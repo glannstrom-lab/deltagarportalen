@@ -2,6 +2,7 @@
  * Relocation Tab - Housing and moving assistance
  */
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Home, MapPin, Calculator, TrendingUp, ExternalLink, CheckCircle, AlertCircle, Car } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -18,26 +19,29 @@ const REGION_DATA = [
   { name: 'Umeå', avgRent: 8500, avgSalary: 39000, commuteIndex: 1, housingWait: '1-3 år' },
 ]
 
+// Housing links with translation keys
 const HOUSING_LINKS = [
-  { name: 'Blocket Bostad', url: 'https://www.blocket.se/bostad', desc: 'Privatuthyrning och andrahand' },
-  { name: 'Qasa', url: 'https://www.qasa.se', desc: 'Säker andrahandsuthyrning' },
-  { name: 'Bostadsportalen', url: 'https://www.bostadsportalen.se', desc: 'Aggregator för hyresbostäder' },
-  { name: 'Samtrygg', url: 'https://www.samtrygg.se', desc: 'Andrahandsuthyrning med trygghet' },
-  { name: 'HomeQ', url: 'https://www.homeq.se', desc: 'Bostadsköer utan kötid' },
+  { key: 'blocket', url: 'https://www.blocket.se/bostad' },
+  { key: 'qasa', url: 'https://www.qasa.se' },
+  { key: 'bostadsportalen', url: 'https://www.bostadsportalen.se' },
+  { key: 'samtrygg', url: 'https://www.samtrygg.se' },
+  { key: 'homeq', url: 'https://www.homeq.se' },
 ]
 
+// Moving checklist with translation keys
 const MOVING_CHECKLIST = [
-  { id: 'address-change', label: 'Anmäl adressändring till Skatteverket', timeframe: 'Senast flyttdagen' },
-  { id: 'mail-forward', label: 'Beställ eftersändning av post', timeframe: '2 veckor före' },
-  { id: 'utilities', label: 'Teckna elavtal för nya bostaden', timeframe: '2-4 veckor före' },
-  { id: 'internet', label: 'Beställ bredband/fiber', timeframe: '2-4 veckor före' },
-  { id: 'insurance', label: 'Teckna/uppdatera hemförsäkring', timeframe: 'Innan inflyttning' },
-  { id: 'cleaning', label: 'Boka flyttstädning', timeframe: '2-4 veckor före' },
-  { id: 'parking', label: 'Ordna parkeringstillstånd om behövs', timeframe: '1-2 veckor före' },
-  { id: 'keys', label: 'Hämta/lämna nycklar', timeframe: 'Flyttdagen' },
+  { id: 'address-change', key: 'addressChange' },
+  { id: 'mail-forward', key: 'mailForward' },
+  { id: 'utilities', key: 'utilities' },
+  { id: 'internet', key: 'internet' },
+  { id: 'insurance', key: 'insurance' },
+  { id: 'cleaning', key: 'cleaning' },
+  { id: 'parking', key: 'parking' },
+  { id: 'keys', key: 'keys' },
 ]
 
 export default function RelocationTab() {
+  const { t } = useTranslation()
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null)
   const [salary, setSalary] = useState<string>('')
   const [checkedItems, setCheckedItems] = useState<string[]>([])
@@ -76,10 +80,9 @@ export default function RelocationTab() {
             <Home className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Flytta för jobb</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t('career.relocation.title')}</h2>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Verktyg för att planera flytt till ny stad för jobbet.
-              Jämför boendekostnader och hitta bostäder.
+              {t('career.relocation.description')}
             </p>
           </div>
         </div>
@@ -89,18 +92,18 @@ export default function RelocationTab() {
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <MapPin className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-          Jämför regioner
+          {t('career.relocation.compareRegions')}
         </h3>
 
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-stone-200 dark:border-stone-600">
-                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">Region</th>
-                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">Snittshyra</th>
-                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">Snittlön</th>
-                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">Bostadskö</th>
-                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">Pendling</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">{t('career.relocation.region')}</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">{t('career.relocation.avgRent')}</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">{t('career.relocation.avgSalary')}</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">{t('career.relocation.housingQueue')}</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-gray-700 dark:text-gray-300">{t('career.relocation.commute')}</th>
               </tr>
             </thead>
             <tbody>
@@ -147,32 +150,32 @@ export default function RelocationTab() {
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Calculator className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-          Beräkna bostadsbudget
+          {t('career.relocation.calculateBudget')}
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Din förväntade månadslön (före skatt)
+              {t('career.relocation.expectedSalary')}
             </label>
             <input
               type="number"
               value={salary}
               onChange={(e) => setSalary(e.target.value)}
               className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100"
-              placeholder="T.ex. 45000"
+              placeholder={t('career.relocation.salaryPlaceholder')}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Välj region
+              {t('career.relocation.selectRegion')}
             </label>
             <select
               value={selectedRegion || ''}
               onChange={(e) => setSelectedRegion(e.target.value)}
               className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100"
             >
-              <option value="">Välj region...</option>
+              <option value="">{t('career.relocation.selectRegionPlaceholder')}</option>
               {REGION_DATA.map((r) => (
                 <option key={r.name} value={r.name}>{r.name}</option>
               ))}
@@ -189,13 +192,13 @@ export default function RelocationTab() {
           )}>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-sm text-gray-700 dark:text-gray-300">Netto (ca)</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{t('career.relocation.netApprox')}</p>
                 <p className="text-xl font-bold text-gray-800 dark:text-gray-100">
                   {affordability.afterTax.toLocaleString('sv-SE')} kr
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-700 dark:text-gray-300">Hyra av lön</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{t('career.relocation.rentOfSalary')}</p>
                 <p className={cn(
                   "text-xl font-bold",
                   affordability.isAffordable ? "text-teal-600 dark:text-teal-400" : "text-amber-600 dark:text-amber-400"
@@ -204,7 +207,7 @@ export default function RelocationTab() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-700 dark:text-gray-300">Kvar efter hyra</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{t('career.relocation.afterRent')}</p>
                 <p className="text-xl font-bold text-gray-800 dark:text-gray-100">
                   {affordability.remaining.toLocaleString('sv-SE')} kr
                 </p>
@@ -215,8 +218,8 @@ export default function RelocationTab() {
               affordability.isAffordable ? "text-teal-700 dark:text-teal-300" : "text-amber-700 dark:text-amber-300"
             )}>
               {affordability.isAffordable
-                ? '✓ Bra budget! Rekommenderat max är 30% av nettolön på hyra.'
-                : '⚠️ Hyran överstiger 30% av nettolön. Överväg billigare alternativ.'}
+                ? t('career.relocation.goodBudget')
+                : t('career.relocation.highRent')}
             </p>
           </div>
         )}
@@ -226,13 +229,13 @@ export default function RelocationTab() {
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Home className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-          Hitta bostad
+          {t('career.relocation.findHousing')}
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {HOUSING_LINKS.map((link) => (
             <a
-              key={link.name}
+              key={link.key}
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -240,11 +243,11 @@ export default function RelocationTab() {
             >
               <div className="flex items-center justify-between">
                 <h4 className="font-medium text-gray-800 dark:text-gray-100 group-hover:text-teal-600 dark:group-hover:text-teal-400">
-                  {link.name}
+                  {t(`career.relocation.housingLinks.${link.key}.name`)}
                 </h4>
                 <ExternalLink className="w-4 h-4 text-gray-600 dark:text-gray-400 group-hover:text-teal-600 dark:group-hover:text-teal-400" />
               </div>
-              <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{link.desc}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-300 mt-1">{t(`career.relocation.housingLinks.${link.key}.desc`)}</p>
             </a>
           ))}
         </div>
@@ -254,7 +257,7 @@ export default function RelocationTab() {
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-          Flyttchecklista
+          {t('career.relocation.movingChecklist')}
         </h3>
 
         <div className="space-y-2">
@@ -279,17 +282,17 @@ export default function RelocationTab() {
                   "text-sm",
                   checkedItems.includes(item.id) ? "text-teal-800 dark:text-teal-200 line-through" : "text-gray-700 dark:text-gray-300"
                 )}>
-                  {item.label}
+                  {t(`career.relocation.checklist.${item.key}.label`)}
                 </span>
               </div>
-              <span className="text-xs text-gray-600 dark:text-gray-400">{item.timeframe}</span>
+              <span className="text-xs text-gray-600 dark:text-gray-400">{t(`career.relocation.checklist.${item.key}.timeframe`)}</span>
             </button>
           ))}
         </div>
 
         {checkedItems.length > 0 && (
           <p className="text-sm text-gray-700 dark:text-gray-300 mt-4">
-            {checkedItems.length} av {MOVING_CHECKLIST.length} punkter klara
+            {t('career.relocation.checklistProgress', { completed: checkedItems.length, total: MOVING_CHECKLIST.length })}
           </p>
         )}
       </Card>
@@ -299,12 +302,12 @@ export default function RelocationTab() {
         <div className="flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-teal-900 dark:text-teal-100">Tips för att hitta bostad</p>
+            <p className="font-medium text-teal-900 dark:text-teal-100">{t('career.relocation.housingTips.title')}</p>
             <ul className="text-sm text-teal-700 dark:text-teal-300 mt-2 space-y-1">
-              <li>- Skriv dig i bostadskö tidigt - det tar tid</li>
-              <li>- Andrahand via Blocket/Qasa är snabbast</li>
-              <li>- Många företag hjälper till med bostad vid flytt</li>
-              <li>- Överväg att pendla från närliggande ort initialt</li>
+              <li>- {t('career.relocation.housingTips.tip1')}</li>
+              <li>- {t('career.relocation.housingTips.tip2')}</li>
+              <li>- {t('career.relocation.housingTips.tip3')}</li>
+              <li>- {t('career.relocation.housingTips.tip4')}</li>
             </ul>
           </div>
         </div>

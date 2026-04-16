@@ -54,7 +54,8 @@
     "new": "Ny!",
     "unknown": "okänd",
     "preview": "Förhandsgranska",
-    "skip": "Hoppa över"
+    "skip": "Hoppa över",
+    "filter": "Filtrera"
   },
   "pageTabs": {
     "cv": {
@@ -1345,7 +1346,10 @@
         "economy": "Ekonomi",
         "administration": "Administration",
         "construction": "Bygg",
-        "education": "Utbildning"
+        "education": "Utbildning",
+        "service": "Service",
+        "logistics": "Logistik",
+        "other": "Övrigt"
       },
       "match": "match",
       "demand": "Efterfrågan",
@@ -1354,7 +1358,16 @@
       "tryDifferentSearch": "Prova att ändra din sökning eller filter",
       "welcomeBack": "Välkommen tillbaka!",
       "basedOnInterests": "Vi visar yrken baserat på dina intressen: {{interests}}",
-      "retakeQuiz": "Gör om testet"
+      "retakeQuiz": "Gör om testet",
+      "salary": "Lön",
+      "salaryRange": "Löneintervall",
+      "demandLabel": "Efterfrågan",
+      "education": "Utbildning",
+      "category": "Kategori",
+      "compare": "Jämför",
+      "comparison": "Jämförelse",
+      "searching": "Söker yrken...",
+      "loadingOccupations": "Laddar yrken..."
     },
     "onboarding": {
       "step": "Steg {{current}} av {{total}}",
@@ -1473,7 +1486,10 @@
       "save": "Spara",
       "cancel": "Avbryt",
       "today": "Idag",
+      "yesterday": "Igår",
       "daysAgo": "dagar sedan",
+      "sendEmail": "Skicka e-post till",
+      "markContacted": "Markera som kontaktad",
       "messageTemplates": "Färdiga meddelanden",
       "copyText": "Kopiera text",
       "syncWithLinkedIn": "Synkronisera med LinkedIn",
@@ -1642,6 +1658,146 @@
       "recommendedCourses": "Rekommenderade utbildningar",
       "yourActionPlan": "Din handlingsplan",
       "newAnalysis": "Gör ny analys"
+    },
+    "credentials": {
+      "title": "Mina Credentials",
+      "description": "Håll koll på certifieringar, utbildningar och licenser du har eller planerar att ta.",
+      "addCredential": "Lägg till credential",
+      "myCredentials": "Mina credentials",
+      "popularCredentials": "Populära certifieringar",
+      "confirmDelete": "Är du säker på att du vill ta bort denna credential?",
+      "targetDateLabel": "Mål",
+      "completedDateLabel": "Klar",
+      "types": {
+        "certification": "Certifiering",
+        "degree": "Examen",
+        "course": "Kurs",
+        "license": "Licens"
+      },
+      "status": {
+        "planned": "Planerad",
+        "inProgress": "Pågående",
+        "completed": "Avslutad"
+      },
+      "form": {
+        "name": "Namn",
+        "namePlaceholder": "T.ex. AWS Cloud Practitioner",
+        "issuer": "Utfärdare",
+        "issuerPlaceholder": "T.ex. Amazon",
+        "type": "Typ",
+        "targetDate": "Måldatum (valfritt)"
+      }
+    },
+    "relocation": {
+      "title": "Flytta för jobb",
+      "description": "Verktyg för att planera flytt till ny stad för jobbet. Jämför boendekostnader och hitta bostäder.",
+      "compareRegions": "Jämför regioner",
+      "region": "Region",
+      "avgRent": "Snittshyra",
+      "avgSalary": "Snittlön",
+      "housingQueue": "Bostadskö",
+      "commute": "Pendling",
+      "calculateBudget": "Beräkna bostadsbudget",
+      "expectedSalary": "Din förväntade månadslön (före skatt)",
+      "salaryPlaceholder": "T.ex. 45000",
+      "selectRegion": "Välj region",
+      "selectRegionPlaceholder": "Välj region...",
+      "netApprox": "Netto (ca)",
+      "rentOfSalary": "Hyra av lön",
+      "afterRent": "Kvar efter hyra",
+      "goodBudget": "Bra budget! Rekommenderat max är 30% av nettolön på hyra.",
+      "highRent": "Hyran överstiger 30% av nettolön. Överväg billigare alternativ.",
+      "findHousing": "Hitta bostad",
+      "movingChecklist": "Flyttchecklista",
+      "checklistProgress": "{{completed}} av {{total}} punkter klara",
+      "housingTips": {
+        "title": "Tips för att hitta bostad",
+        "tip1": "Skriv dig i bostadskö tidigt - det tar tid",
+        "tip2": "Andrahand via Blocket/Qasa är snabbast",
+        "tip3": "Många företag hjälper till med bostad vid flytt",
+        "tip4": "Överväg att pendla från närliggande ort initialt"
+      },
+      "housingLinks": {
+        "blocket": { "name": "Blocket Bostad", "desc": "Privatuthyrning och andrahand" },
+        "qasa": { "name": "Qasa", "desc": "Säker andrahandsuthyrning" },
+        "bostadsportalen": { "name": "Bostadsportalen", "desc": "Aggregator för hyresbostäder" },
+        "samtrygg": { "name": "Samtrygg", "desc": "Andrahandsuthyrning med trygghet" },
+        "homeq": { "name": "HomeQ", "desc": "Bostadsköer utan kötid" }
+      },
+      "checklist": {
+        "addressChange": { "label": "Anmäl adressändring till Skatteverket", "timeframe": "Senast flyttdagen" },
+        "mailForward": { "label": "Beställ eftersändning av post", "timeframe": "2 veckor före" },
+        "utilities": { "label": "Teckna elavtal för nya bostaden", "timeframe": "2-4 veckor före" },
+        "internet": { "label": "Beställ bredband/fiber", "timeframe": "2-4 veckor före" },
+        "insurance": { "label": "Teckna/uppdatera hemförsäkring", "timeframe": "Innan inflyttning" },
+        "cleaning": { "label": "Boka flyttstädning", "timeframe": "2-4 veckor före" },
+        "parking": { "label": "Ordna parkeringstillstånd om behövs", "timeframe": "1-2 veckor före" },
+        "keys": { "label": "Hämta/lämna nycklar", "timeframe": "Flyttdagen" }
+      }
+    },
+    "networkTab": {
+      "loading": "Laddar nätverksdata...",
+      "followUpReminders": "Uppföljningspåminnelser",
+      "toHandle": "att hantera",
+      "dayOverdue": "dag försenad",
+      "daysOverdue": "dagar försenad",
+      "overdue": "Försenad",
+      "done": "Klar",
+      "tomorrow": "Imorgon",
+      "inDays": "Om {{count}} dagar",
+      "neverContacted": "Aldrig kontaktad",
+      "networkingEvents": "Nätverksarrangemang",
+      "addEvent": "Lägg till event",
+      "eventName": "Eventnamn",
+      "locationOptional": "Plats (valfritt)",
+      "noUpcomingEvents": "Inga kommande event",
+      "attend": "Delta",
+      "attending": "Deltar",
+      "noContactsYet": "Du har inga kontakter ännu.",
+      "addContactHint": "Klicka på \"Lägg till kontakt\" för att börja bygga ditt nätverk.",
+      "emailOptional": "E-post (valfritt)",
+      "nextReminder": "Nästa påminnelse",
+      "notesOptional": "Anteckningar (valfritt)",
+      "confirmDeleteContact": "Är du säker på att du vill ta bort denna kontakt?",
+      "confirmDeleteEvent": "Är du säker på att du vill ta bort detta event?",
+      "linkedinTips": {
+        "title": "LinkedIn Tips",
+        "optimizeProfile": {
+          "title": "Optimera din profil",
+          "description": "Se till att ditt profilbild är professionell och ditt sammanfattningsavsnitt väl skrivet."
+        },
+        "regularUpdates": {
+          "title": "Regelbundna uppdateringar",
+          "description": "Dela relevanta artiklar och erfarenheter för att stanna synlig i andras flöden."
+        },
+        "personalMessage": {
+          "title": "Personligt meddelande",
+          "description": "När du skickar en kontaktförfrågan, lägg alltid till ett personligt meddelande."
+        },
+        "engageInGroups": {
+          "title": "Engagera dig i grupper",
+          "description": "Gå med i relevanta LinkedIn-grupper i din bransch för att bygga nätverk."
+        }
+      },
+      "networkingScripts": {
+        "title": "Nätverksscript",
+        "conference": {
+          "title": "Vid en konferens",
+          "script": "Hej! Jag heter [namn]. Jag är intresserad av [område]. Vad är du fokuserad på för tillfället?"
+        },
+        "afterMeeting": {
+          "title": "Efter ett möte",
+          "script": "Det var mycket givande att prata med dig idag om [ämne]. Jag skulle gärna vilja hålla kontakten. Vill du följa varandra på LinkedIn?"
+        },
+        "informational": {
+          "title": "Informativa samtal",
+          "script": "Hej [namn], jag beundrar ditt arbete på [företag]. Skulle du ha tid för ett kort samtal om din karriärsväg?"
+        }
+      },
+      "copied": "Kopierad!",
+      "copy": "Kopiera",
+      "toReconnect": "Att återknyta",
+      "followUpThisWeek": "Uppföljning denna vecka"
     }
   },
   "interestGuide": {

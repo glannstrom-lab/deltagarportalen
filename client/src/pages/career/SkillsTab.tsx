@@ -5,10 +5,10 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Target, Search, CheckCircle, AlertCircle, BookOpen,
-  Sparkles, TrendingUp, Award, Loader2, Trash2, History
+  Sparkles, TrendingUp, Award, Loader2, Trash2, History, Heart
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
-import { skillsAnalysisApi, careerPlanApi, milestonesApi, type SkillsAnalysis, type SkillComparison, type CourseRecommendation, type ActionPlanItem } from '@/services/careerApi'
+import { skillsAnalysisApi, careerPlanApi, milestonesApi, favoriteOccupationsApi, type SkillsAnalysis, type SkillComparison, type CourseRecommendation, type ActionPlanItem, type FavoriteOccupation } from '@/services/careerApi'
 import { useAIStream } from '@/hooks/useAIStream'
 import { cn } from '@/lib/utils'
 
@@ -22,6 +22,7 @@ export default function SkillsTab() {
   const [showHistory, setShowHistory] = useState(false)
   const [isAddingToPlan, setIsAddingToPlan] = useState(false)
   const [addedToPlan, setAddedToPlan] = useState(false)
+  const [favoriteOccupations, setFavoriteOccupations] = useState<FavoriteOccupation[]>([])
 
   const { streamedText, isStreaming, startStream, reset } = useAIStream({
     onComplete: async (fullText) => {
@@ -44,21 +45,26 @@ export default function SkillsTab() {
     }
   })
 
-  // Load previous analyses from cloud
+  // Load previous analyses and favorite occupations from cloud
   useEffect(() => {
-    loadAnalyses()
+    loadData()
   }, [])
 
-  const loadAnalyses = async () => {
+  const loadData = async () => {
     setIsLoading(true)
     try {
-      const analyses = await skillsAnalysisApi.getAll()
+      // Load analyses and favorites in parallel
+      const [analyses, favorites] = await Promise.all([
+        skillsAnalysisApi.getAll(),
+        favoriteOccupationsApi.getAll()
+      ])
       setPreviousAnalyses(analyses)
+      setFavoriteOccupations(favorites)
       if (analyses.length > 0) {
         setCurrentAnalysis(analyses[0])
       }
     } catch (err) {
-      console.error('Failed to load analyses:', err)
+      console.error('Failed to load data:', err)
     } finally {
       setIsLoading(false)
     }
@@ -355,6 +361,28 @@ export default function SkillsTab() {
                 <Search className="w-4 h-4 text-teal-500 dark:text-teal-400" />
                 {t('career.skills.dreamJob')}
               </label>
+
+              {/* Favorite occupations suggestions */}
+              {favoriteOccupations.length > 0 && !dreamJob && (
+                <div className="mb-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-700">
+                  <div className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300 mb-2">
+                    <Heart className="w-4 h-4" />
+                    {i18n.language === 'en' ? 'Your favorite occupations:' : 'Dina favorityrken:'}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {favoriteOccupations.slice(0, 5).map((fav) => (
+                      <button
+                        key={fav.id}
+                        onClick={() => setDreamJob(fav.occupation_title)}
+                        className="px-3 py-1.5 text-sm bg-white dark:bg-stone-700 rounded-full border border-teal-300 dark:border-teal-600 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-800/30 transition-colors"
+                      >
+                        {fav.occupation_title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <textarea
                 value={dreamJob}
                 onChange={(e) => setDreamJob(e.target.value)}

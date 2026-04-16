@@ -54,7 +54,8 @@
     "new": "New!",
     "unknown": "unknown",
     "preview": "Preview",
-    "skip": "Skip"
+    "skip": "Skip",
+    "filter": "Filter"
   },
   "pageTabs": {
     "cv": {
@@ -1316,7 +1317,10 @@
         "economy": "Economy",
         "administration": "Administration",
         "construction": "Construction",
-        "education": "Education"
+        "education": "Education",
+        "service": "Service",
+        "logistics": "Logistics",
+        "other": "Other"
       },
       "match": "match",
       "demand": "Demand",
@@ -1325,7 +1329,16 @@
       "tryDifferentSearch": "Try changing your search or filters",
       "welcomeBack": "Welcome back!",
       "basedOnInterests": "We're showing occupations based on your interests: {{interests}}",
-      "retakeQuiz": "Retake quiz"
+      "retakeQuiz": "Retake quiz",
+      "salary": "Salary",
+      "salaryRange": "Salary range",
+      "demandLabel": "Demand",
+      "education": "Education",
+      "category": "Category",
+      "compare": "Compare",
+      "comparison": "Comparison",
+      "searching": "Searching occupations...",
+      "loadingOccupations": "Loading occupations..."
     },
     "onboarding": {
       "step": "Step {{current}} of {{total}}",
@@ -1444,7 +1457,10 @@
       "save": "Save",
       "cancel": "Cancel",
       "today": "Today",
+      "yesterday": "Yesterday",
       "daysAgo": "days ago",
+      "sendEmail": "Send email to",
+      "markContacted": "Mark as contacted",
       "messageTemplates": "Message templates",
       "copyText": "Copy text",
       "syncWithLinkedIn": "Sync with LinkedIn",
@@ -1613,6 +1629,146 @@
       "recommendedCourses": "Recommended courses",
       "yourActionPlan": "Your action plan",
       "newAnalysis": "New analysis"
+    },
+    "credentials": {
+      "title": "My Credentials",
+      "description": "Track certifications, degrees, and licenses you have or plan to get.",
+      "addCredential": "Add credential",
+      "myCredentials": "My credentials",
+      "popularCredentials": "Popular certifications",
+      "confirmDelete": "Are you sure you want to delete this credential?",
+      "targetDateLabel": "Target",
+      "completedDateLabel": "Completed",
+      "types": {
+        "certification": "Certification",
+        "degree": "Degree",
+        "course": "Course",
+        "license": "License"
+      },
+      "status": {
+        "planned": "Planned",
+        "inProgress": "In Progress",
+        "completed": "Completed"
+      },
+      "form": {
+        "name": "Name",
+        "namePlaceholder": "E.g. AWS Cloud Practitioner",
+        "issuer": "Issuer",
+        "issuerPlaceholder": "E.g. Amazon",
+        "type": "Type",
+        "targetDate": "Target date (optional)"
+      }
+    },
+    "relocation": {
+      "title": "Relocate for Work",
+      "description": "Tools for planning a move to a new city for work. Compare living costs and find housing.",
+      "compareRegions": "Compare regions",
+      "region": "Region",
+      "avgRent": "Avg. rent",
+      "avgSalary": "Avg. salary",
+      "housingQueue": "Housing queue",
+      "commute": "Commute",
+      "calculateBudget": "Calculate housing budget",
+      "expectedSalary": "Your expected monthly salary (before tax)",
+      "salaryPlaceholder": "E.g. 45000",
+      "selectRegion": "Select region",
+      "selectRegionPlaceholder": "Select region...",
+      "netApprox": "Net (approx.)",
+      "rentOfSalary": "Rent of salary",
+      "afterRent": "Remaining after rent",
+      "goodBudget": "Good budget! Recommended max is 30% of net salary on rent.",
+      "highRent": "Rent exceeds 30% of net salary. Consider cheaper options.",
+      "findHousing": "Find housing",
+      "movingChecklist": "Moving checklist",
+      "checklistProgress": "{{completed}} of {{total}} items done",
+      "housingTips": {
+        "title": "Tips for finding housing",
+        "tip1": "Sign up for housing queues early - it takes time",
+        "tip2": "Sublets via Blocket/Qasa are fastest",
+        "tip3": "Many companies help with housing when relocating",
+        "tip4": "Consider commuting from a nearby town initially"
+      },
+      "housingLinks": {
+        "blocket": { "name": "Blocket Bostad", "desc": "Private rentals and sublets" },
+        "qasa": { "name": "Qasa", "desc": "Safe sublet rentals" },
+        "bostadsportalen": { "name": "Bostadsportalen", "desc": "Rental apartment aggregator" },
+        "samtrygg": { "name": "Samtrygg", "desc": "Sublet with security" },
+        "homeq": { "name": "HomeQ", "desc": "Housing queues without wait time" }
+      },
+      "checklist": {
+        "addressChange": { "label": "Report address change to Tax Agency", "timeframe": "By moving day" },
+        "mailForward": { "label": "Order mail forwarding", "timeframe": "2 weeks before" },
+        "utilities": { "label": "Sign electricity contract", "timeframe": "2-4 weeks before" },
+        "internet": { "label": "Order internet/fiber", "timeframe": "2-4 weeks before" },
+        "insurance": { "label": "Get/update home insurance", "timeframe": "Before move-in" },
+        "cleaning": { "label": "Book moving cleaning", "timeframe": "2-4 weeks before" },
+        "parking": { "label": "Arrange parking permit if needed", "timeframe": "1-2 weeks before" },
+        "keys": { "label": "Pick up/return keys", "timeframe": "Moving day" }
+      }
+    },
+    "networkTab": {
+      "loading": "Loading network data...",
+      "followUpReminders": "Follow-up reminders",
+      "toHandle": "to handle",
+      "dayOverdue": "day overdue",
+      "daysOverdue": "days overdue",
+      "overdue": "Overdue",
+      "done": "Done",
+      "tomorrow": "Tomorrow",
+      "inDays": "In {{count}} days",
+      "neverContacted": "Never contacted",
+      "networkingEvents": "Networking events",
+      "addEvent": "Add event",
+      "eventName": "Event name",
+      "locationOptional": "Location (optional)",
+      "noUpcomingEvents": "No upcoming events",
+      "attend": "Attend",
+      "attending": "Attending",
+      "noContactsYet": "You don't have any contacts yet.",
+      "addContactHint": "Click \"Add contact\" to start building your network.",
+      "emailOptional": "Email (optional)",
+      "nextReminder": "Next reminder",
+      "notesOptional": "Notes (optional)",
+      "confirmDeleteContact": "Are you sure you want to delete this contact?",
+      "confirmDeleteEvent": "Are you sure you want to delete this event?",
+      "linkedinTips": {
+        "title": "LinkedIn Tips",
+        "optimizeProfile": {
+          "title": "Optimize your profile",
+          "description": "Make sure your profile picture is professional and your summary is well written."
+        },
+        "regularUpdates": {
+          "title": "Regular updates",
+          "description": "Share relevant articles and experiences to stay visible in others' feeds."
+        },
+        "personalMessage": {
+          "title": "Personal message",
+          "description": "When sending a connection request, always add a personal message."
+        },
+        "engageInGroups": {
+          "title": "Engage in groups",
+          "description": "Join relevant LinkedIn groups in your industry to build your network."
+        }
+      },
+      "networkingScripts": {
+        "title": "Networking scripts",
+        "conference": {
+          "title": "At a conference",
+          "script": "Hi! My name is [name]. I'm interested in [area]. What are you focused on right now?"
+        },
+        "afterMeeting": {
+          "title": "After a meeting",
+          "script": "It was great talking with you today about [topic]. I'd love to stay in touch. Shall we connect on LinkedIn?"
+        },
+        "informational": {
+          "title": "Informational interviews",
+          "script": "Hi [name], I admire your work at [company]. Would you have time for a brief chat about your career path?"
+        }
+      },
+      "copied": "Copied!",
+      "copy": "Copy",
+      "toReconnect": "To reconnect",
+      "followUpThisWeek": "Follow-up this week"
     }
   },
   "interestGuide": {

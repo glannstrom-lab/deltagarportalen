@@ -1124,6 +1124,90 @@ export const favoriteOccupationsApi = {
   }
 };
 
+// ===== User Credentials API =====
+
+export interface UserCredential {
+  id: string;
+  user_id: string;
+  name: string;
+  issuer?: string;
+  type: 'certification' | 'degree' | 'course' | 'license';
+  status: 'planned' | 'in-progress' | 'completed';
+  target_date?: string;
+  completed_date?: string;
+  url?: string;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const credentialsApi = {
+  async getAll(): Promise<UserCredential[]> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { data, error } = await supabase
+      .from('user_credentials')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) handleError(error, 'Failed to fetch credentials');
+    return data || [];
+  },
+
+  async save(credential: Omit<UserCredential, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<UserCredential> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { data, error } = await supabase
+      .from('user_credentials')
+      .insert([{ ...credential, user_id: user.id }])
+      .select()
+      .single();
+
+    if (error) handleError(error, 'Failed to save credential');
+    return data;
+  },
+
+  async update(id: string, updates: Partial<UserCredential>): Promise<UserCredential> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { data, error } = await supabase
+      .from('user_credentials')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single();
+
+    if (error) handleError(error, 'Failed to update credential');
+    return data;
+  },
+
+  async delete(id: string): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { error } = await supabase
+      .from('user_credentials')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id);
+
+    if (error) handleError(error, 'Failed to delete credential');
+  },
+
+  async updateStatus(id: string, status: UserCredential['status']): Promise<UserCredential> {
+    const completedDate = status === 'completed' ? new Date().toISOString().split('T')[0] : undefined;
+    return this.update(id, {
+      status,
+      completed_date: completedDate
+    });
+  }
+};
+
 export default {
   careerPath: careerPathApi,
   salary: salaryApi,
@@ -1134,5 +1218,6 @@ export default {
   milestones: milestonesApi,
   events: networkingEventsApi,
   skillsAnalysis: skillsAnalysisApi,
-  favoriteOccupations: favoriteOccupationsApi
+  favoriteOccupations: favoriteOccupationsApi,
+  credentials: credentialsApi
 };

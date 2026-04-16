@@ -1,21 +1,12 @@
 /**
- * Credentials Tab - Track certifications and education requirements
+ * Credentials Tab - Track certifications and education requirements with cloud storage
  */
 import { useState, useEffect } from 'react'
-import { GraduationCap, CheckCircle, Circle, Plus, Trash2, ExternalLink, Calendar, Award, BookOpen } from '@/components/ui/icons'
+import { useTranslation } from 'react-i18next'
+import { GraduationCap, CheckCircle, Plus, Trash2, Calendar, Award, BookOpen, Loader2 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
-
-interface Credential {
-  id: string
-  name: string
-  issuer: string
-  status: 'planned' | 'in-progress' | 'completed'
-  type: 'certification' | 'degree' | 'course' | 'license'
-  targetDate?: string
-  completedDate?: string
-  url?: string
-}
+import { credentialsApi, type UserCredential } from '@/services/careerApi'
 
 const POPULAR_CREDENTIALS = [
   { name: 'Google Analytics Certification', issuer: 'Google', type: 'certification' as const },
@@ -28,85 +19,119 @@ const POPULAR_CREDENTIALS = [
   { name: 'SFI - Svenska för invandrare', issuer: 'Kommun', type: 'course' as const },
 ]
 
-const CREDENTIAL_TYPES = {
-  certification: { label: 'Certifiering', color: 'violet' },
-  degree: { label: 'Examen', color: 'blue' },
-  course: { label: 'Kurs', color: 'emerald' },
-  license: { label: 'Licens', color: 'amber' },
-}
+type CredentialType = 'certification' | 'degree' | 'course' | 'license'
 
 export default function CredentialsTab() {
-  const [credentials, setCredentials] = useState<Credential[]>([])
+  const { t } = useTranslation()
+  const [credentials, setCredentials] = useState<UserCredential[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     issuer: '',
-    type: 'certification' as Credential['type'],
+    type: 'certification' as CredentialType,
     targetDate: '',
   })
 
-  // Load from localStorage
+  // Load from cloud
   useEffect(() => {
-    const saved = localStorage.getItem('user-credentials')
-    if (saved) {
-      setCredentials(JSON.parse(saved))
-    }
+    loadCredentials()
   }, [])
 
-  // Save to localStorage
-  useEffect(() => {
-    localStorage.setItem('user-credentials', JSON.stringify(credentials))
-  }, [credentials])
+  const loadCredentials = async () => {
+    setIsLoading(true)
+    try {
+      const data = await credentialsApi.getAll()
+      setCredentials(data)
+    } catch (err) {
+      console.error('Failed to load credentials:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (!formData.name.trim()) return
-
-    const newCredential: Credential = {
-      id: Date.now().toString(),
-      name: formData.name,
-      issuer: formData.issuer,
-      type: formData.type,
-      status: 'planned',
-      targetDate: formData.targetDate || undefined,
+    setIsSaving(true)
+    try {
+      const saved = await credentialsApi.save({
+        name: formData.name,
+        issuer: formData.issuer || undefined,
+        type: formData.type,
+        status: 'planned',
+        target_date: formData.targetDate || undefined,
+      })
+      setCredentials(prev => [saved, ...prev])
+      setFormData({ name: '', issuer: '', type: 'certification', targetDate: '' })
+      setIsAdding(false)
+    } catch (err) {
+      console.error('Failed to save credential:', err)
+    } finally {
+      setIsSaving(false)
     }
-
-    setCredentials(prev => [...prev, newCredential])
-    setFormData({ name: '', issuer: '', type: 'certification', targetDate: '' })
-    setIsAdding(false)
   }
 
-  const handleAddPopular = (cred: typeof POPULAR_CREDENTIALS[0]) => {
-    const newCredential: Credential = {
-      id: Date.now().toString(),
-      name: cred.name,
-      issuer: cred.issuer,
-      type: cred.type,
-      status: 'planned',
+  const handleAddPopular = async (cred: typeof POPULAR_CREDENTIALS[0]) => {
+    setIsSaving(true)
+    try {
+      const saved = await credentialsApi.save({
+        name: cred.name,
+        issuer: cred.issuer,
+        type: cred.type,
+        status: 'planned',
+      })
+      setCredentials(prev => [saved, ...prev])
+    } catch (err) {
+      console.error('Failed to save credential:', err)
+    } finally {
+      setIsSaving(false)
     }
-    setCredentials(prev => [...prev, newCredential])
   }
 
-  const updateStatus = (id: string, status: Credential['status']) => {
-    setCredentials(prev => prev.map(c => {
-      if (c.id === id) {
-        return {
-          ...c,
-          status,
-          completedDate: status === 'completed' ? new Date().toISOString().split('T')[0] : undefined,
-        }
-      }
-      return c
-    }))
+  const updateStatus = async (id: string, status: UserCredential['status']) => {
+    try {
+      const updated = await credentialsApi.updateStatus(id, status)
+      setCredentials(prev => prev.map(c => c.id === id ? updated : c))
+    } catch (err) {
+      console.error('Failed to update status:', err)
+    }
   }
 
-  const deleteCredential = (id: string) => {
-    setCredentials(prev => prev.filter(c => c.id !== id))
+  const deleteCredential = async (id: string) => {
+    if (!confirm(t('career.credentials.confirmDelete'))) return
+    try {
+      await credentialsApi.delete(id)
+      setCredentials(prev => prev.filter(c => c.id !== id))
+    } catch (err) {
+      console.error('Failed to delete credential:', err)
+    }
   }
 
   const stats = {
     completed: credentials.filter(c => c.status === 'completed').length,
     inProgress: credentials.filter(c => c.status === 'in-progress').length,
     planned: credentials.filter(c => c.status === 'planned').length,
+  }
+
+  const getTypeLabel = (type: CredentialType) => t(`career.credentials.types.${type}`)
+  const getTypeColor = (type: CredentialType) => {
+    const colors = {
+      certification: 'violet',
+      degree: 'blue',
+      course: 'emerald',
+      license: 'amber',
+    }
+    return colors[type]
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+        <span className="ml-3 text-gray-600 dark:text-gray-400">{t('common.loading')}</span>
+      </div>
+    )
   }
 
   return (
@@ -118,9 +143,9 @@ export default function CredentialsTab() {
             <GraduationCap className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Mina Credentials</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('career.credentials.title')}</h2>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Håll koll på certifieringar, utbildningar och licenser du har eller planerar att ta.
+              {t('career.credentials.description')}
             </p>
           </div>
         </div>
@@ -131,15 +156,15 @@ export default function CredentialsTab() {
         <div className="grid grid-cols-3 gap-4">
           <Card className="text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{stats.completed}</div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Avslutade</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('career.credentials.status.completed')}</p>
           </Card>
           <Card className="text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">{stats.inProgress}</div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Pågående</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('career.credentials.status.inProgress')}</p>
           </Card>
           <Card className="text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <div className="text-2xl font-bold text-gray-600 dark:text-gray-400">{stats.planned}</div>
-            <p className="text-sm text-gray-600 dark:text-gray-400">Planerade</p>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('career.credentials.status.planned')}</p>
           </Card>
         </div>
       )}
@@ -147,44 +172,45 @@ export default function CredentialsTab() {
       {/* Add form */}
       {isAdding ? (
         <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
-          <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">Lägg till credential</h3>
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.credentials.addCredential')}</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Namn *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.name')} *</label>
               <input
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                 className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
-                placeholder="T.ex. AWS Cloud Practitioner"
+                placeholder={t('career.credentials.form.namePlaceholder')}
               />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Utfärdare</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.issuer')}</label>
                 <input
                   type="text"
                   value={formData.issuer}
                   onChange={(e) => setFormData(prev => ({ ...prev, issuer: e.target.value }))}
                   className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
-                  placeholder="T.ex. Amazon"
+                  placeholder={t('career.credentials.form.issuerPlaceholder')}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Typ</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.type')}</label>
                 <select
                   value={formData.type}
-                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as Credential['type'] }))}
+                  onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CredentialType }))}
                   className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100"
                 >
-                  {Object.entries(CREDENTIAL_TYPES).map(([key, val]) => (
-                    <option key={key} value={key}>{val.label}</option>
-                  ))}
+                  <option value="certification">{t('career.credentials.types.certification')}</option>
+                  <option value="degree">{t('career.credentials.types.degree')}</option>
+                  <option value="course">{t('career.credentials.types.course')}</option>
+                  <option value="license">{t('career.credentials.types.license')}</option>
                 </select>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Måldatum (valfritt)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">{t('career.credentials.form.targetDate')}</label>
               <input
                 type="date"
                 value={formData.targetDate}
@@ -193,11 +219,12 @@ export default function CredentialsTab() {
               />
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleAdd} disabled={!formData.name.trim()} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
-                Lägg till
+              <Button onClick={handleAdd} disabled={!formData.name.trim() || isSaving} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null}
+                {t('common.add')}
               </Button>
               <Button variant="outline" onClick={() => setIsAdding(false)}>
-                Avbryt
+                {t('common.cancel')}
               </Button>
             </div>
           </div>
@@ -205,17 +232,17 @@ export default function CredentialsTab() {
       ) : (
         <Button onClick={() => setIsAdding(true)} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
           <Plus className="w-4 h-4 mr-1" />
-          Lägg till credential
+          {t('career.credentials.addCredential')}
         </Button>
       )}
 
       {/* My credentials */}
       {credentials.length > 0 && (
         <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">Mina credentials</h3>
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.credentials.myCredentials')}</h3>
           <div className="space-y-3">
             {credentials.map((cred) => {
-              const typeInfo = CREDENTIAL_TYPES[cred.type]
+              const typeColor = getTypeColor(cred.type)
               return (
                 <div
                   key={cred.id}
@@ -248,23 +275,23 @@ export default function CredentialsTab() {
                         <div className="flex items-center gap-2 mt-2">
                           <span className={cn(
                             "px-2 py-0.5 rounded-full text-xs font-medium",
-                            typeInfo.color === 'violet' && "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300",
-                            typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
-                            typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300",
-                            typeInfo.color === 'amber' && "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
+                            typeColor === 'violet' && "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300",
+                            typeColor === 'blue' && "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+                            typeColor === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300",
+                            typeColor === 'amber' && "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
                           )}>
-                            {typeInfo.label}
+                            {getTypeLabel(cred.type)}
                           </span>
-                          {cred.targetDate && cred.status !== 'completed' && (
+                          {cred.target_date && cred.status !== 'completed' && (
                             <span className="text-xs text-gray-500 dark:text-gray-400 flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
-                              Mål: {cred.targetDate}
+                              {t('career.credentials.targetDateLabel')}: {cred.target_date}
                             </span>
                           )}
-                          {cred.completedDate && (
+                          {cred.completed_date && (
                             <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                               <CheckCircle className="w-3 h-3" />
-                              Klar: {cred.completedDate}
+                              {t('career.credentials.completedDateLabel')}: {cred.completed_date}
                             </span>
                           )}
                         </div>
@@ -273,6 +300,7 @@ export default function CredentialsTab() {
                     <button
                       onClick={() => deleteCredential(cred.id)}
                       className="p-1 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded text-rose-400 hover:text-rose-600 dark:hover:text-rose-400"
+                      aria-label={t('common.delete')}
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -289,7 +317,7 @@ export default function CredentialsTab() {
                           : "bg-stone-100 dark:bg-stone-600 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-500"
                       )}
                     >
-                      Planerad
+                      {t('career.credentials.status.planned')}
                     </button>
                     <button
                       onClick={() => updateStatus(cred.id, 'in-progress')}
@@ -300,7 +328,7 @@ export default function CredentialsTab() {
                           : "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/50"
                       )}
                     >
-                      Pågående
+                      {t('career.credentials.status.inProgress')}
                     </button>
                     <button
                       onClick={() => updateStatus(cred.id, 'completed')}
@@ -311,7 +339,7 @@ export default function CredentialsTab() {
                           : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50"
                       )}
                     >
-                      Avslutad
+                      {t('career.credentials.status.completed')}
                     </button>
                   </div>
                 </div>
@@ -323,13 +351,14 @@ export default function CredentialsTab() {
 
       {/* Popular suggestions */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">Populära certifieringar</h3>
+        <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.credentials.popularCredentials')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {POPULAR_CREDENTIALS.filter(p => !credentials.find(c => c.name === p.name)).slice(0, 6).map((cred) => (
             <button
               key={cred.name}
               onClick={() => handleAddPopular(cred)}
-              className="flex items-center gap-3 p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all text-left group"
+              disabled={isSaving}
+              className="flex items-center gap-3 p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all text-left group disabled:opacity-50"
             >
               <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center group-hover:bg-teal-200 dark:group-hover:bg-teal-900/50">
                 <Plus className="w-4 h-4 text-teal-600 dark:text-teal-400" />

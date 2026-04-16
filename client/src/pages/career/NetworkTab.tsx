@@ -32,43 +32,16 @@ const messageTemplateDefs = [
   },
 ]
 
-const linkedinTips = [
-  {
-    title: 'Optimera din profil',
-    description: 'Se till att ditt profilbild är professionell och ditt sammanfattningsavsnitt väl skrivet.',
-    icon: '📸'
-  },
-  {
-    title: 'Regelbundna uppdateringar',
-    description: 'Dela relevanta artiklar och erfarenheter för att stanna synlig i andras flöden.',
-    icon: '📝'
-  },
-  {
-    title: 'Personligt meddelande',
-    description: 'När du skickar en kontaktförfrågan, lägg alltid till ett personligt meddelande.',
-    icon: '💬'
-  },
-  {
-    title: 'Engagera dig i grupper',
-    description: 'Betala in relevanta LinkedIn-grupper i din bransch för att bygga nätverk.',
-    icon: '👥'
-  },
+// LinkedIn tips with i18n keys
+const linkedinTipKeys = [
+  { key: 'optimizeProfile', icon: '📸' },
+  { key: 'regularUpdates', icon: '📝' },
+  { key: 'personalMessage', icon: '💬' },
+  { key: 'engageInGroups', icon: '👥' },
 ]
 
-const networkingScripts = [
-  {
-    title: 'Vid en konferens',
-    script: 'Hej! Jag heter [namn]. Jag är intresserad av [område]. Vad är du fokuserad på för tillfället?'
-  },
-  {
-    title: 'Efter en möte',
-    script: 'Det var mycket givande att prata med dig idag om [ämne]. Jag skulle gärna vilja hålla kontakten. Vill du följa varandra på LinkedIn?'
-  },
-  {
-    title: 'Informativa samtal',
-    script: 'Hej [namn], jag beundrar ditt arbete på [företag]. Skulle du ha tid för ett kort samtal om din karriärsväg?'
-  },
-]
+// Networking script keys
+const networkingScriptKeys = ['conference', 'afterMeeting', 'informational']
 
 export default function NetworkTab() {
   const { t } = useTranslation()
@@ -127,6 +100,19 @@ export default function NetworkTab() {
     text: t(`career.network.templates.${def.textKey}`)
   })), [t])
 
+  // Build translated LinkedIn tips
+  const linkedinTips = useMemo(() => linkedinTipKeys.map(tip => ({
+    title: t(`career.networkTab.linkedinTips.${tip.key}.title`),
+    description: t(`career.networkTab.linkedinTips.${tip.key}.description`),
+    icon: tip.icon
+  })), [t])
+
+  // Build translated networking scripts
+  const networkingScripts = useMemo(() => networkingScriptKeys.map(key => ({
+    title: t(`career.networkTab.networkingScripts.${key}.title`),
+    script: t(`career.networkTab.networkingScripts.${key}.script`)
+  })), [t])
+
   const addContact = async () => {
     if (!newContact.name.trim()) return
     setIsSaving(true)
@@ -165,7 +151,7 @@ export default function NetworkTab() {
   }
 
   const deleteContact = async (id: string) => {
-    if (!confirm('Är du säker på att du vill ta bort denna kontakt?')) return
+    if (!confirm(t('career.networkTab.confirmDeleteContact'))) return
     try {
       await networkApi.delete(id)
       setContacts(prev => prev.filter(c => c.id !== id))
@@ -214,7 +200,7 @@ export default function NetworkTab() {
   }
 
   const deleteEvent = async (id: string) => {
-    if (!confirm('Är du säker på att du vill ta bort detta event?')) return
+    if (!confirm(t('career.networkTab.confirmDeleteEvent'))) return
     try {
       await networkingEventsApi.delete(id)
       setEvents(prev => prev.filter(e => e.id !== id))
@@ -247,11 +233,29 @@ export default function NetworkTab() {
     return daysUntil < 0
   }).length
 
+  // Helper function to format days text
+  const formatDaysOverdue = (days: number) => {
+    return `${days} ${days === 1 ? t('career.networkTab.dayOverdue') : t('career.networkTab.daysOverdue')}`
+  }
+
+  const formatDaysUntil = (days: number) => {
+    if (days === 0) return t('career.network.today')
+    if (days === 1) return t('career.networkTab.tomorrow')
+    return t('career.networkTab.inDays', { count: days })
+  }
+
+  const formatDaysSince = (days: number | null) => {
+    if (days === null) return t('career.networkTab.neverContacted')
+    if (days === 0) return t('career.network.today')
+    if (days === 1) return t('career.network.yesterday')
+    return `${days} ${t('career.network.daysAgo')}`
+  }
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
-        <span className="ml-3 text-gray-600 dark:text-gray-400">Laddar nätverksdata...</span>
+        <span className="ml-3 text-gray-600 dark:text-gray-400">{t('career.networkTab.loading')}</span>
       </div>
     )
   }
@@ -260,16 +264,16 @@ export default function NetworkTab() {
     <div className="space-y-6">
       {/* Follow-up Reminders Section */}
       {(needsFollowUp > 0 || overdueFollowUps > 0) && (
-        <Card className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label="Uppföljningspåminnelser">
+        <Card className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label={t('career.networkTab.followUpReminders')}>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3 flex items-center gap-2">
             <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-            Uppföljningspåminnelser
+            {t('career.networkTab.followUpReminders')}
             <span className="ml-auto text-sm font-normal px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300">
-              {overdueFollowUps + needsFollowUp} att hantera
+              {overdueFollowUps + needsFollowUp} {t('career.networkTab.toHandle')}
             </span>
           </h3>
 
-          <div className="space-y-2" role="list" aria-label="Kontakter att följa upp">
+          <div className="space-y-2" role="list" aria-label={t('career.networkTab.followUpReminders')}>
             {/* Overdue contacts first */}
             {contacts.filter(c => {
               if (!c.next_contact_date) return false
@@ -289,7 +293,7 @@ export default function NetworkTab() {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-red-900 dark:text-red-100 truncate">{contact.name}</p>
                     <p className="text-xs text-red-700 dark:text-red-300">
-                      {daysOverdue} {daysOverdue === 1 ? 'dag' : 'dagar'} försenad
+                      {formatDaysOverdue(daysOverdue)}
                     </p>
                   </div>
                   <div className="flex gap-1 flex-shrink-0">
@@ -299,7 +303,7 @@ export default function NetworkTab() {
                         variant="outline"
                         className="text-xs border-red-300 text-red-700 hover:bg-red-100"
                         onClick={() => window.location.href = `mailto:${contact.email}`}
-                        aria-label={`Skicka e-post till ${contact.name}`}
+                        aria-label={`${t('career.network.sendEmail')} ${contact.name}`}
                       >
                         <Mail className="w-3 h-3" />
                       </Button>
@@ -308,10 +312,10 @@ export default function NetworkTab() {
                       size="sm"
                       className="text-xs bg-red-600 hover:bg-red-700 text-white"
                       onClick={() => markContacted(contact.id)}
-                      aria-label={`Markera ${contact.name} som kontaktad`}
+                      aria-label={`${t('career.network.markContacted')} ${contact.name}`}
                     >
                       <CheckCircle2 className="w-3 h-3 mr-1" />
-                      Klar
+                      {t('career.networkTab.done')}
                     </Button>
                   </div>
                 </div>
@@ -337,7 +341,7 @@ export default function NetworkTab() {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-amber-900 dark:text-amber-100 truncate">{contact.name}</p>
                     <p className="text-xs text-amber-700 dark:text-amber-300">
-                      {daysUntil === 0 ? 'Idag' : daysUntil === 1 ? 'Imorgon' : `Om ${daysUntil} dagar`}
+                      {formatDaysUntil(daysUntil)}
                     </p>
                   </div>
                   <div className="flex gap-1 flex-shrink-0">
@@ -347,7 +351,7 @@ export default function NetworkTab() {
                         variant="outline"
                         className="text-xs border-amber-300 text-amber-700 hover:bg-amber-100"
                         onClick={() => window.location.href = `mailto:${contact.email}`}
-                        aria-label={`Skicka e-post till ${contact.name}`}
+                        aria-label={`${t('career.network.sendEmail')} ${contact.name}`}
                       >
                         <Mail className="w-3 h-3" />
                       </Button>
@@ -356,10 +360,10 @@ export default function NetworkTab() {
                       size="sm"
                       className="text-xs bg-amber-600 hover:bg-amber-700 text-white"
                       onClick={() => markContacted(contact.id)}
-                      aria-label={`Markera ${contact.name} som kontaktad`}
+                      aria-label={`${t('career.network.markContacted')} ${contact.name}`}
                     >
                       <CheckCircle2 className="w-3 h-3 mr-1" />
-                      Klar
+                      {t('career.networkTab.done')}
                     </Button>
                   </div>
                 </div>
@@ -377,26 +381,26 @@ export default function NetworkTab() {
         <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <Users className="w-6 h-6 text-teal-600 dark:text-teal-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{contacts.length}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Kontakter</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.network.contacts')}</p>
         </Card>
         <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <MessageCircle className="w-6 h-6 text-green-600 dark:text-green-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {contacts.filter(c => c.last_contact_date && getDaysSinceContact(c.last_contact_date)! < 30).length}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Aktiva denna månad</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.network.activeThisMonth')}</p>
         </Card>
         <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <Star className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
           <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {contacts.filter(c => c.status === 'reconnect').length}
           </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Att återknyta</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.networkTab.toReconnect')}</p>
         </Card>
         <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <Calendar className="w-6 h-6 text-teal-600 dark:text-teal-400 mx-auto mb-2" />
           <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{needsFollowUp}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">Uppföljning denna vecka</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.networkTab.followUpThisWeek')}</p>
         </Card>
       </div>
 
@@ -436,21 +440,21 @@ export default function NetworkTab() {
               <div className="grid grid-cols-2 gap-3">
                 <Input
                   type="email"
-                  placeholder="E-post (valfritt)"
+                  placeholder={t('career.networkTab.emailOptional')}
                   value={newContact.email}
                   onChange={(e) => setNewContact(prev => ({ ...prev, email: e.target.value }))}
                   className="bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500"
                 />
                 <Input
                   type="date"
-                  placeholder="Nästa påminnelse"
+                  placeholder={t('career.networkTab.nextReminder')}
                   value={newContact.next_reminder}
                   onChange={(e) => setNewContact(prev => ({ ...prev, next_reminder: e.target.value }))}
                   className="bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500"
                 />
               </div>
               <textarea
-                placeholder="Anteckningar (valfritt)"
+                placeholder={t('career.networkTab.notesOptional')}
                 value={newContact.notes}
                 onChange={(e) => setNewContact(prev => ({ ...prev, notes: e.target.value }))}
                 rows={2}
@@ -471,8 +475,8 @@ export default function NetworkTab() {
           {contacts.length === 0 ? (
             <div className="text-center py-8 text-gray-500 dark:text-gray-400">
               <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-              <p>Du har inga kontakter ännu.</p>
-              <p className="text-sm">Klicka på "Lägg till kontakt" för att börja bygga ditt nätverk.</p>
+              <p>{t('career.networkTab.noContactsYet')}</p>
+              <p className="text-sm">{t('career.networkTab.addContactHint')}</p>
             </div>
           ) : contacts.map((contact) => {
             const daysSince = getDaysSinceContact(contact.last_contact_date)
@@ -519,11 +523,7 @@ export default function NetworkTab() {
                           'text-xs font-medium',
                           daysSince && daysSince > 60 ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400'
                         )}>
-                          {daysSince === 0
-                            ? 'Idag'
-                            : daysSince === 1
-                            ? 'Igår'
-                            : daysSince ? `${daysSince} dagar sedan` : 'Aldrig kontaktad'}
+                          {formatDaysSince(daysSince)}
                         </p>
                         {contact.next_contact_date && (
                           <p className={cn(
@@ -535,12 +535,12 @@ export default function NetworkTab() {
                               : 'text-gray-500 dark:text-gray-400'
                           )}>
                             {daysUntilReminder === 0
-                              ? 'Idag'
+                              ? t('career.network.today')
                               : daysUntilReminder === 1
-                              ? 'Imorgon'
+                              ? t('career.networkTab.tomorrow')
                               : daysUntilReminder && daysUntilReminder > 0
-                              ? `Om ${daysUntilReminder} dagar`
-                              : 'Försenad'}
+                              ? t('career.networkTab.inDays', { count: daysUntilReminder })
+                              : t('career.networkTab.overdue')}
                           </p>
                         )}
                       </div>
@@ -555,7 +555,7 @@ export default function NetworkTab() {
                 </div>
 
                 <div className="flex gap-2 justify-end">
-                  <Button size="sm" variant="outline" className="text-xs" onClick={() => markContacted(contact.id)} title="Markera som kontaktad">
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => markContacted(contact.id)} title={t('career.network.markContacted')}>
                     <CheckCircle2 className="w-3 h-3" />
                   </Button>
                   {contact.email && (
@@ -578,11 +578,11 @@ export default function NetworkTab() {
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
             <Zap className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-            Nätverksarrangemang
+            {t('career.networkTab.networkingEvents')}
           </h3>
           <Button size="sm" variant="outline" onClick={() => setIsAddingEvent(true)}>
             <Plus className="w-4 h-4 mr-1" />
-            Lägg till event
+            {t('career.networkTab.addEvent')}
           </Button>
         </div>
 
@@ -590,7 +590,7 @@ export default function NetworkTab() {
           <div className="mb-4 p-4 bg-stone-50 dark:bg-stone-700 rounded-xl">
             <div className="grid gap-3">
               <Input
-                placeholder="Eventnamn"
+                placeholder={t('career.networkTab.eventName')}
                 value={newEvent.title}
                 onChange={(e) => setNewEvent(prev => ({ ...prev, title: e.target.value }))}
                 className="bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500"
@@ -603,7 +603,7 @@ export default function NetworkTab() {
                   className="bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500"
                 />
                 <Input
-                  placeholder="Plats (valfritt)"
+                  placeholder={t('career.networkTab.locationOptional')}
                   value={newEvent.location}
                   onChange={(e) => setNewEvent(prev => ({ ...prev, location: e.target.value }))}
                   className="bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500"
@@ -612,9 +612,9 @@ export default function NetworkTab() {
             </div>
             <div className="flex gap-2 mt-3">
               <Button size="sm" onClick={addEvent} disabled={isSaving} className="bg-teal-500 hover:bg-teal-600">
-                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Spara'}
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t('career.network.save')}
               </Button>
-              <Button size="sm" variant="ghost" onClick={() => setIsAddingEvent(false)}>Avbryt</Button>
+              <Button size="sm" variant="ghost" onClick={() => setIsAddingEvent(false)}>{t('career.network.cancel')}</Button>
             </div>
           </div>
         )}
@@ -623,7 +623,7 @@ export default function NetworkTab() {
           {events.length === 0 ? (
             <div className="text-center py-6 text-gray-500 dark:text-gray-400">
               <Calendar className="w-10 h-10 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">Inga kommande event</p>
+              <p className="text-sm">{t('career.networkTab.noUpcomingEvents')}</p>
             </div>
           ) : events.map((event) => (
             <div
@@ -656,7 +656,7 @@ export default function NetworkTab() {
                     onClick={() => toggleEventAttending(event.id)}
                     className={event.is_attending ? 'bg-teal-500' : ''}
                   >
-                    {event.is_attending ? 'Deltar' : 'Delta'}
+                    {event.is_attending ? t('career.networkTab.attending') : t('career.networkTab.attend')}
                   </Button>
                   <Button size="sm" variant="ghost" className="text-red-600" onClick={() => deleteEvent(event.id)}>
                     <Trash2 className="w-4 h-4" />
@@ -695,7 +695,7 @@ export default function NetworkTab() {
                     className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700"
                   >
                     <Copy className="w-4 h-4 mr-1" />
-                    {copiedScript === template.text ? 'Kopierad!' : 'Kopiera'}
+                    {copiedScript === template.text ? t('career.networkTab.copied') : t('career.networkTab.copy')}
                   </Button>
                 </div>
               )}
@@ -709,7 +709,7 @@ export default function NetworkTab() {
         <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setShowLinkedInTips(!showLinkedInTips)}>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
             <Linkedin className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-            LinkedIn Tips
+            {t('career.networkTab.linkedinTips.title')}
           </h3>
           <ChevronRight className={cn('w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform', showLinkedInTips && 'rotate-90')} />
         </div>
@@ -734,7 +734,7 @@ export default function NetworkTab() {
         <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setShowNetworkingScripts(!showNetworkingScripts)}>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-            Nätverksscript
+            {t('career.networkTab.networkingScripts.title')}
           </h3>
           <ChevronRight className={cn('w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform', showNetworkingScripts && 'rotate-90')} />
         </div>
@@ -754,7 +754,7 @@ export default function NetworkTab() {
                   className="text-xs"
                 >
                   <Copy className="w-3 h-3 mr-1" />
-                  {copiedScript === script.script ? 'Kopierad!' : 'Kopiera'}
+                  {copiedScript === script.script ? t('career.networkTab.copied') : t('career.networkTab.copy')}
                 </Button>
               </div>
             ))}

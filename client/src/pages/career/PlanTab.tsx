@@ -6,11 +6,11 @@ import { useTranslation } from 'react-i18next'
 import {
   Target, MapPin, Flag, Calendar, CheckCircle, Clock,
   Sparkles, ChevronRight, Plus, Award, TrendingUp, AlertCircle,
-  Zap, X, Trash2, Loader2
+  Zap, X, Trash2, Loader2, Heart
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
-import { careerPlanApi, milestonesApi, type CareerPlan, type CareerMilestone } from '@/services/careerApi'
+import { careerPlanApi, milestonesApi, favoriteOccupationsApi, type CareerPlan, type CareerMilestone, type FavoriteOccupation } from '@/services/careerApi'
 import { CalendarSync } from '@/components/calendar/CalendarSync'
 
 export default function PlanTab() {
@@ -24,6 +24,7 @@ export default function PlanTab() {
   const [isSaving, setIsSaving] = useState(false)
   const [showSMARTHelper, setShowSMARTHelper] = useState(false)
   const [isAddingMilestone, setIsAddingMilestone] = useState(false)
+  const [favoriteOccupations, setFavoriteOccupations] = useState<FavoriteOccupation[]>([])
   const [newMilestone, setNewMilestone] = useState({
     title: '',
     timeframe: '',
@@ -31,15 +32,22 @@ export default function PlanTab() {
     steps: ''
   })
 
-  // Load existing plan from cloud
+  // Load existing plan and favorites from cloud
   useEffect(() => {
-    loadPlan()
+    loadData()
   }, [])
 
-  const loadPlan = async () => {
+  const loadData = async () => {
     setIsLoading(true)
     try {
-      const activePlan = await careerPlanApi.getActive()
+      // Load plan and favorites in parallel
+      const [activePlan, favorites] = await Promise.all([
+        careerPlanApi.getActive(),
+        favoriteOccupationsApi.getAll()
+      ])
+
+      setFavoriteOccupations(favorites)
+
       if (activePlan) {
         setPlan(activePlan)
         setMilestones(activePlan.milestones || [])
@@ -48,7 +56,7 @@ export default function PlanTab() {
         setTimeframe(activePlan.timeframe || '')
       }
     } catch (err) {
-      console.error('Failed to load career plan:', err)
+      console.error('Failed to load data:', err)
     } finally {
       setIsLoading(false)
     }
@@ -226,6 +234,31 @@ export default function PlanTab() {
                 <Flag className="w-4 h-4 text-teal-500 dark:text-teal-400" />
                 {t('career.plan.whereWantToGo')}
               </label>
+
+              {/* Favorite occupations suggestions */}
+              {favoriteOccupations.length > 0 && !goal && (
+                <div className="mb-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-700">
+                  <div className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300 mb-2">
+                    <Heart className="w-4 h-4" />
+                    {i18n.language === 'en' ? 'Set goal based on favorites:' : 'Sätt mål baserat på favoriter:'}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {favoriteOccupations.slice(0, 5).map((fav) => (
+                      <button
+                        key={fav.id}
+                        onClick={() => setGoal(i18n.language === 'en'
+                          ? `Get a job as ${fav.occupation_title}`
+                          : `Få jobb som ${fav.occupation_title}`
+                        )}
+                        className="px-3 py-1.5 text-sm bg-white dark:bg-stone-700 rounded-full border border-teal-300 dark:border-teal-600 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-800/30 transition-colors"
+                      >
+                        {fav.occupation_title}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <textarea
                 value={goal}
                 onChange={(e) => setGoal(e.target.value)}

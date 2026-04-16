@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { favoriteOccupationsApi, type FavoriteOccupation } from '@/services/careerApi'
 import { taxonomyApi, POPULAR_OCCUPATIONS, type Occupation as TaxonomyOccupation } from '@/services/afTaxonomyApi'
 import { trendsApi } from '@/services/afTrendsApi'
+import { unifiedProfileApi, type EmploymentStatus } from '@/services/unifiedProfileApi'
 
 // Extended occupation with display data
 interface DisplayOccupation {
@@ -69,10 +70,9 @@ const salaryRanges = [
 export default function ExploreTab() {
   const { t, i18n } = useTranslation()
 
-  // Onboarding state
-  const [showOnboarding, setShowOnboarding] = useState(() => {
-    return !localStorage.getItem('career-onboarding-completed')
-  })
+  // Onboarding state - check profile data to determine if onboarding is needed
+  const [showOnboarding, setShowOnboarding] = useState(false)
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true)
   const [careerPreferences, setCareerPreferences] = useState<CareerPreferences | null>(null)
 
   const [searchQuery, setSearchQuery] = useState('')
@@ -91,12 +91,24 @@ export default function ExploreTab() {
   const [isLoadingOccupations, setIsLoadingOccupations] = useState(true)
   const [isSearching, setIsSearching] = useState(false)
 
-  // Handle onboarding completion
-  const handleOnboardingComplete = (preferences: CareerPreferences) => {
+  // Handle onboarding completion - save to cloud
+  const handleOnboardingComplete = async (preferences: CareerPreferences) => {
     setCareerPreferences(preferences)
     setShowOnboarding(false)
-    localStorage.setItem('career-onboarding-completed', 'true')
-    localStorage.setItem('career-preferences', JSON.stringify(preferences))
+
+    // Save to cloud via unifiedProfileApi
+    try {
+      await unifiedProfileApi.updateCareer({
+        employmentStatus: preferences.currentSituation as EmploymentStatus,
+        targetIndustries: preferences.interests,
+        careerGoals: {
+          shortTerm: preferences.goals[0] || '',
+          longTerm: preferences.goals[1] || ''
+        }
+      })
+    } catch (err) {
+      console.error('Failed to save career preferences:', err)
+    }
 
     // Pre-select category based on interests
     if (preferences.interests.length > 0) {
@@ -115,21 +127,51 @@ export default function ExploreTab() {
     }
   }
 
-  const handleSkipOnboarding = () => {
+  const handleSkipOnboarding = async () => {
     setShowOnboarding(false)
-    localStorage.setItem('career-onboarding-completed', 'true')
+    // Mark as completed by setting a default status
+    try {
+      await unifiedProfileApi.updateCareer({
+        employmentStatus: 'other'
+      })
+    } catch (err) {
+      console.error('Failed to skip onboarding:', err)
+    }
   }
 
-  // Load saved preferences
+  // Load profile data to check if onboarding is needed
   useEffect(() => {
-    const saved = localStorage.getItem('career-preferences')
-    if (saved) {
+    const loadProfile = async () => {
       try {
-        setCareerPreferences(JSON.parse(saved))
-      } catch {
-        // Invalid JSON, ignore
+        const profile = await unifiedProfileApi.getProfile()
+
+        // Check if onboarding is complete (user has employmentStatus set)
+        const hasCompletedOnboarding = !!profile.career?.employmentStatus
+        setShowOnboarding(!hasCompletedOnboarding)
+
+        // Restore preferences from profile
+        if (hasCompletedOnboarding && profile.career) {
+          setCareerPreferences({
+            currentSituation: profile.career.employmentStatus || '',
+            interests: profile.career.targetIndustries || [],
+            goals: [
+              profile.career.careerGoals?.shortTerm || '',
+              profile.career.careerGoals?.longTerm || ''
+            ].filter(Boolean),
+            location: profile.core?.location || '',
+            experience: profile.professional?.workExperience?.length ? 'experienced' : 'entry'
+          })
+        }
+      } catch (err) {
+        console.error('Failed to load profile:', err)
+        // If profile load fails, show onboarding as fallback
+        setShowOnboarding(true)
+      } finally {
+        setIsLoadingProfile(false)
       }
     }
+
+    loadProfile()
   }, [])
 
   // Load occupations from API
@@ -339,6 +381,18 @@ export default function ExploreTab() {
     return occupations.find(o => o.id === firstFavoriteId)
   }, [favorites, occupations])
 
+  // Show loading state while checking profile
+  if (isLoadingProfile) {
+    return (
+      <div className="flex items-center justify-center py-16" role="status" aria-live="polite">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600 mr-3" aria-hidden="true" />
+        <span className="text-gray-600 dark:text-gray-400">
+          {t('common.loading') || 'Laddar...'}
+        </span>
+      </div>
+    )
+  }
+
   // Show onboarding for first-time users
   if (showOnboarding) {
     return (
@@ -368,9 +422,17 @@ export default function ExploreTab() {
             <Button
               variant="ghost"
               size="sm"
-              onClick={() => {
-                localStorage.removeItem('career-onboarding-completed')
-                localStorage.removeItem('career-preferences')
+              onClick={async () => {
+                // Clear career data in cloud to retake onboarding
+                try {
+                  await unifiedProfileApi.updateCareer({
+                    employmentStatus: undefined as unknown as EmploymentStatus,
+                    targetIndustries: [],
+                    careerGoals: { shortTerm: '', longTerm: '' }
+                  })
+                } catch (err) {
+                  console.error('Failed to reset preferences:', err)
+                }
                 setShowOnboarding(true)
                 setCareerPreferences(null)
               }}
@@ -427,7 +489,7 @@ export default function ExploreTab() {
           className="flex items-center gap-1 px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors text-sm font-medium"
         >
           <Filter className="w-4 h-4" />
-          Filtrera
+          {t('common.filter') || 'Filtrera'}
         </button>
         {comparison.size > 0 && (
           <button
@@ -435,7 +497,7 @@ export default function ExploreTab() {
             className="flex items-center gap-1 px-3 py-2 rounded-lg bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-200 dark:hover:bg-teal-900/50 transition-colors text-sm font-medium"
           >
             <Eye className="w-4 h-4" />
-            Jämför ({comparison.size}/3)
+            {t('career.explore.compare') || 'Jämför'} ({comparison.size}/3)
           </button>
         )}
       </div>
@@ -443,7 +505,7 @@ export default function ExploreTab() {
       {/* Salary Filter */}
       {showFilters && (
         <Card className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-3 text-sm">Löneintervall</h4>
+          <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-3 text-sm">{t('career.explore.salaryRange') || 'Löneintervall'}</h4>
           <div className="flex flex-wrap gap-2">
             {salaryRanges.map((range) => (
               <button
@@ -467,7 +529,7 @@ export default function ExploreTab() {
       {showComparison && comparedOccupations.length > 0 && (
         <Card className="p-4 bg-teal-50 dark:bg-teal-900/20 border-2 border-teal-200 dark:border-teal-700">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-teal-900 dark:text-teal-100">Jämförelse ({comparedOccupations.length})</h3>
+            <h3 className="font-semibold text-teal-900 dark:text-teal-100">{t('career.explore.comparison') || 'Jämförelse'} ({comparedOccupations.length})</h3>
             <button onClick={() => setShowComparison(false)} className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300">
               <X className="w-4 h-4" />
             </button>
@@ -477,9 +539,9 @@ export default function ExploreTab() {
               <div key={occ.id} className="bg-white dark:bg-stone-800 rounded-lg p-3 border border-teal-200 dark:border-teal-700">
                 <h4 className="font-semibold text-gray-800 dark:text-gray-100 text-sm">{occ.title}</h4>
                 <div className="mt-2 space-y-1 text-xs text-gray-600 dark:text-gray-400">
-                  <p><strong>Match:</strong> {occ.match}%</p>
-                  <p><strong>Lön:</strong> {occ.salary}</p>
-                  <p><strong>Efterfrågan:</strong> {occ.demand}</p>
+                  <p><strong>{t('career.explore.match') || 'Match'}:</strong> {occ.match}%</p>
+                  <p><strong>{t('career.explore.salary') || 'Lön'}:</strong> {occ.salary}</p>
+                  <p><strong>{t('career.explore.demandLabel') || 'Efterfrågan'}:</strong> {occ.demand}</p>
                 </div>
               </div>
             ))}
@@ -492,7 +554,9 @@ export default function ExploreTab() {
         <div className="flex items-center justify-center py-8" role="status" aria-live="polite">
           <Loader2 className="w-6 h-6 animate-spin text-teal-600 mr-2" aria-hidden="true" />
           <span className="text-gray-600 dark:text-gray-400">
-            {isSearching ? 'Söker yrken...' : 'Laddar yrken från Arbetsförmedlingen...'}
+            {isSearching
+              ? (t('career.explore.searching') || 'Söker yrken...')
+              : (t('career.explore.loadingOccupations') || 'Laddar yrken...')}
           </span>
         </div>
       )}
@@ -532,7 +596,7 @@ export default function ExploreTab() {
                   <div className="bg-stone-50 dark:bg-stone-700 p-3 rounded-lg">
                     <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400 font-medium mb-1">
                       <DollarSign className="w-4 h-4" />
-                      Lön
+                      {t('career.explore.salary') || 'Lön'}
                     </div>
                     <div className="text-gray-800 dark:text-gray-100 font-semibold">{occupation.salary}</div>
                   </div>
@@ -540,7 +604,7 @@ export default function ExploreTab() {
                   <div className="bg-stone-50 dark:bg-stone-700 p-3 rounded-lg">
                     <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400 font-medium mb-1">
                       <TrendingUp className="w-4 h-4" />
-                      Efterfrågan
+                      {t('career.explore.demandLabel') || 'Efterfrågan'}
                     </div>
                     <div className="text-gray-800 dark:text-gray-100 font-semibold">{getDemandIcon(occupation.demand)} {occupation.demand}</div>
                   </div>
@@ -548,7 +612,7 @@ export default function ExploreTab() {
                   <div className="bg-stone-50 dark:bg-stone-700 p-3 rounded-lg">
                     <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400 font-medium mb-1">
                       <GraduationCap className="w-4 h-4" />
-                      Utbildning
+                      {t('career.explore.education') || 'Utbildning'}
                     </div>
                     <div className="text-gray-800 dark:text-gray-100 font-semibold text-xs">{occupation.education}</div>
                   </div>
@@ -556,7 +620,7 @@ export default function ExploreTab() {
                   <div className="bg-stone-50 dark:bg-stone-700 p-3 rounded-lg">
                     <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400 font-medium mb-1">
                       <Briefcase className="w-4 h-4" />
-                      Kategori
+                      {t('career.explore.category') || 'Kategori'}
                     </div>
                     <div className="text-gray-800 dark:text-gray-100 font-semibold text-xs">{occupation.categoryLabel}</div>
                   </div>
