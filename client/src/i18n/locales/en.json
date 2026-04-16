@@ -122,9 +122,11 @@
     "superadmin": "Superadmin",
     "admin": "Admin",
     "consultant": "Consultant",
-    "participant": "Participant"
+    "participant": "Participant",
+    "user": "User"
   },
   "sidebar": {
+    "menu": "Menu",
     "minimize": "Minimize sidebar",
     "expand": "Expand sidebar",
     "consultantSection": "Consultant",

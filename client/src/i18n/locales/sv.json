@@ -122,9 +122,11 @@
     "superadmin": "Superadmin",
     "admin": "Admin",
     "consultant": "Konsulent",
-    "participant": "Deltagare"
+    "participant": "Deltagare",
+    "user": "Användare"
   },
   "sidebar": {
+    "menu": "Meny",
     "minimize": "Minimera sidomenyn",
     "expand": "Expandera sidomenyn",
     "consultantSection": "Konsulent",

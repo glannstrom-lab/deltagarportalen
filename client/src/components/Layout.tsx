@@ -1,5 +1,6 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Menu, X, User, Settings, LogOut,
   LayoutDashboard, FileText, Mail, Briefcase, Target,
@@ -19,16 +20,16 @@ import { OptimizedImage } from './ui/OptimizedImage'
 
 // Mobila navigeringsitems - synkade med Sidebar navigation.ts
 const mobileNavItems = [
-  { to: '/', label: 'Översikt', icon: LayoutDashboard },
-  { to: '/cv', label: 'CV', icon: FileText },
-  { to: '/cover-letter', label: 'Personligt brev', icon: Mail },
-  { to: '/job-search', label: 'Sök jobb', icon: Briefcase },
-  { to: '/career', label: 'Karriär', icon: Target },
-  { to: '/interest-guide', label: 'Intresseguide', icon: Compass },
-  { to: '/exercises', label: 'Övningar', icon: Dumbbell },
-  { to: '/diary', label: 'Hälsa', icon: Heart },
-  { to: '/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
-  { to: '/resources', label: 'Resurser', icon: Bookmark },
+  { to: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
+  { to: '/cv', labelKey: 'nav.cv', icon: FileText },
+  { to: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
+  { to: '/job-search', labelKey: 'nav.jobSearch', icon: Briefcase },
+  { to: '/career', labelKey: 'nav.career', icon: Target },
+  { to: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
+  { to: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
+  { to: '/diary', labelKey: 'nav.wellness', icon: Heart },
+  { to: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
+  { to: '/resources', labelKey: 'nav.resources', icon: Bookmark },
 ]
 
 export default function Layout() {
@@ -97,6 +98,7 @@ export default function Layout() {
 
 // Mobil topbar med meny-knapp och profil
 function MobileTopBar() {
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const { user, signOut } = useAuthStore()
@@ -130,7 +132,7 @@ function MobileTopBar() {
             <button
               onClick={() => setIsProfileOpen(true)}
               className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 dark:hover:bg-stone-700 transition-colors"
-              aria-label="Profil"
+              aria-label={t('nav.profile')}
             >
               <div className="w-7 h-7 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
                 <User className="w-3.5 h-3.5 text-white" />
@@ -139,7 +141,7 @@ function MobileTopBar() {
             <button
               onClick={() => setIsMenuOpen(true)}
               className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 dark:hover:bg-stone-700 transition-colors"
-              aria-label="Meny"
+              aria-label={t('sidebar.menu')}
             >
               <Menu className="w-5 h-5 text-slate-700 dark:text-stone-300" />
             </button>
@@ -166,10 +168,11 @@ function MobileTopBar() {
       >
         {/* Meny header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700 safe-top">
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">Meny</h2>
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('sidebar.menu')}</h2>
           <button
             onClick={() => setIsMenuOpen(false)}
             className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
+            aria-label={t('common.close')}
           >
             <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
           </button>
@@ -193,7 +196,7 @@ function MobileTopBar() {
                 )}
               >
                 <Icon className="w-5 h-5" />
-                <span>{item.label}</span>
+                <span>{t(item.labelKey)}</span>
               </Link>
             )
           })}
@@ -212,7 +215,7 @@ function MobileTopBar() {
             )}
           >
             <Settings className="w-5 h-5" />
-            <span>Inställningar</span>
+            <span>{t('nav.settings')}</span>
           </Link>
         </div>
       </div>
@@ -236,10 +239,11 @@ function MobileTopBar() {
       >
         {/* Profil header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700 safe-top">
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">Profil</h2>
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('nav.profile')}</h2>
           <button
             onClick={() => setIsProfileOpen(false)}
             className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
+            aria-label={t('common.close')}
           >
             <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
           </button>
@@ -252,8 +256,8 @@ function MobileTopBar() {
               <User className="w-7 h-7 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-slate-800 dark:text-stone-100">{user?.email || 'Användare'}</p>
-              <p className="text-sm text-slate-700 dark:text-stone-400">Deltagare</p>
+              <p className="font-semibold text-slate-800 dark:text-stone-100">{user?.email || t('roles.user')}</p>
+              <p className="text-sm text-slate-700 dark:text-stone-400">{t('roles.participant')}</p>
             </div>
           </div>
 
@@ -263,14 +267,14 @@ function MobileTopBar() {
               onClick={() => setIsProfileOpen(false)}
               className="flex items-center px-4 py-3 rounded-xl text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
             >
-              Min profil
+              {t('topbar.profile')}
             </Link>
             <Link
               to="/settings"
               onClick={() => setIsProfileOpen(false)}
               className="flex items-center px-4 py-3 rounded-xl text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
             >
-              Inställningar
+              {t('nav.settings')}
             </Link>
           </nav>
         </div>
@@ -282,7 +286,7 @@ function MobileTopBar() {
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-red-600 rounded-xl font-medium hover:bg-red-100 transition-colors"
           >
             <LogOut className="w-5 h-5" />
-            Logga ut
+            {t('nav.logout')}
           </button>
         </div>
       </div>
