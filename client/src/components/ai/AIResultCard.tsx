@@ -81,10 +81,15 @@ export function CollapsibleSection({
 }: CollapsibleSectionProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen)
 
+  // Generate stable ID for ARIA relationship
+  const sectionId = `collapsible-${title.toLowerCase().replace(/\s+/g, '-').replace(/[åäö]/g, 'a')}`
+
   return (
     <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={isOpen}
+        aria-controls={`${sectionId}-content`}
         className={cn(
           'w-full flex items-center justify-between p-3 sm:p-4',
           'bg-slate-50 dark:bg-slate-800/50',
@@ -93,7 +98,7 @@ export function CollapsibleSection({
         )}
       >
         <div className="flex items-center gap-2">
-          {icon && <span className="text-teal-500">{icon}</span>}
+          {icon && <span className="text-teal-500" aria-hidden="true">{icon}</span>}
           <span className="font-medium text-slate-800 dark:text-slate-200 text-sm sm:text-base">
             {title}
           </span>
@@ -104,14 +109,17 @@ export function CollapsibleSection({
           )}
         </div>
         {isOpen ? (
-          <ChevronUp className="w-4 h-4 text-slate-700 dark:text-stone-300" />
+          <ChevronUp className="w-4 h-4 text-slate-700 dark:text-stone-300" aria-hidden="true" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-slate-700 dark:text-stone-300" />
+          <ChevronDown className="w-4 h-4 text-slate-700 dark:text-stone-300" aria-hidden="true" />
         )}
       </button>
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            id={`${sectionId}-content`}
+            role="region"
+            aria-labelledby={`${sectionId}-button`}
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}

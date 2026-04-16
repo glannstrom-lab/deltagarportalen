@@ -598,7 +598,7 @@ export function ActionPlan({
 
                       {/* Expandable details */}
                       {isExpanded && (
-                        <div className="mt-3 p-3 bg-slate-50 dark:bg-stone-800 rounded-lg space-y-2 animate-in fade-in">
+                        <div id={`goal-${goal.id}-details`} role="region" aria-label={`SMARTA-kriterier för ${goal.title}`} className="mt-3 p-3 bg-slate-50 dark:bg-stone-800 rounded-lg space-y-2 animate-in fade-in">
                           <div>
                             <span className="text-xs font-medium text-slate-700 dark:text-stone-300">Mätbart:</span>
                             <p className="text-sm text-slate-700 dark:text-stone-300">{goal.measurable}</p>
@@ -640,16 +640,18 @@ export function ActionPlan({
                       {/* Expand button */}
                       <button
                         onClick={() => setExpandedId(isExpanded ? null : goal.id)}
+                        aria-expanded={isExpanded}
+                        aria-controls={`goal-${goal.id}-details`}
                         className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 mt-1 flex items-center gap-1"
                       >
                         {isExpanded ? (
                           <>
-                            <ChevronUp className="w-4 h-4" />
+                            <ChevronUp className="w-4 h-4" aria-hidden="true" />
                             Visa mindre
                           </>
                         ) : (
                           <>
-                            <ChevronDown className="w-4 h-4" />
+                            <ChevronDown className="w-4 h-4" aria-hidden="true" />
                             Visa SMARTA-kriterier
                           </>
                         )}

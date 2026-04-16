@@ -143,20 +143,23 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
     icon?: React.ElementType
   }) => {
     const isExpanded = expandedSections.includes(section)
+    const sectionId = `filter-${section}`
     return (
       <div className="border-b border-slate-100 dark:border-stone-700 last:border-0">
         <button
           onClick={() => toggleSection(section)}
+          aria-expanded={isExpanded}
+          aria-controls={`${sectionId}-content`}
           className="w-full flex items-center justify-between py-3 px-1 hover:bg-slate-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
         >
           <div className="flex items-center gap-2">
-            {Icon && <Icon size={18} className="text-slate-700 dark:text-stone-300" />}
+            {Icon && <Icon size={18} className="text-slate-700 dark:text-stone-300" aria-hidden="true" />}
             <span className="font-medium text-slate-700 dark:text-stone-300">{title}</span>
           </div>
-          {isExpanded ? <ChevronUp size={18} className="text-slate-600 dark:text-stone-400" /> : <ChevronDown size={18} className="text-slate-600 dark:text-stone-400" />}
+          {isExpanded ? <ChevronUp size={18} className="text-slate-600 dark:text-stone-400" aria-hidden="true" /> : <ChevronDown size={18} className="text-slate-600 dark:text-stone-400" aria-hidden="true" />}
         </button>
         {isExpanded && (
-          <div className="pb-4 px-1">
+          <div id={`${sectionId}-content`} role="region" aria-label={title} className="pb-4 px-1">
             {children}
           </div>
         )}

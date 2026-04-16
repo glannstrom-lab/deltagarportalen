@@ -199,7 +199,8 @@ export function CVTips() {
         {tipSections.map(section => {
           const Icon = section.icon
           const isExpanded = expandedSection === section.id
-          
+          const sectionPanelId = `cvtip-${section.id}-content`
+
           return (
             <div
               key={section.id}
@@ -207,11 +208,13 @@ export function CVTips() {
             >
               <button
                 onClick={() => setExpandedSection(isExpanded ? null : section.id)}
+                aria-expanded={isExpanded}
+                aria-controls={sectionPanelId}
                 className="w-full px-6 py-5 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/50 rounded-xl flex items-center justify-center">
-                    <Icon className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                    <Icon className="w-6 h-6 text-teal-600 dark:text-teal-400" aria-hidden="true" />
                   </div>
                   <div className="text-left">
                     <h3 className="font-semibold text-stone-800 dark:text-stone-100">{section.title}</h3>
@@ -219,14 +222,14 @@ export function CVTips() {
                   </div>
                 </div>
                 {isExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                  <ChevronUp className="w-5 h-5 text-stone-600 dark:text-stone-400" aria-hidden="true" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                  <ChevronDown className="w-5 h-5 text-stone-600 dark:text-stone-400" aria-hidden="true" />
                 )}
               </button>
-              
+
               {isExpanded && (
-                <div className="px-6 pb-6 border-t border-stone-100 dark:border-stone-800">
+                <div id={sectionPanelId} role="region" aria-label={section.title} className="px-6 pb-6 border-t border-stone-100 dark:border-stone-800">
                   <div className="grid md:grid-cols-2 gap-6 pt-6">
                     {/* Do's */}
                     <div>
