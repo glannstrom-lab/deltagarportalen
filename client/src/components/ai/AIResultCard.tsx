@@ -5,6 +5,7 @@
  */
 
 import { useState, ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Sparkles,
@@ -30,9 +31,11 @@ interface AILoadingIndicatorProps {
 }
 
 export function AILoadingIndicator({
-  text = 'AI analyserar...',
+  text,
   subtext,
 }: AILoadingIndicatorProps) {
+  const { t } = useTranslation()
+  const displayText = text || t('ai.common.analyzing')
   return (
     <div className="flex flex-col items-center justify-center py-8 px-4">
       <div className="flex items-center gap-1.5 mb-3">
@@ -52,7 +55,7 @@ export function AILoadingIndicator({
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
         />
       </div>
-      <p className="text-sm font-medium text-teal-700 dark:text-teal-300">{text}</p>
+      <p className="text-sm font-medium text-teal-700 dark:text-teal-300">{displayText}</p>
       {subtext && (
         <p className="text-xs text-slate-700 dark:text-stone-400 mt-1">{subtext}</p>
       )}
@@ -145,6 +148,7 @@ interface CopyButtonProps {
 }
 
 export function CopyButton({ text, className }: CopyButtonProps) {
+  const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
@@ -166,7 +170,7 @@ export function CopyButton({ text, className }: CopyButtonProps) {
         'text-slate-700 hover:text-slate-700 dark:hover:text-slate-300',
         className
       )}
-      title={copied ? 'Kopierad!' : 'Kopiera'}
+      title={copied ? t('ai.common.copied') : t('ai.common.copy')}
     >
       {copied ? (
         <Check className="w-4 h-4 text-green-500" />
@@ -186,12 +190,14 @@ interface SourceCitationsProps {
 }
 
 export function SourceCitations({ sources }: SourceCitationsProps) {
+  const { t } = useTranslation()
+
   if (!sources || sources.length === 0) return null
 
   return (
     <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
       <p className="text-xs font-medium text-slate-700 dark:text-stone-400 mb-2">
-        Kallor:
+        {t('ai.common.sources')}:
       </p>
       <div className="flex flex-wrap gap-2">
         {sources.map((source, index) => (
@@ -249,6 +255,8 @@ export function AIResultCard({
   variant = 'default',
   headerActions,
 }: AIResultCardProps) {
+  const { t } = useTranslation()
+
   if (error) {
     return (
       <Card className={cn('overflow-hidden', className)}>
@@ -259,7 +267,7 @@ export function AIResultCard({
             </div>
             <div className="flex-1">
               <h3 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
-                Något gick fel
+                {t('common.error')}
               </h3>
               <p className="text-sm text-slate-600 dark:text-stone-400 mb-4">
                 {error}
@@ -271,7 +279,7 @@ export function AIResultCard({
                   onClick={onRetry}
                   leftIcon={<RefreshCw className="w-4 h-4" />}
                 >
-                  Försök igen
+                  {t('common.tryAgain')}
                 </Button>
               )}
             </div>

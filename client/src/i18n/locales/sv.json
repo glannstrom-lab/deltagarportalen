@@ -2370,6 +2370,12 @@
       "canWithdraw": "Du kan återkalla samtycket när som helst.",
       "privacyPolicy": "Läs vår integritetspolicy"
     },
+    "common": {
+      "analyzing": "AI analyserar...",
+      "copied": "Kopierad!",
+      "copy": "Kopiera",
+      "sources": "Källor"
+    },
     "assistant": {
       "title": "Din AI-assistent",
       "analyzedActivity": "Jag har analyserat din aktivitet",

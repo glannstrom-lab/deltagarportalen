@@ -2330,6 +2330,12 @@
       "canWithdraw": "You can withdraw consent at any time.",
       "privacyPolicy": "Read our privacy policy"
     },
+    "common": {
+      "analyzing": "AI analyzing...",
+      "copied": "Copied!",
+      "copy": "Copy",
+      "sources": "Sources"
+    },
     "assistant": {
       "title": "Your AI assistant",
       "analyzedActivity": "I've analyzed your activity",
