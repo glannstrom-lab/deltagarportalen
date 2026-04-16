@@ -34,7 +34,7 @@ import {
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { aiLogger } from '@/lib/logger'
-import { aiService } from '@/services/aiService'
+import { useAIStream } from '@/hooks/useAIStream'
 import { cvApi, coverLetterApi, jobsApi, userApi } from '@/services/api'
 import { searchPlatsbanken, type PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { useAutoSave } from '@/hooks/useAutoSave'
@@ -112,7 +112,6 @@ export default function CoverLetterGenerator() {
   
   // === GENERATED LETTER ===
   const [generatedBrev, setGeneratedBrev] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [, setGenerationProgress] = useState(0)
   
@@ -142,7 +141,48 @@ export default function CoverLetterGenerator() {
 
   // === AI CONSENT ===
   const { hasConsent: hasAiConsent } = useAiConsent()
-  
+
+  // === AI STREAMING ===
+  const {
+    streamedText,
+    isStreaming,
+    error: streamError,
+    startStream,
+    cancelStream,
+    reset: resetStream
+  } = useAIStream({
+    onToken: (_token, fullText) => {
+      // Update the letter in real-time as tokens arrive
+      setGeneratedBrev(fullText)
+    },
+    onComplete: (fullText) => {
+      setGeneratedBrev(fullText)
+      setExpandedSections(prev => ({ ...prev, result: true }))
+
+      if (!saveTitle && company && jobTitle) {
+        setSaveTitle(`${company} - ${jobTitle}`)
+      }
+
+      // Scroll to result
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+      }, 100)
+    },
+    onError: (err) => {
+      console.error('AI-tjänsten fel:', err)
+      aiLogger.debug('AI-tjänsten ej tillgänglig, använder offline-mall')
+      const offlineBrev = generateOfflineTemplate()
+      setGeneratedBrev(offlineBrev)
+      setExpandedSections(prev => ({ ...prev, result: true }))
+
+      if (!saveTitle && company && jobTitle) {
+        setSaveTitle(`${company} - ${jobTitle}`)
+      }
+
+      setError(t('coverLetterGenerator.generate.offlineFallback'))
+    }
+  })
+
   // === SWEDISH NORMS CHECK ===
   const [normIssues, setNormIssues] = useState<ReturnType<typeof checkSwedishNorms>>([])
   
@@ -405,7 +445,7 @@ export default function CoverLetterGenerator() {
     return brev
   }
 
-  // === GENERATE ===
+  // === GENERATE (with streaming) ===
   const handleGenerate = async () => {
     // Check AI consent first
     if (!hasAiConsent) {
@@ -420,118 +460,55 @@ export default function CoverLetterGenerator() {
 
     // Varna om jobbannons är tom - brevet blir mindre personligt
     if (!jobbAnnons.trim()) {
-      console.warn('Jobbannons saknas - brevet kommer att vara mindre personligt');
+      console.warn('Jobbannons saknas - brevet kommer att vara mindre personligt')
     }
 
-    setIsGenerating(true)
+    // Reset state and clear previous letter
     setError(null)
-    setGenerationProgress(0)
+    setGeneratedBrev('')
+    setExpandedSections(prev => ({ ...prev, result: true }))
 
-    // Simulera progress
-    const progressInterval = setInterval(() => {
-      setGenerationProgress(p => Math.min(90, p + 10))
-    }, 300)
+    const template = templates.find(t => t.id === selectedTemplate)
+    const erfarenhet = cvData?.workExperience
+      ?.map(w => `${w.title} på ${w.company}`)
+      .join(', ')
 
-    try {
-      const template = templates.find(t => t.id === selectedTemplate)
-      const erfarenhet = cvData?.workExperience
-        ?.map(w => `${w.title} på ${w.company}`)
-        .join(', ')
+    // Bygg cvData för AI-tjänsten
+    const aiCvData = cvData ? {
+      firstName: cvData.firstName || '',
+      lastName: cvData.lastName || '',
+      title: cvData.title || '',
+      summary: cvData.summary || '',
+      workExperience: cvData.workExperience || [],
+      skills: cvData.skills || []
+    } : undefined
 
-      // Bygg cvData för AI-tjänsten
-      const aiCvData = cvData ? {
-        firstName: cvData.firstName || '',
-        lastName: cvData.lastName || '',
-        title: cvData.title || '',
-        summary: cvData.summary || '',
-        workExperience: cvData.workExperience || [],
-        skills: cvData.skills || []
-      } : undefined
+    // DEBUG: Logga exakt vad som skickas till AI
+    aiLogger.debug('=== FRONTEND SKICKAR (STREAMING) ===')
+    aiLogger.debug('jobbAnnons state length:', jobbAnnons.length)
+    aiLogger.debug('company state:', company)
+    aiLogger.debug('jobTitle state:', jobTitle)
 
-      // DEBUG: Logga exakt vad som skickas till AI
-      aiLogger.debug('=== FRONTEND SKICKAR ===');
-      aiLogger.debug('jobbAnnons state length:', jobbAnnons.length);
-      aiLogger.debug('jobbAnnons state preview:', jobbAnnons.substring(0, 150));
-      aiLogger.debug('company state:', company);
-      aiLogger.debug('jobTitle state:', jobTitle);
-      aiLogger.debug('cvData workExperience count:', aiCvData?.workExperience?.length || 0);
-      aiLogger.debug('extraKeywords:', extraKeywords);
-      
-      // Bygg payload för debugging
-      const payload = {
-        jobbAnnons,
-        companyName: company,
-        jobTitle: jobTitle,
-        erfarenhet: erfarenhet || cvData?.summary || tidigareBrev,
-        motivering: motivering || undefined,
-        namn: cvData?.firstName && cvData?.lastName 
-          ? `${cvData.firstName} ${cvData.lastName}` 
-          : undefined,
-        ton,
-        extraContext: template?.promptAddition,
-        extraKeywords,
-        cvData: aiCvData
-      };
-      aiLogger.debug('Full payload:', JSON.stringify(payload, null, 2).substring(0, 800));
-      aiLogger.debug('=======================');
+    // Start streaming
+    await startStream('personligt-brev', {
+      jobbAnnons,
+      companyName: company,
+      jobTitle: jobTitle,
+      erfarenhet: erfarenhet || cvData?.summary || tidigareBrev,
+      motivering: motivering || undefined,
+      namn: cvData?.firstName && cvData?.lastName
+        ? `${cvData.firstName} ${cvData.lastName}`
+        : undefined,
+      ton,
+      extraContext: template?.promptAddition,
+      extraKeywords,
+      cvData: aiCvData
+    })
+  }
 
-      const response = await aiService.generateCoverLetter({
-        jobbAnnons,
-        companyName: company,
-        jobTitle: jobTitle,
-        erfarenhet: erfarenhet || cvData?.summary || tidigareBrev,
-        motivering: motivering || undefined,
-        namn: cvData?.firstName && cvData?.lastName
-          ? `${cvData.firstName} ${cvData.lastName}`
-          : undefined,
-        ton,
-        extraContext: template?.promptAddition,
-        extraKeywords,
-        cvData: aiCvData
-      })
-
-      clearInterval(progressInterval)
-      setGenerationProgress(100)
-
-      if (!response || !response.brev) {
-        throw new Error(t('coverLetterGenerator.generate.noLetterGenerated'))
-      }
-
-      setGeneratedBrev(response.brev)
-      setExpandedSections(prev => ({ ...prev, result: true }))
-      
-      if (!saveTitle && company && jobTitle) {
-        setSaveTitle(`${company} - ${jobTitle}`)
-      }
-
-      // Scroll to result
-      setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
-      }, 100)
-    } catch (err) {
-      clearInterval(progressInterval)
-      
-      // OFFLINE FALLBACK: Generera mall lokalt
-      console.error('AI-tjänsten fel:', err);
-      aiLogger.debug('AI-tjänsten ej tillgänglig, använder offline-mall')
-      const offlineBrev = generateOfflineTemplate()
-      setGeneratedBrev(offlineBrev)
-      setExpandedSections(prev => ({ ...prev, result: true }))
-      
-      if (!saveTitle && company && jobTitle) {
-        setSaveTitle(`${company} - ${jobTitle}`)
-      }
-      
-      // Visa info om att det är en mall
-      setError(t('coverLetterGenerator.generate.offlineFallback'))
-      
-      // Scroll to result
-      setTimeout(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
-      }, 100)
-    } finally {
-      setIsGenerating(false)
-    }
+  // === CANCEL GENERATION ===
+  const handleCancelGenerate = () => {
+    cancelStream()
   }
 
   // === SAVE ===
@@ -814,7 +791,7 @@ export default function CoverLetterGenerator() {
             savedLettersCount={savedLetters.length}
             savedJobsCount={savedJobs.length}
             savedJobs={savedJobs}
-            isGenerating={isGenerating}
+            isGenerating={isStreaming}
             hasCV={!!cvData}
             onCompanyChange={setCompany}
             onJobTitleChange={setJobTitle}
@@ -1436,13 +1413,13 @@ export default function CoverLetterGenerator() {
 
       {/* Generate Button */}
       {hasAiConsent && (
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-3">
           <Button
             onClick={handleGenerate}
-            disabled={isGenerating}
+            disabled={isStreaming}
             className="px-8 py-3 text-lg bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700"
           >
-            {isGenerating ? (
+            {isStreaming ? (
               <>
                 <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                 {t('coverLetterGenerator.generate.generating')}
@@ -1454,6 +1431,16 @@ export default function CoverLetterGenerator() {
               </>
             )}
           </Button>
+          {isStreaming && (
+            <Button
+              onClick={handleCancelGenerate}
+              variant="outline"
+              className="px-6 py-3 text-lg border-red-300 text-red-600 hover:bg-red-50 dark:border-red-700 dark:text-red-400 dark:hover:bg-red-900/20"
+            >
+              <Pause className="w-5 h-5 mr-2" />
+              Avbryt
+            </Button>
+          )}
         </div>
       )}
 
@@ -1469,8 +1456,8 @@ export default function CoverLetterGenerator() {
       )}
 
       {/* Result Section */}
-      {generatedBrev && (
-        <Card className="overflow-hidden border-teal-200 dark:border-teal-800 bg-gradient-to-br from-teal-50/30 to-emerald-50/30 dark:from-teal-900/20 dark:to-emerald-900/20">
+      {(generatedBrev || isStreaming) && (
+        <Card className={`overflow-hidden bg-gradient-to-br from-teal-50/30 to-emerald-50/30 dark:from-teal-900/20 dark:to-emerald-900/20 ${isStreaming ? 'border-2 border-teal-400 dark:border-teal-500 animate-pulse' : 'border-teal-200 dark:border-teal-800'}`}>
           <button
             onClick={() => toggleSection('result')}
             className="w-full flex items-center justify-between p-4 text-left hover:bg-teal-50/50 dark:hover:bg-teal-900/30 transition-colors"
@@ -1502,14 +1489,23 @@ export default function CoverLetterGenerator() {
 
               {/* Generated Letter with inline editing */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700 dark:text-stone-300">
-                  {t('coverLetterGenerator.result.editLabel')}
-                </label>
+                <div className="flex items-center justify-between">
+                  <label className="block text-sm font-medium text-slate-700 dark:text-stone-300">
+                    {t('coverLetterGenerator.result.editLabel')}
+                  </label>
+                  {isStreaming && (
+                    <div className="flex items-center gap-2 text-sm text-teal-600 dark:text-teal-400">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Skriver...</span>
+                    </div>
+                  )}
+                </div>
                 <textarea
                   value={generatedBrev}
                   onChange={(e) => setGeneratedBrev(e.target.value)}
                   rows={12}
-                  className="w-full px-4 py-4 rounded-lg border border-slate-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y font-serif leading-relaxed bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  readOnly={isStreaming}
+                  className={`w-full px-4 py-4 rounded-lg border focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y font-serif leading-relaxed bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 ${isStreaming ? 'border-teal-400 dark:border-teal-500 cursor-wait' : 'border-slate-200 dark:border-stone-600'}`}
                 />
 
                 {/* Quick phrases */}
@@ -1610,7 +1606,7 @@ export default function CoverLetterGenerator() {
                 <Button
                   variant="outline"
                   onClick={handleGenerate}
-                  disabled={isGenerating}
+                  disabled={isStreaming}
                   className="flex items-center gap-2"
                 >
                   <RefreshCw className="w-4 h-4" />
