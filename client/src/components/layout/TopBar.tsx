@@ -145,7 +145,7 @@ function AccessibilityMenu() {
                       {isDark ? t('topbar.lightMode', 'Ljust läge') : t('topbar.darkMode', 'Mörkt läge')}
                     </p>
                     <p className="text-xs text-stone-500 dark:text-stone-500">
-                      {isDark ? 'Byt till ljust tema' : 'Byt till mörkt tema'}
+                      {isDark ? t('topbar.switchToLight') : t('topbar.switchToDark')}
                     </p>
                   </div>
                 </div>
@@ -175,7 +175,7 @@ function AccessibilityMenu() {
                       {t('topbar.help', 'Hjälp & Support')}
                     </p>
                     <p className="text-xs text-stone-500 dark:text-stone-500">
-                      Guider och vanliga frågor
+                      {t('topbar.guidesAndFAQ')}
                     </p>
                   </div>
                 </Link>
@@ -248,7 +248,7 @@ export function TopBar() {
               jobin.se
             </span>
             <span className="text-[10px] text-stone-500 dark:text-stone-500 -mt-0.5 tracking-wide">
-              Din jobbportal
+              {t('topbar.tagline')}
             </span>
           </div>
         </Link>
@@ -287,7 +287,7 @@ export function TopBar() {
               </div>
               <div className="hidden sm:block text-left">
                 <p className="text-sm font-medium text-stone-700 dark:text-stone-200 leading-tight">
-                  {profile?.first_name || 'Min profil'}
+                  {profile?.first_name || t('topbar.profile')}
                 </p>
                 <p className="text-[10px] text-stone-500 dark:text-stone-500 leading-tight">
                   {profile?.last_name || ''}
@@ -313,7 +313,7 @@ export function TopBar() {
                   {/* User Info Header */}
                   <div className="px-4 py-3 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border-b border-stone-100 dark:border-stone-700">
                     <p className="font-semibold text-stone-800 dark:text-stone-100">
-                      {profile?.first_name ? `${profile.first_name} ${profile.last_name}` : 'Välkommen'}
+                      {profile?.first_name ? `${profile.first_name} ${profile.last_name}` : t('topbar.welcome')}
                     </p>
                     <p className="text-xs text-stone-500 dark:text-stone-500 truncate">{user?.email}</p>
                   </div>

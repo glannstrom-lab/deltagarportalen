@@ -5,6 +5,7 @@
 
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { ChevronDown } from '@/components/ui/icons'
 
@@ -26,6 +27,7 @@ interface PageTabsProps {
 }
 
 export function PageTabs({ tabs, className, collapsible = true, variant = 'minimal' }: PageTabsProps) {
+  const { t } = useTranslation()
   const location = useLocation()
   const [isExpanded, setIsExpanded] = useState(false)
 
@@ -247,7 +249,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
       >
         <div className="flex items-center gap-3">
           {activeTab?.icon && <activeTab.icon className="w-5 h-5 text-teal-600" />}
-          <span className="font-semibold">{activeTab?.label || 'Välj sida'}</span>
+          <span className="font-semibold">{activeTab?.label || t('layout.pageTabs.selectPage')}</span>
         </div>
         <ChevronDown className={cn(
           'w-5 h-5 text-stone-600 dark:text-stone-400 transition-transform duration-300',

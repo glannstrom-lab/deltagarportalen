@@ -10,6 +10,7 @@
 
 import { memo } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ChevronRight, LucideIcon } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
@@ -139,6 +140,7 @@ export const BaseWidget = memo(function BaseWidget({
   children,
   className,
 }: BaseWidgetProps) {
+  const { t } = useTranslation()
   const colors = colorClasses[color]
   const isSmall = size === 'small'
 
@@ -223,7 +225,7 @@ export const BaseWidget = memo(function BaseWidget({
         <div className={cn(isSmall ? "mt-3" : "mt-4")}>
           {progress.showLabel && (
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-xs text-slate-500 dark:text-slate-400">Progress</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">{t('common.progress')}</span>
               <span className={cn("text-sm font-semibold", isComplete ? "text-emerald-600 dark:text-emerald-400" : colors.accent)}>
                 {progress.value}%
               </span>

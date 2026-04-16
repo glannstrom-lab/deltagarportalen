@@ -83,7 +83,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           {label}
           {showBadge && (
             <span className="px-1.5 py-0.5 text-[10px] font-bold bg-teal-500 text-white rounded-full">
-              Ny
+              {t('common.new')}
             </span>
           )}
         </span>

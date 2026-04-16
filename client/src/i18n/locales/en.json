@@ -29,6 +29,7 @@
     "days": "days",
     "create": "Create",
     "update": "Update",
+    "progress": "Progress",
     "view": "View",
     "download": "Download",
     "upload": "Upload",
@@ -79,6 +80,76 @@
       "documents": "Documents",
       "jobs": "Jobs",
       "articles": "Articles"
+    }
+  },
+  "calendar": {
+    "today": "Today",
+    "oneHour": "1 hour",
+    "videoCall": "Video call",
+    "phone": "Phone",
+    "days": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "eventTypes": {
+      "interview": "Interview",
+      "meeting": "Meeting",
+      "deadline": "Deadline",
+      "reminder": "Reminder",
+      "task": "Task",
+      "followup": "Follow-up",
+      "preparation": "Preparation"
+    },
+    "modal": {
+      "editEvent": "Edit event",
+      "newEvent": "New event",
+      "createEvent": "Create event",
+      "tabs": {
+        "details": "Details",
+        "tasks": "Tasks",
+        "preparation": "Preparation",
+        "travel": "Travel"
+      },
+      "title": "Title",
+      "titlePlaceholder": "E.g. Job interview at Spotify",
+      "type": "Type",
+      "date": "Date",
+      "time": "Time",
+      "locationOptional": "Location (optional)",
+      "locationPlaceholder": "Address or location",
+      "withOptional": "With (optional)",
+      "withPlaceholder": "E.g. Anna Svensson, recruiter",
+      "description": "Description",
+      "descriptionPlaceholder": "Notes about the event...",
+      "linkedTo": "Linked to"
+    },
+    "tasks": {
+      "toDo": "To do",
+      "addPlaceholder": "Add new task...",
+      "empty": "No tasks yet. Add one to get started!"
+    },
+    "interviewPrep": {
+      "title": "Preparation assistant",
+      "subtitle": "AI-generated tips and questions",
+      "theCompany": "The company",
+      "tailoredQuestions": "Tailored questions",
+      "generateDescription": "Generate interview questions based on the company and role",
+      "generateQuestions": "Generate questions",
+      "dressRecommendation": "Dress recommendation",
+      "commonQuestions": "Common interview questions",
+      "questionsToAsk": "Questions to ask them",
+      "searchCompany": "Search for information about the company",
+      "questions": {
+        "businessModel": "What do you know about {{company}}'s business model?",
+        "contribution": "How would you contribute to {{company}}'s growth?",
+        "attraction": "What attracts you most about working at {{company}}?",
+        "challenge": "Describe how you handle [relevant challenge for the role]"
+      }
     }
   },
   "nav": {
@@ -148,10 +219,17 @@
     "noNotifications": "No new notifications",
     "markAllRead": "Mark all as read",
     "unreadNotifications": "{{count}} unread",
-    "profile": "My profile"
+    "profile": "My profile",
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme",
+    "guidesAndFAQ": "Guides and FAQ",
+    "tagline": "Your job portal",
+    "welcome": "Welcome",
+    "accessibility": "Accessibility"
   },
   "language": {
     "select": "Select language",
+    "label": "Language",
     "swedish": "Svenska",
     "english": "English"
   },
@@ -773,6 +851,82 @@
           "description": "Test how well your CV passes recruitment systems",
           "link": "Go to ATS analysis →"
         }
+      }
+    },
+    "export": {
+      "title": "Export CV",
+      "subtitle": "Download as PDF or Word",
+      "createFirst": "Create a CV first to export",
+      "yourName": "Your Name",
+      "pdfSaved": "PDF Saved!",
+      "wordSaved": "Word Saved!",
+      "preparingPdf": "Preparing PDF...",
+      "creatingPdf": "Creating PDF...",
+      "creatingWord": "Creating Word...",
+      "exportError": "Export error",
+      "downloadPdfRecommended": "Download PDF (Recommended)",
+      "pdfExact": "PDF (Exact as on screen)",
+      "downloadWord": "Download Word (.doc)",
+      "filename": "Filename",
+      "errors": {
+        "elementNotFound": "Could not find CV element",
+        "pdfFailed": "Could not export PDF. Try again.",
+        "wordFailed": "Could not export Word. Try again."
+      },
+      "info": {
+        "recommended": "Recommended PDF",
+        "recommendedDesc": "Provides searchable text and smaller file size. Best for ATS systems.",
+        "exact": "PDF (exact as on screen)",
+        "exactDesc": "Captures exact appearance but text is not searchable.",
+        "wordDesc": "Editable format if you need to customize for specific applications."
+      }
+    },
+    "aiWriting": {
+      "title": "AI Writing Help",
+      "secureConnection": "Secure connection via server",
+      "foundWeakPhrases": "Found weak phrases",
+      "more": "more",
+      "replaceAutomatically": "Replace automatically",
+      "aiWorking": "AI working...",
+      "mayTakeSeconds": "This may take a few seconds",
+      "use": "Use",
+      "selectFeatureAbove": "Select a feature above to get help from AI",
+      "features": {
+        "improve": "Improve",
+        "improveDesc": "Make the text more professional and impactful",
+        "quantify": "Quantify",
+        "quantifyDesc": "Add measurable results and numbers",
+        "translate": "Translate",
+        "translateDesc": "Translate to English",
+        "generate": "Generate",
+        "generateDesc": "Create new text based on your input"
+      },
+      "errors": {
+        "writeFirst": "Write something first before using AI improvement.",
+        "aiCouldNotGenerate": "AI could not generate a response.",
+        "couldNotContact": "Could not contact the AI service."
+      },
+      "powerWords": {
+        "wasResponsibleFor": "was responsible for",
+        "led": "led",
+        "helpedWith": "helped with",
+        "drove": "drove",
+        "did": "did",
+        "executed": "executed",
+        "workedWith": "worked with",
+        "specialized": "specialized in",
+        "got": "got",
+        "achieved": "achieved",
+        "goodAt": "good at",
+        "expertIn": "expert in",
+        "assisted": "assisted",
+        "supported": "supported",
+        "agreedTo": "agreed to",
+        "tookOn": "took on",
+        "lookedAt": "looked at",
+        "analyzed": "analyzed",
+        "fixed": "fixed",
+        "solved": "solved"
       }
     }
   },
@@ -2424,6 +2578,20 @@
         "interviewPrediction": "Based on your pace: Interview within {{days}} days (confidence: {{confidence}}%)",
         "increaseRate": "Increase pace: Users who apply to 5+ jobs have 78% chance of interview within 30 days"
       }
+    },
+    "smartMatches": {
+      "title": "Smart matching",
+      "fillCVDescription": "Add more information to your CV to get personalized job recommendations based on your skills.",
+      "completeCV": "Complete your CV",
+      "jobsMatchCount": "{{count}} jobs match your skills",
+      "exploreCareer": "Explore career opportunities",
+      "tabs": {
+        "matchedJobs": "Matched jobs",
+        "similarRoles": "Similar roles"
+      },
+      "seeAllJobs": "See all matched jobs",
+      "overlap": "overlap",
+      "toLearn": "To learn"
     }
   },
   "errors": {
@@ -4529,6 +4697,236 @@
       "download": "Download",
       "apply": "Apply",
       "changeStatus": "Change status"
+    },
+    "stats": {
+      "totalParticipants": "Total participants",
+      "activeParticipants": "Active participants",
+      "needsAttention": "Needs attention",
+      "completedCV": "Completed CV (>70%)"
+    },
+    "dashboard": {
+      "title": "My Participants",
+      "subtitle": "Manage and follow up on {{count}} participants",
+      "inviteParticipant": "Invite participant",
+      "searchPlaceholder": "Search by name or email...",
+      "showList": "Show list",
+      "attentionMessage": "{{count}} participants have not been contacted in over 7 days.",
+      "filters": {
+        "allStatuses": "All statuses",
+        "active": "Active",
+        "inactive": "Inactive",
+        "onHold": "On hold",
+        "completed": "Completed"
+      },
+      "quickActions": {
+        "title": "Quick actions",
+        "sendGroupMessage": "Send group message",
+        "scheduleMeetings": "Schedule meetings",
+        "exportReport": "Export report"
+      }
+    },
+    "participants": {
+      "neverContacted": "Never contacted",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{{count}} days ago",
+      "weeksAgo": "{{count}} weeks ago",
+      "noParticipants": "No participants yet",
+      "noParticipantsDesc": "You have not been assigned any participants yet.",
+      "exists": "Exists",
+      "missing": "Missing",
+      "jobs": "Jobs",
+      "notes": "Notes",
+      "viewProfile": "View profile",
+      "priority": {
+        "critical": "Critical",
+        "high": "High"
+      },
+      "table": {
+        "name": "Name",
+        "status": "Status",
+        "savedJobs": "Saved jobs",
+        "lastContact": "Last contact",
+        "actions": "Actions"
+      }
+    },
+    "actionPlan": {
+      "title": "Action Plan",
+      "subtitle": "SMART goals for {{name}}",
+      "newGoal": "New goal",
+      "saveGoal": "Save goal",
+      "selectTemplate": "Select a template",
+      "orSelectTemplate": "Or select a template",
+      "noGoals": "No goals yet",
+      "noGoalsDesc": "Create SMART goals to help the participant move forward",
+      "deadline": "Deadline",
+      "updateProgress": "Update progress",
+      "showLess": "Show less",
+      "showSmartCriteria": "Show SMART criteria",
+      "smartCriteriaFor": "SMART criteria for {{title}}",
+      "stats": {
+        "total": "Total",
+        "completed": "Completed",
+        "inProgress": "In progress",
+        "highPriority": "High priority"
+      },
+      "priority": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "status": {
+        "notStarted": "Not started",
+        "inProgress": "In progress",
+        "completed": "Completed",
+        "blocked": "Blocked"
+      },
+      "form": {
+        "goalSpecific": "Goal (Specific)",
+        "goalPlaceholder": "e.g. Create a complete CV",
+        "deadlineTimeBound": "Deadline (Time-bound)",
+        "measurable": "Measurable",
+        "measurablePlaceholder": "How will we know the goal is achieved?",
+        "achievable": "Achievable",
+        "achievablePlaceholder": "What resources are needed?",
+        "relevant": "Relevant",
+        "relevantPlaceholder": "Why is this goal important?",
+        "priority": "Priority",
+        "relatedTo": "Related to"
+      },
+      "details": {
+        "measurable": "Measurable",
+        "achievable": "Achievable",
+        "relevant": "Relevant"
+      },
+      "relatedTo": {
+        "cv": "CV Builder",
+        "interestGuide": "Interest Guide",
+        "jobSearch": "Job Search",
+        "education": "Education",
+        "diary": "Diary reflection",
+        "other": "Other"
+      },
+      "templates": {
+        "createCV": {
+          "title": "Create a complete CV",
+          "specific": "Create a CV with all relevant sections filled in",
+          "measurable": "CV score above 80% in ATS analysis",
+          "achievable": "Use CV builder for structured guidance",
+          "relevant": "CV is needed for job applications",
+          "timeBound": "Within 2 weeks"
+        },
+        "interestGuide": {
+          "title": "Complete interest guide",
+          "specific": "Complete the interest test for career guidance",
+          "measurable": "Test completed and results saved",
+          "achievable": "Takes about 15 minutes",
+          "relevant": "Helps find the right career paths",
+          "timeBound": "Within 1 week"
+        },
+        "saveJobs": {
+          "title": "Save interesting jobs",
+          "specific": "Find and save at least 5 relevant job matches",
+          "measurable": "5 jobs saved in the list",
+          "achievable": "Use job search with matching",
+          "relevant": "First step towards applications",
+          "timeBound": "Within 1 week"
+        },
+        "writeDiary": {
+          "title": "Write diary reflection",
+          "specific": "Reflect on the week's job searching in the diary",
+          "measurable": "At least 3 diary entries",
+          "achievable": "Takes 5-10 minutes per entry",
+          "relevant": "Helps track progress and well-being",
+          "timeBound": "Within 1 week"
+        }
+      }
+    }
+  },
+  "layout": {
+    "pageTabs": {
+      "selectPage": "Select page"
+    },
+    "bottomBar": {
+      "cvScore": "CV score",
+      "applications": "Applications",
+      "dailyGoals": "Daily goals",
+      "nextSteps": "Next steps",
+      "suggestionsToProgress": "Suggestions to move forward",
+      "steps": {
+        "createCV": "Create your CV",
+        "createCVDesc": "Get started with your CV",
+        "improveCVScore": "Improve CV score",
+        "improveCVScoreDesc": "You have {{score}}/100 - improve it!",
+        "exploreInterest": "Explore interest guide",
+        "exploreInterestDesc": "Find your direction",
+        "searchJobs": "Search for jobs",
+        "searchJobsDesc": "See what's available",
+        "generateCoverLetter": "Generate cover letter",
+        "generateCoverLetterDesc": "Match your CV",
+        "optimizeLinkedIn": "Optimize LinkedIn",
+        "optimizeLinkedInDesc": "Get seen by recruiters",
+        "saveAsPDF": "Save as PDF",
+        "saveAsPDFDesc": "Download your CV",
+        "savedJobs": "Saved jobs",
+        "savedJobsDesc": "See your saved jobs",
+        "writeApplication": "Write application",
+        "writeApplicationDesc": "Start applying",
+        "prepareInterview": "Prepare for interview",
+        "prepareInterviewDesc": "Practice for the interview",
+        "interestGuide": "Interest guide",
+        "interestGuideDesc": "Find your path",
+        "careerPlanning": "Career planning",
+        "careerPlanningDesc": "Plan your future",
+        "cvBuilder": "CV builder",
+        "cvBuilderDesc": "Build your CV",
+        "searchInterestJobs": "Search jobs by interest",
+        "searchInterestJobsDesc": "Find matching jobs",
+        "readRelatedArticles": "Read related articles",
+        "readRelatedArticlesDesc": "Dive deeper",
+        "createCVForArea": "Create CV for the area",
+        "createCVForAreaDesc": "Customize your CV",
+        "sendMoreApplications": "Send more applications",
+        "sendMoreApplicationsDesc": "Increase your chances",
+        "practiceForCall": "Practice for calls",
+        "viewStatistics": "View statistics",
+        "yourProgress": "Your progress",
+        "searchJobsToApply": "Search jobs to apply for",
+        "findNextJob": "Find your next job",
+        "readyForInterview": "Ready for the interview?",
+        "updateCV": "Update CV",
+        "matchLetter": "Match the letter",
+        "searchMoreJobs": "Search more jobs",
+        "moreInterviews": "More interviews",
+        "practiceCV": "Practice CV questions",
+        "prepareAnswers": "Prepare answers",
+        "readKnowledgeTips": "Read tips in knowledge base",
+        "moreHelp": "More help",
+        "takeBreak": "Take a break",
+        "wellnessExercises": "Wellness exercises",
+        "jobSearchTips": "Job search tips",
+        "getInspiration": "Get inspiration",
+        "continueCV": "Continue with CV",
+        "smallSteps": "Small steps forward",
+        "keepUpdated": "Keep it updated",
+        "viewYourStats": "View your statistics",
+        "settings": "Settings",
+        "customizePortal": "Customize portal",
+        "backToOverview": "Back to overview",
+        "yourDashboard": "Your dashboard",
+        "findJobs": "Find available jobs"
+      }
+    },
+    "mobileNav": {
+      "openMenu": "Open menu",
+      "openProfile": "Open profile",
+      "navigationMenu": "Navigation menu",
+      "menu": "Menu",
+      "closeMenu": "Close menu"
+    },
+    "pageHeader": {
+      "myInsights": "My insights",
+      "insights": "Insights"
     }
   }
 }

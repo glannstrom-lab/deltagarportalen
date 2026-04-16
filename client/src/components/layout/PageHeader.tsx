@@ -3,6 +3,7 @@
  * Matchar designen från översikten
  */
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ChevronRight, Sparkles } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
@@ -13,12 +14,13 @@ interface PageHeaderProps {
   children?: React.ReactNode
 }
 
-export function PageHeader({ 
-  title, 
-  subtitle, 
+export function PageHeader({
+  title,
+  subtitle,
   showInsightsLink = false,
-  children 
+  children
 }: PageHeaderProps) {
+  const { t } = useTranslation()
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
       <div>
@@ -47,8 +49,8 @@ export function PageHeader({
             )}
           >
             <Sparkles size={18} />
-            <span className="hidden sm:inline">Mina insikter</span>
-            <span className="sm:hidden">Insikter</span>
+            <span className="hidden sm:inline">{t('layout.pageHeader.myInsights')}</span>
+            <span className="sm:hidden">{t('layout.pageHeader.insights')}</span>
             <ChevronRight size={18} className="hidden sm:block" />
           </Link>
         )}

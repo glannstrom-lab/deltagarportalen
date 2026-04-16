@@ -19,11 +19,12 @@ import { useTranslation } from 'react-i18next'
  * WCAG 2.2: Minimum touch target 44x44px
  */
 export function MobileMenuButton({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation()
   return (
     <button
       onClick={onClick}
       className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
-      aria-label="Öppna meny"
+      aria-label={t('layout.mobileNav.openMenu')}
     >
       <Menu className="w-6 h-6 text-slate-700 dark:text-stone-300" />
     </button>
@@ -36,11 +37,12 @@ export function MobileMenuButton({ onClick }: { onClick: () => void }) {
  * WCAG 2.2: Minimum touch target 44x44px
  */
 export function MobileProfileButton({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation()
   return (
     <button
       onClick={onClick}
       className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
-      aria-label="Öppna profil"
+      aria-label={t('layout.mobileNav.openProfile')}
     >
       <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
         <User className="w-4 h-4 text-white" />
@@ -98,15 +100,15 @@ export function SideMenu({
         )}
         role="dialog"
         aria-modal="true"
-        aria-label="Navigeringsmeny"
+        aria-label={t('layout.mobileNav.navigationMenu')}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700">
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">Meny</h2>
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('layout.mobileNav.menu')}</h2>
           <button
             onClick={onClose}
             className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
-            aria-label="Stäng meny"
+            aria-label={t('layout.mobileNav.closeMenu')}
           >
             <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
           </button>
@@ -143,7 +145,7 @@ export function SideMenu({
                       <span className="flex-1">{t(item.labelKey)}</span>
                       {showBadge && (
                         <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-400 text-amber-900 rounded-full">
-                          Ny!
+                          {t('common.new')}
                         </span>
                       )}
                     </NavLink>

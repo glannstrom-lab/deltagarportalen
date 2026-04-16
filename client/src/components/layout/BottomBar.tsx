@@ -1,10 +1,11 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { 
-  FileText, 
-  Send, 
-  Mail, 
-  Plus, 
-  Briefcase, 
+import { useTranslation } from 'react-i18next'
+import {
+  FileText,
+  Send,
+  Mail,
+  Plus,
+  Briefcase,
   Compass,
   TrendingUp,
   ArrowRight,
@@ -18,7 +19,7 @@ import {
   ChevronRight,
   ExternalLink
 } from '@/components/ui/icons'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { cvApi, coverLetterApi } from '@/services/api'
 import { activityApi } from '@/services/api'
 import { supabase } from '@/lib/supabase'
@@ -44,6 +45,7 @@ interface NextStep {
 }
 
 export function BottomBar() {
+  const { t } = useTranslation()
   const [stats, setStats] = useState<BottomBarStats>({
     cvScore: 0,
     applications: 0,
@@ -92,310 +94,308 @@ export function BottomBar() {
   }
 
   // Hämta kontextuella nästa steg baserat på nuvarande sida
-  const getContextualNextSteps = (): NextStep[] => {
+  const nextSteps = useMemo((): NextStep[] => {
     const path = location.pathname
-    
+
     // Dashboard / Översikt
     if (path === '/') {
       const steps: NextStep[] = []
       if (!stats.hasCV) {
         steps.push({
-          label: 'Skapa ditt CV',
+          label: t('layout.bottomBar.steps.createCV'),
           path: '/cv',
           icon: FileText,
-          description: 'Kom igång med ditt CV',
+          description: t('layout.bottomBar.steps.createCVDesc'),
           priority: 'high'
         })
       }
       if (stats.cvScore < 70) {
         steps.push({
-          label: 'Förbättra CV-poäng',
+          label: t('layout.bottomBar.steps.improveCVScore'),
           path: '/cv',
           icon: Sparkles,
-          description: `Du har ${stats.cvScore}/100 - höj det!`,
+          description: t('layout.bottomBar.steps.improveCVScoreDesc', { score: stats.cvScore }),
           priority: 'high'
         })
       }
       steps.push({
-        label: 'Utforska intresseguide',
+        label: t('layout.bottomBar.steps.exploreInterest'),
         path: '/interest-guide',
         icon: Compass,
-        description: 'Hitta din riktning',
+        description: t('layout.bottomBar.steps.exploreInterestDesc'),
         priority: 'medium'
       })
       steps.push({
-        label: 'Sök lediga jobb',
+        label: t('layout.bottomBar.steps.searchJobs'),
         path: '/job-search',
         icon: Briefcase,
-        description: 'Se vad som finns',
+        description: t('layout.bottomBar.steps.searchJobsDesc'),
         priority: 'medium'
       })
       return steps
     }
-    
+
     // CV-sidan
     if (path.includes('cv')) {
       return [
         {
-          label: 'Generera personligt brev',
+          label: t('layout.bottomBar.steps.generateCoverLetter'),
           path: '/cover-letter',
           icon: Mail,
-          description: 'Matcha ditt CV',
+          description: t('layout.bottomBar.steps.generateCoverLetterDesc'),
           priority: 'high'
         },
         {
-          label: 'Optimera LinkedIn',
+          label: t('layout.bottomBar.steps.optimizeLinkedIn'),
           path: '/linkedin-optimizer',
           icon: ExternalLink,
-          description: 'Synas för rekryterare',
+          description: t('layout.bottomBar.steps.optimizeLinkedInDesc'),
           priority: 'medium'
         },
         {
-          label: 'Spara som PDF',
+          label: t('layout.bottomBar.steps.saveAsPDF'),
           path: '#',
           icon: FileText,
-          description: 'Ladda ner CV:t',
+          description: t('layout.bottomBar.steps.saveAsPDFDesc'),
           priority: 'low'
         }
       ]
     }
-    
+
     // Jobbsökning
     if (path.includes('job-search')) {
       return [
         {
-          label: 'Sparade jobb',
+          label: t('layout.bottomBar.steps.savedJobs'),
           path: '/job-search',
           icon: Briefcase,
-          description: 'Se dina sparade',
+          description: t('layout.bottomBar.steps.savedJobsDesc'),
           priority: 'high'
         },
         {
-          label: 'Skriv ansökan',
+          label: t('layout.bottomBar.steps.writeApplication'),
           path: '/cover-letter',
           icon: Mail,
-          description: 'Börja ansöka',
+          description: t('layout.bottomBar.steps.writeApplicationDesc'),
           priority: 'high'
         },
         {
-          label: 'Förbered intervju',
+          label: t('layout.bottomBar.steps.prepareInterview'),
           path: '/interview-simulator',
           icon: MessageSquare,
-          description: 'Öva inför intervjun',
+          description: t('layout.bottomBar.steps.prepareInterviewDesc'),
           priority: 'medium'
         }
       ]
     }
-    
+
     // Kunskapsbank
     if (path.includes('knowledge')) {
       return [
         {
-          label: 'Intresseguiden',
+          label: t('layout.bottomBar.steps.interestGuide'),
           path: '/interest-guide',
           icon: Compass,
-          description: 'Hitta din väg',
+          description: t('layout.bottomBar.steps.interestGuideDesc'),
           priority: 'high'
         },
         {
-          label: 'Karriärplanering',
+          label: t('layout.bottomBar.steps.careerPlanning'),
           path: '/career-plan',
           icon: Target,
-          description: 'Planera din framtid',
+          description: t('layout.bottomBar.steps.careerPlanningDesc'),
           priority: 'medium'
         },
         {
-          label: 'CV-byggare',
+          label: t('layout.bottomBar.steps.cvBuilder'),
           path: '/cv',
           icon: FileText,
-          description: 'Bygg ditt CV',
+          description: t('layout.bottomBar.steps.cvBuilderDesc'),
           priority: 'medium'
         }
       ]
     }
-    
+
     // Intresseguiden
     if (path.includes('interest-guide')) {
       return [
         {
-          label: 'Sök jobb inom intresse',
+          label: t('layout.bottomBar.steps.searchInterestJobs'),
           path: '/job-search',
           icon: Briefcase,
-          description: 'Hitta matchande jobb',
+          description: t('layout.bottomBar.steps.searchInterestJobsDesc'),
           priority: 'high'
         },
         {
-          label: 'Läs relaterade artiklar',
+          label: t('layout.bottomBar.steps.readRelatedArticles'),
           path: '/knowledge-base',
           icon: BookOpen,
-          description: 'Fördjupa dig',
+          description: t('layout.bottomBar.steps.readRelatedArticlesDesc'),
           priority: 'medium'
         },
         {
-          label: 'Skapa CV för området',
+          label: t('layout.bottomBar.steps.createCVForArea'),
           path: '/cv',
           icon: FileText,
-          description: 'Anpassa ditt CV',
+          description: t('layout.bottomBar.steps.createCVForAreaDesc'),
           priority: 'medium'
         }
       ]
     }
-    
+
     // Ansökningsbevakning
     if (path.includes('job-tracker')) {
       return [
         {
-          label: 'Skicka fler ansökningar',
+          label: t('layout.bottomBar.steps.sendMoreApplications'),
           path: '/job-search',
           icon: Send,
-          description: 'Öka dina chanser',
+          description: t('layout.bottomBar.steps.sendMoreApplicationsDesc'),
           priority: 'high'
         },
         {
-          label: 'Förbered intervju',
+          label: t('layout.bottomBar.steps.prepareInterview'),
           path: '/interview-simulator',
           icon: MessageSquare,
-          description: 'Öva inför samtal',
+          description: t('layout.bottomBar.steps.practiceForCall'),
           priority: 'medium'
         },
         {
-          label: 'Se statistik',
+          label: t('layout.bottomBar.steps.viewStatistics'),
           path: '/career',
           icon: TrendingUp,
-          description: 'Din utveckling',
+          description: t('layout.bottomBar.steps.yourProgress'),
           priority: 'low'
         }
       ]
     }
-    
+
     // Personligt brev
     if (path.includes('cover-letter')) {
       return [
         {
-          label: 'Sök jobb att ansöka till',
+          label: t('layout.bottomBar.steps.searchJobsToApply'),
           path: '/job-search',
           icon: Briefcase,
-          description: 'Hitta nästa jobb',
+          description: t('layout.bottomBar.steps.findNextJob'),
           priority: 'high'
         },
         {
-          label: 'Förbered intervju',
+          label: t('layout.bottomBar.steps.prepareInterview'),
           path: '/interview-simulator',
           icon: MessageSquare,
-          description: 'Redo för intervjun?',
+          description: t('layout.bottomBar.steps.readyForInterview'),
           priority: 'medium'
         },
         {
-          label: 'Uppdatera CV',
+          label: t('layout.bottomBar.steps.updateCV'),
           path: '/cv',
           icon: FileText,
-          description: 'Matcha brevet',
+          description: t('layout.bottomBar.steps.matchLetter'),
           priority: 'medium'
         }
       ]
     }
-    
+
     // Intervjuträning
     if (path.includes('interview')) {
       return [
         {
-          label: 'Sök fler jobb',
+          label: t('layout.bottomBar.steps.searchMoreJobs'),
           path: '/job-search',
           icon: Briefcase,
-          description: 'Fler intervjuer',
+          description: t('layout.bottomBar.steps.moreInterviews'),
           priority: 'high'
         },
         {
-          label: 'Öva på CV-frågor',
+          label: t('layout.bottomBar.steps.practiceCV'),
           path: '/cv',
           icon: FileText,
-          description: 'Förbered svar',
+          description: t('layout.bottomBar.steps.prepareAnswers'),
           priority: 'medium'
         },
         {
-          label: 'Läs tips i kunskapsbanken',
+          label: t('layout.bottomBar.steps.readKnowledgeTips'),
           path: '/knowledge-base',
           icon: BookOpen,
-          description: 'Mer hjälp',
+          description: t('layout.bottomBar.steps.moreHelp'),
           priority: 'low'
         }
       ]
     }
-    
+
     // Dagbok / Mående
     if (path.includes('diary') || path.includes('wellness')) {
       return [
         {
-          label: 'Ta en paus',
+          label: t('layout.bottomBar.steps.takeBreak'),
           path: '/exercises',
           icon: Sparkles,
-          description: 'Välmåendeövningar',
+          description: t('layout.bottomBar.steps.wellnessExercises'),
           priority: 'high'
         },
         {
-          label: 'Jobbsökningstips',
+          label: t('layout.bottomBar.steps.jobSearchTips'),
           path: '/knowledge-base',
           icon: Lightbulb,
-          description: 'Få inspiration',
+          description: t('layout.bottomBar.steps.getInspiration'),
           priority: 'medium'
         },
         {
-          label: 'Fortsätt med CV',
+          label: t('layout.bottomBar.steps.continueCV'),
           path: '/cv',
           icon: FileText,
-          description: 'Små steg framåt',
+          description: t('layout.bottomBar.steps.smallSteps'),
           priority: 'low'
         }
       ]
     }
-    
+
     // Profil
     if (path.includes('profile')) {
       return [
         {
-          label: 'Uppdatera CV',
+          label: t('layout.bottomBar.steps.updateCV'),
           path: '/cv',
           icon: FileText,
-          description: 'Håll det aktuellt',
+          description: t('layout.bottomBar.steps.keepUpdated'),
           priority: 'high'
         },
         {
-          label: 'Se din statistik',
+          label: t('layout.bottomBar.steps.viewYourStats'),
           path: '/career',
           icon: TrendingUp,
-          description: 'Din utveckling',
+          description: t('layout.bottomBar.steps.yourProgress'),
           priority: 'medium'
         },
         {
-          label: 'Inställningar',
+          label: t('layout.bottomBar.steps.settings'),
           path: '/settings',
           icon: CheckCircle2,
-          description: 'Anpassa portalen',
+          description: t('layout.bottomBar.steps.customizePortal'),
           priority: 'low'
         }
       ]
     }
-    
+
     // Default fallback
     return [
       {
-        label: 'Tillbaka till översikt',
+        label: t('layout.bottomBar.steps.backToOverview'),
         path: '/',
         icon: ArrowRight,
-        description: 'Din dashboard',
+        description: t('layout.bottomBar.steps.yourDashboard'),
         priority: 'high'
       },
       {
-        label: 'Sök jobb',
+        label: t('layout.bottomBar.steps.searchJobs'),
         path: '/job-search',
         icon: Briefcase,
-        description: 'Hitta lediga jobb',
+        description: t('layout.bottomBar.steps.findJobs'),
         priority: 'medium'
       }
     ]
-  }
-
-  const nextSteps = getContextualNextSteps()
+  }, [location.pathname, stats.hasCV, stats.cvScore, t])
   const primaryAction = nextSteps[0]
   const secondaryActions = nextSteps.slice(1, 4)
 
@@ -435,7 +435,7 @@ export function BottomBar() {
                   <TrendingUp size={18} className={getScoreColor(stats.cvScore)} />
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-xs text-slate-700 dark:text-stone-400">CV-poäng</p>
+                  <p className="text-xs text-slate-700 dark:text-stone-400">{t('layout.bottomBar.cvScore')}</p>
                   <p className={cn("font-semibold text-sm", getScoreColor(stats.cvScore))}>
                     {stats.cvScore}/100
                   </p>
@@ -451,7 +451,7 @@ export function BottomBar() {
                   <Send size={18} className="text-orange-600" />
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-xs text-slate-700 dark:text-stone-400">Ansökningar</p>
+                  <p className="text-xs text-slate-700 dark:text-stone-400">{t('layout.bottomBar.applications')}</p>
                   <p className="font-semibold text-sm text-slate-700 dark:text-stone-300">{stats.applications}</p>
                 </div>
               </Link>
@@ -462,7 +462,7 @@ export function BottomBar() {
                   <CheckCircle2 size={18} className="text-teal-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-700 dark:text-stone-400">Dagens mål</p>
+                  <p className="text-xs text-slate-700 dark:text-stone-400">{t('layout.bottomBar.dailyGoals')}</p>
                   <div className="flex items-center gap-2">
                     <div className="w-16 h-1.5 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
                       <div
@@ -495,7 +495,7 @@ export function BottomBar() {
                     : "bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-100 dark:hover:bg-stone-700"
                 )}
               >
-                <span className="hidden sm:inline text-sm font-medium">Nästa steg</span>
+                <span className="hidden sm:inline text-sm font-medium">{t('layout.bottomBar.nextSteps')}</span>
                 <ChevronRight 
                   size={18} 
                   className={cn("transition-transform", showNextSteps && "rotate-90")} 
@@ -524,7 +524,7 @@ export function BottomBar() {
           {showNextSteps && (
             <div className="mt-3 pt-3 border-t border-slate-100 dark:border-stone-700">
               <p className="text-xs font-medium text-slate-700 dark:text-stone-400 uppercase tracking-wider mb-2">
-                Förslag för att komma vidare
+                {t('layout.bottomBar.suggestionsToProgress')}
               </p>
               <div className="flex flex-wrap gap-2">
                 {secondaryActions.map((step, index) => (

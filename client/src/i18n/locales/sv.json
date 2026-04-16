@@ -29,6 +29,7 @@
     "days": "dagar",
     "create": "Skapa",
     "update": "Uppdatera",
+    "progress": "Framsteg",
     "view": "Visa",
     "download": "Ladda ner",
     "upload": "Ladda upp",
@@ -79,6 +80,76 @@
       "documents": "Dokument",
       "jobs": "Jobb",
       "articles": "Artiklar"
+    }
+  },
+  "calendar": {
+    "today": "Idag",
+    "oneHour": "1 tim",
+    "videoCall": "Videosamtal",
+    "phone": "Telefon",
+    "days": {
+      "mon": "Mån",
+      "tue": "Tis",
+      "wed": "Ons",
+      "thu": "Tor",
+      "fri": "Fre",
+      "sat": "Lör",
+      "sun": "Sön"
+    },
+    "eventTypes": {
+      "interview": "Intervju",
+      "meeting": "Möte",
+      "deadline": "Deadline",
+      "reminder": "Påminnelse",
+      "task": "Uppgift",
+      "followup": "Uppföljning",
+      "preparation": "Förberedelse"
+    },
+    "modal": {
+      "editEvent": "Redigera händelse",
+      "newEvent": "Ny händelse",
+      "createEvent": "Skapa händelse",
+      "tabs": {
+        "details": "Detaljer",
+        "tasks": "Uppgifter",
+        "preparation": "Förberedelse",
+        "travel": "Resa"
+      },
+      "title": "Titel",
+      "titlePlaceholder": "T.ex. Jobbintervju på Spotify",
+      "type": "Typ",
+      "date": "Datum",
+      "time": "Tid",
+      "locationOptional": "Plats (valfritt)",
+      "locationPlaceholder": "Adress eller plats",
+      "withOptional": "Med (valfritt)",
+      "withPlaceholder": "T.ex. Anna Svensson, rekryterare",
+      "description": "Beskrivning",
+      "descriptionPlaceholder": "Anteckningar om händelsen...",
+      "linkedTo": "Länkat till"
+    },
+    "tasks": {
+      "toDo": "Att göra",
+      "addPlaceholder": "Lägg till ny uppgift...",
+      "empty": "Inga uppgifter ännu. Lägg till en för att komma igång!"
+    },
+    "interviewPrep": {
+      "title": "Förberedelseassistent",
+      "subtitle": "AI-genererade tips och frågor",
+      "theCompany": "Företaget",
+      "tailoredQuestions": "Skräddarsydda frågor",
+      "generateDescription": "Generera intervjufrågor baserade på företaget och rollen",
+      "generateQuestions": "Generera frågor",
+      "dressRecommendation": "Klädrekommendation",
+      "commonQuestions": "Vanliga intervjufrågor",
+      "questionsToAsk": "Frågor att ställa till dem",
+      "searchCompany": "Sök efter information om företaget",
+      "questions": {
+        "businessModel": "Vad vet du om {{company}}s affärsmodell?",
+        "contribution": "Hur skulle du bidra till {{company}}s tillväxt?",
+        "attraction": "Vad lockar dig mest med att arbeta på {{company}}?",
+        "challenge": "Beskriv hur du hanterar [relevant utmaning för rollen]"
+      }
     }
   },
   "nav": {
@@ -148,10 +219,17 @@
     "noNotifications": "Inga nya notifikationer",
     "markAllRead": "Markera alla lästa",
     "unreadNotifications": "{{count}} olästa",
-    "profile": "Min profil"
+    "profile": "Min profil",
+    "switchToLight": "Byt till ljust tema",
+    "switchToDark": "Byt till mörkt tema",
+    "guidesAndFAQ": "Guider och vanliga frågor",
+    "tagline": "Din jobbportal",
+    "welcome": "Välkommen",
+    "accessibility": "Tillgänglighet"
   },
   "language": {
     "select": "Välj språk",
+    "label": "Språk",
     "swedish": "Svenska",
     "english": "English"
   },
@@ -773,6 +851,82 @@
           "description": "Testa hur väl ditt CV klarar rekryteringssystem",
           "link": "Gå till ATS-analys →"
         }
+      }
+    },
+    "export": {
+      "title": "Exportera CV",
+      "subtitle": "Ladda ner som PDF eller Word",
+      "createFirst": "Skapa ett CV först för att exportera",
+      "yourName": "Ditt Namn",
+      "pdfSaved": "PDF Sparad!",
+      "wordSaved": "Word Sparad!",
+      "preparingPdf": "Förbereder PDF...",
+      "creatingPdf": "Skapar PDF...",
+      "creatingWord": "Skapar Word...",
+      "exportError": "Fel vid export",
+      "downloadPdfRecommended": "Ladda ner PDF (Rekommenderad)",
+      "pdfExact": "PDF (Exakt som på skärmen)",
+      "downloadWord": "Ladda ner Word (.doc)",
+      "filename": "Filnamn",
+      "errors": {
+        "elementNotFound": "Kunde inte hitta CV-elementet",
+        "pdfFailed": "Kunde inte exportera PDF. Försök igen.",
+        "wordFailed": "Kunde inte exportera Word. Försök igen."
+      },
+      "info": {
+        "recommended": "Rekommenderad PDF",
+        "recommendedDesc": "Ger sökbar text och mindre filstorlek. Bäst för ATS-system.",
+        "exact": "PDF (exakt som på skärmen)",
+        "exactDesc": "Fångar exakt utseende men text ej sökbar.",
+        "wordDesc": "Redigerbart format om du behöver anpassa för specifika ansökningar."
+      }
+    },
+    "aiWriting": {
+      "title": "AI-skrivhjälp",
+      "secureConnection": "Säker anslutning via server",
+      "foundWeakPhrases": "Hittade svaga formuleringar",
+      "more": "till",
+      "replaceAutomatically": "Ersätt automatiskt",
+      "aiWorking": "AI arbetar...",
+      "mayTakeSeconds": "Detta kan ta några sekunder",
+      "use": "Använd",
+      "selectFeatureAbove": "Välj en funktion ovan för att få hjälp av AI",
+      "features": {
+        "improve": "Förbättra",
+        "improveDesc": "Gör texten mer professionell och slagkraftig",
+        "quantify": "Kvantifiera",
+        "quantifyDesc": "Lägg till mätbara resultat och siffror",
+        "translate": "Översätt",
+        "translateDesc": "Översätt till engelska",
+        "generate": "Generera",
+        "generateDesc": "Skapa ny text baserat på din input"
+      },
+      "errors": {
+        "writeFirst": "Skriv något först innan du använder AI-förbättring.",
+        "aiCouldNotGenerate": "AI kunde inte generera ett svar.",
+        "couldNotContact": "Kunde inte kontakta AI-tjänsten."
+      },
+      "powerWords": {
+        "wasResponsibleFor": "var ansvarig för",
+        "led": "ledde",
+        "helpedWith": "hjälpte till med",
+        "drove": "drev",
+        "did": "gjorde",
+        "executed": "utförde",
+        "workedWith": "arbetade med",
+        "specialized": "specialiserade mig på",
+        "got": "fick",
+        "achieved": "uppnådde",
+        "goodAt": "bra på",
+        "expertIn": "expert inom",
+        "assisted": "assisterade",
+        "supported": "stödjade",
+        "agreedTo": "gick med på",
+        "tookOn": "åtog mig",
+        "lookedAt": "tittade på",
+        "analyzed": "analyserade",
+        "fixed": "fixade",
+        "solved": "löste"
       }
     }
   },
@@ -2464,6 +2618,20 @@
         "interviewPrediction": "Baserat på din takt: Intervju inom {{days}} dagar (konfidens: {{confidence}}%)",
         "increaseRate": "Öka takten: Användare som söker 5+ jobb har 78% chans till intervju inom 30 dagar"
       }
+    },
+    "smartMatches": {
+      "title": "Smart matchning",
+      "fillCVDescription": "Fyll i mer information i ditt CV för att få personliga jobbrekommendationer baserat på dina kompetenser.",
+      "completeCV": "Komplettera CV:t",
+      "jobsMatchCount": "{{count}} jobb matchar dina kompetenser",
+      "exploreCareer": "Utforska karriärmöjligheter",
+      "tabs": {
+        "matchedJobs": "Matchade jobb",
+        "similarRoles": "Liknande roller"
+      },
+      "seeAllJobs": "Se alla matchade jobb",
+      "overlap": "överlappning",
+      "toLearn": "Att lära sig"
     }
   },
   "errors": {
@@ -4728,6 +4896,236 @@
       "download": "Ladda ner",
       "apply": "Tillämpa",
       "changeStatus": "Ändra status"
+    },
+    "stats": {
+      "totalParticipants": "Totalt antal deltagare",
+      "activeParticipants": "Aktiva deltagare",
+      "needsAttention": "Kräver uppmärksamhet",
+      "completedCV": "Kompletta CV (>70%)"
+    },
+    "dashboard": {
+      "title": "Mina Deltagare",
+      "subtitle": "Hantera och följ upp {{count}} deltagare",
+      "inviteParticipant": "Bjud in deltagare",
+      "searchPlaceholder": "Sök efter namn eller email...",
+      "showList": "Visa lista",
+      "attentionMessage": "{{count}} deltagare har inte kontaktats på över 7 dagar.",
+      "filters": {
+        "allStatuses": "Alla statusar",
+        "active": "Aktiva",
+        "inactive": "Inaktiva",
+        "onHold": "Pausade",
+        "completed": "Avslutade"
+      },
+      "quickActions": {
+        "title": "Snabbåtgärder",
+        "sendGroupMessage": "Skicka gruppmeddelande",
+        "scheduleMeetings": "Schemalägg möten",
+        "exportReport": "Exportera rapport"
+      }
+    },
+    "participants": {
+      "neverContacted": "Aldrig kontaktad",
+      "today": "Idag",
+      "yesterday": "Igår",
+      "daysAgo": "{{count}} dagar sedan",
+      "weeksAgo": "{{count}} veckor sedan",
+      "noParticipants": "Inga deltagare ännu",
+      "noParticipantsDesc": "Du har inte tilldelat några deltagare ännu.",
+      "exists": "Finns",
+      "missing": "Saknas",
+      "jobs": "Jobb",
+      "notes": "Anteckningar",
+      "viewProfile": "Visa profil",
+      "priority": {
+        "critical": "Kritisk",
+        "high": "Hög"
+      },
+      "table": {
+        "name": "Namn",
+        "status": "Status",
+        "savedJobs": "Sparade jobb",
+        "lastContact": "Senast kontakt",
+        "actions": "Åtgärder"
+      }
+    },
+    "actionPlan": {
+      "title": "Handlingsplan",
+      "subtitle": "SMARTA-mål för {{name}}",
+      "newGoal": "Nytt mål",
+      "saveGoal": "Spara mål",
+      "selectTemplate": "Välj en mall",
+      "orSelectTemplate": "Eller välj en mall",
+      "noGoals": "Inga mål ännu",
+      "noGoalsDesc": "Skapa SMARTA-mål för att hjälpa deltagaren framåt",
+      "deadline": "Deadline",
+      "updateProgress": "Uppdatera framsteg",
+      "showLess": "Visa mindre",
+      "showSmartCriteria": "Visa SMARTA-kriterier",
+      "smartCriteriaFor": "SMARTA-kriterier för {{title}}",
+      "stats": {
+        "total": "Totalt",
+        "completed": "Klara",
+        "inProgress": "Pågående",
+        "highPriority": "Hög prioritet"
+      },
+      "priority": {
+        "high": "Hög",
+        "medium": "Medel",
+        "low": "Låg"
+      },
+      "status": {
+        "notStarted": "Ej påbörjad",
+        "inProgress": "Pågår",
+        "completed": "Klar",
+        "blocked": "Blockerad"
+      },
+      "form": {
+        "goalSpecific": "Mål (Specifikt)",
+        "goalPlaceholder": "t.ex. Skapa ett komplett CV",
+        "deadlineTimeBound": "Deadline (Tidsbundet)",
+        "measurable": "Mätbart",
+        "measurablePlaceholder": "Hur vet vi att målet är uppnått?",
+        "achievable": "Genomförbart",
+        "achievablePlaceholder": "Vilka resurser behövs?",
+        "relevant": "Relevant",
+        "relevantPlaceholder": "Varför är detta mål viktigt?",
+        "priority": "Prioritet",
+        "relatedTo": "Kopplat till"
+      },
+      "details": {
+        "measurable": "Mätbart",
+        "achievable": "Genomförbart",
+        "relevant": "Relevant"
+      },
+      "relatedTo": {
+        "cv": "CV-byggare",
+        "interestGuide": "Intresseguide",
+        "jobSearch": "Jobbsökning",
+        "education": "Utbildning",
+        "diary": "Dagboksreflektion",
+        "other": "Övrigt"
+      },
+      "templates": {
+        "createCV": {
+          "title": "Skapa ett komplett CV",
+          "specific": "Skapa ett CV med alla relevanta sektioner ifyllda",
+          "measurable": "CV-poäng över 80% i ATS-analys",
+          "achievable": "Använd CV-byggaren för strukturerad guide",
+          "relevant": "CV behövs för jobbansökningar",
+          "timeBound": "Inom 2 veckor"
+        },
+        "interestGuide": {
+          "title": "Genomför intresseguide",
+          "specific": "Slutför intressetestet för karriärvägledning",
+          "measurable": "Test genomfört och resultat sparat",
+          "achievable": "Tar ca 15 minuter",
+          "relevant": "Hjälper hitta rätt yrkesvägar",
+          "timeBound": "Inom 1 vecka"
+        },
+        "saveJobs": {
+          "title": "Spara intressanta jobb",
+          "specific": "Hitta och spara minst 5 relevanta jobbmatchningar",
+          "measurable": "5 jobb sparade i listan",
+          "achievable": "Använd jobbsökning med matchning",
+          "relevant": "Första steget mot ansökningar",
+          "timeBound": "Inom 1 vecka"
+        },
+        "writeDiary": {
+          "title": "Skriv dagboksreflektion",
+          "specific": "Reflektera över veckans jobbsökande i dagboken",
+          "measurable": "Minst 3 dagboksinlägg",
+          "achievable": "Tar 5-10 minuter per inlägg",
+          "relevant": "Hjälper spåra framsteg och mående",
+          "timeBound": "Inom 1 vecka"
+        }
+      }
+    }
+  },
+  "layout": {
+    "pageTabs": {
+      "selectPage": "Välj sida"
+    },
+    "bottomBar": {
+      "cvScore": "CV-poäng",
+      "applications": "Ansökningar",
+      "dailyGoals": "Dagens mål",
+      "nextSteps": "Nästa steg",
+      "suggestionsToProgress": "Förslag för att komma vidare",
+      "steps": {
+        "createCV": "Skapa ditt CV",
+        "createCVDesc": "Kom igång med ditt CV",
+        "improveCVScore": "Förbättra CV-poäng",
+        "improveCVScoreDesc": "Du har {{score}}/100 - höj det!",
+        "exploreInterest": "Utforska intresseguide",
+        "exploreInterestDesc": "Hitta din riktning",
+        "searchJobs": "Sök lediga jobb",
+        "searchJobsDesc": "Se vad som finns",
+        "generateCoverLetter": "Generera personligt brev",
+        "generateCoverLetterDesc": "Matcha ditt CV",
+        "optimizeLinkedIn": "Optimera LinkedIn",
+        "optimizeLinkedInDesc": "Synas för rekryterare",
+        "saveAsPDF": "Spara som PDF",
+        "saveAsPDFDesc": "Ladda ner CV:t",
+        "savedJobs": "Sparade jobb",
+        "savedJobsDesc": "Se dina sparade",
+        "writeApplication": "Skriv ansökan",
+        "writeApplicationDesc": "Börja ansöka",
+        "prepareInterview": "Förbered intervju",
+        "prepareInterviewDesc": "Öva inför intervjun",
+        "interestGuide": "Intresseguiden",
+        "interestGuideDesc": "Hitta din väg",
+        "careerPlanning": "Karriärplanering",
+        "careerPlanningDesc": "Planera din framtid",
+        "cvBuilder": "CV-byggare",
+        "cvBuilderDesc": "Bygg ditt CV",
+        "searchInterestJobs": "Sök jobb inom intresse",
+        "searchInterestJobsDesc": "Hitta matchande jobb",
+        "readRelatedArticles": "Läs relaterade artiklar",
+        "readRelatedArticlesDesc": "Fördjupa dig",
+        "createCVForArea": "Skapa CV för området",
+        "createCVForAreaDesc": "Anpassa ditt CV",
+        "sendMoreApplications": "Skicka fler ansökningar",
+        "sendMoreApplicationsDesc": "Öka dina chanser",
+        "practiceForCall": "Öva inför samtal",
+        "viewStatistics": "Se statistik",
+        "yourProgress": "Din utveckling",
+        "searchJobsToApply": "Sök jobb att ansöka till",
+        "findNextJob": "Hitta nästa jobb",
+        "readyForInterview": "Redo för intervjun?",
+        "updateCV": "Uppdatera CV",
+        "matchLetter": "Matcha brevet",
+        "searchMoreJobs": "Sök fler jobb",
+        "moreInterviews": "Fler intervjuer",
+        "practiceCV": "Öva på CV-frågor",
+        "prepareAnswers": "Förbered svar",
+        "readKnowledgeTips": "Läs tips i kunskapsbanken",
+        "moreHelp": "Mer hjälp",
+        "takeBreak": "Ta en paus",
+        "wellnessExercises": "Välmåendeövningar",
+        "jobSearchTips": "Jobbsökningstips",
+        "getInspiration": "Få inspiration",
+        "continueCV": "Fortsätt med CV",
+        "smallSteps": "Små steg framåt",
+        "keepUpdated": "Håll det aktuellt",
+        "viewYourStats": "Se din statistik",
+        "settings": "Inställningar",
+        "customizePortal": "Anpassa portalen",
+        "backToOverview": "Tillbaka till översikt",
+        "yourDashboard": "Din dashboard",
+        "findJobs": "Hitta lediga jobb"
+      }
+    },
+    "mobileNav": {
+      "openMenu": "Öppna meny",
+      "openProfile": "Öppna profil",
+      "navigationMenu": "Navigeringsmeny",
+      "menu": "Meny",
+      "closeMenu": "Stäng meny"
+    },
+    "pageHeader": {
+      "myInsights": "Mina insikter",
+      "insights": "Insikter"
     }
   }
 }
