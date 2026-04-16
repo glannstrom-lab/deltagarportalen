@@ -9,7 +9,7 @@ import { Sparkles, Rocket, BookOpen, Route, Wrench, AlertCircle } from '@/compon
 import { Card, LoadingState } from '@/components/ui'
 import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
 import { useAuthStore } from '@/stores/authStore'
-import { PageLayout, PageTabs } from '@/components/layout/index'
+import { PageLayout } from '@/components/layout/index'
 
 // Lazy load tab components for better performance
 const ForYouTab = lazy(() => import('@/components/knowledge-base/tabs/ForYouTab'))
@@ -176,21 +176,10 @@ export default function KnowledgeBase() {
   return (
     <PageLayout
       title={t('knowledgeBase.title')}
-      description={t('knowledgeBase.description')}
-      showTabs={false}
+      description={t('knowledgeBase.intro')}
+      tabs={tabs}
+      tabVariant="glass"
     >
-      {/* Header */}
-      <div className="mb-6 sm:mb-8">
-        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-2xl">
-          {t('knowledgeBase.intro')}
-        </p>
-      </div>
-      
-      {/* Tab navigation - using consistent PageTabs component */}
-      <div className="mb-6 sm:mb-8">
-        <PageTabs tabs={tabs} variant="glass" />
-      </div>
-
       {/* Tab content */}
       <div className="min-h-[300px] sm:min-h-[400px]">
         {renderContent()}
