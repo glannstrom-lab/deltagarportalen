@@ -86,21 +86,10 @@ export default function Help() {
   return (
     <PageLayout
       title={t('help.title')}
-      description={t('helpPage.description')}
+      description={t('helpPage.intro')}
       showTabs={false}
     >
     <div className="max-w-4xl mx-auto">
-      {/* Header */}
-      <div className="text-center mb-10">
-        <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <HelpCircle className="w-8 h-8 text-teal-600 dark:text-teal-400" />
-        </div>
-        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">{t('help.title')}</h1>
-        <p className="text-gray-600 dark:text-gray-300 max-w-lg mx-auto">
-          {t('helpPage.intro')}
-        </p>
-      </div>
-
       {/* Quick Links */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
         {quickLinkDefs.map((item) => {
