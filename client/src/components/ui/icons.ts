@@ -250,6 +250,7 @@ export {
   Walk,
   Wallet,
   Wand2,
+  WifiOff,
   Wind,
   Wrench,
   X,
