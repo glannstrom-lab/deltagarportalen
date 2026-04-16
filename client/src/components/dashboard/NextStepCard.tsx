@@ -66,20 +66,51 @@ export function NextStepCard({ data }: NextStepCardProps) {
   if (!data) return null
 
   // Bestäm nästa steg baserat på användarens progress
+  // NEW ORDER: Quick wins first (Interest + Job = 7 min), then CV and Cover Letter
   const getNextStep = () => {
+    // 1. Interest Guide first - quick win, helps discover matching jobs
+    if (!data.interest?.hasResult) {
+      return {
+        title: 'Upptäck dina intressen',
+        description: 'Ta reda på vilka yrken som passar dig bäst',
+        action: 'Starta',
+        link: '/interest-guide',
+        icon: <Compass size={24} />,
+        time: '5 min',
+        color: colorSchemes.teal,
+        priority: 'high'
+      }
+    }
+
+    // 2. Save a job - quick win, immediate engagement
+    if (data.jobs?.savedCount === 0) {
+      return {
+        title: 'Spara ditt första jobb',
+        description: 'Hitta ett jobb som matchar dina intressen',
+        action: 'Hitta jobb',
+        link: '/job-search',
+        icon: <Briefcase size={24} />,
+        time: '2 min',
+        color: colorSchemes.blue,
+        priority: 'high'
+      }
+    }
+
+    // 3. Create CV - deeper engagement, but not blocking
     if (!data.cv?.hasCV) {
       return {
         title: 'Skapa ditt CV',
-        description: 'Börja med grundinformation för att komma igång',
+        description: 'Bygg ett professionellt CV för dina ansökningar',
         action: 'Starta nu',
         link: '/cv',
         icon: <FileText size={24} />,
         time: '15 min',
         color: colorSchemes.violet,
-        priority: 'high'
+        priority: 'medium'
       }
     }
-    
+
+    // 4. Complete CV if started but not finished
     if (data.cv?.progress < 100) {
       return {
         title: 'Färdigställ ditt CV',
@@ -92,33 +123,8 @@ export function NextStepCard({ data }: NextStepCardProps) {
         priority: 'medium'
       }
     }
-    
-    if (!data.interest?.hasResult) {
-      return {
-        title: 'Gör intresseguiden',
-        description: 'Upptäck yrken som passar dina intressen',
-        action: 'Starta',
-        link: '/interest-guide',
-        icon: <Compass size={24} />,
-        time: '5 min',
-        color: colorSchemes.teal,
-        priority: 'medium'
-      }
-    }
-    
-    if (data.jobs?.savedCount === 0) {
-      return {
-        title: 'Spara ett jobb',
-        description: 'Hitta och spara ditt första jobb att söka',
-        action: 'Hitta jobb',
-        link: '/job-search',
-        icon: <Briefcase size={24} />,
-        time: '2 min',
-        color: colorSchemes.blue,
-        priority: 'medium'
-      }
-    }
-    
+
+    // 5. Create cover letter - requires CV
     if (data.coverLetters?.count === 0) {
       return {
         title: 'Skapa personligt brev',
@@ -128,10 +134,11 @@ export function NextStepCard({ data }: NextStepCardProps) {
         icon: <Mail size={24} />,
         time: '10 min',
         color: colorSchemes.rose,
-        priority: 'low'
+        priority: 'medium'
       }
     }
-    
+
+    // 6. All basics done - encourage applying!
     return {
       title: 'Skicka en ansökan',
       description: `Du har ${data.jobs?.savedCount} sparade jobb att söka!`,
@@ -170,25 +177,25 @@ export function NextStepCard({ data }: NextStepCardProps) {
             <div className="text-left">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles size={14} className="text-amber-500" />
-                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-700 dark:text-stone-300 uppercase tracking-wider">
                   Rekommenderat nästa steg
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900">{step.title}</h3>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-stone-100">{step.title}</h3>
             </div>
           </div>
           
           <div className="flex items-center gap-4">
-            <span className="hidden sm:flex items-center gap-1.5 text-sm text-slate-700 font-medium">
+            <span className="hidden sm:flex items-center gap-1.5 text-sm text-slate-700 dark:text-stone-300 font-medium">
               <Clock size={14} />
               {step.time}
             </span>
             <div className={cn(
               "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm",
-              "bg-white group-hover:shadow-md transition-all duration-200",
+              "bg-white dark:bg-stone-800 group-hover:shadow-md transition-all duration-200",
               "group-hover:scale-105"
             )}>
-              <ChevronDown size={18} className="text-slate-600" />
+              <ChevronDown size={18} className="text-slate-600 dark:text-stone-400" />
             </div>
           </div>
         </button>
