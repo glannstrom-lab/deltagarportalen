@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { CheckSquare, Square, Plus, Trash2, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import type { CalendarTask, TaskStatus } from '@/services/calendarData'
 
@@ -9,6 +10,7 @@ interface TaskManagerProps {
 }
 
 export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps) {
+  const { t } = useTranslation()
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [isExpanded, setIsExpanded] = useState(true)
 
@@ -63,7 +65,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
       >
         <div className="flex items-center gap-3">
           <CheckSquare className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100">Att göra</h3>
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('calendar.tasks.toDo')}</h3>
           <span className="text-sm text-stone-700 dark:text-stone-300">
             ({completedCount}/{tasks.length})
           </span>
@@ -89,7 +91,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
               value={newTaskTitle}
               onChange={(e) => setNewTaskTitle(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addTask()}
-              placeholder="Lägg till ny uppgift..."
+              placeholder={t('calendar.tasks.addPlaceholder')}
               className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
             <button
@@ -158,7 +160,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
 
           {tasks.length === 0 && (
             <p className="text-center text-stone-600 dark:text-stone-400 text-sm py-4">
-              Inga uppgifter ännu. Lägg till en för att komma igång!
+              {t('calendar.tasks.empty')}
             </p>
           )}
         </div>

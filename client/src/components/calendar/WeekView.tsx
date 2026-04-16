@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { getWeekDates, type CalendarEvent, eventTypeConfig } from '@/services/calendarData'
 import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell } from '@/components/ui/icons'
 
@@ -21,8 +23,17 @@ const icons: Record<string, typeof Briefcase> = {
 const hours = Array.from({ length: 14 }, (_, i) => i + 7) // 07:00 - 20:00
 
 export function WeekView({ currentDate, events, onEventClick, onDateClick }: WeekViewProps) {
+  const { t } = useTranslation()
   const weekDates = getWeekDates(currentDate)
-  const days = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
+  const days = useMemo(() => [
+    t('calendar.days.mon'),
+    t('calendar.days.tue'),
+    t('calendar.days.wed'),
+    t('calendar.days.thu'),
+    t('calendar.days.fri'),
+    t('calendar.days.sat'),
+    t('calendar.days.sun')
+  ], [t])
 
   const getEventsForDateAndHour = (date: Date, hour: number) => {
     const dateStr = date.toISOString().split('T')[0]

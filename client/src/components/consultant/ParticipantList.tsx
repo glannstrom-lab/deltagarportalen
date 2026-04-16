@@ -4,12 +4,13 @@
  */
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import { 
-  User, 
-  Mail, 
-  FileText, 
-  Briefcase, 
+import {
+  User,
+  Mail,
+  FileText,
+  Briefcase,
   MessageSquare,
   Calendar,
   MoreVertical,
@@ -47,17 +48,19 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
   view,
   onRefresh,
 }) => {
+  const { t } = useTranslation();
+
   const getInitials = (p: Participant) => {
     return `${p.first_name?.[0] || ''}${p.last_name?.[0] || ''}`.toUpperCase() || p.email[0].toUpperCase();
   };
 
   const getLastContactText = (date: string | null) => {
-    if (!date) return 'Aldrig kontaktad';
+    if (!date) return t('consultant.participants.neverContacted');
     const days = Math.floor((Date.now() - new Date(date).getTime()) / (1000 * 60 * 60 * 24));
-    if (days === 0) return 'Idag';
-    if (days === 1) return 'Igår';
-    if (days < 7) return `${days} dagar sedan`;
-    return `${Math.floor(days / 7)} veckor sedan`;
+    if (days === 0) return t('consultant.participants.today');
+    if (days === 1) return t('consultant.participants.yesterday');
+    if (days < 7) return t('consultant.participants.daysAgo', { count: days });
+    return t('consultant.participants.weeksAgo', { count: Math.floor(days / 7) });
   };
 
   const getPriorityColor = (priority: number) => {
@@ -72,15 +75,15 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
     return (
       <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-12 text-center">
         <User className="w-16 h-16 text-gray-300 dark:text-stone-600 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 dark:text-stone-100 mb-2">Inga deltagare ännu</h3>
+        <h3 className="text-lg font-medium text-gray-900 dark:text-stone-100 mb-2">{t('consultant.participants.noParticipants')}</h3>
         <p className="text-gray-500 dark:text-stone-400 mb-6">
-          Du har inte tilldelat några deltagare ännu.
+          {t('consultant.participants.noParticipantsDesc')}
         </p>
         <button
           onClick={onRefresh}
           className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
         >
-          Bjud in deltagare
+          {t('consultant.dashboard.inviteParticipant')}
         </button>
       </div>
     );
@@ -109,7 +112,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
               <div className="flex items-center gap-2">
                 {p.priority > 0 && (
                   <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getPriorityColor(p.priority)}`}>
-                    {p.priority === 2 ? 'Kritisk' : 'Hög'}
+                    {p.priority === 2 ? t('consultant.participants.priority.critical') : t('consultant.participants.priority.high')}
                   </span>
                 )}
                 <button className="p-1 hover:bg-gray-100 dark:hover:bg-stone-800 rounded">
@@ -123,19 +126,19 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
               <div className="text-center p-3 bg-gray-50 dark:bg-stone-800 rounded-lg">
                 <FileText className="w-5 h-5 text-gray-400 dark:text-stone-500 mx-auto mb-1" />
                 <p className="text-sm font-medium text-gray-900 dark:text-stone-100">
-                  {p.has_cv ? (p.ats_score ? `${p.ats_score}%` : 'Finns') : 'Saknas'}
+                  {p.has_cv ? (p.ats_score ? `${p.ats_score}%` : t('consultant.participants.exists')) : t('consultant.participants.missing')}
                 </p>
-                <p className="text-xs text-gray-500 dark:text-stone-400">CV</p>
+                <p className="text-xs text-gray-500 dark:text-stone-400">{t('nav.cv')}</p>
               </div>
               <div className="text-center p-3 bg-gray-50 dark:bg-stone-800 rounded-lg">
                 <Briefcase className="w-5 h-5 text-gray-400 dark:text-stone-500 mx-auto mb-1" />
                 <p className="text-sm font-medium text-gray-900 dark:text-stone-100">{p.saved_jobs_count}</p>
-                <p className="text-xs text-gray-500 dark:text-stone-400">Jobb</p>
+                <p className="text-xs text-gray-500 dark:text-stone-400">{t('consultant.participants.jobs')}</p>
               </div>
               <div className="text-center p-3 bg-gray-50 dark:bg-stone-800 rounded-lg">
                 <MessageSquare className="w-5 h-5 text-gray-400 dark:text-stone-500 mx-auto mb-1" />
                 <p className="text-sm font-medium text-gray-900 dark:text-stone-100">{p.notes_count}</p>
-                <p className="text-xs text-gray-500 dark:text-stone-400">Anteckningar</p>
+                <p className="text-xs text-gray-500 dark:text-stone-400">{t('consultant.participants.notes')}</p>
               </div>
             </div>
 
@@ -153,7 +156,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
                 to="/profile"
                 className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
-                Visa profil →
+                {t('consultant.participants.viewProfile')} →
               </Link>
             </div>
           </div>
@@ -168,12 +171,12 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
       <table className="min-w-full divide-y divide-gray-200 dark:divide-stone-700">
         <thead className="bg-gray-50 dark:bg-stone-800">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Namn</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Status</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">CV</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Sparade jobb</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Senast kontakt</th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Åtgärder</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">{t('consultant.participants.table.name')}</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">{t('consultant.participants.table.status')}</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">{t('nav.cv')}</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">{t('consultant.participants.table.savedJobs')}</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">{t('consultant.participants.table.lastContact')}</th>
+            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">{t('consultant.participants.table.actions')}</th>
           </tr>
         </thead>
         <tbody className="bg-white dark:bg-stone-900 divide-y divide-gray-200 dark:divide-stone-700">
@@ -195,7 +198,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
               <td className="px-6 py-4">
                 {p.priority > 0 && (
                   <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getPriorityColor(p.priority)}`}>
-                    {p.priority === 2 ? 'Kritisk' : 'Hög'}
+                    {p.priority === 2 ? t('consultant.participants.priority.critical') : t('consultant.participants.priority.high')}
                   </span>
                 )}
               </td>
@@ -219,7 +222,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
                   to="/profile"
                   className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium"
                 >
-                  Visa →
+                  {t('common.view')} →
                 </Link>
               </td>
             </tr>

@@ -53,7 +53,8 @@
     "locationNotSpecified": "Location not specified",
     "new": "New!",
     "unknown": "unknown",
-    "preview": "Preview"
+    "preview": "Preview",
+    "skip": "Skip"
   },
   "pageTabs": {
     "cv": {
@@ -5010,6 +5011,7 @@
       "findJobs": "Find jobs",
       "coverLetter": "Cover letter",
       "analyzeJob": "Analyze job posting",
+      "actionPlan": "Create action plan",
       "workAbility": "My work ability",
       "suggestAdaptations": "Suggest accommodations",
       "planWorkday": "Plan workday",
@@ -5036,6 +5038,30 @@
     "error": {
       "generic": "Something went wrong. Please try again.",
       "noResponse": "No response from AI service."
+    },
+    "copyMessage": "Copy",
+    "messageCopied": "Copied!",
+    "onboarding": {
+      "welcome": {
+        "title": "Welcome to My AI Team!",
+        "description": "Your personal support team with 5 AI specialists to help you in your job search."
+      },
+      "agents": {
+        "title": "Meet your agents",
+        "description": "Each agent specializes in their area and can help you with specific challenges."
+      },
+      "personality": {
+        "title": "Choose personality",
+        "description": "Customize how your agents communicate. From professional to fun grandma style!"
+      },
+      "quickstart": {
+        "title": "Get started quickly",
+        "description": "Here's how to best use AI Team:",
+        "step1": "Choose an agent that matches your question",
+        "step2": "Use quick actions or write freely",
+        "step3": "Try different personalities for variety"
+      },
+      "startChat": "Start chatting"
     }
   }
 }

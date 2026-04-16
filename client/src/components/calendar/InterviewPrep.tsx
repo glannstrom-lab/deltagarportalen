@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Brain, CheckCircle, Lightbulb, Shirt, FileText, HelpCircle, ExternalLink, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import type { CalendarEvent, InterviewPrep } from '@/services/calendarData'
 import { interviewQuestions, dressCodeGuide } from '@/services/calendarData'
@@ -10,18 +11,19 @@ interface InterviewPrepProps {
 }
 
 export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepProps) {
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(true)
 
   const generateAIQuestions = () => {
-    // Simulerad AI-generering
-    const company = event.with?.split(',')[0] || 'Företaget'
+    // AI-simulated question generation
+    const company = event.with?.split(',')[0] || t('calendar.interviewPrep.theCompany')
     const questions = [
-      `Vad vet du om ${company}s affärsmodell?`,
-      `Hur skulle du bidra till ${company}s tillväxt?`,
-      `Vad lockar dig mest med att arbeta på ${company}?`,
-      `Beskriv hur du hanterar [relevant utmaning för rollen]`,
+      t('calendar.interviewPrep.questions.businessModel', { company }),
+      t('calendar.interviewPrep.questions.contribution', { company }),
+      t('calendar.interviewPrep.questions.attraction', { company }),
+      t('calendar.interviewPrep.questions.challenge'),
     ]
-    
+
     onPrepChange({
       ...prep,
       commonQuestions: [...(prep?.commonQuestions || []), ...questions],
@@ -29,7 +31,7 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
   }
 
   const getDressCode = () => {
-    // Gissa klädkod baserat på företagstyp eller default
+    // Guess dress code based on company type or default
     const desc = (event.description || '').toLowerCase()
     if (desc.includes('bank') || desc.includes('finans')) return dressCodeGuide.bank
     if (desc.includes('tech') || desc.includes('it')) return dressCodeGuide.tech
@@ -49,8 +51,8 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
             <Brain className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100">Förberedelseassistent</h3>
-            <p className="text-sm text-stone-700 dark:text-stone-300">AI-genererade tips och frågor</p>
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('calendar.interviewPrep.title')}</h3>
+            <p className="text-sm text-stone-700 dark:text-stone-300">{t('calendar.interviewPrep.subtitle')}</p>
           </div>
         </div>
         {expanded ? <ChevronUp size={20} className="text-stone-600 dark:text-stone-400" /> : <ChevronDown size={20} className="text-stone-600 dark:text-stone-400" />}
@@ -63,37 +65,37 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
             <div className="flex items-start gap-3">
               <Lightbulb className="w-5 h-5 text-amber-500 dark:text-amber-400 mt-0.5" />
               <div className="flex-1">
-                <h4 className="font-medium text-stone-900 dark:text-stone-100">Skräddarsydda frågor</h4>
+                <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('calendar.interviewPrep.tailoredQuestions')}</h4>
                 <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">
-                  Generera intervjufrågor baserade på företaget och rollen
+                  {t('calendar.interviewPrep.generateDescription')}
                 </p>
                 <button
                   onClick={generateAIQuestions}
                   className="mt-3 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors inline-flex items-center gap-2"
                 >
                   <Brain size={16} />
-                  Generera frågor
+                  {t('calendar.interviewPrep.generateQuestions')}
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Klädkod */}
+          {/* Dress code */}
           <div className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-indigo-100 dark:border-indigo-800">
             <div className="flex items-start gap-3">
               <Shirt className="w-5 h-5 text-teal-500 dark:text-teal-400 mt-0.5" />
               <div>
-                <h4 className="font-medium text-stone-900 dark:text-stone-100">Klädrekommendation</h4>
+                <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('calendar.interviewPrep.dressRecommendation')}</h4>
                 <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">{getDressCode()}</p>
               </div>
             </div>
           </div>
 
-          {/* Vanliga frågor */}
+          {/* Common questions */}
           <div className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-indigo-100 dark:border-indigo-800">
             <div className="flex items-center gap-2 mb-3">
               <HelpCircle className="w-5 h-5 text-blue-500 dark:text-blue-400" />
-              <h4 className="font-medium text-stone-900 dark:text-stone-100">Vanliga intervjufrågor</h4>
+              <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('calendar.interviewPrep.commonQuestions')}</h4>
             </div>
             <div className="space-y-2">
               {(prep?.commonQuestions || interviewQuestions.common.slice(0, 5)).map((q, i) => (
@@ -105,11 +107,11 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
             </div>
           </div>
 
-          {/* Frågor att ställa */}
+          {/* Questions to ask */}
           <div className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-indigo-100 dark:border-indigo-800">
             <div className="flex items-center gap-2 mb-3">
               <FileText className="w-5 h-5 text-green-500 dark:text-green-400" />
-              <h4 className="font-medium text-stone-900 dark:text-stone-100">Frågor att ställa till dem</h4>
+              <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('calendar.interviewPrep.questionsToAsk')}</h4>
             </div>
             <div className="space-y-2">
               {interviewQuestions.questionsToAsk.map((q, i) => (
@@ -130,7 +132,7 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
               className="flex items-center justify-center gap-2 p-3 bg-white dark:bg-stone-800 border border-indigo-100 dark:border-indigo-800 rounded-lg text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-colors text-sm font-medium"
             >
               <ExternalLink size={16} />
-              Sök efter information om företaget
+              {t('calendar.interviewPrep.searchCompany')}
             </a>
           )}
         </div>

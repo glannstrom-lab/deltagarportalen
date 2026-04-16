@@ -3,7 +3,8 @@
  * Använder server-side Vercel API med autentisering
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield } from '@/components/ui/icons'
 import { callAI } from '@/services/aiApi'
 
@@ -13,59 +14,65 @@ interface AIWritingAssistantProps {
   type: 'summary' | 'experience' | 'skills'
 }
 
-const powerWords = [
-  { weak: 'var ansvarig för', strong: 'ledde' },
-  { weak: 'hjälpte till med', strong: 'drev' },
-  { weak: 'gjorde', strong: 'utförde' },
-  { weak: 'arbetade med', strong: 'specialiserade mig på' },
-  { weak: 'fick', strong: 'uppnådde' },
-  { weak: 'bra på', strong: 'expert inom' },
-  { weak: 'assisterade', strong: 'stödjade' },
-  { weak: 'gick med på', strong: 'åtog mig' },
-  { weak: 'tittade på', strong: 'analyserade' },
-  { weak: 'fixade', strong: 'löste' },
-]
-
 type FeatureType = 'improve' | 'quantify' | 'translate' | 'generate'
 
-const features: Record<FeatureType, { label: string; icon: typeof Zap; color: string; description: string }> = {
-  improve: {
-    label: 'Förbättra',
-    icon: Zap,
-    color: 'text-amber-500',
-    description: 'Gör texten mer professionell och slagkraftig'
-  },
-  quantify: {
-    label: 'Kvantifiera',
-    icon: TrendingUp,
-    color: 'text-green-500',
-    description: 'Lägg till mätbara resultat och siffror'
-  },
-  translate: {
-    label: 'Översätt',
-    icon: Globe,
-    color: 'text-blue-500',
-    description: 'Översätt till engelska'
-  },
-  generate: {
-    label: 'Generera',
-    icon: Sparkles,
-    color: 'text-teal-500',
-    description: 'Skapa ny text baserat på din input'
-  }
+const featureIcons: Record<FeatureType, { icon: typeof Zap; color: string }> = {
+  improve: { icon: Zap, color: 'text-amber-500' },
+  quantify: { icon: TrendingUp, color: 'text-green-500' },
+  translate: { icon: Globe, color: 'text-blue-500' },
+  generate: { icon: Sparkles, color: 'text-teal-500' }
 }
 
 export function AIWritingAssistant({ content, onChange, type }: AIWritingAssistantProps) {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [suggestion, setSuggestion] = useState('')
   const [activeFeature, setActiveFeature] = useState<FeatureType | null>(null)
 
+  // Power words with translations
+  const powerWords = useMemo(() => [
+    { weak: t('cv.aiWriting.powerWords.wasResponsibleFor'), strong: t('cv.aiWriting.powerWords.led') },
+    { weak: t('cv.aiWriting.powerWords.helpedWith'), strong: t('cv.aiWriting.powerWords.drove') },
+    { weak: t('cv.aiWriting.powerWords.did'), strong: t('cv.aiWriting.powerWords.executed') },
+    { weak: t('cv.aiWriting.powerWords.workedWith'), strong: t('cv.aiWriting.powerWords.specialized') },
+    { weak: t('cv.aiWriting.powerWords.got'), strong: t('cv.aiWriting.powerWords.achieved') },
+    { weak: t('cv.aiWriting.powerWords.goodAt'), strong: t('cv.aiWriting.powerWords.expertIn') },
+    { weak: t('cv.aiWriting.powerWords.assisted'), strong: t('cv.aiWriting.powerWords.supported') },
+    { weak: t('cv.aiWriting.powerWords.agreedTo'), strong: t('cv.aiWriting.powerWords.tookOn') },
+    { weak: t('cv.aiWriting.powerWords.lookedAt'), strong: t('cv.aiWriting.powerWords.analyzed') },
+    { weak: t('cv.aiWriting.powerWords.fixed'), strong: t('cv.aiWriting.powerWords.solved') },
+  ], [t])
+
+  // Features with translations
+  const features = useMemo(() => ({
+    improve: {
+      label: t('cv.aiWriting.features.improve'),
+      description: t('cv.aiWriting.features.improveDesc'),
+      ...featureIcons.improve
+    },
+    quantify: {
+      label: t('cv.aiWriting.features.quantify'),
+      description: t('cv.aiWriting.features.quantifyDesc'),
+      ...featureIcons.quantify
+    },
+    translate: {
+      label: t('cv.aiWriting.features.translate'),
+      description: t('cv.aiWriting.features.translateDesc'),
+      ...featureIcons.translate
+    },
+    generate: {
+      label: t('cv.aiWriting.features.generate'),
+      description: t('cv.aiWriting.features.generateDesc'),
+      ...featureIcons.generate
+    }
+  }), [t])
+
   // SÄKER implementation - anropa autentiserat API
   const callSecureAI = async (feature: FeatureType) => {
     if (!content?.trim()) {
-      setError('Skriv något först innan du använder AI-förbättring.')
+      setError(t('cv.aiWriting.errors.writeFirst'))
       return
     }
 
@@ -81,13 +88,13 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
       })
 
       if (!data.success) {
-        throw new Error('AI kunde inte generera ett svar.')
+        throw new Error(t('cv.aiWriting.errors.aiCouldNotGenerate'))
       }
 
       setSuggestion((data as { result?: string }).result || '')
     } catch (err) {
       console.error('AI-fel:', err)
-      setError(err instanceof Error ? err.message : 'Kunde inte kontakta AI-tjänsten.')
+      setError(err instanceof Error ? err.message : t('cv.aiWriting.errors.couldNotContact'))
     } finally {
       setLoading(false)
     }
@@ -95,7 +102,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
 
   const analyzeText = () => {
     if (!content) return [];
-    const foundWeakWords = powerWords.filter(pw => 
+    const foundWeakWords = powerWords.filter(pw =>
       content.toLowerCase().includes(pw.weak?.toLowerCase())
     )
     return foundWeakWords
@@ -119,7 +126,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
       >
         <Shield size={16} />
         <Sparkles size={16} />
-        <span>AI-skrivhjälp</span>
+        <span>{t('cv.aiWriting.title')}</span>
       </button>
 
       {isOpen && (
@@ -128,7 +135,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
           <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
             <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
             <span className="text-sm text-emerald-700 dark:text-emerald-300">
-              Säker anslutning via server
+              {t('cv.aiWriting.secureConnection')}
             </span>
           </div>
 
@@ -163,7 +170,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
           {weakWords.length > 0 && (
             <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg">
               <p className="text-sm font-medium text-amber-800 dark:text-amber-200 mb-2">
-                Hittade svaga formuleringar:
+                {t('cv.aiWriting.foundWeakPhrases')}:
               </p>
               <div className="space-y-1">
                 {weakWords.slice(0, 3).map((word, index) => (
@@ -175,7 +182,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
                 ))}
                 {weakWords.length > 3 && (
                   <p className="text-xs text-amber-600 dark:text-amber-400">
-                    +{weakWords.length - 3} till...
+                    +{weakWords.length - 3} {t('cv.aiWriting.more')}...
                   </p>
                 )}
               </div>
@@ -184,7 +191,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
                 className="mt-2 flex items-center gap-1 px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700"
               >
                 <Wand2 size={14} />
-                Ersätt automatiskt
+                {t('cv.aiWriting.replaceAutomatically')}
               </button>
             </div>
           )}
@@ -193,8 +200,8 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
           {loading && (
             <div className="p-4 bg-white dark:bg-stone-800 rounded-lg border border-slate-200 dark:border-stone-700 text-center">
               <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-teal-600 dark:text-teal-400" />
-              <p className="text-sm text-slate-600 dark:text-stone-400">AI arbetar...</p>
-              <p className="text-xs text-slate-600 dark:text-stone-500 mt-1">Detta kan ta några sekunder</p>
+              <p className="text-sm text-slate-600 dark:text-stone-400">{t('cv.aiWriting.aiWorking')}</p>
+              <p className="text-xs text-slate-600 dark:text-stone-500 mt-1">{t('cv.aiWriting.mayTakeSeconds')}</p>
             </div>
           )}
 
@@ -215,7 +222,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
                   className="flex items-center gap-1 px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700"
                 >
                   <Check size={14} />
-                  Använd
+                  {t('cv.aiWriting.use')}
                 </button>
                 <button
                   onClick={() => {
@@ -224,7 +231,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
                   }}
                   className="flex items-center gap-1 px-3 py-1.5 border border-slate-300 dark:border-stone-600 text-slate-700 dark:text-stone-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-stone-700"
                 >
-                  Avbryt
+                  {t('common.cancel')}
                 </button>
               </div>
             </div>
@@ -233,7 +240,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
           {/* Empty state */}
           {!loading && !suggestion && !error && (
             <div className="text-center py-4 text-slate-700 dark:text-stone-400 text-sm">
-              Välj en funktion ovan för att få hjälp av AI
+              {t('cv.aiWriting.selectFeatureAbove')}
             </div>
           )}
         </div>

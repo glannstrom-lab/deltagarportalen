@@ -53,7 +53,8 @@
     "locationNotSpecified": "Ort ej angiven",
     "new": "Ny!",
     "unknown": "okänd",
-    "preview": "Förhandsgranska"
+    "preview": "Förhandsgranska",
+    "skip": "Hoppa över"
   },
   "pageTabs": {
     "cv": {
@@ -5209,6 +5210,7 @@
       "findJobs": "Hitta jobb",
       "coverLetter": "Personligt brev",
       "analyzeJob": "Analysera jobbannons",
+      "actionPlan": "Skapa handlingsplan",
       "workAbility": "Min arbetsförmåga",
       "suggestAdaptations": "Föreslå anpassningar",
       "planWorkday": "Planera arbetsdag",
@@ -5235,6 +5237,30 @@
     "error": {
       "generic": "Något gick fel. Försök igen.",
       "noResponse": "Inget svar från AI-tjänsten."
+    },
+    "copyMessage": "Kopiera",
+    "messageCopied": "Kopierat!",
+    "onboarding": {
+      "welcome": {
+        "title": "Välkommen till Mitt AI Team!",
+        "description": "Ditt personliga supportteam med 5 AI-specialister som hjälper dig i jobbsökningen."
+      },
+      "agents": {
+        "title": "Möt dina agenter",
+        "description": "Varje agent är specialist inom sitt område och kan hjälpa dig med specifika utmaningar."
+      },
+      "personality": {
+        "title": "Välj personlighet",
+        "description": "Anpassa hur dina agenter kommunicerar. Från professionell till rolig mormor-stil!"
+      },
+      "quickstart": {
+        "title": "Kom igång snabbt",
+        "description": "Så här använder du AI Team på bästa sätt:",
+        "step1": "Välj en agent som matchar din fråga",
+        "step2": "Använd snabbfunktioner eller skriv fritt",
+        "step3": "Prova olika personligheter för variation"
+      },
+      "startChat": "Börja chatta"
     }
   }
 }

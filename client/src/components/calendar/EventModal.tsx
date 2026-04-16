@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback, useId } from 'react'
+import { useState, useEffect, useCallback, useId, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X, MapPin, Video, Phone, Link2 } from '@/components/ui/icons'
 import type { CalendarEvent } from '@/services/calendarData'
 import { TaskManager } from './TaskManager'
@@ -15,22 +16,28 @@ interface EventModalProps {
   linkedJobTitle?: string
 }
 
-const eventTypes = [
-  { value: 'interview', label: 'Intervju', color: 'bg-amber-100 text-amber-700' },
-  { value: 'meeting', label: 'Möte', color: 'bg-blue-100 text-blue-700' },
-  { value: 'deadline', label: 'Deadline', color: 'bg-red-100 text-red-700' },
-  { value: 'reminder', label: 'Påminnelse', color: 'bg-stone-100 text-stone-700' },
-  { value: 'task', label: 'Uppgift', color: 'bg-purple-100 text-purple-700' },
-  { value: 'followup', label: 'Uppföljning', color: 'bg-green-100 text-green-700' },
-  { value: 'preparation', label: 'Förberedelse', color: 'bg-teal-100 text-teal-700' },
+const eventTypeConfigs = [
+  { value: 'interview', labelKey: 'calendar.eventTypes.interview', color: 'bg-amber-100 text-amber-700' },
+  { value: 'meeting', labelKey: 'calendar.eventTypes.meeting', color: 'bg-blue-100 text-blue-700' },
+  { value: 'deadline', labelKey: 'calendar.eventTypes.deadline', color: 'bg-red-100 text-red-700' },
+  { value: 'reminder', labelKey: 'calendar.eventTypes.reminder', color: 'bg-stone-100 text-stone-700' },
+  { value: 'task', labelKey: 'calendar.eventTypes.task', color: 'bg-purple-100 text-purple-700' },
+  { value: 'followup', labelKey: 'calendar.eventTypes.followup', color: 'bg-green-100 text-green-700' },
+  { value: 'preparation', labelKey: 'calendar.eventTypes.preparation', color: 'bg-teal-100 text-teal-700' },
 ]
 
 export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJobTitle }: EventModalProps) {
+  const { t } = useTranslation()
   const [formData, setFormData] = useState<Partial<CalendarEvent>>({})
   const [activeTab, setActiveTab] = useState<'details' | 'tasks' | 'prep' | 'travel'>('details')
   const titleId = useId()
 
-  // Stäng modal med Escape-tangent
+  const eventTypes = useMemo(() => eventTypeConfigs.map(type => ({
+    ...type,
+    label: t(type.labelKey)
+  })), [t])
+
+  // Close modal with Escape key
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') onClose()
   }, [onClose])
@@ -81,13 +88,13 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
   }
 
   const tabs = [
-    { id: 'details', label: 'Detaljer' },
-    { id: 'tasks', label: 'Uppgifter', count: formData.tasks?.length },
+    { id: 'details', label: t('calendar.modal.tabs.details') },
+    { id: 'tasks', label: t('calendar.modal.tabs.tasks'), count: formData.tasks?.length },
     ...(formData.type === 'interview' ? [
-      { id: 'prep', label: 'Förberedelse' },
+      { id: 'prep', label: t('calendar.modal.tabs.preparation') },
     ] : []),
     ...(formData.location ? [
-      { id: 'travel', label: 'Resa' },
+      { id: 'travel', label: t('calendar.modal.tabs.travel') },
     ] : []),
   ]
 
@@ -103,12 +110,12 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <h2 id={titleId} className="text-xl font-semibold text-stone-900 dark:text-stone-100">
-            {event ? 'Redigera händelse' : 'Ny händelse'}
+            {event ? t('calendar.modal.editEvent') : t('calendar.modal.newEvent')}
           </h2>
           <button
             onClick={onClose}
             className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
-            aria-label="Stäng dialog"
+            aria-label={t('common.close')}
           >
             <X size={20} className="text-stone-700 dark:text-stone-300" aria-hidden="true" />
           </button>
@@ -142,19 +149,19 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
             <>
               {/* Title */}
               <div>
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Titel</label>
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.title')}</label>
                 <input
                   type="text"
                   value={formData.title || ''}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  placeholder="T.ex. Jobbintervju på Spotify"
+                  placeholder={t('calendar.modal.titlePlaceholder')}
                   className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               {/* Type */}
               <div>
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Typ</label>
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.type')}</label>
                 <div className="grid grid-cols-3 gap-2 mt-1">
                   {eventTypes.map((type) => (
                     <button
@@ -175,7 +182,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               {/* Date & Time */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Datum</label>
+                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.date')}</label>
                   <input
                     type="date"
                     value={formData.date || ''}
@@ -184,7 +191,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Tid</label>
+                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.time')}</label>
                   <input
                     type="time"
                     value={formData.time || ''}
@@ -198,13 +205,13 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               <div>
                 <label className="text-sm font-medium text-stone-700 dark:text-stone-300 flex items-center gap-1">
                   <MapPin size={14} />
-                  Plats (valfritt)
+                  {t('calendar.modal.locationOptional')}
                 </label>
                 <input
                   type="text"
                   value={formData.location || ''}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  placeholder="Adress eller plats"
+                  placeholder={t('calendar.modal.locationPlaceholder')}
                   className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
@@ -219,7 +226,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                     className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
                   />
                   <span className="text-sm text-stone-700 dark:text-stone-300 flex items-center gap-1">
-                    <Video size={14} /> Videosamtal
+                    <Video size={14} /> {t('calendar.videoCall')}
                   </span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -230,30 +237,30 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                     className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
                   />
                   <span className="text-sm text-stone-700 dark:text-stone-300 flex items-center gap-1">
-                    <Phone size={14} /> Telefon
+                    <Phone size={14} /> {t('calendar.phone')}
                   </span>
                 </label>
               </div>
 
               {/* With */}
               <div>
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Med (valfritt)</label>
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.withOptional')}</label>
                 <input
                   type="text"
                   value={formData.with || ''}
                   onChange={(e) => setFormData({ ...formData, with: e.target.value })}
-                  placeholder="T.ex. Anna Svensson, rekryterare"
+                  placeholder={t('calendar.modal.withPlaceholder')}
                   className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Beskrivning</label>
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.description')}</label>
                 <textarea
                   value={formData.description || ''}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  placeholder="Anteckningar om händelsen..."
+                  placeholder={t('calendar.modal.descriptionPlaceholder')}
                   rows={3}
                   className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
                 />
@@ -264,7 +271,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                 <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
                   <p className="text-sm text-blue-700 dark:text-blue-300 flex items-center gap-2">
                     <Link2 size={14} />
-                    Länkat till: <strong>{linkedJobTitle}</strong>
+                    {t('calendar.modal.linkedTo')}: <strong>{linkedJobTitle}</strong>
                   </p>
                 </div>
               )}
@@ -306,17 +313,17 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               }}
               className="text-red-600 hover:text-red-700 text-sm font-medium"
             >
-              Ta bort
+              {t('common.delete')}
             </button>
           ) : (
             <div />
           )}
           <div className="flex gap-2">
             <Button variant="ghost" onClick={onClose}>
-              Avbryt
+              {t('common.cancel')}
             </Button>
             <Button onClick={handleSave}>
-              {event ? 'Spara ändringar' : 'Skapa händelse'}
+              {event ? t('common.saveChanges') : t('calendar.modal.createEvent')}
             </Button>
           </div>
         </div>

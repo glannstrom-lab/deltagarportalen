@@ -4,6 +4,7 @@
  */
 
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { 
   Target, 
@@ -66,62 +67,18 @@ interface ActionPlanProps {
   className?: string
 }
 
-const priorityConfig: Record<GoalPriority, { label: string; color: string; bg: string }> = {
-  HIGH: { label: 'Hög', color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-100 dark:bg-rose-900/30' },
-  MEDIUM: { label: 'Medium', color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/30' },
-  LOW: { label: 'Låg', color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30' },
+const priorityStyles: Record<GoalPriority, { color: string; bg: string }> = {
+  HIGH: { color: 'text-rose-600 dark:text-rose-400', bg: 'bg-rose-100 dark:bg-rose-900/30' },
+  MEDIUM: { color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/30' },
+  LOW: { color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30' },
 }
 
-const statusConfig: Record<GoalStatus, { label: string; color: string; icon: typeof CheckCircle2 }> = {
-  NOT_STARTED: { label: 'Inte påbörjad', color: 'text-slate-700 dark:text-stone-300', icon: Clock },
-  IN_PROGRESS: { label: 'Pågående', color: 'text-blue-500 dark:text-blue-400', icon: TrendingUp },
-  COMPLETED: { label: 'Avklarad', color: 'text-emerald-500 dark:text-emerald-400', icon: CheckCircle2 },
-  BLOCKED: { label: 'Blockerad', color: 'text-rose-500 dark:text-rose-400', icon: AlertCircle },
+const statusStyles: Record<GoalStatus, { color: string; icon: typeof CheckCircle2 }> = {
+  NOT_STARTED: { color: 'text-slate-700 dark:text-stone-300', icon: Clock },
+  IN_PROGRESS: { color: 'text-blue-500 dark:text-blue-400', icon: TrendingUp },
+  COMPLETED: { color: 'text-emerald-500 dark:text-emerald-400', icon: CheckCircle2 },
+  BLOCKED: { color: 'text-rose-500 dark:text-rose-400', icon: AlertCircle },
 }
-
-// Mallar för SMARTA-mål
-const goalTemplates = [
-  {
-    title: 'Skapa komplett CV',
-    specific: 'Färdigställa CV med alla obligatoriska sektioner',
-    measurable: 'CV:t ska innehålla personuppgifter, erfarenhet, utbildning och kompetenser',
-    achievable: 'Genom att fylla i en sektion per dag',
-    relevant: 'Ett komplett CV krävs för att kunna söka jobb effektivt',
-    timeBound: 'Inom 2 veckor',
-    priority: 'HIGH' as GoalPriority,
-    relatedTo: { type: 'CV' as const, description: 'CV-byggaren' }
-  },
-  {
-    title: 'Slutför intresseguiden',
-    specific: 'Besvara alla frågor i intresseguiden',
-    measurable: 'Samtliga 24 frågor besvarade',
-    achievable: 'Genom att göra 5 frågor per session',
-    relevant: 'För att förstå vilka yrken som passar bäst',
-    timeBound: 'Inom 1 vecka',
-    priority: 'HIGH' as GoalPriority,
-    relatedTo: { type: 'INTEREST_GUIDE' as const, description: 'Intresseguide' }
-  },
-  {
-    title: 'Spara intressanta jobb',
-    specific: 'Hitta och spara jobb som matchar profilen',
-    measurable: 'Minst 5 sparade jobb',
-    achievable: 'Genom att söka 15 minuter per dag',
-    relevant: 'För att ha alternativ redo när det är dags att söka',
-    timeBound: 'Inom 2 veckor',
-    priority: 'MEDIUM' as GoalPriority,
-    relatedTo: { type: 'JOB_SEARCH' as const, description: 'Jobbsökning' }
-  },
-  {
-    title: 'Skriv dagbok regelbundet',
-    specific: 'Reflektera över jobbsökarprocessen',
-    measurable: 'Minst 3 inlägg per vecka',
-    achievable: 'Genom att skriva 10 minuter efter varje aktivitet',
-    relevant: 'För att följa utveckling och mående över tid',
-    timeBound: 'Pågående varje vecka',
-    priority: 'MEDIUM' as GoalPriority,
-    relatedTo: { type: 'OTHER' as const, description: 'Dagbok' }
-  }
-]
 
 export function ActionPlan({
   participantId,
@@ -132,10 +89,68 @@ export function ActionPlan({
   onDeleteGoal,
   className,
 }: ActionPlanProps) {
+  const { t, i18n } = useTranslation()
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [showTemplates, setShowTemplates] = useState(false)
+
+  // Dynamic config objects with translations
+  const priorityConfig = useMemo(() => ({
+    HIGH: { label: t('consultant.actionPlan.priority.high'), ...priorityStyles.HIGH },
+    MEDIUM: { label: t('consultant.actionPlan.priority.medium'), ...priorityStyles.MEDIUM },
+    LOW: { label: t('consultant.actionPlan.priority.low'), ...priorityStyles.LOW },
+  }), [t])
+
+  const statusConfig = useMemo(() => ({
+    NOT_STARTED: { label: t('consultant.actionPlan.status.notStarted'), ...statusStyles.NOT_STARTED },
+    IN_PROGRESS: { label: t('consultant.actionPlan.status.inProgress'), ...statusStyles.IN_PROGRESS },
+    COMPLETED: { label: t('consultant.actionPlan.status.completed'), ...statusStyles.COMPLETED },
+    BLOCKED: { label: t('consultant.actionPlan.status.blocked'), ...statusStyles.BLOCKED },
+  }), [t])
+
+  const goalTemplates = useMemo(() => [
+    {
+      title: t('consultant.actionPlan.templates.createCV.title'),
+      specific: t('consultant.actionPlan.templates.createCV.specific'),
+      measurable: t('consultant.actionPlan.templates.createCV.measurable'),
+      achievable: t('consultant.actionPlan.templates.createCV.achievable'),
+      relevant: t('consultant.actionPlan.templates.createCV.relevant'),
+      timeBound: t('consultant.actionPlan.templates.createCV.timeBound'),
+      priority: 'HIGH' as GoalPriority,
+      relatedTo: { type: 'CV' as const, description: t('consultant.actionPlan.relatedTo.cv') }
+    },
+    {
+      title: t('consultant.actionPlan.templates.interestGuide.title'),
+      specific: t('consultant.actionPlan.templates.interestGuide.specific'),
+      measurable: t('consultant.actionPlan.templates.interestGuide.measurable'),
+      achievable: t('consultant.actionPlan.templates.interestGuide.achievable'),
+      relevant: t('consultant.actionPlan.templates.interestGuide.relevant'),
+      timeBound: t('consultant.actionPlan.templates.interestGuide.timeBound'),
+      priority: 'HIGH' as GoalPriority,
+      relatedTo: { type: 'INTEREST_GUIDE' as const, description: t('consultant.actionPlan.relatedTo.interestGuide') }
+    },
+    {
+      title: t('consultant.actionPlan.templates.saveJobs.title'),
+      specific: t('consultant.actionPlan.templates.saveJobs.specific'),
+      measurable: t('consultant.actionPlan.templates.saveJobs.measurable'),
+      achievable: t('consultant.actionPlan.templates.saveJobs.achievable'),
+      relevant: t('consultant.actionPlan.templates.saveJobs.relevant'),
+      timeBound: t('consultant.actionPlan.templates.saveJobs.timeBound'),
+      priority: 'MEDIUM' as GoalPriority,
+      relatedTo: { type: 'JOB_SEARCH' as const, description: t('consultant.actionPlan.relatedTo.jobSearch') }
+    },
+    {
+      title: t('consultant.actionPlan.templates.writeDiary.title'),
+      specific: t('consultant.actionPlan.templates.writeDiary.specific'),
+      measurable: t('consultant.actionPlan.templates.writeDiary.measurable'),
+      achievable: t('consultant.actionPlan.templates.writeDiary.achievable'),
+      relevant: t('consultant.actionPlan.templates.writeDiary.relevant'),
+      timeBound: t('consultant.actionPlan.templates.writeDiary.timeBound'),
+      priority: 'MEDIUM' as GoalPriority,
+      relatedTo: { type: 'OTHER' as const, description: t('consultant.actionPlan.relatedTo.diary') }
+    }
+  ], [t])
 
   // Form state
   const [title, setTitle] = useState('')
@@ -254,13 +269,13 @@ export function ActionPlan({
 
   const getRelatedDescription = (type: string): string => {
     const descriptions: Record<string, string> = {
-      CV: 'CV-byggaren',
-      INTEREST_GUIDE: 'Intresseguide',
-      JOB_SEARCH: 'Jobbsökning',
-      EDUCATION: 'Utbildning',
-      OTHER: 'Övrigt'
+      CV: t('consultant.actionPlan.relatedTo.cv'),
+      INTEREST_GUIDE: t('consultant.actionPlan.relatedTo.interestGuide'),
+      JOB_SEARCH: t('consultant.actionPlan.relatedTo.jobSearch'),
+      EDUCATION: t('consultant.actionPlan.relatedTo.education'),
+      OTHER: t('consultant.actionPlan.relatedTo.other')
     }
-    return descriptions[type] || 'Övrigt'
+    return descriptions[type] || t('consultant.actionPlan.relatedTo.other')
   }
 
   // Statistik
@@ -294,8 +309,8 @@ export function ActionPlan({
               <Target className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-stone-100">Handlingsplan</h3>
-              <p className="text-sm text-slate-700 dark:text-stone-300">SMARTA-mål för {participantName}</p>
+              <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('consultant.actionPlan.title')}</h3>
+              <p className="text-sm text-slate-700 dark:text-stone-300">{t('consultant.actionPlan.subtitle', { name: participantName })}</p>
             </div>
           </div>
 
@@ -305,44 +320,44 @@ export function ActionPlan({
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
           >
             <Plus className="w-4 h-4" />
-            <span>Nytt mål</span>
+            <span>{t('consultant.actionPlan.newGoal')}</span>
           </button>
         </div>
 
-        {/* Statistik-kort */}
+        {/* Stats cards */}
         <div className="grid grid-cols-4 gap-3">
           <div className="bg-slate-50 dark:bg-stone-800 rounded-xl p-3 text-center">
             <p className="text-2xl font-bold text-slate-800 dark:text-stone-100">{stats.total}</p>
-            <p className="text-xs text-slate-700 dark:text-stone-300">Totalt</p>
+            <p className="text-xs text-slate-700 dark:text-stone-300">{t('consultant.actionPlan.stats.total')}</p>
           </div>
           <div className="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl p-3 text-center">
             <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{stats.completed}</p>
-            <p className="text-xs text-emerald-600 dark:text-emerald-400">Avklarade</p>
+            <p className="text-xs text-emerald-600 dark:text-emerald-400">{t('consultant.actionPlan.stats.completed')}</p>
           </div>
           <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-3 text-center">
             <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">{stats.inProgress}</p>
-            <p className="text-xs text-blue-600 dark:text-blue-400">Pågående</p>
+            <p className="text-xs text-blue-600 dark:text-blue-400">{t('consultant.actionPlan.stats.inProgress')}</p>
           </div>
           <div className="bg-rose-50 dark:bg-rose-900/30 rounded-xl p-3 text-center">
             <p className="text-2xl font-bold text-rose-600 dark:text-rose-400">{stats.highPriority}</p>
-            <p className="text-xs text-rose-600 dark:text-rose-400">Hög prio</p>
+            <p className="text-xs text-rose-600 dark:text-rose-400">{t('consultant.actionPlan.stats.highPriority')}</p>
           </div>
         </div>
       </div>
 
-      {/* Mallar */}
+      {/* Templates */}
       {showTemplates && (
         <div className="p-4 bg-slate-50 dark:bg-stone-800 border-b border-slate-100 dark:border-stone-700">
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-medium text-slate-700 dark:text-stone-200 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-amber-500 dark:text-amber-400" />
-              Välj en mall
+              {t('consultant.actionPlan.selectTemplate')}
             </h4>
             <button
               onClick={() => setShowTemplates(false)}
               className="text-sm text-slate-700 dark:text-stone-300 hover:text-slate-900 dark:hover:text-stone-100"
             >
-              Stäng
+              {t('common.close')}
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -370,7 +385,7 @@ export function ActionPlan({
         </div>
       )}
 
-      {/* Lägg till/Redigera formulär */}
+      {/* Add/Edit form */}
       {(isAdding || editingId) && (
         <div className="p-6 bg-slate-50 dark:bg-stone-800 border-b border-slate-100 dark:border-stone-700">
           {!showTemplates && isAdding && (
@@ -379,28 +394,28 @@ export function ActionPlan({
               className="mb-4 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 flex items-center gap-1"
             >
               <Sparkles className="w-4 h-4" />
-              Eller välj från mall
+              {t('consultant.actionPlan.orSelectTemplate')}
             </button>
           )}
 
           <div className="space-y-4">
-            {/* Titel och deadline */}
+            {/* Title and deadline */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-stone-200 mb-1">
-                  Mål (Specifikt)
+                  {t('consultant.actionPlan.form.goalSpecific')}
                 </label>
                 <input
                   type="text"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Vad ska uppnås?"
+                  placeholder={t('consultant.actionPlan.form.goalPlaceholder')}
                   className="w-full px-3 py-2 border border-slate-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-stone-900 text-slate-900 dark:text-stone-100"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-stone-200 mb-1">
-                  Deadline (Tidsbundet)
+                  {t('consultant.actionPlan.form.deadlineTimeBound')}
                 </label>
                 <input
                   type="date"
@@ -411,17 +426,17 @@ export function ActionPlan({
               </div>
             </div>
 
-            {/* SMART-komponenter */}
+            {/* SMART components */}
             <div className="space-y-3">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-stone-200 mb-1">
-                  Mätbart - Hur vet vi att det är uppnått?
+                  {t('consultant.actionPlan.form.measurable')}
                 </label>
                 <input
                   type="text"
                   value={measurable}
                   onChange={(e) => setMeasurable(e.target.value)}
-                  placeholder="Ex: Minst 5 sparade jobb, 80% komplett CV..."
+                  placeholder={t('consultant.actionPlan.form.measurablePlaceholder')}
                   className="w-full px-3 py-2 border border-slate-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-stone-900 text-slate-900 dark:text-stone-100"
                 />
               </div>
@@ -429,61 +444,61 @@ export function ActionPlan({
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-stone-200 mb-1">
-                    Genomförbart - Hur ska vi göra?
+                    {t('consultant.actionPlan.form.achievable')}
                   </label>
                   <input
                     type="text"
                     value={achievable}
                     onChange={(e) => setAchievable(e.target.value)}
-                    placeholder="Ex: Genom att..."
+                    placeholder={t('consultant.actionPlan.form.achievablePlaceholder')}
                     className="w-full px-3 py-2 border border-slate-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-stone-900 text-slate-900 dark:text-stone-100"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-stone-200 mb-1">
-                    Relevant - Varför är det viktigt?
+                    {t('consultant.actionPlan.form.relevant')}
                   </label>
                   <input
                     type="text"
                     value={relevant}
                     onChange={(e) => setRelevant(e.target.value)}
-                    placeholder="Ex: För att kunna..."
+                    placeholder={t('consultant.actionPlan.form.relevantPlaceholder')}
                     className="w-full px-3 py-2 border border-slate-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-stone-900 text-slate-900 dark:text-stone-100"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Prioritet och koppling */}
+            {/* Priority and relation */}
             <div className="flex gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-stone-200 mb-1">
-                  Prioritet
+                  {t('consultant.actionPlan.form.priority')}
                 </label>
                 <select
                   value={priority}
                   onChange={(e) => setPriority(e.target.value as GoalPriority)}
                   className="px-3 py-2 border border-slate-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-stone-900 text-slate-900 dark:text-stone-100"
                 >
-                  <option value="HIGH">Hög</option>
-                  <option value="MEDIUM">Medium</option>
-                  <option value="LOW">Låg</option>
+                  <option value="HIGH">{t('consultant.actionPlan.priority.high')}</option>
+                  <option value="MEDIUM">{t('consultant.actionPlan.priority.medium')}</option>
+                  <option value="LOW">{t('consultant.actionPlan.priority.low')}</option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-stone-200 mb-1">
-                  Kopplad till
+                  {t('consultant.actionPlan.form.relatedTo')}
                 </label>
                 <select
                   value={relatedType}
                   onChange={(e) => setRelatedType(e.target.value as SmartGoal['relatedTo']['type'])}
                   className="px-3 py-2 border border-slate-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-stone-900 text-slate-900 dark:text-stone-100"
                 >
-                  <option value="CV">CV</option>
-                  <option value="INTEREST_GUIDE">Intresseguide</option>
-                  <option value="JOB_SEARCH">Jobbsökning</option>
-                  <option value="EDUCATION">Utbildning</option>
-                  <option value="OTHER">Övrigt</option>
+                  <option value="CV">{t('nav.cv')}</option>
+                  <option value="INTEREST_GUIDE">{t('consultant.actionPlan.relatedTo.interestGuide')}</option>
+                  <option value="JOB_SEARCH">{t('consultant.actionPlan.relatedTo.jobSearch')}</option>
+                  <option value="EDUCATION">{t('consultant.actionPlan.relatedTo.education')}</option>
+                  <option value="OTHER">{t('consultant.actionPlan.relatedTo.other')}</option>
                 </select>
               </div>
             </div>
@@ -494,7 +509,7 @@ export function ActionPlan({
                 onClick={handleCancel}
                 className="px-4 py-2 text-slate-600 dark:text-stone-400 hover:text-slate-800 dark:hover:text-stone-200 transition-colors"
               >
-                Avbryt
+                {t('common.cancel')}
               </button>
               <button
                 onClick={() => editingId ? handleUpdate(editingId) : handleSubmit()}
@@ -502,7 +517,7 @@ export function ActionPlan({
                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
-                <span>{editingId ? 'Uppdatera' : 'Spara mål'}</span>
+                <span>{editingId ? t('common.update') : t('consultant.actionPlan.saveGoal')}</span>
               </button>
             </div>
           </div>
@@ -514,9 +529,9 @@ export function ActionPlan({
         {goals.length === 0 ? (
           <div className="p-8 text-center">
             <Target className="w-12 h-12 text-slate-300 dark:text-stone-600 mx-auto mb-3" />
-            <p className="text-slate-700 dark:text-stone-300">Inga mål ännu</p>
+            <p className="text-slate-700 dark:text-stone-300">{t('consultant.actionPlan.noGoals')}</p>
             <p className="text-sm text-slate-600 dark:text-stone-400 mt-1">
-              Skapa SMARTA-mål för att hjälpa deltagaren framåt
+              {t('consultant.actionPlan.noGoalsDesc')}
             </p>
           </div>
         ) : (
@@ -592,24 +607,24 @@ export function ActionPlan({
                         </div>
                         <span className="text-xs text-slate-700 dark:text-stone-300">{goal.progress}%</span>
                         <span className="text-xs text-slate-600 dark:text-stone-400">
-                          Deadline: {new Date(goal.deadline).toLocaleDateString('sv-SE')}
+                          {t('consultant.actionPlan.deadline')}: {new Date(goal.deadline).toLocaleDateString(i18n.language === 'sv' ? 'sv-SE' : 'en-US')}
                         </span>
                       </div>
 
                       {/* Expandable details */}
                       {isExpanded && (
-                        <div id={`goal-${goal.id}-details`} role="region" aria-label={`SMARTA-kriterier för ${goal.title}`} className="mt-3 p-3 bg-slate-50 dark:bg-stone-800 rounded-lg space-y-2 animate-in fade-in">
+                        <div id={`goal-${goal.id}-details`} role="region" aria-label={t('consultant.actionPlan.smartCriteriaFor', { title: goal.title })} className="mt-3 p-3 bg-slate-50 dark:bg-stone-800 rounded-lg space-y-2 animate-in fade-in">
                           <div>
-                            <span className="text-xs font-medium text-slate-700 dark:text-stone-300">Mätbart:</span>
+                            <span className="text-xs font-medium text-slate-700 dark:text-stone-300">{t('consultant.actionPlan.details.measurable')}:</span>
                             <p className="text-sm text-slate-700 dark:text-stone-300">{goal.measurable}</p>
                           </div>
                           <div className="grid grid-cols-2 gap-2">
                             <div>
-                              <span className="text-xs font-medium text-slate-700 dark:text-stone-300">Genomförbart:</span>
+                              <span className="text-xs font-medium text-slate-700 dark:text-stone-300">{t('consultant.actionPlan.details.achievable')}:</span>
                               <p className="text-sm text-slate-700 dark:text-stone-300">{goal.achievable}</p>
                             </div>
                             <div>
-                              <span className="text-xs font-medium text-slate-700 dark:text-stone-300">Relevant:</span>
+                              <span className="text-xs font-medium text-slate-700 dark:text-stone-300">{t('consultant.actionPlan.details.relevant')}:</span>
                               <p className="text-sm text-slate-700 dark:text-stone-300">{goal.relevant}</p>
                             </div>
                           </div>
@@ -618,7 +633,7 @@ export function ActionPlan({
                           {goal.status !== 'COMPLETED' && (
                             <div className="pt-2 border-t border-slate-200 dark:border-stone-700">
                               <label className="text-xs font-medium text-slate-700 dark:text-stone-300 block mb-1">
-                                Uppdatera framsteg:
+                                {t('consultant.actionPlan.updateProgress')}:
                               </label>
                               <input
                                 type="range"
@@ -647,12 +662,12 @@ export function ActionPlan({
                         {isExpanded ? (
                           <>
                             <ChevronUp className="w-4 h-4" aria-hidden="true" />
-                            Visa mindre
+                            {t('consultant.actionPlan.showLess')}
                           </>
                         ) : (
                           <>
                             <ChevronDown className="w-4 h-4" aria-hidden="true" />
-                            Visa SMARTA-kriterier
+                            {t('consultant.actionPlan.showSmartCriteria')}
                           </>
                         )}
                       </button>
@@ -663,14 +678,14 @@ export function ActionPlan({
                       <button
                         onClick={() => handleEdit(goal)}
                         className="p-1.5 text-slate-600 dark:text-stone-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
-                        title="Redigera"
+                        title={t('common.edit')}
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => onDeleteGoal(goal.id)}
                         className="p-1.5 text-slate-600 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
-                        title="Ta bort"
+                        title={t('common.delete')}
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>

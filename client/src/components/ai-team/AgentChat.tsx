@@ -14,7 +14,7 @@ import { agentColorClasses } from './types'
 import { useAITeamContext, formatAITeamContext } from '@/hooks/useAITeamContext'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
-import { Send, RefreshCw, User, Trash2 } from '@/components/ui/icons'
+import { Send, RefreshCw, User, Trash2, Copy, Check } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
@@ -468,12 +468,24 @@ interface MessageBubbleProps {
 }
 
 function MessageBubble({ message, agentColor }: MessageBubbleProps) {
+  const { t } = useTranslation()
+  const [copied, setCopied] = useState(false)
   const isUser = message.role === 'user'
   const colors = agentColorClasses[agentColor as keyof typeof agentColorClasses]
 
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message.content)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error('Failed to copy:', err)
+    }
+  }
+
   return (
     <div className={cn(
-      'flex items-start gap-3',
+      'flex items-start gap-3 group',
       isUser && 'flex-row-reverse'
     )}>
       {isUser ? (
@@ -488,18 +500,52 @@ function MessageBubble({ message, agentColor }: MessageBubbleProps) {
           <span className={cn('text-sm', colors.text)} aria-hidden="true">AI</span>
         </div>
       )}
-      <div
-        className={cn(
-          'max-w-[80%] px-4 py-3 rounded-xl',
-          isUser
-            ? 'bg-teal-500 text-white'
-            : cn(
-                'bg-stone-100 dark:bg-stone-800',
-                'text-stone-900 dark:text-stone-100'
-              )
+      <div className="relative max-w-[80%]">
+        <div
+          className={cn(
+            'px-4 py-3 rounded-xl',
+            isUser
+              ? 'bg-teal-500 text-white'
+              : cn(
+                  'bg-stone-100 dark:bg-stone-800',
+                  'text-stone-900 dark:text-stone-100'
+                )
+          )}
+        >
+          <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+        </div>
+        {/* Copy button - shows on hover for assistant messages */}
+        {!isUser && (
+          <button
+            onClick={handleCopy}
+            className={cn(
+              'absolute -bottom-2 right-2',
+              'opacity-0 group-hover:opacity-100',
+              'transition-opacity duration-200',
+              'px-2 py-1 rounded-lg',
+              'bg-white dark:bg-stone-700',
+              'border border-stone-200 dark:border-stone-600',
+              'text-xs text-stone-600 dark:text-stone-400',
+              'hover:text-stone-900 dark:hover:text-stone-200',
+              'shadow-sm hover:shadow',
+              'flex items-center gap-1',
+              copied && 'opacity-100'
+            )}
+            aria-label={copied ? t('aiTeam.messageCopied') : t('aiTeam.copyMessage')}
+          >
+            {copied ? (
+              <>
+                <Check className="w-3 h-3 text-green-500" />
+                <span className="text-green-600 dark:text-green-400">{t('aiTeam.messageCopied')}</span>
+              </>
+            ) : (
+              <>
+                <Copy className="w-3 h-3" />
+                <span>{t('aiTeam.copyMessage')}</span>
+              </>
+            )}
+          </button>
         )}
-      >
-        <p className="text-sm whitespace-pre-wrap">{message.content}</p>
       </div>
     </div>
   )

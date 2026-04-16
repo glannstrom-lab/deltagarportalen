@@ -23,7 +23,7 @@ export const agents: Agent[] = [
       { id: 'review-cv', labelKey: 'aiTeam.quickActions.reviewCV', prompt: 'Granska mitt CV som finns i min profil. Ge konkret feedback baserat på min faktiska erfarenhet, utbildning och kompetenser som du kan se. Fokusera på förbättringar som är relevanta för min bakgrund.' },
       { id: 'find-jobs', labelKey: 'aiTeam.quickActions.findJobs', prompt: 'Baserat på mitt CV och min profil - vilka typer av jobb passar mig? Ge konkreta förslag utifrån mina faktiska kompetenser och erfarenheter.' },
       { id: 'cover-letter', labelKey: 'aiTeam.quickActions.coverLetter', prompt: 'Hjälp mig skriva ett personligt brev som matchar min faktiska bakgrund och kompetenser från mitt CV.' },
-      { id: 'analyze-job', labelKey: 'aiTeam.quickActions.analyzeJob', prompt: 'Jag vill analysera en jobbannons. Fråga mig om jobbannonsen först, sedan kan vi diskutera hur den matchar min bakgrund.' },
+      { id: 'action-plan', labelKey: 'aiTeam.quickActions.actionPlan', prompt: 'Skapa en konkret handlingsplan för min jobbsökning de närmaste 2 veckorna. Basera planen på min faktiska situation, kompetenser och mål från min profil. Inkludera specifika aktiviteter, deadlines och mätbara delmål.' },
     ],
   },
   {

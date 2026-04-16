@@ -1,4 +1,5 @@
 import { useState, useRef, lazy, Suspense } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Download, FileText, Check, FileType, Loader2, Zap } from '@/components/ui/icons'
 import { loadPDFLibraries, preloadPDFLibraries } from '@/services/pdfLazyLoad'
 import type { CVData } from '@/services/supabaseApi'
@@ -41,6 +42,7 @@ const getLanguageLevelPercent = (level: string): number => {
 }
 
 export function CVExport({ cvData }: CVExportProps) {
+  const { t } = useTranslation()
   const [isExportingPDF, setIsExportingPDF] = useState(false)
   const [isExportingWord, setIsExportingWord] = useState(false)
   const [isExportingVectorPDF, setIsExportingVectorPDF] = useState(false)
@@ -56,18 +58,18 @@ export function CVExport({ cvData }: CVExportProps) {
             <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Exportera CV</h3>
-            <p className="text-sm text-slate-700 dark:text-stone-300">Ladda ner som PDF eller Word</p>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('cv.export.title')}</h3>
+            <p className="text-sm text-slate-700 dark:text-stone-300">{t('cv.export.subtitle')}</p>
           </div>
         </div>
-        <p className="text-sm text-slate-700 dark:text-stone-300">Skapa ett CV först för att exportera</p>
+        <p className="text-sm text-slate-700 dark:text-stone-300">{t('cv.export.createFirst')}</p>
       </div>
     )
   }
 
   const handleExportPDF = async () => {
     if (!pdfRef.current) {
-      alert('Kunde inte hitta CV-elementet')
+      alert(t('cv.export.errors.elementNotFound'))
       return
     }
 
@@ -141,7 +143,7 @@ export function CVExport({ cvData }: CVExportProps) {
       setTimeout(() => setExportSuccess(null), 3000)
     } catch (error) {
       console.error('PDF-exportfel:', error)
-      alert('Kunde inte exportera PDF. Försök igen.')
+      alert(t('cv.export.errors.pdfFailed'))
     } finally {
       setIsExportingPDF(false)
     }
@@ -242,13 +244,13 @@ export function CVExport({ cvData }: CVExportProps) {
       setTimeout(() => setExportSuccess(null), 3000)
     } catch (error) {
       console.error('Word-exportfel:', error)
-      alert('Kunde inte exportera Word. Försök igen.')
+      alert(t('cv.export.errors.wordFailed'))
     } finally {
       setIsExportingWord(false)
     }
   }
 
-  const fullName = `${cvData.firstName} ${cvData.lastName}`.trim() || 'Ditt Namn'
+  const fullName = `${cvData.firstName} ${cvData.lastName}`.trim() || t('cv.export.yourName')
   const template = cvData.template || 'sidebar'
 
   // Template-specific render functions
@@ -755,8 +757,8 @@ export function CVExport({ cvData }: CVExportProps) {
             <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Exportera CV</h3>
-            <p className="text-sm text-slate-700 dark:text-stone-300">Ladda ner som PDF eller Word</p>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('cv.export.title')}</h3>
+            <p className="text-sm text-slate-700 dark:text-stone-300">{t('cv.export.subtitle')}</p>
           </div>
         </div>
 
@@ -767,7 +769,7 @@ export function CVExport({ cvData }: CVExportProps) {
               disabled
               className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium opacity-50"
             >
-              <Loader2 className="w-5 h-5 animate-spin" /> Laddar...
+              <Loader2 className="w-5 h-5 animate-spin" /> {t('common.loading')}
             </button>
           }>
             <BlobProvider document={<CVPDFDocument data={cvData} />}>
@@ -792,13 +794,13 @@ export function CVExport({ cvData }: CVExportProps) {
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:bg-slate-200 disabled:cursor-not-allowed transition-colors"
                 >
                   {exportSuccess === 'vector' ? (
-                    <><Check className="w-5 h-5" /> PDF Sparad!</>
+                    <><Check className="w-5 h-5" /> {t('cv.export.pdfSaved')}</>
                   ) : loading ? (
-                    <><Loader2 className="w-5 h-5 animate-spin" /> Förbereder PDF...</>
+                    <><Loader2 className="w-5 h-5 animate-spin" /> {t('cv.export.preparingPdf')}</>
                   ) : error ? (
-                    <><span className="text-red-200">Fel vid export</span></>
+                    <><span className="text-red-200">{t('cv.export.exportError')}</span></>
                   ) : (
-                    <><Zap className="w-5 h-5" /> Ladda ner PDF (Rekommenderad)</>
+                    <><Zap className="w-5 h-5" /> {t('cv.export.downloadPdfRecommended')}</>
                   )}
                 </button>
               )}
@@ -814,11 +816,11 @@ export function CVExport({ cvData }: CVExportProps) {
             className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-indigo-200 text-indigo-600 rounded-xl font-medium hover:bg-indigo-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'pdf' ? (
-              <><Check className="w-5 h-5" /> PDF Sparad!</>
+              <><Check className="w-5 h-5" /> {t('cv.export.pdfSaved')}</>
             ) : isExportingPDF ? (
-              <><Loader2 className="w-5 h-5 animate-spin" /> Skapar PDF...</>
+              <><Loader2 className="w-5 h-5 animate-spin" /> {t('cv.export.creatingPdf')}</>
             ) : (
-              <><Download className="w-5 h-5" /> PDF (Exakt som på skärmen)</>
+              <><Download className="w-5 h-5" /> {t('cv.export.pdfExact')}</>
             )}
           </button>
 
@@ -829,28 +831,28 @@ export function CVExport({ cvData }: CVExportProps) {
             className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-blue-200 text-blue-600 rounded-xl font-medium hover:bg-blue-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'word' ? (
-              <><Check className="w-5 h-5" /> Word Sparad!</>
+              <><Check className="w-5 h-5" /> {t('cv.export.wordSaved')}</>
             ) : isExportingWord ? (
-              <><Loader2 className="w-5 h-5 animate-spin" /> Skapar Word...</>
+              <><Loader2 className="w-5 h-5 animate-spin" /> {t('cv.export.creatingWord')}</>
             ) : (
-              <><FileType className="w-5 h-5" /> Ladda ner Word (.doc)</>
+              <><FileType className="w-5 h-5" /> {t('cv.export.downloadWord')}</>
             )}
           </button>
         </div>
 
         <p className="text-xs text-slate-600 dark:text-stone-400 mt-4 text-center">
-          Filnamn: {cvData.firstName?.toLowerCase() || 'ditt'}-{cvData.lastName?.toLowerCase() || 'namn'}-cv.pdf / .doc
+          {t('cv.export.filename')}: {cvData.firstName?.toLowerCase() || 'ditt'}-{cvData.lastName?.toLowerCase() || 'namn'}-cv.pdf / .doc
         </p>
 
         <div className="mt-4 p-3 bg-slate-50 dark:bg-stone-800 rounded-lg space-y-2">
           <p className="text-xs text-slate-700 dark:text-stone-300">
-            <strong>Rekommenderad PDF:</strong> Ger sökbar text och mindre filstorlek. Bäst för ATS-system.
+            <strong>{t('cv.export.info.recommended')}:</strong> {t('cv.export.info.recommendedDesc')}
           </p>
           <p className="text-xs text-slate-700 dark:text-stone-300">
-            <strong>PDF (exakt som på skärmen):</strong> Fångar exakt utseende men text ej sökbar.
+            <strong>{t('cv.export.info.exact')}:</strong> {t('cv.export.info.exactDesc')}
           </p>
           <p className="text-xs text-slate-700 dark:text-stone-300">
-            <strong>Word:</strong> Redigerbart format om du behöver anpassa för specifika ansökningar.
+            <strong>Word:</strong> {t('cv.export.info.wordDesc')}
           </p>
         </div>
       </div>

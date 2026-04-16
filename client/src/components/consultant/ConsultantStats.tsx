@@ -3,7 +3,8 @@
  * Statistik-kort för konsulent-dashboard
  */
 
-import React from 'react';
+import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Users, UserCheck, AlertTriangle, Award } from '@/components/ui/icons';
 
 interface Stats {
@@ -18,36 +19,38 @@ interface ConsultantStatsProps {
 }
 
 export const ConsultantStats: React.FC<ConsultantStatsProps> = ({ stats }) => {
-  const cards = [
+  const { t } = useTranslation();
+
+  const cards = useMemo(() => [
     {
-      label: 'Totalt antal deltagare',
+      label: t('consultant.stats.totalParticipants'),
       value: stats.total,
       icon: Users,
       color: 'text-blue-600 dark:text-blue-400',
       bgColor: 'bg-blue-100 dark:bg-blue-900/30',
     },
     {
-      label: 'Aktiva deltagare',
+      label: t('consultant.stats.activeParticipants'),
       value: stats.active,
       icon: UserCheck,
       color: 'text-green-600 dark:text-green-400',
       bgColor: 'bg-green-100 dark:bg-green-900/30',
     },
     {
-      label: 'Kräver uppmärksamhet',
+      label: t('consultant.stats.needsAttention'),
       value: stats.needsAttention,
       icon: AlertTriangle,
       color: 'text-amber-600 dark:text-amber-400',
       bgColor: 'bg-amber-100 dark:bg-amber-900/30',
     },
     {
-      label: 'Kompletta CV (>70%)',
+      label: t('consultant.stats.completedCV'),
       value: stats.completedCV,
       icon: Award,
       color: 'text-purple-600 dark:text-purple-400',
       bgColor: 'bg-purple-100 dark:bg-purple-900/30',
     },
-  ];
+  ], [t, stats]);
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

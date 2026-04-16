@@ -12,6 +12,7 @@ import { AgentSelector } from '@/components/ai-team/AgentSelector'
 import { PersonalityDropdown } from '@/components/ai-team/PersonalityDropdown'
 import { QuickActions } from '@/components/ai-team/QuickActions'
 import { AgentChat, type AgentChatHandle } from '@/components/ai-team/AgentChat'
+import { OnboardingModal } from '@/components/ai-team/OnboardingModal'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { getAgentById } from '@/components/ai-team/AgentSelector'
 import { agentColorClasses } from '@/components/ai-team/types'
@@ -31,6 +32,9 @@ export default function AITeam() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-stone-50 via-white to-stone-50/50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800 pb-20">
+      {/* Onboarding for new users */}
+      <OnboardingModal />
+
       {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50 dark:from-teal-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border-b border-teal-100 dark:border-teal-800/50">
         <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-teal-200/30 to-cyan-200/30 dark:from-teal-700/20 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />

@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { type CalendarEvent, eventTypeConfig, formatDuration } from '@/services/calendarData'
 import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell, MapPin, Video, Phone } from '@/components/ui/icons'
 
@@ -20,6 +21,7 @@ const icons: Record<string, typeof Briefcase> = {
 const hours = Array.from({ length: 16 }, (_, i) => i + 6) // 06:00 - 21:00
 
 export function DayView({ date, events, onEventClick }: DayViewProps) {
+  const { t, i18n } = useTranslation()
   const dateStr = date.toISOString().split('T')[0]
   const dayEvents = events.filter(e => e.date === dateStr).sort((a, b) => 
     a.time.localeCompare(b.time)
@@ -37,14 +39,14 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
       {/* Day header */}
       <div className={`p-4 border-b border-stone-200 dark:border-stone-700 ${isToday ? 'bg-teal-50 dark:bg-teal-900/20' : 'bg-stone-50 dark:bg-stone-800'}`}>
         <h2 className={`text-xl font-semibold ${isToday ? 'text-teal-900 dark:text-teal-100' : 'text-stone-900 dark:text-stone-100'}`}>
-          {date.toLocaleDateString('sv-SE', {
+          {date.toLocaleDateString(i18n.language === 'sv' ? 'sv-SE' : 'en-US', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
           })}
         </h2>
-        {isToday && <span className="text-sm text-teal-700 dark:text-teal-400 font-medium">Idag</span>}
+        {isToday && <span className="text-sm text-teal-700 dark:text-teal-400 font-medium">{t('calendar.today')}</span>}
       </div>
 
       {/* Timeline */}
@@ -63,9 +65,9 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
                 {hourEvents.map((event) => {
                   const config = eventTypeConfig[event.type]
                   const Icon = icons[config.icon]
-                  const duration = event.endTime 
+                  const duration = event.endTime
                     ? formatDuration((parseInt(event.endTime.split(':')[0]) * 60 + parseInt(event.endTime.split(':')[1])) - (parseInt(event.time.split(':')[0]) * 60 + parseInt(event.time.split(':')[1])))
-                    : '1 tim'
+                    : t('calendar.oneHour')
                   
                   return (
                     <button
@@ -95,8 +97,8 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
                           )}
                           {(event.isVideo || event.isPhone) && (
                             <p className="text-sm text-stone-700 dark:text-stone-300 mt-1 flex items-center gap-1">
-                              {event.isVideo && <><Video size={14} /> Videosamtal</>}
-                              {event.isPhone && <><Phone size={14} /> Telefon</>}
+                              {event.isVideo && <><Video size={14} /> {t('calendar.videoCall')}</>}
+                              {event.isPhone && <><Phone size={14} /> {t('calendar.phone')}</>}
                             </p>
                           )}
                           {event.description && (

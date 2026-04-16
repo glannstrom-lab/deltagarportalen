@@ -5,8 +5,9 @@
  */
 
 import { useState, useEffect, memo } from 'react'
-import { 
-  Sparkles, TrendingUp, Lightbulb, ChevronRight, 
+import { useTranslation } from 'react-i18next'
+import {
+  Sparkles, TrendingUp, Lightbulb, ChevronRight,
   Target, Briefcase, Loader2, CheckCircle2, Zap
 } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
@@ -22,6 +23,7 @@ interface SmartJobMatchesProps {
 }
 
 export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
+  const { t } = useTranslation()
   const [semanticMatches, setSemanticMatches] = useState<SemanticMatch[]>([])
   const [similarRoles, setSimilarRoles] = useState<SimilarRole[]>([])
   const [loading, setLoading] = useState(true)
@@ -73,18 +75,17 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             <Sparkles size={20} className="text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900 dark:text-stone-100">Smart matchning</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-stone-100">{t('ai.smartMatches.title')}</h3>
           </div>
         </div>
         <p className="text-sm text-slate-600 dark:text-stone-400">
-          Fyll i mer information i ditt CV for att fa personliga jobbrekommendationer
-          baserat pa dina kompetenser.
+          {t('ai.smartMatches.fillCVDescription')}
         </p>
         <Link
           to="/cv"
           className="inline-flex items-center gap-2 mt-3 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
         >
-          Komplettera CV:t
+          {t('ai.smartMatches.completeCV')}
           <ChevronRight size={16} />
         </Link>
       </div>
@@ -103,11 +104,11 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             <Sparkles size={20} className="text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-white">Smart matchning</h3>
+            <h3 className="font-semibold text-white">{t('ai.smartMatches.title')}</h3>
             <p className="text-sm text-white/80">
-              {hasMatches 
-                ? `${semanticMatches.length} jobb matchar dina kompetenser`
-                : 'Utforska karriärmöjligheter'
+              {hasMatches
+                ? t('ai.smartMatches.jobsMatchCount', { count: semanticMatches.length })
+                : t('ai.smartMatches.exploreCareer')
               }
             </p>
           </div>
@@ -126,7 +127,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
                 : "text-slate-600 dark:text-stone-400 hover:text-slate-900 dark:hover:text-stone-100"
             )}
           >
-            Matchade jobb
+            {t('ai.smartMatches.tabs.matchedJobs')}
           </button>
           <button
             onClick={() => setActiveTab('roles')}
@@ -137,7 +138,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
                 : "text-slate-600 dark:text-stone-400 hover:text-slate-900 dark:hover:text-stone-100"
             )}
           >
-            Liknande roller
+            {t('ai.smartMatches.tabs.similarRoles')}
           </button>
         </div>
       )}
@@ -147,14 +148,14 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
         {activeTab === 'matches' && hasMatches && (
           <div className="space-y-3">
             {semanticMatches.map((match) => (
-              <JobMatchCard key={match.jobId} match={match} />
+              <JobMatchCard key={match.jobId} match={match} unknownEmployerLabel={t('common.employerNotSpecified')} />
             ))}
-            
+
             <Link
               to="/job-search"
               className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
             >
-              Se alla matchade jobb
+              {t('ai.smartMatches.seeAllJobs')}
               <ChevronRight size={16} />
             </Link>
           </div>
@@ -163,7 +164,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
         {activeTab === 'roles' && hasSimilarRoles && (
           <div className="space-y-3">
             {similarRoles.map((role) => (
-              <SimilarRoleCard key={role.role} role={role} />
+              <SimilarRoleCard key={role.role} role={role} overlapLabel={t('ai.smartMatches.overlap')} toLearnLabel={t('ai.smartMatches.toLearn')} />
             ))}
           </div>
         )}
@@ -176,16 +177,16 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
 // JOB MATCH CARD (memoized for performance)
 // ============================================
 
-const JobMatchCard = memo(function JobMatchCard({ match }: { match: SemanticMatch }) {
+const JobMatchCard = memo(function JobMatchCard({ match, unknownEmployerLabel }: { match: SemanticMatch; unknownEmployerLabel: string }) {
   const { job, similarity, matchedKeywords, explanation } = match
-  
+
   // Safety check - if job is undefined or missing headline, don't render
   if (!job || !job.headline) {
     return null
   }
-  
+
   const matchPercentage = Math.round(similarity * 100)
-  
+
   const getMatchColor = (score: number) => {
     if (score >= 70) return 'text-green-600 bg-green-50 border-green-200'
     if (score >= 50) return 'text-amber-600 bg-amber-50 border-amber-200'
@@ -200,7 +201,7 @@ const JobMatchCard = memo(function JobMatchCard({ match }: { match: SemanticMatc
             {job.headline}
           </h4>
           <p className="text-sm text-slate-700">
-            {job.employer?.name || 'Okänd arbetsgivare'}
+            {job.employer?.name || unknownEmployerLabel}
           </p>
           
           {/* Match score */}
@@ -241,9 +242,9 @@ const JobMatchCard = memo(function JobMatchCard({ match }: { match: SemanticMatc
 // SIMILAR ROLE CARD (memoized for performance)
 // ============================================
 
-const SimilarRoleCard = memo(function SimilarRoleCard({ role }: { role: SimilarRole }) {
+const SimilarRoleCard = memo(function SimilarRoleCard({ role, overlapLabel, toLearnLabel }: { role: SimilarRole; overlapLabel: string; toLearnLabel: string }) {
   const matchPercentage = Math.round(role.similarity * 100)
-  
+
   return (
     <div className="bg-slate-50 rounded-xl p-4 hover:bg-slate-100 transition-colors">
       <div className="flex items-start justify-between gap-3">
@@ -252,13 +253,13 @@ const SimilarRoleCard = memo(function SimilarRoleCard({ role }: { role: SimilarR
             <h4 className="font-medium text-slate-900">{role.role}</h4>
             <span className={cn(
               "px-2 py-0.5 rounded-full text-xs font-medium",
-              matchPercentage >= 60 
+              matchPercentage >= 60
                 ? "bg-green-100 text-green-700" :
               matchPercentage >= 40
                 ? "bg-amber-100 text-amber-700"
                 : "bg-slate-100 text-slate-600"
             )}>
-              {matchPercentage}% överlappning
+              {matchPercentage}% {overlapLabel}
             </span>
           </div>
           
@@ -284,7 +285,7 @@ const SimilarRoleCard = memo(function SimilarRoleCard({ role }: { role: SimilarR
           {/* Missing skills */}
           {role.requiredSkills.length > role.transferableSkills.length && (
             <div className="mt-2">
-              <p className="text-xs text-slate-700 mb-1">Att lära sig:</p>
+              <p className="text-xs text-slate-700 mb-1">{toLearnLabel}:</p>
               <div className="flex flex-wrap gap-1">
                 {role.requiredSkills
                   .filter(s => !role.transferableSkills.includes(s))

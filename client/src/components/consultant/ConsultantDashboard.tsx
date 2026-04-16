@@ -4,12 +4,13 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { 
-  Users, 
-  Mail, 
-  Plus, 
-  Search, 
-  Filter, 
+import { useTranslation } from 'react-i18next';
+import {
+  Users,
+  Mail,
+  Plus,
+  Search,
+  Filter,
   MoreVertical,
   TrendingUp,
   Calendar,
@@ -47,6 +48,7 @@ interface Participant {
 }
 
 export const ConsultantDashboard: React.FC = () => {
+  const { t } = useTranslation();
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -115,9 +117,9 @@ export const ConsultantDashboard: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-stone-100">Mina Deltagare</h1>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-stone-100">{t('consultant.dashboard.title')}</h1>
               <p className="text-gray-500 dark:text-stone-400 mt-1">
-                Hantera och följ upp {stats.total} deltagare
+                {t('consultant.dashboard.subtitle', { count: stats.total })}
               </p>
             </div>
             <button
@@ -125,7 +127,7 @@ export const ConsultantDashboard: React.FC = () => {
               className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
             >
               <Plus className="w-5 h-5" />
-              Bjud in deltagare
+              {t('consultant.dashboard.inviteParticipant')}
             </button>
           </div>
         </div>
@@ -146,7 +148,7 @@ export const ConsultantDashboard: React.FC = () => {
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-stone-500" />
                     <input
                       type="text"
-                      placeholder="Sök efter namn eller email..."
+                      placeholder={t('consultant.dashboard.searchPlaceholder')}
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-stone-800 text-gray-900 dark:text-stone-100"
@@ -159,11 +161,11 @@ export const ConsultantDashboard: React.FC = () => {
                   onChange={(e) => setFilterStatus(e.target.value)}
                   className="px-4 py-2 border border-gray-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-stone-800 text-gray-900 dark:text-stone-100"
                 >
-                  <option value="all">Alla statusar</option>
-                  <option value="ACTIVE">Aktiva</option>
-                  <option value="INACTIVE">Inaktiva</option>
-                  <option value="ON_HOLD">Pausade</option>
-                  <option value="COMPLETED">Avslutade</option>
+                  <option value="all">{t('consultant.dashboard.filters.allStatuses')}</option>
+                  <option value="ACTIVE">{t('consultant.dashboard.filters.active')}</option>
+                  <option value="INACTIVE">{t('consultant.dashboard.filters.inactive')}</option>
+                  <option value="ON_HOLD">{t('consultant.dashboard.filters.onHold')}</option>
+                  <option value="COMPLETED">{t('consultant.dashboard.filters.completed')}</option>
                 </select>
 
                 <div className="flex items-center gap-2 border-l border-gray-200 dark:border-stone-700 pl-4">
@@ -195,19 +197,19 @@ export const ConsultantDashboard: React.FC = () => {
           <div className="space-y-6">
             {/* Quick Actions */}
             <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-6">
-              <h3 className="font-semibold text-gray-900 dark:text-stone-100 mb-4">Snabbåtgärder</h3>
+              <h3 className="font-semibold text-gray-900 dark:text-stone-100 mb-4">{t('consultant.dashboard.quickActions.title')}</h3>
               <div className="space-y-3">
                 <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 dark:hover:bg-stone-800 transition-colors">
                   <Mail className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                  <span className="text-gray-700 dark:text-stone-300">Skicka gruppmeddelande</span>
+                  <span className="text-gray-700 dark:text-stone-300">{t('consultant.dashboard.quickActions.sendGroupMessage')}</span>
                 </button>
                 <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 dark:hover:bg-stone-800 transition-colors">
                   <Calendar className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                  <span className="text-gray-700 dark:text-stone-300">Schemalägg möten</span>
+                  <span className="text-gray-700 dark:text-stone-300">{t('consultant.dashboard.quickActions.scheduleMeetings')}</span>
                 </button>
                 <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 dark:hover:bg-stone-800 transition-colors">
                   <FileText className="w-5 h-5 text-primary-600 dark:text-primary-400" />
-                  <span className="text-gray-700 dark:text-stone-300">Exportera rapport</span>
+                  <span className="text-gray-700 dark:text-stone-300">{t('consultant.dashboard.quickActions.exportReport')}</span>
                 </button>
               </div>
             </div>
@@ -221,12 +223,12 @@ export const ConsultantDashboard: React.FC = () => {
                 <div className="flex items-start gap-3">
                   <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
                   <div>
-                    <h3 className="font-semibold text-amber-900 dark:text-amber-200">Kräver uppmärksamhet</h3>
+                    <h3 className="font-semibold text-amber-900 dark:text-amber-200">{t('consultant.stats.needsAttention')}</h3>
                     <p className="text-amber-700 dark:text-amber-300 text-sm mt-1">
-                      {stats.needsAttention} deltagare har inte kontaktats på över 7 dagar.
+                      {t('consultant.dashboard.attentionMessage', { count: stats.needsAttention })}
                     </p>
                     <button className="text-amber-800 dark:text-amber-200 text-sm font-medium mt-3 hover:underline">
-                      Visa lista →
+                      {t('consultant.dashboard.showList')} →
                     </button>
                   </div>
                 </div>
