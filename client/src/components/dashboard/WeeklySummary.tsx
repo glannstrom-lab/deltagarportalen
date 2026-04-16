@@ -144,34 +144,34 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl border border-slate-200 overflow-hidden",
+        "bg-gradient-to-br from-slate-50 to-slate-100 dark:from-stone-900 dark:to-stone-800 rounded-2xl border border-slate-200 dark:border-stone-700 overflow-hidden",
         className
       )}
     >
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-4 flex items-center justify-between hover:bg-slate-100/50 transition-colors"
+        className="w-full p-4 flex items-center justify-between hover:bg-slate-100/50 dark:hover:bg-stone-700/50 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-100 to-teal-100 flex items-center justify-center">
-            <Calendar size={20} className="text-sky-600" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-100 to-teal-100 dark:from-sky-900/50 dark:to-teal-900/50 flex items-center justify-center">
+            <Calendar size={20} className="text-sky-600 dark:text-sky-400" />
           </div>
           <div className="text-left">
-            <h3 className="font-semibold text-slate-800">Din vecka</h3>
-            <p className="text-xs text-slate-700">
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Din vecka</h3>
+            <p className="text-xs text-slate-700 dark:text-stone-300">
               {formatTime(stats.totalTimeSpent)} aktiv tid
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-700">
+          <span className="text-sm text-slate-700 dark:text-stone-300">
             {isExpanded ? 'Dölj' : 'Visa'}
           </span>
           {isExpanded ? (
-            <ChevronUp size={18} className="text-slate-600" />
+            <ChevronUp size={18} className="text-slate-600 dark:text-stone-400" />
           ) : (
-            <ChevronDown size={18} className="text-slate-600" />
+            <ChevronDown size={18} className="text-slate-600 dark:text-stone-400" />
           )}
         </div>
       </button>
@@ -182,17 +182,17 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: 'auto', opacity: 1 }}
           exit={{ height: 0, opacity: 0 }}
-          className="border-t border-slate-200"
+          className="border-t border-slate-200 dark:border-stone-700"
         >
           {/* Motivational Message */}
-          <div className="p-4 bg-gradient-to-r from-teal-50 to-sky-50 border-b border-slate-200">
+          <div className="p-4 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 border-b border-slate-200 dark:border-stone-700">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
-                <Award size={16} className="text-teal-600" />
+              <div className="w-8 h-8 rounded-lg bg-white dark:bg-stone-800 flex items-center justify-center shadow-sm">
+                <Award size={16} className="text-teal-600 dark:text-teal-400" />
               </div>
               <div>
-                <h4 className="font-semibold text-slate-800 text-sm">{motivation.title}</h4>
-                <p className="text-sm text-slate-600 mt-0.5">{motivation.message}</p>
+                <h4 className="font-semibold text-slate-800 dark:text-stone-100 text-sm">{motivation.title}</h4>
+                <p className="text-sm text-slate-600 dark:text-stone-400 mt-0.5">{motivation.message}</p>
               </div>
             </div>
           </div>
@@ -205,22 +205,22 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.05 }}
-                className="flex items-center gap-3 p-3 bg-white rounded-xl border border-slate-200"
+                className="flex items-center gap-3 p-3 bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700"
               >
                 <div className={cn("w-9 h-9 rounded-lg flex items-center justify-center", item.color)}>
                   {item.icon}
                 </div>
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-slate-800">{item.value}</span>
+                    <span className="font-bold text-slate-800 dark:text-stone-100">{item.value}</span>
                     {item.change && (
-                      <span className="text-xs text-emerald-600 font-medium flex items-center">
+                      <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center">
                         <TrendingUp size={10} className="mr-0.5" />
                         {item.change}
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-slate-700">{item.label}</span>
+                  <span className="text-xs text-slate-700 dark:text-stone-300">{item.label}</span>
                 </div>
               </motion.div>
             ))}
@@ -228,12 +228,12 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
 
           {/* Week Goals */}
           <div className="px-4 pb-4">
-            <div className="p-3 bg-white rounded-xl border border-slate-200">
+            <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-slate-700">Veckans mål</span>
-                <span className="text-xs text-slate-700">2 av 3 klara</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-stone-300">Veckans mål</span>
+                <span className="text-xs text-slate-700 dark:text-stone-300">2 av 3 klara</span>
               </div>
-              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: '66%' }}
@@ -243,22 +243,22 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
               </div>
               <div className="mt-3 space-y-2">
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <TrendingUp size={12} className="text-emerald-600" />
+                  <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                    <TrendingUp size={12} className="text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <span className="text-slate-600 line-through">Logga mående 3 dagar</span>
+                  <span className="text-slate-600 dark:text-stone-400 line-through">Logga mående 3 dagar</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center">
-                    <TrendingUp size={12} className="text-emerald-600" />
+                  <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                    <TrendingUp size={12} className="text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <span className="text-slate-600 line-through">Fyll i CV till 80%</span>
+                  <span className="text-slate-600 dark:text-stone-400 line-through">Fyll i CV till 80%</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
-                  <div className="w-5 h-5 rounded-full bg-slate-100 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-slate-300" />
+                  <div className="w-5 h-5 rounded-full bg-slate-100 dark:bg-stone-700 flex items-center justify-center">
+                    <div className="w-2 h-2 rounded-full bg-slate-300 dark:bg-stone-500" />
                   </div>
-                  <span className="text-slate-700">Spara 3 jobb</span>
+                  <span className="text-slate-700 dark:text-stone-300">Spara 3 jobb</span>
                 </div>
               </div>
             </div>

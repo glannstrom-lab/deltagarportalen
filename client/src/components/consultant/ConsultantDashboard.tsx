@@ -109,14 +109,14 @@ export const ConsultantDashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-stone-950">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
+      <div className="bg-white dark:bg-stone-900 border-b border-gray-200 dark:border-stone-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">Mina Deltagare</h1>
-              <p className="text-gray-500 mt-1">
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-stone-100">Mina Deltagare</h1>
+              <p className="text-gray-500 dark:text-stone-400 mt-1">
                 Hantera och följ upp {stats.total} deltagare
               </p>
             </div>
@@ -139,25 +139,25 @@ export const ConsultantDashboard: React.FC = () => {
           {/* Main Content - Participant List */}
           <div className="lg:col-span-2">
             {/* Filters */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
+            <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-4 mb-6">
               <div className="flex flex-wrap items-center gap-4">
                 <div className="flex-1 min-w-[200px]">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-stone-500" />
                     <input
                       type="text"
                       placeholder="Sök efter namn eller email..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                      className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-stone-800 text-gray-900 dark:text-stone-100"
                     />
                   </div>
                 </div>
-                
+
                 <select
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                  className="px-4 py-2 border border-gray-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-primary-500 bg-white dark:bg-stone-800 text-gray-900 dark:text-stone-100"
                 >
                   <option value="all">Alla statusar</option>
                   <option value="ACTIVE">Aktiva</option>
@@ -166,16 +166,16 @@ export const ConsultantDashboard: React.FC = () => {
                   <option value="COMPLETED">Avslutade</option>
                 </select>
 
-                <div className="flex items-center gap-2 border-l border-gray-200 pl-4">
+                <div className="flex items-center gap-2 border-l border-gray-200 dark:border-stone-700 pl-4">
                   <button
                     onClick={() => setSelectedView('grid')}
-                    className={`p-2 rounded-lg ${selectedView === 'grid' ? 'bg-primary-100 text-primary-600' : 'text-gray-400 hover:text-gray-600'}`}
+                    className={`p-2 rounded-lg ${selectedView === 'grid' ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-stone-500 hover:text-gray-600 dark:hover:text-stone-300'}`}
                   >
                     <BarChart3 className="w-5 h-5" />
                   </button>
                   <button
                     onClick={() => setSelectedView('list')}
-                    className={`p-2 rounded-lg ${selectedView === 'list' ? 'bg-primary-100 text-primary-600' : 'text-gray-400 hover:text-gray-600'}`}
+                    className={`p-2 rounded-lg ${selectedView === 'list' ? 'bg-primary-100 dark:bg-primary-900/30 text-primary-600 dark:text-primary-400' : 'text-gray-400 dark:text-stone-500 hover:text-gray-600 dark:hover:text-stone-300'}`}
                   >
                     <Users className="w-5 h-5" />
                   </button>
@@ -194,20 +194,20 @@ export const ConsultantDashboard: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-              <h3 className="font-semibold text-gray-900 mb-4">Snabbåtgärder</h3>
+            <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-6">
+              <h3 className="font-semibold text-gray-900 dark:text-stone-100 mb-4">Snabbåtgärder</h3>
               <div className="space-y-3">
-                <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 transition-colors">
-                  <Mail className="w-5 h-5 text-primary-600" />
-                  <span className="text-gray-700">Skicka gruppmeddelande</span>
+                <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 dark:hover:bg-stone-800 transition-colors">
+                  <Mail className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                  <span className="text-gray-700 dark:text-stone-300">Skicka gruppmeddelande</span>
                 </button>
-                <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 transition-colors">
-                  <Calendar className="w-5 h-5 text-primary-600" />
-                  <span className="text-gray-700">Schemalägg möten</span>
+                <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 dark:hover:bg-stone-800 transition-colors">
+                  <Calendar className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                  <span className="text-gray-700 dark:text-stone-300">Schemalägg möten</span>
                 </button>
-                <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 transition-colors">
-                  <FileText className="w-5 h-5 text-primary-600" />
-                  <span className="text-gray-700">Exportera rapport</span>
+                <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 dark:hover:bg-stone-800 transition-colors">
+                  <FileText className="w-5 h-5 text-primary-600 dark:text-primary-400" />
+                  <span className="text-gray-700 dark:text-stone-300">Exportera rapport</span>
                 </button>
               </div>
             </div>
@@ -217,15 +217,15 @@ export const ConsultantDashboard: React.FC = () => {
 
             {/* Attention Needed */}
             {stats.needsAttention > 0 && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-6">
+              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-6">
                 <div className="flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-amber-600 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
                   <div>
-                    <h3 className="font-semibold text-amber-900">Kräver uppmärksamhet</h3>
-                    <p className="text-amber-700 text-sm mt-1">
+                    <h3 className="font-semibold text-amber-900 dark:text-amber-200">Kräver uppmärksamhet</h3>
+                    <p className="text-amber-700 dark:text-amber-300 text-sm mt-1">
                       {stats.needsAttention} deltagare har inte kontaktats på över 7 dagar.
                     </p>
-                    <button className="text-amber-800 text-sm font-medium mt-3 hover:underline">
+                    <button className="text-amber-800 dark:text-amber-200 text-sm font-medium mt-3 hover:underline">
                       Visa lista →
                     </button>
                   </div>

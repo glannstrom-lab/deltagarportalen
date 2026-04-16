@@ -123,11 +123,11 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
       </button>
 
       {isOpen && (
-        <div className="mt-3 p-4 bg-teal-50 rounded-xl border border-teal-200">
+        <div className="mt-3 p-4 bg-teal-50 dark:bg-teal-900/30 rounded-xl border border-teal-200 dark:border-teal-800">
           {/* Säkerhetsbadge */}
-          <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
-            <Shield className="w-4 h-4 text-emerald-600" />
-            <span className="text-sm text-emerald-700">
+          <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
+            <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <span className="text-sm text-emerald-700 dark:text-emerald-300">
               Säker anslutning via server
             </span>
           </div>
@@ -149,7 +149,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
                   key={key}
                   onClick={() => callSecureAI(key)}
                   disabled={loading}
-                  className="flex flex-col items-center gap-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 hover:bg-slate-50 hover:border-teal-300 transition-colors disabled:opacity-50"
+                  className="flex flex-col items-center gap-1 px-3 py-2 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-700 rounded-lg text-sm text-slate-700 dark:text-stone-300 hover:bg-slate-50 dark:hover:bg-stone-700 hover:border-teal-300 dark:hover:border-teal-600 transition-colors disabled:opacity-50"
                   title={feat.description}
                 >
                   <Icon size={18} className={feat.color} />
@@ -161,20 +161,20 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
 
           {/* Weak words detection */}
           {weakWords.length > 0 && (
-            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <p className="text-sm font-medium text-amber-800 mb-2">
+            <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <p className="text-sm font-medium text-amber-800 dark:text-amber-200 mb-2">
                 Hittade svaga formuleringar:
               </p>
               <div className="space-y-1">
                 {weakWords.slice(0, 3).map((word, index) => (
                   <div key={index} className="flex items-center gap-2 text-sm">
-                    <span className="text-amber-700 line-through">{word.weak}</span>
-                    <span className="text-amber-600">→</span>
-                    <span className="text-emerald-700 font-medium">{word.strong}</span>
+                    <span className="text-amber-700 dark:text-amber-400 line-through">{word.weak}</span>
+                    <span className="text-amber-600 dark:text-amber-500">→</span>
+                    <span className="text-emerald-700 dark:text-emerald-400 font-medium">{word.strong}</span>
                   </div>
                 ))}
                 {weakWords.length > 3 && (
-                  <p className="text-xs text-amber-600">
+                  <p className="text-xs text-amber-600 dark:text-amber-400">
                     +{weakWords.length - 3} till...
                   </p>
                 )}
@@ -191,20 +191,20 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
 
           {/* Loading */}
           {loading && (
-            <div className="p-4 bg-white rounded-lg border border-slate-200 text-center">
-              <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-teal-600" />
-              <p className="text-sm text-slate-600">AI arbetar...</p>
-              <p className="text-xs text-slate-600 mt-1">Detta kan ta några sekunder</p>
+            <div className="p-4 bg-white dark:bg-stone-800 rounded-lg border border-slate-200 dark:border-stone-700 text-center">
+              <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-teal-600 dark:text-teal-400" />
+              <p className="text-sm text-slate-600 dark:text-stone-400">AI arbetar...</p>
+              <p className="text-xs text-slate-600 dark:text-stone-500 mt-1">Detta kan ta några sekunder</p>
             </div>
           )}
 
           {/* Suggestion */}
           {!loading && suggestion && (
-            <div className="bg-white p-4 rounded-lg border border-slate-200">
-              <p className="text-xs font-medium text-slate-700 mb-2 uppercase tracking-wide">
+            <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-slate-200 dark:border-stone-700">
+              <p className="text-xs font-medium text-slate-700 dark:text-stone-300 mb-2 uppercase tracking-wide">
                 {activeFeature && features[activeFeature]?.label}
               </p>
-              <p className="text-sm text-slate-700 whitespace-pre-wrap">{suggestion}</p>
+              <p className="text-sm text-slate-700 dark:text-stone-300 whitespace-pre-wrap">{suggestion}</p>
               <div className="flex gap-2 mt-3">
                 <button
                   onClick={() => {
@@ -222,7 +222,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
                     setSuggestion('')
                     setActiveFeature(null)
                   }}
-                  className="flex items-center gap-1 px-3 py-1.5 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50"
+                  className="flex items-center gap-1 px-3 py-1.5 border border-slate-300 dark:border-stone-600 text-slate-700 dark:text-stone-300 text-sm rounded-lg hover:bg-slate-50 dark:hover:bg-stone-700"
                 >
                   Avbryt
                 </button>
@@ -232,7 +232,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
 
           {/* Empty state */}
           {!loading && !suggestion && !error && (
-            <div className="text-center py-4 text-slate-700 text-sm">
+            <div className="text-center py-4 text-slate-700 dark:text-stone-400 text-sm">
               Välj en funktion ovan för att få hjälp av AI
             </div>
           )}

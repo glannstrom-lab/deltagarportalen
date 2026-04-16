@@ -68,21 +68,21 @@ export function CardHeader({
   return (
     <div className={cn(
       'flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4',
-      'pb-3 sm:pb-4 mb-3 sm:mb-4 border-b border-stone-100',
+      'pb-3 sm:pb-4 mb-3 sm:mb-4 border-b border-stone-100 dark:border-stone-700',
       className
     )}>
       <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
         {icon && (
-          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-teal-50 flex items-center justify-center">
-            <span className="text-teal-600 [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5">{icon}</span>
+          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center">
+            <span className="text-teal-600 dark:text-teal-400 [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5">{icon}</span>
           </div>
         )}
         <div className="flex-1 min-w-0">
           {title && (
-            <h3 className="text-base sm:text-lg font-semibold text-stone-800 truncate">{title}</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-stone-800 dark:text-stone-100 truncate">{title}</h3>
           )}
           {description && (
-            <p className="text-xs sm:text-sm text-stone-500 mt-0.5 line-clamp-2">{description}</p>
+            <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5 line-clamp-2">{description}</p>
           )}
         </div>
       </div>
@@ -119,7 +119,7 @@ export function CardFooter({
   return (
     <div className={cn(
       'flex items-center gap-3',
-      'pt-4 mt-4 border-t border-stone-100',
+      'pt-4 mt-4 border-t border-stone-100 dark:border-stone-700',
       alignClasses[align],
       className
     )}>
@@ -149,10 +149,10 @@ export function CardSection({
       {(title || description) && (
         <div>
           {title && (
-            <h4 className="text-sm font-semibold text-stone-800">{title}</h4>
+            <h4 className="text-sm font-semibold text-stone-800 dark:text-stone-100">{title}</h4>
           )}
           {description && (
-            <p className="text-sm text-stone-500 mt-0.5">{description}</p>
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{description}</p>
           )}
         </div>
       )}
@@ -185,12 +185,12 @@ export function StatCard({
   className
 }: StatCardProps) {
   const colorClasses = {
-    default: 'bg-stone-50 text-stone-600',
-    violet: 'bg-teal-50 text-teal-600',
-    green: 'bg-emerald-50 text-emerald-600',
-    amber: 'bg-amber-50 text-amber-600',
-    blue: 'bg-blue-50 text-blue-600',
-    purple: 'bg-sky-50 text-sky-600',
+    default: 'bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-300',
+    violet: 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400',
+    green: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
+    amber: 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
+    blue: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+    purple: 'bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400',
   }
 
   return (
@@ -212,7 +212,7 @@ export function StatCard({
         )}
         <div className="flex-1 min-w-0 w-full sm:w-auto">
           <div className="flex items-baseline gap-1.5 sm:gap-2">
-            <span className="text-xl sm:text-2xl font-bold text-stone-800">{value}</span>
+            <span className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">{value}</span>
             {trend && (
               <span className={cn(
                 'text-[10px] sm:text-xs font-medium',
@@ -222,7 +222,7 @@ export function StatCard({
               </span>
             )}
           </div>
-          <p className="text-xs sm:text-sm text-stone-500 truncate">{label}</p>
+          <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 truncate">{label}</p>
         </div>
       </div>
     </Card>
@@ -248,17 +248,17 @@ export function InfoCard({
   className
 }: InfoCardProps) {
   const variantClasses = {
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
-    success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
-    warning: 'bg-amber-50 border-amber-200 text-amber-800',
-    error: 'bg-red-50 border-red-200 text-red-800',
+    info: 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-800 dark:text-blue-200',
+    success: 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700 text-emerald-800 dark:text-emerald-200',
+    warning: 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-700 text-amber-800 dark:text-amber-200',
+    error: 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700 text-red-800 dark:text-red-200',
   }
 
   const iconColors = {
-    info: 'text-blue-600',
-    success: 'text-emerald-600',
-    warning: 'text-amber-600',
-    error: 'text-red-600',
+    info: 'text-blue-600 dark:text-blue-400',
+    success: 'text-emerald-600 dark:text-emerald-400',
+    warning: 'text-amber-600 dark:text-amber-400',
+    error: 'text-red-600 dark:text-red-400',
   }
 
   return (
@@ -314,14 +314,14 @@ export function ActionCard({
     <button
       className={cn(
         'w-full text-left',
-        'bg-white rounded-lg sm:rounded-xl border sm:border-2 p-3 sm:p-4',
+        'bg-white dark:bg-stone-900 rounded-lg sm:rounded-xl border sm:border-2 p-3 sm:p-4',
         'transition-all duration-200',
         'min-h-[44px]', // Touch target
         animations.press,
         animations.lift,
         isSelected
-          ? 'border-teal-500 ring-2 ring-teal-500 ring-offset-2'
-          : 'border-stone-200 hover:border-teal-300 hover:shadow-md',
+          ? 'border-teal-500 ring-2 ring-teal-500 ring-offset-2 dark:ring-offset-stone-900'
+          : 'border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md',
         className
       )}
       {...props}
@@ -331,22 +331,22 @@ export function ActionCard({
           <div className={cn(
             'w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0',
             '[&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6',
-            isSelected ? 'bg-teal-100 text-teal-600' : 'bg-stone-100 text-stone-600'
+            isSelected ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
           )}>
             {icon}
           </div>
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h3 className="text-sm sm:text-base font-semibold text-stone-800">{title}</h3>
+            <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-100">{title}</h3>
             {badge && (
-              <span className="px-1.5 sm:px-2 py-0.5 bg-teal-100 text-teal-700 text-[10px] sm:text-xs font-medium rounded-full">
+              <span className="px-1.5 sm:px-2 py-0.5 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-[10px] sm:text-xs font-medium rounded-full">
                 {badge}
               </span>
             )}
           </div>
           {description && (
-            <p className="text-xs sm:text-sm text-stone-500 mt-0.5 sm:mt-1 line-clamp-2">{description}</p>
+            <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5 sm:mt-1 line-clamp-2">{description}</p>
           )}
         </div>
       </div>
@@ -366,9 +366,9 @@ export function SkeletonCard({ className, rows = 3 }: SkeletonCardProps) {
   return (
     <Card className={cn('animate-pulse', className)}>
       <div className="space-y-3">
-        <div className="h-4 bg-stone-200 rounded w-3/4" />
+        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-3/4" />
         {Array.from({ length: rows }).map((_, i) => (
-          <div key={i} className="h-3 bg-stone-200 rounded" />
+          <div key={i} className="h-3 bg-stone-200 dark:bg-stone-700 rounded" />
         ))}
       </div>
     </Card>

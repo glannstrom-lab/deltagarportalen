@@ -47,15 +47,15 @@ export function EmptyState({
       )}>
         {Icon && (
           <div className={cn(
-            'w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3',
+            'w-12 h-12 bg-slate-100 dark:bg-stone-800 rounded-full flex items-center justify-center mb-3',
             iconClassName
           )}>
-            <Icon className="w-6 h-6 text-slate-600" />
+            <Icon className="w-6 h-6 text-slate-600 dark:text-stone-300" />
           </div>
         )}
-        <h3 className="text-sm font-medium text-slate-800">{title}</h3>
+        <h3 className="text-sm font-medium text-slate-800 dark:text-stone-100">{title}</h3>
         {description && (
-          <p className="text-xs text-slate-700 mt-1 max-w-xs">{description}</p>
+          <p className="text-xs text-slate-700 dark:text-stone-300 mt-1 max-w-xs">{description}</p>
         )}
         {action && (
           <Button
@@ -79,15 +79,15 @@ export function EmptyState({
     )}>
       {Icon && (
         <div className={cn(
-          'w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4',
+          'w-16 h-16 bg-slate-100 dark:bg-stone-800 rounded-full flex items-center justify-center mb-4',
           iconClassName
         )}>
-          <Icon className="w-8 h-8 text-slate-600" />
+          <Icon className="w-8 h-8 text-slate-600 dark:text-stone-300" />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
+      <h3 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{title}</h3>
       {description && (
-        <p className="text-sm text-slate-700 mt-2 max-w-xs mx-auto">
+        <p className="text-sm text-slate-700 dark:text-stone-300 mt-2 max-w-xs mx-auto">
           {description}
         </p>
       )}
@@ -167,15 +167,15 @@ export function EmptySearch({
       'text-center py-12 px-4',
       className
     )}>
-      <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-        <svg className="w-8 h-8 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <div className="w-16 h-16 bg-slate-100 dark:bg-stone-800 rounded-full flex items-center justify-center mb-4">
+        <svg className="w-8 h-8 text-slate-600 dark:text-stone-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </div>
-      <h3 className="text-lg font-semibold text-slate-800">
+      <h3 className="text-lg font-semibold text-slate-800 dark:text-stone-100">
         Inga resultat för "{query}"
       </h3>
-      <p className="text-sm text-slate-700 mt-2 max-w-xs">
+      <p className="text-sm text-slate-700 dark:text-stone-300 mt-2 max-w-xs">
         Försök med andra sökord eller kontrollera stavningen.
       </p>
       <Button
@@ -188,13 +188,13 @@ export function EmptySearch({
       
       {suggestions && suggestions.length > 0 && (
         <div className="mt-8 text-left w-full max-w-md">
-          <p className="text-sm font-medium text-slate-700 mb-3">Förslag:</p>
+          <p className="text-sm font-medium text-slate-700 dark:text-stone-300 mb-3">Förslag:</p>
           <div className="flex flex-wrap gap-2">
             {suggestions.map((suggestion) => (
               <button
                 key={suggestion}
                 onClick={() => onClear()}
-                className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm text-slate-600 hover:bg-slate-50 hover:border-slate-300 transition-colors"
+                className="px-3 py-1.5 bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-700 rounded-full text-sm text-slate-600 dark:text-stone-300 hover:bg-slate-50 dark:hover:bg-stone-800 hover:border-slate-300 dark:hover:border-stone-600 transition-colors"
               >
                 {suggestion}
               </button>
@@ -238,15 +238,15 @@ export function EmptyWidget({
     <div className={cn(
       'flex flex-col items-center justify-center',
       'text-center py-8 px-4',
-      'bg-slate-50 rounded-xl border border-dashed border-slate-300',
+      'bg-slate-50 dark:bg-stone-800 rounded-xl border border-dashed border-slate-300 dark:border-stone-600',
       className
     )}>
-      <p className="text-sm font-medium text-slate-700">{title}</p>
-      <p className="text-xs text-slate-700 mt-1">{description}</p>
+      <p className="text-sm font-medium text-slate-700 dark:text-stone-300">{title}</p>
+      <p className="text-xs text-slate-700 dark:text-stone-300 mt-1">{description}</p>
       {action && (
         <button
           onClick={handleClick}
-          className="mt-3 text-sm font-medium text-indigo-600 hover:text-indigo-700"
+          className="mt-3 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
         >
           {action.label} →
         </button>
@@ -281,9 +281,9 @@ export function IllustratedEmptyState({
       <svg viewBox="0 0 120 120" className="w-32 h-32 text-slate-300" fill="currentColor">
         <rect x="20" y="20" width="40" height="50" rx="4" className="text-slate-200" />
         <rect x="35" y="35" width="70" height="50" rx="4" className="text-slate-300" />
-        <rect x="45" y="50" width="40" height="4" rx="2" className="text-slate-600" />
-        <rect x="45" y="60" width="30" height="4" rx="2" className="text-slate-600" />
-        <rect x="45" y="70" width="35" height="4" rx="2" className="text-slate-600" />
+        <rect x="45" y="50" width="40" height="4" rx="2" className="text-slate-600 dark:text-stone-300" />
+        <rect x="45" y="60" width="30" height="4" rx="2" className="text-slate-600 dark:text-stone-300" />
+        <rect x="45" y="70" width="35" height="4" rx="2" className="text-slate-600 dark:text-stone-300" />
       </svg>
     ),
     search: (
@@ -323,9 +323,9 @@ export function IllustratedEmptyState({
       <div className="mb-6">
         {illustrations[illustration]}
       </div>
-      <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
+      <h3 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{title}</h3>
       {description && (
-        <p className="text-sm text-slate-700 mt-2 max-w-sm">
+        <p className="text-sm text-slate-700 dark:text-stone-300 mt-2 max-w-sm">
           {description}
         </p>
       )}

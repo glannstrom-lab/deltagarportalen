@@ -55,7 +55,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none" aria-hidden="true">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-400 pointer-events-none" aria-hidden="true">
               {leftIcon}
             </div>
           )}
@@ -75,7 +75,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 dark:text-slate-400">
               {rightIcon}
             </div>
           )}
@@ -87,7 +87,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
         {hint && !error && (
-          <p id={hintId} className="mt-1.5 text-sm text-slate-700">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-slate-700 dark:text-slate-300">{hint}</p>
         )}
       </div>
     )
@@ -114,14 +114,14 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="p-1 hover:bg-slate-100 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
+            className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
             aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
             aria-pressed={showPassword}
           >
             {showPassword ? (
-              <EyeOff className="w-4 h-4 text-slate-700" aria-hidden="true" />
+              <EyeOff className="w-4 h-4 text-slate-700 dark:text-slate-300" aria-hidden="true" />
             ) : (
-              <Eye className="w-4 h-4 text-slate-700" aria-hidden="true" />
+              <Eye className="w-4 h-4 text-slate-700 dark:text-slate-300" aria-hidden="true" />
             )}
           </button>
         }
@@ -196,7 +196,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           </p>
         )}
         {hint && !error && (
-          <p id={hintId} className="mt-1.5 text-sm text-slate-700">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-slate-700 dark:text-slate-300">{hint}</p>
         )}
       </div>
     )
@@ -254,7 +254,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             aria-describedby={describedBy}
             className={cn(
               inputBase,
-              'appearance-none bg-white pr-10',
+              'appearance-none bg-white dark:bg-stone-900 pr-10',
               error && 'border-red-300 focus:border-red-500 focus:ring-red-500/20',
               className
             )}
@@ -273,7 +273,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               </option>
             ))}
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 pointer-events-none" aria-hidden="true" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 dark:text-slate-400 pointer-events-none" aria-hidden="true" />
         </div>
         {error && (
           <p id={errorId} className="mt-1.5 text-sm text-red-600 flex items-center gap-1" role="alert">
@@ -282,7 +282,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </p>
         )}
         {hint && !error && (
-          <p id={hintId} className="mt-1.5 text-sm text-slate-700">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-slate-700 dark:text-slate-300">{hint}</p>
         )}
       </div>
     )
@@ -316,7 +316,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             {...props}
           />
           <div className={cn(
-            'w-5 h-5 rounded border-2 border-slate-300',
+            'w-5 h-5 rounded border-2 border-slate-300 dark:border-slate-600',
             'peer-checked:bg-sky-600 peer-checked:border-sky-600',
             'peer-focus:ring-2 peer-focus:ring-sky-500/20',
             'transition-all duration-200',
@@ -334,11 +334,11 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           </div>
         </div>
         <div className="flex-1">
-          <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900">
+          <span className="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100">
             {label}
           </span>
           {description && (
-            <p className="text-sm text-slate-700 mt-0.5">{description}</p>
+            <p className="text-sm text-slate-700 dark:text-slate-300 mt-0.5">{description}</p>
           )}
         </div>
       </label>
@@ -365,10 +365,10 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
         {(label || description) && (
           <div className="flex-1">
             {label && (
-              <span className="text-sm font-medium text-slate-700">{label}</span>
+              <span className="text-sm font-medium text-slate-700 dark:text-slate-300">{label}</span>
             )}
             {description && (
-              <p className="text-sm text-slate-700 mt-0.5">{description}</p>
+              <p className="text-sm text-slate-700 dark:text-slate-300 mt-0.5">{description}</p>
             )}
           </div>
         )}
@@ -380,7 +380,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
             {...props}
           />
           <div className={cn(
-            'w-11 h-6 bg-slate-200 rounded-full',
+            'w-11 h-6 bg-slate-200 dark:bg-slate-700 rounded-full',
             'peer-checked:bg-sky-600',
             'peer-focus:ring-2 peer-focus:ring-sky-500/20',
             'transition-colors duration-200',

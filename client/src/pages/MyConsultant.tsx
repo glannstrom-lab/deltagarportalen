@@ -95,7 +95,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
     return (
       <Card className="p-6 text-center">
         <div className="w-16 h-16 rounded-full bg-stone-100 dark:bg-stone-800 mx-auto mb-4 flex items-center justify-center">
-          <User className="w-8 h-8 text-stone-400" />
+          <User className="w-8 h-8 text-stone-400 dark:text-stone-500" />
         </div>
         <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
           Ingen konsulent kopplad
@@ -304,9 +304,9 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
                   </span>
                 </div>
                 {isExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-stone-400" />
+                  <ChevronUp className="w-5 h-5 text-stone-400 dark:text-stone-500" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-stone-400" />
+                  <ChevronDown className="w-5 h-5 text-stone-400 dark:text-stone-500" />
                 )}
               </button>
 
@@ -324,7 +324,7 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
                           {item.isShared ? (
                             <Eye className="w-4 h-4 text-teal-500" aria-label="Delas med konsulenten" />
                           ) : (
-                            <EyeOff className="w-4 h-4 text-stone-400" aria-label="Delas inte" />
+                            <EyeOff className="w-4 h-4 text-stone-400 dark:text-stone-500" aria-label="Delas inte" />
                           )}
                           <span className="text-sm text-stone-600 dark:text-stone-400">
                             {item.label}
@@ -899,7 +899,7 @@ export default function MyConsultant() {
       {!consultant && (
         <Card className="p-8 text-center">
           <div className="w-20 h-20 rounded-full bg-stone-100 dark:bg-stone-800 mx-auto mb-6 flex items-center justify-center">
-            <User className="w-10 h-10 text-stone-400" />
+            <User className="w-10 h-10 text-stone-400 dark:text-stone-500" />
           </div>
           <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
             Ingen konsulent kopplad

@@ -28,9 +28,9 @@ export const LinkedInWidget = memo(function LinkedInWidget({
       <Link
         to="/linkedin-optimizer"
         className={cn(
-          "group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border transition-all duration-200",
+          "group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border transition-all duration-200",
           "hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md",
-          isOptimized ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-slate-700"
+          isOptimized ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-stone-700"
         )}
       >
         <div className={cn(
@@ -40,8 +40,8 @@ export const LinkedInWidget = memo(function LinkedInWidget({
           <Linkedin size={16} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">LinkedIn</p>
-          <p className={cn("text-xs", hasAnalysis ? (isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400") : "text-slate-700 dark:text-slate-600")}>
+          <p className="text-sm font-semibold text-slate-800 dark:text-stone-100">LinkedIn</p>
+          <p className={cn("text-xs", hasAnalysis ? (isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400") : "text-slate-700 dark:text-stone-400")}>
             {hasAnalysis ? `${profileScore}%` : t('linkedInWidget.analyze')}
           </p>
         </div>
@@ -58,9 +58,9 @@ export const LinkedInWidget = memo(function LinkedInWidget({
       <Link
         to="/linkedin-optimizer"
         className={cn(
-          "group block bg-white dark:bg-slate-800 p-4 rounded-xl border transition-all duration-200",
+          "group block bg-white dark:bg-stone-900 p-4 rounded-xl border transition-all duration-200",
           "hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg hover:-translate-y-0.5",
-          isOptimized ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20" : "border-slate-200 dark:border-slate-700"
+          isOptimized ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20" : "border-slate-200 dark:border-stone-700"
         )}
       >
         <div className="flex items-center justify-between mb-3">
@@ -72,13 +72,13 @@ export const LinkedInWidget = memo(function LinkedInWidget({
               <Linkedin size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">LinkedIn</h3>
-              <p className="text-xs text-slate-700 dark:text-slate-600">
+              <h3 className="font-semibold text-slate-800 dark:text-stone-100 text-sm">LinkedIn</h3>
+              <p className="text-xs text-slate-700 dark:text-stone-400">
                 {hasAnalysis ? t('linkedInWidget.profileAnalyzed') : t('linkedInWidget.optimizeProfile')}
               </p>
             </div>
           </div>
-          <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" />
+          <ChevronRight size={16} className="text-slate-300 dark:text-stone-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors" />
         </div>
 
         {hasAnalysis ? (
@@ -86,7 +86,7 @@ export const LinkedInWidget = memo(function LinkedInWidget({
             <span className={cn("text-2xl font-bold", isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400")}>
               {profileScore}%
             </span>
-            <span className="text-sm text-slate-700 dark:text-slate-600">{t('linkedInWidget.profileStrength')}</span>
+            <span className="text-sm text-slate-700 dark:text-stone-400">{t('linkedInWidget.profileStrength')}</span>
           </div>
         ) : (
           <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
@@ -103,9 +103,9 @@ export const LinkedInWidget = memo(function LinkedInWidget({
     <Link
       to="/linkedin-optimizer"
       className={cn(
-        "group block bg-white dark:bg-slate-800 p-5 rounded-xl border transition-all duration-200",
+        "group block bg-white dark:bg-stone-900 p-5 rounded-xl border transition-all duration-200",
         "hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg",
-        isOptimized ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-slate-700"
+        isOptimized ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-stone-700"
       )}
     >
       <div className="flex items-start justify-between mb-4">
@@ -119,25 +119,25 @@ export const LinkedInWidget = memo(function LinkedInWidget({
             <Linkedin size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('linkedInWidget.linkedInOptimization')}</h3>
-            <p className="text-sm text-slate-700 dark:text-slate-600">
+            <h3 className="font-bold text-slate-800 dark:text-stone-100">{t('linkedInWidget.linkedInOptimization')}</h3>
+            <p className="text-sm text-slate-700 dark:text-stone-400">
               {hasAnalysis ? t('linkedInWidget.profileAnalyzed') : t('linkedInWidget.analyzeYourProfile')}
             </p>
           </div>
         </div>
-        <ChevronRight size={18} className="text-slate-300 dark:text-slate-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 mt-1 transition-colors" />
+        <ChevronRight size={18} className="text-slate-300 dark:text-stone-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 mt-1 transition-colors" />
       </div>
 
       {/* Status card */}
       {hasAnalysis ? (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-600 dark:text-slate-600">{t('linkedInWidget.profileStrength')}</span>
+            <span className="text-sm font-medium text-slate-600 dark:text-stone-400">{t('linkedInWidget.profileStrength')}</span>
             <span className={cn("text-lg font-bold", isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400")}>
               {profileScore}%
             </span>
           </div>
-          <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+          <div className="h-3 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
             <div
               className={cn(
                 "h-full rounded-full transition-all duration-500",
@@ -166,16 +166,16 @@ export const LinkedInWidget = memo(function LinkedInWidget({
         <div className={cn("p-3 rounded-lg", isOptimized ? "bg-emerald-50 dark:bg-emerald-900/20" : "bg-blue-50 dark:bg-blue-900/20")}>
           <div className="flex items-center gap-2">
             <TrendingUp size={16} className={isOptimized ? "text-emerald-500 dark:text-emerald-400" : "text-blue-500 dark:text-blue-400"} />
-            <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{profileScore}%</span>
+            <span className="text-lg font-bold text-slate-800 dark:text-stone-100">{profileScore}%</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-600">{t('linkedInWidget.profileStrength')}</p>
+          <p className="text-xs text-slate-700 dark:text-stone-400">{t('linkedInWidget.profileStrength')}</p>
         </div>
-        <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+        <div className="p-3 bg-slate-50 dark:bg-stone-700/50 rounded-lg">
           <div className="flex items-center gap-2">
-            <CheckCircle2 size={16} className="text-slate-700 dark:text-slate-600" />
-            <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{optimizedSections}/{totalSections}</span>
+            <CheckCircle2 size={16} className="text-slate-700 dark:text-stone-400" />
+            <span className="text-lg font-bold text-slate-800 dark:text-stone-100">{optimizedSections}/{totalSections}</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-600">{t('linkedInWidget.sections')}</p>
+          <p className="text-xs text-slate-700 dark:text-stone-400">{t('linkedInWidget.sections')}</p>
         </div>
       </div>
 

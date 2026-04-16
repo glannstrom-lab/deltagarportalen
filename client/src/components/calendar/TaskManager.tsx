@@ -56,32 +56,32 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
   }
 
   return (
-    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full p-4 flex items-center justify-between hover:bg-stone-50 transition-colors"
+        className="w-full p-4 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <CheckSquare className="w-5 h-5 text-purple-600" />
-          <h3 className="font-semibold text-stone-900">Att göra</h3>
-          <span className="text-sm text-stone-700">
+          <CheckSquare className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+          <h3 className="font-semibold text-stone-900 dark:text-stone-100">Att göra</h3>
+          <span className="text-sm text-stone-700 dark:text-stone-300">
             ({completedCount}/{tasks.length})
           </span>
         </div>
         <div className="flex items-center gap-3">
           {/* Progress bar */}
-          <div className="w-24 h-2 bg-stone-200 rounded-full overflow-hidden">
-            <div 
+          <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
+            <div
               className="h-full bg-purple-500 rounded-full transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
-          {isExpanded ? <ChevronUp size={20} className="text-stone-600" /> : <ChevronDown size={20} className="text-stone-600" />}
+          {isExpanded ? <ChevronUp size={20} className="text-stone-600 dark:text-stone-400" /> : <ChevronDown size={20} className="text-stone-600 dark:text-stone-400" />}
         </div>
       </button>
 
       {isExpanded && (
-        <div className="p-4 pt-0 border-t border-stone-100">
+        <div className="p-4 pt-0 border-t border-stone-100 dark:border-stone-700">
           {/* Add new task */}
           <div className="flex gap-2 mt-4">
             <input
@@ -90,7 +90,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
               onChange={(e) => setNewTaskTitle(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addTask()}
               placeholder="Lägg till ny uppgift..."
-              className="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
             <button
               onClick={addTask}
@@ -107,7 +107,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
               <div
                 key={task.id}
                 className={`flex items-center gap-2 p-2 rounded-lg group transition-colors ${
-                  task.status === 'done' ? 'bg-stone-50' : 'hover:bg-stone-50'
+                  task.status === 'done' ? 'bg-stone-50 dark:bg-stone-800' : 'hover:bg-stone-50 dark:hover:bg-stone-800'
                 }`}
               >
                 <button
@@ -115,16 +115,16 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
                   className="flex-shrink-0"
                 >
                   {task.status === 'done' ? (
-                    <CheckSquare className="w-5 h-5 text-purple-600" />
+                    <CheckSquare className="w-5 h-5 text-purple-600 dark:text-purple-400" />
                   ) : (
-                    <Square className="w-5 h-5 text-stone-600 hover:text-purple-600 transition-colors" />
+                    <Square className="w-5 h-5 text-stone-600 dark:text-stone-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors" />
                   )}
                 </button>
-                
+
                 <span className={`flex-1 text-sm ${
-                  task.status === 'done' 
-                    ? 'text-stone-600 line-through' 
-                    : 'text-stone-700'
+                  task.status === 'done'
+                    ? 'text-stone-600 dark:text-stone-400 line-through'
+                    : 'text-stone-700 dark:text-stone-300'
                 }`}>
                   {task.title}
                 </span>
@@ -134,20 +134,20 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
                   <button
                     onClick={() => moveTask(index, 'up')}
                     disabled={index === 0}
-                    className="p-1 hover:bg-stone-200 rounded disabled:opacity-30"
+                    className="p-1 hover:bg-stone-200 dark:hover:bg-stone-700 rounded disabled:opacity-30"
                   >
-                    <ChevronUp size={14} className="text-stone-600" />
+                    <ChevronUp size={14} className="text-stone-600 dark:text-stone-400" />
                   </button>
                   <button
                     onClick={() => moveTask(index, 'down')}
                     disabled={index === tasks.length - 1}
-                    className="p-1 hover:bg-stone-200 rounded disabled:opacity-30"
+                    className="p-1 hover:bg-stone-200 dark:hover:bg-stone-700 rounded disabled:opacity-30"
                   >
-                    <ChevronDown size={14} className="text-stone-600" />
+                    <ChevronDown size={14} className="text-stone-600 dark:text-stone-400" />
                   </button>
                   <button
                     onClick={() => deleteTask(task.id)}
-                    className="p-1 hover:bg-red-100 rounded text-red-400 hover:text-red-600 transition-colors"
+                    className="p-1 hover:bg-red-100 dark:hover:bg-red-900/30 rounded text-red-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -157,7 +157,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
           </div>
 
           {tasks.length === 0 && (
-            <p className="text-center text-stone-600 text-sm py-4">
+            <p className="text-center text-stone-600 dark:text-stone-400 text-sm py-4">
               Inga uppgifter ännu. Lägg till en för att komma igång!
             </p>
           )}

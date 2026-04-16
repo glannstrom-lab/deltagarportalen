@@ -362,7 +362,7 @@ export default function VisibilityTab() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="border-t border-slate-100 dark:border-stone-700 pt-4 mt-4"
+              className="border-t border-stone-100 dark:border-stone-700 pt-4 mt-4"
             >
               <div className="space-y-3">
                 <input
@@ -411,7 +411,7 @@ export default function VisibilityTab() {
           onClick={() => setSelectedCategory(null)}
           className={cn(
             "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            !selectedCategory ? "bg-teal-600 dark:bg-teal-700 text-white" : "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-stone-600"
+            !selectedCategory ? "bg-teal-600 dark:bg-teal-700 text-white" : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
           )}
         >
           Alla ({VISIBILITY_STRATEGIES.length})
@@ -431,7 +431,7 @@ export default function VisibilityTab() {
                     cat.color === 'emerald' && "bg-emerald-600 dark:bg-emerald-700 text-white",
                     cat.color === 'amber' && "bg-amber-600 dark:bg-amber-700 text-white"
                   )
-                  : "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-stone-600"
+                  : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
               )}
             >
               {cat.label} ({count})
@@ -459,7 +459,7 @@ export default function VisibilityTab() {
                   status === 'completed' && "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700",
                   status === 'in_progress' && "bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700",
                   status === 'skipped' && "opacity-50",
-                  status === 'not_started' && "border-slate-100 dark:border-stone-600 hover:border-slate-200 dark:hover:border-stone-500"
+                  status === 'not_started' && "border-stone-100 dark:border-stone-600 hover:border-stone-200 dark:hover:border-stone-500"
                 )}
               >
                 <div className="flex items-start justify-between">
@@ -486,7 +486,7 @@ export default function VisibilityTab() {
                       </span>
                       <span className={cn(
                         "px-2 py-1 rounded-full text-xs font-medium",
-                        strategy.impact === 'low' && "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300",
+                        strategy.impact === 'low' && "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300",
                         strategy.impact === 'medium' && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
                         strategy.impact === 'high' && "bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300"
                       )}>
@@ -585,7 +585,7 @@ export default function VisibilityTab() {
             </div>
           ))}
         </div>
-        <div className="mt-4 pt-4 border-t border-slate-100 dark:border-stone-700">
+        <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700">
           <Link
             to="/linkedin-optimizer"
             className="inline-flex items-center gap-1 text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300"

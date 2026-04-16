@@ -384,7 +384,7 @@ export default function PortfolioTab() {
         </div>
       ) : items.length === 0 && !isEditing && (
         <Card className="text-center py-12 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <FolderOpen className="w-12 h-12 text-slate-300 dark:text-stone-600 mx-auto mb-4" />
+          <FolderOpen className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
           <h3 className="font-semibold text-gray-600 dark:text-gray-300 mb-2">Ingen portfolio ännu</h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 max-w-md mx-auto">
             Lägg till dina projekt, arbeten och certifikat för att visa din kompetens.
@@ -462,7 +462,7 @@ function PortfolioCard({
             typeInfo.color === 'teal' && "bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400",
             typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400",
             typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400",
-            typeInfo.color === 'slate' && "bg-slate-100 dark:bg-stone-700 text-slate-600 dark:text-slate-400"
+            typeInfo.color === 'slate' && "bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400"
           )}>
             <TypeIcon className="w-4 h-4" />
           </div>
@@ -471,10 +471,10 @@ function PortfolioCard({
             <p className="text-xs text-gray-600 dark:text-gray-400">{typeInfo.label}</p>
           </div>
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button onClick={() => onToggleFeatured(item)} className="p-1 hover:bg-slate-100 dark:hover:bg-stone-700 rounded">
-              <Star className={cn("w-4 h-4", item.is_featured ? "text-teal-500 dark:text-teal-400 fill-teal-500 dark:fill-teal-400" : "text-slate-300 dark:text-stone-500")} />
+            <button onClick={() => onToggleFeatured(item)} className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded">
+              <Star className={cn("w-4 h-4", item.is_featured ? "text-teal-500 dark:text-teal-400 fill-teal-500 dark:fill-teal-400" : "text-stone-300 dark:text-stone-500")} />
             </button>
-            <button onClick={() => onEdit(item)} className="p-1 hover:bg-slate-100 dark:hover:bg-stone-700 rounded">
+            <button onClick={() => onEdit(item)} className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded">
               <Edit2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
             </button>
             <button onClick={() => item.id && onDelete(item.id)} className="p-1 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded">
@@ -497,7 +497,7 @@ function PortfolioCard({
           typeInfo.color === 'teal' && "bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400",
           typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400",
           typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400",
-          typeInfo.color === 'slate' && "bg-slate-100 dark:bg-stone-700 text-slate-600 dark:text-slate-400"
+          typeInfo.color === 'slate' && "bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400"
         )}>
           <TypeIcon className="w-6 h-6" />
         </div>
@@ -519,16 +519,16 @@ function PortfolioCard({
             <div className="flex gap-1">
               <button
                 onClick={() => onToggleFeatured(item)}
-                className="p-1.5 hover:bg-slate-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
               >
                 <Star className={cn(
                   "w-4 h-4",
-                  item.is_featured ? "text-teal-500 dark:text-teal-400 fill-teal-500 dark:fill-teal-400" : "text-slate-300 dark:text-stone-500"
+                  item.is_featured ? "text-teal-500 dark:text-teal-400 fill-teal-500 dark:fill-teal-400" : "text-stone-300 dark:text-stone-500"
                 )} />
               </button>
               <button
                 onClick={() => onEdit(item)}
-                className="p-1.5 hover:bg-slate-100 dark:hover:bg-stone-700 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                className="p-1.5 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
               >
                 <Edit2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               </button>
@@ -548,7 +548,7 @@ function PortfolioCard({
           {item.tags.length > 0 && (
             <div className="flex gap-1 flex-wrap mt-3">
               {item.tags.map((tag, idx) => (
-                <span key={idx} className="px-2 py-0.5 bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 rounded text-xs">
+                <span key={idx} className="px-2 py-0.5 bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 rounded text-xs">
                   {tag}
                 </span>
               ))}

@@ -50,17 +50,17 @@ export function CVExport({ cvData }: CVExportProps) {
 
   if (!cvData) {
     return (
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-blue-50 rounded-lg">
-            <FileText className="w-5 h-5 text-blue-600" />
+          <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+            <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800">Exportera CV</h3>
-            <p className="text-sm text-slate-700">Ladda ner som PDF eller Word</p>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Exportera CV</h3>
+            <p className="text-sm text-slate-700 dark:text-stone-300">Ladda ner som PDF eller Word</p>
           </div>
         </div>
-        <p className="text-sm text-slate-700">Skapa ett CV först för att exportera</p>
+        <p className="text-sm text-slate-700 dark:text-stone-300">Skapa ett CV först för att exportera</p>
       </div>
     )
   }
@@ -749,14 +749,14 @@ export function CVExport({ cvData }: CVExportProps) {
       </div>
 
       {/* UI */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
-          <div className="p-2 bg-blue-50 rounded-lg">
-            <FileText className="w-5 h-5 text-blue-600" />
+          <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+            <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800">Exportera CV</h3>
-            <p className="text-sm text-slate-700">Ladda ner som PDF eller Word</p>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Exportera CV</h3>
+            <p className="text-sm text-slate-700 dark:text-stone-300">Ladda ner som PDF eller Word</p>
           </div>
         </div>
 
@@ -838,18 +838,18 @@ export function CVExport({ cvData }: CVExportProps) {
           </button>
         </div>
 
-        <p className="text-xs text-slate-600 mt-4 text-center">
+        <p className="text-xs text-slate-600 dark:text-stone-400 mt-4 text-center">
           Filnamn: {cvData.firstName?.toLowerCase() || 'ditt'}-{cvData.lastName?.toLowerCase() || 'namn'}-cv.pdf / .doc
         </p>
 
-        <div className="mt-4 p-3 bg-slate-50 rounded-lg space-y-2">
-          <p className="text-xs text-slate-700">
+        <div className="mt-4 p-3 bg-slate-50 dark:bg-stone-800 rounded-lg space-y-2">
+          <p className="text-xs text-slate-700 dark:text-stone-300">
             <strong>Rekommenderad PDF:</strong> Ger sökbar text och mindre filstorlek. Bäst för ATS-system.
           </p>
-          <p className="text-xs text-slate-700">
+          <p className="text-xs text-slate-700 dark:text-stone-300">
             <strong>PDF (exakt som på skärmen):</strong> Fångar exakt utseende men text ej sökbar.
           </p>
-          <p className="text-xs text-slate-700">
+          <p className="text-xs text-slate-700 dark:text-stone-300">
             <strong>Word:</strong> Redigerbart format om du behöver anpassa för specifika ansökningar.
           </p>
         </div>

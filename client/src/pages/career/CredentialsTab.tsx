@@ -248,7 +248,10 @@ export default function CredentialsTab() {
                         <div className="flex items-center gap-2 mt-2">
                           <span className={cn(
                             "px-2 py-0.5 rounded-full text-xs font-medium",
-                            `bg-${typeInfo.color}-100 dark:bg-${typeInfo.color}-900/30 text-${typeInfo.color}-700 dark:text-${typeInfo.color}-300`
+                            typeInfo.color === 'violet' && "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300",
+                            typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+                            typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300",
+                            typeInfo.color === 'amber' && "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
                           )}>
                             {typeInfo.label}
                           </span>

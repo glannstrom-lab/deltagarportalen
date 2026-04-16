@@ -62,18 +62,18 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
 
   const getPriorityColor = (priority: number) => {
     switch (priority) {
-      case 2: return 'bg-red-100 text-red-800 border-red-200';
-      case 1: return 'bg-amber-100 text-amber-800 border-amber-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 2: return 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-800';
+      case 1: return 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-800';
+      default: return 'bg-gray-100 dark:bg-stone-700 text-gray-800 dark:text-stone-200 border-gray-200 dark:border-stone-600';
     }
   };
 
   if (participants.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-12 text-center">
-        <User className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Inga deltagare ännu</h3>
-        <p className="text-gray-500 mb-6">
+      <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-12 text-center">
+        <User className="w-16 h-16 text-gray-300 dark:text-stone-600 mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-gray-900 dark:text-stone-100 mb-2">Inga deltagare ännu</h3>
+        <p className="text-gray-500 dark:text-stone-400 mb-6">
           Du har inte tilldelat några deltagare ännu.
         </p>
         <button
@@ -92,18 +92,18 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
         {participants.map((p) => (
           <div
             key={p.participant_id}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow"
+            className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-6 hover:shadow-md transition-shadow"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-semibold">
+                <div className="w-12 h-12 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 font-semibold">
                   {getInitials(p)}
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">
+                  <h3 className="font-semibold text-gray-900 dark:text-stone-100">
                     {p.first_name} {p.last_name}
                   </h3>
-                  <p className="text-sm text-gray-500">{p.email}</p>
+                  <p className="text-sm text-gray-500 dark:text-stone-400">{p.email}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -112,30 +112,30 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
                     {p.priority === 2 ? 'Kritisk' : 'Hög'}
                   </span>
                 )}
-                <button className="p-1 hover:bg-gray-100 rounded">
-                  <MoreVertical className="w-5 h-5 text-gray-400" />
+                <button className="p-1 hover:bg-gray-100 dark:hover:bg-stone-800 rounded">
+                  <MoreVertical className="w-5 h-5 text-gray-400 dark:text-stone-500" />
                 </button>
               </div>
             </div>
 
             {/* Stats */}
             <div className="grid grid-cols-3 gap-4 mb-4">
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <FileText className="w-5 h-5 text-gray-400 mx-auto mb-1" />
-                <p className="text-sm font-medium text-gray-900">
+              <div className="text-center p-3 bg-gray-50 dark:bg-stone-800 rounded-lg">
+                <FileText className="w-5 h-5 text-gray-400 dark:text-stone-500 mx-auto mb-1" />
+                <p className="text-sm font-medium text-gray-900 dark:text-stone-100">
                   {p.has_cv ? (p.ats_score ? `${p.ats_score}%` : 'Finns') : 'Saknas'}
                 </p>
-                <p className="text-xs text-gray-500">CV</p>
+                <p className="text-xs text-gray-500 dark:text-stone-400">CV</p>
               </div>
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <Briefcase className="w-5 h-5 text-gray-400 mx-auto mb-1" />
-                <p className="text-sm font-medium text-gray-900">{p.saved_jobs_count}</p>
-                <p className="text-xs text-gray-500">Jobb</p>
+              <div className="text-center p-3 bg-gray-50 dark:bg-stone-800 rounded-lg">
+                <Briefcase className="w-5 h-5 text-gray-400 dark:text-stone-500 mx-auto mb-1" />
+                <p className="text-sm font-medium text-gray-900 dark:text-stone-100">{p.saved_jobs_count}</p>
+                <p className="text-xs text-gray-500 dark:text-stone-400">Jobb</p>
               </div>
-              <div className="text-center p-3 bg-gray-50 rounded-lg">
-                <MessageSquare className="w-5 h-5 text-gray-400 mx-auto mb-1" />
-                <p className="text-sm font-medium text-gray-900">{p.notes_count}</p>
-                <p className="text-xs text-gray-500">Anteckningar</p>
+              <div className="text-center p-3 bg-gray-50 dark:bg-stone-800 rounded-lg">
+                <MessageSquare className="w-5 h-5 text-gray-400 dark:text-stone-500 mx-auto mb-1" />
+                <p className="text-sm font-medium text-gray-900 dark:text-stone-100">{p.notes_count}</p>
+                <p className="text-xs text-gray-500 dark:text-stone-400">Anteckningar</p>
               </div>
             </div>
 
@@ -143,15 +143,15 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
             <div className="flex items-center justify-between text-sm">
               <span className={`flex items-center gap-1 ${
                 !p.last_contact_at || new Date(p.last_contact_at) < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-                  ? 'text-amber-600'
-                  : 'text-gray-500'
+                  ? 'text-amber-600 dark:text-amber-400'
+                  : 'text-gray-500 dark:text-stone-400'
               }`}>
                 <Calendar className="w-4 h-4" />
                 {getLastContactText(p.last_contact_at)}
               </span>
               <Link
                 to="/profile"
-                className="text-primary-600 hover:text-primary-700 font-medium"
+                className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 font-medium"
               >
                 Visa profil →
               </Link>
@@ -164,31 +164,31 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
 
   // List view
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 overflow-hidden">
+      <table className="min-w-full divide-y divide-gray-200 dark:divide-stone-700">
+        <thead className="bg-gray-50 dark:bg-stone-800">
           <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Namn</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">CV</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Sparade jobb</th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Senast kontakt</th>
-            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Åtgärder</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Namn</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Status</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">CV</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Sparade jobb</th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Senast kontakt</th>
+            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-stone-400 uppercase">Åtgärder</th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white dark:bg-stone-900 divide-y divide-gray-200 dark:divide-stone-700">
           {participants.map((p) => (
-            <tr key={p.participant_id} className="hover:bg-gray-50">
+            <tr key={p.participant_id} className="hover:bg-gray-50 dark:hover:bg-stone-800">
               <td className="px-6 py-4">
                 <div className="flex items-center">
-                  <div className="h-10 w-10 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 font-medium">
+                  <div className="h-10 w-10 rounded-full bg-primary-100 dark:bg-primary-900/30 flex items-center justify-center text-primary-600 dark:text-primary-400 font-medium">
                     {getInitials(p)}
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">
+                    <div className="text-sm font-medium text-gray-900 dark:text-stone-100">
                       {p.first_name} {p.last_name}
                     </div>
-                    <div className="text-sm text-gray-500">{p.email}</div>
+                    <div className="text-sm text-gray-500 dark:text-stone-400">{p.email}</div>
                   </div>
                 </div>
               </td>
@@ -199,17 +199,17 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
                   </span>
                 )}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-500">
+              <td className="px-6 py-4 text-sm text-gray-500 dark:text-stone-400">
                 {p.has_cv ? (p.ats_score ? `${p.ats_score}/100` : '✓') : '—'}
               </td>
-              <td className="px-6 py-4 text-sm text-gray-500">
+              <td className="px-6 py-4 text-sm text-gray-500 dark:text-stone-400">
                 {p.saved_jobs_count}
               </td>
               <td className="px-6 py-4 text-sm">
                 <span className={
                   !p.last_contact_at || new Date(p.last_contact_at) < new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
-                    ? 'text-amber-600'
-                    : 'text-gray-500'
+                    ? 'text-amber-600 dark:text-amber-400'
+                    : 'text-gray-500 dark:text-stone-400'
                 }>
                   {getLastContactText(p.last_contact_at)}
                 </span>
@@ -217,7 +217,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
               <td className="px-6 py-4 text-right">
                 <Link
                   to="/profile"
-                  className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                  className="text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 text-sm font-medium"
                 >
                   Visa →
                 </Link>

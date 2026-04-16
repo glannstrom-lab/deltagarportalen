@@ -34,7 +34,7 @@ export const SkillsWidget = memo(function SkillsWidget({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('skillsWidget.skills')}</p>
-          <p className={cn("text-xs", hasAnalysis ? (isGood ? "text-emerald-600 dark:text-emerald-400" : "text-cyan-600 dark:text-cyan-400") : "text-slate-700 dark:text-slate-600")}>
+          <p className={cn("text-xs", hasAnalysis ? (isGood ? "text-emerald-600 dark:text-emerald-400" : "text-cyan-600 dark:text-cyan-400") : "text-slate-500 dark:text-slate-400")}>
             {hasAnalysis ? `${matchScore}%` : t('skillsWidget.analyze')}
           </p>
         </div>
@@ -61,7 +61,7 @@ export const SkillsWidget = memo(function SkillsWidget({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('skillsWidget.skillsAnalysis')}</h3>
-              <p className="text-xs text-slate-700 dark:text-slate-600">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {hasAnalysis ? t('skillsWidget.analyzed') : t('skillsWidget.findStrengths')}
               </p>
             </div>
@@ -74,7 +74,7 @@ export const SkillsWidget = memo(function SkillsWidget({
             <span className={cn("text-2xl font-bold", isGood ? "text-emerald-600 dark:text-emerald-400" : "text-cyan-600 dark:text-cyan-400")}>
               {matchScore}%
             </span>
-            <span className="text-sm text-slate-700 dark:text-slate-600">{t('skillsWidget.match')}</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400">{t('skillsWidget.match')}</span>
             {gapCount > 0 && (
               <span className="ml-auto px-2 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-full text-xs font-medium">
                 {t('skillsWidget.gapsCount', { count: gapCount })}
@@ -104,7 +104,7 @@ export const SkillsWidget = memo(function SkillsWidget({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('skillsWidget.skillsAnalysis')}</h3>
-            <p className="text-sm text-slate-700 dark:text-slate-600">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {hasAnalysis ? t('skillsWidget.yourSkillsAnalyzed') : t('skillsWidget.findYourStrengths')}
             </p>
           </div>
@@ -116,7 +116,7 @@ export const SkillsWidget = memo(function SkillsWidget({
       {hasAnalysis ? (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-600 dark:text-slate-600">{t('skillsWidget.matchWithGoals')}</span>
+            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{t('skillsWidget.matchWithGoals')}</span>
             <span className={cn("text-lg font-bold", isGood ? "text-emerald-600 dark:text-emerald-400" : "text-cyan-600 dark:text-cyan-400")}>
               {matchScore}%
             </span>
@@ -152,14 +152,14 @@ export const SkillsWidget = memo(function SkillsWidget({
             <TrendingUp size={16} className="text-cyan-500 dark:text-cyan-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{analyzedSkills}</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-600">{t('skillsWidget.analyzed')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('skillsWidget.analyzed')}</p>
         </div>
         <div className={cn("p-3 rounded-lg", gapCount > 0 ? "bg-amber-50 dark:bg-amber-900/20" : "bg-emerald-50 dark:bg-emerald-900/20")}>
           <div className="flex items-center gap-2">
             <Target size={16} className={gapCount > 0 ? "text-amber-500 dark:text-amber-400" : "text-emerald-500 dark:text-emerald-400"} />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{gapCount}</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-600">{t('skillsWidget.gapsToFill')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('skillsWidget.gapsToFill')}</p>
         </div>
       </div>
 

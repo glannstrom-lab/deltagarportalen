@@ -99,36 +99,36 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
       aria-labelledby={titleId}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-stone-200">
-          <h2 id={titleId} className="text-xl font-semibold text-stone-900">
+        <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
+          <h2 id={titleId} className="text-xl font-semibold text-stone-900 dark:text-stone-100">
             {event ? 'Redigera händelse' : 'Ny händelse'}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-stone-100 rounded-lg"
+            className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
             aria-label="Stäng dialog"
           >
-            <X size={20} className="text-stone-700" aria-hidden="true" />
+            <X size={20} className="text-stone-700 dark:text-stone-300" aria-hidden="true" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-stone-200">
+        <div className="flex border-b border-stone-200 dark:border-stone-700">
           {tabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
-                  ? 'border-teal-600 text-teal-600'
-                  : 'border-transparent text-stone-700 hover:text-stone-700'
+                  ? 'border-teal-600 text-teal-600 dark:text-teal-400'
+                  : 'border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-700 dark:hover:text-stone-200'
               }`}
             >
               {tab.label}
               {tab.count !== undefined && tab.count > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.5 bg-stone-100 text-stone-600 rounded-full text-xs">
+                <span className="ml-1.5 px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded-full text-xs">
                   {tab.count}
                 </span>
               )}
@@ -142,19 +142,19 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
             <>
               {/* Title */}
               <div>
-                <label className="text-sm font-medium text-stone-700">Titel</label>
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Titel</label>
                 <input
                   type="text"
                   value={formData.title || ''}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="T.ex. Jobbintervju på Spotify"
-                  className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               {/* Type */}
               <div>
-                <label className="text-sm font-medium text-stone-700">Typ</label>
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Typ</label>
                 <div className="grid grid-cols-3 gap-2 mt-1">
                   {eventTypes.map((type) => (
                     <button
@@ -163,7 +163,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                         formData.type === type.value
                           ? type.color
-                          : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                          : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-600'
                       }`}
                     >
                       {type.label}
@@ -175,28 +175,28 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               {/* Date & Time */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-stone-700">Datum</label>
+                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Datum</label>
                   <input
                     type="date"
                     value={formData.date || ''}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-stone-700">Tid</label>
+                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Tid</label>
                   <input
                     type="time"
                     value={formData.time || ''}
                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                    className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
               </div>
 
               {/* Location */}
               <div>
-                <label className="text-sm font-medium text-stone-700 flex items-center gap-1">
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-300 flex items-center gap-1">
                   <MapPin size={14} />
                   Plats (valfritt)
                 </label>
@@ -205,7 +205,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   value={formData.location || ''}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   placeholder="Adress eller plats"
-                  className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -218,7 +218,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                     onChange={(e) => setFormData({ ...formData, isVideo: e.target.checked })}
                     className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
                   />
-                  <span className="text-sm text-stone-700 flex items-center gap-1">
+                  <span className="text-sm text-stone-700 dark:text-stone-300 flex items-center gap-1">
                     <Video size={14} /> Videosamtal
                   </span>
                 </label>
@@ -229,7 +229,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                     onChange={(e) => setFormData({ ...formData, isPhone: e.target.checked })}
                     className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
                   />
-                  <span className="text-sm text-stone-700 flex items-center gap-1">
+                  <span className="text-sm text-stone-700 dark:text-stone-300 flex items-center gap-1">
                     <Phone size={14} /> Telefon
                   </span>
                 </label>
@@ -237,32 +237,32 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
 
               {/* With */}
               <div>
-                <label className="text-sm font-medium text-stone-700">Med (valfritt)</label>
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Med (valfritt)</label>
                 <input
                   type="text"
                   value={formData.with || ''}
                   onChange={(e) => setFormData({ ...formData, with: e.target.value })}
                   placeholder="T.ex. Anna Svensson, rekryterare"
-                  className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="text-sm font-medium text-stone-700">Beskrivning</label>
+                <label className="text-sm font-medium text-stone-700 dark:text-stone-300">Beskrivning</label>
                 <textarea
                   value={formData.description || ''}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Anteckningar om händelsen..."
                   rows={3}
-                  className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
                 />
               </div>
 
               {/* Linked job */}
               {linkedJobTitle && (
-                <div className="p-3 bg-blue-50 rounded-lg border border-blue-100">
-                  <p className="text-sm text-blue-700 flex items-center gap-2">
+                <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
+                  <p className="text-sm text-blue-700 dark:text-blue-300 flex items-center gap-2">
                     <Link2 size={14} />
                     Länkat till: <strong>{linkedJobTitle}</strong>
                   </p>
@@ -297,7 +297,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-4 border-t border-stone-200">
+        <div className="flex items-center justify-between p-4 border-t border-stone-200 dark:border-stone-700">
           {event ? (
             <button
               onClick={() => {

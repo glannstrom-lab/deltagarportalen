@@ -22,10 +22,10 @@ export function MobileMenuButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
+      className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
       aria-label="Öppna meny"
     >
-      <Menu className="w-6 h-6 text-slate-700" />
+      <Menu className="w-6 h-6 text-slate-700 dark:text-stone-300" />
     </button>
   )
 }
@@ -39,7 +39,7 @@ export function MobileProfileButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       onClick={onClick}
-      className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
+      className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
       aria-label="Öppna profil"
     >
       <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
@@ -91,7 +91,7 @@ export function SideMenu({
       {/* Menu */}
       <div
         className={cn(
-          'fixed top-0 right-0 bottom-0 bg-white z-50 shadow-xl',
+          'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
           'w-[300px] max-w-[85vw]',
           isOpen ? 'translate-x-0' : 'translate-x-full'
@@ -101,14 +101,14 @@ export function SideMenu({
         aria-label="Navigeringsmeny"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200">
-          <h2 className="text-lg font-semibold text-slate-800">Meny</h2>
+        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700">
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">Meny</h2>
           <button
             onClick={onClose}
-            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
+            className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
             aria-label="Stäng meny"
           >
-            <X className="w-5 h-5 text-slate-600" />
+            <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
           </button>
         </div>
 
@@ -117,7 +117,7 @@ export function SideMenu({
           {navGroups.map((group) => (
             <div key={group.id} className="mb-4">
               {/* Group Label */}
-              <h3 className="px-3 py-2 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+              <h3 className="px-3 py-2 text-xs font-semibold text-slate-600 dark:text-stone-400 uppercase tracking-wider">
                 {t(group.labelKey)}
               </h3>
 
@@ -135,8 +135,8 @@ export function SideMenu({
                       className={({ isActive }) => cn(
                         'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                         isActive
-                          ? 'bg-teal-100 text-teal-700 font-medium'
-                          : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
+                          ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+                          : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200 dark:active:bg-stone-600'
                       )}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
@@ -155,8 +155,8 @@ export function SideMenu({
 
           {/* Consultant Section - visas om aktiv roll är CONSULTANT, ADMIN eller SUPERADMIN */}
           {isConsultant && (
-            <div className="border-t border-slate-200 pt-3 mt-2">
-              <h3 className="px-3 py-2 text-xs font-semibold text-teal-600 uppercase tracking-wider">
+            <div className="border-t border-slate-200 dark:border-stone-700 pt-3 mt-2">
+              <h3 className="px-3 py-2 text-xs font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider">
                 {t('sidebar.consultantSection')}
               </h3>
               <div className="space-y-0.5">
@@ -170,8 +170,8 @@ export function SideMenu({
                       className={({ isActive }) => cn(
                         'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                         isActive
-                          ? 'bg-teal-100 text-teal-700 font-medium'
-                          : 'text-teal-600 hover:bg-teal-50 active:bg-teal-100'
+                          ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+                          : 'text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30 active:bg-teal-100 dark:active:bg-teal-900/50'
                       )}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
@@ -185,8 +185,8 @@ export function SideMenu({
 
           {/* Admin Section - visas om aktiv roll är ADMIN eller SUPERADMIN */}
           {isAdmin && (
-            <div className="border-t border-slate-200 pt-3 mt-2">
-              <h3 className="px-3 py-2 text-xs font-semibold text-amber-600 uppercase tracking-wider">
+            <div className="border-t border-slate-200 dark:border-stone-700 pt-3 mt-2">
+              <h3 className="px-3 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
                 {t('sidebar.adminSection')}
               </h3>
               <div className="space-y-0.5">
@@ -200,8 +200,8 @@ export function SideMenu({
                       className={({ isActive }) => cn(
                         'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                         isActive
-                          ? 'bg-amber-100 text-amber-700 font-medium'
-                          : 'text-amber-600 hover:bg-amber-50 active:bg-amber-100'
+                          ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-medium'
+                          : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/30 active:bg-amber-100 dark:active:bg-amber-900/50'
                       )}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
@@ -214,8 +214,8 @@ export function SideMenu({
           )}
 
           {/* Account section: Profile, Settings, Help, Logout */}
-          <div className="border-t border-slate-200 pt-3 mt-2">
-            <h3 className="px-3 py-2 text-xs font-semibold text-slate-600 uppercase tracking-wider">
+          <div className="border-t border-slate-200 dark:border-stone-700 pt-3 mt-2">
+            <h3 className="px-3 py-2 text-xs font-semibold text-slate-600 dark:text-stone-400 uppercase tracking-wider">
               {t('nav.groups.account', 'Konto')}
             </h3>
             <div className="space-y-0.5">
@@ -225,8 +225,8 @@ export function SideMenu({
                 className={({ isActive }) => cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                   isActive
-                    ? 'bg-teal-100 text-teal-700 font-medium'
-                    : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
+                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+                    : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200 dark:active:bg-stone-600'
                 )}
               >
                 <User className="w-5 h-5" />
@@ -239,8 +239,8 @@ export function SideMenu({
                 className={({ isActive }) => cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                   isActive
-                    ? 'bg-teal-100 text-teal-700 font-medium'
-                    : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
+                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+                    : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200 dark:active:bg-stone-600'
                 )}
               >
                 <Settings className="w-5 h-5" />
@@ -253,8 +253,8 @@ export function SideMenu({
                 className={({ isActive }) => cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                   isActive
-                    ? 'bg-teal-100 text-teal-700 font-medium'
-                    : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
+                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+                    : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200 dark:active:bg-stone-600'
                 )}
               >
                 <HelpCircle className="w-5 h-5" />
@@ -266,7 +266,7 @@ export function SideMenu({
                   onClose()
                   signOut()
                 }}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px] text-red-600 hover:bg-red-50 active:bg-red-100"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 active:bg-red-100 dark:active:bg-red-900/50"
               >
                 <LogOut className="w-5 h-5" />
                 <span>{t('nav.logout')}</span>

@@ -604,7 +604,7 @@ export default function SearchTab() {
                   className={`p-4 rounded-lg border transition-colors ${
                     isSelected
                       ? 'border-primary-300 bg-primary-50 dark:bg-primary-900/20'
-                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                      : 'border-slate-200 dark:border-stone-700 hover:border-slate-300 dark:hover:border-stone-600'
                   }`}
                 >
                   <div className="flex items-start gap-4">
@@ -637,13 +637,13 @@ export default function SearchTab() {
                             Ej verifierad
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 dark:bg-stone-800 dark:text-stone-400">
                             Saknar org.nr
                           </span>
                         )}
 
                         {isSaved && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
                             <CheckCircle2 className="w-3 h-3" />
                             Sparad
                           </span>

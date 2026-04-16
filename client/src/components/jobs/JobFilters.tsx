@@ -131,29 +131,29 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
     ...filters.language,
   ].filter(Boolean).length
 
-  const FilterSection = ({ 
-    title, 
-    section, 
-    children, 
-    icon: Icon 
-  }: { 
+  const FilterSection = ({
+    title,
+    section,
+    children,
+    icon: Icon
+  }: {
     title: string
     section: string
     children: React.ReactNode
-    icon?: React.ElementType 
+    icon?: React.ElementType
   }) => {
     const isExpanded = expandedSections.includes(section)
     return (
-      <div className="border-b border-slate-100 last:border-0">
+      <div className="border-b border-slate-100 dark:border-stone-700 last:border-0">
         <button
           onClick={() => toggleSection(section)}
-          className="w-full flex items-center justify-between py-3 px-1 hover:bg-slate-50 rounded-lg transition-colors"
+          className="w-full flex items-center justify-between py-3 px-1 hover:bg-slate-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
         >
           <div className="flex items-center gap-2">
-            {Icon && <Icon size={18} className="text-slate-700" />}
-            <span className="font-medium text-slate-700">{title}</span>
+            {Icon && <Icon size={18} className="text-slate-700 dark:text-stone-300" />}
+            <span className="font-medium text-slate-700 dark:text-stone-300">{title}</span>
           </div>
-          {isExpanded ? <ChevronUp size={18} className="text-slate-600" /> : <ChevronDown size={18} className="text-slate-600" />}
+          {isExpanded ? <ChevronUp size={18} className="text-slate-600 dark:text-stone-400" /> : <ChevronDown size={18} className="text-slate-600 dark:text-stone-400" />}
         </button>
         {isExpanded && (
           <div className="pb-4 px-1">
@@ -169,13 +169,13 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       {/* Search */}
       <FilterSection title="Sökord" section="search" icon={Search}>
         <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 dark:text-stone-400" />
           <input
             type="text"
             placeholder="Yrke, företag, nyckelord..."
             value={filters.search}
             onChange={(e) => updateFilter('search', e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
           />
         </div>
       </FilterSection>
@@ -185,13 +185,13 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
         <div className="space-y-3">
           {/* Kommun/Ort */}
           <div className="relative">
-            <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
+            <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 dark:text-stone-400" />
             <input
               type="text"
               placeholder="Skriv ort eller kommun..."
               value={filters.location}
               onChange={(e) => updateFilter('location', e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
+              className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
             />
           </div>
 
@@ -222,7 +222,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           <select
             value={filters.region}
             onChange={(e) => updateFilter('region', e.target.value)}
-            className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm bg-white"
+            className="w-full px-4 py-2.5 border border-slate-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm bg-white dark:bg-stone-800 dark:text-stone-100"
           >
             <option value="">Alla län</option>
             {swedishRegions.map(region => (
@@ -247,7 +247,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className={`px-3 py-2.5 text-sm rounded-xl transition-colors text-left ${
                 filters.publishedWithin === option.value
                   ? 'bg-teal-100 text-teal-700 font-medium border-2 border-teal-200'
-                  : 'bg-slate-50 text-slate-600 border-2 border-transparent hover:bg-slate-100'
+                  : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
               }`}
             >
               {option.label}
@@ -266,7 +266,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${
                 filters.workArrangement.includes(type.id)
                   ? 'bg-teal-100 text-teal-700 border-2 border-teal-200'
-                  : 'bg-slate-50 text-slate-600 border-2 border-transparent hover:bg-slate-100'
+                  : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
               }`}
             >
               <type.icon size={18} />
@@ -289,7 +289,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl transition-colors ${
                 filters.employmentType.includes(type.id)
                   ? 'bg-teal-600 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-200 dark:hover:bg-stone-700'
               }`}
             >
               <type.icon size={14} />
@@ -309,7 +309,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className={`w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left ${
                 filters.experienceLevel.includes(level.id)
                   ? `bg-${level.color}-100 text-${level.color}-700 border-2 border-${level.color}-200`
-                  : 'bg-slate-50 text-slate-600 border-2 border-transparent hover:bg-slate-100'
+                  : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
               }`}
             >
               <span className="font-medium text-sm">{level.label}</span>
@@ -330,18 +330,18 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               placeholder="Min"
               value={filters.salaryMin || ''}
               onChange={(e) => updateFilter('salaryMin', parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm"
+              className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl text-sm"
             />
-            <span className="text-slate-600">-</span>
+            <span className="text-slate-600 dark:text-stone-400">-</span>
             <input
               type="number"
               placeholder="Max"
               value={filters.salaryMax || ''}
               onChange={(e) => updateFilter('salaryMax', parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm"
+              className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl text-sm"
             />
           </div>
-          <p className="text-xs text-slate-700">Ange önskad månadslön i kr</p>
+          <p className="text-xs text-slate-700 dark:text-stone-300">Ange önskad månadslön i kr</p>
         </div>
       </FilterSection>
 
@@ -355,7 +355,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className={`px-3 py-2 text-sm rounded-xl transition-colors ${
                 filters.language.includes(lang.id)
                   ? 'bg-teal-600 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-200 dark:hover:bg-stone-700'
               }`}
             >
               {lang.label}
@@ -366,16 +366,16 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
 
       {/* Driving License */}
       <FilterSection title="Övrigt" section="other" icon={Car}>
-        <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors">
+        <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-stone-800 cursor-pointer hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors">
           <input
             type="checkbox"
             checked={filters.drivingLicense}
             onChange={(e) => updateFilter('drivingLicense', e.target.checked)}
-            className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+            className="w-5 h-5 rounded border-slate-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500"
           />
           <div>
-            <div className="font-medium text-sm text-slate-700">Körkort krävs</div>
-            <div className="text-xs text-slate-700">Visa endast jobb som kräver körkort</div>
+            <div className="font-medium text-sm text-slate-700 dark:text-stone-300">Körkort krävs</div>
+            <div className="text-xs text-slate-700 dark:text-stone-400">Visa endast jobb som kräver körkort</div>
           </div>
         </label>
       </FilterSection>
@@ -408,12 +408,12 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
   return (
     <>
       {/* Desktop filter panel */}
-      <div className="hidden lg:block bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+      <div className="hidden lg:block bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-100">
+        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-stone-700">
           <div className="flex items-center gap-2">
             <Filter size={20} className="text-teal-600" />
-            <h3 className="font-semibold text-slate-800">Filtrera</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Filtrera</h3>
           </div>
           {hasActiveFilters && (
             <button
@@ -432,13 +432,13 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
         </div>
 
         {/* Footer with count */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50">
+        <div className="p-4 border-t border-slate-100 dark:border-stone-700 bg-slate-50 dark:bg-stone-800">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-600">
-              Visar <strong className="text-slate-900">{jobCount}</strong> jobb
+            <span className="text-sm text-slate-600 dark:text-stone-400">
+              Visar <strong className="text-slate-900 dark:text-stone-100">{jobCount}</strong> jobb
             </span>
             {totalJobs > jobCount && (
-              <span className="text-xs text-slate-700">
+              <span className="text-xs text-slate-700 dark:text-stone-300">
                 av {totalJobs} totala
               </span>
             )}
@@ -450,7 +450,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       <div className="lg:hidden">
         <button
           onClick={() => setShowMobileFilters(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-slate-700 font-medium shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-700 rounded-xl text-slate-700 dark:text-stone-300 font-medium shadow-sm"
         >
           <Filter size={18} />
           Filter
@@ -468,15 +468,15 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className="absolute inset-0 bg-black/50"
               onClick={() => setShowMobileFilters(false)}
             />
-            <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white shadow-xl overflow-hidden flex flex-col">
+            <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white dark:bg-stone-900 shadow-xl overflow-hidden flex flex-col">
               {/* Mobile header */}
-              <div className="flex items-center justify-between p-4 border-b border-slate-100 bg-white">
-                <h3 className="font-semibold text-slate-800">Filtrera jobb</h3>
+              <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-stone-700 bg-white dark:bg-stone-900">
+                <h3 className="font-semibold text-slate-800 dark:text-stone-100">Filtrera jobb</h3>
                 <button
                   onClick={() => setShowMobileFilters(false)}
-                  className="p-2 hover:bg-slate-100 rounded-lg"
+                  className="p-2 hover:bg-slate-100 dark:hover:bg-stone-800 rounded-lg"
                 >
-                  <X size={20} className="text-slate-700" />
+                  <X size={20} className="text-slate-700 dark:text-stone-300" />
                 </button>
               </div>
 
@@ -486,10 +486,10 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               </div>
 
               {/* Mobile footer */}
-              <div className="p-4 border-t border-slate-100 bg-slate-50 flex gap-3">
+              <div className="p-4 border-t border-slate-100 dark:border-stone-700 bg-slate-50 dark:bg-stone-800 flex gap-3">
                 <button
                   onClick={clearAllFilters}
-                  className="flex-1 px-4 py-3 border border-slate-200 rounded-xl text-slate-700 font-medium"
+                  className="flex-1 px-4 py-3 border border-slate-200 dark:border-stone-700 rounded-xl text-slate-700 dark:text-stone-300 font-medium"
                 >
                   Rensa
                 </button>

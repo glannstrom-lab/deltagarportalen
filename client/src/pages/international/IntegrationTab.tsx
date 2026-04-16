@@ -354,7 +354,7 @@ export default function IntegrationTab() {
                       ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700"
                       : item.priority === 'critical'
                       ? "bg-rose-50/50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-800"
-                      : "bg-slate-50 dark:bg-stone-700 border-slate-100 dark:border-stone-600"
+                      : "bg-stone-50 dark:bg-stone-700 border-stone-100 dark:border-stone-600"
                   )}
                 >
                   {/* Main item row */}
@@ -367,7 +367,7 @@ export default function IntegrationTab() {
                         {isCompleted ? (
                           <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                         ) : (
-                          <Circle className="w-5 h-5 text-slate-300 dark:text-stone-500" />
+                          <Circle className="w-5 h-5 text-stone-300 dark:text-stone-500" />
                         )}
                       </div>
                       <div className="flex-1 min-w-0">

@@ -34,7 +34,7 @@ export const InterviewWidget = memo(function InterviewWidget({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('interviewWidget.interview')}</p>
-          <p className="text-xs text-slate-700 dark:text-slate-600">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             {hasStarted ? t('interviewWidget.sessionsCount', { count: completedSessions }) : t('interviewWidget.practiceNow')}
           </p>
         </div>
@@ -61,7 +61,7 @@ export const InterviewWidget = memo(function InterviewWidget({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('interviewWidget.interviewTraining')}</h3>
-              <p className="text-xs text-slate-700 dark:text-slate-600">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {hasStarted ? t('interviewWidget.completedCount', { count: completedSessions }) : t('interviewWidget.aiSimulator')}
               </p>
             </div>
@@ -73,7 +73,7 @@ export const InterviewWidget = memo(function InterviewWidget({
           {hasStarted ? (
             <>
               <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{averageScore}%</span>
-              <span className="text-sm text-slate-700 dark:text-slate-600">{t('interviewWidget.averageScore')}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{t('interviewWidget.averageScore')}</span>
             </>
           ) : (
             <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
@@ -99,7 +99,7 @@ export const InterviewWidget = memo(function InterviewWidget({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('interviewWidget.interviewTraining')}</h3>
-            <p className="text-sm text-slate-700 dark:text-slate-600">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {hasStarted ? t('interviewWidget.practicesCompleted', { count: completedSessions }) : t('interviewWidget.practiceQuestions')}
             </p>
           </div>
@@ -137,14 +137,14 @@ export const InterviewWidget = memo(function InterviewWidget({
             <MessageSquare size={16} className="text-indigo-500 dark:text-indigo-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{completedSessions}</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-600">{t('interviewWidget.exercises')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('interviewWidget.exercises')}</p>
         </div>
         <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <Star size={16} className="text-purple-500 dark:text-purple-400 fill-current" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{averageScore || '-'}%</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-600">{t('interviewWidget.averageScore')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('interviewWidget.averageScore')}</p>
         </div>
       </div>
 

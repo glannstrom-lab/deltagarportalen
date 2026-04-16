@@ -269,10 +269,10 @@ export default function ExploreTab() {
   }
 
   const getMatchColor = (match: number): string => {
-    if (match >= 90) return 'text-emerald-600 bg-emerald-50'
-    if (match >= 80) return 'text-blue-600 bg-blue-50'
-    if (match >= 70) return 'text-amber-600 bg-amber-50'
-    return 'text-slate-600 bg-slate-50'
+    if (match >= 90) return 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30'
+    if (match >= 80) return 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30'
+    if (match >= 70) return 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30'
+    return 'text-stone-600 dark:text-stone-400 bg-stone-50 dark:bg-stone-700'
   }
 
   const getDemandIcon = (demand: string) => {

@@ -223,8 +223,8 @@ export function JobCard({
   const salary = getDisplaySalary()
 
   return (
-    <div 
-      className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 hover:shadow-md transition-all cursor-pointer"
+    <div
+      className="bg-white dark:bg-stone-900 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-stone-700 hover:shadow-md transition-all cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
@@ -233,7 +233,7 @@ export function JobCard({
         <div className="flex-1 min-w-0">
           {/* Header */}
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-slate-800 text-lg truncate">{getDisplayTitle()}</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100 text-lg truncate">{getDisplayTitle()}</h3>
             {showMatch && normalizedJob.matchPercentage && (
               <span className={`text-xs font-bold px-2 py-1 rounded-full ${getMatchColor(normalizedJob.matchPercentage)}`}>
                 {normalizedJob.matchPercentage}% match
@@ -241,10 +241,10 @@ export function JobCard({
             )}
           </div>
           
-          <p className="text-slate-600 font-medium">{getDisplayCompany()}</p>
+          <p className="text-slate-600 dark:text-stone-300 font-medium">{getDisplayCompany()}</p>
           
           {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-slate-700">
+          <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-slate-700 dark:text-stone-300">
             <div className="flex items-center gap-1">
               <MapPin size={14} />
               {getDisplayLocation()}
@@ -260,14 +260,14 @@ export function JobCard({
           </div>
 
           {/* Description preview */}
-          <p className="text-sm text-slate-600 mt-3 line-clamp-2">
+          <p className="text-sm text-slate-600 dark:text-stone-400 mt-3 line-clamp-2">
             {normalizedJob.description}
           </p>
 
           {/* Matching skills */}
           {showMatch && matchingSkills.length > 0 && (
             <div className="mt-3">
-              <p className="text-xs text-slate-700 mb-1">Matchar ditt CV:</p>
+              <p className="text-xs text-slate-700 dark:text-stone-300 mb-1">Matchar ditt CV:</p>
               <div className="flex flex-wrap gap-1">
                 {matchingSkills.slice(0, 3).map((skill, index) => (
                   <span 
@@ -279,7 +279,7 @@ export function JobCard({
                   </span>
                 ))}
                 {matchingSkills.length > 3 && (
-                  <span className="text-xs px-2 py-1 text-slate-700">
+                  <span className="text-xs px-2 py-1 text-slate-700 dark:text-stone-300">
                     +{matchingSkills.length - 3}
                   </span>
                 )}
@@ -290,7 +290,7 @@ export function JobCard({
           {/* Missing skills */}
           {showMatch && missingSkills.length > 0 && (
             <div className="mt-2">
-              <p className="text-xs text-slate-700 mb-1">Saknas i ditt CV:</p>
+              <p className="text-xs text-slate-700 dark:text-stone-300 mb-1">Saknas i ditt CV:</p>
               <div className="flex flex-wrap gap-1">
                 {missingSkills.slice(0, 2).map((skill, index) => (
                   <span 
@@ -311,9 +311,9 @@ export function JobCard({
           <button
             onClick={handleSave}
             className={`p-2 rounded-full transition-colors ${
-              isSaved 
-                ? 'bg-red-50 text-red-500' 
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              isSaved
+                ? 'bg-red-50 text-red-500'
+                : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-200 dark:hover:bg-stone-700'
             }`}
             title={isSaved ? 'Ta bort från sparade' : 'Spara jobb'}
           >
@@ -345,8 +345,8 @@ export function JobCard({
       </div>
 
       {/* Footer */}
-      <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-        <div className="flex items-center gap-4 text-xs text-slate-700">
+      <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100 dark:border-stone-700">
+        <div className="flex items-center gap-4 text-xs text-slate-700 dark:text-stone-300">
           {salary && <span>💰 {salary}</span>}
           {deadline && (
             <span className="text-red-500">

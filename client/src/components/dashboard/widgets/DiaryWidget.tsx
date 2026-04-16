@@ -39,7 +39,7 @@ const eventTypeConfig: Record<string, { icon: typeof Calendar; color: string; bg
   meeting: { icon: Video, color: 'text-blue-600', bg: 'bg-blue-100', labelKey: 'diaryWidget.eventTypes.meeting' },
   deadline: { icon: AlertCircle, color: 'text-red-600', bg: 'bg-red-100', labelKey: 'diaryWidget.eventTypes.deadline' },
   preparation: { icon: FileText, color: 'text-purple-600', bg: 'bg-purple-100', labelKey: 'diaryWidget.eventTypes.preparation' },
-  default: { icon: Calendar, color: 'text-slate-600', bg: 'bg-slate-100', labelKey: 'diaryWidget.eventTypes.event' },
+  default: { icon: Calendar, color: 'text-slate-600 dark:text-stone-400', bg: 'bg-slate-100 dark:bg-stone-800', labelKey: 'diaryWidget.eventTypes.event' },
 }
 
 // Hook for relative date formatting
@@ -99,11 +99,11 @@ function DiaryWidgetSmall({
         <Calendar size={14} className="text-rose-500" />
         <div className="flex-1 min-w-0">
           {upcomingEvents.length === 0 ? (
-            <span className="text-xs text-slate-700">{t('diaryWidget.noEvents')}</span>
+            <span className="text-xs text-slate-700 dark:text-stone-300">{t('diaryWidget.noEvents')}</span>
           ) : (
             <div className="flex items-center gap-1">
-              <span className="text-sm font-bold text-slate-800">{upcomingEvents.length}</span>
-              <span className="text-xs text-slate-700">
+              <span className="text-sm font-bold text-slate-800 dark:text-stone-100">{upcomingEvents.length}</span>
+              <span className="text-xs text-slate-700 dark:text-stone-300">
                 {t('diaryWidget.upcoming')}
               </span>
               {streakDays > 0 && (
@@ -160,13 +160,13 @@ function DiaryWidgetMedium({
             <Calendar size={24} className="text-rose-600" />
           </div>
           <div>
-            <p className="text-2xl font-bold text-slate-800">{upcomingEvents.length}</p>
-            <p className="text-xs text-slate-700">{t('diaryWidget.upcomingEvents')}</p>
+            <p className="text-2xl font-bold text-slate-800 dark:text-stone-100">{upcomingEvents.length}</p>
+            <p className="text-xs text-slate-700 dark:text-stone-300">{t('diaryWidget.upcomingEvents')}</p>
           </div>
           {eventsThisWeek > 0 && (
             <div className="ml-auto text-right">
               <p className="text-sm font-bold text-rose-600">{eventsThisWeek}</p>
-              <p className="text-xs text-slate-700">{t('diaryWidget.thisWeek')}</p>
+              <p className="text-xs text-slate-700 dark:text-stone-300">{t('diaryWidget.thisWeek')}</p>
             </div>
           )}
         </div>
@@ -174,28 +174,28 @@ function DiaryWidgetMedium({
         {/* Nästa händelser */}
         {upcomingEvents.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">{t('diaryWidget.nextUp')}</p>
+            <p className="text-xs font-semibold text-slate-600 dark:text-stone-400 uppercase tracking-wider">{t('diaryWidget.nextUp')}</p>
             {upcomingEvents.slice(0, 2).map((event) => {
               const config = eventTypeConfig[event.type] || eventTypeConfig.default
               const Icon = config.icon
               return (
                 <div
                   key={event.id}
-                  className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all cursor-pointer group"
+                  className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-stone-800 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all cursor-pointer group"
                 >
                   <div className={`w-9 h-9 rounded-lg ${config.bg} flex items-center justify-center`}>
                     <Icon size={16} className={config.color} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-slate-700 truncate group-hover:text-rose-700 transition-colors">
+                    <p className="text-sm font-semibold text-slate-700 dark:text-stone-300 truncate group-hover:text-rose-700 transition-colors">
                       {event.title}
                     </p>
                     <div className="flex items-center gap-2">
                       <span className="text-xs text-rose-600 font-medium">{getRelativeDate(event.date)}</span>
                       {event.time && (
                         <>
-                          <span className="text-xs text-slate-600">•</span>
-                          <span className="text-xs text-slate-700">{event.time}</span>
+                          <span className="text-xs text-slate-600 dark:text-stone-400">•</span>
+                          <span className="text-xs text-slate-700 dark:text-stone-300">{event.time}</span>
                         </>
                       )}
                     </div>
@@ -279,9 +279,9 @@ function DiaryWidgetLarge({
             <p className="text-2xl font-bold text-rose-600">{upcomingEvents.length}</p>
             <p className="text-xs text-rose-700">{t('diaryWidget.upcoming')}</p>
           </div>
-          <div className="p-3 bg-slate-50 rounded-xl text-center">
-            <p className="text-2xl font-bold text-slate-700">{eventsThisWeek}</p>
-            <p className="text-xs text-slate-700">{t('diaryWidget.thisWeek')}</p>
+          <div className="p-3 bg-slate-50 dark:bg-stone-800 rounded-xl text-center">
+            <p className="text-2xl font-bold text-slate-700 dark:text-stone-300">{eventsThisWeek}</p>
+            <p className="text-xs text-slate-700 dark:text-stone-300">{t('diaryWidget.thisWeek')}</p>
           </div>
           <div className="p-3 bg-amber-50 rounded-xl text-center">
             <div className="flex items-center justify-center gap-1">
@@ -295,7 +295,7 @@ function DiaryWidgetLarge({
         {/* Timeline */}
         {upcomingEvents.length > 0 ? (
           <div className="space-y-3">
-            <p className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+            <p className="text-sm font-semibold text-slate-700 dark:text-stone-300 flex items-center gap-2">
               <Clock size={16} className="text-rose-500" />
               {t('diaryWidget.upcomingEventsHeader')}
             </p>
@@ -306,13 +306,13 @@ function DiaryWidgetLarge({
                 return (
                   <div
                     key={event.id}
-                    className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-rose-50 border border-slate-100 hover:border-rose-200 transition-all cursor-pointer group"
+                    className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-stone-800 hover:bg-rose-50 border border-slate-100 dark:border-stone-700 hover:border-rose-200 transition-all cursor-pointer group"
                   >
                     {/* Date column */}
                     <div className="w-14 text-center shrink-0">
                       <p className="text-xs font-bold text-rose-600">{getRelativeDate(event.date)}</p>
                       {event.time && (
-                        <p className="text-xs text-slate-700">{event.time}</p>
+                        <p className="text-xs text-slate-700 dark:text-stone-300">{event.time}</p>
                       )}
                     </div>
 
@@ -323,7 +323,7 @@ function DiaryWidgetLarge({
 
                     {/* Content */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-700 truncate group-hover:text-rose-700 transition-colors">
+                      <p className="text-sm font-semibold text-slate-700 dark:text-stone-300 truncate group-hover:text-rose-700 transition-colors">
                         {event.title}
                       </p>
                       <span className={`text-xs ${config.color}`}>{t(config.labelKey)}</span>
@@ -342,13 +342,13 @@ function DiaryWidgetLarge({
             <h3 className="font-semibold text-rose-900 mb-1">{t('diaryWidget.calendarEmpty')}</h3>
             <p className="text-sm text-rose-600 mb-4">{t('diaryWidget.addEventsDescription')}</p>
             <div className="flex flex-wrap justify-center gap-2">
-              <span className="px-3 py-1.5 bg-white rounded-lg text-xs text-slate-600 border border-rose-100">
+              <span className="px-3 py-1.5 bg-white rounded-lg text-xs text-slate-600 dark:text-stone-400 border border-rose-100">
                 📅 {t('diaryWidget.eventTypes.interviews')}
               </span>
-              <span className="px-3 py-1.5 bg-white rounded-lg text-xs text-slate-600 border border-rose-100">
+              <span className="px-3 py-1.5 bg-white rounded-lg text-xs text-slate-600 dark:text-stone-400 border border-rose-100">
                 💼 {t('diaryWidget.eventTypes.meetings')}
               </span>
-              <span className="px-3 py-1.5 bg-white rounded-lg text-xs text-slate-600 border border-rose-100">
+              <span className="px-3 py-1.5 bg-white rounded-lg text-xs text-slate-600 dark:text-stone-400 border border-rose-100">
                 ⏰ {t('diaryWidget.eventTypes.deadlines')}
               </span>
             </div>

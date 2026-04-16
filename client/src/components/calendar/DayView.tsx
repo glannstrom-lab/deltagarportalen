@@ -35,8 +35,8 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
   return (
     <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
       {/* Day header */}
-      <div className={`p-4 border-b border-stone-200 ${isToday ? 'bg-teal-50' : 'bg-stone-50'}`}>
-        <h2 className={`text-xl font-semibold ${isToday ? 'text-teal-900' : 'text-stone-900'}`}>
+      <div className={`p-4 border-b border-stone-200 dark:border-stone-700 ${isToday ? 'bg-teal-50 dark:bg-teal-900/20' : 'bg-stone-50 dark:bg-stone-800'}`}>
+        <h2 className={`text-xl font-semibold ${isToday ? 'text-teal-900 dark:text-teal-100' : 'text-stone-900 dark:text-stone-100'}`}>
           {date.toLocaleDateString('sv-SE', {
             weekday: 'long',
             year: 'numeric',
@@ -44,7 +44,7 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
             day: 'numeric',
           })}
         </h2>
-        {isToday && <span className="text-sm text-teal-700 font-medium">Idag</span>}
+        {isToday && <span className="text-sm text-teal-700 dark:text-teal-400 font-medium">Idag</span>}
       </div>
 
       {/* Timeline */}
@@ -52,9 +52,9 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
         {hours.map((hour) => {
           const hourEvents = getEventsForHour(hour)
           return (
-            <div key={hour} className="flex border-b border-stone-100 min-h-[100px]">
+            <div key={hour} className="flex border-b border-stone-100 dark:border-stone-700 min-h-[100px]">
               {/* Time label */}
-              <div className="w-20 p-3 border-r border-stone-100 bg-stone-50 text-sm text-stone-700 font-medium text-right sticky left-0">
+              <div className="w-20 p-3 border-r border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-sm text-stone-700 dark:text-stone-300 font-medium text-right sticky left-0">
                 {String(hour).padStart(2, '0')}:00
               </div>
               
@@ -74,33 +74,33 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
                       className={`w-full text-left p-3 rounded-xl ${config.bgColor} ${config.borderColor} border hover:shadow-md transition-all`}
                     >
                       <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg bg-white/50`}>
+                        <div className={`p-2 rounded-lg bg-white/50 dark:bg-stone-800/50`}>
                           <Icon size={20} className={config.color} />
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className="font-semibold text-stone-900">{event.title}</h3>
+                            <h3 className="font-semibold text-stone-900 dark:text-stone-100">{event.title}</h3>
                             <span className={`text-xs px-2 py-0.5 rounded-full ${config.bgColor} ${config.color}`}>
                               {config.label}
                             </span>
                           </div>
-                          <p className="text-sm text-stone-700 mt-1">
+                          <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">
                             {event.time} - {event.endTime || `${duration}`}
                           </p>
                           {event.location && (
-                            <p className="text-sm text-stone-700 mt-1 flex items-center gap-1">
+                            <p className="text-sm text-stone-700 dark:text-stone-300 mt-1 flex items-center gap-1">
                               <MapPin size={14} />
                               {event.location}
                             </p>
                           )}
                           {(event.isVideo || event.isPhone) && (
-                            <p className="text-sm text-stone-700 mt-1 flex items-center gap-1">
+                            <p className="text-sm text-stone-700 dark:text-stone-300 mt-1 flex items-center gap-1">
                               {event.isVideo && <><Video size={14} /> Videosamtal</>}
                               {event.isPhone && <><Phone size={14} /> Telefon</>}
                             </p>
                           )}
                           {event.description && (
-                            <p className="text-sm text-stone-600 mt-2 line-clamp-2">
+                            <p className="text-sm text-stone-600 dark:text-stone-400 mt-2 line-clamp-2">
                               {event.description}
                             </p>
                           )}

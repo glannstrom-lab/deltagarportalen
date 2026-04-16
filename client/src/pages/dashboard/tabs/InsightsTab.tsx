@@ -29,7 +29,7 @@ export default function InsightsTab() {
       >
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
-          <p className="text-slate-700">Analyserar dina mönster...</p>
+          <p className="text-slate-700 dark:text-stone-300">Analyserar dina mönster...</p>
         </div>
       </div>
     )
@@ -38,13 +38,13 @@ export default function InsightsTab() {
   if (error || !data) {
     return (
       <div className="text-center py-12">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
           <Brain className="w-8 h-8 text-red-500" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-800 mb-2">
+        <h3 className="text-lg font-semibold text-slate-800 dark:text-stone-100 mb-2">
           Kunde inte ladda insikter
         </h3>
-        <p className="text-slate-700 mb-4">{error}</p>
+        <p className="text-slate-700 dark:text-stone-300 mb-4">{error}</p>
         <Button onClick={refresh} variant="outline">
           <RefreshCw className="w-4 h-4 mr-2" />
           Försök igen
@@ -58,11 +58,11 @@ export default function InsightsTab() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+          <h2 className="text-2xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
             <Brain className="text-teal-500" size={28} />
             Mina insikter
           </h2>
-          <p className="text-slate-700">Analys baserad på din aktivitet</p>
+          <p className="text-slate-700 dark:text-stone-300">Analys baserad på din aktivitet</p>
         </div>
         <Button onClick={refresh} variant="secondary" size="sm">
           <RefreshCw className="w-4 h-4 mr-2" />
@@ -147,28 +147,28 @@ interface SummaryCardProps {
 
 function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, color }: SummaryCardProps) {
   const colorClasses = {
-    violet: 'bg-teal-100 text-teal-600',
-    orange: 'bg-orange-100 text-orange-600',
-    blue: 'bg-blue-100 text-blue-600',
-    emerald: 'bg-emerald-100 text-emerald-600'
+    violet: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
+    orange: 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400',
+    blue: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
+    emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
   }
 
   const trendColors = {
-    up: 'text-emerald-600',
-    down: 'text-red-500',
-    stable: 'text-slate-700'
+    up: 'text-emerald-600 dark:text-emerald-400',
+    down: 'text-red-500 dark:text-red-400',
+    stable: 'text-slate-700 dark:text-stone-300'
   }
 
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-4">
       <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center mb-3", colorClasses[color])}>
         <Icon size={20} />
       </div>
-      <p className="text-sm text-slate-700">{label}</p>
+      <p className="text-sm text-slate-700 dark:text-stone-300">{label}</p>
       <div className="flex items-baseline gap-2 mt-1">
-        <p className="text-2xl font-bold text-slate-800">{value}</p>
+        <p className="text-2xl font-bold text-slate-800 dark:text-stone-100">{value}</p>
         {trend && changePercent !== undefined && (
           <span className={cn("flex items-center text-sm font-medium", trendColors[trend])}>
             <TrendIcon size={14} className="mr-0.5" />
@@ -176,7 +176,7 @@ function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, 
           </span>
         )}
       </div>
-      {subtext && <p className="text-xs text-slate-600 mt-1">{subtext}</p>}
+      {subtext && <p className="text-xs text-slate-600 dark:text-stone-400 mt-1">{subtext}</p>}
     </div>
   )
 }
@@ -193,8 +193,8 @@ function ActivityChart({ dailyActivity }: ActivityChartProps) {
   const maxCount = Math.max(...dailyActivity.map(d => d.count), 1)
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
+      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <BarChart3 size={20} className="text-teal-500" />
         Aktivitet senaste 14 dagarna
       </h3>
@@ -211,14 +211,14 @@ function ActivityChart({ dailyActivity }: ActivityChartProps) {
                 transition={{ delay: index * 0.03 }}
                 className={cn(
                   "w-full max-w-8 rounded-t-sm",
-                  isToday ? "bg-teal-500" : "bg-teal-200",
-                  day.count === 0 && "bg-slate-100"
+                  isToday ? "bg-teal-500" : "bg-teal-200 dark:bg-teal-700",
+                  day.count === 0 && "bg-slate-100 dark:bg-stone-700"
                 )}
                 title={`${day.date}: ${day.count} aktiviteter`}
               />
               <span className={cn(
                 "text-xs",
-                isToday ? "text-teal-600 font-medium" : "text-slate-600"
+                isToday ? "text-teal-600 dark:text-teal-400 font-medium" : "text-slate-600 dark:text-stone-400"
               )}>
                 {day.dayName}
               </span>
@@ -252,13 +252,13 @@ function ActivityBreakdown({ activities }: ActivityBreakdownProps) {
   const total = activities.reduce((sum, a) => sum + a.count, 0)
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
+      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Activity size={20} className="text-blue-500" />
         Aktivitetsfördelning
       </h3>
       {activities.length === 0 ? (
-        <p className="text-slate-700 text-sm py-4 text-center">
+        <p className="text-slate-700 dark:text-stone-300 text-sm py-4 text-center">
           Ingen aktivitet registrerad ännu
         </p>
       ) : (
@@ -269,15 +269,15 @@ function ActivityBreakdown({ activities }: ActivityBreakdownProps) {
 
             return (
               <div key={activity.type} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center flex-shrink-0">
-                  <Icon size={16} className="text-slate-600" />
+                <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
+                  <Icon size={16} className="text-slate-600 dark:text-stone-400" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-700">{activity.label}</span>
-                    <span className="text-sm font-medium text-slate-800">{activity.count}</span>
+                    <span className="text-sm text-slate-700 dark:text-stone-300">{activity.label}</span>
+                    <span className="text-sm font-medium text-slate-800 dark:text-stone-100">{activity.count}</span>
                   </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-2 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${percent}%` }}
@@ -304,8 +304,8 @@ interface WeeklyProgressChartProps {
 
 function WeeklyProgressChart({ progress }: WeeklyProgressChartProps) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
-      <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
+      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Calendar size={20} className="text-emerald-500" />
         Veckoutveckling
       </h3>
@@ -313,8 +313,8 @@ function WeeklyProgressChart({ progress }: WeeklyProgressChartProps) {
         {progress.map(week => (
           <div key={week.week} className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-600">Vecka {week.week}</span>
-              <span className="text-xs text-slate-600">
+              <span className="text-sm text-slate-600 dark:text-stone-400">Vecka {week.week}</span>
+              <span className="text-xs text-slate-600 dark:text-stone-400">
                 {week.applications + week.exercises} aktiviteter
               </span>
             </div>
@@ -334,12 +334,12 @@ function WeeklyProgressChart({ progress }: WeeklyProgressChartProps) {
                 />
               )}
               {week.applications === 0 && week.exercises === 0 && (
-                <div className="flex-1 bg-slate-100 rounded" />
+                <div className="flex-1 bg-slate-100 dark:bg-stone-700 rounded" />
               )}
             </div>
           </div>
         ))}
-        <div className="flex gap-4 mt-2 text-xs">
+        <div className="flex gap-4 mt-2 text-xs text-slate-700 dark:text-stone-300">
           <span className="flex items-center gap-1">
             <div className="w-3 h-3 bg-emerald-500 rounded" />
             Ansökningar
@@ -366,9 +366,9 @@ interface RecommendationsSectionProps {
 
 function RecommendationsSection({ recommendations, expandedId, onToggle }: RecommendationsSectionProps) {
   const priorityColors = {
-    high: 'border-red-200 bg-red-50/50',
-    medium: 'border-amber-200 bg-amber-50/50',
-    low: 'border-slate-200'
+    high: 'border-red-200 dark:border-red-700 bg-red-50/50 dark:bg-red-900/20',
+    medium: 'border-amber-200 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-900/20',
+    low: 'border-slate-200 dark:border-stone-700'
   }
 
   const categoryIcons = {
@@ -380,7 +380,7 @@ function RecommendationsSection({ recommendations, expandedId, onToggle }: Recom
 
   return (
     <div>
-      <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Target size={20} className="text-teal-500" />
         Personliga rekommendationer
       </h3>
@@ -395,7 +395,7 @@ function RecommendationsSection({ recommendations, expandedId, onToggle }: Recom
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               className={cn(
-                "bg-white p-4 rounded-xl border transition-colors cursor-pointer hover:shadow-md",
+                "bg-white dark:bg-stone-900 p-4 rounded-xl border transition-colors cursor-pointer hover:shadow-md",
                 priorityColors[rec.priority]
               )}
               onClick={() => onToggle(rec.id)}
@@ -404,32 +404,32 @@ function RecommendationsSection({ recommendations, expandedId, onToggle }: Recom
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "w-10 h-10 rounded-lg flex items-center justify-center",
-                    rec.priority === 'high' ? "bg-red-100" :
-                    rec.priority === 'medium' ? "bg-amber-100" : "bg-teal-100"
+                    rec.priority === 'high' ? "bg-red-100 dark:bg-red-900/40" :
+                    rec.priority === 'medium' ? "bg-amber-100 dark:bg-amber-900/40" : "bg-teal-100 dark:bg-teal-900/40"
                   )}>
                     <Icon size={18} className={cn(
-                      rec.priority === 'high' ? "text-red-600" :
-                      rec.priority === 'medium' ? "text-amber-600" : "text-teal-600"
+                      rec.priority === 'high' ? "text-red-600 dark:text-red-400" :
+                      rec.priority === 'medium' ? "text-amber-600 dark:text-amber-400" : "text-teal-600 dark:text-teal-400"
                     )} />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-slate-800">{rec.action}</h4>
-                    <p className="text-sm text-emerald-600 font-medium">{rec.impact}</p>
+                    <h4 className="font-semibold text-slate-800 dark:text-stone-100">{rec.action}</h4>
+                    <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">{rec.impact}</p>
                   </div>
                 </div>
                 {expandedId === rec.id ? (
-                  <ChevronUp size={20} className="text-slate-600" />
+                  <ChevronUp size={20} className="text-slate-600 dark:text-stone-400" />
                 ) : (
-                  <ChevronDown size={20} className="text-slate-600" />
+                  <ChevronDown size={20} className="text-slate-600 dark:text-stone-400" />
                 )}
               </div>
               {expandedId === rec.id && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
-                  className="mt-3 pt-3 border-t border-slate-100"
+                  className="mt-3 pt-3 border-t border-slate-100 dark:border-stone-700"
                 >
-                  <p className="text-sm text-slate-600">{rec.reason}</p>
+                  <p className="text-sm text-slate-600 dark:text-stone-400">{rec.reason}</p>
                 </motion.div>
               )}
             </motion.div>
@@ -477,17 +477,17 @@ function PatternsSection({ mostActiveDay, mostActiveHour, conversionRate, activi
 
   return (
     <div>
-      <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Lightbulb size={20} className="text-amber-500" />
         Dina mönster
       </h3>
       <div className="space-y-3">
         {patterns.map((pattern, index) => (
-          <div key={index} className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
-            <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+          <div key={index} className="flex items-start gap-3 p-4 bg-slate-50 dark:bg-stone-800 rounded-xl">
+            <div className="w-8 h-8 rounded-lg bg-white dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
               <pattern.icon size={14} className="text-teal-500" />
             </div>
-            <p className="text-slate-700">{pattern.text}</p>
+            <p className="text-slate-700 dark:text-stone-300">{pattern.text}</p>
           </div>
         ))}
       </div>

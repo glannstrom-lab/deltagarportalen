@@ -1285,7 +1285,7 @@ export default function Profile() {
             <SectionCard title="Nästa steg" icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
               <div className="space-y-2">
                 {(consultantData?.nextSteps || []).map((step, i) => (
-                  <div key={i} className="flex items-center gap-2 p-2 bg-stone-50 dark:bg-stone-700/50 rounded-lg">
+                  <div key={i} className="flex items-center gap-2 p-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
                     <input
                       type="checkbox"
                       checked={step.completed}

@@ -608,7 +608,7 @@ export default function SkillsTab() {
                 <button
                   key={a.id}
                   onClick={() => selectAnalysis(a)}
-                  className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-teal-300 transition-colors"
+                  className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-gray-800 dark:text-gray-100">{a.dream_job}</span>

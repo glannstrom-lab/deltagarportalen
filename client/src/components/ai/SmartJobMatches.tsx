@@ -37,7 +37,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
       // Find semantic matches
       const matches = embeddingsApi.findSemanticMatches(cv, jobs, 0.25)
       setSemanticMatches(matches.slice(0, 5))
-      
+
       // Find similar roles
       const roles = embeddingsApi.exploreSimilarRoles(cv)
       setSimilarRoles(roles.slice(0, 4))
@@ -49,7 +49,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
   if (loading) {
     return (
       <div className={cn(
-        "bg-white rounded-2xl shadow-sm border border-slate-200 p-6",
+        "bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700 p-6",
         className
       )}>
         <div className="flex items-center justify-center py-8">
@@ -65,24 +65,24 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
   if (!hasMatches && !hasSimilarRoles) {
     return (
       <div className={cn(
-        "bg-gradient-to-br from-teal-50 to-sky-50 rounded-2xl border border-teal-200 p-6",
+        "bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-2xl border border-teal-200 dark:border-teal-800 p-6",
         className
       )}>
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
-            <Sparkles size={20} className="text-teal-600" />
+          <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/50 rounded-xl flex items-center justify-center">
+            <Sparkles size={20} className="text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">Smart matchning</h3>
+            <h3 className="font-semibold text-slate-900 dark:text-stone-100">Smart matchning</h3>
           </div>
         </div>
-        <p className="text-sm text-slate-600">
-          Fyll i mer information i ditt CV för att få personliga jobbrekommendationer 
-          baserat på dina kompetenser.
+        <p className="text-sm text-slate-600 dark:text-stone-400">
+          Fyll i mer information i ditt CV for att fa personliga jobbrekommendationer
+          baserat pa dina kompetenser.
         </p>
         <Link
           to="/cv"
-          className="inline-flex items-center gap-2 mt-3 text-sm text-teal-600 hover:text-teal-700 font-medium"
+          className="inline-flex items-center gap-2 mt-3 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
         >
           Komplettera CV:t
           <ChevronRight size={16} />
@@ -93,7 +93,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
 
   return (
     <div className={cn(
-      "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden",
+      "bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700 overflow-hidden",
       className
     )}>
       {/* Header */}
@@ -116,14 +116,14 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
 
       {/* Tabs */}
       {(hasMatches && hasSimilarRoles) && (
-        <div className="flex border-b border-slate-200">
+        <div className="flex border-b border-slate-200 dark:border-stone-700">
           <button
             onClick={() => setActiveTab('matches')}
             className={cn(
               "flex-1 px-4 py-3 text-sm font-medium transition-colors",
               activeTab === 'matches'
-                ? "text-teal-600 border-b-2 border-teal-600"
-                : "text-slate-600 hover:text-slate-900"
+                ? "text-teal-600 dark:text-teal-400 border-b-2 border-teal-600 dark:border-teal-400"
+                : "text-slate-600 dark:text-stone-400 hover:text-slate-900 dark:hover:text-stone-100"
             )}
           >
             Matchade jobb
@@ -133,8 +133,8 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             className={cn(
               "flex-1 px-4 py-3 text-sm font-medium transition-colors",
               activeTab === 'roles'
-                ? "text-teal-600 border-b-2 border-teal-600"
-                : "text-slate-600 hover:text-slate-900"
+                ? "text-teal-600 dark:text-teal-400 border-b-2 border-teal-600 dark:border-teal-400"
+                : "text-slate-600 dark:text-stone-400 hover:text-slate-900 dark:hover:text-stone-100"
             )}
           >
             Liknande roller
@@ -152,7 +152,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             
             <Link
               to="/job-search"
-              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-teal-600 hover:text-teal-700 font-medium hover:bg-teal-50 rounded-lg transition-colors"
+              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
             >
               Se alla matchade jobb
               <ChevronRight size={16} />

@@ -205,7 +205,7 @@ export function AIAssistant() {
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
+              className="bg-white dark:bg-stone-900 rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
             >
               {/* Header */}
               <div className="bg-gradient-to-r from-teal-500 to-sky-500 p-6 text-white">
@@ -276,31 +276,31 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
   return (
     <div className="space-y-6">
       {/* Prediction Card */}
-      <div className="p-5 bg-gradient-to-br from-teal-50 to-sky-50 rounded-2xl border border-teal-200">
+      <div className="p-5 bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-2xl border border-teal-200 dark:border-teal-800">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
-            <Target size={20} className="text-teal-600" />
+          <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
+            <Target size={20} className="text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800">Din prognos</h3>
-            <p className="text-sm text-slate-700">Baserat på din aktivitet</p>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Din prognos</h3>
+            <p className="text-sm text-slate-700 dark:text-stone-300">Baserat på din aktivitet</p>
           </div>
         </div>
         
         <div className="flex items-end gap-2 mb-2">
-          <span className="text-4xl font-bold text-teal-600">
+          <span className="text-4xl font-bold text-teal-600 dark:text-teal-400">
             {analysis.predictedInterviewChance}%
           </span>
-          <span className="text-slate-600 mb-1">chans till intervju</span>
+          <span className="text-slate-600 dark:text-stone-400 mb-1">chans till intervju</span>
         </div>
-        
+
         {analysis.daysToInterview && (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-600 dark:text-stone-400">
             Baserat på din takt: <span className="font-semibold">Intervju inom {analysis.daysToInterview} dagar</span>
           </p>
         )}
         
-        <div className="mt-4 h-2 bg-teal-200 rounded-full overflow-hidden">
+        <div className="mt-4 h-2 bg-teal-200 dark:bg-teal-800 rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${analysis.predictedInterviewChance}%` }}
@@ -340,11 +340,11 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
 
       {/* Streak Warning */}
       {analysis.streakRisk && (
-        <div className="p-4 bg-amber-50 rounded-xl border border-amber-200 flex items-start gap-3">
-          <AlertTriangle size={20} className="text-amber-600 flex-shrink-0 mt-0.5" />
+        <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-xl border border-amber-200 dark:border-amber-800 flex items-start gap-3">
+          <AlertTriangle size={20} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-semibold text-amber-800">Streak-risk upptäckt!</h4>
-            <p className="text-sm text-amber-700">
+            <h4 className="font-semibold text-amber-800 dark:text-amber-200">Streak-risk upptäckt!</h4>
+            <p className="text-sm text-amber-700 dark:text-amber-300">
               Din streak håller på att brytas. Logga in idag för att behålla den!
             </p>
           </div>
@@ -357,23 +357,23 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
 function InsightsTab({ analysis }: { analysis: BehaviorAnalysis }) {
   return (
     <div className="space-y-4">
-      <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+      <h3 className="font-semibold text-slate-800 dark:text-stone-100 flex items-center gap-2">
         <Lightbulb size={18} className="text-amber-500" />
         AI-genererade insikter
       </h3>
-      
+
       {analysis.insights.map((insight, index) => (
         <motion.div
           key={index}
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: index * 0.1 }}
-          className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-3"
+          className="p-4 bg-slate-50 dark:bg-stone-800 rounded-xl border border-slate-100 dark:border-stone-700 flex items-start gap-3"
         >
-          <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-white dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
             <Zap size={16} className="text-teal-500" />
           </div>
-          <p className="text-slate-700">{insight}</p>
+          <p className="text-slate-700 dark:text-stone-300">{insight}</p>
         </motion.div>
       ))}
     </div>
@@ -383,11 +383,11 @@ function InsightsTab({ analysis }: { analysis: BehaviorAnalysis }) {
 function ActionsTab({ analysis, onClose }: { analysis: BehaviorAnalysis; onClose: () => void }) {
   return (
     <div className="space-y-4">
-      <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+      <h3 className="font-semibold text-slate-800 dark:text-stone-100 flex items-center gap-2">
         <Target size={18} className="text-teal-500" />
         Rekommenderade åtgärder
       </h3>
-      
+
       {analysis.recommendedActions.map((action, index) => (
         <motion.div
           key={action.id}
@@ -396,33 +396,33 @@ function ActionsTab({ analysis, onClose }: { analysis: BehaviorAnalysis; onClose
           transition={{ delay: index * 0.1 }}
           className={cn(
             "p-4 rounded-xl border transition-all",
-            action.priority === 'high' 
-              ? 'bg-teal-50 border-teal-200'
-              : 'bg-slate-50 border-slate-200'
+            action.priority === 'high'
+              ? 'bg-teal-50 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800'
+              : 'bg-slate-50 dark:bg-stone-800 border-slate-200 dark:border-stone-700'
           )}
         >
           <div className="flex items-start gap-3">
             <div className={cn(
               "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-              action.priority === 'high' ? 'bg-teal-100' : 'bg-white'
+              action.priority === 'high' ? 'bg-teal-100 dark:bg-teal-900/50' : 'bg-white dark:bg-stone-700'
             )}>
-              <Sparkles size={18} className="text-teal-600" />
+              <Sparkles size={18} className="text-teal-600 dark:text-teal-400" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-slate-800">{action.action}</h4>
-              <p className="text-sm text-slate-600 mt-1">{action.reason}</p>
+              <h4 className="font-semibold text-slate-800 dark:text-stone-100">{action.action}</h4>
+              <p className="text-sm text-slate-600 dark:text-stone-400 mt-1">{action.reason}</p>
               <div className="flex items-center gap-4 mt-3">
-                <span className="text-xs text-slate-700 flex items-center gap-1">
+                <span className="text-xs text-slate-700 dark:text-stone-300 flex items-center gap-1">
                   <Clock size={12} />
                   {action.timeEstimate}
                 </span>
-                <span className="text-xs text-emerald-600 font-medium flex items-center gap-1">
+                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
                   <TrendingUp size={12} />
                   {action.expectedImpact}
                 </span>
               </div>
             </div>
-            <ChevronRight size={20} className="text-slate-300" />
+            <ChevronRight size={20} className="text-slate-300 dark:text-stone-600" />
           </div>
         </motion.div>
       ))}
@@ -430,20 +430,20 @@ function ActionsTab({ analysis, onClose }: { analysis: BehaviorAnalysis; onClose
   )
 }
 
-function PatternCard({ icon, label, value, subtext }: { 
+function PatternCard({ icon, label, value, subtext }: {
   icon: React.ReactNode
   label: string
   value: string
   subtext: string
 }) {
   return (
-    <div className="p-4 bg-slate-50 rounded-xl">
-      <div className="flex items-center gap-2 text-slate-600 mb-2">
+    <div className="p-4 bg-slate-50 dark:bg-stone-800 rounded-xl">
+      <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400 mb-2">
         {icon}
         <span className="text-xs">{label}</span>
       </div>
-      <p className="font-semibold text-slate-800">{value}</p>
-      <p className="text-xs text-slate-700">{subtext}</p>
+      <p className="font-semibold text-slate-800 dark:text-stone-100">{value}</p>
+      <p className="text-xs text-slate-700 dark:text-stone-300">{subtext}</p>
     </div>
   )
 }

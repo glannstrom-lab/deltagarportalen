@@ -26,7 +26,7 @@ const eventTypeConfig = {
   interview: { icon: Briefcase, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/40' },
   meeting: { icon: Video, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/40' },
   deadline: { icon: Clock, color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/40' },
-  other: { icon: Calendar, color: 'text-slate-600 dark:text-slate-600', bg: 'bg-slate-100 dark:bg-slate-700' },
+  other: { icon: Calendar, color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-700' },
 }
 
 // Helper function - uses translation keys for relative dates
@@ -76,7 +76,7 @@ export const CalendarWidget = memo(function CalendarWidget({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('calendarWidget.calendar')}</p>
-          <p className="text-xs text-slate-700 dark:text-slate-600">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             {nextEvent ? getRelativeDate(nextEvent.date) : t('calendarWidget.eventsCount', { count: upcomingEvents })}
           </p>
         </div>
@@ -103,7 +103,7 @@ export const CalendarWidget = memo(function CalendarWidget({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('calendarWidget.calendar')}</h3>
-              <p className="text-xs text-slate-700 dark:text-slate-600">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {hasEvents ? t('calendarWidget.upcomingCount', { count: upcomingEvents }) : t('calendarWidget.noEvents')}
               </p>
             </div>
@@ -142,7 +142,7 @@ export const CalendarWidget = memo(function CalendarWidget({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('calendarWidget.calendar')}</h3>
-            <p className="text-sm text-slate-700 dark:text-slate-600">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {hasEvents ? t('calendarWidget.upcomingEventsCount', { count: upcomingEvents }) : t('calendarWidget.noEvents')}
             </p>
           </div>
@@ -183,14 +183,14 @@ export const CalendarWidget = memo(function CalendarWidget({
             <Calendar size={16} className="text-rose-500 dark:text-rose-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{upcomingEvents}</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-600">{t('calendarWidget.upcoming')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('calendarWidget.upcoming')}</p>
         </div>
         <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
           <div className="flex items-center gap-2">
-            <Clock size={16} className="text-slate-700 dark:text-slate-600" />
+            <Clock size={16} className="text-slate-500 dark:text-slate-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{eventsThisWeek}</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-slate-600">{t('calendarWidget.thisWeek')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('calendarWidget.thisWeek')}</p>
         </div>
       </div>
 

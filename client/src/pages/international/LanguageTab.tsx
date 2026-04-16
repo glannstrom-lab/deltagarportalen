@@ -166,7 +166,7 @@ export default function LanguageTab() {
           onClick={() => setSelectedLevel(null)}
           className={cn(
             "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            !selectedLevel ? "bg-sky-600 dark:bg-sky-700 text-white" : "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-stone-600"
+            !selectedLevel ? "bg-sky-600 dark:bg-sky-700 text-white" : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
           )}
         >
           Alla nivåer
@@ -175,7 +175,7 @@ export default function LanguageTab() {
           onClick={() => setSelectedLevel('beginner')}
           className={cn(
             "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            selectedLevel === 'beginner' ? "bg-sky-600 dark:bg-sky-700 text-white" : "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-stone-600"
+            selectedLevel === 'beginner' ? "bg-sky-600 dark:bg-sky-700 text-white" : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
           )}
         >
           Nybörjare
@@ -184,7 +184,7 @@ export default function LanguageTab() {
           onClick={() => setSelectedLevel('intermediate')}
           className={cn(
             "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            selectedLevel === 'intermediate' ? "bg-sky-600 dark:bg-sky-700 text-white" : "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-stone-600"
+            selectedLevel === 'intermediate' ? "bg-sky-600 dark:bg-sky-700 text-white" : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
           )}
         >
           Mellannivå
@@ -237,7 +237,7 @@ export default function LanguageTab() {
                       </span>
                       <span className={cn(
                         "text-xs px-2 py-0.5 rounded-full",
-                        resource.cost === 'free' && "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300",
+                        resource.cost === 'free' && "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300",
                         resource.cost === 'paid' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300",
                         resource.cost === 'both' && "bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-300"
                       )}>
@@ -264,7 +264,7 @@ export default function LanguageTab() {
 
         <div className="space-y-3">
           {WORK_PHRASES.map((phrase, idx) => (
-            <div key={idx} className="p-3 bg-slate-50 dark:bg-stone-700 rounded-lg">
+            <div key={idx} className="p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-medium text-gray-800 dark:text-gray-100">{phrase.swedish}</p>

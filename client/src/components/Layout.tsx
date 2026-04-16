@@ -46,7 +46,7 @@ export default function Layout() {
       <SkipLinks />
       <div
         className={cn(
-          'min-h-screen flex flex-col bg-gradient-to-b from-stone-50 via-white to-stone-50/50',
+          'min-h-screen flex flex-col bg-gradient-to-b from-stone-50 via-white to-stone-50/50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800',
           isMobile ? 'pb-safe' : ''
         )}
       >
@@ -111,7 +111,7 @@ function MobileTopBar() {
   return (
     <>
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-gradient-to-r from-teal-50 via-white to-stone-50 border-b border-teal-100 px-4 py-3 safe-top">
+      <header className="sticky top-0 z-30 bg-gradient-to-r from-teal-50 via-white to-stone-50 dark:from-teal-900/30 dark:via-stone-900 dark:to-stone-800 border-b border-teal-100 dark:border-stone-700 px-4 py-3 safe-top">
         <div className="flex items-center justify-between">
           {/* Vänster: Logo */}
           <Link to="/" className="flex items-center gap-2">
@@ -121,7 +121,7 @@ function MobileTopBar() {
               loading="eager"
               className="h-8 w-auto object-contain"
             />
-            <span className="text-base font-semibold text-teal-700">jobin.se</span>
+            <span className="text-base font-semibold text-teal-700 dark:text-teal-300">jobin.se</span>
           </Link>
 
           {/* Höger: Notifikationer + Profil + Meny */}
@@ -129,7 +129,7 @@ function MobileTopBar() {
             <NotificationBell variant="compact" />
             <button
               onClick={() => setIsProfileOpen(true)}
-              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 dark:hover:bg-stone-700 transition-colors"
               aria-label="Profil"
             >
               <div className="w-7 h-7 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
@@ -138,10 +138,10 @@ function MobileTopBar() {
             </button>
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 dark:hover:bg-stone-700 transition-colors"
               aria-label="Meny"
             >
-              <Menu className="w-5 h-5 text-slate-700" />
+              <Menu className="w-5 h-5 text-slate-700 dark:text-stone-300" />
             </button>
           </div>
         </div>
@@ -158,20 +158,20 @@ function MobileTopBar() {
       {/* Sidomeny (höger) - Huvudnavigation synkad med Desktop Sidebar */}
       <div
         className={cn(
-          'fixed top-0 right-0 bottom-0 bg-white z-50 shadow-xl',
+          'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
           'w-[280px] max-w-[80vw]',
           isMenuOpen ? 'translate-x-0' : 'translate-x-full'
         )}
       >
         {/* Meny header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 safe-top">
-          <h2 className="text-lg font-semibold text-slate-800">Meny</h2>
+        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700 safe-top">
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">Meny</h2>
           <button
             onClick={() => setIsMenuOpen(false)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
           >
-            <X className="w-5 h-5 text-slate-600" />
+            <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
           </button>
         </div>
 
@@ -188,8 +188,8 @@ function MobileTopBar() {
                 className={cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
                   isActive
-                    ? 'bg-teal-100 text-teal-700 font-medium'
-                    : 'text-slate-700 hover:bg-slate-100'
+                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+                    : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
                 )}
               >
                 <Icon className="w-5 h-5" />
@@ -200,15 +200,15 @@ function MobileTopBar() {
         </nav>
 
         {/* Footer i meny - Inställningar synkad med Sidebar */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 safe-bottom space-y-1">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-stone-700 safe-bottom space-y-1">
           <Link
             to="/settings"
             onClick={() => setIsMenuOpen(false)}
             className={cn(
               'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
               location.pathname === '/settings'
-                ? 'bg-teal-100 text-teal-700 font-medium'
-                : 'text-slate-700 hover:bg-slate-100'
+                ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+                : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
             )}
           >
             <Settings className="w-5 h-5" />
@@ -228,20 +228,20 @@ function MobileTopBar() {
       {/* Profil-meny (vänster) */}
       <div
         className={cn(
-          'fixed top-0 left-0 bottom-0 bg-white z-50 shadow-xl',
+          'fixed top-0 left-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
           'w-[280px] max-w-[80vw]',
           isProfileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Profil header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 safe-top">
-          <h2 className="text-lg font-semibold text-slate-800">Profil</h2>
+        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700 safe-top">
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">Profil</h2>
           <button
             onClick={() => setIsProfileOpen(false)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
+            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
           >
-            <X className="w-5 h-5 text-slate-600" />
+            <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
           </button>
         </div>
 
@@ -252,8 +252,8 @@ function MobileTopBar() {
               <User className="w-7 h-7 text-white" />
             </div>
             <div>
-              <p className="font-semibold text-slate-800">{user?.email || 'Användare'}</p>
-              <p className="text-sm text-slate-700">Deltagare</p>
+              <p className="font-semibold text-slate-800 dark:text-stone-100">{user?.email || 'Användare'}</p>
+              <p className="text-sm text-slate-700 dark:text-stone-400">Deltagare</p>
             </div>
           </div>
 
@@ -261,14 +261,14 @@ function MobileTopBar() {
             <Link
               to="/profile"
               onClick={() => setIsProfileOpen(false)}
-              className="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
+              className="flex items-center px-4 py-3 rounded-xl text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
             >
               Min profil
             </Link>
             <Link
               to="/settings"
               onClick={() => setIsProfileOpen(false)}
-              className="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
+              className="flex items-center px-4 py-3 rounded-xl text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
             >
               Inställningar
             </Link>
@@ -276,7 +276,7 @@ function MobileTopBar() {
         </div>
 
         {/* Logga ut - synkad med Sidebar */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 safe-bottom">
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-stone-700 safe-bottom">
           <button
             onClick={handleLogout}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-red-600 rounded-xl font-medium hover:bg-red-100 transition-colors"

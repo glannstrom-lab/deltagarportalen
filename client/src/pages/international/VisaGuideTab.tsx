@@ -154,17 +154,17 @@ export default function VisaGuideTab() {
             </button>
 
             {expandedVisa === visa.id && (
-              <div className="mt-4 pt-4 border-t border-slate-100 dark:border-stone-700 space-y-4">
+              <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700 space-y-4">
                 {/* Quick facts */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  <div className="p-3 bg-slate-50 dark:bg-stone-700 rounded-lg">
+                  <div className="p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
                     <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 mb-1">
                       <Clock className="w-3 h-3" />
                       Handläggningstid
                     </div>
                     <p className="font-medium text-gray-800 dark:text-gray-100">{visa.processingTime}</p>
                   </div>
-                  <div className="p-3 bg-slate-50 dark:bg-stone-700 rounded-lg">
+                  <div className="p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
                     <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 mb-1">
                       <FileCheck className="w-3 h-3" />
                       Giltighet
@@ -172,7 +172,7 @@ export default function VisaGuideTab() {
                     <p className="font-medium text-gray-800 dark:text-gray-100">{visa.validity}</p>
                   </div>
                   {visa.minSalary && (
-                    <div className="p-3 bg-slate-50 dark:bg-stone-700 rounded-lg">
+                    <div className="p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
                       <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 mb-1">
                         <DollarSign className="w-3 h-3" />
                         Minimilön
@@ -180,7 +180,7 @@ export default function VisaGuideTab() {
                       <p className="font-medium text-gray-800 dark:text-gray-100">{visa.minSalary}</p>
                     </div>
                   )}
-                  <div className="p-3 bg-slate-50 dark:bg-stone-700 rounded-lg">
+                  <div className="p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
                     <div className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400 mb-1">
                       <Building2 className="w-3 h-3" />
                       Permanent uppehåll
@@ -228,7 +228,7 @@ export default function VisaGuideTab() {
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">Vägen till permanent uppehållstillstånd</h3>
         <div className="relative">
-          <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-slate-200 dark:bg-stone-600" />
+          <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-stone-200 dark:bg-stone-600" />
           <div className="space-y-6 relative">
             <div className="flex items-start gap-4">
               <div className="w-8 h-8 bg-sky-600 dark:bg-sky-700 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">1</div>

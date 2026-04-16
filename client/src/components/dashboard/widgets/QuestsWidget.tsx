@@ -27,9 +27,9 @@ export const QuestsWidget = memo(function QuestsWidget({
       <Link
         to="/"
         className={cn(
-          "group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border transition-all duration-200",
+          "group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border transition-all duration-200",
           "hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md",
-          isComplete ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-slate-700"
+          isComplete ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-stone-700"
         )}
       >
         <div className={cn(
@@ -39,8 +39,8 @@ export const QuestsWidget = memo(function QuestsWidget({
           {isComplete ? <Zap size={16} /> : <Target size={16} />}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Quests</p>
-          <p className={cn("text-xs", isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-slate-700 dark:text-slate-600")}>
+          <p className="text-sm font-semibold text-slate-800 dark:text-stone-100">Quests</p>
+          <p className={cn("text-xs", isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-slate-700 dark:text-stone-400")}>
             {completedQuests}/{totalQuests}
           </p>
         </div>
@@ -60,9 +60,9 @@ export const QuestsWidget = memo(function QuestsWidget({
       <Link
         to="/"
         className={cn(
-          "group block bg-white dark:bg-slate-800 p-4 rounded-xl border transition-all duration-200",
+          "group block bg-white dark:bg-stone-900 p-4 rounded-xl border transition-all duration-200",
           "hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg hover:-translate-y-0.5",
-          isComplete ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20" : "border-slate-200 dark:border-slate-700"
+          isComplete ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20" : "border-slate-200 dark:border-stone-700"
         )}
       >
         <div className="flex items-center justify-between mb-3">
@@ -74,8 +74,8 @@ export const QuestsWidget = memo(function QuestsWidget({
               {isComplete ? <Zap size={18} /> : <Target size={18} />}
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('quests.todaysQuests')}</h3>
-              <p className="text-xs text-slate-700 dark:text-slate-600">
+              <h3 className="font-semibold text-slate-800 dark:text-stone-100 text-sm">{t('quests.todaysQuests')}</h3>
+              <p className="text-xs text-slate-700 dark:text-stone-400">
                 {isComplete ? t('quests.allDone') : t('quests.remaining', { count: totalQuests - completedQuests })}
               </p>
             </div>
@@ -95,7 +95,7 @@ export const QuestsWidget = memo(function QuestsWidget({
           )}>
             {completedQuests}/{totalQuests}
           </span>
-          <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+          <div className="flex-1 h-2 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
             <div
               className={cn(
                 "h-full rounded-full transition-all duration-500",
@@ -120,9 +120,9 @@ export const QuestsWidget = memo(function QuestsWidget({
     <Link
       to="/"
       className={cn(
-        "group block bg-white dark:bg-slate-800 p-5 rounded-xl border transition-all duration-200",
+        "group block bg-white dark:bg-stone-900 p-5 rounded-xl border transition-all duration-200",
         "hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg",
-        isComplete ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-slate-700"
+        isComplete ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-stone-700"
       )}
     >
       <div className="flex items-start justify-between mb-4">
@@ -136,8 +136,8 @@ export const QuestsWidget = memo(function QuestsWidget({
             {isComplete ? <Zap size={24} /> : <Target size={24} />}
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('quests.todaysQuests')}</h3>
-            <p className="text-sm text-slate-700 dark:text-slate-600">
+            <h3 className="font-bold text-slate-800 dark:text-stone-100">{t('quests.todaysQuests')}</h3>
+            <p className="text-sm text-slate-700 dark:text-stone-400">
               {isComplete ? t('quests.youCompletedAll') : t('quests.completeTasks')}
             </p>
           </div>
@@ -153,7 +153,7 @@ export const QuestsWidget = memo(function QuestsWidget({
       {/* Progress */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-600 dark:text-slate-600">{t('quests.progress')}</span>
+          <span className="text-sm text-slate-600 dark:text-stone-400">{t('quests.progress')}</span>
           <span className={cn(
             "text-lg font-bold",
             isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
@@ -161,7 +161,7 @@ export const QuestsWidget = memo(function QuestsWidget({
             {completedQuests}/{totalQuests}
           </span>
         </div>
-        <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+        <div className="h-3 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
           <div
             className={cn(
               "h-full rounded-full transition-all duration-500",
@@ -181,17 +181,17 @@ export const QuestsWidget = memo(function QuestsWidget({
             key={quest.id}
             className={cn(
               "flex items-center gap-3 p-2 rounded-lg",
-              quest.completed ? "bg-emerald-50 dark:bg-emerald-900/20" : "bg-slate-50 dark:bg-slate-700/50"
+              quest.completed ? "bg-emerald-50 dark:bg-emerald-900/20" : "bg-slate-50 dark:bg-stone-800"
             )}
           >
             {quest.completed ? (
               <CheckCircle2 size={16} className="text-emerald-500 dark:text-emerald-400" />
             ) : (
-              <Circle size={16} className="text-slate-300 dark:text-slate-600" />
+              <Circle size={16} className="text-slate-300 dark:text-stone-400" />
             )}
             <span className={cn(
               "text-sm",
-              quest.completed ? "text-emerald-700 dark:text-emerald-400 line-through" : "text-slate-600 dark:text-slate-300"
+              quest.completed ? "text-emerald-700 dark:text-emerald-400 line-through" : "text-slate-600 dark:text-stone-300"
             )}>
               {t(quest.titleKey)}
             </span>

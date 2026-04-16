@@ -324,13 +324,13 @@ export default function StoriesTab() {
                         </div>
                         <div className="flex gap-2 flex-wrap justify-end">
                           {story.hasVideo && (
-                            <div className="flex items-center gap-1 px-3 py-1 bg-red-100 text-red-600 rounded-full text-xs font-medium whitespace-nowrap">
+                            <div className="flex items-center gap-1 px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 rounded-full text-xs font-medium whitespace-nowrap">
                               <Play className="w-3 h-3" />
                               Video
                             </div>
                           )}
                           {story.category === 'Nyanlände' && (
-                            <div className="flex items-center gap-1 px-3 py-1 bg-cyan-100 text-cyan-600 rounded-full text-xs font-medium whitespace-nowrap">
+                            <div className="flex items-center gap-1 px-3 py-1 bg-cyan-100 dark:bg-cyan-900/30 text-cyan-600 dark:text-cyan-400 rounded-full text-xs font-medium whitespace-nowrap">
                               🌍 Nyanlände
                             </div>
                           )}

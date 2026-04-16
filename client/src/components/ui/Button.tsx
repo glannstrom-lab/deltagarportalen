@@ -104,12 +104,12 @@ export function IconButton({
 }: IconButtonProps) {
   const variantClasses = {
     default: cn(
-      'bg-white border border-stone-200 text-stone-700',
-      'hover:bg-stone-50 hover:border-stone-300'
+      'bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-200',
+      'hover:bg-stone-50 dark:hover:bg-stone-800 hover:border-stone-300 dark:hover:border-stone-600'
     ),
     ghost: cn(
-      'bg-transparent text-stone-600',
-      'hover:bg-stone-100 hover:text-stone-900'
+      'bg-transparent text-stone-600 dark:text-stone-300',
+      'hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100'
     ),
     primary: cn(
       'bg-teal-500 text-white',

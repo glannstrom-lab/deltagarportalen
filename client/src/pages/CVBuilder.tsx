@@ -445,8 +445,8 @@ export default function CVBuilder() {
   const renderStep1 = () => (
     <div className="space-y-8">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-stone-800 mb-2">{t('cvBuilder.templates.chooseTemplate')}</h3>
-        <p className="text-stone-700">{t('cvBuilder.templates.templateDescription')}</p>
+        <h3 className="text-2xl font-bold text-stone-800 dark:text-stone-200 mb-2">{t('cvBuilder.templates.chooseTemplate')}</h3>
+        <p className="text-stone-700 dark:text-stone-300">{t('cvBuilder.templates.templateDescription')}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -459,8 +459,8 @@ export default function CVBuilder() {
               className={cn(
                 "group relative overflow-hidden rounded-2xl border-2 text-left transition-all",
                 selected
-                  ? "border-sky-500 ring-2 ring-sky-500 ring-offset-2 shadow-xl"
-                  : "border-stone-200 hover:border-sky-300 hover:shadow-lg"
+                  ? "border-sky-500 ring-2 ring-sky-500 ring-offset-2 dark:ring-offset-stone-900 shadow-xl"
+                  : "border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-600 hover:shadow-lg"
               )}
             >
               {/* Preview thumbnail */}
@@ -525,17 +525,17 @@ export default function CVBuilder() {
               {/* Info */}
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-2">
-                  <h4 className="font-bold text-lg text-stone-800">{tpl.name}</h4>
-                  {selected && <span className="text-xs bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
+                  <h4 className="font-bold text-lg text-stone-800 dark:text-stone-200">{tpl.name}</h4>
+                  {selected && <span className="text-xs bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
                 </div>
-                <p className="text-sm text-stone-700 mb-3">{tpl.desc}</p>
+                <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">{tpl.desc}</p>
 
                 {/* Features */}
                 <div className="flex flex-wrap gap-1.5">
                   {tpl.features.map((feature, i) => (
                     <span
                       key={i}
-                      className="text-xs px-2 py-1 bg-stone-100 text-stone-600 rounded-md"
+                      className="text-xs px-2 py-1 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 rounded-md"
                     >
                       {feature}
                     </span>
@@ -548,16 +548,16 @@ export default function CVBuilder() {
       </div>
 
       {data.template && (
-        <div className="p-5 bg-sky-50 rounded-2xl border border-sky-100">
+        <div className="p-5 bg-sky-50 dark:bg-sky-900/20 rounded-2xl border border-sky-100 dark:border-sky-800/50">
           <div className="flex items-start gap-3">
             <div className="bg-sky-500 text-white rounded-full p-1 mt-0.5">
               <Check className="w-4 h-4" />
             </div>
             <div>
-              <p className="font-medium text-sky-900">
+              <p className="font-medium text-sky-900 dark:text-sky-100">
                 {TEMPLATES.find(tpl => tpl.id === data.template)?.name} {t('cvBuilder.templates.isSelected')}
               </p>
-              <p className="text-sm text-sky-700 mt-1">
+              <p className="text-sm text-sky-700 dark:text-sky-300 mt-1">
                 {t('cvBuilder.templates.selectedInfo')}
               </p>
             </div>
@@ -573,15 +573,15 @@ export default function CVBuilder() {
       <Card className="relative">
         {/* Loading overlay for image upload */}
         {isImageUploading && (
-          <div className="absolute inset-0 bg-white/80 rounded-2xl flex items-center justify-center z-10">
+          <div className="absolute inset-0 bg-white/80 dark:bg-stone-900/80 rounded-2xl flex items-center justify-center z-10">
             <div className="flex items-center gap-3">
               <Loader2 className="w-5 h-5 animate-spin text-sky-600" />
-              <span className="text-sm font-medium text-stone-700">{t('cvBuilder.profileImage.uploading')}</span>
+              <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('cvBuilder.profileImage.uploading')}</span>
             </div>
           </div>
         )}
-        <h3 className="font-semibold text-stone-800 mb-4">{t('cvBuilder.profileImage.title')}</h3>
-        <p className="text-sm text-stone-700 mb-4">
+        <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4">{t('cvBuilder.profileImage.title')}</h3>
+        <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">
           {t('cvBuilder.profileImage.description')}
         </p>
         <CompactImageUpload
@@ -627,8 +627,8 @@ export default function CVBuilder() {
   const renderStep3 = () => (
     <div className="space-y-4">
       <Card>
-        <h3 className="font-semibold text-stone-800 mb-2">{t('cvBuilder.summary.title')}</h3>
-        <p className="text-sm text-stone-700 mb-4">{t('cvBuilder.summary.description')}</p>
+        <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-2">{t('cvBuilder.summary.title')}</h3>
+        <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">{t('cvBuilder.summary.description')}</p>
         <RichTextEditor
           value={data.summary || ''}
           onChange={(v) => setData({ ...data, summary: v })}
@@ -654,7 +654,7 @@ export default function CVBuilder() {
       <ContextualHelp context="experience" />
 
       <div>
-        <h3 className="font-semibold text-stone-800 mb-4 flex items-center gap-2">
+        <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
           <Briefcase className="w-5 h-5 text-sky-500" />
           {t('cvBuilder.sections.workExperience')}
         </h3>
@@ -665,7 +665,7 @@ export default function CVBuilder() {
       </div>
 
       <div>
-        <h3 className="font-semibold text-stone-800 mb-4 flex items-center gap-2">
+        <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
           <GraduationCap className="w-5 h-5 text-sky-500" />
           {t('cvBuilder.sections.education')}
         </h3>
@@ -683,7 +683,7 @@ export default function CVBuilder() {
       <ContextualHelp context="skills" />
 
       <div>
-        <h3 className="font-semibold text-stone-800 mb-4 flex items-center gap-2">
+        <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
           <Award className="w-5 h-5 text-sky-500" />
           {t('cvBuilder.sections.skills')}
         </h3>
@@ -695,8 +695,8 @@ export default function CVBuilder() {
 
       <Card>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-stone-800">{t('cvBuilder.sections.languages')}</h3>
-          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'good' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.languages')}</h3>
+          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'good' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.languages.length > 0 && (
           <div className="space-y-2">
@@ -707,13 +707,13 @@ export default function CVBuilder() {
                   value={lang.language}
                   onChange={(e) => update(data.languages, lang.id, 'languages', 'language', e.target.value)}
                   placeholder={t('cvBuilder.placeholders.language')}
-                  className="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-sm"
+                  className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                   aria-label={t('cvBuilder.sections.languages')}
                 />
                 <select
                   value={lang.level}
                   onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)}
-                  className="px-3 py-2 border border-stone-200 rounded-lg text-sm w-32"
+                  className="px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm w-32 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                   aria-label={t('cvBuilder.fields.languageLevel')}
                 >
                   {LANGUAGE_LEVELS.map(level => (
@@ -724,7 +724,7 @@ export default function CVBuilder() {
                 </select>
                 <button
                   onClick={() => remove(data.languages, lang.id, 'languages')}
-                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                  className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
                   aria-label={t('cvBuilder.actions.remove')}
                 >
                   <Trash2 className="w-4 h-4" />
@@ -737,15 +737,15 @@ export default function CVBuilder() {
 
       <Card>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-stone-800">{t('cvBuilder.sections.certificates')}</h3>
-          <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.certificates')}</h3>
+          <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.certificates.length > 0 && (
           <div className="space-y-2">
             {data.certificates.map((cert) => (
               <div key={cert.id} className="flex items-center gap-3">
-                <input type="text" value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder={t('cvBuilder.sections.certificates')} className="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-sm" />
-                <button onClick={() => remove(data.certificates, cert.id, 'certificates')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                <input type="text" value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder={t('cvBuilder.sections.certificates')} className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
+                <button onClick={() => remove(data.certificates, cert.id, 'certificates')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
           </div>
@@ -754,16 +754,16 @@ export default function CVBuilder() {
 
       <Card>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-stone-800">{t('cvBuilder.sections.links')}</h3>
-          <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.links')}</h3>
+          <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.links.length > 0 && (
           <div className="space-y-2">
             {data.links.map((link) => (
               <div key={link.id} className="flex items-center gap-3">
-                <input type="text" value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder={t('cvBuilder.sections.links')} className="w-1/3 px-3 py-2 border border-stone-200 rounded-lg text-sm" />
-                <input type="url" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-stone-200 rounded-lg text-sm" />
-                <button onClick={() => remove(data.links, link.id, 'links')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                <input type="text" value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder={t('cvBuilder.sections.links')} className="w-1/3 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
+                <input type="url" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100" />
+                <button onClick={() => remove(data.links, link.id, 'links')} className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
           </div>
@@ -789,7 +789,7 @@ export default function CVBuilder() {
     <div className="max-w-7xl mx-auto">
       {/* Action buttons bar */}
       <div className="flex items-center justify-end gap-2 flex-wrap mb-4">
-        <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-sky-600 hover:bg-sky-50 border border-sky-200 rounded-lg transition-colors">
+        <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/20 border border-sky-200 dark:border-sky-700 rounded-lg transition-colors">
           <Sparkles className="w-4 h-4" />
           <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
         </button>
@@ -803,7 +803,7 @@ export default function CVBuilder() {
           <Save className="w-4 h-4" />
           {saving ? t('cvBuilder.actions.saving') : t('cvBuilder.actions.saveNow')}
         </button>
-        <div className="w-px h-6 bg-stone-300 mx-1 hidden sm:block" />
+        <div className="w-px h-6 bg-stone-300 dark:bg-stone-600 mx-1 hidden sm:block" />
         <CVShare onShare={async () => await cvApi.shareCV()} variant="compact" />
         <PDFExportButton
           type="cv"
@@ -819,11 +819,11 @@ export default function CVBuilder() {
 
       {/* Mobile Preview Modal */}
       {showPreview && (
-        <div className="fixed inset-0 z-50 bg-stone-900/50 lg:hidden">
-          <div className="absolute inset-x-0 bottom-0 top-16 bg-stone-100 rounded-t-3xl overflow-hidden flex flex-col">
-            <div className="flex items-center justify-between p-4 bg-white border-b">
-              <h2 className="font-semibold">{t('cvBuilder.actions.preview')}</h2>
-              <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-stone-100 rounded-full"><X className="w-6 h-6" /></button>
+        <div className="fixed inset-0 z-50 bg-stone-900/50 dark:bg-stone-950/70 lg:hidden">
+          <div className="absolute inset-x-0 bottom-0 top-16 bg-stone-100 dark:bg-stone-900 rounded-t-3xl overflow-hidden flex flex-col">
+            <div className="flex items-center justify-between p-4 bg-white dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700">
+              <h2 className="font-semibold text-stone-900 dark:text-stone-100">{t('cvBuilder.actions.preview')}</h2>
+              <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-full"><X className="w-6 h-6 text-stone-700 dark:text-stone-300" /></button>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
               <CVPreview data={data} />
@@ -842,7 +842,7 @@ export default function CVBuilder() {
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center justify-between mt-6">
-            <button onClick={() => setStep(Math.max(1, step - 1))} disabled={step === 1} className="flex items-center gap-2 px-4 py-2.5 border border-stone-300 rounded-xl text-stone-700 hover:bg-stone-50 disabled:opacity-50 font-medium">
+            <button onClick={() => setStep(Math.max(1, step - 1))} disabled={step === 1} className="flex items-center gap-2 px-4 py-2.5 border border-stone-300 dark:border-stone-600 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 disabled:opacity-50 font-medium">
               <ChevronLeft className="w-5 h-5" />
               {t('cvBuilder.actions.previous')}
             </button>
@@ -859,8 +859,8 @@ export default function CVBuilder() {
         {/* Right: Preview + Tools (desktop) */}
         <div className="hidden lg:block space-y-6">
           {/* Preview - Clean A4 look */}
-          <div className="bg-stone-100 rounded-2xl p-6">
-            <div className="bg-white shadow-lg rounded-lg overflow-hidden max-h-[700px] overflow-y-auto">
+          <div className="bg-stone-100 dark:bg-stone-800 rounded-2xl p-6">
+            <div className="bg-white dark:bg-stone-900 shadow-lg rounded-lg overflow-hidden max-h-[700px] overflow-y-auto">
               <CVPreview data={data} />
             </div>
           </div>
@@ -869,14 +869,14 @@ export default function CVBuilder() {
           <ContextualKnowledgeWidget context="cv-building" variant="full" />
 
           {/* Help - Show onboarding again */}
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-5">
-            <h3 className="font-semibold text-stone-800 mb-2">{t('cvBuilder.help.title')}</h3>
-            <p className="text-sm text-stone-700 mb-3">
+          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-5">
+            <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-2">{t('cvBuilder.help.title')}</h3>
+            <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
               {t('cvBuilder.help.description')}
             </p>
             <button
               onClick={() => setShowOnboarding(true)}
-              className="w-full px-4 py-2 text-sm font-medium text-sky-600 bg-sky-50 rounded-lg hover:bg-sky-100 transition-colors"
+              className="w-full px-4 py-2 text-sm font-medium text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 rounded-lg hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors"
             >
               {t('cvBuilder.help.showGuide')}
             </button>
@@ -884,14 +884,14 @@ export default function CVBuilder() {
 
           {/* AI Tools */}
           {step === 3 && (
-            <div className="bg-gradient-to-br from-teal-50 to-sky-50 rounded-2xl shadow-sm border border-teal-200 p-5">
+            <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-2xl shadow-sm border border-teal-200 dark:border-teal-800/50 p-5">
               <div className="flex items-center gap-2 mb-3">
                 <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
                   <Lightbulb className="w-4 h-4 text-white" />
                 </div>
-                <h3 className="font-semibold text-teal-900">{t('cvBuilder.help.aiWriting')}</h3>
+                <h3 className="font-semibold text-teal-900 dark:text-teal-100">{t('cvBuilder.help.aiWriting')}</h3>
               </div>
-              <p className="text-sm text-teal-700 mb-3">
+              <p className="text-sm text-teal-700 dark:text-teal-300 mb-3">
                 {t('cvBuilder.help.aiWritingDesc')}
               </p>
               <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
@@ -899,8 +899,8 @@ export default function CVBuilder() {
           )}
 
           {/* Versions */}
-          <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-5">
-            <h3 className="font-semibold text-stone-800 mb-3">{t('cvBuilder.versions.title')}</h3>
+          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-5">
+            <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-3">{t('cvBuilder.versions.title')}</h3>
             {showSaveVersion ? (
               <div className="space-y-2 mb-3">
                 <input
@@ -908,34 +908,34 @@ export default function CVBuilder() {
                   value={versionName}
                   onChange={(e) => setVersionName(e.target.value)}
                   placeholder={t('cvBuilder.versions.versionNamePlaceholder')}
-                  className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm"
+                  className="w-full px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                 />
                 <div className="flex gap-2">
                   <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-teal-600 text-white text-sm rounded-lg">{t('cvBuilder.versions.save')}</button>
-                  <button onClick={() => setShowSaveVersion(false)} className="flex-1 px-3 py-2 border border-stone-300 text-sm rounded-lg">{t('cvBuilder.versions.cancel')}</button>
+                  <button onClick={() => setShowSaveVersion(false)} className="flex-1 px-3 py-2 border border-stone-300 dark:border-stone-600 text-sm rounded-lg text-stone-700 dark:text-stone-300">{t('cvBuilder.versions.cancel')}</button>
                 </div>
               </div>
             ) : (
               <button
                 onClick={() => setShowSaveVersion(true)}
-                className="w-full mb-3 px-4 py-2 border border-teal-600 text-teal-600 rounded-lg text-sm hover:bg-teal-600/5"
+                className="w-full mb-3 px-4 py-2 border border-teal-600 dark:border-teal-500 text-teal-600 dark:text-teal-400 rounded-lg text-sm hover:bg-teal-600/5 dark:hover:bg-teal-600/10"
               >
                 {t('cvBuilder.versions.saveCurrentVersion')}
               </button>
             )}
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {versions.length === 0 ? (
-                <p className="text-sm text-stone-600 text-center py-2">{t('cvBuilder.versions.noVersions')}</p>
+                <p className="text-sm text-stone-600 dark:text-stone-400 text-center py-2">{t('cvBuilder.versions.noVersions')}</p>
               ) : (
                 versions.map((v) => (
-                  <div key={v.id} className="flex items-center justify-between p-2 bg-stone-50 rounded-lg">
+                  <div key={v.id} className="flex items-center justify-between p-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
                     <div>
-                      <p className="text-sm font-medium text-stone-800">{v.name}</p>
-                      <p className="text-xs text-stone-700">{new Date(v.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}</p>
+                      <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{v.name}</p>
+                      <p className="text-xs text-stone-700 dark:text-stone-300">{new Date(v.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}</p>
                     </div>
                     <button
                       onClick={() => restoreVersion(v.id)}
-                      className="text-xs text-teal-600 hover:bg-teal-600/10 px-2 py-1 rounded"
+                      className="text-xs text-teal-600 dark:text-teal-400 hover:bg-teal-600/10 px-2 py-1 rounded"
                     >
                       {t('cvBuilder.actions.restore')}
                     </button>
@@ -958,18 +958,18 @@ export default function CVBuilder() {
       )}
       
       {/* Mobile Fixed Navigation Bar */}
-      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-stone-200 px-4 py-3 flex items-center justify-between gap-3 safe-area-pb">
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-700 px-4 py-3 flex items-center justify-between gap-3 safe-area-pb">
         <button
           onClick={() => setStep(Math.max(1, step - 1))}
           disabled={step === 1}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-stone-300 rounded-xl text-stone-700 hover:bg-stone-50 disabled:opacity-50 font-medium"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-stone-300 dark:border-stone-600 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 disabled:opacity-50 font-medium"
         >
           <ChevronLeft className="w-5 h-5" />
           {t('cvBuilder.actions.previous')}
         </button>
         <button
           onClick={() => setShowPreview(true)}
-          className="flex items-center justify-center w-12 h-12 bg-sky-100 text-sky-600 rounded-xl"
+          className="flex items-center justify-center w-12 h-12 bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400 rounded-xl"
         >
           <Eye className="w-5 h-5" />
         </button>

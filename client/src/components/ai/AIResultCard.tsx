@@ -54,7 +54,7 @@ export function AILoadingIndicator({
       </div>
       <p className="text-sm font-medium text-teal-700 dark:text-teal-300">{text}</p>
       {subtext && (
-        <p className="text-xs text-slate-700 dark:text-slate-600 mt-1">{subtext}</p>
+        <p className="text-xs text-slate-700 dark:text-stone-400 mt-1">{subtext}</p>
       )}
     </div>
   )
@@ -104,9 +104,9 @@ export function CollapsibleSection({
           )}
         </div>
         {isOpen ? (
-          <ChevronUp className="w-4 h-4 text-slate-700" />
+          <ChevronUp className="w-4 h-4 text-slate-700 dark:text-stone-300" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-slate-700" />
+          <ChevronDown className="w-4 h-4 text-slate-700 dark:text-stone-300" />
         )}
       </button>
       <AnimatePresence>
@@ -182,8 +182,8 @@ export function SourceCitations({ sources }: SourceCitationsProps) {
 
   return (
     <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-      <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
-        Källor:
+      <p className="text-xs font-medium text-slate-700 dark:text-stone-400 mb-2">
+        Kallor:
       </p>
       <div className="flex flex-wrap gap-2">
         {sources.map((source, index) => (
@@ -194,9 +194,9 @@ export function SourceCitations({ sources }: SourceCitationsProps) {
             rel="noopener noreferrer"
             className={cn(
               'inline-flex items-center gap-1 px-2 py-1',
-              'bg-slate-100 dark:bg-slate-800 rounded-md',
-              'text-xs text-slate-600 dark:text-slate-600',
-              'hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors'
+              'bg-slate-100 dark:bg-stone-800 rounded-md',
+              'text-xs text-slate-600 dark:text-stone-400',
+              'hover:bg-slate-200 dark:hover:bg-stone-700 transition-colors'
             )}
           >
             <ExternalLink className="w-3 h-3" />
@@ -253,7 +253,7 @@ export function AIResultCard({
               <h3 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
                 Något gick fel
               </h3>
-              <p className="text-sm text-slate-600 dark:text-slate-600 mb-4">
+              <p className="text-sm text-slate-600 dark:text-stone-400 mb-4">
                 {error}
               </p>
               {onRetry && (
@@ -381,7 +381,7 @@ export function AIStatBlock({
         className
       )}
     >
-      <p className="text-xs text-slate-700 dark:text-slate-600 mb-1">{label}</p>
+      <p className="text-xs text-slate-700 dark:text-stone-400 mb-1">{label}</p>
       <div className="flex items-baseline gap-2">
         <span className="text-lg font-bold text-slate-800 dark:text-slate-200">
           {value}
@@ -392,7 +392,7 @@ export function AIStatBlock({
               'text-xs font-medium',
               trend === 'up' && 'text-green-600',
               trend === 'down' && 'text-red-600',
-              trend === 'neutral' && 'text-slate-700'
+              trend === 'neutral' && 'text-slate-700 dark:text-stone-300'
             )}
           >
             {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'}
@@ -400,7 +400,7 @@ export function AIStatBlock({
         )}
       </div>
       {subValue && (
-        <p className="text-xs text-slate-700 dark:text-slate-600 mt-0.5">
+        <p className="text-xs text-slate-700 dark:text-stone-400 mt-0.5">
           {subValue}
         </p>
       )}

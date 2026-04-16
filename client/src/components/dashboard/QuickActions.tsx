@@ -97,8 +97,8 @@ export function QuickActions() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Clock size={18} className="text-slate-700" />
-        <h3 className="text-sm font-semibold text-slate-700">
+        <Clock size={18} className="text-slate-700 dark:text-stone-300" />
+        <h3 className="text-sm font-semibold text-slate-700 dark:text-stone-300">
           Vad vill du göra?
         </h3>
       </div>
@@ -143,7 +143,7 @@ export function QuickActions() {
 
               {/* Description - only show on hover or selected */}
               <p className={cn(
-                "text-xs text-slate-600 transition-all duration-300",
+                "text-xs text-slate-600 dark:text-stone-400 transition-all duration-300",
                 isHovered || isSelected ? "opacity-100 max-h-10" : "opacity-70 max-h-6 overflow-hidden"
               )}>
                 {action.description}
@@ -152,8 +152,8 @@ export function QuickActions() {
               {/* Arrow indicator */}
               <div className={cn(
                 "absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center",
-                "bg-white/50 text-slate-600 transition-all duration-300",
-                "group-hover:bg-white group-hover:text-slate-600",
+                "bg-white/50 dark:bg-stone-800/50 text-slate-600 dark:text-stone-400 transition-all duration-300",
+                "group-hover:bg-white dark:group-hover:bg-stone-800 group-hover:text-slate-600 dark:group-hover:text-stone-300",
                 isSelected && "rotate-90"
               )}>
                 <ArrowRight size={14} />
@@ -165,11 +165,11 @@ export function QuickActions() {
 
       {/* Expanded suggestions */}
       {selectedDuration && (
-        <div 
-          className="animate-fade-in-up bg-white rounded-2xl border-2 border-slate-200 p-4"
+        <div
+          className="animate-fade-in-up bg-white dark:bg-stone-900 rounded-2xl border-2 border-slate-200 dark:border-stone-700 p-4"
           style={{ animationDelay: '0ms' }}
         >
-          <p className="text-sm font-medium text-slate-700 mb-3">
+          <p className="text-sm font-medium text-slate-700 dark:text-stone-300 mb-3">
             Förslag för {selectedDuration} minuter:
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -181,10 +181,11 @@ export function QuickActions() {
                   onClick={() => handleSuggestionClick(suggestion.link)}
                   className={cn(
                     "text-left px-4 py-3 rounded-xl text-sm",
-                    "bg-slate-50 hover:bg-teal-50 hover:text-teal-700",
-                    "border border-slate-200 hover:border-teal-200",
+                    "bg-slate-50 dark:bg-stone-800 hover:bg-teal-50 dark:hover:bg-teal-900/30 hover:text-teal-700 dark:hover:text-teal-400",
+                    "border border-slate-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700",
                     "transition-all duration-200",
-                    "hover:-translate-y-0.5 hover:shadow-md"
+                    "hover:-translate-y-0.5 hover:shadow-md",
+                    "text-slate-800 dark:text-stone-200"
                   )}
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >

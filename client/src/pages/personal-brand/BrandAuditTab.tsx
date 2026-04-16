@@ -315,7 +315,7 @@ export default function BrandAuditTab() {
                       stroke="currentColor"
                       strokeWidth="8"
                       fill="none"
-                      className="text-slate-200 dark:text-stone-700"
+                      className="text-stone-200 dark:text-stone-700"
                     />
                     <circle
                       cx="48"
@@ -356,14 +356,14 @@ export default function BrandAuditTab() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-4 pt-4 border-t border-slate-100 dark:border-stone-700"
+                  className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700"
                 >
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {Object.entries(CATEGORIES).map(([key, cat]) => {
                       const score = getCategoryScore(key)
                       const Icon = cat.icon
                       return (
-                        <div key={key} className="text-center p-3 rounded-xl bg-slate-50 dark:bg-stone-700">
+                        <div key={key} className="text-center p-3 rounded-xl bg-stone-50 dark:bg-stone-700">
                           <Icon className={cn(
                             "w-5 h-5 mx-auto mb-2",
                             score >= 70 ? "text-emerald-600 dark:text-emerald-400" :
@@ -450,13 +450,13 @@ export default function BrandAuditTab() {
                       "w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left",
                       answers[question.id]
                         ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700"
-                        : "bg-slate-50 dark:bg-stone-700 border-slate-100 dark:border-stone-600 hover:border-slate-200 dark:hover:border-stone-500"
+                        : "bg-stone-50 dark:bg-stone-700 border-stone-100 dark:border-stone-600 hover:border-stone-200 dark:hover:border-stone-500"
                     )}
                   >
                     {answers[question.id] ? (
                       <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                     ) : (
-                      <Circle className="w-5 h-5 text-slate-300 dark:text-stone-500 shrink-0" />
+                      <Circle className="w-5 h-5 text-stone-300 dark:text-stone-500 shrink-0" />
                     )}
                     <span className={cn(
                       "flex-1 text-sm",

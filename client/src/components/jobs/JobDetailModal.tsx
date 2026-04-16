@@ -77,22 +77,22 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
       aria-labelledby={titleId}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-start justify-between">
+        <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-slate-200 dark:border-stone-700 p-6 flex items-start justify-between">
           <div>
-            <h2 id={titleId} className="text-2xl font-bold text-slate-800">{job.title}</h2>
-            <div className="flex items-center gap-2 mt-1 text-slate-600">
+            <h2 id={titleId} className="text-2xl font-bold text-slate-800 dark:text-stone-100">{job.title}</h2>
+            <div className="flex items-center gap-2 mt-1 text-slate-600 dark:text-stone-400">
               <Building size={16} />
               {job.company}
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+            className="p-2 hover:bg-slate-100 dark:hover:bg-stone-800 rounded-full transition-colors"
             aria-label="Stäng dialog"
           >
-            <X size={20} className="text-slate-700" aria-hidden="true" />
+            <X size={20} className="text-slate-700 dark:text-stone-300" aria-hidden="true" />
           </button>
         </div>
 
@@ -107,12 +107,12 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
                 </div>
                 <div className="flex-1">
                   {matchResult.matchingSkills.length > 0 && (
-                    <p className="text-sm text-green-700 mb-1">
+                    <p className="text-sm text-green-700 dark:text-green-400 mb-1">
                       ✅ Matchar: {matchResult.matchingSkills.join(', ')}
                     </p>
                   )}
                   {matchResult.missingSkills.length > 0 && (
-                    <p className="text-sm text-orange-600">
+                    <p className="text-sm text-orange-600 dark:text-orange-400">
                       ⚠️ Saknas: {matchResult.missingSkills.join(', ')}
                     </p>
                   )}
@@ -120,8 +120,8 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
               </div>
               {matchResult.suggestions.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-[#4f46e5]/20">
-                  <p className="text-sm font-medium text-slate-700 mb-1">Förslag för bättre match:</p>
-                  <ul className="text-sm text-slate-600 space-y-1">
+                  <p className="text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">Förslag för bättre match:</p>
+                  <ul className="text-sm text-slate-600 dark:text-stone-400 space-y-1">
                     {matchResult.suggestions.map((suggestion, index) => (
                       <li key={index}>• {suggestion}</li>
                     ))}
@@ -133,20 +133,20 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
 
           {/* Job details */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="flex items-center gap-2 text-slate-600">
+            <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400">
               <MapPin size={18} className="text-[#4f46e5]" />
               {job.location}
             </div>
-            <div className="flex items-center gap-2 text-slate-600">
+            <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400">
               <Briefcase size={18} className="text-[#4f46e5]" />
               {job.employmentType}
             </div>
-            <div className="flex items-center gap-2 text-slate-600">
+            <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400">
               <Clock size={18} className="text-[#4f46e5]" />
               {job.experienceLevel}
             </div>
             {job.salaryRange && (
-              <div className="flex items-center gap-2 text-slate-600">
+              <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400">
                 <DollarSign size={18} className="text-[#4f46e5]" />
                 {job.salaryRange}
               </div>
@@ -155,18 +155,18 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
 
           {/* Description */}
           <div className="mb-6">
-            <h3 className="font-semibold text-slate-800 mb-2">Om tjänsten</h3>
-            <p className="text-slate-600 leading-relaxed">{job.description}</p>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-2">Om tjänsten</h3>
+            <p className="text-slate-600 dark:text-stone-400 leading-relaxed">{job.description}</p>
           </div>
 
           {/* Requirements */}
           <div className="mb-6">
-            <h3 className="font-semibold text-slate-800 mb-2">Krav</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-2">Krav</h3>
             <div className="flex flex-wrap gap-2">
               {job.requirements.map((req, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm"
+                  className="px-3 py-1 bg-slate-100 dark:bg-stone-800 text-slate-700 dark:text-stone-300 rounded-full text-sm"
                 >
                   {req}
                 </span>
@@ -175,7 +175,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
           </div>
 
           {/* Dates */}
-          <div className="flex items-center gap-4 text-sm text-slate-700 mb-6">
+          <div className="flex items-center gap-4 text-sm text-slate-700 dark:text-stone-300 mb-6">
             <div className="flex items-center gap-1">
               <Calendar size={14} />
               Publicerad: {new Date(job.publishedDate || job.publishedAt || Date.now()).toLocaleDateString('sv-SE')}
@@ -190,13 +190,13 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
         </div>
 
         {/* Actions */}
-        <div className="sticky bottom-0 bg-white border-t border-slate-200 p-6 flex gap-3 flex-wrap">
+        <div className="sticky bottom-0 bg-white dark:bg-stone-900 border-t border-slate-200 dark:border-stone-700 p-6 flex gap-3 flex-wrap">
           <button
             onClick={onSave}
             className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 transition-colors ${
               isSaved
                 ? 'border-red-200 bg-red-50 text-red-600'
-                : 'border-slate-200 text-slate-700 hover:border-slate-300'
+                : 'border-slate-200 dark:border-stone-700 text-slate-700 dark:text-stone-300 hover:border-slate-300 dark:hover:border-stone-600'
             }`}
           >
             <Heart size={18} fill={isSaved ? 'currentColor' : 'none'} />
@@ -247,7 +247,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
             href={job.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-3 border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-3 border border-slate-200 dark:border-stone-700 text-slate-700 dark:text-stone-300 rounded-xl hover:bg-slate-50 dark:hover:bg-stone-800 transition-colors"
           >
             <Send size={18} />
             Ansök

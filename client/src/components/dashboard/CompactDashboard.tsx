@@ -37,20 +37,20 @@ interface StatCardProps {
 
 const StatCard = memo(function StatCard({ label, value, icon, color }: StatCardProps) {
   const colorClasses: Record<string, string> = {
-    teal: 'bg-teal-50 text-teal-600',
-    amber: 'bg-amber-50 text-amber-600',
-    blue: 'bg-blue-50 text-blue-600',
-    emerald: 'bg-emerald-50 text-emerald-600',
+    teal: 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400',
+    amber: 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
+    blue: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
+    emerald: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
   }
 
   return (
-    <div className="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200">
+    <div className="flex items-center gap-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-slate-200 dark:border-stone-700">
       <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', colorClasses[color])}>
         {icon}
       </div>
       <div>
-        <p className="text-lg font-semibold text-slate-800 leading-tight">{value}</p>
-        <p className="text-xs text-slate-700">{label}</p>
+        <p className="text-lg font-semibold text-slate-800 dark:text-stone-100 leading-tight">{value}</p>
+        <p className="text-xs text-slate-700 dark:text-stone-300">{label}</p>
       </div>
     </div>
   )
@@ -81,21 +81,21 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
   trend,
 }: CompactWidgetRowProps) {
   const bgColors: Record<string, string> = {
-    teal: 'bg-teal-50 border-teal-100',
-    rose: 'bg-rose-50 border-rose-100',
-    blue: 'bg-blue-50 border-blue-100',
-    sky: 'bg-sky-50 border-sky-100',
-    emerald: 'bg-emerald-50 border-emerald-100',
-    amber: 'bg-amber-50 border-amber-100',
+    teal: 'bg-teal-50 dark:bg-teal-900/30 border-teal-100 dark:border-teal-800',
+    rose: 'bg-rose-50 dark:bg-rose-900/30 border-rose-100 dark:border-rose-800',
+    blue: 'bg-blue-50 dark:bg-blue-900/30 border-blue-100 dark:border-blue-800',
+    sky: 'bg-sky-50 dark:bg-sky-900/30 border-sky-100 dark:border-sky-800',
+    emerald: 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-100 dark:border-emerald-800',
+    amber: 'bg-amber-50 dark:bg-amber-900/30 border-amber-100 dark:border-amber-800',
   }
 
   const iconColors: Record<string, string> = {
-    teal: 'text-teal-600',
-    rose: 'text-rose-600',
-    blue: 'text-blue-600',
-    sky: 'text-sky-600',
-    emerald: 'text-emerald-600',
-    amber: 'text-amber-600',
+    teal: 'text-teal-600 dark:text-teal-400',
+    rose: 'text-rose-600 dark:text-rose-400',
+    blue: 'text-blue-600 dark:text-blue-400',
+    sky: 'text-sky-600 dark:text-sky-400',
+    emerald: 'text-emerald-600 dark:text-emerald-400',
+    amber: 'text-amber-600 dark:text-amber-400',
   }
 
   return (
@@ -106,13 +106,13 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
         bgColors[color] || 'bg-slate-50 border-slate-200'
       )}
     >
-      <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center bg-white shadow-sm', iconColors[color])}>
+      <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center bg-white dark:bg-stone-800 shadow-sm', iconColors[color])}>
         {icon}
       </div>
       
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
-          <h3 className="font-semibold text-slate-800 group-hover:text-teal-600 transition-colors">
+          <h3 className="font-semibold text-slate-800 dark:text-stone-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
             {title}
           </h3>
           {badge && (
@@ -121,19 +121,19 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
             </span>
           )}
         </div>
-        <p className="text-sm text-slate-700">{subtitle}</p>
+        <p className="text-sm text-slate-700 dark:text-stone-300">{subtitle}</p>
       </div>
 
       {progress !== undefined && (
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <span className="text-2xl font-bold text-slate-800">{progress}%</span>
-            {trend && <p className="text-xs text-emerald-600">{trend}</p>}
+            <span className="text-2xl font-bold text-slate-800 dark:text-stone-100">{progress}%</span>
+            {trend && <p className="text-xs text-emerald-600 dark:text-emerald-400">{trend}</p>}
           </div>
         </div>
       )}
 
-      <ChevronRight size={20} className="text-slate-300 group-hover:text-slate-700 transition-colors" />
+      <ChevronRight size={20} className="text-slate-300 dark:text-stone-600 group-hover:text-slate-700 dark:group-hover:text-stone-300 transition-colors" />
     </Link>
   )
 })
@@ -195,15 +195,15 @@ export function CompactDashboard() {
   if (loading || prefsLoading) {
     return (
       <div className="space-y-4">
-        <div className="h-14 bg-slate-200 rounded-xl animate-pulse" />
+        <div className="h-14 bg-slate-200 dark:bg-stone-700 rounded-xl animate-pulse" />
         <div className="grid grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-16 bg-slate-200 rounded-lg animate-pulse" />
+            <div key={i} className="h-16 bg-slate-200 dark:bg-stone-700 rounded-lg animate-pulse" />
           ))}
         </div>
         <div className="space-y-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-20 bg-slate-200 rounded-xl animate-pulse" />
+            <div key={i} className="h-20 bg-slate-200 dark:bg-stone-700 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -298,10 +298,10 @@ export function CompactDashboard() {
       {/* Header with welcome */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800">
+          <h1 className="text-xl font-semibold text-slate-800 dark:text-stone-100">
             Hej{user?.firstName ? `, ${user.firstName}` : ''}! 👋
           </h1>
-          <p className="text-sm text-slate-700">Här är din översikt för idag.</p>
+          <p className="text-sm text-slate-700 dark:text-stone-300">Här är din översikt för idag.</p>
         </div>
       </div>
 
@@ -354,9 +354,9 @@ export function CompactDashboard() {
 
       {/* Empty state */}
       {visibleWidgetItems.length === 0 && (
-        <div className="text-center py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-          <p className="text-slate-700 mb-1">Inga moduler synliga</p>
-          <p className="text-sm text-slate-600">
+        <div className="text-center py-10 bg-slate-50 dark:bg-stone-800 rounded-xl border border-dashed border-slate-200 dark:border-stone-700">
+          <p className="text-slate-700 dark:text-stone-300 mb-1">Inga moduler synliga</p>
+          <p className="text-sm text-slate-600 dark:text-stone-400">
             Klicka på "Moduler" ovan för att välja vad du vill se
           </p>
         </div>

@@ -37,7 +37,7 @@ export const CVWidget = memo(function CVWidget({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">CV</p>
-          <p className={cn("text-xs", isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-slate-700 dark:text-slate-600")}>
+          <p className={cn("text-xs", isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400")}>
             {isComplete ? t('cvWidget.complete') : `${progress}%`}
           </p>
         </div>
@@ -67,7 +67,7 @@ export const CVWidget = memo(function CVWidget({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('cvWidget.yourCV')}</h3>
-              <p className="text-xs text-slate-700 dark:text-slate-600">
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {isComplete ? t('cvWidget.readyToSend') : hasCV ? t('cvWidget.inProgress') : t('cvWidget.getStarted')}
               </p>
             </div>
@@ -118,7 +118,7 @@ export const CVWidget = memo(function CVWidget({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('cvWidget.yourCV')}</h3>
-            <p className="text-sm text-slate-700 dark:text-slate-600">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {isComplete ? t('cvWidget.readyToUse') : hasCV ? t('cvWidget.continueWhereYouLeft') : t('cvWidget.createProfessionalCV')}
             </p>
           </div>
@@ -129,7 +129,7 @@ export const CVWidget = memo(function CVWidget({
       {/* Progress Section */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-600 dark:text-slate-600">{t('cvWidget.progress')}</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">{t('cvWidget.progress')}</span>
           <span className={cn(
             "text-lg font-bold",
             isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-teal-600 dark:text-teal-400"

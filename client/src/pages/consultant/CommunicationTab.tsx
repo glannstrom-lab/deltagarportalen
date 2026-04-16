@@ -114,7 +114,7 @@ function MessageItem({
           </div>
           <p className={cn(
             'text-sm truncate mt-0.5',
-            message.isRead ? 'text-stone-500' : 'text-stone-700 dark:text-stone-300'
+            message.isRead ? 'text-stone-500 dark:text-stone-400' : 'text-stone-700 dark:text-stone-300'
           )}>
             {message.content}
           </p>
@@ -196,7 +196,7 @@ function MeetingCard({
               </span>
             </div>
             {meeting.location && (
-              <p className="text-sm text-stone-500 dark:text-stone-600 mt-1 flex items-center gap-1">
+              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
                 {meeting.location}
               </p>
@@ -790,7 +790,7 @@ export function CommunicationTab() {
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
                 Gruppmeddelande
               </h4>
-              <p className="text-sm text-stone-500 dark:text-stone-600 mb-3">
+              <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
                 Skicka samma meddelande till alla eller valda deltagare.
               </p>
               <Button className="w-full" onClick={() => setShowNewMessage(true)}>
@@ -863,7 +863,7 @@ export function CommunicationTab() {
               <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
                 Inga kommande möten
               </h3>
-              <p className="text-stone-500 dark:text-stone-600 mb-6">
+              <p className="text-stone-500 dark:text-stone-400 mb-6">
                 Boka ett möte med en deltagare för att komma igång.
               </p>
               <Button onClick={() => setShowMeetingDialog(true)}>

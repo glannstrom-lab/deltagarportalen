@@ -729,7 +729,7 @@ export default function CoverLetterGenerator() {
         {(sourceJob || queryJobId) && (
           <Link
             to="/job-search"
-            className="inline-flex items-center gap-1 text-sm text-slate-700 hover:text-slate-700 pt-4"
+            className="inline-flex items-center gap-1 text-sm text-slate-700 dark:text-stone-300 hover:text-slate-700 dark:hover:text-stone-300 pt-4"
           >
             <ArrowLeft size={16} />
             {t('coverLetterGenerator.backToJobSearch')}
@@ -738,44 +738,44 @@ export default function CoverLetterGenerator() {
 
         {/* Source Job Info */}
         {(company || jobTitle) && (
-          <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-4 border border-teal-100">
-            <p className="text-xs text-teal-600 font-medium uppercase tracking-wider mb-1">{t('coverLetterGenerator.writingFor')}</p>
-            <h2 className="font-semibold text-slate-800">{jobTitle}</h2>
-            {company && <p className="text-sm text-slate-600">{company}</p>}
+          <div className="bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/30 rounded-xl p-4 border border-teal-100 dark:border-teal-800">
+            <p className="text-xs text-teal-600 dark:text-teal-400 font-medium uppercase tracking-wider mb-1">{t('coverLetterGenerator.writingFor')}</p>
+            <h2 className="font-semibold text-slate-800 dark:text-stone-100">{jobTitle}</h2>
+            {company && <p className="text-sm text-slate-600 dark:text-stone-400">{company}</p>}
           </div>
         )}
 
         <div className="text-center space-y-2 pt-4">
-          <h1 className="text-xl font-bold text-slate-800">{t('coverLetterGenerator.title')}</h1>
-          <p className="text-sm text-slate-600">
+          <h1 className="text-xl font-bold text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.title')}</h1>
+          <p className="text-sm text-slate-600 dark:text-stone-400">
             {t('coverLetterGenerator.stepByStep')}
           </p>
         </div>
         
         {/* Saved Letters Modal for Mobile */}
         {showSaved ? (
-          <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 p-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-800">{t('coverLetterGenerator.savedLetters.title')}</h3>
+              <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.savedLetters.title')}</h3>
               <button
                 onClick={() => setShowSaved(false)}
-                className="text-sm text-slate-700 hover:text-slate-700"
+                className="text-sm text-slate-700 dark:text-stone-300 hover:text-slate-700 dark:hover:text-stone-300"
               >
                 {t('coverLetterGenerator.savedLetters.close')}
               </button>
             </div>
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {savedLetters.length === 0 ? (
-                <p className="text-slate-700 text-center py-4 text-sm">{t('coverLetterGenerator.savedLetters.noLetters')}</p>
+                <p className="text-slate-700 dark:text-stone-300 text-center py-4 text-sm">{t('coverLetterGenerator.savedLetters.noLetters')}</p>
               ) : (
                 savedLetters.map((letter) => (
                   <div
                     key={letter.id}
-                    className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+                    className="flex items-center justify-between p-3 bg-slate-50 dark:bg-stone-900/50 rounded-lg"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-slate-900 truncate">{letter.title}</p>
-                      <p className="text-sm text-slate-700">
+                      <p className="font-medium text-slate-900 dark:text-stone-100 truncate">{letter.title}</p>
+                      <p className="text-sm text-slate-700 dark:text-stone-300">
                         {new Date(letter.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                         {letter.company && ` • ${letter.company}`}
                       </p>
@@ -786,13 +786,13 @@ export default function CoverLetterGenerator() {
                           handleLoad(letter)
                           setShowSaved(false)
                         }}
-                        className="px-3 py-1 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                        className="px-3 py-1 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-lg transition-colors"
                       >
                         {t('coverLetterGenerator.savedLetters.open')}
                       </button>
                       <button
                         onClick={() => handleDelete(letter.id)}
-                        className="p-1 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -831,7 +831,7 @@ export default function CoverLetterGenerator() {
         )}
         
         {error && !showSaved && (
-          <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg text-sm">
+          <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 rounded-lg text-sm">
             {error}
           </div>
         )}
@@ -846,19 +846,19 @@ export default function CoverLetterGenerator() {
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Link
             to="/job-search"
-            className="inline-flex items-center gap-1 text-sm text-slate-700 hover:text-slate-700"
+            className="inline-flex items-center gap-1 text-sm text-slate-700 dark:text-stone-300 hover:text-slate-700 dark:hover:text-stone-300"
           >
             <ArrowLeft size={16} />
             {t('coverLetterGenerator.backToJobSearch')}
           </Link>
 
           {(company || jobTitle) && (
-            <div className="flex-1 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl px-4 py-3 border border-teal-100">
+            <div className="flex-1 bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-teal-900/30 dark:to-emerald-900/30 rounded-xl px-4 py-3 border border-teal-100 dark:border-teal-800">
               <div className="flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-teal-600" />
+                <Briefcase className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                 <div>
-                  <p className="text-xs text-teal-600 font-medium uppercase tracking-wider">{t('coverLetterGenerator.writingFor')}</p>
-                  <p className="font-semibold text-slate-800">{jobTitle} {company && `${t('coverLetterGenerator.at')} ${company}`}</p>
+                  <p className="text-xs text-teal-600 dark:text-teal-400 font-medium uppercase tracking-wider">{t('coverLetterGenerator.writingFor')}</p>
+                  <p className="font-semibold text-slate-800 dark:text-stone-100">{jobTitle} {company && `${t('coverLetterGenerator.at')} ${company}`}</p>
                 </div>
               </div>
             </div>
@@ -1074,27 +1074,27 @@ export default function CoverLetterGenerator() {
         </Card>
 
         {/* Applications Section */}
-        <Card className="p-4">
+        <Card className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <button
             onClick={() => setShowApplications(!showApplications)}
             className="w-full flex items-center justify-between text-left"
           >
             <div className="flex items-center gap-3">
-              <Send className="w-5 h-5 text-orange-500" />
+              <Send className="w-5 h-5 text-orange-500 dark:text-orange-400" />
               <div>
-                <h3 className="font-medium text-slate-800">{t('coverLetterGenerator.applications.title')}</h3>
-                <p className="text-sm text-slate-700">{t('coverLetterGenerator.applications.count', { count: applications.length })}</p>
+                <h3 className="font-medium text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.applications.title')}</h3>
+                <p className="text-sm text-slate-700 dark:text-stone-300">{t('coverLetterGenerator.applications.count', { count: applications.length })}</p>
               </div>
             </div>
-            {showApplications ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            {showApplications ? <ChevronUp className="w-5 h-5 text-slate-600 dark:text-stone-400" /> : <ChevronDown className="w-5 h-5 text-slate-600 dark:text-stone-400" />}
           </button>
-          
+
           {showApplications && (
-            <div className="mt-4 space-y-3 border-t pt-4 max-h-64 overflow-y-auto">
+            <div className="mt-4 space-y-3 border-t border-stone-200 dark:border-stone-700 pt-4 max-h-64 overflow-y-auto">
               {applications.length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text-slate-700 text-sm mb-3">{t('coverLetterGenerator.applications.noApplications')}</p>
-                  <p className="text-xs text-slate-600 mb-3">
+                  <p className="text-slate-700 dark:text-stone-300 text-sm mb-3">{t('coverLetterGenerator.applications.noApplications')}</p>
+                  <p className="text-xs text-slate-600 dark:text-stone-400 mb-3">
                     {t('coverLetterGenerator.applications.trackInfo')}
                   </p>
                   <button
@@ -1108,7 +1108,7 @@ export default function CoverLetterGenerator() {
                       }
                       setApplications([newApplication, ...applications])
                     }}
-                    className="px-4 py-2 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors"
+                    className="px-4 py-2 bg-orange-500 dark:bg-orange-600 text-white text-sm rounded-lg hover:bg-orange-600 dark:hover:bg-orange-700 transition-colors"
                   >
                     {t('coverLetterGenerator.applications.registerApplication')}
                   </button>
@@ -1118,26 +1118,26 @@ export default function CoverLetterGenerator() {
                   {applications.map((app) => (
                     <div
                       key={app.id}
-                      className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                      className="flex items-center justify-between p-3 bg-slate-50 dark:bg-stone-900/50 rounded-lg hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
                     >
                       <div className="min-w-0 flex-1">
-                        <p className="font-medium text-slate-900 truncate">{app.jobTitle}</p>
-                        <p className="text-sm text-slate-700">
+                        <p className="font-medium text-slate-900 dark:text-stone-100 truncate">{app.jobTitle}</p>
+                        <p className="text-sm text-slate-700 dark:text-stone-300">
                           {app.company} • {new Date(app.appliedDate).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 ml-2">
                         <span className={`px-2 py-1 text-xs rounded-full ${
-                          app.status === 'applied' ? 'bg-blue-100 text-blue-700' :
-                          app.status === 'interview' ? 'bg-amber-100 text-amber-700' :
-                          app.status === 'offer' ? 'bg-emerald-100 text-emerald-700' :
-                          'bg-slate-100 text-slate-700'
+                          app.status === 'applied' ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300' :
+                          app.status === 'interview' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300' :
+                          app.status === 'offer' ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' :
+                          'bg-slate-100 dark:bg-stone-700 text-slate-700 dark:text-stone-300'
                         }`}>
                           {t(`coverLetterGenerator.applications.status.${app.status}`)}
                         </span>
                         <button
                           onClick={() => setApplications(applications.filter(a => a.id !== app.id))}
-                          className="p-1 text-slate-600 hover:text-red-500 transition-colors"
+                          className="p-1 text-slate-600 dark:text-stone-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -1155,7 +1155,7 @@ export default function CoverLetterGenerator() {
                       }
                       setApplications([newApplication, ...applications])
                     }}
-                    className="w-full py-2 border-2 border-dashed border-orange-200 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors text-sm"
+                    className="w-full py-2 border-2 border-dashed border-orange-200 dark:border-orange-800 text-orange-600 dark:text-orange-400 rounded-lg hover:bg-orange-50 dark:hover:bg-orange-900/20 transition-colors text-sm"
                   >
                     {t('coverLetterGenerator.applications.registerNew')}
                   </button>
@@ -1295,18 +1295,18 @@ export default function CoverLetterGenerator() {
       </Card>
 
       {/* CV Section */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <button
           onClick={() => toggleSection('cv')}
-          className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 transition-colors"
+          className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 dark:hover:bg-stone-700 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <User className="w-5 h-5 text-teal-600" />
-            <h2 className="font-semibold text-slate-800">{t('coverLetterGenerator.cvSection.title')}</h2>
+            <User className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <h2 className="font-semibold text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.cvSection.title')}</h2>
           </div>
           <div className="flex items-center gap-2">
-            {cvLoading && <Loader2 className="w-4 h-4 animate-spin text-slate-600" />}
-            {expandedSections.cv ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            {cvLoading && <Loader2 className="w-4 h-4 animate-spin text-slate-600 dark:text-stone-400" />}
+            {expandedSections.cv ? <ChevronUp className="w-5 h-5 text-slate-600 dark:text-stone-400" /> : <ChevronDown className="w-5 h-5 text-slate-600 dark:text-stone-400" />}
           </div>
         </button>
         
@@ -1314,7 +1314,7 @@ export default function CoverLetterGenerator() {
           <div className="p-4 pt-0">
             {!cvData ? (
               <div className="text-center py-8">
-                <p className="text-slate-700 mb-4">{t('coverLetterGenerator.cvSection.noCV')}</p>
+                <p className="text-slate-700 dark:text-stone-300 mb-4">{t('coverLetterGenerator.cvSection.noCV')}</p>
                 <Button onClick={loadCVData} variant="outline">
                   {t('coverLetterGenerator.cvSection.loadCV')}
                 </Button>
@@ -1322,12 +1322,12 @@ export default function CoverLetterGenerator() {
             ) : (
               <div className="space-y-4">
                 {/* Personal Info */}
-                <div className="bg-slate-50 rounded-lg p-4">
-                  <h3 className="font-medium text-slate-800 mb-2 flex items-center gap-2">
+                <div className="bg-slate-50 dark:bg-stone-900/50 rounded-lg p-4">
+                  <h3 className="font-medium text-slate-800 dark:text-stone-100 mb-2 flex items-center gap-2">
                     <User className="w-4 h-4" />
                     {t('coverLetterGenerator.cvSection.personalInfo')}
                   </h3>
-                  <p className="text-slate-700">
+                  <p className="text-slate-700 dark:text-stone-300">
                     {cvData.firstName} {cvData.lastName}
                     {cvData.title && ` • ${cvData.title}`}
                   </p>
@@ -1336,16 +1336,16 @@ export default function CoverLetterGenerator() {
                 {/* CV Match visualization */}
                 {cvMatchScore !== null && jobbAnnons.length > 50 && (
                   <div className={`rounded-lg p-4 ${
-                    cvMatchScore >= 70 ? 'bg-green-50 border border-green-200' :
-                    cvMatchScore >= 40 ? 'bg-amber-50 border border-amber-200' :
-                    'bg-slate-50 border border-slate-200'
+                    cvMatchScore >= 70 ? 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800' :
+                    cvMatchScore >= 40 ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800' :
+                    'bg-slate-50 dark:bg-stone-900/50 border border-slate-200 dark:border-stone-700'
                   }`}>
-                    <h3 className="font-medium text-slate-800 mb-2 flex items-center gap-2">
+                    <h3 className="font-medium text-slate-800 dark:text-stone-100 mb-2 flex items-center gap-2">
                       <Target className="w-4 h-4" />
                       {t('coverLetterGenerator.cvSection.howWellMatches')}
                     </h3>
                     <div className="flex items-center gap-3">
-                      <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                      <div className="flex-1 h-2 bg-slate-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div
                           className={`h-full transition-all duration-500 ${
                             cvMatchScore >= 70 ? 'bg-green-500' :
@@ -1355,13 +1355,13 @@ export default function CoverLetterGenerator() {
                         />
                       </div>
                       <span className={`font-bold ${
-                        cvMatchScore >= 70 ? 'text-green-600' :
-                        cvMatchScore >= 40 ? 'text-amber-600' : 'text-slate-700'
+                        cvMatchScore >= 70 ? 'text-green-600 dark:text-green-400' :
+                        cvMatchScore >= 40 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-700 dark:text-stone-300'
                       }`}>
                         {cvMatchScore}%
                       </span>
                     </div>
-                    <p className="text-sm text-slate-600 mt-2">
+                    <p className="text-sm text-slate-600 dark:text-stone-400 mt-2">
                       {cvMatchScore >= 70
                         ? t('coverLetterGenerator.cvSection.goodMatch')
                         : cvMatchScore >= 40
@@ -1376,17 +1376,17 @@ export default function CoverLetterGenerator() {
 
                 {/* Summary */}
                 {cvData.summary && (
-                  <div className="bg-slate-50 rounded-lg p-4">
-                    <h3 className="font-medium text-slate-800 mb-2">{t('coverLetterGenerator.cvSection.summary')}</h3>
-                    <p className="text-slate-700 text-sm line-clamp-4">{cvData.summary}</p>
+                  <div className="bg-slate-50 dark:bg-stone-900/50 rounded-lg p-4">
+                    <h3 className="font-medium text-slate-800 dark:text-stone-100 mb-2">{t('coverLetterGenerator.cvSection.summary')}</h3>
+                    <p className="text-slate-700 dark:text-stone-300 text-sm line-clamp-4">{cvData.summary}</p>
                   </div>
                 )}
 
                 {/* Experience */}
                 {cvData.workExperience && cvData.workExperience.length > 0 && (
-                  <div className="bg-slate-50 rounded-lg p-4">
-                    <h3 className="font-medium text-slate-800 mb-2">{t('coverLetterGenerator.cvSection.experienceToHighlight')}</h3>
-                    <ul className="space-y-1 text-sm text-slate-700">
+                  <div className="bg-slate-50 dark:bg-stone-900/50 rounded-lg p-4">
+                    <h3 className="font-medium text-slate-800 dark:text-stone-100 mb-2">{t('coverLetterGenerator.cvSection.experienceToHighlight')}</h3>
+                    <ul className="space-y-1 text-sm text-slate-700 dark:text-stone-300">
                       {cvData.workExperience.slice(0, 3).map((exp, idx) => (
                         <li key={idx} className="flex items-center gap-2">
                           <Check className="w-3 h-3 text-teal-500" />
@@ -1394,7 +1394,7 @@ export default function CoverLetterGenerator() {
                         </li>
                       ))}
                       {cvData.workExperience.length > 3 && (
-                        <li className="text-slate-700 text-sm">
+                        <li className="text-slate-700 dark:text-stone-300 text-sm">
                           {t('coverLetterGenerator.cvSection.moreExperiences', { count: cvData.workExperience.length - 3 })}
                         </li>
                       )}
@@ -1404,19 +1404,19 @@ export default function CoverLetterGenerator() {
 
                 {/* Skills */}
                 {cvData.skills && cvData.skills.length > 0 && (
-                  <div className="bg-slate-50 rounded-lg p-4">
-                    <h3 className="font-medium text-slate-800 mb-2">{t('coverLetterGenerator.cvSection.skills')}</h3>
+                  <div className="bg-slate-50 dark:bg-stone-900/50 rounded-lg p-4">
+                    <h3 className="font-medium text-slate-800 dark:text-stone-100 mb-2">{t('coverLetterGenerator.cvSection.skills')}</h3>
                     <div className="flex flex-wrap gap-2">
                       {cvData.skills.slice(0, 8).map((skill, idx) => (
                         <span
                           key={idx}
-                          className="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full"
+                          className="px-2 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-xs rounded-full"
                         >
                           {skill.name}
                         </span>
                       ))}
                       {cvData.skills.length > 8 && (
-                        <span className="text-slate-700 text-xs">
+                        <span className="text-slate-700 dark:text-stone-300 text-xs">
                           +{cvData.skills.length - 8}
                         </span>
                       )}
@@ -1459,10 +1459,10 @@ export default function CoverLetterGenerator() {
 
       {/* Error message */}
       {error && (
-        <div className="p-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg text-center">
+        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 rounded-lg text-center">
           <AlertCircle className="w-5 h-5 mx-auto mb-2" />
           <p>{error}</p>
-          <p className="text-sm mt-2 text-amber-600">
+          <p className="text-sm mt-2 text-amber-600 dark:text-amber-400">
             {t('coverLetterGenerator.generate.yourOwnWordsValueable')}
           </p>
         </div>
@@ -1470,23 +1470,23 @@ export default function CoverLetterGenerator() {
 
       {/* Result Section */}
       {generatedBrev && (
-        <Card className="overflow-hidden border-teal-200 bg-gradient-to-br from-teal-50/30 to-emerald-50/30">
+        <Card className="overflow-hidden border-teal-200 dark:border-teal-800 bg-gradient-to-br from-teal-50/30 to-emerald-50/30 dark:from-teal-900/20 dark:to-emerald-900/20">
           <button
             onClick={() => toggleSection('result')}
-            className="w-full flex items-center justify-between p-4 text-left hover:bg-teal-50/50 transition-colors"
+            className="w-full flex items-center justify-between p-4 text-left hover:bg-teal-50/50 dark:hover:bg-teal-900/30 transition-colors"
           >
             <div className="flex items-center gap-3">
-              <MessageSquare className="w-5 h-5 text-teal-600" />
-              <h2 className="font-semibold text-slate-800">{t('coverLetterGenerator.result.title')}</h2>
+              <MessageSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <h2 className="font-semibold text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.result.title')}</h2>
             </div>
-            {expandedSections.result ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            {expandedSections.result ? <ChevronUp className="w-5 h-5 text-slate-600 dark:text-stone-400" /> : <ChevronDown className="w-5 h-5 text-slate-600 dark:text-stone-400" />}
           </button>
           
           {expandedSections.result && (
             <div className="p-4 pt-0 space-y-4">
               {/* Tips */}
-              <div className="bg-white/70 rounded-lg p-3 text-sm text-slate-600 flex items-start gap-2">
-                <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+              <div className="bg-white/70 dark:bg-stone-800/70 rounded-lg p-3 text-sm text-slate-600 dark:text-stone-400 flex items-start gap-2">
+                <Lightbulb className="w-4 h-4 text-amber-500 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                 <p>
                   {t('coverLetterGenerator.result.tip')}
                 </p>
@@ -1502,19 +1502,19 @@ export default function CoverLetterGenerator() {
 
               {/* Generated Letter with inline editing */}
               <div className="space-y-2">
-                <label className="block text-sm font-medium text-slate-700">
+                <label className="block text-sm font-medium text-slate-700 dark:text-stone-300">
                   {t('coverLetterGenerator.result.editLabel')}
                 </label>
                 <textarea
                   value={generatedBrev}
                   onChange={(e) => setGeneratedBrev(e.target.value)}
                   rows={12}
-                  className="w-full px-4 py-4 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-y font-serif leading-relaxed"
+                  className="w-full px-4 py-4 rounded-lg border border-slate-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y font-serif leading-relaxed bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
 
                 {/* Quick phrases */}
                 <div className="pt-2">
-                  <p className="text-xs text-slate-700 mb-2">{t('coverLetterGenerator.result.quickInsert')}</p>
+                  <p className="text-xs text-slate-700 dark:text-stone-300 mb-2">{t('coverLetterGenerator.result.quickInsert')}</p>
                   <QuickPhrases onSelect={(text) => setGeneratedBrev(generatedBrev + ' ' + text)} />
                 </div>
               </div>
@@ -1522,14 +1522,14 @@ export default function CoverLetterGenerator() {
               {/* Swedish Norms Check */}
               {normIssues.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-slate-700">{t('coverLetterGenerator.result.languageCheck')}</h4>
+                  <h4 className="text-sm font-medium text-slate-700 dark:text-stone-300">{t('coverLetterGenerator.result.languageCheck')}</h4>
                   {normIssues.map((issue, idx) => (
-                    <div 
+                    <div
                       key={idx}
                       className={`p-3 rounded-lg text-sm ${
-                        issue.severity === 'warning' 
-                          ? 'bg-amber-50 border border-amber-200 text-amber-800' 
-                          : 'bg-blue-50 border border-blue-200 text-blue-800'
+                        issue.severity === 'warning'
+                          ? 'bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200'
+                          : 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200'
                       }`}
                     >
                       <p className="font-medium">{issue.issue}</p>
@@ -1541,7 +1541,7 @@ export default function CoverLetterGenerator() {
 
               {/* Save Title Input */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">
                   {t('coverLetterGenerator.result.nameLabel')}
                 </label>
                 <input
@@ -1549,7 +1549,7 @@ export default function CoverLetterGenerator() {
                   value={saveTitle}
                   onChange={(e) => setSaveTitle(e.target.value)}
                   placeholder={t('coverLetterGenerator.result.namePlaceholder')}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none"
+                  className="w-full px-4 py-2 rounded-lg border border-slate-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
               </div>
 
@@ -1626,7 +1626,7 @@ export default function CoverLetterGenerator() {
       <div className="flex justify-center pt-4">
         <button
           onClick={handleReset}
-          className="text-slate-700 hover:text-slate-700 text-sm transition-colors flex items-center gap-2"
+          className="text-slate-700 dark:text-stone-300 hover:text-slate-900 dark:hover:text-stone-100 text-sm transition-colors flex items-center gap-2"
         >
           {t('coverLetterGenerator.actions.clearAndRestart')}
         </button>

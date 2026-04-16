@@ -563,7 +563,7 @@ export default function NetworkTab() {
                       <Mail className="w-3 h-3" />
                     </Button>
                   )}
-                  <Button size="sm" variant="outline" className="text-xs text-red-600 hover:bg-red-50" onClick={() => deleteContact(contact.id)}>
+                  <Button size="sm" variant="outline" className="text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20" onClick={() => deleteContact(contact.id)}>
                     <Trash2 className="w-3 h-3" />
                   </Button>
                 </div>

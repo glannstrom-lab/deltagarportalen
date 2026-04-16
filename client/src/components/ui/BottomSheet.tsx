@@ -93,7 +93,7 @@ export function BottomSheet({
       <div
         className={cn(
           'fixed bottom-0 left-0 right-0 z-50',
-          'bg-white rounded-t-3xl shadow-2xl',
+          'bg-white dark:bg-stone-900 rounded-t-3xl shadow-2xl',
           'flex flex-col',
           'transition-transform duration-300 ease-out',
           isOpen ? 'translate-y-0' : 'translate-y-full',
@@ -107,7 +107,7 @@ export function BottomSheet({
             className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
             onClick={onClose}
           >
-            <div className="w-12 h-1.5 bg-slate-300 rounded-full" />
+            <div className="w-12 h-1.5 bg-slate-300 dark:bg-stone-600 rounded-full" />
           </div>
         )}
         
@@ -116,10 +116,10 @@ export function BottomSheet({
           <div className="flex items-start justify-between gap-4 px-6 pb-4">
             <div className="flex-1 min-w-0">
               {title && (
-                <h2 className="text-lg font-semibold text-slate-800">{title}</h2>
+                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{title}</h2>
               )}
               {description && (
-                <p className="text-sm text-slate-700 mt-1">{description}</p>
+                <p className="text-sm text-slate-700 dark:text-stone-300 mt-1">{description}</p>
               )}
             </div>
             {showCloseButton && (
@@ -168,17 +168,17 @@ export function BottomSheetItem({
         'text-left rounded-xl',
         'transition-colors duration-200',
         animations.press,
-        isSelected 
-          ? 'bg-indigo-50 text-indigo-700' 
-          : 'hover:bg-slate-50',
-        isDestructive && !isSelected && 'text-red-600 hover:bg-red-50',
+        isSelected
+          ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
+          : 'hover:bg-slate-50 dark:hover:bg-stone-800',
+        isDestructive && !isSelected && 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
     >
       {icon && (
         <div className={cn(
           'flex-shrink-0',
-          isSelected ? 'text-indigo-600' : isDestructive ? 'text-red-500' : 'text-slate-700'
+          isSelected ? 'text-indigo-600 dark:text-indigo-400' : isDestructive ? 'text-red-500 dark:text-red-400' : 'text-slate-700 dark:text-stone-300'
         )}>
           {icon}
         </div>
@@ -186,17 +186,17 @@ export function BottomSheetItem({
       <div className="flex-1 min-w-0">
         <div className={cn(
           'font-medium',
-          isSelected && 'text-indigo-700',
-          isDestructive && !isSelected && 'text-red-600'
+          isSelected && 'text-indigo-700 dark:text-indigo-300',
+          isDestructive && !isSelected && 'text-red-600 dark:text-red-400'
         )}>
           {label}
         </div>
         {description && (
-          <div className="text-sm text-slate-700 mt-0.5">{description}</div>
+          <div className="text-sm text-slate-700 dark:text-stone-400 mt-0.5">{description}</div>
         )}
       </div>
       {isSelected && (
-        <svg className="w-5 h-5 text-indigo-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-5 h-5 text-indigo-600 dark:text-indigo-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
         </svg>
       )}
@@ -208,7 +208,7 @@ export function BottomSheetItem({
 // BOTTOM SHEET DIVIDER
 // ============================================
 export function BottomSheetDivider() {
-  return <div className="h-px bg-slate-200 my-2" />
+  return <div className="h-px bg-slate-200 dark:bg-stone-700 my-2" />
 }
 
 // ============================================
@@ -244,7 +244,7 @@ export function FilterSheet({
         {children}
         
         {/* Actions */}
-        <div className="flex items-center gap-3 pt-4 border-t border-slate-200">
+        <div className="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-stone-700">
           <button
             onClick={onClear}
             disabled={filterCount === 0}

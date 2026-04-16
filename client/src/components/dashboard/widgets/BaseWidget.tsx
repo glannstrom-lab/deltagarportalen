@@ -179,13 +179,13 @@ export const BaseWidget = memo(function BaseWidget({
               {title}
             </h3>
             {subtitle && !isSmall && (
-              <p className="text-xs text-slate-700 dark:text-slate-600">{subtitle}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
             )}
           </div>
         </div>
         <ChevronRight
           size={isSmall ? 16 : 18}
-          className="text-slate-300 dark:text-slate-600 group-hover:text-slate-700 dark:group-hover:text-slate-600 group-hover:translate-x-0.5 transition-all"
+          className="text-slate-300 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all"
         />
       </div>
 
@@ -199,7 +199,7 @@ export const BaseWidget = memo(function BaseWidget({
           )}>
             {stat.value}
           </span>
-          <span className="text-sm text-slate-700 dark:text-slate-600">{stat.label}</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">{stat.label}</span>
         </div>
       )}
 
@@ -223,7 +223,7 @@ export const BaseWidget = memo(function BaseWidget({
         <div className={cn(isSmall ? "mt-3" : "mt-4")}>
           {progress.showLabel && (
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-xs text-slate-700 dark:text-slate-600">Progress</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Progress</span>
               <span className={cn("text-sm font-semibold", isComplete ? "text-emerald-600 dark:text-emerald-400" : colors.accent)}>
                 {progress.value}%
               </span>

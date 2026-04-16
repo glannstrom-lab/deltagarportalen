@@ -48,7 +48,7 @@ export function PageLayout({
 
   return (
     <div className={cn(
-      'min-h-screen bg-gradient-to-b from-stone-50 via-white to-stone-50/50',
+      'min-h-screen bg-gradient-to-b from-stone-50 via-white to-stone-50/50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800',
       'space-y-4 sm:space-y-5 md:space-y-6',
       'page-transition',
       className
@@ -145,7 +145,7 @@ export function PageSection({
               </h2>
             )}
             {description && (
-              <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-600 mt-0.5 sm:mt-1 line-clamp-2">
+              <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5 sm:mt-1 line-clamp-2">
                 {description}
               </p>
             )}

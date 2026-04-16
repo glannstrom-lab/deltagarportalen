@@ -60,9 +60,9 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1.5">
           <Trophy size={14} className="text-orange-500" />
-          <span className="text-lg font-bold text-slate-800">{total}</span>
+          <span className="text-lg font-bold text-slate-800 dark:text-stone-100">{total}</span>
         </div>
-        <span className="text-xs text-slate-700">
+        <span className="text-xs text-slate-700 dark:text-stone-300">
           {t('applicationsWidget.applicationsCount', { count: total })}
         </span>
       </div>
@@ -127,14 +127,14 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
               <Trophy size={24} className="text-orange-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-800">{total}</p>
-              <p className="text-xs text-slate-700">{t('applicationsWidget.total')}</p>
+              <p className="text-2xl font-bold text-slate-800 dark:text-stone-100">{total}</p>
+              <p className="text-xs text-slate-700 dark:text-stone-300">{t('applicationsWidget.total')}</p>
             </div>
           </div>
           {responseRate > 0 && (
             <div className="text-right">
               <p className="text-lg font-semibold text-emerald-600">{responseRate}%</p>
-              <p className="text-xs text-slate-700">{t('applicationsWidget.responseRate')}</p>
+              <p className="text-xs text-slate-700 dark:text-stone-300">{t('applicationsWidget.responseRate')}</p>
             </div>
           )}
         </div>
@@ -252,8 +252,8 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
             <p className="text-xs text-emerald-600">{t('applicationsWidget.pipeline.offers')}</p>
           </div>
           <div className="p-3 bg-slate-100 rounded-xl text-center">
-            <XCircle size={20} className="text-slate-700 mx-auto mb-1" />
-            <p className="text-xl font-bold text-slate-700">{rejected}</p>
+            <XCircle size={20} className="text-slate-700 dark:text-stone-300 mx-auto mb-1" />
+            <p className="text-xl font-bold text-slate-700 dark:text-stone-300">{rejected}</p>
             <p className="text-xs text-slate-600">{t('applicationsWidget.pipeline.rejected')}</p>
           </div>
         </div>
@@ -263,7 +263,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
               <span className="text-slate-600">{t('applicationsWidget.yourPipeline')}</span>
-              <span className="font-medium text-slate-800">{t('applicationsWidget.responseRatePercent', { rate: responseRate })}</span>
+              <span className="font-medium text-slate-800 dark:text-stone-100">{t('applicationsWidget.responseRatePercent', { rate: responseRate })}</span>
             </div>
             <div className="flex h-3 rounded-full overflow-hidden">
               {applied > 0 && (

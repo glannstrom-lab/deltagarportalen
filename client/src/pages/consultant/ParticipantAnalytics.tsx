@@ -135,7 +135,7 @@ export default function ParticipantAnalytics() {
                 <div className="flex items-center gap-2">
                   <h3 className="font-semibold">{p.name}</h3>
                   {p.riskFlags.length > 0 && (
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700">
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">
                       {p.riskFlags.length} risk
                     </span>
                   )}

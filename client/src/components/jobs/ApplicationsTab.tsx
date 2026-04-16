@@ -46,14 +46,14 @@ function ApplicationCard({
   const hasNotes = job.notes && job.notes.trim().length > 0
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-4 shadow-sm hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-slate-900 text-sm line-clamp-2">
+          <h4 className="font-semibold text-slate-900 dark:text-stone-100 text-sm line-clamp-2">
             {jobData?.headline || 'Okänd tjänst'}
           </h4>
-          <p className="text-xs text-slate-700 mt-0.5 flex items-center gap-1">
+          <p className="text-xs text-slate-700 dark:text-stone-300 mt-0.5 flex items-center gap-1">
             <Briefcase className="w-3 h-3" />
             {jobData?.employer?.name || 'Okänt företag'}
           </p>
@@ -63,16 +63,16 @@ function ApplicationCard({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-1.5 hover:bg-slate-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
           >
-            <MoreVertical className="w-4 h-4 text-slate-600" />
+            <MoreVertical className="w-4 h-4 text-slate-600 dark:text-stone-400" />
           </button>
 
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border border-slate-200 py-1 min-w-[160px]">
-                <div className="px-2 py-1 text-xs font-medium text-slate-600 uppercase">Ändra status</div>
+              <div className="absolute right-0 top-8 z-20 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-slate-200 dark:border-stone-700 py-1 min-w-[160px]">
+                <div className="px-2 py-1 text-xs font-medium text-slate-600 dark:text-stone-400 uppercase">Ändra status</div>
                 {COLUMNS.map(col => (
                   <button
                     key={col.status}
@@ -81,21 +81,21 @@ function ApplicationCard({
                       setShowMenu(false)
                     }}
                     className={cn(
-                      "w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-slate-50",
-                      job.status === col.status && "bg-slate-50 font-medium"
+                      "w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-stone-800",
+                      job.status === col.status && "bg-slate-50 dark:bg-stone-800 font-medium"
                     )}
                   >
                     <col.icon className={cn("w-4 h-4", col.color)} />
                     {col.title}
                   </button>
                 ))}
-                <div className="border-t border-slate-100 my-1" />
+                <div className="border-t border-slate-100 dark:border-stone-700 my-1" />
                 <button
                   onClick={() => {
                     onDelete(job.id)
                     setShowMenu(false)
                   }}
-                  className="w-full px-3 py-2 text-left text-sm flex items-center gap-2 text-red-600 hover:bg-red-50"
+                  className="w-full px-3 py-2 text-left text-sm flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   <Trash2 className="w-4 h-4" />
                   Ta bort
@@ -108,7 +108,7 @@ function ApplicationCard({
 
       {/* Location */}
       {jobData?.workplace_address?.municipality && (
-        <p className="text-xs text-slate-600 mb-3">
+        <p className="text-xs text-slate-600 dark:text-stone-400 mb-3">
           📍 {jobData.workplace_address.municipality}
         </p>
       )}
@@ -120,17 +120,17 @@ function ApplicationCard({
           className="w-full text-left mb-2"
         >
           <div className={cn(
-            "flex items-start gap-2 p-2 rounded-lg bg-slate-50 text-xs",
+            "flex items-start gap-2 p-2 rounded-lg bg-slate-50 dark:bg-stone-800 text-xs",
             showNotes ? "" : "line-clamp-2"
           )}>
-            <MessageSquare className="w-3 h-3 text-slate-600 flex-shrink-0 mt-0.5" />
-            <span className="text-slate-600">{job.notes}</span>
+            <MessageSquare className="w-3 h-3 text-slate-600 dark:text-stone-400 flex-shrink-0 mt-0.5" />
+            <span className="text-slate-600 dark:text-stone-400">{job.notes}</span>
           </div>
         </button>
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-slate-100">
+      <div className="flex items-center justify-between text-xs text-slate-600 dark:text-stone-400 pt-2 border-t border-slate-100 dark:border-stone-700">
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
           {new Date(job.savedAt).toLocaleDateString('sv-SE')}
@@ -167,9 +167,9 @@ function StatsHeader({ jobs }: { jobs: SavedJob[] }) {
 
   return (
     <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mb-4 sm:mb-6">
-      <div className="bg-white rounded-xl border border-slate-200 p-2 sm:p-4 text-center">
-        <div className="text-lg sm:text-2xl font-bold text-slate-900">{stats.total}</div>
-        <div className="text-[10px] sm:text-xs text-slate-700">Totalt</div>
+      <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-2 sm:p-4 text-center">
+        <div className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-stone-100">{stats.total}</div>
+        <div className="text-[10px] sm:text-xs text-slate-700 dark:text-stone-300">Totalt</div>
       </div>
       <div className="bg-blue-50 rounded-xl border border-blue-200 p-2 sm:p-4 text-center">
         <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats.applied}</div>
@@ -225,13 +225,13 @@ export function ApplicationsTab() {
   if (applications.length === 0) {
     return (
       <Card className="p-12 text-center">
-        <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Send className="w-8 h-8 text-slate-600" />
+        <div className="w-16 h-16 bg-slate-100 dark:bg-stone-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Send className="w-8 h-8 text-slate-600 dark:text-stone-400" />
         </div>
-        <h3 className="text-xl font-semibold text-slate-700 mb-2">
+        <h3 className="text-xl font-semibold text-slate-700 dark:text-stone-300 mb-2">
           Inga ansökningar än
         </h3>
-        <p className="text-slate-700 mb-6 max-w-md mx-auto">
+        <p className="text-slate-700 dark:text-stone-300 mb-6 max-w-md mx-auto">
           När du sparar ett jobb och ändrar status till "Ansökt" kommer det visas här.
           Spåra dina ansökningar och håll koll på din jobbsökning.
         </p>
@@ -276,7 +276,7 @@ export function ApplicationsTab() {
               {/* Cards */}
               <div className="space-y-3">
                 {columnJobs.length === 0 ? (
-                  <div className="text-center py-8 text-sm text-slate-600">
+                  <div className="text-center py-8 text-sm text-slate-600 dark:text-stone-400">
                     Inga jobb här
                   </div>
                 ) : (

@@ -34,22 +34,22 @@ interface MobileWidgetCardProps {
 
 function MobileWidgetCard({ to, icon, title, subtitle, color, badge, badgeColor, progress }: MobileWidgetCardProps) {
   const bgColorClass = {
-    teal: 'bg-teal-50 border-teal-100',
-    rose: 'bg-rose-50 border-rose-100',
-    blue: 'bg-blue-50 border-blue-100',
-    sky: 'bg-sky-50 border-sky-100',
-    emerald: 'bg-emerald-50 border-emerald-100',
-    amber: 'bg-amber-50 border-amber-100',
-  }[color] || 'bg-slate-50 border-slate-200'
+    teal: 'bg-teal-50 dark:bg-teal-900/30 border-teal-100 dark:border-teal-800',
+    rose: 'bg-rose-50 dark:bg-rose-900/30 border-rose-100 dark:border-rose-800',
+    blue: 'bg-blue-50 dark:bg-blue-900/30 border-blue-100 dark:border-blue-800',
+    sky: 'bg-sky-50 dark:bg-sky-900/30 border-sky-100 dark:border-sky-800',
+    emerald: 'bg-emerald-50 dark:bg-emerald-900/30 border-emerald-100 dark:border-emerald-800',
+    amber: 'bg-amber-50 dark:bg-amber-900/30 border-amber-100 dark:border-amber-800',
+  }[color] || 'bg-slate-50 dark:bg-stone-800 border-slate-200 dark:border-stone-700'
 
   const iconColorClass = {
-    teal: 'text-teal-600',
-    rose: 'text-rose-600',
-    blue: 'text-blue-600',
-    sky: 'text-sky-600',
-    emerald: 'text-emerald-600',
-    amber: 'text-amber-600',
-  }[color] || 'text-slate-600'
+    teal: 'text-teal-600 dark:text-teal-400',
+    rose: 'text-rose-600 dark:text-rose-400',
+    blue: 'text-blue-600 dark:text-blue-400',
+    sky: 'text-sky-600 dark:text-sky-400',
+    emerald: 'text-emerald-600 dark:text-emerald-400',
+    amber: 'text-amber-600 dark:text-amber-400',
+  }[color] || 'text-slate-600 dark:text-stone-400'
 
   return (
     <Link
@@ -59,25 +59,25 @@ function MobileWidgetCard({ to, icon, title, subtitle, color, badge, badgeColor,
         bgColorClass
       )}
     >
-      <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center bg-white', iconColorClass)}>
+      <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center bg-white dark:bg-stone-800', iconColorClass)}>
         {icon}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
-          <h3 className="font-medium text-slate-800 text-sm truncate">{title}</h3>
+          <h3 className="font-medium text-slate-800 dark:text-stone-100 text-sm truncate">{title}</h3>
           {badge && (
             <span className={cn('text-xs px-1.5 py-0.5 rounded-full font-medium', badgeColor)}>
               {badge}
             </span>
           )}
         </div>
-        <p className="text-xs text-slate-700 truncate">{subtitle}</p>
+        <p className="text-xs text-slate-700 dark:text-stone-300 truncate">{subtitle}</p>
       </div>
       <div className="flex items-center gap-2">
         {progress !== undefined && (
-          <span className="text-sm font-semibold text-slate-700">{progress}%</span>
+          <span className="text-sm font-semibold text-slate-700 dark:text-stone-300">{progress}%</span>
         )}
-        <ChevronRight size={16} className="text-slate-600" />
+        <ChevronRight size={16} className="text-slate-600 dark:text-stone-400" />
       </div>
     </Link>
   )
@@ -147,10 +147,10 @@ export function MobileDashboard() {
   if (loading || prefsLoading) {
     return (
       <div className="space-y-3">
-        <div className="h-12 bg-slate-200 rounded-xl animate-pulse" />
+        <div className="h-12 bg-slate-200 dark:bg-stone-700 rounded-xl animate-pulse" />
         <div className="grid grid-cols-1 gap-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-16 bg-slate-200 rounded-xl animate-pulse" />
+            <div key={i} className="h-16 bg-slate-200 dark:bg-stone-700 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -251,10 +251,10 @@ export function MobileDashboard() {
     <div className="space-y-3 pb-4">
       {/* Compact Welcome */}
       <div className="px-1">
-        <h1 className="text-lg font-semibold text-slate-800">
+        <h1 className="text-lg font-semibold text-slate-800 dark:text-stone-100">
           Hej{user?.firstName ? `, ${user.firstName}` : ''}!
         </h1>
-        <p className="text-sm text-slate-700">Vad vill du göra idag?</p>
+        <p className="text-sm text-slate-700 dark:text-stone-300">Vad vill du göra idag?</p>
       </div>
 
       {/* Collapsible Filter */}
@@ -274,9 +274,9 @@ export function MobileDashboard() {
 
       {/* Empty state */}
       {visibleWidgetItems.length === 0 && (
-        <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-          <p className="text-slate-700 text-sm mb-1">Inga moduler synliga</p>
-          <p className="text-xs text-slate-600">
+        <div className="text-center py-8 bg-slate-50 dark:bg-stone-800 rounded-xl border border-dashed border-slate-200 dark:border-stone-700">
+          <p className="text-slate-700 dark:text-stone-300 text-sm mb-1">Inga moduler synliga</p>
+          <p className="text-xs text-slate-600 dark:text-stone-400">
             Öppna filtret ovan för att välja moduler
           </p>
         </div>
@@ -284,34 +284,34 @@ export function MobileDashboard() {
 
       {/* Quick stats summary */}
       {data && (
-        <div className="mt-4 p-3 bg-sky-50 rounded-xl border border-sky-100">
-          <h3 className="text-xs font-medium text-sky-700 mb-2 uppercase tracking-wide">
+        <div className="mt-4 p-3 bg-sky-50 dark:bg-sky-900/30 rounded-xl border border-sky-100 dark:border-sky-800">
+          <h3 className="text-xs font-medium text-sky-700 dark:text-sky-400 mb-2 uppercase tracking-wide">
             Din oversikt
           </h3>
           <div className="flex items-center justify-around">
             <div className="text-center">
-              <div className="flex items-center justify-center gap-1 text-sky-700">
+              <div className="flex items-center justify-center gap-1 text-sky-700 dark:text-sky-400">
                 <TrendingUp size={14} />
                 <span className="font-semibold">{data.cv.progress}%</span>
               </div>
-              <span className="text-xs text-sky-600">CV</span>
+              <span className="text-xs text-sky-600 dark:text-sky-500">CV</span>
             </div>
             {data.cv.atsScore > 0 && (
               <div className="text-center">
-                <div className="flex items-center justify-center gap-1 text-amber-600">
+                <div className="flex items-center justify-center gap-1 text-amber-600 dark:text-amber-400">
                   <Award size={14} />
                   <span className="font-semibold">{data.cv.atsScore}</span>
                 </div>
-                <span className="text-xs text-amber-600">ATS</span>
+                <span className="text-xs text-amber-600 dark:text-amber-500">ATS</span>
               </div>
             )}
             <div className="text-center">
-              <span className="font-semibold text-sky-700">{data.applications.total}</span>
-              <span className="text-xs text-sky-600 block">Ansokningar</span>
+              <span className="font-semibold text-sky-700 dark:text-sky-400">{data.applications.total}</span>
+              <span className="text-xs text-sky-600 dark:text-sky-500 block">Ansokningar</span>
             </div>
             <div className="text-center">
-              <span className="font-semibold text-sky-700">{data.jobs.savedCount}</span>
-              <span className="text-xs text-sky-600 block">Sparade</span>
+              <span className="font-semibold text-sky-700 dark:text-sky-400">{data.jobs.savedCount}</span>
+              <span className="text-xs text-sky-600 dark:text-sky-500 block">Sparade</span>
             </div>
           </div>
         </div>

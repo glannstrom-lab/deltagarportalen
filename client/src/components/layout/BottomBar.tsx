@@ -418,7 +418,7 @@ export function BottomBar() {
   return (
     <>
       {/* Smart Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/80 px-4 py-2 z-30 shadow-lg shadow-slate-200/50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-stone-900 border-t border-slate-200/80 dark:border-stone-700 px-4 py-2 z-30 shadow-lg shadow-slate-200/50 dark:shadow-stone-900/50">
         <div className="max-w-7xl mx-auto">
           
           {/* Övre rad - Stats & Primary Action */}
@@ -427,15 +427,15 @@ export function BottomBar() {
             {/* Vänster - Dagens framsteg */}
             <div className="flex items-center gap-4">
               {/* CV-poäng */}
-              <Link 
-                to="/cv" 
-                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors group"
+              <Link
+                to="/cv"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-stone-800 transition-colors group"
               >
                 <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center transition-colors", getScoreBg(stats.cvScore))}>
                   <TrendingUp size={18} className={getScoreColor(stats.cvScore)} />
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-xs text-slate-700">CV-poäng</p>
+                  <p className="text-xs text-slate-700 dark:text-stone-400">CV-poäng</p>
                   <p className={cn("font-semibold text-sm", getScoreColor(stats.cvScore))}>
                     {stats.cvScore}/100
                   </p>
@@ -443,16 +443,16 @@ export function BottomBar() {
               </Link>
 
               {/* Ansökningar */}
-              <Link 
-                to="/job-search" 
-                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
+              <Link
+                to="/job-search"
+                className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 dark:hover:bg-stone-800 transition-colors"
               >
                 <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
                   <Send size={18} className="text-orange-600" />
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-xs text-slate-700">Ansökningar</p>
-                  <p className="font-semibold text-sm text-slate-700">{stats.applications}</p>
+                  <p className="text-xs text-slate-700 dark:text-stone-400">Ansökningar</p>
+                  <p className="font-semibold text-sm text-slate-700 dark:text-stone-300">{stats.applications}</p>
                 </div>
               </Link>
 
@@ -462,15 +462,15 @@ export function BottomBar() {
                   <CheckCircle2 size={18} className="text-teal-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-700">Dagens mål</p>
+                  <p className="text-xs text-slate-700 dark:text-stone-400">Dagens mål</p>
                   <div className="flex items-center gap-2">
-                    <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
-                      <div 
+                    <div className="w-16 h-1.5 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
+                      <div
                         className="h-full bg-teal-500 rounded-full transition-all"
                         style={{ width: `${taskProgress}%` }}
                       />
                     </div>
-                    <span className="text-xs font-medium text-slate-600">
+                    <span className="text-xs font-medium text-slate-600 dark:text-stone-400">
                       {stats.dailyTasksCompleted}/{stats.dailyTasksTotal}
                     </span>
                   </div>
@@ -490,9 +490,9 @@ export function BottomBar() {
                 onClick={() => setShowNextSteps(!showNextSteps)}
                 className={cn(
                   "flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all",
-                  showNextSteps 
-                    ? "bg-slate-100 text-slate-700" 
-                    : "bg-slate-50 text-slate-600 hover:bg-slate-100"
+                  showNextSteps
+                    ? "bg-slate-100 dark:bg-stone-700 text-slate-700 dark:text-stone-200"
+                    : "bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-100 dark:hover:bg-stone-700"
                 )}
               >
                 <span className="hidden sm:inline text-sm font-medium">Nästa steg</span>
@@ -522,8 +522,8 @@ export function BottomBar() {
 
           {/* Expanderad sektion - Nästa steg */}
           {showNextSteps && (
-            <div className="mt-3 pt-3 border-t border-slate-100">
-              <p className="text-xs font-medium text-slate-700 uppercase tracking-wider mb-2">
+            <div className="mt-3 pt-3 border-t border-slate-100 dark:border-stone-700">
+              <p className="text-xs font-medium text-slate-700 dark:text-stone-400 uppercase tracking-wider mb-2">
                 Förslag för att komma vidare
               </p>
               <div className="flex flex-wrap gap-2">
@@ -535,8 +535,8 @@ export function BottomBar() {
                     className={cn(
                       "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all hover:shadow-sm",
                       step.priority === 'high'
-                        ? "bg-teal-50 border-teal-100 text-teal-700 hover:bg-teal-100"
-                        : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                        ? "bg-teal-50 dark:bg-teal-900/40 border-teal-100 dark:border-teal-800 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/60"
+                        : "bg-white dark:bg-stone-800 border-slate-200 dark:border-stone-700 text-slate-700 dark:text-stone-300 hover:bg-slate-50 dark:hover:bg-stone-700"
                     )}
                   >
                     <step.icon size={16} />

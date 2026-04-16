@@ -275,7 +275,7 @@ function StatsCard({ icon, value, label, color, suffix = '' }: {
       <p className="text-2xl font-bold text-stone-800 dark:text-stone-100">
         {value}{suffix}
       </p>
-      <p className="text-sm text-stone-500 dark:text-stone-600">{label}</p>
+      <p className="text-sm text-stone-500 dark:text-stone-400">{label}</p>
     </div>
   )
 }
@@ -358,15 +358,15 @@ function MilestoneCard({ milestone }: { milestone: Milestone }) {
           </div>
           <div>
             <h3 className="font-semibold text-stone-800 dark:text-stone-100">{m.name}</h3>
-            <p className="text-sm text-stone-500 dark:text-stone-600">{m.description}</p>
+            <p className="text-sm text-stone-500 dark:text-stone-400">{m.description}</p>
           </div>
         </div>
-        <ChevronRight size={20} className="text-stone-300 dark:text-stone-600 group-hover:text-teal-500 transition-colors" />
+        <ChevronRight size={20} className="text-stone-300 dark:text-stone-400 group-hover:text-teal-500 transition-colors" />
       </div>
 
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-stone-500 dark:text-stone-600">Framsteg</span>
+          <span className="text-stone-500 dark:text-stone-400">Framsteg</span>
           <span className={cn("font-bold", colors.text)}>
             {milestone.current_progress} / {m.max_progress}
           </span>
@@ -407,7 +407,7 @@ function MilestoneCardCompact({ milestone }: { milestone: Milestone }) {
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-medium text-stone-800 dark:text-stone-100 text-sm truncate">{m.name}</p>
-        <p className="text-xs text-stone-500 dark:text-stone-600 flex items-center gap-1">
+        <p className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1">
           <Zap size={10} />
           +{m.reward_points} XP
         </p>
@@ -454,7 +454,7 @@ function BadgeCard({ achievement, earnedAt }: { achievement: Achievement; earned
       </div>
       <div>
         <p className="font-medium text-stone-800 dark:text-stone-100 text-sm">{achievement.name}</p>
-        <p className="text-xs text-stone-500 dark:text-stone-600">
+        <p className="text-xs text-stone-500 dark:text-stone-400">
           {formatActivityTime(earnedAt)}
         </p>
       </div>
@@ -477,12 +477,12 @@ function ActivityItem({ activity }: { activity: ActivityLog }) {
   return (
     <div className="flex items-center gap-4 p-4">
       <div className="w-10 h-10 bg-stone-100 dark:bg-stone-700 rounded-lg flex items-center justify-center flex-shrink-0">
-        <Icon size={18} className="text-stone-500 dark:text-stone-600" />
+        <Icon size={18} className="text-stone-500 dark:text-stone-400" />
       </div>
       <div className="flex-1 min-w-0">
         <p className="font-medium text-stone-800 dark:text-stone-100 text-sm">{activity.title}</p>
         {activity.description && (
-          <p className="text-xs text-stone-500 dark:text-stone-600 truncate">{activity.description}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 truncate">{activity.description}</p>
         )}
       </div>
       <div className="text-right flex-shrink-0">

@@ -264,7 +264,7 @@ export default function PitchTab() {
 
           {pitches.length === 0 && !isLoading ? (
             <Card className="text-center py-8 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-              <MessageSquare className="w-10 h-10 text-slate-300 dark:text-stone-500 mx-auto mb-3" />
+              <MessageSquare className="w-10 h-10 text-stone-300 dark:text-stone-500 mx-auto mb-3" />
               <p className="text-gray-600 dark:text-gray-300 text-sm">Inga pitchar ännu</p>
               <Button
                 size="sm"
@@ -371,7 +371,7 @@ export default function PitchTab() {
                     </div>
 
                     {/* Pitch content */}
-                    <div className="bg-slate-50 dark:bg-stone-700 rounded-xl p-6 text-left max-h-60 overflow-y-auto">
+                    <div className="bg-stone-50 dark:bg-stone-700 rounded-xl p-6 text-left max-h-60 overflow-y-auto">
                       <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{selectedPitch.content}</p>
                     </div>
 
@@ -520,7 +520,7 @@ export default function PitchTab() {
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {formData.key_points?.map((point, idx) => (
-                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 rounded-full text-sm">
+                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 rounded-full text-sm">
                             {point}
                             <button onClick={() => removeKeyPoint(idx)} className="hover:text-rose-600 dark:hover:text-rose-400">
                               <X className="w-3 h-3" />
@@ -575,13 +575,13 @@ export default function PitchTab() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => handleEdit(selectedPitch)}
-                        className="p-2 hover:bg-slate-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
+                        className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
                       >
                         <Edit2 className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                       </button>
                       <button
                         onClick={() => selectedPitch.id && handleDelete(selectedPitch.id)}
-                        className="p-2 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded-lg transition-colors"
+                        className="p-2 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4 text-rose-500 dark:text-rose-400" />
                       </button>
@@ -589,7 +589,7 @@ export default function PitchTab() {
                   </div>
 
                   {selectedPitch.target_audience && (
-                    <div className="mb-4 p-3 bg-slate-50 dark:bg-stone-700 rounded-lg">
+                    <div className="mb-4 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
                       <p className="text-sm text-gray-600 dark:text-gray-300">
                         <Target className="w-4 h-4 inline mr-1" />
                         Målgrupp: {selectedPitch.target_audience}
@@ -597,7 +597,7 @@ export default function PitchTab() {
                     </div>
                   )}
 
-                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-stone-700 dark:to-stone-600 rounded-xl p-6 mb-4">
+                  <div className="bg-gradient-to-br from-stone-50 to-stone-100 dark:from-stone-700 dark:to-stone-600 rounded-xl p-6 mb-4">
                     <p className="text-gray-800 dark:text-gray-100 whitespace-pre-wrap leading-relaxed">
                       {selectedPitch.content}
                     </p>
@@ -648,7 +648,7 @@ export default function PitchTab() {
                 animate={{ opacity: 1 }}
               >
                 <Card className="text-center py-12 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-                  <Mic className="w-16 h-16 text-slate-200 dark:text-stone-600 mx-auto mb-4" />
+                  <Mic className="w-16 h-16 text-stone-200 dark:text-stone-600 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">Skapa din första pitch</h3>
                   <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
                     En bra elevator pitch är nyckeln till att göra ett starkt första intryck.
