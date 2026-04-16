@@ -142,9 +142,9 @@ Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, ex
     }
 
     return {
-      system: `${systemKontext}\n\nViktig: Svara alltid på svenska. Var hjälpsam, konkret och uppmuntrande. Anpassa dina svar efter din roll som ${agentTyp}.`,
+      system: `${systemKontext}\n\nVIKTIGT - Svarsformat:\n- Svara KORTFATTAT (max 3-4 meningar för enkla frågor, max 6-8 för komplexa)\n- Använd punktlistor istället för långa stycken\n- Gå rakt på sak - skippa inledande fraser som "Absolut!" eller "Självklart!"\n- Svara på svenska\n- Var konkret och handlingsinriktad`,
       user: conversation + 'Användare: ' + (data?.meddelande || 'Hej!'),
-      maxTokens: 1000,
+      maxTokens: 500,
       responseKey: 'svar'
     };
   }
