@@ -426,7 +426,7 @@ export default function ExploreTab() {
                 // Clear career data in cloud to retake onboarding
                 try {
                   await unifiedProfileApi.updateCareer({
-                    employmentStatus: undefined as unknown as EmploymentStatus,
+                    employmentStatus: null as unknown as EmploymentStatus,
                     targetIndustries: [],
                     careerGoals: { shortTerm: '', longTerm: '' }
                   })

@@ -131,7 +131,7 @@ export const unifiedProfileApi = {
           .from('interest_results')
           .select('*')
           .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
+          .order('completed_at', { ascending: false })
           .limit(1)
           .maybeSingle(),
         
