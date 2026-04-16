@@ -7,10 +7,7 @@ import {
   Settings,
   HelpCircle,
   ChevronDown,
-  Globe,
   Accessibility,
-  Check,
-  Languages,
   Eye,
 } from '@/components/ui/icons'
 import { useState, useEffect, useRef } from 'react'
@@ -22,17 +19,13 @@ import { supabase } from '@/lib/supabase'
 import CrisisSupport from '@/components/CrisisSupport'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
+import { LanguageSwitcher } from './LanguageSwitcher'
 
 interface UserProfile {
   first_name: string
   last_name: string
   avatar_url?: string
 }
-
-const languages = [
-  { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
-  { code: 'en', name: 'English', flag: '🇬🇧' },
-]
 
 // ============================================
 // ICON BUTTON COMPONENT
@@ -86,11 +79,9 @@ function IconButton({ onClick, href, title, children, variant = 'stone', classNa
 
 function AccessibilityMenu() {
   const { isDark, toggleDarkMode } = useTheme()
-  const { i18n, t } = useTranslation()
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-
-  const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0]
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -168,43 +159,6 @@ function AccessibilityMenu() {
                   )} />
                 </div>
               </button>
-
-              {/* Language Section */}
-              <div className="pt-2 border-t border-stone-100 dark:border-stone-700">
-                <p className="px-3 py-1.5 text-xs font-medium text-stone-500 dark:text-stone-500 flex items-center gap-2">
-                  <Languages size={14} />
-                  {t('language.label', 'Språk')}
-                </p>
-                {languages.map((lang) => (
-                  <button
-                    key={lang.code}
-                    onClick={() => {
-                      i18n.changeLanguage(lang.code)
-                    }}
-                    className={cn(
-                      'w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors',
-                      lang.code === currentLanguage.code
-                        ? 'bg-teal-50 dark:bg-teal-900/20'
-                        : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
-                    )}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-xl">{lang.flag}</span>
-                      <span className={cn(
-                        'text-sm font-medium',
-                        lang.code === currentLanguage.code
-                          ? 'text-teal-700 dark:text-teal-300'
-                          : 'text-stone-700 dark:text-stone-200'
-                      )}>
-                        {lang.name}
-                      </span>
-                    </div>
-                    {lang.code === currentLanguage.code && (
-                      <Check size={16} className="text-teal-500" />
-                    )}
-                  </button>
-                ))}
-              </div>
 
               {/* Help Link */}
               <div className="pt-2 border-t border-stone-100 dark:border-stone-700">
@@ -306,7 +260,10 @@ export function TopBar() {
             <CrisisSupport variant="inline" />
           </div>
 
-          {/* Accessibility Menu (Language + Dark Mode) */}
+          {/* Language Switcher - Flag icons */}
+          <LanguageSwitcher />
+
+          {/* Accessibility Menu (Dark Mode + Help) */}
           <AccessibilityMenu />
 
           {/* Notifications - Pastel Emerald */}
