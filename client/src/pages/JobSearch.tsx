@@ -6,8 +6,8 @@ import {
   ExternalLink, Filter, ChevronDown,
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
   Bookmark, Send, Bell, MoreVertical,
-  Trash2, CheckCircle, Clock, MessageSquare, Train,
-  Eye, Map, Star, Mic
+  Trash2, CheckCircle, Clock, MessageSquare,
+  Eye, Star, Mic
 } from '@/components/ui/icons';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
@@ -30,7 +30,6 @@ import { CreateApplicationModal } from '@/components/workflow';
 import { AlertsTab } from '@/components/jobs/AlertsTab';
 import { MatchesTab } from '@/components/jobs/MatchesTab';
 import { HiddenJobsTab } from '@/components/jobs/HiddenJobsTab';
-import { JobMapTab } from '@/components/jobs/JobMapTab';
 import { DailyJobTab } from '@/components/jobs/DailyJobTab';
 import { EnergySearch } from '@/components/jobs/EnergySearch';
 import { SmartFilters } from '@/components/jobs/SmartFilters';
@@ -42,7 +41,6 @@ import { helpContent } from '@/data/helpContent';
 // Note: CRM, Culture, and Applications tabs moved to dedicated /applications page
 const jobSearchTabDefs = [
   { id: 'search', labelKey: 'jobSearch.tabs.search', path: '/job-search', icon: Search },
-  { id: 'map', labelKey: 'jobSearch.tabs.map', path: '/job-search/map', icon: Map },
   { id: 'hidden', labelKey: 'jobSearch.tabs.hidden', path: '/job-search/hidden', icon: Eye },
   { id: 'daily', labelKey: 'jobSearch.tabs.daily', path: '/job-search/daily', icon: Star },
   { id: 'saved', labelKey: 'jobSearch.tabs.saved', path: '/job-search/saved', icon: Bookmark },
@@ -889,7 +887,6 @@ export default function JobSearch() {
       >
         <Routes>
           <Route index element={<SearchTab />} />
-          <Route path="map" element={<JobMapTab />} />
           <Route path="hidden" element={<HiddenJobsTab />} />
           <Route path="daily" element={<DailyJobTab />} />
           <Route path="saved" element={<SavedJobsTab />} />

@@ -18,13 +18,13 @@
 
 | # | Namn | API | Status | Beskrivning |
 |---|------|-----|--------|-------------|
-| 1 | **Geografisk Jobbkarta** | JobSearch | ✅ DONE | Visa jobb på karta med pendlingsradie baserat på hemadress |
+| 1 | **Geografisk Jobbkarta** | JobSearch | ❌ REMOVED | Borttagen - inte tillräckligt användbar |
 | 2 | **Ett Jobb Om Dagen** | JobSearch | ✅ DONE | Presentera ETT noggrant utvalt jobb per dag för att minska överväldigande |
 | 3 | **Energianpassad Sökning** | JobSearch | ✅ DONE | Filtrera på deltid/distans när användaren har låg energi |
 | 4 | **Dolda Jobbmarknaden** | JobAd Links + JobSearch | ✅ DONE | Visa 51,000 jobb från LinkedIn/Indeed som inte finns på Platsbanken |
 | 5 | **Röstbaserad Jobbsökning** | JobSearch + Taxonomy | ✅ DONE | Sök jobb genom att prata - tillgängligt för synskadade/dyslektiker |
 | 6 | **Förenklade Jobbkort** | JobSearch | ✅ DONE | Progressiv information - visa först titel/plats, expandera för mer |
-| 7 | **Geografisk Komfortzon** | JobSearch | ✅ DONE | Spara olika pendlingsradier för "bra dag" vs "tung dag" |
+| 7 | **Geografisk Komfortzon** | JobSearch | ❌ REMOVED | Borttagen tillsammans med jobbkartan |
 | 8 | **Konkurrens-Indikator** | Historical + JobSearch | ✅ DONE | Visa uppskattad konkurrens baserat på hur länge annonser ligger uppe |
 | 9 | **Säsongsanpassade Jobb** | Historical + JobSearch | ✅ DONE | Visa sommarjobb/julextra vid rätt tidpunkt automatiskt |
 | 10 | **Språkbaserad Matchning** | Taxonomy + JobSearch | ✅ DONE | Hitta jobb där dina språkkunskaper efterfrågas |
@@ -184,18 +184,18 @@
 ## Progress Tracker
 
 - **Total:** 62 förslag
-- **Klara:** 11 (17.7%)
-- **Pågående:** 0
+- **Klara:** 9 (14.5%)
+- **Borttagna:** 2
 - **Kvar:** 51
 
 ### Implementerade funktioner (Fas 1 - Jobbsökning):
-- ✅ Geografisk Jobbkarta med Google Maps stöd (JobMapTab)
+- ❌ ~~Geografisk Jobbkarta~~ (borttagen - inte tillräckligt användbar)
 - ✅ Ett Jobb Om Dagen för användare som behöver ta det lugnt (DailyJobTab)
 - ✅ Energianpassad Sökning med deltid/distans-filter (EnergySearch)
 - ✅ Dolda Jobbmarknaden via JobAd Links API (HiddenJobsTab)
 - ✅ Röstbaserad Jobbsökning med Web Speech API (VoiceSearch)
 - ✅ Förenklade Jobbkort med progressiv disclosure (EnergySearch)
-- ✅ Geografisk Komfortzon med pendlingsradier (JobMapTab)
+- ❌ ~~Geografisk Komfortzon~~ (borttagen tillsammans med jobbkartan)
 - ✅ Konkurrens-Indikator baserat på annonsålder (SmartFilters)
 - ✅ Säsongsanpassade Jobb (sommar/jul) (SmartFilters)
 - ✅ Språkbaserad Matchning för flerspråkiga (SmartFilters)
