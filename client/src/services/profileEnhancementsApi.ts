@@ -191,14 +191,19 @@ export const profileDocumentsApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const { data, error } = await supabase
-      .from('profile_documents')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
+    try {
+      const { data, error } = await supabase
+        .from('profile_documents')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
 
-    if (error) throw error
-    return data || []
+      if (error?.code === 'PGRST205') return []
+      if (error) throw error
+      return data || []
+    } catch {
+      return []
+    }
   },
 
   async upload(file: File, metadata: {
@@ -276,14 +281,19 @@ export const profileSkillsApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const { data, error } = await supabase
-      .from('profile_skills')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('level', { ascending: false })
+    try {
+      const { data, error } = await supabase
+        .from('profile_skills')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('level', { ascending: false })
 
-    if (error) throw error
-    return data || []
+      if (error?.code === 'PGRST205') return []
+      if (error) throw error
+      return data || []
+    } catch {
+      return []
+    }
   },
 
   async add(skill: {
@@ -388,14 +398,19 @@ export const profileShareApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const { data, error } = await supabase
-      .from('profile_shares')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
+    try {
+      const { data, error } = await supabase
+        .from('profile_shares')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
 
-    if (error) throw error
-    return data || []
+      if (error?.code === 'PGRST205') return []
+      if (error) throw error
+      return data || []
+    } catch {
+      return []
+    }
   },
 
   async create(options: {
@@ -550,15 +565,20 @@ export const profileHistoryApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const { data, error } = await supabase
-      .from('profile_history')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(limit)
+    try {
+      const { data, error } = await supabase
+        .from('profile_history')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(limit)
 
-    if (error) throw error
-    return data || []
+      if (error?.code === 'PGRST205') return []
+      if (error) throw error
+      return data || []
+    } catch {
+      return []
+    }
   },
 
   async logChange(
@@ -594,32 +614,49 @@ export const notificationSettingsApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const { data, error } = await supabase
-      .from('notification_settings')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle()
+    try {
+      const { data, error } = await supabase
+        .from('notification_settings')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle()
 
-    if (error) throw error
-    return data
+      // Handle missing table gracefully
+      if (error?.code === 'PGRST205') return null
+      if (error) throw error
+      return data
+    } catch {
+      // Table might not exist yet
+      return null
+    }
   },
 
-  async update(settings: Partial<NotificationSettings>): Promise<NotificationSettings> {
+  async update(settings: Partial<NotificationSettings>): Promise<NotificationSettings | null> {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const { data, error } = await supabase
-      .from('notification_settings')
-      .upsert({
-        user_id: user.id,
-        ...settings,
-        updated_at: new Date().toISOString()
-      })
-      .select()
-      .single()
+    try {
+      const { data, error } = await supabase
+        .from('notification_settings')
+        .upsert({
+          user_id: user.id,
+          ...settings,
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single()
 
-    if (error) throw error
-    return data
+      // Handle missing table gracefully
+      if (error?.code === 'PGRST205') {
+        console.warn('notification_settings table not found - migration may be pending')
+        return null
+      }
+      if (error) throw error
+      return data
+    } catch {
+      console.warn('Could not save notification settings - table may not exist')
+      return null
+    }
   }
 }
 
@@ -632,32 +669,49 @@ export const visibilitySettingsApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const { data, error } = await supabase
-      .from('visibility_settings')
-      .select('*')
-      .eq('user_id', user.id)
-      .maybeSingle()
+    try {
+      const { data, error } = await supabase
+        .from('visibility_settings')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle()
 
-    if (error) throw error
-    return data
+      // Handle missing table gracefully
+      if (error?.code === 'PGRST205') return null
+      if (error) throw error
+      return data
+    } catch {
+      // Table might not exist yet
+      return null
+    }
   },
 
-  async update(settings: Partial<VisibilitySettings>): Promise<VisibilitySettings> {
+  async update(settings: Partial<VisibilitySettings>): Promise<VisibilitySettings | null> {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    const { data, error } = await supabase
-      .from('visibility_settings')
-      .upsert({
-        user_id: user.id,
-        ...settings,
-        updated_at: new Date().toISOString()
-      })
-      .select()
-      .single()
+    try {
+      const { data, error } = await supabase
+        .from('visibility_settings')
+        .upsert({
+          user_id: user.id,
+          ...settings,
+          updated_at: new Date().toISOString()
+        })
+        .select()
+        .single()
 
-    if (error) throw error
-    return data
+      // Handle missing table gracefully
+      if (error?.code === 'PGRST205') {
+        console.warn('visibility_settings table not found - migration may be pending')
+        return null
+      }
+      if (error) throw error
+      return data
+    } catch {
+      console.warn('Could not save visibility settings - table may not exist')
+      return null
+    }
   }
 }
 

@@ -734,9 +734,10 @@ export default function Profile() {
 
   return (
     <div className="pb-8">
-      {/* Header - Soft Pastel Style */}
+      {/* Unified Header with Tabs - Soft Pastel Style */}
       <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-6">
-        <div className="max-w-5xl mx-auto px-5 py-5">
+        {/* Header content */}
+        <div className="px-5 py-4">
           <div className="flex items-center gap-4">
             {/* Profile Image Upload */}
             <ProfileImageUpload
@@ -793,36 +794,60 @@ export default function Profile() {
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Tabs */}
-      <div className="bg-gradient-to-r from-teal-50/50 via-white to-sky-50/50 dark:from-stone-800/50 dark:via-stone-800 dark:to-stone-800/50 rounded-xl border border-teal-100 dark:border-stone-700 mb-6 sticky top-0 z-10">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="flex gap-1 overflow-x-auto py-2.5 scrollbar-hide">
-            {TABS.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={cn(
-                  'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all',
-                  activeTab === tab.id
-                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 shadow-sm'
-                    : 'text-stone-600 dark:text-stone-400 hover:bg-teal-50 dark:hover:bg-stone-700'
+        {/* Tabs integrated in header - wrapping two rows */}
+        <div className="px-4 pb-3">
+          <div className="bg-white/60 dark:bg-stone-800/40 rounded-xl px-2 py-2 border border-teal-100/50 dark:border-stone-700/50">
+            {/* Desktop: flex-wrap for two rows */}
+            <div className="hidden md:flex flex-wrap items-center gap-1">
+              {TABS.map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
+                    activeTab === tab.id
+                      ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 shadow-sm'
+                      : 'text-stone-600 dark:text-stone-400 hover:bg-teal-50 dark:hover:bg-stone-700'
+                  )}
+                >
+                  {tab.icon}
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+              {/* Sync indicator */}
+              <div className="ml-auto flex items-center gap-1.5 px-2 py-1 text-xs">
+                {cloudSyncing ? (
+                  <><Loader2 className="w-3 h-3 animate-spin text-teal-600 dark:text-teal-400" /><span className="text-teal-600 dark:text-teal-400">Sparar</span></>
+                ) : cloudSynced ? (
+                  <><Cloud className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /><span className="text-emerald-600 dark:text-emerald-400">Sparat</span></>
+                ) : (
+                  <><CloudOff className="w-3 h-3 text-amber-600 dark:text-amber-400" /><span className="text-amber-600 dark:text-amber-400">Ej sparat</span></>
                 )}
+              </div>
+            </div>
+
+            {/* Mobile: dropdown select */}
+            <div className="md:hidden">
+              <select
+                value={activeTab}
+                onChange={(e) => setActiveTab(e.target.value as TabId)}
+                className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm font-medium text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
               >
-                {tab.icon}
-                {tab.label}
-              </button>
-            ))}
-            {/* Sync indicator */}
-            <div className="ml-auto flex items-center gap-1.5 px-3 text-xs bg-white/50 dark:bg-stone-700/50 rounded-lg">
-              {cloudSyncing ? (
-                <><Loader2 className="w-3 h-3 animate-spin text-teal-600 dark:text-teal-400" /><span className="text-teal-600 dark:text-teal-400">Sparar</span></>
-              ) : cloudSynced ? (
-                <><Cloud className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /><span className="text-emerald-600 dark:text-emerald-400">Sparat</span></>
-              ) : (
-                <><CloudOff className="w-3 h-3 text-amber-600 dark:text-amber-400" /><span className="text-amber-600 dark:text-amber-400">Ej sparat</span></>
-              )}
+                {TABS.map(tab => (
+                  <option key={tab.id} value={tab.id}>{tab.label}</option>
+                ))}
+              </select>
+              {/* Mobile sync indicator */}
+              <div className="flex items-center justify-center gap-1.5 mt-2 text-xs">
+                {cloudSyncing ? (
+                  <><Loader2 className="w-3 h-3 animate-spin text-teal-600 dark:text-teal-400" /><span className="text-teal-600 dark:text-teal-400">Sparar...</span></>
+                ) : cloudSynced ? (
+                  <><Cloud className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /><span className="text-emerald-600 dark:text-emerald-400">Sparat</span></>
+                ) : (
+                  <><CloudOff className="w-3 h-3 text-amber-600 dark:text-amber-400" /><span className="text-amber-600 dark:text-amber-400">Ej sparat</span></>
+                )}
+              </div>
             </div>
           </div>
         </div>
