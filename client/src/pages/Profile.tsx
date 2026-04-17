@@ -17,14 +17,15 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { userApi, cvApi, type ProfilePreferences } from '../services/supabaseApi'
-import { cvIntegrationApi, profileExportApi } from '../services/profileEnhancementsApi'
+import { cvIntegrationApi, profileExportApi, profileSkillsApi, profileDocumentsApi } from '../services/profileEnhancementsApi'
 import {
   User, CheckCircle, Camera, Phone, MapPin, Mail,
   Sparkles, Compass, ChevronRight, Briefcase, Heart,
   Plus, X, Loader2, Cloud, CloudOff, Download, Upload,
   Clock, Car, Wallet, Building2, Accessibility, Share2,
   Calendar, Target, Activity, FileText, Users, Settings,
-  Zap, Brain, ClipboardList, TrendingUp, AlertCircle, Star, Linkedin
+  Zap, Brain, ClipboardList, TrendingUp, AlertCircle, Star, Linkedin,
+  Bell, Eye
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
@@ -463,8 +464,22 @@ export default function Profile() {
     loadProfile()
     loadPreferencesFromCloud()
     loadCvData()
+    loadProfileEnhancements()
     return () => { if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current) }
   }, [])
+
+  const loadProfileEnhancements = async () => {
+    try {
+      const [skills, documents] = await Promise.all([
+        profileSkillsApi.getAll(),
+        profileDocumentsApi.getAll()
+      ])
+      setSkillsCount(skills.length)
+      setDocumentsCount(documents.length)
+    } catch (err) {
+      console.error('Error loading profile enhancements:', err)
+    }
+  }
 
   const loadProfile = async () => {
     try {

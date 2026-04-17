@@ -60,9 +60,14 @@ export function AISummary({ className }: Props) {
   }
 
   const handleSave = async () => {
-    // TODO: Save edited summary
-    setSummary(editValue)
-    setEditing(false)
+    try {
+      await aiSummaryApi.save(editValue)
+      setSummary(editValue)
+      setEditing(false)
+    } catch (err) {
+      console.error('Error saving summary:', err)
+      alert('Kunde inte spara sammanfattningen')
+    }
   }
 
   if (loading) {
