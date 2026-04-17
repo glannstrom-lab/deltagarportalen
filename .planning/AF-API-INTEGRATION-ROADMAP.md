@@ -21,7 +21,7 @@
 | 1 | **Geografisk Jobbkarta** | JobSearch | ❌ REMOVED | Borttagen - inte tillräckligt användbar |
 | 2 | **Ett Jobb Om Dagen** | JobSearch | ✅ DONE | Presentera ETT noggrant utvalt jobb per dag för att minska överväldigande |
 | 3 | **Energianpassad Sökning** | JobSearch | ✅ DONE | Filtrera på deltid/distans när användaren har låg energi |
-| 4 | **Dolda Jobbmarknaden** | JobAd Links + JobSearch | ✅ DONE | Visa 51,000 jobb från LinkedIn/Indeed som inte finns på Platsbanken |
+| 4 | **Dolda Jobbmarknaden** | JobAd Links + JobSearch | ❌ REMOVED | Borttagen - var bara dubbletter av Platsbanken |
 | 5 | **Röstbaserad Jobbsökning** | JobSearch + Taxonomy | ✅ DONE | Sök jobb genom att prata - tillgängligt för synskadade/dyslektiker |
 | 6 | **Förenklade Jobbkort** | JobSearch | ✅ DONE | Progressiv information - visa först titel/plats, expandera för mer |
 | 7 | **Geografisk Komfortzon** | JobSearch | ❌ REMOVED | Borttagen tillsammans med jobbkartan |
@@ -184,15 +184,15 @@
 ## Progress Tracker
 
 - **Total:** 62 förslag
-- **Klara:** 9 (14.5%)
-- **Borttagna:** 2
+- **Klara:** 8 (12.9%)
+- **Borttagna:** 3
 - **Kvar:** 51
 
 ### Implementerade funktioner (Fas 1 - Jobbsökning):
 - ❌ ~~Geografisk Jobbkarta~~ (borttagen - inte tillräckligt användbar)
 - ✅ Ett Jobb Om Dagen för användare som behöver ta det lugnt (DailyJobTab)
 - ✅ Energianpassad Sökning med deltid/distans-filter (EnergySearch)
-- ✅ Dolda Jobbmarknaden via JobAd Links API (HiddenJobsTab)
+- ❌ ~~Dolda Jobbmarknaden~~ (borttagen - var bara dubbletter av Platsbanken)
 - ✅ Röstbaserad Jobbsökning med Web Speech API (VoiceSearch)
 - ✅ Förenklade Jobbkort med progressiv disclosure (EnergySearch)
 - ❌ ~~Geografisk Komfortzon~~ (borttagen tillsammans med jobbkartan)

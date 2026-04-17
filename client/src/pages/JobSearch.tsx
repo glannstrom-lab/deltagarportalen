@@ -7,7 +7,7 @@ import {
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
   Bookmark, Send, Bell, MoreVertical,
   Trash2, CheckCircle, Clock, MessageSquare,
-  Eye, Star, Mic
+  Star, Mic
 } from '@/components/ui/icons';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
@@ -29,7 +29,6 @@ import { CreateApplicationModal } from '@/components/workflow';
 // Import tab components
 import { AlertsTab } from '@/components/jobs/AlertsTab';
 import { MatchesTab } from '@/components/jobs/MatchesTab';
-import { HiddenJobsTab } from '@/components/jobs/HiddenJobsTab';
 import { DailyJobTab } from '@/components/jobs/DailyJobTab';
 import { EnergySearch } from '@/components/jobs/EnergySearch';
 import { SmartFilters } from '@/components/jobs/SmartFilters';
@@ -41,7 +40,6 @@ import { helpContent } from '@/data/helpContent';
 // Note: CRM, Culture, and Applications tabs moved to dedicated /applications page
 const jobSearchTabDefs = [
   { id: 'search', labelKey: 'jobSearch.tabs.search', path: '/job-search', icon: Search },
-  { id: 'hidden', labelKey: 'jobSearch.tabs.hidden', path: '/job-search/hidden', icon: Eye },
   { id: 'daily', labelKey: 'jobSearch.tabs.daily', path: '/job-search/daily', icon: Star },
   { id: 'saved', labelKey: 'jobSearch.tabs.saved', path: '/job-search/saved', icon: Bookmark },
   { id: 'matches', labelKey: 'jobSearch.tabs.matches', path: '/job-search/matches', icon: Sparkles },
@@ -887,7 +885,6 @@ export default function JobSearch() {
       >
         <Routes>
           <Route index element={<SearchTab />} />
-          <Route path="hidden" element={<HiddenJobsTab />} />
           <Route path="daily" element={<DailyJobTab />} />
           <Route path="saved" element={<SavedJobsTab />} />
           <Route path="alerts" element={<AlertsTab />} />
