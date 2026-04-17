@@ -1143,6 +1143,16 @@ export interface UserCredential {
 
 // ===== User Adaptations (Workplace Accommodations) =====
 
+export interface AdaptationItem {
+  key: string;
+  status: 'identified' | 'requested' | 'granted' | 'denied' | 'active';
+  rating?: number; // 1-5 effectiveness rating
+  requestedDate?: string;
+  grantedDate?: string;
+  notes?: string;
+  reminderDate?: string;
+}
+
 export interface UserAdaptations {
   id: string;
   user_id: string;
@@ -1150,6 +1160,10 @@ export interface UserAdaptations {
   cognitive_adaptations: string[];
   organizational_adaptations: string[];
   social_adaptations: string[];
+  technical_adaptations: string[];
+  communication_adaptations: string[];
+  environmental_adaptations: string[];
+  adaptation_details: Record<string, AdaptationItem>;
   notes?: string;
   summary?: string;
   created_at: string;
@@ -1176,6 +1190,10 @@ export const adaptationsApi = {
     cognitive_adaptations: string[];
     organizational_adaptations: string[];
     social_adaptations: string[];
+    technical_adaptations?: string[];
+    communication_adaptations?: string[];
+    environmental_adaptations?: string[];
+    adaptation_details?: Record<string, AdaptationItem>;
     notes?: string;
     summary?: string;
   }): Promise<UserAdaptations> {
