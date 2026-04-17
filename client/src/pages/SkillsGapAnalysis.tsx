@@ -21,7 +21,6 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
-import { cn } from '@/lib/utils'
 import { cvApi, type CVData } from '@/services/supabaseApi'
 import { useAuthStore } from '@/stores/authStore'
 import { useAIStream } from '@/hooks/useAIStream'
@@ -310,9 +309,10 @@ export default function SkillsGapAnalysis() {
     if (!confirm(i18n.language === 'en' ? 'Are you sure you want to delete this analysis?' : 'Är du säker på att du vill ta bort denna analys?')) return
     try {
       await skillsAnalysisApi.delete(id)
-      setPreviousAnalyses(prev => prev.filter(a => a.id !== id))
+      const remainingAnalyses = previousAnalyses.filter(a => a.id !== id)
+      setPreviousAnalyses(remainingAnalyses)
       if (currentAnalysis?.id === id) {
-        setCurrentAnalysis(previousAnalyses.find(a => a.id !== id) || null)
+        setCurrentAnalysis(remainingAnalyses.length > 0 ? remainingAnalyses[0] : null)
       }
     } catch (err) {
       console.error('Failed to delete analysis:', err)
