@@ -136,18 +136,21 @@ export const profileImageApi = {
 
     if (uploadError) throw uploadError
 
-    // Get public URL
+    // Get public URL with cache-busting timestamp
     const { data: { publicUrl } } = supabase.storage
       .from('profile-images')
       .getPublicUrl(fileName)
 
+    // Add cache-busting parameter to force browser to reload
+    const urlWithTimestamp = `${publicUrl}?t=${Date.now()}`
+
     // Update profile
     await supabase
       .from('profiles')
-      .update({ profile_image_url: publicUrl })
+      .update({ profile_image_url: urlWithTimestamp })
       .eq('id', user.id)
 
-    return publicUrl
+    return urlWithTimestamp
   },
 
   async delete(): Promise<void> {
