@@ -69,6 +69,7 @@ const LinkedInCallback = lazy(() => import('./pages/LinkedInCallback'))
 const GoogleCalendarCallback = lazy(() => import('./pages/GoogleCalendarCallback'))
 const MyConsultant = lazy(() => import('./pages/MyConsultant'))
 const AITeam = lazy(() => import('./pages/AITeam'))
+const Network = lazy(() => import('./pages/Network'))
 
 /**
  * Lazy route wrapper with error boundary
@@ -239,6 +240,7 @@ function App() {
           <Route path="calendar" element={<LazyRoute><RouteErrorBoundary><Calendar /></RouteErrorBoundary></LazyRoute>} />
           {/* <Route path="journey" element={<LazyRoute><RouteErrorBoundary><Journey /></RouteErrorBoundary></LazyRoute>} /> */}
           <Route path="spontanansökan/*" element={<LazyRoute><RouteErrorBoundary><Spontaneous /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="nätverk" element={<LazyRoute><RouteErrorBoundary><Network /></RouteErrorBoundary></LazyRoute>} />
           <Route path="personal-brand/*" element={<LazyRoute><RouteErrorBoundary><PersonalBrand /></RouteErrorBoundary></LazyRoute>} />
           <Route path="linkedin-optimizer" element={<LazyRoute><RouteErrorBoundary><LinkedInOptimizer /></RouteErrorBoundary></LazyRoute>} />
           <Route path="skills-gap-analysis" element={<LazyRoute><RouteErrorBoundary><SkillsGapAnalysis /></RouteErrorBoundary></LazyRoute>} />

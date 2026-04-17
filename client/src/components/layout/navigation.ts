@@ -77,6 +77,7 @@ export const navGroups: NavGroup[] = [
       { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
       { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList },
       { path: '/spontanansökan', labelKey: 'nav.spontaneous', icon: Building2, isNew: true },
+      { path: '/nätverk', labelKey: 'nav.network', icon: Users },
     ],
   },
   {
