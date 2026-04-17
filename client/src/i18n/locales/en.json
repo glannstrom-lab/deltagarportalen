@@ -1294,8 +1294,8 @@
     "yourCareerPlan": "Your personal career plan",
     "createPlan": "Create my career plan",
     "tabs": {
-      "explore": "Explore Occupations",
-      "exploreDesc": "Discover new career opportunities",
+      "laborMarket": "Labor Market",
+      "laborMarketDesc": "Trends and demand",
       "network": "Network",
       "networkDesc": "Build and maintain your network",
       "adaptation": "Adaptation",

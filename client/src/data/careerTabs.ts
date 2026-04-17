@@ -1,11 +1,11 @@
 /**
  * Career Page Tabs Configuration
- * 8 tabs: Utforska, Nätverk, Anpassning, Företag, Karriärplan, Kompetens, Credentials, Flytt
+ * 8 tabs: Arbetsmarknad, Nätverk, Anpassning, Företag, Karriärplan, Kompetens, Credentials, Flytt
  */
 
 import type { Tab } from '@/components/layout/PageTabs'
 import {
-  Compass,
+  TrendingUp,
   Network,
   Accessibility,
   Building2,
@@ -17,7 +17,7 @@ import {
 
 // Tab definitions with i18n keys - labels are resolved at render time
 export const careerTabDefs = [
-  { id: 'explore', labelKey: 'career.tabs.explore', descriptionKey: 'career.tabs.exploreDesc', path: '/career', icon: Compass },
+  { id: 'labor-market', labelKey: 'career.tabs.laborMarket', descriptionKey: 'career.tabs.laborMarketDesc', path: '/career', icon: TrendingUp },
   { id: 'network', labelKey: 'career.tabs.network', descriptionKey: 'career.tabs.networkDesc', path: '/career/network', icon: Network, badgeKey: 'career.new' },
   { id: 'adaptation', labelKey: 'career.tabs.adaptation', descriptionKey: 'career.tabs.adaptationDesc', path: '/career/adaptation', icon: Accessibility, badgeKey: 'career.new' },
   { id: 'companies', labelKey: 'career.tabs.companies', descriptionKey: 'career.tabs.companiesDesc', path: '/career/companies', icon: Building2, badgeKey: 'career.new' },
@@ -29,7 +29,7 @@ export const careerTabDefs = [
 
 // For backwards compatibility - static tabs (Swedish)
 export const careerTabs: Tab[] = [
-  { id: 'explore', label: 'Utforska yrken', path: '/career', icon: Compass },
+  { id: 'labor-market', label: 'Arbetsmarknad', path: '/career', icon: TrendingUp },
   { id: 'network', label: 'Nätverk', path: '/career/network', icon: Network, badge: undefined },
   { id: 'adaptation', label: 'Anpassning', path: '/career/adaptation', icon: Accessibility, badge: undefined },
   { id: 'companies', label: 'Företag', path: '/career/companies', icon: Building2, badge: undefined },

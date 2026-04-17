@@ -43,7 +43,7 @@ export function IndustryRadarSection({
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<IndustryRadarResult | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [dataSource, setDataSource] = useState<'api' | 'cache' | 'demo'>('api')
+  const [dataSource, setDataSource] = useState<'api' | 'cache'>('api')
 
   if (!AI_FEATURES.INDUSTRY_RADAR) {
     return null
@@ -66,9 +66,9 @@ export function IndustryRadarSection({
       const trendingSkills = trendingSkillsResult.data
       const popularOccupations = popularOccupationsResult.data
 
-      // Determine overall data source (demo if any source is demo)
+      // Determine overall data source
       const sources = [marketStatsResult.source, trendingSkillsResult.source, popularOccupationsResult.source]
-      const overallSource = sources.includes('demo') ? 'demo' : sources.includes('cache') ? 'cache' : 'api'
+      const overallSource = sources.includes('cache') ? 'cache' : 'api'
       setDataSource(overallSource)
 
       // Transform data to IndustryRadarResult format
@@ -409,16 +409,9 @@ export function IndustryRadarSection({
                   {result.lastUpdated && (
                     <span>{t('career.industryRadar.lastUpdated')}: {result.lastUpdated}</span>
                   )}
-                  {dataSource === 'demo' && (
-                    <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full">
-                      {i18n.language === 'en' ? 'Demo data' : 'Demodata'}
-                    </span>
-                  )}
-                  {dataSource === 'api' && (
-                    <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
-                      {i18n.language === 'en' ? 'Live data' : 'Realtidsdata'}
-                    </span>
-                  )}
+                  <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
+                    {i18n.language === 'en' ? 'Live data' : 'Realtidsdata'}
+                  </span>
                 </div>
               </div>
             )}

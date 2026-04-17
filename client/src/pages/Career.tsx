@@ -1,6 +1,6 @@
 /**
  * Career Page - Main entry with tabs
- * 8 tabs: Utforska, Nätverk, Anpassning, Företag, Credentials, Flytta, Karriärplan, Kompetens
+ * 8 tabs: Arbetsmarknad, Nätverk, Anpassning, Företag, Credentials, Flytta, Karriärplan, Kompetens
  */
 import { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
@@ -12,7 +12,7 @@ import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
 
 // Tab components
-import ExploreTab from './career/ExploreTab'
+import LaborMarketTab from './career/LaborMarketTab'
 import NetworkTab from './career/NetworkTab'
 import AdaptationTab from './career/AdaptationTab'
 import CompaniesTab from './career/CompaniesTab'
@@ -52,7 +52,7 @@ export default function CareerPage() {
         className="space-y-6"
       >
         <Routes>
-          <Route path="/" element={<ExploreTab />} />
+          <Route path="/" element={<LaborMarketTab />} />
           <Route path="/network" element={<NetworkTab />} />
           <Route path="/adaptation" element={<AdaptationTab />} />
           <Route path="/companies" element={<CompaniesTab />} />

@@ -1319,8 +1319,8 @@
     "yourCareerPlan": "Din personliga karriärplan",
     "createPlan": "Skapa min karriärplan",
     "tabs": {
-      "explore": "Utforska yrken",
-      "exploreDesc": "Upptäck nya yrkesmöjligheter",
+      "laborMarket": "Arbetsmarknad",
+      "laborMarketDesc": "Trender och efterfrågan",
       "network": "Nätverk",
       "networkDesc": "Bygg och underhåll ditt nätverk",
       "adaptation": "Anpassning",

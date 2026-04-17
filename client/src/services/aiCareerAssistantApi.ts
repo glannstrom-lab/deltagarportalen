@@ -310,7 +310,7 @@ export async function getCompanyAnalysis(
 }
 
 // ============================================
-// INDUSTRY RADAR API (for ExploreTab)
+// INDUSTRY RADAR API (for LaborMarketTab)
 // ============================================
 
 export interface IndustryRadarParams {
