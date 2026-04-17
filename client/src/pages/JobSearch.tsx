@@ -7,7 +7,7 @@ import {
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
   Bookmark, Send, Bell, MoreVertical,
   Trash2, CheckCircle, Clock, MessageSquare,
-  Star, Mic
+  Star, Mic, Battery, Sliders
 } from '@/components/ui/icons';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
@@ -41,6 +41,9 @@ import { helpContent } from '@/data/helpContent';
 const jobSearchTabDefs = [
   { id: 'search', labelKey: 'jobSearch.tabs.search', path: '/job-search', icon: Search },
   { id: 'daily', labelKey: 'jobSearch.tabs.daily', path: '/job-search/daily', icon: Star },
+  { id: 'energy', labelKey: 'jobSearch.tabs.energy', path: '/job-search/energy', icon: Battery },
+  { id: 'smart', labelKey: 'jobSearch.tabs.smart', path: '/job-search/smart', icon: Sliders },
+  { id: 'voice', labelKey: 'jobSearch.tabs.voice', path: '/job-search/voice', icon: Mic },
   { id: 'saved', labelKey: 'jobSearch.tabs.saved', path: '/job-search/saved', icon: Bookmark },
   { id: 'matches', labelKey: 'jobSearch.tabs.matches', path: '/job-search/matches', icon: Sparkles },
 ];
