@@ -139,6 +139,7 @@ export {
   LayoutTemplate,
   Leaf,
   Library,
+  Locate,
   Lightbulb,
   LineChart,
   Link,
@@ -209,6 +210,7 @@ export {
   ShieldCheck,
   Shirt,
   ShoppingCart,
+  Snowflake,
   Signal,
   Siren,
   SkipForward,
@@ -258,6 +260,8 @@ export {
   X,
   XCircle,
   Zap,
+  ZoomIn,
+  ZoomOut,
 } from 'lucide-react'
 
 // Re-export types

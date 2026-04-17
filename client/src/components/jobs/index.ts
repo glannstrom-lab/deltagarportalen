@@ -10,3 +10,11 @@ export { default as JobMatchAnalyzer } from './JobMatchAnalyzer'
 export { ApplicationsTab } from './ApplicationsTab'
 export { AlertsTab } from './AlertsTab'
 export { MatchesTab } from './MatchesTab'
+
+// New JobSearch features (AF API integration roadmap)
+export { HiddenJobsTab } from './HiddenJobsTab'
+export { JobMapTab } from './JobMapTab'
+export { DailyJobTab } from './DailyJobTab'
+export { EnergySearch } from './EnergySearch'
+export { SmartFilters, CompetitionIndicator } from './SmartFilters'
+export { VoiceSearch } from './VoiceSearch'

@@ -964,12 +964,18 @@
     "subtitle": "Hitta lediga jobb från Arbetsförmedlingen",
     "tabs": {
       "search": "Sök",
+      "map": "Karta",
+      "hidden": "Dolda jobb",
+      "daily": "Dagens jobb",
       "saved": "Sparade",
       "crm": "CRM",
       "culture": "Kultur",
       "applications": "Ansökningar",
       "alerts": "Bevakningar",
-      "matches": "Matchningar"
+      "matches": "Matchningar",
+      "energy": "Energianpassad",
+      "smart": "Smarta filter",
+      "voice": "Röstsök"
     },
     "filters": "Filter",
     "results": "Resultat",

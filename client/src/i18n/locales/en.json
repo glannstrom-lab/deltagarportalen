@@ -1011,12 +1011,18 @@
     "takeInterestTest": "Take the interest test",
     "tabs": {
       "search": "Search jobs",
+      "map": "Map",
+      "hidden": "Hidden jobs",
+      "daily": "Daily job",
       "saved": "Saved",
       "crm": "CRM",
       "culture": "Culture",
       "applications": "Applications",
       "alerts": "Alerts",
-      "matches": "Matches"
+      "matches": "Matches",
+      "energy": "Energy-adapted",
+      "smart": "Smart filters",
+      "voice": "Voice search"
     },
     "writeLetter": "Write letter",
     "writePersonalLetter": "Write personal letter",
