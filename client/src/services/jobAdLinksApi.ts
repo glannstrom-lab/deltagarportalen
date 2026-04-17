@@ -97,8 +97,40 @@ export async function getJobSources(): Promise<{ sources: JobSource[] }> {
   return fetchFromFunction<{ sources: JobSource[] }>('/sources');
 }
 
-// Source badge colors for UI
+// Source badge colors for UI - supports both old names and actual API source labels
 export const SOURCE_COLORS: Record<string, { bg: string; text: string; border: string }> = {
+  // Common Swedish job sites from the API
+  'thehub.io': {
+    bg: 'bg-violet-50 dark:bg-violet-900/30',
+    text: 'text-violet-700 dark:text-violet-400',
+    border: 'border-violet-200 dark:border-violet-800'
+  },
+  'onepartnergroup.se': {
+    bg: 'bg-blue-50 dark:bg-blue-900/30',
+    text: 'text-blue-700 dark:text-blue-400',
+    border: 'border-blue-200 dark:border-blue-800'
+  },
+  'academicwork.se': {
+    bg: 'bg-amber-50 dark:bg-amber-900/30',
+    text: 'text-amber-700 dark:text-amber-400',
+    border: 'border-amber-200 dark:border-amber-800'
+  },
+  'manpower.se': {
+    bg: 'bg-red-50 dark:bg-red-900/30',
+    text: 'text-red-700 dark:text-red-400',
+    border: 'border-red-200 dark:border-red-800'
+  },
+  'randstad.se': {
+    bg: 'bg-sky-50 dark:bg-sky-900/30',
+    text: 'text-sky-700 dark:text-sky-400',
+    border: 'border-sky-200 dark:border-sky-800'
+  },
+  'adecco.se': {
+    bg: 'bg-rose-50 dark:bg-rose-900/30',
+    text: 'text-rose-700 dark:text-rose-400',
+    border: 'border-rose-200 dark:border-rose-800'
+  },
+  // Legacy names (kept for backwards compatibility)
   'LinkedIn': {
     bg: 'bg-blue-50 dark:bg-blue-900/30',
     text: 'text-blue-700 dark:text-blue-400',
@@ -114,21 +146,7 @@ export const SOURCE_COLORS: Record<string, { bg: string; text: string; border: s
     text: 'text-green-700 dark:text-green-400',
     border: 'border-green-200 dark:border-green-800'
   },
-  'StepStone': {
-    bg: 'bg-orange-50 dark:bg-orange-900/30',
-    text: 'text-orange-700 dark:text-orange-400',
-    border: 'border-orange-200 dark:border-orange-800'
-  },
-  'Glassdoor': {
-    bg: 'bg-emerald-50 dark:bg-emerald-900/30',
-    text: 'text-emerald-700 dark:text-emerald-400',
-    border: 'border-emerald-200 dark:border-emerald-800'
-  },
-  'Blocket Jobb': {
-    bg: 'bg-rose-50 dark:bg-rose-900/30',
-    text: 'text-rose-700 dark:text-rose-400',
-    border: 'border-rose-200 dark:border-rose-800'
-  },
+  // Default
   'Extern': {
     bg: 'bg-stone-50 dark:bg-stone-800',
     text: 'text-stone-700 dark:text-stone-400',

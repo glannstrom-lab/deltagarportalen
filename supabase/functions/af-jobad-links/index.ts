@@ -153,13 +153,22 @@ async function handleSearch(
 
 // Transform raw job link data to our format
 function transformJobLink(data: any, idx: number): ExternalJob {
+  // Extract source from source_links array (new API format)
+  const sourceLink = data.source_links?.[0];
+  const sourceUrl = sourceLink?.url || data.url || data.source_url || data.link || '';
+  const sourceLabel = sourceLink?.label || '';
+
+  // Get location from workplace_addresses array
+  const workplaceAddress = data.workplace_addresses?.[0];
+  const location = workplaceAddress?.municipality || data.workplace?.municipality || data.location || '';
+
   return {
     id: data.id || `ext-${idx}-${Date.now()}`,
     headline: data.headline || data.header || data.title || 'Extern tjänst',
-    source: extractSource(data.url || data.source_url || ''),
-    sourceUrl: data.url || data.source_url || data.link || '',
-    employer: data.employer?.name || data.company || extractEmployerFromUrl(data.url || ''),
-    location: data.workplace?.municipality || data.location || '',
+    source: sourceLabel || extractSource(sourceUrl),
+    sourceUrl: sourceUrl,
+    employer: data.employer?.name || data.company || '',
+    location: location,
     publishedDate: data.publication_date || data.published || new Date().toISOString(),
     occupation: data.occupation?.label || data.occupation_group?.label || '',
   };
@@ -190,29 +199,36 @@ function extractEmployerFromUrl(url: string): string | undefined {
 // Get statistics about available external jobs
 async function handleStats(corsHeaders: Record<string, string>): Promise<Response> {
   try {
-    // Get total count from API
-    const countUrl = `${JOBAD_LINKS_API}/joblinks?limit=1`;
-    const response = await fetch(countUrl, {
+    // Get total count and sample jobs to calculate source distribution
+    const sampleUrl = `${JOBAD_LINKS_API}/joblinks?limit=200`;
+    const response = await fetch(sampleUrl, {
       headers: { 'Accept': 'application/json' }
     });
 
     let totalJobs = 51000; // Fallback estimate
+    const sourceCounts: Record<string, number> = {};
 
     if (response.ok) {
       const data = await response.json();
       totalJobs = data.total?.value || totalJobs;
+
+      // Count sources from sample
+      (data.hits || []).forEach((job: any) => {
+        const sourceLabel = job.source_links?.[0]?.label || 'Övriga';
+        sourceCounts[sourceLabel] = (sourceCounts[sourceLabel] || 0) + 1;
+      });
     }
 
-    // Group by source (estimated distribution)
-    const sourceDistribution = [
-      { source: 'LinkedIn', count: Math.floor(totalJobs * 0.35), icon: '💼' },
-      { source: 'Indeed', count: Math.floor(totalJobs * 0.25), icon: '🔍' },
-      { source: 'Monster', count: Math.floor(totalJobs * 0.10), icon: '👹' },
-      { source: 'StepStone', count: Math.floor(totalJobs * 0.08), icon: '📊' },
-      { source: 'Glassdoor', count: Math.floor(totalJobs * 0.07), icon: '🚪' },
-      { source: 'Blocket Jobb', count: Math.floor(totalJobs * 0.05), icon: '📦' },
-      { source: 'Övriga', count: Math.floor(totalJobs * 0.10), icon: '🌐' },
-    ];
+    // Calculate estimated counts based on sample ratios
+    const sampleSize = Object.values(sourceCounts).reduce((a, b) => a + b, 0) || 1;
+    const sourceDistribution = Object.entries(sourceCounts)
+      .map(([source, count]) => ({
+        source,
+        count: Math.round((count / sampleSize) * totalJobs),
+        icon: getSourceIcon(source),
+      }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 8); // Top 8 sources
 
     return new Response(JSON.stringify({
       totalJobs,
@@ -226,6 +242,31 @@ async function handleStats(corsHeaders: Record<string, string>): Promise<Respons
     console.error('[af-jobad-links] Stats error:', error);
     throw error;
   }
+}
+
+// Get icon for source
+function getSourceIcon(source: string): string {
+  const icons: Record<string, string> = {
+    'linkedin.com': '💼',
+    'indeed.com': '🔍',
+    'monster.se': '👹',
+    'stepstone.se': '📊',
+    'glassdoor.com': '🚪',
+    'blocket.se': '📦',
+    'thehub.io': '🚀',
+    'onepartnergroup.se': '🤝',
+    'academicwork.se': '🎓',
+    'manpower.se': '👷',
+    'randstad.se': '🔧',
+    'adecco.se': '📋',
+  };
+
+  for (const [key, icon] of Object.entries(icons)) {
+    if (source.toLowerCase().includes(key.replace('.com', '').replace('.se', '').replace('.io', ''))) {
+      return icon;
+    }
+  }
+  return '🌐';
 }
 
 // Get list of available sources

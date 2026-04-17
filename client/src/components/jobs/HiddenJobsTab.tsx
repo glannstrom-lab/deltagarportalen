@@ -70,8 +70,9 @@ export function HiddenJobsTab() {
     fetchData();
   };
 
-  // Check if source filtering is reliable (sources are not all "Extern")
-  const hasReliableSources = jobs.some((job) => job.source && job.source !== 'Extern');
+  // Check if source filtering is reliable (sources exist and are not all empty/Extern)
+  const uniqueSources = [...new Set(jobs.map((job) => job.source).filter(Boolean))];
+  const hasReliableSources = uniqueSources.length > 1 || (uniqueSources.length === 1 && uniqueSources[0] !== 'Extern');
 
   const filteredJobs = selectedSource && hasReliableSources
     ? jobs.filter((job) => job.source === selectedSource)
@@ -275,13 +276,8 @@ export function HiddenJobsTab() {
                         colors.bg
                       )}
                     >
-                      {job.source === 'LinkedIn'
-                        ? '💼'
-                        : job.source === 'Indeed'
-                        ? '🔍'
-                        : job.source === 'Monster'
-                        ? '👹'
-                        : '🌐'}
+                      {/* Use source icon from stats if available, otherwise generic */}
+                      {stats?.sourceDistribution.find(s => s.source === job.source)?.icon || '🌐'}
                     </div>
 
                     <div className="flex-1 min-w-0">
