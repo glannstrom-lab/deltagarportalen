@@ -129,10 +129,13 @@ export const profileImageApi = {
     const fileExt = file.name.split('.').pop()
     const fileName = `${user.id}/avatar.${fileExt}`
 
-    // Upload to storage
+    // Upload to storage with explicit content type
     const { error: uploadError } = await supabase.storage
       .from('profile-images')
-      .upload(fileName, file, { upsert: true })
+      .upload(fileName, file, {
+        upsert: true,
+        contentType: file.type
+      })
 
     if (uploadError) throw uploadError
 
