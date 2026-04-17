@@ -1296,6 +1296,76 @@ export const credentialsApi = {
   }
 };
 
+// ===== Relocation Preferences API =====
+
+export interface RelocationPreferences {
+  id: string;
+  user_id: string;
+  target_regions: string[];
+  current_region?: string;
+  max_rent_budget?: number;
+  expected_salary?: number;
+  checklist_completed: string[];
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const relocationApi = {
+  async get(): Promise<RelocationPreferences | null> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { data, error } = await supabase
+      .from('relocation_preferences')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (error && error.code !== 'PGRST116') handleError(error, 'Failed to fetch relocation preferences');
+    return data;
+  },
+
+  async save(prefs: {
+    target_regions?: string[];
+    current_region?: string;
+    max_rent_budget?: number;
+    expected_salary?: number;
+    checklist_completed?: string[];
+    notes?: string;
+  }): Promise<RelocationPreferences> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { data, error } = await supabase
+      .from('relocation_preferences')
+      .upsert({
+        user_id: user.id,
+        ...prefs,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id'
+      })
+      .select()
+      .single();
+
+    if (error) handleError(error, 'Failed to save relocation preferences');
+    return data;
+  },
+
+  async delete(): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { error } = await supabase
+      .from('relocation_preferences')
+      .delete()
+      .eq('user_id', user.id);
+
+    if (error) handleError(error, 'Failed to delete relocation preferences');
+  }
+};
+
 export default {
   careerPath: careerPathApi,
   salary: salaryApi,
@@ -1308,5 +1378,6 @@ export default {
   skillsAnalysis: skillsAnalysisApi,
   favoriteOccupations: favoriteOccupationsApi,
   credentials: credentialsApi,
-  adaptations: adaptationsApi
+  adaptations: adaptationsApi,
+  relocation: relocationApi
 };
