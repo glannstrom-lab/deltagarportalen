@@ -1,12 +1,12 @@
 /**
  * Career Page Tabs Configuration
- * 8 tabs: Arbetsmarknad, Nätverk, Anpassning, Företag, Karriärplan, Kompetens, Credentials, Flytt
+ * 7 tabs: Arbetsmarknad, Anpassning, Företag, Credentials, Flytt, Karriärplan, Kompetens
+ * Note: Nätverk has been moved to its own page (/nätverk)
  */
 
 import type { Tab } from '@/components/layout/PageTabs'
 import {
   TrendingUp,
-  Network,
   Accessibility,
   Building2,
   Target,
@@ -18,7 +18,6 @@ import {
 // Tab definitions with i18n keys - labels are resolved at render time
 export const careerTabDefs = [
   { id: 'labor-market', labelKey: 'career.tabs.laborMarket', descriptionKey: 'career.tabs.laborMarketDesc', path: '/career', icon: TrendingUp },
-  { id: 'network', labelKey: 'career.tabs.network', descriptionKey: 'career.tabs.networkDesc', path: '/career/network', icon: Network, badgeKey: 'career.new' },
   { id: 'adaptation', labelKey: 'career.tabs.adaptation', descriptionKey: 'career.tabs.adaptationDesc', path: '/career/adaptation', icon: Accessibility, badgeKey: 'career.new' },
   { id: 'companies', labelKey: 'career.tabs.companies', descriptionKey: 'career.tabs.companiesDesc', path: '/career/companies', icon: Building2, badgeKey: 'career.new' },
   { id: 'credentials', labelKey: 'career.tabs.credentials', descriptionKey: 'career.tabs.credentialsDesc', path: '/career/credentials', icon: GraduationCap, badgeKey: 'career.new' },
@@ -30,7 +29,6 @@ export const careerTabDefs = [
 // For backwards compatibility - static tabs (Swedish)
 export const careerTabs: Tab[] = [
   { id: 'labor-market', label: 'Arbetsmarknad', path: '/career', icon: TrendingUp },
-  { id: 'network', label: 'Nätverk', path: '/career/network', icon: Network, badge: undefined },
   { id: 'adaptation', label: 'Anpassning', path: '/career/adaptation', icon: Accessibility, badge: undefined },
   { id: 'companies', label: 'Företag', path: '/career/companies', icon: Building2, badge: undefined },
   { id: 'credentials', label: 'Credentials', path: '/career/credentials', icon: GraduationCap, badge: undefined },
