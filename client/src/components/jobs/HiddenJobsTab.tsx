@@ -70,7 +70,10 @@ export function HiddenJobsTab() {
     fetchData();
   };
 
-  const filteredJobs = selectedSource
+  // Check if source filtering is reliable (sources are not all "Extern")
+  const hasReliableSources = jobs.some((job) => job.source && job.source !== 'Extern');
+
+  const filteredJobs = selectedSource && hasReliableSources
     ? jobs.filter((job) => job.source === selectedSource)
     : jobs;
 
@@ -184,8 +187,8 @@ export function HiddenJobsTab() {
         </Button>
       </form>
 
-      {/* Source filter chips */}
-      {stats && (
+      {/* Source filter chips - only show when source data is reliable */}
+      {stats && hasReliableSources && (
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setSelectedSource(null)}
@@ -221,6 +224,16 @@ export function HiddenJobsTab() {
               {source.source}
             </button>
           ))}
+        </div>
+      )}
+
+      {/* Info when source filtering isn't available */}
+      {stats && !hasReliableSources && jobs.length > 0 && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3 text-sm text-amber-700 dark:text-amber-400">
+          <AlertCircle className="w-4 h-4 inline mr-2" />
+          {lang === 'en'
+            ? 'Source filtering is not available for these jobs. Showing all external jobs.'
+            : 'Källfiltrering är inte tillgänglig för dessa jobb. Visar alla externa jobb.'}
         </div>
       )}
 

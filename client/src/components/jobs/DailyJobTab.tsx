@@ -25,6 +25,10 @@ import { Card, Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { searchJobs, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs } from '@/hooks/useSavedJobs';
+import { cvApi } from '@/services/supabaseApi';
+import { interestGuideApi } from '@/services/cloudStorage';
+import { calculateUserProfile, calculateJobMatches } from '@/services/interestGuideData';
+import { unifiedProfileApi } from '@/services/unifiedProfileApi';
 
 // Storage key for daily job
 const DAILY_JOB_KEY = 'jobin_daily_job';
@@ -34,6 +38,14 @@ interface DailyJobData {
   job: PlatsbankenJob;
   reason: string;
   matchScore: number;
+}
+
+interface UserProfileData {
+  skills: string[];
+  workTitles: string[];
+  preferredRoles: string[];
+  occupationMatches: Array<{ name: string; matchPercentage: number }>;
+  location: string;
 }
 
 export function DailyJobTab() {
@@ -48,6 +60,65 @@ export function DailyJobTab() {
 
   // Get today's date string
   const getTodayKey = () => new Date().toISOString().split('T')[0];
+
+  // Load user profile data
+  const loadUserProfile = async (): Promise<UserProfileData> => {
+    const profile: UserProfileData = {
+      skills: [],
+      workTitles: [],
+      preferredRoles: [],
+      occupationMatches: [],
+      location: '',
+    };
+
+    try {
+      // Load CV data
+      const cv = await cvApi.getCV();
+      if (cv) {
+        const skills = cv.skills?.map((s: string | { name: string }) =>
+          typeof s === 'string' ? s : s.name
+        ).filter(Boolean) || [];
+        const certificates = cv.certificates?.map((c: { name?: string }) => c.name).filter(Boolean) || [];
+        const languages = cv.languages?.map((l: string | { name?: string; language?: string }) =>
+          typeof l === 'string' ? l : (l.name || l.language)
+        ).filter(Boolean) || [];
+        profile.skills = [...new Set([...skills, ...certificates, ...languages])];
+        profile.workTitles = cv.work_experience?.map((e: { title?: string }) => e.title).filter(Boolean) || [];
+      }
+
+      // Load interest guide results
+      const interestProgress = await interestGuideApi.getProgress();
+      if (interestProgress?.is_completed && interestProgress.answers) {
+        try {
+          const userProfile = calculateUserProfile(interestProgress.answers);
+          if (userProfile) {
+            const matches = calculateJobMatches(userProfile);
+            profile.occupationMatches = matches
+              .filter(m => m.matchPercentage >= 50)
+              .slice(0, 15)
+              .map(m => ({ name: m.occupation.name, matchPercentage: m.matchPercentage }));
+          }
+        } catch (e) {
+          console.error('Error calculating interest matches:', e);
+        }
+      }
+
+      // Load career goals and location from unified profile
+      const unifiedProfile = await unifiedProfileApi.getProfile();
+      if (unifiedProfile) {
+        if (unifiedProfile.career?.preferredRoles) {
+          profile.preferredRoles = unifiedProfile.career.preferredRoles;
+        }
+        if (unifiedProfile.core?.location) {
+          profile.location = unifiedProfile.core.location;
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
+
+    return profile;
+  };
 
   // Load or generate daily job
   useEffect(() => {
@@ -65,6 +136,9 @@ export function DailyJobTab() {
           return;
         }
 
+        // Load user profile data
+        const userProfile = await loadUserProfile();
+
         // Fetch fresh jobs
         const result = await searchJobs({ limit: 50, publishedWithin: 'week' });
 
@@ -74,8 +148,8 @@ export function DailyJobTab() {
           return;
         }
 
-        // Select best job based on criteria
-        const selectedJob = selectBestJob(result.hits);
+        // Select best job based on profile matching
+        const selectedJob = selectBestJob(result.hits, userProfile);
 
         // Cache for today
         localStorage.setItem(DAILY_JOB_DATE_KEY, getTodayKey());
@@ -92,53 +166,127 @@ export function DailyJobTab() {
     loadDailyJob();
   }, []);
 
-  // Select the best job based on various criteria
-  const selectBestJob = (jobs: PlatsbankenJob[]): DailyJobData => {
-    // Scoring factors:
-    // - Recent publication (higher score)
-    // - Has complete information
-    // - Has application URL
-    // - Good employer name
-    // - Not too long description (digestible)
+  // Select the best job based on user profile and various criteria
+  const selectBestJob = (jobs: PlatsbankenJob[], userProfile: UserProfileData): DailyJobData => {
+    const hasProfileData =
+      userProfile.skills.length > 0 ||
+      userProfile.workTitles.length > 0 ||
+      userProfile.preferredRoles.length > 0 ||
+      userProfile.occupationMatches.length > 0 ||
+      userProfile.location.length > 0;
 
     const scoredJobs = jobs.map((job) => {
       let score = 0;
       let reasons: string[] = [];
+      const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase();
+      const jobLocation = (job.workplace_address?.municipality || job.workplace_address?.city || '').toLowerCase();
 
-      // Recent publication
+      // ===== LOCATION MATCHING (High priority - up to 30 points) =====
+      if (userProfile.location && jobLocation) {
+        const userLocationLower = userProfile.location.toLowerCase();
+
+        // Exact match or partial match
+        if (jobLocation.includes(userLocationLower) || userLocationLower.includes(jobLocation)) {
+          score += 30;
+          reasons.push(lang === 'en' ? 'Near your home' : 'Nära din bostadsort');
+        }
+        // Check for greater region match (Stockholm area, Göteborg area, etc.)
+        else if (
+          (userLocationLower.includes('stockholm') && jobLocation.includes('stockholm')) ||
+          (userLocationLower.includes('göteborg') && jobLocation.includes('göteborg')) ||
+          (userLocationLower.includes('malmö') && jobLocation.includes('malmö')) ||
+          (userLocationLower.includes('solna') && jobLocation.includes('stockholm')) ||
+          (userLocationLower.includes('nacka') && jobLocation.includes('stockholm')) ||
+          (userLocationLower.includes('huddinge') && jobLocation.includes('stockholm')) ||
+          (userLocationLower.includes('stockholm') && (jobLocation.includes('solna') || jobLocation.includes('nacka') || jobLocation.includes('huddinge') || jobLocation.includes('sundbyberg') || jobLocation.includes('kista')))
+        ) {
+          score += 20;
+          reasons.push(lang === 'en' ? 'In your region' : 'I din region');
+        }
+      }
+
+      // ===== PROFILE MATCHING (Primary scoring if profile exists) =====
+      if (hasProfileData) {
+        // Match CV skills (up to 40 points)
+        let skillMatches = 0;
+        userProfile.skills.forEach(skill => {
+          const skillLower = skill.toLowerCase();
+          if (jobText.includes(skillLower)) {
+            skillMatches++;
+          }
+        });
+        if (skillMatches > 0) {
+          score += Math.min(40, skillMatches * 10);
+          reasons.push(lang === 'en' ? `Matches ${skillMatches} of your skills` : `Matchar ${skillMatches} av dina kompetenser`);
+        }
+
+        // Match work experience titles (up to 30 points)
+        let titleMatches = 0;
+        userProfile.workTitles.forEach(title => {
+          if (jobText.includes(title.toLowerCase())) {
+            titleMatches++;
+          }
+        });
+        if (titleMatches > 0) {
+          score += Math.min(30, titleMatches * 15);
+          reasons.push(lang === 'en' ? 'Matches your experience' : 'Matchar din erfarenhet');
+        }
+
+        // Match preferred roles (up to 25 points)
+        let roleMatches = 0;
+        userProfile.preferredRoles.forEach(role => {
+          if (jobText.includes(role.toLowerCase())) {
+            roleMatches++;
+          }
+        });
+        if (roleMatches > 0) {
+          score += Math.min(25, roleMatches * 12);
+          reasons.push(lang === 'en' ? 'Matches your career goals' : 'Matchar dina karriärmål');
+        }
+
+        // Match interest guide occupations (up to 35 points)
+        let bestOccMatch = 0;
+        userProfile.occupationMatches.forEach(occ => {
+          const occWords = occ.name.toLowerCase().split(/[\s\/]+/).filter(w => w.length > 3);
+          const matchedWords = occWords.filter(w => jobText.includes(w));
+          if (matchedWords.length > 0) {
+            const matchQuality = (matchedWords.length / occWords.length) * occ.matchPercentage;
+            if (matchQuality > bestOccMatch) {
+              bestOccMatch = matchQuality;
+            }
+          }
+        });
+        if (bestOccMatch > 0) {
+          score += Math.min(35, Math.round(bestOccMatch * 0.35));
+          reasons.push(lang === 'en' ? 'Fits your interests' : 'Passar dina intressen');
+        }
+      }
+
+      // ===== GENERAL QUALITY FACTORS =====
+      // Recent publication (up to 15 points)
       const daysOld = Math.floor(
         (Date.now() - new Date(job.publication_date).getTime()) / (1000 * 60 * 60 * 24)
       );
       if (daysOld <= 1) {
-        score += 30;
-        reasons.push(lang === 'en' ? 'Just published' : 'Nyligen publicerad');
+        score += 15;
+        if (reasons.length === 0) reasons.push(lang === 'en' ? 'Just published' : 'Nyligen publicerad');
       } else if (daysOld <= 3) {
-        score += 20;
-        reasons.push(lang === 'en' ? 'New this week' : 'Ny denna vecka');
-      }
-
-      // Has complete information
-      if (job.employer?.name) score += 15;
-      if (job.workplace_address?.municipality) {
         score += 10;
-        reasons.push(lang === 'en' ? 'Clear location' : 'Tydlig plats');
-      }
-      if (job.description?.text && job.description.text.length > 200) score += 10;
-
-      // Has application URL
-      if (job.application_details?.url) {
-        score += 20;
-        reasons.push(lang === 'en' ? 'Easy to apply' : 'Enkel att ansöka till');
+        if (reasons.length === 0) reasons.push(lang === 'en' ? 'New this week' : 'Ny denna vecka');
       }
 
-      // Not too overwhelming (description not too long)
-      if (job.description?.text && job.description.text.length < 3000) {
+      // Has complete information (up to 10 points)
+      if (job.employer?.name) score += 5;
+      if (job.workplace_address?.municipality) score += 5;
+
+      // Has application URL (10 points)
+      if (job.application_details?.url || job.webpage_url) {
         score += 10;
-        reasons.push(lang === 'en' ? 'Manageable scope' : 'Hanterbar omfattning');
+        if (reasons.length < 2) reasons.push(lang === 'en' ? 'Easy to apply' : 'Enkel att ansöka till');
       }
 
-      // Employment type bonus
-      if (job.employment_type?.label?.toLowerCase().includes('heltid')) {
+      // Not too overwhelming (5 points)
+      if (job.description?.text && job.description.text.length < 3000 && job.description.text.length > 200) {
         score += 5;
       }
 
@@ -149,10 +297,14 @@ export function DailyJobTab() {
     scoredJobs.sort((a, b) => b.score - a.score);
     const best = scoredJobs[0];
 
+    // Calculate match percentage (max is ~160 with profile + location, ~45 without)
+    const maxScore = hasProfileData ? 160 : 45;
+    const matchScore = Math.min(95, Math.round((best.score / maxScore) * 100));
+
     return {
       job: best.job,
-      reason: best.reasons.slice(0, 2).join(' • '),
-      matchScore: Math.min(Math.round((best.score / 100) * 100), 95),
+      reason: best.reasons.slice(0, 2).join(' • ') || (lang === 'en' ? 'Good opportunity' : 'Bra möjlighet'),
+      matchScore,
     };
   };
 

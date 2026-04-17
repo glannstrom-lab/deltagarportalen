@@ -583,9 +583,9 @@ export function JobMapTab() {
                 <Heart className="w-4 h-4 mr-1" />
                 {lang === 'en' ? 'Save' : 'Spara'}
               </Button>
-              {selectedJob.application_details?.url && (
+              {(selectedJob.application_details?.url || selectedJob.webpage_url) && (
                 <a
-                  href={selectedJob.application_details.url}
+                  href={selectedJob.application_details?.url || selectedJob.webpage_url}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
