@@ -75,6 +75,23 @@ npm run test:coverage  # Med coverage
 npx tsc --noEmit
 ```
 
+### Supabase-migrationer
+
+**VIKTIGT:** Använd INTE `npx supabase db push` - det försöker köra ALLA migrationer och failar på konflikter.
+
+```bash
+# Kör NY migration direkt mot remote-databasen:
+npx supabase db query --linked "ALTER TABLE tablename ADD COLUMN IF NOT EXISTS newcol type DEFAULT 'value';"
+
+# Eller kör från fil:
+npx supabase db query --linked -f supabase/migrations/20260417_new_migration.sql
+
+# Verifiera kolumner:
+npx supabase db query --linked "SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'tablename';" --output table
+```
+
+Migrationsfiler skapas fortfarande i `supabase/migrations/` för dokumentation, men körs manuellt med `db query --linked`.
+
 ---
 
 ## Felsökningsprotokoll
