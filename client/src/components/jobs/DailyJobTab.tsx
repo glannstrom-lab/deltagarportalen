@@ -139,17 +139,82 @@ export function DailyJobTab() {
         // Load user profile data
         const userProfile = await loadUserProfile();
 
-        // Fetch fresh jobs
-        const result = await searchJobs({ limit: 50, publishedWithin: 'week' });
+        // Build search queries based on profile
+        const searchQueries: string[] = [];
 
-        if (result.hits.length === 0) {
+        // Add preferred roles as search terms
+        if (userProfile.preferredRoles.length > 0) {
+          searchQueries.push(...userProfile.preferredRoles.slice(0, 2));
+        }
+
+        // Add top work titles
+        if (userProfile.workTitles.length > 0) {
+          searchQueries.push(...userProfile.workTitles.slice(0, 2));
+        }
+
+        // Add top skills if no roles/titles
+        if (searchQueries.length === 0 && userProfile.skills.length > 0) {
+          searchQueries.push(...userProfile.skills.slice(0, 3));
+        }
+
+        // Add top occupation matches from interest guide
+        if (userProfile.occupationMatches.length > 0) {
+          const topOcc = userProfile.occupationMatches[0].name.split('/')[0].trim();
+          if (topOcc.length > 3) searchQueries.push(topOcc);
+        }
+
+        // Fetch jobs - use profile-based search if available, otherwise generic
+        let allJobs: PlatsbankenJob[] = [];
+
+        if (searchQueries.length > 0) {
+          // Search with profile-based queries (parallel searches)
+          const uniqueQueries = [...new Set(searchQueries)].slice(0, 3);
+          const searchPromises = uniqueQueries.map(query =>
+            searchJobs({
+              query,
+              municipality: userProfile.location || undefined,
+              limit: 30,
+              publishedWithin: 'week'
+            }).catch(() => ({ hits: [] }))
+          );
+
+          const results = await Promise.all(searchPromises);
+          const seenIds = new Set<string>();
+
+          results.forEach(result => {
+            result.hits.forEach(job => {
+              if (!seenIds.has(job.id)) {
+                seenIds.add(job.id);
+                allJobs.push(job);
+              }
+            });
+          });
+        }
+
+        // Fallback to generic search if no profile-based results
+        if (allJobs.length < 10) {
+          const fallbackResult = await searchJobs({
+            municipality: userProfile.location || undefined,
+            limit: 50,
+            publishedWithin: 'week'
+          });
+
+          const seenIds = new Set(allJobs.map(j => j.id));
+          fallbackResult.hits.forEach(job => {
+            if (!seenIds.has(job.id)) {
+              allJobs.push(job);
+            }
+          });
+        }
+
+        if (allJobs.length === 0) {
           setDailyJob(null);
           setIsLoading(false);
           return;
         }
 
         // Select best job based on profile matching
-        const selectedJob = selectBestJob(result.hits, userProfile);
+        const selectedJob = selectBestJob(allJobs, userProfile);
 
         // Cache for today
         localStorage.setItem(DAILY_JOB_DATE_KEY, getTodayKey());
