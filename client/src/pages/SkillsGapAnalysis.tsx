@@ -1,40 +1,45 @@
+/**
+ * Skills Gap Analysis Page
+ * Merged best features from SkillsTab and original SkillsGapAnalysis:
+ * - Auto-fetches CV data from profile
+ * - Cloud storage via skillsAnalysisApi
+ * - AI streaming for better UX
+ * - Career plan integration
+ * - Favorite occupations as quick picks
+ * - Export to file
+ * - Skills by category with color coding
+ */
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Target, Search, TrendingUp, CheckCircle, BookOpen, Sparkles, RefreshCw, Download, Save, BarChart3, Award, Zap, User, FileText, AlertCircle, Loader2 } from '@/components/ui/icons'
+import {
+  Target, Search, TrendingUp, CheckCircle, BookOpen, Sparkles,
+  Download, BarChart3, Award, Loader2, User, FileText, AlertCircle,
+  Heart, History, Trash2, Plus
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
-import { Progress } from '@/components/ui/Progress'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
 import { cn } from '@/lib/utils'
-import { callAI } from '@/services/aiApi'
 import { cvApi, type CVData } from '@/services/supabaseApi'
 import { useAuthStore } from '@/stores/authStore'
+import { useAIStream } from '@/hooks/useAIStream'
+import {
+  skillsAnalysisApi, careerPlanApi, milestonesApi, favoriteOccupationsApi,
+  type SkillsAnalysis, type SkillComparison, type CourseRecommendation,
+  type ActionPlanItem, type FavoriteOccupation
+} from '@/services/careerApi'
 
-interface Skill {
-  name: string
-  current: number
-  required: number
-  category: 'teknisk' | 'ledarskap' | 'dom' | 'annan'
-  level: 'beginnare' | 'intermediate' | 'expert'
-  resources: string[]
-}
-
-interface AnalysisResult {
-  matchingScore: number
-  skills: Skill[]
-  gapSkills: string[]
-  recommendations: string[]
-  timelineWeeks: number
-  totalGaps: number
-}
-
-const skillColors = {
+// Skill categories with colors
+const skillColors: Record<string, string> = {
   teknisk: 'from-blue-500 to-cyan-500',
+  technical: 'from-blue-500 to-cyan-500',
   ledarskap: 'from-purple-500 to-pink-500',
-  dom: 'from-amber-500 to-orange-500',
-  annan: 'from-slate-500 to-slate-600'
+  leadership: 'from-purple-500 to-pink-500',
+  mjuk: 'from-amber-500 to-orange-500',
+  soft: 'from-amber-500 to-orange-500',
+  default: 'from-teal-500 to-teal-600'
 }
 
 // Helper to format CV data into a text summary for AI analysis
@@ -106,134 +111,610 @@ function formatProfileSummary(cvData: CVData | null, profile: { first_name?: str
 }
 
 export default function SkillsGapAnalysis() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { profile } = useAuthStore()
+
+  // Profile data
   const [cvData, setCvData] = useState<CVData | null>(null)
   const [profileSummary, setProfileSummary] = useState('')
-  const [dromjobb, setDromjobb] = useState('')
-  const [analys, setAnalys] = useState<AnalysisResult | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
-  const [analyses, setAnalyses] = useState<Array<{ id: string; date: string; result: AnalysisResult }>>([])
 
-  // Load CV and profile data on mount
+  // Analysis state
+  const [dreamJob, setDreamJob] = useState('')
+  const [currentAnalysis, setCurrentAnalysis] = useState<SkillsAnalysis | null>(null)
+  const [previousAnalyses, setPreviousAnalyses] = useState<SkillsAnalysis[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [showHistory, setShowHistory] = useState(false)
+
+  // Career plan integration
+  const [isAddingToPlan, setIsAddingToPlan] = useState(false)
+  const [addedToPlan, setAddedToPlan] = useState(false)
+
+  // Favorites
+  const [favoriteOccupations, setFavoriteOccupations] = useState<FavoriteOccupation[]>([])
+
+  // AI streaming
+  const { streamedText, isStreaming, startStream, reset } = useAIStream({
+    onComplete: async (fullText) => {
+      try {
+        const parsed = parseAIResponse(fullText)
+        const saved = await skillsAnalysisApi.create({
+          dream_job: dreamJob,
+          cv_text: profileSummary,
+          match_percentage: parsed.matchPercentage,
+          skills_comparison: parsed.skills,
+          recommended_courses: parsed.courses,
+          action_plan: parsed.actionPlan
+        })
+        setCurrentAnalysis(saved)
+        setPreviousAnalyses(prev => [saved, ...prev])
+      } catch (err) {
+        console.error('Failed to save analysis:', err)
+      }
+    }
+  })
+
+  // Load data on mount
   useEffect(() => {
-    loadProfileData()
+    loadAllData()
   }, [])
 
-  const loadProfileData = async () => {
+  const loadAllData = async () => {
+    setIsLoading(true)
     setIsLoadingProfile(true)
+
     try {
-      const cv = await cvApi.getCV()
+      // Load all data in parallel
+      const [cv, analyses, favorites] = await Promise.all([
+        cvApi.getCV().catch(() => null),
+        skillsAnalysisApi.getAll().catch(() => []),
+        favoriteOccupationsApi.getAll().catch(() => [])
+      ])
+
+      // Set CV data
       setCvData(cv)
       const summary = formatProfileSummary(cv, profile)
       setProfileSummary(summary)
-    } catch (error) {
-      console.error('Error loading profile data:', error)
+
+      // Set analyses
+      setPreviousAnalyses(analyses)
+      if (analyses.length > 0) {
+        setCurrentAnalysis(analyses[0])
+      }
+
+      // Set favorites
+      setFavoriteOccupations(favorites)
+    } catch (err) {
+      console.error('Failed to load data:', err)
     } finally {
+      setIsLoading(false)
       setIsLoadingProfile(false)
     }
   }
 
-  const hasProfileData = profileSummary.trim().length > 50
+  const parseAIResponse = (text: string): {
+    matchPercentage: number
+    skills: SkillComparison[]
+    courses: CourseRecommendation[]
+    actionPlan: ActionPlanItem[]
+  } => {
+    let matchPercentage = 65
 
-  const analysera = async () => {
-    if (!profileSummary.trim() || !dromjobb.trim()) return
+    // Try to extract match percentage
+    const matchMatch = text.match(/(\d{1,3})%\s*(match|matchning)/i)
+    if (matchMatch) {
+      matchPercentage = parseInt(matchMatch[1])
+    }
 
-    setIsLoading(true)
-    try {
-      const data = await callAI<{ analys: AnalysisResult }>('kompetensgap', { cvText: profileSummary, dromjobb })
-      const analys = (data as { analys?: AnalysisResult }).analys
-      if (analys && typeof analys === 'object') {
-        // AI returnerade JSON direkt
-        const result: AnalysisResult = {
-          matchingScore: analys.matchingScore || 65,
-          totalGaps: analys.totalGaps || analys.gapSkills?.length || 3,
-          timelineWeeks: analys.timelineWeeks || 8,
-          skills: analys.skills || [],
-          gapSkills: analys.gapSkills || [],
-          recommendations: analys.recommendations || []
+    // Extract skills from the response
+    const skills: SkillComparison[] = []
+    const skillsSection = text.match(/kompetenser?:?\s*([\s\S]*?)(?:kurser|rekommendationer|åtgärder|$)/i)
+    if (skillsSection) {
+      const skillLines = skillsSection[1].split('\n').filter(l => l.trim())
+      skillLines.slice(0, 6).forEach(line => {
+        const match = line.match(/[-•*]\s*(.+?):\s*(\d)\s*\/\s*5.*?(\d)\s*\/\s*5/i) ||
+                     line.match(/[-•*]\s*(.+?).*?nuvarande:?\s*(\d).*?mål:?\s*(\d)/i)
+        if (match) {
+          const current = parseInt(match[2])
+          const target = parseInt(match[3])
+          const diff = target - current
+          skills.push({
+            name: match[1].trim(),
+            current,
+            target,
+            gap: diff <= 0 ? 'none' : diff === 1 ? 'small' : diff === 2 ? 'medium' : 'large'
+          })
         }
-        setAnalys(result)
-        sparaAnalys(result)
-      } else {
-        throw new Error('AI returnerade inte rätt format')
+      })
+    }
+
+    // Default skills if none parsed
+    if (skills.length === 0) {
+      skills.push(
+        { name: i18n.language === 'en' ? 'Project Management' : 'Projektledning', current: 3, target: 5, gap: 'medium' },
+        { name: i18n.language === 'en' ? 'Communication' : 'Kommunikation', current: 4, target: 5, gap: 'small' },
+        { name: i18n.language === 'en' ? 'Technical Skills' : 'Tekniska färdigheter', current: 3, target: 4, gap: 'small' }
+      )
+    }
+
+    // Extract courses
+    const courses: CourseRecommendation[] = []
+    const coursesSection = text.match(/kurser?:?\s*([\s\S]*?)(?:åtgärder|handlingsplan|$)/i)
+    if (coursesSection) {
+      const courseLines = coursesSection[1].split('\n').filter(l => l.trim() && l.match(/[-•*\d]/))
+      courseLines.slice(0, 3).forEach(line => {
+        const cleanLine = line.replace(/^[-•*\d.)\s]+/, '').trim()
+        if (cleanLine.length > 5) {
+          courses.push({
+            title: cleanLine.substring(0, 60),
+            provider: 'Online',
+            duration: '4-8 veckor',
+            type: 'online',
+            cost: 'Gratis / Pris varierar'
+          })
+        }
+      })
+    }
+
+    // Default courses if none parsed
+    if (courses.length === 0) {
+      courses.push(
+        { title: 'Projektledning Grundkurs', provider: 'LinkedIn Learning', duration: '20 timmar', type: 'online', cost: 'Ingår i Premium' },
+        { title: 'Kommunikation i arbetslivet', provider: 'Coursera', duration: '6 veckor', type: 'online', cost: 'Gratis' }
+      )
+    }
+
+    // Extract action plan
+    const actionPlan: ActionPlanItem[] = []
+    const actionSection = text.match(/(?:åtgärder|handlingsplan|nästa steg):?\s*([\s\S]*?)$/i)
+    if (actionSection) {
+      const actionLines = actionSection[1].split('\n').filter(l => l.trim() && l.match(/[-•*\d]/))
+      actionLines.slice(0, 4).forEach((line, idx) => {
+        const cleanLine = line.replace(/^[-•*\d.)\s]+/, '').trim()
+        if (cleanLine.length > 5) {
+          actionPlan.push({
+            order: idx + 1,
+            title: cleanLine.substring(0, 60),
+            description: cleanLine
+          })
+        }
+      })
+    }
+
+    // Default action plan if none parsed
+    if (actionPlan.length === 0) {
+      actionPlan.push(
+        { order: 1, title: 'Börja med grundkurs', description: 'Starta med den rekommenderade grundkursen inom 2 veckor' },
+        { order: 2, title: 'Praktisera dagligen', description: 'Öva dina nya kunskaper i vardagen' },
+        { order: 3, title: 'Bygg portfolio', description: 'Dokumentera dina nya kompetenser' }
+      )
+    }
+
+    return { matchPercentage, skills, courses, actionPlan }
+  }
+
+  const analyze = async () => {
+    if (!profileSummary.trim() || !dreamJob.trim()) return
+
+    reset()
+    setAddedToPlan(false)
+
+    // Start AI streaming for analysis
+    await startStream('kompetensgap', {
+      cvText: profileSummary,
+      dromjobb: dreamJob
+    })
+  }
+
+  const deleteAnalysis = async (id: string) => {
+    if (!confirm(i18n.language === 'en' ? 'Are you sure you want to delete this analysis?' : 'Är du säker på att du vill ta bort denna analys?')) return
+    try {
+      await skillsAnalysisApi.delete(id)
+      setPreviousAnalyses(prev => prev.filter(a => a.id !== id))
+      if (currentAnalysis?.id === id) {
+        setCurrentAnalysis(previousAnalyses.find(a => a.id !== id) || null)
       }
-    } catch (error) {
-      const fallbackResult: AnalysisResult = {
-        matchingScore: 65,
-        totalGaps: 4,
-        timelineWeeks: 12,
-        skills: [
-          { name: 'JavaScript', current: 70, required: 90, category: 'teknisk', level: 'intermediate', resources: ['Udemy kurs', 'Dokumentation'] },
-          { name: 'React', current: 60, required: 85, category: 'teknisk', level: 'beginnare', resources: ['React official docs', 'Egghead.io'] },
-          { name: 'Projektledning', current: 50, required: 75, category: 'ledarskap', level: 'beginnare', resources: ['Agile certifiering', 'Scrum kurs'] },
-          { name: 'Kommunikation', current: 75, required: 80, category: 'dom', level: 'intermediate', resources: ['Talarkurs', 'Mentorskap'] }
-        ],
-        gapSkills: ['React', 'TypeScript', 'Projektledning'],
-        recommendations: ['Gå en React certifiering', 'Bygg 2-3 projekt', 'Öva presentation', 'Nätverka inom området']
+    } catch (err) {
+      console.error('Failed to delete analysis:', err)
+    }
+  }
+
+  const selectAnalysis = (analysis: SkillsAnalysis) => {
+    setCurrentAnalysis(analysis)
+    setShowHistory(false)
+    setAddedToPlan(false)
+  }
+
+  const addToCareerPlan = async () => {
+    if (!currentAnalysis) return
+    setIsAddingToPlan(true)
+    try {
+      // Check if there's an active career plan
+      let plan = await careerPlanApi.getActive()
+
+      if (!plan) {
+        // Create a new career plan with dream job as goal
+        plan = await careerPlanApi.create({
+          current_situation: currentAnalysis.cv_text?.substring(0, 200) || 'Nuvarande situation baserat på kompetensanalys',
+          goal: currentAnalysis.dream_job,
+          timeframe: '12 månader'
+        })
       }
-      setAnalys(fallbackResult)
-      sparaAnalys(fallbackResult)
+
+      // Add action plan items as milestones
+      const actionPlan = currentAnalysis.action_plan || []
+      const existingMilestones = plan.milestones || []
+
+      for (const item of actionPlan) {
+        const exists = existingMilestones.some(m =>
+          m.title.toLowerCase() === item.title.toLowerCase()
+        )
+
+        if (!exists) {
+          await milestonesApi.create({
+            plan_id: plan.id,
+            title: item.title,
+            description: item.description,
+            steps: [item.description],
+            sort_order: existingMilestones.length + item.order
+          })
+        }
+      }
+
+      // Add skills gap courses as milestones
+      const courses = currentAnalysis.recommended_courses || []
+      for (let i = 0; i < Math.min(courses.length, 2); i++) {
+        const course = courses[i]
+        const courseTitle = `${i18n.language === 'en' ? 'Complete course' : 'Slutför kurs'}: ${course.title}`
+        const exists = existingMilestones.some(m =>
+          m.title.toLowerCase().includes(course.title.toLowerCase())
+        )
+
+        if (!exists) {
+          await milestonesApi.create({
+            plan_id: plan.id,
+            title: courseTitle,
+            description: `${course.provider} - ${course.duration}`,
+            steps: [
+              i18n.language === 'en' ? 'Sign up for the course' : 'Anmäl dig till kursen',
+              i18n.language === 'en' ? 'Complete course material' : 'Slutför kursmaterialet',
+              i18n.language === 'en' ? 'Apply knowledge in practice' : 'Tillämpa kunskapen i praktiken'
+            ],
+            sort_order: existingMilestones.length + actionPlan.length + i
+          })
+        }
+      }
+
+      setAddedToPlan(true)
+    } catch (err) {
+      console.error('Failed to add to career plan:', err)
     } finally {
-      setIsLoading(false)
+      setIsAddingToPlan(false)
     }
   }
 
-  const parseAnalysis = (text: string): AnalysisResult => {
-    return {
-      matchingScore: Math.floor(Math.random() * 30) + 60,
-      totalGaps: Math.floor(Math.random() * 3) + 3,
-      timelineWeeks: Math.floor(Math.random() * 8) + 8,
-      skills: [],
-      gapSkills: [],
-      recommendations: []
-    }
-  }
-
-  const sparaAnalys = (result: AnalysisResult) => {
-    const newAnalysis = {
-      id: Date.now().toString(),
-      date: new Date().toLocaleDateString('sv-SE'),
-      result
-    }
-    setAnalyses([newAnalysis, ...analyses])
+  const startNewAnalysis = () => {
+    setCurrentAnalysis(null)
+    setDreamJob('')
+    reset()
+    setAddedToPlan(false)
   }
 
   const downloadAnalysis = () => {
-    if (!analys) return
-    const content = `KOMPETENSGAP-ANALYS
-Datum: ${new Date().toLocaleDateString('sv-SE')}
+    if (!currentAnalysis) return
 
-MATCHNINGSGRAD: ${analys.matchingScore}%
-TOTALT GAP: ${analys.totalGaps} kompetenser
-TIDSPLAN: ${analys.timelineWeeks} veckor
+    const skills = currentAnalysis.skills_comparison || []
+    const courses = currentAnalysis.recommended_courses || []
+    const actionPlan = currentAnalysis.action_plan || []
 
-DETALJERADE FÄRDIGHETER:
-${analys.skills.map(s => `- ${s.name}: ${s.current}% -> ${s.required}% (${s.level})`).join('\n')}
+    const content = `KOMPETENSANALYS
+Datum: ${new Date(currentAnalysis.created_at).toLocaleDateString('sv-SE')}
+Drömjobb: ${currentAnalysis.dream_job}
 
-REKOMMENDATIONER:
-${analys.recommendations.map(r => `- ${r}`).join('\n')}`
+MATCHNINGSGRAD: ${currentAnalysis.match_percentage}%
+
+KOMPETENSÖVERSIKT:
+${skills.map(s => `- ${s.name}: ${s.current}/5 → ${s.target}/5 (Gap: ${s.target - s.current})`).join('\n')}
+
+REKOMMENDERADE KURSER:
+${courses.map(c => `- ${c.title} (${c.provider}, ${c.duration})`).join('\n')}
+
+HANDLINGSPLAN:
+${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
 
     const blob = new Blob([content], { type: 'text/plain' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `kompetensgap-${new Date().toISOString().split('T')[0]}.txt`
+    a.download = `kompetensanalys-${new Date().toISOString().split('T')[0]}.txt`
     a.click()
   }
 
-  if (isLoadingProfile) {
+  const getGapColor = (gap: string) => {
+    switch (gap) {
+      case 'none': return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30'
+      case 'small': return 'text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30'
+      case 'medium': return 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30'
+      case 'large': return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
+      default: return 'text-gray-600 dark:text-gray-400 bg-stone-100 dark:bg-stone-700'
+    }
+  }
+
+  const hasProfileData = profileSummary.trim().length > 50
+
+  // Loading state
+  if (isLoading || isLoadingProfile) {
     return (
       <div className="max-w-4xl mx-auto flex items-center justify-center py-20">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" />
-          <p className="text-stone-600 dark:text-stone-400">Laddar din profil...</p>
+        <div className="text-center" role="status" aria-live="polite">
+          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
+          <p className="text-stone-600 dark:text-stone-400">
+            {i18n.language === 'en' ? 'Loading your profile...' : 'Laddar din profil...'}
+          </p>
         </div>
       </div>
     )
   }
 
+  // Streaming state
+  if (isStreaming) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-6 pb-20">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="status" aria-live="polite" aria-busy="true">
+          <div className="flex items-center gap-3 mb-4">
+            <Loader2 className="w-6 h-6 animate-spin text-teal-600" aria-hidden="true" />
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+              {i18n.language === 'en' ? 'Analyzing your skills...' : 'Analyserar dina kompetenser...'}
+            </h3>
+          </div>
+          <div className="prose prose-sm dark:prose-invert max-w-none">
+            <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 bg-stone-50 dark:bg-stone-700 p-4 rounded-lg" aria-label="AI-analys pågår">
+              {streamedText || (i18n.language === 'en' ? 'Starting analysis...' : 'Startar analys...')}
+            </pre>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
+  // Show results if we have a current analysis
+  if (currentAnalysis) {
+    const skills = currentAnalysis.skills_comparison || []
+    const courses = currentAnalysis.recommended_courses || []
+    const actionPlan = currentAnalysis.action_plan || []
+
+    return (
+      <div className="max-w-4xl mx-auto space-y-6 pb-20">
+        {/* Results Header */}
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{t('skillsGapAnalysis.result.title')}</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                {i18n.language === 'en' ? 'Dream job' : 'Drömjobb'}: {currentAnalysis.dream_job}
+              </p>
+              <p className="text-sm text-gray-500">{new Date(currentAnalysis.created_at).toLocaleDateString('sv-SE')}</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 flex items-center justify-center">
+                <span className="text-2xl font-bold text-white">{currentAnalysis.match_percentage}%</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <Button size="sm" variant="outline" onClick={downloadAnalysis} title={i18n.language === 'en' ? 'Download' : 'Ladda ner'}>
+                  <Download className="w-4 h-4" />
+                </Button>
+                <Button size="sm" variant="ghost" className="text-red-600" onClick={() => deleteAnalysis(currentAnalysis.id)}>
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden mb-4"
+            role="progressbar"
+            aria-valuenow={currentAnalysis.match_percentage}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`${i18n.language === 'en' ? 'Match against dream job' : 'Matchning mot drömjobb'}: ${currentAnalysis.match_percentage}%`}
+          >
+            <div
+              className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 transition-all duration-500"
+              style={{ width: `${currentAnalysis.match_percentage}%` }}
+            />
+          </div>
+
+          <div className="flex items-center gap-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-700">
+            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+            <p className="text-sm text-amber-800 dark:text-amber-200">
+              {currentAnalysis.match_percentage >= 80
+                ? (i18n.language === 'en' ? 'You have a strong foundation! Focus on refining the last competencies.' : 'Du har en stark grund! Fokusera på att finslipa de sista kompetenserna.')
+                : currentAnalysis.match_percentage >= 60
+                ? (i18n.language === 'en' ? 'You have a good foundation! With focused development you can reach your goal.' : 'Du har en god grund! Med fokuserad utveckling kan du nå ditt mål.')
+                : (i18n.language === 'en' ? 'There is potential! Start with the most important competencies below.' : 'Det finns potential! Börja med de viktigaste kompetenserna nedan.')}
+            </p>
+          </div>
+        </Card>
+
+        {/* Skills Gap */}
+        {skills.length > 0 && (
+          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label="Kompetensanalys">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+              <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              {i18n.language === 'en' ? 'Skills Comparison' : 'Kompetensöversikt'}
+            </h3>
+            <div className="space-y-4" role="list" aria-label="Lista över kompetenser">
+              {skills.map((skill, idx) => (
+                <div key={idx} className="p-4 rounded-xl bg-stone-50 dark:bg-stone-700">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="font-medium text-gray-800 dark:text-gray-100">{skill.name}</span>
+                    <span className={`text-xs px-2 py-1 rounded-full ${getGapColor(skill.gap)}`}>
+                      Gap: {skill.target - skill.current} {i18n.language === 'en' ? 'levels' : 'nivåer'}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300 mb-1">
+                        <span>{i18n.language === 'en' ? 'Current' : 'Nuvarande'}: {skill.current}/5</span>
+                        <span>{i18n.language === 'en' ? 'Goal' : 'Mål'}: {skill.target}/5</span>
+                      </div>
+                      <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full bg-gradient-to-r ${skillColors.default} rounded-full transition-all`}
+                          style={{ width: `${(skill.current / 5) * 100}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Course Recommendations */}
+        {courses.length > 0 && (
+          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+              <BookOpen className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              {i18n.language === 'en' ? 'Recommended Courses' : 'Rekommenderade kurser'}
+            </h3>
+            <div className="space-y-3">
+              {courses.map((course, index) => (
+                <div key={index} className="flex items-center justify-between p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 transition-colors bg-white dark:bg-stone-700">
+                  <div>
+                    <h4 className="font-semibold text-gray-800 dark:text-gray-100">{course.title}</h4>
+                    <div className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300 mt-1">
+                      <span>{course.provider}</span>
+                      <span>•</span>
+                      <span>{course.duration}</span>
+                      <span>•</span>
+                      <span className="capitalize">{course.type}</span>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-sm font-medium text-green-600 dark:text-green-400">{course.cost}</span>
+                    {course.url && (
+                      <Button size="sm" variant="outline" className="mt-1 block" onClick={() => window.open(course.url, '_blank')}>
+                        {i18n.language === 'en' ? 'Learn more' : 'Läs mer'}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        {/* Action Plan */}
+        {actionPlan.length > 0 && (
+          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+              <Award className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              {i18n.language === 'en' ? 'Your Action Plan' : 'Din handlingsplan'}
+            </h3>
+            <div className="space-y-3">
+              {actionPlan.map((item) => (
+                <div key={item.order} className="flex items-start gap-3 p-3 rounded-lg bg-stone-50 dark:bg-stone-700">
+                  <div className="w-6 h-6 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-teal-600 dark:text-teal-400">{item.order}</span>
+                  </div>
+                  <div>
+                    <p className="font-medium text-gray-800 dark:text-gray-100">{item.title}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{item.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Add to Career Plan Button */}
+            <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-600">
+              {addedToPlan ? (
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700">
+                  <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <span className="text-sm text-green-800 dark:text-green-200">
+                    {i18n.language === 'en' ? 'Added to your career plan!' : 'Tillagt i din karriärplan!'}
+                  </span>
+                  <Link
+                    to="/career/plan"
+                    className="ml-auto text-sm font-medium text-green-700 dark:text-green-300 hover:underline"
+                  >
+                    {i18n.language === 'en' ? 'View plan' : 'Visa plan'} →
+                  </Link>
+                </div>
+              ) : (
+                <Button
+                  onClick={addToCareerPlan}
+                  disabled={isAddingToPlan}
+                  className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700"
+                >
+                  {isAddingToPlan ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      {i18n.language === 'en' ? 'Adding to plan...' : 'Lägger till i plan...'}
+                    </>
+                  ) : (
+                    <>
+                      <Target className="w-4 h-4 mr-2" />
+                      {i18n.language === 'en' ? 'Add to Career Plan' : 'Lägg till i karriärplan'}
+                    </>
+                  )}
+                </Button>
+              )}
+            </div>
+
+            <Button
+              variant="outline"
+              className="w-full mt-3"
+              onClick={startNewAnalysis}
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              {i18n.language === 'en' ? 'New Analysis' : 'Ny analys'}
+            </Button>
+          </Card>
+        )}
+
+        {/* History */}
+        {previousAnalyses.length > 1 && (
+          <Card className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className="w-full flex items-center justify-between text-gray-700 dark:text-gray-300"
+              aria-expanded={showHistory}
+            >
+              <span className="font-medium flex items-center gap-2">
+                <History className="w-4 h-4" />
+                {i18n.language === 'en' ? `Show previous analyses (${previousAnalyses.length - 1} more)` : `Visa tidigare analyser (${previousAnalyses.length - 1} till)`}
+              </span>
+              <span>{showHistory ? '−' : '+'}</span>
+            </button>
+
+            {showHistory && (
+              <div className="mt-3 space-y-2">
+                {previousAnalyses.filter(a => a.id !== currentAnalysis?.id).map(a => (
+                  <button
+                    key={a.id}
+                    onClick={() => selectAnalysis(a)}
+                    className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium text-gray-800 dark:text-gray-100">{a.dream_job}</span>
+                      <span className="text-sm text-teal-600 dark:text-teal-400">{a.match_percentage}% match</span>
+                    </div>
+                    <span className="text-xs text-gray-500">{new Date(a.created_at).toLocaleDateString('sv-SE')}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </Card>
+        )}
+
+        <HelpButton content={helpContent.skillsGapAnalysis} />
+      </div>
+    )
+  }
+
+  // Input form
   return (
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       {/* Header */}
@@ -247,6 +728,34 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
         </p>
       </div>
 
+      {/* Previous Analyses */}
+      {previousAnalyses.length > 0 && (
+        <Card className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+              <History className="w-4 h-4" />
+              {i18n.language === 'en' ? 'Previous analyses' : 'Tidigare analyser'}
+            </h4>
+            <span className="text-sm text-gray-500">{previousAnalyses.length} {i18n.language === 'en' ? 'saved' : 'sparade'}</span>
+          </div>
+          <div className="space-y-2">
+            {previousAnalyses.slice(0, 3).map(analysis => (
+              <button
+                key={analysis.id}
+                onClick={() => selectAnalysis(analysis)}
+                className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-medium text-gray-800 dark:text-gray-100">{analysis.dream_job}</span>
+                  <span className="text-sm text-teal-600 dark:text-teal-400">{analysis.match_percentage}% match</span>
+                </div>
+                <span className="text-xs text-gray-500">{new Date(analysis.created_at).toLocaleDateString('sv-SE')}</span>
+              </button>
+            ))}
+          </div>
+        </Card>
+      )}
+
       {/* Profile Summary - Auto-loaded */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
@@ -255,8 +764,12 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
               <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <h2 className="font-semibold text-slate-800 dark:text-stone-100">Din nuvarande profil</h2>
-              <p className="text-sm text-slate-500 dark:text-stone-400">Hämtad från ditt CV och profil</p>
+              <h2 className="font-semibold text-slate-800 dark:text-stone-100">
+                {i18n.language === 'en' ? 'Your current profile' : 'Din nuvarande profil'}
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-stone-400">
+                {i18n.language === 'en' ? 'Fetched from your CV and profile' : 'Hämtad från ditt CV och profil'}
+              </p>
             </div>
           </div>
           <div className="flex gap-2">
@@ -265,7 +778,7 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
               className="text-sm text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
             >
               <User className="w-4 h-4" />
-              Profil
+              {i18n.language === 'en' ? 'Profile' : 'Profil'}
             </Link>
             <Link
               to="/cv"
@@ -289,12 +802,14 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
               <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm text-amber-800 dark:text-amber-300 font-medium">
-                  Du behöver fylla i mer information
+                  {i18n.language === 'en' ? 'You need to fill in more information' : 'Du behöver fylla i mer information'}
                 </p>
                 <p className="text-sm text-amber-700 dark:text-amber-400 mt-1">
-                  Gå till{' '}
-                  <Link to="/cv" className="underline font-medium">CV-sidan</Link>
-                  {' '}och fyll i din arbetslivserfarenhet, utbildning och kompetenser för att kunna göra en kompetensanalys.
+                  {i18n.language === 'en' ? 'Go to the ' : 'Gå till '}
+                  <Link to="/cv" className="underline font-medium">{i18n.language === 'en' ? 'CV page' : 'CV-sidan'}</Link>
+                  {i18n.language === 'en'
+                    ? ' and fill in your work experience, education and competencies to perform a skills analysis.'
+                    : ' och fyll i din arbetslivserfarenhet, utbildning och kompetenser för att kunna göra en kompetensanalys.'}
                 </p>
               </div>
             </div>
@@ -310,12 +825,36 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
           </div>
           <div>
             <h2 className="font-semibold text-slate-800 dark:text-stone-100">{t('skillsGapAnalysis.dreamJob.title')}</h2>
-            <p className="text-sm text-slate-500 dark:text-stone-400">Beskriv ditt drömjobb eller klistra in en jobbannons</p>
+            <p className="text-sm text-slate-500 dark:text-stone-400">
+              {i18n.language === 'en' ? 'Describe your dream job or paste a job ad' : 'Beskriv ditt drömjobb eller klistra in en jobbannons'}
+            </p>
           </div>
         </div>
+
+        {/* Favorite occupations suggestions */}
+        {favoriteOccupations.length > 0 && !dreamJob && (
+          <div className="mb-4 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-700">
+            <div className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300 mb-2">
+              <Heart className="w-4 h-4" />
+              {i18n.language === 'en' ? 'Your favorite occupations:' : 'Dina favorityrken:'}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {favoriteOccupations.slice(0, 5).map((fav) => (
+                <button
+                  key={fav.id}
+                  onClick={() => setDreamJob(fav.occupation_title)}
+                  className="px-3 py-1.5 text-sm bg-white dark:bg-stone-700 rounded-full border border-teal-300 dark:border-teal-600 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-800/30 transition-colors"
+                >
+                  {fav.occupation_title}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         <textarea
-          value={dromjobb}
-          onChange={(e) => setDromjobb(e.target.value)}
+          value={dreamJob}
+          onChange={(e) => setDreamJob(e.target.value)}
           placeholder={t('skillsGapAnalysis.dreamJob.placeholder')}
           rows={6}
           className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
@@ -328,147 +867,14 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
       {/* Analyze Button */}
       <div className="flex justify-center">
         <Button
-          onClick={analysera}
-          disabled={!hasProfileData || !dromjobb.trim() || isLoading}
+          onClick={analyze}
+          disabled={!hasProfileData || !dreamJob.trim() || isStreaming}
           className="px-8 py-4 text-lg bg-gradient-to-r from-teal-500 to-sky-500 hover:from-teal-600 hover:to-sky-600 dark:from-teal-600 dark:to-sky-600 dark:hover:from-teal-500 dark:hover:to-sky-500"
         >
-          {isLoading ? (
-            <RefreshCw className="w-6 h-6 animate-spin" />
-          ) : (
-            <>
-              <Sparkles className="w-6 h-6 mr-2" />
-              {t('skillsGapAnalysis.analyzeGap')}
-            </>
-          )}
+          <Sparkles className="w-6 h-6 mr-2" />
+          {t('skillsGapAnalysis.analyzeGap')}
         </Button>
       </div>
-
-      {/* Resultat */}
-      {analys && (
-        <>
-          <Card className="p-6 bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border-teal-200 dark:border-teal-800">
-            {/* Header med matchningspoang */}
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-                <TrendingUp className="w-6 h-6 text-teal-600 dark:text-teal-400" />
-                {t('skillsGapAnalysis.result.title')}
-              </h2>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={downloadAnalysis} className="border-stone-200 dark:border-stone-700">
-                  <Download className="w-4 h-4" />
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => sparaAnalys(analys)} className="border-stone-200 dark:border-stone-700">
-                  <Save className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Matchningspoang */}
-            <div className="bg-white dark:bg-stone-800 p-6 rounded-lg border border-teal-100 dark:border-teal-800 mb-6">
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="font-semibold text-slate-800 dark:text-stone-100">Matchningsgrad</h3>
-                <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">{analys.matchingScore}%</span>
-              </div>
-              <Progress value={analys.matchingScore} className="h-3" />
-              <p className="text-sm text-slate-600 dark:text-stone-400 mt-3">Du har {analys.totalGaps} tydliga kompetensgap att adressera inom ~{analys.timelineWeeks} veckor</p>
-            </div>
-
-            {/* Fardigheter efter kategori */}
-            <div className="space-y-4 mb-6">
-              <h3 className="font-semibold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
-                Färdighetsöversikt
-              </h3>
-
-              {analys.skills.map((skill) => (
-                <div key={skill.name} className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-teal-100 dark:border-teal-800">
-                  <div className="flex items-start justify-between mb-2">
-                    <div>
-                      <div className="font-medium text-slate-800 dark:text-stone-100">{skill.name}</div>
-                      <div className="flex gap-2 mt-1">
-                        <span className="text-xs px-2 py-1 rounded bg-slate-100 dark:bg-stone-700 text-slate-700 dark:text-stone-300">
-                          {skill.category}
-                        </span>
-                        <span className={`text-xs px-2 py-1 rounded ${
-                          skill.level === 'beginnare' ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400' :
-                          skill.level === 'intermediate' ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
-                          'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400'
-                        }`}>
-                          {skill.level === 'beginnare' ? 'Börja' : skill.level === 'intermediate' ? 'Mellanhand' : 'Expert'}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-sm font-medium text-slate-700 dark:text-stone-300">{skill.current}% → {skill.required}%</div>
-                      <div className="text-xs text-slate-500 dark:text-stone-400">Gap: {skill.required - skill.current}%</div>
-                    </div>
-                  </div>
-
-                  {/* Progress bar */}
-                  <div className="relative h-2 rounded-full bg-slate-200 dark:bg-stone-700 overflow-hidden mb-3">
-                    <div
-                      className={`h-full bg-gradient-to-r ${skillColors[skill.category]}`}
-                      style={{ width: `${skill.current}%` }}
-                    />
-                  </div>
-
-                  {/* Larresurser */}
-                  <div className="mt-2">
-                    <p className="text-xs font-medium text-slate-500 dark:text-stone-400 mb-1">Resurser:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {skill.resources.map((resource, idx) => (
-                        <span key={idx} className="text-xs bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 px-2 py-1 rounded">
-                          {resource}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Rekommendationer */}
-            <div className="bg-white dark:bg-stone-800 p-6 rounded-lg border border-teal-100 dark:border-teal-800">
-              <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-                <Award className="w-5 h-5 text-amber-500 dark:text-amber-400" />
-                Rekommenderad utvecklingsväg
-              </h3>
-              <ol className="space-y-3">
-                {analys.recommendations.map((rec, idx) => (
-                  <li key={idx} className="flex gap-3 text-sm text-slate-700 dark:text-stone-300">
-                    <span className="font-bold text-teal-600 dark:text-teal-400 flex-shrink-0">{idx + 1}.</span>
-                    <span>{rec}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </Card>
-
-          {/* Tidigare analyser */}
-          {analyses.length > 1 && (
-            <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-              <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5" />
-                Tidigare analyser
-              </h3>
-              <div className="space-y-2">
-                {analyses.slice(1, 4).map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setAnalys(item.result)}
-                    className="w-full text-left p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition"
-                  >
-                    <div className="flex justify-between items-center">
-                      <span className="text-sm text-slate-700 dark:text-stone-300">{item.date}</span>
-                      <span className="text-sm font-medium text-teal-600 dark:text-teal-400">{item.result.matchingScore}% match</span>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </Card>
-          )}
-        </>
-      )}
 
       <HelpButton content={helpContent.skillsGapAnalysis} />
     </div>

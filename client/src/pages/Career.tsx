@@ -1,7 +1,8 @@
 /**
  * Career Page - Main entry with tabs
- * 6 tabs: Arbetsmarknad, Anpassning, Credentials, Flytta, Karriärplan, Kompetens
+ * 5 tabs: Arbetsmarknad, Anpassning, Credentials, Flytta, Karriärplan
  * Note: Nätverk moved to /nätverk, Företag removed (use Spontanansökan instead)
+ * Note: Kompetens merged into standalone /skills-gap page
  */
 import { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
@@ -16,7 +17,6 @@ import { helpContent } from '@/data/helpContent'
 import LaborMarketTab from './career/LaborMarketTab'
 import AdaptationTab from './career/AdaptationTab'
 import PlanTab from './career/PlanTab'
-import SkillsTab from './career/SkillsTab'
 import CredentialsTab from './career/CredentialsTab'
 import RelocationTab from './career/RelocationTab'
 
@@ -56,7 +56,6 @@ export default function CareerPage() {
           <Route path="/credentials" element={<CredentialsTab />} />
           <Route path="/relocation" element={<RelocationTab />} />
           <Route path="/plan" element={<PlanTab />} />
-          <Route path="/skills" element={<SkillsTab />} />
           <Route path="*" element={<Navigate to="/career" replace />} />
         </Routes>
       </PageLayout>

@@ -1,7 +1,8 @@
 /**
  * Career Page Tabs Configuration
- * 6 tabs: Arbetsmarknad, Anpassning, Credentials, Flytt, Karriärplan, Kompetens
+ * 5 tabs: Arbetsmarknad, Anpassning, Credentials, Flytt, Karriärplan
  * Note: Nätverk moved to /nätverk, Företag removed (duplicate of Spontanansökan)
+ * Note: Kompetens removed - merged into standalone /skills-gap page
  */
 
 import type { Tab } from '@/components/layout/PageTabs'
@@ -9,7 +10,6 @@ import {
   TrendingUp,
   Accessibility,
   Target,
-  BarChart3,
   GraduationCap,
   Home,
 } from '@/components/ui/icons'
@@ -20,8 +20,7 @@ export const careerTabDefs = [
   { id: 'adaptation', labelKey: 'career.tabs.adaptation', descriptionKey: 'career.tabs.adaptationDesc', path: '/career/adaptation', icon: Accessibility, badgeKey: 'career.new' },
   { id: 'credentials', labelKey: 'career.tabs.credentials', descriptionKey: 'career.tabs.credentialsDesc', path: '/career/credentials', icon: GraduationCap, badgeKey: 'career.new' },
   { id: 'relocation', labelKey: 'career.tabs.relocation', descriptionKey: 'career.tabs.relocationDesc', path: '/career/relocation', icon: Home, badgeKey: 'career.new' },
-  { id: 'plan', labelKey: 'career.tabs.plan', descriptionKey: 'career.tabs.planDesc', path: '/career-plan', icon: Target },
-  { id: 'skills', labelKey: 'career.tabs.skills', descriptionKey: 'career.tabs.skillsDesc', path: '/skills-gap', icon: BarChart3 },
+  { id: 'plan', labelKey: 'career.tabs.plan', descriptionKey: 'career.tabs.planDesc', path: '/career/plan', icon: Target },
 ]
 
 // For backwards compatibility - static tabs (Swedish)
@@ -30,6 +29,5 @@ export const careerTabs: Tab[] = [
   { id: 'adaptation', label: 'Anpassning', path: '/career/adaptation', icon: Accessibility, badge: undefined },
   { id: 'credentials', label: 'Credentials', path: '/career/credentials', icon: GraduationCap, badge: undefined },
   { id: 'relocation', label: 'Flytta', path: '/career/relocation', icon: Home, badge: undefined },
-  { id: 'plan', label: 'Karriärplan', path: '/career-plan', icon: Target },
-  { id: 'skills', label: 'Kompetens', path: '/skills-gap', icon: BarChart3 },
+  { id: 'plan', label: 'Karriärplan', path: '/career/plan', icon: Target },
 ]
