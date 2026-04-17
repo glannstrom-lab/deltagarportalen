@@ -40,6 +40,7 @@ const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'))
 const Article = lazy(() => import('./pages/Article'))
 const Profile = lazy(() => import('./pages/Profile'))
 const UnifiedProfile = lazy(() => import('./pages/UnifiedProfile'))
+const SharedProfile = lazy(() => import('./pages/SharedProfile'))
 // JobTracker removed - using JobSearch instead
 const JobSearch = lazy(() => import('./pages/JobSearch'))
 const Career = lazy(() => import('./pages/Career'))
@@ -209,6 +210,9 @@ function App() {
         <Route path="/ai-policy" element={<AiPolicy />} />
         <Route path="/linkedin/callback" element={<LazyRoute><LinkedInCallback /></LazyRoute>} />
         <Route path="/calendar/google-callback" element={<LazyRoute><GoogleCalendarCallback /></LazyRoute>} />
+
+        {/* Public profile sharing */}
+        <Route path="/profile/shared/:shareCode" element={<LazyRoute><SharedProfile /></LazyRoute>} />
 
         {/* Root route - shows Landing or Layout based on auth */}
         <Route path="/" element={<RootRoute />}>

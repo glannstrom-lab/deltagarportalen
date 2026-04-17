@@ -1,24 +1,47 @@
 /**
  * Profile Page - Compact Professional Design
  * Organized into tabs for better navigation and less dead space
+ *
+ * Features:
+ * - Profile image upload
+ * - CV integration
+ * - AI-generated summary
+ * - Skills with levels
+ * - Document uploads
+ * - Profile sharing
+ * - Career timeline
+ * - Notification & visibility settings
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { userApi, type ProfilePreferences } from '../services/supabaseApi'
+import { userApi, cvApi, type ProfilePreferences } from '../services/supabaseApi'
+import { cvIntegrationApi, profileExportApi } from '../services/profileEnhancementsApi'
 import {
   User, CheckCircle, Camera, Phone, MapPin, Mail,
   Sparkles, Compass, ChevronRight, Briefcase, Heart,
-  Plus, X, Loader2, Cloud, CloudOff,
-  Clock, Car, Wallet, Building2, Accessibility,
-  Calendar, Target, Activity, FileText, Users,
-  Zap, Brain, ClipboardList, TrendingUp, AlertCircle
+  Plus, X, Loader2, Cloud, CloudOff, Download, Upload,
+  Clock, Car, Wallet, Building2, Accessibility, Share2,
+  Calendar, Target, Activity, FileText, Users, Settings,
+  Zap, Brain, ClipboardList, TrendingUp, AlertCircle, Star, Linkedin
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
+import {
+  ProfileImageUpload,
+  SkillsSection,
+  DocumentsSection,
+  ProfileSharing,
+  AISummary,
+  CompletionGuide,
+  ProfileHistory,
+  CareerTimeline,
+  NotificationSettingsSection,
+  VisibilitySettingsSection
+} from '@/components/profile'
 
 // ============== CONSTANTS ==============
 
@@ -103,13 +126,18 @@ const INDUSTRIES = [
 
 // ============== TAB DEFINITIONS ==============
 
-type TabId = 'basic' | 'jobbsok' | 'stod' | 'mal'
+type TabId = 'basic' | 'jobbsok' | 'stod' | 'mal' | 'kompetenser' | 'dokument' | 'dela' | 'tidslinje' | 'installningar'
 
 const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
   { id: 'basic', label: 'Grundinfo', icon: <User className="w-4 h-4" /> },
   { id: 'jobbsok', label: 'Jobbsökning', icon: <Briefcase className="w-4 h-4" /> },
-  { id: 'stod', label: 'Stöd & anpassning', icon: <Heart className="w-4 h-4" /> },
-  { id: 'mal', label: 'Mål & uppföljning', icon: <Target className="w-4 h-4" /> },
+  { id: 'kompetenser', label: 'Kompetenser', icon: <Star className="w-4 h-4" /> },
+  { id: 'dokument', label: 'Dokument', icon: <FileText className="w-4 h-4" /> },
+  { id: 'stod', label: 'Stöd', icon: <Heart className="w-4 h-4" /> },
+  { id: 'mal', label: 'Mål', icon: <Target className="w-4 h-4" /> },
+  { id: 'tidslinje', label: 'Tidslinje', icon: <Calendar className="w-4 h-4" /> },
+  { id: 'dela', label: 'Dela', icon: <Share2 className="w-4 h-4" /> },
+  { id: 'installningar', label: 'Inställningar', icon: <Settings className="w-4 h-4" /> },
 ]
 
 // ============== COMPACT COMPONENTS ==============
@@ -382,6 +410,8 @@ export default function Profile() {
     phone?: string
     location?: string
     bio?: string
+    profile_image_url?: string
+    ai_summary?: string
     created_at: string
   } | null>(null)
 
@@ -392,6 +422,22 @@ export default function Profile() {
     phone: '',
     location: '',
   })
+
+  // CV data for integration
+  const [cvData, setCvData] = useState<{
+    summary?: string
+    workExperience?: unknown[]
+    education?: unknown[]
+    skills?: unknown[]
+  } | null>(null)
+
+  // Profile enhancements state
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null)
+  const [skillsCount, setSkillsCount] = useState(0)
+  const [documentsCount, setDocumentsCount] = useState(0)
+  const [hasSummary, setHasSummary] = useState(false)
+  const [importing, setImporting] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   // Preferences state
   const [desiredJobs, setDesiredJobs] = useState<string[]>([])
@@ -416,6 +462,7 @@ export default function Profile() {
   useEffect(() => {
     loadProfile()
     loadPreferencesFromCloud()
+    loadCvData()
     return () => { if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current) }
   }, [])
 
@@ -430,11 +477,72 @@ export default function Profile() {
         phone: data.phone || '',
         location: data.location || '',
       })
+      setProfileImageUrl(data.profile_image_url || null)
+      setHasSummary(Boolean(data.ai_summary))
     } catch (err) {
       console.error('Error loading profile:', err)
     } finally {
       setLoading(false)
     }
+  }
+
+  const loadCvData = async () => {
+    try {
+      const cv = await cvApi.getCV()
+      if (cv) {
+        setCvData({
+          summary: cv.summary || undefined,
+          workExperience: cv.workExperience || [],
+          education: cv.education || [],
+          skills: cv.skills || []
+        })
+      }
+    } catch (err) {
+      console.error('Error loading CV data:', err)
+    }
+  }
+
+  const handleImportFromCV = async () => {
+    setImporting(true)
+    try {
+      const result = await cvIntegrationApi.importToProfile()
+      if (result.imported.length > 0) {
+        alert(`Importerade: ${result.imported.join(', ')}`)
+        loadProfile() // Reload profile to show imported data
+      } else {
+        alert('Inga nya fält att importera från CV.')
+      }
+    } catch (err) {
+      console.error('Error importing from CV:', err)
+      alert('Kunde inte importera från CV')
+    } finally {
+      setImporting(false)
+    }
+  }
+
+  const handleExportPDF = async () => {
+    setExporting(true)
+    try {
+      const blob = await profileExportApi.toPDF()
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.download = `profil_${formData.first_name}_${formData.last_name}.pdf`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      console.error('Error exporting PDF:', err)
+      alert('Kunde inte exportera PDF. Kontrollera att du har ett CV.')
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const handleProfileImageChange = (url: string | null) => {
+    setProfileImageUrl(url)
+    setProfile(prev => prev ? { ...prev, profile_image_url: url || undefined } : prev)
   }
 
   const loadPreferencesFromCloud = async () => {
@@ -615,28 +723,58 @@ export default function Profile() {
       <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-6">
         <div className="max-w-5xl mx-auto px-5 py-5">
           <div className="flex items-center gap-4">
-            <div className="relative">
-              <div className="w-16 h-16 bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <User className="w-8 h-8 text-white" />
-              </div>
-              <button
-                className="absolute -bottom-1 -right-1 w-6 h-6 bg-white dark:bg-stone-700 text-teal-600 dark:text-teal-400 rounded-lg flex items-center justify-center shadow-lg hover:scale-110 transition-transform border border-teal-200 dark:border-teal-700"
-                onClick={() => alert('Bilduppladdning kommer snart!')}
-              >
-                <Camera className="w-3 h-3" />
-              </button>
-            </div>
+            {/* Profile Image Upload */}
+            <ProfileImageUpload
+              currentImage={profileImageUrl}
+              onImageChange={handleProfileImageChange}
+              size="md"
+            />
             <div className="flex-1 min-w-0">
               <h1 className="text-xl font-bold text-teal-800 dark:text-teal-300 truncate">
                 {formData.first_name || 'Välkommen!'} {formData.last_name}
               </h1>
               <p className="text-teal-600 dark:text-teal-400 text-sm truncate">{profile?.email}</p>
             </div>
-            <div className="hidden sm:flex items-center gap-2 bg-white/60 dark:bg-stone-800/60 rounded-full px-3 py-1.5 border border-teal-200 dark:border-teal-800">
-              <div className="w-16 h-1.5 bg-teal-200 dark:bg-teal-900 rounded-full overflow-hidden">
-                <div className="h-full bg-teal-500 dark:bg-teal-400 rounded-full transition-all" style={{ width: `${completion.percent}%` }} />
+
+            {/* Action buttons */}
+            <div className="hidden sm:flex items-center gap-2">
+              {/* CV Import */}
+              <button
+                onClick={handleImportFromCV}
+                disabled={importing}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-teal-700 dark:text-teal-300 bg-white dark:bg-stone-800 border border-teal-200 dark:border-teal-700 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors disabled:opacity-50"
+                title="Importera data från ditt CV"
+              >
+                {importing ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Upload className="w-3.5 h-3.5" />
+                )}
+                CV
+              </button>
+
+              {/* PDF Export */}
+              <button
+                onClick={handleExportPDF}
+                disabled={exporting}
+                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-teal-700 dark:text-teal-300 bg-white dark:bg-stone-800 border border-teal-200 dark:border-teal-700 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors disabled:opacity-50"
+                title="Exportera profil som PDF"
+              >
+                {exporting ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                PDF
+              </button>
+
+              {/* Completion indicator */}
+              <div className="flex items-center gap-2 bg-white/60 dark:bg-stone-800/60 rounded-full px-3 py-1.5 border border-teal-200 dark:border-teal-800">
+                <div className="w-12 h-1.5 bg-teal-200 dark:bg-teal-900 rounded-full overflow-hidden">
+                  <div className="h-full bg-teal-500 dark:bg-teal-400 rounded-full transition-all" style={{ width: `${completion.percent}%` }} />
+                </div>
+                <span className="text-xs font-medium text-teal-700 dark:text-teal-300">{completion.percent}%</span>
               </div>
-              <span className="text-xs font-medium text-teal-700 dark:text-teal-300">{completion.percent}%</span>
             </div>
           </div>
         </div>
@@ -1339,6 +1477,113 @@ export default function Profile() {
                 rows={4}
                 placeholder="Övriga anteckningar, observationer eller reflektioner..."
               />
+            </SectionCard>
+          </div>
+        )}
+
+        {/* TAB: Kompetenser */}
+        {activeTab === 'kompetenser' && (
+          <div className="grid gap-4 md:grid-cols-2">
+            {/* Skills Section */}
+            <SectionCard title="Mina kompetenser" icon={<Star className="w-4 h-4" />} className="md:col-span-2" colorScheme="amber">
+              <SkillsSection />
+            </SectionCard>
+
+            {/* AI Summary */}
+            <SectionCard title="Profilsammanfattning" icon={<Sparkles className="w-4 h-4" />} className="md:col-span-2" colorScheme="teal">
+              <AISummary />
+            </SectionCard>
+
+            {/* Completion Guide */}
+            <SectionCard title="Kompletteringsguide" icon={<CheckCircle className="w-4 h-4" />} className="md:col-span-2" colorScheme="sky">
+              <CompletionGuide
+                profile={profile}
+                cv={cvData}
+                skillsCount={skillsCount}
+                documentsCount={documentsCount}
+                hasSummary={hasSummary}
+              />
+            </SectionCard>
+          </div>
+        )}
+
+        {/* TAB: Dokument */}
+        {activeTab === 'dokument' && (
+          <div className="grid gap-4">
+            <SectionCard title="Certifikat & dokument" icon={<FileText className="w-4 h-4" />} colorScheme="sky">
+              <DocumentsSection />
+            </SectionCard>
+
+            {/* LinkedIn Import Placeholder */}
+            <div className="p-6 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 rounded-2xl border border-sky-200 dark:border-sky-800/50">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-[#0077b5] flex items-center justify-center">
+                  <Linkedin className="w-6 h-6 text-white" />
+                </div>
+                <div className="flex-1">
+                  <p className="font-semibold text-sky-800 dark:text-sky-300">Importera från LinkedIn</p>
+                  <p className="text-sm text-sky-600 dark:text-sky-400">
+                    Importera din profil direkt från LinkedIn (kommer snart)
+                  </p>
+                </div>
+                <button
+                  disabled
+                  className="px-4 py-2 bg-[#0077b5] text-white rounded-lg text-sm font-medium opacity-50 cursor-not-allowed"
+                >
+                  Kommer snart
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: Tidslinje */}
+        {activeTab === 'tidslinje' && (
+          <div className="grid gap-4">
+            <SectionCard title="Karriärtidslinje" icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
+              <CareerTimeline />
+            </SectionCard>
+
+            {/* Profile History */}
+            <SectionCard title="Ändringshistorik" icon={<Activity className="w-4 h-4" />} colorScheme="sky">
+              <ProfileHistory />
+            </SectionCard>
+          </div>
+        )}
+
+        {/* TAB: Dela */}
+        {activeTab === 'dela' && (
+          <div className="grid gap-4">
+            <SectionCard title="Dela din profil" icon={<Share2 className="w-4 h-4" />} colorScheme="teal">
+              <ProfileSharing />
+            </SectionCard>
+
+            <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/50">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-medium text-amber-800 dark:text-amber-300">Tips för delning</p>
+                  <ul className="text-xs text-amber-600 dark:text-amber-400 mt-1 space-y-1">
+                    <li>• Skapa olika länkar för olika ändamål (t.ex. per jobbansökan)</li>
+                    <li>• Sätt en giltighetstid för att kontrollera åtkomst</li>
+                    <li>• Välj vilka delar av din profil som ska visas</li>
+                    <li>• Använd QR-koden på visitkort eller CV</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: Inställningar */}
+        {activeTab === 'installningar' && (
+          <div className="grid gap-4 md:grid-cols-2">
+            <SectionCard title="Notifikationer" icon={<Bell className="w-4 h-4" />} colorScheme="teal">
+              <NotificationSettingsSection />
+            </SectionCard>
+
+            <SectionCard title="Synlighet" icon={<Eye className="w-4 h-4" />} colorScheme="sky">
+              <VisibilitySettingsSection />
             </SectionCard>
           </div>
         )}

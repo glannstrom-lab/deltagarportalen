@@ -151,6 +151,19 @@ export async function chatWithAI(data: {
   return callAI<string>('chatbot', data)
 }
 
+export async function generateProfileSummary(data: {
+  name?: string
+  title?: string
+  location?: string
+  experience?: Array<{ title: string; company: string; description?: string }>
+  education?: Array<{ degree: string; school: string }>
+  skills?: Array<{ name: string; level?: number }>
+  desiredJobs?: string[]
+  interests?: string[]
+}) {
+  return callAI<string>('profile-summary', data)
+}
+
 export default {
   callAI,
   generateCoverLetter,
@@ -160,5 +173,6 @@ export default {
   getJobTips,
   prepareSalaryNegotiation,
   createCareerPlan,
-  chatWithAI
+  chatWithAI,
+  generateProfileSummary
 }
