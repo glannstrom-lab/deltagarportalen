@@ -228,6 +228,7 @@ export {
   Target,
   ThumbsDown,
   ThumbsUp,
+  Thermometer,
   ToggleLeft,
   ToggleRight,
   Train,
