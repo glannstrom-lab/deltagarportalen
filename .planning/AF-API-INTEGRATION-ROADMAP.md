@@ -20,14 +20,14 @@
 |---|------|-----|--------|-------------|
 | 1 | **Geografisk Jobbkarta** | JobSearch | ❌ REMOVED | Borttagen - inte tillräckligt användbar |
 | 2 | **Ett Jobb Om Dagen** | JobSearch | ✅ DONE | Presentera ETT noggrant utvalt jobb per dag för att minska överväldigande |
-| 3 | **Energianpassad Sökning** | JobSearch | ✅ DONE | Filtrera på deltid/distans när användaren har låg energi |
+| 3 | **Energianpassad Sökning** | JobSearch | ❌ REMOVED | Borttagen - inte tillräckligt användbar |
 | 4 | **Dolda Jobbmarknaden** | JobAd Links + JobSearch | ❌ REMOVED | Borttagen - var bara dubbletter av Platsbanken |
-| 5 | **Röstbaserad Jobbsökning** | JobSearch + Taxonomy | ✅ DONE | Sök jobb genom att prata - tillgängligt för synskadade/dyslektiker |
-| 6 | **Förenklade Jobbkort** | JobSearch | ✅ DONE | Progressiv information - visa först titel/plats, expandera för mer |
+| 5 | **Röstbaserad Jobbsökning** | JobSearch + Taxonomy | ✅ DONE | Integrerad i huvudsökningen som mikrofon-knapp |
+| 6 | **Förenklade Jobbkort** | JobSearch | ❌ REMOVED | Borttagen tillsammans med Energianpassad Sökning |
 | 7 | **Geografisk Komfortzon** | JobSearch | ❌ REMOVED | Borttagen tillsammans med jobbkartan |
-| 8 | **Konkurrens-Indikator** | Historical + JobSearch | ✅ DONE | Visa uppskattad konkurrens baserat på hur länge annonser ligger uppe |
-| 9 | **Säsongsanpassade Jobb** | Historical + JobSearch | ✅ DONE | Visa sommarjobb/julextra vid rätt tidpunkt automatiskt |
-| 10 | **Språkbaserad Matchning** | Taxonomy + JobSearch | ✅ DONE | Hitta jobb där dina språkkunskaper efterfrågas |
+| 8 | **Konkurrens-Indikator** | Historical + JobSearch | ❌ REMOVED | Borttagen - filtrera random jobb fungerade inte |
+| 9 | **Säsongsanpassade Jobb** | Historical + JobSearch | ❌ REMOVED | Borttagen - användare kan söka "sommarjobb" själv |
+| 10 | **Språkbaserad Matchning** | Taxonomy + JobSearch | ❌ REMOVED | Borttagen - användare kan söka språk själv |
 
 ---
 
@@ -184,21 +184,21 @@
 ## Progress Tracker
 
 - **Total:** 62 förslag
-- **Klara:** 8 (12.9%)
-- **Borttagna:** 3
+- **Klara:** 3 (Dagens jobb, Röstsök, Bransch-Radar)
+- **Borttagna:** 8 (fungerade inte som tänkt)
 - **Kvar:** 51
 
 ### Implementerade funktioner (Fas 1 - Jobbsökning):
 - ❌ ~~Geografisk Jobbkarta~~ (borttagen - inte tillräckligt användbar)
-- ✅ Ett Jobb Om Dagen för användare som behöver ta det lugnt (DailyJobTab)
-- ✅ Energianpassad Sökning med deltid/distans-filter (EnergySearch)
+- ✅ **Ett Jobb Om Dagen** - profilmatchat dagligt jobb (DailyJobTab)
+- ❌ ~~Energianpassad Sökning~~ (borttagen - inte tillräckligt användbar)
 - ❌ ~~Dolda Jobbmarknaden~~ (borttagen - var bara dubbletter av Platsbanken)
-- ✅ Röstbaserad Jobbsökning med Web Speech API (VoiceSearch)
-- ✅ Förenklade Jobbkort med progressiv disclosure (EnergySearch)
+- ✅ **Röstbaserad Jobbsökning** - integrerad i huvudsökningen som mikrofon-knapp
+- ❌ ~~Förenklade Jobbkort~~ (borttagen tillsammans med EnergySearch)
 - ❌ ~~Geografisk Komfortzon~~ (borttagen tillsammans med jobbkartan)
-- ✅ Konkurrens-Indikator baserat på annonsålder (SmartFilters)
-- ✅ Säsongsanpassade Jobb (sommar/jul) (SmartFilters)
-- ✅ Språkbaserad Matchning för flerspråkiga (SmartFilters)
-- ✅ Bransch-Radar med marknadsdata (LaborMarketTab - redan implementerad)
+- ❌ ~~Konkurrens-Indikator~~ (borttagen - fungerade inte som tänkt)
+- ❌ ~~Säsongsanpassade Jobb~~ (borttagen - användare kan söka själv)
+- ❌ ~~Språkbaserad Matchning~~ (borttagen - användare kan söka själv)
+- ✅ **Bransch-Radar** - marknadsdata på Karriär-sidan (LaborMarketTab)
 
 *Senast uppdaterad: 2026-04-17*

@@ -7,7 +7,7 @@ import {
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
   Bookmark, Send, Bell, MoreVertical,
   Trash2, CheckCircle, Clock, MessageSquare,
-  Star, Mic, Battery, Sliders
+  Star, Mic
 } from '@/components/ui/icons';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
@@ -30,9 +30,6 @@ import { CreateApplicationModal } from '@/components/workflow';
 import { AlertsTab } from '@/components/jobs/AlertsTab';
 import { MatchesTab } from '@/components/jobs/MatchesTab';
 import { DailyJobTab } from '@/components/jobs/DailyJobTab';
-import { EnergySearch } from '@/components/jobs/EnergySearch';
-import { SmartFilters } from '@/components/jobs/SmartFilters';
-import { VoiceSearch } from '@/components/jobs/VoiceSearch';
 import { HelpButton } from '@/components/HelpButton';
 import { helpContent } from '@/data/helpContent';
 
@@ -41,9 +38,6 @@ import { helpContent } from '@/data/helpContent';
 const jobSearchTabDefs = [
   { id: 'search', labelKey: 'jobSearch.tabs.search', path: '/job-search', icon: Search },
   { id: 'daily', labelKey: 'jobSearch.tabs.daily', path: '/job-search/daily', icon: Star },
-  { id: 'energy', labelKey: 'jobSearch.tabs.energy', path: '/job-search/energy', icon: Battery },
-  { id: 'smart', labelKey: 'jobSearch.tabs.smart', path: '/job-search/smart', icon: Sliders },
-  { id: 'voice', labelKey: 'jobSearch.tabs.voice', path: '/job-search/voice', icon: Mic },
   { id: 'saved', labelKey: 'jobSearch.tabs.saved', path: '/job-search/saved', icon: Bookmark },
   { id: 'matches', labelKey: 'jobSearch.tabs.matches', path: '/job-search/matches', icon: Sparkles },
 ];
@@ -101,6 +95,7 @@ function SearchTab() {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isListening, setIsListening] = useState(false);
 
   // Saved jobs hook
   const { savedJobs, saveJob, removeJob, isSaved, getStats } = useSavedJobs()
@@ -180,6 +175,26 @@ function SearchTab() {
     }
   };
 
+  // Voice search
+  const startVoiceSearch = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = i18n.language === 'en' ? 'en-US' : 'sv-SE';
+    recognition.interimResults = false;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setFilters({ ...filters, query: transcript });
+    };
+
+    recognition.start();
+  };
+
   const hasActiveFilters = filters.municipality || filters.region || filters.employmentType || filters.publishedWithin !== 'all';
 
   // Pagination
@@ -238,12 +253,28 @@ function SearchTab() {
                   setShowSuggestions(true);
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                className="w-full pl-10 pr-4 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                className="w-full pl-10 pr-12 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 role="combobox"
                 aria-expanded={showSuggestions && suggestions.length > 0}
                 aria-controls="job-search-suggestions"
                 aria-autocomplete="list"
               />
+              {/* Voice search button */}
+              {(window.SpeechRecognition || window.webkitSpeechRecognition) && (
+                <button
+                  type="button"
+                  onClick={startVoiceSearch}
+                  className={cn(
+                    "absolute right-3 top-1/2 mt-2 -translate-y-1/2 p-1.5 rounded-lg transition-colors",
+                    isListening
+                      ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400 animate-pulse"
+                      : "hover:bg-stone-100 dark:hover:bg-stone-600 text-stone-500 dark:text-stone-400"
+                  )}
+                  aria-label={isListening ? t('jobSearch.listening') : t('jobSearch.voiceSearch')}
+                >
+                  <Mic size={18} />
+                </button>
+              )}
 
               {/* Autocomplete */}
               {showSuggestions && suggestions.length > 0 && (
@@ -892,9 +923,6 @@ export default function JobSearch() {
           <Route path="saved" element={<SavedJobsTab />} />
           <Route path="alerts" element={<AlertsTab />} />
           <Route path="matches" element={<MatchesTab />} />
-          <Route path="energy" element={<EnergySearch />} />
-          <Route path="smart" element={<SmartFilters />} />
-          <Route path="voice" element={<VoiceSearch />} />
           {/* Redirect old paths to the dedicated Applications page */}
           <Route path="applications" element={<Navigate to="/applications" replace />} />
           <Route path="crm" element={<Navigate to="/applications/contacts" replace />} />
