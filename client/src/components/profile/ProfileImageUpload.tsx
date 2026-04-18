@@ -80,7 +80,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
   const displayImage = preview || currentImage
 
   return (
-    <div className={cn('relative inline-block', className)}>
+    <div className={cn('relative inline-block p-2', className)}>
       <div
         className={cn(
           'rounded-2xl overflow-hidden bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 flex items-center justify-center shadow-lg',
@@ -107,13 +107,13 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
         )}
       </div>
 
-      {/* Upload button */}
+      {/* Upload button - bottom right, outside image */}
       <button
         type="button"
         onClick={() => fileInputRef.current?.click()}
         disabled={uploading}
         className={cn(
-          'absolute -bottom-1 -right-1 bg-white dark:bg-stone-700 text-teal-600 dark:text-teal-400',
+          'absolute bottom-0 right-0 bg-white dark:bg-stone-700 text-teal-600 dark:text-teal-400',
           'rounded-lg flex items-center justify-center shadow-lg hover:scale-110 transition-transform',
           'border border-teal-200 dark:border-teal-700 disabled:opacity-50',
           size === 'sm' ? 'w-5 h-5' : 'w-7 h-7'
@@ -123,13 +123,13 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
         <Upload className={size === 'sm' ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5'} />
       </button>
 
-      {/* Remove button */}
+      {/* Remove button - top right, outside image */}
       {displayImage && !uploading && (
         <button
           type="button"
           onClick={handleRemove}
           className={cn(
-            'absolute -top-1 -right-1 bg-red-500 text-white',
+            'absolute top-0 right-0 bg-red-500 text-white',
             'rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors',
             size === 'sm' ? 'w-4 h-4' : 'w-5 h-5'
           )}
