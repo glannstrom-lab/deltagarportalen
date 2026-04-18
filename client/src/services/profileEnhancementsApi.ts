@@ -129,15 +129,14 @@ export const profileImageApi = {
     const fileExt = file.name.split('.').pop()
     const fileName = `${user.id}/avatar.${fileExt}`
 
-    // Convert file to ArrayBuffer to avoid multipart encoding issues
-    const arrayBuffer = await file.arrayBuffer()
+    // Convert file to Blob with explicit type to ensure proper Content-Type header
+    const blob = new Blob([await file.arrayBuffer()], { type: file.type })
 
-    // Upload to storage with explicit content type
+    // Upload to storage
     const { error: uploadError } = await supabase.storage
       .from('profile-images')
-      .upload(fileName, arrayBuffer, {
-        upsert: true,
-        contentType: file.type
+      .upload(fileName, blob, {
+        upsert: true
       })
 
     if (uploadError) throw uploadError
