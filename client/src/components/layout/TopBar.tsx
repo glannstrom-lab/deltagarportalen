@@ -24,7 +24,7 @@ import { LanguageSwitcher } from './LanguageSwitcher'
 interface UserProfile {
   first_name: string
   last_name: string
-  avatar_url?: string
+  profile_image_url?: string
 }
 
 // ============================================
@@ -218,7 +218,7 @@ export function TopBar() {
     if (!user) return
     const { data } = await supabase
       .from('profiles')
-      .select('first_name, last_name, avatar_url')
+      .select('first_name, last_name, profile_image_url')
       .eq('id', user.id)
       .single()
     if (data) setProfile(data)
@@ -282,8 +282,16 @@ export function TopBar() {
                 showUserMenu && 'ring-2 ring-teal-400/50'
               )}
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-sky-500 rounded-lg flex items-center justify-center text-white font-semibold text-sm shadow-inner">
-                {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'}
+              <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-sky-500 rounded-lg flex items-center justify-center text-white font-semibold text-sm shadow-inner overflow-hidden">
+                {profile?.profile_image_url ? (
+                  <img
+                    src={profile.profile_image_url}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'
+                )}
               </div>
               <div className="hidden sm:block text-left">
                 <p className="text-sm font-medium text-stone-700 dark:text-stone-200 leading-tight">
