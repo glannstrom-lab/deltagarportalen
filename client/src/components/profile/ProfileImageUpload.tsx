@@ -1,9 +1,9 @@
 /**
- * ProfileImageUpload - Profilbildsuppladdning med förhandsgranskning
+ * ProfileImageUpload - Profilbildsuppladdning med text-knappar under bilden
  */
 
 import { useState, useRef } from 'react'
-import { Camera, Loader2, X, Upload } from '@/components/ui/icons'
+import { Camera, Loader2 } from '@/components/ui/icons'
 import { profileImageApi } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
 
@@ -23,31 +23,28 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
   const sizeClasses = {
     sm: 'w-12 h-12',
     md: 'w-20 h-20',
-    lg: 'w-32 h-32'
+    lg: 'w-24 h-24'
   }
 
   const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
 
-    // Validate
     if (!file.type.startsWith('image/')) {
       setError('Välj en bildfil')
       return
     }
     if (file.size > 5 * 1024 * 1024) {
-      setError('Bilden måste vara mindre än 5MB')
+      setError('Max 5MB')
       return
     }
 
     setError(null)
 
-    // Preview
     const reader = new FileReader()
     reader.onload = (e) => setPreview(e.target?.result as string)
     reader.readAsDataURL(file)
 
-    // Upload
     setUploading(true)
     try {
       const url = await profileImageApi.upload(file)
@@ -55,7 +52,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
       setPreview(null)
     } catch (err) {
       console.error('Upload error:', err)
-      setError('Kunde inte ladda upp bilden')
+      setError('Uppladdning misslyckades')
       setPreview(null)
     } finally {
       setUploading(false)
@@ -71,7 +68,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
       onImageChange(null)
     } catch (err) {
       console.error('Delete error:', err)
-      setError('Kunde inte ta bort bilden')
+      setError('Kunde inte ta bort')
     } finally {
       setUploading(false)
     }
@@ -80,10 +77,11 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
   const displayImage = preview || currentImage
 
   return (
-    <div className={cn('relative inline-block p-2', className)}>
+    <div className={cn('flex flex-col items-center gap-2', className)}>
+      {/* Image */}
       <div
         className={cn(
-          'rounded-2xl overflow-hidden bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 flex items-center justify-center shadow-lg',
+          'relative rounded-2xl overflow-hidden bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 flex items-center justify-center shadow-lg flex-shrink-0',
           sizeClasses[size]
         )}
       >
@@ -96,48 +94,40 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
         ) : (
           <Camera className={cn(
             'text-white',
-            size === 'sm' ? 'w-5 h-5' : size === 'md' ? 'w-8 h-8' : 'w-12 h-12'
+            size === 'sm' ? 'w-5 h-5' : size === 'md' ? 'w-8 h-8' : 'w-10 h-10'
           )} />
         )}
 
         {uploading && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-2xl">
-            <Loader2 className="w-6 h-6 text-white animate-spin" />
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <Loader2 className="w-5 h-5 text-white animate-spin" />
           </div>
         )}
       </div>
 
-      {/* Upload button - bottom right, outside image */}
-      <button
-        type="button"
-        onClick={() => fileInputRef.current?.click()}
-        disabled={uploading}
-        className={cn(
-          'absolute bottom-0 right-0 bg-white dark:bg-stone-700 text-teal-600 dark:text-teal-400',
-          'rounded-lg flex items-center justify-center shadow-lg hover:scale-110 transition-transform',
-          'border border-teal-200 dark:border-teal-700 disabled:opacity-50',
-          size === 'sm' ? 'w-5 h-5' : 'w-7 h-7'
-        )}
-        title="Ladda upp bild"
-      >
-        <Upload className={size === 'sm' ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5'} />
-      </button>
-
-      {/* Remove button - top right, outside image */}
-      {displayImage && !uploading && (
+      {/* Text buttons below image */}
+      <div className="flex items-center gap-3 text-xs">
         <button
           type="button"
-          onClick={handleRemove}
-          className={cn(
-            'absolute top-0 right-0 bg-red-500 text-white',
-            'rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-colors',
-            size === 'sm' ? 'w-4 h-4' : 'w-5 h-5'
-          )}
-          title="Ta bort bild"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium disabled:opacity-50"
         >
-          <X className={size === 'sm' ? 'w-2 h-2' : 'w-3 h-3'} />
+          {displayImage ? 'Byt bild' : 'Ladda upp'}
         </button>
-      )}
+        {displayImage && !uploading && (
+          <>
+            <span className="text-stone-300 dark:text-stone-600">|</span>
+            <button
+              type="button"
+              onClick={handleRemove}
+              className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-medium"
+            >
+              Ta bort
+            </button>
+          </>
+        )}
+      </div>
 
       <input
         ref={fileInputRef}
@@ -148,9 +138,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
       />
 
       {error && (
-        <p className="absolute top-full mt-1 text-xs text-red-500 dark:text-red-400 whitespace-nowrap">
-          {error}
-        </p>
+        <p className="text-xs text-red-500 dark:text-red-400">{error}</p>
       )}
     </div>
   )

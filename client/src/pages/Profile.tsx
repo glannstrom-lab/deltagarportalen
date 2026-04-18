@@ -279,19 +279,22 @@ function TagInput({
 
   return (
     <div>
-      <div className="flex flex-wrap gap-1.5 mb-2">
+      <div className="flex flex-wrap gap-1 mb-2">
         {tags.map((tag, i) => (
-          <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 rounded-full text-xs font-medium">
+          <span key={i} className="inline-flex items-center gap-0.5 pl-2 pr-1 py-0.5 bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 rounded text-xs font-medium leading-tight">
             {tag}
-            <button onClick={() => onRemove(i)} className="hover:bg-teal-200 dark:hover:bg-teal-800 rounded-full p-0.5">
-              <X className="w-3 h-3" />
+            <button
+              onClick={() => onRemove(i)}
+              className="w-4 h-4 flex items-center justify-center hover:bg-teal-200 dark:hover:bg-teal-800 rounded ml-0.5"
+            >
+              <X className="w-2.5 h-2.5" />
             </button>
           </span>
         ))}
       </div>
       {tags.length < maxTags && (
         <div className="relative">
-          <div className="flex gap-1.5">
+          <div className="flex gap-1">
             <input
               type="text"
               value={input}
@@ -300,25 +303,25 @@ function TagInput({
               onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd(input))}
               placeholder={placeholder}
-              className="flex-1 px-3 py-1.5 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500 placeholder:text-stone-400 dark:placeholder:text-stone-500"
+              className="flex-1 px-2 py-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 placeholder:text-stone-400"
             />
             <button
               type="button"
               onClick={() => handleAdd(input)}
               disabled={!input.trim()}
-              className="px-2 py-1.5 bg-teal-500 dark:bg-teal-600 text-white rounded-lg text-sm disabled:opacity-50 hover:bg-teal-600 dark:hover:bg-teal-500 transition-colors"
+              className="px-2 py-1 bg-teal-500 text-white rounded text-xs disabled:opacity-50 hover:bg-teal-600 transition-colors"
             >
-              <Plus className="w-4 h-4" />
+              <Plus className="w-3 h-3" />
             </button>
           </div>
           {showSuggestions && filteredSuggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg shadow-lg z-10 py-1">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded shadow-lg z-10 py-0.5">
               {filteredSuggestions.map(s => (
                 <button
                   key={s}
                   type="button"
                   onClick={() => handleAdd(s)}
-                  className="w-full px-3 py-1.5 text-left text-sm hover:bg-teal-50 dark:hover:bg-teal-900/40 text-stone-700 dark:text-stone-300"
+                  className="w-full px-2 py-1 text-left text-xs hover:bg-teal-50 dark:hover:bg-teal-900/40 text-stone-700 dark:text-stone-300"
                 >
                   {s}
                 </button>
@@ -734,107 +737,81 @@ export default function Profile() {
 
   return (
     <div className="pb-8">
-      {/* Unified Header with Tabs - Soft Pastel Style */}
-      <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-6">
+      {/* Header */}
+      <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-6 overflow-hidden">
         {/* Header content */}
-        <div className="px-6 py-5">
-          <div className="flex items-start gap-5">
-            {/* Profile Image Upload - larger size */}
+        <div className="px-5 py-4">
+          <div className="flex items-center gap-4">
+            {/* Profile Image */}
             <ProfileImageUpload
               currentImage={profileImageUrl}
               onImageChange={handleProfileImageChange}
-              size="lg"
+              size="md"
             />
 
             {/* Name and info */}
-            <div className="flex-1 min-w-0 pt-2">
-              <h1 className="text-2xl font-bold text-teal-800 dark:text-teal-300 truncate mb-1">
+            <div className="flex-1 min-w-0">
+              <h1 className="text-lg font-bold text-teal-800 dark:text-teal-300 truncate">
                 {formData.first_name || 'Välkommen!'} {formData.last_name}
               </h1>
-              <p className="text-teal-600 dark:text-teal-400 text-sm truncate mb-3">{profile?.email}</p>
-
-              {/* Completion bar inline with name section */}
-              <div className="flex items-center gap-3">
-                <div className="flex-1 max-w-32 h-2 bg-teal-100 dark:bg-teal-900/50 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-teal-400 to-sky-400 rounded-full transition-all" style={{ width: `${completion.percent}%` }} />
-                </div>
-                <span className="text-sm font-semibold text-teal-600 dark:text-teal-400">{completion.percent}%</span>
-              </div>
+              <p className="text-teal-600 dark:text-teal-400 text-sm truncate">{profile?.email}</p>
             </div>
 
-            {/* Action buttons - vertical on right */}
-            <div className="hidden sm:flex flex-col gap-2">
+            {/* Action buttons + completion */}
+            <div className="hidden sm:flex items-center gap-3">
               <button
                 onClick={handleImportFromCV}
                 disabled={importing}
-                className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-medium text-teal-700 dark:text-teal-300 bg-white dark:bg-stone-800 border border-teal-200 dark:border-teal-700 rounded-xl hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors disabled:opacity-50 shadow-sm"
-                title="Importera data från ditt CV"
+                className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/40 rounded-lg transition-colors disabled:opacity-50"
               >
-                {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                <span>Importera CV</span>
+                {importing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                CV
               </button>
-
               <button
                 onClick={handleExportPDF}
                 disabled={exporting}
-                className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-medium text-teal-700 dark:text-teal-300 bg-white dark:bg-stone-800 border border-teal-200 dark:border-teal-700 rounded-xl hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors disabled:opacity-50 shadow-sm"
-                title="Exportera profil som PDF"
+                className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/40 rounded-lg transition-colors disabled:opacity-50"
               >
-                {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
-                <span>Ladda ner PDF</span>
+                {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+                PDF
               </button>
+              <div className="flex items-center gap-1.5 text-xs text-teal-600 dark:text-teal-400">
+                <div className="w-16 h-1.5 bg-teal-100 dark:bg-teal-900/50 rounded-full overflow-hidden">
+                  <div className="h-full bg-teal-500 rounded-full" style={{ width: `${completion.percent}%` }} />
+                </div>
+                <span className="font-medium">{completion.percent}%</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Tabs - cleaner horizontal scroll on mobile */}
-        <div className="px-4 pb-4 border-t border-teal-100 dark:border-teal-900/50">
-          {/* Desktop tabs */}
-          <div className="hidden md:flex items-center gap-1 pt-3 overflow-x-auto">
+        {/* Tabs */}
+        <div className="border-t border-teal-100 dark:border-teal-900/50 px-2 py-2">
+          <div className="flex items-center gap-0.5 overflow-x-auto">
             {TABS.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  'flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap',
+                  'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex-shrink-0',
                   activeTab === tab.id
-                    ? 'bg-white dark:bg-stone-800 text-teal-700 dark:text-teal-300 shadow-md border border-teal-200 dark:border-teal-700'
-                    : 'text-stone-500 dark:text-stone-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-white/50 dark:hover:bg-stone-800/50'
+                    ? 'bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300'
+                    : 'text-stone-500 dark:text-stone-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30'
                 )}
               >
                 {tab.icon}
                 <span>{tab.label}</span>
               </button>
             ))}
-            {/* Sync indicator - subtle */}
-            <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs">
+            <div className="ml-auto flex-shrink-0 px-2">
               {cloudSyncing ? (
-                <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-500" />
+                <Loader2 className="w-3 h-3 animate-spin text-teal-500" />
               ) : cloudSynced ? (
-                <Cloud className="w-3.5 h-3.5 text-emerald-500" />
+                <Cloud className="w-3 h-3 text-emerald-500" />
               ) : (
-                <CloudOff className="w-3.5 h-3.5 text-amber-500" />
+                <CloudOff className="w-3 h-3 text-amber-500" />
               )}
             </div>
-          </div>
-
-          {/* Mobile: horizontal scroll tabs */}
-          <div className="md:hidden flex items-center gap-1 pt-3 overflow-x-auto pb-1 -mx-1 px-1">
-            {TABS.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={cn(
-                  'flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap flex-shrink-0',
-                  activeTab === tab.id
-                    ? 'bg-white dark:bg-stone-800 text-teal-700 dark:text-teal-300 shadow-md border border-teal-200 dark:border-teal-700'
-                    : 'text-stone-500 dark:text-stone-400 hover:bg-white/50 dark:hover:bg-stone-800/50'
-                )}
-              >
-                {tab.icon}
-                <span>{tab.label}</span>
-              </button>
-            ))}
           </div>
         </div>
       </div>
