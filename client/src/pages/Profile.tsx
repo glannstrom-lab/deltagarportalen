@@ -253,7 +253,8 @@ function TagInput({
   onRemove,
   suggestions = [],
   placeholder,
-  maxTags = 5
+  maxTags = 5,
+  colorScheme = 'teal'
 }: {
   tags: string[]
   onAdd: (tag: string) => void
@@ -261,9 +262,35 @@ function TagInput({
   suggestions?: string[]
   placeholder: string
   maxTags?: number
+  colorScheme?: 'teal' | 'amber' | 'sky'
 }) {
   const [input, setInput] = useState('')
   const [showSuggestions, setShowSuggestions] = useState(false)
+
+  const colorClasses = {
+    teal: {
+      tag: 'bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300',
+      hover: 'hover:bg-teal-200 dark:hover:bg-teal-800',
+      button: 'bg-teal-500 hover:bg-teal-600',
+      focus: 'focus:ring-teal-400 focus:border-teal-400',
+      suggestion: 'hover:bg-teal-50 dark:hover:bg-teal-900/40'
+    },
+    amber: {
+      tag: 'bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
+      hover: 'hover:bg-amber-200 dark:hover:bg-amber-800',
+      button: 'bg-amber-500 hover:bg-amber-600',
+      focus: 'focus:ring-amber-400 focus:border-amber-400',
+      suggestion: 'hover:bg-amber-50 dark:hover:bg-amber-900/40'
+    },
+    sky: {
+      tag: 'bg-sky-50 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300',
+      hover: 'hover:bg-sky-200 dark:hover:bg-sky-800',
+      button: 'bg-sky-500 hover:bg-sky-600',
+      focus: 'focus:ring-sky-400 focus:border-sky-400',
+      suggestion: 'hover:bg-sky-50 dark:hover:bg-sky-900/40'
+    }
+  }
+  const colors = colorClasses[colorScheme]
 
   const filteredSuggestions = suggestions.filter(
     s => s.toLowerCase().includes(input.toLowerCase()) && !tags.includes(s)
@@ -281,11 +308,11 @@ function TagInput({
     <div>
       <div className="flex flex-wrap gap-1 mb-2">
         {tags.map((tag, i) => (
-          <span key={i} className="inline-flex items-center gap-0.5 pl-2 pr-1 py-0.5 bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 rounded text-xs font-medium leading-tight">
+          <span key={i} className={cn('inline-flex items-center gap-0.5 pl-2 pr-1 py-0.5 rounded text-xs font-medium leading-tight', colors.tag)}>
             {tag}
             <button
               onClick={() => onRemove(i)}
-              className="w-4 h-4 flex items-center justify-center hover:bg-teal-200 dark:hover:bg-teal-800 rounded ml-0.5"
+              className={cn('w-4 h-4 flex items-center justify-center rounded ml-0.5', colors.hover)}
             >
               <X className="w-2.5 h-2.5" />
             </button>
@@ -303,13 +330,13 @@ function TagInput({
               onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd(input))}
               placeholder={placeholder}
-              className="flex-1 px-2 py-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-1 focus:ring-teal-400 focus:border-teal-400 placeholder:text-stone-400"
+              className={cn('flex-1 px-2 py-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded text-xs text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-1 placeholder:text-stone-400', colors.focus)}
             />
             <button
               type="button"
               onClick={() => handleAdd(input)}
               disabled={!input.trim()}
-              className="px-2 py-1 bg-teal-500 text-white rounded text-xs disabled:opacity-50 hover:bg-teal-600 transition-colors"
+              className={cn('px-2 py-1 text-white rounded text-xs disabled:opacity-50 transition-colors', colors.button)}
             >
               <Plus className="w-3 h-3" />
             </button>
@@ -321,7 +348,7 @@ function TagInput({
                   key={s}
                   type="button"
                   onClick={() => handleAdd(s)}
-                  className="w-full px-2 py-1 text-left text-xs hover:bg-teal-50 dark:hover:bg-teal-900/40 text-stone-700 dark:text-stone-300"
+                  className={cn('w-full px-2 py-1 text-left text-xs text-stone-700 dark:text-stone-300', colors.suggestion)}
                 >
                   {s}
                 </button>
@@ -738,9 +765,9 @@ export default function Profile() {
   return (
     <div className="pb-8 max-w-5xl mx-auto">
       {/* Header Card */}
-      <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 mb-4 overflow-hidden">
+      <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-4 overflow-hidden">
         {/* Profile Info */}
-        <div className="p-4 flex items-center gap-4">
+        <div className="p-4 sm:p-5 flex items-center gap-4">
           <ProfileImageUpload
             currentImage={profileImageUrl}
             onImageChange={handleProfileImageChange}
@@ -782,11 +809,11 @@ export default function Profile() {
         </div>
 
         {/* Mobile: Tab dropdown */}
-        <div className="md:hidden border-t border-stone-100 dark:border-stone-700 p-3">
+        <div className="md:hidden border-t border-teal-100 dark:border-teal-800/50 p-3 bg-white/50 dark:bg-stone-800/30">
           <select
             value={activeTab}
             onChange={(e) => setActiveTab(e.target.value as TabId)}
-            className="w-full px-3 py-2 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm font-medium text-stone-700 dark:text-stone-200"
+            className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-teal-200 dark:border-teal-700 rounded-lg text-sm font-medium text-stone-700 dark:text-stone-200 focus:ring-2 focus:ring-teal-400/30 focus:border-teal-400"
           >
             {TABS.map(tab => (
               <option key={tab.id} value={tab.id}>{tab.label}</option>
@@ -794,18 +821,18 @@ export default function Profile() {
           </select>
         </div>
 
-        {/* Desktop: Tab bar */}
-        <div className="hidden md:block border-t border-stone-100 dark:border-stone-700">
-          <div className="flex">
+        {/* Desktop: Tab bar - wraps to two rows */}
+        <div className="hidden md:block border-t border-teal-100 dark:border-teal-800/50 bg-white/50 dark:bg-stone-800/30">
+          <div className="flex flex-wrap justify-center gap-1 p-2">
             {TABS.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  'flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors',
+                  'flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors',
                   activeTab === tab.id
-                    ? 'border-teal-500 text-teal-600 dark:text-teal-400 bg-teal-50/50 dark:bg-teal-900/20'
-                    : 'border-transparent text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
+                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 shadow-sm'
+                    : 'text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/50'
                 )}
               >
                 {tab.icon}
@@ -837,13 +864,13 @@ export default function Profile() {
 
             {/* Önskade jobb */}
             <SectionCard title="Önskade jobb" icon={<Briefcase className="w-4 h-4" />} colorScheme="sky">
-              <TagInput tags={desiredJobs} onAdd={addJob} onRemove={removeJob} suggestions={SUGGESTED_JOBS} placeholder="T.ex. Projektledare" maxTags={5} />
+              <TagInput tags={desiredJobs} onAdd={addJob} onRemove={removeJob} suggestions={SUGGESTED_JOBS} placeholder="T.ex. Projektledare" maxTags={5} colorScheme="sky" />
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">{desiredJobs.length}/5 valda</p>
             </SectionCard>
 
             {/* Intressen */}
             <SectionCard title="Intressen" icon={<Heart className="w-4 h-4" />} colorScheme="amber">
-              <TagInput tags={interests} onAdd={addInterest} onRemove={removeInterest} suggestions={SUGGESTED_INTERESTS} placeholder="T.ex. Teknik" maxTags={5} />
+              <TagInput tags={interests} onAdd={addInterest} onRemove={removeInterest} suggestions={SUGGESTED_INTERESTS} placeholder="T.ex. Teknik" maxTags={5} colorScheme="amber" />
               <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">{interests.length}/5 valda</p>
             </SectionCard>
 
