@@ -110,8 +110,18 @@ export interface VisibilitySettings {
 }
 
 // ============================================
-// PROFILE IMAGE API
+// PROFILE IMAGE API (uses Vercel Blob)
 // ============================================
+
+/**
+ * Generate unique filename for profile image
+ */
+function generateProfileFilename(userId: string, file: File): string {
+  const timestamp = Date.now()
+  const random = Math.random().toString(36).substring(2, 8)
+  const extension = file.name.split('.').pop()?.toLowerCase() || 'jpg'
+  return `profile-${userId}-${timestamp}-${random}.${extension}`
+}
 
 export const profileImageApi = {
   async upload(file: File): Promise<string> {
@@ -126,48 +136,40 @@ export const profileImageApi = {
       throw new Error('Image must be less than 5MB')
     }
 
-    const fileExt = file.name.split('.').pop()
-    const fileName = `${user.id}/avatar.${fileExt}`
+    // Generate unique filename
+    const filename = generateProfileFilename(user.id, file)
 
-    // Upload file directly
-    const { error: uploadError } = await supabase.storage
-      .from('profile-images')
-      .upload(fileName, file, {
-        upsert: true,
-        contentType: file.type
-      })
+    // Upload to Vercel Blob via API
+    const response = await fetch(`/api/upload-image?filename=${encodeURIComponent(filename)}`, {
+      method: 'POST',
+      body: file,
+      headers: {
+        'Content-Type': file.type,
+      },
+    })
 
-    if (uploadError) throw uploadError
+    if (!response.ok) {
+      const error = await response.text()
+      throw new Error(error || 'Upload failed')
+    }
 
-    // Get public URL with cache-busting timestamp
-    const { data: { publicUrl } } = supabase.storage
-      .from('profile-images')
-      .getPublicUrl(fileName)
+    const { url } = await response.json()
 
-    // Add cache-busting parameter to force browser to reload
-    const urlWithTimestamp = `${publicUrl}?t=${Date.now()}`
-
-    // Update profile
+    // Update profile with new image URL
     await supabase
       .from('profiles')
-      .update({ profile_image_url: urlWithTimestamp })
+      .update({ profile_image_url: url })
       .eq('id', user.id)
 
-    return urlWithTimestamp
+    return url
   },
 
   async delete(): Promise<void> {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    // Delete from storage (try common extensions)
-    for (const ext of ['jpg', 'jpeg', 'png', 'gif', 'webp']) {
-      await supabase.storage
-        .from('profile-images')
-        .remove([`${user.id}/avatar.${ext}`])
-    }
-
-    // Update profile
+    // Note: Vercel Blob files are not deleted here (they auto-expire or can be cleaned up separately)
+    // Just clear the profile reference
     await supabase
       .from('profiles')
       .update({ profile_image_url: null })
