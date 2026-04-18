@@ -737,118 +737,104 @@ export default function Profile() {
       {/* Unified Header with Tabs - Soft Pastel Style */}
       <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-6">
         {/* Header content */}
-        <div className="px-5 py-4">
-          <div className="flex items-center gap-4">
-            {/* Profile Image Upload */}
+        <div className="px-6 py-5">
+          <div className="flex items-start gap-5">
+            {/* Profile Image Upload - larger size */}
             <ProfileImageUpload
               currentImage={profileImageUrl}
               onImageChange={handleProfileImageChange}
-              size="md"
+              size="lg"
             />
-            <div className="flex-1 min-w-0">
-              <h1 className="text-xl font-bold text-teal-800 dark:text-teal-300 truncate">
+
+            {/* Name and info */}
+            <div className="flex-1 min-w-0 pt-2">
+              <h1 className="text-2xl font-bold text-teal-800 dark:text-teal-300 truncate mb-1">
                 {formData.first_name || 'Välkommen!'} {formData.last_name}
               </h1>
-              <p className="text-teal-600 dark:text-teal-400 text-sm truncate">{profile?.email}</p>
+              <p className="text-teal-600 dark:text-teal-400 text-sm truncate mb-3">{profile?.email}</p>
+
+              {/* Completion bar inline with name section */}
+              <div className="flex items-center gap-3">
+                <div className="flex-1 max-w-32 h-2 bg-teal-100 dark:bg-teal-900/50 rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-teal-400 to-sky-400 rounded-full transition-all" style={{ width: `${completion.percent}%` }} />
+                </div>
+                <span className="text-sm font-semibold text-teal-600 dark:text-teal-400">{completion.percent}%</span>
+              </div>
             </div>
 
-            {/* Action buttons */}
-            <div className="hidden sm:flex items-center gap-2">
-              {/* CV Import */}
+            {/* Action buttons - vertical on right */}
+            <div className="hidden sm:flex flex-col gap-2">
               <button
                 onClick={handleImportFromCV}
                 disabled={importing}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-teal-700 dark:text-teal-300 bg-white dark:bg-stone-800 border border-teal-200 dark:border-teal-700 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors disabled:opacity-50"
+                className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-medium text-teal-700 dark:text-teal-300 bg-white dark:bg-stone-800 border border-teal-200 dark:border-teal-700 rounded-xl hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors disabled:opacity-50 shadow-sm"
                 title="Importera data från ditt CV"
               >
-                {importing ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Upload className="w-3.5 h-3.5" />
-                )}
-                CV
+                {importing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                <span>Importera CV</span>
               </button>
 
-              {/* PDF Export */}
               <button
                 onClick={handleExportPDF}
                 disabled={exporting}
-                className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-teal-700 dark:text-teal-300 bg-white dark:bg-stone-800 border border-teal-200 dark:border-teal-700 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors disabled:opacity-50"
+                className="flex items-center justify-center gap-1.5 px-4 py-2 text-xs font-medium text-teal-700 dark:text-teal-300 bg-white dark:bg-stone-800 border border-teal-200 dark:border-teal-700 rounded-xl hover:bg-teal-50 dark:hover:bg-teal-900/40 transition-colors disabled:opacity-50 shadow-sm"
                 title="Exportera profil som PDF"
               >
-                {exporting ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                ) : (
-                  <Download className="w-3.5 h-3.5" />
-                )}
-                PDF
+                {exporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                <span>Ladda ner PDF</span>
               </button>
-
-              {/* Completion indicator */}
-              <div className="flex items-center gap-2 bg-white/60 dark:bg-stone-800/60 rounded-full px-3 py-1.5 border border-teal-200 dark:border-teal-800">
-                <div className="w-12 h-1.5 bg-teal-200 dark:bg-teal-900 rounded-full overflow-hidden">
-                  <div className="h-full bg-teal-500 dark:bg-teal-400 rounded-full transition-all" style={{ width: `${completion.percent}%` }} />
-                </div>
-                <span className="text-xs font-medium text-teal-700 dark:text-teal-300">{completion.percent}%</span>
-              </div>
             </div>
           </div>
         </div>
 
-        {/* Tabs integrated in header - wrapping two rows */}
-        <div className="px-4 pb-3">
-          <div className="bg-white/60 dark:bg-stone-800/40 rounded-xl px-2 py-2 border border-teal-100/50 dark:border-stone-700/50">
-            {/* Desktop: flex-wrap for two rows */}
-            <div className="hidden md:flex flex-wrap items-center gap-1">
-              {TABS.map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={cn(
-                    'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all',
-                    activeTab === tab.id
-                      ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 shadow-sm'
-                      : 'text-stone-600 dark:text-stone-400 hover:bg-teal-50 dark:hover:bg-stone-700'
-                  )}
-                >
-                  {tab.icon}
-                  <span>{tab.label}</span>
-                </button>
-              ))}
-              {/* Sync indicator */}
-              <div className="ml-auto flex items-center gap-1.5 px-2 py-1 text-xs">
-                {cloudSyncing ? (
-                  <><Loader2 className="w-3 h-3 animate-spin text-teal-600 dark:text-teal-400" /><span className="text-teal-600 dark:text-teal-400">Sparar</span></>
-                ) : cloudSynced ? (
-                  <><Cloud className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /><span className="text-emerald-600 dark:text-emerald-400">Sparat</span></>
-                ) : (
-                  <><CloudOff className="w-3 h-3 text-amber-600 dark:text-amber-400" /><span className="text-amber-600 dark:text-amber-400">Ej sparat</span></>
+        {/* Tabs - cleaner horizontal scroll on mobile */}
+        <div className="px-4 pb-4 border-t border-teal-100 dark:border-teal-900/50">
+          {/* Desktop tabs */}
+          <div className="hidden md:flex items-center gap-1 pt-3 overflow-x-auto">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  'flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-medium transition-all whitespace-nowrap',
+                  activeTab === tab.id
+                    ? 'bg-white dark:bg-stone-800 text-teal-700 dark:text-teal-300 shadow-md border border-teal-200 dark:border-teal-700'
+                    : 'text-stone-500 dark:text-stone-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-white/50 dark:hover:bg-stone-800/50'
                 )}
-              </div>
-            </div>
-
-            {/* Mobile: dropdown select */}
-            <div className="md:hidden">
-              <select
-                value={activeTab}
-                onChange={(e) => setActiveTab(e.target.value as TabId)}
-                className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm font-medium text-stone-800 dark:text-stone-200 focus:outline-none focus:ring-2 focus:ring-teal-500/20"
               >
-                {TABS.map(tab => (
-                  <option key={tab.id} value={tab.id}>{tab.label}</option>
-                ))}
-              </select>
-              {/* Mobile sync indicator */}
-              <div className="flex items-center justify-center gap-1.5 mt-2 text-xs">
-                {cloudSyncing ? (
-                  <><Loader2 className="w-3 h-3 animate-spin text-teal-600 dark:text-teal-400" /><span className="text-teal-600 dark:text-teal-400">Sparar...</span></>
-                ) : cloudSynced ? (
-                  <><Cloud className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /><span className="text-emerald-600 dark:text-emerald-400">Sparat</span></>
-                ) : (
-                  <><CloudOff className="w-3 h-3 text-amber-600 dark:text-amber-400" /><span className="text-amber-600 dark:text-amber-400">Ej sparat</span></>
-                )}
-              </div>
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
+            {/* Sync indicator - subtle */}
+            <div className="ml-auto flex items-center gap-1.5 px-3 py-1.5 text-xs">
+              {cloudSyncing ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin text-teal-500" />
+              ) : cloudSynced ? (
+                <Cloud className="w-3.5 h-3.5 text-emerald-500" />
+              ) : (
+                <CloudOff className="w-3.5 h-3.5 text-amber-500" />
+              )}
             </div>
+          </div>
+
+          {/* Mobile: horizontal scroll tabs */}
+          <div className="md:hidden flex items-center gap-1 pt-3 overflow-x-auto pb-1 -mx-1 px-1">
+            {TABS.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={cn(
+                  'flex items-center gap-1 px-3 py-2 rounded-xl text-xs font-medium transition-all whitespace-nowrap flex-shrink-0',
+                  activeTab === tab.id
+                    ? 'bg-white dark:bg-stone-800 text-teal-700 dark:text-teal-300 shadow-md border border-teal-200 dark:border-teal-700'
+                    : 'text-stone-500 dark:text-stone-400 hover:bg-white/50 dark:hover:bg-stone-800/50'
+                )}
+              >
+                {tab.icon}
+                <span>{tab.label}</span>
+              </button>
+            ))}
           </div>
         </div>
       </div>
