@@ -33,9 +33,9 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
     }
   },
   global: {
+    // Note: Don't set Content-Type globally - it breaks storage uploads
     headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Accept': 'application/json'
     }
   }
 })
