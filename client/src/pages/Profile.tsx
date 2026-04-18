@@ -736,88 +736,88 @@ export default function Profile() {
   }
 
   return (
-    <div className="pb-8">
-      {/* Header */}
-      <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-6 overflow-hidden">
-        {/* Header content */}
-        <div className="px-5 py-4">
-          <div className="flex items-center gap-4">
-            {/* Profile Image */}
-            <ProfileImageUpload
-              currentImage={profileImageUrl}
-              onImageChange={handleProfileImageChange}
-              size="md"
-            />
-
-            {/* Name and info */}
-            <div className="flex-1 min-w-0">
-              <h1 className="text-lg font-bold text-teal-800 dark:text-teal-300 truncate">
-                {formData.first_name || 'Välkommen!'} {formData.last_name}
-              </h1>
-              <p className="text-teal-600 dark:text-teal-400 text-sm truncate">{profile?.email}</p>
-            </div>
-
-            {/* Action buttons + completion */}
-            <div className="hidden sm:flex items-center gap-3">
-              <button
-                onClick={handleImportFromCV}
-                disabled={importing}
-                className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/40 rounded-lg transition-colors disabled:opacity-50"
-              >
-                {importing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
-                CV
-              </button>
-              <button
-                onClick={handleExportPDF}
-                disabled={exporting}
-                className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/40 rounded-lg transition-colors disabled:opacity-50"
-              >
-                {exporting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
-                PDF
-              </button>
-              <div className="flex items-center gap-1.5 text-xs text-teal-600 dark:text-teal-400">
-                <div className="w-16 h-1.5 bg-teal-100 dark:bg-teal-900/50 rounded-full overflow-hidden">
-                  <div className="h-full bg-teal-500 rounded-full" style={{ width: `${completion.percent}%` }} />
-                </div>
-                <span className="font-medium">{completion.percent}%</span>
-              </div>
-            </div>
+    <div className="pb-8 max-w-5xl mx-auto">
+      {/* Header Card */}
+      <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 mb-4 overflow-hidden">
+        {/* Profile Info */}
+        <div className="p-4 flex items-center gap-4">
+          <ProfileImageUpload
+            currentImage={profileImageUrl}
+            onImageChange={handleProfileImageChange}
+            size="md"
+          />
+          <div className="flex-1 min-w-0">
+            <h1 className="text-base font-semibold text-stone-800 dark:text-stone-100 truncate">
+              {formData.first_name || 'Välkommen!'} {formData.last_name}
+            </h1>
+            <p className="text-stone-500 dark:text-stone-400 text-sm truncate">{profile?.email}</p>
+          </div>
+          {/* Desktop: actions */}
+          <div className="hidden md:flex items-center gap-2">
+            <button
+              onClick={handleImportFromCV}
+              disabled={importing}
+              className="text-xs text-teal-600 dark:text-teal-400 hover:underline disabled:opacity-50"
+            >
+              {importing ? 'Importerar...' : 'Importera CV'}
+            </button>
+            <span className="text-stone-300 dark:text-stone-600">|</span>
+            <button
+              onClick={handleExportPDF}
+              disabled={exporting}
+              className="text-xs text-teal-600 dark:text-teal-400 hover:underline disabled:opacity-50"
+            >
+              {exporting ? 'Exporterar...' : 'Ladda ner PDF'}
+            </button>
+            <span className="text-stone-300 dark:text-stone-600">|</span>
+            <span className="text-xs text-stone-500 dark:text-stone-400">{completion.percent}% klar</span>
+            {cloudSyncing ? (
+              <Loader2 className="w-3 h-3 animate-spin text-stone-400" />
+            ) : cloudSynced ? (
+              <Cloud className="w-3 h-3 text-emerald-500" />
+            ) : (
+              <CloudOff className="w-3 h-3 text-amber-500" />
+            )}
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="border-t border-teal-100 dark:border-teal-900/50 px-2 py-2">
-          <div className="flex items-center gap-0.5 overflow-x-auto">
+        {/* Mobile: Tab dropdown */}
+        <div className="md:hidden border-t border-stone-100 dark:border-stone-700 p-3">
+          <select
+            value={activeTab}
+            onChange={(e) => setActiveTab(e.target.value as TabId)}
+            className="w-full px-3 py-2 bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm font-medium text-stone-700 dark:text-stone-200"
+          >
+            {TABS.map(tab => (
+              <option key={tab.id} value={tab.id}>{tab.label}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Desktop: Tab bar */}
+        <div className="hidden md:block border-t border-stone-100 dark:border-stone-700">
+          <div className="flex">
             {TABS.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all whitespace-nowrap flex-shrink-0',
+                  'flex items-center gap-1.5 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors',
                   activeTab === tab.id
-                    ? 'bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300'
-                    : 'text-stone-500 dark:text-stone-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30'
+                    ? 'border-teal-500 text-teal-600 dark:text-teal-400 bg-teal-50/50 dark:bg-teal-900/20'
+                    : 'border-transparent text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
                 )}
               >
                 {tab.icon}
                 <span>{tab.label}</span>
               </button>
             ))}
-            <div className="ml-auto flex-shrink-0 px-2">
-              {cloudSyncing ? (
-                <Loader2 className="w-3 h-3 animate-spin text-teal-500" />
-              ) : cloudSynced ? (
-                <Cloud className="w-3 h-3 text-emerald-500" />
-              ) : (
-                <CloudOff className="w-3 h-3 text-amber-500" />
-              )}
-            </div>
           </div>
         </div>
       </div>
 
       {/* Tab Content */}
-      <div className="max-w-5xl mx-auto">
+      <div>
 
         {/* TAB: Grundinfo */}
         {activeTab === 'basic' && (
