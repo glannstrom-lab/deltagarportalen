@@ -122,6 +122,15 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, [messages, streamingContent])
 
+    // Cleanup abort controller on unmount to prevent state updates on unmounted component
+    useEffect(() => {
+      return () => {
+        if (abortControllerRef.current) {
+          abortControllerRef.current.abort()
+        }
+      }
+    }, [])
+
     // Auto-resize textarea
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setInputValue(e.target.value)

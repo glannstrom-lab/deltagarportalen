@@ -112,8 +112,40 @@ export function useNotifications(): UseNotificationsReturn {
   useEffect(() => {
     if (!user) return
 
-    // Initial fetch
-    fetchNotifications()
+    let isMounted = true
+
+    // Initial fetch with mounted check
+    const loadInitial = async () => {
+      try {
+        setError(null)
+        const { data, error: fetchError } = await supabase
+          .from('notifications')
+          .select('*')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false })
+          .limit(50)
+
+        if (!isMounted) return
+
+        if (fetchError) {
+          throw fetchError
+        }
+
+        setNotifications(data || [])
+        apiLogger.debug('Notifications loaded', { count: data?.length || 0 })
+      } catch (err) {
+        if (!isMounted) return
+        const message = err instanceof Error ? err.message : 'Kunde inte ladda notifikationer'
+        setError(message)
+        apiLogger.error('Failed to load notifications', { error: err })
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
+      }
+    }
+
+    loadInitial()
 
     // Subscribe to realtime changes
     const channel = supabase
@@ -127,6 +159,7 @@ export function useNotifications(): UseNotificationsReturn {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
+          if (!isMounted) return
           apiLogger.debug('New notification received', { type: payload.new.type })
           setNotifications((prev) => [payload.new as Notification, ...prev])
         }
@@ -140,6 +173,7 @@ export function useNotifications(): UseNotificationsReturn {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
+          if (!isMounted) return
           setNotifications((prev) =>
             prev.map((n) =>
               n.id === (payload.new as Notification).id ? (payload.new as Notification) : n
@@ -156,6 +190,7 @@ export function useNotifications(): UseNotificationsReturn {
           filter: `user_id=eq.${user.id}`,
         },
         (payload) => {
+          if (!isMounted) return
           setNotifications((prev) =>
             prev.filter((n) => n.id !== (payload.old as Notification).id)
           )
@@ -169,10 +204,11 @@ export function useNotifications(): UseNotificationsReturn {
 
     // Cleanup subscription
     return () => {
+      isMounted = false
       apiLogger.debug('Unsubscribing from notifications channel')
       supabase.removeChannel(channel)
     }
-  }, [user, fetchNotifications])
+  }, [user])
 
   // ============================================
   // COMPUTED VALUES

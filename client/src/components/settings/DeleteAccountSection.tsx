@@ -50,25 +50,35 @@ export function DeleteAccountSection() {
 
   // Load deletion status on mount
   useEffect(() => {
-    loadDeletionStatus()
-  }, [])
+    let isMounted = true
 
-  const loadDeletionStatus = async () => {
-    try {
-      setIsLoading(true)
-      const { data, error } = await supabase.rpc('get_deletion_status')
+    const loadDeletionStatus = async () => {
+      try {
+        setIsLoading(true)
+        const { data, error } = await supabase.rpc('get_deletion_status')
 
-      if (error) throw error
+        if (!isMounted) return
 
-      if (data?.success) {
-        setDeletionStatus(data)
+        if (error) throw error
+
+        if (data?.success) {
+          setDeletionStatus(data)
+        }
+      } catch (err) {
+        console.error('Error loading deletion status:', err)
+      } finally {
+        if (isMounted) {
+          setIsLoading(false)
+        }
       }
-    } catch (err) {
-      console.error('Error loading deletion status:', err)
-    } finally {
-      setIsLoading(false)
     }
-  }
+
+    loadDeletionStatus()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
 
   // Export user data (GDPR Art. 20)
   const handleExportData = async () => {

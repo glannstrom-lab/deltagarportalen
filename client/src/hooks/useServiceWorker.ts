@@ -44,9 +44,14 @@ export function useServiceWorker(): UseServiceWorkerReturn {
       return
     }
 
+    let registration: ServiceWorkerRegistration | null = null
+    let updateFoundHandler: (() => void) | null = null
+    let stateChangeHandler: (() => void) | null = null
+    let installingWorker: ServiceWorker | null = null
+
     const registerSW = async () => {
       try {
-        const registration = await navigator.serviceWorker.register('/sw.js', {
+        registration = await navigator.serviceWorker.register('/sw.js', {
           scope: '/',
         })
 
@@ -59,18 +64,20 @@ export function useServiceWorker(): UseServiceWorkerReturn {
         }))
 
         // Handle updates
-        registration.addEventListener('updatefound', () => {
-          const newWorker = registration.installing
-          
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+        updateFoundHandler = () => {
+          installingWorker = registration?.installing || null
+
+          if (installingWorker) {
+            stateChangeHandler = () => {
+              if (installingWorker?.state === 'installed' && navigator.serviceWorker.controller) {
                 swLogger.debug('[SW] Update available')
                 setState((prev) => ({ ...prev, updateAvailable: true }))
               }
-            })
+            }
+            installingWorker.addEventListener('statechange', stateChangeHandler)
           }
-        })
+        }
+        registration.addEventListener('updatefound', updateFoundHandler)
 
         // Check for existing waiting worker
         if (registration.waiting && navigator.serviceWorker.controller) {
@@ -82,6 +89,16 @@ export function useServiceWorker(): UseServiceWorkerReturn {
     }
 
     registerSW()
+
+    // Cleanup event listeners on unmount
+    return () => {
+      if (registration && updateFoundHandler) {
+        registration.removeEventListener('updatefound', updateFoundHandler)
+      }
+      if (installingWorker && stateChangeHandler) {
+        installingWorker.removeEventListener('statechange', stateChangeHandler)
+      }
+    }
   }, [state.isSupported])
 
   // Listen for online/offline events
@@ -130,9 +147,11 @@ export function useServiceWorker(): UseServiceWorkerReturn {
     state.registration.waiting.postMessage('skipWaiting')
 
     // Reload page when new SW takes over
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
+    const handleControllerChange = () => {
+      navigator.serviceWorker.removeEventListener('controllerchange', handleControllerChange)
       window.location.reload()
-    })
+    }
+    navigator.serviceWorker.addEventListener('controllerchange', handleControllerChange)
   }, [state.registration])
 
   // Unregister service worker
