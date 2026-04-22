@@ -120,6 +120,16 @@ export function safeJSONParse<T>(json: string, fallback: T): T {
   }
 }
 
+// Safe JSON stringify with error handling (handles circular references)
+export function safeJsonStringify(value: unknown, fallback = '{}'): string {
+  try {
+    return JSON.stringify(value);
+  } catch {
+    // Likely a circular reference error
+    return fallback;
+  }
+}
+
 // Export all security utilities
 export default {
   sanitizeInput,
@@ -131,4 +141,5 @@ export default {
   RateLimiter,
   generateCSRFToken,
   safeJSONParse,
+  safeJsonStringify,
 };
