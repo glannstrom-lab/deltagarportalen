@@ -42,7 +42,11 @@ export function useBookmarks() {
         if (response.ok) return await response.json()
       } catch {
         // Fallback to localStorage
-        return JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
+        try {
+          return JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
+        } catch {
+          return []
+        }
       }
     },
     staleTime: 1 * 60 * 1000,
@@ -64,11 +68,17 @@ export function useToggleBookmark() {
         }
       } catch {
         // Fallback to localStorage
-        const bookmarks = JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
-        const newBookmarks = shouldBookmark
-          ? [...bookmarks, articleId]
-          : bookmarks.filter((id: string) => id !== articleId)
-        localStorage.setItem('article-bookmarks', JSON.stringify(newBookmarks))
+        try {
+          const bookmarks = JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
+          const newBookmarks = shouldBookmark
+            ? [...bookmarks, articleId]
+            : bookmarks.filter((id: string) => id !== articleId)
+          localStorage.setItem('article-bookmarks', JSON.stringify(newBookmarks))
+        } catch {
+          // If parse fails, start fresh
+          const newBookmarks = shouldBookmark ? [articleId] : []
+          localStorage.setItem('article-bookmarks', JSON.stringify(newBookmarks))
+        }
       }
       return { articleId, shouldBookmark }
     },
