@@ -122,6 +122,8 @@ export function DailyJobTab() {
 
   // Load or generate daily job
   useEffect(() => {
+    let isMounted = true;
+
     const loadDailyJob = async () => {
       setIsLoading(true);
 
@@ -131,8 +133,10 @@ export function DailyJobTab() {
         const cachedJob = localStorage.getItem(DAILY_JOB_KEY);
 
         if (cachedDate === getTodayKey() && cachedJob) {
-          setDailyJob(JSON.parse(cachedJob));
-          setIsLoading(false);
+          if (isMounted) {
+            setDailyJob(JSON.parse(cachedJob));
+            setIsLoading(false);
+          }
           return;
         }
 
@@ -208,8 +212,10 @@ export function DailyJobTab() {
         }
 
         if (allJobs.length === 0) {
-          setDailyJob(null);
-          setIsLoading(false);
+          if (isMounted) {
+            setDailyJob(null);
+            setIsLoading(false);
+          }
           return;
         }
 
@@ -220,15 +226,23 @@ export function DailyJobTab() {
         localStorage.setItem(DAILY_JOB_DATE_KEY, getTodayKey());
         localStorage.setItem(DAILY_JOB_KEY, JSON.stringify(selectedJob));
 
-        setDailyJob(selectedJob);
+        if (isMounted) {
+          setDailyJob(selectedJob);
+        }
       } catch (error) {
         console.error('Failed to load daily job:', error);
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     loadDailyJob();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   // Select the best job based on user profile and various criteria
