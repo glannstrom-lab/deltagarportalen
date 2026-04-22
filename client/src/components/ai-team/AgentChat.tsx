@@ -249,6 +249,26 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           }
         }
 
+        // Process any remaining buffer content after stream ends
+        if (buffer.trim()) {
+          if (buffer.startsWith('data: ')) {
+            const data = buffer.slice(6).trim()
+            if (data !== '[DONE]') {
+              try {
+                const parsed = JSON.parse(data)
+                if (parsed.token) {
+                  fullContent += parsed.token
+                }
+                if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
+                  setSuggestions(parsed.suggestions)
+                }
+              } catch {
+                // Skip malformed JSON
+              }
+            }
+          }
+        }
+
         // Add final message
         if (fullContent) {
           addMessage({
