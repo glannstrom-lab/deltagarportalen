@@ -21,8 +21,8 @@ describe('Skeleton', () => {
 
   it('renders dashboard widget skeleton', () => {
     render(<DashboardWidgetSkeleton />)
-    // Should have multiple skeleton elements
-    const skeletons = document.querySelectorAll('[class*="animate-pulse"]')
+    // Should have multiple skeleton elements with skeleton-shimmer class
+    const skeletons = document.querySelectorAll('.skeleton-shimmer')
     expect(skeletons.length).toBeGreaterThan(0)
   })
 
@@ -35,8 +35,8 @@ describe('Skeleton', () => {
 
   it('renders form skeleton with correct number of fields', () => {
     render(<FormSkeleton fields={4} />)
-    // Should render 4 form fields plus button
-    const skeletons = document.querySelectorAll('[class*="animate-pulse"]')
+    // Should render 4 form fields plus button - each field has label and input skeleton
+    const skeletons = document.querySelectorAll('.skeleton-shimmer')
     expect(skeletons.length).toBeGreaterThanOrEqual(4)
   })
 

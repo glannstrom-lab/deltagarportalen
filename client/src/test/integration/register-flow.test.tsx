@@ -61,7 +61,7 @@ describe('Register Flow Integration', () => {
     expect(screen.getByLabelText(/bekräfta lösenord/i)).toBeInTheDocument()
 
     // Submit button should be initially disabled (password not valid, consent not given)
-    const submitButton = screen.getByRole('button', { name: /registrera/i })
+    const submitButton = screen.getByRole('button', { name: /^registrera$/i })
     expect(submitButton).toBeDisabled()
   })
 
@@ -162,7 +162,7 @@ describe('Register Flow Integration', () => {
     await user.click(screen.getByLabelText(/integritetspolicyn/i))
 
     // Submit form
-    const submitButton = screen.getByRole('button', { name: /registrera/i })
+    const submitButton = screen.getByRole('button', { name: /^registrera$/i })
     await user.click(submitButton)
 
     // Should call signUp with correct data
@@ -188,7 +188,7 @@ describe('Register Flow Integration', () => {
       </QueryClientProvider>
     )
 
-    const submitButton = screen.getByRole('button', { name: /registrera/i })
+    const submitButton = screen.getByRole('button', { name: /^registrera$/i })
 
     // Initially disabled (no password)
     expect(submitButton).toBeDisabled()
@@ -228,7 +228,7 @@ describe('Register Flow Integration', () => {
     await user.click(screen.getByLabelText(/integritetspolicyn/i))
 
     // Submit form
-    const submitButton = screen.getByRole('button', { name: /registrera/i })
+    const submitButton = screen.getByRole('button', { name: /^registrera$/i })
     await user.click(submitButton)
 
     // Should show error message
@@ -263,7 +263,7 @@ describe('Register Flow Integration', () => {
     await user.click(screen.getByLabelText(/integritetspolicyn/i))
 
     // Submit form
-    const submitButton = screen.getByRole('button', { name: /registrera/i })
+    const submitButton = screen.getByRole('button', { name: /^registrera$/i })
     await user.click(submitButton)
 
     // Should show loading state
