@@ -250,7 +250,6 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                   )}>
                     {reminder.type === 'application' && <Briefcase className="w-5 h-5 text-blue-600" />}
                     {reminder.type === 'followUp' && <TrendingUp className="w-5 h-5 text-amber-600" />}
-                    {reminder.type === 'followUp' && <TrendingUp className="w-5 h-5 text-amber-600" />}
                     {reminder.type === 'deadline' && <Clock className="w-5 h-5 text-rose-600" />}
                     {reminder.type === 'milestone' && <Zap className="w-5 h-5 text-emerald-600" />}
                     {reminder.type === 'insight' && <Bell className="w-5 h-5 text-teal-600" />}
