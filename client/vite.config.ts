@@ -1,14 +1,72 @@
-import { defineConfig } from 'vite'
+import { defineConfig, Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import compression from 'vite-plugin-compression2'
 import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 
+/**
+ * Mock API plugin for local development
+ * Handles /api/* routes that normally run as Vercel serverless functions
+ */
+function mockApiPlugin(): Plugin {
+  return {
+    name: 'mock-api',
+    configureServer(server) {
+      server.middlewares.use(async (req, res, next) => {
+        // Only handle API routes in development
+        if (!req.url?.startsWith('/api/')) {
+          return next()
+        }
+
+        // Mock /api/upload-image - returns a data URL from the uploaded file
+        if (req.url.startsWith('/api/upload-image') && req.method === 'POST') {
+          const chunks: Buffer[] = []
+
+          req.on('data', (chunk) => chunks.push(chunk))
+          req.on('end', () => {
+            const buffer = Buffer.concat(chunks)
+            const contentType = req.headers['content-type'] || 'image/jpeg'
+            const base64 = buffer.toString('base64')
+            const dataUrl = `data:${contentType};base64,${base64}`
+
+            res.setHeader('Content-Type', 'application/json')
+            res.setHeader('Access-Control-Allow-Origin', '*')
+            res.end(JSON.stringify({ url: dataUrl }))
+          })
+          return
+        }
+
+        // Mock /api/test
+        if (req.url === '/api/test') {
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({ ok: true, time: Date.now(), mode: 'development' }))
+          return
+        }
+
+        // For other API routes, return 501 Not Implemented in dev mode
+        if (req.url.startsWith('/api/')) {
+          res.statusCode = 501
+          res.setHeader('Content-Type', 'application/json')
+          res.end(JSON.stringify({
+            error: 'API not available in development mode',
+            hint: 'Use "vercel dev" or deploy to Vercel for full API support'
+          }))
+          return
+        }
+
+        next()
+      })
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    // Mock API endpoints in development
+    mockApiPlugin(),
     // Optimize images during build (PNG compression, WebP generation)
     ViteImageOptimizer({
       png: {

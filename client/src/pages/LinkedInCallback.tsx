@@ -17,6 +17,8 @@ export default function LinkedInCallback() {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    let redirectTimeout: ReturnType<typeof setTimeout> | null = null
+
     async function processCallback() {
       const code = searchParams.get('code')
       const state = searchParams.get('state')
@@ -48,7 +50,7 @@ export default function LinkedInCallback() {
           setStatus('success')
 
           // Redirect to CV builder with import flag after short delay
-          setTimeout(() => {
+          redirectTimeout = setTimeout(() => {
             navigate('/cv?import=linkedin')
           }, 2000)
         } else {
@@ -66,6 +68,12 @@ export default function LinkedInCallback() {
     }
 
     processCallback()
+
+    return () => {
+      if (redirectTimeout) {
+        clearTimeout(redirectTimeout)
+      }
+    }
   }, [searchParams, navigate])
 
   return (

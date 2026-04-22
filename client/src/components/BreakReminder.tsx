@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Coffee, X, Clock, CheckCircle } from '@/components/ui/icons'
 import { useSettingsStore } from '../stores/settingsStore'
 
@@ -13,6 +13,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
   const [lastActiveTime, setLastActiveTime] = useState(Date.now())
   const [isPaused, setIsPaused] = useState(false)
   const [dismissed, setDismissed] = useState(false)
+  const dismissTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   const REMINDER_INTERVAL = workDuration * 60 // sekunder
   const PAUSE_TIMEOUT = 60 * 1000 // 1 minut inaktivitet = paus
@@ -66,13 +67,27 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
     return () => clearInterval(interval)
   }, [calmMode, dismissed, lastActiveTime, REMINDER_INTERVAL, showReminder])
 
+  // Rensa dismiss timeout vid unmount
+  useEffect(() => {
+    return () => {
+      if (dismissTimeoutRef.current) {
+        clearTimeout(dismissTimeoutRef.current)
+      }
+    }
+  }, [])
+
   const dismissReminder = useCallback(() => {
     setShowReminder(false)
     setSecondsActive(0)
     setDismissed(true)
-    
+
+    // Rensa eventuell tidigare timeout
+    if (dismissTimeoutRef.current) {
+      clearTimeout(dismissTimeoutRef.current)
+    }
+
     // Återaktivera påminnelser efter 5 minuter
-    setTimeout(() => {
+    dismissTimeoutRef.current = setTimeout(() => {
       setDismissed(false)
     }, 5 * 60 * 1000)
   }, [])

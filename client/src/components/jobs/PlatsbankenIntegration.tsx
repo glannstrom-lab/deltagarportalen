@@ -86,6 +86,7 @@ export default function PlatsbankenIntegration() {
   const [notification, setNotification] = useState<{ message: string; type: 'success' | 'info' } | null>(null);
   
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const notificationTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const LIMIT = 20;
 
   // Ladda sparade jobb och sökningar från localStorage
@@ -142,10 +143,23 @@ export default function PlatsbankenIntegration() {
     loadLocations();
   }, []);
 
+  // Rensa notification timeout vid unmount
+  useEffect(() => {
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
+  }, []);
+
   // Visa notification
   const showNotification = (message: string, type: 'success' | 'info' = 'info') => {
+    // Rensa eventuell tidigare timeout
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+    }
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
+    notificationTimeoutRef.current = setTimeout(() => setNotification(null), 3000);
   };
 
   // Sök jobb

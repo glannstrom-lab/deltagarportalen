@@ -33,11 +33,18 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
   useEffect(() => {
     // Animera in stegen en i taget
     const steps = ['profile', 'cv', 'interest', 'cover-letter', 'apply', 'consultant', 'interview']
+    const timeouts: ReturnType<typeof setTimeout>[] = []
+
     steps.forEach((step, index) => {
-      setTimeout(() => {
+      const timeout = setTimeout(() => {
         setAnimatedSteps(prev => [...prev, step])
       }, index * 150)
+      timeouts.push(timeout)
     })
+
+    return () => {
+      timeouts.forEach(timeout => clearTimeout(timeout))
+    }
   }, [])
 
   const steps: RoadmapStep[] = [
