@@ -159,6 +159,9 @@ export function ApplicationsContacts() {
     mutationFn: (id: string) => applicationContactsApi.markContacted(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['application-contacts-all'] })
+    },
+    onError: (error) => {
+      console.error('Failed to mark contact as contacted:', error)
     }
   })
 
@@ -166,6 +169,9 @@ export function ApplicationsContacts() {
     mutationFn: (id: string) => applicationContactsApi.delete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['application-contacts-all'] })
+    },
+    onError: (error) => {
+      console.error('Failed to delete contact:', error)
     }
   })
 

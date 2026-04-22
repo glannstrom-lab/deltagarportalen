@@ -131,7 +131,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
         const { data: { session } } = await supabase.auth.getSession()
         if (session && data) {
           const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-          await fetch(
+          const emailResponse = await fetch(
             `${supabaseUrl}/functions/v1/send-invite-email`,
             {
               method: 'POST',
@@ -142,6 +142,9 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
               body: JSON.stringify({ invitationId: data.id })
             }
           )
+          if (!emailResponse.ok) {
+            console.warn('Email sending failed:', emailResponse.status, emailResponse.statusText)
+          }
         }
       } catch (emailErr) {
         console.warn('Could not send email automatically:', emailErr instanceof Error ? emailErr.message : 'Unknown error')

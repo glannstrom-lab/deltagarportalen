@@ -108,8 +108,14 @@ function PrivateRoute({
     return <Navigate to="/" replace />
   }
   
-  if (allowedRoles && profile?.role && !allowedRoles.includes(profile.role)) {
-    return <Navigate to="/" replace />
+  // Check both activeRole (current) and roles array for multi-role users
+  if (allowedRoles && profile) {
+    const hasAccess = allowedRoles.some(role =>
+      profile.activeRole === role || profile.roles?.includes(role)
+    )
+    if (!hasAccess) {
+      return <Navigate to="/" replace />
+    }
   }
   
   return <>{children}</>

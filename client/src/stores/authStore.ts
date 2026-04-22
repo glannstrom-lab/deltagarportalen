@@ -395,6 +395,9 @@ export const useAuthStore = create<AuthState>()(
               console.error('Failed to update activeRole:', error)
             }
           })
+          .catch((err) => {
+            console.error('Failed to update activeRole:', err)
+          })
       },
 
       // Clear error
