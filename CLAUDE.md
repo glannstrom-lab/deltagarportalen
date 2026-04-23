@@ -190,6 +190,19 @@ Projektets 10 specialiserade agenter finns i `.claude/agents/`:
 | product-owner | User stories, prioritering, värdeskapande |
 | ai-engineer | AI-funktioner, personalisering, ML-optimering |
 | performance-engineer | Core Web Vitals, laddningstider, optimering |
-| security-specialist | Dataskydd, autentisering, GDPR |
+| security-specialist | Säkerhetsrevision, secrets, RLS, XSS, GDPR → `docs/security-audit.md` |
 
 Använd agenter för granskning: "Låt [agent] granska [funktion/kod]"
+
+### Säkerhetsrevision
+Kör säkerhetsagenten för en fullständig audit:
+```
+Låt security-specialist granska hela projektet
+```
+Rapporten skrivs till `docs/security-audit.md` och inkluderar:
+- Secrets & credentials-sökning
+- Supabase RLS-verifiering
+- API-endpoints auth-krav
+- Input validation (XSS, SQL injection)
+- Externa API:er (OAuth, Claude)
+- Top 3 att fixa innan launch
