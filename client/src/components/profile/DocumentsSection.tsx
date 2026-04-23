@@ -1,11 +1,13 @@
 /**
  * DocumentsSection - Dokument-uppladdning (certifikat, intyg, etc)
+ * Updated with ARIA attributes and toast notifications
  */
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useId } from 'react'
 import { Plus, X, FileText, Upload, Loader2, ExternalLink, Calendar, Building2 } from '@/components/ui/icons'
 import { profileDocumentsApi, type ProfileDocument } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
+import { notifications } from '@/lib/toast'
 
 const DOCUMENT_TYPES = [
   { value: 'certificate', label: 'Certifikat' },
@@ -56,7 +58,7 @@ export function DocumentsSection({ className }: Props) {
     if (!file) return
 
     if (file.size > 10 * 1024 * 1024) {
-      alert('Filen måste vara mindre än 10MB')
+      notifications.error('Filen måste vara mindre än 10MB')
       return
     }
 
@@ -72,6 +74,8 @@ export function DocumentsSection({ className }: Props) {
     if (!selectedFile || !formData.name) return
 
     setUploading(true)
+    const toastId = notifications.loading('Laddar upp...')
+
     try {
       const doc = await profileDocumentsApi.upload(selectedFile, {
         name: formData.name,
@@ -83,22 +87,38 @@ export function DocumentsSection({ className }: Props) {
       })
       setDocuments(prev => [doc, ...prev])
       resetForm()
+      notifications.dismiss(toastId)
+      notifications.success('Dokument uppladdat!')
     } catch (err) {
       console.error('Error uploading document:', err)
-      alert('Kunde inte ladda upp dokumentet')
+      notifications.dismiss(toastId)
+      notifications.error('Kunde inte ladda upp dokumentet')
     } finally {
       setUploading(false)
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Vill du ta bort detta dokument?')) return
+  // State for delete confirmation
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
-    try {
-      await profileDocumentsApi.delete(id)
-      setDocuments(prev => prev.filter(d => d.id !== id))
-    } catch (err) {
-      console.error('Error deleting document:', err)
+  const handleDelete = async (id: string) => {
+    // If already in confirm state, proceed with deletion
+    if (deleteConfirm === id) {
+      try {
+        await profileDocumentsApi.delete(id)
+        setDocuments(prev => prev.filter(d => d.id !== id))
+        notifications.success('Dokument borttaget')
+      } catch (err) {
+        console.error('Error deleting document:', err)
+        notifications.error('Kunde inte ta bort dokumentet')
+      } finally {
+        setDeleteConfirm(null)
+      }
+    } else {
+      // Set confirm state - user needs to click again to confirm
+      setDeleteConfirm(id)
+      // Auto-reset after 3 seconds
+      setTimeout(() => setDeleteConfirm(null), 3000)
     }
   }
 
@@ -138,18 +158,20 @@ export function DocumentsSection({ className }: Props) {
   return (
     <div className={cn('space-y-4', className)}>
       {/* Upload area */}
-      <div
+      <button
+        type="button"
         onClick={() => fileInputRef.current?.click()}
-        className="border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-xl p-6 text-center cursor-pointer hover:border-teal-400 dark:hover:border-teal-500 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 transition-colors"
+        className="w-full border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-xl p-6 text-center cursor-pointer hover:border-teal-400 dark:hover:border-teal-500 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+        aria-label="Ladda upp dokument"
       >
-        <Upload className="w-8 h-8 mx-auto text-stone-400 dark:text-stone-500 mb-2" />
+        <Upload className="w-8 h-8 mx-auto text-stone-400 dark:text-stone-500 mb-2" aria-hidden="true" />
         <p className="text-sm text-stone-600 dark:text-stone-400">
           Klicka för att ladda upp certifikat, intyg eller andra dokument
         </p>
         <p className="text-xs text-stone-500 dark:text-stone-500 mt-1">
           PDF, Word, bilder - max 10MB
         </p>
-      </div>
+      </button>
 
       <input
         ref={fileInputRef}
@@ -157,18 +179,28 @@ export function DocumentsSection({ className }: Props) {
         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
         onChange={handleFileSelect}
         className="hidden"
+        aria-label="Välj fil att ladda upp"
       />
 
       {/* Upload form modal */}
       {showForm && selectedFile && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div
+          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="upload-modal-title"
+        >
           <div className="bg-white dark:bg-stone-800 rounded-2xl p-6 max-w-md w-full space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-stone-800 dark:text-stone-200">
+              <h3 id="upload-modal-title" className="font-semibold text-stone-800 dark:text-stone-200">
                 Ladda upp dokument
               </h3>
-              <button onClick={resetForm} className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg">
-                <X className="w-5 h-5 text-stone-500" />
+              <button
+                onClick={resetForm}
+                className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg"
+                aria-label="Stäng dialogruta"
+              >
+                <X className="w-5 h-5 text-stone-500" aria-hidden="true" />
               </button>
             </div>
 
@@ -337,17 +369,22 @@ export function DocumentsSection({ className }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/40 rounded-lg transition-colors"
-                title="Öppna dokument"
+                aria-label={`Öppna ${doc.name} i nytt fönster`}
               >
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-4 h-4" aria-hidden="true" />
               </a>
 
               <button
                 onClick={() => handleDelete(doc.id)}
-                className="p-2 text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                title="Ta bort"
+                className={cn(
+                  'p-2 rounded-lg transition-colors',
+                  deleteConfirm === doc.id
+                    ? 'text-white bg-red-500 hover:bg-red-600'
+                    : 'text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
+                )}
+                aria-label={deleteConfirm === doc.id ? 'Klicka igen för att bekräfta borttagning' : `Ta bort: ${doc.name}`}
               >
-                <X className="w-4 h-4" />
+                <X className="w-4 h-4" aria-hidden="true" />
               </button>
             </div>
           ))}

@@ -1,11 +1,13 @@
 /**
  * ProfileSharing - Skapa och hantera delbara profillänkar
+ * Updated with ARIA attributes and toast notifications
  */
 
 import { useState, useEffect } from 'react'
 import { Link2, Copy, QrCode, Trash2, Loader2, Plus, Eye, Calendar, Check, ExternalLink } from '@/components/ui/icons'
 import { profileShareApi, type ProfileShare } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
+import { notifications } from '@/lib/toast'
 
 interface Props {
   className?: string
@@ -80,22 +82,37 @@ export function ProfileSharing({ className }: Props) {
     }
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Vill du ta bort denna delningslänk?')) return
+  // Delete confirmation state
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
-    try {
-      await profileShareApi.delete(id)
-      setShares(prev => prev.filter(s => s.id !== id))
-    } catch (err) {
-      console.error('Error deleting share:', err)
+  const handleDelete = async (id: string) => {
+    if (deleteConfirm === id) {
+      try {
+        await profileShareApi.delete(id)
+        setShares(prev => prev.filter(s => s.id !== id))
+        notifications.success('Delningslänk borttagen')
+      } catch (err) {
+        console.error('Error deleting share:', err)
+        notifications.error('Kunde inte ta bort delningslänk')
+      } finally {
+        setDeleteConfirm(null)
+      }
+    } else {
+      setDeleteConfirm(id)
+      setTimeout(() => setDeleteConfirm(null), 3000)
     }
   }
 
   const copyToClipboard = async (shareCode: string) => {
-    const url = profileShareApi.getShareUrl(shareCode)
-    await navigator.clipboard.writeText(url)
-    setCopied(shareCode)
-    setTimeout(() => setCopied(null), 2000)
+    try {
+      const url = profileShareApi.getShareUrl(shareCode)
+      await navigator.clipboard.writeText(url)
+      setCopied(shareCode)
+      notifications.success('Länk kopierad till urklipp')
+      setTimeout(() => setCopied(null), 2000)
+    } catch (err) {
+      notifications.error('Kunde inte kopiera länk')
+    }
   }
 
   const formatDate = (date: string) => {

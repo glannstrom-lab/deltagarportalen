@@ -1,11 +1,13 @@
 /**
  * AISummary - AI-genererad profilsammanfattning
+ * Updated with ARIA attributes and toast notifications
  */
 
 import { useState, useEffect } from 'react'
 import { Sparkles, RefreshCw, Loader2, Copy, Check, Edit3 } from '@/components/ui/icons'
 import { aiSummaryApi } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
+import { notifications, TOAST_MESSAGES } from '@/lib/toast'
 
 interface Props {
   className?: string
@@ -36,12 +38,17 @@ export function AISummary({ className }: Props) {
 
   const handleGenerate = async () => {
     setGenerating(true)
+    const toastId = notifications.loading(TOAST_MESSAGES.AI_GENERATING)
+
     try {
       const newSummary = await aiSummaryApi.generate()
       setSummary(newSummary)
+      notifications.dismiss(toastId)
+      notifications.success(TOAST_MESSAGES.AI_SUCCESS)
     } catch (err) {
       console.error('Error generating summary:', err)
-      alert('Kunde inte generera sammanfattning. Kontrollera att du har fyllt i profil och CV.')
+      notifications.dismiss(toastId)
+      notifications.error('Kunde inte generera sammanfattning. Kontrollera att du har fyllt i profil och CV.')
     } finally {
       setGenerating(false)
     }
@@ -49,9 +56,14 @@ export function AISummary({ className }: Props) {
 
   const handleCopy = async () => {
     if (!summary) return
-    await navigator.clipboard.writeText(summary)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    try {
+      await navigator.clipboard.writeText(summary)
+      setCopied(true)
+      notifications.success('Kopierat till urklipp')
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      notifications.error('Kunde inte kopiera')
+    }
   }
 
   const handleEdit = () => {
@@ -64,9 +76,10 @@ export function AISummary({ className }: Props) {
       await aiSummaryApi.save(editValue)
       setSummary(editValue)
       setEditing(false)
+      notifications.success(TOAST_MESSAGES.SAVE_SUCCESS)
     } catch (err) {
       console.error('Error saving summary:', err)
-      alert('Kunde inte spara sammanfattningen')
+      notifications.error('Kunde inte spara sammanfattningen')
     }
   }
 
@@ -99,16 +112,16 @@ export function AISummary({ className }: Props) {
                     ? 'bg-green-100 dark:bg-green-900/40 text-green-600'
                     : 'hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500'
                 )}
-                title="Kopiera"
+                aria-label={copied ? 'Kopierat!' : 'Kopiera sammanfattning'}
               >
-                {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copied ? <Check className="w-4 h-4" aria-hidden="true" /> : <Copy className="w-4 h-4" aria-hidden="true" />}
               </button>
               <button
                 onClick={handleEdit}
                 className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500 rounded-lg transition-colors"
-                title="Redigera"
+                aria-label="Redigera sammanfattning"
               >
-                <Edit3 className="w-4 h-4" />
+                <Edit3 className="w-4 h-4" aria-hidden="true" />
               </button>
             </>
           )}
@@ -116,15 +129,16 @@ export function AISummary({ className }: Props) {
             onClick={handleGenerate}
             disabled={generating}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/40 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/60 transition-colors disabled:opacity-50"
+            aria-busy={generating}
           >
             {generating ? (
               <>
-                <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                Genererar...
+                <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
+                <span role="status">Genererar...</span>
               </>
             ) : (
               <>
-                <RefreshCw className="w-3.5 h-3.5" />
+                <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
                 {summary ? 'Generera ny' : 'Generera'}
               </>
             )}
