@@ -26,6 +26,7 @@ import { OnboardingStep } from '@/components/dashboard/OnboardingStep'
 import { QuickActionButton } from '@/components/dashboard/QuickActionButton'
 import { DashboardSection } from '@/components/dashboard/DashboardSection'
 import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton'
+import { DashboardError } from '@/components/dashboard/DashboardError'
 
 
 // ============================================
@@ -48,7 +49,7 @@ const ONBOARDING_STEPS = [
 export default function DashboardPage() {
   const { t } = useTranslation()
   const { profile: authProfile } = useAuthStore()
-  const { data: dashboardData, loading: dashboardLoading } = useDashboardData()
+  const { data: dashboardData, loading: dashboardLoading, error: dashboardError, refetch } = useDashboardData()
   const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
 
   // Calculate onboarding progress
@@ -82,7 +83,8 @@ export default function DashboardPage() {
   }
 
   const onboardingProgress = getOnboardingProgress()
-  const progressPercent = Math.round((onboardingProgress.completed / onboardingProgress.total) * 100)
+  // Fix: Prevent division by zero
+  const progressPercent = Math.round((onboardingProgress.completed / (onboardingProgress.total || 1)) * 100)
 
   // Find first incomplete step for current step indicator
   const currentStepIndex = ONBOARDING_STEPS.findIndex(
@@ -91,6 +93,11 @@ export default function DashboardPage() {
 
   if (dashboardLoading || interestLoading) {
     return <DashboardSkeleton />
+  }
+
+  // Show error state if data failed to load
+  if (dashboardError) {
+    return <DashboardError error={dashboardError} onRetry={refetch} />
   }
 
   const firstName = authProfile?.first_name || 'Välkommen'
@@ -106,7 +113,7 @@ export default function DashboardPage() {
           <div className="px-4 py-4 sm:px-5 sm:py-5">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shrink-0">
-                <User className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                <User className="w-6 h-6 sm:w-7 sm:h-7 text-white" aria-hidden="true" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-xs sm:text-sm text-teal-600 dark:text-teal-400 font-medium">{greeting}</p>
@@ -116,8 +123,15 @@ export default function DashboardPage() {
               </div>
               {/* Progress ring - visible on all screens */}
               <div className="flex items-center gap-2 sm:gap-3">
-                <div className="relative w-10 h-10 sm:w-12 sm:h-12">
-                  <svg className="w-10 h-10 sm:w-12 sm:h-12 -rotate-90">
+                <div
+                  className="relative w-10 h-10 sm:w-12 sm:h-12"
+                  role="progressbar"
+                  aria-valuenow={progressPercent}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                  aria-label={`Jobbredo: ${progressPercent}% klart, ${onboardingProgress.completed} av ${onboardingProgress.total} steg avklarade`}
+                >
+                  <svg className="w-10 h-10 sm:w-12 sm:h-12 -rotate-90" aria-hidden="true">
                     <circle
                       cx="50%"
                       cy="50%"
@@ -137,7 +151,7 @@ export default function DashboardPage() {
                       strokeLinecap="round"
                     />
                   </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300">
+                  <span className="absolute inset-0 flex items-center justify-center text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300" aria-hidden="true">
                     {progressPercent}%
                   </span>
                 </div>
@@ -250,9 +264,9 @@ export default function DashboardPage() {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-700 transition-colors"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2"
                   >
-                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 dark:text-amber-400 shrink-0" aria-hidden="true" />
                     <span className="text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 truncate">{item.label}</span>
                   </Link>
                 ))}
@@ -278,9 +292,9 @@ export default function DashboardPage() {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-700 transition-colors"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
                   >
-                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600 dark:text-sky-400 shrink-0" />
+                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600 dark:text-sky-400 shrink-0" aria-hidden="true" />
                     <span className="text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 truncate">{item.label}</span>
                   </Link>
                 ))}
@@ -294,7 +308,7 @@ export default function DashboardPage() {
             {interestProfile?.hasResult && interestProfile.riasecScores && (
               <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-3 sm:p-4">
                 <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                  <Compass className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600 dark:text-teal-400" />
+                  <Compass className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
                   <h3 className="text-sm sm:text-base font-semibold text-teal-800 dark:text-teal-300">Din intresseprofil</h3>
                 </div>
                 <div className="flex justify-center">
@@ -328,9 +342,9 @@ export default function DashboardPage() {
                 )}
                 <Link
                   to="/interest-guide"
-                  className="flex items-center justify-center gap-1 mt-2 sm:mt-3 text-xs sm:text-sm text-teal-600 dark:text-teal-400 hover:underline"
+                  className="flex items-center justify-center gap-1 mt-2 sm:mt-3 text-xs sm:text-sm text-teal-600 dark:text-teal-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 rounded"
                 >
-                  Se mer <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  Se mer <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                 </Link>
               </div>
             )}
@@ -339,11 +353,12 @@ export default function DashboardPage() {
             {!interestProfile?.hasResult && (
               <Link
                 to="/interest-guide"
-                className="block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border border-amber-200 dark:border-amber-800/50 p-3 sm:p-4 hover:shadow-lg transition-shadow group"
+                className="block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border border-amber-200 dark:border-amber-800/50 p-3 sm:p-4 hover:shadow-lg transition-shadow group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2"
+                aria-label="Upptäck dina styrkor - Gör intresseguiden"
               >
                 <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 rounded-xl flex items-center justify-center shrink-0">
-                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
                   </div>
                   <div className="min-w-0">
                     <h3 className="text-sm sm:text-base font-semibold text-amber-800 dark:text-amber-300 truncate">Upptäck dina styrkor</h3>
@@ -353,7 +368,7 @@ export default function DashboardPage() {
                 <p className="text-xs sm:text-sm text-amber-700 dark:text-amber-300/80">
                   Svara på frågor och få personliga jobbförslag baserat på dina intressen.
                 </p>
-                <div className="flex items-center gap-1 mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
+                <div className="flex items-center gap-1 mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-1 transition-transform" aria-hidden="true">
                   Starta nu <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
               </Link>
@@ -363,17 +378,18 @@ export default function DashboardPage() {
             {authProfile?.consultant_id && (
               <Link
                 to="/my-consultant"
-                className="block bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-900/20 dark:to-indigo-900/20 rounded-2xl border border-sky-200 dark:border-sky-800/50 p-3 sm:p-4 hover:shadow-lg transition-shadow"
+                className="block bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-900/20 dark:to-indigo-900/20 rounded-2xl border border-sky-200 dark:border-sky-800/50 p-3 sm:p-4 hover:shadow-lg transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
+                aria-label="Min konsulent - Kommunicera och följ upp"
               >
                 <div className="flex items-center gap-2.5 sm:gap-3">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-sky-400 to-indigo-400 dark:from-sky-500 dark:to-indigo-500 rounded-xl flex items-center justify-center shrink-0">
-                    <UserCheck className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                    <UserCheck className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
                   </div>
                   <div className="min-w-0 flex-1">
                     <h3 className="text-sm sm:text-base font-semibold text-sky-800 dark:text-sky-300">Min konsulent</h3>
                     <p className="text-xs sm:text-sm text-sky-600 dark:text-sky-400">Kommunicera och följ upp</p>
                   </div>
-                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-sky-400 dark:text-sky-500 shrink-0" />
+                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-sky-400 dark:text-sky-500 shrink-0" aria-hidden="true" />
                 </div>
               </Link>
             )}
@@ -402,7 +418,7 @@ export default function DashboardPage() {
             {dashboardData?.wellness && (
               <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-3 sm:p-4">
                 <div className="flex items-center gap-2 mb-2 sm:mb-3">
-                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 dark:text-rose-400" />
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 dark:text-rose-400" aria-hidden="true" />
                   <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-200">Välmående</h3>
                 </div>
                 {dashboardData.wellness.moodToday ? (

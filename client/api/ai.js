@@ -121,6 +121,50 @@ Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, ex
     maxTokens: 800,
     responseKey: 'result'
   }),
+  'profile-summary': (data) => {
+    // Build experience text
+    let experienceText = '';
+    if (data?.experience?.length) {
+      experienceText = data.experience.map(e => `${e.title} på ${e.company}${e.description ? ': ' + e.description : ''}`).join('\n');
+    }
+
+    // Build education text
+    let educationText = '';
+    if (data?.education?.length) {
+      educationText = data.education.map(e => `${e.degree} från ${e.school}`).join('\n');
+    }
+
+    // Build skills text
+    let skillsText = '';
+    if (data?.skills?.length) {
+      skillsText = data.skills.map(s => s.name + (s.level ? ` (nivå ${s.level}/5)` : '')).join(', ');
+    }
+
+    return {
+      system: `Du är en expert på att skriva professionella profilsammanfattningar på svenska. Skriv en engagerande och professionell sammanfattning (3-5 meningar) som lyfter fram personens styrkor, erfarenhet och mål. Använd ett varmt men professionellt tonläge som passar en jobbsökande.`,
+      user: `Skriv en professionell profilsammanfattning för denna person:
+
+NAMN: ${data?.name || 'Ej angivet'}
+TITEL: ${data?.title || 'Ej angiven'}
+ORT: ${data?.location || 'Ej angiven'}
+
+ERFARENHET:
+${experienceText || 'Ej angiven'}
+
+UTBILDNING:
+${educationText || 'Ej angiven'}
+
+KOMPETENSER:
+${skillsText || 'Ej angivna'}
+
+ÖNSKADE JOBB: ${data?.desiredJobs?.join(', ') || 'Ej angivet'}
+INTRESSEN: ${data?.interests?.join(', ') || 'Ej angivna'}
+
+Skriv en sammanfattning på 3-5 meningar som passar i en jobbsökarprofil:`,
+      maxTokens: 500,
+      responseKey: 'summary'
+    };
+  },
   'chatbot': (data) => {
     const historik = data?.historik || [];
     return {

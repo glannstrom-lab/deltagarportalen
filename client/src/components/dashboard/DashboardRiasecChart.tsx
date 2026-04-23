@@ -1,6 +1,7 @@
 /**
  * RIASEC Radar Chart Component for Dashboard
  * Displays user's interest profile as a radar/spider chart
+ * Updated with ARIA attributes for accessibility
  */
 
 import type { RiasecScores } from '@/hooks/useInterestProfile'
@@ -8,6 +9,16 @@ import type { RiasecScores } from '@/hooks/useInterestProfile'
 interface DashboardRiasecChartProps {
   scores: RiasecScores
   size?: number
+}
+
+// Swedish names for RIASEC types
+const RIASEC_NAMES: Record<keyof RiasecScores, string> = {
+  realistic: 'Praktisk',
+  investigative: 'Undersökande',
+  artistic: 'Konstnärlig',
+  social: 'Social',
+  enterprising: 'Företagsam',
+  conventional: 'Konventionell'
 }
 
 export function DashboardRiasecChart({ scores, size = 200 }: DashboardRiasecChartProps) {
@@ -99,38 +110,70 @@ export function DashboardRiasecChart({ scores, size = 200 }: DashboardRiasecChar
     )
   })
 
+  // Find top 3 scores for aria-label description
+  const sortedScores = keys
+    .map(k => ({ key: k, score: scores[k] }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 3)
+
+  const ariaLabel = `Intresseprofil: Dina topp 3 områden är ${sortedScores
+    .map((s, i) => `${i + 1}. ${RIASEC_NAMES[s.key]} (${Math.round((s.score / maxScore) * 100)}%)`)
+    .join(', ')}`
+
   return (
-    <svg width={size} height={size} className="mx-auto">
-      <defs>
-        <linearGradient id="riasecGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.4" />
-        </linearGradient>
-      </defs>
-      {levelCircles}
-      {axes}
-      <polygon
-        points={polygonPoints}
-        fill="url(#riasecGrad)"
-        stroke="#14b8a6"
-        strokeWidth="2"
-      />
-      {keys.map((key, i) => {
-        const point = getPoint(i, scores[key])
-        return (
-          <circle
-            key={key}
-            cx={point.x}
-            cy={point.y}
-            r="4"
-            fill="white"
-            stroke={colors[key]}
-            strokeWidth="2"
-          />
-        )
-      })}
-      {labels}
-    </svg>
+    <figure role="img" aria-label={ariaLabel}>
+      {/* Visual chart - hidden from screen readers */}
+      <svg width={size} height={size} className="mx-auto" aria-hidden="true">
+        <defs>
+          <linearGradient id="riasecGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.4" />
+          </linearGradient>
+        </defs>
+        {levelCircles}
+        {axes}
+        <polygon
+          points={polygonPoints}
+          fill="url(#riasecGrad)"
+          stroke="#14b8a6"
+          strokeWidth="2"
+        />
+        {keys.map((key, i) => {
+          const point = getPoint(i, scores[key])
+          return (
+            <circle
+              key={key}
+              cx={point.x}
+              cy={point.y}
+              r="4"
+              fill="white"
+              stroke={colors[key]}
+              strokeWidth="2"
+            />
+          )
+        })}
+        {labels}
+      </svg>
+
+      {/* Accessible fallback table - visually hidden but available to screen readers */}
+      <table className="sr-only">
+        <caption>RIASEC intressepoäng</caption>
+        <thead>
+          <tr>
+            <th scope="col">Intresseområde</th>
+            <th scope="col">Poäng</th>
+          </tr>
+        </thead>
+        <tbody>
+          {keys.map(key => (
+            <tr key={key}>
+              <td>{RIASEC_NAMES[key]}</td>
+              <td>{Math.round((scores[key] / maxScore) * 100)}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </figure>
   )
 }
 
