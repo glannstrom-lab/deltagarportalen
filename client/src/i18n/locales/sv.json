@@ -5413,7 +5413,9 @@
     "send": "Skicka",
     "inputPlaceholder": "Skriv ett meddelande...",
     "inputHint": "Tryck Enter för att skicka, Shift+Enter för ny rad",
-    "startChatHint": "Välj en snabbfunktion eller skriv ett meddelande för att börja",
+    "startChatHint": "Eller skriv ett eget meddelande nedan",
+    "welcomeMessage": "Hej! Jag är här för att hjälpa dig. Det finns inga dumma frågor – börja när du känner dig redo!",
+    "tryAsking": "Prova att fråga om:",
     "agents": {
       "arbetskonsulent": {
         "name": "Arbetskonsulent",

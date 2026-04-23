@@ -71,8 +71,13 @@ export default function AITeam() {
 
         {/* Chat Area with Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          {/* Chat Area - shown first on mobile */}
+          <Card className="order-first lg:order-last lg:col-span-3 p-0 overflow-hidden h-[450px] sm:h-[500px] lg:h-[600px]">
+            <AgentChat ref={chatRef} />
+          </Card>
+
           {/* Sidebar - Personality & Quick Actions */}
-          <div className="lg:col-span-1 space-y-4">
+          <div className="order-last lg:order-first lg:col-span-1 space-y-4">
             <Card className="p-4">
               <PersonalityDropdown />
             </Card>
@@ -109,11 +114,6 @@ export default function AITeam() {
               </ul>
             </Card>
           </div>
-
-          {/* Chat Area */}
-          <Card className="lg:col-span-3 p-0 overflow-hidden h-[600px]">
-            <AgentChat ref={chatRef} />
-          </Card>
         </div>
       </div>
     </div>

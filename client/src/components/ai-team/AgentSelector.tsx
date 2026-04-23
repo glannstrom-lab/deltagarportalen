@@ -104,7 +104,7 @@ export function AgentSelector({ className }: AgentSelectorProps) {
             key={agent.id}
             onClick={() => setAgent(agent.id)}
             className={cn(
-              'relative flex flex-col items-center p-4 rounded-xl',
+              'relative flex flex-col items-center p-3 sm:p-4 rounded-xl',
               'transition-all duration-200',
               'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
               colors.ring.replace('ring-', 'focus-visible:ring-'),
@@ -126,7 +126,7 @@ export function AgentSelector({ className }: AgentSelectorProps) {
                   )
             )}
             aria-pressed={isSelected}
-            aria-label={t(agent.nameKey)}
+            aria-label={`${t(agent.nameKey)}: ${t(agent.descriptionKey)}`}
           >
             <AgentAvatar agentId={agent.id} color={agent.color} size="lg" />
             <span
@@ -138,6 +138,16 @@ export function AgentSelector({ className }: AgentSelectorProps) {
               )}
             >
               {t(agent.nameKey)}
+            </span>
+            <span
+              className={cn(
+                'mt-1 text-[10px] sm:text-xs text-center line-clamp-2 leading-tight',
+                isSelected
+                  ? 'text-stone-600 dark:text-stone-400'
+                  : 'text-stone-400 dark:text-stone-500'
+              )}
+            >
+              {t(agent.descriptionKey)}
             </span>
             {isSelected && (
               <div

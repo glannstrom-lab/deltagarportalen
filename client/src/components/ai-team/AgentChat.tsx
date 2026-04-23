@@ -622,7 +622,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           aria-label={t('aiTeam.chatHistory')}
         >
           {messages.length === 0 ? (
-            <EmptyState agent={agent} />
+            <EmptyState agent={agent} onQuickAction={sendMessage} />
           ) : (
             messages.map((message) => (
               <MessageBubble
@@ -795,21 +795,71 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
   }
 )
 
-// Empty state component
-function EmptyState({ agent }: { agent: ReturnType<typeof getAgentById> }) {
+// Empty state component with welcoming message
+interface EmptyStateProps {
+  agent: ReturnType<typeof getAgentById>
+  onQuickAction?: (prompt: string) => void
+}
+
+function EmptyState({ agent, onQuickAction }: EmptyStateProps) {
   const { t } = useTranslation()
   const colors = agentColorClasses[agent.color]
 
+  // Get first 3 quick actions from the agent
+  const quickActions = agent.quickActions?.slice(0, 3) || []
+
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center p-8">
+    <div className="flex flex-col items-center justify-center h-full text-center p-4 sm:p-8">
       <AgentAvatar agentId={agent.id} color={agent.color} size="xl" />
       <h3 className="mt-4 text-lg font-semibold text-stone-900 dark:text-stone-100">
         {t(agent.nameKey)}
       </h3>
-      <p className="mt-2 text-sm text-stone-500 dark:text-stone-400 max-w-sm">
+
+      {/* Welcome speech bubble */}
+      <div className={cn(
+        'mt-4 px-4 py-3 rounded-2xl max-w-sm',
+        'bg-stone-100 dark:bg-stone-800',
+        'border border-stone-200 dark:border-stone-700'
+      )}>
+        <p className="text-sm text-stone-700 dark:text-stone-300">
+          {t('aiTeam.welcomeMessage', { agent: t(agent.nameKey) })}
+        </p>
+      </div>
+
+      <p className="mt-4 text-sm text-stone-500 dark:text-stone-400 max-w-sm">
         {t(agent.descriptionKey)}
       </p>
-      <p className={cn('mt-4 text-sm', colors.text)}>
+
+      {/* Quick action suggestions */}
+      {quickActions.length > 0 && onQuickAction && (
+        <div className="mt-6 w-full max-w-sm">
+          <p className="text-xs text-stone-400 dark:text-stone-500 mb-2">
+            {t('aiTeam.tryAsking')}
+          </p>
+          <div className="flex flex-col gap-2">
+            {quickActions.map((action) => (
+              <button
+                key={action.id}
+                onClick={() => onQuickAction(action.prompt)}
+                className={cn(
+                  'w-full px-3 py-2 rounded-lg text-left text-sm',
+                  'bg-stone-50 dark:bg-stone-800/50',
+                  'border border-stone-200 dark:border-stone-700',
+                  'hover:border-stone-300 dark:hover:border-stone-600',
+                  'hover:bg-white dark:hover:bg-stone-800',
+                  'text-stone-700 dark:text-stone-300',
+                  'transition-colors',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500'
+                )}
+              >
+                {t(action.labelKey)}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <p className={cn('mt-6 text-xs', colors.text)}>
         {t('aiTeam.startChatHint')}
       </p>
     </div>
