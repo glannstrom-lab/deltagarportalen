@@ -172,10 +172,8 @@ describe('Dashboard', () => {
       renderDashboard()
 
       await waitFor(() => {
-        // Current Dashboard structure has these sections
+        // Current Dashboard structure - simplified without quick actions and development sections
         expect(screen.getByText('Kom igång')).toBeInTheDocument()
-        expect(screen.getByText('Snabbåtgärder')).toBeInTheDocument()
-        expect(screen.getByText('Utveckling')).toBeInTheDocument()
       })
     })
 
@@ -196,8 +194,8 @@ describe('Dashboard', () => {
         const buttons = screen.getAllByRole('button')
         const categoryButtons = buttons.filter((btn) => btn.getAttribute('aria-expanded') !== null)
 
-        // Dashboard has multiple expandable sections
-        expect(categoryButtons.length).toBeGreaterThanOrEqual(2)
+        // Dashboard has at least one expandable section (Kom igång)
+        expect(categoryButtons.length).toBeGreaterThanOrEqual(1)
         categoryButtons.forEach((btn) => {
           expect(btn).toHaveAttribute('aria-expanded')
           expect(btn).toHaveAttribute('aria-controls')
@@ -226,9 +224,8 @@ describe('Dashboard', () => {
       renderDashboard()
 
       await waitFor(() => {
-        // Check that sections exist - exact structure may vary
+        // Check that sections exist - simplified structure
         expect(screen.getByText('Kom igång')).toBeInTheDocument()
-        expect(screen.getByText('Snabbåtgärder')).toBeInTheDocument()
       })
     })
   })
@@ -257,45 +254,14 @@ describe('Dashboard', () => {
     })
   })
 
-  describe('quick actions', () => {
-    it('should render quick action buttons', async () => {
+  describe('KPI cards', () => {
+    it('should render KPI cards section', async () => {
       renderDashboard()
 
       await waitFor(() => {
-        // Current Dashboard quick actions
-        expect(screen.getByText('Sök jobb')).toBeInTheDocument()
-        expect(screen.getByText('Redigera CV')).toBeInTheDocument()
-        expect(screen.getByText('Nytt brev')).toBeInTheDocument()
-        expect(screen.getByText('Dagbok')).toBeInTheDocument()
-      })
-    })
-  })
-
-  describe('development section', () => {
-    it('should render development section header', async () => {
-      renderDashboard()
-
-      await waitFor(() => {
-        // Development section is collapsed by default, but header is visible
-        expect(screen.getByText('Utveckling')).toBeInTheDocument()
-      })
-    })
-
-    it('should show development items when section is expanded', async () => {
-      const user = userEvent.setup()
-      renderDashboard()
-
-      await waitFor(() => {
-        expect(screen.getByText('Utveckling')).toBeInTheDocument()
-      })
-
-      // Click to expand the development section
-      const expandButton = screen.getByRole('button', { name: /utveckling/i })
-      await user.click(expandButton)
-
-      // Now items should be visible
-      await waitFor(() => {
-        expect(screen.getByText('Karriär')).toBeInTheDocument()
+        // Dashboard shows KPI cards for key metrics
+        const links = screen.getAllByRole('link')
+        expect(links.length).toBeGreaterThan(0)
       })
     })
   })

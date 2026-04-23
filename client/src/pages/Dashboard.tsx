@@ -14,7 +14,7 @@ import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import {
   User, Compass, FileText, Search, Mail, ClipboardList,
   ChevronRight, Bookmark, Briefcase, Heart, Sparkles, FileUser,
-  UserCheck, Flame, Zap, ArrowRight
+  UserCheck, Flame, Zap, ArrowRight, Target
 } from '@/components/ui/icons'
 
 // Extracted dashboard components

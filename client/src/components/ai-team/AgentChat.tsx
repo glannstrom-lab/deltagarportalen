@@ -131,6 +131,18 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       }
     }, [])
 
+    // Abort streaming when agent changes to prevent race conditions
+    useEffect(() => {
+      // Abort any ongoing streaming when switching agents
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
+      // Reset streaming state
+      setIsStreaming(false)
+      setStreamingContent('')
+      setSuggestions([])
+    }, [selectedAgent])
+
     // Auto-resize textarea
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
       setInputValue(e.target.value)
@@ -142,6 +154,12 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
     const sendMessage = useCallback(async (messageText?: string) => {
       const text = messageText || inputValue.trim()
       if (!text || isLoading || isStreaming) return
+
+      // Set loading state immediately to prevent double-send
+      setLoading(true)
+      setIsStreaming(true)
+      setStreamingContent('')
+      setError(null)
 
       // Clear input
       setInputValue('')
@@ -159,12 +177,6 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
 
       // Notify parent if callback provided
       onSendMessage?.(text)
-
-      // Send to AI with streaming
-      setLoading(true)
-      setIsStreaming(true)
-      setStreamingContent('')
-      setError(null)
 
       try {
         // Build context message with agent role, personality, and user data
@@ -679,7 +691,11 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           )}
 
           {error && (
-            <Card className="p-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800">
+            <Card
+              className="p-4 bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800"
+              role="alert"
+              aria-live="assertive"
+            >
               <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
             </Card>
           )}
@@ -863,14 +879,14 @@ function MessageBubble({ message, agentColor, onSaveToDiary, diarySaved, onSpeak
         >
           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
         </div>
-        {/* Action buttons - shows on hover for assistant messages */}
+        {/* Action buttons - always visible on mobile, hover/focus on desktop */}
         {!isUser && (
           <div className={cn(
             'absolute -bottom-2 right-2',
-            'opacity-0 group-hover:opacity-100',
+            'opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100',
             'transition-opacity duration-200',
             'flex items-center gap-1',
-            (copied || diarySaved || taskCreated || isSpeaking) && 'opacity-100'
+            (copied || diarySaved || taskCreated || isSpeaking) && 'sm:opacity-100'
           )}>
             {/* Speak button */}
             <button
@@ -883,11 +899,12 @@ function MessageBubble({ message, agentColor, onSaveToDiary, diarySaved, onSpeak
                 'hover:text-stone-900 dark:hover:text-stone-200',
                 'shadow-sm hover:shadow',
                 'flex items-center gap-1',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1',
                 isSpeaking && 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-700'
               )}
               aria-label={isSpeaking ? t('aiTeam.voice.stopSpeaking') : t('aiTeam.voice.speak')}
             >
-              <Volume2 className={cn('w-3 h-3', isSpeaking && 'text-teal-500 animate-pulse')} />
+              <Volume2 className={cn('w-3 h-3', isSpeaking && 'text-teal-500 animate-pulse')} aria-hidden="true" />
             </button>
             {/* Create task button */}
             <button
@@ -899,14 +916,15 @@ function MessageBubble({ message, agentColor, onSaveToDiary, diarySaved, onSpeak
                 'text-xs text-stone-600 dark:text-stone-400',
                 'hover:text-stone-900 dark:hover:text-stone-200',
                 'shadow-sm hover:shadow',
-                'flex items-center gap-1'
+                'flex items-center gap-1',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
               )}
               aria-label={taskCreated ? t('aiTeam.calendar.taskCreated') : t('aiTeam.calendar.createTask')}
             >
               {taskCreated ? (
-                <Check className="w-3 h-3 text-green-500" />
+                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
               ) : (
-                <CalendarPlus className="w-3 h-3" />
+                <CalendarPlus className="w-3 h-3" aria-hidden="true" />
               )}
             </button>
             {/* Save to diary button */}
@@ -919,14 +937,15 @@ function MessageBubble({ message, agentColor, onSaveToDiary, diarySaved, onSpeak
                 'text-xs text-stone-600 dark:text-stone-400',
                 'hover:text-stone-900 dark:hover:text-stone-200',
                 'shadow-sm hover:shadow',
-                'flex items-center gap-1'
+                'flex items-center gap-1',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
               )}
               aria-label={diarySaved ? t('aiTeam.savedToDiary') : t('aiTeam.saveToDiary')}
             >
               {diarySaved ? (
-                <Check className="w-3 h-3 text-green-500" />
+                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
               ) : (
-                <BookOpen className="w-3 h-3" />
+                <BookOpen className="w-3 h-3" aria-hidden="true" />
               )}
             </button>
             {/* Copy button */}
@@ -939,14 +958,15 @@ function MessageBubble({ message, agentColor, onSaveToDiary, diarySaved, onSpeak
                 'text-xs text-stone-600 dark:text-stone-400',
                 'hover:text-stone-900 dark:hover:text-stone-200',
                 'shadow-sm hover:shadow',
-                'flex items-center gap-1'
+                'flex items-center gap-1',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
               )}
               aria-label={copied ? t('aiTeam.messageCopied') : t('aiTeam.copyMessage')}
             >
               {copied ? (
-                <Check className="w-3 h-3 text-green-500" />
+                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
               ) : (
-                <Copy className="w-3 h-3" />
+                <Copy className="w-3 h-3" aria-hidden="true" />
               )}
             </button>
           </div>
