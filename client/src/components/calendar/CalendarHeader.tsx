@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { ChevronLeft, ChevronRight } from '@/components/ui/icons'
 import type { CalendarView } from '@/services/calendarData'
 
@@ -8,23 +10,35 @@ interface CalendarHeaderProps {
   onNavigate: (direction: 'prev' | 'next' | 'today') => void
 }
 
-const viewLabels: Record<CalendarView, string> = {
-  month: 'Månad',
-  week: 'Vecka',
-  day: 'Dag',
-  agenda: 'Agenda',
-}
-
 export function CalendarHeader({
   currentDate,
   view,
   onViewChange,
   onNavigate,
 }: CalendarHeaderProps) {
-  const monthNames = [
-    'Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
-    'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'
-  ]
+  const { t, i18n } = useTranslation()
+
+  const viewLabels = useMemo(() => ({
+    month: t('calendar.views.month'),
+    week: t('calendar.views.week'),
+    day: t('calendar.views.day'),
+    agenda: t('calendar.views.agenda'),
+  }), [t])
+
+  const monthNames = useMemo(() => [
+    t('calendar.months.january'),
+    t('calendar.months.february'),
+    t('calendar.months.march'),
+    t('calendar.months.april'),
+    t('calendar.months.may'),
+    t('calendar.months.june'),
+    t('calendar.months.july'),
+    t('calendar.months.august'),
+    t('calendar.months.september'),
+    t('calendar.months.october'),
+    t('calendar.months.november'),
+    t('calendar.months.december'),
+  ], [t])
 
   const getTitle = () => {
     switch (view) {
@@ -32,17 +46,17 @@ export function CalendarHeader({
         return `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`
       case 'week': {
         const weekNum = getWeekNumber(currentDate)
-        return `Vecka ${weekNum}, ${currentDate.getFullYear()}`
+        return t('calendar.weekNumber', { week: weekNum, year: currentDate.getFullYear() })
       }
       case 'day':
-        return currentDate.toLocaleDateString('sv-SE', {
+        return currentDate.toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', {
           weekday: 'long',
           year: 'numeric',
           month: 'long',
           day: 'numeric',
         })
       case 'agenda':
-        return 'Kommande händelser'
+        return t('calendar.upcomingEvents')
     }
   }
 
@@ -58,26 +72,26 @@ export function CalendarHeader({
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-stone-800 rounded-xl border border-teal-100 dark:border-stone-700 p-4">
       <div className="flex items-center gap-3 flex-wrap">
         {/* Navigation */}
-        <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-700 rounded-lg p-1">
+        <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-700 rounded-lg p-1" role="group" aria-label={t('calendar.navigation.previous')}>
           <button
             onClick={() => onNavigate('prev')}
-            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors"
-            aria-label="Föregående"
+            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1"
+            aria-label={t('calendar.navigation.previous')}
           >
-            <ChevronLeft size={18} className="text-stone-600 dark:text-stone-300" />
+            <ChevronLeft size={18} className="text-stone-600 dark:text-stone-300" aria-hidden="true" />
           </button>
           <button
             onClick={() => onNavigate('today')}
-            className="px-3 py-2 text-sm font-medium text-stone-700 dark:text-stone-200 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors"
+            className="px-3 py-2 text-sm font-medium text-stone-700 dark:text-stone-200 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1"
           >
-            Idag
+            {t('calendar.navigation.today')}
           </button>
           <button
             onClick={() => onNavigate('next')}
-            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors"
-            aria-label="Nästa"
+            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1"
+            aria-label={t('calendar.navigation.next')}
           >
-            <ChevronRight size={18} className="text-stone-600 dark:text-stone-300" />
+            <ChevronRight size={18} className="text-stone-600 dark:text-stone-300" aria-hidden="true" />
           </button>
         </div>
 
@@ -88,12 +102,14 @@ export function CalendarHeader({
       </div>
 
       {/* View switcher */}
-      <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-700 rounded-lg p-1">
+      <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-700 rounded-lg p-1" role="tablist" aria-label={t('calendar.views.month')}>
         {(Object.keys(viewLabels) as CalendarView[]).map((v) => (
           <button
             key={v}
+            role="tab"
+            aria-selected={view === v}
             onClick={() => onViewChange(v)}
-            className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+            className={`px-3 py-2 text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1 ${
               view === v
                 ? 'bg-teal-600 text-white shadow-sm'
                 : 'text-stone-600 dark:text-stone-300 hover:bg-white dark:hover:bg-stone-600'

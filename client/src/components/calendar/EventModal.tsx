@@ -14,6 +14,7 @@ interface EventModalProps {
   onSave: (event: CalendarEvent) => void
   onDelete: (eventId: string) => void
   linkedJobTitle?: string
+  isSaving?: boolean
 }
 
 const eventTypeConfigs = [
@@ -26,10 +27,11 @@ const eventTypeConfigs = [
   { value: 'preparation', labelKey: 'calendar.eventTypes.preparation', color: 'bg-teal-100 text-teal-700' },
 ]
 
-export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJobTitle }: EventModalProps) {
+export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJobTitle, isSaving = false }: EventModalProps) {
   const { t } = useTranslation()
   const [formData, setFormData] = useState<Partial<CalendarEvent>>({})
   const [activeTab, setActiveTab] = useState<'details' | 'tasks' | 'prep' | 'travel'>('details')
+  const [validationError, setValidationError] = useState<string | null>(null)
   const titleId = useId()
 
   const eventTypes = useMemo(() => eventTypeConfigs.map(type => ({
@@ -54,6 +56,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
   }, [isOpen, handleKeyDown])
 
   useEffect(() => {
+    setValidationError(null)
     if (event) {
       setFormData({ ...event })
       // Sätt aktiv tab baserat på event-typ
@@ -67,6 +70,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
         type: 'meeting',
         date: new Date().toISOString().split('T')[0],
         time: '09:00',
+        endTime: '10:00',
         tasks: [],
       })
     }
@@ -75,8 +79,16 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
   if (!isOpen) return null
 
   const handleSave = () => {
+    setValidationError(null)
+
     if (!formData.title || !formData.date || !formData.time) return
-    
+
+    // Validate end time is after start time
+    if (formData.endTime && formData.time && formData.endTime <= formData.time) {
+      setValidationError(t('calendar.errors.endTimeBeforeStart'))
+      return
+    }
+
     onSave({
       ...event,
       ...formData,
@@ -84,7 +96,6 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
       createdAt: event?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     } as CalendarEvent)
-    onClose()
   }
 
   const tabs = [
@@ -180,26 +191,58 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               </div>
 
               {/* Date & Time */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.date')}</label>
                   <input
                     type="date"
                     value={formData.date || ''}
-                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    onChange={(e) => {
+                      setValidationError(null)
+                      setFormData({ ...formData, date: e.target.value })
+                    }}
                     className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.time')}</label>
+                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.startTime')}</label>
                   <input
                     type="time"
                     value={formData.time || ''}
-                    onChange={(e) => setFormData({ ...formData, time: e.target.value })}
+                    onChange={(e) => {
+                      setValidationError(null)
+                      setFormData({ ...formData, time: e.target.value })
+                    }}
                     className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
+                <div>
+                  <label className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('calendar.modal.endTime')}</label>
+                  <input
+                    type="time"
+                    value={formData.endTime || ''}
+                    onChange={(e) => {
+                      setValidationError(null)
+                      setFormData({ ...formData, endTime: e.target.value })
+                    }}
+                    className={`mt-1 w-full px-3 py-2 border bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                      validationError ? 'border-red-500 dark:border-red-500' : 'border-stone-200 dark:border-stone-700'
+                    }`}
+                    aria-invalid={validationError ? 'true' : 'false'}
+                    aria-describedby={validationError ? 'time-error' : undefined}
+                  />
+                </div>
               </div>
+
+              {/* Validation error */}
+              {validationError && (
+                <div id="time-error" role="alert" className="text-sm text-red-600 dark:text-red-400 flex items-center gap-1">
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                  {validationError}
+                </div>
+              )}
 
               {/* Location */}
               <div>
@@ -307,11 +350,9 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
         <div className="flex items-center justify-between p-4 border-t border-stone-200 dark:border-stone-700">
           {event ? (
             <button
-              onClick={() => {
-                onDelete(event.id)
-                onClose()
-              }}
-              className="text-red-600 hover:text-red-700 text-sm font-medium"
+              onClick={() => onDelete(event.id)}
+              disabled={isSaving}
+              className="text-red-600 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {t('common.delete')}
             </button>
@@ -319,10 +360,10 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
             <div />
           )}
           <div className="flex gap-2">
-            <Button variant="ghost" onClick={onClose}>
+            <Button variant="ghost" onClick={onClose} disabled={isSaving}>
               {t('common.cancel')}
             </Button>
-            <Button onClick={handleSave}>
+            <Button onClick={handleSave} disabled={isSaving || !formData.title || !formData.date || !formData.time}>
               {event ? t('common.saveChanges') : t('calendar.modal.createEvent')}
             </Button>
           </div>

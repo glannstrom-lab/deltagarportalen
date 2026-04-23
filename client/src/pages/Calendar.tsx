@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, Loader2, CalendarDays } from '@/components/ui/icons'
+import { Plus, Loader2, CalendarDays, AlertCircle, RefreshCw } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
@@ -20,23 +20,36 @@ export default function Calendar() {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [statusMessage, setStatusMessage] = useState<string | null>(null)
+  const [isSaving, setIsSaving] = useState(false)
+
+  // Clear status message after 3 seconds
+  useEffect(() => {
+    if (statusMessage) {
+      const timer = setTimeout(() => setStatusMessage(null), 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [statusMessage])
 
   // Load events from cloud
-  useEffect(() => {
-    loadEvents()
-  }, [])
-
-  const loadEvents = async () => {
+  const loadEvents = useCallback(async () => {
     setLoading(true)
+    setError(null)
     try {
       const eventsData = await calendarApi.getEvents()
       setEvents(eventsData as unknown as CalendarEvent[])
-    } catch (error) {
-      console.error('Error loading calendar events:', error)
+    } catch (err) {
+      console.error('Error loading calendar events:', err)
+      setError(t('calendar.errors.loadFailed'))
     } finally {
       setLoading(false)
     }
-  }
+  }, [t])
+
+  useEffect(() => {
+    loadEvents()
+  }, [loadEvents])
 
   const navigate = (direction: 'prev' | 'next' | 'today') => {
     if (direction === 'today') {
@@ -65,6 +78,8 @@ export default function Calendar() {
   }
 
   const handleSaveEvent = async (event: CalendarEvent) => {
+    setIsSaving(true)
+    setError(null)
     try {
       // Transform to API format
       const apiEvent = {
@@ -97,6 +112,9 @@ export default function Calendar() {
         const success = await calendarApi.updateEvent(event.id, apiEvent)
         if (success) {
           setEvents(events.map(e => e.id === event.id ? event : e))
+          setStatusMessage(t('calendar.eventUpdated'))
+        } else {
+          throw new Error('Update failed')
         }
       } else {
         // Create new event
@@ -104,24 +122,40 @@ export default function Calendar() {
         if (created) {
           const newEvent = { ...event, id: created.id || event.id }
           setEvents([...events, newEvent])
+          setStatusMessage(t('calendar.eventCreated'))
+        } else {
+          throw new Error('Create failed')
         }
       }
 
       setSelectedEvent(null)
       setIsModalOpen(false)
-    } catch (error) {
-      console.error('Error saving event:', error)
+    } catch (err) {
+      console.error('Error saving event:', err)
+      setError(t('calendar.errors.saveFailed'))
+    } finally {
+      setIsSaving(false)
     }
   }
 
   const handleDeleteEvent = async (eventId: string) => {
+    setIsSaving(true)
+    setError(null)
     try {
       const success = await calendarApi.deleteEvent(eventId)
       if (success) {
         setEvents(events.filter(e => e.id !== eventId))
+        setStatusMessage(t('calendar.eventDeleted'))
+        setSelectedEvent(null)
+        setIsModalOpen(false)
+      } else {
+        throw new Error('Delete failed')
       }
-    } catch (error) {
-      console.error('Error deleting event:', error)
+    } catch (err) {
+      console.error('Error deleting event:', err)
+      setError(t('calendar.errors.deleteFailed'))
+    } finally {
+      setIsSaving(false)
     }
   }
 
@@ -297,6 +331,38 @@ export default function Calendar() {
         }
       >
         <div className="space-y-4">
+          {/* Status message - aria-live for screen readers */}
+          <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+            {statusMessage}
+          </div>
+
+          {/* Visible status toast */}
+          {statusMessage && (
+            <div className="fixed bottom-4 right-4 z-50 px-4 py-3 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg border border-green-200 dark:border-green-800 shadow-lg flex items-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              {statusMessage}
+            </div>
+          )}
+
+          {/* Error message */}
+          {error && (
+            <div role="alert" className="p-4 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-lg border border-red-200 dark:border-red-800 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-5 h-5" aria-hidden="true" />
+                {error}
+              </div>
+              <button
+                onClick={loadEvents}
+                className="flex items-center gap-1 px-3 py-1.5 bg-red-100 dark:bg-red-800/50 hover:bg-red-200 dark:hover:bg-red-800 rounded-lg text-sm font-medium transition-colors"
+              >
+                <RefreshCw className="w-4 h-4" aria-hidden="true" />
+                {t('common.tryAgain')}
+              </button>
+            </div>
+          )}
+
           {loading && (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
@@ -304,7 +370,7 @@ export default function Calendar() {
             </div>
           )}
 
-          {!loading && (
+          {!loading && !error && (
             <>
               <CalendarHeader
                 currentDate={currentDate}
@@ -342,12 +408,25 @@ export default function Calendar() {
         event={selectedEvent}
         isOpen={isModalOpen}
         onClose={() => {
-          setIsModalOpen(false)
-          setSelectedEvent(null)
+          if (!isSaving) {
+            setIsModalOpen(false)
+            setSelectedEvent(null)
+          }
         }}
         onSave={handleSaveEvent}
         onDelete={handleDeleteEvent}
+        isSaving={isSaving}
       />
+
+      {/* Saving overlay */}
+      {isSaving && (
+        <div className="fixed inset-0 bg-black/20 z-[60] flex items-center justify-center">
+          <div className="bg-white dark:bg-stone-800 rounded-lg p-4 flex items-center gap-3 shadow-lg">
+            <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
+            <span className="text-stone-700 dark:text-stone-300">{t('common.loading')}</span>
+          </div>
+        </div>
+      )}
     </>
   )
 }

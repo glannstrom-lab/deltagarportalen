@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Brain, CheckCircle, Lightbulb, Shirt, FileText, HelpCircle, ExternalLink, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import type { CalendarEvent, InterviewPrep } from '@/services/calendarData'
@@ -13,6 +13,7 @@ interface InterviewPrepProps {
 export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepProps) {
   const { t } = useTranslation()
   const [expanded, setExpanded] = useState(true)
+  const contentId = useId()
 
   const generateAIQuestions = () => {
     // AI-simulated question generation
@@ -44,22 +45,24 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
     <div className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl border border-indigo-100 dark:border-indigo-800 overflow-hidden">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full p-4 flex items-center justify-between hover:bg-white/50 dark:hover:bg-stone-800/50 transition-colors"
+        aria-expanded={expanded}
+        aria-controls={contentId}
+        className="w-full p-4 flex items-center justify-between hover:bg-white/50 dark:hover:bg-stone-800/50 transition-colors focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-inset"
       >
         <div className="flex items-center gap-3">
           <div className="p-2 bg-indigo-100 dark:bg-indigo-900/40 rounded-lg">
-            <Brain className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
+            <Brain className="w-5 h-5 text-indigo-600 dark:text-indigo-400" aria-hidden="true" />
           </div>
-          <div>
+          <div className="text-left">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('calendar.interviewPrep.title')}</h3>
             <p className="text-sm text-stone-700 dark:text-stone-300">{t('calendar.interviewPrep.subtitle')}</p>
           </div>
         </div>
-        {expanded ? <ChevronUp size={20} className="text-stone-600 dark:text-stone-400" /> : <ChevronDown size={20} className="text-stone-600 dark:text-stone-400" />}
+        {expanded ? <ChevronUp size={20} className="text-stone-600 dark:text-stone-400" aria-hidden="true" /> : <ChevronDown size={20} className="text-stone-600 dark:text-stone-400" aria-hidden="true" />}
       </button>
 
       {expanded && (
-        <div className="p-4 pt-0 space-y-4">
+        <div id={contentId} className="p-4 pt-0 space-y-4">
           {/* AI Generator */}
           <div className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-indigo-100 dark:border-indigo-800">
             <div className="flex items-start gap-3">

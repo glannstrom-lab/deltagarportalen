@@ -55,7 +55,10 @@
     "unknown": "okänd",
     "preview": "Förhandsgranska",
     "skip": "Hoppa över",
-    "filter": "Filtrera"
+    "filter": "Filtrera",
+    "done": "Klar",
+    "pending": "Väntar",
+    "retry": "Försök igen"
   },
   "pageTabs": {
     "cv": {
@@ -122,6 +125,8 @@
       "type": "Typ",
       "date": "Datum",
       "time": "Tid",
+      "startTime": "Starttid",
+      "endTime": "Sluttid",
       "locationOptional": "Plats (valfritt)",
       "locationPlaceholder": "Adress eller plats",
       "withOptional": "Med (valfritt)",
@@ -152,6 +157,74 @@
         "attraction": "Vad lockar dig mest med att arbeta på {{company}}?",
         "challenge": "Beskriv hur du hanterar [relevant utmaning för rollen]"
       }
+    },
+    "title": "Kalender",
+    "newEvent": "Ny händelse",
+    "upcomingEvents": "Kommande händelser",
+    "noEventsPlanned": "Inga händelser planerade",
+    "moreEvents": "+{{count}} till",
+    "eventCreated": "Händelse skapad",
+    "eventUpdated": "Händelse uppdaterad",
+    "eventDeleted": "Händelse borttagen",
+    "errors": {
+      "loadFailed": "Kunde inte ladda kalenderhändelser. Försök igen.",
+      "saveFailed": "Kunde inte spara händelsen. Försök igen.",
+      "deleteFailed": "Kunde inte ta bort händelsen. Försök igen.",
+      "endTimeBeforeStart": "Sluttid måste vara efter starttid"
+    },
+    "views": {
+      "month": "Månad",
+      "week": "Vecka",
+      "day": "Dag",
+      "agenda": "Agenda"
+    },
+    "navigation": {
+      "previous": "Föregående",
+      "next": "Nästa",
+      "today": "Idag"
+    },
+    "months": {
+      "january": "Januari",
+      "february": "Februari",
+      "march": "Mars",
+      "april": "April",
+      "may": "Maj",
+      "june": "Juni",
+      "july": "Juli",
+      "august": "Augusti",
+      "september": "September",
+      "october": "Oktober",
+      "november": "November",
+      "december": "December"
+    },
+    "weekNumber": "Vecka {{week}}, {{year}}",
+    "travel": {
+      "title": "Reseplanering",
+      "destination": "Destination",
+      "destinationPlaceholder": "Ange adress...",
+      "duration": "Restid (min)",
+      "cost": "Kostnad (kr)",
+      "transportMode": "Färdsätt",
+      "modes": {
+        "public": "Kollektivtrafik",
+        "car": "Bil",
+        "bike": "Cykel",
+        "walk": "Gång"
+      },
+      "savePlan": "Spara reseplan",
+      "departureTime": "Avresa senast",
+      "reimbursed": "Ersätts",
+      "edit": "Ändra",
+      "travelPlan": "Reseplan"
+    },
+    "tasks": {
+      "toDo": "Att göra",
+      "addPlaceholder": "Lägg till ny uppgift...",
+      "empty": "Inga uppgifter ännu. Lägg till en för att komma igång!",
+      "addTask": "Lägg till uppgift",
+      "moveUp": "Flytta upp",
+      "moveDown": "Flytta ned",
+      "deleteTask": "Ta bort uppgift"
     }
   },
   "nav": {
