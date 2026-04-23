@@ -1005,6 +1005,73 @@
         "fixed": "fixade",
         "solved": "löste"
       }
+    },
+    "quickMode": {
+      "title": "Snabb-CV",
+      "subtitle": "Skapa ett grundläggande CV på 30 sekunder",
+      "step": "Steg",
+      "of": "av",
+      "steps": {
+        "name": "Ditt namn",
+        "title": "Vad jobbar du som?",
+        "contact": "Kontaktuppgifter"
+      },
+      "placeholders": {
+        "name": "Anna Andersson",
+        "title": "t.ex. Projektledare, Säljare, Utvecklare",
+        "email": "din.email@exempel.se",
+        "phone": "070-123 45 67 (valfritt)"
+      },
+      "next": "Nästa",
+      "generate": "Skapa mitt CV",
+      "generating": "Skapar ditt CV...",
+      "generatingHint": "Vi genererar en professionell sammanfattning åt dig",
+      "switchToFull": "Vill du ha mer kontroll?",
+      "benefits": "Du kan alltid utöka och anpassa ditt CV efteråt",
+      "success": "Ditt CV är skapat! Du kan nu redigera och lägga till mer information."
+    },
+    "jobAdapt": {
+      "title": "Anpassa för jobb",
+      "description": "Klistra in en jobbannons för att få förslag på hur du kan anpassa ditt CV",
+      "placeholder": "Klistra in jobbannonsen här...\n\nExempel:\nVi söker en erfaren projektledare med kunskap inom agila metoder. Du bör ha erfarenhet av...",
+      "analyze": "Analysera annons",
+      "analyzing": "Analyserar annons...",
+      "clear": "Rensa",
+      "paste": "Klistra in",
+      "collapsed": {
+        "title": "Optimera för jobbannons",
+        "description": "Klistra in en annons för att se matchning"
+      },
+      "match": {
+        "title": "Matchning",
+        "good": "Bra matchning!",
+        "needsWork": "Kan förbättras"
+      },
+      "keywords": {
+        "found": "Matchande nyckelord",
+        "foundDescription": "Dessa nyckelord finns redan i ditt CV",
+        "missing": "Saknade nyckelord",
+        "missingDescription": "Klicka för att lägga till i ditt CV",
+        "addSkill": "Lägg till kompetens: {{keyword}}"
+      },
+      "summary": {
+        "title": "Förslag på sammanfattning",
+        "update": "Uppdatera sammanfattning",
+        "updated": "Sammanfattningen har uppdaterats"
+      },
+      "tips": {
+        "title": "Tips för denna annons",
+        "addKeywords": "Lägg till de saknade nyckelorden i din sammanfattning eller kompetenser",
+        "highlightExperience": "Framhäv erfarenheter som matchar kraven",
+        "quantifyResults": "Kvantifiera dina resultat där det är möjligt"
+      },
+      "skillAdded": "Kompetens tillagd: {{skill}}",
+      "summaryUpdated": "Sammanfattning uppdaterad"
+    },
+    "welcome": {
+      "title": "Välkommen till CV-byggaren",
+      "subtitle": "Välj hur du vill börja",
+      "fullBuilder": "Eller använd den fullständiga CV-byggaren"
     }
   },
   "coverLetter": {

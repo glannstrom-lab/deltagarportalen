@@ -32,6 +32,8 @@ import { SkillsEditor } from '@/components/cv/SkillsEditor'
 import { ContextualHelp } from '@/components/cv/ContextualHelp'
 import { CVOnboarding, shouldShowOnboarding } from '@/components/cv/CVOnboarding'
 import { ContextualKnowledgeWidget } from '@/components/workflow'
+import { QuickCVMode } from '@/components/cv/QuickCVMode'
+import { JobAdaptPanel } from '@/components/cv/JobAdaptPanel'
 
 // ============================================
 // STEG - med tidsuppskattningar för bättre UX
@@ -253,7 +255,9 @@ export default function CVBuilder() {
   const [showSaveVersion, setShowSaveVersion] = useState(false)
   const [versionName, setVersionName] = useState('')
   const [showOnboarding, setShowOnboarding] = useState(false)
-  
+  const [showQuickMode, setShowQuickMode] = useState(false)
+  const [hasLoadedCV, setHasLoadedCV] = useState(false)
+
   const [data, setData] = useState<CVData>({
     firstName: '', lastName: '', title: '', email: '', phone: '', location: '',
     summary: '', skills: [], workExperience: [], education: [],
@@ -327,15 +331,16 @@ export default function CVBuilder() {
           const { data: versionData } = JSON.parse(editVersion)
           setData(prev => ({ ...prev, ...versionData }))
           localStorage.removeItem('cv-edit-version')
+          setHasLoadedCV(true)
           showToast.success(t('cvBuilder.messages.loadedCVVersion'))
           return
         } catch (e) {
           console.error('Fel vid laddning av version:', e)
         }
       }
-      
+
       const cv = await cvApi.getCV()
-      
+
       if (cv) {
         setData(prev => {
           const newData = { ...prev, ...cv }
@@ -355,8 +360,19 @@ export default function CVBuilder() {
             }
           } catch { }
         }
+        // Kolla om vi ska visa quick mode (ingen befintlig CV-data)
+        const hasExistingData = !!(cv.firstName || cv.lastName || cv.title || cv.summary)
+        setShowQuickMode(!hasExistingData)
+      } else {
+        // Ingen CV finns - visa quick mode
+        setShowQuickMode(true)
       }
-    } catch (e) { console.error(e) }
+      setHasLoadedCV(true)
+    } catch (e) {
+      console.error(e)
+      setHasLoadedCV(true)
+      setShowQuickMode(true)
+    }
   }
 
   const loadVersions = async () => {
@@ -400,6 +416,35 @@ export default function CVBuilder() {
       setData(prev => ({ ...prev, ...restored }))
       showToast.success(t('cvBuilder.messages.versionRestored'))
     } catch { showToast.error(t('cvBuilder.messages.couldNotRestore')) }
+  }
+
+  // Handler för QuickCVMode - fyll i data och byt till full mode
+  const handleQuickComplete = (quickData: Partial<CVData>) => {
+    setData(prev => ({ ...prev, ...quickData }))
+    setShowQuickMode(false)
+    setStep(2) // Gå till "Om dig" för att kunna redigera vidare
+    showToast.success(t('cv.quickMode.success', 'Ditt CV är skapat! Du kan nu redigera och lägga till mer information.'))
+  }
+
+  // Handler för JobAdaptPanel - lägg till skill
+  const handleAddSkillFromJob = (skillName: string) => {
+    const newSkill = {
+      id: Date.now().toString(),
+      name: skillName,
+      level: 3,
+      category: 'technical' as const
+    }
+    setData(prev => ({
+      ...prev,
+      skills: [...(prev.skills || []), newSkill]
+    }))
+    showToast.success(t('cv.jobAdapt.skillAdded', 'Kompetens tillagd: {{skill}}', { skill: skillName }))
+  }
+
+  // Handler för JobAdaptPanel - uppdatera sammanfattning
+  const handleUpdateSummaryFromJob = (summary: string) => {
+    setData(prev => ({ ...prev, summary }))
+    showToast.success(t('cv.jobAdapt.summaryUpdated', 'Sammanfattning uppdaterad'))
   }
 
   const loadDemoData = async () => {
@@ -785,6 +830,49 @@ export default function CVBuilder() {
 
   const currentStep = STEPS.find(s => s.id === step)!
 
+  // Visa laddningsindikator medan CV laddas
+  if (!hasLoadedCV) {
+    return (
+      <div className="max-w-7xl mx-auto flex items-center justify-center py-12">
+        <div className="flex items-center gap-3">
+          <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
+          <span className="text-stone-600 dark:text-stone-400">{t('cvBuilder.loading', 'Laddar...')}</span>
+        </div>
+      </div>
+    )
+  }
+
+  // Visa QuickCVMode om användaren inte har befintlig CV-data
+  if (showQuickMode) {
+    return (
+      <div className="max-w-2xl mx-auto py-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-stone-800 dark:text-stone-200 mb-2">
+            {t('cv.welcome.title', 'Välkommen till CV-byggaren')}
+          </h1>
+          <p className="text-stone-600 dark:text-stone-400">
+            {t('cv.welcome.subtitle', 'Välj hur du vill börja')}
+          </p>
+        </div>
+
+        <QuickCVMode
+          onComplete={handleQuickComplete}
+          onSwitchToFull={() => setShowQuickMode(false)}
+          className="mb-6"
+        />
+
+        <div className="text-center">
+          <button
+            onClick={() => setShowQuickMode(false)}
+            className="px-6 py-3 text-teal-600 dark:text-teal-400 font-medium hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-xl transition-colors"
+          >
+            {t('cv.welcome.fullBuilder', 'Eller använd den fullständiga CV-byggaren')}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-7xl mx-auto">
       {/* Action buttons bar */}
@@ -881,6 +969,15 @@ export default function CVBuilder() {
               {t('cvBuilder.help.showGuide')}
             </button>
           </div>
+
+          {/* Job Adapt Panel - Anpassa för jobb */}
+          {step >= 3 && (
+            <JobAdaptPanel
+              cvData={data}
+              onAddSkill={handleAddSkillFromJob}
+              onUpdateSummary={handleUpdateSummaryFromJob}
+            />
+          )}
 
           {/* AI Tools */}
           {step === 3 && (

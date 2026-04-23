@@ -932,6 +932,73 @@
         "fixed": "fixed",
         "solved": "solved"
       }
+    },
+    "quickMode": {
+      "title": "Quick CV",
+      "subtitle": "Create a basic CV in 30 seconds",
+      "step": "Step",
+      "of": "of",
+      "steps": {
+        "name": "Your name",
+        "title": "What's your job?",
+        "contact": "Contact details"
+      },
+      "placeholders": {
+        "name": "John Smith",
+        "title": "e.g. Project Manager, Sales, Developer",
+        "email": "your.email@example.com",
+        "phone": "+46 70-123 45 67 (optional)"
+      },
+      "next": "Next",
+      "generate": "Create my CV",
+      "generating": "Creating your CV...",
+      "generatingHint": "We're generating a professional summary for you",
+      "switchToFull": "Want more control?",
+      "benefits": "You can always expand and customize your CV later",
+      "success": "Your CV is created! You can now edit and add more information."
+    },
+    "jobAdapt": {
+      "title": "Adapt for job",
+      "description": "Paste a job ad to get suggestions on how to adapt your CV",
+      "placeholder": "Paste the job ad here...\n\nExample:\nWe are looking for an experienced project manager with knowledge in agile methods. You should have experience in...",
+      "analyze": "Analyze ad",
+      "analyzing": "Analyzing ad...",
+      "clear": "Clear",
+      "paste": "Paste",
+      "collapsed": {
+        "title": "Optimize for job ad",
+        "description": "Paste an ad to see matching"
+      },
+      "match": {
+        "title": "Match",
+        "good": "Good match!",
+        "needsWork": "Can be improved"
+      },
+      "keywords": {
+        "found": "Matching keywords",
+        "foundDescription": "These keywords are already in your CV",
+        "missing": "Missing keywords",
+        "missingDescription": "Click to add to your CV",
+        "addSkill": "Add skill: {{keyword}}"
+      },
+      "summary": {
+        "title": "Summary suggestion",
+        "update": "Update summary",
+        "updated": "Summary has been updated"
+      },
+      "tips": {
+        "title": "Tips for this ad",
+        "addKeywords": "Add the missing keywords to your summary or skills",
+        "highlightExperience": "Highlight experiences that match the requirements",
+        "quantifyResults": "Quantify your results where possible"
+      },
+      "skillAdded": "Skill added: {{skill}}",
+      "summaryUpdated": "Summary updated"
+    },
+    "welcome": {
+      "title": "Welcome to the CV Builder",
+      "subtitle": "Choose how you want to start",
+      "fullBuilder": "Or use the full CV builder"
     }
   },
   "coverLetter": {
