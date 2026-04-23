@@ -8,8 +8,9 @@
  * - Förhandsgranskning och redigering
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { 
   FileText, 
   Building2, 
@@ -40,6 +41,8 @@ import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { showToast } from '@/components/Toast'
 import { callAI } from '@/services/aiApi'
+import { coverLetterApi } from '@/services/supabaseApi'
+import { useAutoSave } from '@/hooks/useAutoSave'
 import type { CVData } from '@/services/supabaseApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 
@@ -87,6 +90,7 @@ async function generateCoverLetterWithAI(data: {
 }
 
 export function CoverLetterWrite() {
+  const { t } = useTranslation()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { user } = useAuthStore()
@@ -97,15 +101,16 @@ export function CoverLetterWrite() {
   // States
   const [currentStep, setCurrentStep] = useState(1)
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   const [generatedLetter, setGeneratedLetter] = useState<string>('')
   const [editedLetter, setEditedLetter] = useState<string>('')
-  
+
   // Data states
   const [cvData, setCvData] = useState<CVData | null>(null)
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([])
   const [loadingCV, setLoadingCV] = useState(true)
   const [loadingJobs, setLoadingJobs] = useState(true)
-  
+
   // Form data
   const [formData, setFormData] = useState({
     company: '',
@@ -116,6 +121,23 @@ export function CoverLetterWrite() {
     tone: 'professional' as 'professional' | 'enthusiastic' | 'formal',
     selectedJobId: initialJobId || '',
     useManualInput: false,
+  })
+
+  // M2: Auto-save draft
+  const autoSaveData = {
+    formData,
+    editedLetter,
+    currentStep
+  }
+
+  const { lastSaved, clearSavedData } = useAutoSave({
+    key: 'cover-letter-write-draft',
+    data: autoSaveData,
+    onRestore: (saved) => {
+      if (saved.formData) setFormData(saved.formData)
+      if (saved.editedLetter) setEditedLetter(saved.editedLetter)
+      if (saved.currentStep) setCurrentStep(saved.currentStep)
+    }
   })
 
   // Hämta CV-data från Supabase
@@ -272,9 +294,35 @@ export function CoverLetterWrite() {
     }
   }
 
-  const handleSave = () => {
-    showToast.success('Brev sparat!')
-    navigate('/cover-letter/my-letters')
+  // M1: Actually save the letter to database
+  const handleSave = async () => {
+    if (!editedLetter.trim()) {
+      showToast.error(t('coverLetter.write.errors.emptyLetter', 'Brevet kan inte vara tomt'))
+      return
+    }
+
+    setIsSaving(true)
+    try {
+      const title = `${formData.company} - ${formData.jobTitle}`.trim() || t('coverLetter.write.untitledLetter', 'Namnlöst brev')
+
+      await coverLetterApi.create({
+        title,
+        content: editedLetter,
+        company: formData.company || undefined,
+        job_title: formData.jobTitle || undefined,
+        job_ad: formData.jobAd || undefined,
+        ai_generated: true
+      })
+
+      clearSavedData() // Clear auto-saved draft
+      showToast.success(t('coverLetter.write.saved', 'Brev sparat!'))
+      navigate('/cover-letter/my-letters')
+    } catch (error) {
+      console.error('Failed to save letter:', error)
+      showToast.error(t('coverLetter.write.errors.saveFailed', 'Kunde inte spara brevet. Försök igen.'))
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const canProceed = () => {
@@ -303,15 +351,18 @@ export function CoverLetterWrite() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Step indicator */}
-      <div className="mb-6 sm:mb-8">
+      <nav aria-label="Brevskrivningssteg" className="mb-6 sm:mb-8">
         {/* Mobile: Compact step indicator */}
-        <div className="flex sm:hidden items-center justify-center gap-2 mb-3">
+        <div className="flex sm:hidden items-center justify-center gap-2 mb-3" role="list">
           {steps.map((step) => {
             const isActive = step.id === currentStep
             const isCompleted = step.id < currentStep
             return (
               <div
                 key={step.id}
+                role="listitem"
+                aria-current={isActive ? 'step' : undefined}
+                aria-label={`${step.title}${isCompleted ? ' (slutfört)' : isActive ? ' (aktuellt)' : ''}`}
                 className={cn(
                   'w-2.5 h-2.5 rounded-full transition-colors',
                   isActive && 'bg-teal-600 w-8',
@@ -322,31 +373,38 @@ export function CoverLetterWrite() {
             )
           })}
         </div>
-        <div className="sm:hidden text-center">
+        <div className="sm:hidden text-center" role="status" aria-live="polite">
           <span className="text-sm font-medium text-teal-600">
-            Steg {currentStep}: {steps[currentStep - 1].title}
+            Steg {currentStep} av {steps.length}: {steps[currentStep - 1].title}
           </span>
         </div>
 
         {/* Desktop: Full step indicator */}
-        <div className="hidden sm:flex items-center justify-between">
+        <ol className="hidden sm:flex items-center justify-between" role="list">
           {steps.map((step, index) => {
             const Icon = step.icon
             const isActive = step.id === currentStep
             const isCompleted = step.id < currentStep
 
             return (
-              <div key={step.id} className="flex items-center">
+              <li
+                key={step.id}
+                className="flex items-center"
+                aria-current={isActive ? 'step' : undefined}
+              >
                 <div className={cn(
                   'flex flex-col items-center',
                   index < steps.length - 1 && 'flex-1'
                 )}>
-                  <div className={cn(
-                    'w-10 h-10 rounded-full flex items-center justify-center transition-colors',
-                    isActive && 'bg-teal-600 text-white',
-                    isCompleted && 'bg-emerald-500 text-white',
-                    !isActive && !isCompleted && 'bg-slate-100 text-slate-600'
-                  )}>
+                  <div
+                    className={cn(
+                      'w-10 h-10 rounded-full flex items-center justify-center transition-colors',
+                      isActive && 'bg-teal-600 text-white',
+                      isCompleted && 'bg-emerald-500 text-white',
+                      !isActive && !isCompleted && 'bg-slate-100 text-slate-600'
+                    )}
+                    aria-hidden="true"
+                  >
                     {isCompleted ? (
                       <Check size={20} />
                     ) : (
@@ -360,19 +418,24 @@ export function CoverLetterWrite() {
                     !isActive && !isCompleted && 'text-slate-600'
                   )}>
                     {step.title}
+                    {isCompleted && <span className="sr-only"> (slutfört)</span>}
+                    {isActive && <span className="sr-only"> (aktuellt steg)</span>}
                   </span>
                 </div>
                 {index < steps.length - 1 && (
-                  <div className={cn(
-                    'w-full h-0.5 mx-2',
-                    isCompleted ? 'bg-emerald-500' : 'bg-slate-200'
-                  )} />
+                  <div
+                    className={cn(
+                      'w-full h-0.5 mx-2',
+                      isCompleted ? 'bg-emerald-500' : 'bg-slate-200'
+                    )}
+                    aria-hidden="true"
+                  />
                 )}
-              </div>
+              </li>
             )
           })}
-        </div>
-      </div>
+        </ol>
+      </nav>
 
       {/* CV Status Banner */}
       {cvData && (
@@ -501,11 +564,12 @@ export function CoverLetterWrite() {
         ) : (
           <Button
             onClick={handleSave}
-            className="gap-1 sm:gap-2 flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700"
+            disabled={isSaving}
+            className="gap-1 sm:gap-2 flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50"
           >
-            <Save size={18} />
-            <span className="hidden sm:inline">Spara brev</span>
-            <span className="sm:hidden">Spara</span>
+            {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Save size={18} />}
+            <span className="hidden sm:inline">{isSaving ? t('common.saving', 'Sparar...') : t('coverLetter.write.saveButton', 'Spara brev')}</span>
+            <span className="sm:hidden">{isSaving ? '...' : t('common.save', 'Spara')}</span>
           </Button>
         )}
       </div>
@@ -571,9 +635,18 @@ function Step1SelectJob({
               return (
                 <div
                   key={job.id}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={formData.selectedJobId === job.job_id}
                   onClick={() => onSelectJob(job)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      onSelectJob(job)
+                    }
+                  }}
                   className={cn(
-                    'p-4 rounded-xl border-2 cursor-pointer transition-all',
+                    'p-4 rounded-xl border-2 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2',
                     formData.selectedJobId === job.job_id
                       ? 'border-teal-500 bg-teal-50'
                       : 'border-slate-200 hover:border-teal-200 hover:bg-slate-50'
@@ -669,12 +742,13 @@ function Step1SelectJob({
       {formData.useManualInput && (
         <div className="space-y-4 pt-4 border-t border-slate-200">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="cl-company" className="block text-sm font-medium text-slate-700 mb-1.5">
               Företag *
             </label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" aria-hidden="true" />
               <input
+                id="cl-company"
                 type="text"
                 value={formData.company}
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
@@ -685,12 +759,13 @@ function Step1SelectJob({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="cl-jobtitle" className="block text-sm font-medium text-slate-700 mb-1.5">
               Jobbtitel *
             </label>
             <div className="relative">
-              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" aria-hidden="true" />
               <input
+                id="cl-jobtitle"
                 type="text"
                 value={formData.jobTitle}
                 onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
@@ -701,10 +776,11 @@ function Step1SelectJob({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="cl-jobad" className="block text-sm font-medium text-slate-700 mb-1.5">
               Jobbannons (valfritt men rekommenderat)
             </label>
             <textarea
+              id="cl-jobad"
               value={formData.jobAd}
               onChange={(e) => setFormData({ ...formData, jobAd: e.target.value })}
               placeholder="Klistra in texten från jobbannonsen här..."
@@ -755,13 +831,23 @@ function Step2Template({
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-4">
+      <div className="grid md:grid-cols-2 gap-4" role="listbox" aria-label="Välj brevmall">
         {coverLetterTemplates.map((template) => (
           <div
             key={template.id}
+            role="option"
+            aria-selected={formData.selectedTemplate === template.id}
+            tabIndex={0}
             onClick={() => setFormData({ ...formData, selectedTemplate: template.id })}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault()
+                setFormData({ ...formData, selectedTemplate: template.id })
+              }
+            }}
             className={cn(
               'p-4 rounded-xl border-2 cursor-pointer transition-all',
+              'focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2',
               formData.selectedTemplate === template.id
                 ? 'border-teal-500 bg-teal-50'
                 : 'border-slate-200 hover:border-teal-200 hover:bg-slate-50'
@@ -834,11 +920,11 @@ function Step3Customize({
       )}
 
       {/* Tonalternativ */}
-      <div>
-        <label className="block text-sm font-medium text-slate-700 mb-3">
+      <fieldset>
+        <legend className="block text-sm font-medium text-slate-700 mb-3">
           Välj tonläge
-        </label>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+        </legend>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3" role="radiogroup">
           {[
             { id: 'professional', label: 'Professionell', desc: 'Balanserad och trygg' },
             { id: 'enthusiastic', label: 'Entusiastisk', desc: 'Energisk och passionerad' },
@@ -846,6 +932,8 @@ function Step3Customize({
           ].map((tone) => (
             <button
               key={tone.id}
+              role="radio"
+              aria-checked={formData.tone === tone.id}
               onClick={() => setFormData({ ...formData, tone: tone.id })}
               className={cn(
                 'p-3 rounded-lg border-2 text-left transition-all',
@@ -859,14 +947,15 @@ function Step3Customize({
             </button>
           ))}
         </div>
-      </div>
+      </fieldset>
 
       {/* Extra motivation */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-1.5">
+        <label htmlFor="cl-motivation" className="block text-sm font-medium text-slate-700 mb-1.5">
           Varför vill du ha detta jobb? (valfritt)
         </label>
         <textarea
+          id="cl-motivation"
           value={formData.motivation}
           onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
           placeholder="t.ex. Jag vill jobba med hållbarhet och erfarenhet av att..."

@@ -3,7 +3,7 @@
  * Lista över alla sparade personliga brev
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   FileText,
@@ -67,6 +67,36 @@ export function CoverLetterMyLetters() {
   const [error, setError] = useState<string | null>(null)
   const [showActions, setShowActions] = useState<string | null>(null)
   const [actionLoading, setActionLoading] = useState<string | null>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+  const menuButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
+
+  // Close dropdown on Escape key or click outside
+  useEffect(() => {
+    if (!showActions) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setShowActions(null)
+        // Return focus to the trigger button
+        const buttonRef = menuButtonRefs.current.get(showActions)
+        buttonRef?.focus()
+      }
+    }
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowActions(null)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    document.addEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [showActions])
 
   // Load letters from API
   const loadLetters = useCallback(async () => {
@@ -271,9 +301,11 @@ export function CoverLetterMyLetters() {
       {/* Header med sök */}
       <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 sm:justify-between sm:items-center">
         <div className="relative w-full sm:flex-1 sm:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+          <label htmlFor="letter-search" className="sr-only">Sök bland dina brev</label>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" aria-hidden="true" />
           <input
-            type="text"
+            id="letter-search"
+            type="search"
             placeholder="Sök bland dina brev..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -375,48 +407,63 @@ export function CoverLetterMyLetters() {
                     <span className="sm:inline">Redigera</span>
                   </Button>
 
-                  <div className="relative">
+                  <div className="relative" ref={showActions === letter.id ? dropdownRef : undefined}>
                     <Button
+                      ref={(el) => {
+                        if (el) menuButtonRefs.current.set(letter.id, el)
+                      }}
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowActions(showActions === letter.id ? null : letter.id)}
+                      aria-expanded={showActions === letter.id}
+                      aria-haspopup="menu"
+                      aria-controls={`letter-menu-${letter.id}`}
                       className="gap-1.5"
                     >
-                      <MoreVertical size={14} />
+                      <MoreVertical size={14} aria-hidden="true" />
                       <span className="hidden sm:inline">Mer</span>
+                      <span className="sr-only">Fler alternativ för {letter.title}</span>
                     </Button>
 
                     {showActions === letter.id && (
-                      <div className="absolute right-0 sm:left-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 min-w-[160px] z-10">
+                      <div
+                        id={`letter-menu-${letter.id}`}
+                        role="menu"
+                        aria-label={`Alternativ för ${letter.title}`}
+                        className="absolute right-0 sm:left-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 min-w-[160px] z-10"
+                      >
                         <button
+                          role="menuitem"
                           onClick={() => handleDuplicate(letter)}
                           disabled={actionLoading === letter.id}
-                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 flex items-center gap-2 disabled:opacity-50"
+                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 focus:bg-slate-50 focus:outline-none flex items-center gap-2 disabled:opacity-50"
                         >
                           {actionLoading === letter.id ? (
-                            <Loader2 size={14} className="text-slate-600 animate-spin" />
+                            <Loader2 size={14} className="text-slate-600 animate-spin" aria-hidden="true" />
                           ) : (
-                            <Copy size={14} className="text-slate-600" />
+                            <Copy size={14} className="text-slate-600" aria-hidden="true" />
                           )}
                           Duplicera
                         </button>
                         <button
+                          role="menuitem"
                           onClick={() => handleDownload(letter)}
-                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 flex items-center gap-2"
+                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 focus:bg-slate-50 focus:outline-none flex items-center gap-2"
                         >
-                          <Download size={14} className="text-slate-600" />
+                          <Download size={14} className="text-slate-600" aria-hidden="true" />
                           Ladda ner PDF
                         </button>
-                        <hr className="my-1 border-slate-100" />
+                        <hr className="my-1 border-slate-100" aria-hidden="true" />
                         <button
+                          role="menuitem"
                           onClick={() => handleDelete(letter.id)}
                           disabled={actionLoading === letter.id}
-                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 flex items-center gap-2 text-rose-600 disabled:opacity-50"
+                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 focus:bg-slate-50 focus:outline-none flex items-center gap-2 text-rose-600 disabled:opacity-50"
                         >
                           {actionLoading === letter.id ? (
-                            <Loader2 size={14} className="animate-spin" />
+                            <Loader2 size={14} className="animate-spin" aria-hidden="true" />
                           ) : (
-                            <Trash2 size={14} />
+                            <Trash2 size={14} aria-hidden="true" />
                           )}
                           Ta bort
                         </button>
