@@ -58,7 +58,11 @@
     "filter": "Filtrera",
     "done": "Klar",
     "pending": "Väntar",
-    "retry": "Försök igen"
+    "retry": "Försök igen",
+    "showDetails": "Visa detaljer",
+    "passed": "Godkänt",
+    "missing": "Saknas",
+    "needsAttention": "Behöver uppmärksamhet"
   },
   "pageTabs": {
     "cv": {
@@ -793,6 +797,141 @@
         "title": "Vill du förbättra ditt CV?",
         "description": "Gå tillbaka till CV-byggaren och gör justeringar",
         "button": "Förbättra mitt CV"
+      },
+      "analyzer": {
+        "title": "ATS-analys",
+        "subtitle": "Optimera för rekryteringssystem",
+        "scoreLabel": "ATS-poäng: {{score}} av 100",
+        "outOf100": "av 100 poäng",
+        "checksCompleted": "Du har {{passed}} av {{total}} på plats",
+        "fixNow": "Fixa nu",
+        "moreSteps": "+{{count}} fler förbättringsförslag",
+        "industries": {
+          "title": "Branschspecifika nyckelord",
+          "description": "Välj din bransch för att se vilka nyckelord som är vanliga",
+          "selectLabel": "Välj bransch",
+          "matchFor": "Matchning för {{industry}}",
+          "found": "Hittade",
+          "missing": "Saknas",
+          "it": "IT & Tech",
+          "healthcare": "Vård & Omsorg",
+          "construction": "Bygg & Anläggning",
+          "retail": "Handel & Försäljning",
+          "education": "Utbildning",
+          "finance": "Ekonomi & Finans",
+          "admin": "Administration",
+          "service": "Hotell & Restaurang"
+        },
+        "keywords": {
+          "title": "Nyckelordsanalys",
+          "competence": "Kompetensord",
+          "action": "Aktivitetsord",
+          "results": "Resultatindikatorer",
+          "found": "Hittade",
+          "suggestions": "Förslag",
+          "tip": "Tips: Använd nyckelorden naturligt i dina beskrivningar – koppla dem till dina faktiska erfarenheter"
+        },
+        "checks": {
+          "contact": "Kontaktinformation",
+          "contactDesc": "E-post och telefon finns",
+          "summary": "Sammanfattning",
+          "summaryDesc": "Minst 50 tecken rekommenderas",
+          "experience": "Erfarenhet",
+          "experienceDesc": "Minst en anställning",
+          "education": "Utbildning",
+          "educationDesc": "Minst en utbildning",
+          "measurable": "Mätbara resultat",
+          "measurableDesc": "Använder siffror och procent",
+          "skills": "Färdigheter",
+          "skillsDesc": "Minst 3 färdigheter",
+          "length": "CV-längd",
+          "lengthDesc": "150-800 ord rekommenderas",
+          "readability": "Läslighet",
+          "readabilityLevel": "Nivå",
+          "languages": "Språk",
+          "languagesDesc": "Språkkunskaper angivna",
+          "references": "Referenser",
+          "referencesDesc": "Minst en referens"
+        },
+        "technical": {
+          "title": "ATS-kompatibilitet",
+          "noImages": "Inga bilder",
+          "noImagesDesc": "Bilder kan inte läsas av de flesta ATS",
+          "noImagesTip": "Ta bort profilbilden - de flesta ATS-system kan inte tolka bilder",
+          "standardFont": "Standardtypsnitt",
+          "standardFontDesc": "Använder ATS-vänligt typsnitt",
+          "standardFontTip": "Använd Arial, Calibri, Georgia eller Times New Roman för bästa kompatibilitet",
+          "noTables": "Inga tabeller",
+          "noTablesDesc": "Tabeller kan förvrängas i ATS",
+          "noTablesTip": "Använd vanlig textformatering istället för tabeller",
+          "fileFormat": "Filformat",
+          "fileFormatDesc": "PDF rekommenderas för bästa kompatibilitet",
+          "fileFormatTip": "Spara alltid som PDF för att bevara formateringen",
+          "fileName": "Filnamn",
+          "fileNameDesc": "Använd förnamn-efternamn-cv.pdf",
+          "fileNameTip": "Rekommenderat filnamn: {{name}}-cv.pdf"
+        },
+        "readability": {
+          "noText": "Ingen text",
+          "veryHard": "Mycket svår",
+          "veryEasy": "Mycket lätt",
+          "easy": "Lätt",
+          "medium": "Medel",
+          "mediumHard": "Medelsvår"
+        },
+        "nextSteps": {
+          "title": "Nästa steg för att stärka ditt CV",
+          "measurable": "Förstärk med mätbara resultat – siffror visar din påverkan",
+          "skills": "Utforska fler färdigheter du har som kan tillföra värde",
+          "summary": "Skapa en sammanfattning som visar vem du är professionellt",
+          "moreContent": "Utveckla dina beskrivningar för att visa mer av din erfarenhet",
+          "lessContent": "Förfina dina texter för att göra dem mer koncisa",
+          "keywords": "Lägg till fler nyckelord som matchar dina styrkor",
+          "scanability": "Förbättra skannbarheten genom att korta ner långa texter"
+        },
+        "recruiterTest": {
+          "title": "Rekryterarens ögonblicks-test",
+          "description": "En rekryterare skannar ditt CV på 6 sekunder. Så här ser det ut:",
+          "listLabel": "Checklista för snabbskanning",
+          "name": "Namn synligt",
+          "profile": "Tydlig profil",
+          "yearsExp": "{{years}} år erfarenhet",
+          "experience": "Erfarenhet",
+          "skillsCount": "{{count}} styrkor",
+          "keySkills": "Nyckelkompetenser",
+          "latestRole": "Senaste roll",
+          "at": "på {{company}}"
+        },
+        "scanability": {
+          "title": "Skannbarhetspoäng",
+          "label": "Skannbarhetspoäng: {{score}} av 100",
+          "excellent": "Mycket lättskannat CV - rekryterare ser snabbt dina styrkor!",
+          "good": "Acceptabel skannbarhet - några justeringar kan hjälpa",
+          "poor": "Svårskannat CV - viktig information kan missas av rekryterare"
+        },
+        "export": {
+          "title": "Export-förberedelse",
+          "ready": "Klar",
+          "readyTitle": "Ditt CV är redo att exporteras!",
+          "readyDescription": "Alla kontroller är godkända. Ditt CV bör vara väl läsbart för både ATS och rekryterare.",
+          "needsWorkTitle": "Åtgärda innan export",
+          "needsWorkDescription": "Följande problem kan påverka hur väl ditt CV läses av ATS-system:",
+          "fileNameSuggestion": "Filnamn att använda",
+          "issueImage": "Innehåller bild som ATS kanske inte kan läsa",
+          "issueTable": "Använder tabellayout som kan förvrängas",
+          "issueFont": "Använder icke-standard typsnitt",
+          "issueSkills": "För få färdigheter listade",
+          "issueSummary": "Saknar eller har för kort sammanfattning",
+          "issueScanability": "Låg skannbarhetspoäng"
+        },
+        "stats": {
+          "words": "ord totalt",
+          "readLevel": "läsnivå"
+        },
+        "tips": {
+          "label": "Tips",
+          "description": "ATS-system (Applicant Tracking Systems) används av de flesta större företag för att filtrera CV:n. Använd nyckelord från jobbannonser och undvik tabeller, bilder och komplicerad formatering."
+        }
       }
     },
     "tips": {

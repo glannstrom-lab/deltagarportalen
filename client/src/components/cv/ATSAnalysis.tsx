@@ -3,7 +3,7 @@
  * Check how well CV passes through recruitment systems
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Target,
@@ -43,8 +43,8 @@ export function ATSAnalysis() {
   const [cvData, setCvData] = useState<CVData | null>(null)
   const [loadingCV, setLoadingCV] = useState(true)
 
-  // Generate default checks with translations
-  const getDefaultChecks = (): ATSCheck[] => [
+  // Generate default checks with translations (M5: wrapped in useCallback)
+  const getDefaultChecks = useCallback((): ATSCheck[] => [
     {
       id: '1',
       category: 'content',
@@ -126,14 +126,14 @@ export function ATSAnalysis() {
       score: 5,
       tips: [t('cv.ats.checks.headings.tip1'), t('cv.ats.checks.headings.tip2')]
     }
-  ]
+  ], [t])
 
-  // Initialize checks with translations
+  // Initialize checks with translations (M5: fixed dependencies)
   useEffect(() => {
     if (checks.length === 0) {
       setChecks(getDefaultChecks())
     }
-  }, [t])
+  }, [checks.length, getDefaultChecks])
 
   // Load CV data
   useEffect(() => {
@@ -152,8 +152,8 @@ export function ATSAnalysis() {
     loadCV()
   }, [])
 
-  // Calculate actual ATS score based on CV data
-  const calculateChecks = (cv: CVData | null): ATSCheck[] => {
+  // Calculate actual ATS score based on CV data (M5: wrapped in useCallback)
+  const calculateChecks = useCallback((cv: CVData | null): ATSCheck[] => {
     if (!cv) return getDefaultChecks()
 
     return [
@@ -243,14 +243,14 @@ export function ATSAnalysis() {
         tips: [t('cv.ats.checks.certifications.tip1'), t('cv.ats.checks.certifications.tip2')]
       }
     ]
-  }
+  }, [t, getDefaultChecks])
 
-  // Recalculate checks when CV data changes
+  // Recalculate checks when CV data changes (M5: fixed dependencies)
   useEffect(() => {
     if (cvData) {
       setChecks(calculateChecks(cvData))
     }
-  }, [cvData])
+  }, [cvData, calculateChecks])
 
   const totalScore = checks.reduce((sum, check) => sum + check.score, 0)
   const maxScore = 100

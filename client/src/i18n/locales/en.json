@@ -55,7 +55,14 @@
     "unknown": "unknown",
     "preview": "Preview",
     "skip": "Skip",
-    "filter": "Filter"
+    "filter": "Filter",
+    "done": "Done",
+    "pending": "Pending",
+    "retry": "Retry",
+    "showDetails": "Show details",
+    "passed": "Passed",
+    "missing": "Missing",
+    "needsAttention": "Needs attention"
   },
   "pageTabs": {
     "cv": {
@@ -720,6 +727,141 @@
         "title": "Want to improve your CV?",
         "description": "Go back to the CV builder and make adjustments",
         "button": "Improve my CV"
+      },
+      "analyzer": {
+        "title": "ATS Analysis",
+        "subtitle": "Optimize for recruitment systems",
+        "scoreLabel": "ATS score: {{score}} out of 100",
+        "outOf100": "out of 100 points",
+        "checksCompleted": "You have {{passed}} of {{total}} in place",
+        "fixNow": "Fix now",
+        "moreSteps": "+{{count}} more improvement suggestions",
+        "industries": {
+          "title": "Industry-specific keywords",
+          "description": "Select your industry to see common keywords",
+          "selectLabel": "Select industry",
+          "matchFor": "Match for {{industry}}",
+          "found": "Found",
+          "missing": "Missing",
+          "it": "IT & Tech",
+          "healthcare": "Healthcare",
+          "construction": "Construction",
+          "retail": "Retail & Sales",
+          "education": "Education",
+          "finance": "Finance & Accounting",
+          "admin": "Administration",
+          "service": "Hospitality"
+        },
+        "keywords": {
+          "title": "Keyword Analysis",
+          "competence": "Competency words",
+          "action": "Action words",
+          "results": "Result indicators",
+          "found": "Found",
+          "suggestions": "Suggestions",
+          "tip": "Tip: Use keywords naturally in your descriptions – connect them to your actual experiences"
+        },
+        "checks": {
+          "contact": "Contact Information",
+          "contactDesc": "Email and phone included",
+          "summary": "Summary",
+          "summaryDesc": "At least 50 characters recommended",
+          "experience": "Experience",
+          "experienceDesc": "At least one position",
+          "education": "Education",
+          "educationDesc": "At least one education",
+          "measurable": "Measurable Results",
+          "measurableDesc": "Uses numbers and percentages",
+          "skills": "Skills",
+          "skillsDesc": "At least 3 skills",
+          "length": "CV Length",
+          "lengthDesc": "150-800 words recommended",
+          "readability": "Readability",
+          "readabilityLevel": "Level",
+          "languages": "Languages",
+          "languagesDesc": "Language skills specified",
+          "references": "References",
+          "referencesDesc": "At least one reference"
+        },
+        "technical": {
+          "title": "ATS Compatibility",
+          "noImages": "No images",
+          "noImagesDesc": "Images cannot be read by most ATS",
+          "noImagesTip": "Remove profile picture - most ATS systems cannot interpret images",
+          "standardFont": "Standard font",
+          "standardFontDesc": "Uses ATS-friendly font",
+          "standardFontTip": "Use Arial, Calibri, Georgia, or Times New Roman for best compatibility",
+          "noTables": "No tables",
+          "noTablesDesc": "Tables can be distorted in ATS",
+          "noTablesTip": "Use regular text formatting instead of tables",
+          "fileFormat": "File format",
+          "fileFormatDesc": "PDF recommended for best compatibility",
+          "fileFormatTip": "Always save as PDF to preserve formatting",
+          "fileName": "File name",
+          "fileNameDesc": "Use firstname-lastname-cv.pdf",
+          "fileNameTip": "Recommended filename: {{name}}-cv.pdf"
+        },
+        "readability": {
+          "noText": "No text",
+          "veryHard": "Very hard",
+          "veryEasy": "Very easy",
+          "easy": "Easy",
+          "medium": "Medium",
+          "mediumHard": "Medium hard"
+        },
+        "nextSteps": {
+          "title": "Next steps to strengthen your CV",
+          "measurable": "Add measurable results – numbers show your impact",
+          "skills": "Explore more skills you have that can add value",
+          "summary": "Create a summary that shows who you are professionally",
+          "moreContent": "Develop your descriptions to show more of your experience",
+          "lessContent": "Refine your text to make it more concise",
+          "keywords": "Add more keywords that match your strengths",
+          "scanability": "Improve scanability by shortening long texts"
+        },
+        "recruiterTest": {
+          "title": "Recruiter's Snapshot Test",
+          "description": "A recruiter scans your CV in 6 seconds. Here's what they see:",
+          "listLabel": "Quick scan checklist",
+          "name": "Name visible",
+          "profile": "Clear profile",
+          "yearsExp": "{{years}} years experience",
+          "experience": "Experience",
+          "skillsCount": "{{count}} strengths",
+          "keySkills": "Key skills",
+          "latestRole": "Latest role",
+          "at": "at {{company}}"
+        },
+        "scanability": {
+          "title": "Scanability Score",
+          "label": "Scanability score: {{score}} out of 100",
+          "excellent": "Very scannable CV - recruiters quickly see your strengths!",
+          "good": "Acceptable scanability - some adjustments can help",
+          "poor": "Hard to scan CV - important information may be missed by recruiters"
+        },
+        "export": {
+          "title": "Export Readiness",
+          "ready": "Ready",
+          "readyTitle": "Your CV is ready to export!",
+          "readyDescription": "All checks passed. Your CV should be well-readable by both ATS and recruiters.",
+          "needsWorkTitle": "Fix before exporting",
+          "needsWorkDescription": "The following issues may affect how well your CV is read by ATS systems:",
+          "fileNameSuggestion": "Filename to use",
+          "issueImage": "Contains image that ATS may not read",
+          "issueTable": "Uses table layout that may be distorted",
+          "issueFont": "Uses non-standard font",
+          "issueSkills": "Too few skills listed",
+          "issueSummary": "Missing or too short summary",
+          "issueScanability": "Low scanability score"
+        },
+        "stats": {
+          "words": "words total",
+          "readLevel": "reading level"
+        },
+        "tips": {
+          "label": "Tip",
+          "description": "ATS (Applicant Tracking Systems) are used by most larger companies to filter CVs. Use keywords from job ads and avoid tables, images, and complicated formatting."
+        }
       }
     },
     "tips": {
