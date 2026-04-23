@@ -15,6 +15,38 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY
 );
 
+// Security: Allowed origins for CORS
+const ALLOWED_ORIGINS = [
+  'https://deltagarportalen.se',
+  'https://www.deltagarportalen.se',
+  'https://deltagarportalen.vercel.app',
+  'https://deltagarportal.vercel.app',
+  'https://jobin.se',
+  'https://www.jobin.se',
+  process.env.FRONTEND_URL,
+  ...(process.env.NODE_ENV !== 'production' ? [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:3000',
+  ] : []),
+].filter(Boolean);
+
+function isVercelPreviewUrl(origin) {
+  if (!origin) return false;
+  return /^https:\/\/deltagarportal(en)?-[a-z0-9]+-[\w-]+\.vercel\.app$/.test(origin);
+}
+
+function getCorsHeaders(requestOrigin) {
+  const isAllowed = ALLOWED_ORIGINS.includes(requestOrigin) || isVercelPreviewUrl(requestOrigin);
+  const origin = isAllowed ? requestOrigin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+    'Access-Control-Allow-Credentials': 'true',
+  };
+}
+
 // Arbetsförmedlingen API
 const AF_API_URL = 'https://jobsearch.api.jobtechdev.se/search';
 
@@ -349,11 +381,13 @@ async function sendDailyDigest(userId) {
 
 // Main handler
 module.exports = async (req, res) => {
-  // CORS
-  res.setHeader('Access-Control-Allow-Credentials', true);
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Authorization, Content-Type');
+  const requestOrigin = req.headers.origin;
+  const corsHeaders = getCorsHeaders(requestOrigin);
+
+  // Set CORS headers
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    res.setHeader(key, value);
+  });
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();

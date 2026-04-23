@@ -5,6 +5,49 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
+// Security: Allowed origins for CORS
+const ALLOWED_ORIGINS = [
+  // Production domains
+  'https://deltagarportalen.se',
+  'https://www.deltagarportalen.se',
+  'https://deltagarportalen.vercel.app',
+  'https://deltagarportal.vercel.app',
+  // Legacy domains
+  'https://jobin.se',
+  'https://www.jobin.se',
+  // Environment-specific frontend URL
+  process.env.FRONTEND_URL,
+  // Allow localhost in development only
+  ...(process.env.NODE_ENV !== 'production' ? [
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173'
+  ] : []),
+].filter(Boolean);
+
+/**
+ * Check if origin matches Vercel preview URL pattern
+ */
+function isVercelPreviewUrl(origin) {
+  if (!origin) return false;
+  return /^https:\/\/deltagarportal(en)?-[a-z0-9]+-[\w-]+\.vercel\.app$/.test(origin);
+}
+
+/**
+ * Get CORS headers with origin validation
+ */
+function getCorsHeaders(requestOrigin) {
+  const isAllowed = ALLOWED_ORIGINS.includes(requestOrigin) || isVercelPreviewUrl(requestOrigin);
+  const origin = isAllowed ? requestOrigin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    'Access-Control-Allow-Credentials': 'true',
+  };
+}
+
 const PROMPTS = {
   'personligt-brev': (data) => {
     const ton = data.ton || data.tone || 'professionell';
@@ -97,10 +140,13 @@ const PROMPTS = {
 };
 
 module.exports = async (req, res) => {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  const requestOrigin = req.headers.origin;
+  const corsHeaders = getCorsHeaders(requestOrigin);
+
+  // Set CORS headers
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    res.setHeader(key, value);
+  });
 
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
