@@ -58,7 +58,7 @@ Deltagarportalen har en **imponerande AI-arkitektur** med flera välutvecklade f
 #### 1. **Exponerad API-nyckel** 🔴
 ```typescript
 // client/src/components/cv/AIWritingAssistant.tsx
-const OPENROUTER_API_KEY = 'sk-or-v1-e2880334d35e43bdb1e0d0e273337e11...'
+const OPENROUTER_API_KEY = 'sk-or-v1-[REDACTED]...'
 ```
 **Risk:** API-nyckel synlig i klientkoden - vem som helst kan stjäla den!
 **Åtgärd:** Flytta ALLA AI-anrop till Edge Functions omedelbart.

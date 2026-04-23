@@ -87,7 +87,7 @@ vercel
 | Variabel | Värde |
 |----------|-------|
 | `VITE_SUPABASE_URL` | `https://odcvrdkvzyrbdzvdrhkz.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9kY3ZyZGt2enlyYmR6dmRyaGt6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzE4NjU1NzcsImV4cCI6MjA4NzQ0MTU3N30.StWwqG3cVo1ItJ5Z59eQzBGBH4ttIHypupcKzkAYXus` |
+| `VITE_SUPABASE_ANON_KEY` | `[Hämta från Supabase Dashboard → Settings → API → anon public]` |
 
 4. Klicka "Save"
 5. Redeploya: Gå till "Deployments" → klicka på "...") → "Redeploy"
