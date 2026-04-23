@@ -1,6 +1,7 @@
 /**
  * Agent Chat Component
  * Chat interface with message history and streaming support
+ * Refactored to use extracted hooks and components
  */
 
 import { useState, useRef, useEffect, useCallback, forwardRef, useImperativeHandle } from 'react'
@@ -14,11 +15,14 @@ import { agentColorClasses } from './types'
 import { useAITeamContext, formatAITeamContext } from '@/hooks/useAITeamContext'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
-import { Send, RefreshCw, User, Trash2, Copy, Check, BookOpen, Share2, Mic, MicOff, Volume2, Download, CalendarPlus } from '@/components/ui/icons'
+import { RefreshCw, Trash2, Share2, Check, Download } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { diaryEntriesApi } from '@/services/diaryApi'
-import type { ResponseMode } from './types'
+import { useVoiceInput } from '@/hooks/useVoiceInput'
+import { useVoiceOutput } from '@/hooks/useVoiceOutput'
+import { MessageBubble } from './MessageBubble'
+import { ChatInput } from './ChatInput'
 
 export interface AgentChatHandle {
   sendMessage: (message: string) => Promise<void>
@@ -53,12 +57,8 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
     const [shareSuccess, setShareSuccess] = useState(false)
     const [diarySuccess, setDiarySuccess] = useState<string | null>(null)
     const [taskSuccess, setTaskSuccess] = useState<string | null>(null)
-    const [isRecording, setIsRecording] = useState(false)
-    const [isSpeaking, setIsSpeaking] = useState(false)
     const [isExporting, setIsExporting] = useState(false)
-    const recognitionRef = useRef<SpeechRecognition | null>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
-    const inputRef = useRef<HTMLTextAreaElement>(null)
     const abortControllerRef = useRef<AbortController | null>(null)
 
     const agent = getAgentById(selectedAgent)
@@ -66,6 +66,17 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
     const colors = agentColorClasses[agent.color]
     const { context: userContext } = useAITeamContext()
     const { user } = useAuthStore()
+
+    // Voice input hook
+    const { isRecording, toggleRecording } = useVoiceInput({
+      onTranscript: setInputValue,
+      onError: setError,
+    })
+
+    // Voice output hook
+    const { isSpeaking, speak: speakMessage } = useVoiceOutput({
+      onError: setError,
+    })
 
     // Load session memory on mount and agent change
     useEffect(() => {
@@ -143,14 +154,6 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       setSuggestions([])
     }, [selectedAgent])
 
-    // Auto-resize textarea
-    const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      setInputValue(e.target.value)
-      // Auto-resize
-      e.target.style.height = 'auto'
-      e.target.style.height = Math.min(e.target.scrollHeight, 150) + 'px'
-    }, [])
-
     const sendMessage = useCallback(async (messageText?: string) => {
       const text = messageText || inputValue.trim()
       if (!text || isLoading || isStreaming) return
@@ -163,9 +166,6 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
 
       // Clear input
       setInputValue('')
-      if (inputRef.current) {
-        inputRef.current.style.height = 'auto'
-      }
 
       // Add user message
       addMessage({
@@ -319,13 +319,6 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       setError,
     ])
 
-    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault()
-        sendMessage()
-      }
-    }, [sendMessage])
-
     // Save message to diary
     const handleSaveToDiary = useCallback(async (content: string) => {
       try {
@@ -388,79 +381,6 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       setSuggestions([])
       sendMessage(suggestion)
     }, [sendMessage])
-
-    // Voice input - Start/stop recording
-    const toggleRecording = useCallback(() => {
-      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-        setError(t('aiTeam.voice.notSupported'))
-        return
-      }
-
-      if (isRecording) {
-        recognitionRef.current?.stop()
-        setIsRecording(false)
-        return
-      }
-
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-      const recognition = new SpeechRecognition()
-      recognition.lang = 'sv-SE'
-      recognition.continuous = false
-      recognition.interimResults = true
-
-      recognition.onresult = (event: SpeechRecognitionEvent) => {
-        const transcript = Array.from(event.results)
-          .map(result => result[0].transcript)
-          .join('')
-        setInputValue(transcript)
-        if (inputRef.current) {
-          inputRef.current.style.height = 'auto'
-          inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 150) + 'px'
-        }
-      }
-
-      recognition.onend = () => {
-        setIsRecording(false)
-      }
-
-      recognition.onerror = () => {
-        setIsRecording(false)
-      }
-
-      recognitionRef.current = recognition
-      recognition.start()
-      setIsRecording(true)
-    }, [isRecording, t, setError])
-
-    // Voice output - Text-to-speech
-    const speakMessage = useCallback((text: string) => {
-      if (!('speechSynthesis' in window)) {
-        setError(t('aiTeam.voice.notSupported'))
-        return
-      }
-
-      if (isSpeaking) {
-        window.speechSynthesis.cancel()
-        setIsSpeaking(false)
-        return
-      }
-
-      const utterance = new SpeechSynthesisUtterance(text)
-      utterance.lang = 'sv-SE'
-      utterance.rate = 1.0
-      utterance.pitch = 1.0
-
-      // Try to find a Swedish voice
-      const voices = window.speechSynthesis.getVoices()
-      const svVoice = voices.find(v => v.lang.startsWith('sv'))
-      if (svVoice) utterance.voice = svVoice
-
-      utterance.onend = () => setIsSpeaking(false)
-      utterance.onerror = () => setIsSpeaking(false)
-
-      setIsSpeaking(true)
-      window.speechSynthesis.speak(utterance)
-    }, [isSpeaking, t, setError])
 
     // Create calendar task from message
     const handleCreateTask = useCallback(async (content: string) => {
@@ -729,67 +649,14 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
         </div>
 
         {/* Input */}
-        <div className={cn(
-          'p-4 border-t border-stone-200 dark:border-stone-700',
-          'bg-white dark:bg-stone-900'
-        )}>
-          <div className="flex items-end gap-2 sm:gap-3">
-            <button
-              onClick={toggleRecording}
-              disabled={isLoading}
-              className={cn(
-                'flex-shrink-0 p-3 rounded-xl',
-                'transition-all duration-200',
-                isRecording
-                  ? 'bg-red-500 text-white animate-pulse'
-                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400',
-                'hover:bg-stone-200 dark:hover:bg-stone-700',
-                'disabled:opacity-50 disabled:cursor-not-allowed'
-              )}
-              aria-label={isRecording ? t('aiTeam.voice.stopRecording') : t('aiTeam.voice.startRecording')}
-              title={isRecording ? t('aiTeam.voice.stopRecording') : t('aiTeam.voice.startRecording')}
-            >
-              {isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-            </button>
-            <textarea
-              ref={inputRef}
-              value={inputValue}
-              onChange={handleInputChange}
-              onKeyDown={handleKeyDown}
-              placeholder={t('aiTeam.inputPlaceholder')}
-              disabled={isLoading}
-              rows={1}
-              className={cn(
-                'flex-1 resize-none',
-                'px-4 py-3 rounded-xl',
-                'bg-stone-50 dark:bg-stone-800',
-                'border border-stone-200 dark:border-stone-700',
-                'focus:border-teal-500 dark:focus:border-teal-400',
-                'focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900',
-                'outline-none transition-colors',
-                'text-stone-900 dark:text-stone-100',
-                'placeholder:text-stone-400 dark:placeholder:text-stone-500',
-                'disabled:opacity-50 disabled:cursor-not-allowed'
-              )}
-              aria-label={t('aiTeam.inputPlaceholder')}
-            />
-            <Button
-              onClick={() => sendMessage()}
-              disabled={!inputValue.trim() || isLoading}
-              className="flex-shrink-0"
-              aria-label={t('aiTeam.send')}
-            >
-              {isLoading ? (
-                <RefreshCw className="w-5 h-5 animate-spin" />
-              ) : (
-                <Send className="w-5 h-5" />
-              )}
-            </Button>
-          </div>
-          <p className="mt-2 text-xs text-stone-500 dark:text-stone-400">
-            {t('aiTeam.inputHint')}
-          </p>
-        </div>
+        <ChatInput
+          value={inputValue}
+          onChange={setInputValue}
+          onSend={() => sendMessage()}
+          onToggleRecording={toggleRecording}
+          isLoading={isLoading}
+          isRecording={isRecording}
+        />
       </div>
     )
   }
@@ -862,166 +729,6 @@ function EmptyState({ agent, onQuickAction }: EmptyStateProps) {
       <p className={cn('mt-6 text-xs', colors.text)}>
         {t('aiTeam.startChatHint')}
       </p>
-    </div>
-  )
-}
-
-// Message bubble component
-interface MessageBubbleProps {
-  message: {
-    id: string
-    role: 'user' | 'assistant'
-    content: string
-  }
-  agentColor: string
-  onSaveToDiary?: (content: string) => void
-  diarySaved?: boolean
-  onSpeak?: (content: string) => void
-  isSpeaking?: boolean
-  onCreateTask?: (content: string) => void
-  taskCreated?: boolean
-}
-
-function MessageBubble({ message, agentColor, onSaveToDiary, diarySaved, onSpeak, isSpeaking, onCreateTask, taskCreated }: MessageBubbleProps) {
-  const { t } = useTranslation()
-  const [copied, setCopied] = useState(false)
-  const isUser = message.role === 'user'
-  const colors = agentColorClasses[agentColor as keyof typeof agentColorClasses]
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(message.content)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
-      console.error('Failed to copy:', err)
-    }
-  }
-
-  return (
-    <div className={cn(
-      'flex items-start gap-3 group',
-      isUser && 'flex-row-reverse'
-    )}>
-      {isUser ? (
-        <div className="w-8 h-8 rounded-xl bg-stone-100 dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
-          <User className="w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
-        </div>
-      ) : (
-        <div className={cn(
-          'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0',
-          colors.bgLight
-        )}>
-          <span className={cn('text-sm', colors.text)} aria-hidden="true">AI</span>
-        </div>
-      )}
-      <div className="relative max-w-[80%]">
-        <div
-          className={cn(
-            'px-4 py-3 rounded-xl',
-            isUser
-              ? 'bg-teal-500 text-white'
-              : cn(
-                  'bg-stone-100 dark:bg-stone-800',
-                  'text-stone-900 dark:text-stone-100'
-                )
-          )}
-        >
-          <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-        </div>
-        {/* Action buttons - always visible on mobile, hover/focus on desktop */}
-        {!isUser && (
-          <div className={cn(
-            'absolute -bottom-2 right-2',
-            'opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100',
-            'transition-opacity duration-200',
-            'flex items-center gap-1',
-            (copied || diarySaved || taskCreated || isSpeaking) && 'sm:opacity-100'
-          )}>
-            {/* Speak button */}
-            <button
-              onClick={() => onSpeak?.(message.content)}
-              className={cn(
-                'px-2 py-1 rounded-lg',
-                'bg-white dark:bg-stone-700',
-                'border border-stone-200 dark:border-stone-600',
-                'text-xs text-stone-600 dark:text-stone-400',
-                'hover:text-stone-900 dark:hover:text-stone-200',
-                'shadow-sm hover:shadow',
-                'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1',
-                isSpeaking && 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-700'
-              )}
-              aria-label={isSpeaking ? t('aiTeam.voice.stopSpeaking') : t('aiTeam.voice.speak')}
-            >
-              <Volume2 className={cn('w-3 h-3', isSpeaking && 'text-teal-500 animate-pulse')} aria-hidden="true" />
-            </button>
-            {/* Create task button */}
-            <button
-              onClick={() => onCreateTask?.(message.content)}
-              className={cn(
-                'px-2 py-1 rounded-lg',
-                'bg-white dark:bg-stone-700',
-                'border border-stone-200 dark:border-stone-600',
-                'text-xs text-stone-600 dark:text-stone-400',
-                'hover:text-stone-900 dark:hover:text-stone-200',
-                'shadow-sm hover:shadow',
-                'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
-              )}
-              aria-label={taskCreated ? t('aiTeam.calendar.taskCreated') : t('aiTeam.calendar.createTask')}
-            >
-              {taskCreated ? (
-                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
-              ) : (
-                <CalendarPlus className="w-3 h-3" aria-hidden="true" />
-              )}
-            </button>
-            {/* Save to diary button */}
-            <button
-              onClick={() => onSaveToDiary?.(message.content)}
-              className={cn(
-                'px-2 py-1 rounded-lg',
-                'bg-white dark:bg-stone-700',
-                'border border-stone-200 dark:border-stone-600',
-                'text-xs text-stone-600 dark:text-stone-400',
-                'hover:text-stone-900 dark:hover:text-stone-200',
-                'shadow-sm hover:shadow',
-                'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
-              )}
-              aria-label={diarySaved ? t('aiTeam.savedToDiary') : t('aiTeam.saveToDiary')}
-            >
-              {diarySaved ? (
-                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
-              ) : (
-                <BookOpen className="w-3 h-3" aria-hidden="true" />
-              )}
-            </button>
-            {/* Copy button */}
-            <button
-              onClick={handleCopy}
-              className={cn(
-                'px-2 py-1 rounded-lg',
-                'bg-white dark:bg-stone-700',
-                'border border-stone-200 dark:border-stone-600',
-                'text-xs text-stone-600 dark:text-stone-400',
-                'hover:text-stone-900 dark:hover:text-stone-200',
-                'shadow-sm hover:shadow',
-                'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
-              )}
-              aria-label={copied ? t('aiTeam.messageCopied') : t('aiTeam.copyMessage')}
-            >
-              {copied ? (
-                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
-              ) : (
-                <Copy className="w-3 h-3" aria-hidden="true" />
-              )}
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   )
 }
