@@ -1,6 +1,6 @@
 /**
  * Dashboard Page - Visual overview with real data
- * Features: Hero, KPIs, RIASEC chart, compact onboarding, quick actions
+ * Features: Hero, KPIs, RIASEC chart, compact onboarding
  */
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -12,10 +12,8 @@ import { cn } from '@/lib/utils'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import {
-  User, Compass, FileText, Search, Mail, Building2, ClipboardList,
-  ChevronRight, Target, GraduationCap, Star,
-  TrendingUp, Linkedin, BookOpen, Dumbbell, Calendar, NotebookPen,
-  Smile, Globe, Bookmark, Briefcase, Heart, Sparkles, FileUser,
+  User, Compass, FileText, Search, Mail, ClipboardList,
+  ChevronRight, Bookmark, Briefcase, Heart, Sparkles, FileUser,
   UserCheck, Flame, Zap, ArrowRight
 } from '@/components/ui/icons'
 
@@ -23,7 +21,6 @@ import {
 import { DashboardRiasecChart } from '@/components/dashboard/DashboardRiasecChart'
 import { KpiCard } from '@/components/dashboard/KpiCard'
 import { OnboardingStep } from '@/components/dashboard/OnboardingStep'
-import { QuickActionButton } from '@/components/dashboard/QuickActionButton'
 import { DashboardSection } from '@/components/dashboard/DashboardSection'
 import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton'
 import { DashboardError } from '@/components/dashboard/DashboardError'
@@ -228,78 +225,6 @@ export default function DashboardPage() {
               </div>
             </DashboardSection>
 
-            {/* Quick Actions */}
-            <DashboardSection
-              title="Snabbåtgärder"
-              icon={Sparkles}
-              colorScheme="sky"
-              defaultExpanded={true}
-            >
-              <div className="flex flex-wrap gap-2">
-                <QuickActionButton icon={Search} label="Sök jobb" to="/job-search" color="teal" />
-                <QuickActionButton icon={FileUser} label="Redigera CV" to="/cv" color="teal" />
-                <QuickActionButton icon={Mail} label="Nytt brev" to="/cover-letter" color="sky" />
-                <QuickActionButton icon={Building2} label="Spontanansökan" to="/spontanansökan" color="sky" />
-                <QuickActionButton icon={NotebookPen} label="Dagbok" to="/diary" color="amber" />
-                <QuickActionButton icon={Smile} label="Logga mående" to="/wellness" color="amber" />
-              </div>
-            </DashboardSection>
-
-            {/* Skills & Development */}
-            <DashboardSection
-              title="Utveckling"
-              icon={TrendingUp}
-              colorScheme="amber"
-              defaultExpanded={false}
-            >
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2">
-                {[
-                  { icon: Target, label: 'Karriär', path: '/career' },
-                  { icon: GraduationCap, label: 'Utbildning', path: '/education' },
-                  { icon: Star, label: 'Varumärke', path: '/personal-brand' },
-                  { icon: Linkedin, label: 'LinkedIn', path: '/linkedin-optimizer' },
-                  { icon: TrendingUp, label: 'Kompetensanalys', path: '/skills-gap-analysis' },
-                  { icon: BookOpen, label: 'Kunskapsbank', path: '/knowledge-base' },
-                ].map(item => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2"
-                  >
-                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 dark:text-amber-400 shrink-0" aria-hidden="true" />
-                    <span className="text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 truncate">{item.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </DashboardSection>
-
-            {/* Wellness & Planning */}
-            <DashboardSection
-              title="Välmående & Planering"
-              icon={Heart}
-              colorScheme="sky"
-              defaultExpanded={false}
-            >
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2">
-                {[
-                  { icon: Calendar, label: 'Kalender', path: '/calendar' },
-                  { icon: NotebookPen, label: 'Dagbok', path: '/diary' },
-                  { icon: Smile, label: 'Hälsa', path: '/wellness' },
-                  { icon: Dumbbell, label: 'Övningar', path: '/exercises' },
-                  { icon: Globe, label: 'Internationellt', path: '/international' },
-                  { icon: Bookmark, label: 'Resurser', path: '/resources' },
-                ].map(item => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
-                  >
-                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600 dark:text-sky-400 shrink-0" aria-hidden="true" />
-                    <span className="text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 truncate">{item.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </DashboardSection>
           </div>
 
           {/* Sidebar - 1/3 width */}
