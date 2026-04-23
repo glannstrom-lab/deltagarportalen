@@ -9,12 +9,14 @@ import {
   Folder,
   Target,
   BookOpen,
+  Briefcase,
 } from '@/components/ui/icons'
 
 // Tab definitions with i18n keys - labels are resolved at render time
 export const cvTabDefs = [
   { id: 'create', labelKey: 'cv.tabs.create', path: '/cv', icon: FileEdit },
   { id: 'my-cvs', labelKey: 'cv.tabs.myCvs', path: '/cv/my-cvs', icon: Folder },
+  { id: 'adapt', labelKey: 'cv.tabs.adapt', path: '/cv/adapt', icon: Briefcase },
   { id: 'ats', labelKey: 'cv.tabs.ats', path: '/cv/ats', icon: Target },
   { id: 'tips', labelKey: 'cv.tabs.tips', path: '/cv/tips', icon: BookOpen },
 ]
@@ -23,6 +25,7 @@ export const cvTabDefs = [
 export const cvTabs: Tab[] = [
   { id: 'create', label: 'Skapa CV', path: '/cv', icon: FileEdit },
   { id: 'my-cvs', label: 'Mina CV', path: '/cv/my-cvs', icon: Folder },
+  { id: 'adapt', label: 'Anpassa', path: '/cv/adapt', icon: Briefcase },
   { id: 'ats', label: 'ATS-analys', path: '/cv/ats', icon: Target },
   { id: 'tips', label: 'CV-tips', path: '/cv/tips', icon: BookOpen },
 ]

@@ -532,6 +532,7 @@
     "tabs": {
       "create": "Create CV",
       "myCvs": "My CVs",
+      "adapt": "Adapt",
       "templates": "Templates",
       "ats": "ATS Analysis",
       "tips": "CV Tips"
@@ -993,7 +994,17 @@
         "quantifyResults": "Quantify your results where possible"
       },
       "skillAdded": "Skill added: {{skill}}",
-      "summaryUpdated": "Summary updated"
+      "summaryUpdated": "Summary updated",
+      "pageTitle": "Adapt your CV for job ads",
+      "pageDescription": "Paste a job ad below to get suggestions on how to optimize your CV for that specific job.",
+      "noCVTitle": "Create a CV first",
+      "noCVDescription": "You need a CV before you can adapt it for specific jobs. Start by creating your CV.",
+      "createCV": "Create CV",
+      "currentCV": "Your current CV",
+      "name": "Name",
+      "jobTitle": "Title",
+      "skills": "Skills",
+      "editCV": "Edit CV"
     },
     "welcome": {
       "title": "Welcome to the CV Builder",

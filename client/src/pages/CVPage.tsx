@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { cvTabDefs } from '@/data/cvTabs'
 import CVBuilder from './CVBuilder'
+import JobAdaptPage from './JobAdaptPage'
 import { MyCVs } from '@/components/cv/MyCVs'
 import { ATSAnalysis } from '@/components/cv/ATSAnalysis'
 import { CVTips } from '@/components/cv/CVTips'
@@ -41,6 +42,7 @@ export default function CVPage() {
         <Routes>
           <Route path="/" element={<CVBuilder />} />
           <Route path="/my-cvs" element={<MyCVs />} />
+          <Route path="/adapt" element={<JobAdaptPage />} />
           <Route path="/ats" element={<ATSAnalysis />} />
           <Route path="/tips" element={<CVTips />} />
           <Route path="*" element={<Navigate to="/cv" replace />} />

@@ -17,6 +17,7 @@ interface JobAdaptPanelProps {
   onAddSkill: (skill: string) => void
   onUpdateSummary: (summary: string) => void
   className?: string
+  defaultExpanded?: boolean
 }
 
 interface AnalysisResult {
@@ -69,12 +70,12 @@ function extractJobInfo(text: string): { title: string; company: string } {
   return { title, company }
 }
 
-export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className }: JobAdaptPanelProps) {
+export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, defaultExpanded = true }: JobAdaptPanelProps) {
   const { t } = useTranslation()
   const [jobDescription, setJobDescription] = useState('')
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
-  const [isExpanded, setIsExpanded] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
   const [addedKeywords, setAddedKeywords] = useState<string[]>([])
 
   // Skapa CV-text för matchning

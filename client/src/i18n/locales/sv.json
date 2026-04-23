@@ -605,6 +605,7 @@
     "tabs": {
       "create": "Skapa CV",
       "myCvs": "Mina CV",
+      "adapt": "Anpassa",
       "templates": "Mallar",
       "ats": "ATS-analys",
       "tips": "CV-tips"
@@ -1066,7 +1067,17 @@
         "quantifyResults": "Kvantifiera dina resultat där det är möjligt"
       },
       "skillAdded": "Kompetens tillagd: {{skill}}",
-      "summaryUpdated": "Sammanfattning uppdaterad"
+      "summaryUpdated": "Sammanfattning uppdaterad",
+      "pageTitle": "Anpassa ditt CV för jobbannonser",
+      "pageDescription": "Klistra in en jobbannons nedan för att få förslag på hur du kan optimera ditt CV för just det jobbet.",
+      "noCVTitle": "Skapa ett CV först",
+      "noCVDescription": "Du behöver ett CV innan du kan anpassa det för specifika jobb. Börja med att skapa ditt CV.",
+      "createCV": "Skapa CV",
+      "currentCV": "Ditt nuvarande CV",
+      "name": "Namn",
+      "jobTitle": "Titel",
+      "skills": "Kompetenser",
+      "editCV": "Redigera CV"
     },
     "welcome": {
       "title": "Välkommen till CV-byggaren",
