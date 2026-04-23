@@ -5,7 +5,57 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
+// ============================================
+// Rate Limiting Configuration
+// ============================================
+
+const RATE_LIMITS = {
+  'personligt-brev': { limit: 10, windowMinutes: 15 },
+  'cv-optimering': { limit: 15, windowMinutes: 15 },
+  'karriarplan': { limit: 5, windowMinutes: 15 },
+  'kompetensgap': { limit: 10, windowMinutes: 15 },
+  'default': { limit: 20, windowMinutes: 15 }
+};
+
+async function checkRateLimit(supabase, userId, functionName) {
+  const config = RATE_LIMITS[functionName] || RATE_LIMITS.default;
+
+  try {
+    const { data, error } = await supabase.rpc('check_rate_limit', {
+      p_identifier: userId,
+      p_endpoint: `ai-stream-${functionName}`,
+      p_max_requests: config.limit,
+      p_window_minutes: config.windowMinutes
+    });
+
+    if (error) {
+      console.error('[RateLimit] Supabase error:', error.message);
+      return { allowed: true, remaining: config.limit, resetIn: 0 };
+    }
+
+    if (data && data.length > 0) {
+      const result = data[0];
+      const resetIn = result.reset_at
+        ? Math.max(0, new Date(result.reset_at).getTime() - Date.now())
+        : config.windowMinutes * 60 * 1000;
+
+      return {
+        allowed: result.allowed,
+        remaining: result.remaining || 0,
+        resetIn
+      };
+    }
+
+    return { allowed: true, remaining: config.limit, resetIn: 0 };
+  } catch (err) {
+    console.error('[RateLimit] Error:', err.message);
+    return { allowed: true, remaining: config.limit, resetIn: 0 };
+  }
+}
+
+// ============================================
 // Security: Allowed origins for CORS
+// ============================================
 const ALLOWED_ORIGINS = [
   // Production domains
   'https://deltagarportalen.se',
@@ -166,6 +216,17 @@ module.exports = async (req, res) => {
 
     const fn = req.body.function;
     const data = req.body.data || req.body;
+
+    // Check rate limit before processing
+    const rateLimit = await checkRateLimit(supabase, user.id, fn);
+    if (!rateLimit.allowed) {
+      const retryAfter = Math.ceil(rateLimit.resetIn / 1000);
+      res.setHeader('Retry-After', String(retryAfter));
+      return res.status(429).json({
+        error: 'För många förfrågningar. Vänta en stund och försök igen.',
+        retryAfter
+      });
+    }
 
     if (!fn || !PROMPTS[fn]) return res.status(400).json({ error: 'Invalid function: ' + fn });
 

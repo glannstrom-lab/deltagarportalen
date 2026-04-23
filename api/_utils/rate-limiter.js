@@ -1,59 +1,119 @@
 /**
- * Simple Rate Limiter for Edge Runtime
+ * Distributed Rate Limiter using Supabase
  *
- * Note: This uses in-memory storage which resets on each cold start.
- * For production with high traffic, consider using Upstash Redis or similar.
+ * Uses Supabase database for persistent rate limiting that works
+ * across serverless instances and cold starts.
  *
- * This provides basic protection against brute-force attacks.
+ * Falls back to in-memory if Supabase call fails.
  */
 
-// In-memory store for rate limiting (per edge instance)
-const rateLimitStore = new Map()
+import { createClient } from '@supabase/supabase-js'
 
-// Clean up old entries every 5 minutes
+// Supabase client for rate limiting (uses anon key, function handles security)
+let supabaseClient = null
+
+function getSupabase() {
+  if (!supabaseClient) {
+    const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL
+    const key = process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
+    if (url && key) {
+      supabaseClient = createClient(url, key)
+    }
+  }
+  return supabaseClient
+}
+
+// Fallback in-memory store (used if Supabase fails)
+const fallbackStore = new Map()
 const CLEANUP_INTERVAL = 5 * 60 * 1000
 let lastCleanup = Date.now()
 
-function cleanupOldEntries() {
+function cleanupFallbackStore() {
   const now = Date.now()
   if (now - lastCleanup < CLEANUP_INTERVAL) return
-
   lastCleanup = now
-  const cutoff = now - 60 * 1000 // Remove entries older than 1 minute
-
-  for (const [key, data] of rateLimitStore.entries()) {
+  const cutoff = now - 60 * 1000
+  for (const [key, data] of fallbackStore.entries()) {
     if (data.windowStart < cutoff) {
-      rateLimitStore.delete(key)
+      fallbackStore.delete(key)
     }
   }
 }
 
 /**
- * Check if request should be rate limited
- * @param {string} identifier - Unique identifier (usually IP address)
- * @param {number} maxRequests - Maximum requests allowed in window (default: 10)
- * @param {number} windowMs - Time window in milliseconds (default: 60000 = 1 minute)
- * @returns {{ allowed: boolean, remaining: number, resetIn: number }}
+ * Check rate limit using Supabase (distributed)
+ * Falls back to in-memory if Supabase is unavailable
+ *
+ * @param {string} identifier - Unique identifier (IP or user ID)
+ * @param {number} maxRequests - Maximum requests allowed (default: 10)
+ * @param {number} windowMs - Time window in milliseconds (default: 60000)
+ * @param {string} endpoint - Optional endpoint name for tracking
+ * @returns {Promise<{ allowed: boolean, remaining: number, resetIn: number }>}
  */
-export function checkRateLimit(identifier, maxRequests = 10, windowMs = 60000) {
-  cleanupOldEntries()
+export async function checkRateLimit(identifier, maxRequests = 10, windowMs = 60000, endpoint = 'default') {
+  const supabase = getSupabase()
+
+  if (supabase) {
+    try {
+      // Convert windowMs to minutes for the database function
+      const windowMinutes = Math.max(1, Math.ceil(windowMs / 60000))
+
+      const { data, error } = await supabase.rpc('check_rate_limit', {
+        p_identifier: identifier,
+        p_endpoint: endpoint,
+        p_max_requests: maxRequests,
+        p_window_minutes: windowMinutes
+      })
+
+      if (error) {
+        console.error('[RateLimit] Supabase error, using fallback:', error.message)
+        return checkRateLimitFallback(identifier, maxRequests, windowMs)
+      }
+
+      if (data && data.length > 0) {
+        const result = data[0]
+        const resetIn = result.reset_at
+          ? Math.max(0, new Date(result.reset_at).getTime() - Date.now())
+          : windowMs
+
+        return {
+          allowed: result.allowed,
+          remaining: result.remaining || 0,
+          resetIn
+        }
+      }
+
+      // Unexpected response format, use fallback
+      console.warn('[RateLimit] Unexpected response format, using fallback')
+      return checkRateLimitFallback(identifier, maxRequests, windowMs)
+
+    } catch (err) {
+      console.error('[RateLimit] Error calling Supabase:', err.message)
+      return checkRateLimitFallback(identifier, maxRequests, windowMs)
+    }
+  }
+
+  // No Supabase configured, use fallback
+  return checkRateLimitFallback(identifier, maxRequests, windowMs)
+}
+
+/**
+ * Synchronous in-memory fallback rate limiter
+ */
+function checkRateLimitFallback(identifier, maxRequests, windowMs) {
+  cleanupFallbackStore()
 
   const now = Date.now()
   const key = `rate:${identifier}`
 
-  let data = rateLimitStore.get(key)
+  let data = fallbackStore.get(key)
 
-  // If no existing data or window expired, create new window
   if (!data || (now - data.windowStart) > windowMs) {
-    data = {
-      windowStart: now,
-      count: 0,
-    }
+    data = { windowStart: now, count: 0 }
   }
 
-  // Increment count
   data.count++
-  rateLimitStore.set(key, data)
+  fallbackStore.set(key, data)
 
   const remaining = Math.max(0, maxRequests - data.count)
   const resetIn = Math.max(0, windowMs - (now - data.windowStart))
@@ -61,8 +121,16 @@ export function checkRateLimit(identifier, maxRequests = 10, windowMs = 60000) {
   return {
     allowed: data.count <= maxRequests,
     remaining,
-    resetIn,
+    resetIn
   }
+}
+
+/**
+ * Synchronous version for edge runtime compatibility
+ * Uses in-memory only (for cases where async isn't possible)
+ */
+export function checkRateLimitSync(identifier, maxRequests = 10, windowMs = 60000) {
+  return checkRateLimitFallback(identifier, maxRequests, windowMs)
 }
 
 /**
@@ -71,18 +139,26 @@ export function checkRateLimit(identifier, maxRequests = 10, windowMs = 60000) {
  * @returns {string} - Client IP address
  */
 export function getClientIP(req) {
+  // Handle both Edge Runtime (headers.get) and Node.js (headers object)
+  const getHeader = (name) => {
+    if (typeof req.headers?.get === 'function') {
+      return req.headers.get(name)
+    }
+    return req.headers?.[name] || req.headers?.[name.toLowerCase()]
+  }
+
   // Vercel/Cloudflare headers
-  const forwarded = req.headers.get('x-forwarded-for')
+  const forwarded = getHeader('x-forwarded-for')
   if (forwarded) {
     return forwarded.split(',')[0].trim()
   }
 
   // Cloudflare
-  const cfConnecting = req.headers.get('cf-connecting-ip')
+  const cfConnecting = getHeader('cf-connecting-ip')
   if (cfConnecting) return cfConnecting
 
   // Vercel
-  const realIP = req.headers.get('x-real-ip')
+  const realIP = getHeader('x-real-ip')
   if (realIP) return realIP
 
   return 'unknown'
@@ -108,8 +184,35 @@ export function rateLimitResponse(requestOrigin, resetIn, getCorsHeaders) {
       headers: {
         'Content-Type': 'application/json',
         'Retry-After': String(retryAfter),
+        'X-RateLimit-Remaining': '0',
         ...getCorsHeaders(requestOrigin),
       },
     }
   )
+}
+
+/**
+ * Create rate limit response for Node.js (res.json style)
+ */
+export function sendRateLimitResponse(res, resetIn, corsHeaders = {}) {
+  const retryAfter = Math.ceil(resetIn / 1000)
+
+  Object.entries(corsHeaders).forEach(([key, value]) => {
+    res.setHeader(key, value)
+  })
+  res.setHeader('Retry-After', String(retryAfter))
+  res.setHeader('X-RateLimit-Remaining', '0')
+
+  return res.status(429).json({
+    error: 'Too many requests. Please try again later.',
+    retryAfter
+  })
+}
+
+export default {
+  checkRateLimit,
+  checkRateLimitSync,
+  getClientIP,
+  rateLimitResponse,
+  sendRateLimitResponse
 }

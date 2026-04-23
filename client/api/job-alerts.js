@@ -47,6 +47,51 @@ function getCorsHeaders(requestOrigin) {
   };
 }
 
+// ============================================
+// Rate Limiting
+// ============================================
+
+const JOB_ALERT_RATE_LIMITS = {
+  'check': { limit: 5, windowMinutes: 60 },      // Cron job
+  'check-user': { limit: 10, windowMinutes: 15 }, // User-triggered
+  'send-digest': { limit: 2, windowMinutes: 60 }, // Daily digest
+  'default': { limit: 10, windowMinutes: 15 }
+};
+
+async function checkRateLimit(identifier, action) {
+  const config = JOB_ALERT_RATE_LIMITS[action] || JOB_ALERT_RATE_LIMITS.default;
+
+  try {
+    const { data, error } = await supabase.rpc('check_rate_limit', {
+      p_identifier: identifier,
+      p_endpoint: `job-alerts-${action}`,
+      p_max_requests: config.limit,
+      p_window_minutes: config.windowMinutes
+    });
+
+    if (error) {
+      console.error('[RateLimit] Error:', error.message);
+      return { allowed: true, remaining: config.limit, resetIn: 0 };
+    }
+
+    if (data && data.length > 0) {
+      const result = data[0];
+      return {
+        allowed: result.allowed,
+        remaining: result.remaining || 0,
+        resetIn: result.reset_at
+          ? Math.max(0, new Date(result.reset_at).getTime() - Date.now())
+          : config.windowMinutes * 60 * 1000
+      };
+    }
+
+    return { allowed: true, remaining: config.limit, resetIn: 0 };
+  } catch (err) {
+    console.error('[RateLimit] Error:', err.message);
+    return { allowed: true, remaining: config.limit, resetIn: 0 };
+  }
+}
+
 // Arbetsförmedlingen API
 const AF_API_URL = 'https://jobsearch.api.jobtechdev.se/search';
 
@@ -394,6 +439,23 @@ module.exports = async (req, res) => {
   }
 
   const action = req.query.action || req.body?.action;
+
+  // Get identifier for rate limiting (IP for cron, userId for user actions)
+  const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
+    || req.headers['x-real-ip']
+    || 'unknown';
+  const rateLimitId = req.body?.userId || clientIP;
+
+  // Check rate limit
+  const rateLimit = await checkRateLimit(rateLimitId, action || 'default');
+  if (!rateLimit.allowed) {
+    const retryAfter = Math.ceil(rateLimit.resetIn / 1000);
+    res.setHeader('Retry-After', String(retryAfter));
+    return res.status(429).json({
+      error: 'Too many requests. Please try again later.',
+      retryAfter
+    });
+  }
 
   try {
     switch (action) {

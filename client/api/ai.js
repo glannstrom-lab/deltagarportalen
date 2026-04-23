@@ -1,6 +1,78 @@
 const { createClient } = require('@supabase/supabase-js');
 
+// ============================================
+// Rate Limiting Configuration
+// ============================================
+
+// Rate limits per AI function (requests per 15 minutes)
+const RATE_LIMITS = {
+  'personligt-brev': { limit: 10, windowMinutes: 15 },
+  'cv-optimering': { limit: 15, windowMinutes: 15 },
+  'generera-cv-text': { limit: 20, windowMinutes: 15 },
+  'intervju-forberedelser': { limit: 10, windowMinutes: 15 },
+  'intervju-simulator': { limit: 20, windowMinutes: 15 },
+  'jobbtips': { limit: 20, windowMinutes: 15 },
+  'loneforhandling': { limit: 10, windowMinutes: 15 },
+  'karriarplan': { limit: 5, windowMinutes: 15 },
+  'kompetensgap': { limit: 10, windowMinutes: 15 },
+  'linkedin-optimering': { limit: 15, windowMinutes: 15 },
+  'mentalt-stod': { limit: 20, windowMinutes: 15 },
+  'natverkande': { limit: 15, windowMinutes: 15 },
+  'ansokningscoach': { limit: 15, windowMinutes: 15 },
+  'ovningshjalp': { limit: 20, windowMinutes: 15 },
+  'profile-summary': { limit: 10, windowMinutes: 15 },
+  'chatbot': { limit: 30, windowMinutes: 15 },
+  'ai-team-chat': { limit: 50, windowMinutes: 15 },
+  'default': { limit: 20, windowMinutes: 15 }
+};
+
+/**
+ * Check rate limit using Supabase distributed storage
+ * @param {object} supabase - Supabase client
+ * @param {string} userId - User ID for rate limiting
+ * @param {string} functionName - AI function name
+ * @returns {Promise<{allowed: boolean, remaining: number, resetIn: number}>}
+ */
+async function checkRateLimit(supabase, userId, functionName) {
+  const config = RATE_LIMITS[functionName] || RATE_LIMITS.default;
+
+  try {
+    const { data, error } = await supabase.rpc('check_rate_limit', {
+      p_identifier: userId,
+      p_endpoint: `ai-${functionName}`,
+      p_max_requests: config.limit,
+      p_window_minutes: config.windowMinutes
+    });
+
+    if (error) {
+      console.error('[RateLimit] Supabase error:', error.message);
+      // On error, allow request but log it
+      return { allowed: true, remaining: config.limit, resetIn: 0 };
+    }
+
+    if (data && data.length > 0) {
+      const result = data[0];
+      const resetIn = result.reset_at
+        ? Math.max(0, new Date(result.reset_at).getTime() - Date.now())
+        : config.windowMinutes * 60 * 1000;
+
+      return {
+        allowed: result.allowed,
+        remaining: result.remaining || 0,
+        resetIn
+      };
+    }
+
+    return { allowed: true, remaining: config.limit, resetIn: 0 };
+  } catch (err) {
+    console.error('[RateLimit] Error:', err.message);
+    return { allowed: true, remaining: config.limit, resetIn: 0 };
+  }
+}
+
+// ============================================
 // Security: Allowed origins for CORS
+// ============================================
 const ALLOWED_ORIGINS = [
   // Production domains
   'https://deltagarportalen.se',
@@ -275,6 +347,21 @@ module.exports = async (req, res) => {
 
     const fn = req.body.function;
     const data = req.body.data || req.body;
+
+    // Check rate limit before processing
+    const rateLimit = await checkRateLimit(supabase, user.id, fn);
+    if (!rateLimit.allowed) {
+      const retryAfter = Math.ceil(rateLimit.resetIn / 1000);
+      res.setHeader('Retry-After', String(retryAfter));
+      res.setHeader('X-RateLimit-Remaining', '0');
+      return res.status(429).json({
+        error: 'För många förfrågningar. Vänta en stund och försök igen.',
+        retryAfter
+      });
+    }
+
+    // Add rate limit headers
+    res.setHeader('X-RateLimit-Remaining', String(rateLimit.remaining));
     const stream = req.body.stream === true;
 
     if (!fn || !PROMPTS[fn]) return res.status(400).json({ error: 'Invalid function: ' + fn });
