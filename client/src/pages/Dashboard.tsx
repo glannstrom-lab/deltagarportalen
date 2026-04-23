@@ -1,7 +1,9 @@
 /**
  * Dashboard Page - Visual overview with real data
  * Features: Hero, KPIs, RIASEC chart, compact onboarding
+ * Updated: Next step CTA, limited visible steps for less overwhelm
  */
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ConsultantRequestBanner } from '@/components/consultant/ConsultantRequestBanner'
@@ -13,8 +15,8 @@ import { useDashboardData } from '@/hooks/useDashboardData'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import {
   User, Compass, FileText, Search, Mail, ClipboardList,
-  ChevronRight, Bookmark, Briefcase, Heart, Sparkles, FileUser,
-  UserCheck, Flame, Zap, ArrowRight, Target
+  ChevronRight, ChevronDown, Bookmark, Briefcase, Heart, Sparkles, FileUser,
+  UserCheck, Flame, Zap, ArrowRight, Target, Play
 } from '@/components/ui/icons'
 
 // Extracted dashboard components
@@ -43,11 +45,16 @@ const ONBOARDING_STEPS = [
 // ============================================
 // MAIN DASHBOARD COMPONENT
 // ============================================
+
+// Number of onboarding steps to show by default (reduces overwhelm)
+const VISIBLE_STEPS_COUNT = 3
+
 export default function DashboardPage() {
   const { t } = useTranslation()
   const { profile: authProfile } = useAuthStore()
   const { data: dashboardData, loading: dashboardLoading, error: dashboardError, refetch } = useDashboardData()
   const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
+  const [showAllSteps, setShowAllSteps] = useState(false)
 
   // Calculate onboarding progress
   const getOnboardingProgress = () => {
@@ -88,6 +95,26 @@ export default function DashboardPage() {
     step => !onboardingProgress.progress?.[step.trackKey]
   )
 
+  // Get the next recommended step (first incomplete)
+  const nextStep = currentStepIndex >= 0 ? ONBOARDING_STEPS[currentStepIndex] : null
+
+  // Get visible steps: show completed + next few incomplete (max VISIBLE_STEPS_COUNT incomplete)
+  const getVisibleSteps = () => {
+    if (showAllSteps) return ONBOARDING_STEPS
+
+    const completedSteps = ONBOARDING_STEPS.filter(
+      step => onboardingProgress.progress?.[step.trackKey]
+    )
+    const incompleteSteps = ONBOARDING_STEPS.filter(
+      step => !onboardingProgress.progress?.[step.trackKey]
+    ).slice(0, VISIBLE_STEPS_COUNT)
+
+    return [...completedSteps, ...incompleteSteps]
+  }
+
+  const visibleSteps = getVisibleSteps()
+  const hiddenStepsCount = ONBOARDING_STEPS.length - visibleSteps.length
+
   if (dashboardLoading || interestLoading) {
     return <DashboardSkeleton />
   }
@@ -101,8 +128,9 @@ export default function DashboardPage() {
   const greeting = getGreeting()
 
   return (
-    <div className="page-transition pb-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="page-transition pb-8 sm:pb-10 lg:pb-12">
+      {/* Responsive container: full width mobile, contained tablet/desktop */}
+      <div className="max-w-full md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
         <ConsultantRequestBanner />
 
         {/* Hero Section */}
@@ -163,8 +191,8 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* KPI Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
+        {/* KPI Cards - 2x2 mobile, 4 col tablet/desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-5 lg:mb-6">
           <KpiCard
             icon={FileText}
             label="CV-progress"
@@ -198,10 +226,35 @@ export default function DashboardPage() {
           />
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
-          {/* Main content - 2/3 width */}
-          <div className="lg:col-span-2 space-y-3 sm:space-y-4">
-            {/* Onboarding Section */}
+        {/* Next Step CTA - Prominent single action, touch-optimized */}
+        {nextStep && progressPercent < 100 && (
+          <Link
+            to={nextStep.path}
+            className="block mb-4 sm:mb-5 lg:mb-6 bg-gradient-to-r from-teal-500 to-sky-500 dark:from-teal-600 dark:to-sky-600 rounded-2xl p-4 sm:p-5 md:p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.005] active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 group"
+            role="region"
+            aria-label="Ditt nästa steg"
+          >
+            <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/20 backdrop-blur rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-white/30 transition-colors">
+                <nextStep.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" aria-hidden="true" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs sm:text-sm md:text-sm text-white/80 font-medium mb-0.5 md:mb-1">Ditt nästa steg</p>
+                <h2 className="text-base sm:text-lg md:text-xl font-bold truncate">{nextStep.title}</h2>
+                <p className="text-xs sm:text-sm md:text-base text-white/80 truncate">{nextStep.description}</p>
+              </div>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center shrink-0 group-hover:bg-white/30 transition-colors">
+                <Play className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white ml-0.5" aria-hidden="true" />
+              </div>
+            </div>
+          </Link>
+        )}
+
+        {/* Responsive grid: 1 col mobile, 2 col tablet (sidebar below), 3 col desktop */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 lg:gap-6">
+          {/* Main content - full on mobile, 2/2 on tablet, 2/3 on desktop */}
+          <div className="md:col-span-2 lg:col-span-2 space-y-3 sm:space-y-4">
+            {/* Onboarding Section - Shows limited steps to reduce overwhelm */}
             <DashboardSection
               title="Kom igång"
               icon={Zap}
@@ -209,26 +262,52 @@ export default function DashboardPage() {
               colorScheme="teal"
               defaultExpanded={progressPercent < 100}
             >
-              <div className="grid sm:grid-cols-2 gap-2">
-                {ONBOARDING_STEPS.map((step, i) => (
-                  <OnboardingStep
-                    key={step.id}
-                    step={step.step}
-                    title={step.title}
-                    description={step.description}
-                    icon={step.icon}
-                    isComplete={onboardingProgress.progress?.[step.trackKey] || false}
-                    isCurrent={currentStepIndex === i}
-                    to={step.path}
-                  />
-                ))}
+              {/* Onboarding grid: 1 col mobile, 2 col tablet+, 3 col wide desktop */}
+              <div id="onboarding-steps-grid" className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2 sm:gap-3">
+                {visibleSteps.map((step) => {
+                  const stepIndex = ONBOARDING_STEPS.findIndex(s => s.id === step.id)
+                  return (
+                    <OnboardingStep
+                      key={step.id}
+                      step={step.step}
+                      title={step.title}
+                      description={step.description}
+                      icon={step.icon}
+                      isComplete={onboardingProgress.progress?.[step.trackKey] || false}
+                      isCurrent={currentStepIndex === stepIndex}
+                      to={step.path}
+                    />
+                  )
+                })}
               </div>
+              {/* Show more button if there are hidden steps */}
+              {hiddenStepsCount > 0 && !showAllSteps && (
+                <button
+                  onClick={() => setShowAllSteps(true)}
+                  className="mt-3 w-full py-2 px-3 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 hover:bg-teal-100 dark:hover:bg-teal-900/50 rounded-lg transition-colors flex items-center justify-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                  aria-expanded="false"
+                  aria-controls="onboarding-steps-grid"
+                >
+                  <ChevronDown className="w-4 h-4" aria-hidden="true" />
+                  Visa {hiddenStepsCount} fler steg
+                </button>
+              )}
+              {showAllSteps && hiddenStepsCount > 0 && (
+                <button
+                  onClick={() => setShowAllSteps(false)}
+                  className="mt-3 w-full py-2 px-3 text-sm font-medium text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors flex items-center justify-center gap-1.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                  aria-expanded="true"
+                  aria-controls="onboarding-steps-grid"
+                >
+                  Visa färre
+                </button>
+              )}
             </DashboardSection>
 
           </div>
 
-          {/* Sidebar - 1/3 width */}
-          <div className="space-y-3 sm:space-y-4">
+          {/* Sidebar - full on mobile, 2-col grid on tablet, 1/3 on desktop */}
+          <div className="md:col-span-2 lg:col-span-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-3 sm:gap-4">
             {/* RIASEC Profile */}
             {interestProfile?.hasResult && interestProfile.riasecScores && (
               <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-3 sm:p-4">

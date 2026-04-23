@@ -2,9 +2,7 @@ import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Menu, X, User, Settings, LogOut,
-  LayoutDashboard, FileText, Mail, Briefcase, Target,
-  Compass, Dumbbell, Heart, BookOpen, Bookmark
+  Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle
 } from '@/components/ui/icons'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
@@ -17,20 +15,7 @@ import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
 import { OptimizedImage } from './ui/OptimizedImage'
-
-// Mobila navigeringsitems - synkade med Sidebar navigation.ts
-const mobileNavItems = [
-  { to: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
-  { to: '/cv', labelKey: 'nav.cv', icon: FileText },
-  { to: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
-  { to: '/job-search', labelKey: 'nav.jobSearch', icon: Briefcase },
-  { to: '/career', labelKey: 'nav.career', icon: Target },
-  { to: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
-  { to: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
-  { to: '/diary', labelKey: 'nav.wellness', icon: Heart },
-  { to: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
-  { to: '/resources', labelKey: 'nav.resources', icon: Bookmark },
-]
+import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge } from './layout/navigation'
 
 export default function Layout() {
   const { isMobile } = useMobileOptimizer()
@@ -158,67 +143,10 @@ function MobileTopBar() {
       )}
 
       {/* Sidomeny (höger) - Huvudnavigation synkad med Desktop Sidebar */}
-      <div
-        className={cn(
-          'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
-          'transform transition-transform duration-300 ease-out',
-          'w-[280px] max-w-[80vw]',
-          isMenuOpen ? 'translate-x-0' : 'translate-x-full'
-        )}
-      >
-        {/* Meny header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700 safe-top">
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('sidebar.menu')}</h2>
-          <button
-            onClick={() => setIsMenuOpen(false)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
-            aria-label={t('common.close')}
-          >
-            <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
-          </button>
-        </div>
-
-        {/* Meny-länkar - synkade med Desktop Sidebar */}
-        <nav className="p-2 space-y-1">
-          {mobileNavItems.map((item) => {
-            const Icon = item.icon
-            const isActive = location.pathname === item.to || location.pathname.startsWith(item.to + '/')
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                onClick={() => setIsMenuOpen(false)}
-                className={cn(
-                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
-                  isActive
-                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
-                    : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
-                )}
-              >
-                <Icon className="w-5 h-5" />
-                <span>{t(item.labelKey)}</span>
-              </Link>
-            )
-          })}
-        </nav>
-
-        {/* Footer i meny - Inställningar synkad med Sidebar */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-stone-700 safe-bottom space-y-1">
-          <Link
-            to="/settings"
-            onClick={() => setIsMenuOpen(false)}
-            className={cn(
-              'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
-              location.pathname === '/settings'
-                ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
-                : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
-            )}
-          >
-            <Settings className="w-5 h-5" />
-            <span>{t('nav.settings')}</span>
-          </Link>
-        </div>
-      </div>
+      <MobileMainMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+      />
 
       {/* Profil overlay */}
       {isProfileOpen && (
@@ -291,5 +219,216 @@ function MobileTopBar() {
         </div>
       </div>
     </>
+  )
+}
+
+/**
+ * MobileMainMenu - Fullständig navigation med alla sidor grupperade
+ * Synkad med Desktop Sidebar via navGroups
+ */
+function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const { t } = useTranslation()
+  const location = useLocation()
+  const { profile, signOut } = useAuthStore()
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['overview', 'job-search'])
+
+  const activeRole = profile?.activeRole || profile?.role || 'USER'
+  const isSuperAdmin = activeRole === 'SUPERADMIN'
+  const isAdmin = activeRole === 'ADMIN' || isSuperAdmin
+  const isConsultant = activeRole === 'CONSULTANT' || isAdmin
+
+  const toggleGroup = (groupId: string) => {
+    setExpandedGroups(prev =>
+      prev.includes(groupId)
+        ? prev.filter(id => id !== groupId)
+        : [...prev, groupId]
+    )
+  }
+
+  return (
+    <div
+      className={cn(
+        'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
+        'transform transition-transform duration-300 ease-out',
+        'w-[300px] max-w-[85vw] flex flex-col',
+        isOpen ? 'translate-x-0' : 'translate-x-full'
+      )}
+      role="dialog"
+      aria-modal="true"
+      aria-label={t('sidebar.menu')}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700 safe-top shrink-0">
+        <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('sidebar.menu')}</h2>
+        <button
+          onClick={onClose}
+          className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
+          aria-label={t('common.close')}
+        >
+          <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
+        </button>
+      </div>
+
+      {/* Scrollable Navigation */}
+      <nav className="flex-1 overflow-y-auto p-3">
+        {navGroups.map((group) => {
+          const isGroupExpanded = expandedGroups.includes(group.id)
+
+          return (
+            <div key={group.id} className="mb-2">
+              {/* Group Header - Expandable */}
+              <button
+                onClick={() => toggleGroup(group.id)}
+                className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold text-teal-700 dark:text-teal-400 uppercase tracking-wider hover:bg-teal-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
+                aria-expanded={isGroupExpanded}
+              >
+                <span>{t(group.labelKey)}</span>
+                <ChevronDown
+                  className={cn(
+                    'w-4 h-4 transition-transform',
+                    !isGroupExpanded && '-rotate-90'
+                  )}
+                />
+              </button>
+
+              {/* Group Items */}
+              {isGroupExpanded && (
+                <div className="mt-1 space-y-0.5">
+                  {group.items.map((item) => {
+                    const Icon = item.icon
+                    const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+                    const showBadge = shouldShowBadge(item)
+
+                    return (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        onClick={onClose}
+                        className={cn(
+                          'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                          isActive
+                            ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+                            : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200'
+                        )}
+                      >
+                        <Icon className="w-5 h-5 flex-shrink-0" />
+                        <span className="flex-1">{t(item.labelKey)}</span>
+                        {showBadge && (
+                          <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-400 text-amber-900 rounded-full">
+                            {t('common.new')}
+                          </span>
+                        )}
+                      </Link>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )
+        })}
+
+        {/* Consultant Section */}
+        {isConsultant && (
+          <div className="mt-3 pt-3 border-t border-slate-200 dark:border-stone-700">
+            <p className="px-3 py-2 text-xs font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wider">
+              {t('sidebar.consultantSection')}
+            </p>
+            <div className="space-y-0.5">
+              {consultantNavItems.map((item) => {
+                const Icon = item.icon
+                const isActive = location.pathname.startsWith(item.path)
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={onClose}
+                    className={cn(
+                      'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                      isActive
+                        ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 font-medium'
+                        : 'text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-stone-700'
+                    )}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <span>{t(item.labelKey)}</span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Admin Section */}
+        {isAdmin && (
+          <div className="mt-3 pt-3 border-t border-slate-200 dark:border-stone-700">
+            <p className="px-3 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+              {t('sidebar.adminSection')}
+            </p>
+            <div className="space-y-0.5">
+              {adminNavItems.map((item) => {
+                const Icon = item.icon
+                const isActive = location.pathname.startsWith(item.path)
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={onClose}
+                    className={cn(
+                      'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                      isActive
+                        ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-medium'
+                        : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-stone-700'
+                    )}
+                  >
+                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <span>{t(item.labelKey)}</span>
+                  </Link>
+                )
+              })}
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Footer - Settings, Help, Logout */}
+      <div className="shrink-0 p-3 border-t border-slate-200 dark:border-stone-700 safe-bottom space-y-0.5">
+        <Link
+          to="/settings"
+          onClick={onClose}
+          className={cn(
+            'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+            location.pathname === '/settings'
+              ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+              : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
+          )}
+        >
+          <Settings className="w-5 h-5" />
+          <span>{t('nav.settings')}</span>
+        </Link>
+        <Link
+          to="/help"
+          onClick={onClose}
+          className={cn(
+            'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+            location.pathname === '/help'
+              ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+              : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
+          )}
+        >
+          <HelpCircle className="w-5 h-5" />
+          <span>{t('nav.help', 'Hjälp')}</span>
+        </Link>
+        <button
+          onClick={() => {
+            onClose()
+            signOut()
+          }}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+        >
+          <LogOut className="w-5 h-5" />
+          <span>{t('nav.logout')}</span>
+        </button>
+      </div>
+    </div>
   )
 }
