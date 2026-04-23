@@ -10,11 +10,11 @@
 
 Denna sakerhetsrevision har granskat Deltagarportalen for potentiella sarbarheter och sakerhetsrisker. Granskningen omfattar secrets-hantering, autentisering, auktorisering, input-validering, externa API-anrop, headers och loggning.
 
-**Huvudfynd:**
-- **1 KRITISK** sarbarhet: Produktionsnycklar i arkiverad dokumentation
-- **2 HOGA** risker: CORS-konfiguration med wildcard i client/api, saknad rate limiting i vissa endpoints
-- **4 MEDIUM** risker: Potentiella prompt injection-vektorer, in-memory rate limiting
-- **3 LAGA** risker: Mindre forbattringsmojligheter
+**Huvudfynd (ALLA ATGARDADE 2026-04-23):**
+- ~~**1 KRITISK** sarbarhet: Produktionsnycklar i arkiverad dokumentation~~ ✅ FIXAT
+- ~~**2 HOGA** risker: CORS-konfiguration med wildcard, saknad rate limiting~~ ✅ FIXAT
+- **4 MEDIUM** risker: Potentiella prompt injection-vektorer (kvarstar)
+- **3 LAGA** risker: Mindre forbattringsmojligheter (kvarstar)
 
 **Positivt:**
 - Supabase RLS ar valkonfigurerat
@@ -247,11 +247,12 @@ Denna sakerhetsrevision har granskat Deltagarportalen for potentiella sarbarhete
 
 ---
 
-## Top 3 Saker att Fixa Innan Launch
+## Top 3 Saker att Fixa Innan Launch (ALLA ATGARDADE)
 
-### 1. [HIGH-001] Fixa CORS i client/api/ai.js
+### ✅ 1. [HIGH-001] Fixa CORS i client/api/ai.js - FIXAT
 
-**Varfor kritiskt:** CORS wildcard (`*`) tillater attacker fran vilken webbplats som helst.
+**Status:** Atgardat i commit `4d600a9` (2026-04-23)
+**Losning:** ALLOWED_ORIGINS whitelist med produktionsdomaner, Vercel preview-stod.
 
 **Atgard i client/api/ai.js:**
 ```javascript
@@ -271,9 +272,10 @@ if (ALLOWED_ORIGINS.includes(origin)) {
 }
 ```
 
-### 2. [HIGH-002] Implementera distribuerad rate limiting
+### ✅ 2. [HIGH-002] Implementera distribuerad rate limiting - FIXAT
 
-**Varfor kritiskt:** In-memory rate limiting fungerar inte tillforlitligt i serverless-miljo.
+**Status:** Atgardat i commit `c10839a` (2026-04-23)
+**Losning:** Supabase `check_rate_limit` RPC med per-funktion limits.
 
 **Atgard:** Anvand befintlig `rate_limits`-tabell i Supabase:
 ```javascript
@@ -289,9 +291,10 @@ const { data: rateLimitData } = await supabase
 // men med Supabase som backend
 ```
 
-### 3. [CRITICAL-001] Ta bort produktionsnycklar fran dokumentation
+### ✅ 3. [MEDIUM-001] Ta bort produktionsnycklar fran dokumentation - FIXAT
 
-**Varfor viktigt:** Anon keys i arkiverad dokumentation ar inte kritiskt (RLS skyddar), men det ar bad practice och kan skapa forvirring.
+**Status:** Atgardat i commit `3094737` (2026-04-23)
+**Losning:** Nycklar ersatta med platshallare i arkiverade dokument.
 
 **Atgard:**
 ```bash
@@ -381,3 +384,4 @@ echo "archive/" >> .gitignore
 
 *Rapport genererad av Security Specialist Agent, 2026-04-23*
 *Uppdaterad med verifiering av .env-filer, 2026-04-23*
+*Alla hogriskproblem atgardade, 2026-04-23*
