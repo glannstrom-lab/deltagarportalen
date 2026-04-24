@@ -5802,7 +5802,87 @@
     "result": {
       "title": "Din personliga karriärplan",
       "timeframe": "Tidsplan: {{timeframe}}",
-      "updateMonthly": "Uppdatera planen månadsvis"
+      "updateMonthly": "Uppdatera planen månadsvis",
+      "progress": "Framsteg genom planen",
+      "month": "Månad {{month}}",
+      "successMetrics": "Framgångsmått"
+    },
+    "status": {
+      "planned": "Planerad",
+      "inProgress": "Pågår",
+      "completed": "Slutförd"
+    },
+    "checkIns": {
+      "title": "Regelbundna checkup-tillfällen",
+      "weekly": {
+        "title": "Veckovis checkup",
+        "q1": "Hur många ansökningar skickade du denna vecka?",
+        "q2": "Vilka nätverkskontakter gjorde du?",
+        "q3": "Vilka hinder stötte du på?"
+      },
+      "monthly": {
+        "title": "Månatlig review",
+        "q1": "Granskar du dina milstolpar?",
+        "q2": "Behöver du justera din strategi?",
+        "q3": "Vilka nya färdigheter utvecklade du?"
+      }
+    },
+    "smart": {
+      "title": "SMART-mål för din plan",
+      "specific": "pecifik: Exakta jobbroller och företag identifierade",
+      "measurable": "easurable: 50+ ansökningar, 10+ nätverksmöten",
+      "attainable": "ttainable: Realistisk tidsplan över {{timeframe}}",
+      "relevant": "elevant: Målposition överensstämmer med dina framtidsdrömmar",
+      "timeBound": "id-begränsad: Klar deadline på {{timeframe}}"
+    },
+    "actions": {
+      "createNew": "Skapa ny plan",
+      "shareByEmail": "Dela plan via e-post"
+    },
+    "fallback": {
+      "milestone1": {
+        "title": "Förberedelse & Positionering",
+        "task1": "Uppdatera CV och LinkedIn-profil",
+        "task2": "Identifiera 15-20 målföretag",
+        "task3": "Skapa personlig varumärkesöversikt",
+        "metrics": "3 slutförda förberedelser"
+      },
+      "milestone2": {
+        "title": "Aktiv jobbsökning & Nätverkande",
+        "task1": "Skicka 5-10 ansökningar per vecka",
+        "task2": "Nätverka med 2-3 nya kontakter per vecka",
+        "task3": "Öva intervjufrågor varje vecka",
+        "metrics": "50+ ansökningar, 10+ nätverksmöten"
+      },
+      "milestone3": {
+        "title": "Intervjuer & Förhandlingar",
+        "task1": "Följa upp ansökningar aktivt",
+        "task2": "Gå på minst 3-5 intervjuer",
+        "task3": "Förhandla om erbjudanden och villkor",
+        "metrics": "Minst ett jobberbjudande"
+      },
+      "week": "Vecka {{week}}",
+      "weekRange": "Vecka {{start}}-{{end}}",
+      "everyThursday": "Varje torsdag"
+    },
+    "download": {
+      "title": "KARRIÄRPLAN",
+      "filename": "karriarplan",
+      "created": "Skapad",
+      "timeframe": "Tidsram",
+      "currentPosition": "NUVARANDE POSITION",
+      "targetPosition": "MÅLPOSITION",
+      "obstacles": "HINDER ATT ÖVERVINNA",
+      "noneSpecified": "Ingen angiven",
+      "milestonesSection": "MILSTOLPAR OCH ÅTGÄRDER",
+      "milestone": "MILSTOLPE",
+      "monthLabel": "Månad",
+      "statusLabel": "Status",
+      "tasks": "Uppgifter",
+      "checkupSchedule": "CHECKUP-SCHEMA",
+      "weeklyCheckup": "Veckovis: Granskning av ansökningar och nätverkande",
+      "monthlyCheckup": "Månatlig: Framstegsgranskning och plansjustering",
+      "quarterlyCheckup": "Kvartal: Djup analys av karriärutveckling"
     }
   },
   "skillsGapAnalysis": {

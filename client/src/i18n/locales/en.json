@@ -5802,7 +5802,87 @@
     "result": {
       "title": "Your personal career plan",
       "timeframe": "Timeline: {{timeframe}}",
-      "updateMonthly": "Update the plan monthly"
+      "updateMonthly": "Update the plan monthly",
+      "progress": "Progress through the plan",
+      "month": "Month {{month}}",
+      "successMetrics": "Success metrics"
+    },
+    "status": {
+      "planned": "Planned",
+      "inProgress": "In Progress",
+      "completed": "Completed"
+    },
+    "checkIns": {
+      "title": "Regular check-up sessions",
+      "weekly": {
+        "title": "Weekly check-up",
+        "q1": "How many applications did you send this week?",
+        "q2": "What networking contacts did you make?",
+        "q3": "What obstacles did you encounter?"
+      },
+      "monthly": {
+        "title": "Monthly review",
+        "q1": "Are you reviewing your milestones?",
+        "q2": "Do you need to adjust your strategy?",
+        "q3": "What new skills did you develop?"
+      }
+    },
+    "smart": {
+      "title": "SMART goals for your plan",
+      "specific": "pecific: Exact job roles and companies identified",
+      "measurable": "easurable: 50+ applications, 10+ networking meetings",
+      "attainable": "ttainable: Realistic timeline over {{timeframe}}",
+      "relevant": "elevant: Target position aligns with your future dreams",
+      "timeBound": "ime-bound: Clear deadline of {{timeframe}}"
+    },
+    "actions": {
+      "createNew": "Create new plan",
+      "shareByEmail": "Share plan by email"
+    },
+    "fallback": {
+      "milestone1": {
+        "title": "Preparation & Positioning",
+        "task1": "Update CV and LinkedIn profile",
+        "task2": "Identify 15-20 target companies",
+        "task3": "Create personal brand overview",
+        "metrics": "3 completed preparations"
+      },
+      "milestone2": {
+        "title": "Active Job Search & Networking",
+        "task1": "Send 5-10 applications per week",
+        "task2": "Network with 2-3 new contacts per week",
+        "task3": "Practice interview questions every week",
+        "metrics": "50+ applications, 10+ networking meetings"
+      },
+      "milestone3": {
+        "title": "Interviews & Negotiations",
+        "task1": "Follow up on applications actively",
+        "task2": "Attend at least 3-5 interviews",
+        "task3": "Negotiate offers and conditions",
+        "metrics": "At least one job offer"
+      },
+      "week": "Week {{week}}",
+      "weekRange": "Week {{start}}-{{end}}",
+      "everyThursday": "Every Thursday"
+    },
+    "download": {
+      "title": "CAREER PLAN",
+      "filename": "career-plan",
+      "created": "Created",
+      "timeframe": "Timeframe",
+      "currentPosition": "CURRENT POSITION",
+      "targetPosition": "TARGET POSITION",
+      "obstacles": "OBSTACLES TO OVERCOME",
+      "noneSpecified": "None specified",
+      "milestonesSection": "MILESTONES AND ACTIONS",
+      "milestone": "MILESTONE",
+      "monthLabel": "Month",
+      "statusLabel": "Status",
+      "tasks": "Tasks",
+      "checkupSchedule": "CHECKUP SCHEDULE",
+      "weeklyCheckup": "Weekly: Review applications and networking",
+      "monthlyCheckup": "Monthly: Progress review and plan adjustment",
+      "quarterlyCheckup": "Quarterly: Deep analysis of career development"
     }
   },
   "skillsGapAnalysis": {
