@@ -306,7 +306,7 @@ export default function SkillsGapAnalysis() {
   }
 
   const deleteAnalysis = async (id: string) => {
-    if (!confirm(i18n.language === 'en' ? 'Are you sure you want to delete this analysis?' : 'Är du säker på att du vill ta bort denna analys?')) return
+    if (!confirm(t('skillsGapAnalysis.confirmDelete'))) return
     try {
       await skillsAnalysisApi.delete(id)
       const remainingAnalyses = previousAnalyses.filter(a => a.id !== id)
@@ -406,27 +406,28 @@ export default function SkillsGapAnalysis() {
     const skills = currentAnalysis.skills_comparison || []
     const courses = currentAnalysis.recommended_courses || []
     const actionPlan = currentAnalysis.action_plan || []
+    const dateLocale = i18n.language === 'sv' ? 'sv-SE' : 'en-US'
 
-    const content = `KOMPETENSANALYS
-Datum: ${new Date(currentAnalysis.created_at).toLocaleDateString('sv-SE')}
-Drömjobb: ${currentAnalysis.dream_job}
+    const content = `${t('skillsGapAnalysis.download.title')}
+${t('skillsGapAnalysis.download.date')}: ${new Date(currentAnalysis.created_at).toLocaleDateString(dateLocale)}
+${t('skillsGapAnalysis.download.dreamJob')}: ${currentAnalysis.dream_job}
 
-MATCHNINGSGRAD: ${currentAnalysis.match_percentage}%
+${t('skillsGapAnalysis.download.matchRate')}: ${currentAnalysis.match_percentage}%
 
-KOMPETENSÖVERSIKT:
+${t('skillsGapAnalysis.download.skillsOverview')}:
 ${skills.map(s => `- ${s.name}: ${s.current}/5 → ${s.target}/5 (Gap: ${s.target - s.current})`).join('\n')}
 
-REKOMMENDERADE KURSER:
+${t('skillsGapAnalysis.download.recommendedCourses')}:
 ${courses.map(c => `- ${c.title} (${c.provider}, ${c.duration})`).join('\n')}
 
-HANDLINGSPLAN:
+${t('skillsGapAnalysis.download.actionPlan')}:
 ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
 
     const blob = new Blob([content], { type: 'text/plain' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `kompetensanalys-${new Date().toISOString().split('T')[0]}.txt`
+    a.download = `${t('skillsGapAnalysis.download.filename')}-${new Date().toISOString().split('T')[0]}.txt`
     a.click()
   }
 
@@ -449,7 +450,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         <div className="text-center" role="status" aria-live="polite">
           <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-stone-600 dark:text-stone-400">
-            {i18n.language === 'en' ? 'Loading your profile...' : 'Laddar din profil...'}
+            {t('skillsGapAnalysis.loadingProfile')}
           </p>
         </div>
       </div>
@@ -464,12 +465,12 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           <div className="flex items-center gap-3 mb-4">
             <Loader2 className="w-6 h-6 animate-spin text-teal-600" aria-hidden="true" />
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-              {i18n.language === 'en' ? 'Analyzing your skills...' : 'Analyserar dina kompetenser...'}
+              {t('skillsGapAnalysis.analyzing')}
             </h3>
           </div>
           <div className="prose prose-sm dark:prose-invert max-w-none">
             <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 bg-stone-50 dark:bg-stone-700 p-4 rounded-lg" aria-label="AI-analys pågår">
-              {streamedText || (i18n.language === 'en' ? 'Starting analysis...' : 'Startar analys...')}
+              {streamedText || t('skillsGapAnalysis.startingAnalysis')}
             </pre>
           </div>
         </Card>
@@ -491,7 +492,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
             <div>
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{t('skillsGapAnalysis.result.title')}</h3>
               <p className="text-gray-600 dark:text-gray-300">
-                {i18n.language === 'en' ? 'Dream job' : 'Drömjobb'}: {currentAnalysis.dream_job}
+                {t('skillsGapAnalysis.dreamJobLabel')}: {currentAnalysis.dream_job}
               </p>
               <p className="text-sm text-gray-500">{new Date(currentAnalysis.created_at).toLocaleDateString('sv-SE')}</p>
             </div>
@@ -541,7 +542,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label="Kompetensanalys">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-              {i18n.language === 'en' ? 'Skills Comparison' : 'Kompetensöversikt'}
+              {t('skillsGapAnalysis.skillsComparison')}
             </h3>
             <div className="space-y-4" role="list" aria-label="Lista över kompetenser">
               {skills.map((skill, idx) => (
@@ -549,14 +550,14 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                   <div className="flex items-center justify-between mb-2">
                     <span className="font-medium text-gray-800 dark:text-gray-100">{skill.name}</span>
                     <span className={`text-xs px-2 py-1 rounded-full ${getGapColor(skill.gap)}`}>
-                      Gap: {skill.target - skill.current} {i18n.language === 'en' ? 'levels' : 'nivåer'}
+                      Gap: {skill.target - skill.current} {t('skillsGapAnalysis.levels')}
                     </span>
                   </div>
                   <div className="flex items-center gap-4">
                     <div className="flex-1">
                       <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300 mb-1">
-                        <span>{i18n.language === 'en' ? 'Current' : 'Nuvarande'}: {skill.current}/5</span>
-                        <span>{i18n.language === 'en' ? 'Goal' : 'Mål'}: {skill.target}/5</span>
+                        <span>{t('skillsGapAnalysis.current')}: {skill.current}/5</span>
+                        <span>{t('skillsGapAnalysis.goal')}: {skill.target}/5</span>
                       </div>
                       <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
                         <div
@@ -577,7 +578,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-              {i18n.language === 'en' ? 'Recommended Courses' : 'Rekommenderade kurser'}
+              {t('skillsGapAnalysis.recommendedCourses')}
             </h3>
             <div className="space-y-3">
               {courses.map((course, index) => (
@@ -596,7 +597,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                     <span className="text-sm font-medium text-green-600 dark:text-green-400">{course.cost}</span>
                     {course.url && (
                       <Button size="sm" variant="outline" className="mt-1 block" onClick={() => window.open(course.url, '_blank')}>
-                        {i18n.language === 'en' ? 'Learn more' : 'Läs mer'}
+                        {t('skillsGapAnalysis.learnMore')}
                       </Button>
                     )}
                   </div>
@@ -611,7 +612,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
               <Award className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-              {i18n.language === 'en' ? 'Your Action Plan' : 'Din handlingsplan'}
+              {t('skillsGapAnalysis.yourActionPlan')}
             </h3>
             <div className="space-y-3">
               {actionPlan.map((item) => (
@@ -633,13 +634,13 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700">
                   <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
                   <span className="text-sm text-green-800 dark:text-green-200">
-                    {i18n.language === 'en' ? 'Added to your career plan!' : 'Tillagt i din karriärplan!'}
+                    {t('skillsGapAnalysis.addedToCareerPlan')}
                   </span>
                   <Link
                     to="/career/plan"
                     className="ml-auto text-sm font-medium text-green-700 dark:text-green-300 hover:underline"
                   >
-                    {i18n.language === 'en' ? 'View plan' : 'Visa plan'} →
+                    {t('skillsGapAnalysis.viewPlan')} →
                   </Link>
                 </div>
               ) : (
@@ -651,12 +652,12 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                   {isAddingToPlan ? (
                     <>
                       <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                      {i18n.language === 'en' ? 'Adding to plan...' : 'Lägger till i plan...'}
+                      {t('skillsGapAnalysis.addingToPlan')}
                     </>
                   ) : (
                     <>
                       <Target className="w-4 h-4 mr-2" />
-                      {i18n.language === 'en' ? 'Add to Career Plan' : 'Lägg till i karriärplan'}
+                      {t('skillsGapAnalysis.addToCareerPlan')}
                     </>
                   )}
                 </Button>
@@ -669,7 +670,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
               onClick={startNewAnalysis}
             >
               <Plus className="w-4 h-4 mr-2" />
-              {i18n.language === 'en' ? 'New Analysis' : 'Ny analys'}
+              {t('skillsGapAnalysis.newAnalysis')}
             </Button>
           </Card>
         )}
@@ -684,7 +685,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
             >
               <span className="font-medium flex items-center gap-2">
                 <History className="w-4 h-4" />
-                {i18n.language === 'en' ? `Show previous analyses (${previousAnalyses.length - 1} more)` : `Visa tidigare analyser (${previousAnalyses.length - 1} till)`}
+                {t('skillsGapAnalysis.showPreviousAnalyses', { count: previousAnalyses.length - 1 })}
               </span>
               <span>{showHistory ? '−' : '+'}</span>
             </button>
@@ -734,9 +735,9 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           <div className="flex items-center justify-between mb-3">
             <h4 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
               <History className="w-4 h-4" />
-              {i18n.language === 'en' ? 'Previous analyses' : 'Tidigare analyser'}
+              {t('skillsGapAnalysis.previousAnalyses')}
             </h4>
-            <span className="text-sm text-gray-500">{previousAnalyses.length} {i18n.language === 'en' ? 'saved' : 'sparade'}</span>
+            <span className="text-sm text-gray-500">{previousAnalyses.length} {t('skillsGapAnalysis.saved')}</span>
           </div>
           <div className="space-y-2">
             {previousAnalyses.slice(0, 3).map(analysis => (
@@ -765,10 +766,10 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
             </div>
             <div>
               <h2 className="font-semibold text-slate-800 dark:text-stone-100">
-                {i18n.language === 'en' ? 'Your current profile' : 'Din nuvarande profil'}
+                {t('skillsGapAnalysis.yourCurrentProfile')}
               </h2>
               <p className="text-sm text-slate-500 dark:text-stone-400">
-                {i18n.language === 'en' ? 'Fetched from your CV and profile' : 'Hämtad från ditt CV och profil'}
+                {t('skillsGapAnalysis.fetchedFromCVAndProfile')}
               </p>
             </div>
           </div>
@@ -778,7 +779,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
               className="text-sm text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
             >
               <User className="w-4 h-4" />
-              {i18n.language === 'en' ? 'Profile' : 'Profil'}
+              {t('common.profile')}
             </Link>
             <Link
               to="/cv"
@@ -802,14 +803,12 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
               <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
               <div>
                 <p className="text-sm text-amber-800 dark:text-amber-300 font-medium">
-                  {i18n.language === 'en' ? 'You need to fill in more information' : 'Du behöver fylla i mer information'}
+                  {t('skillsGapAnalysis.needMoreInfo')}
                 </p>
                 <p className="text-sm text-amber-700 dark:text-amber-400 mt-1">
-                  {i18n.language === 'en' ? 'Go to the ' : 'Gå till '}
-                  <Link to="/cv" className="underline font-medium">{i18n.language === 'en' ? 'CV page' : 'CV-sidan'}</Link>
-                  {i18n.language === 'en'
-                    ? ' and fill in your work experience, education and competencies to perform a skills analysis.'
-                    : ' och fyll i din arbetslivserfarenhet, utbildning och kompetenser för att kunna göra en kompetensanalys.'}
+                  {t('skillsGapAnalysis.goToCVPage1')}
+                  <Link to="/cv" className="underline font-medium">{t('skillsGapAnalysis.cvPage')}</Link>
+                  {t('skillsGapAnalysis.goToCVPage2')}
                 </p>
               </div>
             </div>
@@ -826,7 +825,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           <div>
             <h2 className="font-semibold text-slate-800 dark:text-stone-100">{t('skillsGapAnalysis.dreamJob.title')}</h2>
             <p className="text-sm text-slate-500 dark:text-stone-400">
-              {i18n.language === 'en' ? 'Describe your dream job or paste a job ad' : 'Beskriv ditt drömjobb eller klistra in en jobbannons'}
+              {t('skillsGapAnalysis.dreamJobDescription')}
             </p>
           </div>
         </div>
@@ -836,7 +835,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           <div className="mb-4 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-700">
             <div className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300 mb-2">
               <Heart className="w-4 h-4" />
-              {i18n.language === 'en' ? 'Your favorite occupations:' : 'Dina favorityrken:'}
+              {t('skillsGapAnalysis.favoriteOccupations')}
             </div>
             <div className="flex flex-wrap gap-2">
               {favoriteOccupations.slice(0, 5).map((fav) => (
