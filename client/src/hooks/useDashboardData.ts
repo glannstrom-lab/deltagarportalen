@@ -145,22 +145,18 @@ export interface UseDashboardDataReturn {
 function getDefaultDashboardData(): DashboardWidgetData
 
 // Funktion för att hämta all dashboard-data
-// PRESTANDA: Delat upp i kritisk och sekundär data för snabbare initial rendering
+// PRESTANDA: Alla anrop körs parallellt i ett enda Promise.all för snabbast möjliga laddning
 async function fetchDashboardData(): Promise<DashboardWidgetData> {
   try {
   // Hämta användare EN gång och återanvänd
   const { data: { user } } = await supabase.auth.getUser()
 
-  // STEG 1: Kritisk data - behövs för att visa huvudinnehåll snabbt
-  const [cv, interestResult, savedJobs, coverLetters] = await Promise.all([
-    cvApi.getCV().catch(() => null),
-    interestApi.getResult().catch(() => null),
-    savedJobsApi.getAll().catch(() => []),
-    coverLetterApi.getAll().catch(() => []),
-  ])
-
-  // STEG 2: Sekundär data - kan laddas parallellt efteråt
+  // ALLA anrop körs parallellt - ingen sekventiell väntan (LCP -500-1500ms)
   const [
+    cv,
+    interestResult,
+    savedJobs,
+    coverLetters,
     atsAnalysis,
     activities,
     applicationCount,
@@ -173,6 +169,12 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     moodStreak,
     articleProgress,
   ] = await Promise.all([
+    // Kritisk data
+    cvApi.getCV().catch(() => null),
+    interestApi.getResult().catch(() => null),
+    savedJobsApi.getAll().catch(() => []),
+    coverLetterApi.getAll().catch(() => []),
+    // Sekundär data - nu parallellt med kritisk data
     cvApi.getATSAnalysis().catch(() => null),
     activityApi.getActivities().catch(() => []),
     activityApi.getCount('application_sent').catch(() => 0),

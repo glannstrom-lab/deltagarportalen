@@ -15,8 +15,8 @@ import { useDashboardDataQuery } from '@/hooks/useDashboardData'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import {
   User, Compass, FileText, Search, Mail, ClipboardList,
-  ChevronRight, ChevronDown, Bookmark, Briefcase, Heart, Sparkles, FileUser,
-  UserCheck, Flame, Zap, ArrowRight, Target, Play
+  ChevronRight, ChevronDown, Bookmark, Heart, Sparkles, FileUser,
+  UserCheck, Flame, Zap, ArrowRight, Play
 } from '@/components/ui/icons'
 
 // Extracted dashboard components
@@ -30,16 +30,14 @@ import { DashboardError } from '@/components/dashboard/DashboardError'
 
 // ============================================
 // ONBOARDING STEPS DATA
+// Reducerat från 8 till 5 steg för att minska kognitiv belastning
 // ============================================
 const ONBOARDING_STEPS = [
   { step: 1, id: 'profile', title: 'Fyll i din profil', description: 'Lägg till kontaktuppgifter', icon: User, path: '/profile', trackKey: 'profile' },
   { step: 2, id: 'interest', title: 'Gör intresseguiden', description: 'Upptäck passande yrken', icon: Compass, path: '/interest-guide', trackKey: 'interest' },
   { step: 3, id: 'cv', title: 'Skapa ditt CV', description: 'Bygg ett proffsigt CV', icon: FileUser, path: '/cv', trackKey: 'cv' },
-  { step: 4, id: 'career', title: 'Utforska karriärvägar', description: 'Hitta din riktning', icon: Target, path: '/career', trackKey: 'career' },
-  { step: 5, id: 'jobSearch', title: 'Sök efter jobb', description: 'Hitta lediga tjänster', icon: Search, path: '/job-search', trackKey: 'jobSearch' },
-  { step: 6, id: 'coverLetter', title: 'Skriv personligt brev', description: 'Skapa övertygande brev', icon: Mail, path: '/cover-letter', trackKey: 'coverLetter' },
-  { step: 7, id: 'applications', title: 'Följ dina ansökningar', description: 'Håll koll på status', icon: ClipboardList, path: '/applications', trackKey: 'applications' },
-  { step: 8, id: 'interview', title: 'Öva på intervjuer', description: 'Träna med AI-simulatorn', icon: Briefcase, path: '/interview-simulator', trackKey: 'interview' },
+  { step: 4, id: 'jobSearch', title: 'Sök efter jobb', description: 'Hitta lediga tjänster', icon: Search, path: '/job-search', trackKey: 'jobSearch' },
+  { step: 5, id: 'coverLetter', title: 'Skriv personligt brev', description: 'Skapa övertygande brev', icon: Mail, path: '/cover-letter', trackKey: 'coverLetter' },
 ]
 
 // ============================================
@@ -63,16 +61,13 @@ export default function DashboardPage() {
     let completed = 0
     let currentStep = 1
 
-    // Check each step
+    // Check each step (5 core steps)
     const progress: Record<string, boolean> = {
       profile: authProfile?.first_name ? true : false,
       interest: interestProfile?.hasResult || false,
       cv: dashboardData.cv?.hasCV || false,
-      career: false, // Would need career data
       jobSearch: dashboardData.jobs?.savedCount > 0,
       coverLetter: dashboardData.coverLetters?.count > 0,
-      applications: dashboardData.applications?.total > 0,
-      interview: false, // Would need interview data
     }
 
     ONBOARDING_STEPS.forEach((step, i) => {

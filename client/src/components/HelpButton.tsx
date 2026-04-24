@@ -3,7 +3,7 @@
  * Displays in bottom-right corner with expandable Q&A
  */
 
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { HelpCircle, X, ChevronDown, ChevronUp, MessageCircle, Lightbulb } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
@@ -26,6 +26,55 @@ interface HelpButtonProps {
 export function HelpButton({ content }: HelpButtonProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null)
+  const modalRef = useRef<HTMLDivElement>(null)
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+  const previousFocusRef = useRef<HTMLElement | null>(null)
+
+  // Close modal with Escape key (WCAG 2.1.2)
+  useEffect(() => {
+    if (!isOpen) return
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false)
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen])
+
+  // Focus trap and focus management (WCAG 2.4.3)
+  useEffect(() => {
+    if (isOpen) {
+      // Store current focus to restore later
+      previousFocusRef.current = document.activeElement as HTMLElement
+      // Focus close button when modal opens
+      closeButtonRef.current?.focus()
+    } else if (previousFocusRef.current) {
+      // Restore focus when modal closes
+      previousFocusRef.current.focus()
+    }
+  }, [isOpen])
+
+  // Focus trap - keep focus within modal
+  const handleTabKey = useCallback((e: React.KeyboardEvent) => {
+    if (e.key !== 'Tab' || !modalRef.current) return
+
+    const focusableElements = modalRef.current.querySelectorAll<HTMLElement>(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    )
+    const firstElement = focusableElements[0]
+    const lastElement = focusableElements[focusableElements.length - 1]
+
+    if (e.shiftKey && document.activeElement === firstElement) {
+      e.preventDefault()
+      lastElement?.focus()
+    } else if (!e.shiftKey && document.activeElement === lastElement) {
+      e.preventDefault()
+      firstElement?.focus()
+    }
+  }, [])
 
   return (
     <>
@@ -47,15 +96,24 @@ export function HelpButton({ content }: HelpButtonProps) {
 
       {/* Help Modal */}
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="help-modal-title"
+          onKeyDown={handleTabKey}
+        >
           {/* Backdrop */}
           <div
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setIsOpen(false)}
+            aria-hidden="true"
           />
 
           {/* Modal Content */}
-          <div className={cn(
+          <div
+            ref={modalRef}
+            className={cn(
             'relative w-full max-w-lg max-h-[85vh] overflow-hidden',
             'bg-white rounded-2xl shadow-2xl',
             'animate-in slide-in-from-bottom-4 fade-in duration-300'
@@ -65,20 +123,22 @@ export function HelpButton({ content }: HelpButtonProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                    <HelpCircle className="w-5 h-5" />
+                    <HelpCircle className="w-5 h-5" aria-hidden="true" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold">{content.title}</h2>
+                    <h2 id="help-modal-title" className="text-lg font-bold">{content.title}</h2>
                     {content.description && (
                       <p className="text-teal-100 text-sm">{content.description}</p>
                     )}
                   </div>
                 </div>
                 <button
+                  ref={closeButtonRef}
                   onClick={() => setIsOpen(false)}
+                  aria-label="Stäng hjälprutan"
                   className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -89,7 +149,7 @@ export function HelpButton({ content }: HelpButtonProps) {
               {content.tips && content.tips.length > 0 && (
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
                   <div className="flex items-center gap-2 text-amber-700 font-semibold mb-3">
-                    <Lightbulb className="w-5 h-5" />
+                    <Lightbulb className="w-5 h-5" aria-hidden="true" />
                     <span>Tips</span>
                   </div>
                   <ul className="space-y-2">
@@ -106,7 +166,7 @@ export function HelpButton({ content }: HelpButtonProps) {
               {/* FAQ Section */}
               <div>
                 <div className="flex items-center gap-2 text-slate-700 font-semibold mb-3">
-                  <MessageCircle className="w-5 h-5 text-teal-500" />
+                  <MessageCircle className="w-5 h-5 text-teal-500" aria-hidden="true" />
                   <span>Vanliga frågor</span>
                 </div>
                 <div className="space-y-2">
@@ -117,6 +177,8 @@ export function HelpButton({ content }: HelpButtonProps) {
                     >
                       <button
                         onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
+                        aria-expanded={expandedIndex === index}
+                        aria-controls={`faq-answer-${index}`}
                         className={cn(
                           'w-full px-4 py-3 text-left flex items-center justify-between gap-3',
                           'hover:bg-slate-50 transition-colors',
@@ -125,16 +187,21 @@ export function HelpButton({ content }: HelpButtonProps) {
                       >
                         <span className="font-medium text-slate-700 text-sm">{faq.question}</span>
                         {expandedIndex === index ? (
-                          <ChevronUp className="w-5 h-5 text-slate-600 flex-shrink-0" />
+                          <ChevronUp className="w-5 h-5 text-slate-600 flex-shrink-0" aria-hidden="true" />
                         ) : (
-                          <ChevronDown className="w-5 h-5 text-slate-600 flex-shrink-0" />
+                          <ChevronDown className="w-5 h-5 text-slate-600 flex-shrink-0" aria-hidden="true" />
                         )}
                       </button>
-                      {expandedIndex === index && (
-                        <div className="px-4 pb-4 text-sm text-slate-600 border-t border-slate-100 pt-3">
-                          {faq.answer}
-                        </div>
-                      )}
+                      <div
+                        id={`faq-answer-${index}`}
+                        className={cn(
+                          'px-4 pb-4 text-sm text-slate-600 border-t border-slate-100 pt-3',
+                          expandedIndex !== index && 'hidden'
+                        )}
+                        hidden={expandedIndex !== index}
+                      >
+                        {faq.answer}
+                      </div>
                     </div>
                   ))}
                 </div>
