@@ -2,12 +2,14 @@
  * CompactSelect - Accessible select component
  */
 
-import { useId, forwardRef } from 'react'
+import { useId, forwardRef, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 export interface SelectOption {
   value: string
-  label: string
+  label?: string
+  labelKey?: string
 }
 
 export interface CompactSelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> {
@@ -24,7 +26,7 @@ export const CompactSelect = forwardRef<HTMLSelectElement, CompactSelectProps>((
   options,
   error,
   hint,
-  placeholder = 'Välj...',
+  placeholder,
   onChange,
   className,
   id: providedId,
@@ -32,6 +34,7 @@ export const CompactSelect = forwardRef<HTMLSelectElement, CompactSelectProps>((
   value,
   ...props
 }, ref) => {
+  const { t } = useTranslation()
   const generatedId = useId()
   const selectId = providedId || generatedId
   const errorId = `${selectId}-error`
@@ -40,6 +43,12 @@ export const CompactSelect = forwardRef<HTMLSelectElement, CompactSelectProps>((
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     onChange?.(e.target.value)
   }
+
+  // Helper to get translated label
+  const getLabel = useCallback((opt: SelectOption) => {
+    if (opt.labelKey) return t(opt.labelKey)
+    return opt.label || opt.value
+  }, [t])
 
   return (
     <div className="w-full">
@@ -74,10 +83,10 @@ export const CompactSelect = forwardRef<HTMLSelectElement, CompactSelectProps>((
         )}
         {...props}
       >
-        <option value="">{placeholder}</option>
+        <option value="">{placeholder || t('common.select')}</option>
         {options.map(opt => (
           <option key={opt.value} value={opt.value}>
-            {opt.label}
+            {getLabel(opt)}
           </option>
         ))}
       </select>

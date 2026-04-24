@@ -73,7 +73,8 @@
     "tagsCount": "{{label}}: {{count}} of {{max}}",
     "removeTag": "Remove {{tag}}",
     "suggestions": "Suggestions",
-    "tagInputInstructions": "Press Enter to add. Use arrow keys to navigate suggestions."
+    "tagInputInstructions": "Press Enter to add. Use arrow keys to navigate suggestions.",
+    "select": "Select..."
   },
   "riasec": {
     "realistic": "Realistic",

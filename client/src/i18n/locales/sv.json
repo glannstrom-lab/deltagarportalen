@@ -73,7 +73,8 @@
     "tagsCount": "{{label}}: {{count}} av {{max}}",
     "removeTag": "Ta bort {{tag}}",
     "suggestions": "Förslag",
-    "tagInputInstructions": "Tryck Enter för att lägga till. Använd piltangenter för att navigera förslag."
+    "tagInputInstructions": "Tryck Enter för att lägga till. Använd piltangenter för att navigera förslag.",
+    "select": "Välj..."
   },
   "riasec": {
     "realistic": "Realistisk",
