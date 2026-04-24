@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, Link } from 'react-router-dom'
 import {
   User, Mail, Phone, MapPin, Briefcase, GraduationCap,
@@ -13,6 +14,7 @@ import { profileShareApi, type ProfileShare } from '@/services/profileEnhancemen
 import { cn } from '@/lib/utils'
 
 export default function SharedProfile() {
+  const { t } = useTranslation()
   const { shareCode } = useParams<{ shareCode: string }>()
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -25,7 +27,7 @@ export default function SharedProfile() {
 
   const loadSharedProfile = async () => {
     if (!shareCode) {
-      setError('Ingen delningskod angiven')
+      setError(t('sharedProfile.noShareCode'))
       setLoading(false)
       return
     }
@@ -33,7 +35,7 @@ export default function SharedProfile() {
     try {
       const result = await profileShareApi.getSharedProfile(shareCode)
       if (!result) {
-        setError('Länken är ogiltig eller har gått ut')
+        setError(t('sharedProfile.linkInvalid'))
         setLoading(false)
         return
       }
@@ -42,7 +44,7 @@ export default function SharedProfile() {
       setShare(result.share)
     } catch (err) {
       console.error('Error loading shared profile:', err)
-      setError('Kunde inte ladda profilen')
+      setError(t('sharedProfile.loadError'))
     } finally {
       setLoading(false)
     }
@@ -57,7 +59,7 @@ export default function SharedProfile() {
       <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center">
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" />
-          <p className="text-stone-600 dark:text-stone-400">Laddar profil...</p>
+          <p className="text-stone-600 dark:text-stone-400">{t('profile.loading')}</p>
         </div>
       </div>
     )
@@ -69,17 +71,17 @@ export default function SharedProfile() {
         <div className="max-w-md w-full text-center">
           <AlertCircle className="w-16 h-16 text-amber-500 mx-auto mb-4" />
           <h1 className="text-xl font-bold text-stone-800 dark:text-stone-200 mb-2">
-            Profilen kunde inte visas
+            {t('sharedProfile.couldNotDisplay')}
           </h1>
           <p className="text-stone-600 dark:text-stone-400 mb-6">
-            {error || 'Länken är ogiltig eller har gått ut.'}
+            {error || t('sharedProfile.linkInvalid')}
           </p>
           <Link
             to="/"
             className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
-            Tillbaka till startsidan
+            {t('sharedProfile.backToHome')}
           </Link>
         </div>
       </div>
@@ -118,7 +120,7 @@ export default function SharedProfile() {
         {share?.show_contact && (
           <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4">
-              Kontaktuppgifter
+              {t('sharedProfile.contactInfo')}
             </h2>
             <div className="grid gap-3 sm:grid-cols-3">
               {profile.email && (
@@ -147,7 +149,7 @@ export default function SharedProfile() {
         {share?.show_summary && profile.ai_summary && (
           <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4">
-              Om mig
+              {t('sharedProfile.aboutMe')}
             </h2>
             <p className="text-stone-600 dark:text-stone-400 whitespace-pre-wrap">
               {profile.ai_summary as string}
@@ -160,7 +162,7 @@ export default function SharedProfile() {
           <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
               <Star className="w-5 h-5 text-amber-500" />
-              Kompetenser
+              {t('sharedProfile.skills')}
             </h2>
             <div className="flex flex-wrap gap-2">
               {(profile.skills as Array<{ name: string; level: number }>).map((skill, i) => (
@@ -193,7 +195,7 @@ export default function SharedProfile() {
           <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
               <Briefcase className="w-5 h-5 text-blue-500" />
-              Arbetslivserfarenhet
+              {t('sharedProfile.workExperience')}
             </h2>
             <div className="space-y-4">
               {(profile.work_experience as Array<{
@@ -209,7 +211,7 @@ export default function SharedProfile() {
                   <p className="text-sm text-teal-600 dark:text-teal-400">{job.company}</p>
                   <p className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1 mt-1">
                     <Calendar className="w-3 h-3" />
-                    {formatDate(job.startDate)} - {job.current ? 'Nu' : job.endDate ? formatDate(job.endDate) : ''}
+                    {formatDate(job.startDate)} - {job.current ? t('common.today') : job.endDate ? formatDate(job.endDate) : ''}
                   </p>
                   {job.description && (
                     <p className="text-sm text-stone-600 dark:text-stone-400 mt-2">{job.description}</p>
@@ -225,7 +227,7 @@ export default function SharedProfile() {
           <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
               <GraduationCap className="w-5 h-5 text-purple-500" />
-              Utbildning
+              {t('sharedProfile.education')}
             </h2>
             <div className="space-y-4">
               {(profile.education as Array<{
@@ -252,7 +254,7 @@ export default function SharedProfile() {
           <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-sky-500" />
-              Dokument
+              {t('sharedProfile.documents')}
             </h2>
             <div className="grid gap-2">
               {(profile.documents as Array<{ name: string; type: string; file_url: string }>).map((doc, i) => (
@@ -273,10 +275,10 @@ export default function SharedProfile() {
 
         {/* Footer */}
         <div className="text-center text-xs text-stone-400 dark:text-stone-500 mt-8">
-          <p>Delad via Deltagarportalen</p>
+          <p>{t('sharedProfile.sharedVia')}</p>
           {share?.expires_at && (
             <p className="mt-1">
-              Länken gäller t.o.m. {new Date(share.expires_at).toLocaleDateString('sv-SE')}
+              {t('sharedProfile.linkValidUntil', { date: new Date(share.expires_at).toLocaleDateString('sv-SE') })}
             </p>
           )}
         </div>

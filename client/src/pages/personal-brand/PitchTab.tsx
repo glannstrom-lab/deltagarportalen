@@ -3,6 +3,7 @@
  * Features: Pitch builder, practice mode with timer, AI feedback
  */
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Mic,
   Play,
@@ -58,6 +59,7 @@ const PITCH_TEMPLATES = [
 ]
 
 export default function PitchTab() {
+  const { t } = useTranslation()
   const [pitches, setPitches] = useState<ElevatorPitch[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedPitch, setSelectedPitch] = useState<ElevatorPitch | null>(null)

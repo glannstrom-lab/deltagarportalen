@@ -3,6 +3,7 @@
  * Översikt över deltagares aktivitet, riskindikatorer och framsteg
  */
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { 
   Users, 
@@ -81,6 +82,7 @@ const mockParticipants: Participant[] = [
 ]
 
 export default function ParticipantAnalytics() {
+  const { t } = useTranslation()
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedParticipant, setSelectedParticipant] = useState<Participant | null>(null)
 
@@ -91,28 +93,28 @@ export default function ParticipantAnalytics() {
     avgProgress: Math.round(mockParticipants.reduce((acc, p) => acc + p.cvProgress, 0) / mockParticipants.length)
   }
 
-  const filteredParticipants = mockParticipants.filter(p => 
+  const filteredParticipants = mockParticipants.filter(p =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   return (
     <PageLayout
-      title="Deltagaranalys"
-      description="Översikt och insikter om dina deltagare"
+      title={t('consultant.participantAnalytics.title')}
+      description={t('consultant.participantAnalytics.description')}
       className="space-y-6"
     >
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard icon={<Users size={20} />} label="Totalt" value={stats.total} color="blue" />
-        <StatCard icon={<AlertTriangle size={20} />} label="Behöver stöd" value={stats.atRisk} color="red" />
-        <StatCard icon={<Activity size={20} />} label="Aktiva idag" value={stats.activeToday} color="emerald" />
-        <StatCard icon={<TrendingUp size={20} />} label="CV-snitt" value={`${stats.avgProgress}%`} color="amber" />
+        <StatCard icon={<Users size={20} />} label={t('consultant.participantAnalytics.stats.total')} value={stats.total} color="blue" />
+        <StatCard icon={<AlertTriangle size={20} />} label={t('consultant.participantAnalytics.stats.needsSupport')} value={stats.atRisk} color="red" />
+        <StatCard icon={<Activity size={20} />} label={t('consultant.participantAnalytics.stats.activeToday')} value={stats.activeToday} color="emerald" />
+        <StatCard icon={<TrendingUp size={20} />} label={t('consultant.participantAnalytics.stats.cvAverage')} value={`${stats.avgProgress}%`} color="amber" />
       </div>
 
       {/* Search */}
       <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4">
         <Input
-          placeholder="Sök deltagare..."
+          placeholder={t('consultant.participantAnalytics.searchPlaceholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="max-w-md"
@@ -136,7 +138,7 @@ export default function ParticipantAnalytics() {
                   <h3 className="font-semibold">{p.name}</h3>
                   {p.riskFlags.length > 0 && (
                     <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300">
-                      {p.riskFlags.length} risk
+                      {t('consultant.participantAnalytics.riskCount', { count: p.riskFlags.length })}
                     </span>
                   )}
                 </div>
@@ -150,7 +152,7 @@ export default function ParticipantAnalytics() {
 
       {/* Detail Modal */}
       {selectedParticipant && (
-        <DetailModal participant={selectedParticipant} onClose={() => setSelectedParticipant(null)} />
+        <DetailModal participant={selectedParticipant} onClose={() => setSelectedParticipant(null)} t={t} />
       )}
     </PageLayout>
   )
@@ -179,7 +181,7 @@ function StatCard({ icon, label, value, color }: {
   )
 }
 
-function DetailModal({ participant, onClose }: { participant: Participant, onClose: () => void }) {
+function DetailModal({ participant, onClose, t }: { participant: Participant, onClose: () => void, t: (key: string, options?: any) => string }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -194,38 +196,38 @@ function DetailModal({ participant, onClose }: { participant: Participant, onClo
         onClick={e => e.stopPropagation()}
       >
         <h2 className="text-xl font-bold mb-4 text-stone-900 dark:text-stone-100">{participant.name}</h2>
-        
+
         {participant.riskFlags.length > 0 ? (
           <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-xl mb-4">
-            <p className="font-semibold text-red-800 dark:text-red-300">Riskindikatorer</p>
+            <p className="font-semibold text-red-800 dark:text-red-300">{t('consultant.participantAnalytics.riskIndicators')}</p>
             {participant.riskFlags.map((flag, i) => (
               <span key={i} className="text-sm text-red-600 dark:text-red-400 block">{flag}</span>
             ))}
           </div>
         ) : (
           <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl mb-4">
-            <p className="text-emerald-800 dark:text-emerald-300">Allt ser bra ut!</p>
+            <p className="text-emerald-800 dark:text-emerald-300">{t('consultant.participantAnalytics.allGood')}</p>
           </div>
         )}
 
         <div className="space-y-3">
           <div className="flex items-center justify-between p-3 bg-stone-100 dark:bg-stone-700 rounded-lg">
-            <span className="flex items-center gap-2 text-stone-700 dark:text-stone-300"><FileText size={16} /> CV Progress</span>
+            <span className="flex items-center gap-2 text-stone-700 dark:text-stone-300"><FileText size={16} /> {t('consultant.participantAnalytics.cvProgress')}</span>
             <span className="font-semibold text-stone-900 dark:text-stone-100">{participant.cvProgress}%</span>
           </div>
           <div className="flex items-center justify-between p-3 bg-stone-100 dark:bg-stone-700 rounded-lg">
-            <span className="flex items-center gap-2 text-stone-700 dark:text-stone-300"><Briefcase size={16} /> Ansökningar</span>
+            <span className="flex items-center gap-2 text-stone-700 dark:text-stone-300"><Briefcase size={16} /> {t('consultant.participantAnalytics.applications')}</span>
             <span className="font-semibold text-stone-900 dark:text-stone-100">{participant.applicationsSent}</span>
           </div>
           <div className="flex items-center justify-between p-3 bg-stone-100 dark:bg-stone-700 rounded-lg">
-            <span className="flex items-center gap-2 text-stone-700 dark:text-stone-300"><Heart size={16} /> Välmående</span>
-            <span className="font-semibold text-stone-900 dark:text-stone-100">{participant.wellnessStreak} dagar</span>
+            <span className="flex items-center gap-2 text-stone-700 dark:text-stone-300"><Heart size={16} /> {t('consultant.participantAnalytics.wellness')}</span>
+            <span className="font-semibold text-stone-900 dark:text-stone-100">{t('consultant.participantAnalytics.daysStreak', { count: participant.wellnessStreak })}</span>
           </div>
         </div>
 
         <div className="flex gap-3 mt-6">
-          <Button className="flex-1"><Mail size={16} className="mr-2" /> Meddelande</Button>
-          <Button variant="outline" className="flex-1"><Calendar size={16} className="mr-2" /> Boka möte</Button>
+          <Button className="flex-1"><Mail size={16} className="mr-2" /> {t('consultant.participantAnalytics.sendMessage')}</Button>
+          <Button variant="outline" className="flex-1"><Calendar size={16} className="mr-2" /> {t('consultant.participantAnalytics.bookMeeting')}</Button>
         </div>
       </motion.div>
     </motion.div>

@@ -69,6 +69,7 @@ function MetricCard({
   subtitle,
   icon: Icon,
   trend,
+  trendLabel,
   color = 'teal',
 }: {
   title: string
@@ -76,6 +77,7 @@ function MetricCard({
   subtitle?: string
   icon: React.ElementType
   trend?: { value: number; isPositive: boolean }
+  trendLabel?: string
   color?: 'teal' | 'emerald' | 'amber' | 'rose' | 'blue'
 }) {
   const colorClasses = {
@@ -106,7 +108,7 @@ function MetricCard({
                 <TrendingDown className="w-4 h-4" />
               )}
               <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
-              <span className="text-stone-500 dark:text-stone-400 font-normal ml-1">vs förra månaden</span>
+              <span className="text-stone-500 dark:text-stone-400 font-normal ml-1">{trendLabel}</span>
             </div>
           )}
         </div>
@@ -326,9 +328,9 @@ export function AnalyticsTab() {
         const monthlyData = generateMonthlyProgress(dateRange, avgATS)
 
         const statusData = [
-          { label: 'Aktiva', value: active, color: 'bg-emerald-500' },
-          { label: 'Inaktiva', value: total - active - completed, color: 'bg-stone-400' },
-          { label: 'Avslutade', value: completed, color: 'bg-blue-500' },
+          { label: t('consultant.analytics.status.active'), value: active, color: 'bg-emerald-500' },
+          { label: t('consultant.analytics.status.inactive'), value: total - active - completed, color: 'bg-stone-400' },
+          { label: t('consultant.analytics.status.completed'), value: completed, color: 'bg-blue-500' },
         ]
 
         // Calculate goal categories from real data
@@ -525,9 +527,9 @@ export function AnalyticsTab() {
   const calculateGoalCategories = (goals: any[]) => {
     if (goals.length === 0) {
       return [
-        { category: 'CV-förbättring', count: 0 },
-        { category: 'Jobbansökningar', count: 0 },
-        { category: 'Intervjuträning', count: 0 },
+        { category: t('consultant.analytics.goalCategories.cvImprovement'), count: 0 },
+        { category: t('consultant.analytics.goalCategories.jobApplications'), count: 0 },
+        { category: t('consultant.analytics.goalCategories.interviewTraining'), count: 0 },
       ]
     }
 
@@ -535,18 +537,18 @@ export function AnalyticsTab() {
 
     goals.forEach(goal => {
       const title = (goal.title || '').toLowerCase()
-      let category = 'Övrigt'
+      let category = t('consultant.analytics.goalCategories.other')
 
       if (title.includes('cv') || title.includes('resume') || title.includes('meritförteckning')) {
-        category = 'CV-förbättring'
+        category = t('consultant.analytics.goalCategories.cvImprovement')
       } else if (title.includes('jobb') || title.includes('ansök') || title.includes('söka')) {
-        category = 'Jobbansökningar'
+        category = t('consultant.analytics.goalCategories.jobApplications')
       } else if (title.includes('intervju')) {
-        category = 'Intervjuträning'
+        category = t('consultant.analytics.goalCategories.interviewTraining')
       } else if (title.includes('nätverk') || title.includes('linkedin') || title.includes('kontakt')) {
-        category = 'Nätverkande'
+        category = t('consultant.analytics.goalCategories.networking')
       } else if (title.includes('kompetens') || title.includes('kurs') || title.includes('utbildning')) {
-        category = 'Kompetensutveckling'
+        category = t('consultant.analytics.goalCategories.skillsDevelopment')
       }
 
       categories[category] = (categories[category] || 0) + 1
@@ -565,28 +567,28 @@ export function AnalyticsTab() {
       // Export as Excel (CSV with tab separator)
       const dateStr = new Date().toISOString().split('T')[0]
       const dateRangeLabels = {
-        week: 'vecka',
-        month: 'månad',
-        quarter: 'kvartal',
-        year: 'år',
+        week: t('consultant.analytics.export.week'),
+        month: t('consultant.analytics.export.month'),
+        quarter: t('consultant.analytics.export.quarter'),
+        year: t('consultant.analytics.export.year'),
       }
 
       const data = [
-        ['Konsultrapport', `Senaste ${dateRangeLabels[dateRange]}`],
+        [t('consultant.analytics.export.reportTitle'), `${t('consultant.analytics.export.last')} ${dateRangeLabels[dateRange]}`],
         [''],
-        ['Nyckeltal', 'Värde'],
-        ['Totalt deltagare', analytics.totalParticipants],
-        ['Aktiva deltagare', analytics.activeParticipants],
-        ['Avslutade deltagare', analytics.completedParticipants],
-        ['CV-komplettering', `${analytics.cvCompletionRate}%`],
-        ['Måluppfyllelse', `${analytics.goalsCompletionRate}%`],
-        ['Engagemang', `${analytics.engagementRate}%`],
-        ['Genomsnittlig placeringstid', `${analytics.averageTimeToPlacement} dagar`],
+        [t('consultant.analytics.export.keyMetrics'), t('consultant.analytics.export.value')],
+        [t('consultant.analytics.export.totalParticipants'), analytics.totalParticipants],
+        [t('consultant.analytics.export.activeParticipants'), analytics.activeParticipants],
+        [t('consultant.analytics.export.completedParticipants'), analytics.completedParticipants],
+        [t('consultant.analytics.export.cvCompletion'), `${analytics.cvCompletionRate}%`],
+        [t('consultant.analytics.export.goalCompletion'), `${analytics.goalsCompletionRate}%`],
+        [t('consultant.analytics.export.engagement'), `${analytics.engagementRate}%`],
+        [t('consultant.analytics.export.avgPlacementTime'), t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })],
         [''],
-        ['Statusfördelning', 'Antal'],
+        [t('consultant.analytics.export.statusDistribution'), t('consultant.analytics.export.count')],
         ...analytics.statusDistribution.map(s => [s.label, s.value]),
         [''],
-        ['Målkategorier', 'Antal'],
+        [t('consultant.analytics.export.goalCategories'), t('consultant.analytics.export.count')],
         ...analytics.topGoalCategories.map(c => [c.category, c.count]),
       ]
 
@@ -595,7 +597,7 @@ export function AnalyticsTab() {
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
       link.href = url
-      link.download = `konsultrapport-${dateStr}.xlsx`
+      link.download = `${t('consultant.analytics.export.filename')}-${dateStr}.xlsx`
       link.click()
       URL.revokeObjectURL(url)
     }
@@ -638,10 +640,10 @@ export function AnalyticsTab() {
               'text-stone-900 dark:text-stone-100'
             )}
           >
-            <option value="week">Senaste veckan</option>
-            <option value="month">Senaste månaden</option>
-            <option value="quarter">Senaste kvartalet</option>
-            <option value="year">Senaste året</option>
+            <option value="week">{t('consultant.analytics.dateRange.week')}</option>
+            <option value="month">{t('consultant.analytics.dateRange.month')}</option>
+            <option value="quarter">{t('consultant.analytics.dateRange.quarter')}</option>
+            <option value="year">{t('consultant.analytics.dateRange.year')}</option>
           </select>
           <button
             onClick={() => fetchAnalytics()}
@@ -665,32 +667,34 @@ export function AnalyticsTab() {
       {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <MetricCard
-          title="Totalt deltagare"
+          title={t('consultant.analytics.metrics.totalParticipants')}
           value={analytics.totalParticipants}
-          subtitle={`${analytics.activeParticipants} aktiva`}
+          subtitle={t('consultant.analytics.metrics.activeCount', { count: analytics.activeParticipants })}
           icon={Users}
           color="teal"
         />
         <MetricCard
-          title="CV-komplettering"
+          title={t('consultant.analytics.metrics.cvCompletion')}
           value={`${analytics.cvCompletionRate}%`}
-          subtitle="Har komplett CV"
+          subtitle={t('consultant.analytics.metrics.hasCompleteCV')}
           icon={FileText}
           trend={trends.cvCompletion.value > 0 ? trends.cvCompletion : undefined}
+          trendLabel={t('consultant.analytics.vsLastMonth')}
           color="emerald"
         />
         <MetricCard
-          title="Genomsnittlig placeringstid"
-          value={`${analytics.averageTimeToPlacement} dagar`}
-          subtitle="Från start till jobb"
+          title={t('consultant.analytics.metrics.avgPlacementTime')}
+          value={t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })}
+          subtitle={t('consultant.analytics.metrics.fromStartToJob')}
           icon={Clock}
           trend={trends.placementTime.value > 0 ? trends.placementTime : undefined}
+          trendLabel={t('consultant.analytics.vsLastMonth')}
           color="blue"
         />
         <MetricCard
-          title="Avslutade med jobb"
+          title={t('consultant.analytics.metrics.completedWithJob')}
           value={analytics.completedParticipants}
-          subtitle={`${Math.round((analytics.completedParticipants / Math.max(analytics.totalParticipants, 1)) * 100)}% placeringsgrad`}
+          subtitle={t('consultant.analytics.metrics.placementRate', { rate: Math.round((analytics.completedParticipants / Math.max(analytics.totalParticipants, 1)) * 100) })}
           icon={Award}
           color="emerald"
         />
@@ -706,10 +710,10 @@ export function AnalyticsTab() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                Framsteg över tid
+                {t('consultant.analytics.progressOverTime.title')}
               </h3>
               <p className="text-sm text-stone-500 dark:text-stone-600">
-                Genomsnittlig CV-poäng per månad
+                {t('consultant.analytics.progressOverTime.subtitle')}
               </p>
             </div>
             <Activity className="w-5 h-5 text-stone-500 dark:text-stone-400" />
@@ -728,10 +732,10 @@ export function AnalyticsTab() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                Nyckeltal
+                {t('consultant.analytics.keyMetrics.title')}
               </h3>
               <p className="text-sm text-stone-500 dark:text-stone-600">
-                Översikt av viktiga mätvärden
+                {t('consultant.analytics.keyMetrics.subtitle')}
               </p>
             </div>
             <PieChart className="w-5 h-5 text-stone-500 dark:text-stone-400" />
@@ -741,19 +745,19 @@ export function AnalyticsTab() {
               value={analytics.cvCompletionRate}
               size={100}
               strokeWidth={10}
-              label="CV-kvalitet"
+              label={t('consultant.analytics.keyMetrics.cvQuality')}
             />
             <ProgressRing
               value={analytics.goalsCompletionRate}
               size={100}
               strokeWidth={10}
-              label="Måluppfyllelse"
+              label={t('consultant.analytics.keyMetrics.goalCompletion')}
             />
             <ProgressRing
               value={analytics.engagementRate}
               size={100}
               strokeWidth={10}
-              label="Engagemang"
+              label={t('consultant.analytics.keyMetrics.engagement')}
             />
           </div>
         </Card>
@@ -766,10 +770,10 @@ export function AnalyticsTab() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                Statusfördelning
+                {t('consultant.analytics.statusDistribution.title')}
               </h3>
               <p className="text-sm text-stone-500 dark:text-stone-600">
-                Fördelning av deltagare per status
+                {t('consultant.analytics.statusDistribution.subtitle')}
               </p>
             </div>
             <Users className="w-5 h-5 text-stone-500 dark:text-stone-400" />
@@ -801,10 +805,10 @@ export function AnalyticsTab() {
           <div className="flex items-center justify-between mb-6">
             <div>
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                Vanligaste målkategorierna
+                {t('consultant.analytics.goalCategories.title')}
               </h3>
               <p className="text-sm text-stone-500 dark:text-stone-600">
-                Mest frekventa måltyper bland deltagare
+                {t('consultant.analytics.goalCategories.subtitle')}
               </p>
             </div>
             <Target className="w-5 h-5 text-stone-500 dark:text-stone-400" />
@@ -824,7 +828,7 @@ export function AnalyticsTab() {
                   </span>
                 </div>
                 <span className="text-sm text-stone-500 dark:text-stone-400">
-                  {goal.count} mål
+                  {t('consultant.analytics.goalCategories.goalsCount', { count: goal.count })}
                 </span>
               </div>
             ))}
@@ -837,10 +841,10 @@ export function AnalyticsTab() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              Kohortanalys
+              {t('consultant.analytics.cohortAnalysis.title')}
             </h3>
             <p className="text-sm text-stone-500 dark:text-stone-600">
-              Jämförelse mellan deltagargrupper baserat på startdatum
+              {t('consultant.analytics.cohortAnalysis.subtitle')}
             </p>
           </div>
           <BarChart3 className="w-5 h-5 text-stone-500 dark:text-stone-400" />
@@ -850,19 +854,19 @@ export function AnalyticsTab() {
             <thead>
               <tr className="border-b border-stone-200 dark:border-stone-700">
                 <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
-                  Kohort
+                  {t('consultant.analytics.cohortAnalysis.columns.cohort')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
-                  Deltagare
+                  {t('consultant.analytics.cohortAnalysis.columns.participants')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
-                  CV-komplett
+                  {t('consultant.analytics.cohortAnalysis.columns.cvComplete')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
-                  Placerade
+                  {t('consultant.analytics.cohortAnalysis.columns.placed')}
                 </th>
                 <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
-                  Snitt tid (dagar)
+                  {t('consultant.analytics.cohortAnalysis.columns.avgTime')}
                 </th>
               </tr>
             </thead>
@@ -902,7 +906,7 @@ export function AnalyticsTab() {
               ) : (
                 <tr>
                   <td colSpan={5} className="px-4 py-8 text-center text-stone-500 dark:text-stone-400">
-                    Inga kohorter att visa. Lägg till deltagare för att se kohortanalys.
+                    {t('consultant.analytics.cohortAnalysis.empty')}
                   </td>
                 </tr>
               )}

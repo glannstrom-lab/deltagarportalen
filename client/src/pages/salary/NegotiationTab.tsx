@@ -3,6 +3,7 @@
  * Features: interactive checklist with progress, scenario simulator, tips carousel, localStorage persistence
  */
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TrendingUp, CheckCircle, AlertCircle, MessageSquare, Target, Clock, Sparkles, ChevronDown, ChevronUp, RotateCcw, Play, BarChart3, TrendingDown } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -178,6 +179,7 @@ const TIPS_CAROUSEL = [
 ]
 
 export default function NegotiationTab() {
+  const { t } = useTranslation()
   const [expandedStep, setExpandedStep] = useState<number | null>(1)
   const [checklist, setChecklist] = useState<ChecklistItem[]>([])
   const [selectedScenario, setSelectedScenario] = useState<NegotiationScenario | null>(null)
@@ -249,10 +251,9 @@ export default function NegotiationTab() {
             <TrendingUp className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Löneförhandlingsguide</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t('salary.negotiation.title')}</h2>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Steg-för-steg guide för att förhandla lön i svensk arbetskultur.
-              Förberedd förhandling ger bättre resultat.
+              {t('salary.negotiation.description')}
             </p>
           </div>
         </div>
@@ -263,11 +264,9 @@ export default function NegotiationTab() {
         <div className="flex items-start gap-3">
           <AlertCircle className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-teal-900 dark:text-teal-100">Svensk arbetsmarknad</p>
+            <p className="font-medium text-teal-900 dark:text-teal-100">{t('salary.negotiation.swedishMarket')}</p>
             <p className="text-sm text-teal-700 dark:text-teal-300 mt-1">
-              I Sverige är löneförhandling ofta mer strukturerad än i andra länder.
-              Många branscher har kollektivavtal som sätter ramarna.
-              Individuella förhandlingar sker ofta vid årliga lönesamtal.
+              {t('salary.negotiation.swedishMarketDesc')}
             </p>
           </div>
         </div>
@@ -277,7 +276,7 @@ export default function NegotiationTab() {
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Target className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-          Förhandlingens 5 steg
+          {t('salary.negotiation.fiveSteps')}
         </h3>
 
         <div className="space-y-3">
@@ -318,7 +317,7 @@ export default function NegotiationTab() {
                 <div className="px-4 pb-4 space-y-4">
                   {/* Tips */}
                   <div>
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tips:</p>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('salary.negotiation.tipsLabel')}</p>
                     <ul className="space-y-2">
                       {step.tips.map((tip, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
@@ -333,7 +332,7 @@ export default function NegotiationTab() {
                   <div>
                     <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1">
                       <MessageSquare className="w-4 h-4" />
-                      Exempelfraser:
+                      {t('salary.negotiation.examplePhrases')}
                     </p>
                     <div className="space-y-2">
                       {step.phrases.map((phrase, idx) => (
@@ -355,7 +354,7 @@ export default function NegotiationTab() {
         <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
           <h3 className="font-semibold text-teal-800 dark:text-teal-200 mb-4 flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-            Gör detta
+            {t('salary.negotiation.doThis')}
           </h3>
           <ul className="space-y-3">
             {DO_AND_DONT.do.map((item, idx) => (
@@ -372,7 +371,7 @@ export default function NegotiationTab() {
         <Card className="border-rose-200 dark:border-rose-800 bg-white dark:bg-stone-800">
           <h3 className="font-semibold text-rose-800 dark:text-rose-200 mb-4 flex items-center gap-2">
             <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
-            Undvik detta
+            {t('salary.negotiation.avoidThis')}
           </h3>
           <ul className="space-y-3">
             {DO_AND_DONT.dont.map((item, idx) => (
@@ -392,7 +391,7 @@ export default function NegotiationTab() {
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
             <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-            Förberedelschecklista
+            {t('salary.negotiation.preparationChecklist')}
           </h3>
           <Button
             onClick={resetChecklist}
@@ -407,7 +406,7 @@ export default function NegotiationTab() {
         {/* Progress bar */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Färdiggrad</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('salary.negotiation.completion')}</span>
             <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{completedCount}/{checklist.length}</span>
           </div>
           <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
@@ -453,7 +452,7 @@ export default function NegotiationTab() {
       <Card className="border-sky-200 dark:border-sky-800 bg-sky-50/30 dark:bg-sky-900/10">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Play className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-          Scenariosimulatör
+          {t('salary.negotiation.scenarioSimulator')}
         </h3>
 
         {!showScenario ? (
@@ -482,7 +481,7 @@ export default function NegotiationTab() {
               onClick={() => setShowScenario(false)}
               className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4"
             >
-              ← Tillbaka till scenarion
+              ← {t('salary.negotiation.backToScenarios')}
             </button>
 
             <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-sky-200 dark:border-sky-700">
@@ -493,33 +492,33 @@ export default function NegotiationTab() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                 {selectedScenario.currentSalary > 0 && (
                   <div className="bg-teal-50 dark:bg-teal-900/30 rounded-lg p-3">
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Nuvarande</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.negotiation.current')}</p>
                     <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.currentSalary.toLocaleString('sv-SE')} kr</p>
                   </div>
                 )}
                 <div className="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-3">
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Marknad</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.negotiation.market')}</p>
                   <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.marketRate.toLocaleString('sv-SE')} kr</p>
                 </div>
                 <div className="bg-teal-50 dark:bg-teal-900/30 rounded-lg p-3">
-                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Målön</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.negotiation.targetSalary')}</p>
                   <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.targetSalary.toLocaleString('sv-SE')} kr</p>
                 </div>
               </div>
 
               {/* Analysis */}
               <div className="p-3 bg-gradient-to-r from-sky-50 to-sky-100 dark:from-sky-900/20 dark:to-sky-800/20 rounded-lg border border-sky-200 dark:border-sky-700 mb-4">
-                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Rekommendation</p>
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">{t('salary.negotiation.recommendation')}</p>
                 <p className="text-sm text-gray-700 dark:text-gray-300">{selectedScenario.recommendation}</p>
               </div>
 
               {/* Salary gap visualization */}
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Löneintervall</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('salary.negotiation.salaryRange')}</p>
                 {selectedScenario.currentSalary > 0 && (
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-gray-600 dark:text-gray-400">Från nuvarande</span>
+                      <span className="text-gray-600 dark:text-gray-400">{t('salary.negotiation.fromCurrent')}</span>
                       <span className="font-medium text-gray-900 dark:text-gray-100">
                         +{selectedScenario.targetSalary - selectedScenario.currentSalary} kr
                         ({(((selectedScenario.targetSalary - selectedScenario.currentSalary) / selectedScenario.currentSalary) * 100).toFixed(1)}%)
@@ -537,7 +536,7 @@ export default function NegotiationTab() {
                 )}
                 <div>
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-gray-600 dark:text-gray-400">Jämfört med marknad</span>
+                    <span className="text-gray-600 dark:text-gray-400">{t('salary.negotiation.comparedToMarket')}</span>
                     <span className={cn(
                       'font-medium',
                       selectedScenario.targetSalary > selectedScenario.marketRate
@@ -574,7 +573,7 @@ export default function NegotiationTab() {
       <Card className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-          Tips för dagen
+          {t('salary.negotiation.dailyTip')}
         </h3>
 
         <div className="relative">
@@ -595,7 +594,7 @@ export default function NegotiationTab() {
               onClick={prevTip}
               className="px-3 py-1 text-sm text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
             >
-              ← Tidigare
+              ← {t('common.previous')}
             </button>
             <span className="text-xs text-gray-600 dark:text-gray-400">
               {currentTipIndex + 1} / {TIPS_CAROUSEL.length}
@@ -604,7 +603,7 @@ export default function NegotiationTab() {
               onClick={nextTip}
               className="px-3 py-1 text-sm text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
             >
-              Nästa →
+              {t('common.next')} →
             </button>
           </div>
         </div>
@@ -614,24 +613,24 @@ export default function NegotiationTab() {
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-          När ska du förhandla?
+          {t('salary.negotiation.whenToNegotiate')}
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
-            <p className="font-medium text-amber-900 dark:text-amber-100">Vid jobbstart</p>
-            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">Bästa tillfället att sätta rätt nivå</p>
+            <p className="font-medium text-amber-900 dark:text-amber-100">{t('salary.negotiation.timing.jobStart')}</p>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{t('salary.negotiation.timing.jobStartDesc')}</p>
           </div>
           <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
-            <p className="font-medium text-amber-900 dark:text-amber-100">Årligt lönesamtal</p>
-            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">Planerat tillfälle - var förberedd</p>
+            <p className="font-medium text-amber-900 dark:text-amber-100">{t('salary.negotiation.timing.annualReview')}</p>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{t('salary.negotiation.timing.annualReviewDesc')}</p>
           </div>
           <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
-            <p className="font-medium text-amber-900 dark:text-amber-100">Efter stora framgångar</p>
-            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">Dokumentera och kapitalisera</p>
+            <p className="font-medium text-amber-900 dark:text-amber-100">{t('salary.negotiation.timing.afterSuccess')}</p>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{t('salary.negotiation.timing.afterSuccessDesc')}</p>
           </div>
           <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
-            <p className="font-medium text-amber-900 dark:text-amber-100">Vid nya ansvar</p>
-            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">Mer ansvar = mer kompensation</p>
+            <p className="font-medium text-amber-900 dark:text-amber-100">{t('salary.negotiation.timing.newResponsibilities')}</p>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">{t('salary.negotiation.timing.newResponsibilitiesDesc')}</p>
           </div>
         </div>
       </Card>

@@ -2,6 +2,7 @@
  * History Tab - Previous test results and comparisons
  */
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import {
   calculateUserProfile,
@@ -33,6 +34,7 @@ interface HistoryEntry {
 }
 
 export default function HistoryTab() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [currentProfile, setCurrentProfile] = useState<UserProfile | null>(null)
   const [history, setHistory] = useState<HistoryEntry[]>([])
@@ -62,7 +64,7 @@ export default function HistoryTab() {
         }
       } catch (err) {
         console.error('Failed to load history:', err)
-        setError('Kunde inte ladda historiken')
+        setError(t('interestGuide.history.errorLoading'))
       } finally {
         setIsLoading(false)
       }
@@ -90,7 +92,7 @@ export default function HistoryTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
-        <LoadingState title="Laddar historik..." size="lg" />
+        <LoadingState title={t('interestGuide.history.loading')} size="lg" />
       </div>
     )
   }
@@ -101,17 +103,16 @@ export default function HistoryTab() {
         <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <History className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Ingen historik än</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">{t('interestGuide.history.noHistory')}</h2>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
-          När du genomfört testet kommer dina resultat att sparas här.
-          Du kan göra om testet när som helst och jämföra resultaten.
+          {t('interestGuide.history.noHistoryDesc')}
         </p>
         <Button
           onClick={() => navigate('/interest-guide')}
           className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600"
         >
           <Sparkles className="w-4 h-4" />
-          Starta testet
+          {t('interestGuide.history.startTest')}
         </Button>
       </div>
     )
@@ -129,12 +130,11 @@ export default function HistoryTab() {
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium mb-4">
           <History className="w-4 h-4" />
-          Din historik
+          {t('interestGuide.history.badge')}
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">Testresultat över tid</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">{t('interestGuide.history.title')}</h1>
         <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Här kan du se och jämföra dina tidigare testresultat.
-          Dina intressen och personlighet kan utvecklas över tid.
+          {t('interestGuide.history.description')}
         </p>
       </div>
 

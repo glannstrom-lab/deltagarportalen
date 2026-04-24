@@ -2,6 +2,7 @@
  * Language Tab - Swedish language resources for work
  */
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Languages, BookOpen, Headphones, MessageSquare, Trophy, ExternalLink, Play, CheckCircle } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -104,6 +105,7 @@ const LEVELS = [
 ]
 
 export default function LanguageTab() {
+  const { t } = useTranslation()
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null)
 
   const filteredResources = selectedLevel
@@ -123,10 +125,9 @@ export default function LanguageTab() {
             <Languages className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Svenska för arbetslivet</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('international.language.title')}</h2>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Resurser och tips för att lära dig svenska. Grundläggande svenska
-              uppskattas mycket på svenska arbetsplatser.
+              {t('international.language.description')}
             </p>
           </div>
         </div>

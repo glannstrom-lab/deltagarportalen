@@ -2,6 +2,7 @@
  * Explore Tab - Browse all occupations and industries
  */
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { occupations, type Occupation } from '@/services/interestGuideData'
 import { Button } from '@/components/ui'
 import {
@@ -42,6 +43,7 @@ function getOccupationField(occupation: Occupation): string {
 }
 
 export default function ExploreTab() {
+  const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedField, setSelectedField] = useState<string | null>(null)
   const [filterUni, setFilterUni] = useState<boolean | null>(null)
@@ -106,11 +108,11 @@ export default function ExploreTab() {
   const getPrognosisText = (prognosis: string) => {
     switch (prognosis) {
       case 'growing':
-        return 'Växande'
+        return t('interestGuide.explore.prognosis.growing')
       case 'declining':
-        return 'Krympande'
+        return t('interestGuide.explore.prognosis.declining')
       default:
-        return 'Stabil'
+        return t('interestGuide.explore.prognosis.stable')
     }
   }
 
@@ -120,12 +122,11 @@ export default function ExploreTab() {
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium mb-4">
           <Compass className="w-4 h-4" />
-          Utforska yrken
+          {t('interestGuide.explore.badge')}
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">Alla yrken</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">{t('interestGuide.explore.title')}</h1>
         <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          Bläddra bland alla yrken i vår databas. Filtrera efter bransch,
-          utbildningsnivå eller framtidsutsikter.
+          {t('interestGuide.explore.description')}
         </p>
       </div>
 
@@ -136,7 +137,7 @@ export default function ExploreTab() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
             <input
               type="text"
-              placeholder="Sök bland alla yrken..."
+              placeholder={t('interestGuide.explore.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 focus:border-transparent text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
@@ -158,7 +159,7 @@ export default function ExploreTab() {
           <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700 space-y-4">
             {/* Field Filter */}
             <div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bransch</p>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('interestGuide.explore.filters.field')}</p>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setSelectedField(null)}
@@ -168,7 +169,7 @@ export default function ExploreTab() {
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
-                  Alla
+                  {t('common.all')}
                 </button>
                 {fields.map(field => (
                   <button
@@ -188,7 +189,7 @@ export default function ExploreTab() {
 
             {/* Education Filter */}
             <div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Utbildningsnivå</p>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('interestGuide.explore.filters.educationLevel')}</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setFilterUni(null)}
@@ -227,7 +228,7 @@ export default function ExploreTab() {
 
             {/* Prognosis Filter */}
             <div>
-              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Framtidsutsikter</p>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">{t('interestGuide.explore.filters.prognosis')}</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setFilterPrognosis(null)}
@@ -281,7 +282,7 @@ export default function ExploreTab() {
       {/* Results count */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-gray-500 dark:text-gray-400">
-          Visar <span className="font-medium text-gray-900 dark:text-gray-100">{filteredOccupations.length}</span> av {occupations.length} yrken
+          {t('interestGuide.explore.showing', { count: filteredOccupations.length, total: occupations.length })}
         </p>
       </div>
 
@@ -289,7 +290,7 @@ export default function ExploreTab() {
       {filteredOccupations.length === 0 ? (
         <div className="text-center py-12 text-gray-500 dark:text-gray-400">
           <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
-          <p>Inga yrken hittades med dina filter.</p>
+          <p>{t('interestGuide.explore.noResults')}</p>
           <Button
             variant="outline"
             onClick={() => {
@@ -300,7 +301,7 @@ export default function ExploreTab() {
             }}
             className="mt-4"
           >
-            Rensa filter
+            {t('interestGuide.explore.clearFilters')}
           </Button>
         </div>
       ) : (

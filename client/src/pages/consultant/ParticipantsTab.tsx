@@ -495,7 +495,7 @@ export function ParticipantsTab() {
                     <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
                       <FileText className="w-5 h-5 text-stone-500 dark:text-stone-400 mx-auto mb-1" />
                       <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
-                        {p.has_cv ? (p.ats_score ? `${p.ats_score}%` : 'Ja') : '—'}
+                        {p.has_cv ? (p.ats_score ? `${p.ats_score}%` : t('common.yes')) : '—'}
                       </p>
                       <p className="text-xs text-stone-500">CV</p>
                     </div>
@@ -504,14 +504,14 @@ export function ParticipantsTab() {
                       <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
                         {p.saved_jobs_count}
                       </p>
-                      <p className="text-xs text-stone-500">Jobb</p>
+                      <p className="text-xs text-stone-500">{t('consultant.participants.jobs')}</p>
                     </div>
                     <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
                       <MessageSquare className="w-5 h-5 text-stone-500 dark:text-stone-400 mx-auto mb-1" />
                       <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
                         {p.notes_count}
                       </p>
-                      <p className="text-xs text-stone-500">Notat</p>
+                      <p className="text-xs text-stone-500">{t('consultant.participants.notes')}</p>
                     </div>
                   </div>
 
@@ -636,7 +636,7 @@ export function ParticipantsTab() {
                             (p.ats_score || 0) >= 70 ? 'text-emerald-600' :
                             (p.ats_score || 0) >= 50 ? 'text-amber-600' : 'text-stone-600'
                           )}>
-                            {p.ats_score ? `${p.ats_score}/100` : 'Ja'}
+                            {p.ats_score ? `${p.ats_score}/100` : t('common.yes')}
                           </span>
                         ) : '—'}
                       </td>

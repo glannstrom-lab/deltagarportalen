@@ -5,6 +5,7 @@
  */
 
 import { Suspense, lazy, useEffect, Component, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Loader2 } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { HelpButton } from '@/components/HelpButton'
@@ -81,11 +82,12 @@ class ProfileErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
 // ============== SECTION LOADER ==============
 
 function SectionLoader() {
+  const { t } = useTranslation()
   return (
     <div className="flex items-center justify-center py-12">
       <div className="text-center">
         <Loader2 className="w-6 h-6 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-2" />
-        <p className="text-sm text-stone-500 dark:text-stone-400">Laddar...</p>
+        <p className="text-sm text-stone-500 dark:text-stone-400">{t('common.loading')}</p>
       </div>
     </div>
   )
@@ -110,11 +112,12 @@ function TabContent({ activeTab }: { activeTab: TabId }) {
 // ============== INITIAL LOADER ==============
 
 function InitialLoader() {
+  const { t } = useTranslation()
   return (
     <div className="flex items-center justify-center py-12">
       <div className="text-center">
         <Loader2 className="w-8 h-8 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-3" />
-        <p className="text-stone-600 dark:text-stone-400">Laddar profil...</p>
+        <p className="text-stone-600 dark:text-stone-400">{t('profile.loading')}</p>
       </div>
     </div>
   )
@@ -123,6 +126,7 @@ function InitialLoader() {
 // ============== MAIN COMPONENT ==============
 
 export default function Profile() {
+  const { t } = useTranslation()
   const { activeTab, initialLoading, loadAll } = useProfileStore()
 
   // Load all profile data on mount

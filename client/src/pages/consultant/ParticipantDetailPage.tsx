@@ -81,12 +81,12 @@ interface TimelineEvent {
 }
 
 // Status Badge Component
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, t }: { status: string; t: (key: string) => string }) {
   const badges = {
-    ACTIVE: { label: 'Aktiv', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' },
-    INACTIVE: { label: 'Inaktiv', color: 'bg-stone-100 text-stone-800 dark:bg-stone-700 dark:text-stone-300' },
-    COMPLETED: { label: 'Avslutad', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' },
-    ON_HOLD: { label: 'Pausad', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' },
+    ACTIVE: { label: t('consultant.participants.status.active'), color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' },
+    INACTIVE: { label: t('consultant.participants.status.inactive'), color: 'bg-stone-100 text-stone-800 dark:bg-stone-700 dark:text-stone-300' },
+    COMPLETED: { label: t('consultant.participants.status.completed'), color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' },
+    ON_HOLD: { label: t('consultant.participants.status.onHold'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' },
   }
   const badge = badges[status as keyof typeof badges] || badges.INACTIVE
 
@@ -132,10 +132,12 @@ function GoalCard({
   goal,
   onEdit,
   onComplete,
+  t,
 }: {
   goal: Goal
   onEdit: (goal: Goal) => void
   onComplete: (id: string) => void
+  t: (key: string) => string
 }) {
   const statusColors = {
     NOT_STARTED: 'bg-stone-100 text-stone-600',
@@ -178,20 +180,20 @@ function GoalCard({
 
       <div className="flex items-center gap-3 mb-3">
         <span className={cn('px-2 py-0.5 rounded text-xs font-medium', statusColors[goal.status])}>
-          {goal.status === 'NOT_STARTED' ? 'Ej påbörjad' :
-           goal.status === 'IN_PROGRESS' ? 'Pågår' :
-           goal.status === 'COMPLETED' ? 'Klar' : 'Blockerad'}
+          {goal.status === 'NOT_STARTED' ? t('consultant.participantDetail.goalStatus.notStarted') :
+           goal.status === 'IN_PROGRESS' ? t('consultant.participantDetail.goalStatus.inProgress') :
+           goal.status === 'COMPLETED' ? t('consultant.participantDetail.goalStatus.completed') : t('consultant.participantDetail.goalStatus.blocked')}
         </span>
         <span className={cn('text-xs font-medium', priorityColors[goal.priority])}>
-          {goal.priority === 'HIGH' ? 'Hög prioritet' :
-           goal.priority === 'MEDIUM' ? 'Medel' : 'Låg'}
+          {goal.priority === 'HIGH' ? t('consultant.participantDetail.priority.high') :
+           goal.priority === 'MEDIUM' ? t('consultant.participantDetail.priority.medium') : t('consultant.participantDetail.priority.low')}
         </span>
       </div>
 
       {/* Progress Bar */}
       <div className="mb-3">
         <div className="flex items-center justify-between text-xs mb-1">
-          <span className="text-stone-500">Framsteg</span>
+          <span className="text-stone-500">{t('common.progress')}</span>
           <span className="font-medium text-stone-700 dark:text-stone-300">{goal.progress}%</span>
         </div>
         <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
@@ -211,12 +213,12 @@ function GoalCard({
           isOverdue ? 'text-rose-600 font-medium' : 'text-stone-500'
         )}>
           <Clock className="w-3 h-3 inline mr-1" />
-          Deadline: {new Date(goal.deadline).toLocaleDateString('sv-SE')}
+          {t('consultant.participantDetail.deadline')}: {new Date(goal.deadline).toLocaleDateString('sv-SE')}
         </span>
         {goal.status !== 'COMPLETED' && (
           <Button size="sm" variant="ghost" onClick={() => onComplete(goal.id)}>
             <CheckCircle className="w-4 h-4 mr-1" />
-            Markera klar
+            {t('consultant.participantDetail.markComplete')}
           </Button>
         )}
       </div>
@@ -398,9 +400,9 @@ export function ParticipantDetailPage() {
   if (!participant) {
     return (
       <div className="text-center py-12">
-        <p className="text-stone-500">Deltagaren kunde inte hittas</p>
+        <p className="text-stone-500">{t('consultant.participantDetail.notFound')}</p>
         <Button variant="outline" className="mt-4" onClick={() => navigate('/consultant/participants')}>
-          Tillbaka till deltagare
+          {t('consultant.participantDetail.backToParticipants')}
         </Button>
       </div>
     )
@@ -419,7 +421,7 @@ export function ParticipantDetailPage() {
         className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
-        Tillbaka till deltagare
+        {t('consultant.participantDetail.backToParticipants')}
       </Link>
 
       {/* Header */}
@@ -451,10 +453,10 @@ export function ParticipantDetailPage() {
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <StatusBadge status={participant.status} />
+                <StatusBadge status={participant.status} t={t} />
                 <Button variant="outline" size="sm">
                   <Edit2 className="w-4 h-4 mr-1" />
-                  Redigera
+                  {t('common.edit')}
                 </Button>
               </div>
             </div>
@@ -463,7 +465,7 @@ export function ParticipantDetailPage() {
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">
               <QuickStat
                 icon={FileText}
-                label="CV-poäng"
+                label={t('consultant.participantDetail.cvScore')}
                 value={participant.ats_score ? `${participant.ats_score}%` : '—'}
                 status={
                   (participant.ats_score || 0) >= 70 ? 'good' :
@@ -472,17 +474,17 @@ export function ParticipantDetailPage() {
               />
               <QuickStat
                 icon={Briefcase}
-                label="Sparade jobb"
+                label={t('consultant.participantDetail.savedJobs')}
                 value={participant.saved_jobs_count}
               />
               <QuickStat
                 icon={Target}
-                label="Aktiva mål"
+                label={t('consultant.participantDetail.activeGoals')}
                 value={goals.filter(g => g.status !== 'COMPLETED').length}
               />
               <QuickStat
                 icon={Clock}
-                label="Senast kontakt"
+                label={t('consultant.participantDetail.lastContact')}
                 value={participant.last_contact_at
                   ? Math.floor((Date.now() - new Date(participant.last_contact_at).getTime()) / (1000 * 60 * 60 * 24))
                   : '—'}
@@ -499,10 +501,10 @@ export function ParticipantDetailPage() {
       {/* Tab Navigation */}
       <div className="flex items-center gap-2 border-b border-stone-200 dark:border-stone-700 overflow-x-auto">
         {[
-          { id: 'overview', label: 'Översikt', icon: Activity },
-          { id: 'goals', label: 'Mål', icon: Target },
-          { id: 'journal', label: 'Anteckningar', icon: MessageSquare },
-          { id: 'timeline', label: 'Tidslinje', icon: Clock },
+          { id: 'overview', label: t('consultant.participantDetail.tabs.overview'), icon: Activity },
+          { id: 'goals', label: t('consultant.participantDetail.tabs.goals'), icon: Target },
+          { id: 'journal', label: t('consultant.participantDetail.tabs.journal'), icon: MessageSquare },
+          { id: 'timeline', label: t('consultant.participantDetail.tabs.timeline'), icon: Clock },
         ].map(tab => (
           <button
             key={tab.id}
@@ -527,10 +529,10 @@ export function ParticipantDetailPage() {
           <Card className="p-5">
             <div className="flex items-center justify-between mb-4">
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                Aktiva mål
+                {t('consultant.participantDetail.activeGoals')}
               </h3>
               <Button size="sm" variant="ghost" onClick={() => setActiveTab('goals')}>
-                Se alla
+                {t('common.seeAll')}
               </Button>
             </div>
             <div className="space-y-3">
@@ -540,6 +542,7 @@ export function ParticipantDetailPage() {
                   goal={goal}
                   onEdit={handleEditGoal}
                   onComplete={handleCompleteGoal}
+                  t={t}
                 />
               ))}
             </div>
@@ -548,12 +551,12 @@ export function ParticipantDetailPage() {
           {/* Quick Note */}
           <Card className="p-5">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">
-              Snabbanteckning
+              {t('consultant.participantDetail.quickNote')}
             </h3>
             <textarea
               value={newNote}
               onChange={e => setNewNote(e.target.value)}
-              placeholder="Skriv en anteckning om deltagaren..."
+              placeholder={t('consultant.participantDetail.notePlaceholder')}
               rows={4}
               className={cn(
                 'w-full px-4 py-3 rounded-xl',
@@ -565,7 +568,7 @@ export function ParticipantDetailPage() {
             />
             <Button className="mt-3" onClick={handleAddNote} disabled={!newNote.trim()}>
               <Send className="w-4 h-4 mr-2" />
-              Spara anteckning
+              {t('consultant.participantDetail.saveNote')}
             </Button>
           </Card>
         </div>
@@ -575,11 +578,11 @@ export function ParticipantDetailPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <p className="text-stone-500">
-              {goals.filter(g => g.status !== 'COMPLETED').length} aktiva mål
+              {t('consultant.participantDetail.activeGoalsCount', { count: goals.filter(g => g.status !== 'COMPLETED').length })}
             </p>
             <Button>
               <Plus className="w-4 h-4 mr-2" />
-              Nytt mål
+              {t('consultant.participantDetail.newGoal')}
             </Button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -589,6 +592,7 @@ export function ParticipantDetailPage() {
                 goal={goal}
                 onEdit={handleEditGoal}
                 onComplete={handleCompleteGoal}
+                t={t}
               />
             ))}
           </div>
@@ -601,7 +605,7 @@ export function ParticipantDetailPage() {
             <textarea
               value={newNote}
               onChange={e => setNewNote(e.target.value)}
-              placeholder="Skriv en ny anteckning..."
+              placeholder={t('consultant.participantDetail.writeNote')}
               rows={3}
               className={cn(
                 'w-full px-4 py-3 rounded-xl',
@@ -614,7 +618,7 @@ export function ParticipantDetailPage() {
             <div className="flex items-center justify-end mt-3">
               <Button onClick={handleAddNote} disabled={!newNote.trim()}>
                 <Plus className="w-4 h-4 mr-2" />
-                Lägg till
+                {t('common.add')}
               </Button>
             </div>
           </Card>

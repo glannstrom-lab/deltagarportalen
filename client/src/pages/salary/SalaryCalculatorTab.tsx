@@ -4,6 +4,7 @@
  * Features: comparison mode, net salary after tax, visual charts, save/export
  */
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Calculator, MapPin, Briefcase, TrendingUp, Info, Sparkles, Download, Plus, X, BarChart3, PieChart } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { SalaryInsightsPanel } from '@/components/ai'
@@ -64,6 +65,7 @@ interface SalaryComparison {
 }
 
 export default function SalaryCalculatorTab() {
+  const { t } = useTranslation()
   const [occupation, setOccupation] = useState('')
   const [region, setRegion] = useState('')
   const [experience, setExperience] = useState('')
@@ -158,9 +160,9 @@ export default function SalaryCalculatorTab() {
             <Calculator className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Lönekalkylator</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t('salary.calculator.title')}</h2>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Beräkna förväntad lön baserat på yrke, erfarenhet och region. Data baserad på svensk lönestatistik.
+              {t('salary.calculator.description')}
             </p>
           </div>
         </div>
@@ -168,21 +170,21 @@ export default function SalaryCalculatorTab() {
 
       {/* Calculator Form */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Ange dina uppgifter</h3>
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">{t('salary.calculator.enterDetails')}</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Occupation */}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               <Briefcase className="w-4 h-4 inline mr-1" />
-              Yrkeskategori
+              {t('salary.calculator.occupation')}
             </label>
             <select
               value={occupation}
               onChange={(e) => setOccupation(e.target.value)}
               className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 text-gray-800 dark:text-gray-100"
             >
-              <option value="">Välj kategori...</option>
+              <option value="">{t('salary.calculator.selectCategory')}</option>
               {Object.keys(SALARY_DATA).map((occ) => (
                 <option key={occ} value={occ}>{occ}</option>
               ))}
@@ -193,14 +195,14 @@ export default function SalaryCalculatorTab() {
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               <MapPin className="w-4 h-4 inline mr-1" />
-              Region
+              {t('salary.calculator.region')}
             </label>
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
               className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 text-gray-800 dark:text-gray-100"
             >
-              <option value="">Välj region...</option>
+              <option value="">{t('salary.calculator.selectRegion')}</option>
               {Object.keys(REGION_ADJUSTMENTS).map((reg) => (
                 <option key={reg} value={reg}>{reg}</option>
               ))}
@@ -211,14 +213,14 @@ export default function SalaryCalculatorTab() {
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               <TrendingUp className="w-4 h-4 inline mr-1" />
-              Erfarenhet
+              {t('salary.calculator.experience')}
             </label>
             <select
               value={experience}
               onChange={(e) => setExperience(e.target.value)}
               className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 text-gray-800 dark:text-gray-100"
             >
-              <option value="">Välj erfarenhet...</option>
+              <option value="">{t('salary.calculator.selectExperience')}</option>
               {Object.keys(EXPERIENCE_MULTIPLIERS).map((exp) => (
                 <option key={exp} value={exp}>{exp}</option>
               ))}
@@ -232,7 +234,7 @@ export default function SalaryCalculatorTab() {
           className="mt-6 w-full sm:w-auto"
         >
           <Calculator className="w-4 h-4 mr-2" />
-          Beräkna lön
+          {t('salary.calculator.calculate')}
         </Button>
       </Card>
 
@@ -248,7 +250,7 @@ export default function SalaryCalculatorTab() {
               <div className="flex items-center justify-between gap-2 mb-6">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">Ditt löneresultat</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-gray-100">{t('salary.calculator.yourResult')}</h3>
                 </div>
                 <Button
                   onClick={handleExport}
@@ -257,32 +259,32 @@ export default function SalaryCalculatorTab() {
                   className="gap-2"
                 >
                   <Download className="w-4 h-4" />
-                  Exportera
+                  {t('common.export')}
                 </Button>
               </div>
 
               {/* Salary range grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800">
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">Minimum</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">{t('salary.calculator.minimum')}</p>
                   <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">
                     {calculatedSalary.min.toLocaleString('sv-SE')} kr
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">per månad</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{t('salary.calculator.perMonth')}</p>
                 </div>
                 <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border-2 border-teal-300 dark:border-teal-600 shadow-sm">
-                  <p className="text-sm text-teal-600 dark:text-teal-400 font-medium mb-1">Median (rekommenderat)</p>
+                  <p className="text-sm text-teal-600 dark:text-teal-400 font-medium mb-1">{t('salary.calculator.medianRecommended')}</p>
                   <p className="text-3xl font-bold text-teal-700 dark:text-teal-300">
                     {calculatedSalary.median.toLocaleString('sv-SE')} kr
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">per månad</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{t('salary.calculator.perMonth')}</p>
                 </div>
                 <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800">
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">Maximum</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">{t('salary.calculator.maximum')}</p>
                   <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">
                     {calculatedSalary.max.toLocaleString('sv-SE')} kr
                   </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">per månad</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-400">{t('salary.calculator.perMonth')}</p>
                 </div>
               </div>
 
@@ -293,13 +295,13 @@ export default function SalaryCalculatorTab() {
                   className="w-full flex items-center justify-between hover:bg-stone-50/50 dark:hover:bg-stone-600/50 transition-colors"
                 >
                   <div className="text-left">
-                    <p className="text-sm text-gray-700 dark:text-gray-300">Nettolön/månad</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300">{t('salary.calculator.netSalaryPerMonth')}</p>
                     <p className="text-xl font-bold text-gray-800 dark:text-gray-100">
                       {calculateNetSalary(calculatedSalary.median).toLocaleString('sv-SE')} kr
                     </p>
                   </div>
                   <div className="text-right text-xs text-gray-700 dark:text-gray-400">
-                    (efter skatt ~22%)
+                    {t('salary.calculator.afterTax')}
                   </div>
                 </button>
               </div>
@@ -307,25 +309,25 @@ export default function SalaryCalculatorTab() {
               {/* Annual salary & growth */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800">
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">Årslön (brutto)</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">{t('salary.calculator.annualSalaryGross')}</p>
                   <p className="text-xl font-bold text-gray-800 dark:text-gray-100">
                     {(calculatedSalary.median * 12).toLocaleString('sv-SE')} kr
                   </p>
                 </div>
                 <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800">
-                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">Löneökning/år (snitt)</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">{t('salary.calculator.annualIncrease')}</p>
                   <p className="text-xl font-bold text-teal-600 dark:text-teal-400">+{calculatedSalary.growth}%</p>
                 </div>
               </div>
 
               {/* Visual salary range chart */}
               <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800 mb-4">
-                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Löneintervallets fördelning</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{t('salary.calculator.salaryRangeDistribution')}</p>
                 <div className="space-y-3">
                   {/* Min range */}
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-xs text-gray-600 dark:text-gray-400">Min</span>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">{t('salary.calculator.min')}</span>
                       <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{calculatedSalary.min.toLocaleString('sv-SE')} kr</span>
                     </div>
                     <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
@@ -338,7 +340,7 @@ export default function SalaryCalculatorTab() {
                   {/* Median range */}
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-xs text-gray-600 dark:text-gray-400">Median</span>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">{t('salary.calculator.median')}</span>
                       <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{calculatedSalary.median.toLocaleString('sv-SE')} kr</span>
                     </div>
                     <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
@@ -351,7 +353,7 @@ export default function SalaryCalculatorTab() {
                   {/* Max range */}
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="text-xs text-gray-600 dark:text-gray-400">Max</span>
+                      <span className="text-xs text-gray-600 dark:text-gray-400">{t('salary.calculator.max')}</span>
                       <span className="text-xs font-medium text-gray-700 dark:text-gray-300">{calculatedSalary.max.toLocaleString('sv-SE')} kr</span>
                     </div>
                     <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
@@ -372,10 +374,10 @@ export default function SalaryCalculatorTab() {
                   <div className="flex items-start gap-3">
                     <PieChart className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
                     <div className="text-sm text-teal-800 dark:text-teal-200">
-                      <p className="font-medium mb-2">Skatteavdrag</p>
+                      <p className="font-medium mb-2">{t('salary.calculator.taxDeduction')}</p>
                       <ul className="space-y-1">
-                        <li>Primär källskatt (ungefär 22%): ~{Math.round(calculatedSalary.median * 0.22).toLocaleString('sv-SE')} kr</li>
-                        <li>Arbetsgivaravgift ingår ej i din lön</li>
+                        <li>{t('salary.calculator.primaryTax', { amount: Math.round(calculatedSalary.median * 0.22).toLocaleString('sv-SE') })}</li>
+                        <li>{t('salary.calculator.employerFeeNotIncluded')}</li>
                       </ul>
                     </div>
                   </div>
@@ -386,10 +388,9 @@ export default function SalaryCalculatorTab() {
               <div className="flex items-start gap-3 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-100 dark:border-teal-800">
                 <Info className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
                 <div className="text-sm text-teal-800 dark:text-teal-200">
-                  <p className="font-medium mb-1">Om beräkningen</p>
+                  <p className="font-medium mb-1">{t('salary.calculator.aboutCalculation')}</p>
                   <p>
-                    Löneuppgifterna är baserade på branschstatistik och justerade för region och erfarenhet.
-                    Nettolönen är en uppskattning. Faktisk skatt varierar baserat på personliga förhållanden.
+                    {t('salary.calculator.aboutCalculationText')}
                   </p>
                 </div>
               </div>
@@ -401,7 +402,7 @@ export default function SalaryCalculatorTab() {
                 className="w-full mt-4 gap-2"
               >
                 <Plus className="w-4 h-4" />
-                Lägg till jämförelse
+                {t('salary.calculator.addComparison')}
               </Button>
             </Card>
           </motion.div>
@@ -413,7 +414,7 @@ export default function SalaryCalculatorTab() {
         <Card className="border-sky-200 dark:border-sky-800 bg-sky-50/30 dark:bg-sky-900/10">
           <div className="flex items-center gap-2 mb-4">
             <BarChart3 className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-            <h3 className="font-semibold text-gray-900 dark:text-gray-100">Lönejämförelser ({comparisons.length})</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100">{t('salary.calculator.salaryComparisons', { count: comparisons.length })}</h3>
           </div>
 
           <div className="space-y-3">
@@ -434,11 +435,11 @@ export default function SalaryCalculatorTab() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="bg-sky-50 dark:bg-sky-900/30 rounded-lg p-3">
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Brutto</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.calculator.gross')}</p>
                     <p className="font-bold text-gray-900 dark:text-gray-100">{comp.gross.toLocaleString('sv-SE')} kr</p>
                   </div>
                   <div className="bg-sky-50 dark:bg-sky-900/30 rounded-lg p-3">
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Netto</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.calculator.net')}</p>
                     <p className="font-bold text-gray-900 dark:text-gray-100">{comp.net.toLocaleString('sv-SE')} kr</p>
                   </div>
                 </div>
@@ -446,7 +447,7 @@ export default function SalaryCalculatorTab() {
                 {/* Comparison bar with current */}
                 {calculatedSalary && (
                   <div className="mt-3 pt-3 border-t border-sky-100 dark:border-sky-800">
-                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Jämfört med nuvarande beräkning</p>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('salary.calculator.comparedToCurrent')}</p>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 bg-stone-100 dark:bg-stone-600 rounded-full h-2 overflow-hidden">
                         <div
@@ -479,15 +480,15 @@ export default function SalaryCalculatorTab() {
 
       {/* Tips section */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Tips för bättre lön</h3>
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">{t('salary.calculator.tipsTitle')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
             <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center shrink-0">
               <span className="text-teal-600 dark:text-teal-400 font-bold">1</span>
             </div>
             <div>
-              <p className="font-medium text-gray-800 dark:text-gray-100">Bygg kompetens</p>
-              <p className="text-sm text-gray-700 dark:text-gray-400">Certifieringar och specialkunskaper höjer lönen</p>
+              <p className="font-medium text-gray-800 dark:text-gray-100">{t('salary.calculator.tips.buildSkills')}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">{t('salary.calculator.tips.buildSkillsDesc')}</p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
@@ -495,8 +496,8 @@ export default function SalaryCalculatorTab() {
               <span className="text-teal-600 dark:text-teal-400 font-bold">2</span>
             </div>
             <div>
-              <p className="font-medium text-gray-800 dark:text-gray-100">Dokumentera resultat</p>
-              <p className="text-sm text-gray-700 dark:text-gray-400">Konkreta exempel stärker din förhandlingsposition</p>
+              <p className="font-medium text-gray-800 dark:text-gray-100">{t('salary.calculator.tips.documentResults')}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">{t('salary.calculator.tips.documentResultsDesc')}</p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
@@ -504,8 +505,8 @@ export default function SalaryCalculatorTab() {
               <span className="text-teal-600 dark:text-teal-400 font-bold">3</span>
             </div>
             <div>
-              <p className="font-medium text-gray-800 dark:text-gray-100">Tajming är allt</p>
-              <p className="text-sm text-gray-700 dark:text-gray-400">Förhandla efter framgångar eller vid nya ansvar</p>
+              <p className="font-medium text-gray-800 dark:text-gray-100">{t('salary.calculator.tips.timing')}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">{t('salary.calculator.tips.timingDesc')}</p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
@@ -513,8 +514,8 @@ export default function SalaryCalculatorTab() {
               <span className="text-teal-600 dark:text-teal-400 font-bold">4</span>
             </div>
             <div>
-              <p className="font-medium text-gray-800 dark:text-gray-100">Känn din marknad</p>
-              <p className="text-sm text-gray-700 dark:text-gray-400">Ha koll på vad konkurrenter erbjuder</p>
+              <p className="font-medium text-gray-800 dark:text-gray-100">{t('salary.calculator.tips.knowMarket')}</p>
+              <p className="text-sm text-gray-700 dark:text-gray-400">{t('salary.calculator.tips.knowMarketDesc')}</p>
             </div>
           </div>
         </div>

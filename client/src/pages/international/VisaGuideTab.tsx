@@ -2,6 +2,7 @@
  * Visa Guide Tab - Work permit information for Sweden
  */
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { FileCheck, AlertCircle, CheckCircle, ExternalLink, Clock, DollarSign, Building2, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -81,6 +82,7 @@ const VISA_TYPES: VisaType[] = [
 ]
 
 export default function VisaGuideTab() {
+  const { t } = useTranslation()
   const [expandedVisa, setExpandedVisa] = useState<string | null>('work-permit')
 
   return (
@@ -92,10 +94,9 @@ export default function VisaGuideTab() {
             <FileCheck className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Visum & Arbetstillstånd</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('international.visa.title')}</h2>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Guide till olika typer av arbetstillstånd i Sverige.
-              Klicka på varje typ för att se krav och processinformation.
+              {t('international.visa.description')}
             </p>
           </div>
         </div>

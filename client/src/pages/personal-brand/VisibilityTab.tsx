@@ -3,6 +3,7 @@
  * Features: Strategy tracking, content calendar, progress sync
  */
 import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
   Eye,
@@ -143,6 +144,7 @@ const CATEGORIES = {
 }
 
 export default function VisibilityTab() {
+  const { t } = useTranslation()
   const [progress, setProgress] = useState<VisibilityProgressItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)

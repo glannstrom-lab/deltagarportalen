@@ -3,6 +3,7 @@
  * Features: Cloud sync, better visuals, sharing
  */
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
   FolderOpen,
@@ -39,6 +40,7 @@ const ITEM_TYPES = {
 }
 
 export default function PortfolioTab() {
+  const { t } = useTranslation()
   const [items, setItems] = useState<PortfolioItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)

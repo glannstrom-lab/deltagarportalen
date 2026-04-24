@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Map, RefreshCw, Loader2, Trophy, Target, BarChart3 } from '@/components/ui/icons'
 import { Button } from '@/components/ui'
 import { useJourney } from '@/hooks/useJourney'
@@ -22,6 +23,7 @@ import {
 import type { JourneyPhase } from '@/types/journey.types'
 
 export default function Journey() {
+  const { t } = useTranslation()
   const {
     progress,
     stats,
@@ -57,7 +59,7 @@ export default function Journey() {
       >
         <div className="text-center">
           <Loader2 className="w-12 h-12 text-teal-600 dark:text-teal-400 animate-spin mx-auto mb-4" aria-hidden="true" />
-          <p className="text-gray-600 dark:text-gray-300">Laddar din jobbresa...</p>
+          <p className="text-gray-600 dark:text-gray-300">{t('journey.loading')}</p>
         </div>
       </div>
     )
@@ -72,12 +74,12 @@ export default function Journey() {
             <Map className="w-8 h-8 text-red-500 dark:text-red-400" />
           </div>
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
-            Kunde inte ladda din resa
+            {t('journey.errorLoading')}
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-4">{error}</p>
           <Button onClick={refresh}>
             <RefreshCw className="w-4 h-4 mr-2" />
-            Försök igen
+            {t('common.tryAgain')}
           </Button>
         </div>
       </div>
@@ -94,11 +96,10 @@ export default function Journey() {
               <Map className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-              Välkommen till Min Jobbresa
+              {t('journey.welcomeTitle')}
             </h1>
             <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              Här kan du följa din väg mot anställning. Vi guidar dig steg för steg
-              genom jobbsökarprocessen och firar dina framsteg längs vägen.
+              {t('journey.welcomeDescription')}
             </p>
           </div>
 
@@ -111,7 +112,7 @@ export default function Journey() {
 
           <div className="mt-8 text-center">
             <Button size="lg" onClick={() => window.location.href = '/'}>
-              Börja din resa
+              {t('journey.startJourney')}
             </Button>
           </div>
         </div>
@@ -129,14 +130,14 @@ export default function Journey() {
               <Map className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Min Jobbresa</h1>
-              <p className="text-gray-600 dark:text-gray-300">Följ din väg mot anställning</p>
+              <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{t('journey.title')}</h1>
+              <p className="text-gray-600 dark:text-gray-300">{t('journey.subtitle')}</p>
             </div>
           </div>
 
           <Button variant="secondary" size="sm" onClick={refresh}>
             <RefreshCw className="w-4 h-4 mr-2" />
-            Uppdatera
+            {t('common.refresh')}
           </Button>
         </div>
 
@@ -158,7 +159,7 @@ export default function Journey() {
             `}
           >
             <Map className="w-4 h-4" />
-            Översikt
+            {t('journey.tabs.overview')}
           </button>
           <button
             onClick={() => setActiveTab('goals')}
@@ -171,7 +172,7 @@ export default function Journey() {
             `}
           >
             <Target className="w-4 h-4" />
-            Mål
+            {t('journey.tabs.goals')}
             {goals.filter(g => !g.is_completed).length > 0 && (
               <span className="bg-teal-500 dark:bg-teal-600 text-white text-xs px-1.5 py-0.5 rounded-full">
                 {goals.filter(g => !g.is_completed).length}
@@ -189,7 +190,7 @@ export default function Journey() {
             `}
           >
             <Trophy className="w-4 h-4" />
-            Achievements
+            {t('journey.tabs.achievements')}
             {achievements.filter(a => a.is_unlocked).length > 0 && (
               <span className="bg-amber-500 dark:bg-amber-600 text-white text-xs px-1.5 py-0.5 rounded-full">
                 {achievements.filter(a => a.is_unlocked).length}
@@ -207,7 +208,7 @@ export default function Journey() {
             `}
           >
             <BarChart3 className="w-4 h-4" />
-            Statistik
+            {t('journey.tabs.stats')}
           </button>
         </div>
 
@@ -268,23 +269,23 @@ export default function Journey() {
 
               {/* Tips for goal setting */}
               <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-6 border border-teal-100 dark:border-teal-800">
-                <h4 className="font-semibold text-teal-900 dark:text-teal-100 mb-3">Tips för att sätta mål</h4>
+                <h4 className="font-semibold text-teal-900 dark:text-teal-100 mb-3">{t('journey.goalTips.title')}</h4>
                 <ul className="space-y-2 text-sm text-teal-700 dark:text-teal-300">
                   <li className="flex items-start gap-2">
                     <span className="text-teal-500 dark:text-teal-400 mt-0.5">•</span>
-                    Börja med små, uppnåeliga mål
+                    {t('journey.goalTips.tip1')}
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-teal-500 dark:text-teal-400 mt-0.5">•</span>
-                    Sätt veckomål istället för månadsmål
+                    {t('journey.goalTips.tip2')}
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-teal-500 dark:text-teal-400 mt-0.5">•</span>
-                    Fira varje uppnått mål - du förtjänar det!
+                    {t('journey.goalTips.tip3')}
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-teal-500 dark:text-teal-400 mt-0.5">•</span>
-                    Fokusera på aktiviteter, inte resultat
+                    {t('journey.goalTips.tip4')}
                   </li>
                 </ul>
               </div>

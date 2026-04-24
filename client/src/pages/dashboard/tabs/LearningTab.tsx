@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   BookOpen, Play, Clock, CheckCircle2, Award, Star, TrendingUp,
@@ -18,6 +19,7 @@ import type { ArticleWithProgress, ExerciseWithProgress, LearningCategory } from
 type ViewMode = 'home' | 'category' | 'article' | 'exercise'
 
 export default function LearningTab() {
+  const { t } = useTranslation()
   const {
     progress,
     recommendedArticles,
@@ -84,7 +86,7 @@ export default function LearningTab() {
       >
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
-          <p className="text-slate-700 dark:text-stone-300">Laddar lärande...</p>
+          <p className="text-slate-700 dark:text-stone-300">{t('dashboard.learning.loading')}</p>
         </div>
       </div>
     )
@@ -97,12 +99,12 @@ export default function LearningTab() {
           <BookOpen className="w-8 h-8 text-red-500" />
         </div>
         <h3 className="text-lg font-semibold text-slate-800 dark:text-stone-100 mb-2">
-          Kunde inte ladda lärande
+          {t('dashboard.learning.errorTitle')}
         </h3>
         <p className="text-slate-700 dark:text-stone-300 mb-4">{error}</p>
         <Button onClick={refresh} variant="outline">
           <RefreshCw className="w-4 h-4 mr-2" />
-          Försök igen
+          {t('common.tryAgain')}
         </Button>
       </div>
     )
@@ -115,6 +117,7 @@ export default function LearningTab() {
         article={selectedArticle}
         onBack={handleBack}
         onComplete={() => completeArticle(selectedArticle.id)}
+        t={t}
       />
     )
   }
@@ -125,6 +128,7 @@ export default function LearningTab() {
       <ExerciseView
         exercise={selectedExercise}
         onBack={handleBack}
+        t={t}
       />
     )
   }
@@ -138,6 +142,7 @@ export default function LearningTab() {
         isLoading={isLoadingCategory}
         onBack={handleBack}
         onSelectArticle={handleSelectArticle}
+        t={t}
       />
     )
   }
@@ -150,9 +155,9 @@ export default function LearningTab() {
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
             <BookOpen className="text-teal-500" size={28} />
-            Lärande
+            {t('dashboard.learning.title')}
           </h2>
-          <p className="text-slate-700 dark:text-stone-300">Utveckla dina färdigheter för jobbsökningen</p>
+          <p className="text-slate-700 dark:text-stone-300">{t('dashboard.learning.subtitle')}</p>
         </div>
         <Button onClick={refresh} variant="secondary" size="sm">
           <RefreshCw className="w-4 h-4" />
@@ -161,7 +166,7 @@ export default function LearningTab() {
 
       {/* Progress summary */}
       {progress && (
-        <ProgressSummary progress={progress} />
+        <ProgressSummary progress={progress} t={t} />
       )}
 
       {/* Daily tip */}
@@ -172,7 +177,7 @@ export default function LearningTab() {
       {/* Continue learning */}
       {inProgressArticles.length > 0 && (
         <Section
-          title="Fortsätt läsa"
+          title={t('dashboard.learning.continueReading')}
           icon={<Play className="text-amber-500" />}
         >
           <div className="space-y-3">
@@ -187,6 +192,7 @@ export default function LearningTab() {
                   article={article}
                   onClick={() => handleSelectArticle(article)}
                   showProgress
+                  t={t}
                 />
               </motion.div>
             ))}
@@ -196,13 +202,13 @@ export default function LearningTab() {
 
       {/* Recommended articles */}
       <Section
-        title={hasInterestProfile ? "Anpassat för dig" : "Rekommenderat för dig"}
+        title={hasInterestProfile ? t('dashboard.learning.personalizedForYou') : t('dashboard.learning.recommendedForYou')}
         icon={hasInterestProfile ? <Compass className="text-amber-500" /> : <Star className="text-teal-500" />}
       >
         {hasInterestProfile && (
           <p className="text-sm text-slate-700 dark:text-stone-300 -mt-2 mb-4 flex items-center gap-1">
             <Sparkles size={14} className="text-amber-500" />
-            Baserat på din intresseprofil
+            {t('dashboard.learning.basedOnProfile')}
           </p>
         )}
         <div className="grid gap-3 sm:grid-cols-2">
@@ -217,6 +223,7 @@ export default function LearningTab() {
                 article={article}
                 onClick={() => handleSelectArticle(article)}
                 showRelevance={hasInterestProfile}
+                t={t}
               />
             </motion.div>
           ))}
@@ -225,7 +232,7 @@ export default function LearningTab() {
 
       {/* Exercises */}
       <Section
-        title="Övningar"
+        title={t('dashboard.learning.exercises')}
         icon={<Dumbbell className="text-emerald-500" />}
       >
         <div className="grid gap-3 sm:grid-cols-2">
@@ -240,6 +247,7 @@ export default function LearningTab() {
                 exercise={exercise}
                 onClick={() => handleSelectExercise(exercise)}
                 showRelevance={hasInterestProfile}
+                t={t}
               />
             </motion.div>
           ))}
@@ -248,7 +256,7 @@ export default function LearningTab() {
 
       {/* Categories */}
       <Section
-        title="Kategorier"
+        title={t('dashboard.learning.categories')}
         icon={<Target className="text-blue-500" />}
       >
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -262,6 +270,7 @@ export default function LearningTab() {
               <CategoryCard
                 category={category}
                 onClick={() => handleSelectCategory(category)}
+                t={t}
               />
             </motion.div>
           ))}
@@ -283,33 +292,34 @@ interface ProgressSummaryProps {
     totalXP: number
     streak: number
   }
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function ProgressSummary({ progress }: ProgressSummaryProps) {
+function ProgressSummary({ progress, t }: ProgressSummaryProps) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <StatCard
         icon={<FileText className="text-teal-500" />}
         value={progress.articlesRead}
-        label="Artiklar lästa"
+        label={t('dashboard.learning.stats.articlesRead')}
         color="violet"
       />
       <StatCard
         icon={<Dumbbell className="text-emerald-500" />}
         value={progress.exercisesCompleted}
-        label="Övningar klara"
+        label={t('dashboard.learning.stats.exercisesCompleted')}
         color="emerald"
       />
       <StatCard
         icon={<Zap className="text-amber-500" />}
         value={progress.totalXP}
-        label="Total XP"
+        label={t('dashboard.learning.stats.totalXP')}
         color="amber"
       />
       <StatCard
         icon={<Flame className="text-orange-500" />}
         value={progress.streak}
-        label="Dagars streak"
+        label={t('dashboard.learning.stats.daysStreak')}
         color="orange"
       />
     </div>
@@ -397,9 +407,10 @@ interface ArticleCardProps {
   onClick: () => void
   showProgress?: boolean
   showRelevance?: boolean
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleCardProps) {
+function ArticleCard({ article, onClick, showProgress, showRelevance, t }: ArticleCardProps) {
   const difficultyColors = {
     easy: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
     medium: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
@@ -407,9 +418,9 @@ function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleC
   }
 
   const difficultyLabels = {
-    easy: 'Lätt',
-    medium: 'Medel',
-    detailed: 'Detaljerad'
+    easy: t('dashboard.learning.difficulty.easy'),
+    medium: t('dashboard.learning.difficulty.medium'),
+    detailed: t('dashboard.learning.difficulty.detailed')
   }
 
   const hasHighRelevance = showRelevance && article.relevanceScore && article.relevanceScore >= 60
@@ -460,7 +471,7 @@ function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleC
             {hasHighRelevance && (
               <span className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
                 <Sparkles size={12} />
-                Matchar din profil
+                {t('dashboard.learning.matchesProfile')}
               </span>
             )}
           </div>
@@ -472,7 +483,7 @@ function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleC
                   style={{ width: `${article.progress}%` }}
                 />
               </div>
-              <span className="text-xs text-slate-700 dark:text-stone-300 mt-1">{article.progress}% läst</span>
+              <span className="text-xs text-slate-700 dark:text-stone-300 mt-1">{t('dashboard.learning.percentRead', { percent: article.progress })}</span>
             </div>
           )}
         </div>
@@ -495,9 +506,10 @@ interface ExerciseCardProps {
   exercise: ExerciseWithProgress
   onClick: () => void
   showRelevance?: boolean
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function ExerciseCard({ exercise, onClick, showRelevance }: ExerciseCardProps) {
+function ExerciseCard({ exercise, onClick, showRelevance, t }: ExerciseCardProps) {
   const difficultyColors = {
     'Lätt': 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
     'Medel': 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
@@ -552,7 +564,7 @@ function ExerciseCard({ exercise, onClick, showRelevance }: ExerciseCardProps) {
             {hasHighRelevance && (
               <span className="text-xs text-amber-600 dark:text-amber-400 flex items-center gap-1">
                 <Sparkles size={12} />
-                Matchar din profil
+                {t('dashboard.learning.matchesProfile')}
               </span>
             )}
           </div>
@@ -575,9 +587,10 @@ function ExerciseCard({ exercise, onClick, showRelevance }: ExerciseCardProps) {
 interface CategoryCardProps {
   category: LearningCategory
   onClick: () => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function CategoryCard({ category, onClick }: CategoryCardProps) {
+function CategoryCard({ category, onClick, t }: CategoryCardProps) {
   const progress = category.articleCount > 0
     ? Math.round((category.completedCount / category.articleCount) * 100)
     : 0
@@ -594,7 +607,7 @@ function CategoryCard({ category, onClick }: CategoryCardProps) {
       <p className="text-sm text-slate-700 dark:text-stone-300 line-clamp-2 mb-3">{category.description}</p>
       <div className="flex items-center justify-between text-xs">
         <span className="text-slate-700 dark:text-stone-300">
-          {category.completedCount}/{category.articleCount} artiklar
+          {t('dashboard.learning.articlesProgress', { completed: category.completedCount, total: category.articleCount })}
         </span>
         {progress > 0 && (
           <span className="text-emerald-600 dark:text-emerald-400 font-medium">{progress}%</span>
@@ -622,9 +635,10 @@ interface CategoryViewProps {
   isLoading: boolean
   onBack: () => void
   onSelectArticle: (article: ArticleWithProgress) => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function CategoryView({ category, articles, isLoading, onBack, onSelectArticle }: CategoryViewProps) {
+function CategoryView({ category, articles, isLoading, onBack, onSelectArticle, t }: CategoryViewProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
@@ -640,7 +654,7 @@ function CategoryView({ category, articles, isLoading, onBack, onSelectArticle }
         className="flex items-center gap-2 text-slate-600 dark:text-stone-400 hover:text-slate-800 dark:hover:text-stone-200 transition-colors"
       >
         <ArrowLeft size={20} />
-        Tillbaka
+        {t('common.back')}
       </button>
 
       <div>
@@ -660,6 +674,7 @@ function CategoryView({ category, articles, isLoading, onBack, onSelectArticle }
               article={article}
               onClick={() => onSelectArticle(article)}
               showProgress
+              t={t}
             />
           </motion.div>
         ))}
@@ -676,9 +691,10 @@ interface ArticleViewProps {
   article: ArticleWithProgress
   onBack: () => void
   onComplete: () => Promise<boolean>
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function ArticleView({ article, onBack, onComplete }: ArticleViewProps) {
+function ArticleView({ article, onBack, onComplete, t }: ArticleViewProps) {
   const [isCompleting, setIsCompleting] = useState(false)
   const [isCompleted, setIsCompleted] = useState(article.isCompleted)
 
@@ -698,7 +714,7 @@ function ArticleView({ article, onBack, onComplete }: ArticleViewProps) {
         className="flex items-center gap-2 text-slate-600 dark:text-stone-400 hover:text-slate-800 dark:hover:text-stone-200 transition-colors"
       >
         <ArrowLeft size={20} />
-        Tillbaka
+        {t('common.back')}
       </button>
 
       <div className="bg-white dark:bg-stone-900 rounded-2xl border border-slate-200 dark:border-stone-700 overflow-hidden">
@@ -745,7 +761,7 @@ function ArticleView({ article, onBack, onComplete }: ArticleViewProps) {
             ) : (
               <Sparkles className="w-4 h-4 mr-2" />
             )}
-            {isCompleted ? 'Avklarad (+10 XP)' : 'Markera som läst (+10 XP)'}
+            {isCompleted ? t('dashboard.learning.completed') : t('dashboard.learning.markAsRead')}
           </Button>
         </div>
       </div>
@@ -760,9 +776,10 @@ function ArticleView({ article, onBack, onComplete }: ArticleViewProps) {
 interface ExerciseViewProps {
   exercise: ExerciseWithProgress
   onBack: () => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function ExerciseView({ exercise, onBack }: ExerciseViewProps) {
+function ExerciseView({ exercise, onBack, t }: ExerciseViewProps) {
   const [currentStep, setCurrentStep] = useState(0)
 
   return (
@@ -772,7 +789,7 @@ function ExerciseView({ exercise, onBack }: ExerciseViewProps) {
         className="flex items-center gap-2 text-slate-600 dark:text-stone-400 hover:text-slate-800 dark:hover:text-stone-200 transition-colors"
       >
         <ArrowLeft size={20} />
-        Tillbaka
+        {t('common.back')}
       </button>
 
       <div className="bg-white dark:bg-stone-900 rounded-2xl border border-slate-200 dark:border-stone-700 p-6">
@@ -793,7 +810,7 @@ function ExerciseView({ exercise, onBack }: ExerciseViewProps) {
         {/* Progress */}
         <div className="mb-6">
           <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-slate-600 dark:text-stone-400">Steg {currentStep + 1} av {exercise.steps.length}</span>
+            <span className="text-slate-600 dark:text-stone-400">{t('dashboard.learning.stepOf', { current: currentStep + 1, total: exercise.steps.length })}</span>
             <span className="text-slate-700 dark:text-stone-300">{Math.round(((currentStep + 1) / exercise.steps.length) * 100)}%</span>
           </div>
           <div className="h-2 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
@@ -842,16 +859,16 @@ function ExerciseView({ exercise, onBack }: ExerciseViewProps) {
             onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
             disabled={currentStep === 0}
           >
-            Föregående
+            {t('common.previous')}
           </Button>
           {currentStep < exercise.steps.length - 1 ? (
             <Button onClick={() => setCurrentStep(currentStep + 1)}>
-              Nästa steg
+              {t('dashboard.learning.nextStep')}
             </Button>
           ) : (
             <Button>
               <CheckCircle2 className="w-4 h-4 mr-2" />
-              Slutför (+20 XP)
+              {t('dashboard.learning.complete')}
             </Button>
           )}
         </div>

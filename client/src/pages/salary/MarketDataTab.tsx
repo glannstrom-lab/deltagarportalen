@@ -3,6 +3,7 @@
  * Features: interactive sorting, filtering, visual charts, search, expandable rows
  */
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { BarChart3, TrendingUp, MapPin, Building2, Users, ArrowUp, ArrowDown, Search, Filter, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -55,6 +56,7 @@ interface ExpandedRows {
 }
 
 export default function MarketDataTab() {
+  const { t } = useTranslation()
   const [selectedView, setSelectedView] = useState<'industry' | 'region'>('industry')
   const [searchTerm, setSearchTerm] = useState('')
   const [sortKey, setSortKey] = useState<SortKey>('median')
@@ -121,9 +123,9 @@ export default function MarketDataTab() {
             <BarChart3 className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Marknadsdata</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t('salary.marketData.title')}</h2>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Lönestatistik per bransch och region i Sverige. Data uppdateras kvartalsvis.
+              {t('salary.marketData.description')}
             </p>
           </div>
         </div>
@@ -142,7 +144,7 @@ export default function MarketDataTab() {
             )}
           >
             <Building2 className="w-4 h-4" />
-            Per bransch
+            {t('salary.marketData.byIndustry')}
           </button>
           <button
             onClick={() => setSelectedView('region')}
@@ -154,7 +156,7 @@ export default function MarketDataTab() {
             )}
           >
             <MapPin className="w-4 h-4" />
-            Per region
+            {t('salary.marketData.byRegion')}
           </button>
         </div>
 
@@ -163,7 +165,7 @@ export default function MarketDataTab() {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400" />
           <input
             type="text"
-            placeholder={selectedView === 'industry' ? 'Sök bransch...' : 'Sök region...'}
+            placeholder={selectedView === 'industry' ? t('salary.marketData.searchIndustry') : t('salary.marketData.searchRegion')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-10 pr-4 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 text-gray-800 dark:text-gray-100"
@@ -177,9 +179,9 @@ export default function MarketDataTab() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <Building2 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-              Medianlön per bransch
+              {t('salary.marketData.medianByIndustry')}
             </h3>
-            <span className="text-xs text-gray-700 dark:text-gray-300">{filteredAndSortedIndustries.length} resultat</span>
+            <span className="text-xs text-gray-700 dark:text-gray-300">{filteredAndSortedIndustries.length} {t('salary.marketData.results')}</span>
           </div>
 
           {/* Sort controls */}
@@ -193,7 +195,7 @@ export default function MarketDataTab() {
                   : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
-              Lön {sortKey === 'median' && (sortOrder === 'asc' ? '↑' : '↓')}
+              {t('salary.marketData.sortSalary')} {sortKey === 'median' && (sortOrder === 'asc' ? '↑' : '↓')}
             </button>
             <button
               onClick={() => toggleSort('change')}
@@ -204,7 +206,7 @@ export default function MarketDataTab() {
                   : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
-              Ökning {sortKey === 'change' && (sortOrder === 'asc' ? '↑' : '↓')}
+              {t('salary.marketData.sortGrowth')} {sortKey === 'change' && (sortOrder === 'asc' ? '↑' : '↓')}
             </button>
             <button
               onClick={() => toggleSort('name')}
@@ -215,7 +217,7 @@ export default function MarketDataTab() {
                   : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
-              Namn {sortKey === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+              {t('salary.marketData.sortName')} {sortKey === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
             </button>
           </div>
 
@@ -252,7 +254,7 @@ export default function MarketDataTab() {
                               industry.change >= 3 ? "text-teal-600 dark:text-teal-400" : "text-gray-700 dark:text-gray-400"
                             )}>
                               {industry.change >= 3 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3 opacity-30" />}
-                              {industry.change}%/år
+                              {industry.change}{t('salary.marketData.perYear')}
                             </span>
                             <span className="text-sm font-bold text-gray-900 dark:text-gray-100 min-w-fit">
                               {industry.median.toLocaleString('sv-SE')} kr
@@ -279,11 +281,11 @@ export default function MarketDataTab() {
                             <div className="px-3 pb-3 pt-1 bg-teal-50/30 dark:bg-teal-900/10 rounded-b-xl border-t border-teal-100/50 dark:border-teal-800/50">
                               <div className="grid grid-cols-2 gap-4">
                                 <div className="text-sm">
-                                  <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">Anställda i Sverige</p>
+                                  <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">{t('salary.marketData.employeesInSweden')}</p>
                                   <p className="font-semibold text-gray-900 dark:text-gray-100">~{industry.employees}</p>
                                 </div>
                                 <div className="text-sm">
-                                  <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">Årlig tillväxt</p>
+                                  <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">{t('salary.marketData.annualGrowth')}</p>
                                   <p className={cn(
                                     'font-semibold',
                                     industry.change >= 3 ? 'text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
@@ -293,10 +295,10 @@ export default function MarketDataTab() {
                                 </div>
                               </div>
                               <div className="mt-3 p-2 bg-white dark:bg-stone-700 rounded-lg border border-teal-100 dark:border-teal-800">
-                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Lönespektrum (uppskattning):</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('salary.marketData.salaryRange')}</p>
                                 <div className="flex justify-between text-xs text-gray-700 dark:text-gray-300">
-                                  <span>Min: ~{Math.round(industry.median * 0.8).toLocaleString('sv-SE')} kr</span>
-                                  <span>Max: ~{Math.round(industry.median * 1.3).toLocaleString('sv-SE')} kr</span>
+                                  <span>{t('salary.marketData.min')}: ~{Math.round(industry.median * 0.8).toLocaleString('sv-SE')} kr</span>
+                                  <span>{t('salary.marketData.max')}: ~{Math.round(industry.median * 1.3).toLocaleString('sv-SE')} kr</span>
                                 </div>
                               </div>
                             </div>
@@ -310,7 +312,7 @@ export default function MarketDataTab() {
             ) : (
               <div className="text-center py-8 text-gray-700 dark:text-gray-300">
                 <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>Ingen bransch hittad för "{searchTerm}"</p>
+                <p>{t('salary.marketData.noIndustryFound', { searchTerm })}</p>
               </div>
             )}
           </AnimatePresence>
@@ -323,9 +325,9 @@ export default function MarketDataTab() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-              Lönenivå per region
+              {t('salary.marketData.salaryByRegion')}
             </h3>
-            <span className="text-xs text-gray-700 dark:text-gray-300">{filteredRegions.length} resultat</span>
+            <span className="text-xs text-gray-700 dark:text-gray-300">{filteredRegions.length} {t('salary.marketData.results')}</span>
           </div>
 
           <div className="space-y-3">
@@ -348,7 +350,7 @@ export default function MarketDataTab() {
                       <div className="flex-1">
                         <p className="font-medium text-gray-900 dark:text-gray-100">{region.region}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                          {region.avgSalary.toLocaleString('sv-SE')} kr/månad
+                          {region.avgSalary.toLocaleString('sv-SE')} {t('salary.marketData.perMonth')}
                         </p>
                       </div>
                       <div className="flex items-center gap-4">
@@ -383,18 +385,18 @@ export default function MarketDataTab() {
                             {/* Cost of living */}
                             <div className="grid grid-cols-2 gap-4">
                               <div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Levnadskostnad</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.marketData.costOfLiving')}</p>
                                 <p className="font-semibold text-gray-900 dark:text-gray-100">{region.costOfLiving}</p>
                               </div>
                               <div>
-                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Snittlön</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.marketData.averageSalary')}</p>
                                 <p className="font-semibold text-gray-900 dark:text-gray-100">{region.avgSalary.toLocaleString('sv-SE')} kr</p>
                               </div>
                             </div>
 
                             {/* Premium visualization */}
                             <div>
-                              <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Lönepremie relativt genomsnitt</p>
+                              <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('salary.marketData.salaryPremium')}</p>
                               <div className="flex items-center gap-2">
                                 <div className="flex-1 h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
                                   <div
@@ -413,10 +415,10 @@ export default function MarketDataTab() {
                             <div className="p-3 bg-white dark:bg-stone-700 rounded-lg border border-stone-200 dark:border-stone-600 text-xs text-gray-600 dark:text-gray-400">
                               <p>
                                 {premiumNum > 0
-                                  ? `Högre löner än genomsnitt. Viktigt att väga detta mot levnadskostnaderna.`
+                                  ? t('salary.marketData.premiumHigher')
                                   : premiumNum < 0
-                                  ? `Lägre löner än genomsnitt, men ofta med lägre levnadskostnader.`
-                                  : `Genomsnittlig lön för Sverige.`
+                                  ? t('salary.marketData.premiumLower')
+                                  : t('salary.marketData.premiumAverage')
                                 }
                               </p>
                             </div>
@@ -430,7 +432,7 @@ export default function MarketDataTab() {
             ) : (
               <div className="text-center py-8 text-gray-700 dark:text-gray-300">
                 <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                <p>Ingen region hittad för "{searchTerm}"</p>
+                <p>{t('salary.marketData.noRegionFound', { searchTerm })}</p>
               </div>
             )}
           </div>
@@ -441,7 +443,7 @@ export default function MarketDataTab() {
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-          Kompetenser med hög lönepremie
+          {t('salary.marketData.highPremiumSkills')}
         </h3>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -452,7 +454,7 @@ export default function MarketDataTab() {
             >
               <p className="font-medium text-gray-800 dark:text-gray-100">{item.skill}</p>
               <p className="text-lg font-bold text-amber-700 dark:text-amber-400 mt-1">{item.premium}</p>
-              <p className="text-xs text-gray-700 dark:text-gray-400 mt-1">Efterfrågan: {item.demand}</p>
+              <p className="text-xs text-gray-700 dark:text-gray-400 mt-1">{t('salary.marketData.demand')}: {item.demand}</p>
             </div>
           ))}
         </div>
@@ -461,9 +463,7 @@ export default function MarketDataTab() {
       {/* Disclaimer */}
       <Card className="bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600">
         <p className="text-sm text-gray-700 dark:text-gray-300">
-          <strong>Om statistiken:</strong> Data baseras på branschrapporter, SCB-statistik och löneundersökningar.
-          Siffror är uppskattningar och kan variera beroende på specifik roll, företagsstorlek och individuella faktorer.
-          Senast uppdaterad: Q1 2026.
+          <strong>{t('salary.marketData.disclaimerTitle')}</strong> {t('salary.marketData.disclaimerText')}
         </p>
       </Card>
     </div>

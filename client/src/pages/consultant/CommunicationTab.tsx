@@ -141,10 +141,12 @@ function MeetingCard({
   meeting,
   onEdit,
   onCancel,
+  joinMeetingLabel,
 }: {
   meeting: Meeting
   onEdit: (meeting: Meeting) => void
   onCancel: (id: string) => void
+  joinMeetingLabel: string
 }) {
   const typeIcons = {
     video: Video,
@@ -228,7 +230,7 @@ function MeetingCard({
           className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white rounded-lg text-sm font-medium hover:from-amber-600 hover:to-orange-600 transition-colors"
         >
           <Video className="w-4 h-4" />
-          Anslut till möte
+          {joinMeetingLabel}
         </a>
       )}
     </Card>
@@ -241,11 +243,13 @@ function NewMessageDialog({
   onClose,
   participants,
   onSend,
+  t,
 }: {
   isOpen: boolean
   onClose: () => void
   participants: Participant[]
   onSend: (participantIds: string[], message: string) => void
+  t: (key: string) => string
 }) {
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([])
   const [message, setMessage] = useState('')
@@ -272,7 +276,7 @@ function NewMessageDialog({
       <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-lg">
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-            Nytt meddelande
+            {t('consultant.communication.newMessage')}
           </h3>
           <button
             onClick={onClose}
@@ -285,13 +289,13 @@ function NewMessageDialog({
           {/* Participant Selection */}
           <div>
             <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-              Till
+              {t('consultant.communication.to')}
             </label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
               <input
                 type="text"
-                placeholder="Sök deltagare..."
+                placeholder={t('consultant.communication.searchParticipants')}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className={cn(
@@ -362,12 +366,12 @@ function NewMessageDialog({
           {/* Message Input */}
           <div>
             <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-              Meddelande
+              {t('consultant.communication.message')}
             </label>
             <textarea
               value={message}
               onChange={e => setMessage(e.target.value)}
-              placeholder="Skriv ditt meddelande..."
+              placeholder={t('consultant.communication.writeMessage')}
               rows={4}
               className={cn(
                 'w-full px-4 py-3 rounded-xl',
@@ -381,14 +385,14 @@ function NewMessageDialog({
         </div>
         <div className="flex items-center justify-end gap-3 p-4 border-t border-stone-200 dark:border-stone-700">
           <Button variant="ghost" onClick={onClose}>
-            Avbryt
+            {t('common.cancel')}
           </Button>
           <Button
             onClick={handleSend}
             disabled={selectedParticipants.length === 0 || !message.trim()}
           >
             <Send className="w-4 h-4 mr-2" />
-            Skicka
+            {t('consultant.communication.send')}
           </Button>
         </div>
       </div>
@@ -600,7 +604,7 @@ export function CommunicationTab() {
   }
 
   const handleCancelMeeting = async (meetingId: string) => {
-    if (!confirm('Är du säker på att du vill avboka detta möte?')) return
+    if (!confirm(t('consultant.communication.confirmCancelMeeting'))) return
 
     try {
       const { error } = await supabase
@@ -673,7 +677,7 @@ export function CommunicationTab() {
           )}
         >
           <MessageSquare className="w-5 h-5" />
-          Meddelanden
+          {t('consultant.communication.messages')}
           {messages.filter(m => !m.isRead).length > 0 && (
             <span className="px-2 py-0.5 bg-amber-500 dark:bg-amber-600 text-white text-xs rounded-full">
               {messages.filter(m => !m.isRead).length}
@@ -690,7 +694,7 @@ export function CommunicationTab() {
           )}
         >
           <Calendar className="w-5 h-5" />
-          Möten
+          {t('consultant.communication.meetings')}
           {upcomingMeetings.length > 0 && (
             <span className="px-2 py-0.5 bg-emerald-600 text-white text-xs rounded-full">
               {upcomingMeetings.length}
@@ -716,14 +720,14 @@ export function CommunicationTab() {
                       'text-sm text-stone-900 dark:text-stone-100'
                     )}
                   >
-                    <option value="all">Alla meddelanden</option>
-                    <option value="unread">Olästa</option>
-                    <option value="starred">Stjärnmärkta</option>
+                    <option value="all">{t('consultant.communication.allMessages')}</option>
+                    <option value="unread">{t('consultant.communication.unread')}</option>
+                    <option value="starred">{t('consultant.communication.starred')}</option>
                   </select>
                 </div>
                 <Button size="sm" onClick={() => setShowNewMessage(true)}>
                   <Plus className="w-4 h-4 mr-1.5" />
-                  Nytt meddelande
+                  {t('consultant.communication.newMessage')}
                 </Button>
               </div>
             </div>
@@ -745,7 +749,7 @@ export function CommunicationTab() {
                 <div className="p-8 text-center">
                   <Inbox className="w-12 h-12 text-stone-300 dark:text-stone-500 mx-auto mb-3" />
                   <p className="text-stone-500 dark:text-stone-400">
-                    Inga meddelanden
+                    {t('consultant.communication.noMessages')}
                   </p>
                 </div>
               )}
@@ -756,7 +760,7 @@ export function CommunicationTab() {
           <div className="space-y-4">
             <Card className="p-4">
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
-                Snabbmeddelanden
+                {t('consultant.communication.quickMessages')}
               </h4>
               <div className="space-y-2">
                 <Button
@@ -765,7 +769,7 @@ export function CommunicationTab() {
                   onClick={() => setShowNewMessage(true)}
                 >
                   <Mail className="w-4 h-4 mr-2" />
-                  Påminnelse om möte
+                  {t('consultant.communication.meetingReminder')}
                 </Button>
                 <Button
                   variant="outline"
@@ -773,7 +777,7 @@ export function CommunicationTab() {
                   onClick={() => setShowNewMessage(true)}
                 >
                   <Bell className="w-4 h-4 mr-2" />
-                  Check-in meddelande
+                  {t('consultant.communication.checkInMessage')}
                 </Button>
                 <Button
                   variant="outline"
@@ -781,21 +785,21 @@ export function CommunicationTab() {
                   onClick={() => setShowNewMessage(true)}
                 >
                   <Star className="w-4 h-4 mr-2" />
-                  Grattis till framsteg
+                  {t('consultant.communication.congratsProgress')}
                 </Button>
               </div>
             </Card>
 
             <Card className="p-4">
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
-                Gruppmeddelande
+                {t('consultant.communication.groupMessage')}
               </h4>
               <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
-                Skicka samma meddelande till alla eller valda deltagare.
+                {t('consultant.communication.groupMessageDesc')}
               </p>
               <Button className="w-full" onClick={() => setShowNewMessage(true)}>
                 <Users className="w-4 h-4 mr-2" />
-                Skicka till grupp
+                {t('consultant.communication.sendToGroup')}
               </Button>
             </Card>
           </div>
@@ -807,11 +811,11 @@ export function CommunicationTab() {
           {/* Quick Actions */}
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              Kommande möten
+              {t('consultant.communication.upcomingMeetings')}
             </h3>
             <Button onClick={() => setShowMeetingDialog(true)}>
               <Plus className="w-4 h-4 mr-2" />
-              Boka nytt möte
+              {t('consultant.communication.bookNewMeeting')}
             </Button>
           </div>
 
@@ -821,7 +825,7 @@ export function CommunicationTab() {
           ) && (
             <div>
               <h4 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
-                Idag
+                {t('common.today')}
               </h4>
               <div className="space-y-3">
                 {upcomingMeetings
@@ -832,6 +836,7 @@ export function CommunicationTab() {
                       meeting={meeting}
                       onEdit={m => setShowMeetingDialog(true)}
                       onCancel={handleCancelMeeting}
+                      joinMeetingLabel={t('consultant.communication.joinMeeting')}
                     />
                   ))}
               </div>
@@ -841,7 +846,7 @@ export function CommunicationTab() {
           {/* This Week */}
           <div>
             <h4 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
-              Denna vecka
+              {t('consultant.communication.thisWeek')}
             </h4>
             <div className="space-y-3">
               {upcomingMeetings
@@ -852,6 +857,7 @@ export function CommunicationTab() {
                     meeting={meeting}
                     onEdit={m => setShowMeetingDialog(true)}
                     onCancel={handleCancelMeeting}
+                    joinMeetingLabel={t('consultant.communication.joinMeeting')}
                   />
                 ))}
             </div>
@@ -861,14 +867,14 @@ export function CommunicationTab() {
             <Card className="p-12 text-center">
               <Calendar className="w-16 h-16 text-stone-300 dark:text-stone-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
-                Inga kommande möten
+                {t('consultant.communication.noMeetings')}
               </h3>
               <p className="text-stone-500 dark:text-stone-400 mb-6">
-                Boka ett möte med en deltagare för att komma igång.
+                {t('consultant.communication.noMeetingsDesc')}
               </p>
               <Button onClick={() => setShowMeetingDialog(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                Boka möte
+                {t('consultant.communication.bookMeeting')}
               </Button>
             </Card>
           )}
@@ -881,6 +887,7 @@ export function CommunicationTab() {
         onClose={() => setShowNewMessage(false)}
         participants={participants}
         onSend={handleSendMessage}
+        t={t}
       />
 
       {/* Meeting Scheduler Dialog */}
@@ -934,12 +941,12 @@ export function CommunicationTab() {
               {/* Reply section */}
               <div className="pt-4 border-t border-stone-200 dark:border-stone-700">
                 <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-                  Svara
+                  {t('consultant.communication.reply')}
                 </label>
                 <textarea
                   value={replyContent}
                   onChange={e => setReplyContent(e.target.value)}
-                  placeholder="Skriv ditt svar..."
+                  placeholder={t('consultant.communication.writeReply')}
                   rows={3}
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
@@ -959,7 +966,7 @@ export function CommunicationTab() {
                   setReplyContent('')
                 }}
               >
-                Stäng
+                {t('common.close')}
               </Button>
               <Button
                 onClick={handleReplyToMessage}
@@ -968,12 +975,12 @@ export function CommunicationTab() {
                 {sendingMessage ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Skickar...
+                    {t('consultant.communication.sending')}
                   </>
                 ) : (
                   <>
                     <Reply className="w-4 h-4 mr-2" />
-                    Skicka svar
+                    {t('consultant.communication.sendReply')}
                   </>
                 )}
               </Button>

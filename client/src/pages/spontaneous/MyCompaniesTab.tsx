@@ -2,6 +2,7 @@
  * My Companies Tab - View and manage saved companies
  */
 import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Building2,
   MapPin,
@@ -33,83 +34,84 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/DropdownMenu'
 
-// Status configuration
+// Status configuration (labels are translation keys)
 const statusConfig: Record<SpontaneousStatus, {
-  label: string
+  labelKey: string
   icon: typeof Building2
   color: string
   bgColor: string
 }> = {
   saved: {
-    label: 'Sparad',
+    labelKey: 'spontaneous.status.saved',
     icon: Building2,
     color: 'text-slate-600',
     bgColor: 'bg-slate-100 dark:bg-slate-800',
   },
   to_contact: {
-    label: 'Att kontakta',
+    labelKey: 'spontaneous.status.to_contact',
     icon: Send,
     color: 'text-blue-600',
     bgColor: 'bg-blue-100 dark:bg-blue-900/30',
   },
   contacted: {
-    label: 'Kontaktad',
+    labelKey: 'spontaneous.status.contacted',
     icon: Send,
     color: 'text-purple-600',
     bgColor: 'bg-purple-100 dark:bg-purple-900/30',
   },
   waiting: {
-    label: 'Väntar svar',
+    labelKey: 'spontaneous.status.waiting',
     icon: Clock,
     color: 'text-amber-600',
     bgColor: 'bg-amber-100 dark:bg-amber-900/30',
   },
   response_positive: {
-    label: 'Positivt svar',
+    labelKey: 'spontaneous.status.response_positive',
     icon: CheckCircle,
     color: 'text-green-600',
     bgColor: 'bg-green-100 dark:bg-green-900/30',
   },
   response_negative: {
-    label: 'Avslag',
+    labelKey: 'spontaneous.status.response_negative',
     icon: XCircle,
     color: 'text-red-600',
     bgColor: 'bg-red-100 dark:bg-red-900/30',
   },
   no_response: {
-    label: 'Inget svar',
+    labelKey: 'spontaneous.status.no_response',
     icon: AlertCircle,
     color: 'text-orange-600',
     bgColor: 'bg-orange-100 dark:bg-orange-900/30',
   },
   archived: {
-    label: 'Arkiverad',
+    labelKey: 'spontaneous.status.archived',
     icon: Archive,
     color: 'text-slate-600',
     bgColor: 'bg-slate-100 dark:bg-slate-800',
   },
 }
 
-// Filter options
-const filterOptions: Array<{ value: SpontaneousStatus | 'all'; label: string }> = [
-  { value: 'all', label: 'Alla' },
-  { value: 'saved', label: 'Sparade' },
-  { value: 'to_contact', label: 'Att kontakta' },
-  { value: 'contacted', label: 'Kontaktade' },
-  { value: 'waiting', label: 'Väntar svar' },
-  { value: 'response_positive', label: 'Positivt svar' },
-  { value: 'response_negative', label: 'Avslag' },
-  { value: 'archived', label: 'Arkiverade' },
+// Filter options (labels are translation keys)
+const filterOptions: Array<{ value: SpontaneousStatus | 'all'; labelKey: string }> = [
+  { value: 'all', labelKey: 'common.all' },
+  { value: 'saved', labelKey: 'spontaneous.status.saved' },
+  { value: 'to_contact', labelKey: 'spontaneous.status.to_contact' },
+  { value: 'contacted', labelKey: 'spontaneous.status.contacted' },
+  { value: 'waiting', labelKey: 'spontaneous.status.waiting' },
+  { value: 'response_positive', labelKey: 'spontaneous.status.response_positive' },
+  { value: 'response_negative', labelKey: 'spontaneous.status.response_negative' },
+  { value: 'archived', labelKey: 'spontaneous.status.archived' },
 ]
 
 function StatusBadge({ status }: { status: SpontaneousStatus }) {
+  const { t } = useTranslation()
   const config = statusConfig[status]
   const Icon = config.icon
 
   return (
     <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bgColor} ${config.color}`}>
       <Icon className="w-3.5 h-3.5" />
-      {config.label}
+      {t(config.labelKey)}
     </span>
   )
 }
@@ -125,6 +127,7 @@ function CompanyCard({
   onDelete: () => void
   onUpdateNotes: (notes: string) => void
 }) {
+  const { t } = useTranslation()
   const [isEditingNotes, setIsEditingNotes] = useState(false)
   const [notesValue, setNotesValue] = useState(company.notes || '')
   const address = company.company_data?.address
@@ -154,7 +157,7 @@ function CompanyCard({
             <StatusBadge status={company.status} />
             {company.priority === 'high' && (
               <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
-                Hog prioritet
+                {t('spontaneous.highPriority')}
               </span>
             )}
           </div>
@@ -183,14 +186,14 @@ function CompanyCard({
           {company.outreach_date && (
             <p className="text-xs text-slate-600 dark:text-stone-400 mt-2 flex items-center gap-1">
               <Calendar className="w-3 h-3" />
-              Kontaktad: {new Date(company.outreach_date).toLocaleDateString('sv-SE')}
+              {t('spontaneous.contacted')}: {new Date(company.outreach_date).toLocaleDateString('sv-SE')}
             </p>
           )}
 
           {company.followup_date && (
             <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              Uppfoljning: {new Date(company.followup_date).toLocaleDateString('sv-SE')}
+              {t('spontaneous.followUp')}: {new Date(company.followup_date).toLocaleDateString('sv-SE')}
             </p>
           )}
 
@@ -203,12 +206,12 @@ function CompanyCard({
                   onChange={(e) => setNotesValue(e.target.value)}
                   className="w-full text-sm p-2 border rounded-md bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 text-slate-900 dark:text-stone-100"
                   rows={3}
-                  placeholder="Lagg till anteckningar..."
+                  placeholder={t('spontaneous.addNotesPlaceholder')}
                   autoFocus
                 />
                 <div className="flex gap-2">
-                  <Button size="sm" onClick={handleSaveNotes} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500">Spara</Button>
-                  <Button size="sm" variant="outline" onClick={() => setIsEditingNotes(false)} className="border-stone-200 dark:border-stone-700">Avbryt</Button>
+                  <Button size="sm" onClick={handleSaveNotes} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500">{t('common.save')}</Button>
+                  <Button size="sm" variant="outline" onClick={() => setIsEditingNotes(false)} className="border-stone-200 dark:border-stone-700">{t('common.cancel')}</Button>
                 </div>
               </div>
             ) : (
@@ -221,7 +224,7 @@ function CompanyCard({
                 ) : (
                   <p className="text-slate-500 dark:text-stone-500 italic flex items-center gap-1">
                     <Edit2 className="w-3 h-3" />
-                    Klicka for att lagga till anteckningar...
+                    {t('spontaneous.clickToAddNotes')}
                   </p>
                 )}
               </div>
@@ -239,37 +242,37 @@ function CompanyCard({
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={() => onUpdateStatus('to_contact')}>
               <Send className="w-4 h-4 mr-2" />
-              Markera: Att kontakta
+              {t('spontaneous.markAs')}: {t('spontaneous.status.to_contact')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onUpdateStatus('contacted')}>
               <Send className="w-4 h-4 mr-2" />
-              Markera: Kontaktad
+              {t('spontaneous.markAs')}: {t('spontaneous.status.contacted')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onUpdateStatus('waiting')}>
               <Clock className="w-4 h-4 mr-2" />
-              Markera: Väntar svar
+              {t('spontaneous.markAs')}: {t('spontaneous.status.waiting')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => onUpdateStatus('response_positive')}>
               <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
-              Positivt svar
+              {t('spontaneous.status.response_positive')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onUpdateStatus('response_negative')}>
               <XCircle className="w-4 h-4 mr-2 text-red-600" />
-              Avslag
+              {t('spontaneous.status.response_negative')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onUpdateStatus('no_response')}>
               <AlertCircle className="w-4 h-4 mr-2" />
-              Inget svar
+              {t('spontaneous.status.no_response')}
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => onUpdateStatus('archived')}>
               <Archive className="w-4 h-4 mr-2" />
-              Arkivera
+              {t('spontaneous.archive')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={onDelete} className="text-red-600">
               <Trash2 className="w-4 h-4 mr-2" />
-              Ta bort
+              {t('common.delete')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
@@ -333,6 +336,7 @@ function exportToCSV(companies: SpontaneousCompany[]) {
 }
 
 export default function MyCompaniesTab() {
+  const { t } = useTranslation()
   const [filter, setFilter] = useState<SpontaneousStatus | 'all'>('all')
   const { companies, isLoading, updateStatus, removeCompany, updateCompany } = useSpontaneousCompanies()
 
@@ -346,7 +350,7 @@ export default function MyCompaniesTab() {
   }
 
   const handleDelete = async (id: string) => {
-    if (confirm('Är du säker på att du vill ta bort detta företag?')) {
+    if (confirm(t('spontaneous.confirmDelete'))) {
       await removeCompany(id)
     }
   }
@@ -377,7 +381,7 @@ export default function MyCompaniesTab() {
               onClick={() => setFilter(option.value)}
               className={`flex-shrink-0 ${filter === option.value ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
             >
-              {option.label}
+              {t(option.labelKey)}
               {option.value !== 'all' && (
                 <span className="ml-1.5 text-xs opacity-70">
                   ({companies.filter(c => c.status === option.value).length})
@@ -395,7 +399,7 @@ export default function MyCompaniesTab() {
             className="flex-shrink-0 border-stone-200 dark:border-stone-700"
           >
             <Download className="w-4 h-4 mr-1.5" />
-            Exportera
+            {t('common.export')}
           </Button>
         )}
       </div>
@@ -405,12 +409,12 @@ export default function MyCompaniesTab() {
         <Card className="p-8 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <Building2 className="w-12 h-12 text-slate-300 dark:text-stone-600 mx-auto mb-4" />
           <h3 className="text-lg font-medium mb-2 text-slate-800 dark:text-stone-100">
-            {filter === 'all' ? 'Inga sparade foretag' : `Inga foretag med status "${filterOptions.find(o => o.value === filter)?.label}"`}
+            {filter === 'all' ? t('spontaneous.noSavedCompanies') : t('spontaneous.noCompaniesWithStatus', { status: t(filterOptions.find(o => o.value === filter)?.labelKey || '') })}
           </h3>
           <p className="text-slate-600 dark:text-stone-400">
             {filter === 'all'
-              ? 'Sok efter foretag och spara de du ar intresserad av.'
-              : 'Andra filter for att se andra foretag.'
+              ? t('spontaneous.searchAndSaveCompanies')
+              : t('spontaneous.changeFilter')
             }
           </p>
         </Card>

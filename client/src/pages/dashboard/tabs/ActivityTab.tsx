@@ -4,6 +4,7 @@
  */
 
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   Trophy, Flame, Star, Award, Target, Zap,
   Crown, TrendingUp, ChevronRight, Lock, CheckCircle2,
@@ -99,6 +100,7 @@ const milestoneRoutes: Record<string, string> = {
 }
 
 export default function ActivityTab() {
+  const { t } = useTranslation()
   const { data: gamification, isLoading: gamificationLoading } = useGamification()
   const { data: dashboardData, loading: dashboardLoading } = useDashboardData()
 
@@ -122,7 +124,7 @@ export default function ActivityTab() {
     totalPoints: 0,
     currentStreak: 0,
     level: 1,
-    levelTitle: 'Nybörjare',
+    levelTitle: t('dashboard.activity.levels.beginner'),
     nextLevelPoints: 100,
     milestonesCompleted: 0,
     totalMilestones: 0,
@@ -141,28 +143,28 @@ export default function ActivityTab() {
         <StatsCard
           icon={<Star size={24} />}
           value={stats.totalPoints}
-          label="Poäng"
+          label={t('dashboard.activity.stats.points')}
           color="amber"
           suffix=" XP"
         />
         <StatsCard
           icon={<Flame size={24} />}
           value={stats.currentStreak}
-          label="Streak"
+          label={t('dashboard.activity.stats.streak')}
           color="orange"
-          suffix=" dagar"
+          suffix={` ${t('dashboard.activity.stats.days')}`}
         />
         <StatsCard
           icon={<Trophy size={24} />}
           value={completedMilestones.length}
-          label="Milstolpar"
+          label={t('dashboard.activity.stats.milestones')}
           color="violet"
           suffix={` / ${milestonesWithRealData.length}`}
         />
         <StatsCard
           icon={<Award size={24} />}
           value={gamification?.userAchievements?.length || 0}
-          label="Badges"
+          label={t('dashboard.activity.stats.badges')}
           color="emerald"
           suffix={` / ${gamification?.achievements?.length || 0}`}
         />
@@ -174,6 +176,7 @@ export default function ActivityTab() {
         title={stats.levelTitle}
         currentPoints={stats.totalPoints}
         nextLevelPoints={stats.nextLevelPoints}
+        t={t}
       />
 
       {/* Active Milestones (In Progress) */}
@@ -181,11 +184,11 @@ export default function ActivityTab() {
         <section>
           <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <TrendingUp size={20} className="text-teal-500" />
-            Aktiva Milstolpar
+            {t('dashboard.activity.sections.activeMilestones')}
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
             {inProgressMilestones.slice(0, 4).map(milestone => (
-              <MilestoneCard key={milestone.id} milestone={milestone} />
+              <MilestoneCard key={milestone.id} milestone={milestone} progressLabel={t('dashboard.activity.progress')} />
             ))}
           </div>
         </section>
@@ -196,7 +199,7 @@ export default function ActivityTab() {
         <section>
           <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <Target size={20} className="text-stone-600" />
-            Tillgängliga Milstolpar
+            {t('dashboard.activity.sections.availableMilestones')}
           </h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {notStartedMilestones.slice(0, 6).map(milestone => (
@@ -211,7 +214,7 @@ export default function ActivityTab() {
         <section>
           <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <CheckCircle2 size={20} className="text-emerald-500" />
-            Avklarade Milstolpar ({completedMilestones.length})
+            {t('dashboard.activity.sections.completedMilestones', { count: completedMilestones.length })}
           </h2>
           <div className="flex flex-wrap gap-2">
             {completedMilestones.map(milestone => (
@@ -226,7 +229,7 @@ export default function ActivityTab() {
         <section>
           <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <Award size={20} className="text-amber-500" />
-            Upplåsta Badges
+            {t('dashboard.activity.sections.unlockedBadges')}
           </h2>
           <div className="flex flex-wrap gap-3">
             {gamification?.userAchievements?.map(ua => (
@@ -241,7 +244,7 @@ export default function ActivityTab() {
         <section>
           <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <Activity size={20} className="text-blue-500" />
-            Senaste Aktivitet
+            {t('dashboard.activity.sections.recentActivity')}
           </h2>
           <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 divide-y divide-stone-100 dark:divide-stone-700">
             {gamification?.activityLog?.slice(0, 5).map(activity => (
@@ -280,11 +283,12 @@ function StatsCard({ icon, value, label, color, suffix = '' }: {
   )
 }
 
-function LevelProgress({ level, title, currentPoints, nextLevelPoints }: {
+function LevelProgress({ level, title, currentPoints, nextLevelPoints, t }: {
   level: number
   title: string
   currentPoints: number
   nextLevelPoints: number
+  t: (key: string, options?: any) => string
 }) {
   const progress = nextLevelPoints > currentPoints
     ? Math.round((currentPoints / nextLevelPoints) * 100)
@@ -298,13 +302,13 @@ function LevelProgress({ level, title, currentPoints, nextLevelPoints }: {
             <Crown size={28} />
           </div>
           <div>
-            <p className="text-white/80 text-sm">Nivå {level}</p>
+            <p className="text-white/80 text-sm">{t('dashboard.activity.level', { level })}</p>
             <p className="text-xl font-bold">{title}</p>
           </div>
         </div>
         <div className="text-right">
           <p className="text-2xl font-bold">{currentPoints} XP</p>
-          <p className="text-white/80 text-sm">Nästa nivå: {nextLevelPoints} XP</p>
+          <p className="text-white/80 text-sm">{t('dashboard.activity.nextLevel', { points: nextLevelPoints })}</p>
         </div>
       </div>
       <div className="h-3 bg-white/20 rounded-full overflow-hidden">
@@ -333,7 +337,7 @@ interface Milestone {
   }
 }
 
-function MilestoneCard({ milestone }: { milestone: Milestone }) {
+function MilestoneCard({ milestone, progressLabel }: { milestone: Milestone; progressLabel: string }) {
   const m = milestone.milestone
   if (!m) return null
 
@@ -366,7 +370,7 @@ function MilestoneCard({ milestone }: { milestone: Milestone }) {
 
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-stone-500 dark:text-stone-400">Framsteg</span>
+          <span className="text-stone-500 dark:text-stone-400">{progressLabel}</span>
           <span className={cn("font-bold", colors.text)}>
             {milestone.current_progress} / {m.max_progress}
           </span>

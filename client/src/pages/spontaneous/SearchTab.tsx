@@ -2,6 +2,7 @@
  * Search Tab - Look up companies by organization number or AI search
  */
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Search,
   Building2,
@@ -40,6 +41,7 @@ import { showToast } from '@/components/Toast'
 
 // Company status badge based on raw data from Bolagsverket
 function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
+  const { t } = useTranslation()
   // Check for various status indicators
   const verksamOrg = rawData.verksamOrganisation as Record<string, unknown> | undefined
   const avregOrg = rawData.avregistreradOrganisation as Record<string, unknown> | undefined
@@ -50,7 +52,7 @@ function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
 
   // Check if company is deregistered
   if (avregOrg?.avregistreringsdatum) {
-    const orsak = avregOrsak?.klartext as string || 'Avregistrerat'
+    const orsak = avregOrsak?.klartext as string || t('spontaneous.companyStatus.deregistered')
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
         <XCircle className="w-3 h-3" />
@@ -62,7 +64,7 @@ function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
   // Check for ongoing liquidation/bankruptcy
   if (pagaendeLista && pagaendeLista.length > 0) {
     const process = pagaendeLista[0]
-    const processType = process.klartext as string || process.kod as string || 'Pågående process'
+    const processType = process.klartext as string || process.kod as string || t('spontaneous.companyStatus.ongoingProcess')
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
         <AlertTriangle className="w-3 h-3" />
@@ -76,7 +78,7 @@ function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
         <CheckCircle2 className="w-3 h-3" />
-        Aktivt
+        {t('spontaneous.companyStatus.active')}
       </span>
     )
   }
@@ -85,7 +87,7 @@ function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
   if (reklamsparr?.kod === 'NEJ') {
     return (
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-        Öppen för kontakt
+        {t('spontaneous.companyStatus.openForContact')}
       </span>
     )
   }
@@ -96,6 +98,7 @@ function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
 type SearchMode = 'orgnr' | 'ai'
 
 export default function SearchTab() {
+  const { t } = useTranslation()
   const [searchMode, setSearchMode] = useState<SearchMode>('ai')
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearching, setIsSearching] = useState(false)
@@ -150,10 +153,10 @@ export default function SearchTab() {
       a.click()
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
-      showToast.success('Årsredovisning nedladdad')
+      showToast.success(t('spontaneous.annualReportDownloaded'))
     } catch (err) {
       console.error('Error downloading document:', err)
-      showToast.error('Kunde inte ladda ner dokumentet')
+      showToast.error(t('spontaneous.downloadError'))
     } finally {
       setDownloadingDocId(null)
     }
@@ -164,7 +167,7 @@ export default function SearchTab() {
     const query = searchQuery.trim()
 
     if (query.length < 3) {
-      setSearchError('Ange minst 3 tecken för AI-sökning')
+      setSearchError(t('spontaneous.aiSearch.minChars'))
       return
     }
 
@@ -181,11 +184,11 @@ export default function SearchTab() {
       setAiSearchStats({ total: result.totalFound, verified: result.verified })
 
       if (result.companies.length === 0) {
-        setSearchError('Inga företag hittades. Prova en annan sökterm.')
+        setSearchError(t('spontaneous.aiSearch.noResults'))
       }
     } catch (err) {
       console.error('AI Search error:', err)
-      setSearchError(err instanceof Error ? err.message : 'Sökningen misslyckades')
+      setSearchError(err instanceof Error ? err.message : t('spontaneous.aiSearch.failed'))
     } finally {
       setIsSearching(false)
     }
@@ -194,7 +197,7 @@ export default function SearchTab() {
   // Save AI result company
   const handleSaveAICompany = async (company: AICompanyResult) => {
     if (!company.orgNumber) {
-      showToast.error('Kan inte spara företag utan organisationsnummer')
+      showToast.error(t('spontaneous.cannotSaveWithoutOrgNumber'))
       return
     }
 
@@ -213,7 +216,7 @@ export default function SearchTab() {
     const toSave = aiResults.filter(c => c.orgNumber && selectedForSave.has(c.orgNumber) && !isCompanySaved(c.orgNumber))
 
     if (toSave.length === 0) {
-      showToast.warning('Inga nya företag att spara')
+      showToast.warning(t('spontaneous.noNewCompaniesToSave'))
       return
     }
 
@@ -231,7 +234,7 @@ export default function SearchTab() {
 
     setSelectedForSave(new Set())
     setIsSearching(false)
-    showToast.success(`${saved} företag sparade`)
+    showToast.success(t('spontaneous.companiesSaved', { count: saved }))
   }
 
   // Toggle selection
@@ -266,12 +269,12 @@ export default function SearchTab() {
     const query = searchQuery.trim()
 
     if (!query) {
-      setSearchError('Ange ett organisationsnummer')
+      setSearchError(t('spontaneous.search.enterOrgNumber'))
       return
     }
 
     if (!isValidOrgNumber(query)) {
-      setSearchError('Ogiltigt format. Ange 10 siffror (t.ex. 5560747551 eller 556074-7551)')
+      setSearchError(t('spontaneous.search.invalidFormat'))
       return
     }
 
@@ -284,11 +287,11 @@ export default function SearchTab() {
       if (result) {
         setSearchResult(result)
       } else {
-        setSearchError('Företaget hittades inte i Bolagsverkets register')
+        setSearchError(t('spontaneous.search.notFound'))
       }
     } catch (err) {
       console.error('Search error:', err)
-      setSearchError('Något gick fel vid sökningen. Försök igen.')
+      setSearchError(t('spontaneous.search.error'))
     } finally {
       setIsSearching(false)
     }
@@ -322,7 +325,7 @@ export default function SearchTab() {
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
           <Search className="w-5 h-5 text-teal-500 dark:text-teal-400" />
-          Sok foretag
+          {t('spontaneous.search.title')}
         </h2>
 
         {/* Search Mode Toggle */}
@@ -334,7 +337,7 @@ export default function SearchTab() {
             className={`flex items-center gap-2 ${searchMode === 'ai' ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Sparkles className="w-4 h-4" />
-            AI-sokning
+            {t('spontaneous.search.aiSearch')}
           </Button>
           <Button
             variant={searchMode === 'orgnr' ? 'default' : 'outline'}
@@ -343,17 +346,16 @@ export default function SearchTab() {
             className={`flex items-center gap-2 ${searchMode === 'orgnr' ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Hash className="w-4 h-4" />
-            Org.nummer
+            {t('spontaneous.search.orgNumber')}
           </Button>
         </div>
 
         <p className="text-slate-600 dark:text-stone-400 mb-4">
           {searchMode === 'ai' ? (
-            <>Beskriv vilka företag du söker, t.ex. "IT-konsulter i Stockholm" eller "advokatbyråer som arbetar med arbetsrätt"</>
+            <>{t('spontaneous.search.aiDescription')}</>
           ) : (
             <>
-              Ange ett organisationsnummer för att hämta information.
-              Hitta org.nr på{' '}
+              {t('spontaneous.search.orgNumberDescription')}{' '}
               <a
                 href="https://allabolag.se"
                 target="_blank"
@@ -377,8 +379,8 @@ export default function SearchTab() {
             <Input
               type="text"
               placeholder={searchMode === 'ai'
-                ? "T.ex. 'Reklambyraer i Goteborg med 10-50 anstallda'"
-                : "Organisationsnummer (t.ex. 556074-7551)"
+                ? t('spontaneous.search.aiPlaceholder')
+                : t('spontaneous.search.placeholder')
               }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -397,10 +399,10 @@ export default function SearchTab() {
             ) : searchMode === 'ai' ? (
               <>
                 <Sparkles className="w-4 h-4 mr-1" />
-                Sok
+                {t('common.search')}
               </>
             ) : (
-              'Sok'
+              t('common.search')
             )}
           </Button>
         </div>
@@ -435,7 +437,7 @@ export default function SearchTab() {
                   <div className="flex items-start gap-2">
                     <MapPin className="w-4 h-4 text-slate-600 dark:text-stone-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">Adress</p>
+                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">{t('spontaneous.company.address')}</p>
                       <p className="text-sm text-slate-600 dark:text-stone-400">
                         {searchResult.address.street && <span>{searchResult.address.street}<br /></span>}
                         {searchResult.address.postalCode} {searchResult.address.city}
@@ -449,7 +451,7 @@ export default function SearchTab() {
                   <div className="flex items-start gap-2">
                     <Briefcase className="w-4 h-4 text-slate-600 dark:text-stone-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">Bransch (SNI)</p>
+                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">{t('spontaneous.company.industry')}</p>
                       <p className="text-sm text-slate-600 dark:text-stone-400">
                         {searchResult.sniCodes.slice(0, 3).map(sni => (
                           <span key={sni.code} className="block">
@@ -459,7 +461,7 @@ export default function SearchTab() {
                         ))}
                         {searchResult.sniCodes.length > 3 && (
                           <span className="text-xs text-slate-500 dark:text-stone-500">
-                            +{searchResult.sniCodes.length - 3} fler
+                            +{searchResult.sniCodes.length - 3} {t('common.more').toLowerCase()}
                           </span>
                         )}
                       </p>
@@ -472,7 +474,7 @@ export default function SearchTab() {
                   <div className="flex items-start gap-2">
                     <Calendar className="w-4 h-4 text-slate-600 dark:text-stone-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">Registrerat</p>
+                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">{t('spontaneous.company.registered')}</p>
                       <p className="text-sm text-slate-600 dark:text-stone-400">
                         {new Date(searchResult.registrationDate).toLocaleDateString('sv-SE')}
                       </p>
@@ -484,7 +486,7 @@ export default function SearchTab() {
               {/* Business Description */}
               {searchResult.businessDescription && (
                 <div className="mt-4">
-                  <p className="text-sm font-medium text-slate-800 dark:text-stone-200 mb-1">Verksamhet</p>
+                  <p className="text-sm font-medium text-slate-800 dark:text-stone-200 mb-1">{t('spontaneous.company.business')}</p>
                   <p className="text-sm text-slate-600 dark:text-stone-400">
                     {searchResult.businessDescription}
                   </p>
@@ -495,12 +497,12 @@ export default function SearchTab() {
               <div className="mt-6 pt-4 border-t border-stone-200 dark:border-stone-700">
                 <div className="flex items-center gap-2 mb-3">
                   <FileText className="w-4 h-4 text-teal-500 dark:text-teal-400" />
-                  <p className="text-sm font-medium text-slate-800 dark:text-stone-200">Arsredovisningar</p>
+                  <p className="text-sm font-medium text-slate-800 dark:text-stone-200">{t('spontaneous.annualReports')}</p>
                   {isLoadingDocs && <Loader2 className="w-4 h-4 animate-spin text-slate-600 dark:text-stone-400" />}
                 </div>
 
                 {!isLoadingDocs && documents.length === 0 && (
-                  <p className="text-sm text-slate-600 dark:text-stone-400">Inga arsredovisningar tillgangliga.</p>
+                  <p className="text-sm text-slate-600 dark:text-stone-400">{t('spontaneous.noAnnualReports')}</p>
                 )}
 
                 {documents.length > 0 && (
@@ -524,7 +526,7 @@ export default function SearchTab() {
                     ))}
                     {documents.length > 5 && (
                       <span className="text-xs text-slate-600 dark:text-stone-400 self-center">
-                        +{documents.length - 5} fler
+                        +{documents.length - 5} {t('common.more').toLowerCase()}
                       </span>
                     )}
                   </div>
@@ -545,7 +547,7 @@ export default function SearchTab() {
                 ) : (
                   <Plus className="w-4 h-4 mr-2" />
                 )}
-                {alreadySaved ? 'Redan sparad' : 'Spara foretag'}
+                {alreadySaved ? t('spontaneous.company.alreadySaved') : t('spontaneous.company.save')}
               </Button>
             </div>
           </div>
@@ -559,11 +561,11 @@ export default function SearchTab() {
             <div>
               <h3 className="text-lg font-semibold flex items-center gap-2 text-slate-800 dark:text-stone-100">
                 <Sparkles className="w-5 h-5 text-teal-500 dark:text-teal-400" />
-                Sokresultat
+                {t('spontaneous.searchResults')}
               </h3>
               {aiSearchStats && (
                 <p className="text-sm text-slate-600 dark:text-stone-400">
-                  {aiSearchStats.total} foretag hittade, {aiSearchStats.verified} verifierade mot Bolagsverket
+                  {t('spontaneous.aiSearch.resultsFound', { total: aiSearchStats.total, verified: aiSearchStats.verified })}
                 </p>
               )}
             </div>
@@ -576,7 +578,7 @@ export default function SearchTab() {
                 className="border-stone-200 dark:border-stone-700"
               >
                 <CheckCheck className="w-4 h-4 mr-1" />
-                Valj alla verifierade
+                {t('spontaneous.selectAllVerified')}
               </Button>
               {selectedForSave.size > 0 && (
                 <Button
@@ -586,7 +588,7 @@ export default function SearchTab() {
                   className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
                 >
                   <Save className="w-4 h-4 mr-1" />
-                  Spara valda ({selectedForSave.size})
+                  {t('spontaneous.saveSelected', { count: selectedForSave.size })}
                 </Button>
               )}
             </div>
@@ -629,23 +631,23 @@ export default function SearchTab() {
                         {company.verified ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
                             <CheckCircle2 className="w-3 h-3" />
-                            Verifierad
+                            {t('spontaneous.verified')}
                           </span>
                         ) : company.orgNumber ? (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
                             <AlertTriangle className="w-3 h-3" />
-                            Ej verifierad
+                            {t('spontaneous.notVerified')}
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 dark:bg-stone-800 dark:text-stone-400">
-                            Saknar org.nr
+                            {t('spontaneous.missingOrgNumber')}
                           </span>
                         )}
 
                         {isSaved && (
                           <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
                             <CheckCircle2 className="w-3 h-3" />
-                            Sparad
+                            {t('spontaneous.status.saved')}
                           </span>
                         )}
                       </div>
@@ -733,21 +735,21 @@ export default function SearchTab() {
 
       {/* Tips Section */}
       <Card className="p-6 bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800">
-        <h3 className="font-medium mb-2 text-slate-800 dark:text-stone-100">Tips for spontanansokningar</h3>
+        <h3 className="font-medium mb-2 text-slate-800 dark:text-stone-100">{t('spontaneous.tips.title')}</h3>
         <ul className="text-sm text-slate-600 dark:text-stone-400 space-y-1.5">
           {searchMode === 'ai' ? (
             <>
-              <li>Var specifik i din sokning: bransch, ort, storlek</li>
-              <li>Exempel: "Arkitektkontor i Malmo", "Startup inom fintech"</li>
-              <li>Verifierade foretag har bekraftade uppgifter fran Bolagsverket</li>
-              <li>Spara flera foretag samtidigt med kryssrutorna</li>
+              <li>{t('spontaneous.tips.aiTip1')}</li>
+              <li>{t('spontaneous.tips.aiTip2')}</li>
+              <li>{t('spontaneous.tips.aiTip3')}</li>
+              <li>{t('spontaneous.tips.aiTip4')}</li>
             </>
           ) : (
             <>
-              <li>Hitta org.nr pa <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-teal-500 dark:text-teal-400 hover:underline">allabolag.se</a></li>
-              <li>Valj foretag som matchar din kompetens</li>
-              <li>Researcha foretaget innan du kontaktar dem</li>
-              <li>Folj upp om du inte hort nagot inom 1-2 veckor</li>
+              <li>{t('spontaneous.tips.orgTip1')} <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-teal-500 dark:text-teal-400 hover:underline">allabolag.se</a></li>
+              <li>{t('spontaneous.tips.tip2')}</li>
+              <li>{t('spontaneous.tips.tip3')}</li>
+              <li>{t('spontaneous.tips.tip4')}</li>
             </>
           )}
         </ul>

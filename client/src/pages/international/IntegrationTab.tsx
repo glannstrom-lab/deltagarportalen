@@ -3,6 +3,7 @@
  * With cloud sync, notes, and target dates
  */
 import { useState, useEffect, useCallback } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Users,
   CheckCircle,
@@ -178,6 +179,7 @@ const CHECKLIST_CATEGORIES = [
 ]
 
 export default function IntegrationTab() {
+  const { t } = useTranslation()
   const [itemProgress, setItemProgress] = useState<Record<string, ItemProgress>>({})
   const [expandedItem, setExpandedItem] = useState<string | null>(null)
   const [editingNotes, setEditingNotes] = useState<string | null>(null)
@@ -293,10 +295,9 @@ export default function IntegrationTab() {
             <Users className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Integrationschecklista</h2>
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('international.integration.title')}</h2>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              Steg-för-steg guide för att etablera dig i Sverige.
-              Markera punkter som klara för att spara din progress.
+              {t('international.integration.description')}
             </p>
           </div>
         </div>
@@ -304,7 +305,7 @@ export default function IntegrationTab() {
         {/* Progress bar */}
         <div className="mt-4 pt-4 border-t border-sky-100 dark:border-sky-800">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-sky-800 dark:text-sky-200">Din framsteg</span>
+            <span className="text-sm font-medium text-sky-800 dark:text-sky-200">{t('international.integration.yourProgress')}</span>
             <span className="text-sm font-bold text-sky-700 dark:text-sky-300">{completedItems}/{totalItems} ({progress}%)</span>
           </div>
           <div className="h-3 bg-sky-100 dark:bg-sky-900/50 rounded-full overflow-hidden">
@@ -326,7 +327,7 @@ export default function IntegrationTab() {
             className="gap-2 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700"
           >
             <Download className="w-4 h-4" />
-            Exportera checklista
+            {t('international.integration.exportChecklist')}
           </Button>
         </div>
       </Card>

@@ -110,50 +110,52 @@ export function SettingsTab() {
   const [saved, setSaved] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
 
-  const defaultNotifications: NotificationSetting[] = [
+  const getDefaultNotifications = (): NotificationSetting[] => [
     {
       id: 'new_participant',
-      label: 'Ny deltagare tilldelad',
-      description: 'När en ny deltagare tilldelas dig',
+      label: t('consultant.settings.newParticipantAssigned'),
+      description: t('consultant.settings.whenAssigned'),
       enabled: true,
       channel: 'both',
     },
     {
       id: 'participant_inactive',
-      label: 'Inaktiv deltagare',
-      description: 'När en deltagare inte loggat in på 7 dagar',
+      label: t('consultant.settings.participantInactive'),
+      description: t('consultant.settings.notLoggedIn'),
       enabled: true,
       channel: 'email',
     },
     {
       id: 'goal_deadline',
-      label: 'Mål-deadline närmar sig',
-      description: 'När ett mål har deadline inom 2 dagar',
+      label: t('consultant.settings.goalDeadline'),
+      description: t('consultant.settings.deadlineWithinDays'),
       enabled: true,
       channel: 'both',
     },
     {
       id: 'new_message',
-      label: 'Nytt meddelande',
-      description: 'När du får ett meddelande från deltagare',
+      label: t('consultant.settings.newMessageReceived'),
+      description: t('consultant.settings.messageFromParticipant'),
       enabled: true,
       channel: 'push',
     },
     {
       id: 'cv_updated',
-      label: 'CV uppdaterat',
-      description: 'När en deltagare uppdaterar sitt CV',
+      label: t('consultant.settings.cvUpdated'),
+      description: t('consultant.settings.participantUpdatedCv'),
       enabled: false,
       channel: 'email',
     },
     {
       id: 'meeting_reminder',
-      label: 'Mötespåminnelse',
-      description: 'Påminnelse 1 timme före schemalagt möte',
+      label: t('consultant.settings.meetingReminder'),
+      description: t('consultant.settings.reminderBeforeMeeting'),
       enabled: true,
       channel: 'both',
     },
   ]
+
+  const defaultNotifications = getDefaultNotifications()
 
   const [notifications, setNotifications] = useState<NotificationSetting[]>(defaultNotifications)
 
@@ -384,9 +386,9 @@ export function SettingsTab() {
                     !notification.enabled && 'opacity-50'
                   )}
                 >
-                  <option value="email">Email</option>
-                  <option value="push">Push</option>
-                  <option value="both">Båda</option>
+                  <option value="email">{t('consultant.settings.email')}</option>
+                  <option value="push">{t('consultant.settings.push')}</option>
+                  <option value="both">{t('consultant.settings.both')}</option>
                 </select>
                 <Toggle
                   enabled={notification.enabled}

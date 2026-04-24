@@ -3,6 +3,7 @@
  * Features: Cloud sync, action buttons, progress tracking
  */
 import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
   ClipboardCheck,
@@ -160,6 +161,7 @@ const CATEGORIES = {
 }
 
 export default function BrandAuditTab() {
+  const { t } = useTranslation()
   const [answers, setAnswers] = useState<Record<string, boolean>>({})
   const [showResults, setShowResults] = useState(false)
   const [isLoading, setIsLoading] = useState(true)

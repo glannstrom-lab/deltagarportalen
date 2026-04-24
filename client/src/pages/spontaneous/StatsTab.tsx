@@ -1,6 +1,7 @@
 /**
  * Stats Tab - View statistics and upcoming follow-ups
  */
+import { useTranslation } from 'react-i18next'
 import {
   Building2,
   Send,
@@ -47,6 +48,7 @@ function StatCard({
 }
 
 export default function StatsTab() {
+  const { t } = useTranslation()
   const { stats, companies, upcomingFollowups, isLoading } = useSpontaneousCompanies()
 
   if (isLoading) {
@@ -69,32 +71,32 @@ export default function StatsTab() {
       <div>
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
           <TrendingUp className="w-5 h-5 text-teal-500 dark:text-teal-400" />
-          Oversikt
+          {t('spontaneous.stats.overview')}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard
-            label="Totalt sparade"
+            label={t('spontaneous.stats.totalSaved')}
             value={totalCompanies}
             icon={Building2}
             color="text-slate-600"
             bgColor="bg-slate-100 dark:bg-slate-800"
           />
           <StatCard
-            label="Kontaktade"
+            label={t('spontaneous.stats.contacted')}
             value={totalContacted}
             icon={Send}
             color="text-blue-600"
             bgColor="bg-blue-100 dark:bg-blue-900/30"
           />
           <StatCard
-            label="Fått svar"
+            label={t('spontaneous.stats.responses')}
             value={totalResponses}
             icon={CheckCircle}
             color="text-green-600"
             bgColor="bg-green-100 dark:bg-green-900/30"
           />
           <StatCard
-            label="Väntar svar"
+            label={t('spontaneous.stats.waiting')}
             value={stats.waiting}
             icon={Clock}
             color="text-amber-600"
@@ -108,14 +110,14 @@ export default function StatsTab() {
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <h3 className="font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
             <Target className="w-5 h-5 text-teal-500 dark:text-teal-400" />
-            Svarsfrekvens
+            {t('spontaneous.stats.responseRate')}
           </h3>
 
           {totalContacted > 0 ? (
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between text-sm mb-1 text-slate-700 dark:text-stone-300">
-                  <span>Fatt svar</span>
+                  <span>{t('spontaneous.stats.responses')}</span>
                   <span className="font-medium">{responseRate}%</span>
                 </div>
                 <div className="h-3 bg-slate-200 dark:bg-stone-700 rounded-full overflow-hidden">
@@ -128,7 +130,7 @@ export default function StatsTab() {
 
               <div>
                 <div className="flex justify-between text-sm mb-1 text-slate-700 dark:text-stone-300">
-                  <span>Positiva svar</span>
+                  <span>{t('spontaneous.stats.positiveRate')}</span>
                   <span className="font-medium">{positiveRate}%</span>
                 </div>
                 <div className="h-3 bg-slate-200 dark:bg-stone-700 rounded-full overflow-hidden">
@@ -141,19 +143,19 @@ export default function StatsTab() {
             </div>
           ) : (
             <p className="text-slate-600 dark:text-stone-400 text-sm">
-              Kontakta foretag for att se statistik har.
+              {t('spontaneous.stats.contactToSeeStats')}
             </p>
           )}
         </Card>
 
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <h3 className="font-semibold mb-4 text-slate-800 dark:text-stone-100">Status fordelning</h3>
+          <h3 className="font-semibold mb-4 text-slate-800 dark:text-stone-100">{t('spontaneous.stats.statusDistribution')}</h3>
           <div className="space-y-2">
-            <StatusRow label="Att kontakta" value={stats.to_contact} color="bg-blue-500" total={totalCompanies} />
-            <StatusRow label="Vantar svar" value={stats.waiting} color="bg-amber-500" total={totalCompanies} />
-            <StatusRow label="Positivt svar" value={stats.response_positive} color="bg-emerald-500" total={totalCompanies} />
-            <StatusRow label="Avslag" value={stats.response_negative} color="bg-red-500" total={totalCompanies} />
-            <StatusRow label="Inget svar" value={stats.no_response} color="bg-orange-500" total={totalCompanies} />
+            <StatusRow label={t('spontaneous.status.to_contact')} value={stats.to_contact} color="bg-blue-500" total={totalCompanies} />
+            <StatusRow label={t('spontaneous.status.waiting')} value={stats.waiting} color="bg-amber-500" total={totalCompanies} />
+            <StatusRow label={t('spontaneous.status.response_positive')} value={stats.response_positive} color="bg-emerald-500" total={totalCompanies} />
+            <StatusRow label={t('spontaneous.status.response_negative')} value={stats.response_negative} color="bg-red-500" total={totalCompanies} />
+            <StatusRow label={t('spontaneous.status.no_response')} value={stats.no_response} color="bg-orange-500" total={totalCompanies} />
           </div>
         </Card>
       </div>
@@ -162,7 +164,7 @@ export default function StatsTab() {
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
           <Calendar className="w-5 h-5 text-teal-500 dark:text-teal-400" />
-          Kommande uppfoljningar
+          {t('spontaneous.followups.title')}
         </h3>
 
         {upcomingFollowups.length > 0 ? (
@@ -183,7 +185,7 @@ export default function StatsTab() {
                     {company.followup_date && new Date(company.followup_date).toLocaleDateString('sv-SE')}
                   </p>
                   <p className="text-xs text-slate-600 dark:text-stone-400">
-                    {company.followup_date && getDaysUntil(new Date(company.followup_date))}
+                    {company.followup_date && getDaysUntil(new Date(company.followup_date), t)}
                   </p>
                 </div>
               </div>
@@ -191,19 +193,19 @@ export default function StatsTab() {
           </div>
         ) : (
           <p className="text-slate-600 dark:text-stone-400 text-sm">
-            Inga kommande uppfoljningar. Satt paminnelser nar du kontaktar foretag.
+            {t('spontaneous.followups.empty')}
           </p>
         )}
       </Card>
 
       {/* Tips */}
       <Card className="p-6 bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-sky-200 dark:border-sky-800">
-        <h3 className="font-semibold mb-2 text-slate-800 dark:text-stone-100">Tips for battre resultat</h3>
+        <h3 className="font-semibold mb-2 text-slate-800 dark:text-stone-100">{t('spontaneous.tips.title')}</h3>
         <ul className="text-sm text-slate-600 dark:text-stone-400 space-y-1.5">
-          <li>Sikta pa att kontakta 5-10 nya foretag per vecka</li>
-          <li>Folj alltid upp efter 1-2 veckor om du inte fatt svar</li>
-          <li>En svarsfrekvens pa 10-20% ar normalt for spontanansokningar</li>
-          <li>Kvalitet gar fore kvantitet - anpassa varje ansokan</li>
+          <li>{t('spontaneous.tips.tip1')}</li>
+          <li>{t('spontaneous.tips.tip4')}</li>
+          <li>{t('spontaneous.tips.tip3Stat')}</li>
+          <li>{t('spontaneous.tips.tip4Stat')}</li>
         </ul>
       </Card>
     </div>
@@ -238,13 +240,13 @@ function StatusRow({
   )
 }
 
-function getDaysUntil(date: Date): string {
+function getDaysUntil(date: Date, t: (key: string, options?: Record<string, unknown>) => string): string {
   const now = new Date()
   const diffTime = date.getTime() - now.getTime()
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
 
-  if (diffDays < 0) return 'Försenad'
-  if (diffDays === 0) return 'Idag'
-  if (diffDays === 1) return 'Imorgon'
-  return `Om ${diffDays} dagar`
+  if (diffDays < 0) return t('spontaneous.followups.overdue')
+  if (diffDays === 0) return t('spontaneous.followups.today')
+  if (diffDays === 1) return t('spontaneous.followups.tomorrow')
+  return t('spontaneous.followups.daysLeft', { days: diffDays })
 }

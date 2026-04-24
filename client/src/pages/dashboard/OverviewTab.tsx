@@ -3,6 +3,7 @@
  * Uppdaterad med riktig data, energianpassning och nya funktioner
  */
 import { useState, useCallback, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 // Energy store removed - widgets shown based on user progress only
@@ -77,6 +78,7 @@ const getDefaultWidgetSizes = (data: {
 }
 
 export default function OverviewTab() {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const { data, loading, error, refetch } = useDashboardData()
   // Widget-storlekar baserat på data
@@ -153,8 +155,8 @@ export default function OverviewTab() {
   if (error) {
     return (
       <ErrorState
-        title="Kunde inte ladda dashboard"
-        message="Något gick fel när vi hämtade din data. Försök igen."
+        title={t('dashboard.overview.errorTitle')}
+        message={t('dashboard.overview.errorMessage')}
         onRetry={refetch}
       />
     )
@@ -320,9 +322,9 @@ export default function OverviewTab() {
       {/* Empty state */}
       {visibleWidgets.length === 0 && (
         <div className="text-center py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-          <p className="text-slate-700 mb-1">Inga widgets synliga</p>
+          <p className="text-slate-700 mb-1">{t('dashboard.overview.noWidgets')}</p>
           <p className="text-sm text-slate-600">
-            Klicka på "Filter" för att välja vad du vill se
+            {t('dashboard.overview.noWidgetsHint')}
           </p>
         </div>
       )}

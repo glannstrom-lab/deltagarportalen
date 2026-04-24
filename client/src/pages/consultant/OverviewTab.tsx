@@ -382,18 +382,18 @@ export function OverviewTab() {
         }
 
         const activityDescriptions: Record<string, string> = {
-          GENERAL: 'Ny anteckning',
-          PROGRESS: 'Framsteg noterat',
-          CONCERN: 'Fråga uppmärksammad',
-          GOAL: 'Målrelaterad aktivitet',
+          GENERAL: t('consultant.overview.activity.newNote'),
+          PROGRESS: t('consultant.overview.activity.progressNoted'),
+          CONCERN: t('consultant.overview.activity.concernNoted'),
+          GOAL: t('consultant.overview.activity.goalRelated'),
         }
 
         const activities: RecentActivity[] = (journalData || []).map((entry: any) => ({
           id: entry.id,
           type: activityTypes[entry.category] || 'message',
-          participantName: entry.profiles ? `${entry.profiles.first_name} ${entry.profiles.last_name}` : 'Okänd',
+          participantName: entry.profiles ? `${entry.profiles.first_name} ${entry.profiles.last_name}` : t('common.unknown'),
           participantId: entry.participant_id,
-          description: activityDescriptions[entry.category] || 'Aktivitet',
+          description: activityDescriptions[entry.category] || t('consultant.overview.activity.activity'),
           timestamp: entry.created_at,
         }))
 
@@ -408,7 +408,7 @@ export function OverviewTab() {
               type: 'login' as const,
               participantName: `${p.first_name} ${p.last_name}`,
               participantId: p.participant_id,
-              description: 'Loggade in',
+              description: t('consultant.overview.activity.loggedIn'),
               timestamp: p.last_login!,
             }))
           setRecentActivity(recentLogins)
@@ -421,13 +421,13 @@ export function OverviewTab() {
           const categories: Record<string, number> = {}
           goalsData.forEach((g: any) => {
             // Extract category from title or use a default categorization
-            let category = 'Övrigt'
+            let category = t('consultant.overview.goalCategories.other')
             const title = g.title?.toLowerCase() || ''
-            if (title.includes('cv') || title.includes('resume')) category = 'CV-förbättring'
-            else if (title.includes('jobb') || title.includes('ansök')) category = 'Jobbansökningar'
-            else if (title.includes('intervju')) category = 'Intervjuträning'
-            else if (title.includes('nätverk') || title.includes('linkedin')) category = 'Nätverkande'
-            else if (title.includes('kompetens') || title.includes('kurs')) category = 'Kompetensutveckling'
+            if (title.includes('cv') || title.includes('resume')) category = t('consultant.overview.goalCategories.cvImprovement')
+            else if (title.includes('jobb') || title.includes('ansök') || title.includes('job') || title.includes('apply')) category = t('consultant.overview.goalCategories.jobApplications')
+            else if (title.includes('intervju') || title.includes('interview')) category = t('consultant.overview.goalCategories.interviewTraining')
+            else if (title.includes('nätverk') || title.includes('linkedin') || title.includes('network')) category = t('consultant.overview.goalCategories.networking')
+            else if (title.includes('kompetens') || title.includes('kurs') || title.includes('skill') || title.includes('course')) category = t('consultant.overview.goalCategories.skillsDevelopment')
 
             categories[category] = (categories[category] || 0) + 1
           })
@@ -720,19 +720,19 @@ export function OverviewTab() {
                 ) : (
                   <>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">CV-förbättring</span>
+                      <span className="text-sm text-stone-600 dark:text-stone-400">{t('consultant.overview.goalCategories.cvImprovement')}</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div className="h-full bg-teal-600 rounded-full" style={{ width: '75%' }} />
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">Jobbansökningar</span>
+                      <span className="text-sm text-stone-600 dark:text-stone-400">{t('consultant.overview.goalCategories.jobApplications')}</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div className="h-full bg-teal-600 rounded-full" style={{ width: '60%' }} />
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">Intervjuträning</span>
+                      <span className="text-sm text-stone-600 dark:text-stone-400">{t('consultant.overview.goalCategories.interviewTraining')}</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div className="h-full bg-teal-600 rounded-full" style={{ width: '45%' }} />
                       </div>

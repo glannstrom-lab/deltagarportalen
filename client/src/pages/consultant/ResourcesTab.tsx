@@ -75,20 +75,22 @@ function TemplateCard({
   onStar,
   onEdit,
   onDelete,
+  t,
 }: {
   template: GoalTemplate
   onUse: (template: GoalTemplate) => void
   onStar: (id: string) => void
   onEdit: (template: GoalTemplate) => void
   onDelete: (id: string) => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }) {
   const [showMenu, setShowMenu] = useState(false)
   const categoryLabels = {
-    cv: { label: 'CV', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
-    job_search: { label: 'Jobbsökning', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' },
-    interview: { label: 'Intervju', color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300' },
-    networking: { label: 'Nätverk', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' },
-    skills: { label: 'Kompetens', color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' },
+    cv: { label: t('consultant.resources.cv'), color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
+    job_search: { label: t('consultant.resources.jobSearch'), color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' },
+    interview: { label: t('consultant.resources.interview'), color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300' },
+    networking: { label: t('consultant.resources.networking'), color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' },
+    skills: { label: t('consultant.resources.skills'), color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' },
   }
 
   const category = categoryLabels[template.category]
@@ -126,14 +128,14 @@ function TemplateCard({
                     className="w-full px-3 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center gap-2"
                   >
                     <Edit2 className="w-4 h-4" />
-                    Redigera
+                    {t('common.edit')}
                   </button>
                   <button
                     onClick={() => { onDelete(template.id); setShowMenu(false) }}
                     className="w-full px-3 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center gap-2 text-red-600"
                   >
                     <Trash2 className="w-4 h-4" />
-                    Ta bort
+                    {t('common.delete')}
                   </button>
                 </div>
               )}
@@ -150,11 +152,11 @@ function TemplateCard({
       <div className="flex items-center justify-between">
         <span className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1">
           <Users className="w-3 h-3" />
-          Använd {template.usageCount} gånger
+          {t('consultant.resources.used', { count: template.usageCount })}
         </span>
         <Button size="sm" onClick={() => onUse(template)}>
           <Copy className="w-3 h-3 mr-1.5" />
-          Använd
+          {t('consultant.resources.use')}
         </Button>
       </div>
     </Card>
@@ -166,10 +168,12 @@ function JobCollectionCard({
   collection,
   onView,
   onShare,
+  t,
 }: {
   collection: JobCollection
   onView: (collection: JobCollection) => void
   onShare: (id: string) => void
+  t: (key: string) => string
 }) {
   return (
     <Card className="p-4 hover:shadow-md transition-shadow">
@@ -190,7 +194,7 @@ function JobCollectionCard({
       <div className="flex items-center gap-3 text-xs text-stone-500 dark:text-stone-400 mb-4">
         <span className="flex items-center gap-1">
           <Briefcase className="w-3 h-3" />
-          {collection.jobCount} jobb
+          {collection.jobCount} {t('consultant.resources.jobs')}
         </span>
         <span className="flex items-center gap-1">
           <Tag className="w-3 h-3" />
@@ -199,7 +203,7 @@ function JobCollectionCard({
       </div>
       <div className="flex items-center gap-2">
         <Button size="sm" variant="outline" className="flex-1" onClick={() => onView(collection)}>
-          Visa
+          {t('consultant.resources.view')}
         </Button>
         <Button size="sm" variant="ghost" onClick={() => onShare(collection.id)}>
           <Share2 className="w-4 h-4" />
@@ -213,15 +217,17 @@ function JobCollectionCard({
 function BestPracticeCard({
   practice,
   onView,
+  t,
 }: {
   practice: BestPractice
   onView: (practice: BestPractice) => void
+  t: (key: string) => string
 }) {
   const categoryLabels = {
-    onboarding: { label: 'Onboarding', icon: Users },
-    coaching: { label: 'Coachning', icon: Lightbulb },
-    followup: { label: 'Uppföljning', icon: Clock },
-    crisis: { label: 'Krishantering', icon: Target },
+    onboarding: { label: t('consultant.resources.practices.onboarding'), icon: Users },
+    coaching: { label: t('consultant.resources.practices.coaching'), icon: Lightbulb },
+    followup: { label: t('consultant.resources.practices.followup'), icon: Clock },
+    crisis: { label: t('consultant.resources.practices.crisis'), icon: Target },
   }
 
   const category = categoryLabels[practice.category]
@@ -244,7 +250,7 @@ function BestPracticeCard({
             {practice.description}
           </p>
           <span className="inline-flex items-center gap-1 mt-2 text-xs text-amber-600 dark:text-amber-400">
-            {practice.steps.length} steg
+            {practice.steps.length} {t('consultant.resources.steps')}
             <ChevronRight className="w-3 h-3" />
           </span>
         </div>
@@ -260,12 +266,14 @@ function TemplateFormDialog({
   template,
   onSave,
   saving,
+  t,
 }: {
   isOpen: boolean
   onClose: () => void
   template: GoalTemplate | null
   onSave: (data: Partial<GoalTemplate>) => void
   saving: boolean
+  t: (key: string) => string
 }) {
   const [formData, setFormData] = useState<Partial<GoalTemplate>>({
     title: '',
@@ -302,7 +310,7 @@ function TemplateFormDialog({
       <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
-            {template ? 'Redigera mall' : 'Skapa ny mall'}
+            {template ? t('consultant.resources.form.editTemplate') : t('consultant.resources.form.createTemplate')}
           </h3>
           <button
             onClick={onClose}
@@ -314,105 +322,105 @@ function TemplateFormDialog({
         <div className="p-4 space-y-4">
           <div>
             <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-              Titel
+              {t('consultant.resources.form.title')}
             </label>
             <input
               type="text"
               value={formData.title || ''}
               onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
               className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
-              placeholder="T.ex. Förbättra CV till 80+ poäng"
+              placeholder={t('consultant.resources.form.titlePlaceholder')}
             />
           </div>
           <div>
             <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-              Kategori
+              {t('consultant.resources.form.category')}
             </label>
             <select
               value={formData.category || 'cv'}
               onChange={e => setFormData(prev => ({ ...prev, category: e.target.value as GoalTemplate['category'] }))}
               className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 text-stone-900 dark:text-stone-100"
             >
-              <option value="cv">CV</option>
-              <option value="job_search">Jobbsökning</option>
-              <option value="interview">Intervju</option>
-              <option value="networking">Nätverk</option>
-              <option value="skills">Kompetens</option>
+              <option value="cv">{t('consultant.resources.cv')}</option>
+              <option value="job_search">{t('consultant.resources.jobSearch')}</option>
+              <option value="interview">{t('consultant.resources.interview')}</option>
+              <option value="networking">{t('consultant.resources.networking')}</option>
+              <option value="skills">{t('consultant.resources.skills')}</option>
             </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
-              Beskrivning
+              {t('consultant.resources.form.description')}
             </label>
             <textarea
               value={formData.description || ''}
               onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
               className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100 resize-none"
               rows={2}
-              placeholder="Kort beskrivning av mallen"
+              placeholder={t('consultant.resources.form.descriptionPlaceholder')}
             />
           </div>
           <div className="border-t border-stone-200 dark:border-stone-700 pt-4">
-            <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-3">SMART-mål</h4>
+            <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-3">{t('consultant.resources.form.smartGoals')}</h4>
             <div className="space-y-3">
               <div>
                 <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
-                  <strong>S</strong>pecifikt
+                  <strong>S</strong>{t('consultant.resources.form.specific')}
                 </label>
                 <input
                   type="text"
                   value={formData.specific || ''}
                   onChange={e => setFormData(prev => ({ ...prev, specific: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
-                  placeholder="Vad exakt ska uppnås?"
+                  placeholder={t('consultant.resources.form.specificPlaceholder')}
                 />
               </div>
               <div>
                 <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
-                  <strong>M</strong>ätbart
+                  <strong>M</strong>{t('consultant.resources.form.measurable')}
                 </label>
                 <input
                   type="text"
                   value={formData.measurable || ''}
                   onChange={e => setFormData(prev => ({ ...prev, measurable: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
-                  placeholder="Hur mäts framgång?"
+                  placeholder={t('consultant.resources.form.measurablePlaceholder')}
                 />
               </div>
               <div>
                 <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
-                  <strong>A</strong>chievable (Uppnåeligt)
+                  <strong>A</strong>{t('consultant.resources.form.achievable')}
                 </label>
                 <input
                   type="text"
                   value={formData.achievable || ''}
                   onChange={e => setFormData(prev => ({ ...prev, achievable: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
-                  placeholder="Hur är det möjligt att uppnå?"
+                  placeholder={t('consultant.resources.form.achievablePlaceholder')}
                 />
               </div>
               <div>
                 <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
-                  <strong>R</strong>elevant
+                  <strong>R</strong>{t('consultant.resources.form.relevant')}
                 </label>
                 <input
                   type="text"
                   value={formData.relevant || ''}
                   onChange={e => setFormData(prev => ({ ...prev, relevant: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
-                  placeholder="Varför är detta viktigt?"
+                  placeholder={t('consultant.resources.form.relevantPlaceholder')}
                 />
               </div>
               <div>
                 <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
-                  <strong>T</strong>idsbestämt
+                  <strong>T</strong>{t('consultant.resources.form.timeBound')}
                 </label>
                 <input
                   type="text"
                   value={formData.timeBound || ''}
                   onChange={e => setFormData(prev => ({ ...prev, timeBound: e.target.value }))}
                   className="w-full px-3 py-2 rounded-lg bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 focus:border-amber-500 dark:focus:border-amber-400 text-stone-900 dark:text-stone-100"
-                  placeholder="När ska det vara klart?"
+                  placeholder={t('consultant.resources.form.timeBoundPlaceholder')}
                 />
               </div>
             </div>
@@ -420,11 +428,11 @@ function TemplateFormDialog({
         </div>
         <div className="flex items-center justify-end gap-3 p-4 border-t border-stone-200 dark:border-stone-700">
           <Button variant="outline" onClick={onClose}>
-            Avbryt
+            {t('common.cancel')}
           </Button>
           <Button onClick={() => onSave(formData)} disabled={saving || !formData.title}>
             {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
-            {template ? 'Spara ändringar' : 'Skapa mall'}
+            {template ? t('consultant.resources.form.saveChanges') : t('consultant.resources.form.createTemplate')}
           </Button>
         </div>
       </div>
@@ -438,11 +446,13 @@ function TemplateDetailDialog({
   onClose,
   template,
   onUseForParticipant,
+  t,
 }: {
   isOpen: boolean
   onClose: () => void
   template: GoalTemplate | null
   onUseForParticipant: () => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }) {
   if (!isOpen || !template) return null
 
@@ -463,41 +473,41 @@ function TemplateDetailDialog({
         <div className="p-4 space-y-4">
           <p className="text-stone-600 dark:text-stone-400">{template.description}</p>
           <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-4 space-y-3">
-            <h4 className="font-medium text-stone-900 dark:text-stone-100">SMART-mål</h4>
+            <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('consultant.resources.form.smartGoals')}</h4>
             <div className="space-y-2 text-sm">
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">S - Specifikt:</span>
+                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.specific')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.specific}</span>
               </div>
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">M - Mätbart:</span>
+                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.measurable')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.measurable}</span>
               </div>
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">A - Uppnåeligt:</span>
+                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.achievable')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.achievable}</span>
               </div>
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">R - Relevant:</span>
+                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.relevant')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.relevant}</span>
               </div>
               <div>
-                <span className="font-medium text-amber-600 dark:text-amber-400">T - Tidsbestämt:</span>
+                <span className="font-medium text-amber-600 dark:text-amber-400">{t('consultant.resources.detail.timeBound')}:</span>
                 <span className="text-stone-600 dark:text-stone-400 ml-2">{template.timeBound}</span>
               </div>
             </div>
           </div>
           <p className="text-xs text-stone-500 dark:text-stone-400">
-            Använd {template.usageCount} gånger
+            {t('consultant.resources.used', { count: template.usageCount })}
           </p>
         </div>
         <div className="flex items-center justify-end gap-3 p-4 border-t border-stone-200 dark:border-stone-700">
           <Button variant="outline" onClick={onClose}>
-            Stäng
+            {t('common.close')}
           </Button>
           <Button onClick={onUseForParticipant}>
             <Copy className="w-4 h-4 mr-2" />
-            Använd för deltagare
+            {t('consultant.resources.useForParticipant')}
           </Button>
         </div>
       </div>
@@ -510,10 +520,12 @@ function BestPracticeDetailDialog({
   isOpen,
   onClose,
   practice,
+  t,
 }: {
   isOpen: boolean
   onClose: () => void
   practice: BestPractice | null
+  t: (key: string) => string
 }) {
   if (!isOpen || !practice) return null
 
@@ -534,7 +546,7 @@ function BestPracticeDetailDialog({
         <div className="p-4 space-y-4">
           <p className="text-stone-600 dark:text-stone-400">{practice.description}</p>
           <div className="space-y-3">
-            <h4 className="font-medium text-stone-900 dark:text-stone-100">Steg</h4>
+            <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('consultant.resources.stepsTitle')}</h4>
             <ol className="space-y-2">
               {practice.steps.map((step, index) => (
                 <li key={index} className="flex items-start gap-3">
@@ -549,7 +561,7 @@ function BestPracticeDetailDialog({
         </div>
         <div className="flex items-center justify-end p-4 border-t border-stone-200 dark:border-stone-700">
           <Button onClick={onClose}>
-            Stäng
+            {t('common.close')}
           </Button>
         </div>
       </div>
@@ -758,7 +770,7 @@ export function ResourcesTab() {
 
   const handleDeleteTemplate = async (id: string) => {
     if (id.startsWith('default-')) return
-    if (!confirm('Är du säker på att du vill ta bort denna mall?')) return
+    if (!confirm(t('consultant.resources.confirmDelete'))) return
 
     try {
       await supabase
@@ -907,7 +919,7 @@ export function ResourcesTab() {
           )}
         >
           <Target className="w-5 h-5" />
-          Målmallar
+          {t('consultant.resources.goalTemplates')}
         </button>
         <button
           onClick={() => setActiveSection('collections')}
@@ -919,7 +931,7 @@ export function ResourcesTab() {
           )}
         >
           <Briefcase className="w-5 h-5" />
-          Jobbsamlingar
+          {t('consultant.resources.jobCollections')}
         </button>
         <button
           onClick={() => setActiveSection('practices')}
@@ -931,7 +943,7 @@ export function ResourcesTab() {
           )}
         >
           <BookOpen className="w-5 h-5" />
-          Best Practices
+          {t('consultant.resources.bestPractices')}
         </button>
       </div>
 
@@ -944,7 +956,7 @@ export function ResourcesTab() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
               <input
                 type="text"
-                placeholder="Sök mallar..."
+                placeholder={t('consultant.resources.searchTemplates')}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className={cn(
@@ -965,16 +977,16 @@ export function ResourcesTab() {
                 'text-stone-900 dark:text-stone-100'
               )}
             >
-              <option value="all">Alla kategorier</option>
-              <option value="cv">CV</option>
-              <option value="job_search">Jobbsökning</option>
-              <option value="interview">Intervju</option>
-              <option value="networking">Nätverk</option>
-              <option value="skills">Kompetens</option>
+              <option value="all">{t('consultant.resources.allCategories')}</option>
+              <option value="cv">{t('consultant.resources.cv')}</option>
+              <option value="job_search">{t('consultant.resources.jobSearch')}</option>
+              <option value="interview">{t('consultant.resources.interview')}</option>
+              <option value="networking">{t('consultant.resources.networking')}</option>
+              <option value="skills">{t('consultant.resources.skills')}</option>
             </select>
             <Button onClick={() => { setEditingTemplate(null); setShowTemplateForm(true) }}>
               <Plus className="w-4 h-4 mr-2" />
-              Skapa mall
+              {t('consultant.resources.createTemplate')}
             </Button>
           </div>
 
@@ -992,8 +1004,9 @@ export function ResourcesTab() {
                   template={template}
                   onUse={handleUseTemplate}
                   onStar={handleStarTemplate}
-                  onEdit={(t) => { setEditingTemplate(t); setShowTemplateForm(true) }}
+                  onEdit={(tmpl) => { setEditingTemplate(tmpl); setShowTemplateForm(true) }}
                   onDelete={handleDeleteTemplate}
+                  t={t}
                 />
               ))}
             </div>
@@ -1003,7 +1016,7 @@ export function ResourcesTab() {
             <Card className="p-12 text-center">
               <Target className="w-12 h-12 text-stone-300 dark:text-stone-500 mx-auto mb-4" />
               <p className="text-stone-500 dark:text-stone-400">
-                Inga mallar matchade din sökning
+                {t('consultant.resources.noTemplatesFound')}
               </p>
             </Card>
           )}
@@ -1015,11 +1028,11 @@ export function ResourcesTab() {
         <>
           <div className="flex items-center justify-between">
             <p className="text-stone-500 dark:text-stone-400">
-              Skapa och dela jobbsamlingar med dina deltagare
+              {t('consultant.resources.createAndShare')}
             </p>
             <Button onClick={() => alert('Funktion för att skapa jobbsamlingar kommer snart!')}>
               <Plus className="w-4 h-4 mr-2" />
-              Ny samling
+              {t('consultant.resources.newCollection')}
             </Button>
           </div>
 
@@ -1030,6 +1043,7 @@ export function ResourcesTab() {
                 collection={collection}
                 onView={() => alert(`Visa samling: ${collection.name}\n\nDenna funktion kommer snart!`)}
                 onShare={() => alert(`Dela samling med deltagare:\n${collection.name}\n\nDenna funktion kommer snart!`)}
+                t={t}
               />
             ))}
           </div>
@@ -1040,7 +1054,7 @@ export function ResourcesTab() {
       {activeSection === 'practices' && (
         <>
           <p className="text-stone-500 dark:text-stone-400">
-            Beprövade metoder och checklistor för effektivt konsulentarbete
+            {t('consultant.resources.provenMethods')}
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -1049,6 +1063,7 @@ export function ResourcesTab() {
                 key={practice.id}
                 practice={practice}
                 onView={(p) => { setSelectedPractice(p); setShowPracticeDetail(true) }}
+                t={t}
               />
             ))}
           </div>
@@ -1062,6 +1077,7 @@ export function ResourcesTab() {
         template={editingTemplate}
         onSave={handleSaveTemplate}
         saving={saving}
+        t={t}
       />
 
       {/* Template Detail Dialog */}
@@ -1070,6 +1086,7 @@ export function ResourcesTab() {
         onClose={() => { setShowTemplateDetail(false); setSelectedTemplate(null) }}
         template={selectedTemplate}
         onUseForParticipant={handleUseForParticipant}
+        t={t}
       />
 
       {/* Best Practice Detail Dialog */}
@@ -1077,6 +1094,7 @@ export function ResourcesTab() {
         isOpen={showPracticeDetail}
         onClose={() => { setShowPracticeDetail(false); setSelectedPractice(null) }}
         practice={selectedPractice}
+        t={t}
       />
     </div>
   )

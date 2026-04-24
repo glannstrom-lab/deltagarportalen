@@ -1,5 +1,6 @@
 {
   "common": {
+    "export": "Export",
     "save": "Save",
     "saveChanges": "Save changes",
     "cancel": "Cancel",
@@ -63,7 +64,8 @@
     "passed": "Passed",
     "missing": "Missing",
     "needsAttention": "Needs attention",
-    "today": "Today"
+    "today": "Today",
+    "refresh": "Refresh"
   },
   "pageTabs": {
     "cv": {
@@ -470,6 +472,94 @@
       "knowledge": {
         "title": "Knowledge base",
         "tipsGuides": "Tips and guides"
+      }
+    },
+    "overview": {
+      "errorTitle": "Could not load dashboard",
+      "errorMessage": "Something went wrong when fetching your data. Please try again.",
+      "noWidgets": "No widgets visible",
+      "noWidgetsHint": "Click on \"Filter\" to choose what you want to see"
+    },
+    "activity": {
+      "stats": {
+        "points": "Points",
+        "streak": "Streak",
+        "days": "days",
+        "milestones": "Milestones",
+        "badges": "Badges"
+      },
+      "sections": {
+        "activeMilestones": "Active Milestones",
+        "availableMilestones": "Available Milestones",
+        "completedMilestones": "Completed Milestones ({{count}})",
+        "unlockedBadges": "Unlocked Badges",
+        "recentActivity": "Recent Activity"
+      },
+      "level": "Level {{level}}",
+      "nextLevel": "Next level: {{points}} XP",
+      "progress": "Progress",
+      "levels": {
+        "beginner": "Beginner"
+      }
+    },
+    "insights": {
+      "analyzing": "Analyzing your patterns...",
+      "errorTitle": "Could not load insights",
+      "title": "My Insights",
+      "subtitle": "Analysis based on your activity",
+      "activitiesThisWeek": "Activities this week",
+      "streak": "Streak",
+      "days": "{{count}} days",
+      "bestTime": "Best time",
+      "averageMood": "Average mood",
+      "activityLast14Days": "Activity last 14 days",
+      "activitiesCount": "{{count}} activities",
+      "activityBreakdown": "Activity breakdown",
+      "noActivityYet": "No activity recorded yet",
+      "weeklyProgress": "Weekly progress",
+      "week": "Week {{number}}",
+      "applicationsCount": "{{count}} applications",
+      "exercisesCount": "{{count}} exercises",
+      "applications": "Applications",
+      "exercises": "Exercises",
+      "personalRecommendations": "Personal recommendations",
+      "yourPatterns": "Your patterns",
+      "patterns": {
+        "mostActiveDay": "You are most active on {{day}}s",
+        "productiveTime": "Your most productive time is {{time}}",
+        "activitiesLast30Days": "You have completed {{count}} activities in the last 30 days",
+        "conversionRate": "{{rate}}% of your applications lead to interviews"
+      }
+    },
+    "learning": {
+      "loading": "Loading learning...",
+      "errorTitle": "Could not load learning",
+      "title": "Learning",
+      "subtitle": "Develop your skills for job searching",
+      "continueReading": "Continue reading",
+      "personalizedForYou": "Personalized for you",
+      "recommendedForYou": "Recommended for you",
+      "basedOnProfile": "Based on your interest profile",
+      "exercises": "Exercises",
+      "categories": "Categories",
+      "matchesProfile": "Matches your profile",
+      "percentRead": "{{percent}}% read",
+      "articlesProgress": "{{completed}}/{{total}} articles",
+      "completed": "Completed (+10 XP)",
+      "markAsRead": "Mark as read (+10 XP)",
+      "stepOf": "Step {{current}} of {{total}}",
+      "nextStep": "Next step",
+      "complete": "Complete (+20 XP)",
+      "stats": {
+        "articlesRead": "Articles read",
+        "exercisesCompleted": "Exercises completed",
+        "totalXP": "Total XP",
+        "daysStreak": "Days streak"
+      },
+      "difficulty": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "detailed": "Detailed"
       }
     }
   },
@@ -1431,6 +1521,28 @@
       "description": "These haven't been updated in 7+ days."
     }
   },
+  "journey": {
+    "title": "My Job Journey",
+    "subtitle": "Follow your path to employment",
+    "loading": "Loading your job journey...",
+    "errorLoading": "Could not load your journey",
+    "welcomeTitle": "Welcome to My Job Journey",
+    "welcomeDescription": "Here you can follow your path to employment. We guide you step by step through the job search process and celebrate your progress along the way.",
+    "startJourney": "Start your journey",
+    "tabs": {
+      "overview": "Overview",
+      "goals": "Goals",
+      "achievements": "Achievements",
+      "stats": "Statistics"
+    },
+    "goalTips": {
+      "title": "Tips for setting goals",
+      "tip1": "Start with small, achievable goals",
+      "tip2": "Set weekly goals instead of monthly goals",
+      "tip3": "Celebrate every achieved goal - you deserve it!",
+      "tip4": "Focus on activities, not results"
+    }
+  },
   "spontaneous": {
     "title": "Spontaneous Application",
     "description": "Find and contact companies that match your profile",
@@ -1461,9 +1573,15 @@
       "title": "Search companies",
       "placeholder": "Organization number (e.g., 556074-7551)",
       "button": "Search",
-      "invalidFormat": "Invalid format. Enter 10 digits.",
+      "invalidFormat": "Invalid format. Enter 10 digits (e.g., 5560747551 or 556074-7551)",
       "notFound": "Company not found in the Swedish Companies Registry",
-      "error": "Something went wrong. Please try again."
+      "error": "Something went wrong. Please try again.",
+      "aiSearch": "AI search",
+      "orgNumber": "Org. number",
+      "aiDescription": "Describe what companies you're looking for, e.g., \"IT consultants in Stockholm\" or \"law firms specializing in employment law\"",
+      "orgNumberDescription": "Enter an organization number to fetch information. Find org. numbers at",
+      "aiPlaceholder": "E.g. 'Ad agencies in Gothenburg with 10-50 employees'",
+      "enterOrgNumber": "Enter an organization number"
     },
     "company": {
       "address": "Address",
@@ -1480,7 +1598,9 @@
       "responses": "Got response",
       "waiting": "Awaiting response",
       "responseRate": "Response rate",
-      "positiveRate": "Positive responses"
+      "positiveRate": "Positive responses",
+      "contactToSeeStats": "Contact companies to see statistics here.",
+      "statusDistribution": "Status distribution"
     },
     "followups": {
       "title": "Upcoming follow-ups",
@@ -1491,12 +1611,56 @@
       "daysLeft": "In {{days}} days"
     },
     "tips": {
-      "title": "Tips for better results",
+      "title": "Tips for spontaneous applications",
       "tip1": "Aim to contact 5-10 new companies per week",
-      "tip2": "Always follow up after 1-2 weeks if you haven't heard back",
-      "tip3": "A response rate of 10-20% is normal for spontaneous applications",
-      "tip4": "Quality over quantity – customize each application"
-    }
+      "tip2": "Choose companies that match your competence",
+      "tip3": "Research the company before you contact them",
+      "tip4": "Follow up if you haven't heard back within 1-2 weeks",
+      "aiTip1": "Be specific in your search: industry, location, size",
+      "aiTip2": "Example: \"Architecture firms in Malmö\", \"Fintech startup\"",
+      "aiTip3": "Verified companies have confirmed data from the Swedish Companies Registry",
+      "aiTip4": "Save multiple companies at once using the checkboxes",
+      "orgTip1": "Find org. numbers at",
+      "tip3Stat": "A response rate of 10-20% is normal for spontaneous applications",
+      "tip4Stat": "Quality over quantity – customize each application"
+    },
+    "companyStatus": {
+      "active": "Active",
+      "deregistered": "Deregistered",
+      "ongoingProcess": "Ongoing process",
+      "openForContact": "Open for contact"
+    },
+    "aiSearch": {
+      "minChars": "Enter at least 3 characters for AI search",
+      "noResults": "No companies found. Try a different search term.",
+      "failed": "Search failed",
+      "resultsFound": "{{total}} companies found, {{verified}} verified against the Swedish Companies Registry"
+    },
+    "annualReports": "Annual reports",
+    "noAnnualReports": "No annual reports available.",
+    "annualReportDownloaded": "Annual report downloaded",
+    "downloadError": "Could not download the document",
+    "cannotSaveWithoutOrgNumber": "Cannot save company without organization number",
+    "noNewCompaniesToSave": "No new companies to save",
+    "companiesSaved": "{{count}} companies saved",
+    "searchResults": "Search results",
+    "selectAllVerified": "Select all verified",
+    "saveSelected": "Save selected ({{count}})",
+    "verified": "Verified",
+    "notVerified": "Not verified",
+    "missingOrgNumber": "Missing org. number",
+    "markAs": "Mark as",
+    "highPriority": "High priority",
+    "contacted": "Contacted",
+    "followUp": "Follow-up",
+    "addNotesPlaceholder": "Add notes...",
+    "clickToAddNotes": "Click to add notes...",
+    "archive": "Archive",
+    "confirmDelete": "Are you sure you want to delete this company?",
+    "noSavedCompanies": "No saved companies",
+    "noCompaniesWithStatus": "No companies with status \"{{status}}\"",
+    "searchAndSaveCompanies": "Search for companies and save the ones you're interested in.",
+    "changeFilter": "Change filter to see other companies."
   },
   "career": {
     "title": "Career",
@@ -2089,7 +2253,36 @@
     "noResultsYet": "No results yet",
     "completeTestToSeeResults": "You need to complete the interest test to see your results.",
     "couldNotLoadResults": "Could not load results",
-    "couldNotRestartTest": "Could not restart the test"
+    "couldNotRestartTest": "Could not restart the test",
+    "explore": {
+      "badge": "Explore occupations",
+      "title": "All occupations",
+      "description": "Browse all occupations in our database. Filter by industry, education level or future outlook.",
+      "searchPlaceholder": "Search among all occupations...",
+      "filters": {
+        "field": "Industry",
+        "educationLevel": "Education level",
+        "prognosis": "Future outlook"
+      },
+      "prognosis": {
+        "growing": "Growing",
+        "stable": "Stable",
+        "declining": "Declining"
+      },
+      "showing": "Showing {{count}} of {{total}} occupations",
+      "noResults": "No occupations found with your filters.",
+      "clearFilters": "Clear filters"
+    },
+    "history": {
+      "badge": "Your history",
+      "title": "Test results over time",
+      "description": "Here you can view and compare your previous test results. Your interests and personality can develop over time.",
+      "loading": "Loading history...",
+      "errorLoading": "Could not load history",
+      "noHistory": "No history yet",
+      "noHistoryDesc": "When you complete the test, your results will be saved here. You can redo the test anytime and compare the results.",
+      "startTest": "Start the test"
+    }
   },
   "quests": {
     "todaysQuests": "Today's Quests",
@@ -2105,6 +2298,22 @@
       "readArticle": "Read an article",
       "updateCV": "Update your CV",
       "applyJob": "Apply for a job"
+    }
+  },
+  "international": {
+    "integration": {
+      "title": "Integration Checklist",
+      "description": "Step-by-step guide to establishing yourself in Sweden. Mark items as complete to save your progress.",
+      "yourProgress": "Your progress",
+      "exportChecklist": "Export checklist"
+    },
+    "language": {
+      "title": "Swedish for Work",
+      "description": "Resources and tips for learning Swedish. Basic Swedish is highly appreciated in Swedish workplaces."
+    },
+    "visa": {
+      "title": "Visa & Work Permits",
+      "description": "Guide to different types of work permits in Sweden. Click on each type to see requirements and process information."
     }
   },
   "exercises": {
@@ -4606,6 +4815,21 @@
       "describeNeedsPlaceholder": "Describe any adaptations you need in the workplace..."
     }
   },
+  "sharedProfile": {
+    "noShareCode": "No share code provided",
+    "linkInvalid": "The link is invalid or has expired",
+    "loadError": "Could not load the profile",
+    "couldNotDisplay": "The profile could not be displayed",
+    "backToHome": "Back to home page",
+    "contactInfo": "Contact information",
+    "aboutMe": "About me",
+    "skills": "Skills",
+    "workExperience": "Work experience",
+    "education": "Education",
+    "documents": "Documents",
+    "sharedVia": "Shared via Deltagarportalen",
+    "linkValidUntil": "The link is valid until {{date}}"
+  },
   "article": {
     "backToKnowledgeBase": "Back to knowledge base",
     "invalidLink": "Invalid article link",
@@ -5147,7 +5371,23 @@
       "activeCount": "{{count}} active",
       "unreadMessages": "{{count}} unread messages",
       "noActivity": "No activity yet",
-      "seeDetails": "See details"
+      "seeDetails": "See details",
+      "activity": {
+        "newNote": "New note",
+        "progressNoted": "Progress noted",
+        "concernNoted": "Concern noted",
+        "goalRelated": "Goal-related activity",
+        "activity": "Activity",
+        "loggedIn": "Logged in"
+      },
+      "goalCategories": {
+        "other": "Other",
+        "cvImprovement": "CV improvement",
+        "jobApplications": "Job applications",
+        "interviewTraining": "Interview training",
+        "networking": "Networking",
+        "skillsDevelopment": "Skills development"
+      }
     },
     "participants": {
       "neverContacted": "Never contacted",
@@ -5493,38 +5733,88 @@
       "addNote": "Add"
     },
     "analytics": {
-      "lastWeek": "Last week",
-      "lastMonth": "Last month",
-      "lastQuarter": "Last quarter",
-      "lastYear": "Last year",
-      "excel": "Excel",
-      "pdfReport": "PDF report",
-      "totalParticipants": "Total participants",
-      "cvCompletion": "CV completion",
-      "hasCompleteCv": "Has complete CV",
-      "avgPlacementTime": "Average placement time",
-      "fromStartToJob": "From start to job",
-      "placedWithJob": "Placed with job",
-      "placementRate": "{{percent}}% placement rate",
-      "progressOverTime": "Progress over time",
-      "avgCvScoreByMonth": "Average CV score by month",
-      "keyMetrics": "Key metrics",
-      "overviewMetrics": "Overview of important metrics",
-      "cvQuality": "CV quality",
-      "goalCompletion": "Goal completion",
-      "engagement": "Engagement",
-      "statusDistribution": "Status distribution",
-      "distributionByStatus": "Distribution of participants by status",
-      "topGoalCategories": "Top goal categories",
-      "mostFrequent": "Most frequent goal types among participants",
-      "goals": "goals",
-      "cohortAnalysis": "Cohort analysis",
-      "cohortComparison": "Comparison between participant groups based on start date",
-      "cohort": "Cohort",
-      "participantsCount": "Participants",
-      "cvComplete": "CV complete",
-      "placed": "Placed",
-      "avgTimeDays": "Avg time (days)"
+      "dateRange": {
+        "week": "Last week",
+        "month": "Last month",
+        "quarter": "Last quarter",
+        "year": "Last year"
+      },
+      "vsLastMonth": "vs last month",
+      "metrics": {
+        "totalParticipants": "Total participants",
+        "activeCount": "{{count}} active",
+        "cvCompletion": "CV completion",
+        "hasCompleteCV": "Has complete CV",
+        "avgPlacementTime": "Average placement time",
+        "days": "{{count}} days",
+        "fromStartToJob": "From start to job",
+        "completedWithJob": "Completed with job",
+        "placementRate": "{{rate}}% placement rate"
+      },
+      "progressOverTime": {
+        "title": "Progress over time",
+        "subtitle": "Average CV score by month"
+      },
+      "keyMetrics": {
+        "title": "Key metrics",
+        "subtitle": "Overview of important metrics",
+        "cvQuality": "CV quality",
+        "goalCompletion": "Goal completion",
+        "engagement": "Engagement"
+      },
+      "statusDistribution": {
+        "title": "Status distribution",
+        "subtitle": "Distribution of participants by status"
+      },
+      "goalCategories": {
+        "title": "Top goal categories",
+        "subtitle": "Most frequent goal types among participants",
+        "goalsCount": "{{count}} goals",
+        "cvImprovement": "CV improvement",
+        "jobApplications": "Job applications",
+        "interviewTraining": "Interview training",
+        "networking": "Networking",
+        "skillsDevelopment": "Skills development",
+        "other": "Other"
+      },
+      "cohortAnalysis": {
+        "title": "Cohort analysis",
+        "subtitle": "Comparison between participant groups based on start date",
+        "columns": {
+          "cohort": "Cohort",
+          "participants": "Participants",
+          "cvComplete": "CV complete",
+          "placed": "Placed",
+          "avgTime": "Avg time (days)"
+        },
+        "empty": "No cohorts to display. Add participants to see cohort analysis."
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "completed": "Completed"
+      },
+      "export": {
+        "week": "week",
+        "month": "month",
+        "quarter": "quarter",
+        "year": "year",
+        "last": "Last",
+        "reportTitle": "Consultant Report",
+        "keyMetrics": "Key metrics",
+        "value": "Value",
+        "totalParticipants": "Total participants",
+        "activeParticipants": "Active participants",
+        "completedParticipants": "Completed participants",
+        "cvCompletion": "CV completion",
+        "goalCompletion": "Goal completion",
+        "engagement": "Engagement",
+        "avgPlacementTime": "Average placement time",
+        "statusDistribution": "Status distribution",
+        "count": "Count",
+        "goalCategories": "Goal categories",
+        "filename": "consultant-report"
+      }
     },
     "communication": {
       "messages": "Messages",
@@ -5543,7 +5833,6 @@
       "sendToGroup": "Send to group",
       "upcomingMeetings": "Upcoming meetings",
       "bookNewMeeting": "Book new meeting",
-      "today": "Today",
       "thisWeek": "This week",
       "noUpcomingMeetings": "No upcoming meetings",
       "bookMeetingToStart": "Book a meeting with a participant to get started.",
@@ -5552,9 +5841,15 @@
       "to": "To",
       "searchParticipants": "Search participants...",
       "message": "Message",
-      "writePlaceholder": "Write your message...",
-      "cancel": "Cancel",
-      "send": "Send"
+      "writeMessage": "Write your message...",
+      "send": "Send",
+      "noMeetings": "No upcoming meetings",
+      "noMeetingsDesc": "Book a meeting with a participant to get started.",
+      "reply": "Reply",
+      "writeReply": "Write your reply...",
+      "sending": "Sending...",
+      "sendReply": "Send reply",
+      "confirmCancelMeeting": "Are you sure you want to cancel this meeting?"
     },
     "resources": {
       "goalTemplates": "Goal templates",
@@ -5575,7 +5870,98 @@
       "jobs": "jobs",
       "view": "View",
       "provenMethods": "Proven methods and checklists for effective consulting",
-      "steps": "steps"
+      "steps": "steps",
+      "stepsTitle": "Steps",
+      "noTemplatesFound": "No templates matched your search",
+      "useForParticipant": "Use for participant",
+      "confirmDelete": "Are you sure you want to delete this template?",
+      "practices": {
+        "onboarding": "Onboarding",
+        "coaching": "Coaching",
+        "followup": "Follow-up",
+        "crisis": "Crisis management"
+      },
+      "form": {
+        "editTemplate": "Edit template",
+        "createTemplate": "Create new template",
+        "title": "Title",
+        "titlePlaceholder": "E.g. Improve CV to 80+ points",
+        "category": "Category",
+        "description": "Description",
+        "descriptionPlaceholder": "Short description of the template",
+        "smartGoals": "SMART goals",
+        "specific": "pecific",
+        "specificPlaceholder": "What exactly should be achieved?",
+        "measurable": "easurable",
+        "measurablePlaceholder": "How is success measured?",
+        "achievable": "chievable",
+        "achievablePlaceholder": "How is it possible to achieve?",
+        "relevant": "elevant",
+        "relevantPlaceholder": "Why is this important?",
+        "timeBound": "ime-bound",
+        "timeBoundPlaceholder": "When should it be completed?",
+        "saveChanges": "Save changes"
+      },
+      "detail": {
+        "specific": "S - Specific",
+        "measurable": "M - Measurable",
+        "achievable": "A - Achievable",
+        "relevant": "R - Relevant",
+        "timeBound": "T - Time-bound"
+      }
+    },
+    "participantDetail": {
+      "notFound": "Participant not found",
+      "backToParticipants": "Back to participants",
+      "cvScore": "CV score",
+      "savedJobs": "Saved jobs",
+      "activeGoals": "Active goals",
+      "lastContact": "Last contact",
+      "tabs": {
+        "overview": "Overview",
+        "goals": "Goals",
+        "journal": "Journal",
+        "timeline": "Timeline"
+      },
+      "goalStatus": {
+        "notStarted": "Not started",
+        "inProgress": "In progress",
+        "completed": "Completed",
+        "blocked": "Blocked"
+      },
+      "priority": {
+        "high": "High priority",
+        "medium": "Medium priority",
+        "low": "Low priority"
+      },
+      "deadline": "Deadline",
+      "markComplete": "Mark as complete",
+      "quickNote": "Quick note",
+      "notePlaceholder": "Write a note about the participant...",
+      "saveNote": "Save note",
+      "activeGoalsCount": "{{count}} active goals",
+      "newGoal": "New goal",
+      "writeNote": "Write note"
+    },
+    "participantAnalytics": {
+      "title": "Participant Analytics",
+      "description": "Overview and insights about your participants",
+      "stats": {
+        "total": "Total",
+        "needsSupport": "Needs support",
+        "activeToday": "Active today",
+        "cvAverage": "CV average"
+      },
+      "searchPlaceholder": "Search participants...",
+      "riskCount": "{{count}} risk",
+      "riskIndicators": "Risk indicators",
+      "allGood": "Everything looks good!",
+      "cvProgress": "CV Progress",
+      "applications": "Applications",
+      "wellness": "Wellness",
+      "daysStreak": "{{count}} days",
+      "sendMessage": "Message",
+      "bookMeeting": "Book meeting"
     },
     "alerts": {
       "noContact": "No contact for 7+ days",
@@ -5847,5 +6233,120 @@
     },
     "welcomeMessage": "Hi! I am here to help you. There are no silly questions - start when you feel ready!",
     "tryAsking": "Try asking about:"
+  },
+  "salary": {
+    "negotiation": {
+      "title": "Salary Negotiation Guide",
+      "description": "Step-by-step guide for negotiating salary in Swedish work culture. Prepared negotiation gives better results.",
+      "swedishMarket": "Swedish labor market",
+      "swedishMarketDesc": "In Sweden, salary negotiation is often more structured than in other countries. Many industries have collective agreements that set the framework. Individual negotiations often occur during annual salary reviews.",
+      "fiveSteps": "The 5 steps of negotiation",
+      "tipsLabel": "Tips:",
+      "examplePhrases": "Example phrases:",
+      "doThis": "Do this",
+      "avoidThis": "Avoid this",
+      "preparationChecklist": "Preparation checklist",
+      "completion": "Completion",
+      "scenarioSimulator": "Scenario simulator",
+      "backToScenarios": "Back to scenarios",
+      "current": "Current",
+      "market": "Market",
+      "targetSalary": "Target salary",
+      "recommendation": "Recommendation",
+      "salaryRange": "Salary range",
+      "fromCurrent": "From current",
+      "comparedToMarket": "Compared to market",
+      "dailyTip": "Tip of the day",
+      "whenToNegotiate": "When should you negotiate?",
+      "timing": {
+        "jobStart": "At job start",
+        "jobStartDesc": "Best opportunity to set the right level",
+        "annualReview": "Annual salary review",
+        "annualReviewDesc": "Planned occasion - be prepared",
+        "afterSuccess": "After major success",
+        "afterSuccessDesc": "Document and capitalize",
+        "newResponsibilities": "With new responsibilities",
+        "newResponsibilitiesDesc": "More responsibility = more compensation"
+      }
+    },
+    "calculator": {
+      "title": "Salary Calculator",
+      "description": "Calculate expected salary based on occupation, experience and region. Data based on Swedish salary statistics.",
+      "enterDetails": "Enter your details",
+      "occupation": "Occupation category",
+      "selectCategory": "Select category...",
+      "region": "Region",
+      "selectRegion": "Select region...",
+      "experience": "Experience",
+      "selectExperience": "Select experience...",
+      "calculate": "Calculate salary",
+      "yourResult": "Your salary result",
+      "minimum": "Minimum",
+      "maximum": "Maximum",
+      "medianRecommended": "Median (recommended)",
+      "perMonth": "per month",
+      "netSalaryPerMonth": "Net salary/month",
+      "afterTax": "(after tax ~22%)",
+      "annualSalaryGross": "Annual salary (gross)",
+      "annualIncrease": "Annual increase (avg)",
+      "salaryRangeDistribution": "Salary range distribution",
+      "min": "Min",
+      "median": "Median",
+      "max": "Max",
+      "taxDeduction": "Tax deduction",
+      "primaryTax": "Primary withholding tax (approx. 22%): ~{{amount}} kr",
+      "employerFeeNotIncluded": "Employer fee not included in your salary",
+      "aboutCalculation": "About the calculation",
+      "aboutCalculationText": "Salary data is based on industry statistics and adjusted for region and experience. Net salary is an estimate. Actual tax varies based on personal circumstances.",
+      "addComparison": "Add comparison",
+      "salaryComparisons": "Salary comparisons ({{count}})",
+      "gross": "Gross",
+      "net": "Net",
+      "comparedToCurrent": "Compared to current calculation",
+      "tipsTitle": "Tips for better salary",
+      "tips": {
+        "buildSkills": "Build competence",
+        "buildSkillsDesc": "Certifications and special skills increase salary",
+        "documentResults": "Document results",
+        "documentResultsDesc": "Concrete examples strengthen your negotiation position",
+        "timing": "Timing is everything",
+        "timingDesc": "Negotiate after successes or when given new responsibilities",
+        "knowMarket": "Know your market",
+        "knowMarketDesc": "Stay informed about what competitors offer"
+      }
+    },
+    "marketData": {
+      "title": "Salary Statistics",
+      "description": "Compare salaries by industry and region. Data based on Swedish salary surveys and SCB statistics.",
+      "byIndustry": "By industry",
+      "byRegion": "By region",
+      "searchIndustry": "Search industry...",
+      "searchRegion": "Search region...",
+      "medianByIndustry": "Median salary by industry",
+      "results": "results",
+      "sortSalary": "Salary",
+      "sortGrowth": "Growth",
+      "sortName": "Name",
+      "perYear": "%/year",
+      "employeesInSweden": "Employees in Sweden",
+      "annualGrowth": "Annual growth",
+      "salaryRange": "Salary range (estimate):",
+      "min": "Min",
+      "max": "Max",
+      "noIndustryFound": "No industry found for \"{{searchTerm}}\"",
+      "salaryByRegion": "Salary level by region",
+      "perMonth": "kr/month",
+      "costOfLiving": "Cost of living",
+      "averageSalary": "Average salary",
+      "salaryPremium": "Salary premium relative to average",
+      "premiumHigher": "Higher salaries than average. Important to weigh this against living costs.",
+      "premiumLower": "Lower salaries than average, but often with lower living costs.",
+      "premiumAverage": "Average salary for Sweden.",
+      "noRegionFound": "No region found for \"{{searchTerm}}\"",
+      "highPremiumSkills": "Skills with high salary premium",
+      "demand": "Demand",
+      "disclaimerTitle": "About the statistics:",
+      "disclaimerText": "Data is based on industry reports, SCB statistics and salary surveys. Figures are estimates and may vary depending on specific role, company size and individual factors. Last updated: Q1 2026."
+    }
   }
 }

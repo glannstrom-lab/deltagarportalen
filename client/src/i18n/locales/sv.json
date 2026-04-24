@@ -1,5 +1,6 @@
 {
   "common": {
+    "export": "Exportera",
     "save": "Spara",
     "saveChanges": "Spara ändringar",
     "cancel": "Avbryt",
@@ -63,7 +64,8 @@
     "passed": "Godkänt",
     "missing": "Saknas",
     "needsAttention": "Behöver uppmärksamhet",
-    "today": "Idag"
+    "today": "Idag",
+    "refresh": "Uppdatera"
   },
   "pageTabs": {
     "cv": {
@@ -470,6 +472,94 @@
       "knowledge": {
         "title": "Kunskapsbank",
         "tipsGuides": "Tips och guider"
+      }
+    },
+    "overview": {
+      "errorTitle": "Kunde inte ladda dashboard",
+      "errorMessage": "Något gick fel när vi hämtade din data. Försök igen.",
+      "noWidgets": "Inga widgets synliga",
+      "noWidgetsHint": "Klicka på \"Filter\" för att välja vad du vill se"
+    },
+    "activity": {
+      "stats": {
+        "points": "Poäng",
+        "streak": "Streak",
+        "days": "dagar",
+        "milestones": "Milstolpar",
+        "badges": "Badges"
+      },
+      "sections": {
+        "activeMilestones": "Aktiva Milstolpar",
+        "availableMilestones": "Tillgängliga Milstolpar",
+        "completedMilestones": "Avklarade Milstolpar ({{count}})",
+        "unlockedBadges": "Upplåsta Badges",
+        "recentActivity": "Senaste Aktivitet"
+      },
+      "level": "Nivå {{level}}",
+      "nextLevel": "Nästa nivå: {{points}} XP",
+      "progress": "Framsteg",
+      "levels": {
+        "beginner": "Nybörjare"
+      }
+    },
+    "insights": {
+      "analyzing": "Analyserar dina mönster...",
+      "errorTitle": "Kunde inte ladda insikter",
+      "title": "Mina insikter",
+      "subtitle": "Analys baserad på din aktivitet",
+      "activitiesThisWeek": "Aktiviteter denna vecka",
+      "streak": "Streak",
+      "days": "{{count}} dagar",
+      "bestTime": "Bästa tiden",
+      "averageMood": "Genomsnittligt mående",
+      "activityLast14Days": "Aktivitet senaste 14 dagarna",
+      "activitiesCount": "{{count}} aktiviteter",
+      "activityBreakdown": "Aktivitetsfördelning",
+      "noActivityYet": "Ingen aktivitet registrerad ännu",
+      "weeklyProgress": "Veckoutveckling",
+      "week": "Vecka {{number}}",
+      "applicationsCount": "{{count}} ansökningar",
+      "exercisesCount": "{{count}} övningar",
+      "applications": "Ansökningar",
+      "exercises": "Övningar",
+      "personalRecommendations": "Personliga rekommendationer",
+      "yourPatterns": "Dina mönster",
+      "patterns": {
+        "mostActiveDay": "Du är mest aktiv på {{day}}ar",
+        "productiveTime": "Din produktivaste tid är klockan {{time}}",
+        "activitiesLast30Days": "Du har gjort {{count}} aktiviteter de senaste 30 dagarna",
+        "conversionRate": "{{rate}}% av dina ansökningar leder till intervju"
+      }
+    },
+    "learning": {
+      "loading": "Laddar lärande...",
+      "errorTitle": "Kunde inte ladda lärande",
+      "title": "Lärande",
+      "subtitle": "Utveckla dina färdigheter för jobbsökningen",
+      "continueReading": "Fortsätt läsa",
+      "personalizedForYou": "Anpassat för dig",
+      "recommendedForYou": "Rekommenderat för dig",
+      "basedOnProfile": "Baserat på din intresseprofil",
+      "exercises": "Övningar",
+      "categories": "Kategorier",
+      "matchesProfile": "Matchar din profil",
+      "percentRead": "{{percent}}% läst",
+      "articlesProgress": "{{completed}}/{{total}} artiklar",
+      "completed": "Avklarad (+10 XP)",
+      "markAsRead": "Markera som läst (+10 XP)",
+      "stepOf": "Steg {{current}} av {{total}}",
+      "nextStep": "Nästa steg",
+      "complete": "Slutför (+20 XP)",
+      "stats": {
+        "articlesRead": "Artiklar lästa",
+        "exercisesCompleted": "Övningar klara",
+        "totalXP": "Total XP",
+        "daysStreak": "Dagars streak"
+      },
+      "difficulty": {
+        "easy": "Lätt",
+        "medium": "Medel",
+        "detailed": "Detaljerad"
       }
     }
   },
@@ -1431,6 +1521,28 @@
       "description": "Dessa har inte uppdaterats på 7+ dagar."
     }
   },
+  "journey": {
+    "title": "Min Jobbresa",
+    "subtitle": "Följ din väg mot anställning",
+    "loading": "Laddar din jobbresa...",
+    "errorLoading": "Kunde inte ladda din resa",
+    "welcomeTitle": "Välkommen till Min Jobbresa",
+    "welcomeDescription": "Här kan du följa din väg mot anställning. Vi guidar dig steg för steg genom jobbsökarprocessen och firar dina framsteg längs vägen.",
+    "startJourney": "Börja din resa",
+    "tabs": {
+      "overview": "Översikt",
+      "goals": "Mål",
+      "achievements": "Achievements",
+      "stats": "Statistik"
+    },
+    "goalTips": {
+      "title": "Tips för att sätta mål",
+      "tip1": "Börja med små, uppnåeliga mål",
+      "tip2": "Sätt veckomål istället för månadsmål",
+      "tip3": "Fira varje uppnått mål - du förtjänar det!",
+      "tip4": "Fokusera på aktiviteter, inte resultat"
+    }
+  },
   "spontaneous": {
     "title": "Spontanansökan",
     "description": "Hitta och kontakta företag som passar dig",
@@ -1461,9 +1573,15 @@
       "title": "Sök företag",
       "placeholder": "Organisationsnummer (t.ex. 556074-7551)",
       "button": "Sök",
-      "invalidFormat": "Ogiltigt format. Ange 10 siffror.",
+      "invalidFormat": "Ogiltigt format. Ange 10 siffror (t.ex. 5560747551 eller 556074-7551)",
       "notFound": "Företaget hittades inte i Bolagsverkets register",
-      "error": "Något gick fel vid sökningen. Försök igen."
+      "error": "Något gick fel vid sökningen. Försök igen.",
+      "aiSearch": "AI-sökning",
+      "orgNumber": "Org.nummer",
+      "aiDescription": "Beskriv vilka företag du söker, t.ex. \"IT-konsulter i Stockholm\" eller \"advokatbyråer som arbetar med arbetsrätt\"",
+      "orgNumberDescription": "Ange ett organisationsnummer för att hämta information. Hitta org.nr på",
+      "aiPlaceholder": "T.ex. 'Reklambyråer i Göteborg med 10-50 anställda'",
+      "enterOrgNumber": "Ange ett organisationsnummer"
     },
     "company": {
       "address": "Adress",
@@ -1480,7 +1598,9 @@
       "responses": "Fått svar",
       "waiting": "Väntar svar",
       "responseRate": "Svarsfrekvens",
-      "positiveRate": "Positiva svar"
+      "positiveRate": "Positiva svar",
+      "contactToSeeStats": "Kontakta företag för att se statistik här.",
+      "statusDistribution": "Statusfördelning"
     },
     "followups": {
       "title": "Kommande uppföljningar",
@@ -1491,12 +1611,56 @@
       "daysLeft": "Om {{days}} dagar"
     },
     "tips": {
-      "title": "Tips för bättre resultat",
+      "title": "Tips för spontanansökningar",
       "tip1": "Sikta på att kontakta 5-10 nya företag per vecka",
-      "tip2": "Följ alltid upp efter 1-2 veckor om du inte fått svar",
-      "tip3": "En svarsfrekvens på 10-20% är normalt för spontanansökningar",
-      "tip4": "Kvalitet går före kvantitet – anpassa varje ansökan"
-    }
+      "tip2": "Välj företag som matchar din kompetens",
+      "tip3": "Researcha företaget innan du kontaktar dem",
+      "tip4": "Följ upp om du inte hört något inom 1-2 veckor",
+      "aiTip1": "Var specifik i din sökning: bransch, ort, storlek",
+      "aiTip2": "Exempel: \"Arkitektkontor i Malmö\", \"Startup inom fintech\"",
+      "aiTip3": "Verifierade företag har bekräftade uppgifter från Bolagsverket",
+      "aiTip4": "Spara flera företag samtidigt med kryssrutorna",
+      "orgTip1": "Hitta org.nr på",
+      "tip3Stat": "En svarsfrekvens på 10-20% är normalt för spontanansökningar",
+      "tip4Stat": "Kvalitet går före kvantitet – anpassa varje ansökan"
+    },
+    "companyStatus": {
+      "active": "Aktivt",
+      "deregistered": "Avregistrerat",
+      "ongoingProcess": "Pågående process",
+      "openForContact": "Öppen för kontakt"
+    },
+    "aiSearch": {
+      "minChars": "Ange minst 3 tecken för AI-sökning",
+      "noResults": "Inga företag hittades. Prova en annan sökterm.",
+      "failed": "Sökningen misslyckades",
+      "resultsFound": "{{total}} företag hittade, {{verified}} verifierade mot Bolagsverket"
+    },
+    "annualReports": "Årsredovisningar",
+    "noAnnualReports": "Inga årsredovisningar tillgängliga.",
+    "annualReportDownloaded": "Årsredovisning nedladdad",
+    "downloadError": "Kunde inte ladda ner dokumentet",
+    "cannotSaveWithoutOrgNumber": "Kan inte spara företag utan organisationsnummer",
+    "noNewCompaniesToSave": "Inga nya företag att spara",
+    "companiesSaved": "{{count}} företag sparade",
+    "searchResults": "Sökresultat",
+    "selectAllVerified": "Välj alla verifierade",
+    "saveSelected": "Spara valda ({{count}})",
+    "verified": "Verifierad",
+    "notVerified": "Ej verifierad",
+    "missingOrgNumber": "Saknar org.nr",
+    "markAs": "Markera som",
+    "highPriority": "Hög prioritet",
+    "contacted": "Kontaktad",
+    "followUp": "Uppföljning",
+    "addNotesPlaceholder": "Lägg till anteckningar...",
+    "clickToAddNotes": "Klicka för att lägga till anteckningar...",
+    "archive": "Arkivera",
+    "confirmDelete": "Är du säker på att du vill ta bort detta företag?",
+    "noSavedCompanies": "Inga sparade företag",
+    "noCompaniesWithStatus": "Inga företag med status \"{{status}}\"",
+    "searchAndSaveCompanies": "Sök efter företag och spara de du är intresserad av.",
+    "changeFilter": "Ändra filter för att se andra företag."
   },
   "career": {
     "title": "Karriär",
@@ -2089,6 +2253,35 @@
           "description": "Hur upplever du dina förutsättningar för arbete?"
         }
       }
+    },
+    "explore": {
+      "badge": "Utforska yrken",
+      "title": "Alla yrken",
+      "description": "Bläddra bland alla yrken i vår databas. Filtrera efter bransch, utbildningsnivå eller framtidsutsikter.",
+      "searchPlaceholder": "Sök bland alla yrken...",
+      "filters": {
+        "field": "Bransch",
+        "educationLevel": "Utbildningsnivå",
+        "prognosis": "Framtidsutsikter"
+      },
+      "prognosis": {
+        "growing": "Växande",
+        "stable": "Stabil",
+        "declining": "Krympande"
+      },
+      "showing": "Visar {{count}} av {{total}} yrken",
+      "noResults": "Inga yrken hittades med dina filter.",
+      "clearFilters": "Rensa filter"
+    },
+    "history": {
+      "badge": "Din historik",
+      "title": "Testresultat över tid",
+      "description": "Här kan du se och jämföra dina tidigare testresultat. Dina intressen och personlighet kan utvecklas över tid.",
+      "loading": "Laddar historik...",
+      "errorLoading": "Kunde inte ladda historiken",
+      "noHistory": "Ingen historik än",
+      "noHistoryDesc": "När du genomfört testet kommer dina resultat att sparas här. Du kan göra om testet när som helst och jämföra resultaten.",
+      "startTest": "Starta testet"
     }
   },
   "quests": {
@@ -2105,6 +2298,22 @@
       "readArticle": "Läs en artikel",
       "updateCV": "Uppdatera ditt CV",
       "applyJob": "Sök ett jobb"
+    }
+  },
+  "international": {
+    "integration": {
+      "title": "Integrationschecklista",
+      "description": "Steg-för-steg guide för att etablera dig i Sverige. Markera punkter som klara för att spara din progress.",
+      "yourProgress": "Din framsteg",
+      "exportChecklist": "Exportera checklista"
+    },
+    "language": {
+      "title": "Svenska för arbetslivet",
+      "description": "Resurser och tips för att lära dig svenska. Grundläggande svenska uppskattas mycket på svenska arbetsplatser."
+    },
+    "visa": {
+      "title": "Visum & Arbetstillstånd",
+      "description": "Guide till olika typer av arbetstillstånd i Sverige. Klicka på varje typ för att se krav och processinformation."
     }
   },
   "exercises": {
@@ -4606,6 +4815,21 @@
       "describeNeedsPlaceholder": "Beskriv eventuella anpassningar du behöver på arbetsplatsen..."
     }
   },
+  "sharedProfile": {
+    "noShareCode": "Ingen delningskod angiven",
+    "linkInvalid": "Länken är ogiltig eller har gått ut",
+    "loadError": "Kunde inte ladda profilen",
+    "couldNotDisplay": "Profilen kunde inte visas",
+    "backToHome": "Tillbaka till startsidan",
+    "contactInfo": "Kontaktuppgifter",
+    "aboutMe": "Om mig",
+    "skills": "Kompetenser",
+    "workExperience": "Arbetslivserfarenhet",
+    "education": "Utbildning",
+    "documents": "Dokument",
+    "sharedVia": "Delad via Deltagarportalen",
+    "linkValidUntil": "Länken gäller t.o.m. {{date}}"
+  },
   "article": {
     "backToKnowledgeBase": "Tillbaka till kunskapsbanken",
     "invalidLink": "Ogiltig artikellänk",
@@ -5147,7 +5371,23 @@
       "activeCount": "{{count}} aktiva",
       "unreadMessages": "{{count}} olästa meddelanden",
       "noActivity": "Ingen aktivitet ännu",
-      "seeDetails": "Se detaljer"
+      "seeDetails": "Se detaljer",
+      "activity": {
+        "newNote": "Ny anteckning",
+        "progressNoted": "Framsteg noterat",
+        "concernNoted": "Fråga uppmärksammad",
+        "goalRelated": "Målrelaterad aktivitet",
+        "activity": "Aktivitet",
+        "loggedIn": "Loggade in"
+      },
+      "goalCategories": {
+        "other": "Övrigt",
+        "cvImprovement": "CV-förbättring",
+        "jobApplications": "Jobbansökningar",
+        "interviewTraining": "Intervjuträning",
+        "networking": "Nätverkande",
+        "skillsDevelopment": "Kompetensutveckling"
+      }
     },
     "participants": {
       "neverContacted": "Aldrig kontaktad",
@@ -5241,38 +5481,88 @@
       "addNote": "Lägg till"
     },
     "analytics": {
-      "lastWeek": "Senaste veckan",
-      "lastMonth": "Senaste månaden",
-      "lastQuarter": "Senaste kvartalet",
-      "lastYear": "Senaste året",
-      "excel": "Excel",
-      "pdfReport": "PDF-rapport",
-      "totalParticipants": "Totalt deltagare",
-      "cvCompletion": "CV-komplettering",
-      "hasCompleteCv": "Har komplett CV",
-      "avgPlacementTime": "Genomsnittlig placeringstid",
-      "fromStartToJob": "Från start till jobb",
-      "placedWithJob": "Avslutade med jobb",
-      "placementRate": "{{percent}}% placeringsgrad",
-      "progressOverTime": "Framsteg över tid",
-      "avgCvScoreByMonth": "Genomsnittlig CV-poäng per månad",
-      "keyMetrics": "Nyckeltal",
-      "overviewMetrics": "Översikt av viktiga mätvärden",
-      "cvQuality": "CV-kvalitet",
-      "goalCompletion": "Måluppfyllelse",
-      "engagement": "Engagemang",
-      "statusDistribution": "Statusfördelning",
-      "distributionByStatus": "Fördelning av deltagare per status",
-      "topGoalCategories": "Vanligaste målkategorierna",
-      "mostFrequent": "Mest frekventa måltyper bland deltagare",
-      "goals": "mål",
-      "cohortAnalysis": "Kohortanalys",
-      "cohortComparison": "Jämförelse mellan deltagargrupper baserat på startdatum",
-      "cohort": "Kohort",
-      "participantsCount": "Deltagare",
-      "cvComplete": "CV-komplett",
-      "placed": "Placerade",
-      "avgTimeDays": "Snitt tid (dagar)"
+      "dateRange": {
+        "week": "Senaste veckan",
+        "month": "Senaste månaden",
+        "quarter": "Senaste kvartalet",
+        "year": "Senaste året"
+      },
+      "vsLastMonth": "vs förra månaden",
+      "metrics": {
+        "totalParticipants": "Totalt deltagare",
+        "activeCount": "{{count}} aktiva",
+        "cvCompletion": "CV-komplettering",
+        "hasCompleteCV": "Har komplett CV",
+        "avgPlacementTime": "Genomsnittlig placeringstid",
+        "days": "{{count}} dagar",
+        "fromStartToJob": "Från start till jobb",
+        "completedWithJob": "Avslutade med jobb",
+        "placementRate": "{{rate}}% placeringsgrad"
+      },
+      "progressOverTime": {
+        "title": "Framsteg över tid",
+        "subtitle": "Genomsnittlig CV-poäng per månad"
+      },
+      "keyMetrics": {
+        "title": "Nyckeltal",
+        "subtitle": "Översikt av viktiga mätvärden",
+        "cvQuality": "CV-kvalitet",
+        "goalCompletion": "Måluppfyllelse",
+        "engagement": "Engagemang"
+      },
+      "statusDistribution": {
+        "title": "Statusfördelning",
+        "subtitle": "Fördelning av deltagare per status"
+      },
+      "goalCategories": {
+        "title": "Vanligaste målkategorierna",
+        "subtitle": "Mest frekventa måltyper bland deltagare",
+        "goalsCount": "{{count}} mål",
+        "cvImprovement": "CV-förbättring",
+        "jobApplications": "Jobbansökningar",
+        "interviewTraining": "Intervjuträning",
+        "networking": "Nätverkande",
+        "skillsDevelopment": "Kompetensutveckling",
+        "other": "Övrigt"
+      },
+      "cohortAnalysis": {
+        "title": "Kohortanalys",
+        "subtitle": "Jämförelse mellan deltagargrupper baserat på startdatum",
+        "columns": {
+          "cohort": "Kohort",
+          "participants": "Deltagare",
+          "cvComplete": "CV-komplett",
+          "placed": "Placerade",
+          "avgTime": "Snitt tid (dagar)"
+        },
+        "empty": "Inga kohorter att visa. Lägg till deltagare för att se kohortanalys."
+      },
+      "status": {
+        "active": "Aktiva",
+        "inactive": "Inaktiva",
+        "completed": "Avslutade"
+      },
+      "export": {
+        "week": "vecka",
+        "month": "månad",
+        "quarter": "kvartal",
+        "year": "år",
+        "last": "Senaste",
+        "reportTitle": "Konsultrapport",
+        "keyMetrics": "Nyckeltal",
+        "value": "Värde",
+        "totalParticipants": "Totalt deltagare",
+        "activeParticipants": "Aktiva deltagare",
+        "completedParticipants": "Avslutade deltagare",
+        "cvCompletion": "CV-komplettering",
+        "goalCompletion": "Måluppfyllelse",
+        "engagement": "Engagemang",
+        "avgPlacementTime": "Genomsnittlig placeringstid",
+        "statusDistribution": "Statusfördelning",
+        "count": "Antal",
+        "goalCategories": "Målkategorier",
+        "filename": "konsultrapport"
+      }
     },
     "communication": {
       "messages": "Meddelanden",
@@ -5291,7 +5581,6 @@
       "sendToGroup": "Skicka till grupp",
       "upcomingMeetings": "Kommande möten",
       "bookNewMeeting": "Boka nytt möte",
-      "today": "Idag",
       "thisWeek": "Denna vecka",
       "noUpcomingMeetings": "Inga kommande möten",
       "bookMeetingToStart": "Boka ett möte med en deltagare för att komma igång.",
@@ -5300,9 +5589,15 @@
       "to": "Till",
       "searchParticipants": "Sök deltagare...",
       "message": "Meddelande",
-      "writePlaceholder": "Skriv ditt meddelande...",
-      "cancel": "Avbryt",
-      "send": "Skicka"
+      "writeMessage": "Skriv ditt meddelande...",
+      "send": "Skicka",
+      "noMeetings": "Inga kommande möten",
+      "noMeetingsDesc": "Boka ett möte med en deltagare för att komma igång.",
+      "reply": "Svara",
+      "writeReply": "Skriv ditt svar...",
+      "sending": "Skickar...",
+      "sendReply": "Skicka svar",
+      "confirmCancelMeeting": "Är du säker på att du vill avboka detta möte?"
     },
     "resources": {
       "goalTemplates": "Målmallar",
@@ -5323,7 +5618,78 @@
       "jobs": "jobb",
       "view": "Visa",
       "provenMethods": "Beprövade metoder och checklistor för effektivt konsulentarbete",
-      "steps": "steg"
+      "steps": "steg",
+      "stepsTitle": "Steg",
+      "noTemplatesFound": "Inga mallar matchade din sökning",
+      "useForParticipant": "Använd för deltagare",
+      "confirmDelete": "Är du säker på att du vill ta bort denna mall?",
+      "practices": {
+        "onboarding": "Onboarding",
+        "coaching": "Coachning",
+        "followup": "Uppföljning",
+        "crisis": "Krishantering"
+      },
+      "form": {
+        "editTemplate": "Redigera mall",
+        "createTemplate": "Skapa ny mall",
+        "title": "Titel",
+        "titlePlaceholder": "T.ex. Förbättra CV till 80+ poäng",
+        "category": "Kategori",
+        "description": "Beskrivning",
+        "descriptionPlaceholder": "Kort beskrivning av mallen",
+        "smartGoals": "SMART-mål",
+        "specific": "pecifikt",
+        "specificPlaceholder": "Vad exakt ska uppnås?",
+        "measurable": "ätbart",
+        "measurablePlaceholder": "Hur mäts framgång?",
+        "achievable": "chievable (Uppnåeligt)",
+        "achievablePlaceholder": "Hur är det möjligt att uppnå?",
+        "relevant": "elevant",
+        "relevantPlaceholder": "Varför är detta viktigt?",
+        "timeBound": "idsbestämt",
+        "timeBoundPlaceholder": "När ska det vara klart?",
+        "saveChanges": "Spara ändringar"
+      },
+      "detail": {
+        "specific": "S - Specifikt",
+        "measurable": "M - Mätbart",
+        "achievable": "A - Uppnåeligt",
+        "relevant": "R - Relevant",
+        "timeBound": "T - Tidsbestämt"
+      }
+    },
+    "participantDetail": {
+      "notFound": "Deltagare hittades inte",
+      "backToParticipants": "Tillbaka till deltagare",
+      "cvScore": "CV-poäng",
+      "savedJobs": "Sparade jobb",
+      "activeGoals": "Aktiva mål",
+      "lastContact": "Senaste kontakt",
+      "tabs": {
+        "overview": "Översikt",
+        "goals": "Mål",
+        "journal": "Dagbok",
+        "timeline": "Tidslinje"
+      },
+      "goalStatus": {
+        "notStarted": "Ej påbörjad",
+        "inProgress": "Pågående",
+        "completed": "Avklarad",
+        "blocked": "Blockerad"
+      },
+      "priority": {
+        "high": "Hög prioritet",
+        "medium": "Medel prioritet",
+        "low": "Låg prioritet"
+      },
+      "deadline": "Deadline",
+      "markComplete": "Markera som klar",
+      "quickNote": "Snabbanteckning",
+      "notePlaceholder": "Skriv en anteckning om deltagaren...",
+      "saveNote": "Spara anteckning",
+      "activeGoalsCount": "{{count}} aktiva mål",
+      "newGoal": "Nytt mål",
+      "writeNote": "Skriv anteckning"
     },
     "settings": {
       "unsavedChanges": "Du har osparade ändringar",
@@ -5382,6 +5748,26 @@
       "teamDesc": "Kollegor och administratörer",
       "dataPrivacyDesc": "Hantera data och GDPR-relaterade inställningar",
       "daysCount": "{{count}} dagar"
+    },
+    "participantAnalytics": {
+      "title": "Deltagaranalys",
+      "description": "Översikt och insikter om dina deltagare",
+      "stats": {
+        "total": "Totalt",
+        "needsSupport": "Behöver stöd",
+        "activeToday": "Aktiva idag",
+        "cvAverage": "CV-snitt"
+      },
+      "searchPlaceholder": "Sök deltagare...",
+      "riskCount": "{{count}} risk",
+      "riskIndicators": "Riskindikatorer",
+      "allGood": "Allt ser bra ut!",
+      "cvProgress": "CV Progress",
+      "applications": "Ansökningar",
+      "wellness": "Välmående",
+      "daysStreak": "{{count}} dagar",
+      "sendMessage": "Meddelande",
+      "bookMeeting": "Boka möte"
     },
     "alerts": {
       "noContact": "Ej kontaktad på 7+ dagar",
@@ -5846,6 +6232,121 @@
         "step3": "Prova olika personligheter för variation"
       },
       "startChat": "Börja chatta"
+    }
+  },
+  "salary": {
+    "negotiation": {
+      "title": "Löneförhandlingsguide",
+      "description": "Steg-för-steg guide för att förhandla lön i svensk arbetskultur. Förberedd förhandling ger bättre resultat.",
+      "swedishMarket": "Svensk arbetsmarknad",
+      "swedishMarketDesc": "I Sverige är löneförhandling ofta mer strukturerad än i andra länder. Många branscher har kollektivavtal som sätter ramarna. Individuella förhandlingar sker ofta vid årliga lönesamtal.",
+      "fiveSteps": "Förhandlingens 5 steg",
+      "tipsLabel": "Tips:",
+      "examplePhrases": "Exempelfraser:",
+      "doThis": "Gör detta",
+      "avoidThis": "Undvik detta",
+      "preparationChecklist": "Förberedelschecklista",
+      "completion": "Färdiggrad",
+      "scenarioSimulator": "Scenariosimulatör",
+      "backToScenarios": "Tillbaka till scenarion",
+      "current": "Nuvarande",
+      "market": "Marknad",
+      "targetSalary": "Målön",
+      "recommendation": "Rekommendation",
+      "salaryRange": "Löneintervall",
+      "fromCurrent": "Från nuvarande",
+      "comparedToMarket": "Jämfört med marknad",
+      "dailyTip": "Tips för dagen",
+      "whenToNegotiate": "När ska du förhandla?",
+      "timing": {
+        "jobStart": "Vid jobbstart",
+        "jobStartDesc": "Bästa tillfället att sätta rätt nivå",
+        "annualReview": "Årligt lönesamtal",
+        "annualReviewDesc": "Planerat tillfälle - var förberedd",
+        "afterSuccess": "Efter stora framgångar",
+        "afterSuccessDesc": "Dokumentera och kapitalisera",
+        "newResponsibilities": "Vid nya ansvar",
+        "newResponsibilitiesDesc": "Mer ansvar = mer kompensation"
+      }
+    },
+    "calculator": {
+      "title": "Lönekalkylator",
+      "description": "Beräkna förväntad lön baserat på yrke, erfarenhet och region. Data baserad på svensk lönestatistik.",
+      "enterDetails": "Ange dina uppgifter",
+      "occupation": "Yrkeskategori",
+      "selectCategory": "Välj kategori...",
+      "region": "Region",
+      "selectRegion": "Välj region...",
+      "experience": "Erfarenhet",
+      "selectExperience": "Välj erfarenhet...",
+      "calculate": "Beräkna lön",
+      "yourResult": "Ditt löneresultat",
+      "minimum": "Minimum",
+      "maximum": "Maximum",
+      "medianRecommended": "Median (rekommenderat)",
+      "perMonth": "per månad",
+      "netSalaryPerMonth": "Nettolön/månad",
+      "afterTax": "(efter skatt ~22%)",
+      "annualSalaryGross": "Årslön (brutto)",
+      "annualIncrease": "Löneökning/år (snitt)",
+      "salaryRangeDistribution": "Löneintervallets fördelning",
+      "min": "Min",
+      "median": "Median",
+      "max": "Max",
+      "taxDeduction": "Skatteavdrag",
+      "primaryTax": "Primär källskatt (ungefär 22%): ~{{amount}} kr",
+      "employerFeeNotIncluded": "Arbetsgivaravgift ingår ej i din lön",
+      "aboutCalculation": "Om beräkningen",
+      "aboutCalculationText": "Löneuppgifterna är baserade på branschstatistik och justerade för region och erfarenhet. Nettolönen är en uppskattning. Faktisk skatt varierar baserat på personliga förhållanden.",
+      "addComparison": "Lägg till jämförelse",
+      "salaryComparisons": "Lönejämförelser ({{count}})",
+      "gross": "Brutto",
+      "net": "Netto",
+      "comparedToCurrent": "Jämfört med nuvarande beräkning",
+      "tipsTitle": "Tips för bättre lön",
+      "tips": {
+        "buildSkills": "Bygg kompetens",
+        "buildSkillsDesc": "Certifieringar och specialkunskaper höjer lönen",
+        "documentResults": "Dokumentera resultat",
+        "documentResultsDesc": "Konkreta exempel stärker din förhandlingsposition",
+        "timing": "Tajming är allt",
+        "timingDesc": "Förhandla efter framgångar eller vid nya ansvar",
+        "knowMarket": "Känn din marknad",
+        "knowMarketDesc": "Ha koll på vad konkurrenter erbjuder"
+      }
+    },
+    "marketData": {
+      "title": "Lönestatistik",
+      "description": "Jämför löner per bransch och region. Data baserad på svenska löneundersökningar och SCB-statistik.",
+      "byIndustry": "Per bransch",
+      "byRegion": "Per region",
+      "searchIndustry": "Sök bransch...",
+      "searchRegion": "Sök region...",
+      "medianByIndustry": "Medianlön per bransch",
+      "results": "resultat",
+      "sortSalary": "Lön",
+      "sortGrowth": "Ökning",
+      "sortName": "Namn",
+      "perYear": "%/år",
+      "employeesInSweden": "Anställda i Sverige",
+      "annualGrowth": "Årlig tillväxt",
+      "salaryRange": "Lönespektrum (uppskattning):",
+      "min": "Min",
+      "max": "Max",
+      "noIndustryFound": "Ingen bransch hittad för \"{{searchTerm}}\"",
+      "salaryByRegion": "Lönenivå per region",
+      "perMonth": "kr/månad",
+      "costOfLiving": "Levnadskostnad",
+      "averageSalary": "Snittlön",
+      "salaryPremium": "Lönepremie relativt genomsnitt",
+      "premiumHigher": "Högre löner än genomsnitt. Viktigt att väga detta mot levnadskostnaderna.",
+      "premiumLower": "Lägre löner än genomsnitt, men ofta med lägre levnadskostnader.",
+      "premiumAverage": "Genomsnittlig lön för Sverige.",
+      "noRegionFound": "Ingen region hittad för \"{{searchTerm}}\"",
+      "highPremiumSkills": "Kompetenser med hög lönepremie",
+      "demand": "Efterfrågan",
+      "disclaimerTitle": "Om statistiken:",
+      "disclaimerText": "Data baseras på branschrapporter, SCB-statistik och löneundersökningar. Siffror är uppskattningar och kan variera beroende på specifik roll, företagsstorlek och individuella faktorer. Senast uppdaterad: Q1 2026."
     }
   }
 }

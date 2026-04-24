@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import {
   Brain, TrendingUp, TrendingDown, Minus, Target, Lightbulb,
@@ -16,6 +17,7 @@ import { Button } from '@/components/ui/Button'
 import type { PersonalizedRecommendation, ActivityByType, DailyActivity, WeeklyProgress } from '@/services/insightsService'
 
 export default function InsightsTab() {
+  const { t } = useTranslation()
   const { data, isLoading, error, refresh } = useInsights()
   const [expandedRecommendation, setExpandedRecommendation] = useState<string | null>(null)
 
@@ -29,7 +31,7 @@ export default function InsightsTab() {
       >
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
-          <p className="text-slate-700 dark:text-stone-300">Analyserar dina mönster...</p>
+          <p className="text-slate-700 dark:text-stone-300">{t('dashboard.insights.analyzing')}</p>
         </div>
       </div>
     )
@@ -42,12 +44,12 @@ export default function InsightsTab() {
           <Brain className="w-8 h-8 text-red-500" />
         </div>
         <h3 className="text-lg font-semibold text-slate-800 dark:text-stone-100 mb-2">
-          Kunde inte ladda insikter
+          {t('dashboard.insights.errorTitle')}
         </h3>
         <p className="text-slate-700 dark:text-stone-300 mb-4">{error}</p>
         <Button onClick={refresh} variant="outline">
           <RefreshCw className="w-4 h-4 mr-2" />
-          Försök igen
+          {t('common.tryAgain')}
         </Button>
       </div>
     )
@@ -60,13 +62,13 @@ export default function InsightsTab() {
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
             <Brain className="text-teal-500" size={28} />
-            Mina insikter
+            {t('dashboard.insights.title')}
           </h2>
-          <p className="text-slate-700 dark:text-stone-300">Analys baserad på din aktivitet</p>
+          <p className="text-slate-700 dark:text-stone-300">{t('dashboard.insights.subtitle')}</p>
         </div>
         <Button onClick={refresh} variant="secondary" size="sm">
           <RefreshCw className="w-4 h-4 mr-2" />
-          Uppdatera
+          {t('common.refresh')}
         </Button>
       </div>
 
@@ -74,7 +76,7 @@ export default function InsightsTab() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <SummaryCard
           icon={Activity}
-          label="Aktiviteter denna vecka"
+          label={t('dashboard.insights.activitiesThisWeek')}
           value={data.activitySummary.thisWeek}
           trend={data.activitySummary.trend}
           changePercent={data.activitySummary.changePercent}
@@ -82,35 +84,35 @@ export default function InsightsTab() {
         />
         <SummaryCard
           icon={Flame}
-          label="Streak"
-          value={`${data.streakDays} dagar`}
+          label={t('dashboard.insights.streak')}
+          value={t('dashboard.insights.days', { count: data.streakDays })}
           color="orange"
         />
         <SummaryCard
           icon={Clock}
-          label="Bästa tiden"
+          label={t('dashboard.insights.bestTime')}
           value={`${data.mostActiveHour.toString().padStart(2, '0')}:00`}
           subtext={data.mostActiveDay}
           color="blue"
         />
         <SummaryCard
           icon={Smile}
-          label="Genomsnittligt mående"
+          label={t('dashboard.insights.averageMood')}
           value={data.averageMoodThisWeek > 0 ? `${data.averageMoodThisWeek}/5` : '-'}
           color="emerald"
         />
       </div>
 
       {/* Activity Chart */}
-      <ActivityChart dailyActivity={data.dailyActivity} />
+      <ActivityChart dailyActivity={data.dailyActivity} t={t} />
 
       {/* Two column layout */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Activity breakdown */}
-        <ActivityBreakdown activities={data.activityByType} />
+        <ActivityBreakdown activities={data.activityByType} t={t} />
 
         {/* Weekly progress */}
-        <WeeklyProgressChart progress={data.weeklyProgress} />
+        <WeeklyProgressChart progress={data.weeklyProgress} t={t} />
       </div>
 
       {/* Recommendations */}
@@ -118,6 +120,7 @@ export default function InsightsTab() {
         recommendations={data.recommendations}
         expandedId={expandedRecommendation}
         onToggle={(id) => setExpandedRecommendation(expandedRecommendation === id ? null : id)}
+        t={t}
       />
 
       {/* Patterns & Tips */}
@@ -126,6 +129,7 @@ export default function InsightsTab() {
         mostActiveHour={data.mostActiveHour}
         conversionRate={data.applicationConversionRate}
         activitySummary={data.activitySummary}
+        t={t}
       />
     </div>
   )
@@ -187,16 +191,17 @@ function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, 
 
 interface ActivityChartProps {
   dailyActivity: DailyActivity[]
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function ActivityChart({ dailyActivity }: ActivityChartProps) {
+function ActivityChart({ dailyActivity, t }: ActivityChartProps) {
   const maxCount = Math.max(...dailyActivity.map(d => d.count), 1)
 
   return (
     <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <BarChart3 size={20} className="text-teal-500" />
-        Aktivitet senaste 14 dagarna
+        {t('dashboard.insights.activityLast14Days')}
       </h3>
       <div className="flex items-end justify-between gap-1 h-32">
         {dailyActivity.map((day, index) => {
@@ -214,7 +219,7 @@ function ActivityChart({ dailyActivity }: ActivityChartProps) {
                   isToday ? "bg-teal-500" : "bg-teal-200 dark:bg-teal-700",
                   day.count === 0 && "bg-slate-100 dark:bg-stone-700"
                 )}
-                title={`${day.date}: ${day.count} aktiviteter`}
+                title={`${day.date}: ${t('dashboard.insights.activitiesCount', { count: day.count })}`}
               />
               <span className={cn(
                 "text-xs",
@@ -236,9 +241,10 @@ function ActivityChart({ dailyActivity }: ActivityChartProps) {
 
 interface ActivityBreakdownProps {
   activities: ActivityByType[]
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function ActivityBreakdown({ activities }: ActivityBreakdownProps) {
+function ActivityBreakdown({ activities, t }: ActivityBreakdownProps) {
   const getIcon = (type: string) => {
     switch (type) {
       case 'application_sent': return Send
@@ -255,11 +261,11 @@ function ActivityBreakdown({ activities }: ActivityBreakdownProps) {
     <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Activity size={20} className="text-blue-500" />
-        Aktivitetsfördelning
+        {t('dashboard.insights.activityBreakdown')}
       </h3>
       {activities.length === 0 ? (
         <p className="text-slate-700 dark:text-stone-300 text-sm py-4 text-center">
-          Ingen aktivitet registrerad ännu
+          {t('dashboard.insights.noActivityYet')}
         </p>
       ) : (
         <div className="space-y-3">
@@ -300,22 +306,23 @@ function ActivityBreakdown({ activities }: ActivityBreakdownProps) {
 
 interface WeeklyProgressChartProps {
   progress: WeeklyProgress[]
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function WeeklyProgressChart({ progress }: WeeklyProgressChartProps) {
+function WeeklyProgressChart({ progress, t }: WeeklyProgressChartProps) {
   return (
     <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Calendar size={20} className="text-emerald-500" />
-        Veckoutveckling
+        {t('dashboard.insights.weeklyProgress')}
       </h3>
       <div className="space-y-4">
         {progress.map(week => (
           <div key={week.week} className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-600 dark:text-stone-400">Vecka {week.week}</span>
+              <span className="text-sm text-slate-600 dark:text-stone-400">{t('dashboard.insights.week', { number: week.week })}</span>
               <span className="text-xs text-slate-600 dark:text-stone-400">
-                {week.applications + week.exercises} aktiviteter
+                {t('dashboard.insights.activitiesCount', { count: week.applications + week.exercises })}
               </span>
             </div>
             <div className="flex gap-1 h-6">
@@ -323,14 +330,14 @@ function WeeklyProgressChart({ progress }: WeeklyProgressChartProps) {
                 <div
                   className="bg-emerald-500 rounded-l"
                   style={{ flex: week.applications }}
-                  title={`${week.applications} ansökningar`}
+                  title={t('dashboard.insights.applicationsCount', { count: week.applications })}
                 />
               )}
               {week.exercises > 0 && (
                 <div
                   className="bg-blue-500"
                   style={{ flex: week.exercises }}
-                  title={`${week.exercises} övningar`}
+                  title={t('dashboard.insights.exercisesCount', { count: week.exercises })}
                 />
               )}
               {week.applications === 0 && week.exercises === 0 && (
@@ -342,11 +349,11 @@ function WeeklyProgressChart({ progress }: WeeklyProgressChartProps) {
         <div className="flex gap-4 mt-2 text-xs text-slate-700 dark:text-stone-300">
           <span className="flex items-center gap-1">
             <div className="w-3 h-3 bg-emerald-500 rounded" />
-            Ansökningar
+            {t('dashboard.insights.applications')}
           </span>
           <span className="flex items-center gap-1">
             <div className="w-3 h-3 bg-blue-500 rounded" />
-            Övningar
+            {t('dashboard.insights.exercises')}
           </span>
         </div>
       </div>
@@ -362,9 +369,10 @@ interface RecommendationsSectionProps {
   recommendations: PersonalizedRecommendation[]
   expandedId: string | null
   onToggle: (id: string) => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function RecommendationsSection({ recommendations, expandedId, onToggle }: RecommendationsSectionProps) {
+function RecommendationsSection({ recommendations, expandedId, onToggle, t }: RecommendationsSectionProps) {
   const priorityColors = {
     high: 'border-red-200 dark:border-red-700 bg-red-50/50 dark:bg-red-900/20',
     medium: 'border-amber-200 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-900/20',
@@ -382,7 +390,7 @@ function RecommendationsSection({ recommendations, expandedId, onToggle }: Recom
     <div>
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Target size={20} className="text-teal-500" />
-        Personliga rekommendationer
+        {t('dashboard.insights.personalRecommendations')}
       </h3>
       <div className="space-y-3">
         {recommendations.map((rec, index) => {
@@ -449,24 +457,25 @@ interface PatternsSectionProps {
   mostActiveHour: number
   conversionRate: number
   activitySummary: { total: number; trend: string }
+  t: (key: string, options?: Record<string, unknown>) => string
 }
 
-function PatternsSection({ mostActiveDay, mostActiveHour, conversionRate, activitySummary }: PatternsSectionProps) {
+function PatternsSection({ mostActiveDay, mostActiveHour, conversionRate, activitySummary, t }: PatternsSectionProps) {
   const patterns = [
     {
-      text: `Du är mest aktiv på ${mostActiveDay}ar`,
+      text: t('dashboard.insights.patterns.mostActiveDay', { day: mostActiveDay }),
       icon: Calendar
     },
     {
-      text: `Din produktivaste tid är klockan ${mostActiveHour.toString().padStart(2, '0')}:00`,
+      text: t('dashboard.insights.patterns.productiveTime', { time: mostActiveHour.toString().padStart(2, '0') + ':00' }),
       icon: Clock
     },
     activitySummary.total > 0 && {
-      text: `Du har gjort ${activitySummary.total} aktiviteter de senaste 30 dagarna`,
+      text: t('dashboard.insights.patterns.activitiesLast30Days', { count: activitySummary.total }),
       icon: Activity
     },
     conversionRate > 0 && {
-      text: `${conversionRate}% av dina ansökningar leder till intervju`,
+      text: t('dashboard.insights.patterns.conversionRate', { rate: conversionRate }),
       icon: TrendingUp
     }
   ].filter(Boolean) as { text: string; icon: React.ElementType }[]
@@ -479,7 +488,7 @@ function PatternsSection({ mostActiveDay, mostActiveHour, conversionRate, activi
     <div>
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Lightbulb size={20} className="text-amber-500" />
-        Dina mönster
+        {t('dashboard.insights.yourPatterns')}
       </h3>
       <div className="space-y-3">
         {patterns.map((pattern, index) => (
