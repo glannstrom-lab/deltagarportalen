@@ -116,7 +116,7 @@ export const ConsultantRequestBanner: React.FC = () => {
           >
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-12 h-12 bg-teal-100 dark:bg-teal-800 rounded-full flex items-center justify-center">
-                <UserPlus className="w-6 h-6 text-teal-600 dark:text-teal-300" />
+                <UserPlus className="w-6 h-6 text-teal-600 dark:text-teal-300" aria-hidden="true" />
               </div>
 
               <div className="flex-1 min-w-0">
@@ -130,7 +130,7 @@ export const ConsultantRequestBanner: React.FC = () => {
                 {request.message && (
                   <div className="mt-3 p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
                     <div className="flex items-start gap-2">
-                      <MessageSquare className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" />
+                      <MessageSquare className="w-4 h-4 text-gray-400 mt-0.5 flex-shrink-0" aria-hidden="true" />
                       <p className="text-sm text-gray-700 dark:text-gray-300 italic">
                         "{request.message}"
                       </p>
@@ -145,9 +145,9 @@ export const ConsultantRequestBanner: React.FC = () => {
                     className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 transition-colors text-sm font-medium"
                   >
                     {responding === request.id ? (
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
                     ) : (
-                      <Check className="w-4 h-4" />
+                      <Check className="w-4 h-4" aria-hidden="true" />
                     )}
                     Acceptera
                   </button>
@@ -156,7 +156,7 @@ export const ConsultantRequestBanner: React.FC = () => {
                     disabled={responding === request.id}
                     className="flex items-center gap-2 px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-colors text-sm font-medium"
                   >
-                    <X className="w-4 h-4" />
+                    <X className="w-4 h-4" aria-hidden="true" />
                     Neka
                   </button>
                 </div>

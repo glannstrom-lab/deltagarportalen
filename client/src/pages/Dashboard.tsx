@@ -3,7 +3,7 @@
  * Features: Hero, KPIs, RIASEC chart, compact onboarding
  * Updated: Next step CTA, limited visible steps for less overwhelm
  */
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ConsultantRequestBanner } from '@/components/consultant/ConsultantRequestBanner'
@@ -11,7 +11,7 @@ import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { useDashboardData } from '@/hooks/useDashboardData'
+import { useDashboardDataQuery } from '@/hooks/useDashboardData'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import {
   User, Compass, FileText, Search, Mail, ClipboardList,
@@ -52,13 +52,13 @@ const VISIBLE_STEPS_COUNT = 3
 export default function DashboardPage() {
   const { t } = useTranslation()
   const { profile: authProfile } = useAuthStore()
-  const { data: dashboardData, loading: dashboardLoading, error: dashboardError, refetch } = useDashboardData()
+  const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError, refetch } = useDashboardDataQuery()
   const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
   const [showAllSteps, setShowAllSteps] = useState(false)
 
-  // Calculate onboarding progress
-  const getOnboardingProgress = () => {
-    if (!dashboardData) return { completed: 0, total: ONBOARDING_STEPS.length, currentStep: 1 }
+  // Calculate onboarding progress (memoized for performance)
+  const onboardingProgress = useMemo(() => {
+    if (!dashboardData) return { completed: 0, total: ONBOARDING_STEPS.length, currentStep: 1, progress: {} as Record<string, boolean> }
 
     let completed = 0
     let currentStep = 1
@@ -84,9 +84,8 @@ export default function DashboardPage() {
     })
 
     return { completed, total: ONBOARDING_STEPS.length, currentStep, progress }
-  }
+  }, [dashboardData, authProfile?.first_name, interestProfile?.hasResult])
 
-  const onboardingProgress = getOnboardingProgress()
   // Fix: Prevent division by zero
   const progressPercent = Math.round((onboardingProgress.completed / (onboardingProgress.total || 1)) * 100)
 
@@ -98,8 +97,8 @@ export default function DashboardPage() {
   // Get the next recommended step (first incomplete)
   const nextStep = currentStepIndex >= 0 ? ONBOARDING_STEPS[currentStepIndex] : null
 
-  // Get visible steps: show completed + next few incomplete (max VISIBLE_STEPS_COUNT incomplete)
-  const getVisibleSteps = () => {
+  // Get visible steps (memoized for performance)
+  const visibleSteps = useMemo(() => {
     if (showAllSteps) return ONBOARDING_STEPS
 
     const completedSteps = ONBOARDING_STEPS.filter(
@@ -110,10 +109,20 @@ export default function DashboardPage() {
     ).slice(0, VISIBLE_STEPS_COUNT)
 
     return [...completedSteps, ...incompleteSteps]
-  }
+  }, [showAllSteps, onboardingProgress.progress])
 
-  const visibleSteps = getVisibleSteps()
   const hiddenStepsCount = ONBOARDING_STEPS.length - visibleSteps.length
+
+  // Check if user has any activity (for hiding KPI cards for new users)
+  const hasAnyActivity = useMemo(() => {
+    if (!dashboardData) return false
+    return (
+      (dashboardData.cv?.progress || 0) > 0 ||
+      (dashboardData.jobs?.savedCount || 0) > 0 ||
+      (dashboardData.applications?.total || 0) > 0 ||
+      (dashboardData.activity?.streakDays || 0) > 0
+    )
+  }, [dashboardData])
 
   if (dashboardLoading || interestLoading) {
     return <DashboardSkeleton />
@@ -128,7 +137,15 @@ export default function DashboardPage() {
   const greeting = getGreeting()
 
   return (
-    <div className="page-transition pb-8 sm:pb-10 lg:pb-12">
+    <>
+      {/* Skip link for keyboard/screen reader users - WCAG 2.4.1 */}
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-teal-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none"
+      >
+        Hoppa till huvudinnehåll
+      </a>
+      <main id="main-content" className="page-transition pb-8 sm:pb-10 lg:pb-12">
       {/* Responsive container: full width mobile, contained tablet/desktop */}
       <div className="max-w-full md:max-w-3xl lg:max-w-5xl xl:max-w-6xl mx-auto">
         <ConsultantRequestBanner />
@@ -191,40 +208,42 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* KPI Cards - 2x2 mobile, 4 col tablet/desktop */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-5 lg:mb-6">
-          <KpiCard
-            icon={FileText}
-            label="CV-progress"
-            value={`${dashboardData?.cv?.progress || 0}%`}
-            subtext={dashboardData?.cv?.hasCV ? 'Uppdaterat' : 'Inte påbörjat'}
-            color="teal"
-            to="/cv"
-          />
-          <KpiCard
-            icon={Bookmark}
-            label="Sparade jobb"
-            value={dashboardData?.jobs?.savedCount || 0}
-            subtext={dashboardData?.jobs?.newMatches ? `${dashboardData.jobs.newMatches} nya` : undefined}
-            color="sky"
-            to="/job-search"
-          />
-          <KpiCard
-            icon={ClipboardList}
-            label="Ansökningar"
-            value={dashboardData?.applications?.total || 0}
-            subtext={dashboardData?.applications?.statusBreakdown?.interview ? `${dashboardData.applications.statusBreakdown.interview} intervjuer` : undefined}
-            color="amber"
-            to="/applications"
-          />
-          <KpiCard
-            icon={Flame}
-            label="Aktivitet"
-            value={`${dashboardData?.activity?.streakDays || 0}d`}
-            subtext="Daglig streak"
-            color="emerald"
-          />
-        </div>
+        {/* KPI Cards - Only show if user has some activity (reduces "shame dashboard" for new users) */}
+        {hasAnyActivity && (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-5 lg:mb-6">
+            <KpiCard
+              icon={FileText}
+              label="CV-progress"
+              value={`${dashboardData?.cv?.progress || 0}%`}
+              subtext={dashboardData?.cv?.hasCV ? 'Uppdaterat' : 'Inte påbörjat'}
+              color="teal"
+              to="/cv"
+            />
+            <KpiCard
+              icon={Bookmark}
+              label="Sparade jobb"
+              value={dashboardData?.jobs?.savedCount || 0}
+              subtext={dashboardData?.jobs?.newMatches ? `${dashboardData.jobs.newMatches} nya` : undefined}
+              color="sky"
+              to="/job-search"
+            />
+            <KpiCard
+              icon={ClipboardList}
+              label="Ansökningar"
+              value={dashboardData?.applications?.total || 0}
+              subtext={dashboardData?.applications?.statusBreakdown?.interview ? `${dashboardData.applications.statusBreakdown.interview} intervjuer` : undefined}
+              color="amber"
+              to="/applications"
+            />
+            <KpiCard
+              icon={Flame}
+              label="Senaste aktivitet"
+              value={dashboardData?.activity?.streakDays ? `${dashboardData.activity.streakDays}d` : 'Idag'}
+              subtext="Fortsätt så!"
+              color="emerald"
+            />
+          </div>
+        )}
 
         {/* Next Step CTA - Prominent single action, touch-optimized */}
         {nextStep && progressPercent < 100 && (
@@ -448,7 +467,8 @@ export default function DashboardPage() {
         </div>
       </div>
       <HelpButton content={helpContent.dashboard} />
-    </div>
+    </main>
+    </>
   )
 }
 
