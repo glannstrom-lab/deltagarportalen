@@ -310,27 +310,27 @@ export function SettingsTab() {
             {saved ? (
               <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
                 <CheckCircle className="w-5 h-5" />
-                <p className="font-medium">Inställningar sparade!</p>
+                <p className="font-medium">{t('consultant.settings.saved')}</p>
               </div>
             ) : (
               <>
                 <p className="font-medium text-amber-900 dark:text-amber-100">
-                  Du har osparade ändringar
+                  {t('consultant.settings.unsavedChanges')}
                 </p>
                 <div className="flex items-center gap-2">
                   <Button variant="ghost" onClick={handleReset}>
-                    Ångra
+                    {t('consultant.settings.undo')}
                   </Button>
                   <Button onClick={handleSave} disabled={saving}>
                     {saving ? (
                       <>
                         <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                        Sparar...
+                        {t('consultant.settings.saving')}
                       </>
                     ) : (
                       <>
                         <Save className="w-4 h-4 mr-2" />
-                        Spara
+                        {t('consultant.settings.save')}
                       </>
                     )}
                   </Button>
@@ -349,10 +349,10 @@ export function SettingsTab() {
           </div>
           <div>
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              Notifikationer
+              {t('consultant.settings.notifications')}
             </h3>
             <p className="text-sm text-stone-500 dark:text-stone-400">
-              Hantera hur och när du vill bli notifierad
+              {t('consultant.settings.notificationsDesc')}
             </p>
           </div>
         </div>
@@ -406,10 +406,10 @@ export function SettingsTab() {
           </div>
           <div>
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              Inställningar
+              {t('consultant.settings.preferences')}
             </h3>
             <p className="text-sm text-stone-500 dark:text-stone-400">
-              Anpassa din konsultvy
+              {t('consultant.settings.preferencesDesc')}
             </p>
           </div>
         </div>
@@ -417,8 +417,8 @@ export function SettingsTab() {
         <div>
           <SettingRow
             icon={Palette}
-            label="Standardvy för deltagare"
-            description="Välj hur deltagarlistan visas som standard"
+            label={t('consultant.settings.defaultParticipantView')}
+            description={t('consultant.settings.chooseDefaultView')}
           >
             <select
               value={preferences.defaultView}
@@ -430,15 +430,15 @@ export function SettingsTab() {
                 'text-stone-900 dark:text-stone-100'
               )}
             >
-              <option value="grid">Rutnät</option>
-              <option value="list">Lista</option>
+              <option value="grid">{t('consultant.settings.grid')}</option>
+              <option value="list">{t('consultant.settings.list')}</option>
             </select>
           </SettingRow>
 
           <SettingRow
             icon={Globe}
-            label="Språk"
-            description="Välj språk för gränssnittet"
+            label={t('consultant.settings.language')}
+            description={t('consultant.settings.chooseLanguage')}
           >
             <select
               value={preferences.language}
@@ -450,15 +450,15 @@ export function SettingsTab() {
                 'text-stone-900 dark:text-stone-100'
               )}
             >
-              <option value="sv">Svenska</option>
-              <option value="en">English</option>
+              <option value="sv">{t('consultant.settings.swedish')}</option>
+              <option value="en">{t('consultant.settings.english')}</option>
             </select>
           </SettingRow>
 
           <SettingRow
             icon={Clock}
-            label="Tidszon"
-            description="Används för mötesbokning och påminnelser"
+            label={t('consultant.settings.timezone')}
+            description={t('consultant.settings.usedForMeetings')}
           >
             <select
               value={preferences.timezone}
@@ -478,8 +478,8 @@ export function SettingsTab() {
 
           <SettingRow
             icon={Calendar}
-            label="Veckan börjar"
-            description="Påverkar kalendervisning"
+            label={t('consultant.settings.weekStart')}
+            description={t('consultant.settings.affectsCalendar')}
           >
             <select
               value={preferences.weekStart}
@@ -491,15 +491,15 @@ export function SettingsTab() {
                 'text-stone-900 dark:text-stone-100'
               )}
             >
-              <option value="monday">Måndag</option>
-              <option value="sunday">Söndag</option>
+              <option value="monday">{t('consultant.settings.monday')}</option>
+              <option value="sunday">{t('consultant.settings.sunday')}</option>
             </select>
           </SettingRow>
 
           <SettingRow
             icon={AlertTriangle}
-            label="Inaktivitetsvarning"
-            description="Dagar innan en deltagare markeras som inaktiv"
+            label={t('consultant.settings.inactivityWarning')}
+            description={t('consultant.settings.daysBeforeInactive')}
           >
             <select
               value={preferences.showInactiveWarning}
@@ -511,9 +511,9 @@ export function SettingsTab() {
                 'text-stone-900 dark:text-stone-100'
               )}
             >
-              <option value={5}>5 dagar</option>
-              <option value={7}>7 dagar</option>
-              <option value={14}>14 dagar</option>
+              <option value={5}>{t('consultant.settings.daysCount', { count: 5 })}</option>
+              <option value={7}>{t('consultant.settings.daysCount', { count: 7 })}</option>
+              <option value={14}>{t('consultant.settings.daysCount', { count: 14 })}</option>
             </select>
           </SettingRow>
         </div>
@@ -528,10 +528,10 @@ export function SettingsTab() {
             </div>
             <div>
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                Team
+                {t('consultant.settings.team')}
               </h3>
               <p className="text-sm text-stone-500 dark:text-stone-400">
-                Kollegor och administratörer
+                {t('consultant.settings.teamDesc')}
               </p>
             </div>
           </div>
@@ -563,11 +563,11 @@ export function SettingsTab() {
                     ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300'
                     : 'bg-stone-200 text-stone-700 dark:bg-stone-700 dark:text-stone-300'
                 )}>
-                  {member.role === 'admin' ? 'Admin' : 'Konsulent'}
+                  {member.role === 'admin' ? t('consultant.settings.admin') : t('consultant.settings.consultant')}
                 </span>
                 {member.participantCount > 0 && (
                   <span className="text-sm text-stone-500 dark:text-stone-600">
-                    {member.participantCount} deltagare
+                    {t('consultant.settings.participantsCount', { count: member.participantCount })}
                   </span>
                 )}
               </div>
@@ -584,10 +584,10 @@ export function SettingsTab() {
           </div>
           <div>
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              Data & Integritet
+              {t('consultant.settings.dataPrivacy')}
             </h3>
             <p className="text-sm text-stone-500 dark:text-stone-400">
-              Hantera data och GDPR-relaterade inställningar
+              {t('consultant.settings.dataPrivacyDesc')}
             </p>
           </div>
         </div>
@@ -595,19 +595,19 @@ export function SettingsTab() {
         <div className="space-y-3">
           <button className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors">
             <span className="font-medium text-stone-900 dark:text-stone-100">
-              Exportera all data
+              {t('consultant.settings.exportAllData')}
             </span>
             <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
           </button>
           <button className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors">
             <span className="font-medium text-stone-900 dark:text-stone-100">
-              Se åtkomstlogg
+              {t('consultant.settings.viewAccessLog')}
             </span>
             <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
           </button>
           <button className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors">
             <span className="font-medium text-stone-900 dark:text-stone-100">
-              Integritetspolicy
+              {t('consultant.settings.privacyPolicy')}
             </span>
             <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
           </button>

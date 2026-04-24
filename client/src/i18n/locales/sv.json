@@ -5374,7 +5374,14 @@
       "gdprSettings": "Hantera data och GDPR-relaterade inställningar",
       "exportAllData": "Exportera all data",
       "viewAccessLog": "Se åtkomstlogg",
-      "privacyPolicy": "Integritetspolicy"
+      "privacyPolicy": "Integritetspolicy",
+      "saved": "Inställningar sparade!",
+      "saving": "Sparar...",
+      "notificationsDesc": "Hantera hur och när du vill bli notifierad",
+      "preferencesDesc": "Anpassa din konsultvy",
+      "teamDesc": "Kollegor och administratörer",
+      "dataPrivacyDesc": "Hantera data och GDPR-relaterade inställningar",
+      "daysCount": "{{count}} dagar"
     },
     "alerts": {
       "noContact": "Ej kontaktad på 7+ dagar",

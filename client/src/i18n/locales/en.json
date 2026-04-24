@@ -5261,7 +5261,14 @@
       "participantsCount": "{{count}} participants",
       "exportAllData": "Export all data",
       "viewAccessLog": "View access log",
-      "privacyPolicy": "Privacy policy"
+      "privacyPolicy": "Privacy policy",
+      "saved": "Settings saved!",
+      "saving": "Saving...",
+      "notificationsDesc": "Manage how and when you want to be notified",
+      "preferencesDesc": "Customize your consultant view",
+      "teamDesc": "Colleagues and administrators",
+      "dataPrivacyDesc": "Manage data and GDPR-related settings",
+      "daysCount": "{{count}} days"
     },
     "statuses": {
       "active": "Active",
