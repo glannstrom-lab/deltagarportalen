@@ -3,6 +3,7 @@
  * Combines: Dela + Inställningar tabs
  */
 
+import { useTranslation } from 'react-i18next'
 import { Share2, Bell, Eye, AlertCircle } from '@/components/ui/icons'
 import { SectionCard } from '../forms'
 import {
@@ -12,6 +13,8 @@ import {
 } from '../index'
 
 export function SettingsSection() {
+  const { t } = useTranslation()
+
   return (
     <div
       role="tabpanel"
@@ -21,7 +24,7 @@ export function SettingsSection() {
     >
       {/* Profile Sharing */}
       <SectionCard
-        title="Dela din profil"
+        title={t('profile.settingsSection.shareProfile')}
         icon={<Share2 className="w-4 h-4" />}
         colorScheme="teal"
         className="md:col-span-2"
@@ -35,13 +38,13 @@ export function SettingsSection() {
           <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" aria-hidden="true" />
           <div>
             <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
-              Tips för delning
+              {t('profile.settingsSection.sharingTips')}
             </p>
             <ul className="text-xs text-amber-600 dark:text-amber-400 mt-1 space-y-1">
-              <li>• Skapa olika länkar för olika ändamål (t.ex. per jobbansökan)</li>
-              <li>• Sätt en giltighetstid för att kontrollera åtkomst</li>
-              <li>• Välj vilka delar av din profil som ska visas</li>
-              <li>• Använd QR-koden på visitkort eller CV</li>
+              <li>• {t('profile.settingsSection.tip1')}</li>
+              <li>• {t('profile.settingsSection.tip2')}</li>
+              <li>• {t('profile.settingsSection.tip3')}</li>
+              <li>• {t('profile.settingsSection.tip4')}</li>
             </ul>
           </div>
         </div>
@@ -49,7 +52,7 @@ export function SettingsSection() {
 
       {/* Notification Settings */}
       <SectionCard
-        title="Notifikationer"
+        title={t('profile.settingsSection.notifications')}
         icon={<Bell className="w-4 h-4" />}
         colorScheme="teal"
       >
@@ -58,7 +61,7 @@ export function SettingsSection() {
 
       {/* Visibility Settings */}
       <SectionCard
-        title="Synlighet"
+        title={t('profile.settingsSection.visibility')}
         icon={<Eye className="w-4 h-4" />}
         colorScheme="sky"
       >

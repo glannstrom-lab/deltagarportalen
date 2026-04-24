@@ -74,7 +74,9 @@
     "removeTag": "Ta bort {{tag}}",
     "suggestions": "Förslag",
     "tagInputInstructions": "Tryck Enter för att lägga till. Använd piltangenter för att navigera förslag.",
-    "select": "Välj..."
+    "select": "Välj...",
+    "copied": "Kopierat!",
+    "saving": "Sparar..."
   },
   "riasec": {
     "realistic": "Realistisk",
@@ -4803,6 +4805,89 @@
     "tip2": "En kort bio hjälper arbetsgivare att lära känna dig",
     "tip3": "Uppdatera din profil regelbundet med aktuell information",
     "errorLoadingSection": "Något gick fel vid laddning av denna sektion",
+    "aiSummary": {
+      "copy": "Kopiera sammanfattning",
+      "edit": "Redigera sammanfattning",
+      "generating": "Genererar...",
+      "generate": "Generera",
+      "regenerate": "Generera ny"
+    },
+    "careerTimeline": {
+      "current": "Nuvarande",
+      "emptyState": "Din karriärtidslinje är tom. Lägg till erfarenhet och utbildning i ditt CV.",
+      "goToCVBuilder": "Gå till CV-byggaren",
+      "editInCVBuilder": "Redigera i CV-byggaren"
+    },
+    "imageUpload": {
+      "selectImageFile": "Välj en bildfil",
+      "maxSize": "Max 5MB",
+      "changeImage": "Byt bild"
+    },
+    "settingsSection": {
+      "shareProfile": "Dela din profil",
+      "sharingTips": "Tips för delning",
+      "tip1": "Skapa olika länkar för olika ändamål (t.ex. per jobbansökan)",
+      "tip2": "Sätt en giltighetstid för att kontrollera åtkomst",
+      "tip3": "Välj vilka delar av din profil som ska visas",
+      "tip4": "Använd QR-koden på visitkort eller CV",
+      "notifications": "Notifikationer",
+      "visibility": "Synlighet"
+    },
+    "competenceSection": {
+      "mySkills": "Mina kompetenser",
+      "profileSummary": "Profilsammanfattning",
+      "certificatesDocuments": "Certifikat & dokument",
+      "importFromLinkedIn": "Importera från LinkedIn",
+      "importFromLinkedInDesc": "Importera din profil direkt från LinkedIn (kommer snart)",
+      "comingSoon": "Kommer snart",
+      "completionGuide": "Kompletteringsguide"
+    },
+    "completionGuide": {
+      "title": "Profilkomplettering",
+      "stepsComplete": "{{completed}} av {{total}} steg klara",
+      "importantStepsLeft": "{{count}} viktiga steg kvar",
+      "completeToImproveChances": "Slutför dessa för att öka dina chanser att hitta jobb.",
+      "profileComplete": "Din profil är komplett!",
+      "allInfoFilled": "Du har fyllt i all viktig information.",
+      "items": {
+        "name": {
+          "label": "Namn",
+          "description": "Lägg till ditt för- och efternamn"
+        },
+        "photo": {
+          "label": "Profilbild",
+          "description": "Ladda upp en professionell profilbild"
+        },
+        "contact": {
+          "label": "Kontaktuppgifter",
+          "description": "Lägg till telefon och ort"
+        },
+        "cvSummary": {
+          "label": "CV-sammanfattning",
+          "description": "Skriv en kort sammanfattning i ditt CV"
+        },
+        "experience": {
+          "label": "Arbetslivserfarenhet",
+          "description": "Lägg till din arbetslivserfarenhet i CV"
+        },
+        "education": {
+          "label": "Utbildning",
+          "description": "Lägg till din utbildning i CV"
+        },
+        "skills": {
+          "label": "Kompetenser",
+          "description": "Lägg till minst 3 kompetenser"
+        },
+        "aiSummary": {
+          "label": "AI-sammanfattning",
+          "description": "Generera en professionell sammanfattning"
+        },
+        "documents": {
+          "label": "Dokument",
+          "description": "Ladda upp certifikat eller intyg"
+        }
+      }
+    },
     "overview": {
       "contactInfo": "Kontaktuppgifter",
       "firstName": "Förnamn",
@@ -5048,6 +5133,93 @@
         "remote": "Distans",
         "education": "Utbildning",
         "bonus": "Bonus"
+      }
+    },
+    "suggestions": {
+      "jobs": {
+        "projectManager": "Projektledare",
+        "developer": "Utvecklare",
+        "designer": "Designer",
+        "marketer": "Marknadsförare",
+        "salesperson": "Säljare",
+        "economist": "Ekonom",
+        "hrSpecialist": "HR-specialist",
+        "teacher": "Lärare",
+        "nurse": "Sjuksköterska",
+        "engineer": "Ingenjör",
+        "consultant": "Konsult",
+        "manager": "Chef",
+        "administrator": "Administratör",
+        "analyst": "Analytiker",
+        "coordinator": "Koordinator"
+      },
+      "interests": {
+        "technology": "Teknik",
+        "creativity": "Kreativitet",
+        "leadership": "Ledarskap",
+        "problemSolving": "Problemlösning",
+        "communication": "Kommunikation",
+        "analysis": "Analys",
+        "teamwork": "Teamwork",
+        "innovation": "Innovation",
+        "strategy": "Strategi",
+        "customerContact": "Kundkontakt"
+      },
+      "skills": {
+        "microsoftOffice": "Microsoft Office",
+        "excel": "Excel",
+        "word": "Word",
+        "powerpoint": "PowerPoint",
+        "customerService": "Kundservice",
+        "communication": "Kommunikation",
+        "teamwork": "Teamwork",
+        "leadership": "Ledarskap",
+        "projectManagement": "Projektledning",
+        "problemSolving": "Problemlösning",
+        "timeManagement": "Tidsstyrning",
+        "organization": "Organisation",
+        "swedish": "Svenska",
+        "english": "Engelska",
+        "driversLicenseB": "Körkort B",
+        "javascript": "JavaScript",
+        "python": "Python",
+        "react": "React",
+        "sql": "SQL",
+        "sales": "Försäljning",
+        "marketing": "Marknadsföring",
+        "economics": "Ekonomi",
+        "accounting": "Bokföring"
+      }
+    },
+    "completion": {
+      "fields": {
+        "firstName": "Förnamn",
+        "lastName": "Efternamn",
+        "phone": "Telefon",
+        "location": "Ort",
+        "desiredJobs": "Önskade jobb",
+        "availability": "Tillgänglighet",
+        "cvStatus": "CV-status",
+        "energyLevel": "Energinivå",
+        "shortTermGoal": "Kortsiktigt mål",
+        "longTermGoal": "Långsiktigt mål",
+        "registeredAF": "Registrerad på AF",
+        "sectors": "Önskade sektorer"
+      }
+    },
+    "messages": {
+      "completion": {
+        "welcome": "Välkommen! Låt oss komma igång.",
+        "goodStart": "Bra start! Du är på rätt väg.",
+        "halfway": "Halvvägs! Du gör framsteg.",
+        "almostThere": "Nästan där! Bara lite kvar.",
+        "complete": "Fantastiskt! Din profil är komplett."
+      },
+      "encouragement": {
+        "everyStep": "Varje steg räknas!",
+        "takeYourTime": "Ta den tid du behöver.",
+        "doingGreat": "Du gör så gott du kan.",
+        "pauseIsProgress": "Paus är också framsteg."
       }
     },
     "sections": {
@@ -6212,7 +6384,61 @@
       "preferencesDesc": "Anpassa din konsultvy",
       "teamDesc": "Kollegor och administratörer",
       "dataPrivacyDesc": "Hantera data och GDPR-relaterade inställningar",
-      "daysCount": "{{count}} dagar"
+      "daysCount": "{{count}} dagar",
+      "emailNotifications": "E-postnotiser",
+      "pushNotifications": "Push-notiser",
+      "enablePush": "Aktivera push-notiser",
+      "enablePushDesc": "Få notiser direkt på enheten",
+      "frequency": "Frekvens",
+      "frequencyOptions": {
+        "realtime": "Direkt",
+        "daily": "Daglig sammanfattning",
+        "weekly": "Veckosummering",
+        "never": "Aldrig"
+      },
+      "notifications": {
+        "jobMatches": "Jobbmatchningar",
+        "jobMatchesDesc": "Nya jobb som matchar din profil",
+        "applicationUpdates": "Ansökningsuppdateringar",
+        "applicationUpdatesDesc": "Status på dina ansökningar",
+        "weeklySummary": "Veckosummering",
+        "weeklySummaryDesc": "Sammanfattning av din aktivitet",
+        "tipsAndResources": "Tips & resurser",
+        "tipsAndResourcesDesc": "Användbara tips för jobbsökare",
+        "consultantMessages": "Meddelanden från konsulent",
+        "consultantMessagesDesc": "När din konsulent skickar meddelanden",
+        "deadlines": "Deadlines",
+        "achievements": "Prestationer"
+      },
+      "whoCanSeeProfile": "Vem kan se din profil?",
+      "visibility": {
+        "private": "Endast jag",
+        "privateDesc": "Din profil är helt privat",
+        "consultant": "Konsulenter",
+        "consultantDesc": "Synlig för din arbetskonsulent",
+        "public": "Alla",
+        "publicDesc": "Synlig för arbetsgivare och rekryterare"
+      },
+      "showHideSections": "Visa/dölj sektioner",
+      "sections": {
+        "fullName": "Fullständigt namn",
+        "photo": "Profilbild",
+        "email": "E-post",
+        "phone": "Telefon",
+        "location": "Ort",
+        "summary": "Sammanfattning",
+        "skills": "Kompetenser",
+        "experience": "Erfarenhet",
+        "education": "Utbildning",
+        "documents": "Dokument",
+        "interests": "Intressen",
+        "goals": "Mål"
+      },
+      "jobSearch": "Jobbsökning",
+      "visibleToEmployers": "Synlig för arbetsgivare",
+      "visibleToEmployersDesc": "Arbetsgivare kan hitta din profil",
+      "searchableProfile": "Sökbar profil",
+      "searchableProfileDesc": "Din profil kan hittas via sökning"
     },
     "participantAnalytics": {
       "title": "Deltagaranalys",

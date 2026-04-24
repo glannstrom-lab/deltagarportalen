@@ -3,6 +3,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Bell, Mail, Phone, MessageSquare, Globe,
   Lock, Eye, EyeOff, Users, Building2, Loader2
@@ -24,6 +25,7 @@ interface NotificationSettingsProps {
 }
 
 export function NotificationSettingsSection({ className }: NotificationSettingsProps) {
+  const { t } = useTranslation()
   const [settings, setSettings] = useState<NotificationSettings | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -89,20 +91,20 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
       <div>
         <div className="flex items-center gap-2 mb-3">
           <Mail className="w-4 h-4 text-teal-500" />
-          <h4 className="font-medium text-stone-800 dark:text-stone-200">E-postnotiser</h4>
+          <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.emailNotifications')}</h4>
         </div>
         <div className="space-y-2">
           {[
-            { key: 'email_job_matches', label: 'Jobbmatchningar', desc: 'Nya jobb som matchar din profil' },
-            { key: 'email_application_updates', label: 'Ansökningsuppdateringar', desc: 'Status på dina ansökningar' },
-            { key: 'email_weekly_summary', label: 'Veckosummering', desc: 'Sammanfattning av din aktivitet' },
-            { key: 'email_tips_and_resources', label: 'Tips & resurser', desc: 'Användbara tips för jobbsökare' },
-            { key: 'email_consultant_messages', label: 'Meddelanden från konsulent', desc: 'När din konsulent skickar meddelanden' },
+            { key: 'email_job_matches', labelKey: 'profile.settings.notifications.jobMatches', descKey: 'profile.settings.notifications.jobMatchesDesc' },
+            { key: 'email_application_updates', labelKey: 'profile.settings.notifications.applicationUpdates', descKey: 'profile.settings.notifications.applicationUpdatesDesc' },
+            { key: 'email_weekly_summary', labelKey: 'profile.settings.notifications.weeklySummary', descKey: 'profile.settings.notifications.weeklySummaryDesc' },
+            { key: 'email_tips_and_resources', labelKey: 'profile.settings.notifications.tipsAndResources', descKey: 'profile.settings.notifications.tipsAndResourcesDesc' },
+            { key: 'email_consultant_messages', labelKey: 'profile.settings.notifications.consultantMessages', descKey: 'profile.settings.notifications.consultantMessagesDesc' },
           ].map(item => (
             <label key={item.key} className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
               <div>
-                <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{item.label}</p>
-                <p className="text-xs text-stone-500 dark:text-stone-400">{item.desc}</p>
+                <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t(item.labelKey)}</p>
+                <p className="text-xs text-stone-500 dark:text-stone-400">{t(item.descKey)}</p>
               </div>
               <input
                 type="checkbox"
@@ -119,13 +121,13 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
       <div>
         <div className="flex items-center gap-2 mb-3">
           <Phone className="w-4 h-4 text-teal-500" />
-          <h4 className="font-medium text-stone-800 dark:text-stone-200">Push-notiser</h4>
+          <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.pushNotifications')}</h4>
         </div>
         <div className="space-y-2">
           <label className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
             <div>
-              <p className="text-sm font-medium text-stone-800 dark:text-stone-200">Aktivera push-notiser</p>
-              <p className="text-xs text-stone-500 dark:text-stone-400">Få notiser direkt på enheten</p>
+              <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.enablePush')}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">{t('profile.settings.enablePushDesc')}</p>
             </div>
             <input
               type="checkbox"
@@ -137,12 +139,12 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
           {settings.push_enabled && (
             <div className="ml-4 space-y-2">
               {[
-                { key: 'push_job_matches', label: 'Jobbmatchningar' },
-                { key: 'push_deadlines', label: 'Deadlines' },
-                { key: 'push_achievements', label: 'Prestationer' },
+                { key: 'push_job_matches', labelKey: 'profile.settings.notifications.jobMatches' },
+                { key: 'push_deadlines', labelKey: 'profile.settings.notifications.deadlines' },
+                { key: 'push_achievements', labelKey: 'profile.settings.notifications.achievements' },
               ].map(item => (
                 <label key={item.key} className="flex items-center justify-between p-2 bg-stone-50 dark:bg-stone-700/50 rounded-lg cursor-pointer">
-                  <span className="text-sm text-stone-700 dark:text-stone-300">{item.label}</span>
+                  <span className="text-sm text-stone-700 dark:text-stone-300">{t(item.labelKey)}</span>
                   <input
                     type="checkbox"
                     checked={settings[item.key as keyof NotificationSettings] as boolean}
@@ -160,24 +162,24 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
       <div>
         <div className="flex items-center gap-2 mb-3">
           <Bell className="w-4 h-4 text-teal-500" />
-          <h4 className="font-medium text-stone-800 dark:text-stone-200">Frekvens</h4>
+          <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.frequency')}</h4>
         </div>
         <select
           value={settings.digest_frequency}
           onChange={(e) => handleChange('digest_frequency', e.target.value)}
           className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
         >
-          <option value="realtime">Direkt</option>
-          <option value="daily">Daglig sammanfattning</option>
-          <option value="weekly">Veckosummering</option>
-          <option value="never">Aldrig</option>
+          <option value="realtime">{t('profile.settings.frequencyOptions.realtime')}</option>
+          <option value="daily">{t('profile.settings.frequencyOptions.daily')}</option>
+          <option value="weekly">{t('profile.settings.frequencyOptions.weekly')}</option>
+          <option value="never">{t('profile.settings.frequencyOptions.never')}</option>
         </select>
       </div>
 
       {saving && (
         <div className="flex items-center gap-2 text-xs text-teal-600 dark:text-teal-400">
           <Loader2 className="w-3 h-3 animate-spin" />
-          Sparar...
+          {t('common.saving')}
         </div>
       )}
     </div>
@@ -193,6 +195,7 @@ interface VisibilitySettingsProps {
 }
 
 export function VisibilitySettingsSection({ className }: VisibilitySettingsProps) {
+  const { t } = useTranslation()
   const [settings, setSettings] = useState<VisibilitySettings | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -263,13 +266,13 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
       <div>
         <div className="flex items-center gap-2 mb-3">
           <Globe className="w-4 h-4 text-teal-500" />
-          <h4 className="font-medium text-stone-800 dark:text-stone-200">Vem kan se din profil?</h4>
+          <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.whoCanSeeProfile')}</h4>
         </div>
         <div className="space-y-2">
           {[
-            { value: 'private', label: 'Endast jag', desc: 'Din profil är helt privat', icon: Lock },
-            { value: 'consultant', label: 'Konsulenter', desc: 'Synlig för din arbetskonsulent', icon: Users },
-            { value: 'public', label: 'Alla', desc: 'Synlig för arbetsgivare och rekryterare', icon: Globe },
+            { value: 'private', labelKey: 'profile.settings.visibility.private', descKey: 'profile.settings.visibility.privateDesc', icon: Lock },
+            { value: 'consultant', labelKey: 'profile.settings.visibility.consultant', descKey: 'profile.settings.visibility.consultantDesc', icon: Users },
+            { value: 'public', labelKey: 'profile.settings.visibility.public', descKey: 'profile.settings.visibility.publicDesc', icon: Globe },
           ].map(item => (
             <label
               key={item.value}
@@ -292,8 +295,8 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
                 <item.icon className="w-4 h-4 text-stone-600 dark:text-stone-400" />
               </div>
               <div>
-                <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{item.label}</p>
-                <p className="text-xs text-stone-500 dark:text-stone-400">{item.desc}</p>
+                <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t(item.labelKey)}</p>
+                <p className="text-xs text-stone-500 dark:text-stone-400">{t(item.descKey)}</p>
               </div>
             </label>
           ))}
@@ -304,22 +307,22 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
       <div>
         <div className="flex items-center gap-2 mb-3">
           <Eye className="w-4 h-4 text-teal-500" />
-          <h4 className="font-medium text-stone-800 dark:text-stone-200">Visa/dölj sektioner</h4>
+          <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.showHideSections')}</h4>
         </div>
         <div className="grid grid-cols-2 gap-2">
           {[
-            { key: 'show_full_name', label: 'Fullständigt namn' },
-            { key: 'show_photo', label: 'Profilbild' },
-            { key: 'show_email', label: 'E-post' },
-            { key: 'show_phone', label: 'Telefon' },
-            { key: 'show_location', label: 'Ort' },
-            { key: 'show_summary', label: 'Sammanfattning' },
-            { key: 'show_skills', label: 'Kompetenser' },
-            { key: 'show_experience', label: 'Erfarenhet' },
-            { key: 'show_education', label: 'Utbildning' },
-            { key: 'show_documents', label: 'Dokument' },
-            { key: 'show_interests', label: 'Intressen' },
-            { key: 'show_goals', label: 'Mål' },
+            { key: 'show_full_name', labelKey: 'profile.settings.sections.fullName' },
+            { key: 'show_photo', labelKey: 'profile.settings.sections.photo' },
+            { key: 'show_email', labelKey: 'profile.settings.sections.email' },
+            { key: 'show_phone', labelKey: 'profile.settings.sections.phone' },
+            { key: 'show_location', labelKey: 'profile.settings.sections.location' },
+            { key: 'show_summary', labelKey: 'profile.settings.sections.summary' },
+            { key: 'show_skills', labelKey: 'profile.settings.sections.skills' },
+            { key: 'show_experience', labelKey: 'profile.settings.sections.experience' },
+            { key: 'show_education', labelKey: 'profile.settings.sections.education' },
+            { key: 'show_documents', labelKey: 'profile.settings.sections.documents' },
+            { key: 'show_interests', labelKey: 'profile.settings.sections.interests' },
+            { key: 'show_goals', labelKey: 'profile.settings.sections.goals' },
           ].map(item => (
             <label key={item.key} className="flex items-center gap-2 p-2 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
               <input
@@ -328,7 +331,7 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
                 onChange={(e) => handleChange(item.key as keyof VisibilitySettings, e.target.checked)}
                 className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
               />
-              <span className="text-sm text-stone-700 dark:text-stone-300">{item.label}</span>
+              <span className="text-sm text-stone-700 dark:text-stone-300">{t(item.labelKey)}</span>
             </label>
           ))}
         </div>
@@ -338,13 +341,13 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
       <div>
         <div className="flex items-center gap-2 mb-3">
           <Building2 className="w-4 h-4 text-teal-500" />
-          <h4 className="font-medium text-stone-800 dark:text-stone-200">Jobbsökning</h4>
+          <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.jobSearch')}</h4>
         </div>
         <div className="space-y-2">
           <label className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
             <div>
-              <p className="text-sm font-medium text-stone-800 dark:text-stone-200">Synlig för arbetsgivare</p>
-              <p className="text-xs text-stone-500 dark:text-stone-400">Arbetsgivare kan hitta din profil</p>
+              <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.visibleToEmployers')}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">{t('profile.settings.visibleToEmployersDesc')}</p>
             </div>
             <input
               type="checkbox"
@@ -355,8 +358,8 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
           </label>
           <label className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
             <div>
-              <p className="text-sm font-medium text-stone-800 dark:text-stone-200">Sökbar profil</p>
-              <p className="text-xs text-stone-500 dark:text-stone-400">Din profil kan hittas via sökning</p>
+              <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.searchableProfile')}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">{t('profile.settings.searchableProfileDesc')}</p>
             </div>
             <input
               type="checkbox"
@@ -371,7 +374,7 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
       {saving && (
         <div className="flex items-center gap-2 text-xs text-teal-600 dark:text-teal-400">
           <Loader2 className="w-3 h-3 animate-spin" />
-          Sparar...
+          {t('common.saving')}
         </div>
       )}
     </div>

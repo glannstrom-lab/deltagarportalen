@@ -74,7 +74,9 @@
     "removeTag": "Remove {{tag}}",
     "suggestions": "Suggestions",
     "tagInputInstructions": "Press Enter to add. Use arrow keys to navigate suggestions.",
-    "select": "Select..."
+    "select": "Select...",
+    "copied": "Copied!",
+    "saving": "Saving..."
   },
   "riasec": {
     "realistic": "Realistic",
@@ -4803,6 +4805,89 @@
     "tip2": "A short bio helps employers get to know you",
     "tip3": "Update your profile regularly with current information",
     "errorLoadingSection": "Something went wrong while loading this section",
+    "aiSummary": {
+      "copy": "Copy summary",
+      "edit": "Edit summary",
+      "generating": "Generating...",
+      "generate": "Generate",
+      "regenerate": "Regenerate"
+    },
+    "careerTimeline": {
+      "current": "Current",
+      "emptyState": "Your career timeline is empty. Add experience and education to your CV.",
+      "goToCVBuilder": "Go to CV builder",
+      "editInCVBuilder": "Edit in CV builder"
+    },
+    "imageUpload": {
+      "selectImageFile": "Please select an image file",
+      "maxSize": "Max 5MB",
+      "changeImage": "Change image"
+    },
+    "settingsSection": {
+      "shareProfile": "Share your profile",
+      "sharingTips": "Sharing tips",
+      "tip1": "Create different links for different purposes (e.g., per job application)",
+      "tip2": "Set an expiration date to control access",
+      "tip3": "Choose which parts of your profile to show",
+      "tip4": "Use the QR code on business cards or CV",
+      "notifications": "Notifications",
+      "visibility": "Visibility"
+    },
+    "competenceSection": {
+      "mySkills": "My skills",
+      "profileSummary": "Profile summary",
+      "certificatesDocuments": "Certificates & documents",
+      "importFromLinkedIn": "Import from LinkedIn",
+      "importFromLinkedInDesc": "Import your profile directly from LinkedIn (coming soon)",
+      "comingSoon": "Coming soon",
+      "completionGuide": "Completion guide"
+    },
+    "completionGuide": {
+      "title": "Profile Completion",
+      "stepsComplete": "{{completed}} of {{total}} steps complete",
+      "importantStepsLeft": "{{count}} important steps left",
+      "completeToImproveChances": "Complete these to improve your chances of finding a job.",
+      "profileComplete": "Your profile is complete!",
+      "allInfoFilled": "You have filled in all the important information.",
+      "items": {
+        "name": {
+          "label": "Name",
+          "description": "Add your first and last name"
+        },
+        "photo": {
+          "label": "Profile photo",
+          "description": "Upload a professional profile photo"
+        },
+        "contact": {
+          "label": "Contact information",
+          "description": "Add phone and location"
+        },
+        "cvSummary": {
+          "label": "CV summary",
+          "description": "Write a short summary in your CV"
+        },
+        "experience": {
+          "label": "Work experience",
+          "description": "Add your work experience to your CV"
+        },
+        "education": {
+          "label": "Education",
+          "description": "Add your education to your CV"
+        },
+        "skills": {
+          "label": "Skills",
+          "description": "Add at least 3 skills"
+        },
+        "aiSummary": {
+          "label": "AI summary",
+          "description": "Generate a professional summary"
+        },
+        "documents": {
+          "label": "Documents",
+          "description": "Upload certificates or references"
+        }
+      }
+    },
     "overview": {
       "contactInfo": "Contact Information",
       "firstName": "First name",
@@ -5048,6 +5133,93 @@
         "remote": "Remote work",
         "education": "Education",
         "bonus": "Bonus"
+      }
+    },
+    "suggestions": {
+      "jobs": {
+        "projectManager": "Project Manager",
+        "developer": "Developer",
+        "designer": "Designer",
+        "marketer": "Marketer",
+        "salesperson": "Salesperson",
+        "economist": "Economist",
+        "hrSpecialist": "HR Specialist",
+        "teacher": "Teacher",
+        "nurse": "Nurse",
+        "engineer": "Engineer",
+        "consultant": "Consultant",
+        "manager": "Manager",
+        "administrator": "Administrator",
+        "analyst": "Analyst",
+        "coordinator": "Coordinator"
+      },
+      "interests": {
+        "technology": "Technology",
+        "creativity": "Creativity",
+        "leadership": "Leadership",
+        "problemSolving": "Problem Solving",
+        "communication": "Communication",
+        "analysis": "Analysis",
+        "teamwork": "Teamwork",
+        "innovation": "Innovation",
+        "strategy": "Strategy",
+        "customerContact": "Customer Contact"
+      },
+      "skills": {
+        "microsoftOffice": "Microsoft Office",
+        "excel": "Excel",
+        "word": "Word",
+        "powerpoint": "PowerPoint",
+        "customerService": "Customer Service",
+        "communication": "Communication",
+        "teamwork": "Teamwork",
+        "leadership": "Leadership",
+        "projectManagement": "Project Management",
+        "problemSolving": "Problem Solving",
+        "timeManagement": "Time Management",
+        "organization": "Organization",
+        "swedish": "Swedish",
+        "english": "English",
+        "driversLicenseB": "Driver's License B",
+        "javascript": "JavaScript",
+        "python": "Python",
+        "react": "React",
+        "sql": "SQL",
+        "sales": "Sales",
+        "marketing": "Marketing",
+        "economics": "Economics",
+        "accounting": "Accounting"
+      }
+    },
+    "completion": {
+      "fields": {
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "phone": "Phone",
+        "location": "Location",
+        "desiredJobs": "Desired Jobs",
+        "availability": "Availability",
+        "cvStatus": "CV Status",
+        "energyLevel": "Energy Level",
+        "shortTermGoal": "Short-term Goal",
+        "longTermGoal": "Long-term Goal",
+        "registeredAF": "Registered at AF",
+        "sectors": "Desired Sectors"
+      }
+    },
+    "messages": {
+      "completion": {
+        "welcome": "Welcome! Let's get started.",
+        "goodStart": "Good start! You're on the right track.",
+        "halfway": "Halfway there! You're making progress.",
+        "almostThere": "Almost there! Just a little bit left.",
+        "complete": "Fantastic! Your profile is complete."
+      },
+      "encouragement": {
+        "everyStep": "Every step counts!",
+        "takeYourTime": "Take your time.",
+        "doingGreat": "You're doing great.",
+        "pauseIsProgress": "Taking a break is also progress."
       }
     },
     "sections": {
@@ -5973,7 +6145,61 @@
       "preferencesDesc": "Customize your consultant view",
       "teamDesc": "Colleagues and administrators",
       "dataPrivacyDesc": "Manage data and GDPR-related settings",
-      "daysCount": "{{count}} days"
+      "daysCount": "{{count}} days",
+      "emailNotifications": "Email notifications",
+      "pushNotifications": "Push notifications",
+      "enablePush": "Enable push notifications",
+      "enablePushDesc": "Get notifications directly on your device",
+      "frequency": "Frequency",
+      "frequencyOptions": {
+        "realtime": "Realtime",
+        "daily": "Daily digest",
+        "weekly": "Weekly summary",
+        "never": "Never"
+      },
+      "notifications": {
+        "jobMatches": "Job matches",
+        "jobMatchesDesc": "New jobs matching your profile",
+        "applicationUpdates": "Application updates",
+        "applicationUpdatesDesc": "Status of your applications",
+        "weeklySummary": "Weekly summary",
+        "weeklySummaryDesc": "Summary of your activity",
+        "tipsAndResources": "Tips & resources",
+        "tipsAndResourcesDesc": "Useful tips for job seekers",
+        "consultantMessages": "Consultant messages",
+        "consultantMessagesDesc": "When your consultant sends messages",
+        "deadlines": "Deadlines",
+        "achievements": "Achievements"
+      },
+      "whoCanSeeProfile": "Who can see your profile?",
+      "visibility": {
+        "private": "Only me",
+        "privateDesc": "Your profile is completely private",
+        "consultant": "Consultants",
+        "consultantDesc": "Visible to your work consultant",
+        "public": "Everyone",
+        "publicDesc": "Visible to employers and recruiters"
+      },
+      "showHideSections": "Show/hide sections",
+      "sections": {
+        "fullName": "Full name",
+        "photo": "Profile photo",
+        "email": "Email",
+        "phone": "Phone",
+        "location": "Location",
+        "summary": "Summary",
+        "skills": "Skills",
+        "experience": "Experience",
+        "education": "Education",
+        "documents": "Documents",
+        "interests": "Interests",
+        "goals": "Goals"
+      },
+      "jobSearch": "Job search",
+      "visibleToEmployers": "Visible to employers",
+      "visibleToEmployersDesc": "Employers can find your profile",
+      "searchableProfile": "Searchable profile",
+      "searchableProfileDesc": "Your profile can be found via search"
     },
     "statuses": {
       "active": "Active",

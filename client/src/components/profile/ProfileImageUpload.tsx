@@ -3,6 +3,7 @@
  */
 
 import { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Camera, Loader2 } from '@/components/ui/icons'
 import { profileImageApi } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
@@ -15,6 +16,7 @@ interface Props {
 }
 
 export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', className }: Props) {
+  const { t } = useTranslation()
   const [uploading, setUploading] = useState(false)
   const [preview, setPreview] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -31,11 +33,11 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
     if (!file) return
 
     if (!file.type.startsWith('image/')) {
-      setError('Välj en bildfil')
+      setError(t('profile.imageUpload.selectImageFile'))
       return
     }
     if (file.size > 5 * 1024 * 1024) {
-      setError('Max 5MB')
+      setError(t('profile.imageUpload.maxSize'))
       return
     }
 
@@ -113,7 +115,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
           disabled={uploading}
           className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium disabled:opacity-50"
         >
-          {displayImage ? 'Byt bild' : 'Ladda upp'}
+          {displayImage ? t('profile.imageUpload.changeImage') : t('common.upload')}
         </button>
         {displayImage && !uploading && (
           <>
@@ -123,7 +125,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
               onClick={handleRemove}
               className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300 font-medium"
             >
-              Ta bort
+              {t('common.remove')}
             </button>
           </>
         )}

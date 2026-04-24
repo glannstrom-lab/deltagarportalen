@@ -9,11 +9,17 @@ import { cn } from '@/lib/utils'
 import { validateTag, sanitizeInput } from '@/lib/validators'
 import { VALIDATION } from '../constants'
 
+export interface SuggestionItem {
+  value: string
+  labelKey?: string
+  label?: string
+}
+
 export interface TagInputProps {
   tags: string[]
   onAdd: (tag: string) => void
   onRemove: (index: number) => void
-  suggestions?: readonly string[]
+  suggestions?: readonly (string | SuggestionItem)[]
   placeholder?: string
   maxTags?: number
   maxLength?: number
@@ -83,11 +89,22 @@ export function TagInput({
   }
   const colors = colorClasses[colorScheme]
 
+  // Helper to get suggestion label
+  const getSuggestionLabel = useCallback((s: string | SuggestionItem): string => {
+    if (typeof s === 'string') return s
+    if (s.labelKey) return t(s.labelKey)
+    return s.label || s.value
+  }, [t])
+
   // Filter suggestions
   const filteredSuggestions = suggestions
-    .filter(s =>
-      s.toLowerCase().includes(input.toLowerCase()) &&
-      !tags.some(t => t.toLowerCase() === s.toLowerCase())
+    .map(s => ({
+      original: s,
+      label: getSuggestionLabel(s)
+    }))
+    .filter(({ label }) =>
+      label.toLowerCase().includes(input.toLowerCase()) &&
+      !tags.some(tag => tag.toLowerCase() === label.toLowerCase())
     )
     .slice(0, 5)
 
@@ -131,7 +148,7 @@ export function TagInput({
       case 'Enter':
         e.preventDefault()
         if (activeIndex >= 0 && filteredSuggestions[activeIndex]) {
-          handleAdd(filteredSuggestions[activeIndex])
+          handleAdd(filteredSuggestions[activeIndex].label)
         } else if (input.trim()) {
           handleAdd(input)
         }
@@ -172,8 +189,8 @@ export function TagInput({
     }, 150)
   }, [])
 
-  const handleSuggestionClick = useCallback((suggestion: string) => {
-    handleAdd(suggestion)
+  const handleSuggestionClick = useCallback((suggestionLabel: string) => {
+    handleAdd(suggestionLabel)
     inputRef.current?.focus()
   }, [handleAdd])
 
@@ -285,20 +302,20 @@ export function TagInput({
               aria-label={t('common.suggestions')}
               className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded shadow-lg z-10 py-0.5 max-h-40 overflow-y-auto"
             >
-              {filteredSuggestions.map((s, index) => (
+              {filteredSuggestions.map(({ label }, index) => (
                 <li
-                  key={s}
+                  key={label}
                   id={`${listboxId}-${index}`}
                   role="option"
                   aria-selected={index === activeIndex}
-                  onClick={() => handleSuggestionClick(s)}
+                  onClick={() => handleSuggestionClick(label)}
                   className={cn(
                     'w-full px-2 py-1.5 text-left text-xs text-stone-700 dark:text-stone-300 cursor-pointer',
                     colors.suggestion,
                     index === activeIndex && 'bg-teal-50 dark:bg-teal-900/40'
                   )}
                 >
-                  {s}
+                  {label}
                 </li>
               ))}
             </ul>

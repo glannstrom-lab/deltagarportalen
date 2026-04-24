@@ -4,6 +4,7 @@
 
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   Briefcase, GraduationCap, Award, Calendar, MapPin,
   ChevronRight, Loader2, Plus
@@ -28,6 +29,7 @@ interface Props {
 }
 
 export function CareerTimeline({ className }: Props) {
+  const { t } = useTranslation()
   const [items, setItems] = useState<TimelineItem[]>([])
   const [loading, setLoading] = useState(true)
 
@@ -209,7 +211,7 @@ export function CareerTimeline({ className }: Props) {
                     </div>
                     {item.current && (
                       <span className="px-2 py-0.5 text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full">
-                        Nuvarande
+                        {t('profile.careerTimeline.current')}
                       </span>
                     )}
                   </div>
@@ -241,14 +243,14 @@ export function CareerTimeline({ className }: Props) {
         <div className="text-center py-8">
           <Calendar className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
           <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">
-            Din karriärtidslinje är tom. Lägg till erfarenhet och utbildning i ditt CV.
+            {t('profile.careerTimeline.emptyState')}
           </p>
           <Link
             to="/cv-builder"
             className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Gå till CV-byggaren
+            {t('profile.careerTimeline.goToCVBuilder')}
           </Link>
         </div>
       )}
@@ -258,7 +260,7 @@ export function CareerTimeline({ className }: Props) {
           to="/cv-builder"
           className="flex items-center justify-center gap-2 p-3 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-xl transition-colors"
         >
-          Redigera i CV-byggaren
+          {t('profile.careerTimeline.editInCVBuilder')}
           <ChevronRight className="w-4 h-4" />
         </Link>
       )}

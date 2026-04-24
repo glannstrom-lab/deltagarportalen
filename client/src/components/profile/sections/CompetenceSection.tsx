@@ -3,6 +3,7 @@
  * Combines: Kompetenser + Dokument tabs
  */
 
+import { useTranslation } from 'react-i18next'
 import { Star, Sparkles, CheckCircle, FileText, Linkedin } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { SectionCard } from '../forms'
@@ -14,6 +15,7 @@ import {
 } from '../index'
 
 export function CompetenceSection() {
+  const { t } = useTranslation()
   const { profile, cvData, enhancements } = useProfileStore()
 
   return (
@@ -25,7 +27,7 @@ export function CompetenceSection() {
     >
       {/* Skills Section */}
       <SectionCard
-        title="Mina kompetenser"
+        title={t('profile.competenceSection.mySkills')}
         icon={<Star className="w-4 h-4" />}
         colorScheme="amber"
         className="md:col-span-2"
@@ -35,7 +37,7 @@ export function CompetenceSection() {
 
       {/* AI Summary */}
       <SectionCard
-        title="Profilsammanfattning"
+        title={t('profile.competenceSection.profileSummary')}
         icon={<Sparkles className="w-4 h-4" />}
         colorScheme="teal"
         className="md:col-span-2"
@@ -45,7 +47,7 @@ export function CompetenceSection() {
 
       {/* Documents */}
       <SectionCard
-        title="Certifikat & dokument"
+        title={t('profile.competenceSection.certificatesDocuments')}
         icon={<FileText className="w-4 h-4" />}
         colorScheme="sky"
       >
@@ -59,23 +61,23 @@ export function CompetenceSection() {
             <Linkedin className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
           <div className="flex-1">
-            <p className="font-semibold text-sky-800 dark:text-sky-300">Importera från LinkedIn</p>
+            <p className="font-semibold text-sky-800 dark:text-sky-300">{t('profile.competenceSection.importFromLinkedIn')}</p>
             <p className="text-sm text-sky-600 dark:text-sky-400">
-              Importera din profil direkt från LinkedIn (kommer snart)
+              {t('profile.competenceSection.importFromLinkedInDesc')}
             </p>
           </div>
           <button
             disabled
             className="px-4 py-2 bg-[#0077b5] text-white rounded-lg text-sm font-medium opacity-50 cursor-not-allowed"
           >
-            Kommer snart
+            {t('profile.competenceSection.comingSoon')}
           </button>
         </div>
       </div>
 
       {/* Completion Guide */}
       <SectionCard
-        title="Kompletteringsguide"
+        title={t('profile.competenceSection.completionGuide')}
         icon={<CheckCircle className="w-4 h-4" />}
         colorScheme="sky"
         className="md:col-span-2"

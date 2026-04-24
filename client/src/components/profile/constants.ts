@@ -7,14 +7,34 @@
 // ============== JOB SUGGESTIONS ==============
 
 export const SUGGESTED_JOBS = [
-  'Projektledare', 'Utvecklare', 'Designer', 'Marknadsförare', 'Säljare',
-  'Ekonom', 'HR-specialist', 'Lärare', 'Sjuksköterska', 'Ingenjör',
-  'Konsult', 'Chef', 'Administratör', 'Analytiker', 'Koordinator'
+  { value: 'projektledare', labelKey: 'profile.suggestions.jobs.projectManager' },
+  { value: 'utvecklare', labelKey: 'profile.suggestions.jobs.developer' },
+  { value: 'designer', labelKey: 'profile.suggestions.jobs.designer' },
+  { value: 'marknadsforare', labelKey: 'profile.suggestions.jobs.marketer' },
+  { value: 'saljare', labelKey: 'profile.suggestions.jobs.salesperson' },
+  { value: 'ekonom', labelKey: 'profile.suggestions.jobs.economist' },
+  { value: 'hr_specialist', labelKey: 'profile.suggestions.jobs.hrSpecialist' },
+  { value: 'larare', labelKey: 'profile.suggestions.jobs.teacher' },
+  { value: 'sjukskoterska', labelKey: 'profile.suggestions.jobs.nurse' },
+  { value: 'ingenjor', labelKey: 'profile.suggestions.jobs.engineer' },
+  { value: 'konsult', labelKey: 'profile.suggestions.jobs.consultant' },
+  { value: 'chef', labelKey: 'profile.suggestions.jobs.manager' },
+  { value: 'administrator', labelKey: 'profile.suggestions.jobs.administrator' },
+  { value: 'analytiker', labelKey: 'profile.suggestions.jobs.analyst' },
+  { value: 'koordinator', labelKey: 'profile.suggestions.jobs.coordinator' }
 ] as const
 
 export const SUGGESTED_INTERESTS = [
-  'Teknik', 'Kreativitet', 'Ledarskap', 'Problemlösning', 'Kommunikation',
-  'Analys', 'Teamwork', 'Innovation', 'Strategi', 'Kundkontakt'
+  { value: 'teknik', labelKey: 'profile.suggestions.interests.technology' },
+  { value: 'kreativitet', labelKey: 'profile.suggestions.interests.creativity' },
+  { value: 'ledarskap', labelKey: 'profile.suggestions.interests.leadership' },
+  { value: 'problemlosning', labelKey: 'profile.suggestions.interests.problemSolving' },
+  { value: 'kommunikation', labelKey: 'profile.suggestions.interests.communication' },
+  { value: 'analys', labelKey: 'profile.suggestions.interests.analysis' },
+  { value: 'teamwork', labelKey: 'profile.suggestions.interests.teamwork' },
+  { value: 'innovation', labelKey: 'profile.suggestions.interests.innovation' },
+  { value: 'strategi', labelKey: 'profile.suggestions.interests.strategy' },
+  { value: 'kundkontakt', labelKey: 'profile.suggestions.interests.customerContact' }
 ] as const
 
 // ============== EMPLOYMENT ==============
@@ -178,18 +198,18 @@ export const TABS = [
 export const PROFILE_COMPLETION = {
   TOTAL_FIELDS: 12,
   FIELDS: [
-    { key: 'first_name', label: 'Förnamn', priority: 'high' },
-    { key: 'last_name', label: 'Efternamn', priority: 'high' },
-    { key: 'phone', label: 'Telefon', priority: 'high' },
-    { key: 'location', label: 'Ort', priority: 'high' },
-    { key: 'desired_jobs', label: 'Önskade jobb', priority: 'high' },
-    { key: 'availability_status', label: 'Tillgänglighet', priority: 'medium' },
-    { key: 'cv_status', label: 'CV-status', priority: 'high' },
-    { key: 'energy_level', label: 'Energinivå', priority: 'medium' },
-    { key: 'short_term_goal', label: 'Kortsiktigt mål', priority: 'medium' },
-    { key: 'long_term_goal', label: 'Långsiktigt mål', priority: 'medium' },
-    { key: 'registered_af', label: 'Registrerad på AF', priority: 'low' },
-    { key: 'sectors', label: 'Önskade sektorer', priority: 'low' },
+    { key: 'first_name', labelKey: 'profile.completion.fields.firstName', priority: 'high' },
+    { key: 'last_name', labelKey: 'profile.completion.fields.lastName', priority: 'high' },
+    { key: 'phone', labelKey: 'profile.completion.fields.phone', priority: 'high' },
+    { key: 'location', labelKey: 'profile.completion.fields.location', priority: 'high' },
+    { key: 'desired_jobs', labelKey: 'profile.completion.fields.desiredJobs', priority: 'high' },
+    { key: 'availability_status', labelKey: 'profile.completion.fields.availability', priority: 'medium' },
+    { key: 'cv_status', labelKey: 'profile.completion.fields.cvStatus', priority: 'high' },
+    { key: 'energy_level', labelKey: 'profile.completion.fields.energyLevel', priority: 'medium' },
+    { key: 'short_term_goal', labelKey: 'profile.completion.fields.shortTermGoal', priority: 'medium' },
+    { key: 'long_term_goal', labelKey: 'profile.completion.fields.longTermGoal', priority: 'medium' },
+    { key: 'registered_af', labelKey: 'profile.completion.fields.registeredAF', priority: 'low' },
+    { key: 'sectors', labelKey: 'profile.completion.fields.sectors', priority: 'low' },
   ]
 } as const
 
@@ -221,27 +241,44 @@ export const VALIDATION = {
 
 export const POSITIVE_MESSAGES = {
   COMPLETION: {
-    0: 'Välkommen! Låt oss komma igång.',
-    25: 'Bra start! Du är på rätt väg.',
-    50: 'Halvvägs! Du gör framsteg.',
-    75: 'Nästan där! Bara lite kvar.',
-    100: 'Fantastiskt! Din profil är komplett.'
+    0: 'profile.messages.completion.welcome',
+    25: 'profile.messages.completion.goodStart',
+    50: 'profile.messages.completion.halfway',
+    75: 'profile.messages.completion.almostThere',
+    100: 'profile.messages.completion.complete'
   },
   ENCOURAGEMENT: [
-    'Varje steg räknas!',
-    'Ta den tid du behöver.',
-    'Du gör så gott du kan.',
-    'Paus är också framsteg.'
+    'profile.messages.encouragement.everyStep',
+    'profile.messages.encouragement.takeYourTime',
+    'profile.messages.encouragement.doingGreat',
+    'profile.messages.encouragement.pauseIsProgress'
   ]
 } as const
 
 // ============== SUGGESTED SKILLS ==============
 
 export const SUGGESTED_SKILLS = [
-  'Microsoft Office', 'Excel', 'Word', 'PowerPoint',
-  'Kundservice', 'Kommunikation', 'Teamwork', 'Ledarskap',
-  'Projektledning', 'Problemlösning', 'Tidsstyrning', 'Organisation',
-  'Svenska', 'Engelska', 'Körkort B',
-  'JavaScript', 'Python', 'React', 'SQL',
-  'Försäljning', 'Marknadsföring', 'Ekonomi', 'Bokföring'
+  { value: 'microsoft_office', labelKey: 'profile.suggestions.skills.microsoftOffice' },
+  { value: 'excel', labelKey: 'profile.suggestions.skills.excel' },
+  { value: 'word', labelKey: 'profile.suggestions.skills.word' },
+  { value: 'powerpoint', labelKey: 'profile.suggestions.skills.powerpoint' },
+  { value: 'customer_service', labelKey: 'profile.suggestions.skills.customerService' },
+  { value: 'communication', labelKey: 'profile.suggestions.skills.communication' },
+  { value: 'teamwork', labelKey: 'profile.suggestions.skills.teamwork' },
+  { value: 'leadership', labelKey: 'profile.suggestions.skills.leadership' },
+  { value: 'project_management', labelKey: 'profile.suggestions.skills.projectManagement' },
+  { value: 'problem_solving', labelKey: 'profile.suggestions.skills.problemSolving' },
+  { value: 'time_management', labelKey: 'profile.suggestions.skills.timeManagement' },
+  { value: 'organization', labelKey: 'profile.suggestions.skills.organization' },
+  { value: 'swedish', labelKey: 'profile.suggestions.skills.swedish' },
+  { value: 'english', labelKey: 'profile.suggestions.skills.english' },
+  { value: 'drivers_license_b', labelKey: 'profile.suggestions.skills.driversLicenseB' },
+  { value: 'javascript', labelKey: 'profile.suggestions.skills.javascript' },
+  { value: 'python', labelKey: 'profile.suggestions.skills.python' },
+  { value: 'react', labelKey: 'profile.suggestions.skills.react' },
+  { value: 'sql', labelKey: 'profile.suggestions.skills.sql' },
+  { value: 'sales', labelKey: 'profile.suggestions.skills.sales' },
+  { value: 'marketing', labelKey: 'profile.suggestions.skills.marketing' },
+  { value: 'economics', labelKey: 'profile.suggestions.skills.economics' },
+  { value: 'accounting', labelKey: 'profile.suggestions.skills.accounting' }
 ] as const

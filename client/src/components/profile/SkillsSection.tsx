@@ -20,10 +20,21 @@ const SKILL_CATEGORIES = [
 ] as const
 
 const SUGGESTED_SKILLS = [
-  'Microsoft Office', 'Excel', 'Word', 'PowerPoint', 'Kommunikation',
-  'Problemlösning', 'Teamwork', 'Projektledning', 'Kundservice', 'Ledarskap',
-  'Engelska', 'Svenska', 'Tyska', 'Planering', 'Organisering'
-]
+  { value: 'microsoft_office', labelKey: 'profile.suggestions.skills.microsoftOffice' },
+  { value: 'excel', labelKey: 'profile.suggestions.skills.excel' },
+  { value: 'word', labelKey: 'profile.suggestions.skills.word' },
+  { value: 'powerpoint', labelKey: 'profile.suggestions.skills.powerpoint' },
+  { value: 'communication', labelKey: 'profile.suggestions.skills.communication' },
+  { value: 'problem_solving', labelKey: 'profile.suggestions.skills.problemSolving' },
+  { value: 'teamwork', labelKey: 'profile.suggestions.skills.teamwork' },
+  { value: 'project_management', labelKey: 'profile.suggestions.skills.projectManagement' },
+  { value: 'customer_service', labelKey: 'profile.suggestions.skills.customerService' },
+  { value: 'leadership', labelKey: 'profile.suggestions.skills.leadership' },
+  { value: 'english', labelKey: 'profile.suggestions.skills.english' },
+  { value: 'swedish', labelKey: 'profile.suggestions.skills.swedish' },
+  { value: 'time_management', labelKey: 'profile.suggestions.skills.timeManagement' },
+  { value: 'organization', labelKey: 'profile.suggestions.skills.organization' }
+] as const
 
 interface Props {
   className?: string
@@ -119,8 +130,9 @@ export function SkillsSection({ className }: Props) {
   }
 
   const filteredSuggestions = SUGGESTED_SKILLS
-    .filter(s => s.toLowerCase().includes(newSkill.name.toLowerCase()))
-    .filter(s => !skills.some(sk => sk.name.toLowerCase() === s.toLowerCase()))
+    .map(s => ({ ...s, label: t(s.labelKey) }))
+    .filter(s => s.label.toLowerCase().includes(newSkill.name.toLowerCase()))
+    .filter(s => !skills.some(sk => sk.name.toLowerCase() === s.label.toLowerCase()))
     .slice(0, 5)
 
   if (loading) {
@@ -251,16 +263,16 @@ export function SkillsSection({ className }: Props) {
                 className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg shadow-lg z-10 py-1"
               >
                 {filteredSuggestions.map(s => (
-                  <li key={s} role="option" aria-selected={false}>
+                  <li key={s.value} role="option" aria-selected={false}>
                     <button
                       type="button"
                       onClick={() => {
-                        setNewSkill(prev => ({ ...prev, name: s }))
+                        setNewSkill(prev => ({ ...prev, name: s.label }))
                         setShowSuggestions(false)
                       }}
                       className="w-full px-3 py-1.5 text-left text-sm hover:bg-teal-50 dark:hover:bg-teal-900/40 text-stone-700 dark:text-stone-300"
                     >
-                      {s}
+                      {s.label}
                     </button>
                   </li>
                 ))}

@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Sparkles, RefreshCw, Loader2, Copy, Check, Edit3 } from '@/components/ui/icons'
 import { aiSummaryApi } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function AISummary({ className }: Props) {
+  const { t } = useTranslation()
   const [summary, setSummary] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
@@ -112,14 +114,14 @@ export function AISummary({ className }: Props) {
                     ? 'bg-green-100 dark:bg-green-900/40 text-green-600'
                     : 'hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500'
                 )}
-                aria-label={copied ? 'Kopierat!' : 'Kopiera sammanfattning'}
+                aria-label={copied ? t('common.copied') : t('profile.aiSummary.copy')}
               >
                 {copied ? <Check className="w-4 h-4" aria-hidden="true" /> : <Copy className="w-4 h-4" aria-hidden="true" />}
               </button>
               <button
                 onClick={handleEdit}
                 className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500 rounded-lg transition-colors"
-                aria-label="Redigera sammanfattning"
+                aria-label={t('profile.aiSummary.edit')}
               >
                 <Edit3 className="w-4 h-4" aria-hidden="true" />
               </button>
@@ -134,12 +136,12 @@ export function AISummary({ className }: Props) {
             {generating ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin" aria-hidden="true" />
-                <span role="status">Genererar...</span>
+                <span role="status">{t('profile.aiSummary.generating')}</span>
               </>
             ) : (
               <>
                 <RefreshCw className="w-3.5 h-3.5" aria-hidden="true" />
-                {summary ? 'Generera ny' : 'Generera'}
+                {summary ? t('profile.aiSummary.regenerate') : t('profile.aiSummary.generate')}
               </>
             )}
           </button>
@@ -159,13 +161,13 @@ export function AISummary({ className }: Props) {
               onClick={() => setEditing(false)}
               className="px-3 py-1.5 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
             >
-              Avbryt
+              {t('common.cancel')}
             </button>
             <button
               onClick={handleSave}
               className="px-3 py-1.5 text-sm font-medium bg-teal-500 hover:bg-teal-600 text-white rounded-lg transition-colors"
             >
-              Spara
+              {t('common.save')}
             </button>
           </div>
         </div>

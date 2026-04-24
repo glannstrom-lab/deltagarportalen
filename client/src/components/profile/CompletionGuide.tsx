@@ -3,6 +3,7 @@
  */
 
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   CheckCircle, Circle, ChevronRight, AlertTriangle,
   User, FileText, Star, Briefcase, GraduationCap, Image
@@ -48,35 +49,37 @@ export function CompletionGuide({
   hasSummary,
   className
 }: Props) {
+  const { t } = useTranslation()
+
   const items: CompletionItem[] = [
     {
       id: 'name',
-      label: 'Namn',
-      description: 'Lägg till ditt för- och efternamn',
+      label: t('profile.completionGuide.items.name.label'),
+      description: t('profile.completionGuide.items.name.description'),
       completed: Boolean(profile?.first_name && profile?.last_name),
       priority: 'high',
       icon: <User className="w-4 h-4" />
     },
     {
       id: 'photo',
-      label: 'Profilbild',
-      description: 'Ladda upp en professionell profilbild',
+      label: t('profile.completionGuide.items.photo.label'),
+      description: t('profile.completionGuide.items.photo.description'),
       completed: Boolean(profile?.profile_image_url),
       priority: 'medium',
       icon: <Image className="w-4 h-4" />
     },
     {
       id: 'contact',
-      label: 'Kontaktuppgifter',
-      description: 'Lägg till telefon och ort',
+      label: t('profile.completionGuide.items.contact.label'),
+      description: t('profile.completionGuide.items.contact.description'),
       completed: Boolean(profile?.phone && profile?.location),
       priority: 'high',
       icon: <User className="w-4 h-4" />
     },
     {
       id: 'cv-summary',
-      label: 'CV-sammanfattning',
-      description: 'Skriv en kort sammanfattning i ditt CV',
+      label: t('profile.completionGuide.items.cvSummary.label'),
+      description: t('profile.completionGuide.items.cvSummary.description'),
       completed: Boolean(cv?.summary),
       priority: 'high',
       link: '/cv-builder',
@@ -84,8 +87,8 @@ export function CompletionGuide({
     },
     {
       id: 'experience',
-      label: 'Arbetslivserfarenhet',
-      description: 'Lägg till din arbetslivserfarenhet i CV',
+      label: t('profile.completionGuide.items.experience.label'),
+      description: t('profile.completionGuide.items.experience.description'),
       completed: Boolean(cv?.workExperience?.length),
       priority: 'high',
       link: '/cv-builder',
@@ -93,8 +96,8 @@ export function CompletionGuide({
     },
     {
       id: 'education',
-      label: 'Utbildning',
-      description: 'Lägg till din utbildning i CV',
+      label: t('profile.completionGuide.items.education.label'),
+      description: t('profile.completionGuide.items.education.description'),
       completed: Boolean(cv?.education?.length),
       priority: 'medium',
       link: '/cv-builder',
@@ -102,24 +105,24 @@ export function CompletionGuide({
     },
     {
       id: 'skills',
-      label: 'Kompetenser',
-      description: 'Lägg till minst 3 kompetenser',
+      label: t('profile.completionGuide.items.skills.label'),
+      description: t('profile.completionGuide.items.skills.description'),
       completed: skillsCount >= 3,
       priority: 'medium',
       icon: <Star className="w-4 h-4" />
     },
     {
       id: 'ai-summary',
-      label: 'AI-sammanfattning',
-      description: 'Generera en professionell sammanfattning',
+      label: t('profile.completionGuide.items.aiSummary.label'),
+      description: t('profile.completionGuide.items.aiSummary.description'),
       completed: hasSummary,
       priority: 'low',
       icon: <FileText className="w-4 h-4" />
     },
     {
       id: 'documents',
-      label: 'Dokument',
-      description: 'Ladda upp certifikat eller intyg',
+      label: t('profile.completionGuide.items.documents.label'),
+      description: t('profile.completionGuide.items.documents.description'),
       completed: documentsCount > 0,
       priority: 'low',
       icon: <FileText className="w-4 h-4" />
@@ -147,7 +150,7 @@ export function CompletionGuide({
       <div className="p-4 bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-xl border border-teal-200 dark:border-teal-800/50">
         <div className="flex items-center justify-between mb-3">
           <span className="font-semibold text-teal-800 dark:text-teal-300">
-            Profilkomplettering
+            {t('profile.completionGuide.title')}
           </span>
           <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">
             {completionPercent}%
@@ -162,7 +165,7 @@ export function CompletionGuide({
         </div>
 
         <p className="text-xs text-teal-600 dark:text-teal-400 mt-2">
-          {completedCount} av {totalCount} steg klara
+          {t('profile.completionGuide.stepsComplete', { completed: completedCount, total: totalCount })}
         </p>
       </div>
 
@@ -172,10 +175,10 @@ export function CompletionGuide({
           <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
-              {highPriorityIncomplete.length} viktiga steg kvar
+              {t('profile.completionGuide.importantStepsLeft', { count: highPriorityIncomplete.length })}
             </p>
             <p className="text-xs text-amber-600 dark:text-amber-400">
-              Slutför dessa för att öka dina chanser att hitta jobb.
+              {t('profile.completionGuide.completeToImproveChances')}
             </p>
           </div>
         </div>
@@ -242,10 +245,10 @@ export function CompletionGuide({
         <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800/50 text-center">
           <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
           <p className="text-sm font-medium text-green-800 dark:text-green-300">
-            Din profil är komplett!
+            {t('profile.completionGuide.profileComplete')}
           </p>
           <p className="text-xs text-green-600 dark:text-green-400">
-            Du har fyllt i all viktig information.
+            {t('profile.completionGuide.allInfoFilled')}
           </p>
         </div>
       )}
