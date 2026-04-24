@@ -22,25 +22,26 @@ export class AuthHelper {
   constructor(private page: Page) {}
 
   async login(email: string, password: string) {
-    await this.page.goto('/login')
-    await this.page.getByLabel(/e-post/i).fill(email)
-    await this.page.getByLabel(/lösenord/i).fill(password)
-    await this.page.getByRole('button', { name: /logga in/i }).click()
+    await this.page.goto('/#/login')
+    await waitForAppReady(this.page)
+    await this.page.locator('input#email').fill(email)
+    await this.page.locator('input#password').fill(password)
+    await this.page.getByRole('button', { name: /^logga in$/i }).click()
     // Wait for redirect to dashboard
-    await this.page.waitForURL('/', { timeout: 10000 })
+    await this.page.waitForURL(/\/$/, { timeout: 10000 })
   }
 
   async logout() {
     // Open user menu and click logout
     await this.page.getByRole('button', { name: /profil|meny/i }).click()
     await this.page.getByRole('menuitem', { name: /logga ut/i }).click()
-    await this.page.waitForURL('/login')
+    await this.page.waitForURL(/\/#\/login/)
   }
 
   async isLoggedIn(): Promise<boolean> {
     // Check if we're on a protected page (not login/register/landing)
     const url = this.page.url()
-    return !url.includes('/login') && !url.includes('/register')
+    return !url.includes('/#/login') && !url.includes('/#/register')
   }
 }
 
@@ -48,28 +49,28 @@ export class NavigationHelper {
   constructor(private page: Page) {}
 
   async goToDashboard() {
-    await this.page.goto('/')
-    await this.page.waitForLoadState('networkidle')
+    await this.page.goto('/#/')
+    await waitForAppReady(this.page)
   }
 
   async goToCV() {
-    await this.page.goto('/cv')
-    await this.page.waitForLoadState('networkidle')
+    await this.page.goto('/#/cv')
+    await waitForAppReady(this.page)
   }
 
   async goToJobSearch() {
-    await this.page.goto('/job-search')
-    await this.page.waitForLoadState('networkidle')
+    await this.page.goto('/#/job-search')
+    await waitForAppReady(this.page)
   }
 
   async goToCoverLetter() {
-    await this.page.goto('/cover-letter')
-    await this.page.waitForLoadState('networkidle')
+    await this.page.goto('/#/cover-letter')
+    await waitForAppReady(this.page)
   }
 
   async goToProfile() {
-    await this.page.goto('/profile')
-    await this.page.waitForLoadState('networkidle')
+    await this.page.goto('/#/profile')
+    await waitForAppReady(this.page)
   }
 }
 
@@ -124,4 +125,43 @@ export async function waitForSkeleton(page: Page) {
   if (await skeleton.isVisible()) {
     await expect(skeleton).not.toBeVisible({ timeout: 10000 })
   }
+}
+
+/**
+ * Wait for app to finish loading (auth initialization)
+ * The app shows "Laddar Jobin..." or a spinner while auth initializes
+ */
+export async function waitForAppReady(page: Page, timeout = 15000) {
+  // Wait for loading indicators to disappear
+  const loadingIndicators = [
+    page.getByText('Laddar Jobin...'),
+    page.getByText('Laddar...'),
+    page.locator('[role="status"][aria-busy="true"]'),
+  ]
+
+  for (const indicator of loadingIndicators) {
+    try {
+      // Wait a bit for potential loading state to appear
+      await page.waitForTimeout(500)
+      if (await indicator.isVisible({ timeout: 1000 })) {
+        await expect(indicator).not.toBeVisible({ timeout })
+      }
+    } catch {
+      // Loading indicator not found or already gone
+    }
+  }
+
+  // Dismiss cookie consent if present
+  try {
+    const acceptCookies = page.getByRole('button', { name: /endast nödvändiga/i })
+    if (await acceptCookies.isVisible({ timeout: 1000 })) {
+      await acceptCookies.click()
+      await page.waitForTimeout(300)
+    }
+  } catch {
+    // Cookie consent not found or already dismissed
+  }
+
+  // Extra wait for React hydration and state updates
+  await page.waitForTimeout(500)
 }

@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-import { 
-  X, 
-  ChevronRight, 
-  ChevronLeft, 
-  Sparkles, 
+import {
+  X,
+  ChevronRight,
+  ChevronLeft,
+  Sparkles,
   Zap,
   User,
   Mail,
@@ -21,9 +21,8 @@ import {
   Compass,
   FileText,
   Briefcase,
-  Turtle,
-  Walk,
-  Running
+  Snail,
+  Footprints,
 } from '@/components/ui/icons'
 
 type EnergyLevel = 'high' | 'medium' | 'low' | null
@@ -316,13 +315,13 @@ export default function Onboarding() {
                 <button
                   onClick={() => handleEnergySelect('low')}
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
-                    energyLevel === 'low' 
-                      ? 'border-teal-500 bg-teal-50 shadow-md' 
+                    energyLevel === 'low'
+                      ? 'border-teal-500 bg-teal-50 shadow-md'
                       : 'border-slate-200 hover:border-teal-300 hover:bg-slate-50'
                   }`}
                 >
                   <div className="flex justify-center mb-2">
-                    <Turtle className="w-8 h-8 text-teal-600" />
+                    <Snail className="w-8 h-8 text-teal-600" />
                   </div>
                   <div className="font-semibold text-slate-700 text-sm">Utforska lugnt</div>
                   <div className="text-xs text-slate-700 mt-1">Visa mig bara det viktigaste</div>
@@ -330,13 +329,13 @@ export default function Onboarding() {
                 <button
                   onClick={() => handleEnergySelect('medium')}
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
-                    energyLevel === 'medium' 
-                      ? 'border-blue-500 bg-blue-50 shadow-md' 
+                    energyLevel === 'medium'
+                      ? 'border-blue-500 bg-blue-50 shadow-md'
                       : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
                   }`}
                 >
                   <div className="flex justify-center mb-2">
-                    <Walk className="w-8 h-8 text-blue-600" />
+                    <Footprints className="w-8 h-8 text-blue-600" />
                   </div>
                   <div className="font-semibold text-slate-700 text-sm">Steg för steg</div>
                   <div className="text-xs text-slate-700 mt-1">Jag vill ha guidad hjälp</div>
@@ -344,13 +343,13 @@ export default function Onboarding() {
                 <button
                   onClick={() => handleEnergySelect('high')}
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
-                    energyLevel === 'high' 
-                      ? 'border-orange-500 bg-orange-50 shadow-md' 
+                    energyLevel === 'high'
+                      ? 'border-orange-500 bg-orange-50 shadow-md'
                       : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
                   }`}
                 >
                   <div className="flex justify-center mb-2">
-                    <Running className="w-8 h-8 text-orange-600" />
+                    <Zap className="w-8 h-8 text-orange-600" />
                   </div>
                   <div className="font-semibold text-slate-700 text-sm">Kom igång snabbt</div>
                   <div className="text-xs text-slate-700 mt-1">Jag vet vad jag vill</div>

@@ -76,11 +76,11 @@ export default defineConfig({
     },
   ],
 
-  // Run local dev server before starting the tests
-  webServer: {
+  // Run local dev server before starting the tests (skip if PLAYWRIGHT_BASE_URL is set)
+  webServer: process.env.PLAYWRIGHT_BASE_URL ? undefined : {
     command: 'npm run dev:client',
     url: 'http://localhost:5173',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true,
     timeout: 120000,
   },
 })
