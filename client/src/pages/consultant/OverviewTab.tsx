@@ -89,6 +89,7 @@ function KPICard({
   status?: 'green' | 'yellow' | 'red' | 'neutral'
   onClick?: () => void
 }) {
+  const { t } = useTranslation()
   const statusColors = {
     green: 'bg-emerald-50 border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800',
     yellow: 'bg-amber-50 border-amber-200 dark:bg-amber-900/20 dark:border-amber-800',
@@ -132,7 +133,7 @@ function KPICard({
                 <TrendingDown className="w-4 h-4" />
               )}
               <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
-              <span className="text-stone-500 dark:text-stone-400 font-normal">vs förra veckan</span>
+              <span className="text-stone-500 dark:text-stone-400 font-normal">{t('consultant.overview.vsLastWeek')}</span>
             </div>
           )}
         </div>
@@ -154,30 +155,32 @@ function KPICard({
 function AttentionAlert({
   participant,
   type,
+  t,
 }: {
   participant: Participant
   type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement'
+  t: (key: string) => string
 }) {
   const alerts = {
     no_contact: {
       icon: Clock,
       color: 'text-amber-600 bg-amber-100',
-      message: 'Ej kontaktad på 7+ dagar',
+      message: t('consultant.alerts.noContact'),
     },
     inactive: {
       icon: AlertTriangle,
       color: 'text-rose-600 bg-rose-100',
-      message: 'Inaktiv i 14+ dagar',
+      message: t('consultant.alerts.inactive'),
     },
     no_cv: {
       icon: FileText,
       color: 'text-blue-600 bg-blue-100',
-      message: 'CV saknas',
+      message: t('consultant.alerts.noCv'),
     },
     low_engagement: {
       icon: Activity,
       color: 'text-amber-600 bg-amber-100',
-      message: 'Lågt engagemang',
+      message: t('consultant.alerts.lowEngagement'),
     },
   }
 
@@ -484,34 +487,34 @@ export function OverviewTab() {
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
-          title="Totalt deltagare"
+          title={t('consultant.overview.totalParticipants')}
           value={stats.totalParticipants}
-          subtitle={`${stats.activeParticipants} aktiva`}
+          subtitle={t('consultant.overview.activeCount', { count: stats.activeParticipants })}
           icon={Users}
           status="neutral"
           onClick={() => navigate('/consultant/participants')}
         />
         <KPICard
-          title="Kräver uppmärksamhet"
+          title={t('consultant.overview.needsAttention')}
           value={stats.needsAttention}
-          subtitle="Ej kontaktade 7+ dagar"
+          subtitle={t('consultant.overview.notContactedDays', { count: 7 })}
           icon={AlertTriangle}
           status={stats.needsAttention === 0 ? 'green' : stats.needsAttention <= 3 ? 'yellow' : 'red'}
           onClick={() => navigate('/consultant/participants?filter=attention')}
         />
         <KPICard
-          title="CV-kvalitet"
+          title={t('consultant.overview.cvQuality')}
           value={`${stats.averageProgress}%`}
-          subtitle={`${stats.completedCV} kompletta`}
+          subtitle={t('consultant.overview.completeCvs', { count: stats.completedCV })}
           icon={FileText}
           status={stats.averageProgress >= 70 ? 'green' : stats.averageProgress >= 50 ? 'yellow' : 'red'}
           trend={{ value: 5, isPositive: true }}
           onClick={() => navigate('/consultant/analytics')}
         />
         <KPICard
-          title="Möten denna vecka"
+          title={t('consultant.overview.meetingsThisWeek')}
           value={stats.meetingsThisWeek}
-          subtitle={stats.pendingMessages > 0 ? `${stats.pendingMessages} olästa meddelanden` : 'Schemalagda'}
+          subtitle={stats.pendingMessages > 0 ? t('consultant.overview.unreadMessages', { count: stats.pendingMessages }) : t('consultant.overview.scheduled')}
           icon={Calendar}
           status={stats.meetingsThisWeek > 0 ? 'green' : 'neutral'}
           onClick={() => navigate('/consultant/communication')}
@@ -527,14 +530,14 @@ export function OverviewTab() {
               <div className="flex items-center gap-2">
                 <Bell className="w-5 h-5 text-amber-600" />
                 <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                  Kräver uppmärksamhet
+                  {t('consultant.overview.attentionAlerts')}
                 </h3>
               </div>
               <Link
                 to="/consultant/participants?filter=attention"
                 className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium"
               >
-                Visa alla
+                {t('consultant.overview.viewAll')}
               </Link>
             </div>
           </div>
@@ -546,6 +549,7 @@ export function OverviewTab() {
                     key={`${item.participant.participant_id}-${item.type}-${i}`}
                     participant={item.participant}
                     type={item.type}
+                    t={t}
                   />
                 ))}
               </div>
@@ -553,10 +557,10 @@ export function OverviewTab() {
               <div className="p-8 text-center">
                 <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
                 <p className="font-medium text-stone-900 dark:text-stone-100">
-                  Alla deltagare följs upp!
+                  {t('consultant.overview.allCaughtUp')}
                 </p>
                 <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-                  Inga deltagare kräver omedelbar uppmärksamhet.
+                  {t('consultant.overview.noAttentionNeeded')}
                 </p>
               </div>
             )}
@@ -567,34 +571,34 @@ export function OverviewTab() {
         <Card>
           <div className="p-4 sm:p-5 border-b border-stone-200 dark:border-stone-700">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              Snabbåtgärder
+              {t('consultant.overview.quickActions')}
             </h3>
           </div>
           <div className="p-4 space-y-3">
             <QuickAction
               icon={Plus}
-              label="Bjud in deltagare"
+              label={t('consultant.overview.inviteParticipant')}
               onClick={() => setShowInviteDialog(true)}
               variant="primary"
             />
             <QuickAction
               icon={Mail}
-              label="Skicka gruppmeddelande"
+              label={t('consultant.overview.sendGroupMessage')}
               onClick={() => navigate('/consultant/communication')}
             />
             <QuickAction
               icon={Calendar}
-              label="Schemalägg möte"
+              label={t('consultant.overview.scheduleMeeting')}
               onClick={() => setShowMeetingDialog(true)}
             />
             <QuickAction
               icon={Download}
-              label="Exportera rapport"
+              label={t('consultant.overview.exportReport')}
               onClick={() => setShowReportDialog(true)}
             />
             <QuickAction
               icon={Target}
-              label="Skapa mål för deltagare"
+              label={t('consultant.overview.createGoal')}
               onClick={() => setShowGoalDialog(true)}
             />
           </div>
@@ -610,7 +614,7 @@ export function OverviewTab() {
               <div className="flex items-center gap-2">
                 <Activity className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                 <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                  Senaste aktivitet
+                  {t('consultant.overview.recentActivity')}
                 </h3>
               </div>
               <button
@@ -656,7 +660,7 @@ export function OverviewTab() {
               </div>
             ) : (
               <div className="p-8 text-center text-stone-500">
-                Ingen aktivitet ännu
+                {t('consultant.overview.noActivity')}
               </div>
             )}
           </div>
@@ -669,14 +673,14 @@ export function OverviewTab() {
               <div className="flex items-center gap-2">
                 <Target className="w-5 h-5 text-emerald-600" />
                 <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-                  Målöversikt
+                  {t('consultant.overview.goalsOverview')}
                 </h3>
               </div>
               <Link
                 to="/consultant/analytics"
                 className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium"
               >
-                Se detaljer
+                {t('consultant.overview.seeDetails')}
               </Link>
             </div>
           </div>
@@ -685,20 +689,20 @@ export function OverviewTab() {
               <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
                 <p className="text-3xl font-bold text-emerald-600">{stats.goalsCompleted}</p>
                 <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
-                  Avklarade mål
+                  {t('consultant.overview.completedGoals')}
                 </p>
               </div>
               <div className="text-center p-4 bg-rose-50 dark:bg-rose-900/20 rounded-xl">
                 <p className="text-3xl font-bold text-rose-600">{stats.goalsOverdue}</p>
                 <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
-                  Försenade mål
+                  {t('consultant.overview.overdueGoals')}
                 </p>
               </div>
             </div>
 
             <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
               <h4 className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">
-                Vanligaste målkategorierna
+                {t('consultant.overview.topGoalCategories')}
               </h4>
               <div className="space-y-2">
                 {goalCategories.length > 0 ? (

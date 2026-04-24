@@ -62,7 +62,8 @@
     "showDetails": "Visa detaljer",
     "passed": "Godkänt",
     "missing": "Saknas",
-    "needsAttention": "Behöver uppmärksamhet"
+    "needsAttention": "Behöver uppmärksamhet",
+    "today": "Idag"
   },
   "pageTabs": {
     "cv": {
@@ -92,10 +93,8 @@
     }
   },
   "calendar": {
-    "today": "Idag",
-    "oneHour": "1 tim",
-    "videoCall": "Videosamtal",
-    "phone": "Telefon",
+    "title": "Kalender",
+    "description": "Dina händelser och möten",
     "days": {
       "mon": "Mån",
       "tue": "Tis",
@@ -105,130 +104,23 @@
       "sat": "Lör",
       "sun": "Sön"
     },
-    "eventTypes": {
-      "interview": "Intervju",
-      "meeting": "Möte",
-      "deadline": "Deadline",
-      "reminder": "Påminnelse",
-      "task": "Uppgift",
-      "followup": "Uppföljning",
-      "preparation": "Förberedelse"
-    },
-    "modal": {
-      "editEvent": "Redigera händelse",
-      "newEvent": "Ny händelse",
-      "createEvent": "Skapa händelse",
-      "tabs": {
-        "details": "Detaljer",
-        "tasks": "Uppgifter",
-        "preparation": "Förberedelse",
-        "travel": "Resa"
-      },
-      "title": "Titel",
-      "titlePlaceholder": "T.ex. Jobbintervju på Spotify",
-      "type": "Typ",
-      "date": "Datum",
-      "time": "Tid",
-      "startTime": "Starttid",
-      "endTime": "Sluttid",
-      "locationOptional": "Plats (valfritt)",
-      "locationPlaceholder": "Adress eller plats",
-      "withOptional": "Med (valfritt)",
-      "withPlaceholder": "T.ex. Anna Svensson, rekryterare",
-      "description": "Beskrivning",
-      "descriptionPlaceholder": "Anteckningar om händelsen...",
-      "linkedTo": "Länkat till"
-    },
-    "tasks": {
-      "toDo": "Att göra",
-      "addPlaceholder": "Lägg till ny uppgift...",
-      "empty": "Inga uppgifter ännu. Lägg till en för att komma igång!"
-    },
-    "interviewPrep": {
-      "title": "Förberedelseassistent",
-      "subtitle": "AI-genererade tips och frågor",
-      "theCompany": "Företaget",
-      "tailoredQuestions": "Skräddarsydda frågor",
-      "generateDescription": "Generera intervjufrågor baserade på företaget och rollen",
-      "generateQuestions": "Generera frågor",
-      "dressRecommendation": "Klädrekommendation",
-      "commonQuestions": "Vanliga intervjufrågor",
-      "questionsToAsk": "Frågor att ställa till dem",
-      "searchCompany": "Sök efter information om företaget",
-      "questions": {
-        "businessModel": "Vad vet du om {{company}}s affärsmodell?",
-        "contribution": "Hur skulle du bidra till {{company}}s tillväxt?",
-        "attraction": "Vad lockar dig mest med att arbeta på {{company}}?",
-        "challenge": "Beskriv hur du hanterar [relevant utmaning för rollen]"
-      }
-    },
-    "title": "Kalender",
-    "newEvent": "Ny händelse",
+    "moreEvents": "+{{count}} till",
     "upcomingEvents": "Kommande händelser",
     "noEventsPlanned": "Inga händelser planerade",
-    "moreEvents": "+{{count}} till",
-    "eventCreated": "Händelse skapad",
-    "eventUpdated": "Händelse uppdaterad",
-    "eventDeleted": "Händelse borttagen",
-    "errors": {
-      "loadFailed": "Kunde inte ladda kalenderhändelser. Försök igen.",
-      "saveFailed": "Kunde inte spara händelsen. Försök igen.",
-      "deleteFailed": "Kunde inte ta bort händelsen. Försök igen.",
-      "endTimeBeforeStart": "Sluttid måste vara efter starttid"
-    },
-    "views": {
-      "month": "Månad",
-      "week": "Vecka",
-      "day": "Dag",
-      "agenda": "Agenda"
-    },
-    "navigation": {
-      "previous": "Föregående",
-      "next": "Nästa",
-      "today": "Idag"
-    },
-    "months": {
-      "january": "Januari",
-      "february": "Februari",
-      "march": "Mars",
-      "april": "April",
-      "may": "Maj",
-      "june": "Juni",
-      "july": "Juli",
-      "august": "Augusti",
-      "september": "September",
-      "october": "Oktober",
-      "november": "November",
-      "december": "December"
-    },
-    "weekNumber": "Vecka {{week}}, {{year}}",
-    "travel": {
-      "title": "Reseplanering",
-      "destination": "Destination",
-      "destinationPlaceholder": "Ange adress...",
-      "duration": "Restid (min)",
-      "cost": "Kostnad (kr)",
-      "transportMode": "Färdsätt",
-      "modes": {
-        "public": "Kollektivtrafik",
-        "car": "Bil",
-        "bike": "Cykel",
-        "walk": "Gång"
-      },
-      "savePlan": "Spara reseplan",
-      "departureTime": "Avresa senast",
-      "reimbursed": "Ersätts",
-      "edit": "Ändra",
-      "travelPlan": "Reseplan"
-    },
-    "tasks": {
-      "toDo": "Att göra",
-      "addPlaceholder": "Lägg till ny uppgift...",
-      "empty": "Inga uppgifter ännu. Lägg till en för att komma igång!",
-      "addTask": "Lägg till uppgift",
-      "moveUp": "Flytta upp",
-      "moveDown": "Flytta ned",
-      "deleteTask": "Ta bort uppgift"
+    "newEvent": "Ny händelse",
+    "mockData": {
+      "jobInterview": "Jobbintervju - Tech Solutions",
+      "secondInterview": "Andra intervjun med tekniska frågor",
+      "updateCV": "Uppdatera CV",
+      "prepTechQuestions": "Förbereda tekniska frågor",
+      "researchCompany": "Kolla upp företaget",
+      "consultantMeeting": "Möte med arbetskonsulent",
+      "weeklyFollowUp": "Veckovis uppföljning av jobbsökande",
+      "applicationDeadline": "Sista ansökningsdag - Digital Agency",
+      "writeCoverLetter": "Skriva personligt brev",
+      "updatePortfolio": "Uppdatera portfolio",
+      "interviewPrep": "Förberedelse inför intervju",
+      "reviewQuestions": "Gå igenom vanliga intervjufrågor"
     }
   },
   "nav": {
@@ -263,7 +155,6 @@
     "skillsGap": "Kompetensanalys",
     "interviewSimulator": "Intervjuträning",
     "aiTeam": "Mitt AI Team",
-    "profile": "Min profil",
     "help": "Hjälp",
     "groups": {
       "overview": "Översikt",
@@ -1277,7 +1168,31 @@
     "saveJob": "Spara jobb",
     "applications": "Ansökningar",
     "alerts": "Bevakningar",
-    "matches": "Matchningar",
+    "matches": {
+      "title": "Smarta jobbmatchningar",
+      "subtitle": "Välj vilka datakällor som ska användas för matchning",
+      "sources": {
+        "cv": "Mitt CV",
+        "interest": "Intresseguiden",
+        "career": "Karriärmål"
+      },
+      "missing": "Saknas",
+      "locations": "Orter",
+      "allLocations": "Alla orter",
+      "minScore": "Minst",
+      "all": "Alla",
+      "goodMatch": "Bra match",
+      "possible": "Möjliga",
+      "total": "Totalt",
+      "showDetails": "Visa matchningsdetaljer",
+      "matchingSkills": "Matchande kompetenser",
+      "interestTypes": "Intressetyper",
+      "careerMatch": "Karriärmatch",
+      "requiredSkills": "Kompetenser som efterfrågas",
+      "createProfile": "Skapa din profil först",
+      "createProfileDesc": "För att hitta de bästa matchningarna behöver vi veta mer om dig.",
+      "analyzing": "Analyserar din profil och hittar matchningar..."
+    },
     "savedJobs": "Sparade jobb",
     "searchToSave": "Sök jobb att spara",
     "exploreJobs": "Utforska jobb",
@@ -1315,31 +1230,6 @@
     "noMatchesTitle": "Inga matchningar ännu",
     "noMatchesDesc": "Slutför din profil för att få personliga jobbförslag.",
     "takeInterestTest": "Gör intressetestet",
-    "matches": {
-      "title": "Smarta jobbmatchningar",
-      "subtitle": "Välj vilka datakällor som ska användas för matchning",
-      "sources": {
-        "cv": "Mitt CV",
-        "interest": "Intresseguiden",
-        "career": "Karriärmål"
-      },
-      "missing": "Saknas",
-      "locations": "Orter",
-      "allLocations": "Alla orter",
-      "minScore": "Minst",
-      "all": "Alla",
-      "goodMatch": "Bra match",
-      "possible": "Möjliga",
-      "total": "Totalt",
-      "showDetails": "Visa matchningsdetaljer",
-      "matchingSkills": "Matchande kompetenser",
-      "interestTypes": "Intressetyper",
-      "careerMatch": "Karriärmatch",
-      "requiredSkills": "Kompetenser som efterfrågas",
-      "createProfile": "Skapa din profil först",
-      "createProfileDesc": "För att hitta de bästa matchningarna behöver vi veta mer om dig.",
-      "analyzing": "Analyserar din profil och hittar matchningar..."
-    },
     "writeLetter": "Skriv brev",
     "writePersonalLetter": "Skriv personligt brev",
     "somethingWentWrong": "Något gick fel"
@@ -2015,21 +1905,60 @@
         "tip4": "Överväg att pendla från närliggande ort initialt"
       },
       "housingLinks": {
-        "blocket": { "name": "Blocket Bostad", "desc": "Privatuthyrning och andrahand" },
-        "qasa": { "name": "Qasa", "desc": "Säker andrahandsuthyrning" },
-        "bostadsportalen": { "name": "Bostadsportalen", "desc": "Aggregator för hyresbostäder" },
-        "samtrygg": { "name": "Samtrygg", "desc": "Andrahandsuthyrning med trygghet" },
-        "homeq": { "name": "HomeQ", "desc": "Bostadsköer utan kötid" }
+        "blocket": {
+          "name": "Blocket Bostad",
+          "desc": "Privatuthyrning och andrahand"
+        },
+        "qasa": {
+          "name": "Qasa",
+          "desc": "Säker andrahandsuthyrning"
+        },
+        "bostadsportalen": {
+          "name": "Bostadsportalen",
+          "desc": "Aggregator för hyresbostäder"
+        },
+        "samtrygg": {
+          "name": "Samtrygg",
+          "desc": "Andrahandsuthyrning med trygghet"
+        },
+        "homeq": {
+          "name": "HomeQ",
+          "desc": "Bostadsköer utan kötid"
+        }
       },
       "checklist": {
-        "addressChange": { "label": "Anmäl adressändring till Skatteverket", "timeframe": "Senast flyttdagen" },
-        "mailForward": { "label": "Beställ eftersändning av post", "timeframe": "2 veckor före" },
-        "utilities": { "label": "Teckna elavtal för nya bostaden", "timeframe": "2-4 veckor före" },
-        "internet": { "label": "Beställ bredband/fiber", "timeframe": "2-4 veckor före" },
-        "insurance": { "label": "Teckna/uppdatera hemförsäkring", "timeframe": "Innan inflyttning" },
-        "cleaning": { "label": "Boka flyttstädning", "timeframe": "2-4 veckor före" },
-        "parking": { "label": "Ordna parkeringstillstånd om behövs", "timeframe": "1-2 veckor före" },
-        "keys": { "label": "Hämta/lämna nycklar", "timeframe": "Flyttdagen" }
+        "addressChange": {
+          "label": "Anmäl adressändring till Skatteverket",
+          "timeframe": "Senast flyttdagen"
+        },
+        "mailForward": {
+          "label": "Beställ eftersändning av post",
+          "timeframe": "2 veckor före"
+        },
+        "utilities": {
+          "label": "Teckna elavtal för nya bostaden",
+          "timeframe": "2-4 veckor före"
+        },
+        "internet": {
+          "label": "Beställ bredband/fiber",
+          "timeframe": "2-4 veckor före"
+        },
+        "insurance": {
+          "label": "Teckna/uppdatera hemförsäkring",
+          "timeframe": "Innan inflyttning"
+        },
+        "cleaning": {
+          "label": "Boka flyttstädning",
+          "timeframe": "2-4 veckor före"
+        },
+        "parking": {
+          "label": "Ordna parkeringstillstånd om behövs",
+          "timeframe": "1-2 veckor före"
+        },
+        "keys": {
+          "label": "Hämta/lämna nycklar",
+          "timeframe": "Flyttdagen"
+        }
       }
     },
     "networkTab": {
@@ -2163,31 +2092,19 @@
     }
   },
   "quests": {
-    "pointsToday": "poäng idag",
-    "daysInRow": "dagar i rad",
-    "totalCompleted": "totalt avklarade",
-    "todaysProgress": "Dagens progress",
-    "ofQuestsCompleted": "{{completed}} av {{total}} quests avklarade",
-    "todaysQuests": "Dagens uppdrag",
-    "noQuestsYet": "Inga quests tilldelade än.",
-    "comeBackTomorrow": "Kom tillbaka imorgon!",
-    "completed": "Avklarad!",
-    "min": "min",
-    "points": "poäng",
-    "greatJob": "Bra jobbat! 🎉",
-    "allQuestsComplete": "Du har avslutat alla dagens quests. Ta en välförtjänt paus!",
-    "tip": "Tips",
-    "tipText": "Välj quests baserat på din energinivå idag. Det är okej att bara göra en liten del - allt räknas!",
-    "categories": {
-      "cv": "CV & Profil",
-      "apply": "Jobbsökning",
-      "network": "Nätverkande",
-      "wellness": "Välmående"
-    },
-    "energy": {
-      "low": "Låg energi",
-      "medium": "Medium",
-      "high": "Hög energi"
+    "todaysQuests": "Dagens Quests",
+    "allDone": "Alla klara!",
+    "remaining": "{{count}} kvar",
+    "youCompletedAll": "Du har klarat allt!",
+    "completeTasks": "Slutför uppgifterna",
+    "streakDays": "{{count}} dagar",
+    "progress": "Progress",
+    "showAll": "Visa alla",
+    "continue": "Fortsätt",
+    "sample": {
+      "readArticle": "Läs en artikel",
+      "updateCV": "Uppdatera ditt CV",
+      "applyJob": "Sök ett jobb"
     }
   },
   "exercises": {
@@ -2384,18 +2301,54 @@
       "energyLogged": "Energinivå sparad!",
       "suggestions": "Förslag baserat på din energi",
       "activities": {
-        "writeLetter": { "title": "Skriv personligt brev", "description": "Perfekt tid för fokuserat skrivande" },
-        "network": { "title": "Nätverka aktivt", "description": "Kontakta nya personer på LinkedIn" },
-        "prepareInterview": { "title": "Förbered intervju", "description": "Öva på vanliga frågor" },
-        "searchJobs": { "title": "Sök jobb", "description": "Gå igenom platsbanken" },
-        "updateCV": { "title": "Uppdatera CV", "description": "Gör små förbättringar" },
-        "doExercise": { "title": "Gör en övning", "description": "Kompetensutveckling" },
-        "readArticles": { "title": "Läsa artiklar", "description": "Kunskapsbanken väntar" },
-        "writeDiary": { "title": "Skriv i dagboken", "description": "Reflektera över dagen" },
-        "planTomorrow": { "title": "Planera imorgon", "description": "Skriv en lista" },
-        "rest": { "title": "Vila", "description": "Det är okej att vila" },
-        "reflect": { "title": "Reflektera", "description": "Skriv ner tankar" },
-        "breathing": { "title": "Andningsövning", "description": "10 minuter mindfulness" }
+        "writeLetter": {
+          "title": "Skriv personligt brev",
+          "description": "Perfekt tid för fokuserat skrivande"
+        },
+        "network": {
+          "title": "Nätverka aktivt",
+          "description": "Kontakta nya personer på LinkedIn"
+        },
+        "prepareInterview": {
+          "title": "Förbered intervju",
+          "description": "Öva på vanliga frågor"
+        },
+        "searchJobs": {
+          "title": "Sök jobb",
+          "description": "Gå igenom platsbanken"
+        },
+        "updateCV": {
+          "title": "Uppdatera CV",
+          "description": "Gör små förbättringar"
+        },
+        "doExercise": {
+          "title": "Gör en övning",
+          "description": "Kompetensutveckling"
+        },
+        "readArticles": {
+          "title": "Läsa artiklar",
+          "description": "Kunskapsbanken väntar"
+        },
+        "writeDiary": {
+          "title": "Skriv i dagboken",
+          "description": "Reflektera över dagen"
+        },
+        "planTomorrow": {
+          "title": "Planera imorgon",
+          "description": "Skriv en lista"
+        },
+        "rest": {
+          "title": "Vila",
+          "description": "Det är okej att vila"
+        },
+        "reflect": {
+          "title": "Reflektera",
+          "description": "Skriv ner tankar"
+        },
+        "breathing": {
+          "title": "Andningsövning",
+          "description": "10 minuter mindfulness"
+        }
       },
       "weekHistory": "Veckans energi",
       "noNotes": "Inga anteckningar",
@@ -2429,10 +2382,22 @@
         "description": "Identifiera alla ljud du kan höra just nu, en efter en"
       },
       "contacts": {
-        "1177": { "name": "Jourtelefon 1177", "description": "Sjukvårdsrådgivning dygnet runt" },
-        "bup": { "name": "Barn- och ungdomspsykiatri (BUP)", "description": "Akut hjälp för barn och unga" },
-        "healthcare": { "name": "Sjukvårdsupplysningen", "description": "Råd och vägledning" },
-        "112": { "name": "112", "description": "Vid akut livsfara" }
+        "112": {
+          "name": "112",
+          "description": "Vid akut livsfara"
+        },
+        "1177": {
+          "name": "Jourtelefon 1177",
+          "description": "Sjukvårdsrådgivning dygnet runt"
+        },
+        "bup": {
+          "name": "Barn- och ungdomspsykiatri (BUP)",
+          "description": "Akut hjälp för barn och unga"
+        },
+        "healthcare": {
+          "name": "Sjukvårdsupplysningen",
+          "description": "Råd och vägledning"
+        }
       }
     },
     "routines": {
@@ -2493,11 +2458,26 @@
         "problemSolving": "Problemlösning"
       },
       "exercises": {
-        "namememory": { "title": "Namn-minne", "description": "Öva på att komma ihåg namn och ansikten" },
-        "focus": { "title": "Fokus-övning", "description": "Träna koncentration i 10 minuter utan avbrott" },
-        "prioritization": { "title": "Prioriterings-träning", "description": "Sortera uppgifter efter vikt och brådska" },
-        "workingmemory": { "title": "Arbetsminne", "description": "Kom ihåg instruktioner medan du gör något annat" },
-        "distractedreading": { "title": "Distraherad läsning", "description": "Läsa och förstå text med bakgrundsljud" }
+        "namememory": {
+          "title": "Namn-minne",
+          "description": "Öva på att komma ihåg namn och ansikten"
+        },
+        "focus": {
+          "title": "Fokus-övning",
+          "description": "Träna koncentration i 10 minuter utan avbrott"
+        },
+        "prioritization": {
+          "title": "Prioriterings-träning",
+          "description": "Sortera uppgifter efter vikt och brådska"
+        },
+        "workingmemory": {
+          "title": "Arbetsminne",
+          "description": "Kom ihåg instruktioner medan du gör något annat"
+        },
+        "distractedreading": {
+          "title": "Distraherad läsning",
+          "description": "Läsa och förstå text med bakgrundsljud"
+        }
       }
     },
     "consent": {
@@ -3324,22 +3304,6 @@
     "read": "Lästa",
     "saved": "Sparade",
     "continueReading": "Fortsätt läsa"
-  },
-  "quests": {
-    "todaysQuests": "Dagens Quests",
-    "allDone": "Alla klara!",
-    "remaining": "{{count}} kvar",
-    "youCompletedAll": "Du har klarat allt!",
-    "completeTasks": "Slutför uppgifterna",
-    "streakDays": "{{count}} dagar",
-    "progress": "Progress",
-    "showAll": "Visa alla",
-    "continue": "Fortsätt",
-    "sample": {
-      "readArticle": "Läs en artikel",
-      "updateCV": "Uppdatera ditt CV",
-      "applyJob": "Sök ett jobb"
-    }
   },
   "crisis": {
     "ariaLabel": "Öppna stöd och hjälp - för dig som mår dåligt eller behöver någon att prata med",
@@ -4494,37 +4458,6 @@
     "fallbackQ2": "Bra! Vilka är dina styrkor och svagheter?",
     "fallbackQ3": "Varför vill du just jobba hos oss?"
   },
-  "calendar": {
-    "title": "Kalender",
-    "description": "Dina händelser och möten",
-    "days": {
-      "mon": "Mån",
-      "tue": "Tis",
-      "wed": "Ons",
-      "thu": "Tor",
-      "fri": "Fre",
-      "sat": "Lör",
-      "sun": "Sön"
-    },
-    "moreEvents": "+{{count}} till",
-    "upcomingEvents": "Kommande händelser",
-    "noEventsPlanned": "Inga händelser planerade",
-    "newEvent": "Ny händelse",
-    "mockData": {
-      "jobInterview": "Jobbintervju - Tech Solutions",
-      "secondInterview": "Andra intervjun med tekniska frågor",
-      "updateCV": "Uppdatera CV",
-      "prepTechQuestions": "Förbereda tekniska frågor",
-      "researchCompany": "Kolla upp företaget",
-      "consultantMeeting": "Möte med arbetskonsulent",
-      "weeklyFollowUp": "Veckovis uppföljning av jobbsökande",
-      "applicationDeadline": "Sista ansökningsdag - Digital Agency",
-      "writeCoverLetter": "Skriva personligt brev",
-      "updatePortfolio": "Uppdatera portfolio",
-      "interviewPrep": "Förberedelse inför intervju",
-      "reviewQuestions": "Gå igenom vanliga intervjufrågor"
-    }
-  },
   "profile": {
     "title": "Din profil",
     "description": "Hantera dina kontouppgifter och personliga information.",
@@ -5031,32 +4964,56 @@
       "sidebar": {
         "name": "Sidokolumn",
         "desc": "Modern layout med sidopanel för kontakt och skills",
-        "features": ["Sidokolumn", "Rundat foto", "Skills i sidopanel"]
+        "features": [
+          "Sidokolumn",
+          "Rundat foto",
+          "Skills i sidopanel"
+        ]
       },
       "centered": {
         "name": "Centrerad",
         "desc": "Hero-design med stort foto och gradient",
-        "features": ["Gradient header", "Centrerat foto", "Timeline"]
+        "features": [
+          "Gradient header",
+          "Centrerat foto",
+          "Timeline"
+        ]
       },
       "minimal": {
         "name": "Minimal",
         "desc": "Luftig design med mycket whitespace",
-        "features": ["Clean & luftig", "Enkel typografi", "Fokus på innehåll"]
+        "features": [
+          "Clean & luftig",
+          "Enkel typografi",
+          "Fokus på innehåll"
+        ]
       },
       "creative": {
         "name": "Kreativ",
         "desc": "Färgstark två-kolumns layout",
-        "features": ["Färgstark", "Progress bars", "Kort-layout"]
+        "features": [
+          "Färgstark",
+          "Progress bars",
+          "Kort-layout"
+        ]
       },
       "executive": {
         "name": "Executive",
         "desc": "Elegant med serif-typsnitt för ledare",
-        "features": ["Serif rubriker", "Guld-accenter", "Klassisk"]
+        "features": [
+          "Serif rubriker",
+          "Guld-accenter",
+          "Klassisk"
+        ]
       },
       "nordic": {
         "name": "Nordisk",
         "desc": "Skandinavisk design med mjuka färger",
-        "features": ["Mjuka färger", "Ljust tema", "Clean"]
+        "features": [
+          "Mjuka färger",
+          "Ljust tema",
+          "Clean"
+        ]
       },
       "selected": "Vald",
       "isSelected": "är vald",
@@ -5185,35 +5142,75 @@
       "goalsOverview": "Målöversikt",
       "completedGoals": "Avklarade mål",
       "overdueGoals": "Försenade mål",
-      "topGoalCategories": "Vanligaste målkategorierna"
+      "topGoalCategories": "Vanligaste målkategorierna",
+      "vsLastWeek": "vs förra veckan",
+      "activeCount": "{{count}} aktiva",
+      "unreadMessages": "{{count}} olästa meddelanden",
+      "noActivity": "Ingen aktivitet ännu",
+      "seeDetails": "Se detaljer"
     },
     "participants": {
+      "neverContacted": "Aldrig kontaktad",
+      "today": "Idag",
+      "yesterday": "Igår",
+      "daysAgo": "{{count}} dagar sedan",
+      "weeksAgo": "{{count}} veckor sedan",
+      "noParticipants": "Inga deltagare ännu",
+      "noParticipantsDesc": "Du har inte tilldelat några deltagare ännu.",
+      "exists": "Finns",
+      "missing": "Saknas",
+      "jobs": "Jobb",
+      "notes": "Anteckningar",
+      "viewProfile": "Visa profil",
+      "priority": {
+        "critical": "Kritisk",
+        "high": "Hög"
+      },
+      "table": {
+        "name": "Namn",
+        "status": "Status",
+        "cv": "CV",
+        "savedJobs": "Sparade jobb",
+        "lastContact": "Senast kontakt",
+        "actions": "Åtgärder"
+      },
       "searchPlaceholder": "Sök efter namn eller email...",
-      "allStatuses": "Alla statusar",
-      "active": "Aktiva",
-      "inactive": "Inaktiva",
-      "paused": "Pausade",
-      "completed": "Avslutade",
-      "needsAttention": "Kräver uppmärksamhet",
-      "sortBy": "Sortera efter",
-      "priority": "Prioritet",
-      "name": "Namn",
-      "cvScore": "CV-poäng",
-      "lastContact": "Senast kontakt",
-      "status": "Status",
       "invite": "Bjud in",
-      "selected": "{{count}} valda",
-      "sendMessage": "Skicka meddelande",
-      "addTag": "Lägg till tagg",
-      "export": "Exportera",
-      "showing": "Visar {{shown}} av {{total}} deltagare",
+      "selectedCount": "{{count}} valda",
+      "showingCount": "Visar {{shown}} av {{total}} deltagare",
       "selectAll": "Markera alla",
       "deselectAll": "Avmarkera alla",
-      "noParticipants": "Inga deltagare hittades",
+      "noResults": "Inga deltagare hittades",
       "tryDifferentFilters": "Prova att ändra dina filter eller sökord.",
-      "noAssignedYet": "Du har inte tilldelats några deltagare ännu.",
+      "noParticipantsYet": "Du har inte tilldelats några deltagare ännu.",
       "clearFilters": "Rensa filter",
-      "view": "Visa"
+      "status": {
+        "active": "Aktiv",
+        "inactive": "Inaktiv",
+        "completed": "Avslutad",
+        "onHold": "Pausad"
+      },
+      "filter": {
+        "all": "Alla statusar",
+        "active": "Aktiva",
+        "inactive": "Inaktiva",
+        "onHold": "Pausade",
+        "completed": "Avslutade",
+        "needsAttention": "Kräver uppmärksamhet"
+      },
+      "sort": {
+        "priority": "Prioritet",
+        "name": "Namn",
+        "cvScore": "CV-poäng",
+        "lastContact": "Senast kontakt",
+        "status": "Status"
+      },
+      "bulk": {
+        "sendMessage": "Skicka meddelande",
+        "addTag": "Lägg till tagg",
+        "changeStatus": "Ändra status",
+        "export": "Exportera"
+      }
     },
     "participantDetail": {
       "backToParticipants": "Tillbaka till deltagare",
@@ -5485,31 +5482,6 @@
         "sendGroupMessage": "Skicka gruppmeddelande",
         "scheduleMeetings": "Schemalägg möten",
         "exportReport": "Exportera rapport"
-      }
-    },
-    "participants": {
-      "neverContacted": "Aldrig kontaktad",
-      "today": "Idag",
-      "yesterday": "Igår",
-      "daysAgo": "{{count}} dagar sedan",
-      "weeksAgo": "{{count}} veckor sedan",
-      "noParticipants": "Inga deltagare ännu",
-      "noParticipantsDesc": "Du har inte tilldelat några deltagare ännu.",
-      "exists": "Finns",
-      "missing": "Saknas",
-      "jobs": "Jobb",
-      "notes": "Anteckningar",
-      "viewProfile": "Visa profil",
-      "priority": {
-        "critical": "Kritisk",
-        "high": "Hög"
-      },
-      "table": {
-        "name": "Namn",
-        "status": "Status",
-        "savedJobs": "Sparade jobb",
-        "lastContact": "Senast kontakt",
-        "actions": "Åtgärder"
       }
     },
     "actionPlan": {

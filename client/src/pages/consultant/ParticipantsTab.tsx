@@ -188,27 +188,27 @@ export function ParticipantsTab() {
 
   const getStatusBadge = (status: string) => {
     const badges = {
-      ACTIVE: { label: 'Aktiv', color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' },
-      INACTIVE: { label: 'Inaktiv', color: 'bg-stone-100 text-stone-800 dark:bg-stone-700 dark:text-stone-300' },
-      COMPLETED: { label: 'Avslutad', color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' },
-      ON_HOLD: { label: 'Pausad', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' },
+      ACTIVE: { label: t('consultant.participants.status.active'), color: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300' },
+      INACTIVE: { label: t('consultant.participants.status.inactive'), color: 'bg-stone-100 text-stone-800 dark:bg-stone-700 dark:text-stone-300' },
+      COMPLETED: { label: t('consultant.participants.status.completed'), color: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300' },
+      ON_HOLD: { label: t('consultant.participants.status.onHold'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' },
     }
     return badges[status as keyof typeof badges] || badges.INACTIVE
   }
 
   const getPriorityBadge = (priority: number) => {
-    if (priority === 2) return { label: 'Kritisk', color: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300' }
-    if (priority === 1) return { label: 'Hög', color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' }
+    if (priority === 2) return { label: t('consultant.participants.priority.critical'), color: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300' }
+    if (priority === 1) return { label: t('consultant.participants.priority.high'), color: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300' }
     return null
   }
 
   const getLastContactText = (date: string | null) => {
-    if (!date) return 'Aldrig kontaktad'
+    if (!date) return t('consultant.participants.neverContacted')
     const days = Math.floor((Date.now() - new Date(date).getTime()) / (1000 * 60 * 60 * 24))
-    if (days === 0) return 'Idag'
-    if (days === 1) return 'Igår'
-    if (days < 7) return `${days} dagar sedan`
-    return `${Math.floor(days / 7)} veckor sedan`
+    if (days === 0) return t('common.today')
+    if (days === 1) return t('consultant.participants.yesterday')
+    if (days < 7) return t('consultant.participants.daysAgo', { count: days })
+    return t('consultant.participants.weeksAgo', { count: Math.floor(days / 7) })
   }
 
   const isOverdue = (date: string | null) => {
@@ -230,7 +230,7 @@ export function ParticipantsTab() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
             <input
               type="text"
-              placeholder="Sök efter namn eller email..."
+              placeholder={t('consultant.participants.searchPlaceholder')}
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className={cn(
@@ -261,12 +261,12 @@ export function ParticipantsTab() {
                 'text-stone-900 dark:text-stone-100'
               )}
             >
-              <option value="all">Alla statusar</option>
-              <option value="ACTIVE">Aktiva</option>
-              <option value="INACTIVE">Inaktiva</option>
-              <option value="ON_HOLD">Pausade</option>
-              <option value="COMPLETED">Avslutade</option>
-              <option value="attention">Kräver uppmärksamhet</option>
+              <option value="all">{t('consultant.participants.filter.all')}</option>
+              <option value="ACTIVE">{t('consultant.participants.filter.active')}</option>
+              <option value="INACTIVE">{t('consultant.participants.filter.inactive')}</option>
+              <option value="ON_HOLD">{t('consultant.participants.filter.onHold')}</option>
+              <option value="COMPLETED">{t('consultant.participants.filter.completed')}</option>
+              <option value="attention">{t('consultant.participants.filter.needsAttention')}</option>
             </select>
 
             {/* Sort */}
@@ -282,11 +282,11 @@ export function ParticipantsTab() {
                   'text-sm'
                 )}
               >
-                <option value="priority">Prioritet</option>
-                <option value="name">Namn</option>
-                <option value="ats_score">CV-poäng</option>
-                <option value="last_contact">Senast kontakt</option>
-                <option value="status">Status</option>
+                <option value="priority">{t('consultant.participants.sort.priority')}</option>
+                <option value="name">{t('consultant.participants.sort.name')}</option>
+                <option value="ats_score">{t('consultant.participants.sort.cvScore')}</option>
+                <option value="last_contact">{t('consultant.participants.sort.lastContact')}</option>
+                <option value="status">{t('consultant.participants.sort.status')}</option>
               </select>
               <button
                 onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
@@ -329,7 +329,7 @@ export function ParticipantsTab() {
             {/* Add Participant Button */}
             <Button className="ml-2">
               <UserPlus className="w-4 h-4 mr-2" />
-              Bjud in
+              {t('consultant.participants.invite')}
             </Button>
           </div>
         </div>
@@ -347,7 +347,7 @@ export function ParticipantsTab() {
                 <X className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               </button>
               <span className="font-medium text-amber-900 dark:text-amber-100">
-                {selectedParticipants.length} valda
+                {t('consultant.participants.selectedCount', { count: selectedParticipants.length })}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -357,7 +357,7 @@ export function ParticipantsTab() {
                 onClick={() => handleBulkAction('message')}
               >
                 <Mail className="w-4 h-4 mr-1.5" />
-                Skicka meddelande
+                {t('consultant.participants.bulk.sendMessage')}
               </Button>
               <Button
                 variant="ghost"
@@ -365,7 +365,7 @@ export function ParticipantsTab() {
                 onClick={() => handleBulkAction('tag')}
               >
                 <Tag className="w-4 h-4 mr-1.5" />
-                Lägg till tagg
+                {t('consultant.participants.bulk.addTag')}
               </Button>
               <Button
                 variant="ghost"
@@ -373,7 +373,7 @@ export function ParticipantsTab() {
                 onClick={() => handleBulkAction('status')}
               >
                 <UserCheck className="w-4 h-4 mr-1.5" />
-                Ändra status
+                {t('consultant.participants.bulk.changeStatus')}
               </Button>
               <Button
                 variant="ghost"
@@ -381,7 +381,7 @@ export function ParticipantsTab() {
                 onClick={() => handleBulkAction('export')}
               >
                 <Download className="w-4 h-4 mr-1.5" />
-                Exportera
+                {t('consultant.participants.bulk.export')}
               </Button>
             </div>
           </div>
@@ -391,7 +391,7 @@ export function ParticipantsTab() {
       {/* Results Count */}
       <div className="flex items-center justify-between px-1">
         <p className="text-sm text-stone-500 dark:text-stone-400">
-          Visar {filteredParticipants.length} av {participants.length} deltagare
+          {t('consultant.participants.showingCount', { shown: filteredParticipants.length, total: participants.length })}
         </p>
         {filteredParticipants.length > 0 && (
           <button
@@ -399,8 +399,8 @@ export function ParticipantsTab() {
             className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium"
           >
             {selectedParticipants.length === filteredParticipants.length
-              ? 'Avmarkera alla'
-              : 'Markera alla'}
+              ? t('consultant.participants.deselectAll')
+              : t('consultant.participants.selectAll')}
           </button>
         )}
       </div>
@@ -410,12 +410,12 @@ export function ParticipantsTab() {
         <Card className="p-12 text-center">
           <Users className="w-16 h-16 text-stone-300 dark:text-stone-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
-            Inga deltagare hittades
+            {t('consultant.participants.noResults')}
           </h3>
           <p className="text-stone-500 dark:text-stone-600 mb-6">
             {searchQuery || filterStatus !== 'all'
-              ? 'Prova att ändra dina filter eller sökord.'
-              : 'Du har inte tilldelats några deltagare ännu.'}
+              ? t('consultant.participants.tryDifferentFilters')
+              : t('consultant.participants.noParticipantsYet')}
           </p>
           {(searchQuery || filterStatus !== 'all') && (
             <Button
@@ -426,7 +426,7 @@ export function ParticipantsTab() {
                 setSearchParams({})
               }}
             >
-              Rensa filter
+              {t('consultant.participants.clearFilters')}
             </Button>
           )}
         </Card>
@@ -553,22 +553,22 @@ export function ParticipantsTab() {
                     </button>
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
-                    Namn
+                    {t('consultant.participants.table.name')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
-                    Status
+                    {t('consultant.participants.table.status')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
-                    CV
+                    {t('consultant.participants.table.cv')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
-                    Sparade jobb
+                    {t('consultant.participants.table.savedJobs')}
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
-                    Senast kontakt
+                    {t('consultant.participants.table.lastContact')}
                   </th>
                   <th className="px-4 py-3 text-right text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
-                    Åtgärder
+                    {t('consultant.participants.table.actions')}
                   </th>
                 </tr>
               </thead>
@@ -656,7 +656,7 @@ export function ParticipantsTab() {
                           to={`/consultant/participants/${p.participant_id}`}
                           className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 text-sm font-medium"
                         >
-                          Visa
+                          {t('common.view')}
                         </Link>
                       </td>
                     </tr>

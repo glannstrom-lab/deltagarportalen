@@ -62,7 +62,8 @@
     "showDetails": "Show details",
     "passed": "Passed",
     "missing": "Missing",
-    "needsAttention": "Needs attention"
+    "needsAttention": "Needs attention",
+    "today": "Today"
   },
   "pageTabs": {
     "cv": {
@@ -5141,7 +5142,12 @@
       "goalsOverview": "Goals overview",
       "completedGoals": "Completed goals",
       "overdueGoals": "Overdue goals",
-      "topGoalCategories": "Top goal categories"
+      "topGoalCategories": "Top goal categories",
+      "vsLastWeek": "vs last week",
+      "activeCount": "{{count}} active",
+      "unreadMessages": "{{count}} unread messages",
+      "noActivity": "No activity yet",
+      "seeDetails": "See details"
     },
     "participants": {
       "neverContacted": "Never contacted",
@@ -5163,9 +5169,47 @@
       "table": {
         "name": "Name",
         "status": "Status",
+        "cv": "CV",
         "savedJobs": "Saved jobs",
         "lastContact": "Last contact",
         "actions": "Actions"
+      },
+      "searchPlaceholder": "Search by name or email...",
+      "invite": "Invite",
+      "selectedCount": "{{count}} selected",
+      "showingCount": "Showing {{shown}} of {{total}} participants",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "noResults": "No participants found",
+      "tryDifferentFilters": "Try changing your filters or search terms.",
+      "noParticipantsYet": "You have not been assigned any participants yet.",
+      "clearFilters": "Clear filters",
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "completed": "Completed",
+        "onHold": "On hold"
+      },
+      "filter": {
+        "all": "All statuses",
+        "active": "Active",
+        "inactive": "Inactive",
+        "onHold": "On hold",
+        "completed": "Completed",
+        "needsAttention": "Needs attention"
+      },
+      "sort": {
+        "priority": "Priority",
+        "name": "Name",
+        "cvScore": "CV score",
+        "lastContact": "Last contact",
+        "status": "Status"
+      },
+      "bulk": {
+        "sendMessage": "Send message",
+        "addTag": "Add tag",
+        "changeStatus": "Change status",
+        "export": "Export"
       }
     },
     "settings": {
