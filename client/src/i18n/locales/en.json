@@ -4951,6 +4951,84 @@
       "careerTimeline": "Career Timeline",
       "changeHistory": "Change History"
     },
+    "constants": {
+      "employment": {
+        "unemployed": "Job seeker",
+        "employed": "Employed",
+        "student": "Student",
+        "parentalLeave": "Parental leave",
+        "sickLeave": "Sick leave",
+        "other": "Other"
+      },
+      "employmentType": {
+        "fulltime": "Full-time",
+        "parttime": "Part-time",
+        "freelance": "Freelance",
+        "temporary": "Temporary",
+        "internship": "Internship"
+      },
+      "remote": {
+        "yes": "Yes, fully remote",
+        "hybrid": "Hybrid (mixed)",
+        "no": "On-site"
+      },
+      "sector": {
+        "private": "Private",
+        "public": "Public",
+        "nonprofit": "Non-profit"
+      },
+      "afProgram": {
+        "jobbgarantin": "Job Guarantee",
+        "etablering": "Establishment Program",
+        "stodMatchning": "Support & Matching",
+        "praktik": "Internship Program",
+        "nystartsjobb": "New Start Jobs"
+      },
+      "supportNeed": {
+        "language": "I'm improving my Swedish",
+        "license": "I'm getting my driver's license",
+        "validation": "Education validation in progress",
+        "experience": "I'm new to this field",
+        "health": "I need health considerations",
+        "childcare": "Childcare needs to be arranged"
+      },
+      "adaptation": {
+        "ergonomic": "Ergonomic workplace",
+        "parttime": "Part-time work",
+        "breaks": "Regular breaks",
+        "quiet": "Quiet environment",
+        "flexibleHours": "Flexible hours",
+        "remote": "Remote work",
+        "reducedPace": "Adjusted pace",
+        "writtenInstructions": "Clear written instructions"
+      },
+      "functional": {
+        "full": "Full capacity",
+        "limited": "Some adaptation needed",
+        "significantlyLimited": "More adaptation needed"
+      },
+      "rehab": {
+        "early": "Early phase",
+        "ongoing": "Ongoing",
+        "late": "Final phase",
+        "completed": "Completed"
+      },
+      "cvStatus": {
+        "complete": "Complete",
+        "needsUpdate": "Can be updated",
+        "missing": "Not started yet"
+      },
+      "reference": {
+        "available": "Available",
+        "missing": "Need to collect",
+        "needsContact": "Need to contact"
+      },
+      "time": {
+        "morning": "Morning",
+        "afternoon": "Afternoon",
+        "varies": "Varies"
+      }
+    },
     "sections": {
       "desiredJobs": "Desired jobs",
       "desiredJobsDesc": "What roles are you dreaming of? (max 3)",

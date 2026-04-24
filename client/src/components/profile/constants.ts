@@ -20,26 +20,26 @@ export const SUGGESTED_INTERESTS = [
 // ============== EMPLOYMENT ==============
 
 export const EMPLOYMENT_STATUSES = [
-  { value: 'unemployed', label: 'Arbetssökande' },
-  { value: 'employed', label: 'Anställd' },
-  { value: 'student', label: 'Studerar' },
-  { value: 'parental_leave', label: 'Föräldraledig' },
-  { value: 'sick_leave', label: 'Sjukskriven' },
-  { value: 'other', label: 'Annat' },
+  { value: 'unemployed', labelKey: 'profile.constants.employment.unemployed' },
+  { value: 'employed', labelKey: 'profile.constants.employment.employed' },
+  { value: 'student', labelKey: 'profile.constants.employment.student' },
+  { value: 'parental_leave', labelKey: 'profile.constants.employment.parentalLeave' },
+  { value: 'sick_leave', labelKey: 'profile.constants.employment.sickLeave' },
+  { value: 'other', labelKey: 'profile.constants.employment.other' },
 ] as const
 
 export const EMPLOYMENT_TYPES = [
-  { value: 'fulltime', label: 'Heltid' },
-  { value: 'parttime', label: 'Deltid' },
-  { value: 'freelance', label: 'Frilans' },
-  { value: 'temporary', label: 'Vikariat' },
-  { value: 'internship', label: 'Praktik' },
+  { value: 'fulltime', labelKey: 'profile.constants.employmentType.fulltime' },
+  { value: 'parttime', labelKey: 'profile.constants.employmentType.parttime' },
+  { value: 'freelance', labelKey: 'profile.constants.employmentType.freelance' },
+  { value: 'temporary', labelKey: 'profile.constants.employmentType.temporary' },
+  { value: 'internship', labelKey: 'profile.constants.employmentType.internship' },
 ] as const
 
 export const REMOTE_WORK_OPTIONS = [
-  { value: 'yes', label: 'Ja, helt på distans' },
-  { value: 'hybrid', label: 'Hybrid (blandat)' },
-  { value: 'no', label: 'På plats' }
+  { value: 'yes', labelKey: 'profile.constants.remote.yes' },
+  { value: 'hybrid', labelKey: 'profile.constants.remote.hybrid' },
+  { value: 'no', labelKey: 'profile.constants.remote.no' }
 ] as const
 
 // ============== MOBILITY ==============
@@ -47,9 +47,9 @@ export const REMOTE_WORK_OPTIONS = [
 export const DRIVERS_LICENSES = ['B', 'A', 'C', 'D', 'BE', 'CE'] as const
 
 export const SECTORS = [
-  { value: 'private', label: 'Privat' },
-  { value: 'public', label: 'Offentlig' },
-  { value: 'nonprofit', label: 'Ideell' },
+  { value: 'private', labelKey: 'profile.constants.sector.private' },
+  { value: 'public', labelKey: 'profile.constants.sector.public' },
+  { value: 'nonprofit', labelKey: 'profile.constants.sector.nonprofit' },
 ] as const
 
 export const SWEDISH_REGIONS = [
@@ -72,23 +72,23 @@ export const BENEFITS = [
 // ============== AF PROGRAMS ==============
 
 export const AF_PROGRAMS = [
-  { value: 'jobbgarantin', label: 'Jobbgarantin' },
-  { value: 'etablering', label: 'Etablering' },
-  { value: 'stod_matchning', label: 'Stöd & matchning' },
-  { value: 'praktik', label: 'Praktik' },
-  { value: 'nystartsjobb', label: 'Nystartsjobb' },
+  { value: 'jobbgarantin', labelKey: 'profile.constants.afProgram.jobbgarantin' },
+  { value: 'etablering', labelKey: 'profile.constants.afProgram.etablering' },
+  { value: 'stod_matchning', labelKey: 'profile.constants.afProgram.stodMatchning' },
+  { value: 'praktik', labelKey: 'profile.constants.afProgram.praktik' },
+  { value: 'nystartsjobb', labelKey: 'profile.constants.afProgram.nystartsjobb' },
 ] as const
 
 // ============== SUPPORT NEEDS ==============
 // Positive language: "Hinder" → "Stöd jag kan behöva"
 
 export const SUPPORT_NEEDS = [
-  { value: 'language', label: 'Jag utvecklar mitt svenska' },
-  { value: 'license', label: 'Jag tar körkort' },
-  { value: 'validation', label: 'Validering av utbildning pågår' },
-  { value: 'experience', label: 'Jag är ny inom området' },
-  { value: 'health', label: 'Jag behöver hänsyn till min hälsa' },
-  { value: 'childcare', label: 'Barnomsorg behöver ordnas' },
+  { value: 'language', labelKey: 'profile.constants.supportNeed.language' },
+  { value: 'license', labelKey: 'profile.constants.supportNeed.license' },
+  { value: 'validation', labelKey: 'profile.constants.supportNeed.validation' },
+  { value: 'experience', labelKey: 'profile.constants.supportNeed.experience' },
+  { value: 'health', labelKey: 'profile.constants.supportNeed.health' },
+  { value: 'childcare', labelKey: 'profile.constants.supportNeed.childcare' },
 ] as const
 
 // Legacy mapping for backwards compatibility
@@ -98,54 +98,54 @@ export const WORK_BARRIERS = SUPPORT_NEEDS
 // Positive language: Focus on "what helps me work best"
 
 export const ADAPTATION_NEEDS = [
-  { value: 'ergonomic', label: 'Ergonomisk arbetsplats' },
-  { value: 'parttime', label: 'Deltidsarbete' },
-  { value: 'breaks', label: 'Regelbundna pauser' },
-  { value: 'quiet', label: 'Lugn miljö' },
-  { value: 'flexible_hours', label: 'Flexibla tider' },
-  { value: 'remote', label: 'Distansarbete' },
-  { value: 'reduced_pace', label: 'Anpassat tempo' },
-  { value: 'written_instructions', label: 'Tydliga skriftliga instruktioner' },
+  { value: 'ergonomic', labelKey: 'profile.constants.adaptation.ergonomic' },
+  { value: 'parttime', labelKey: 'profile.constants.adaptation.parttime' },
+  { value: 'breaks', labelKey: 'profile.constants.adaptation.breaks' },
+  { value: 'quiet', labelKey: 'profile.constants.adaptation.quiet' },
+  { value: 'flexible_hours', labelKey: 'profile.constants.adaptation.flexibleHours' },
+  { value: 'remote', labelKey: 'profile.constants.adaptation.remote' },
+  { value: 'reduced_pace', labelKey: 'profile.constants.adaptation.reducedPace' },
+  { value: 'written_instructions', labelKey: 'profile.constants.adaptation.writtenInstructions' },
 ] as const
 
 // ============== FUNCTIONAL LEVELS ==============
 // Positive language
 
 export const FUNCTIONAL_LEVELS = [
-  { value: 'full', label: 'Full kapacitet' },
-  { value: 'limited', label: 'Viss anpassning behövs' },
-  { value: 'significantly_limited', label: 'Mer anpassning behövs' }
+  { value: 'full', labelKey: 'profile.constants.functional.full' },
+  { value: 'limited', labelKey: 'profile.constants.functional.limited' },
+  { value: 'significantly_limited', labelKey: 'profile.constants.functional.significantlyLimited' }
 ] as const
 
 // ============== REHABILITATION ==============
 
 export const REHABILITATION_PHASES = [
-  { value: 'early', label: 'Tidig fas' },
-  { value: 'ongoing', label: 'Pågående' },
-  { value: 'late', label: 'Avslutande fas' },
-  { value: 'completed', label: 'Avslutad' }
+  { value: 'early', labelKey: 'profile.constants.rehab.early' },
+  { value: 'ongoing', labelKey: 'profile.constants.rehab.ongoing' },
+  { value: 'late', labelKey: 'profile.constants.rehab.late' },
+  { value: 'completed', labelKey: 'profile.constants.rehab.completed' }
 ] as const
 
 // ============== CV STATUS ==============
 
 export const CV_STATUSES = [
-  { value: 'complete', label: 'Komplett' },
-  { value: 'needs_update', label: 'Kan uppdateras' },
-  { value: 'missing', label: 'Inte påbörjat ännu' }
+  { value: 'complete', labelKey: 'profile.constants.cvStatus.complete' },
+  { value: 'needs_update', labelKey: 'profile.constants.cvStatus.needsUpdate' },
+  { value: 'missing', labelKey: 'profile.constants.cvStatus.missing' }
 ] as const
 
 export const REFERENCE_STATUSES = [
-  { value: 'available', label: 'Finns tillgängliga' },
-  { value: 'missing', label: 'Behöver samla' },
-  { value: 'needs_contact', label: 'Behöver kontaktas' }
+  { value: 'available', labelKey: 'profile.constants.reference.available' },
+  { value: 'missing', labelKey: 'profile.constants.reference.missing' },
+  { value: 'needs_contact', labelKey: 'profile.constants.reference.needsContact' }
 ] as const
 
 // ============== TIME OF DAY ==============
 
 export const BEST_TIME_OPTIONS = [
-  { value: 'morning', label: 'Förmiddag' },
-  { value: 'afternoon', label: 'Eftermiddag' },
-  { value: 'varies', label: 'Varierar' }
+  { value: 'morning', labelKey: 'profile.constants.time.morning' },
+  { value: 'afternoon', labelKey: 'profile.constants.time.afternoon' },
+  { value: 'varies', labelKey: 'profile.constants.time.varies' }
 ] as const
 
 // ============== TABS ==============

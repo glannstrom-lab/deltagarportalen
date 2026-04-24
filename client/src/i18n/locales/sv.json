@@ -4951,6 +4951,84 @@
       "careerTimeline": "Karriärtidslinje",
       "changeHistory": "Ändringshistorik"
     },
+    "constants": {
+      "employment": {
+        "unemployed": "Arbetssökande",
+        "employed": "Anställd",
+        "student": "Studerar",
+        "parentalLeave": "Föräldraledig",
+        "sickLeave": "Sjukskriven",
+        "other": "Annat"
+      },
+      "employmentType": {
+        "fulltime": "Heltid",
+        "parttime": "Deltid",
+        "freelance": "Frilans",
+        "temporary": "Vikariat",
+        "internship": "Praktik"
+      },
+      "remote": {
+        "yes": "Ja, helt på distans",
+        "hybrid": "Hybrid (blandat)",
+        "no": "På plats"
+      },
+      "sector": {
+        "private": "Privat",
+        "public": "Offentlig",
+        "nonprofit": "Ideell"
+      },
+      "afProgram": {
+        "jobbgarantin": "Jobbgarantin",
+        "etablering": "Etablering",
+        "stodMatchning": "Stöd & matchning",
+        "praktik": "Praktik",
+        "nystartsjobb": "Nystartsjobb"
+      },
+      "supportNeed": {
+        "language": "Jag utvecklar mitt svenska",
+        "license": "Jag tar körkort",
+        "validation": "Validering av utbildning pågår",
+        "experience": "Jag är ny inom området",
+        "health": "Jag behöver hänsyn till min hälsa",
+        "childcare": "Barnomsorg behöver ordnas"
+      },
+      "adaptation": {
+        "ergonomic": "Ergonomisk arbetsplats",
+        "parttime": "Deltidsarbete",
+        "breaks": "Regelbundna pauser",
+        "quiet": "Lugn miljö",
+        "flexibleHours": "Flexibla tider",
+        "remote": "Distansarbete",
+        "reducedPace": "Anpassat tempo",
+        "writtenInstructions": "Tydliga skriftliga instruktioner"
+      },
+      "functional": {
+        "full": "Full kapacitet",
+        "limited": "Viss anpassning behövs",
+        "significantlyLimited": "Mer anpassning behövs"
+      },
+      "rehab": {
+        "early": "Tidig fas",
+        "ongoing": "Pågående",
+        "late": "Avslutande fas",
+        "completed": "Avslutad"
+      },
+      "cvStatus": {
+        "complete": "Komplett",
+        "needsUpdate": "Kan uppdateras",
+        "missing": "Inte påbörjat ännu"
+      },
+      "reference": {
+        "available": "Finns tillgängliga",
+        "missing": "Behöver samla",
+        "needsContact": "Behöver kontaktas"
+      },
+      "time": {
+        "morning": "Förmiddag",
+        "afternoon": "Eftermiddag",
+        "varies": "Varierar"
+      }
+    },
     "sections": {
       "desiredJobs": "Önskade jobb",
       "desiredJobsDesc": "Vilka roller drömmer du om? (max 3)",

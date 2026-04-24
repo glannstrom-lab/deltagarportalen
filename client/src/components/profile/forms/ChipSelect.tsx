@@ -4,11 +4,13 @@
  */
 
 import { useId, useCallback, KeyboardEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 export interface ChipOption {
   value: string
-  label: string
+  label?: string
+  labelKey?: string
 }
 
 export interface ChipSelectProps {
@@ -36,10 +38,17 @@ export function ChipSelect({
   disabled = false,
   className
 }: ChipSelectProps) {
+  const { t } = useTranslation()
   const groupId = useId()
   const labelId = `${groupId}-label`
   const hintId = `${groupId}-hint`
   const errorId = `${groupId}-error`
+
+  // Helper to get translated label
+  const getLabel = useCallback((opt: ChipOption) => {
+    if (opt.labelKey) return t(opt.labelKey)
+    return opt.label || opt.value
+  }, [t])
 
   const isSelected = useCallback((value: string) => {
     if (multiple) {
@@ -112,7 +121,7 @@ export function ChipSelect({
                 disabled && 'opacity-50 cursor-not-allowed'
               )}
             >
-              {opt.label}
+              {getLabel(opt)}
             </button>
           )
         })}
