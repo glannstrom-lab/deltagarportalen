@@ -5739,13 +5739,19 @@
       "connection": {
         "label": "Connect",
         "description": "Network smart"
+      },
+      "audit": {
+        "label": "Profile Audit",
+        "description": "Review your profile"
       }
     },
     "headline": {
       "title": "Create Headline",
       "description": "Your headline appears right below your name. Make it descriptive and catchy!",
       "jobTitlePlaceholder": "Your job title (e.g. Project Manager)",
-      "specializationPlaceholder": "Specialization (e.g. Digital Transformations)"
+      "specializationPlaceholder": "Specialization (e.g. Digital Transformations)",
+      "tipLabel": "Tip",
+      "tipText": "Include keywords that recruiters search for to increase your visibility."
     },
     "about": {
       "title": "Write About Section",
@@ -5781,6 +5787,26 @@
     },
     "errors": {
       "generateFailed": "Could not generate text. Please try again."
+    },
+    "audit": {
+      "profileHealth": "Profile Health",
+      "grade": "Grade",
+      "profileCompleted": "Profile completed",
+      "recommendation": "Focus on the red areas to improve your visibility and attractiveness to recruiters.",
+      "checklists": "Checklist",
+      "beforeAfterExamples": "Before & After Examples",
+      "before": "Before",
+      "after": "After",
+      "hideKeywords": "Hide keywords",
+      "showKeywords": "Show keywords",
+      "priorityActions": "Priority Actions",
+      "high": "High",
+      "medium": "Medium",
+      "action1": "Add at least 3 recommendations",
+      "action2": "Rewrite your About section with an engaging hook",
+      "action3": "Update experience descriptions with measurable results",
+      "action4": "Add key skills to your headline",
+      "startAudit": "Start profile audit"
     }
   },
   "careerPlan": {

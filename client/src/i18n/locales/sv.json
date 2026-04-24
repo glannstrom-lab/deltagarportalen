@@ -5739,13 +5739,19 @@
       "connection": {
         "label": "Kontakt",
         "description": "Nätverka smart"
+      },
+      "audit": {
+        "label": "Profilgranskning",
+        "description": "Granska din profil"
       }
     },
     "headline": {
       "title": "Skapa Headline",
       "description": "Din headline syns direkt under ditt namn. Gör den beskrivande och catchy!",
       "jobTitlePlaceholder": "Din yrkestitel (t.ex. Projektledare)",
-      "specializationPlaceholder": "Specialisering (t.ex. Digitala transformationer)"
+      "specializationPlaceholder": "Specialisering (t.ex. Digitala transformationer)",
+      "tipLabel": "Tips",
+      "tipText": "Inkludera nyckelord som rekryterare söker efter för att öka din synlighet."
     },
     "about": {
       "title": "Skriv About-sektion",
@@ -5781,6 +5787,26 @@
     },
     "errors": {
       "generateFailed": "Kunde inte generera text. Försök igen."
+    },
+    "audit": {
+      "profileHealth": "Profilhälsa",
+      "grade": "Betyg",
+      "profileCompleted": "Profil ifylld",
+      "recommendation": "Fokusera på de röda områdena för att förbättra din synlighet och attraktivitet för rekryterare.",
+      "checklists": "Checklista",
+      "beforeAfterExamples": "Före & Efter-exempel",
+      "before": "Före",
+      "after": "Efter",
+      "hideKeywords": "Dölj nyckelord",
+      "showKeywords": "Visa nyckelord",
+      "priorityActions": "Prioriterade åtgärder",
+      "high": "Hög",
+      "medium": "Medel",
+      "action1": "Lägg till minst 3 rekommendationer",
+      "action2": "Skriv om din About-sektion med en engagerande hook",
+      "action3": "Uppdatera erfarenhetsbeskrivningar med mätbara resultat",
+      "action4": "Lägg till nyckelkompetenser i din headline",
+      "startAudit": "Starta profilgranskning"
     }
   },
   "careerPlan": {

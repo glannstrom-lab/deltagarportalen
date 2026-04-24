@@ -132,7 +132,7 @@ export default function LinkedInOptimizer() {
     { id: 'about', label: t('linkedInOptimizer.tabs.about.label'), icon: FileText, beskrivning: t('linkedInOptimizer.tabs.about.description') },
     { id: 'post', label: t('linkedInOptimizer.tabs.post.label'), icon: Share2, beskrivning: t('linkedInOptimizer.tabs.post.description') },
     { id: 'connection', label: t('linkedInOptimizer.tabs.connection.label'), icon: MessageSquare, beskrivning: t('linkedInOptimizer.tabs.connection.description') },
-    { id: 'audit', label: 'Profil-granskning', icon: Shield, beskrivning: 'Fullständig analys' }
+    { id: 'audit', label: t('linkedInOptimizer.tabs.audit.label'), icon: Shield, beskrivning: t('linkedInOptimizer.tabs.audit.description') }
   ]
 
   const auditGrade = profileCompleteness >= 80 ? 'A' : profileCompleteness >= 70 ? 'B' : profileCompleteness >= 60 ? 'C' : 'D'
@@ -191,7 +191,7 @@ export default function LinkedInOptimizer() {
                   className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <div className="bg-sky-50 dark:bg-sky-900/20 p-4 rounded-lg border border-sky-200 dark:border-sky-800">
-                  <p className="text-sm text-sky-800 dark:text-sky-300"><strong>Tips:</strong> Använd nyckelord som arbetsgivare söker på. Exempelvis: Full-Stack Developer, Cloud Architecture, Team Leadership</p>
+                  <p className="text-sm text-sky-800 dark:text-sky-300"><strong>{t('linkedInOptimizer.headline.tipLabel')}:</strong> {t('linkedInOptimizer.headline.tipText')}</p>
                 </div>
               </div>
             )}
@@ -322,21 +322,21 @@ export default function LinkedInOptimizer() {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
                 <Shield className="w-6 h-6 text-teal-600 dark:text-teal-400" />
-                Profilhälsa
+                {t('linkedInOptimizer.audit.profileHealth')}
               </h2>
               <div className="text-right">
                 <p className="text-4xl font-bold text-teal-600 dark:text-teal-400">{auditGrade}</p>
-                <p className="text-xs text-slate-600 dark:text-stone-400">Betyg</p>
+                <p className="text-xs text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.audit.grade')}</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-slate-700 dark:text-stone-300">Profil slutförd</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-stone-300">{t('linkedInOptimizer.audit.profileCompleted')}</span>
                 <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{profileCompleteness}%</span>
               </div>
               <Progress value={profileCompleteness} className="h-4" />
-              <p className="text-xs text-slate-600 dark:text-stone-400 mt-2">Rekommendation: Slutför din profil för att öka synligheten bland rekryterare</p>
+              <p className="text-xs text-slate-600 dark:text-stone-400 mt-2">{t('linkedInOptimizer.audit.recommendation')}</p>
             </div>
           </Card>
 
@@ -373,7 +373,7 @@ export default function LinkedInOptimizer() {
                     <div>
                       <h4 className="font-medium text-slate-800 dark:text-stone-100 mb-2 flex items-center gap-2">
                         <ListCheckIcon className="w-4 h-4" />
-                        Checklistor
+                        {t('linkedInOptimizer.audit.checklists')}
                       </h4>
                       <div className="space-y-2">
                         {section.checklist.map((item, idx) => (
@@ -396,14 +396,14 @@ export default function LinkedInOptimizer() {
 
                     {/* Before/After Examples */}
                     <div>
-                      <h4 className="font-medium text-slate-800 dark:text-stone-100 mb-2">Fore/Efter exempel</h4>
+                      <h4 className="font-medium text-slate-800 dark:text-stone-100 mb-2">{t('linkedInOptimizer.audit.beforeAfterExamples')}</h4>
                       <div className="grid md:grid-cols-2 gap-3">
                         <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded border border-red-200 dark:border-red-800">
-                          <p className="text-xs text-red-700 dark:text-red-400 font-medium mb-1">Innan</p>
+                          <p className="text-xs text-red-700 dark:text-red-400 font-medium mb-1">{t('linkedInOptimizer.audit.before')}</p>
                           <p className="text-sm text-slate-700 dark:text-stone-300">{section.examples.before}</p>
                         </div>
                         <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded border border-emerald-200 dark:border-emerald-800">
-                          <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium mb-1">Efter</p>
+                          <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium mb-1">{t('linkedInOptimizer.audit.after')}</p>
                           <p className="text-sm text-slate-700 dark:text-stone-300">{section.examples.after}</p>
                         </div>
                       </div>
@@ -416,7 +416,7 @@ export default function LinkedInOptimizer() {
                         className="flex items-center gap-2 text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300"
                       >
                         {showKeywords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        {showKeywords ? 'Dolj' : 'Visa'} nyckelord for denna sektion
+                        {showKeywords ? t('linkedInOptimizer.audit.hideKeywords') : t('linkedInOptimizer.audit.showKeywords')}
                       </button>
                       {showKeywords && (
                         <div className="flex flex-wrap gap-2 mt-2">
@@ -438,20 +438,20 @@ export default function LinkedInOptimizer() {
           <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
             <h3 className="font-bold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-              Prioriterade atgardsobjekt
+              {t('linkedInOptimizer.audit.priorityActions')}
             </h3>
             <ol className="space-y-2">
               <li className="text-sm text-slate-700 dark:text-stone-300">
-                <strong className="text-amber-700 dark:text-amber-400">Hogt:</strong> Lagg till rekommendationer fran tidigare kollegor och chefer
+                <strong className="text-amber-700 dark:text-amber-400">{t('linkedInOptimizer.audit.high')}:</strong> {t('linkedInOptimizer.audit.action1')}
               </li>
               <li className="text-sm text-slate-700 dark:text-stone-300">
-                <strong className="text-amber-700 dark:text-amber-400">Hogt:</strong> Forbattra "Om mig" sektionen med mer specifika nyckelord
+                <strong className="text-amber-700 dark:text-amber-400">{t('linkedInOptimizer.audit.high')}:</strong> {t('linkedInOptimizer.audit.action2')}
               </li>
               <li className="text-sm text-slate-700 dark:text-stone-300">
-                <strong className="text-slate-600 dark:text-stone-400">Medel:</strong> Lagg till matbara resultat till din arbetshistoria
+                <strong className="text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.audit.medium')}:</strong> {t('linkedInOptimizer.audit.action3')}
               </li>
               <li className="text-sm text-slate-700 dark:text-stone-300">
-                <strong className="text-slate-600 dark:text-stone-400">Medel:</strong> Lanka relevanta projekt och publikationer
+                <strong className="text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.audit.medium')}:</strong> {t('linkedInOptimizer.audit.action4')}
               </li>
             </ol>
           </Card>
@@ -463,7 +463,7 @@ export default function LinkedInOptimizer() {
         <div className="flex gap-2">
           <Button onClick={startAudit} variant="outline" className="flex-1 border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800">
             <Shield className="w-4 h-4 mr-2" />
-            Starta profil-granskning
+            {t('linkedInOptimizer.audit.startAudit')}
           </Button>
         </div>
       )}
