@@ -2289,6 +2289,86 @@
       "followUpThisWeek": "Uppföljning denna vecka"
     }
   },
+  "myConsultant": {
+    "title": "Min konsulent",
+    "subtitle": "Kommunicera med {{name}}",
+    "subtitleNoConsultant": "Ingen konsulent tilldelad ännu",
+    "noConsultant": "Du har ingen konsulent tilldelad ännu",
+    "noConsultantDesc": "Du har ännu inte kopplats till en arbetskonsulent. Kontakta oss om du behöver hjälp.",
+    "contactSupport": "Kontakta support",
+    "consultant": {
+      "yourConsultant": "Din arbetskonsulent",
+      "availableToday": "Tillgänglig idag",
+      "available": "Tillgänglig",
+      "phone": "Telefon",
+      "email": "E-post"
+    },
+    "nextMeeting": {
+      "title": "Nästa möte",
+      "noMeetings": "Inga planerade möten",
+      "bookMeeting": "Boka möte",
+      "meetingTypes": {
+        "video": "Videomöte",
+        "phone": "Telefonmöte",
+        "inPerson": "Fysiskt möte"
+      }
+    },
+    "sharedInfo": {
+      "title": "Delad information",
+      "description": "Information som delas med din konsulent",
+      "lastLogin": "Senaste inloggning",
+      "today": "Idag",
+      "savedJobs": "Sparade jobb",
+      "sentApplications": "Skickade ansökningar",
+      "countUnit": "{{count}} st",
+      "cvStatus": "CV-status",
+      "created": "Skapat",
+      "notCreated": "Ej skapat",
+      "atsScore": "ATS-poäng",
+      "notCalculated": "Ej beräknat",
+      "lastUpdated": "Senast uppdaterat",
+      "energyLevel": "Energinivå",
+      "latestMood": "Senaste humör",
+      "notLogged": "Ej loggat",
+      "categories": {
+        "progress": "Aktivitet",
+        "cv": "CV & Profil",
+        "wellbeing": "Mående"
+      },
+      "shared": "Delas",
+      "notShared": "Delas ej"
+    },
+    "messages": {
+      "title": "Meddelanden",
+      "noMessages": "Inga meddelanden ännu",
+      "startConversation": "Starta en konversation med din konsulent",
+      "placeholder": "Skriv ett meddelande...",
+      "send": "Skicka",
+      "you": "Du",
+      "unread": "Oläst"
+    },
+    "goals": {
+      "title": "Mål",
+      "noGoals": "Inga mål satta ännu",
+      "addGoal": "Lägg till mål",
+      "completed": "Avklarade",
+      "inProgress": "Pågående",
+      "notStarted": "Ej påbörjat",
+      "goalsCompleted": "{{count}} mål avklarade",
+      "keepGoing": "Fortsätt så!"
+    },
+    "quickActions": {
+      "title": "Snabbåtgärder",
+      "sendMessage": "Skicka meddelande",
+      "bookMeeting": "Boka möte",
+      "shareCV": "Dela CV",
+      "viewGoals": "Visa mål"
+    },
+    "email": {
+      "bookingSubject": "Bokningsförfrågan",
+      "bookingBody": "Hej {{name}},\n\nJag skulle vilja boka ett möte.\n\nMed vänliga hälsningar"
+    }
+  },
   "interestGuide": {
     "title": "Intresseguide",
     "subtitle": "Upptäck dina intressen och styrkor",

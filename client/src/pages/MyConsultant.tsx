@@ -98,10 +98,10 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
           <User className="w-8 h-8 text-stone-400 dark:text-stone-500" />
         </div>
         <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
-          Ingen konsulent kopplad
+          {t('myConsultant.noConsultant')}
         </h2>
         <p className="text-stone-600 dark:text-stone-400 text-sm">
-          Du har för närvarande ingen arbetskonsulent kopplad till ditt konto.
+          {t('myConsultant.noConsultantDesc')}
         </p>
       </Card>
     )
@@ -114,9 +114,9 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
   }
 
   const meetingTypeLabels = {
-    video: 'Videomöte',
-    phone: 'Telefonmöte',
-    in_person: 'Fysiskt möte',
+    video: t('myConsultant.meetingTypes.video'),
+    phone: t('myConsultant.meetingTypes.phone'),
+    in_person: t('myConsultant.meetingTypes.inPerson'),
   }
 
   return (
@@ -142,7 +142,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
             {consultant.title && (
               <p className="text-teal-100 text-sm">{consultant.title}</p>
             )}
-            <p className="text-teal-100 text-sm mt-1">Din arbetskonsulent</p>
+            <p className="text-teal-100 text-sm mt-1">{t('myConsultant.yourConsultant')}</p>
           </div>
         </div>
       </div>
@@ -150,7 +150,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
       {/* Contact info */}
       <div className="p-4 border-b border-stone-200 dark:border-stone-700">
         <h3 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
-          Kontaktuppgifter
+          {t('myConsultant.contactInfo')}
         </h3>
         <div className="space-y-2">
           <a
@@ -179,7 +179,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
       {/* Next meeting */}
       <div className="p-4">
         <h3 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
-          Nästa möte
+          {t('myConsultant.nextMeeting')}
         </h3>
         {nextMeeting ? (
           <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-4">
@@ -216,7 +216,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
                     className="inline-flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:underline mt-2"
                   >
                     <Video className="w-4 h-4" />
-                    Gå med i möte
+                    {t('myConsultant.joinMeeting')}
                   </a>
                 )}
               </div>
@@ -225,7 +225,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
         ) : (
           <div className="text-center py-4 text-stone-500 dark:text-stone-400">
             <Calendar className="w-8 h-8 mx-auto mb-2 opacity-50" />
-            <p className="text-sm">Inget möte inbokat</p>
+            <p className="text-sm">{t('myConsultant.noMeetingScheduled')}</p>
           </div>
         )}
       </div>
@@ -235,6 +235,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
 
 // Shared Information Section
 function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) {
+  const { t } = useTranslation()
   const [expandedCategories, setExpandedCategories] = useState<string[]>(['progress'])
 
   const toggleCategory = (category: string) => {
@@ -254,11 +255,11 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
   }
 
   const categoryLabels: Record<string, string> = {
-    progress: 'Dina framsteg',
-    cv: 'CV-status',
-    goals: 'Mål & handlingsplan',
-    activity: 'Aktivitet',
-    wellbeing: 'Välmående',
+    progress: t('myConsultant.categories.progress'),
+    cv: t('myConsultant.categories.cv'),
+    goals: t('myConsultant.categories.goals'),
+    activity: t('myConsultant.categories.activity'),
+    wellbeing: t('myConsultant.categories.wellbeing'),
   }
 
   const statusColors = {
@@ -273,11 +274,11 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
         <div className="flex items-center gap-2">
           <Eye className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-            Delad information
+            {t('myConsultant.sharedInfo')}
           </h2>
         </div>
         <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-          Det här kan din konsulent se för att kunna hjälpa dig bättre
+          {t('myConsultant.sharedInfoDesc')}
         </p>
       </div>
 
@@ -322,9 +323,9 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
                       <div key={index} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           {item.isShared ? (
-                            <Eye className="w-4 h-4 text-teal-500" aria-label="Delas med konsulenten" />
+                            <Eye className="w-4 h-4 text-teal-500" aria-label={t('myConsultant.sharedWithConsultant')} />
                           ) : (
-                            <EyeOff className="w-4 h-4 text-stone-400 dark:text-stone-500" aria-label="Delas inte" />
+                            <EyeOff className="w-4 h-4 text-stone-400 dark:text-stone-500" aria-label={t('myConsultant.notShared')} />
                           )}
                           <span className="text-sm text-stone-600 dark:text-stone-400">
                             {item.label}
@@ -358,6 +359,7 @@ function MessagesSection({
   onSendMessage: (content: string) => Promise<void>
   loading: boolean
 }) {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const [newMessage, setNewMessage] = useState('')
   const [sending, setSending] = useState(false)
@@ -395,11 +397,11 @@ function MessagesSection({
         <div className="flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-            Meddelanden
+            {t('myConsultant.messages')}
           </h2>
         </div>
         <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-          Skriv till {consultant.first_name}
+          {t('myConsultant.writeTo', { name: consultant.first_name })}
         </p>
       </div>
 
@@ -408,7 +410,7 @@ function MessagesSection({
         className="flex-1 overflow-y-auto p-4 space-y-4"
         role="log"
         aria-live="polite"
-        aria-label="Meddelandehistorik"
+        aria-label={t('myConsultant.messageHistory')}
       >
         {loading ? (
           <div className="flex items-center justify-center h-full">
@@ -420,10 +422,10 @@ function MessagesSection({
               <MessageSquare className="w-8 h-8 text-teal-600 dark:text-teal-400" />
             </div>
             <p className="text-stone-600 dark:text-stone-400">
-              Inga meddelanden ännu
+              {t('myConsultant.noMessagesYet')}
             </p>
             <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-              Skicka ett meddelande för att starta en konversation
+              {t('myConsultant.sendToStart')}
             </p>
           </div>
         ) : (
@@ -468,14 +470,14 @@ function MessagesSection({
       <div className="p-4 border-t border-stone-200 dark:border-stone-700">
         <div className="flex gap-2">
           <label htmlFor="message-input" className="sr-only">
-            Skriv ett meddelande
+            {t('myConsultant.writeMessage')}
           </label>
           <textarea
             id="message-input"
             value={newMessage}
             onChange={e => setNewMessage(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Skriv ett meddelande..."
+            placeholder={t('myConsultant.messagePlaceholder')}
             rows={1}
             className={cn(
               'flex-1 resize-none rounded-xl border border-stone-300 dark:border-stone-600',
@@ -489,13 +491,13 @@ function MessagesSection({
             onClick={handleSend}
             disabled={!newMessage.trim() || sending}
             className="px-4"
-            aria-label="Skicka meddelande"
+            aria-label={t('myConsultant.sendMessage')}
           >
             <Send className="w-5 h-5" />
           </Button>
         </div>
         <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
-          Tryck Enter för att skicka
+          {t('myConsultant.pressEnterToSend')}
         </p>
       </div>
     </Card>
@@ -504,23 +506,25 @@ function MessagesSection({
 
 // Goals Section
 function GoalsSection({ goals }: { goals: Goal[] }) {
+  const { t } = useTranslation()
+
   if (goals.length === 0) {
     return null
   }
 
   const statusConfig = {
     NOT_STARTED: {
-      label: 'Ej påbörjat',
+      label: t('myConsultant.goalStatus.notStarted'),
       color: 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400',
       icon: Clock,
     },
     IN_PROGRESS: {
-      label: 'Pågående',
+      label: t('myConsultant.goalStatus.inProgress'),
       color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400',
       icon: Activity,
     },
     COMPLETED: {
-      label: 'Klart',
+      label: t('myConsultant.goalStatus.completed'),
       color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400',
       icon: CheckCircle,
     },
@@ -535,12 +539,12 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
           <div className="flex items-center gap-2">
             <Target className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             <h2 className="font-semibold text-stone-900 dark:text-stone-100">
-              Överenskomna mål
+              {t('myConsultant.agreedGoals')}
             </h2>
           </div>
           <div role="status" aria-live="polite">
             <span className="text-sm text-stone-500 dark:text-stone-400">
-              {completedCount} av {goals.length} klara
+              {t('myConsultant.goalsCompleted', { completed: completedCount, total: goals.length })}
             </span>
           </div>
         </div>
@@ -565,7 +569,7 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
                 </p>
                 {goal.deadline && (
                   <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                    Deadline: {new Date(goal.deadline).toLocaleDateString('sv-SE')}
+                    {t('myConsultant.deadline')}: {new Date(goal.deadline).toLocaleDateString()}
                   </p>
                 )}
               </div>
@@ -583,8 +587,7 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
           <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-4 flex items-center gap-3">
             <Sparkles className="w-6 h-6 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
             <p className="text-sm text-emerald-700 dark:text-emerald-300">
-              Bra jobbat! Du har slutfört {completedCount} {completedCount === 1 ? 'mål' : 'mål'}.
-              Fortsätt så!
+              {t('myConsultant.greatJob', { count: completedCount })}
             </p>
           </div>
         </div>
@@ -595,12 +598,14 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
 
 // Quick Actions
 function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInfo | null; onBookMeeting: () => void }) {
+  const { t } = useTranslation()
+
   if (!consultant) return null
 
   return (
     <Card className="p-4">
       <h2 className="font-semibold text-stone-900 dark:text-stone-100 mb-4">
-        Snabbåtgärder
+        {t('myConsultant.quickActions')}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <a
@@ -612,7 +617,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
           )}
         >
           <Mail className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-          <span className="font-medium">Skicka e-post</span>
+          <span className="font-medium">{t('myConsultant.sendEmail')}</span>
         </a>
         {consultant.phone && (
           <a
@@ -624,7 +629,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
             )}
           >
             <Phone className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-            <span className="font-medium">Ring</span>
+            <span className="font-medium">{t('myConsultant.call')}</span>
           </a>
         )}
         <button
@@ -636,7 +641,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
           )}
         >
           <Calendar className="w-5 h-5" />
-          <span className="font-medium">Boka möte</span>
+          <span className="font-medium">{t('myConsultant.bookMeeting')}</span>
         </button>
       </div>
     </Card>
@@ -645,7 +650,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
 
 // Main Page Component
 export default function MyConsultant() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { user, profile } = useAuthStore()
   const [loading, setLoading] = useState(true)
   const [consultant, setConsultant] = useState<ConsultantInfo | null>(null)
@@ -683,7 +688,7 @@ export default function MyConsultant() {
       if (consultantData) {
         setConsultant({
           ...consultantData,
-          title: 'Arbetskonsulent',
+          title: t('myConsultant.consultant.yourConsultant'),
         })
       }
 
@@ -772,27 +777,29 @@ export default function MyConsultant() {
       .limit(1)
       .single()
 
+    const dateLocale = i18n.language === 'sv' ? 'sv-SE' : 'en-US'
+
     const info: SharedInfo[] = [
       {
         category: 'progress',
         items: [
           {
-            label: 'Senaste inloggning',
+            label: t('myConsultant.sharedInfo.lastLogin'),
             value: profile?.last_login
-              ? new Date(profile.last_login).toLocaleDateString('sv-SE')
-              : 'Idag',
+              ? new Date(profile.last_login).toLocaleDateString(dateLocale)
+              : t('myConsultant.sharedInfo.today'),
             status: 'good',
             isShared: true,
           },
           {
-            label: 'Sparade jobb',
-            value: `${jobsCount || 0} st`,
+            label: t('myConsultant.sharedInfo.savedJobs'),
+            value: t('myConsultant.sharedInfo.countUnit', { count: jobsCount || 0 }),
             status: (jobsCount || 0) > 0 ? 'good' : 'neutral',
             isShared: true,
           },
           {
-            label: 'Skickade ansökningar',
-            value: `${applicationsCount || 0} st`,
+            label: t('myConsultant.sharedInfo.sentApplications'),
+            value: t('myConsultant.sharedInfo.countUnit', { count: applicationsCount || 0 }),
             status: (applicationsCount || 0) > 0 ? 'good' : 'neutral',
             isShared: true,
           },
@@ -802,21 +809,21 @@ export default function MyConsultant() {
         category: 'cv',
         items: [
           {
-            label: 'CV-status',
-            value: cvData ? 'Skapat' : 'Ej skapat',
+            label: t('myConsultant.sharedInfo.cvStatus'),
+            value: cvData ? t('myConsultant.sharedInfo.created') : t('myConsultant.sharedInfo.notCreated'),
             status: cvData ? 'good' : 'attention',
             isShared: true,
           },
           {
-            label: 'ATS-poäng',
-            value: cvData?.ats_score ? `${cvData.ats_score}%` : 'Ej beräknat',
+            label: t('myConsultant.sharedInfo.atsScore'),
+            value: cvData?.ats_score ? `${cvData.ats_score}%` : t('myConsultant.sharedInfo.notCalculated'),
             status: cvData?.ats_score && cvData.ats_score >= 70 ? 'good' : cvData?.ats_score ? 'attention' : 'neutral',
             isShared: true,
           },
           {
-            label: 'Senast uppdaterat',
+            label: t('myConsultant.sharedInfo.lastUpdated'),
             value: cvData?.updated_at
-              ? new Date(cvData.updated_at).toLocaleDateString('sv-SE')
+              ? new Date(cvData.updated_at).toLocaleDateString(dateLocale)
               : '-',
             status: 'neutral',
             isShared: true,
@@ -827,16 +834,16 @@ export default function MyConsultant() {
         category: 'wellbeing',
         items: [
           {
-            label: 'Energinivå',
+            label: t('myConsultant.sharedInfo.energyLevel'),
             value: wellnessData?.energy_level
               ? `${wellnessData.energy_level}/5`
-              : 'Ej loggat',
+              : t('myConsultant.sharedInfo.notLogged'),
             status: wellnessData?.energy_level && wellnessData.energy_level >= 3 ? 'good' : wellnessData?.energy_level ? 'attention' : 'neutral',
             isShared: true,
           },
           {
-            label: 'Senaste humör',
-            value: wellnessData?.mood || 'Ej loggat',
+            label: t('myConsultant.sharedInfo.latestMood'),
+            value: wellnessData?.mood || t('myConsultant.sharedInfo.notLogged'),
             status: 'neutral',
             isShared: true,
           },
@@ -869,7 +876,9 @@ export default function MyConsultant() {
   const handleBookMeeting = () => {
     // For now, open email with meeting request
     if (consultant) {
-      window.location.href = `mailto:${consultant.email}?subject=Bokningsförfrågan&body=Hej ${consultant.first_name},%0D%0A%0D%0AJag skulle vilja boka ett möte.%0D%0A%0D%0AMed vänliga hälsningar`
+      const subject = encodeURIComponent(t('myConsultant.email.bookingSubject'))
+      const body = encodeURIComponent(t('myConsultant.email.bookingBody', { name: consultant.first_name }))
+      window.location.href = `mailto:${consultant.email}?subject=${subject}&body=${body}`
     }
   }
 
@@ -886,12 +895,12 @@ export default function MyConsultant() {
       {/* Page header */}
       <div className="mb-8">
         <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100">
-          Min konsulent
+          {t('myConsultant.title')}
         </h1>
         <p className="text-stone-600 dark:text-stone-400 mt-2">
           {consultant
-            ? `Håll kontakten med ${consultant.first_name} och följ dina framsteg`
-            : 'Här ser du information om din arbetskonsulent'}
+            ? t('myConsultant.subtitle', { name: consultant.first_name })
+            : t('myConsultant.subtitleNoConsultant')}
         </p>
       </div>
 
@@ -902,11 +911,10 @@ export default function MyConsultant() {
             <User className="w-10 h-10 text-stone-400 dark:text-stone-500" />
           </div>
           <h2 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-3">
-            Ingen konsulent kopplad
+            {t('myConsultant.noConsultant')}
           </h2>
           <p className="text-stone-600 dark:text-stone-400 max-w-md mx-auto">
-            Du har för närvarande ingen arbetskonsulent kopplad till ditt konto.
-            Om du förväntar dig att ha en konsulent, kontakta din organisation.
+            {t('myConsultant.noConsultantFullDesc')}
           </p>
         </Card>
       )}

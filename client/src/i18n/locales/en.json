@@ -2289,6 +2289,86 @@
       "followUpThisWeek": "Follow-up this week"
     }
   },
+  "myConsultant": {
+    "title": "My Consultant",
+    "subtitle": "Communicate with {{name}}",
+    "subtitleNoConsultant": "No consultant assigned yet",
+    "noConsultant": "You don't have a consultant assigned yet",
+    "noConsultantDesc": "You haven't been connected to a career consultant yet. Contact us if you need help.",
+    "contactSupport": "Contact support",
+    "consultant": {
+      "yourConsultant": "Your career consultant",
+      "availableToday": "Available today",
+      "available": "Available",
+      "phone": "Phone",
+      "email": "Email"
+    },
+    "nextMeeting": {
+      "title": "Next meeting",
+      "noMeetings": "No scheduled meetings",
+      "bookMeeting": "Book meeting",
+      "meetingTypes": {
+        "video": "Video meeting",
+        "phone": "Phone meeting",
+        "inPerson": "In-person meeting"
+      }
+    },
+    "sharedInfo": {
+      "title": "Shared information",
+      "description": "Information shared with your consultant",
+      "lastLogin": "Last login",
+      "today": "Today",
+      "savedJobs": "Saved jobs",
+      "sentApplications": "Sent applications",
+      "countUnit": "{{count}} pcs",
+      "cvStatus": "CV status",
+      "created": "Created",
+      "notCreated": "Not created",
+      "atsScore": "ATS score",
+      "notCalculated": "Not calculated",
+      "lastUpdated": "Last updated",
+      "energyLevel": "Energy level",
+      "latestMood": "Latest mood",
+      "notLogged": "Not logged",
+      "categories": {
+        "progress": "Activity",
+        "cv": "CV & Profile",
+        "wellbeing": "Wellbeing"
+      },
+      "shared": "Shared",
+      "notShared": "Not shared"
+    },
+    "messages": {
+      "title": "Messages",
+      "noMessages": "No messages yet",
+      "startConversation": "Start a conversation with your consultant",
+      "placeholder": "Write a message...",
+      "send": "Send",
+      "you": "You",
+      "unread": "Unread"
+    },
+    "goals": {
+      "title": "Goals",
+      "noGoals": "No goals set yet",
+      "addGoal": "Add goal",
+      "completed": "Completed",
+      "inProgress": "In progress",
+      "notStarted": "Not started",
+      "goalsCompleted": "{{count}} goals completed",
+      "keepGoing": "Keep going!"
+    },
+    "quickActions": {
+      "title": "Quick actions",
+      "sendMessage": "Send message",
+      "bookMeeting": "Book meeting",
+      "shareCV": "Share CV",
+      "viewGoals": "View goals"
+    },
+    "email": {
+      "bookingSubject": "Meeting request",
+      "bookingBody": "Hi {{name}},\n\nI would like to book a meeting.\n\nBest regards"
+    }
+  },
   "interestGuide": {
     "title": "Interest Guide",
     "subtitle": "Discover your interests and strengths",
