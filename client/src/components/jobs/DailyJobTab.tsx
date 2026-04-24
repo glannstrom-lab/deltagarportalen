@@ -508,6 +508,8 @@ export function DailyJobTab() {
         <div className="p-6">
           <button
             onClick={() => setShowDetails(!showDetails)}
+            aria-expanded={showDetails}
+            aria-controls="daily-job-details"
             className="w-full text-left"
           >
             <div className="flex items-center justify-between">
@@ -530,7 +532,10 @@ export function DailyJobTab() {
           </button>
 
           {showDetails && job.description?.text && (
-            <div className="mt-4 text-stone-600 dark:text-stone-400 text-sm whitespace-pre-line">
+            <div
+              id="daily-job-details"
+              className="mt-4 text-stone-600 dark:text-stone-400 text-sm whitespace-pre-line"
+            >
               {job.description.text.substring(0, 1500)}
               {job.description.text.length > 1500 && '...'}
             </div>

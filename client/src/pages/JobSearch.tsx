@@ -121,22 +121,24 @@ function SearchTab() {
     return () => clearTimeout(timer);
   }, [filters]);
 
-  // Hämta autocomplete-förslag
+  // Hämta autocomplete-förslag (med debounce för att minska API-anrop)
   useEffect(() => {
-    const fetchAutocomplete = async () => {
-      if (filters.query.length >= 2) {
-        try {
-          const results = await getAutocomplete(filters.query);
-          setSuggestions(results);
-        } catch (err) {
-          console.error('Autocomplete error:', err);
-          setSuggestions([]);
-        }
-      } else {
+    if (filters.query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      try {
+        const results = await getAutocomplete(filters.query);
+        setSuggestions(results);
+      } catch (err) {
+        console.error('Autocomplete error:', err);
         setSuggestions([]);
       }
-    };
-    fetchAutocomplete();
+    }, 200); // 200ms debounce
+
+    return () => clearTimeout(timer);
   }, [filters.query]);
 
   // Reset pagination när filter ändras
@@ -155,7 +157,7 @@ function SearchTab() {
         region: filters.region,
         employmentType: filters.employmentType,
         publishedWithin: filters.publishedWithin,
-        limit: 100,
+        limit: JOBS_PER_PAGE, // Hämta endast det som visas per sida för snabbare LCP
       });
 
       setJobs(result.hits);
@@ -383,34 +385,50 @@ function SearchTab() {
               <div className="flex items-center justify-between pt-3 border-t border-stone-100 dark:border-stone-700">
                 <div className="flex flex-wrap gap-2">
                   {filters.municipality && (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded text-sm">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded-lg text-sm min-h-[44px]">
                       📍 {filters.municipality}
-                      <button onClick={() => setFilters({ ...filters, municipality: '' })} className="ml-1 hover:text-teal-900 dark:hover:text-teal-200">
-                        <X className="w-3 h-3" />
+                      <button
+                        onClick={() => setFilters({ ...filters, municipality: '' })}
+                        aria-label={t('jobSearch.removeFilter', { filter: filters.municipality }) || `Ta bort filter: ${filters.municipality}`}
+                        className="ml-1 p-1 hover:text-teal-900 dark:hover:text-teal-200 hover:bg-teal-200 dark:hover:bg-teal-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                      >
+                        <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   )}
                   {filters.region && (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded text-sm">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded-lg text-sm min-h-[44px]">
                       🗺️ {REGIONS.find(r => r.code === filters.region)?.name}
-                      <button onClick={() => setFilters({ ...filters, region: '' })} className="ml-1 hover:text-teal-900 dark:hover:text-teal-200">
-                        <X className="w-3 h-3" />
+                      <button
+                        onClick={() => setFilters({ ...filters, region: '' })}
+                        aria-label={t('jobSearch.removeFilter', { filter: REGIONS.find(r => r.code === filters.region)?.name }) || `Ta bort filter: ${REGIONS.find(r => r.code === filters.region)?.name}`}
+                        className="ml-1 p-1 hover:text-teal-900 dark:hover:text-teal-200 hover:bg-teal-200 dark:hover:bg-teal-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                      >
+                        <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   )}
                   {filters.employmentType && (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 rounded text-sm">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 rounded-lg text-sm min-h-[44px]">
                       💼 {filters.employmentType}
-                      <button onClick={() => setFilters({ ...filters, employmentType: '' })} className="ml-1 hover:text-sky-900 dark:hover:text-sky-200">
-                        <X className="w-3 h-3" />
+                      <button
+                        onClick={() => setFilters({ ...filters, employmentType: '' })}
+                        aria-label={t('jobSearch.removeFilter', { filter: filters.employmentType }) || `Ta bort filter: ${filters.employmentType}`}
+                        className="ml-1 p-1 hover:text-sky-900 dark:hover:text-sky-200 hover:bg-sky-200 dark:hover:bg-sky-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                      >
+                        <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   )}
                   {filters.publishedWithin !== 'all' && (
-                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded text-sm">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg text-sm min-h-[44px]">
                       📅 {filters.publishedWithin === 'today' ? t('jobSearch.today') : filters.publishedWithin === 'week' ? t('jobSearch.lastWeek') : t('jobSearch.lastMonth')}
-                      <button onClick={() => setFilters({ ...filters, publishedWithin: 'all' })} className="ml-1 hover:text-emerald-900 dark:hover:text-emerald-200">
-                        <X className="w-3 h-3" />
+                      <button
+                        onClick={() => setFilters({ ...filters, publishedWithin: 'all' })}
+                        aria-label={t('jobSearch.removeFilter', { filter: t('jobSearch.' + filters.publishedWithin) }) || `Ta bort datumfilter`}
+                        className="ml-1 p-1 hover:text-emerald-900 dark:hover:text-emerald-200 hover:bg-emerald-200 dark:hover:bg-emerald-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                      >
+                        <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   )}
@@ -536,25 +554,27 @@ function SearchTab() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 pt-4">
+              <nav className="flex items-center justify-center gap-2 pt-4" aria-label={t('jobSearch.pagination') || 'Sidnavigering'}>
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-slate-600 dark:text-stone-300"
+                  aria-label={t('jobSearch.previousPage') || 'Föregående sida'}
+                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-slate-600 dark:text-stone-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 >
-                  <ChevronLeft size={20} />
+                  <ChevronLeft size={20} aria-hidden="true" />
                 </button>
-                <span className="px-4 py-2 text-sm text-slate-600 dark:text-stone-400">
+                <span className="px-4 py-2 text-sm text-slate-600 dark:text-stone-400" aria-current="page">
                   {t('jobSearch.pageXofY', { current: currentPage, total: totalPages })}
                 </span>
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-slate-600 dark:text-stone-300"
+                  aria-label={t('jobSearch.nextPage') || 'Nästa sida'}
+                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-slate-600 dark:text-stone-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 >
-                  <ChevronRight size={20} />
+                  <ChevronRight size={20} aria-hidden="true" />
                 </button>
-              </div>
+              </nav>
             )}
           </div>
         ) : (
