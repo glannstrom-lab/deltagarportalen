@@ -239,6 +239,86 @@
     "greetingDefault": "där",
     "loading": "Laddar din översikt...",
     "ariaLabel": "Dashboard-widgets",
+    "skipToContent": "Hoppa till huvudinnehåll",
+    "readyForJobs": "Redo för jobb",
+    "progressCount": "{{completed}}/{{total}} klart",
+    "progressAria": "Jobbredo: {{percent}}% klart, {{completed}} av {{total}} steg avklarade",
+    "greetings": {
+      "morning": "God morgon",
+      "lateMorning": "God förmiddag",
+      "afternoon": "God eftermiddag",
+      "evening": "God kväll"
+    },
+    "kpi": {
+      "cvProgress": "CV-progress",
+      "updated": "Uppdaterat",
+      "notStarted": "Inte påbörjat",
+      "savedJobs": "Sparade jobb",
+      "newCount": "{{count}} nya",
+      "applications": "Ansökningar",
+      "interviewCount": "{{count}} intervjuer",
+      "recentActivity": "Senaste aktivitet",
+      "today": "Idag",
+      "keepGoing": "Fortsätt så!"
+    },
+    "nextStep": {
+      "title": "Ditt nästa steg",
+      "aria": "Ditt nästa steg"
+    },
+    "onboarding": {
+      "title": "Kom igång",
+      "showMore": "Visa {{count}} fler steg",
+      "showLess": "Visa färre",
+      "steps": {
+        "profile": {
+          "title": "Fyll i din profil",
+          "description": "Lägg till kontaktuppgifter"
+        },
+        "interest": {
+          "title": "Gör intresseguiden",
+          "description": "Upptäck passande yrken"
+        },
+        "cv": {
+          "title": "Skapa ditt CV",
+          "description": "Bygg ett proffsigt CV"
+        },
+        "jobSearch": {
+          "title": "Sök efter jobb",
+          "description": "Hitta lediga tjänster"
+        },
+        "coverLetter": {
+          "title": "Skriv personligt brev",
+          "description": "Skapa övertygande brev"
+        }
+      }
+    },
+    "sidebar": {
+      "interestProfile": "Din intresseprofil",
+      "suitableJobs": "Passande yrken:",
+      "seeMore": "Se mer",
+      "interestGuide": {
+        "title": "Upptäck dina styrkor",
+        "subtitle": "Gör intresseguiden",
+        "description": "Svara på frågor och få personliga jobbförslag baserat på dina intressen.",
+        "startNow": "Starta nu",
+        "aria": "Upptäck dina styrkor - Gör intresseguiden"
+      },
+      "consultant": {
+        "title": "Min konsulent",
+        "subtitle": "Kommunicera och följ upp",
+        "aria": "Min konsulent - Kommunicera och följ upp"
+      },
+      "savedJobs": {
+        "title": "Sparade jobb",
+        "viewAll": "Visa alla"
+      },
+      "wellness": {
+        "title": "Välmående",
+        "todaysMood": "Dagens mående",
+        "logToday": "Logga ditt mående idag",
+        "streak": "{{days}} dagars streak"
+      }
+    },
     "welcomeMessages": {
       "start": "Välkommen! Låt oss komma igång med ditt jobbsökande.",
       "goodStart": "Bra start! Fortsätt bygga din profil.",

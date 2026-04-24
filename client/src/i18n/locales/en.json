@@ -239,6 +239,86 @@
     "greetingDefault": "there",
     "loading": "Loading your overview...",
     "ariaLabel": "Dashboard widgets",
+    "skipToContent": "Skip to main content",
+    "readyForJobs": "Ready for jobs",
+    "progressCount": "{{completed}}/{{total}} done",
+    "progressAria": "Job ready: {{percent}}% complete, {{completed}} of {{total}} steps done",
+    "greetings": {
+      "morning": "Good morning",
+      "lateMorning": "Good late morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "kpi": {
+      "cvProgress": "CV progress",
+      "updated": "Updated",
+      "notStarted": "Not started",
+      "savedJobs": "Saved jobs",
+      "newCount": "{{count}} new",
+      "applications": "Applications",
+      "interviewCount": "{{count}} interviews",
+      "recentActivity": "Recent activity",
+      "today": "Today",
+      "keepGoing": "Keep it up!"
+    },
+    "nextStep": {
+      "title": "Your next step",
+      "aria": "Your next step"
+    },
+    "onboarding": {
+      "title": "Get started",
+      "showMore": "Show {{count}} more steps",
+      "showLess": "Show less",
+      "steps": {
+        "profile": {
+          "title": "Complete your profile",
+          "description": "Add contact information"
+        },
+        "interest": {
+          "title": "Take the interest guide",
+          "description": "Discover suitable jobs"
+        },
+        "cv": {
+          "title": "Create your CV",
+          "description": "Build a professional CV"
+        },
+        "jobSearch": {
+          "title": "Search for jobs",
+          "description": "Find open positions"
+        },
+        "coverLetter": {
+          "title": "Write a cover letter",
+          "description": "Create compelling letters"
+        }
+      }
+    },
+    "sidebar": {
+      "interestProfile": "Your interest profile",
+      "suitableJobs": "Suitable jobs:",
+      "seeMore": "See more",
+      "interestGuide": {
+        "title": "Discover your strengths",
+        "subtitle": "Take the interest guide",
+        "description": "Answer questions and get personalized job suggestions based on your interests.",
+        "startNow": "Start now",
+        "aria": "Discover your strengths - Take the interest guide"
+      },
+      "consultant": {
+        "title": "My consultant",
+        "subtitle": "Communicate and follow up",
+        "aria": "My consultant - Communicate and follow up"
+      },
+      "savedJobs": {
+        "title": "Saved jobs",
+        "viewAll": "View all"
+      },
+      "wellness": {
+        "title": "Wellness",
+        "todaysMood": "Today's mood",
+        "logToday": "Log your mood today",
+        "streak": "{{days}} day streak"
+      }
+    },
     "welcomeMessages": {
       "start": "Welcome! Let's get started with your job search.",
       "goodStart": "Good start! Keep building your profile.",

@@ -33,11 +33,11 @@ import { DashboardError } from '@/components/dashboard/DashboardError'
 // Reducerat från 8 till 5 steg för att minska kognitiv belastning
 // ============================================
 const ONBOARDING_STEPS = [
-  { step: 1, id: 'profile', title: 'Fyll i din profil', description: 'Lägg till kontaktuppgifter', icon: User, path: '/profile', trackKey: 'profile' },
-  { step: 2, id: 'interest', title: 'Gör intresseguiden', description: 'Upptäck passande yrken', icon: Compass, path: '/interest-guide', trackKey: 'interest' },
-  { step: 3, id: 'cv', title: 'Skapa ditt CV', description: 'Bygg ett proffsigt CV', icon: FileUser, path: '/cv', trackKey: 'cv' },
-  { step: 4, id: 'jobSearch', title: 'Sök efter jobb', description: 'Hitta lediga tjänster', icon: Search, path: '/job-search', trackKey: 'jobSearch' },
-  { step: 5, id: 'coverLetter', title: 'Skriv personligt brev', description: 'Skapa övertygande brev', icon: Mail, path: '/cover-letter', trackKey: 'coverLetter' },
+  { step: 1, id: 'profile', titleKey: 'dashboard.onboarding.steps.profile.title', descriptionKey: 'dashboard.onboarding.steps.profile.description', icon: User, path: '/profile', trackKey: 'profile' },
+  { step: 2, id: 'interest', titleKey: 'dashboard.onboarding.steps.interest.title', descriptionKey: 'dashboard.onboarding.steps.interest.description', icon: Compass, path: '/interest-guide', trackKey: 'interest' },
+  { step: 3, id: 'cv', titleKey: 'dashboard.onboarding.steps.cv.title', descriptionKey: 'dashboard.onboarding.steps.cv.description', icon: FileUser, path: '/cv', trackKey: 'cv' },
+  { step: 4, id: 'jobSearch', titleKey: 'dashboard.onboarding.steps.jobSearch.title', descriptionKey: 'dashboard.onboarding.steps.jobSearch.description', icon: Search, path: '/job-search', trackKey: 'jobSearch' },
+  { step: 5, id: 'coverLetter', titleKey: 'dashboard.onboarding.steps.coverLetter.title', descriptionKey: 'dashboard.onboarding.steps.coverLetter.description', icon: Mail, path: '/cover-letter', trackKey: 'coverLetter' },
 ]
 
 // ============================================
@@ -48,7 +48,7 @@ const ONBOARDING_STEPS = [
 const VISIBLE_STEPS_COUNT = 3
 
 export default function DashboardPage() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { profile: authProfile } = useAuthStore()
   const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError, refetch } = useDashboardDataQuery()
   const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
@@ -128,17 +128,17 @@ export default function DashboardPage() {
     return <DashboardError error={dashboardError} onRetry={refetch} />
   }
 
-  const firstName = authProfile?.first_name || 'Välkommen'
-  const greeting = getGreeting()
+  const firstName = authProfile?.first_name || t('dashboard.welcome')
+  const greetingKey = getGreetingKey()
 
   return (
-    <>
+    <div key={i18n.language}>
       {/* Skip link for keyboard/screen reader users - WCAG 2.4.1 */}
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-teal-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none"
       >
-        Hoppa till huvudinnehåll
+        {t('dashboard.skipToContent')}
       </a>
       <main id="main-content" className="page-transition pb-8 sm:pb-10 lg:pb-12">
       {/* Responsive container: full width mobile, contained tablet/desktop */}
@@ -153,7 +153,7 @@ export default function DashboardPage() {
                 <User className="w-6 h-6 sm:w-7 sm:h-7 text-white" aria-hidden="true" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm text-teal-600 dark:text-teal-400 font-medium">{greeting}</p>
+                <p className="text-xs sm:text-sm text-teal-600 dark:text-teal-400 font-medium">{t(greetingKey)}</p>
                 <h1 className="text-lg sm:text-xl font-bold text-teal-800 dark:text-teal-300 truncate">
                   {firstName}!
                 </h1>
@@ -166,7 +166,7 @@ export default function DashboardPage() {
                   aria-valuenow={progressPercent}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                  aria-label={`Jobbredo: ${progressPercent}% klart, ${onboardingProgress.completed} av ${onboardingProgress.total} steg avklarade`}
+                  aria-label={t('dashboard.progressAria', { percent: progressPercent, completed: onboardingProgress.completed, total: onboardingProgress.total })}
                 >
                   <svg className="w-10 h-10 sm:w-12 sm:h-12 -rotate-90" aria-hidden="true">
                     <circle
@@ -193,9 +193,9 @@ export default function DashboardPage() {
                   </span>
                 </div>
                 <div className="hidden sm:block text-right">
-                  <p className="text-xs text-stone-500 dark:text-stone-400">Redo för jobb</p>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">{t('dashboard.readyForJobs')}</p>
                   <p className="text-sm font-semibold text-teal-700 dark:text-teal-300">
-                    {onboardingProgress.completed}/{onboardingProgress.total} klart
+                    {t('dashboard.progressCount', { completed: onboardingProgress.completed, total: onboardingProgress.total })}
                   </p>
                 </div>
               </div>
@@ -208,33 +208,33 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-5 lg:mb-6">
             <KpiCard
               icon={FileText}
-              label="CV-progress"
+              label={t('dashboard.kpi.cvProgress')}
               value={`${dashboardData?.cv?.progress || 0}%`}
-              subtext={dashboardData?.cv?.hasCV ? 'Uppdaterat' : 'Inte påbörjat'}
+              subtext={dashboardData?.cv?.hasCV ? t('dashboard.kpi.updated') : t('dashboard.kpi.notStarted')}
               color="teal"
               to="/cv"
             />
             <KpiCard
               icon={Bookmark}
-              label="Sparade jobb"
+              label={t('dashboard.kpi.savedJobs')}
               value={dashboardData?.jobs?.savedCount || 0}
-              subtext={dashboardData?.jobs?.newMatches ? `${dashboardData.jobs.newMatches} nya` : undefined}
+              subtext={dashboardData?.jobs?.newMatches ? t('dashboard.kpi.newCount', { count: dashboardData.jobs.newMatches }) : undefined}
               color="sky"
               to="/job-search"
             />
             <KpiCard
               icon={ClipboardList}
-              label="Ansökningar"
+              label={t('dashboard.kpi.applications')}
               value={dashboardData?.applications?.total || 0}
-              subtext={dashboardData?.applications?.statusBreakdown?.interview ? `${dashboardData.applications.statusBreakdown.interview} intervjuer` : undefined}
+              subtext={dashboardData?.applications?.statusBreakdown?.interview ? t('dashboard.kpi.interviewCount', { count: dashboardData.applications.statusBreakdown.interview }) : undefined}
               color="amber"
               to="/applications"
             />
             <KpiCard
               icon={Flame}
-              label="Senaste aktivitet"
-              value={dashboardData?.activity?.streakDays ? `${dashboardData.activity.streakDays}d` : 'Idag'}
-              subtext="Fortsätt så!"
+              label={t('dashboard.kpi.recentActivity')}
+              value={dashboardData?.activity?.streakDays ? `${dashboardData.activity.streakDays}d` : t('dashboard.kpi.today')}
+              subtext={t('dashboard.kpi.keepGoing')}
               color="emerald"
             />
           </div>
@@ -246,16 +246,16 @@ export default function DashboardPage() {
             to={nextStep.path}
             className="block mb-4 sm:mb-5 lg:mb-6 bg-gradient-to-r from-teal-500 to-sky-500 dark:from-teal-600 dark:to-sky-600 rounded-2xl p-4 sm:p-5 md:p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.005] active:scale-[0.99] focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 group"
             role="region"
-            aria-label="Ditt nästa steg"
+            aria-label={t('dashboard.nextStep.aria')}
           >
             <div className="flex items-center gap-3 sm:gap-4 md:gap-5">
               <div className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 bg-white/20 backdrop-blur rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 group-hover:bg-white/30 transition-colors">
                 <nextStep.icon className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-white" aria-hidden="true" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-xs sm:text-sm md:text-sm text-white/80 font-medium mb-0.5 md:mb-1">Ditt nästa steg</p>
-                <h2 className="text-base sm:text-lg md:text-xl font-bold truncate">{nextStep.title}</h2>
-                <p className="text-xs sm:text-sm md:text-base text-white/80 truncate">{nextStep.description}</p>
+                <p className="text-xs sm:text-sm md:text-sm text-white/80 font-medium mb-0.5 md:mb-1">{t('dashboard.nextStep.title')}</p>
+                <h2 className="text-base sm:text-lg md:text-xl font-bold truncate">{t(nextStep.titleKey)}</h2>
+                <p className="text-xs sm:text-sm md:text-base text-white/80 truncate">{t(nextStep.descriptionKey)}</p>
               </div>
               <div className="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 bg-white/20 backdrop-blur rounded-full flex items-center justify-center shrink-0 group-hover:bg-white/30 transition-colors">
                 <Play className="w-5 h-5 sm:w-6 sm:h-6 md:w-7 md:h-7 text-white ml-0.5" aria-hidden="true" />
@@ -270,7 +270,7 @@ export default function DashboardPage() {
           <div className="md:col-span-2 lg:col-span-2 space-y-3 sm:space-y-4">
             {/* Onboarding Section - Shows limited steps to reduce overwhelm */}
             <DashboardSection
-              title="Kom igång"
+              title={t('dashboard.onboarding.title')}
               icon={Zap}
               badge={`${onboardingProgress.completed}/${onboardingProgress.total}`}
               colorScheme="teal"
@@ -284,8 +284,8 @@ export default function DashboardPage() {
                     <OnboardingStep
                       key={step.id}
                       step={step.step}
-                      title={step.title}
-                      description={step.description}
+                      title={t(step.titleKey)}
+                      description={t(step.descriptionKey)}
                       icon={step.icon}
                       isComplete={onboardingProgress.progress?.[step.trackKey] || false}
                       isCurrent={currentStepIndex === stepIndex}
@@ -303,7 +303,7 @@ export default function DashboardPage() {
                   aria-controls="onboarding-steps-grid"
                 >
                   <ChevronDown className="w-4 h-4" aria-hidden="true" />
-                  Visa {hiddenStepsCount} fler steg
+                  {t('dashboard.onboarding.showMore', { count: hiddenStepsCount })}
                 </button>
               )}
               {showAllSteps && hiddenStepsCount > 0 && (
@@ -313,7 +313,7 @@ export default function DashboardPage() {
                   aria-expanded="true"
                   aria-controls="onboarding-steps-grid"
                 >
-                  Visa färre
+                  {t('dashboard.onboarding.showLess')}
                 </button>
               )}
             </DashboardSection>
@@ -327,7 +327,7 @@ export default function DashboardPage() {
               <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-3 sm:p-4">
                 <div className="flex items-center gap-2 mb-2 sm:mb-3">
                   <Compass className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
-                  <h3 className="text-sm sm:text-base font-semibold text-teal-800 dark:text-teal-300">Din intresseprofil</h3>
+                  <h3 className="text-sm sm:text-base font-semibold text-teal-800 dark:text-teal-300">{t('dashboard.sidebar.interestProfile')}</h3>
                 </div>
                 <div className="flex justify-center">
                   <DashboardRiasecChart scores={interestProfile.riasecScores} size={160} />
@@ -347,7 +347,7 @@ export default function DashboardPage() {
                 {/* Recommended occupations */}
                 {interestProfile.recommendedOccupations?.length > 0 && (
                   <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-teal-200 dark:border-teal-800/50">
-                    <p className="text-[10px] sm:text-xs font-medium text-teal-700 dark:text-teal-400 mb-1.5 sm:mb-2">Passande yrken:</p>
+                    <p className="text-[10px] sm:text-xs font-medium text-teal-700 dark:text-teal-400 mb-1.5 sm:mb-2">{t('dashboard.sidebar.suitableJobs')}</p>
                     <div className="space-y-0.5 sm:space-y-1">
                       {interestProfile.recommendedOccupations.slice(0, 3).map((occ, i) => (
                         <div key={i} className="flex items-center justify-between text-[10px] sm:text-xs">
@@ -362,7 +362,7 @@ export default function DashboardPage() {
                   to="/interest-guide"
                   className="flex items-center justify-center gap-1 mt-2 sm:mt-3 text-xs sm:text-sm text-teal-600 dark:text-teal-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 rounded"
                 >
-                  Se mer <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
+                  {t('dashboard.sidebar.seeMore')} <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
                 </Link>
               </div>
             )}
@@ -372,22 +372,22 @@ export default function DashboardPage() {
               <Link
                 to="/interest-guide"
                 className="block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border border-amber-200 dark:border-amber-800/50 p-3 sm:p-4 hover:shadow-lg transition-shadow group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2"
-                aria-label="Upptäck dina styrkor - Gör intresseguiden"
+                aria-label={t('dashboard.sidebar.interestGuide.aria')}
               >
                 <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 rounded-xl flex items-center justify-center shrink-0">
                     <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
                   </div>
                   <div className="min-w-0">
-                    <h3 className="text-sm sm:text-base font-semibold text-amber-800 dark:text-amber-300 truncate">Upptäck dina styrkor</h3>
-                    <p className="text-xs sm:text-sm text-amber-600 dark:text-amber-400">Gör intresseguiden</p>
+                    <h3 className="text-sm sm:text-base font-semibold text-amber-800 dark:text-amber-300 truncate">{t('dashboard.sidebar.interestGuide.title')}</h3>
+                    <p className="text-xs sm:text-sm text-amber-600 dark:text-amber-400">{t('dashboard.sidebar.interestGuide.subtitle')}</p>
                   </div>
                 </div>
                 <p className="text-xs sm:text-sm text-amber-700 dark:text-amber-300/80">
-                  Svara på frågor och få personliga jobbförslag baserat på dina intressen.
+                  {t('dashboard.sidebar.interestGuide.description')}
                 </p>
                 <div className="flex items-center gap-1 mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-1 transition-transform" aria-hidden="true">
-                  Starta nu <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  {t('dashboard.sidebar.interestGuide.startNow')} <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
               </Link>
             )}
@@ -397,15 +397,15 @@ export default function DashboardPage() {
               <Link
                 to="/my-consultant"
                 className="block bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-900/20 dark:to-indigo-900/20 rounded-2xl border border-sky-200 dark:border-sky-800/50 p-3 sm:p-4 hover:shadow-lg transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-2"
-                aria-label="Min konsulent - Kommunicera och följ upp"
+                aria-label={t('dashboard.sidebar.consultant.aria')}
               >
                 <div className="flex items-center gap-2.5 sm:gap-3">
                   <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-sky-400 to-indigo-400 dark:from-sky-500 dark:to-indigo-500 rounded-xl flex items-center justify-center shrink-0">
                     <UserCheck className="w-4 h-4 sm:w-5 sm:h-5 text-white" aria-hidden="true" />
                   </div>
                   <div className="min-w-0 flex-1">
-                    <h3 className="text-sm sm:text-base font-semibold text-sky-800 dark:text-sky-300">Min konsulent</h3>
-                    <p className="text-xs sm:text-sm text-sky-600 dark:text-sky-400">Kommunicera och följ upp</p>
+                    <h3 className="text-sm sm:text-base font-semibold text-sky-800 dark:text-sky-300">{t('dashboard.sidebar.consultant.title')}</h3>
+                    <p className="text-xs sm:text-sm text-sky-600 dark:text-sky-400">{t('dashboard.sidebar.consultant.subtitle')}</p>
                   </div>
                   <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-sky-400 dark:text-sky-500 shrink-0" aria-hidden="true" />
                 </div>
@@ -416,9 +416,9 @@ export default function DashboardPage() {
             {dashboardData?.jobs?.recentSavedJobs && dashboardData.jobs.recentSavedJobs.length > 0 && (
               <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-3 sm:p-4">
                 <div className="flex items-center justify-between mb-2 sm:mb-3">
-                  <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-200">Sparade jobb</h3>
+                  <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-200">{t('dashboard.sidebar.savedJobs.title')}</h3>
                   <Link to="/job-search" className="text-[10px] sm:text-xs text-teal-600 dark:text-teal-400 hover:underline">
-                    Visa alla
+                    {t('dashboard.sidebar.savedJobs.viewAll')}
                   </Link>
                 </div>
                 <div className="space-y-1.5 sm:space-y-2">
@@ -437,23 +437,23 @@ export default function DashboardPage() {
               <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-3 sm:p-4">
                 <div className="flex items-center gap-2 mb-2 sm:mb-3">
                   <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 dark:text-rose-400" aria-hidden="true" />
-                  <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-200">Välmående</h3>
+                  <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-200">{t('dashboard.sidebar.wellness.title')}</h3>
                 </div>
                 {dashboardData.wellness.moodToday ? (
                   <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400">
-                    Dagens mående: <span className="font-medium">{getMoodEmoji(dashboardData.wellness.moodToday)}</span>
+                    {t('dashboard.sidebar.wellness.todaysMood')}: <span className="font-medium">{getMoodEmoji(dashboardData.wellness.moodToday)}</span>
                   </p>
                 ) : (
                   <Link
                     to="/wellness"
                     className="text-xs sm:text-sm text-teal-600 dark:text-teal-400 hover:underline"
                   >
-                    Logga ditt mående idag →
+                    {t('dashboard.sidebar.wellness.logToday')} →
                   </Link>
                 )}
                 {dashboardData.wellness.streakDays > 0 && (
                   <p className="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400 mt-1">
-                    🔥 {dashboardData.wellness.streakDays} dagars streak
+                    🔥 {t('dashboard.sidebar.wellness.streak', { days: dashboardData.wellness.streakDays })}
                   </p>
                 )}
               </div>
@@ -463,7 +463,7 @@ export default function DashboardPage() {
       </div>
       <HelpButton content={helpContent.dashboard} />
     </main>
-    </>
+    </div>
   )
 }
 
@@ -471,12 +471,12 @@ export default function DashboardPage() {
 // HELPER FUNCTIONS
 // ============================================
 
-function getGreeting() {
+function getGreetingKey() {
   const hour = new Date().getHours()
-  if (hour < 10) return 'God morgon'
-  if (hour < 12) return 'God förmiddag'
-  if (hour < 18) return 'God eftermiddag'
-  return 'God kväll'
+  if (hour < 10) return 'dashboard.greetings.morning'
+  if (hour < 12) return 'dashboard.greetings.lateMorning'
+  if (hour < 18) return 'dashboard.greetings.afternoon'
+  return 'dashboard.greetings.evening'
 }
 
 function getMoodEmoji(mood: number | string) {
