@@ -6,6 +6,7 @@
 
 import { Suspense, lazy, useEffect, Component, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
+import i18n from '@/i18n/config'
 import { Loader2 } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { HelpButton } from '@/components/HelpButton'
@@ -61,7 +62,7 @@ class ProfileErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
       return (
         <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
           <p className="text-red-700 dark:text-red-300 font-medium">
-            Något gick fel vid laddning av denna sektion
+            {i18n.t('profile.errorLoadingSection')}
           </p>
           <p className="text-sm text-red-600 dark:text-red-400 mt-1">
             {this.state.error?.message}
@@ -70,7 +71,7 @@ class ProfileErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
             onClick={() => this.setState({ hasError: false, error: null })}
             className="mt-3 px-4 py-2 bg-red-100 dark:bg-red-800 text-red-700 dark:text-red-200 rounded-lg text-sm font-medium hover:bg-red-200 dark:hover:bg-red-700 transition-colors"
           >
-            Försök igen
+            {i18n.t('common.tryAgain')}
           </button>
         </div>
       )
@@ -96,9 +97,12 @@ function SectionLoader() {
 // ============== TAB CONTENT ==============
 
 function TabContent({ activeTab }: { activeTab: TabId }) {
+  const { i18n } = useTranslation()
+
+  // Key based on language forces re-render when language changes
   return (
     <ProfileErrorBoundary>
-      <Suspense fallback={<SectionLoader />}>
+      <Suspense key={i18n.language} fallback={<SectionLoader />}>
         {activeTab === 'overview' && <OverviewSection />}
         {activeTab === 'jobbsok' && <JobSearchSection />}
         {activeTab === 'kompetens' && <CompetenceSection />}

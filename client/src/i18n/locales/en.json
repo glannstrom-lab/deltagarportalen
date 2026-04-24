@@ -4713,6 +4713,7 @@
     "tip1": "Fill in all fields so employers can contact you",
     "tip2": "A short bio helps employers get to know you",
     "tip3": "Update your profile regularly with current information",
+    "errorLoadingSection": "Something went wrong while loading this section",
     "overview": {
       "contactInfo": "Contact Information",
       "firstName": "First name",

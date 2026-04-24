@@ -4713,6 +4713,7 @@
     "tip1": "Fyll i alla fält för att arbetsförmedlare ska kunna kontakta dig",
     "tip2": "En kort bio hjälper arbetsgivare att lära känna dig",
     "tip3": "Uppdatera din profil regelbundet med aktuell information",
+    "errorLoadingSection": "Något gick fel vid laddning av denna sektion",
     "overview": {
       "contactInfo": "Kontaktuppgifter",
       "firstName": "Förnamn",
