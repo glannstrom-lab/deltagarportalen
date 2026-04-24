@@ -4871,7 +4871,129 @@
     "goodAnswerNext": "Good answer! Here's the next question...",
     "fallbackQ1": "Thanks for the introduction! Describe a situation where you handled a conflict.",
     "fallbackQ2": "Great! What are your strengths and weaknesses?",
-    "fallbackQ3": "Why do you want to work for us specifically?"
+    "fallbackQ3": "Why do you want to work for us specifically?",
+    "timer": {
+      "timeForAnswer": "Time for answer:",
+      "ariaLabel": "Time for answer: {{seconds}} seconds",
+      "pauseTimer": "Pause timer",
+      "startTimer": "Start timer"
+    },
+    "categories": {
+      "aboutYou": "About yourself",
+      "experienceSkills": "Experience & skills",
+      "motivationGoals": "Motivation & goals",
+      "technicalQuestions": "Technical questions"
+    },
+    "questions": {
+      "tellAboutYourself": "Tell me about yourself and your background",
+      "biggestStrengths": "What are your biggest strengths?",
+      "weaknesses": "What are your weakest areas?",
+      "challengeOvercome": "Describe a challenge you overcame in a previous job",
+      "handleConflicts": "How do you handle conflicts in the workplace?",
+      "proudProject": "Tell me about a project you're proud of",
+      "whyInterested": "Why are you interested in this position?",
+      "fiveYears": "Where do you see yourself in 5 years?",
+      "whatMotivates": "What motivates you most at work?",
+      "technicalChallenge": "Describe a technical challenge and how you solved it",
+      "stayUpdated": "How do you stay updated with new technology?",
+      "futurePlans": "What are your future plans?"
+    },
+    "setup": {
+      "startTraining": "Start your interview training",
+      "selectCategory": "Select question category (optional)",
+      "randomQuestions": "Random questions"
+    },
+    "star": {
+      "title": "STAR method for better answers",
+      "situation": "Describe the context",
+      "task": "Explain what needed to be done",
+      "action": "What did you specifically do?",
+      "result": "What was the outcome?"
+    },
+    "relatedExercises": "Related exercises",
+    "exercises": {
+      "starMethod": "STAR method in practice",
+      "starMethodDesc": "Practice structuring your answers",
+      "bodyLanguage": "Body language in interviews",
+      "bodyLanguageDesc": "Learn to signal confidence",
+      "salaryTalk": "Salary negotiation",
+      "salaryTalkDesc": "Prepare for the salary discussion"
+    },
+    "readMore": "Read more about interviews",
+    "articles": {
+      "commonQuestions": "10 most common interview questions",
+      "handleNervousness": "How to handle nervousness",
+      "questionsForEmployer": "Questions to ask the employer"
+    },
+    "session": {
+      "endInterview": "End",
+      "endInterviewAria": "End interview",
+      "questionsAnswered": "Questions answered",
+      "averageRating": "Average rating",
+      "previousAnswers": "Previous answers",
+      "question": "Question",
+      "yourAnswer": "Your answer",
+      "aiRating": "AI rating (click to adjust):",
+      "rateThisAnswer": "Rate this answer:",
+      "hideFeedback": "Hide feedback",
+      "showFeedback": "Show feedback and tips",
+      "aiFeedback": "AI feedback:",
+      "starTip": "Try structuring your answers with the STAR method (Situation, Task, Action, Result).",
+      "questionNumber": "Question {{number}}"
+    },
+    "input": {
+      "giveStart": "Give me a start",
+      "yourAnswerLabel": "Your answer",
+      "stopRecording": "Stop recording",
+      "recordAnswer": "Record answer",
+      "speakNow": "Speak now... your answer appears here",
+      "writeOrRecord": "Write your answer here or use the microphone...",
+      "characters": "{{count}} characters",
+      "recommended": "Recommended: 100-300 characters",
+      "nextQuestion": "Next question"
+    },
+    "recording": {
+      "pauseRecording": "Pause recording",
+      "resumeRecording": "Resume recording",
+      "recordSession": "Record entire session",
+      "saveRecording": "Save recording",
+      "recorded": "{{time}} recorded"
+    },
+    "download": {
+      "downloadSummary": "Download summary",
+      "title": "INTERVIEW PRACTICE SUMMARY",
+      "date": "Date",
+      "role": "Role",
+      "company": "Company",
+      "notSpecified": "Not specified",
+      "sessionOverview": "SESSION OVERVIEW",
+      "totalQuestions": "Total questions",
+      "averageClassification": "Average classification",
+      "questionsAndAnswers": "QUESTIONS AND ANSWERS",
+      "questionLabel": "QUESTION",
+      "answerLabel": "ANSWER",
+      "ratingLabel": "RATING",
+      "tipsForImprovement": "TIPS FOR IMPROVEMENT",
+      "tip1": "Use the STAR method for better structured answers",
+      "tip2": "Practice out loud to improve pronunciation and pace",
+      "tip3": "Prepare concrete examples from your experience"
+    },
+    "example": {
+      "goodAnswer": "Example of a good answer:"
+    },
+    "quickTips": {
+      "title": "Quick tips",
+      "tip1": "Use concrete examples from your life",
+      "tip2": "Describe what YOU did, not the team",
+      "tip3": "End with the result and the lesson learned"
+    },
+    "progress": {
+      "title": "Your progress",
+      "answered": "Answered",
+      "questionsUnit": "questions",
+      "questionsLeft": "{{count}} questions left to achievement",
+      "goalAchieved": "You've reached the goal!"
+    }
   },
   "profile": {
     "title": "Your profile",

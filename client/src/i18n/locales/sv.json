@@ -4871,7 +4871,129 @@
     "goodAnswerNext": "Bra svar! Här är nästa fråga...",
     "fallbackQ1": "Tack för presentationen! Beskriv en situation där du hanterat en konflikt.",
     "fallbackQ2": "Bra! Vilka är dina styrkor och svagheter?",
-    "fallbackQ3": "Varför vill du just jobba hos oss?"
+    "fallbackQ3": "Varför vill du just jobba hos oss?",
+    "timer": {
+      "timeForAnswer": "Tid för svar:",
+      "ariaLabel": "Tid för svar: {{seconds}} sekunder",
+      "pauseTimer": "Pausa timer",
+      "startTimer": "Starta timer"
+    },
+    "categories": {
+      "aboutYou": "Om dig själv",
+      "experienceSkills": "Erfarenhet & färdigheter",
+      "motivationGoals": "Motivation & mål",
+      "technicalQuestions": "Tekniska frågor"
+    },
+    "questions": {
+      "tellAboutYourself": "Berätta om dig själv och din bakgrund",
+      "biggestStrengths": "Vad är dina största styrkor?",
+      "weaknesses": "Vilka är dina svagaste sidor?",
+      "challengeOvercome": "Beskriv en utmaning du övervann i ett tidigare jobb",
+      "handleConflicts": "Hur hanterar du konflikter på arbetsplatsen?",
+      "proudProject": "Berätta om ett projekt du är stolt över",
+      "whyInterested": "Varför är du intresserad av denna position?",
+      "fiveYears": "Var ser du dig själv om 5 år?",
+      "whatMotivates": "Vad motiverar dig mest på jobbet?",
+      "technicalChallenge": "Beskriv en teknisk utmaning och hur du löste den",
+      "stayUpdated": "Hur håller du dig uppdaterad med ny teknik?",
+      "futurePlans": "Vad är dina framtidsplaner?"
+    },
+    "setup": {
+      "startTraining": "Starta din intervjuträning",
+      "selectCategory": "Välj frågekategori (valfritt)",
+      "randomQuestions": "Slumpmässiga frågor"
+    },
+    "star": {
+      "title": "STAR-metoden för bättre svar",
+      "situation": "Beskriv sammanhanget",
+      "task": "Förklara vad som behövde göras",
+      "action": "Vad gjorde du specifikt?",
+      "result": "Vad blev resultatet?"
+    },
+    "relatedExercises": "Relaterade övningar",
+    "exercises": {
+      "starMethod": "STAR-metoden i praktiken",
+      "starMethodDesc": "Öva att strukturera dina svar",
+      "bodyLanguage": "Kroppsspråk på intervju",
+      "bodyLanguageDesc": "Lär dig signalera självförtroende",
+      "salaryTalk": "Löneförhandling",
+      "salaryTalkDesc": "Förbered dig för lönediskussionen"
+    },
+    "readMore": "Läs mer om intervjuer",
+    "articles": {
+      "commonQuestions": "10 vanligaste intervjufrågorna",
+      "handleNervousness": "Så hanterar du nervositet",
+      "questionsForEmployer": "Frågor att ställa till arbetsgivaren"
+    },
+    "session": {
+      "endInterview": "Avsluta",
+      "endInterviewAria": "Avsluta intervjun",
+      "questionsAnswered": "Frågor besvarade",
+      "averageRating": "Genomsnittligt betyg",
+      "previousAnswers": "Tidigare svar",
+      "question": "Fråga",
+      "yourAnswer": "Ditt svar",
+      "aiRating": "AI-betyg (klicka för att justera):",
+      "rateThisAnswer": "Betygsätt detta svar:",
+      "hideFeedback": "Dölj feedback",
+      "showFeedback": "Visa feedback och tips",
+      "aiFeedback": "AI-feedback:",
+      "starTip": "Försök strukturera dina svar med STAR-metoden (Situation, Task, Action, Result).",
+      "questionNumber": "Fråga {{number}}"
+    },
+    "input": {
+      "giveStart": "Ge mig en start",
+      "yourAnswerLabel": "Ditt svar",
+      "stopRecording": "Stoppa inspelning",
+      "recordAnswer": "Spela in svar",
+      "speakNow": "Tala nu... ditt svar visas här",
+      "writeOrRecord": "Skriv ditt svar här eller använd mikrofonen...",
+      "characters": "{{count}} tecken",
+      "recommended": "Rekommenderat: 100-300 tecken",
+      "nextQuestion": "Nästa fråga"
+    },
+    "recording": {
+      "pauseRecording": "Pausa inspelning",
+      "resumeRecording": "Fortsätt spela in",
+      "recordSession": "Spela in hela sessionen",
+      "saveRecording": "Spara inspelning",
+      "recorded": "{{time}} inspelad"
+    },
+    "download": {
+      "downloadSummary": "Ladda ner sammanfattning",
+      "title": "INTERVJUPRAKTIK SAMMANFATTNING",
+      "date": "Datum",
+      "role": "Roll",
+      "company": "Företag",
+      "notSpecified": "Inte angiven",
+      "sessionOverview": "SESSIONÖVERSIKT",
+      "totalQuestions": "Totalt frågor",
+      "averageClassification": "Genomsnittliga klassificering",
+      "questionsAndAnswers": "FRÅGOR OCH SVAR",
+      "questionLabel": "FRÅGA",
+      "answerLabel": "SVAR",
+      "ratingLabel": "BETYG",
+      "tipsForImprovement": "TIPS FÖR FÖRBÄTTRING",
+      "tip1": "Använd STAR-metoden för bättre strukturerade svar",
+      "tip2": "Praktisera högljudd för att förbättra uttal och tempo",
+      "tip3": "Förbered konkreta exempel från din erfarenhet"
+    },
+    "example": {
+      "goodAnswer": "Exempel på bra svar:"
+    },
+    "quickTips": {
+      "title": "Snabbtips",
+      "tip1": "Använd konkreta exempel från ditt liv",
+      "tip2": "Beskriv vad DU gjorde, inte teamet",
+      "tip3": "Avsluta med resultatet och lärdomen"
+    },
+    "progress": {
+      "title": "Din progress",
+      "answered": "Besvarat",
+      "questionsUnit": "frågor",
+      "questionsLeft": "{{count}} frågor kvar till utmärkelse",
+      "goalAchieved": "Du har klarat målet!"
+    }
   },
   "profile": {
     "title": "Din profil",

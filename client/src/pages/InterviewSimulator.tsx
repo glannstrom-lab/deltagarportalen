@@ -21,7 +21,11 @@ interface TimerProps {
   onTogglePause: () => void
 }
 
-const InterviewTimer = memo(function InterviewTimer({ seconds, isRunning, onTogglePause }: TimerProps) {
+interface InterviewTimerPropsExtended extends TimerProps {
+  t: (key: string, options?: Record<string, unknown>) => string
+}
+
+const InterviewTimer = memo(function InterviewTimer({ seconds, isRunning, onTogglePause, t }: InterviewTimerPropsExtended) {
   // Color coding: green (0-30s), yellow (30-60s), orange (60-90s), red (90s+)
   const getTimerColor = () => {
     if (seconds < 30) return 'text-emerald-600 dark:text-emerald-400'
@@ -42,18 +46,18 @@ const InterviewTimer = memo(function InterviewTimer({ seconds, isRunning, onTogg
       className={`flex items-center justify-between p-3 rounded-lg border transition-colors ${getTimerBgColor()}`}
       role="timer"
       aria-live="off"
-      aria-label={`Tid för svar: ${seconds} sekunder`}
+      aria-label={t('interviewSimulator.timer.ariaLabel', { seconds })}
     >
       <div className="flex items-center gap-2">
         <Clock className={`w-4 h-4 ${getTimerColor()}`} aria-hidden="true" />
-        <span className="text-sm font-medium text-slate-700 dark:text-stone-300">Tid för svar:</span>
+        <span className="text-sm font-medium text-slate-700 dark:text-stone-300">{t('interviewSimulator.timer.timeForAnswer')}</span>
       </div>
       <div className="flex items-center gap-2">
         <span className={`text-2xl font-bold ${getTimerColor()}`}>{seconds}s</span>
         <button
           onClick={onTogglePause}
           className="p-1.5 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:bg-stone-50 dark:hover:bg-stone-600 transition-colors"
-          aria-label={isRunning ? 'Pausa timer' : 'Starta timer'}
+          aria-label={isRunning ? t('interviewSimulator.timer.pauseTimer') : t('interviewSimulator.timer.startTimer')}
           type="button"
         >
           {isRunning ? (
@@ -428,7 +432,7 @@ TIPS FÖR FÖRBÄTTRING:
 
         {/* Setup Form */}
         <Card className="p-6 md:p-8 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100 mb-6">Starta din intervjuträning</h2>
+          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100 mb-6">{t('interviewSimulator.setup.startTraining')}</h2>
           <div className="space-y-5">
             <div>
               <label htmlFor="roll-input" className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-2">
@@ -461,7 +465,7 @@ TIPS FÖR FÖRBÄTTRING:
             <div>
               <label htmlFor="category-select" className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-2 flex items-center gap-2">
                 <ListTodo className="w-4 h-4" aria-hidden="true" />
-                Välj frågekategori (valfritt)
+                {t('interviewSimulator.setup.selectCategory')}
               </label>
               <select
                 id="category-select"
@@ -469,7 +473,7 @@ TIPS FÖR FÖRBÄTTRING:
                 onChange={(e) => setSelectedCategory(e.target.value)}
                 className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors"
               >
-                <option value="">Slumpmässiga frågor</option>
+                <option value="">{t('interviewSimulator.setup.randomQuestions')}</option>
                 {questionCategories.map((cat) => (
                   <option key={cat.name} value={cat.name}>{cat.name}</option>
                 ))}
@@ -491,24 +495,24 @@ TIPS FÖR FÖRBÄTTRING:
         <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800/50">
           <h3 className="font-bold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-            STAR-metoden för bättre svar
+            {t('interviewSimulator.star.title')}
           </h3>
           <ul className="space-y-3 text-sm text-slate-700 dark:text-stone-300" role="list">
             <li className="flex items-start gap-3">
               <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-amber-200 dark:bg-amber-800/50 text-amber-800 dark:text-amber-200 font-bold text-xs flex-shrink-0">S</span>
-              <span><strong>Situation</strong> - Beskriv sammanhanget</span>
+              <span><strong>Situation</strong> - {t('interviewSimulator.star.situation')}</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-orange-200 dark:bg-orange-800/50 text-orange-800 dark:text-orange-200 font-bold text-xs flex-shrink-0">T</span>
-              <span><strong>Task</strong> - Förklara vad som behövde göras</span>
+              <span><strong>Task</strong> - {t('interviewSimulator.star.task')}</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-yellow-200 dark:bg-yellow-800/50 text-yellow-800 dark:text-yellow-200 font-bold text-xs flex-shrink-0">A</span>
-              <span><strong>Action</strong> - Vad gjorde du specifikt?</span>
+              <span><strong>Action</strong> - {t('interviewSimulator.star.action')}</span>
             </li>
             <li className="flex items-start gap-3">
               <span className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-lime-200 dark:bg-lime-800/50 text-lime-800 dark:text-lime-200 font-bold text-xs flex-shrink-0">R</span>
-              <span><strong>Result</strong> - Vad blev resultatet?</span>
+              <span><strong>Result</strong> - {t('interviewSimulator.star.result')}</span>
             </li>
           </ul>
         </Card>
@@ -517,7 +521,7 @@ TIPS FÖR FÖRBÄTTRING:
         <div className="space-y-4">
           <h3 className="font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
             <Zap className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
-            Relaterade övningar
+            {t('interviewSimulator.relatedExercises')}
           </h3>
           <div className="grid gap-4 sm:grid-cols-3">
             {relatedContent.exercises.map((exercise) => (
@@ -539,7 +543,7 @@ TIPS FÖR FÖRBÄTTRING:
         <div className="space-y-4">
           <h3 className="font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-sky-600 dark:text-sky-400" aria-hidden="true" />
-            Läs mer om intervjuer
+            {t('interviewSimulator.readMore')}
           </h3>
           <div className="space-y-2">
             {relatedContent.articles.map((article, idx) => (
@@ -573,23 +577,23 @@ TIPS FÖR FÖRBÄTTRING:
             <h1 className="text-xl font-bold text-slate-800 dark:text-stone-100">{t('interviewSimulator.interview')} {roll}</h1>
             <p className="text-sm text-slate-600 dark:text-stone-400">{foretag || t('interviewSimulator.genericPractice')}</p>
           </div>
-          <Button variant="outline" size="sm" onClick={avslutaIntervju} aria-label="Avsluta intervjun">
-            Avsluta
+          <Button variant="outline" size="sm" onClick={avslutaIntervju} aria-label={t('interviewSimulator.session.endInterviewAria')}>
+            {t('interviewSimulator.session.endInterview')}
           </Button>
         </div>
 
         {/* Stats - improved grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div className="bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-teal-100 dark:border-teal-800/50 shadow-sm">
-            <p className="text-xs text-slate-600 dark:text-stone-400 mb-1">Frågor besvarade</p>
+            <p className="text-xs text-slate-600 dark:text-stone-400 mb-1">{t('interviewSimulator.session.questionsAnswered')}</p>
             <p className="text-3xl font-bold text-teal-600 dark:text-teal-400">{antalFragor}</p>
           </div>
           <div className="bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-teal-100 dark:border-teal-800/50 shadow-sm">
-            <p className="text-xs text-slate-600 dark:text-stone-400 mb-1">Genomsnittligt betyg</p>
+            <p className="text-xs text-slate-600 dark:text-stone-400 mb-1">{t('interviewSimulator.session.averageRating')}</p>
             <p className="text-3xl font-bold text-teal-600 dark:text-teal-400">{avgRating}/5</p>
           </div>
           <div className="col-span-2 md:col-span-1 bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-teal-100 dark:border-teal-800/50 shadow-sm">
-            <p className="text-xs text-slate-600 dark:text-stone-400 mb-1">Tid för svar</p>
+            <p className="text-xs text-slate-600 dark:text-stone-400 mb-1">{t('interviewSimulator.timer.timeForAnswer')}</p>
             <p className={`text-3xl font-bold ${timerSeconds < 30 ? 'text-emerald-600 dark:text-emerald-400' : timerSeconds < 60 ? 'text-yellow-600 dark:text-yellow-400' : timerSeconds < 90 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}`}>
               {timerSeconds}s
             </p>
@@ -599,10 +603,10 @@ TIPS FÖR FÖRBÄTTRING:
 
       {/* Historik med expanderbar feedback - with aria-live */}
       {historik.length > 0 && (
-        <div className="space-y-4" role="log" aria-live="polite" aria-label="Intervjuhistorik">
+        <div className="space-y-4" role="log" aria-live="polite" aria-label={t('interviewSimulator.session.previousAnswers')}>
           <h2 className="font-semibold text-slate-800 dark:text-stone-100 flex items-center gap-2">
             <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
-            Tidigare svar
+            {t('interviewSimulator.session.previousAnswers')}
           </h2>
           {historik.map((fs, index) => (
             <Card key={index} className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
@@ -613,7 +617,7 @@ TIPS FÖR FÖRBÄTTRING:
                     <User className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-teal-600 dark:text-teal-400 mb-1">Fråga</p>
+                    <p className="text-sm font-medium text-teal-600 dark:text-teal-400 mb-1">{t('interviewSimulator.session.question')}</p>
                     <p className="text-slate-800 dark:text-stone-200">{fs.fraga}</p>
                   </div>
                 </div>
@@ -624,7 +628,7 @@ TIPS FÖR FÖRBÄTTRING:
                     <Bot className="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-1">Ditt svar</p>
+                    <p className="text-sm font-medium text-emerald-600 dark:text-emerald-400 mb-1">{t('interviewSimulator.session.yourAnswer')}</p>
                     <p className="text-slate-800 dark:text-stone-200">{fs.svar}</p>
                   </div>
                 </div>
@@ -633,7 +637,7 @@ TIPS FÖR FÖRBÄTTRING:
                 <div className="bg-stone-50 dark:bg-stone-700/50 p-4 rounded-xl border border-stone-200 dark:border-stone-600">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-sm font-medium text-slate-700 dark:text-stone-300">
-                      {fs.rating ? 'AI-betyg (klicka för att justera):' : 'Betygsätt detta svar:'}
+                      {fs.rating ? t('interviewSimulator.session.aiRating') : t('interviewSimulator.session.rateThisAnswer')}
                     </p>
                     <div className="flex gap-1" role="group" aria-label="Betygsättning">
                       {[1, 2, 3, 4, 5].map((star) => (
@@ -660,12 +664,12 @@ TIPS FÖR FÖRBÄTTRING:
                     {expandedFeedback === index ? (
                       <>
                         <ChevronUp className="w-4 h-4" aria-hidden="true" />
-                        Dölj feedback
+                        {t('interviewSimulator.session.hideFeedback')}
                       </>
                     ) : (
                       <>
                         <ChevronDown className="w-4 h-4" aria-hidden="true" />
-                        Visa feedback och tips
+                        {t('interviewSimulator.session.showFeedback')}
                       </>
                     )}
                   </button>
@@ -674,11 +678,11 @@ TIPS FÖR FÖRBÄTTRING:
                     <div id={`feedback-${index}`} className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-600 space-y-3" aria-live="polite">
                       {fs.feedback && (
                         <div className="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl text-sm text-teal-800 dark:text-teal-300 border border-teal-100 dark:border-teal-800/50">
-                          <strong>AI-feedback:</strong> {fs.feedback}
+                          <strong>{t('interviewSimulator.session.aiFeedback')}</strong> {fs.feedback}
                         </div>
                       )}
                       <div className="bg-sky-50 dark:bg-sky-900/20 p-3 rounded-xl text-sm text-sky-800 dark:text-sky-300 border border-sky-100 dark:border-sky-800/50">
-                        <strong>Tips:</strong> Försök strukturera dina svar med STAR-metoden (Situation, Task, Action, Result).
+                        <strong>Tips:</strong> {t('interviewSimulator.session.starTip')}
                       </div>
                     </div>
                   )}
@@ -698,7 +702,7 @@ TIPS FÖR FÖRBÄTTRING:
           <div className="flex-1">
             <p className="text-sm font-medium text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2">
               <Clock className="w-4 h-4" aria-hidden="true" />
-              Fråga {antalFragor + 1}
+              {t('interviewSimulator.session.questionNumber', { number: antalFragor + 1 })}
             </p>
             <p className="text-lg text-slate-800 dark:text-stone-100 font-medium">{nuvarandeFraga}</p>
           </div>
@@ -713,6 +717,7 @@ TIPS FÖR FÖRBÄTTRING:
             seconds={timerSeconds}
             isRunning={isTimerRunning}
             onTogglePause={toggleTimerPause}
+            t={t}
           />
 
           {/* Support phrase button */}
@@ -728,7 +733,7 @@ TIPS FÖR FÖRBÄTTRING:
               ) : (
                 <HelpCircle className="w-4 h-4" aria-hidden="true" />
               )}
-              Ge mig en start
+              {t('interviewSimulator.input.giveStart')}
             </button>
             {supportPhrase && (
               <div className="flex-1 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-sm text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/50" aria-live="polite">
@@ -740,7 +745,7 @@ TIPS FÖR FÖRBÄTTRING:
           {/* Answer Textarea */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label htmlFor="svar-textarea" className="text-sm font-medium text-slate-700 dark:text-stone-300">Ditt svar</label>
+              <label htmlFor="svar-textarea" className="text-sm font-medium text-slate-700 dark:text-stone-300">{t('interviewSimulator.input.yourAnswerLabel')}</label>
               {speechSupported && (
                 <button
                   onClick={toggleRecording}
@@ -750,17 +755,17 @@ TIPS FÖR FÖRBÄTTRING:
                       : 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600 border border-stone-200 dark:border-stone-600'
                   }`}
                   aria-pressed={isRecording}
-                  aria-label={isRecording ? 'Stoppa inspelning' : 'Börja spela in svar'}
+                  aria-label={isRecording ? t('interviewSimulator.input.stopRecording') : t('interviewSimulator.input.recordAnswer')}
                 >
                   {isRecording ? (
                     <>
                       <MicOff className="w-4 h-4" aria-hidden="true" />
-                      Stoppa inspelning
+                      {t('interviewSimulator.input.stopRecording')}
                     </>
                   ) : (
                     <>
                       <Mic className="w-4 h-4" aria-hidden="true" />
-                      Spela in svar
+                      {t('interviewSimulator.input.recordAnswer')}
                     </>
                   )}
                 </button>
@@ -770,7 +775,7 @@ TIPS FÖR FÖRBÄTTRING:
               id="svar-textarea"
               value={anvandarSvar}
               onChange={(e) => setAnvandarSvar(e.target.value)}
-              placeholder={isRecording ? "Tala nu... ditt svar visas här" : "Skriv ditt svar här eller använd mikrofonen..."}
+              placeholder={isRecording ? t('interviewSimulator.input.speakNow') : t('interviewSimulator.input.writeOrRecord')}
               rows={5}
               aria-describedby="svar-hints"
               className={`w-full px-4 py-3 rounded-xl border focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors ${
@@ -778,8 +783,8 @@ TIPS FÖR FÖRBÄTTRING:
               }`}
             />
             <div id="svar-hints" className="flex justify-between items-center text-xs text-slate-500 dark:text-stone-500">
-              <span>{anvandarSvar.length} tecken</span>
-              <span>Rekommenderat: 100-300 tecken</span>
+              <span>{t('interviewSimulator.input.characters', { count: anvandarSvar.length })}</span>
+              <span>{t('interviewSimulator.input.recommended')}</span>
             </div>
           </div>
 
@@ -791,7 +796,7 @@ TIPS FÖR FÖRBÄTTRING:
               className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 dark:from-teal-600 dark:to-cyan-600 dark:hover:from-teal-500 dark:hover:to-cyan-500 text-white font-medium py-3 rounded-xl shadow-md shadow-teal-200 dark:shadow-teal-900/30"
               aria-busy={isLoading}
             >
-              {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" aria-label="Laddar" /> : <><Send className="w-4 h-4 mr-2" aria-hidden="true" /> Nästa fråga</>}
+              {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" aria-label={t('common.loading')} /> : <><Send className="w-4 h-4 mr-2" aria-hidden="true" /> {t('interviewSimulator.input.nextQuestion')}</>}
             </Button>
 
             {/* Audio Recording Controls */}
@@ -801,8 +806,8 @@ TIPS FÖR FÖRBÄTTRING:
                 onClick={isAudioRecording ? (isAudioPaused ? resumeAudioRecording : pauseAudioRecording) : () => startAudioRecording()}
                 size="sm"
                 className={`px-4 rounded-xl ${isAudioRecording ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400' : ''}`}
-                aria-label={isAudioRecording ? (isAudioPaused ? 'Fortsätt spela in' : 'Pausa inspelning') : 'Spela in hela sessionen'}
-                title={isAudioRecording ? `${Math.floor(audioRecordingTime / 60)}:${(audioRecordingTime % 60).toString().padStart(2, '0')} inspelad` : 'Spela in hela sessionen'}
+                aria-label={isAudioRecording ? (isAudioPaused ? t('interviewSimulator.recording.resumeRecording') : t('interviewSimulator.recording.pauseRecording')) : t('interviewSimulator.recording.recordSession')}
+                title={isAudioRecording ? t('interviewSimulator.recording.recorded', { time: `${Math.floor(audioRecordingTime / 60)}:${(audioRecordingTime % 60).toString().padStart(2, '0')}` }) : t('interviewSimulator.recording.recordSession')}
               >
                 {isAudioRecording ? (
                   isAudioPaused ? (
@@ -828,7 +833,7 @@ TIPS FÖR FÖRBÄTTRING:
                 }}
                 size="sm"
                 className="px-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400"
-                aria-label="Spara inspelning"
+                aria-label={t('interviewSimulator.recording.saveRecording')}
               >
                 <Save className="w-4 h-4" aria-hidden="true" />
               </Button>
@@ -839,7 +844,7 @@ TIPS FÖR FÖRBÄTTRING:
               onClick={downloadSessionSummary}
               size="sm"
               className="px-4 rounded-xl"
-              aria-label="Ladda ner sammanfattning"
+              aria-label={t('interviewSimulator.download.downloadSummary')}
             >
               <Download className="w-4 h-4" aria-hidden="true" />
             </Button>
@@ -855,7 +860,7 @@ TIPS FÖR FÖRBÄTTRING:
               <Zap className="w-5 h-5 text-white" aria-hidden="true" />
             </div>
             <div>
-              <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">Exempel på bra svar:</p>
+              <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300 mb-2">{t('interviewSimulator.example.goodAnswer')}</p>
               <p className="text-sm text-emerald-700 dark:text-emerald-300 italic leading-relaxed">"{exampleAnswers[nuvarandeFraga]}"</p>
             </div>
           </div>
@@ -867,32 +872,32 @@ TIPS FÖR FÖRBÄTTRING:
         <Card className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
           <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-3 flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-            Snabbtips
+            {t('interviewSimulator.quickTips.title')}
           </h3>
           <ul className="space-y-2 text-sm text-slate-600 dark:text-stone-400">
             <li className="flex items-start gap-2">
               <span className="text-teal-500 mt-1">•</span>
-              <span>Använd konkreta exempel från ditt liv</span>
+              <span>{t('interviewSimulator.quickTips.tip1')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-teal-500 mt-1">•</span>
-              <span>Beskriv vad DU gjorde, inte teamet</span>
+              <span>{t('interviewSimulator.quickTips.tip2')}</span>
             </li>
             <li className="flex items-start gap-2">
               <span className="text-teal-500 mt-1">•</span>
-              <span>Avsluta med resultatet och lärdomen</span>
+              <span>{t('interviewSimulator.quickTips.tip3')}</span>
             </li>
           </ul>
         </Card>
         <Card className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
           <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-3 flex items-center gap-2">
             <Star className="w-5 h-5 text-yellow-500 dark:text-yellow-400" aria-hidden="true" />
-            Din progress
+            {t('interviewSimulator.progress.title')}
           </h3>
           <div className="space-y-3">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-600 dark:text-stone-400">Besvarat</span>
-              <span className="font-medium text-slate-800 dark:text-stone-200">{antalFragor} frågor</span>
+              <span className="text-slate-600 dark:text-stone-400">{t('interviewSimulator.progress.answered')}</span>
+              <span className="font-medium text-slate-800 dark:text-stone-200">{antalFragor} {t('interviewSimulator.progress.questionsUnit')}</span>
             </div>
             <div className="w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
               <div
@@ -901,7 +906,7 @@ TIPS FÖR FÖRBÄTTRING:
               />
             </div>
             <p className="text-xs text-slate-500 dark:text-stone-500">
-              {antalFragor < 5 ? `${5 - antalFragor} frågor kvar till utmärkelse` : 'Du har klarat målet!'}
+              {antalFragor < 5 ? t('interviewSimulator.progress.questionsLeft', { count: 5 - antalFragor }) : t('interviewSimulator.progress.goalAchieved')}
             </p>
           </div>
         </Card>
