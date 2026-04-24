@@ -92,10 +92,8 @@
     }
   },
   "calendar": {
-    "today": "Today",
-    "oneHour": "1 hour",
-    "videoCall": "Video call",
-    "phone": "Phone",
+    "title": "Calendar",
+    "description": "Your events and meetings",
     "days": {
       "mon": "Mon",
       "tue": "Tue",
@@ -105,60 +103,23 @@
       "sat": "Sat",
       "sun": "Sun"
     },
-    "eventTypes": {
-      "interview": "Interview",
-      "meeting": "Meeting",
-      "deadline": "Deadline",
-      "reminder": "Reminder",
-      "task": "Task",
-      "followup": "Follow-up",
-      "preparation": "Preparation"
-    },
-    "modal": {
-      "editEvent": "Edit event",
-      "newEvent": "New event",
-      "createEvent": "Create event",
-      "tabs": {
-        "details": "Details",
-        "tasks": "Tasks",
-        "preparation": "Preparation",
-        "travel": "Travel"
-      },
-      "title": "Title",
-      "titlePlaceholder": "E.g. Job interview at Spotify",
-      "type": "Type",
-      "date": "Date",
-      "time": "Time",
-      "locationOptional": "Location (optional)",
-      "locationPlaceholder": "Address or location",
-      "withOptional": "With (optional)",
-      "withPlaceholder": "E.g. Anna Svensson, recruiter",
-      "description": "Description",
-      "descriptionPlaceholder": "Notes about the event...",
-      "linkedTo": "Linked to"
-    },
-    "tasks": {
-      "toDo": "To do",
-      "addPlaceholder": "Add new task...",
-      "empty": "No tasks yet. Add one to get started!"
-    },
-    "interviewPrep": {
-      "title": "Preparation assistant",
-      "subtitle": "AI-generated tips and questions",
-      "theCompany": "The company",
-      "tailoredQuestions": "Tailored questions",
-      "generateDescription": "Generate interview questions based on the company and role",
-      "generateQuestions": "Generate questions",
-      "dressRecommendation": "Dress recommendation",
-      "commonQuestions": "Common interview questions",
-      "questionsToAsk": "Questions to ask them",
-      "searchCompany": "Search for information about the company",
-      "questions": {
-        "businessModel": "What do you know about {{company}}'s business model?",
-        "contribution": "How would you contribute to {{company}}'s growth?",
-        "attraction": "What attracts you most about working at {{company}}?",
-        "challenge": "Describe how you handle [relevant challenge for the role]"
-      }
+    "moreEvents": "+{{count}} more",
+    "upcomingEvents": "Upcoming events",
+    "noEventsPlanned": "No events planned",
+    "newEvent": "New event",
+    "mockData": {
+      "jobInterview": "Job Interview - Tech Solutions",
+      "secondInterview": "Second interview with technical questions",
+      "updateCV": "Update CV",
+      "prepTechQuestions": "Prepare technical questions",
+      "researchCompany": "Research the company",
+      "consultantMeeting": "Meeting with employment consultant",
+      "weeklyFollowUp": "Weekly follow-up on job seeking",
+      "applicationDeadline": "Application deadline - Digital Agency",
+      "writeCoverLetter": "Write cover letter",
+      "updatePortfolio": "Update portfolio",
+      "interviewPrep": "Interview preparation",
+      "reviewQuestions": "Review common interview questions"
     }
   },
   "nav": {
@@ -193,7 +154,6 @@
     "skillsGap": "Skills Analysis",
     "interviewSimulator": "Interview Practice",
     "aiTeam": "My AI Team",
-    "profile": "My Profile",
     "help": "Help",
     "groups": {
       "overview": "Overview",
@@ -1192,7 +1152,31 @@
     "saveJob": "Save job",
     "applications": "Applications",
     "alerts": "Alerts",
-    "matches": "Matches",
+    "matches": {
+      "title": "Smart job matches",
+      "subtitle": "Choose which data sources to use for matching",
+      "sources": {
+        "cv": "My CV",
+        "interest": "Interest Guide",
+        "career": "Career Goals"
+      },
+      "missing": "Missing",
+      "locations": "Locations",
+      "allLocations": "All locations",
+      "minScore": "At least",
+      "all": "All",
+      "goodMatch": "Good match",
+      "possible": "Possible",
+      "total": "Total",
+      "showDetails": "Show match details",
+      "matchingSkills": "Matching skills",
+      "interestTypes": "Interest types",
+      "careerMatch": "Career match",
+      "requiredSkills": "Required skills",
+      "createProfile": "Create your profile first",
+      "createProfileDesc": "To find the best matches, we need to know more about you.",
+      "analyzing": "Analyzing your profile and finding matches..."
+    },
     "savedJobs": "Saved jobs",
     "searchToSave": "Search for jobs to save",
     "exploreJobs": "Explore jobs",
@@ -1532,7 +1516,11 @@
       "plan": "Career Plan",
       "planDesc": "Create your career path",
       "skills": "Skills",
-      "skillsDesc": "Analyze and develop skills"
+      "skillsDesc": "Analyze and develop skills",
+      "credentials": "Credentials",
+      "credentialsDesc": "Track certifications and education",
+      "relocation": "Relocation",
+      "relocationDesc": "Move for work"
     },
     "new": "New!",
     "explore": {
@@ -1916,21 +1904,60 @@
         "tip4": "Consider commuting from a nearby town initially"
       },
       "housingLinks": {
-        "blocket": { "name": "Blocket Bostad", "desc": "Private rentals and sublets" },
-        "qasa": { "name": "Qasa", "desc": "Safe sublet rentals" },
-        "bostadsportalen": { "name": "Bostadsportalen", "desc": "Rental apartment aggregator" },
-        "samtrygg": { "name": "Samtrygg", "desc": "Sublet with security" },
-        "homeq": { "name": "HomeQ", "desc": "Housing queues without wait time" }
+        "blocket": {
+          "name": "Blocket Bostad",
+          "desc": "Private rentals and sublets"
+        },
+        "qasa": {
+          "name": "Qasa",
+          "desc": "Safe sublet rentals"
+        },
+        "bostadsportalen": {
+          "name": "Bostadsportalen",
+          "desc": "Rental apartment aggregator"
+        },
+        "samtrygg": {
+          "name": "Samtrygg",
+          "desc": "Sublet with security"
+        },
+        "homeq": {
+          "name": "HomeQ",
+          "desc": "Housing queues without wait time"
+        }
       },
       "checklist": {
-        "addressChange": { "label": "Report address change to Tax Agency", "timeframe": "By moving day" },
-        "mailForward": { "label": "Order mail forwarding", "timeframe": "2 weeks before" },
-        "utilities": { "label": "Sign electricity contract", "timeframe": "2-4 weeks before" },
-        "internet": { "label": "Order internet/fiber", "timeframe": "2-4 weeks before" },
-        "insurance": { "label": "Get/update home insurance", "timeframe": "Before move-in" },
-        "cleaning": { "label": "Book moving cleaning", "timeframe": "2-4 weeks before" },
-        "parking": { "label": "Arrange parking permit if needed", "timeframe": "1-2 weeks before" },
-        "keys": { "label": "Pick up/return keys", "timeframe": "Moving day" }
+        "addressChange": {
+          "label": "Report address change to Tax Agency",
+          "timeframe": "By moving day"
+        },
+        "mailForward": {
+          "label": "Order mail forwarding",
+          "timeframe": "2 weeks before"
+        },
+        "utilities": {
+          "label": "Sign electricity contract",
+          "timeframe": "2-4 weeks before"
+        },
+        "internet": {
+          "label": "Order internet/fiber",
+          "timeframe": "2-4 weeks before"
+        },
+        "insurance": {
+          "label": "Get/update home insurance",
+          "timeframe": "Before move-in"
+        },
+        "cleaning": {
+          "label": "Book moving cleaning",
+          "timeframe": "2-4 weeks before"
+        },
+        "parking": {
+          "label": "Arrange parking permit if needed",
+          "timeframe": "1-2 weeks before"
+        },
+        "keys": {
+          "label": "Pick up/return keys",
+          "timeframe": "Moving day"
+        }
       }
     },
     "networkTab": {
@@ -2050,34 +2077,33 @@
           "description": "How do you experience your conditions for work?"
         }
       }
-    }
+    },
+    "occupationsThatSuitYou": "Occupations that suit you",
+    "basedOnYourProfile": "Based on your profile",
+    "occupationsDescription": "We have analyzed your profile and found occupations that match your interests, personality and prerequisites.",
+    "completeTestFirst": "Complete the test first",
+    "completeTestForSuggestions": "You need to complete the interest test to get personalized career suggestions.",
+    "startTest": "Start the test",
+    "noOccupationsFound": "No occupations found with your filters.",
+    "noResultsYet": "No results yet",
+    "completeTestToSeeResults": "You need to complete the interest test to see your results.",
+    "couldNotLoadResults": "Could not load results",
+    "couldNotRestartTest": "Could not restart the test"
   },
   "quests": {
-    "pointsToday": "points today",
-    "daysInRow": "days in a row",
-    "totalCompleted": "total completed",
-    "todaysProgress": "Today's progress",
-    "ofQuestsCompleted": "{{completed}} of {{total}} quests completed",
-    "todaysQuests": "Today's quests",
-    "noQuestsYet": "No quests assigned yet.",
-    "comeBackTomorrow": "Come back tomorrow!",
-    "completed": "Completed!",
-    "min": "min",
-    "points": "points",
-    "greatJob": "Great job! 🎉",
-    "allQuestsComplete": "You have completed all of today's quests. Take a well-deserved break!",
-    "tip": "Tip",
-    "tipText": "Choose quests based on your energy level today. It's okay to just do a small part - everything counts!",
-    "categories": {
-      "cv": "CV & Profile",
-      "apply": "Job Search",
-      "network": "Networking",
-      "wellness": "Wellness"
-    },
-    "energy": {
-      "low": "Low energy",
-      "medium": "Medium",
-      "high": "High energy"
+    "todaysQuests": "Today's Quests",
+    "allDone": "All done!",
+    "remaining": "{{count}} left",
+    "youCompletedAll": "You've completed everything!",
+    "completeTasks": "Complete the tasks",
+    "streakDays": "{{count}} days",
+    "progress": "Progress",
+    "showAll": "Show all",
+    "continue": "Continue",
+    "sample": {
+      "readArticle": "Read an article",
+      "updateCV": "Update your CV",
+      "applyJob": "Apply for a job"
     }
   },
   "exercises": {
@@ -2274,18 +2300,54 @@
       "energyLogged": "Energy level saved!",
       "suggestions": "Suggestions based on your energy",
       "activities": {
-        "writeLetter": { "title": "Write cover letter", "description": "Perfect time for focused writing" },
-        "network": { "title": "Network actively", "description": "Contact new people on LinkedIn" },
-        "prepareInterview": { "title": "Prepare for interview", "description": "Practice common questions" },
-        "searchJobs": { "title": "Search for jobs", "description": "Browse job listings" },
-        "updateCV": { "title": "Update CV", "description": "Make small improvements" },
-        "doExercise": { "title": "Do an exercise", "description": "Skills development" },
-        "readArticles": { "title": "Read articles", "description": "Knowledge base awaits" },
-        "writeDiary": { "title": "Write in diary", "description": "Reflect on the day" },
-        "planTomorrow": { "title": "Plan tomorrow", "description": "Write a to-do list" },
-        "rest": { "title": "Rest", "description": "It's okay to rest" },
-        "reflect": { "title": "Reflect", "description": "Write down your thoughts" },
-        "breathing": { "title": "Breathing exercise", "description": "10 minutes of mindfulness" }
+        "writeLetter": {
+          "title": "Write cover letter",
+          "description": "Perfect time for focused writing"
+        },
+        "network": {
+          "title": "Network actively",
+          "description": "Contact new people on LinkedIn"
+        },
+        "prepareInterview": {
+          "title": "Prepare for interview",
+          "description": "Practice common questions"
+        },
+        "searchJobs": {
+          "title": "Search for jobs",
+          "description": "Browse job listings"
+        },
+        "updateCV": {
+          "title": "Update CV",
+          "description": "Make small improvements"
+        },
+        "doExercise": {
+          "title": "Do an exercise",
+          "description": "Skills development"
+        },
+        "readArticles": {
+          "title": "Read articles",
+          "description": "Knowledge base awaits"
+        },
+        "writeDiary": {
+          "title": "Write in diary",
+          "description": "Reflect on the day"
+        },
+        "planTomorrow": {
+          "title": "Plan tomorrow",
+          "description": "Write a to-do list"
+        },
+        "rest": {
+          "title": "Rest",
+          "description": "It's okay to rest"
+        },
+        "reflect": {
+          "title": "Reflect",
+          "description": "Write down your thoughts"
+        },
+        "breathing": {
+          "title": "Breathing exercise",
+          "description": "10 minutes of mindfulness"
+        }
       },
       "weekHistory": "Weekly energy",
       "noNotes": "No notes",
@@ -2319,10 +2381,22 @@
         "description": "Identify all the sounds you can hear right now, one by one"
       },
       "contacts": {
-        "1177": { "name": "Health line 1177", "description": "Healthcare advice 24/7" },
-        "bup": { "name": "Child and Youth Psychiatry (BUP)", "description": "Emergency help for children and youth" },
-        "healthcare": { "name": "Healthcare information", "description": "Advice and guidance" },
-        "112": { "name": "112", "description": "In case of life-threatening emergency" }
+        "112": {
+          "name": "112",
+          "description": "In case of life-threatening emergency"
+        },
+        "1177": {
+          "name": "Health line 1177",
+          "description": "Healthcare advice 24/7"
+        },
+        "bup": {
+          "name": "Child and Youth Psychiatry (BUP)",
+          "description": "Emergency help for children and youth"
+        },
+        "healthcare": {
+          "name": "Healthcare information",
+          "description": "Advice and guidance"
+        }
       }
     },
     "routines": {
@@ -2383,11 +2457,26 @@
         "problemSolving": "Problem solving"
       },
       "exercises": {
-        "namememory": { "title": "Name memory", "description": "Practice remembering names and faces" },
-        "focus": { "title": "Focus exercise", "description": "Train concentration for 10 minutes without interruption" },
-        "prioritization": { "title": "Prioritization training", "description": "Sort tasks by importance and urgency" },
-        "workingmemory": { "title": "Working memory", "description": "Remember instructions while doing something else" },
-        "distractedreading": { "title": "Distracted reading", "description": "Read and understand text with background noise" }
+        "namememory": {
+          "title": "Name memory",
+          "description": "Practice remembering names and faces"
+        },
+        "focus": {
+          "title": "Focus exercise",
+          "description": "Train concentration for 10 minutes without interruption"
+        },
+        "prioritization": {
+          "title": "Prioritization training",
+          "description": "Sort tasks by importance and urgency"
+        },
+        "workingmemory": {
+          "title": "Working memory",
+          "description": "Remember instructions while doing something else"
+        },
+        "distractedreading": {
+          "title": "Distracted reading",
+          "description": "Read and understand text with background noise"
+        }
       }
     },
     "consent": {
@@ -3214,22 +3303,6 @@
     "read": "Read",
     "saved": "Saved",
     "continueReading": "Continue reading"
-  },
-  "quests": {
-    "todaysQuests": "Today's Quests",
-    "allDone": "All done!",
-    "remaining": "{{count}} left",
-    "youCompletedAll": "You've completed everything!",
-    "completeTasks": "Complete the tasks",
-    "streakDays": "{{count}} days",
-    "progress": "Progress",
-    "showAll": "Show all",
-    "continue": "Continue",
-    "sample": {
-      "readArticle": "Read an article",
-      "updateCV": "Update your CV",
-      "applyJob": "Apply for a job"
-    }
   },
   "crisis": {
     "ariaLabel": "Open support and help - for those who are struggling or need someone to talk to",
@@ -4384,37 +4457,6 @@
     "fallbackQ2": "Great! What are your strengths and weaknesses?",
     "fallbackQ3": "Why do you want to work for us specifically?"
   },
-  "calendar": {
-    "title": "Calendar",
-    "description": "Your events and meetings",
-    "days": {
-      "mon": "Mon",
-      "tue": "Tue",
-      "wed": "Wed",
-      "thu": "Thu",
-      "fri": "Fri",
-      "sat": "Sat",
-      "sun": "Sun"
-    },
-    "moreEvents": "+{{count}} more",
-    "upcomingEvents": "Upcoming events",
-    "noEventsPlanned": "No events planned",
-    "newEvent": "New event",
-    "mockData": {
-      "jobInterview": "Job Interview - Tech Solutions",
-      "secondInterview": "Second interview with technical questions",
-      "updateCV": "Update CV",
-      "prepTechQuestions": "Prepare technical questions",
-      "researchCompany": "Research the company",
-      "consultantMeeting": "Meeting with employment consultant",
-      "weeklyFollowUp": "Weekly follow-up on job seeking",
-      "applicationDeadline": "Application deadline - Digital Agency",
-      "writeCoverLetter": "Write cover letter",
-      "updatePortfolio": "Update portfolio",
-      "interviewPrep": "Interview preparation",
-      "reviewQuestions": "Review common interview questions"
-    }
-  },
   "profile": {
     "title": "Your profile",
     "description": "Manage your account details and personal information.",
@@ -4921,32 +4963,56 @@
       "sidebar": {
         "name": "Sidebar",
         "desc": "Modern layout with sidebar for contact and skills",
-        "features": ["Sidebar", "Rounded photo", "Skills in sidebar"]
+        "features": [
+          "Sidebar",
+          "Rounded photo",
+          "Skills in sidebar"
+        ]
       },
       "centered": {
         "name": "Centered",
         "desc": "Hero design with large photo and gradient",
-        "features": ["Gradient header", "Centered photo", "Timeline"]
+        "features": [
+          "Gradient header",
+          "Centered photo",
+          "Timeline"
+        ]
       },
       "minimal": {
         "name": "Minimal",
         "desc": "Airy design with lots of whitespace",
-        "features": ["Clean & airy", "Simple typography", "Content focus"]
+        "features": [
+          "Clean & airy",
+          "Simple typography",
+          "Content focus"
+        ]
       },
       "creative": {
         "name": "Creative",
         "desc": "Colorful two-column layout",
-        "features": ["Colorful", "Progress bars", "Card layout"]
+        "features": [
+          "Colorful",
+          "Progress bars",
+          "Card layout"
+        ]
       },
       "executive": {
         "name": "Executive",
         "desc": "Elegant with serif fonts for leaders",
-        "features": ["Serif headings", "Gold accents", "Classic"]
+        "features": [
+          "Serif headings",
+          "Gold accents",
+          "Classic"
+        ]
       },
       "nordic": {
         "name": "Nordic",
         "desc": "Scandinavian design with soft colors",
-        "features": ["Soft colors", "Light theme", "Clean"]
+        "features": [
+          "Soft colors",
+          "Light theme",
+          "Clean"
+        ]
       },
       "selected": "Selected",
       "isSelected": "is selected",
@@ -5078,32 +5144,29 @@
       "topGoalCategories": "Top goal categories"
     },
     "participants": {
-      "searchPlaceholder": "Search by name or email...",
-      "allStatuses": "All statuses",
-      "active": "Active",
-      "inactive": "Inactive",
-      "paused": "Paused",
-      "completed": "Completed",
-      "needsAttention": "Needs attention",
-      "sortBy": "Sort by",
-      "priority": "Priority",
-      "name": "Name",
-      "cvScore": "CV score",
-      "lastContact": "Last contact",
-      "status": "Status",
-      "invite": "Invite",
-      "selected": "{{count}} selected",
-      "sendMessage": "Send message",
-      "addTag": "Add tag",
-      "export": "Export",
-      "showing": "Showing {{shown}} of {{total}} participants",
-      "selectAll": "Select all",
-      "deselectAll": "Deselect all",
-      "noParticipants": "No participants found",
-      "tryDifferentFilters": "Try changing your filters or search terms.",
-      "noAssignedYet": "You have not been assigned any participants yet.",
-      "clearFilters": "Clear filters",
-      "view": "View"
+      "neverContacted": "Never contacted",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{{count}} days ago",
+      "weeksAgo": "{{count}} weeks ago",
+      "noParticipants": "No participants yet",
+      "noParticipantsDesc": "You have not been assigned any participants yet.",
+      "exists": "Exists",
+      "missing": "Missing",
+      "jobs": "Jobs",
+      "notes": "Notes",
+      "viewProfile": "View profile",
+      "priority": {
+        "critical": "Critical",
+        "high": "High"
+      },
+      "table": {
+        "name": "Name",
+        "status": "Status",
+        "savedJobs": "Saved jobs",
+        "lastContact": "Last contact",
+        "actions": "Actions"
+      }
     },
     "settings": {
       "unsavedChanges": "You have unsaved changes",
@@ -5114,7 +5177,47 @@
       "team": "Team",
       "colleaguesAndAdmins": "Colleagues and administrators",
       "dataPrivacy": "Data & Privacy",
-      "gdprSettings": "Manage data and GDPR-related settings"
+      "gdprSettings": "Manage data and GDPR-related settings",
+      "undo": "Undo",
+      "save": "Save",
+      "newParticipantAssigned": "New participant assigned",
+      "whenAssigned": "When a new participant is assigned to you",
+      "participantInactive": "Inactive participant",
+      "notLoggedIn": "When a participant has not logged in for 7 days",
+      "goalDeadline": "Goal deadline approaching",
+      "deadlineWithinDays": "When a goal has a deadline within 2 days",
+      "newMessageReceived": "New message",
+      "messageFromParticipant": "When you receive a message from a participant",
+      "cvUpdated": "CV updated",
+      "participantUpdatedCv": "When a participant updates their CV",
+      "meetingReminder": "Meeting reminder",
+      "reminderBeforeMeeting": "Reminder 1 hour before scheduled meeting",
+      "email": "Email",
+      "push": "Push",
+      "both": "Both",
+      "defaultParticipantView": "Default participant view",
+      "chooseDefaultView": "Choose how the participant list is displayed by default",
+      "grid": "Grid",
+      "list": "List",
+      "language": "Language",
+      "chooseLanguage": "Choose interface language",
+      "swedish": "Swedish",
+      "english": "English",
+      "timezone": "Timezone",
+      "usedForMeetings": "Used for meeting booking and reminders",
+      "weekStart": "Week starts",
+      "affectsCalendar": "Affects calendar view",
+      "monday": "Monday",
+      "sunday": "Sunday",
+      "inactivityWarning": "Inactivity warning",
+      "daysBeforeInactive": "Days before a participant is marked as inactive",
+      "days": "days",
+      "admin": "Admin",
+      "consultant": "Consultant",
+      "participantsCount": "{{count}} participants",
+      "exportAllData": "Export all data",
+      "viewAccessLog": "View access log",
+      "privacyPolicy": "Privacy policy"
     },
     "statuses": {
       "active": "Active",
@@ -5218,31 +5321,6 @@
         "exportReport": "Export report"
       }
     },
-    "participants": {
-      "neverContacted": "Never contacted",
-      "today": "Today",
-      "yesterday": "Yesterday",
-      "daysAgo": "{{count}} days ago",
-      "weeksAgo": "{{count}} weeks ago",
-      "noParticipants": "No participants yet",
-      "noParticipantsDesc": "You have not been assigned any participants yet.",
-      "exists": "Exists",
-      "missing": "Missing",
-      "jobs": "Jobs",
-      "notes": "Notes",
-      "viewProfile": "View profile",
-      "priority": {
-        "critical": "Critical",
-        "high": "High"
-      },
-      "table": {
-        "name": "Name",
-        "status": "Status",
-        "savedJobs": "Saved jobs",
-        "lastContact": "Last contact",
-        "actions": "Actions"
-      }
-    },
     "actionPlan": {
       "title": "Action Plan",
       "subtitle": "SMART goals for {{name}}",
@@ -5334,6 +5412,125 @@
           "timeBound": "Within 1 week"
         }
       }
+    },
+    "participantDetail": {
+      "backToParticipants": "Back to participants",
+      "edit": "Edit",
+      "cvScore": "CV score",
+      "savedJobs": "Saved jobs",
+      "activeGoals": "Active goals",
+      "lastContact": "Last contact",
+      "daysAgo": "{{count}} days ago",
+      "overview": "Overview",
+      "goals": "Goals",
+      "journal": "Notes",
+      "timeline": "Timeline",
+      "quickNote": "Quick note",
+      "writePlaceholder": "Write a note about the participant...",
+      "saveNote": "Save note",
+      "newGoal": "New goal",
+      "markComplete": "Mark complete",
+      "notStarted": "Not started",
+      "inProgress": "In progress",
+      "complete": "Complete",
+      "blocked": "Blocked",
+      "highPriority": "High priority",
+      "mediumPriority": "Medium",
+      "lowPriority": "Low",
+      "progress": "Progress",
+      "deadline": "Deadline",
+      "addNote": "Add"
+    },
+    "analytics": {
+      "lastWeek": "Last week",
+      "lastMonth": "Last month",
+      "lastQuarter": "Last quarter",
+      "lastYear": "Last year",
+      "excel": "Excel",
+      "pdfReport": "PDF report",
+      "totalParticipants": "Total participants",
+      "cvCompletion": "CV completion",
+      "hasCompleteCv": "Has complete CV",
+      "avgPlacementTime": "Average placement time",
+      "fromStartToJob": "From start to job",
+      "placedWithJob": "Placed with job",
+      "placementRate": "{{percent}}% placement rate",
+      "progressOverTime": "Progress over time",
+      "avgCvScoreByMonth": "Average CV score by month",
+      "keyMetrics": "Key metrics",
+      "overviewMetrics": "Overview of important metrics",
+      "cvQuality": "CV quality",
+      "goalCompletion": "Goal completion",
+      "engagement": "Engagement",
+      "statusDistribution": "Status distribution",
+      "distributionByStatus": "Distribution of participants by status",
+      "topGoalCategories": "Top goal categories",
+      "mostFrequent": "Most frequent goal types among participants",
+      "goals": "goals",
+      "cohortAnalysis": "Cohort analysis",
+      "cohortComparison": "Comparison between participant groups based on start date",
+      "cohort": "Cohort",
+      "participantsCount": "Participants",
+      "cvComplete": "CV complete",
+      "placed": "Placed",
+      "avgTimeDays": "Avg time (days)"
+    },
+    "communication": {
+      "messages": "Messages",
+      "meetings": "Meetings",
+      "allMessages": "All messages",
+      "unread": "Unread",
+      "starred": "Starred",
+      "newMessage": "New message",
+      "noMessages": "No messages",
+      "quickMessages": "Quick messages",
+      "meetingReminder": "Meeting reminder",
+      "checkInMessage": "Check-in message",
+      "congratsProgress": "Congratulations on progress",
+      "groupMessage": "Group message",
+      "groupMessageDesc": "Send the same message to all or selected participants.",
+      "sendToGroup": "Send to group",
+      "upcomingMeetings": "Upcoming meetings",
+      "bookNewMeeting": "Book new meeting",
+      "today": "Today",
+      "thisWeek": "This week",
+      "noUpcomingMeetings": "No upcoming meetings",
+      "bookMeetingToStart": "Book a meeting with a participant to get started.",
+      "bookMeeting": "Book meeting",
+      "joinMeeting": "Join meeting",
+      "to": "To",
+      "searchParticipants": "Search participants...",
+      "message": "Message",
+      "writePlaceholder": "Write your message...",
+      "cancel": "Cancel",
+      "send": "Send"
+    },
+    "resources": {
+      "goalTemplates": "Goal templates",
+      "jobCollections": "Job collections",
+      "bestPractices": "Best Practices",
+      "searchTemplates": "Search templates...",
+      "allCategories": "All categories",
+      "cv": "CV",
+      "jobSearch": "Job search",
+      "interview": "Interview",
+      "networking": "Networking",
+      "skills": "Skills",
+      "createTemplate": "Create template",
+      "used": "Used {{count}} times",
+      "use": "Use",
+      "createAndShare": "Create and share job collections with your participants",
+      "newCollection": "New collection",
+      "jobs": "jobs",
+      "view": "View",
+      "provenMethods": "Proven methods and checklists for effective consulting",
+      "steps": "steps"
+    },
+    "alerts": {
+      "noContact": "No contact for 7+ days",
+      "inactive": "Inactive for 14+ days",
+      "noCv": "CV missing",
+      "lowEngagement": "Low engagement"
     }
   },
   "layout": {
@@ -5596,6 +5793,8 @@
         "step3": "Try different personalities for variety"
       },
       "startChat": "Start chatting"
-    }
+    },
+    "welcomeMessage": "Hi! I am here to help you. There are no silly questions - start when you feel ready!",
+    "tryAsking": "Try asking about:"
   }
 }
