@@ -75,6 +75,14 @@
     "suggestions": "Suggestions",
     "tagInputInstructions": "Press Enter to add. Use arrow keys to navigate suggestions."
   },
+  "riasec": {
+    "realistic": "Realistic",
+    "investigative": "Investigative",
+    "artistic": "Artistic",
+    "social": "Social",
+    "enterprising": "Enterprising",
+    "conventional": "Conventional"
+  },
   "pageTabs": {
     "cv": {
       "design": "Design",

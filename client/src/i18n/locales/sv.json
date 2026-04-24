@@ -75,6 +75,14 @@
     "suggestions": "Förslag",
     "tagInputInstructions": "Tryck Enter för att lägga till. Använd piltangenter för att navigera förslag."
   },
+  "riasec": {
+    "realistic": "Realistisk",
+    "investigative": "Undersökande",
+    "artistic": "Konstnärlig",
+    "social": "Social",
+    "enterprising": "Företagsam",
+    "conventional": "Konventionell"
+  },
   "pageTabs": {
     "cv": {
       "design": "Design",

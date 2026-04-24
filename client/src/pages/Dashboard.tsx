@@ -334,11 +334,10 @@ export default function DashboardPage() {
                 </div>
                 <div className="mt-2 sm:mt-3 space-y-1 sm:space-y-1.5">
                   {interestProfile.dominantTypes.slice(0, 3).map((type, i) => {
-                    const rt = RIASEC_TYPES[type.code]
                     return (
                       <div key={type.code} className="flex items-center gap-1.5 sm:gap-2">
                         <span className="text-xs sm:text-sm">{['🥇', '🥈', '🥉'][i]}</span>
-                        <span className="flex-1 text-xs sm:text-sm text-stone-700 dark:text-stone-300">{rt.nameSv}</span>
+                        <span className="flex-1 text-xs sm:text-sm text-stone-700 dark:text-stone-300">{t(`riasec.${type.code}`)}</span>
                         <span className="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400">{type.score}%</span>
                       </div>
                     )
