@@ -2597,7 +2597,34 @@
       "sat": "Lör",
       "sun": "Sön"
     },
-    "noTitle": "Utan titel"
+    "noTitle": "Utan titel",
+    "tabs": {
+      "journal": "Dagbok",
+      "mood": "Humör",
+      "goals": "Mål",
+      "gratitude": "Tacksamhet"
+    },
+    "streak": {
+      "days": "dagar"
+    },
+    "achievements": {
+      "weekStreak": {
+        "title": "En veckas streak!",
+        "description": "Du har skrivit {{count}} dagar i rad!"
+      },
+      "tenEntries": {
+        "title": "10 inlägg!",
+        "description": "Du har skrivit 10 dagboksinlägg!"
+      },
+      "thousandWords": {
+        "title": "1000 ord!",
+        "description": "Du har skrivit över 1000 ord totalt!"
+      },
+      "twoWeekRecord": {
+        "title": "Två veckors rekord!",
+        "description": "Ditt längsta streak: {{count}} dagar!"
+      }
+    }
   },
   "wellness": {
     "title": "Hälsa",

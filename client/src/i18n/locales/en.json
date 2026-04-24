@@ -2597,7 +2597,34 @@
       "sat": "Sat",
       "sun": "Sun"
     },
-    "noTitle": "No title"
+    "noTitle": "No title",
+    "tabs": {
+      "journal": "Journal",
+      "mood": "Mood",
+      "goals": "Goals",
+      "gratitude": "Gratitude"
+    },
+    "streak": {
+      "days": "days"
+    },
+    "achievements": {
+      "weekStreak": {
+        "title": "One week streak!",
+        "description": "You've written for {{count}} days in a row!"
+      },
+      "tenEntries": {
+        "title": "10 entries!",
+        "description": "You've written 10 journal entries!"
+      },
+      "thousandWords": {
+        "title": "1000 words!",
+        "description": "You've written over 1000 words in total!"
+      },
+      "twoWeekRecord": {
+        "title": "Two week record!",
+        "description": "Your longest streak: {{count}} days!"
+      }
+    }
   },
   "wellness": {
     "title": "Wellness",

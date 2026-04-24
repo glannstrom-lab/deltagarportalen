@@ -19,14 +19,14 @@ import { Card } from '@/components/ui'
 import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 
 // Tab configuration
-const TABS = [
-  { id: 'journal', label: 'Dagbok', icon: BookHeart, color: 'teal' },
-  { id: 'mood', label: 'Humör', icon: Smile, color: 'amber' },
-  { id: 'goals', label: 'Mål', icon: Target, color: 'blue' },
-  { id: 'gratitude', label: 'Tacksamhet', icon: Heart, color: 'rose' },
+const TAB_DEFS = [
+  { id: 'journal', labelKey: 'diary.tabs.journal', icon: BookHeart, color: 'teal' },
+  { id: 'mood', labelKey: 'diary.tabs.mood', icon: Smile, color: 'amber' },
+  { id: 'goals', labelKey: 'diary.tabs.goals', icon: Target, color: 'blue' },
+  { id: 'gratitude', labelKey: 'diary.tabs.gratitude', icon: Heart, color: 'rose' },
 ] as const
 
-type TabId = typeof TABS[number]['id']
+type TabId = typeof TAB_DEFS[number]['id']
 
 function TabNavigation({
   activeTab,
@@ -37,12 +37,14 @@ function TabNavigation({
   onTabChange: (tab: TabId) => void
   streak: number
 }) {
+  const { t } = useTranslation()
+
   return (
     <div className="flex items-center justify-between gap-4">
       <div className={cn(
         "flex gap-1 p-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl overflow-x-auto scrollbar-hide flex-1",
       )}>
-        {TABS.map((tab) => {
+        {TAB_DEFS.map((tab) => {
           const Icon = tab.icon
           const isActive = activeTab === tab.id
 
@@ -66,7 +68,7 @@ function TabNavigation({
                 isActive && tab.color === 'blue' && "text-blue-600 dark:text-blue-400",
                 isActive && tab.color === 'rose' && "text-rose-600 dark:text-rose-400"
               )} />
-              <span className="hidden xs:inline sm:inline">{tab.label}</span>
+              <span className="hidden xs:inline sm:inline">{t(tab.labelKey)}</span>
             </button>
           )
         })}
@@ -77,7 +79,7 @@ function TabNavigation({
         <div className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-xl border border-orange-100 dark:border-orange-800">
           <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" />
           <span className="font-bold text-orange-600 dark:text-orange-400">{streak}</span>
-          <span className="text-xs text-orange-500 dark:text-orange-400 hidden sm:inline">dagar</span>
+          <span className="text-xs text-orange-500 dark:text-orange-400 hidden sm:inline">{t('diary.streak.days')}</span>
         </div>
       )}
     </div>
@@ -85,6 +87,7 @@ function TabNavigation({
 }
 
 function AchievementBanner() {
+  const { t } = useTranslation()
   const { currentStreak, longestStreak, totalEntries, totalWords } = useDiaryStreaks()
 
   // Only show for significant achievements
@@ -93,29 +96,29 @@ function AchievementBanner() {
   if (currentStreak >= 7) {
     achievement = {
       emoji: '🔥',
-      title: 'En veckas streak!',
-      description: `Du har skrivit ${currentStreak} dagar i rad!`,
+      title: t('diary.achievements.weekStreak.title'),
+      description: t('diary.achievements.weekStreak.description', { count: currentStreak }),
       color: 'from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 border-orange-200 dark:border-orange-800'
     }
   } else if (totalEntries >= 10 && totalEntries < 11) {
     achievement = {
       emoji: '📚',
-      title: '10 inlägg!',
-      description: 'Du har skrivit 10 dagboksinlägg!',
+      title: t('diary.achievements.tenEntries.title'),
+      description: t('diary.achievements.tenEntries.description'),
       color: 'from-sky-50 to-sky-100 dark:from-sky-900/30 dark:to-sky-800/30 border-sky-200 dark:border-sky-800'
     }
   } else if (totalWords >= 1000 && totalWords < 1100) {
     achievement = {
       emoji: '✍️',
-      title: '1000 ord!',
-      description: 'Du har skrivit över 1000 ord totalt!',
+      title: t('diary.achievements.thousandWords.title'),
+      description: t('diary.achievements.thousandWords.description'),
       color: 'from-sky-50 to-teal-50 dark:from-sky-900/30 dark:to-teal-900/30 border-sky-200 dark:border-sky-800'
     }
   } else if (longestStreak >= 14) {
     achievement = {
       emoji: '🏆',
-      title: 'Två veckors rekord!',
-      description: `Ditt längsta streak: ${longestStreak} dagar!`,
+      title: t('diary.achievements.twoWeekRecord.title'),
+      description: t('diary.achievements.twoWeekRecord.description', { count: longestStreak }),
       color: 'from-yellow-50 to-amber-50 dark:from-yellow-900/30 dark:to-amber-900/30 border-yellow-200 dark:border-yellow-800'
     }
   }
@@ -150,7 +153,7 @@ export default function Diary() {
   const getInitialTab = (): TabId => {
     const params = new URLSearchParams(location.search)
     const tab = params.get('tab') as TabId
-    if (tab && TABS.some(t => t.id === tab)) {
+    if (tab && TAB_DEFS.some(t => t.id === tab)) {
       return tab
     }
     return 'journal'
@@ -168,7 +171,7 @@ export default function Diary() {
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const tab = params.get('tab') as TabId
-    if (tab && TABS.some(t => t.id === tab) && tab !== activeTab) {
+    if (tab && TAB_DEFS.some(t => t.id === tab) && tab !== activeTab) {
       setActiveTab(tab)
     }
   }, [location.search])
