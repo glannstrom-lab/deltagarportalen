@@ -130,7 +130,7 @@ function InitialLoader() {
 // ============== MAIN COMPONENT ==============
 
 export default function Profile() {
-  const { t } = useTranslation()
+  const { i18n } = useTranslation()
   const { activeTab, initialLoading, loadAll } = useProfileStore()
 
   // Load all profile data on mount
@@ -143,8 +143,9 @@ export default function Profile() {
     return <InitialLoader />
   }
 
+  // Key forces full re-render when language changes
   return (
-    <div className="pb-8 max-w-5xl mx-auto">
+    <div key={i18n.language} className="pb-8 max-w-5xl mx-auto">
       {/* Toast notifications */}
       <Toaster
         position="top-right"
