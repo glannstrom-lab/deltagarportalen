@@ -59,14 +59,27 @@ export const SWEDISH_REGIONS = [
 ] as const
 
 export const INDUSTRIES = [
-  'IT & Tech', 'Vård & omsorg', 'Bygg', 'Transport', 'Handel',
-  'Utbildning', 'Industri', 'Bank & finans', 'Media', 'Restaurang'
+  { value: 'it_tech', labelKey: 'profile.constants.industry.itTech' },
+  { value: 'healthcare', labelKey: 'profile.constants.industry.healthcare' },
+  { value: 'construction', labelKey: 'profile.constants.industry.construction' },
+  { value: 'transport', labelKey: 'profile.constants.industry.transport' },
+  { value: 'retail', labelKey: 'profile.constants.industry.retail' },
+  { value: 'education', labelKey: 'profile.constants.industry.education' },
+  { value: 'manufacturing', labelKey: 'profile.constants.industry.manufacturing' },
+  { value: 'finance', labelKey: 'profile.constants.industry.finance' },
+  { value: 'media', labelKey: 'profile.constants.industry.media' },
+  { value: 'hospitality', labelKey: 'profile.constants.industry.hospitality' }
 ] as const
 
 // ============== BENEFITS ==============
 
 export const BENEFITS = [
-  'Friskvård', 'Pension', 'Flex-tid', 'Distans', 'Utbildning', 'Bonus'
+  { value: 'wellness', labelKey: 'profile.constants.benefit.wellness' },
+  { value: 'pension', labelKey: 'profile.constants.benefit.pension' },
+  { value: 'flextime', labelKey: 'profile.constants.benefit.flextime' },
+  { value: 'remote', labelKey: 'profile.constants.benefit.remote' },
+  { value: 'education', labelKey: 'profile.constants.benefit.education' },
+  { value: 'bonus', labelKey: 'profile.constants.benefit.bonus' }
 ] as const
 
 // ============== AF PROGRAMS ==============

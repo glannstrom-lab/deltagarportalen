@@ -281,7 +281,7 @@ export function JobSearchSection() {
           </div>
           <ChipSelect
             label={t('profile.jobSearch.importantBenefits')}
-            options={BENEFITS.map(b => ({ value: b, label: b }))}
+            options={[...BENEFITS]}
             selected={preferences.salary?.importantBenefits || []}
             onChange={(v) => updateSalary({ importantBenefits: v as string[] })}
             multiple
@@ -308,7 +308,7 @@ export function JobSearchSection() {
           />
           <ChipSelect
             label={t('profile.jobSearch.industries')}
-            options={INDUSTRIES.map(i => ({ value: i, label: i }))}
+            options={[...INDUSTRIES]}
             selected={preferences.consultant_data?.targetIndustries || []}
             onChange={(v) => updateConsultantData({ targetIndustries: v as string[] })}
             multiple

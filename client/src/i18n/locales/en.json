@@ -5028,6 +5028,26 @@
         "morning": "Morning",
         "afternoon": "Afternoon",
         "varies": "Varies"
+      },
+      "industry": {
+        "itTech": "IT & Tech",
+        "healthcare": "Healthcare",
+        "construction": "Construction",
+        "transport": "Transport",
+        "retail": "Retail",
+        "education": "Education",
+        "manufacturing": "Manufacturing",
+        "finance": "Banking & Finance",
+        "media": "Media",
+        "hospitality": "Hospitality"
+      },
+      "benefit": {
+        "wellness": "Wellness benefits",
+        "pension": "Pension",
+        "flextime": "Flexible hours",
+        "remote": "Remote work",
+        "education": "Education",
+        "bonus": "Bonus"
       }
     },
     "sections": {

@@ -5028,6 +5028,26 @@
         "morning": "Förmiddag",
         "afternoon": "Eftermiddag",
         "varies": "Varierar"
+      },
+      "industry": {
+        "itTech": "IT & Tech",
+        "healthcare": "Vård & omsorg",
+        "construction": "Bygg",
+        "transport": "Transport",
+        "retail": "Handel",
+        "education": "Utbildning",
+        "manufacturing": "Industri",
+        "finance": "Bank & finans",
+        "media": "Media",
+        "hospitality": "Restaurang"
+      },
+      "benefit": {
+        "wellness": "Friskvård",
+        "pension": "Pension",
+        "flextime": "Flex-tid",
+        "remote": "Distans",
+        "education": "Utbildning",
+        "bonus": "Bonus"
       }
     },
     "sections": {
