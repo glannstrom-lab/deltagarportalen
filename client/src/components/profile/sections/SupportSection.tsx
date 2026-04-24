@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Zap, Activity, Accessibility, TrendingUp, Target,
   Calendar, Users, FileText, X, ClipboardList, Brain
@@ -20,6 +21,7 @@ import {
 } from '../constants'
 
 export function SupportSection() {
+  const { t } = useTranslation()
   const { preferences, updatePreferences } = useProfileStore()
 
   // Helpers
@@ -47,10 +49,10 @@ export function SupportSection() {
       className="grid gap-4 md:grid-cols-2"
     >
       {/* Energy & capacity */}
-      <SectionCard title="Energi & ork" icon={<Zap className="w-4 h-4" />} colorScheme="amber">
+      <SectionCard title={t('profile.support.energy')} icon={<Zap className="w-4 h-4" />} colorScheme="amber">
         <div className="space-y-4">
           <ProgressSlider
-            label="Hållbar arbetstid per dag"
+            label={t('profile.support.sustainableHours')}
             value={preferences.therapist_data?.energyLevel?.sustainableHoursPerDay || 8}
             onChange={(v) => updateTherapistData({
               energyLevel: { ...preferences.therapist_data?.energyLevel, sustainableHoursPerDay: v }
@@ -58,11 +60,11 @@ export function SupportSection() {
             min={1}
             max={10}
             step={1}
-            unit=" tim"
+            unit={t('profile.support.hours')}
             colorScheme="amber"
           />
           <ProgressSlider
-            label="Hållbara dagar per vecka"
+            label={t('profile.support.sustainableDays')}
             value={preferences.therapist_data?.energyLevel?.sustainableDaysPerWeek || 5}
             onChange={(v) => updateTherapistData({
               energyLevel: { ...preferences.therapist_data?.energyLevel, sustainableDaysPerWeek: v }
@@ -70,11 +72,11 @@ export function SupportSection() {
             min={1}
             max={7}
             step={1}
-            unit=" dagar"
+            unit={t('profile.support.days')}
             colorScheme="amber"
           />
           <ChipSelect
-            label="Bästa tid på dagen"
+            label={t('profile.support.bestTimeOfDay')}
             options={[...BEST_TIME_OPTIONS]}
             selected={preferences.therapist_data?.energyLevel?.bestTimeOfDay || ''}
             onChange={(v) => updateTherapistData({
@@ -85,10 +87,10 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Functional level (positive framing) */}
-      <SectionCard title="Min kapacitet" icon={<Activity className="w-4 h-4" />} colorScheme="amber">
+      <SectionCard title={t('profile.support.myCapacity')} icon={<Activity className="w-4 h-4" />} colorScheme="amber">
         <div className="space-y-4">
           <ChipSelect
-            label="Fysisk kapacitet"
+            label={t('profile.support.physicalCapacity')}
             options={[...FUNCTIONAL_LEVELS]}
             selected={preferences.therapist_data?.functionalLevel?.physical || ''}
             onChange={(v) => updateTherapistData({
@@ -96,7 +98,7 @@ export function SupportSection() {
             })}
           />
           <ChipSelect
-            label="Kognitiv kapacitet"
+            label={t('profile.support.cognitiveCapacity')}
             options={[...FUNCTIONAL_LEVELS]}
             selected={preferences.therapist_data?.functionalLevel?.cognitive || ''}
             onChange={(v) => updateTherapistData({
@@ -104,7 +106,7 @@ export function SupportSection() {
             })}
           />
           <ChipSelect
-            label="Social kapacitet"
+            label={t('profile.support.socialCapacity')}
             options={[...FUNCTIONAL_LEVELS]}
             selected={preferences.therapist_data?.functionalLevel?.social || ''}
             onChange={(v) => updateTherapistData({
@@ -115,10 +117,10 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Adaptation needs (positive framing) */}
-      <SectionCard title="Hur jag jobbar bäst" icon={<Accessibility className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.howIWorkBest')} icon={<Accessibility className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-4">
           <p className="text-xs text-stone-500 dark:text-stone-400 mb-2">
-            Välj de arbetsförhållanden som passar dig bäst
+            {t('profile.support.chooseWorkConditions')}
           </p>
           <ChipSelect
             options={[...ADAPTATION_NEEDS]}
@@ -128,55 +130,55 @@ export function SupportSection() {
           />
           {(preferences.therapist_data?.adaptationNeeds?.length || 0) > 0 && (
             <CompactTextarea
-              label="Beskriv närmare (valfritt)"
+              label={t('profile.support.describeMore')}
               value={preferences.therapist_data?.adaptationDetails || ''}
               onChange={(v) => updateTherapistData({ adaptationDetails: v })}
               rows={2}
-              placeholder="Beskriv dina specifika behov..."
+              placeholder={t('profile.support.specificNeedsPlaceholder')}
             />
           )}
         </div>
       </SectionCard>
 
       {/* Rehabilitation */}
-      <SectionCard title="Rehabilitering" icon={<TrendingUp className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.rehabilitation')} icon={<TrendingUp className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-4">
           <ChipSelect
-            label="Rehabiliteringsfas"
+            label={t('profile.support.rehabilitationPhase')}
             options={[...REHABILITATION_PHASES]}
             selected={preferences.therapist_data?.rehabilitationPhase || ''}
             onChange={(v) => updateTherapistData({ rehabilitationPhase: v as string })}
           />
           <CompactInput
-            label="Nästa uppföljning"
+            label={t('profile.support.nextFollowUp')}
             type="date"
             value={preferences.therapist_data?.followUpDate || ''}
             onChange={(v) => updateTherapistData({ followUpDate: v })}
           />
           <CompactTextarea
-            label="Anteckningar"
+            label={t('profile.support.notes')}
             value={preferences.therapist_data?.followUpNotes || ''}
             onChange={(v) => updateTherapistData({ followUpNotes: v })}
             rows={2}
-            placeholder="Egna anteckningar..."
+            placeholder={t('profile.support.ownNotesPlaceholder')}
           />
         </div>
       </SectionCard>
 
       {/* Short-term goal */}
-      <SectionCard title="Kortsiktigt mål" icon={<Target className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.shortTermGoal')} icon={<Target className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-4">
           <CompactTextarea
-            label="Mål"
+            label={t('profile.support.goal')}
             value={preferences.support_goals?.shortTerm?.goal || ''}
             onChange={(v) => updateSupportGoals({
               shortTerm: { ...preferences.support_goals?.shortTerm, goal: v }
             })}
             rows={2}
-            placeholder="T.ex. Skicka 5 ansökningar i veckan"
+            placeholder={t('profile.support.shortTermPlaceholder')}
           />
           <CompactInput
-            label="Deadline"
+            label={t('profile.support.deadline')}
             type="date"
             value={preferences.support_goals?.shortTerm?.deadline || ''}
             onChange={(v) => updateSupportGoals({
@@ -184,7 +186,7 @@ export function SupportSection() {
             })}
           />
           <ProgressSlider
-            label="Framsteg"
+            label={t('profile.support.progress')}
             value={preferences.support_goals?.shortTerm?.progress || 0}
             onChange={(v) => updateSupportGoals({
               shortTerm: { ...preferences.support_goals?.shortTerm, progress: v }
@@ -195,19 +197,19 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Long-term goal */}
-      <SectionCard title="Långsiktigt mål" icon={<TrendingUp className="w-4 h-4" />} colorScheme="sky">
+      <SectionCard title={t('profile.support.longTermGoal')} icon={<TrendingUp className="w-4 h-4" />} colorScheme="sky">
         <div className="space-y-4">
           <CompactTextarea
-            label="Mål"
+            label={t('profile.support.goal')}
             value={preferences.support_goals?.longTerm?.goal || ''}
             onChange={(v) => updateSupportGoals({
               longTerm: { ...preferences.support_goals?.longTerm, goal: v }
             })}
             rows={2}
-            placeholder="T.ex. Få fast anställning inom mitt område"
+            placeholder={t('profile.support.longTermPlaceholder')}
           />
           <CompactInput
-            label="Deadline"
+            label={t('profile.support.deadline')}
             type="date"
             value={preferences.support_goals?.longTerm?.deadline || ''}
             onChange={(v) => updateSupportGoals({
@@ -215,7 +217,7 @@ export function SupportSection() {
             })}
           />
           <ProgressSlider
-            label="Framsteg"
+            label={t('profile.support.progress')}
             value={preferences.support_goals?.longTerm?.progress || 0}
             onChange={(v) => updateSupportGoals({
               longTerm: { ...preferences.support_goals?.longTerm, progress: v }
@@ -226,7 +228,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Internship/Work training */}
-      <SectionCard title="Praktik / Arbetsträning" icon={<Users className="w-4 h-4" />} colorScheme="amber">
+      <SectionCard title={t('profile.support.internship')} icon={<Users className="w-4 h-4" />} colorScheme="amber">
         <div className="space-y-3">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -238,32 +240,32 @@ export function SupportSection() {
               className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
             />
             <span className="text-sm text-stone-700 dark:text-stone-300">
-              Pågående praktik/arbetsträning
+              {t('profile.support.ongoingInternship')}
             </span>
           </label>
           {preferences.consultant_data?.internship?.active && (
             <>
               <div className="grid grid-cols-2 gap-3">
                 <CompactInput
-                  label="Företag"
+                  label={t('profile.support.company')}
                   value={preferences.consultant_data?.internship?.company || ''}
                   onChange={(v) => updateConsultantData({
                     internship: { ...preferences.consultant_data?.internship, company: v }
                   })}
-                  placeholder="Företagsnamn"
+                  placeholder={t('profile.support.companyName')}
                 />
                 <CompactInput
-                  label="Handledare"
+                  label={t('profile.support.supervisor')}
                   value={preferences.consultant_data?.internship?.supervisor || ''}
                   onChange={(v) => updateConsultantData({
                     internship: { ...preferences.consultant_data?.internship, supervisor: v }
                   })}
-                  placeholder="Namn"
+                  placeholder={t('profile.support.name')}
                 />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <CompactInput
-                  label="Startdatum"
+                  label={t('profile.support.startDate')}
                   type="date"
                   value={preferences.consultant_data?.internship?.startDate || ''}
                   onChange={(v) => updateConsultantData({
@@ -271,7 +273,7 @@ export function SupportSection() {
                   })}
                 />
                 <CompactInput
-                  label="Slutdatum"
+                  label={t('profile.support.endDate')}
                   type="date"
                   value={preferences.consultant_data?.internship?.endDate || ''}
                   onChange={(v) => updateConsultantData({
@@ -285,7 +287,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Next steps */}
-      <SectionCard title="Nästa steg" icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.nextSteps')} icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-2">
           {(preferences.consultant_data?.nextSteps || []).map((step, i) => (
             <div key={i} className="flex items-center gap-2 p-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
@@ -316,7 +318,7 @@ export function SupportSection() {
                   updateConsultantData({ nextSteps: steps })
                 }}
                 className="p-1 hover:bg-stone-200 dark:hover:bg-stone-600 rounded"
-                aria-label={`Ta bort: ${step.activity}`}
+                aria-label={t('common.removeTag', { tag: step.activity })}
               >
                 <X className="w-3 h-3 text-stone-400 dark:text-stone-500" aria-hidden="true" />
               </button>
@@ -325,7 +327,7 @@ export function SupportSection() {
           <div className="flex gap-2 pt-2">
             <input
               type="text"
-              placeholder="Ny aktivitet..."
+              placeholder={t('profile.support.newActivity')}
               className="flex-1 px-3 py-1.5 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
@@ -344,23 +346,23 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Notes */}
-      <SectionCard title="Anteckningar" icon={<FileText className="w-4 h-4" />} colorScheme="sky" className="md:col-span-2">
+      <SectionCard title={t('profile.support.notesTitle')} icon={<FileText className="w-4 h-4" />} colorScheme="sky" className="md:col-span-2">
         <CompactTextarea
           label=""
           value={preferences.support_goals?.notes || ''}
           onChange={(v) => updateSupportGoals({ notes: v })}
           rows={4}
-          placeholder="Övriga anteckningar, observationer eller reflektioner..."
+          placeholder={t('profile.support.notesPlaceholder')}
         />
       </SectionCard>
 
       {/* Career Timeline */}
-      <SectionCard title="Karriärtidslinje" icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.careerTimeline')} icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
         <CareerTimeline />
       </SectionCard>
 
       {/* Profile History */}
-      <SectionCard title="Ändringshistorik" icon={<Activity className="w-4 h-4" />} colorScheme="sky">
+      <SectionCard title={t('profile.support.changeHistory')} icon={<Activity className="w-4 h-4" />} colorScheme="sky">
         <ProfileHistory />
       </SectionCard>
     </div>

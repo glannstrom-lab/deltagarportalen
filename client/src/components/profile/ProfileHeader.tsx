@@ -3,6 +3,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Cloud, CloudOff, Loader2, Download, Upload,
   AlertCircle, FileText, Users, Activity, ChevronDown, ChevronUp
@@ -12,9 +13,9 @@ import { useProfileStore } from '@/stores/profileStore'
 import { ProfileImageUpload } from './ProfileImageUpload'
 import { cvIntegrationApi, profileExportApi } from '@/services/profileEnhancementsApi'
 import { notifications, TOAST_MESSAGES } from '@/lib/toast'
-import { POSITIVE_MESSAGES } from './constants'
 
 export function ProfileHeader() {
+  const { t } = useTranslation()
   const {
     profile,
     preferences,
@@ -38,10 +39,10 @@ export function ProfileHeader() {
       notifications.dismiss(toastId)
 
       if (result.imported.length > 0) {
-        notifications.success(`Importerade: ${result.imported.join(', ')}`)
+        notifications.success(t('profile.header.importedFields', { fields: result.imported.join(', ') }))
         await loadProfile()
       } else {
-        notifications.info('Inga nya fält att importera från CV.')
+        notifications.info(t('profile.header.noFieldsToImport'))
       }
     } catch (err) {
       console.error('Error importing from CV:', err)
@@ -72,7 +73,7 @@ export function ProfileHeader() {
     } catch (err) {
       console.error('Error exporting PDF:', err)
       notifications.dismiss(toastId)
-      notifications.error('Kunde inte exportera PDF. Kontrollera att du har ett CV.')
+      notifications.error(t('profile.header.exportError'))
     } finally {
       setExporting(false)
     }
@@ -81,11 +82,11 @@ export function ProfileHeader() {
   // Get positive message based on completion
   const getPositiveMessage = () => {
     const percent = completion.percent
-    if (percent >= 100) return POSITIVE_MESSAGES.COMPLETION[100]
-    if (percent >= 75) return POSITIVE_MESSAGES.COMPLETION[75]
-    if (percent >= 50) return POSITIVE_MESSAGES.COMPLETION[50]
-    if (percent >= 25) return POSITIVE_MESSAGES.COMPLETION[25]
-    return POSITIVE_MESSAGES.COMPLETION[0]
+    if (percent >= 100) return t('profile.header.completion.100')
+    if (percent >= 75) return t('profile.header.completion.75')
+    if (percent >= 50) return t('profile.header.completion.50')
+    if (percent >= 25) return t('profile.header.completion.25')
+    return t('profile.header.completion.0')
   }
 
   // Calculate consultant alerts
@@ -93,24 +94,24 @@ export function ProfileHeader() {
     const alerts: Array<{ type: 'error' | 'warning'; message: string }> = []
 
     if (!preferences.consultant_data?.cvStatus || preferences.consultant_data.cvStatus === 'missing') {
-      alerts.push({ type: 'warning', message: 'CV är inte påbörjat ännu' })
+      alerts.push({ type: 'warning', message: t('profile.header.alerts.cvNotStarted') })
     }
 
     if (preferences.consultant_data?.activityLevel?.applicationsSent === 0) {
-      alerts.push({ type: 'warning', message: 'Inga ansökningar registrerade' })
+      alerts.push({ type: 'warning', message: t('profile.header.alerts.noApplications') })
     }
 
     if ((preferences.consultant_data?.workBarriers?.length || 0) > 2) {
       alerts.push({
         type: 'warning',
-        message: `${preferences.consultant_data?.workBarriers?.length} stödområden identifierade`
+        message: t('profile.header.alerts.supportAreas', { count: preferences.consultant_data?.workBarriers?.length })
       })
     }
 
     if (preferences.therapist_data?.followUpDate) {
       const followUp = new Date(preferences.therapist_data.followUpDate)
       if (followUp < new Date()) {
-        alerts.push({ type: 'error', message: 'Försenad uppföljning' })
+        alerts.push({ type: 'error', message: t('profile.header.alerts.overdueFollowup') })
       }
     }
 
@@ -131,7 +132,7 @@ export function ProfileHeader() {
 
         <div className="flex-1 min-w-0 text-center sm:text-left">
           <h1 className="text-xl font-bold text-stone-800 dark:text-stone-100 truncate">
-            {profile?.first_name || 'Välkommen!'} {profile?.last_name}
+            {profile?.first_name || t('profile.header.welcome')} {profile?.last_name}
           </h1>
           <p className="text-stone-500 dark:text-stone-400 text-sm truncate">{profile?.email}</p>
 
@@ -150,7 +151,7 @@ export function ProfileHeader() {
             aria-busy={importing}
           >
             <Upload className="w-3.5 h-3.5" aria-hidden="true" />
-            {importing ? 'Importerar...' : 'Importera CV'}
+            {importing ? t('profile.header.importing') : t('profile.header.importCV')}
           </button>
 
           <span className="text-stone-300 dark:text-stone-600" aria-hidden="true">|</span>
@@ -162,7 +163,7 @@ export function ProfileHeader() {
             aria-busy={exporting}
           >
             <Download className="w-3.5 h-3.5" aria-hidden="true" />
-            {exporting ? 'Exporterar...' : 'Ladda ner PDF'}
+            {exporting ? t('profile.header.exporting') : t('profile.header.downloadPDF')}
           </button>
 
           <span className="text-stone-300 dark:text-stone-600" aria-hidden="true">|</span>
@@ -172,17 +173,17 @@ export function ProfileHeader() {
             {cloudSyncing ? (
               <>
                 <Loader2 className="w-3.5 h-3.5 animate-spin text-stone-400" aria-hidden="true" />
-                <span className="text-xs text-stone-500">Sparar...</span>
+                <span className="text-xs text-stone-500">{t('profile.header.saving')}</span>
               </>
             ) : cloudSynced ? (
               <>
                 <Cloud className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" />
-                <span className="text-xs text-emerald-600 dark:text-emerald-400">Sparat</span>
+                <span className="text-xs text-emerald-600 dark:text-emerald-400">{t('profile.header.saved')}</span>
               </>
             ) : (
               <>
                 <CloudOff className="w-3.5 h-3.5 text-amber-500" aria-hidden="true" />
-                <span className="text-xs text-amber-600">Ej sparat</span>
+                <span className="text-xs text-amber-600">{t('profile.header.notSaved')}</span>
               </>
             )}
           </div>
@@ -193,7 +194,7 @@ export function ProfileHeader() {
       <div className="px-4 sm:px-6 pb-4">
         <div className="flex items-center justify-between mb-2">
           <span className="text-xs font-medium text-stone-600 dark:text-stone-400">
-            Din profil
+            {t('profile.header.yourProfile')}
           </span>
           <span className={cn(
             'text-xs font-bold',
@@ -201,7 +202,7 @@ export function ProfileHeader() {
             completion.percent >= 50 ? 'text-amber-600 dark:text-amber-400' :
             'text-stone-600 dark:text-stone-400'
           )}>
-            {completion.filled} av {completion.total} steg
+            {t('profile.header.stepsCompleted', { filled: completion.filled, total: completion.total })}
           </span>
         </div>
 
@@ -211,7 +212,7 @@ export function ProfileHeader() {
           aria-valuenow={completion.percent}
           aria-valuemin={0}
           aria-valuemax={100}
-          aria-label={`Profilkomplettering: ${completion.percent}%`}
+          aria-label={t('profile.header.progressLabel', { percent: completion.percent })}
         >
           <div
             className={cn(
@@ -227,7 +228,7 @@ export function ProfileHeader() {
         {/* Next step suggestion */}
         {completion.nextStep && (
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
-            Nästa steg: <span className="text-teal-600 dark:text-teal-400 font-medium">{completion.nextStep.label}</span>
+            {t('profile.header.nextStep')}: <span className="text-teal-600 dark:text-teal-400 font-medium">{completion.nextStep.label}</span>
           </p>
         )}
       </div>
@@ -265,7 +266,7 @@ export function ProfileHeader() {
         >
           <span className="flex items-center gap-2 text-sm font-medium text-stone-700 dark:text-stone-300">
             <Users className="w-4 h-4 text-purple-500" aria-hidden="true" />
-            Handledningsöversikt
+            {t('profile.header.consultantOverview')}
           </span>
           {showConsultantView ? (
             <ChevronUp className="w-4 h-4 text-stone-400" aria-hidden="true" />
@@ -282,19 +283,19 @@ export function ProfileHeader() {
             <div className="bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-2 mb-1">
                 <FileText className="w-4 h-4 text-sky-500" aria-hidden="true" />
-                <span className="text-xs text-stone-500 dark:text-stone-400">CV-status</span>
+                <span className="text-xs text-stone-500 dark:text-stone-400">{t('profile.header.cvStatus')}</span>
               </div>
               <p className="text-sm font-bold text-stone-800 dark:text-stone-100">
-                {preferences.consultant_data?.cvStatus === 'complete' ? 'Komplett' :
-                 preferences.consultant_data?.cvStatus === 'needs_update' ? 'Kan uppdateras' :
-                 'Inte påbörjat'}
+                {preferences.consultant_data?.cvStatus === 'complete' ? t('profile.header.cvComplete') :
+                 preferences.consultant_data?.cvStatus === 'needs_update' ? t('profile.header.cvNeedsUpdate') :
+                 t('profile.header.cvNotStarted')}
               </p>
             </div>
 
             <div className="bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-2 mb-1">
                 <Activity className="w-4 h-4 text-amber-500" aria-hidden="true" />
-                <span className="text-xs text-stone-500 dark:text-stone-400">Ansökningar</span>
+                <span className="text-xs text-stone-500 dark:text-stone-400">{t('profile.header.applications')}</span>
               </div>
               <p className="text-sm font-bold text-stone-800 dark:text-stone-100">
                 {preferences.consultant_data?.activityLevel?.applicationsSent || 0}
@@ -304,7 +305,7 @@ export function ProfileHeader() {
             <div className="bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-2 mb-1">
                 <Users className="w-4 h-4 text-teal-500" aria-hidden="true" />
-                <span className="text-xs text-stone-500 dark:text-stone-400">Intervjuer</span>
+                <span className="text-xs text-stone-500 dark:text-stone-400">{t('profile.header.interviews')}</span>
               </div>
               <p className="text-sm font-bold text-stone-800 dark:text-stone-100">
                 {preferences.consultant_data?.activityLevel?.interviews || 0}
@@ -314,7 +315,7 @@ export function ProfileHeader() {
             <div className="bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-2 mb-1">
                 <AlertCircle className="w-4 h-4 text-purple-500" aria-hidden="true" />
-                <span className="text-xs text-stone-500 dark:text-stone-400">Stödbehov</span>
+                <span className="text-xs text-stone-500 dark:text-stone-400">{t('profile.header.supportNeeds')}</span>
               </div>
               <p className="text-sm font-bold text-stone-800 dark:text-stone-100">
                 {preferences.consultant_data?.workBarriers?.length || 0}

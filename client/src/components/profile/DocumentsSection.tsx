@@ -4,23 +4,25 @@
  */
 
 import { useState, useEffect, useRef, useId } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus, X, FileText, Upload, Loader2, ExternalLink, Calendar, Building2 } from '@/components/ui/icons'
 import { profileDocumentsApi, type ProfileDocument } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
 import { notifications } from '@/lib/toast'
 
 const DOCUMENT_TYPES = [
-  { value: 'certificate', label: 'Certifikat' },
-  { value: 'degree', label: 'Examensbevis' },
-  { value: 'reference', label: 'Referensbrev' },
-  { value: 'other', label: 'Övrigt' },
-]
+  { value: 'certificate', labelKey: 'profile.documents.types.certificate' },
+  { value: 'degree', labelKey: 'profile.documents.types.degree' },
+  { value: 'reference', labelKey: 'profile.documents.types.reference' },
+  { value: 'other', labelKey: 'profile.documents.types.other' },
+] as const
 
 interface Props {
   className?: string
 }
 
 export function DocumentsSection({ className }: Props) {
+  const { t } = useTranslation()
   const [documents, setDocuments] = useState<ProfileDocument[]>([])
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
@@ -58,7 +60,7 @@ export function DocumentsSection({ className }: Props) {
     if (!file) return
 
     if (file.size > 10 * 1024 * 1024) {
-      notifications.error('Filen måste vara mindre än 10MB')
+      notifications.error(t('profile.documents.fileTooLarge'))
       return
     }
 
@@ -74,7 +76,7 @@ export function DocumentsSection({ className }: Props) {
     if (!selectedFile || !formData.name) return
 
     setUploading(true)
-    const toastId = notifications.loading('Laddar upp...')
+    const toastId = notifications.loading(t('profile.documents.uploading'))
 
     try {
       const doc = await profileDocumentsApi.upload(selectedFile, {
@@ -88,11 +90,11 @@ export function DocumentsSection({ className }: Props) {
       setDocuments(prev => [doc, ...prev])
       resetForm()
       notifications.dismiss(toastId)
-      notifications.success('Dokument uppladdat!')
+      notifications.success(t('profile.documents.uploadSuccess'))
     } catch (err) {
       console.error('Error uploading document:', err)
       notifications.dismiss(toastId)
-      notifications.error('Kunde inte ladda upp dokumentet')
+      notifications.error(t('profile.documents.uploadError'))
     } finally {
       setUploading(false)
     }
@@ -107,10 +109,10 @@ export function DocumentsSection({ className }: Props) {
       try {
         await profileDocumentsApi.delete(id)
         setDocuments(prev => prev.filter(d => d.id !== id))
-        notifications.success('Dokument borttaget')
+        notifications.success(t('profile.documents.deleteSuccess'))
       } catch (err) {
         console.error('Error deleting document:', err)
-        notifications.error('Kunde inte ta bort dokumentet')
+        notifications.error(t('profile.documents.deleteError'))
       } finally {
         setDeleteConfirm(null)
       }
@@ -162,14 +164,14 @@ export function DocumentsSection({ className }: Props) {
         type="button"
         onClick={() => fileInputRef.current?.click()}
         className="w-full border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-xl p-6 text-center cursor-pointer hover:border-teal-400 dark:hover:border-teal-500 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-        aria-label="Ladda upp dokument"
+        aria-label={t('profile.documents.uploadDocument')}
       >
         <Upload className="w-8 h-8 mx-auto text-stone-400 dark:text-stone-500 mb-2" aria-hidden="true" />
         <p className="text-sm text-stone-600 dark:text-stone-400">
-          Klicka för att ladda upp certifikat, intyg eller andra dokument
+          {t('profile.documents.clickToUpload')}
         </p>
         <p className="text-xs text-stone-500 dark:text-stone-500 mt-1">
-          PDF, Word, bilder - max 10MB
+          {t('profile.documents.fileFormats')}
         </p>
       </button>
 
@@ -179,7 +181,7 @@ export function DocumentsSection({ className }: Props) {
         accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
         onChange={handleFileSelect}
         className="hidden"
-        aria-label="Välj fil att ladda upp"
+        aria-label={t('profile.documents.selectFile')}
       />
 
       {/* Upload form modal */}
@@ -193,12 +195,12 @@ export function DocumentsSection({ className }: Props) {
           <div className="bg-white dark:bg-stone-800 rounded-2xl p-6 max-w-md w-full space-y-4">
             <div className="flex items-center justify-between">
               <h3 id="upload-modal-title" className="font-semibold text-stone-800 dark:text-stone-200">
-                Ladda upp dokument
+                {t('profile.documents.uploadDocument')}
               </h3>
               <button
                 onClick={resetForm}
                 className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg"
-                aria-label="Stäng dialogruta"
+                aria-label={t('common.closeDialog')}
               >
                 <X className="w-5 h-5 text-stone-500" aria-hidden="true" />
               </button>
@@ -217,41 +219,41 @@ export function DocumentsSection({ className }: Props) {
             <div className="space-y-3">
               <div>
                 <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
-                  Namn *
+                  {t('profile.documents.name')} *
                 </label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                  placeholder="T.ex. Projektledarutbildning"
+                  placeholder={t('profile.documents.namePlaceholder')}
                   className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                 />
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
-                  Typ
+                  {t('profile.documents.type')}
                 </label>
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ProfileDocument['type'] }))}
                   className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                 >
-                  {DOCUMENT_TYPES.map(t => (
-                    <option key={t.value} value={t.value}>{t.label}</option>
+                  {DOCUMENT_TYPES.map(dt => (
+                    <option key={dt.value} value={dt.value}>{t(dt.labelKey)}</option>
                   ))}
                 </select>
               </div>
 
               <div>
                 <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
-                  Utfärdare
+                  {t('profile.documents.issuer')}
                 </label>
                 <input
                   type="text"
                   value={formData.issuer}
                   onChange={(e) => setFormData(prev => ({ ...prev, issuer: e.target.value }))}
-                  placeholder="T.ex. Komvux, Arbetsförmedlingen"
+                  placeholder={t('profile.documents.issuerPlaceholder')}
                   className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                 />
               </div>
@@ -259,7 +261,7 @@ export function DocumentsSection({ className }: Props) {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
-                    Utfärdat
+                    {t('profile.documents.issuedDate')}
                   </label>
                   <input
                     type="date"
@@ -270,7 +272,7 @@ export function DocumentsSection({ className }: Props) {
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
-                    Giltigt t.o.m.
+                    {t('profile.documents.validUntil')}
                   </label>
                   <input
                     type="date"
@@ -283,12 +285,12 @@ export function DocumentsSection({ className }: Props) {
 
               <div>
                 <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
-                  Beskrivning
+                  {t('profile.documents.description')}
                 </label>
                 <textarea
                   value={formData.description}
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                  placeholder="Valfri beskrivning..."
+                  placeholder={t('profile.documents.descriptionPlaceholder')}
                   rows={2}
                   className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                 />
@@ -300,7 +302,7 @@ export function DocumentsSection({ className }: Props) {
                 onClick={resetForm}
                 className="flex-1 px-4 py-2 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-lg text-sm font-medium hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
               >
-                Avbryt
+                {t('common.cancel')}
               </button>
               <button
                 onClick={handleUpload}
@@ -310,12 +312,12 @@ export function DocumentsSection({ className }: Props) {
                 {uploading ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    Laddar upp...
+                    {t('profile.documents.uploading')}
                   </>
                 ) : (
                   <>
                     <Upload className="w-4 h-4" />
-                    Ladda upp
+                    {t('profile.documents.upload')}
                   </>
                 )}
               </button>
@@ -342,7 +344,7 @@ export function DocumentsSection({ className }: Props) {
                     {doc.name}
                   </span>
                   <span className="px-2 py-0.5 text-xs bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded-full">
-                    {DOCUMENT_TYPES.find(t => t.value === doc.type)?.label || doc.type}
+                    {t(DOCUMENT_TYPES.find(dt => dt.value === doc.type)?.labelKey || 'profile.documents.types.other')}
                   </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-stone-500 dark:text-stone-400 mt-0.5">
@@ -369,7 +371,7 @@ export function DocumentsSection({ className }: Props) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/40 rounded-lg transition-colors"
-                aria-label={`Öppna ${doc.name} i nytt fönster`}
+                aria-label={t('profile.documents.openInNewWindow', { name: doc.name })}
               >
                 <ExternalLink className="w-4 h-4" aria-hidden="true" />
               </a>
@@ -382,7 +384,7 @@ export function DocumentsSection({ className }: Props) {
                     ? 'text-white bg-red-500 hover:bg-red-600'
                     : 'text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20'
                 )}
-                aria-label={deleteConfirm === doc.id ? 'Klicka igen för att bekräfta borttagning' : `Ta bort: ${doc.name}`}
+                aria-label={deleteConfirm === doc.id ? t('profile.documents.clickToConfirmDelete') : t('profile.documents.remove', { name: doc.name })}
               >
                 <X className="w-4 h-4" aria-hidden="true" />
               </button>
@@ -391,7 +393,7 @@ export function DocumentsSection({ className }: Props) {
         </div>
       ) : (
         <p className="text-sm text-stone-500 dark:text-stone-400 text-center py-4">
-          Inga dokument uppladdade än.
+          {t('profile.documents.noDocuments')}
         </p>
       )}
     </div>

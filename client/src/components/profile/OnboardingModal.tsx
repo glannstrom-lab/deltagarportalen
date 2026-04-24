@@ -4,50 +4,52 @@
  */
 
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X, ChevronRight, ChevronLeft, Sparkles, User, Briefcase, Heart } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useProfileStore } from '@/stores/profileStore'
 
 interface OnboardingStep {
   id: string
-  title: string
-  description: string
+  titleKey: string
+  descriptionKey: string
   icon: React.ReactNode
-  encouragement: string
+  encouragementKey: string
 }
 
 const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: 'welcome',
-    title: 'Välkommen!',
-    description: 'Det här är din profil - ett verktyg som hjälper dig framåt i din jobbsökning. Ta det i din egen takt.',
+    titleKey: 'profile.onboarding.welcome.title',
+    descriptionKey: 'profile.onboarding.welcome.description',
     icon: <Sparkles className="w-8 h-8" />,
-    encouragement: 'Varje steg räknas!'
+    encouragementKey: 'profile.onboarding.welcome.encouragement'
   },
   {
     id: 'basic',
-    title: 'Berätta lite om dig',
-    description: 'Börja med det grundläggande: ditt namn och hur man når dig. Det tar bara en minut.',
+    titleKey: 'profile.onboarding.basic.title',
+    descriptionKey: 'profile.onboarding.basic.description',
     icon: <User className="w-8 h-8" />,
-    encouragement: 'Du bestämmer vad du vill dela.'
+    encouragementKey: 'profile.onboarding.basic.encouragement'
   },
   {
     id: 'jobs',
-    title: 'Vad vill du jobba med?',
-    description: 'Lägg till några önskade jobb. Du kan ändra detta när som helst.',
+    titleKey: 'profile.onboarding.jobs.title',
+    descriptionKey: 'profile.onboarding.jobs.description',
     icon: <Briefcase className="w-8 h-8" />,
-    encouragement: 'Osäker? Det är helt okej!'
+    encouragementKey: 'profile.onboarding.jobs.encouragement'
   },
   {
     id: 'support',
-    title: 'Vi finns här för dig',
-    description: 'Om du behöver stöd eller anpassningar finns det plats för det. Inget är obligatoriskt.',
+    titleKey: 'profile.onboarding.support.title',
+    descriptionKey: 'profile.onboarding.support.description',
     icon: <Heart className="w-8 h-8" />,
-    encouragement: 'Dina behov är viktiga.'
+    encouragementKey: 'profile.onboarding.support.encouragement'
   }
 ]
 
 export function OnboardingModal() {
+  const { t } = useTranslation()
   const { showOnboarding, onboardingStep, setOnboardingStep, completeOnboarding, setActiveTab } = useProfileStore()
 
   const [isClosing, setIsClosing] = useState(false)
@@ -137,7 +139,7 @@ export function OnboardingModal() {
           <button
             onClick={handleClose}
             className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
-            aria-label="Stäng"
+            aria-label={t('common.close')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -149,18 +151,18 @@ export function OnboardingModal() {
           </div>
 
           <h2 id="onboarding-title" className="text-2xl font-bold text-center">
-            {currentStep.title}
+            {t(currentStep.titleKey)}
           </h2>
         </div>
 
         {/* Content */}
         <div className="px-6 py-6">
           <p className="text-stone-600 dark:text-stone-300 text-center mb-4">
-            {currentStep.description}
+            {t(currentStep.descriptionKey)}
           </p>
 
           <p className="text-sm text-teal-600 dark:text-teal-400 text-center font-medium">
-            {currentStep.encouragement}
+            {t(currentStep.encouragementKey)}
           </p>
 
           {/* Quick action buttons */}
@@ -171,7 +173,7 @@ export function OnboardingModal() {
                   onClick={() => handleSkipToTab('overview')}
                   className="px-3 py-1.5 text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 rounded-full hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
                 >
-                  Börja med grundinfo
+                  {t('profile.onboarding.startWithBasics')}
                 </button>
               )}
               {onboardingStep >= 2 && (
@@ -179,7 +181,7 @@ export function OnboardingModal() {
                   onClick={() => handleSkipToTab('jobbsok')}
                   className="px-3 py-1.5 text-xs bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 rounded-full hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
                 >
-                  Välj önskade jobb
+                  {t('profile.onboarding.chooseDesiredJobs')}
                 </button>
               )}
             </div>
@@ -198,7 +200,7 @@ export function OnboardingModal() {
                   ? 'w-6 bg-teal-500'
                   : 'bg-stone-300 dark:bg-stone-600 hover:bg-stone-400'
               )}
-              aria-label={`Steg ${index + 1} av ${ONBOARDING_STEPS.length}`}
+              aria-label={t('profile.onboarding.stepOf', { step: index + 1, total: ONBOARDING_STEPS.length })}
               aria-current={index === onboardingStep ? 'step' : undefined}
             />
           ))}
@@ -217,21 +219,21 @@ export function OnboardingModal() {
             )}
           >
             <ChevronLeft className="w-4 h-4" />
-            Tillbaka
+            {t('profile.onboarding.back')}
           </button>
 
           <button
             onClick={handleClose}
             className="text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200"
           >
-            Hoppa över
+            {t('profile.onboarding.skip')}
           </button>
 
           <button
             onClick={handleNext}
             className="flex items-center gap-1 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium rounded-lg transition-colors"
           >
-            {isLastStep ? 'Kom igång' : 'Nästa'}
+            {isLastStep ? t('profile.onboarding.getStarted') : t('profile.onboarding.next')}
             {!isLastStep && <ChevronRight className="w-4 h-4" />}
           </button>
         </div>
@@ -239,7 +241,7 @@ export function OnboardingModal() {
         {/* Encouragement footer */}
         <div className="px-6 pb-6 pt-2 border-t border-stone-100 dark:border-stone-800">
           <p className="text-xs text-stone-400 dark:text-stone-500 text-center">
-            Du kan alltid komma tillbaka och ändra. Ta den tid du behöver.
+            {t('profile.onboarding.takeYourTime')}
           </p>
         </div>
       </div>

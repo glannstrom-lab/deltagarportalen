@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link2, Copy, QrCode, Trash2, Loader2, Plus, Eye, Calendar, Check, ExternalLink } from '@/components/ui/icons'
 import { profileShareApi, type ProfileShare } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
@@ -14,6 +15,7 @@ interface Props {
 }
 
 export function ProfileSharing({ className }: Props) {
+  const { t } = useTranslation()
   const [shares, setShares] = useState<ProfileShare[]>([])
   const [loading, setLoading] = useState(true)
   const [creating, setCreating] = useState(false)
@@ -90,10 +92,10 @@ export function ProfileSharing({ className }: Props) {
       try {
         await profileShareApi.delete(id)
         setShares(prev => prev.filter(s => s.id !== id))
-        notifications.success('Delningslänk borttagen')
+        notifications.success(t('profile.sharing.deleteSuccess'))
       } catch (err) {
         console.error('Error deleting share:', err)
-        notifications.error('Kunde inte ta bort delningslänk')
+        notifications.error(t('profile.sharing.deleteError'))
       } finally {
         setDeleteConfirm(null)
       }
@@ -108,10 +110,10 @@ export function ProfileSharing({ className }: Props) {
       const url = profileShareApi.getShareUrl(shareCode)
       await navigator.clipboard.writeText(url)
       setCopied(shareCode)
-      notifications.success('Länk kopierad till urklipp')
+      notifications.success(t('profile.sharing.linkCopied'))
       setTimeout(() => setCopied(null), 2000)
     } catch (err) {
-      notifications.error('Kunde inte kopiera länk')
+      notifications.error(t('profile.sharing.copyError'))
     }
   }
 
@@ -147,48 +149,48 @@ export function ProfileSharing({ className }: Props) {
         >
           <Plus className="w-5 h-5 text-teal-500" />
           <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
-            Skapa ny delningslänk
+            {t('profile.sharing.createNewLink')}
           </span>
         </button>
       ) : (
         <div className="p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-stone-800 dark:text-stone-200">
-              Ny delningslänk
+              {t('profile.sharing.newShareLink')}
             </h3>
             <button
               onClick={() => setShowForm(false)}
               className="text-stone-500 hover:text-stone-700 dark:hover:text-stone-300"
             >
-              Avbryt
+              {t('common.cancel')}
             </button>
           </div>
 
           <div>
             <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
-              Namn (valfritt)
+              {t('profile.sharing.nameOptional')}
             </label>
             <input
               type="text"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-              placeholder="T.ex. Jobbansökan Volvo"
+              placeholder={t('profile.sharing.namePlaceholder')}
               className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
             />
           </div>
 
           <div>
             <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-2">
-              Vad ska visas?
+              {t('profile.sharing.whatToShow')}
             </label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {[
-                { key: 'show_summary', label: 'Sammanfattning' },
-                { key: 'show_contact', label: 'Kontaktinfo' },
-                { key: 'show_skills', label: 'Kompetenser' },
-                { key: 'show_experience', label: 'Erfarenhet' },
-                { key: 'show_education', label: 'Utbildning' },
-                { key: 'show_documents', label: 'Dokument' },
+                { key: 'show_summary', labelKey: 'profile.sharing.summary' },
+                { key: 'show_contact', labelKey: 'profile.sharing.contactInfo' },
+                { key: 'show_skills', labelKey: 'profile.sharing.skills' },
+                { key: 'show_experience', labelKey: 'profile.sharing.experience' },
+                { key: 'show_education', labelKey: 'profile.sharing.education' },
+                { key: 'show_documents', labelKey: 'profile.sharing.documents' },
               ].map(item => (
                 <label key={item.key} className="flex items-center gap-2 cursor-pointer">
                   <input
@@ -197,7 +199,7 @@ export function ProfileSharing({ className }: Props) {
                     onChange={(e) => setFormData(prev => ({ ...prev, [item.key]: e.target.checked }))}
                     className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
                   />
-                  <span className="text-sm text-stone-700 dark:text-stone-300">{item.label}</span>
+                  <span className="text-sm text-stone-700 dark:text-stone-300">{t(item.labelKey)}</span>
                 </label>
               ))}
             </div>
@@ -206,30 +208,30 @@ export function ProfileSharing({ className }: Props) {
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
-                Giltig i (dagar)
+                {t('profile.sharing.validFor')}
               </label>
               <select
                 value={formData.expires_in_days}
                 onChange={(e) => setFormData(prev => ({ ...prev, expires_in_days: parseInt(e.target.value) }))}
                 className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
               >
-                <option value="7">7 dagar</option>
-                <option value="30">30 dagar</option>
-                <option value="90">90 dagar</option>
-                <option value="365">1 år</option>
-                <option value="0">Obegränsat</option>
+                <option value="7">{t('profile.sharing.days', { count: 7 })}</option>
+                <option value="30">{t('profile.sharing.days', { count: 30 })}</option>
+                <option value="90">{t('profile.sharing.days', { count: 90 })}</option>
+                <option value="365">{t('profile.sharing.oneYear')}</option>
+                <option value="0">{t('profile.sharing.unlimited')}</option>
               </select>
             </div>
             <div>
               <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
-                Max visningar
+                {t('profile.sharing.maxViews')}
               </label>
               <select
                 value={formData.max_views}
                 onChange={(e) => setFormData(prev => ({ ...prev, max_views: parseInt(e.target.value) }))}
                 className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
               >
-                <option value="0">Obegränsat</option>
+                <option value="0">{t('profile.sharing.unlimited')}</option>
                 <option value="1">1</option>
                 <option value="5">5</option>
                 <option value="10">10</option>
@@ -246,12 +248,12 @@ export function ProfileSharing({ className }: Props) {
             {creating ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" />
-                Skapar...
+                {t('profile.sharing.creating')}
               </>
             ) : (
               <>
                 <Link2 className="w-4 h-4" />
-                Skapa länk
+                {t('profile.sharing.createLink')}
               </>
             )}
           </button>
@@ -276,11 +278,11 @@ export function ProfileSharing({ className }: Props) {
                   <div className="flex items-center gap-2 mb-1">
                     <Link2 className="w-4 h-4 text-teal-500" />
                     <span className="font-medium text-sm text-stone-800 dark:text-stone-200">
-                      {share.name || 'Delningslänk'}
+                      {share.name || t('profile.sharing.shareLink')}
                     </span>
                     {isExpired(share) && (
                       <span className="px-2 py-0.5 text-xs bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300 rounded-full">
-                        Utgången
+                        {t('profile.sharing.expired')}
                       </span>
                     )}
                   </div>
@@ -288,22 +290,22 @@ export function ProfileSharing({ className }: Props) {
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-stone-500 dark:text-stone-400">
                     <span className="flex items-center gap-1">
                       <Eye className="w-3 h-3" />
-                      {share.view_count} visningar
+                      {t('profile.sharing.viewCount', { count: share.view_count })}
                       {share.max_views && ` / ${share.max_views}`}
                     </span>
                     {share.expires_at && (
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
-                        Giltigt t.o.m. {formatDate(share.expires_at)}
+                        {t('profile.sharing.validUntil', { date: formatDate(share.expires_at) })}
                       </span>
                     )}
                   </div>
 
                   <div className="flex items-center gap-1 mt-2 text-xs text-stone-400">
-                    {share.show_summary && <span className="px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 rounded">Sammanfattning</span>}
-                    {share.show_contact && <span className="px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 rounded">Kontakt</span>}
-                    {share.show_skills && <span className="px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 rounded">Skills</span>}
-                    {share.show_experience && <span className="px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 rounded">Erfarenhet</span>}
+                    {share.show_summary && <span className="px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 rounded">{t('profile.sharing.summary')}</span>}
+                    {share.show_contact && <span className="px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 rounded">{t('profile.sharing.contact')}</span>}
+                    {share.show_skills && <span className="px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 rounded">{t('profile.sharing.skills')}</span>}
+                    {share.show_experience && <span className="px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 rounded">{t('profile.sharing.experience')}</span>}
                   </div>
                 </div>
 
@@ -316,7 +318,7 @@ export function ProfileSharing({ className }: Props) {
                         ? 'bg-green-100 dark:bg-green-900/40 text-green-600'
                         : 'hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500'
                     )}
-                    title="Kopiera länk"
+                    title={t('profile.sharing.copyLink')}
                   >
                     {copied === share.share_code ? (
                       <Check className="w-4 h-4" />
@@ -330,7 +332,7 @@ export function ProfileSharing({ className }: Props) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500 rounded-lg transition-colors"
-                    title="Öppna länk"
+                    title={t('profile.sharing.openLink')}
                   >
                     <ExternalLink className="w-4 h-4" />
                   </a>
@@ -340,7 +342,7 @@ export function ProfileSharing({ className }: Props) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500 rounded-lg transition-colors"
-                    title="Visa QR-kod"
+                    title={t('profile.sharing.showQRCode')}
                   >
                     <QrCode className="w-4 h-4" />
                   </a>
@@ -348,7 +350,7 @@ export function ProfileSharing({ className }: Props) {
                   <button
                     onClick={() => handleDelete(share.id)}
                     className="p-2 hover:bg-red-50 dark:hover:bg-red-900/20 text-stone-400 hover:text-red-500 rounded-lg transition-colors"
-                    title="Ta bort"
+                    title={t('common.remove')}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -359,7 +361,7 @@ export function ProfileSharing({ className }: Props) {
         </div>
       ) : !showForm && (
         <p className="text-sm text-stone-500 dark:text-stone-400 text-center py-4">
-          Inga delningslänkar skapade än. Skapa en länk för att dela din profil med arbetsgivare.
+          {t('profile.sharing.noShareLinks')}
         </p>
       )}
     </div>

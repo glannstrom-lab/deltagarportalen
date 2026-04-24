@@ -3,6 +3,7 @@
  */
 
 import { useState, useRef, useId, useCallback, useEffect, KeyboardEvent } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X, Plus } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { validateTag, sanitizeInput } from '@/lib/validators'
@@ -29,7 +30,7 @@ export function TagInput({
   onAdd,
   onRemove,
   suggestions = [],
-  placeholder = 'Lägg till...',
+  placeholder,
   maxTags = VALIDATION.MAX_TAGS,
   maxLength = VALIDATION.MAX_TAG_LENGTH,
   label,
@@ -39,7 +40,9 @@ export function TagInput({
   disabled = false,
   className
 }: TagInputProps) {
+  const { t } = useTranslation()
   const inputId = useId()
+  const defaultPlaceholder = placeholder || t('common.addTag')
   const listboxId = `${inputId}-listbox`
   const labelId = `${inputId}-label`
   const errorId = `${inputId}-error`
@@ -191,7 +194,7 @@ export function TagInput({
       {/* Tags */}
       <div
         role="list"
-        aria-label={`${label || 'Taggar'}: ${tags.length} av ${maxTags}`}
+        aria-label={t('common.tagsCount', { label: label || t('common.tags'), count: tags.length, max: maxTags })}
         className="flex flex-wrap gap-1 mb-2 min-h-[1.5rem]"
       >
         {tags.map((tag, i) => (
@@ -208,7 +211,7 @@ export function TagInput({
               type="button"
               onClick={() => onRemove(i)}
               disabled={disabled}
-              aria-label={`Ta bort ${tag}`}
+              aria-label={t('common.removeTag', { tag })}
               className={cn(
                 'w-4 h-4 flex items-center justify-center rounded ml-0.5 transition-colors',
                 'focus:outline-none focus:ring-1 focus:ring-current',
@@ -236,7 +239,7 @@ export function TagInput({
               onFocus={() => setShowSuggestions(true)}
               onBlur={handleBlur}
               onKeyDown={handleKeyDown}
-              placeholder={placeholder}
+              placeholder={defaultPlaceholder}
               disabled={disabled}
               aria-expanded={showSuggestions && filteredSuggestions.length > 0}
               aria-controls={listboxId}
@@ -258,7 +261,7 @@ export function TagInput({
               type="button"
               onClick={() => handleAdd(input)}
               disabled={!input.trim() || disabled}
-              aria-label="Lägg till"
+              aria-label={t('common.add')}
               className={cn(
                 'px-2 py-1 text-white rounded text-xs transition-colors',
                 'focus:outline-none focus:ring-2 focus:ring-offset-1',
@@ -271,7 +274,7 @@ export function TagInput({
           </div>
 
           <span id={`${inputId}-instructions`} className="sr-only">
-            Tryck Enter för att lägga till. Använd piltangenter för att navigera förslag.
+            {t('common.tagInputInstructions')}
           </span>
 
           {/* Suggestions dropdown */}
@@ -279,7 +282,7 @@ export function TagInput({
             <ul
               id={listboxId}
               role="listbox"
-              aria-label="Förslag"
+              aria-label={t('common.suggestions')}
               className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded shadow-lg z-10 py-0.5 max-h-40 overflow-y-auto"
             >
               {filteredSuggestions.map((s, index) => (

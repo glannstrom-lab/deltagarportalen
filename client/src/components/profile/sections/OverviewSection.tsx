@@ -4,6 +4,7 @@
  */
 
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { User, Briefcase, Heart, Compass, Sparkles, ChevronRight } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
@@ -14,6 +15,7 @@ import {
 } from '../constants'
 
 export function OverviewSection() {
+  const { t } = useTranslation()
   const {
     profile,
     preferences,
@@ -60,37 +62,37 @@ export function OverviewSection() {
       className="grid gap-4 md:grid-cols-2"
     >
       {/* Contact info */}
-      <SectionCard title="Kontaktuppgifter" icon={<User className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.overview.contactInfo')} icon={<User className="w-4 h-4" />} colorScheme="teal">
         <div className="grid gap-3">
           <div className="grid grid-cols-2 gap-3">
             <CompactInput
-              label="Förnamn"
+              label={t('profile.overview.firstName')}
               value={profile?.first_name || ''}
               onChange={(v) => handleChange('first_name', v)}
-              placeholder="Förnamn"
+              placeholder={t('profile.overview.firstName')}
             />
             <CompactInput
-              label="Efternamn"
+              label={t('profile.overview.lastName')}
               value={profile?.last_name || ''}
               onChange={(v) => handleChange('last_name', v)}
-              placeholder="Efternamn"
+              placeholder={t('profile.overview.lastName')}
             />
           </div>
           <CompactInput
-            label="Telefon"
+            label={t('profile.overview.phone')}
             type="tel"
             value={profile?.phone || ''}
             onChange={(v) => handleChange('phone', v)}
             placeholder="070-123 45 67"
           />
           <CompactInput
-            label="Ort"
+            label={t('profile.overview.location')}
             value={profile?.location || ''}
             onChange={(v) => handleChange('location', v)}
-            placeholder="Stockholm"
+            placeholder={t('profile.overview.locationPlaceholder')}
           />
           <CompactInput
-            label="E-post"
+            label={t('profile.overview.email')}
             value={profile?.email || ''}
             disabled
           />
@@ -98,44 +100,45 @@ export function OverviewSection() {
       </SectionCard>
 
       {/* Desired jobs */}
-      <SectionCard title="Önskade jobb" icon={<Briefcase className="w-4 h-4" />} colorScheme="sky">
+      <SectionCard title={t('profile.overview.desiredJobs')} icon={<Briefcase className="w-4 h-4" />} colorScheme="sky">
         <TagInput
           tags={preferences.desired_jobs || []}
           onAdd={addJob}
           onRemove={removeJob}
           suggestions={SUGGESTED_JOBS}
-          placeholder="T.ex. Projektledare"
+          placeholder={t('profile.overview.desiredJobsPlaceholder')}
           maxTags={5}
           colorScheme="sky"
-          hint="Lägg till de jobb du är intresserad av"
+          hint={t('profile.overview.desiredJobsHint')}
         />
       </SectionCard>
 
       {/* Interests */}
-      <SectionCard title="Intressen" icon={<Heart className="w-4 h-4" />} colorScheme="amber">
+      <SectionCard title={t('profile.overview.interests')} icon={<Heart className="w-4 h-4" />} colorScheme="amber">
         <TagInput
           tags={preferences.interests || []}
           onAdd={addInterest}
           onRemove={removeInterest}
           suggestions={SUGGESTED_INTERESTS}
-          placeholder="T.ex. Teknik"
+          placeholder={t('profile.overview.interestsPlaceholder')}
           maxTags={5}
           colorScheme="amber"
-          hint="Vad intresserar dig i arbetslivet?"
+          hint={t('profile.overview.interestsHint')}
         />
       </SectionCard>
 
       {/* RIASEC profile */}
       {!interestLoading && interestProfile.hasResult && (
-        <SectionCard title="Intresseprofil (RIASEC)" icon={<Compass className="w-4 h-4" />} colorScheme="teal">
+        <SectionCard title={t('profile.overview.interestProfile')} icon={<Compass className="w-4 h-4" />} colorScheme="teal">
           <div className="space-y-2">
             {interestProfile.dominantTypes.slice(0, 3).map((type, i) => {
               const rt = RIASEC_TYPES[type.code]
+              const typeName = t(`interestGuide.riasec.${type.code}`, { defaultValue: rt.nameSv })
               return (
                 <div key={type.code} className="flex items-center gap-2">
                   <span className="text-lg" aria-hidden="true">{['🥇', '🥈', '🥉'][i]}</span>
                   <span className="text-sm font-medium flex-1 text-stone-800 dark:text-stone-200">
-                    {rt.nameSv}
+                    {typeName}
                   </span>
                   <div
                     className="w-20 h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden"
@@ -143,7 +146,7 @@ export function OverviewSection() {
                     aria-valuenow={type.score}
                     aria-valuemin={0}
                     aria-valuemax={100}
-                    aria-label={`${rt.nameSv}: ${type.score}%`}
+                    aria-label={`${typeName}: ${type.score}%`}
                   >
                     <div
                       className="h-full bg-amber-500 dark:bg-amber-400 rounded-full"
@@ -161,7 +164,7 @@ export function OverviewSection() {
             to="/interest-guide"
             className="inline-flex items-center gap-1 mt-3 text-xs text-teal-600 dark:text-teal-400 hover:underline"
           >
-            Gör om guiden <ChevronRight className="w-3 h-3" aria-hidden="true" />
+            {t('profile.overview.redoGuide')} <ChevronRight className="w-3 h-3" aria-hidden="true" />
           </Link>
         </SectionCard>
       )}
@@ -176,9 +179,9 @@ export function OverviewSection() {
             <Sparkles className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
           <div className="flex-1">
-            <p className="font-bold text-amber-800 dark:text-amber-300">Upptäck dina styrkor</p>
+            <p className="font-bold text-amber-800 dark:text-amber-300">{t('profile.overview.discoverStrengths')}</p>
             <p className="text-sm text-amber-600 dark:text-amber-400">
-              Gör intresseguiden för personliga jobbförslag
+              {t('profile.overview.takeInterestGuide')}
             </p>
           </div>
           <ChevronRight className="w-5 h-5 text-amber-400 dark:text-amber-500 group-hover:translate-x-1 transition-transform" aria-hidden="true" />

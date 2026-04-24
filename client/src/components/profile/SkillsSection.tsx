@@ -4,19 +4,20 @@
  */
 
 import { useState, useEffect, useId } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus, X, Star, Loader2, Download, Sparkles } from '@/components/ui/icons'
 import { profileSkillsApi, type ProfileSkill } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
 import { notifications } from '@/lib/toast'
 
 const SKILL_CATEGORIES = [
-  { value: 'technical', label: 'Teknisk' },
-  { value: 'soft', label: 'Mjuk' },
-  { value: 'language', label: 'Språk' },
-  { value: 'tool', label: 'Verktyg' },
-  { value: 'certification', label: 'Certifiering' },
-  { value: 'other', label: 'Övrigt' },
-]
+  { value: 'technical', labelKey: 'profile.skills.categories.technical' },
+  { value: 'soft', labelKey: 'profile.skills.categories.soft' },
+  { value: 'language', labelKey: 'profile.skills.categories.language' },
+  { value: 'tool', labelKey: 'profile.skills.categories.tool' },
+  { value: 'certification', labelKey: 'profile.skills.categories.certification' },
+  { value: 'other', labelKey: 'profile.skills.categories.other' },
+] as const
 
 const SUGGESTED_SKILLS = [
   'Microsoft Office', 'Excel', 'Word', 'PowerPoint', 'Kommunikation',
@@ -29,6 +30,7 @@ interface Props {
 }
 
 export function SkillsSection({ className }: Props) {
+  const { t } = useTranslation()
   const [skills, setSkills] = useState<ProfileSkill[]>([])
   const [loading, setLoading] = useState(true)
   const [adding, setAdding] = useState(false)
@@ -104,13 +106,13 @@ export function SkillsSection({ className }: Props) {
       const imported = await profileSkillsApi.importFromCV()
       if (imported.length > 0) {
         setSkills(prev => [...prev, ...imported].sort((a, b) => b.level - a.level))
-        notifications.success(`Importerade ${imported.length} kompetenser från ditt CV!`)
+        notifications.success(t('profile.skills.importedCount', { count: imported.length }))
       } else {
-        notifications.info('Inga nya kompetenser att importera från CV.')
+        notifications.info(t('profile.skills.noSkillsToImport'))
       }
     } catch (err) {
       console.error('Error importing skills:', err)
-      notifications.error('Kunde inte importera från CV')
+      notifications.error(t('profile.skills.importError'))
     } finally {
       setImporting(false)
     }
@@ -134,7 +136,7 @@ export function SkillsSection({ className }: Props) {
       {/* Header with import button */}
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-200">
-          Kompetenser ({skills.length})
+          {t('profile.skills.title')} ({skills.length})
         </h3>
         <button
           onClick={handleImportFromCV}
@@ -146,7 +148,7 @@ export function SkillsSection({ className }: Props) {
           ) : (
             <Download className="w-3.5 h-3.5" />
           )}
-          Importera från CV
+          {t('profile.skills.importFromCV')}
         </button>
       </div>
 
@@ -164,7 +166,7 @@ export function SkillsSection({ className }: Props) {
                     {skill.name}
                   </span>
                   <span className="px-2 py-0.5 text-xs bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 rounded-full">
-                    {SKILL_CATEGORIES.find(c => c.value === skill.category)?.label || skill.category}
+                    {t(SKILL_CATEGORIES.find(c => c.value === skill.category)?.labelKey || 'profile.skills.categories.other')}
                   </span>
                 </div>
               </div>
@@ -173,14 +175,14 @@ export function SkillsSection({ className }: Props) {
               <div
                 className="flex items-center gap-0.5"
                 role="group"
-                aria-label={`Kompetennivå för ${skill.name}`}
+                aria-label={t('profile.skills.skillLevelFor', { name: skill.name })}
               >
                 {[1, 2, 3, 4, 5].map(level => (
                   <button
                     key={level}
                     onClick={() => handleUpdateLevel(skill.id, level)}
                     className="p-0.5 hover:scale-110 transition-transform"
-                    aria-label={`Sätt nivå ${level} av 5`}
+                    aria-label={t('profile.skills.setLevel', { level, max: 5 })}
                     aria-pressed={level === skill.level}
                   >
                     <Star
@@ -199,7 +201,7 @@ export function SkillsSection({ className }: Props) {
               <button
                 onClick={() => handleDelete(skill.id)}
                 className="p-1 text-stone-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                aria-label={`Ta bort kompetens: ${skill.name}`}
+                aria-label={t('profile.skills.removeSkill', { name: skill.name })}
               >
                 <X className="w-4 h-4" aria-hidden="true" />
               </button>
@@ -208,7 +210,7 @@ export function SkillsSection({ className }: Props) {
         </div>
       ) : (
         <p className="text-sm text-stone-500 dark:text-stone-400 text-center py-4">
-          Inga kompetenser tillagda än. Lägg till dina kompetenser eller importera från ditt CV.
+          {t('profile.skills.noSkillsYet')}
         </p>
       )}
 
@@ -216,13 +218,13 @@ export function SkillsSection({ className }: Props) {
       <div className="p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-4 h-4 text-teal-500" />
-          <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Lägg till kompetens</span>
+          <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('profile.skills.addSkill')}</span>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-3">
           {/* Name input with suggestions */}
           <div className="relative">
-            <label htmlFor={newSkillInputId} className="sr-only">Kompetensnamn</label>
+            <label htmlFor={newSkillInputId} className="sr-only">{t('profile.skills.skillName')}</label>
             <input
               id={newSkillInputId}
               type="text"
@@ -234,7 +236,7 @@ export function SkillsSection({ className }: Props) {
               onFocus={() => setShowSuggestions(true)}
               onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-              placeholder="T.ex. Excel, Projektledning"
+              placeholder={t('profile.skills.skillPlaceholder')}
               className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
               role="combobox"
               aria-expanded={showSuggestions && filteredSuggestions.length > 0}
@@ -245,7 +247,7 @@ export function SkillsSection({ className }: Props) {
               <ul
                 id={suggestionsId}
                 role="listbox"
-                aria-label="Förslag på kompetenser"
+                aria-label={t('profile.skills.suggestions')}
                 className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg shadow-lg z-10 py-1"
               >
                 {filteredSuggestions.map(s => (
@@ -268,7 +270,7 @@ export function SkillsSection({ className }: Props) {
 
           {/* Category select */}
           <div>
-            <label htmlFor="skill-category" className="sr-only">Kategori</label>
+            <label htmlFor="skill-category" className="sr-only">{t('profile.skills.category')}</label>
             <select
               id="skill-category"
               value={newSkill.category}
@@ -276,7 +278,7 @@ export function SkillsSection({ className }: Props) {
               className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
             >
               {SKILL_CATEGORIES.map(cat => (
-                <option key={cat.value} value={cat.value}>{cat.label}</option>
+                <option key={cat.value} value={cat.value}>{t(cat.labelKey)}</option>
               ))}
             </select>
           </div>
@@ -286,7 +288,7 @@ export function SkillsSection({ className }: Props) {
             <div
               className="flex items-center gap-0.5"
               role="group"
-              aria-label="Välj kompetensnivå"
+              aria-label={t('profile.skills.chooseLevel')}
             >
               {[1, 2, 3, 4, 5].map(level => (
                 <button
@@ -294,7 +296,7 @@ export function SkillsSection({ className }: Props) {
                   type="button"
                   onClick={() => setNewSkill(prev => ({ ...prev, level }))}
                   className="p-0.5"
-                  aria-label={`Sätt nivå ${level} av 5`}
+                  aria-label={t('profile.skills.setLevel', { level, max: 5 })}
                   aria-pressed={level === newSkill.level}
                 >
                   <Star
@@ -314,7 +316,7 @@ export function SkillsSection({ className }: Props) {
               onClick={handleAdd}
               disabled={!newSkill.name.trim() || adding}
               className="flex items-center gap-1 px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              aria-label="Lägg till kompetens"
+              aria-label={t('profile.skills.addSkill')}
             >
               {adding ? (
                 <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />

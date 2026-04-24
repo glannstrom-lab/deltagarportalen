@@ -3,6 +3,7 @@
  */
 
 import { useCallback, KeyboardEvent, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   User, Briefcase, Star, Heart, Settings
 } from '@/components/ui/icons'
@@ -20,6 +21,7 @@ const TAB_ICONS: Record<TabId, React.ReactNode> = {
 }
 
 export function ProfileTabs() {
+  const { t } = useTranslation()
   const { activeTab, setActiveTab, completion } = useProfileStore()
   const tabRefs = useRef<Map<TabId, HTMLButtonElement>>(new Map())
 
@@ -69,7 +71,7 @@ export function ProfileTabs() {
       <div className="md:hidden overflow-x-auto scrollbar-hide">
         <nav
           role="tablist"
-          aria-label="Profilflikar"
+          aria-label={t('profile.tabs.ariaLabel')}
           className="flex gap-1 p-1 min-w-max bg-stone-100 dark:bg-stone-800 rounded-xl"
         >
           {TABS.map((tab, index) => {
@@ -98,11 +100,11 @@ export function ProfileTabs() {
                 )}
               >
                 <span aria-hidden="true">{TAB_ICONS[tab.id]}</span>
-                <span>{tab.shortLabel}</span>
+                <span>{t(tab.shortLabelKey)}</span>
                 {status === 'incomplete' && (
                   <span
                     className="w-1.5 h-1.5 bg-amber-400 rounded-full"
-                    aria-label="Innehåller ofullständiga fält"
+                    aria-label={t('profile.tabs.incompleteFields')}
                   />
                 )}
               </button>
@@ -114,7 +116,7 @@ export function ProfileTabs() {
       {/* Desktop: Full tabs */}
       <nav
         role="tablist"
-        aria-label="Profilflikar"
+        aria-label={t('profile.tabs.ariaLabel')}
         className="hidden md:flex items-center justify-center gap-1 p-1.5 bg-stone-100 dark:bg-stone-800 rounded-xl"
       >
         {TABS.map((tab, index) => {
@@ -143,11 +145,11 @@ export function ProfileTabs() {
               )}
             >
               <span aria-hidden="true">{TAB_ICONS[tab.id]}</span>
-              <span>{tab.label}</span>
+              <span>{t(tab.labelKey)}</span>
               {status === 'incomplete' && (
                 <span
                   className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"
-                  aria-label="Innehåller ofullständiga fält"
+                  aria-label={t('profile.tabs.incompleteFields')}
                 />
               )}
             </button>

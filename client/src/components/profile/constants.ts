@@ -153,11 +153,11 @@ export const BEST_TIME_OPTIONS = [
 export type TabId = 'overview' | 'jobbsok' | 'kompetens' | 'stod' | 'installningar'
 
 export const TABS = [
-  { id: 'overview' as const, label: 'Översikt', shortLabel: 'Översikt' },
-  { id: 'jobbsok' as const, label: 'Jobbsökning', shortLabel: 'Jobb' },
-  { id: 'kompetens' as const, label: 'Kompetenser', shortLabel: 'Skills' },
-  { id: 'stod' as const, label: 'Stöd & Mål', shortLabel: 'Stöd' },
-  { id: 'installningar' as const, label: 'Inställningar', shortLabel: 'Mer' },
+  { id: 'overview' as const, labelKey: 'profile.tabs.overview', shortLabelKey: 'profile.tabs.overviewShort' },
+  { id: 'jobbsok' as const, labelKey: 'profile.tabs.jobSearch', shortLabelKey: 'profile.tabs.jobSearchShort' },
+  { id: 'kompetens' as const, labelKey: 'profile.tabs.skills', shortLabelKey: 'profile.tabs.skillsShort' },
+  { id: 'stod' as const, labelKey: 'profile.tabs.support', shortLabelKey: 'profile.tabs.supportShort' },
+  { id: 'installningar' as const, labelKey: 'profile.tabs.settings', shortLabelKey: 'profile.tabs.settingsShort' },
 ] as const
 
 // ============== COMPLETION ==============
