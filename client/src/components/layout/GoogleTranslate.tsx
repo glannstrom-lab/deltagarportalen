@@ -29,44 +29,59 @@ export function GoogleTranslate() {
   const { t, i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [hasInitialized, setHasInitialized] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const initAttempted = useRef(false)
 
-  // Ladda Google Translate-script
+  // Initiera Google Translate när menyn öppnas första gången
   useEffect(() => {
-    if (initAttempted.current) return
-    initAttempted.current = true
+    if (!isOpen || hasInitialized) return
 
-    // Skapa init-funktionen
-    window.googleTranslateElementInit = () => {
-      if (window.google?.translate?.TranslateElement) {
-        new window.google.translate.TranslateElement(
-          {
-            pageLanguage: i18n.language === 'en' ? 'en' : 'sv',
-            includedLanguages: SUPPORTED_LANGUAGES,
-            layout: (window.google.translate.TranslateElement as unknown as { InlineLayout: { SIMPLE: unknown } }).InlineLayout?.SIMPLE,
-            autoDisplay: false,
-          },
-          'google_translate_element'
-        )
-        setIsLoaded(true)
+    // Vänta lite så DOM:en hinner rendera
+    const timer = setTimeout(() => {
+      const element = document.getElementById('google_translate_element')
+      if (!element) return
+
+      // Skapa init-funktionen
+      window.googleTranslateElementInit = () => {
+        if (window.google?.translate?.TranslateElement) {
+          try {
+            new window.google.translate.TranslateElement(
+              {
+                pageLanguage: i18n.language === 'en' ? 'en' : 'sv',
+                includedLanguages: SUPPORTED_LANGUAGES,
+                layout: (window.google.translate.TranslateElement as unknown as { InlineLayout: { SIMPLE: unknown } }).InlineLayout?.SIMPLE,
+                autoDisplay: false,
+              },
+              'google_translate_element'
+            )
+            setIsLoaded(true)
+          } catch (e) {
+            console.error('Google Translate init error:', e)
+          }
+        }
       }
-    }
 
-    // Ladda scriptet
-    const script = document.createElement('script')
-    script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
-    script.async = true
-    document.body.appendChild(script)
+      // Kolla om scriptet redan finns
+      const existingScript = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')
 
-    return () => {
-      // Cleanup om komponenten unmountas
-      const existingScript = document.querySelector('script[src*="translate.google.com"]')
       if (existingScript) {
-        existingScript.remove()
+        // Scriptet finns redan, kör init direkt om google finns
+        if (window.google?.translate?.TranslateElement) {
+          window.googleTranslateElementInit()
+        }
+      } else {
+        // Ladda scriptet
+        const script = document.createElement('script')
+        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
+        script.async = true
+        document.body.appendChild(script)
       }
-    }
-  }, [i18n.language])
+
+      setHasInitialized(true)
+    }, 100)
+
+    return () => clearTimeout(timer)
+  }, [isOpen, hasInitialized, i18n.language])
 
   // Stäng menyn vid klick utanför
   useEffect(() => {
@@ -124,33 +139,28 @@ export function GoogleTranslate() {
             </div>
 
             <div className="p-3">
-              {!isLoaded ? (
-                <div className="flex items-center justify-center py-4">
-                  <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                  <span className="ml-2 text-sm text-stone-500">
+              {/* Google Translate Widget - alltid renderad när open */}
+              <div
+                id="google_translate_element"
+                className="google-translate-wrapper min-h-[40px]"
+              />
+
+              {!isLoaded && hasInitialized && (
+                <div className="flex items-center justify-center py-2">
+                  <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                  <span className="ml-2 text-xs text-stone-500">
                     {t('common.loading', 'Laddar...')}
                   </span>
                 </div>
-              ) : (
-                <>
-                  {/* Google Translate Widget */}
-                  <div
-                    id="google_translate_element"
-                    className="google-translate-wrapper"
-                  />
-
-                  <p className="text-xs text-stone-400 dark:text-stone-500 mt-3 text-center">
-                    {t('language.machineTranslation', 'Maskinöversättning - kvaliteten kan variera')}
-                  </p>
-                </>
               )}
+
+              <p className="text-xs text-stone-400 dark:text-stone-500 mt-3 text-center">
+                {t('language.machineTranslation', 'Maskinöversättning - kvaliteten kan variera')}
+              </p>
             </div>
           </div>
         </>
       )}
-
-      {/* Dold container för Google Translate om menyn är stängd */}
-      {!isOpen && <div id="google_translate_element" className="hidden" />}
     </div>
   )
 }
