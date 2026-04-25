@@ -19,176 +19,78 @@ const LANGUAGES = [
   { code: 'zh-CN', name: '中文', flag: '🇨🇳', english: 'Chinese' },
 ] as const
 
-// Hämta aktuellt översättningsspråk från Google Translate cookie
-function getActiveTranslation(): string | null {
-  const match = document.cookie.match(/googtrans=\/[^/]+\/([^;]+)/)
-  return match ? match[1] : null
-}
+const STORAGE_KEY = 'googleTranslateLanguage'
 
-// Försök använda Google Translate's interna restore-funktion
-function tryRestoreOriginal(): boolean {
+// Hämta valt språk från localStorage
+function getSelectedLanguage(): string | null {
   try {
-    // Metod 1: Hitta Google's restore-länk i DOM
-    const restoreLink = document.querySelector('.goog-te-banner-frame')?.contentDocument
-      ?.querySelector('button[id="restore"], .restore, [onclick*="restore"]') as HTMLElement
-    if (restoreLink) {
-      restoreLink.click()
-      return true
-    }
-
-    // Metod 2: Anropa Google's interna funktion
-    const win = window as Window & {
-      google?: {
-        translate?: {
-          TranslateElement?: {
-            restore?: () => void
-          }
-        }
-      }
-      _gaq?: unknown
-    }
-
-    if (typeof win.google?.translate?.TranslateElement?.restore === 'function') {
-      win.google.translate.TranslateElement.restore()
-      return true
-    }
-
-    // Metod 3: Simulera klick på "Show original" om den finns
-    const showOriginal = document.querySelector('[id*="restore"], .goog-te-menu-value span:first-child') as HTMLElement
-    if (showOriginal) {
-      showOriginal.click()
-      return true
-    }
+    return localStorage.getItem(STORAGE_KEY)
   } catch {
-    // Ignorera fel
+    return null
   }
-  return false
 }
 
-// Rensa ALLT Google Translate-relaterat
-function nukeGoogleTranslate() {
-  // 1. Rensa alla cookies (alla möjliga kombinationer)
-  const expiredDate = 'Thu, 01 Jan 1970 00:00:00 UTC'
-  const domain = window.location.hostname
-  const cookieNames = ['googtrans', 'googtrans/', 'googtrans-b', 'NID', 'OGPC']
-
-  // Försök ta bort på alla möjliga sätt
-  for (const name of cookieNames) {
-    // Utan domain
-    document.cookie = `${name}=; expires=${expiredDate}; path=/`
-    document.cookie = `${name}=; expires=${expiredDate}; path=`
-    // Med domain
-    document.cookie = `${name}=; expires=${expiredDate}; path=/; domain=${domain}`
-    document.cookie = `${name}=; expires=${expiredDate}; path=/; domain=.${domain}`
-    // Localhost varianter
-    document.cookie = `${name}=; expires=${expiredDate}; path=/; domain=localhost`
-    document.cookie = `${name}=; expires=${expiredDate}; path=/; domain=.localhost`
-  }
-
-  // 2. Rensa localStorage och sessionStorage
+// Spara valt språk till localStorage
+function setSelectedLanguage(langCode: string | null) {
   try {
-    const keysToRemove: string[] = []
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i)
-      if (key && (key.includes('goog') || key.includes('translate') || key.includes('GT-'))) {
-        keysToRemove.push(key)
-      }
+    if (langCode) {
+      localStorage.setItem(STORAGE_KEY, langCode)
+    } else {
+      localStorage.removeItem(STORAGE_KEY)
     }
-    keysToRemove.forEach(key => localStorage.removeItem(key))
-
-    const sessionKeysToRemove: string[] = []
-    for (let i = 0; i < sessionStorage.length; i++) {
-      const key = sessionStorage.key(i)
-      if (key && (key.includes('goog') || key.includes('translate') || key.includes('GT-'))) {
-        sessionKeysToRemove.push(key)
-      }
-    }
-    sessionKeysToRemove.forEach(key => sessionStorage.removeItem(key))
   } catch {
     // Ignorera
   }
-
-  // 3. Ta bort alla Google Translate-element från DOM
-  const elementsToRemove = document.querySelectorAll(
-    '.goog-te-banner-frame, .goog-te-menu-frame, .skiptranslate, #goog-gt-tt, .goog-te-spinner-pos, .goog-te-balloon-frame, [id^="goog-gt-"], [class*="goog-te"]'
-  )
-  elementsToRemove.forEach(el => el.remove())
-
-  // 4. Ta bort Google Translate script
-  const scripts = document.querySelectorAll('script[src*="translate.google"], script[src*="googleapis.com/translate"]')
-  scripts.forEach(s => s.remove())
-
-  // 5. Ta bort style-element som Google injicerat
-  const styles = document.querySelectorAll('style[type="text/css"]')
-  styles.forEach(style => {
-    if (style.textContent?.includes('goog-te') || style.textContent?.includes('skiptranslate')) {
-      style.remove()
-    }
-  })
 }
 
-// Sätt Google Translate cookie och ladda om
-function setTranslation(langCode: string | null) {
+// Sätt Google Translate cookie
+function setGoogleTranslateCookie(langCode: string) {
+  const value = `/sv/${langCode}`
   const domain = window.location.hostname
-  const isLocalhost = domain === 'localhost' || domain === '127.0.0.1'
 
-  // Rensa allt först
-  nukeGoogleTranslate()
+  document.cookie = `googtrans=${value}; path=/`
 
-  if (langCode === null) {
-    // VIKTIGT: Sätt till /sv/sv (svenska till svenska) = ingen översättning
-    // Att bara ta bort cookien fungerar inte - Google kommer ihåg
-    const resetValue = '/sv/sv'
-    document.cookie = `googtrans=${resetValue}; path=/`
-    if (!isLocalhost) {
-      document.cookie = `googtrans=${resetValue}; path=/; domain=${domain}`
-      document.cookie = `googtrans=${resetValue}; path=/; domain=.${domain}`
-    }
-  } else {
-    // Sätt ny översättning
-    const value = `/sv/${langCode}`
-    document.cookie = `googtrans=${value}; path=/`
-    if (!isLocalhost) {
-      document.cookie = `googtrans=${value}; path=/; domain=${domain}`
-      document.cookie = `googtrans=${value}; path=/; domain=.${domain}`
-    }
+  if (domain !== 'localhost' && domain !== '127.0.0.1') {
+    document.cookie = `googtrans=${value}; path=/; domain=.${domain}`
   }
-
-  // Hård omladdning - navigera till samma path
-  window.location.href = window.location.pathname
 }
 
-export function GoogleTranslate() {
-  const { t } = useTranslation()
-  const [isOpen, setIsOpen] = useState(false)
-  const [activeLanguage, setActiveLanguage] = useState<string | null>(null)
-  const [scriptLoaded, setScriptLoaded] = useState(false)
-  const menuRef = useRef<HTMLDivElement>(null)
+// Rensa Google Translate cookies så gott det går
+function clearGoogleTranslateCookies() {
+  const domain = window.location.hostname
+  const expiredDate = 'Thu, 01 Jan 1970 00:00:00 UTC'
 
-  // Kolla aktivt språk vid mount
-  useEffect(() => {
-    setActiveLanguage(getActiveTranslation())
-  }, [])
+  document.cookie = `googtrans=; expires=${expiredDate}; path=/`
+  document.cookie = `googtrans=; expires=${expiredDate}; path=/; domain=.${domain}`
+  document.cookie = `googtrans=; expires=${expiredDate}; path=/; domain=${domain}`
+}
 
-  // Ladda Google Translate script (behövs för att översättningen ska fungera)
-  useEffect(() => {
-    if (scriptLoaded) return
-
-    const existingScript = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')
-    if (existingScript) {
-      setScriptLoaded(true)
-      return
+// Ladda Google Translate scriptet
+function loadGoogleTranslateScript(targetLang: string): Promise<void> {
+  return new Promise((resolve) => {
+    // Skapa element för Google Translate
+    let container = document.getElementById('google_translate_element')
+    if (!container) {
+      container = document.createElement('div')
+      container.id = 'google_translate_element'
+      container.style.display = 'none'
+      document.body.appendChild(container)
     }
 
-    // Skapa ett dolt element för Google Translate
-    const hiddenDiv = document.createElement('div')
-    hiddenDiv.id = 'google_translate_element'
-    hiddenDiv.style.display = 'none'
-    document.body.appendChild(hiddenDiv)
+    // Sätt cookie innan scriptet laddas
+    setGoogleTranslateCookie(targetLang)
 
-    // Definiera init-funktionen
-    ;(window as Window & { googleTranslateElementInit?: () => void }).googleTranslateElementInit = () => {
-      const google = (window as Window & { google?: { translate?: { TranslateElement: new (config: object, id: string) => void } } }).google
+    // Definiera callback
+    const win = window as Window & { googleTranslateElementInit?: () => void }
+    win.googleTranslateElementInit = () => {
+      const google = (window as Window & {
+        google?: {
+          translate?: {
+            TranslateElement: new (config: object, id: string) => void
+          }
+        }
+      }).google
+
       if (google?.translate?.TranslateElement) {
         new google.translate.TranslateElement(
           {
@@ -198,7 +100,15 @@ export function GoogleTranslate() {
           'google_translate_element'
         )
       }
-      setScriptLoaded(true)
+      resolve()
+    }
+
+    // Kolla om scriptet redan finns
+    const existingScript = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')
+    if (existingScript) {
+      // Scriptet finns redan - Google Translate borde vara aktiv
+      resolve()
+      return
     }
 
     // Ladda scriptet
@@ -206,7 +116,26 @@ export function GoogleTranslate() {
     script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
     script.async = true
     document.head.appendChild(script)
-  }, [scriptLoaded])
+  })
+}
+
+export function GoogleTranslate() {
+  const { t } = useTranslation()
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeLanguage, setActiveLanguage] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  // Kolla sparad översättning vid mount och ladda scriptet om det behövs
+  useEffect(() => {
+    const savedLang = getSelectedLanguage()
+    setActiveLanguage(savedLang)
+
+    if (savedLang) {
+      // Användaren hade en översättning aktiv - ladda scriptet
+      loadGoogleTranslateScript(savedLang)
+    }
+  }, [])
 
   // Stäng menyn vid klick utanför
   useEffect(() => {
@@ -228,21 +157,39 @@ export function GoogleTranslate() {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen])
 
-  const handleSelectLanguage = (langCode: string) => {
-    setTranslation(langCode)
+  const handleSelectLanguage = async (langCode: string) => {
+    setIsLoading(true)
+    setIsOpen(false)
+
+    // Spara valet
+    setSelectedLanguage(langCode)
+    setGoogleTranslateCookie(langCode)
+
+    // Ladda om sidan för att aktivera översättningen
+    window.location.reload()
   }
 
   const handleResetTranslation = () => {
-    setTranslation(null)
+    setIsLoading(true)
+    setIsOpen(false)
+
+    // Ta bort sparad översättning
+    setSelectedLanguage(null)
+    clearGoogleTranslateCookies()
+
+    // Ladda om sidan - utan sparad översättning laddas inte scriptet
+    window.location.reload()
   }
 
   return (
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
+        disabled={isLoading}
         className={cn(
           'w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200',
           'shadow-sm hover:shadow-md focus:outline-none',
+          isLoading && 'opacity-50 cursor-wait',
           activeLanguage
             ? 'bg-emerald-200 dark:bg-emerald-800/60 ring-2 ring-emerald-400/50'
             : isOpen
@@ -252,15 +199,19 @@ export function GoogleTranslate() {
         aria-label={t('language.translate', 'Översätt sidan')}
         aria-expanded={isOpen}
         title={activeLanguage
-          ? t('language.translatedTo', 'Sidan är översatt')
+          ? `${t('language.translatedTo', 'Översatt till')} ${LANGUAGES.find(l => l.code === activeLanguage)?.name || activeLanguage}`
           : t('language.translate', 'Översätt till fler språk')
         }
       >
-        <Globe size={20} className={cn(
-          activeLanguage
-            ? 'text-emerald-700 dark:text-emerald-300'
-            : 'text-emerald-600 dark:text-emerald-400'
-        )} />
+        {isLoading ? (
+          <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <Globe size={20} className={cn(
+            activeLanguage
+              ? 'text-emerald-700 dark:text-emerald-300'
+              : 'text-emerald-600 dark:text-emerald-400'
+          )} />
+        )}
       </button>
 
       {isOpen && (
