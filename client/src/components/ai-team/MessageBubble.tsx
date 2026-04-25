@@ -56,25 +56,30 @@ export function MessageBubble({
       isUser && 'flex-row-reverse'
     )}>
       {isUser ? (
-        <div className="w-8 h-8 rounded-xl bg-stone-100 dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
-          <User className="w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-700 dark:to-stone-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+          <User className="w-4 h-4 text-stone-600 dark:text-stone-300" aria-hidden="true" />
         </div>
       ) : (
         <div className={cn(
-          'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0',
-          colors.bgLight
+          'w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0',
+          'bg-gradient-to-br shadow-sm',
+          colors.bgLight,
+          colors.text
         )}>
-          <span className={cn('text-sm', colors.text)} aria-hidden="true">AI</span>
+          <span className="text-sm font-semibold" aria-hidden="true">AI</span>
         </div>
       )}
       <div className="relative max-w-[80%]">
         <div
           className={cn(
-            'px-4 py-3 rounded-xl',
+            'px-4 py-3 rounded-2xl',
             isUser
-              ? 'bg-teal-500 text-white'
+              ? 'bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-md shadow-teal-500/20'
               : cn(
-                  'bg-stone-100 dark:bg-stone-800',
+                  'bg-gradient-to-br from-stone-50 via-stone-100 to-stone-50',
+                  'dark:from-stone-800 dark:via-stone-800/90 dark:to-stone-800',
+                  'border border-stone-200/80 dark:border-stone-700/80',
+                  'shadow-sm',
                   'text-stone-900 dark:text-stone-100'
                 )
           )}

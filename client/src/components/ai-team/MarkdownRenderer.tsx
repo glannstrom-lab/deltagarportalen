@@ -1,9 +1,10 @@
 /**
- * Simple Markdown Renderer for AI Team chat
- * Renders common markdown patterns without external dependencies
+ * Markdown Renderer for AI Team chat
+ * Beautiful rendering of AI responses with modern styling
  */
 
 import { cn } from '@/lib/utils'
+import { CheckCircle, Lightbulb, ArrowRight, Star, Sparkles } from '@/components/ui/icons'
 
 interface MarkdownRendererProps {
   content: string
@@ -14,9 +15,9 @@ export function MarkdownRenderer({ content, className }: MarkdownRendererProps) 
   const elements = parseMarkdown(content)
 
   return (
-    <div className={cn('text-sm space-y-2', className)}>
+    <div className={cn('text-sm space-y-3', className)}>
       {elements.map((element, index) => (
-        <MarkdownElement key={index} element={element} />
+        <MarkdownElement key={index} element={element} isFirst={index === 0} />
       ))}
     </div>
   )
@@ -151,12 +152,12 @@ function parseMarkdown(text: string): ParsedElement[] {
   return elements
 }
 
-function MarkdownElement({ element }: { element: ParsedElement }) {
+function MarkdownElement({ element, isFirst }: { element: ParsedElement; isFirst: boolean }) {
   switch (element.type) {
     case 'heading':
       return <Heading level={element.level || 2} content={element.content} />
     case 'paragraph':
-      return <Paragraph content={element.content} />
+      return <Paragraph content={element.content} isFirst={isFirst} />
     case 'list':
       return <UnorderedList items={element.items || []} />
     case 'numbered-list':
@@ -166,28 +167,63 @@ function MarkdownElement({ element }: { element: ParsedElement }) {
     case 'blockquote':
       return <Blockquote content={element.content} />
     default:
-      return <Paragraph content={element.content} />
+      return <Paragraph content={element.content} isFirst={isFirst} />
   }
 }
 
 function Heading({ level, content }: { level: number; content: string }) {
-  const classes = {
-    1: 'text-lg font-bold text-stone-900 dark:text-stone-100',
-    2: 'text-base font-semibold text-stone-900 dark:text-stone-100',
-    3: 'text-sm font-semibold text-stone-800 dark:text-stone-200',
-    4: 'text-sm font-medium text-stone-700 dark:text-stone-300',
+  const baseClasses = 'flex items-center gap-2'
+
+  if (level === 1) {
+    return (
+      <div className={cn(baseClasses, 'mt-1')}>
+        <Sparkles className="w-4 h-4 text-amber-500 flex-shrink-0" />
+        <h3 className="text-base font-bold text-stone-900 dark:text-stone-50">
+          <InlineMarkdown text={content} />
+        </h3>
+      </div>
+    )
+  }
+
+  if (level === 2) {
+    return (
+      <div className={cn(baseClasses, 'mt-1')}>
+        <Star className="w-3.5 h-3.5 text-teal-500 flex-shrink-0" />
+        <h4 className="text-sm font-semibold text-stone-800 dark:text-stone-100">
+          <InlineMarkdown text={content} />
+        </h4>
+      </div>
+    )
   }
 
   return (
-    <p className={classes[level as keyof typeof classes] || classes[2]}>
+    <h5 className="text-sm font-medium text-stone-700 dark:text-stone-200 mt-1">
       <InlineMarkdown text={content} />
-    </p>
+    </h5>
   )
 }
 
-function Paragraph({ content }: { content: string }) {
+function Paragraph({ content, isFirst }: { content: string; isFirst: boolean }) {
+  // First paragraph gets special styling if it looks like a greeting or intro
+  const isGreeting = isFirst && (
+    content.toLowerCase().includes('hej') ||
+    content.toLowerCase().includes('hallå') ||
+    content.toLowerCase().includes('välkommen') ||
+    content.startsWith('Absolut') ||
+    content.startsWith('Självklart') ||
+    content.startsWith('Visst')
+  )
+
+  if (isGreeting) {
+    return (
+      <p className="text-stone-700 dark:text-stone-200 leading-relaxed font-medium">
+        <InlineMarkdown text={content} />
+      </p>
+    )
+  }
+
   return (
-    <p className="text-stone-700 dark:text-stone-300 leading-relaxed">
+    <p className="text-stone-600 dark:text-stone-300 leading-relaxed">
       <InlineMarkdown text={content} />
     </p>
   )
@@ -195,11 +231,18 @@ function Paragraph({ content }: { content: string }) {
 
 function UnorderedList({ items }: { items: string[] }) {
   return (
-    <ul className="space-y-1.5 ml-1">
+    <ul className="space-y-2">
       {items.map((item, idx) => (
-        <li key={idx} className="flex items-start gap-2 text-stone-700 dark:text-stone-300">
-          <span className="text-teal-500 mt-1.5 text-xs">●</span>
-          <span className="flex-1">
+        <li
+          key={idx}
+          className={cn(
+            'flex items-start gap-2.5 p-2.5 rounded-lg',
+            'bg-white/60 dark:bg-stone-800/60',
+            'border border-stone-200/50 dark:border-stone-700/50'
+          )}
+        >
+          <CheckCircle className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
+          <span className="flex-1 text-stone-700 dark:text-stone-200">
             <InlineMarkdown text={item} />
           </span>
         </li>
@@ -210,31 +253,72 @@ function UnorderedList({ items }: { items: string[] }) {
 
 function OrderedList({ items }: { items: string[] }) {
   return (
-    <ol className="space-y-1.5 ml-1">
-      {items.map((item, idx) => (
-        <li key={idx} className="flex items-start gap-2 text-stone-700 dark:text-stone-300">
-          <span className="text-teal-600 dark:text-teal-400 font-medium min-w-[1.25rem]">
-            {idx + 1}.
-          </span>
-          <span className="flex-1">
-            <InlineMarkdown text={item} />
-          </span>
-        </li>
-      ))}
+    <ol className="space-y-2">
+      {items.map((item, idx) => {
+        // Extract title if item has a dash or colon pattern like "Strategy 1 - Description"
+        const titleMatch = item.match(/^(.+?)(?:\s*[-–—:]\s*)(.+)$/)
+        const hasTitle = titleMatch && titleMatch[1].length < 50
+
+        return (
+          <li
+            key={idx}
+            className={cn(
+              'relative p-3 rounded-xl',
+              'bg-gradient-to-r from-white/80 to-white/40',
+              'dark:from-stone-800/80 dark:to-stone-800/40',
+              'border border-stone-200/60 dark:border-stone-700/60',
+              'shadow-sm'
+            )}
+          >
+            <div className="flex items-start gap-3">
+              {/* Number badge */}
+              <div className={cn(
+                'flex-shrink-0 w-6 h-6 rounded-lg',
+                'bg-gradient-to-br from-teal-500 to-teal-600',
+                'flex items-center justify-center',
+                'text-white text-xs font-bold',
+                'shadow-sm'
+              )}>
+                {idx + 1}
+              </div>
+
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                {hasTitle ? (
+                  <>
+                    <div className="font-semibold text-stone-800 dark:text-stone-100 mb-0.5">
+                      <InlineMarkdown text={titleMatch[1]} />
+                    </div>
+                    <div className="text-stone-600 dark:text-stone-300 text-[13px] leading-relaxed">
+                      <InlineMarkdown text={titleMatch[2]} />
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-stone-700 dark:text-stone-200">
+                    <InlineMarkdown text={item} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </li>
+        )
+      })}
     </ol>
   )
 }
 
 function CodeBlock({ content, language }: { content: string; language?: string }) {
   return (
-    <div className="relative">
+    <div className="relative rounded-xl overflow-hidden border border-stone-300/50 dark:border-stone-600/50">
       {language && (
-        <div className="absolute top-0 right-0 px-2 py-0.5 text-xs text-stone-400 dark:text-stone-500 bg-stone-200 dark:bg-stone-700 rounded-bl rounded-tr-lg">
-          {language}
+        <div className="flex items-center justify-between px-3 py-1.5 bg-stone-200/80 dark:bg-stone-700/80 border-b border-stone-300/50 dark:border-stone-600/50">
+          <span className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+            {language}
+          </span>
         </div>
       )}
-      <pre className="bg-stone-100 dark:bg-stone-900 rounded-lg p-3 overflow-x-auto">
-        <code className="text-xs text-stone-800 dark:text-stone-200 font-mono">
+      <pre className="bg-stone-100 dark:bg-stone-900 p-3 overflow-x-auto">
+        <code className="text-xs text-stone-800 dark:text-stone-200 font-mono leading-relaxed">
           {content}
         </code>
       </pre>
@@ -244,8 +328,15 @@ function CodeBlock({ content, language }: { content: string; language?: string }
 
 function Blockquote({ content }: { content: string }) {
   return (
-    <blockquote className="border-l-3 border-teal-400 pl-3 py-1 bg-teal-50/50 dark:bg-teal-900/20 rounded-r-lg">
-      <p className="text-stone-600 dark:text-stone-400 italic">
+    <blockquote className={cn(
+      'relative pl-4 py-2 pr-3',
+      'bg-gradient-to-r from-amber-50/80 to-transparent',
+      'dark:from-amber-900/20 dark:to-transparent',
+      'border-l-4 border-amber-400 dark:border-amber-500',
+      'rounded-r-lg'
+    )}>
+      <Lightbulb className="absolute -left-2 -top-2 w-4 h-4 text-amber-500 bg-stone-50 dark:bg-stone-800 rounded-full p-0.5" />
+      <p className="text-stone-700 dark:text-stone-300 italic leading-relaxed">
         <InlineMarkdown text={content} />
       </p>
     </blockquote>
@@ -254,7 +345,6 @@ function Blockquote({ content }: { content: string }) {
 
 // Inline markdown: **bold**, *italic*, `code`, [link](url)
 function InlineMarkdown({ text }: { text: string }) {
-  // Process inline elements
   const parts: (string | JSX.Element)[] = []
   let remaining = text
   let keyIndex = 0
@@ -268,7 +358,7 @@ function InlineMarkdown({ text }: { text: string }) {
         keyIndex++
       }
       parts.push(
-        <strong key={`bold-${keyIndex++}`} className="font-semibold text-stone-900 dark:text-stone-100">
+        <strong key={`bold-${keyIndex++}`} className="font-semibold text-stone-800 dark:text-stone-100">
           {boldMatch[3]}
         </strong>
       )
@@ -284,7 +374,7 @@ function InlineMarkdown({ text }: { text: string }) {
         keyIndex++
       }
       parts.push(
-        <em key={`italic-${keyIndex++}`} className="italic">
+        <em key={`italic-${keyIndex++}`} className="italic text-stone-600 dark:text-stone-400">
           {italicMatch[2]}
         </em>
       )
@@ -301,7 +391,12 @@ function InlineMarkdown({ text }: { text: string }) {
       parts.push(
         <code
           key={`code-${keyIndex++}`}
-          className="px-1.5 py-0.5 bg-stone-200 dark:bg-stone-700 rounded text-xs font-mono text-teal-700 dark:text-teal-300"
+          className={cn(
+            'px-1.5 py-0.5 rounded-md',
+            'bg-teal-100/80 dark:bg-teal-900/40',
+            'text-teal-700 dark:text-teal-300',
+            'text-[13px] font-mono font-medium'
+          )}
         >
           {codeMatch[2]}
         </code>
@@ -322,9 +417,17 @@ function InlineMarkdown({ text }: { text: string }) {
           href={linkMatch[3]}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-teal-600 dark:text-teal-400 hover:underline"
+          className={cn(
+            'inline-flex items-center gap-0.5',
+            'text-teal-600 dark:text-teal-400',
+            'hover:text-teal-700 dark:hover:text-teal-300',
+            'underline decoration-teal-300 dark:decoration-teal-600',
+            'underline-offset-2 hover:decoration-teal-500',
+            'transition-colors'
+          )}
         >
           {linkMatch[2]}
+          <ArrowRight className="w-3 h-3" />
         </a>
       )
       remaining = remaining.slice(linkMatch[0].length)
@@ -354,7 +457,12 @@ function processInlineCode(text: string, startKey: number): (string | JSX.Elemen
       parts.push(
         <code
           key={`code-${keyIndex++}`}
-          className="px-1.5 py-0.5 bg-stone-200 dark:bg-stone-700 rounded text-xs font-mono text-teal-700 dark:text-teal-300"
+          className={cn(
+            'px-1.5 py-0.5 rounded-md',
+            'bg-teal-100/80 dark:bg-teal-900/40',
+            'text-teal-700 dark:text-teal-300',
+            'text-[13px] font-mono font-medium'
+          )}
         >
           {codeMatch[1]}
         </code>
