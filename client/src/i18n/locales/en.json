@@ -7130,6 +7130,22 @@
     "title": "My AI Team",
     "description": "Your personal support team for job searching. Choose an agent and start chatting!",
     "selectAgent": "Choose your agent",
+    "skipToChat": "Skip to chat",
+    "suggestion": {
+      "title": "Recommended for you"
+    },
+    "suggestions": {
+      "cvWork": "You were just working on your CV",
+      "coverLetter": "You were just working on a cover letter",
+      "jobSearch": "You were just searching for jobs",
+      "interview": "You were just practicing interviews",
+      "wellness": "You just checked in on your health",
+      "diary": "You just wrote in your diary",
+      "career": "You were just exploring career paths",
+      "skillsGap": "You just analyzed skill gaps",
+      "interestGuide": "You were just exploring your interests",
+      "linkedin": "You were just working on LinkedIn"
+    },
     "personality": "Personality",
     "selectPersonality": "Select personality",
     "clearChat": "Clear chat",

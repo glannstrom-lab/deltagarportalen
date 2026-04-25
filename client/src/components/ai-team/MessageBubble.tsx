@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { agentColorClasses } from './types'
 import { User, Copy, Check, BookOpen, Volume2, CalendarPlus } from '@/components/ui/icons'
+import { MarkdownRenderer } from './MarkdownRenderer'
 
 export interface MessageBubbleProps {
   message: {
@@ -78,7 +79,11 @@ export function MessageBubble({
                 )
           )}
         >
-          <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+          {isUser ? (
+            <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+          ) : (
+            <MarkdownRenderer content={message.content} />
+          )}
         </div>
         {/* Action buttons - always visible on mobile, hover/focus on desktop */}
         {!isUser && (

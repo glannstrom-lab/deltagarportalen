@@ -4,35 +4,51 @@
  * Users can chat with 5 specialized AI agents with customizable personalities
  */
 
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/Card'
-import { AgentSelector } from '@/components/ai-team/AgentSelector'
+import { AgentSelector, getAgentById } from '@/components/ai-team/AgentSelector'
 import { PersonalityDropdown } from '@/components/ai-team/PersonalityDropdown'
 import { QuickActions } from '@/components/ai-team/QuickActions'
 import { AgentChat, type AgentChatHandle } from '@/components/ai-team/AgentChat'
 import { OnboardingModal } from '@/components/ai-team/OnboardingModal'
 import { ResponseModeSelector } from '@/components/ai-team/ResponseModeSelector'
 import { useAITeamStore } from '@/stores/aiTeamStore'
-import { getAgentById } from '@/components/ai-team/AgentSelector'
 import { agentColorClasses } from '@/components/ai-team/types'
-import { Users, Sparkles } from '@/components/ui/icons'
+import { Users, Sparkles, Lightbulb } from '@/components/ui/icons'
+import { useSuggestedAgent } from '@/hooks/useSuggestedAgent'
 
 export default function AITeam() {
   const { t } = useTranslation()
-  const { selectedAgent } = useAITeamStore()
+  const { selectedAgent, setAgent } = useAITeamStore()
   const agent = getAgentById(selectedAgent)
   const colors = agentColorClasses[agent.color]
   const chatRef = useRef<AgentChatHandle>(null)
+  const suggestedAgent = useSuggestedAgent()
 
   // Handle quick action click - send message to chat via ref
   const handleQuickAction = useCallback((prompt: string) => {
     chatRef.current?.sendMessage(prompt)
   }, [])
 
+  // Handle clicking the suggested agent
+  const handleSuggestedAgentClick = useCallback(() => {
+    if (suggestedAgent) {
+      setAgent(suggestedAgent.agentId)
+    }
+  }, [suggestedAgent, setAgent])
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-stone-50 via-white to-stone-50/50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800 pb-20">
+      {/* Skip link for accessibility */}
+      <a
+        href="#ai-chat"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-teal-600 focus:text-white focus:rounded-lg focus:shadow-lg"
+      >
+        {t('aiTeam.skipToChat', 'Hoppa till chatten')}
+      </a>
+
       {/* Onboarding for new users */}
       <OnboardingModal />
 
@@ -58,6 +74,36 @@ export default function AITeam() {
 
       {/* Main Content */}
       <div className="max-w-6xl mx-auto px-4 py-6 sm:py-8 space-y-6">
+        {/* Suggested Agent Banner */}
+        {suggestedAgent && suggestedAgent.agentId !== selectedAgent && (
+          <button
+            onClick={handleSuggestedAgentClick}
+            className={cn(
+              'w-full flex items-center gap-3 p-4 rounded-xl',
+              'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20',
+              'border border-amber-200 dark:border-amber-800',
+              'hover:from-amber-100 hover:to-orange-100 dark:hover:from-amber-900/30 dark:hover:to-orange-900/30',
+              'transition-all duration-200',
+              'text-left group'
+            )}
+          >
+            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
+              <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+                {t('aiTeam.suggestion.title', 'Rekommenderad för dig')}
+              </p>
+              <p className="text-sm text-amber-700 dark:text-amber-300 truncate">
+                {t(suggestedAgent.reasonKey, suggestedAgent.reason)} — {t(`aiTeam.agents.${suggestedAgent.agentId}.name`)}
+              </p>
+            </div>
+            <div className="flex-shrink-0 text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
+              →
+            </div>
+          </button>
+        )}
+
         {/* Agent Selector */}
         <Card className="p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-4">
@@ -72,7 +118,11 @@ export default function AITeam() {
         {/* Chat Area with Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Chat Area - shown first on mobile */}
-          <Card className="order-first lg:order-last lg:col-span-3 p-0 overflow-hidden h-[450px] sm:h-[500px] lg:h-[600px]">
+          <Card
+            id="ai-chat"
+            className="order-first lg:order-last lg:col-span-3 p-0 overflow-hidden h-[450px] sm:h-[500px] lg:h-[600px]"
+            tabIndex={-1}
+          >
             <AgentChat ref={chatRef} />
           </Card>
 

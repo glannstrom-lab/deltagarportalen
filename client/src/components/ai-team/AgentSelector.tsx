@@ -93,9 +93,39 @@ export function AgentSelector({ className }: AgentSelectorProps) {
   const { t } = useTranslation()
   const { selectedAgent, setAgent } = useAITeamStore()
 
+  // Handle keyboard navigation within the group
+  const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
+    let newIndex = currentIndex
+
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      newIndex = (currentIndex + 1) % agents.length
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      newIndex = (currentIndex - 1 + agents.length) % agents.length
+    } else if (e.key === 'Home') {
+      e.preventDefault()
+      newIndex = 0
+    } else if (e.key === 'End') {
+      e.preventDefault()
+      newIndex = agents.length - 1
+    } else {
+      return
+    }
+
+    setAgent(agents[newIndex].id)
+    // Focus the new button
+    const buttons = document.querySelectorAll('[role="radio"]')
+    ;(buttons[newIndex] as HTMLElement)?.focus()
+  }
+
   return (
-    <div className={cn('grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3', className)}>
-      {agents.map((agent) => {
+    <div
+      role="radiogroup"
+      aria-label={t('aiTeam.selectAgent', 'Välj AI-agent')}
+      className={cn('grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3', className)}
+    >
+      {agents.map((agent, index) => {
         const isSelected = selectedAgent === agent.id
         const colors = agentColorClasses[agent.color]
 
@@ -103,6 +133,7 @@ export function AgentSelector({ className }: AgentSelectorProps) {
           <button
             key={agent.id}
             onClick={() => setAgent(agent.id)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
             className={cn(
               'relative flex flex-col items-center p-3 sm:p-4 rounded-xl',
               'transition-all duration-200',
@@ -125,7 +156,9 @@ export function AgentSelector({ className }: AgentSelectorProps) {
                     'hover:shadow-md'
                   )
             )}
-            aria-pressed={isSelected}
+            role="radio"
+            aria-checked={isSelected}
+            tabIndex={isSelected ? 0 : -1}
             aria-label={`${t(agent.nameKey)}: ${t(agent.descriptionKey)}`}
           >
             <AgentAvatar agentId={agent.id} color={agent.color} size="lg" />

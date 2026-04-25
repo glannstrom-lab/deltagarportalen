@@ -23,6 +23,7 @@ import { useVoiceInput } from '@/hooks/useVoiceInput'
 import { useVoiceOutput } from '@/hooks/useVoiceOutput'
 import { MessageBubble } from './MessageBubble'
 import { ChatInput } from './ChatInput'
+import { MarkdownRenderer } from './MarkdownRenderer'
 
 export interface AgentChatHandle {
   sendMessage: (message: string) => Promise<void>
@@ -573,10 +574,8 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
                 'bg-stone-100 dark:bg-stone-800',
                 'text-stone-900 dark:text-stone-100'
               )}>
-                <p className="text-sm whitespace-pre-wrap">
-                  {streamingContent}
-                  <span className="inline-block w-2 h-4 ml-1 bg-current animate-pulse" />
-                </p>
+                <MarkdownRenderer content={streamingContent} />
+                <span className="inline-block w-2 h-4 ml-1 bg-current animate-pulse" />
               </div>
             </div>
           )}

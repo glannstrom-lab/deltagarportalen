@@ -7130,6 +7130,22 @@
     "title": "Mitt AI Team",
     "description": "Ditt personliga supportteam för jobbsökning. Välj en agent och börja chatta!",
     "selectAgent": "Välj din agent",
+    "skipToChat": "Hoppa till chatten",
+    "suggestion": {
+      "title": "Rekommenderad för dig"
+    },
+    "suggestions": {
+      "cvWork": "Du arbetade nyss med ditt CV",
+      "coverLetter": "Du arbetade nyss med personligt brev",
+      "jobSearch": "Du sökte nyss efter jobb",
+      "interview": "Du övade nyss på intervjuer",
+      "wellness": "Du checkade nyss in din hälsa",
+      "diary": "Du skrev nyss i dagboken",
+      "career": "Du utforskade nyss karriärvägar",
+      "skillsGap": "Du analyserade nyss kompetensgap",
+      "interestGuide": "Du utforskade nyss dina intressen",
+      "linkedin": "Du arbetade nyss med LinkedIn"
+    },
     "personality": "Personlighet",
     "selectPersonality": "Välj personlighet",
     "clearChat": "Rensa chatt",
