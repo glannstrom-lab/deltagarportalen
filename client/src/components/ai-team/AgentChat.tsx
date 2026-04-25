@@ -84,19 +84,15 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       if (!user?.id) return
 
       const loadSessionMemory = async () => {
-        try {
-          const { data } = await supabase
-            .from('ai_team_sessions')
-            .select('messages')
-            .eq('user_id', user.id)
-            .eq('agent_id', selectedAgent)
-            .single()
+        const { data } = await supabase
+          .from('ai_team_sessions')
+          .select('messages')
+          .eq('user_id', user.id)
+          .eq('agent_id', selectedAgent)
+          .maybeSingle()
 
-          if (data?.messages && Array.isArray(data.messages)) {
-            setMessages(data.messages)
-          }
-        } catch {
-          // No saved session, start fresh
+        if (data?.messages && Array.isArray(data.messages)) {
+          setMessages(data.messages)
         }
       }
 
