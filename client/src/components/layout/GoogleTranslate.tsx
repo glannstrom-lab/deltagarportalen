@@ -25,67 +25,141 @@ function getActiveTranslation(): string | null {
   return match ? match[1] : null
 }
 
-// Rensa alla Google Translate cookies
-function clearGoogleTranslateCookies() {
-  const domain = window.location.hostname
-  const isLocalhost = domain === 'localhost' || domain === '127.0.0.1'
+// Försök använda Google Translate's interna restore-funktion
+function tryRestoreOriginal(): boolean {
+  try {
+    // Metod 1: Hitta Google's restore-länk i DOM
+    const restoreLink = document.querySelector('.goog-te-banner-frame')?.contentDocument
+      ?.querySelector('button[id="restore"], .restore, [onclick*="restore"]') as HTMLElement
+    if (restoreLink) {
+      restoreLink.click()
+      return true
+    }
+
+    // Metod 2: Anropa Google's interna funktion
+    const win = window as Window & {
+      google?: {
+        translate?: {
+          TranslateElement?: {
+            restore?: () => void
+          }
+        }
+      }
+      _gaq?: unknown
+    }
+
+    if (typeof win.google?.translate?.TranslateElement?.restore === 'function') {
+      win.google.translate.TranslateElement.restore()
+      return true
+    }
+
+    // Metod 3: Simulera klick på "Show original" om den finns
+    const showOriginal = document.querySelector('[id*="restore"], .goog-te-menu-value span:first-child') as HTMLElement
+    if (showOriginal) {
+      showOriginal.click()
+      return true
+    }
+  } catch {
+    // Ignorera fel
+  }
+  return false
+}
+
+// Rensa ALLT Google Translate-relaterat
+function nukeGoogleTranslate() {
+  // 1. Rensa alla cookies (alla möjliga kombinationer)
   const expiredDate = 'Thu, 01 Jan 1970 00:00:00 UTC'
+  const domain = window.location.hostname
+  const cookieNames = ['googtrans', 'googtrans/', 'googtrans-b', 'NID', 'OGPC']
 
-  // Alla möjliga cookie-namn som Google Translate använder
-  const cookieNames = ['googtrans', 'googtrans-b']
-
-  // Alla möjliga paths och domains
-  const paths = ['/', '', '/deltagarportal']
-  const domains = ['', domain, `.${domain}`]
-
-  if (isLocalhost) {
-    domains.push('localhost', '.localhost', '127.0.0.1')
+  // Försök ta bort på alla möjliga sätt
+  for (const name of cookieNames) {
+    // Utan domain
+    document.cookie = `${name}=; expires=${expiredDate}; path=/`
+    document.cookie = `${name}=; expires=${expiredDate}; path=`
+    // Med domain
+    document.cookie = `${name}=; expires=${expiredDate}; path=/; domain=${domain}`
+    document.cookie = `${name}=; expires=${expiredDate}; path=/; domain=.${domain}`
+    // Localhost varianter
+    document.cookie = `${name}=; expires=${expiredDate}; path=/; domain=localhost`
+    document.cookie = `${name}=; expires=${expiredDate}; path=/; domain=.localhost`
   }
 
-  // Rensa alla kombinationer
-  for (const name of cookieNames) {
-    for (const path of paths) {
-      for (const d of domains) {
-        const domainPart = d ? `; domain=${d}` : ''
-        const pathPart = `; path=${path || '/'}`
-        document.cookie = `${name}=; expires=${expiredDate}${pathPart}${domainPart}`
+  // 2. Rensa localStorage och sessionStorage
+  try {
+    const keysToRemove: string[] = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key && (key.includes('goog') || key.includes('translate') || key.includes('GT-'))) {
+        keysToRemove.push(key)
       }
     }
+    keysToRemove.forEach(key => localStorage.removeItem(key))
+
+    const sessionKeysToRemove: string[] = []
+    for (let i = 0; i < sessionStorage.length; i++) {
+      const key = sessionStorage.key(i)
+      if (key && (key.includes('goog') || key.includes('translate') || key.includes('GT-'))) {
+        sessionKeysToRemove.push(key)
+      }
+    }
+    sessionKeysToRemove.forEach(key => sessionStorage.removeItem(key))
+  } catch {
+    // Ignorera
   }
+
+  // 3. Ta bort alla Google Translate-element från DOM
+  const elementsToRemove = document.querySelectorAll(
+    '.goog-te-banner-frame, .goog-te-menu-frame, .skiptranslate, #goog-gt-tt, .goog-te-spinner-pos, .goog-te-balloon-frame, [id^="goog-gt-"], [class*="goog-te"]'
+  )
+  elementsToRemove.forEach(el => el.remove())
+
+  // 4. Ta bort Google Translate script
+  const scripts = document.querySelectorAll('script[src*="translate.google"], script[src*="googleapis.com/translate"]')
+  scripts.forEach(s => s.remove())
+
+  // 5. Ta bort style-element som Google injicerat
+  const styles = document.querySelectorAll('style[type="text/css"]')
+  styles.forEach(style => {
+    if (style.textContent?.includes('goog-te') || style.textContent?.includes('skiptranslate')) {
+      style.remove()
+    }
+  })
 }
 
 // Sätt Google Translate cookie och ladda om
 function setTranslation(langCode: string | null) {
-  // Rensa alltid alla cookies först
-  clearGoogleTranslateCookies()
-
-  // Rensa sessionStorage om Google Translate lagrar något där
-  try {
-    Object.keys(sessionStorage).forEach(key => {
-      if (key.toLowerCase().includes('translate') || key.toLowerCase().includes('goog')) {
-        sessionStorage.removeItem(key)
-      }
-    })
-  } catch {
-    // Ignorera om sessionStorage inte är tillgänglig
-  }
-
-  if (langCode !== null) {
-    // Sätt ny översättning
-    const value = `/sv/${langCode}`
-    document.cookie = `googtrans=${value}; path=/`
-
-    const domain = window.location.hostname
-    const isLocalhost = domain === 'localhost' || domain === '127.0.0.1'
-    if (!isLocalhost) {
-      document.cookie = `googtrans=${value}; path=/; domain=.${domain}`
+  if (langCode === null) {
+    // Försök restore först
+    if (tryRestoreOriginal()) {
+      setTimeout(() => {
+        nukeGoogleTranslate()
+        window.location.replace(window.location.pathname)
+      }, 100)
+      return
     }
+
+    // Nuke allt och ladda om
+    nukeGoogleTranslate()
+
+    // Navigera till ren URL (utan query params)
+    window.location.replace(window.location.pathname)
+    return
   }
 
-  // Navigera till samma sida utan cache
-  const url = new URL(window.location.href)
-  url.searchParams.set('_gt', Date.now().toString())
-  window.location.replace(url.toString())
+  // Sätt ny översättning
+  nukeGoogleTranslate() // Rensa först
+
+  const value = `/sv/${langCode}`
+  document.cookie = `googtrans=${value}; path=/`
+
+  const domain = window.location.hostname
+  if (domain !== 'localhost' && domain !== '127.0.0.1') {
+    document.cookie = `googtrans=${value}; path=/; domain=.${domain}`
+  }
+
+  // Ladda om
+  window.location.reload()
 }
 
 export function GoogleTranslate() {
