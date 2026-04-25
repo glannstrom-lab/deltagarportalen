@@ -25,27 +25,67 @@ function getActiveTranslation(): string | null {
   return match ? match[1] : null
 }
 
-// Sätt Google Translate cookie och ladda om
-function setTranslation(langCode: string | null) {
+// Rensa alla Google Translate cookies
+function clearGoogleTranslateCookies() {
   const domain = window.location.hostname
+  const isLocalhost = domain === 'localhost' || domain === '127.0.0.1'
+  const expiredDate = 'Thu, 01 Jan 1970 00:00:00 UTC'
 
-  if (langCode === null) {
-    // Ta bort översättning - rensa alla möjliga cookie-varianter
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`
-    // Rensa även för localhost
-    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost;`
-  } else {
-    // Sätt översättning
-    const value = `/sv/${langCode}`
-    document.cookie = `googtrans=${value}; path=/;`
-    document.cookie = `googtrans=${value}; path=/; domain=${domain};`
-    document.cookie = `googtrans=${value}; path=/; domain=.${domain};`
+  // Alla möjliga cookie-namn som Google Translate använder
+  const cookieNames = ['googtrans', 'googtrans-b']
+
+  // Alla möjliga paths och domains
+  const paths = ['/', '', '/deltagarportal']
+  const domains = ['', domain, `.${domain}`]
+
+  if (isLocalhost) {
+    domains.push('localhost', '.localhost', '127.0.0.1')
   }
 
-  // Ladda om sidan för att aktivera översättningen
-  window.location.reload()
+  // Rensa alla kombinationer
+  for (const name of cookieNames) {
+    for (const path of paths) {
+      for (const d of domains) {
+        const domainPart = d ? `; domain=${d}` : ''
+        const pathPart = `; path=${path || '/'}`
+        document.cookie = `${name}=; expires=${expiredDate}${pathPart}${domainPart}`
+      }
+    }
+  }
+}
+
+// Sätt Google Translate cookie och ladda om
+function setTranslation(langCode: string | null) {
+  // Rensa alltid alla cookies först
+  clearGoogleTranslateCookies()
+
+  // Rensa sessionStorage om Google Translate lagrar något där
+  try {
+    Object.keys(sessionStorage).forEach(key => {
+      if (key.toLowerCase().includes('translate') || key.toLowerCase().includes('goog')) {
+        sessionStorage.removeItem(key)
+      }
+    })
+  } catch {
+    // Ignorera om sessionStorage inte är tillgänglig
+  }
+
+  if (langCode !== null) {
+    // Sätt ny översättning
+    const value = `/sv/${langCode}`
+    document.cookie = `googtrans=${value}; path=/`
+
+    const domain = window.location.hostname
+    const isLocalhost = domain === 'localhost' || domain === '127.0.0.1'
+    if (!isLocalhost) {
+      document.cookie = `googtrans=${value}; path=/; domain=.${domain}`
+    }
+  }
+
+  // Navigera till samma sida utan cache
+  const url = new URL(window.location.href)
+  url.searchParams.set('_gt', Date.now().toString())
+  window.location.replace(url.toString())
 }
 
 export function GoogleTranslate() {
