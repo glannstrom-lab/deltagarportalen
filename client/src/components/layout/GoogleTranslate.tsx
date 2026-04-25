@@ -1,103 +1,100 @@
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Globe } from '@/components/ui/icons'
+import { Globe, Check } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
-declare global {
-  interface Window {
-    google: {
-      translate: {
-        TranslateElement: {
-          new (
-            config: {
-              pageLanguage: string
-              includedLanguages?: string
-              layout?: number
-              autoDisplay?: boolean
-              multilanguagePage?: boolean
-            },
-            elementId: string
-          ): void
-          InlineLayout: {
-            SIMPLE: number
-            HORIZONTAL: number
-            VERTICAL: number
-          }
-        }
-      }
-    }
-    googleTranslateElementInit?: () => void
-  }
+// Språk med namn på sitt eget språk och flagg-emoji
+const LANGUAGES = [
+  { code: 'ar', name: 'العربية', flag: '🇸🇦', english: 'Arabic' },
+  { code: 'fa', name: 'فارسی', flag: '🇮🇷', english: 'Persian' },
+  { code: 'so', name: 'Soomaali', flag: '🇸🇴', english: 'Somali' },
+  { code: 'ti', name: 'ትግርኛ', flag: '🇪🇷', english: 'Tigrinya' },
+  { code: 'uk', name: 'Українська', flag: '🇺🇦', english: 'Ukrainian' },
+  { code: 'pl', name: 'Polski', flag: '🇵🇱', english: 'Polish' },
+  { code: 'de', name: 'Deutsch', flag: '🇩🇪', english: 'German' },
+  { code: 'fr', name: 'Français', flag: '🇫🇷', english: 'French' },
+  { code: 'es', name: 'Español', flag: '🇪🇸', english: 'Spanish' },
+  { code: 'fi', name: 'Suomi', flag: '🇫🇮', english: 'Finnish' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺', english: 'Russian' },
+  { code: 'zh-CN', name: '中文', flag: '🇨🇳', english: 'Chinese' },
+] as const
+
+// Hämta aktuellt översättningsspråk från Google Translate cookie
+function getActiveTranslation(): string | null {
+  const match = document.cookie.match(/googtrans=\/[^/]+\/([^;]+)/)
+  return match ? match[1] : null
 }
 
-// Språk som stöds (utöver svenska/engelska som hanteras av i18next)
-const SUPPORTED_LANGUAGES = 'ar,fa,so,ti,uk,pl,de,fr,es,fi,ru,zh-CN'
+// Sätt Google Translate cookie och ladda om
+function setTranslation(langCode: string | null) {
+  const domain = window.location.hostname
+
+  if (langCode === null) {
+    // Ta bort översättning
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`
+  } else {
+    // Sätt översättning
+    const value = `/sv/${langCode}`
+    document.cookie = `googtrans=${value}; path=/;`
+    document.cookie = `googtrans=${value}; path=/; domain=${domain};`
+    document.cookie = `googtrans=${value}; path=/; domain=.${domain};`
+  }
+
+  // Ladda om sidan för att aktivera översättningen
+  window.location.reload()
+}
 
 export function GoogleTranslate() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
-  const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
+  const [activeLanguage, setActiveLanguage] = useState<string | null>(null)
+  const [scriptLoaded, setScriptLoaded] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
-  const hasInitialized = useRef(false)
 
-  const initGoogleTranslate = useCallback(() => {
-    const element = document.getElementById('google_translate_element')
-    if (!element) {
-      console.warn('Google Translate: Element not found')
+  // Kolla aktivt språk vid mount
+  useEffect(() => {
+    setActiveLanguage(getActiveTranslation())
+  }, [])
+
+  // Ladda Google Translate script (behövs för att översättningen ska fungera)
+  useEffect(() => {
+    if (scriptLoaded) return
+
+    const existingScript = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')
+    if (existingScript) {
+      setScriptLoaded(true)
       return
     }
 
-    // Rensa eventuellt tidigare innehåll
-    element.innerHTML = ''
+    // Skapa ett dolt element för Google Translate
+    const hiddenDiv = document.createElement('div')
+    hiddenDiv.id = 'google_translate_element'
+    hiddenDiv.style.display = 'none'
+    document.body.appendChild(hiddenDiv)
 
-    try {
-      new window.google.translate.TranslateElement(
-        {
-          pageLanguage: i18n.language === 'en' ? 'en' : 'sv',
-          includedLanguages: SUPPORTED_LANGUAGES,
-          autoDisplay: false,
-          multilanguagePage: true,
-        },
-        'google_translate_element'
-      )
-      setStatus('ready')
-    } catch (e) {
-      console.error('Google Translate init error:', e)
-      setStatus('error')
-    }
-  }, [i18n.language])
-
-  // Ladda Google Translate när menyn öppnas första gången
-  useEffect(() => {
-    if (!isOpen || hasInitialized.current) return
-
-    hasInitialized.current = true
-    setStatus('loading')
-
-    // Definiera callback
-    window.googleTranslateElementInit = () => {
-      // Vänta lite för att säkerställa att DOM är redo
-      setTimeout(initGoogleTranslate, 50)
-    }
-
-    // Kolla om scriptet redan finns
-    const existingScript = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')
-
-    if (existingScript && window.google?.translate?.TranslateElement) {
-      // Scriptet finns redan och är laddat
-      setTimeout(initGoogleTranslate, 50)
-    } else if (!existingScript) {
-      // Ladda scriptet
-      const script = document.createElement('script')
-      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
-      script.async = true
-      script.onerror = () => {
-        console.error('Failed to load Google Translate script')
-        setStatus('error')
+    // Definiera init-funktionen
+    ;(window as Window & { googleTranslateElementInit?: () => void }).googleTranslateElementInit = () => {
+      const google = (window as Window & { google?: { translate?: { TranslateElement: new (config: object, id: string) => void } } }).google
+      if (google?.translate?.TranslateElement) {
+        new google.translate.TranslateElement(
+          {
+            pageLanguage: 'sv',
+            autoDisplay: false,
+          },
+          'google_translate_element'
+        )
       }
-      document.head.appendChild(script)
+      setScriptLoaded(true)
     }
-  }, [isOpen, initGoogleTranslate])
+
+    // Ladda scriptet
+    const script = document.createElement('script')
+    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
+    script.async = true
+    document.head.appendChild(script)
+  }, [scriptLoaded])
 
   // Stäng menyn vid klick utanför
   useEffect(() => {
@@ -119,6 +116,19 @@ export function GoogleTranslate() {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen])
 
+  const handleSelectLanguage = (langCode: string) => {
+    if (activeLanguage === langCode) {
+      // Redan aktivt - stäng av översättning
+      setTranslation(null)
+    } else {
+      setTranslation(langCode)
+    }
+  }
+
+  const handleResetTranslation = () => {
+    setTranslation(null)
+  }
+
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -126,22 +136,31 @@ export function GoogleTranslate() {
         className={cn(
           'w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200',
           'shadow-sm hover:shadow-md focus:outline-none',
-          isOpen
-            ? 'bg-emerald-100 dark:bg-emerald-900/40 ring-2 ring-emerald-400/50'
-            : 'bg-emerald-100/80 hover:bg-emerald-200/90 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/50'
+          activeLanguage
+            ? 'bg-emerald-200 dark:bg-emerald-800/60 ring-2 ring-emerald-400/50'
+            : isOpen
+              ? 'bg-emerald-100 dark:bg-emerald-900/40 ring-2 ring-emerald-400/50'
+              : 'bg-emerald-100/80 hover:bg-emerald-200/90 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/50'
         )}
         aria-label={t('language.translate', 'Översätt sidan')}
         aria-expanded={isOpen}
-        title={t('language.translate', 'Översätt till fler språk')}
+        title={activeLanguage
+          ? t('language.translatedTo', 'Sidan är översatt')
+          : t('language.translate', 'Översätt till fler språk')
+        }
       >
-        <Globe size={20} className="text-emerald-600 dark:text-emerald-400" />
+        <Globe size={20} className={cn(
+          activeLanguage
+            ? 'text-emerald-700 dark:text-emerald-300'
+            : 'text-emerald-600 dark:text-emerald-400'
+        )} />
       </button>
 
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
           <div
-            className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
+            className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
           >
             {/* Header */}
             <div className="px-4 py-2.5 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-b border-stone-100 dark:border-stone-700">
@@ -149,35 +168,59 @@ export function GoogleTranslate() {
                 <Globe size={16} className="text-emerald-500" />
                 {t('language.translatePage', 'Översätt sidan')}
               </h3>
-              <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
-                {t('language.poweredByGoogle', 'Via Google Translate')}
-              </p>
             </div>
 
-            <div className="p-4">
-              {status === 'loading' && (
-                <div className="flex items-center justify-center py-4">
-                  <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                  <span className="ml-2 text-sm text-stone-500">
-                    {t('common.loading', 'Laddar...')}
-                  </span>
-                </div>
-              )}
+            {/* Återställ-knapp om översättning är aktiv */}
+            {activeLanguage && (
+              <div className="px-2 pt-2">
+                <button
+                  onClick={handleResetTranslation}
+                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-stone-100 dark:bg-stone-700 hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors text-sm text-stone-600 dark:text-stone-300"
+                >
+                  {t('language.showOriginal', 'Visa original (Svenska)')}
+                </button>
+              </div>
+            )}
 
-              {status === 'error' && (
-                <div className="text-center py-4 text-red-500 text-sm">
-                  {t('common.error', 'Kunde inte ladda översättning')}
-                </div>
-              )}
+            {/* Språklista */}
+            <div className="p-2 max-h-80 overflow-y-auto">
+              {LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => handleSelectLanguage(lang.code)}
+                  className={cn(
+                    'w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors',
+                    activeLanguage === lang.code
+                      ? 'bg-emerald-50 dark:bg-emerald-900/30'
+                      : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
+                  )}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl" role="img" aria-label={lang.english}>
+                      {lang.flag}
+                    </span>
+                    <span
+                      className={cn(
+                        'text-sm font-medium',
+                        activeLanguage === lang.code
+                          ? 'text-emerald-700 dark:text-emerald-300'
+                          : 'text-stone-700 dark:text-stone-200'
+                      )}
+                    >
+                      {lang.name}
+                    </span>
+                  </div>
+                  {activeLanguage === lang.code && (
+                    <Check size={16} className="text-emerald-500" />
+                  )}
+                </button>
+              ))}
+            </div>
 
-              {/* Google Translate Widget Container */}
-              <div
-                id="google_translate_element"
-                className="google-translate-wrapper"
-              />
-
-              <p className="text-xs text-stone-400 dark:text-stone-500 mt-4 text-center">
-                {t('language.machineTranslation', 'Maskinöversättning - kvaliteten kan variera')}
+            {/* Footer */}
+            <div className="px-4 py-2 border-t border-stone-100 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-900/30">
+              <p className="text-xs text-stone-400 dark:text-stone-500 text-center">
+                {t('language.machineTranslation', 'Maskinöversättning via Google')}
               </p>
             </div>
           </div>

@@ -227,8 +227,10 @@
     "english": "English",
     "translate": "Översätt sidan",
     "translatePage": "Översätt sidan",
+    "translatedTo": "Sidan är översatt",
+    "showOriginal": "Visa original (Svenska)",
     "poweredByGoogle": "Via Google Translate",
-    "machineTranslation": "Maskinöversättning - kvaliteten kan variera"
+    "machineTranslation": "Maskinöversättning via Google"
   },
   "dashboard": {
     "title": "Översikt",

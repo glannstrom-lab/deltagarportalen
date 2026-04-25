@@ -851,74 +851,29 @@
 }
 
 /* ============================================
-   Google Translate Widget Styling
+   Google Translate - Dölj alla Google-element
+   Vi använder egen UI, Google sköter bara översättningen
    ============================================ */
 
-/* Wrapper för att styla dropdown */
-.google-translate-wrapper .goog-te-gadget {
-  font-family: inherit !important;
-  font-size: 0.875rem !important;
-}
-
-/* Dölj "Powered by Google" */
-.google-translate-wrapper .goog-te-gadget > span {
-  display: none !important;
-}
-
-/* Styla select-elementet */
-.google-translate-wrapper .goog-te-gadget select,
-.google-translate-wrapper .goog-te-combo {
-  width: 100% !important;
-  padding: 0.625rem 0.75rem !important;
-  border: 1px solid #e7e5e4 !important;
-  border-radius: 0.75rem !important;
-  background-color: #fafaf9 !important;
-  font-size: 0.875rem !important;
-  color: #44403c !important;
-  cursor: pointer !important;
-  transition: all 0.2s !important;
-}
-
-.google-translate-wrapper .goog-te-gadget select:hover,
-.google-translate-wrapper .goog-te-combo:hover {
-  border-color: #10b981 !important;
-  background-color: #ecfdf5 !important;
-}
-
-.google-translate-wrapper .goog-te-gadget select:focus,
-.google-translate-wrapper .goog-te-combo:focus {
-  outline: none !important;
-  border-color: #10b981 !important;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2) !important;
-}
-
-/* Dark mode */
-.dark .google-translate-wrapper .goog-te-gadget select,
-.dark .google-translate-wrapper .goog-te-combo {
-  background-color: #292524 !important;
-  border-color: #44403c !important;
-  color: #e7e5e4 !important;
-}
-
-.dark .google-translate-wrapper .goog-te-gadget select:hover,
-.dark .google-translate-wrapper .goog-te-combo:hover {
-  border-color: #10b981 !important;
-  background-color: #064e3b !important;
-}
-
-/* Dölj Google Translate iframe banner (men inte widgeten själv) */
+/* Dölj Google Translate banner och widget */
 .goog-te-banner-frame,
-body > .skiptranslate:first-child {
+.goog-te-gadget,
+.skiptranslate,
+#google_translate_element {
   display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  overflow: hidden !important;
 }
 
 /* Förhindra att Google Translate flyttar body */
 body {
   top: 0 !important;
+  position: static !important;
 }
 
-/* Se till att widget-containern är synlig */
-.google-translate-wrapper .skiptranslate,
-.google-translate-wrapper .goog-te-gadget-simple {
-  display: block !important;
+/* Ta bort Google's highlight-styling på översatt text */
+.goog-text-highlight {
+  background: none !important;
+  box-shadow: none !important;
 }
