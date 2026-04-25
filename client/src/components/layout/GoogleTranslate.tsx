@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Globe, Check } from '@/components/ui/icons'
+import { Globe, Check, RotateCcw } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 // Språk med namn på sitt eget språk och flagg-emoji
@@ -30,10 +30,12 @@ function setTranslation(langCode: string | null) {
   const domain = window.location.hostname
 
   if (langCode === null) {
-    // Ta bort översättning
+    // Ta bort översättning - rensa alla möjliga cookie-varianter
     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`
     document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain};`
+    // Rensa även för localhost
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=localhost;`
   } else {
     // Sätt översättning
     const value = `/sv/${langCode}`
@@ -117,12 +119,7 @@ export function GoogleTranslate() {
   }, [isOpen])
 
   const handleSelectLanguage = (langCode: string) => {
-    if (activeLanguage === langCode) {
-      // Redan aktivt - stäng av översättning
-      setTranslation(null)
-    } else {
-      setTranslation(langCode)
-    }
+    setTranslation(langCode)
   }
 
   const handleResetTranslation = () => {
@@ -170,20 +167,49 @@ export function GoogleTranslate() {
               </h3>
             </div>
 
-            {/* Återställ-knapp om översättning är aktiv */}
-            {activeLanguage && (
-              <div className="px-2 pt-2">
-                <button
-                  onClick={handleResetTranslation}
-                  className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-stone-100 dark:bg-stone-700 hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors text-sm text-stone-600 dark:text-stone-300"
-                >
-                  {t('language.showOriginal', 'Visa original (Svenska)')}
-                </button>
-              </div>
-            )}
-
             {/* Språklista */}
             <div className="p-2 max-h-80 overflow-y-auto">
+              {/* Svenska (Original) - alltid först */}
+              <button
+                onClick={handleResetTranslation}
+                className={cn(
+                  'w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors mb-1',
+                  !activeLanguage
+                    ? 'bg-sky-50 dark:bg-sky-900/30'
+                    : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
+                )}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-xl" role="img" aria-label="Swedish">
+                    🇸🇪
+                  </span>
+                  <div className="flex flex-col items-start">
+                    <span
+                      className={cn(
+                        'text-sm font-medium',
+                        !activeLanguage
+                          ? 'text-sky-700 dark:text-sky-300'
+                          : 'text-stone-700 dark:text-stone-200'
+                      )}
+                    >
+                      Svenska
+                    </span>
+                    <span className="text-xs text-stone-400 dark:text-stone-500">
+                      Original
+                    </span>
+                  </div>
+                </div>
+                {!activeLanguage ? (
+                  <Check size={16} className="text-sky-500" />
+                ) : (
+                  <RotateCcw size={14} className="text-stone-400" />
+                )}
+              </button>
+
+              {/* Divider */}
+              <div className="border-t border-stone-100 dark:border-stone-700 my-2" />
+
+              {/* Andra språk */}
               {LANGUAGES.map((lang) => (
                 <button
                   key={lang.code}
