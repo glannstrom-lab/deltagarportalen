@@ -129,37 +129,33 @@ function nukeGoogleTranslate() {
 
 // Sätt Google Translate cookie och ladda om
 function setTranslation(langCode: string | null) {
-  if (langCode === null) {
-    // Försök restore först
-    if (tryRestoreOriginal()) {
-      setTimeout(() => {
-        nukeGoogleTranslate()
-        window.location.replace(window.location.pathname)
-      }, 100)
-      return
-    }
-
-    // Nuke allt och ladda om
-    nukeGoogleTranslate()
-
-    // Navigera till ren URL (utan query params)
-    window.location.replace(window.location.pathname)
-    return
-  }
-
-  // Sätt ny översättning
-  nukeGoogleTranslate() // Rensa först
-
-  const value = `/sv/${langCode}`
-  document.cookie = `googtrans=${value}; path=/`
-
   const domain = window.location.hostname
-  if (domain !== 'localhost' && domain !== '127.0.0.1') {
-    document.cookie = `googtrans=${value}; path=/; domain=.${domain}`
+  const isLocalhost = domain === 'localhost' || domain === '127.0.0.1'
+
+  // Rensa allt först
+  nukeGoogleTranslate()
+
+  if (langCode === null) {
+    // VIKTIGT: Sätt till /sv/sv (svenska till svenska) = ingen översättning
+    // Att bara ta bort cookien fungerar inte - Google kommer ihåg
+    const resetValue = '/sv/sv'
+    document.cookie = `googtrans=${resetValue}; path=/`
+    if (!isLocalhost) {
+      document.cookie = `googtrans=${resetValue}; path=/; domain=${domain}`
+      document.cookie = `googtrans=${resetValue}; path=/; domain=.${domain}`
+    }
+  } else {
+    // Sätt ny översättning
+    const value = `/sv/${langCode}`
+    document.cookie = `googtrans=${value}; path=/`
+    if (!isLocalhost) {
+      document.cookie = `googtrans=${value}; path=/; domain=${domain}`
+      document.cookie = `googtrans=${value}; path=/; domain=.${domain}`
+    }
   }
 
-  // Ladda om
-  window.location.reload()
+  // Hård omladdning - navigera till samma path
+  window.location.href = window.location.pathname
 }
 
 export function GoogleTranslate() {
