@@ -906,12 +906,19 @@
   background-color: #064e3b !important;
 }
 
-/* Dölj Google Translate iframe banner */
-.skiptranslate,
-.goog-te-banner-frame {
+/* Dölj Google Translate iframe banner (men inte widgeten själv) */
+.goog-te-banner-frame,
+body > .skiptranslate:first-child {
   display: none !important;
 }
 
+/* Förhindra att Google Translate flyttar body */
 body {
   top: 0 !important;
+}
+
+/* Se till att widget-containern är synlig */
+.google-translate-wrapper .skiptranslate,
+.google-translate-wrapper .goog-te-gadget-simple {
+  display: block !important;
 }

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Globe } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -7,18 +7,26 @@ declare global {
   interface Window {
     google: {
       translate: {
-        TranslateElement: new (
-          config: {
-            pageLanguage: string
-            includedLanguages?: string
-            layout: unknown
-            autoDisplay: boolean
-          },
-          elementId: string
-        ) => void
+        TranslateElement: {
+          new (
+            config: {
+              pageLanguage: string
+              includedLanguages?: string
+              layout?: number
+              autoDisplay?: boolean
+              multilanguagePage?: boolean
+            },
+            elementId: string
+          ): void
+          InlineLayout: {
+            SIMPLE: number
+            HORIZONTAL: number
+            VERTICAL: number
+          }
+        }
       }
     }
-    googleTranslateElementInit: () => void
+    googleTranslateElementInit?: () => void
   }
 }
 
@@ -28,60 +36,68 @@ const SUPPORTED_LANGUAGES = 'ar,fa,so,ti,uk,pl,de,fr,es,fi,ru,zh-CN'
 export function GoogleTranslate() {
   const { t, i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [hasInitialized, setHasInitialized] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle')
   const menuRef = useRef<HTMLDivElement>(null)
+  const hasInitialized = useRef(false)
 
-  // Initiera Google Translate när menyn öppnas första gången
+  const initGoogleTranslate = useCallback(() => {
+    const element = document.getElementById('google_translate_element')
+    if (!element) {
+      console.warn('Google Translate: Element not found')
+      return
+    }
+
+    // Rensa eventuellt tidigare innehåll
+    element.innerHTML = ''
+
+    try {
+      new window.google.translate.TranslateElement(
+        {
+          pageLanguage: i18n.language === 'en' ? 'en' : 'sv',
+          includedLanguages: SUPPORTED_LANGUAGES,
+          autoDisplay: false,
+          multilanguagePage: true,
+        },
+        'google_translate_element'
+      )
+      setStatus('ready')
+    } catch (e) {
+      console.error('Google Translate init error:', e)
+      setStatus('error')
+    }
+  }, [i18n.language])
+
+  // Ladda Google Translate när menyn öppnas första gången
   useEffect(() => {
-    if (!isOpen || hasInitialized) return
+    if (!isOpen || hasInitialized.current) return
 
-    // Vänta lite så DOM:en hinner rendera
-    const timer = setTimeout(() => {
-      const element = document.getElementById('google_translate_element')
-      if (!element) return
+    hasInitialized.current = true
+    setStatus('loading')
 
-      // Skapa init-funktionen
-      window.googleTranslateElementInit = () => {
-        if (window.google?.translate?.TranslateElement) {
-          try {
-            new window.google.translate.TranslateElement(
-              {
-                pageLanguage: i18n.language === 'en' ? 'en' : 'sv',
-                includedLanguages: SUPPORTED_LANGUAGES,
-                layout: (window.google.translate.TranslateElement as unknown as { InlineLayout: { SIMPLE: unknown } }).InlineLayout?.SIMPLE,
-                autoDisplay: false,
-              },
-              'google_translate_element'
-            )
-            setIsLoaded(true)
-          } catch (e) {
-            console.error('Google Translate init error:', e)
-          }
-        }
+    // Definiera callback
+    window.googleTranslateElementInit = () => {
+      // Vänta lite för att säkerställa att DOM är redo
+      setTimeout(initGoogleTranslate, 50)
+    }
+
+    // Kolla om scriptet redan finns
+    const existingScript = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')
+
+    if (existingScript && window.google?.translate?.TranslateElement) {
+      // Scriptet finns redan och är laddat
+      setTimeout(initGoogleTranslate, 50)
+    } else if (!existingScript) {
+      // Ladda scriptet
+      const script = document.createElement('script')
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
+      script.async = true
+      script.onerror = () => {
+        console.error('Failed to load Google Translate script')
+        setStatus('error')
       }
-
-      // Kolla om scriptet redan finns
-      const existingScript = document.querySelector('script[src*="translate.google.com/translate_a/element.js"]')
-
-      if (existingScript) {
-        // Scriptet finns redan, kör init direkt om google finns
-        if (window.google?.translate?.TranslateElement) {
-          window.googleTranslateElementInit()
-        }
-      } else {
-        // Ladda scriptet
-        const script = document.createElement('script')
-        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit'
-        script.async = true
-        document.body.appendChild(script)
-      }
-
-      setHasInitialized(true)
-    }, 100)
-
-    return () => clearTimeout(timer)
-  }, [isOpen, hasInitialized, i18n.language])
+      document.head.appendChild(script)
+    }
+  }, [isOpen, initGoogleTranslate])
 
   // Stäng menyn vid klick utanför
   useEffect(() => {
@@ -125,7 +141,7 @@ export function GoogleTranslate() {
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
           <div
-            className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
+            className="absolute right-0 top-full mt-2 w-72 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
           >
             {/* Header */}
             <div className="px-4 py-2.5 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-b border-stone-100 dark:border-stone-700">
@@ -138,23 +154,29 @@ export function GoogleTranslate() {
               </p>
             </div>
 
-            <div className="p-3">
-              {/* Google Translate Widget - alltid renderad när open */}
-              <div
-                id="google_translate_element"
-                className="google-translate-wrapper min-h-[40px]"
-              />
-
-              {!isLoaded && hasInitialized && (
-                <div className="flex items-center justify-center py-2">
-                  <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
-                  <span className="ml-2 text-xs text-stone-500">
+            <div className="p-4">
+              {status === 'loading' && (
+                <div className="flex items-center justify-center py-4">
+                  <div className="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+                  <span className="ml-2 text-sm text-stone-500">
                     {t('common.loading', 'Laddar...')}
                   </span>
                 </div>
               )}
 
-              <p className="text-xs text-stone-400 dark:text-stone-500 mt-3 text-center">
+              {status === 'error' && (
+                <div className="text-center py-4 text-red-500 text-sm">
+                  {t('common.error', 'Kunde inte ladda översättning')}
+                </div>
+              )}
+
+              {/* Google Translate Widget Container */}
+              <div
+                id="google_translate_element"
+                className="google-translate-wrapper"
+              />
+
+              <p className="text-xs text-stone-400 dark:text-stone-500 mt-4 text-center">
                 {t('language.machineTranslation', 'Maskinöversättning - kvaliteten kan variera')}
               </p>
             </div>
