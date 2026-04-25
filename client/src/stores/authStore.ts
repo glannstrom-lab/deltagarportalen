@@ -22,6 +22,50 @@ export interface Profile {
   consultant_id: string | null
   created_at: string
   updated_at: string
+  // Extended profile data
+  bio: string | null
+  location: string | null
+  employment_status: string | null
+  desired_jobs: {
+    titles?: string[]
+    industries?: string[]
+    keywords?: string[]
+  } | null
+  career_goals: {
+    shortTerm?: string
+    longTerm?: string
+    skills?: string[]
+  } | null
+  work_preferences: {
+    remote?: boolean
+    hybrid?: boolean
+    onsite?: boolean
+    partTime?: boolean
+    fullTime?: boolean
+    flexible?: boolean
+  } | null
+  availability: {
+    startDate?: string
+    noticePeriod?: string
+    hoursPerWeek?: number
+  } | null
+  mobility: {
+    canRelocate?: boolean
+    maxCommute?: number
+    driversLicense?: boolean
+    ownCar?: boolean
+  } | null
+  salary: {
+    minimum?: number
+    desired?: number
+    currency?: string
+  } | null
+  support_goals: {
+    goals?: string[]
+    challenges?: string[]
+    strengths?: string[]
+  } | null
+  interests: string[] | null
   // GDPR Consent timestamps
   terms_accepted_at: string | null
   privacy_accepted_at: string | null

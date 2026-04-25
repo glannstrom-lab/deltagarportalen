@@ -15,12 +15,45 @@ import { useInterestProfile } from '@/hooks/useInterestProfile'
 import type { AgentId } from '@/components/ai-team/types'
 
 export interface AITeamUserContext {
-  // Profile
+  // Profile basics
   firstName?: string
+  bio?: string
+  location?: string
+  employmentStatus?: string
+
+  // Career goals
   targetRole?: string
   targetIndustry?: string
   experienceYears?: number
-  location?: string
+  desiredJobs?: string[]
+  careerGoals?: {
+    shortTerm?: string
+    longTerm?: string
+    targetSkills?: string[]
+  }
+  supportGoals?: {
+    goals?: string[]
+    challenges?: string[]
+    strengths?: string[]
+  }
+
+  // Work preferences
+  workPreferences?: {
+    remote?: boolean
+    hybrid?: boolean
+    onsite?: boolean
+    partTime?: boolean
+    fullTime?: boolean
+  }
+  availability?: {
+    startDate?: string
+    noticePeriod?: string
+  }
+  mobility?: {
+    canRelocate?: boolean
+    driversLicense?: boolean
+  }
+  salaryExpectation?: number
 
   // CV data
   hasCV: boolean
@@ -38,7 +71,7 @@ export interface AITeamUserContext {
   skills?: string[]
   languages?: string[]
 
-  // Job search
+  // Job search activity
   savedJobsCount: number
   appliedJobsCount: number
   interviewsCount: number
@@ -51,6 +84,7 @@ export interface AITeamUserContext {
   // Interest profile
   riasecTypes?: string[]
   suggestedCareers?: string[]
+  interests?: string[]
 
   // Current state
   energyLevel: 'low' | 'medium' | 'high'
@@ -80,10 +114,69 @@ export function useAITeamContext() {
     // Profile info
     if (profile) {
       ctx.firstName = profile.first_name || undefined
-      ctx.targetRole = profile.target_role || undefined
-      ctx.targetIndustry = profile.target_industry || undefined
-      ctx.experienceYears = profile.experience_years || undefined
-      ctx.location = profile.city || profile.location || undefined
+      ctx.bio = profile.bio || undefined
+      ctx.location = profile.location || undefined
+      ctx.employmentStatus = profile.employment_status || undefined
+
+      // Career goals
+      if (profile.desired_jobs) {
+        ctx.desiredJobs = profile.desired_jobs.titles || []
+        if (profile.desired_jobs.industries?.[0]) {
+          ctx.targetIndustry = profile.desired_jobs.industries[0]
+        }
+        if (profile.desired_jobs.titles?.[0]) {
+          ctx.targetRole = profile.desired_jobs.titles[0]
+        }
+      }
+
+      if (profile.career_goals) {
+        ctx.careerGoals = {
+          shortTerm: profile.career_goals.shortTerm,
+          longTerm: profile.career_goals.longTerm,
+          targetSkills: profile.career_goals.skills,
+        }
+      }
+
+      if (profile.support_goals) {
+        ctx.supportGoals = {
+          goals: profile.support_goals.goals,
+          challenges: profile.support_goals.challenges,
+          strengths: profile.support_goals.strengths,
+        }
+      }
+
+      // Work preferences
+      if (profile.work_preferences) {
+        ctx.workPreferences = {
+          remote: profile.work_preferences.remote,
+          hybrid: profile.work_preferences.hybrid,
+          onsite: profile.work_preferences.onsite,
+          partTime: profile.work_preferences.partTime,
+          fullTime: profile.work_preferences.fullTime,
+        }
+      }
+
+      if (profile.availability) {
+        ctx.availability = {
+          startDate: profile.availability.startDate,
+          noticePeriod: profile.availability.noticePeriod,
+        }
+      }
+
+      if (profile.mobility) {
+        ctx.mobility = {
+          canRelocate: profile.mobility.canRelocate,
+          driversLicense: profile.mobility.driversLicense,
+        }
+      }
+
+      if (profile.salary?.minimum) {
+        ctx.salaryExpectation = profile.salary.minimum
+      }
+
+      if (profile.interests && Array.isArray(profile.interests)) {
+        ctx.interests = profile.interests
+      }
     }
 
     // CV data
@@ -168,16 +261,90 @@ export function useAITeamContext() {
 export function formatAITeamContext(context: AITeamUserContext, agentId: AgentId): string {
   const sections: string[] = []
 
-  // Profile section
+  // Profile section - always included
   const profileParts: string[] = []
   if (context.firstName) profileParts.push(`Namn: ${context.firstName}`)
-  if (context.targetRole) profileParts.push(`Söker: ${context.targetRole}`)
-  if (context.targetIndustry) profileParts.push(`Bransch: ${context.targetIndustry}`)
-  if (context.experienceYears !== undefined) profileParts.push(`Erfarenhet: ${context.experienceYears} år`)
+  if (context.bio) profileParts.push(`Om mig: ${context.bio.substring(0, 300)}`)
   if (context.location) profileParts.push(`Ort: ${context.location}`)
+  if (context.employmentStatus) profileParts.push(`Anställningsstatus: ${context.employmentStatus}`)
 
   if (profileParts.length > 0) {
     sections.push(`[PROFIL]\n${profileParts.join('\n')}`)
+  }
+
+  // Career goals section
+  const careerParts: string[] = []
+  if (context.targetRole) careerParts.push(`Söker jobb som: ${context.targetRole}`)
+  if (context.desiredJobs && context.desiredJobs.length > 1) {
+    careerParts.push(`Önskade roller: ${context.desiredJobs.slice(0, 5).join(', ')}`)
+  }
+  if (context.targetIndustry) careerParts.push(`Bransch: ${context.targetIndustry}`)
+  if (context.experienceYears !== undefined) careerParts.push(`Erfarenhet: ${context.experienceYears} år`)
+
+  if (context.careerGoals) {
+    if (context.careerGoals.shortTerm) careerParts.push(`Kortsiktigt mål: ${context.careerGoals.shortTerm}`)
+    if (context.careerGoals.longTerm) careerParts.push(`Långsiktigt mål: ${context.careerGoals.longTerm}`)
+    if (context.careerGoals.targetSkills?.length) {
+      careerParts.push(`Vill utveckla: ${context.careerGoals.targetSkills.join(', ')}`)
+    }
+  }
+
+  if (careerParts.length > 0) {
+    sections.push(`[KARRIÄRMÅL]\n${careerParts.join('\n')}`)
+  }
+
+  // Support goals (for arbetsterapeut and motivationscoach)
+  if ((agentId === 'arbetsterapeut' || agentId === 'motivationscoach') && context.supportGoals) {
+    const supportParts: string[] = []
+    if (context.supportGoals.goals?.length) {
+      supportParts.push(`Mål: ${context.supportGoals.goals.join(', ')}`)
+    }
+    if (context.supportGoals.challenges?.length) {
+      supportParts.push(`Utmaningar: ${context.supportGoals.challenges.join(', ')}`)
+    }
+    if (context.supportGoals.strengths?.length) {
+      supportParts.push(`Styrkor: ${context.supportGoals.strengths.join(', ')}`)
+    }
+    if (supportParts.length > 0) {
+      sections.push(`[STÖDMÅL]\n${supportParts.join('\n')}`)
+    }
+  }
+
+  // Work preferences (for arbetskonsulent)
+  if (agentId === 'arbetskonsulent' && context.workPreferences) {
+    const prefParts: string[] = []
+    const prefs: string[] = []
+    if (context.workPreferences.remote) prefs.push('distans')
+    if (context.workPreferences.hybrid) prefs.push('hybrid')
+    if (context.workPreferences.onsite) prefs.push('på plats')
+    if (context.workPreferences.fullTime) prefs.push('heltid')
+    if (context.workPreferences.partTime) prefs.push('deltid')
+    if (prefs.length > 0) prefParts.push(`Arbetsform: ${prefs.join(', ')}`)
+
+    if (context.availability?.startDate) {
+      prefParts.push(`Kan börja: ${context.availability.startDate}`)
+    }
+    if (context.availability?.noticePeriod) {
+      prefParts.push(`Uppsägningstid: ${context.availability.noticePeriod}`)
+    }
+    if (context.mobility?.canRelocate) {
+      prefParts.push(`Kan flytta: Ja`)
+    }
+    if (context.mobility?.driversLicense) {
+      prefParts.push(`Körkort: Ja`)
+    }
+    if (context.salaryExpectation) {
+      prefParts.push(`Löneanspråk: ${context.salaryExpectation.toLocaleString('sv-SE')} kr/mån`)
+    }
+
+    if (prefParts.length > 0) {
+      sections.push(`[ARBETSPREFERENSER]\n${prefParts.join('\n')}`)
+    }
+  }
+
+  // Interests
+  if (context.interests && context.interests.length > 0) {
+    sections.push(`[INTRESSEN]\n${context.interests.slice(0, 10).join(', ')}`)
   }
 
   // CV section (mainly for arbetskonsulent)
