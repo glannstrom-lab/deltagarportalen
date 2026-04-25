@@ -20,6 +20,7 @@ import CrisisSupport from '@/components/CrisisSupport'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { LanguageSwitcher } from './LanguageSwitcher'
+import { GoogleTranslate } from './GoogleTranslate'
 
 interface UserProfile {
   first_name: string
@@ -262,6 +263,9 @@ export function TopBar() {
 
           {/* Language Switcher - Flag icons */}
           <LanguageSwitcher />
+
+          {/* Google Translate - för fler språk */}
+          <GoogleTranslate />
 
           {/* Accessibility Menu (Dark Mode + Help) */}
           <AccessibilityMenu />

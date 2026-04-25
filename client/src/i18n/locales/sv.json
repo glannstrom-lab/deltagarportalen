@@ -224,7 +224,11 @@
     "select": "Välj språk",
     "label": "Språk",
     "swedish": "Svenska",
-    "english": "English"
+    "english": "English",
+    "translate": "Översätt sidan",
+    "translatePage": "Översätt sidan",
+    "poweredByGoogle": "Via Google Translate",
+    "machineTranslation": "Maskinöversättning - kvaliteten kan variera"
   },
   "dashboard": {
     "title": "Översikt",

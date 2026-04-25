@@ -224,7 +224,11 @@
     "select": "Select language",
     "label": "Language",
     "swedish": "Svenska",
-    "english": "English"
+    "english": "English",
+    "translate": "Translate page",
+    "translatePage": "Translate page",
+    "poweredByGoogle": "Powered by Google Translate",
+    "machineTranslation": "Machine translation - quality may vary"
   },
   "dashboard": {
     "title": "Dashboard",
