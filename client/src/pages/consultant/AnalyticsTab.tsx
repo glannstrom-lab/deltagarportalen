@@ -70,7 +70,7 @@ function MetricCard({
   icon: Icon,
   trend,
   trendLabel,
-  color = 'teal',
+  color = 'brand',
 }: {
   title: string
   value: string | number
@@ -78,10 +78,10 @@ function MetricCard({
   icon: React.ElementType
   trend?: { value: number; isPositive: boolean }
   trendLabel?: string
-  color?: 'teal' | 'emerald' | 'amber' | 'rose' | 'blue'
+  color?: 'brand' | 'emerald' | 'amber' | 'rose' | 'blue'
 }) {
   const colorClasses = {
-    teal: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
+    brand: 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400',
     emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
     amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',
     rose: 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400',
@@ -636,7 +636,7 @@ export function AnalyticsTab() {
               'px-4 py-2.5 rounded-xl',
               'bg-stone-100 dark:bg-stone-800',
               'border-2 border-transparent',
-              'focus:border-teal-500',
+              'focus:border-brand-700',
               'text-stone-900 dark:text-stone-100'
             )}
           >
@@ -671,7 +671,7 @@ export function AnalyticsTab() {
           value={analytics.totalParticipants}
           subtitle={t('consultant.analytics.metrics.activeCount', { count: analytics.activeParticipants })}
           icon={Users}
-          color="teal"
+          color="brand"
         />
         <MetricCard
           title={t('consultant.analytics.metrics.cvCompletion')}
@@ -722,7 +722,7 @@ export function AnalyticsTab() {
             data={analytics.monthlyProgress.map(m => ({
               label: m.month,
               value: m.value,
-              color: 'bg-teal-600',
+              color: 'bg-brand-900',
             }))}
           />
         </Card>

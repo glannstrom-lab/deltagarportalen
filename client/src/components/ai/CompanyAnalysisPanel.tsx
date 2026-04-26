@@ -80,7 +80,7 @@ export function CompanyAnalysisPanel({
   const getSentimentIcon = (sentiment: 'positive' | 'neutral' | 'negative') => {
     switch (sentiment) {
       case 'positive':
-        return <ThumbsUp className="w-3 h-3 text-green-500" />
+        return <ThumbsUp className="w-3 h-3 text-brand-700" />
       case 'negative':
         return <ThumbsDown className="w-3 h-3 text-red-500" />
       default:
@@ -91,7 +91,7 @@ export function CompanyAnalysisPanel({
   const getSentimentColor = (sentiment: 'positive' | 'neutral' | 'negative') => {
     switch (sentiment) {
       case 'positive':
-        return 'border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/20'
+        return 'border-brand-200 bg-brand-50 dark:border-brand-900 dark:bg-brand-900/20'
       case 'negative':
         return 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20'
       default:
@@ -102,10 +102,10 @@ export function CompanyAnalysisPanel({
   if (!hasStarted) {
     return (
       <AiConsentGate compact featureName="Företagsanalys">
-        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20', className)}>
+        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-brand-50 to-sky-50 dark:from-brand-900/20 dark:to-sky-900/20', className)}>
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/50">
-              <Building2 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <div className="p-2 rounded-lg bg-brand-100 dark:bg-brand-900/50">
+              <Building2 className="w-5 h-5 text-brand-900 dark:text-brand-400" />
             </div>
             <div className="flex-1">
               <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
@@ -236,7 +236,7 @@ export function CompanyAnalysisPanel({
                   className={cn(
                     'px-2 py-0.5 rounded-full text-xs font-medium',
                     result.recruitmentNeeds.hiring
-                      ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
+                      ? 'bg-brand-100 text-brand-900 dark:bg-brand-900/50 dark:text-brand-300'
                       : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-600'
                   )}
                 >
@@ -253,7 +253,7 @@ export function CompanyAnalysisPanel({
                     {result.recruitmentNeeds.roles.map((role, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 text-xs rounded-full"
+                        className="px-2 py-0.5 bg-brand-100 dark:bg-brand-900/50 text-brand-900 dark:text-brand-300 text-xs rounded-full"
                       >
                         {role}
                       </span>
@@ -332,8 +332,8 @@ export function CompanyAnalysisPanel({
               defaultOpen
             >
               <div className="space-y-3">
-                <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800">
-                  <p className="text-xs font-medium text-teal-600 dark:text-teal-400 mb-1">
+                <div className="p-3 rounded-lg bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-900">
+                  <p className="text-xs font-medium text-brand-900 dark:text-brand-400 mb-1">
                     Bästa approach
                   </p>
                   <p className="text-sm text-slate-700 dark:text-slate-300">
@@ -369,8 +369,8 @@ export function CompanyAnalysisPanel({
                   </div>
                 )}
 
-                <div className="p-2 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-                  <p className="text-xs text-green-700 dark:text-green-300">
+                <div className="p-2 rounded-lg bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-900">
+                  <p className="text-xs text-brand-900 dark:text-brand-300">
                     <strong>Bästa tid att kontakta:</strong> {result.spontaneousApplicationTips.bestTimeToApply}
                   </p>
                 </div>

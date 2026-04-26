@@ -30,10 +30,10 @@ function KpiCardSkeleton() {
 // Hero Section Skeleton
 function HeroSkeleton() {
   return (
-    <div className="bg-stone-100 dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 mb-4 sm:mb-6 overflow-hidden">
+    <div className="bg-stone-100 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 mb-4 sm:mb-6 overflow-hidden">
       <div className="px-4 py-4 sm:px-5 sm:py-5">
         <div className="flex items-center gap-3 sm:gap-4">
-          <Shimmer className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl shrink-0" />
+          <Shimmer className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-xl shrink-0" />
           <div className="flex-1 min-w-0">
             <Shimmer className="w-20 h-3 mb-2" />
             <Shimmer className="w-32 h-5" />
@@ -54,7 +54,7 @@ function HeroSkeleton() {
 // Section Skeleton - matches DashboardSection
 function SectionSkeleton({ expanded = true }: { expanded?: boolean }) {
   return (
-    <div className="rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+    <div className="rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
       <div className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-stone-100 dark:bg-stone-800/50">
         <div className="flex items-center gap-2">
           <Shimmer className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -104,7 +104,7 @@ function QuickActionsSkeleton() {
 // RIASEC Chart Skeleton
 function RiasecSkeleton() {
   return (
-    <div className="bg-stone-100 dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-3 sm:p-4">
+    <div className="bg-stone-100 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 p-3 sm:p-4">
       <div className="flex items-center gap-2 mb-2 sm:mb-3">
         <Shimmer className="w-4 h-4 sm:w-5 sm:h-5" />
         <Shimmer className="w-32 h-4" />
@@ -128,7 +128,7 @@ function RiasecSkeleton() {
 // Sidebar Card Skeleton
 function SidebarCardSkeleton() {
   return (
-    <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-3 sm:p-4">
+    <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 p-3 sm:p-4">
       <div className="flex items-center gap-2 mb-2 sm:mb-3">
         <Shimmer className="w-4 h-4 sm:w-5 sm:h-5" />
         <Shimmer className="w-24 h-4" />
@@ -171,7 +171,7 @@ export function DashboardSkeleton() {
             <SectionSkeleton expanded={true} />
 
             {/* Quick Actions Section */}
-            <div className="rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+            <div className="rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
               <div className="w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3 bg-stone-100 dark:bg-stone-800/50">
                 <div className="flex items-center gap-2">
                   <Shimmer className="w-4 h-4 sm:w-5 sm:h-5" />

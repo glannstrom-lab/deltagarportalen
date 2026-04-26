@@ -129,7 +129,7 @@ export class RouteErrorBoundary extends Component<Props, State> {
           role="alert"
           aria-live="assertive"
         >
-          <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-xl max-w-md w-full p-6 sm:p-8 text-center border border-stone-200 dark:border-stone-700">
+          <div className="bg-white dark:bg-stone-800 rounded-xl max-w-md w-full p-6 sm:p-8 text-center border border-stone-200 dark:border-stone-700">
             {/* Icon */}
             <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
               errorType === 'network'
@@ -170,7 +170,7 @@ export class RouteErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={this.handleRetry}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-teal-600 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600 text-white rounded-xl font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-brand-900 hover:bg-brand-900 dark:bg-brand-700 dark:hover:bg-brand-900 text-white rounded-xl font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
               >
                 <RefreshCw className="w-4 h-4" aria-hidden="true" />
                 {retryCount < MAX_RETRIES && errorType === 'chunk'
@@ -182,7 +182,7 @@ export class RouteErrorBoundary extends Component<Props, State> {
               <Link
                 to="/"
                 onClick={this.handleReset}
-                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-stone-600 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
+                className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white dark:bg-stone-700 text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-stone-600 rounded-xl font-medium hover:bg-stone-50 dark:hover:bg-stone-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
               >
                 <Home className="w-4 h-4" aria-hidden="true" />
                 Till startsidan
@@ -199,7 +199,7 @@ export class RouteErrorBoundary extends Component<Props, State> {
             {/* Support link */}
             <p className="text-xs text-stone-500 dark:text-stone-400 mt-4">
               Om problemet kvarstår,{' '}
-              <Link to="/help" className="text-teal-600 dark:text-teal-400 hover:underline">
+              <Link to="/help" className="text-brand-900 dark:text-brand-400 hover:underline">
                 kontakta support
               </Link>
               .
@@ -226,7 +226,7 @@ export function RouteLoadingFallback() {
     >
       <div className="text-center">
         <Loader2
-          className="animate-spin text-teal-500 dark:text-teal-400 mx-auto mb-3"
+          className="animate-spin text-brand-700 dark:text-brand-400 mx-auto mb-3"
           size={32}
           aria-hidden="true"
         />

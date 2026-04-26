@@ -401,7 +401,7 @@ export function DailyJobTab() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16" role="status">
-        <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center mb-4 animate-pulse">
+        <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center mb-4 animate-pulse">
           <Star className="w-8 h-8 text-white" />
         </div>
         <p className="text-stone-600 dark:text-stone-400">
@@ -439,7 +439,7 @@ export function DailyJobTab() {
       {/* Header card */}
       <Card className="p-6 bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-amber-900/20 dark:via-orange-900/20 dark:to-rose-900/20 border-amber-200 dark:border-amber-800">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-200 dark:shadow-amber-900/30">
+          <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center  dark:/30">
             <Star className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -585,7 +585,7 @@ export function DailyJobTab() {
                   )}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(
                     job.description?.text?.substring(0, 500) || ''
                   )}`}
-                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-medium bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
+                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-medium bg-brand-50 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/50 transition-colors"
                 >
                   <FileText className="w-5 h-5" />
                   {lang === 'en' ? 'Write letter' : 'Skriv brev'}
@@ -598,7 +598,7 @@ export function DailyJobTab() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setHasActioned(true)}
-                  className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl font-medium hover:from-teal-600 hover:to-emerald-600 transition-colors shadow-lg shadow-teal-200 dark:shadow-teal-900/30"
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-brand-700 to-emerald-500 text-white rounded-xl font-medium hover:from-brand-900 hover:to-emerald-600 transition-colors  dark:/30"
                 >
                   <Send className="w-5 h-5" />
                   {lang === 'en' ? 'Apply Now' : 'Ansök nu'}
@@ -614,7 +614,7 @@ export function DailyJobTab() {
             </div>
           ) : (
             <div className="text-center">
-              <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
+              <CheckCircle className="w-12 h-12 text-brand-700 mx-auto mb-3" />
               <h4 className="font-semibold text-stone-800 dark:text-stone-100 mb-1">
                 {lang === 'en' ? 'Great job!' : 'Bra jobbat!'}
               </h4>

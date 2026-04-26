@@ -97,10 +97,10 @@ export default function MyJourneyTab() {
         </Card>
 
         {/* CV Status */}
-        <Card className="bg-teal-50 border-teal-100">
+        <Card className="bg-brand-50 border-brand-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-teal-600" />
+            <div className="w-10 h-10 bg-brand-100 rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-brand-900" />
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-900">{cvData?.completeness || 0}%</p>
@@ -199,10 +199,10 @@ export default function MyJourneyTab() {
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {!cvData?.hasCV && (
-            <Card className="hover:shadow-md transition-shadow">
+            <Card className="hover: transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-teal-600" />
+                  <FileText className="w-5 h-5 text-brand-900" />
                   <div>
                     <h4 className="font-medium text-slate-900">{t('knowledgeBase.myJourney.createCV')}</h4>
                     <p className="text-sm text-slate-700">{t('knowledgeBase.myJourney.createCVDescription')}</p>
@@ -210,7 +210,7 @@ export default function MyJourneyTab() {
                 </div>
                 <Link
                   to="/cv"
-                  className="px-3 py-1.5 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700"
+                  className="px-3 py-1.5 bg-brand-900 text-white rounded-lg text-sm font-medium hover:bg-brand-900"
                 >
                   {t('knowledgeBase.myJourney.start')}
                 </Link>
@@ -219,7 +219,7 @@ export default function MyJourneyTab() {
           )}
 
           {!riasecProfile.hasResult && (
-            <Card className="hover:shadow-md transition-shadow">
+            <Card className="hover: transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Compass className="w-5 h-5 text-amber-600" />
@@ -239,7 +239,7 @@ export default function MyJourneyTab() {
           )}
 
           {savedJobsData?.count === 0 && (
-            <Card className="hover:shadow-md transition-shadow">
+            <Card className="hover: transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <Briefcase className="w-5 h-5 text-blue-600" />
@@ -260,7 +260,7 @@ export default function MyJourneyTab() {
 
           {/* All done state */}
           {cvData?.hasCV && riasecProfile.hasResult && savedJobsData && savedJobsData.count > 0 && (
-            <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-100 md:col-span-2">
+            <Card className="bg-gradient-to-r from-emerald-50 to-brand-50 border-emerald-100 md:col-span-2">
               <div className="flex items-center gap-4">
                 <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                 <div>
@@ -289,7 +289,7 @@ export default function MyJourneyTab() {
           </div>
           <div className="space-y-3">
             {savedJobsData.jobs.slice(0, 3).map((job: any) => (
-              <Card key={job.id} className="hover:shadow-sm transition-shadow">
+              <Card key={job.id} className="hover: transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
                     <h4 className="font-medium text-slate-900">

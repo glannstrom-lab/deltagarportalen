@@ -38,10 +38,10 @@ export function MobileBackButton() {
         'fixed z-50',
         'w-11 h-11', // 44px för att matcha safe area
         'bg-white rounded-full',
-        'shadow-lg border border-slate-100',
+        ' border border-slate-100',
         'flex items-center justify-center',
         'transition-all duration-200',
-        'hover:shadow-xl hover:scale-105',
+        'hover: hover:scale-105',
         'active:scale-95',
         'focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2'
       )}

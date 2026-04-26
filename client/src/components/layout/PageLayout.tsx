@@ -125,7 +125,7 @@ export function PageSection({
   return (
     <section className={cn(
       'bg-white dark:bg-stone-900',
-      'rounded-2xl', // Consistent border radius
+      'rounded-xl', // Consistent border radius
       'border-2 border-stone-200 dark:border-stone-700 overflow-hidden',
       'hover:border-stone-300 dark:hover:border-stone-600',
       'transition-all duration-200',

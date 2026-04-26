@@ -48,13 +48,13 @@ interface CourseCardProps {
 
 const PROVIDER_COLORS: Record<string, string> = {
   'YOUTUBE': 'bg-red-100 text-red-700',
-  'KHAN_ACADEMY': 'bg-green-100 text-green-700',
+  'KHAN_ACADEMY': 'bg-brand-100 text-brand-900',
   'LINKEDIN_LEARNING': 'bg-blue-100 text-blue-700',
   'FUTURELEARN': 'bg-pink-100 text-pink-700',
   'COURSERA': 'bg-indigo-100 text-indigo-700',
   'UDEMY': 'bg-purple-100 text-purple-700',
   'OTHER': 'bg-slate-100 text-slate-700',
-  'INTERNAL': 'bg-teal-100 text-teal-700'
+  'INTERNAL': 'bg-brand-100 text-brand-900'
 };
 
 const PROVIDER_NAMES: Record<string, string> = {
@@ -90,7 +90,7 @@ function formatDuration(minutes: number): string {
 function getEnergyColor(level: 'LOW' | 'MEDIUM' | 'HIGH'): string {
   switch (level) {
     case 'LOW':
-      return 'bg-green-100 text-green-700 border-green-200';
+      return 'bg-brand-100 text-brand-900 border-brand-200';
     case 'MEDIUM':
       return 'bg-amber-100 text-amber-700 border-amber-200';
     case 'HIGH':
@@ -176,8 +176,8 @@ export default function CourseCard({
 
   return (
     <div 
-      className={`bg-white rounded-2xl border transition-all ${
-        isHovered ? 'border-indigo-300 shadow-md' : 'border-slate-200'
+      className={`bg-white rounded-xl border transition-all ${
+        isHovered ? 'border-indigo-300' : 'border-slate-200'
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
@@ -206,7 +206,7 @@ export default function CourseCard({
             {getEnergyLabel(energy_level)}
           </span>
           {course.is_free && (
-            <span className="px-2 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-medium">
+            <span className="px-2 py-1 bg-brand-100 text-brand-900 rounded-lg text-xs font-medium">
               Gratis
             </span>
           )}
@@ -240,7 +240,7 @@ export default function CourseCard({
         </button>
         
         {showMenu && (
-          <div className="absolute top-12 right-3 bg-white rounded-xl shadow-lg border border-slate-200 py-1 min-w-[150px] z-10">
+          <div className="absolute top-12 right-3 bg-white rounded-xl border border-slate-200 py-1 min-w-[150px] z-10">
             {status !== 'COMPLETED' && (
               <button
                 onClick={handleBookmark}

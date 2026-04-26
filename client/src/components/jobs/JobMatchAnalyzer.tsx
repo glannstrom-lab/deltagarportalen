@@ -51,7 +51,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
   }
 
   const getMatchColor = (percentage: number) => {
-    if (percentage >= 80) return 'text-green-600 bg-green-50 border-green-200'
+    if (percentage >= 80) return 'text-brand-900 bg-brand-50 border-brand-200'
     if (percentage >= 60) return 'text-yellow-600 bg-yellow-50 border-yellow-200'
     if (percentage >= 40) return 'text-orange-600 bg-orange-50 border-orange-200'
     return 'text-red-600 bg-red-50 border-red-200'
@@ -66,8 +66,8 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl p-8 text-center">
-        <Loader2 size={48} className="mx-auto text-teal-600 animate-spin mb-4" />
+      <div className="bg-white rounded-xl p-8 text-center">
+        <Loader2 size={48} className="mx-auto text-brand-900 animate-spin mb-4" />
         <h3 className="text-lg font-semibold text-slate-800">Analyserar matchning...</h3>
         <p className="text-slate-700">Vi jämför ditt CV med jobbets krav</p>
       </div>
@@ -76,7 +76,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
 
   if (error) {
     return (
-      <div className="bg-white rounded-2xl p-8">
+      <div className="bg-white rounded-xl p-8">
         <div className="flex items-center gap-3 text-red-600 mb-4">
           <AlertCircle size={32} />
           <h3 className="text-lg font-semibold">Något gick fel</h3>
@@ -84,7 +84,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
         <p className="text-slate-600 mb-4">{error}</p>
         <button
           onClick={analyzeMatch}
-          className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+          className="px-4 py-2 bg-brand-900 text-white rounded-lg hover:bg-brand-900"
         >
           Försök igen
         </button>
@@ -95,13 +95,13 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
   if (!analysis) return null
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+    <div className="bg-white rounded-xl overflow-hidden">
       {/* Header */}
       <div className={`p-6 border-b ${getMatchColor(analysis.match_percentage)}`}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-white rounded-lg shadow-sm">
-              <Target size={24} className="text-teal-600" />
+            <div className="p-2 bg-white rounded-lg">
+              <Target size={24} className="text-brand-900" />
             </div>
             <div>
               <h3 className="text-lg font-bold">Matchningsanalys</h3>
@@ -162,7 +162,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
             onClick={() => setActiveTab(tab.id as any)}
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
               activeTab === tab.id
-                ? 'text-teal-600 border-b-2 border-teal-600 bg-teal-50/50'
+                ? 'text-brand-900 border-b-2 border-brand-900 bg-brand-50/50'
                 : 'text-slate-600 hover:bg-slate-50'
             }`}
           >
@@ -179,7 +179,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
             {/* Quick Stats */}
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-slate-50 rounded-xl p-4">
-                <div className="flex items-center gap-2 text-green-600 mb-2">
+                <div className="flex items-center gap-2 text-brand-900 mb-2">
                   <CheckCircle2 size={20} />
                   <span className="font-medium">Detta har du</span>
                 </div>
@@ -206,7 +206,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
               <ul className="space-y-2">
                 {analysis.suggestions.map((suggestion, i) => (
                   <li key={i} className="flex items-start gap-2 text-slate-700">
-                    <span className="text-teal-600 mt-1">•</span>
+                    <span className="text-brand-900 mt-1">•</span>
                     {suggestion}
                   </li>
                 ))}
@@ -237,7 +237,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
             {/* Matching Skills */}
             {analysis.matching_skills.length > 0 && (
               <div>
-                <h4 className="font-semibold text-green-700 mb-3 flex items-center gap-2">
+                <h4 className="font-semibold text-brand-900 mb-3 flex items-center gap-2">
                   <Award size={18} />
                   Matchande kompetenser ({analysis.matching_skills.length})
                 </h4>
@@ -245,7 +245,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
                   {analysis.matching_skills.map((skill, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium"
+                      className="px-3 py-1 bg-brand-100 text-brand-900 rounded-full text-sm font-medium"
                     >
                       <CheckCircle2 size={14} className="inline mr-1" />
                       {skill}
@@ -291,7 +291,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
                   {analysis.matching_languages.map((lang, i) => (
                     <span
                       key={i}
-                      className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm"
+                      className="px-3 py-1 bg-brand-100 text-brand-900 rounded-full text-sm"
                     >
                       <CheckCircle2 size={14} className="inline mr-1" />
                       {lang}
@@ -319,7 +319,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
                 <div className="flex items-center justify-between">
                   <span className="text-slate-700">Erfarenhet</span>
                   {analysis.experience_match ? (
-                    <span className="flex items-center gap-1 text-green-600 text-sm">
+                    <span className="flex items-center gap-1 text-brand-900 text-sm">
                       <CheckCircle2 size={16} /> Uppfyllt
                     </span>
                   ) : (
@@ -331,7 +331,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
                 <div className="flex items-center justify-between">
                   <span className="text-slate-700">Utbildning</span>
                   {analysis.education_match ? (
-                    <span className="flex items-center gap-1 text-green-600 text-sm">
+                    <span className="flex items-center gap-1 text-brand-900 text-sm">
                       <CheckCircle2 size={16} /> Uppfyllt
                     </span>
                   ) : (
@@ -347,15 +347,15 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
 
         {activeTab === 'improvements' && (
           <div className="space-y-6">
-            <div className="bg-gradient-to-br from-teal-50 to-blue-50 rounded-xl p-6">
+            <div className="bg-gradient-to-br from-brand-50 to-blue-50 rounded-xl p-6">
               <h4 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <TrendingUp size={20} className="text-teal-600" />
+                <TrendingUp size={20} className="text-brand-900" />
                 Så här ökar du dina chanser
               </h4>
               
               <div className="space-y-4">
                 {analysis.match_percentage < 60 && (
-                  <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <div className="bg-white rounded-lg p-4">
                     <h5 className="font-medium text-slate-800 mb-2">1. Fyll på med kompetenser</h5>
                     <p className="text-sm text-slate-600 mb-3">
                       Jobbet kräver fler kompetenser än du har just nu. Överväg:
@@ -368,7 +368,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
                   </div>
                 )}
 
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="bg-white rounded-lg p-4">
                   <h5 className="font-medium text-slate-800 mb-2">
                     {analysis.match_percentage >= 60 ? '1' : '2'}. Anpassa ditt CV
                   </h5>
@@ -377,14 +377,14 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {analysis.missing_skills.slice(0, 5).map((skill, i) => (
-                      <span key={i} className="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded">
+                      <span key={i} className="px-2 py-1 bg-brand-100 text-brand-900 text-xs rounded">
                         {skill}
                       </span>
                     ))}
                   </div>
                 </div>
 
-                <div className="bg-white rounded-lg p-4 shadow-sm">
+                <div className="bg-white rounded-lg p-4">
                   <h5 className="font-medium text-slate-800 mb-2">
                     {analysis.match_percentage >= 60 ? '2' : '3'}. Sök brett
                   </h5>

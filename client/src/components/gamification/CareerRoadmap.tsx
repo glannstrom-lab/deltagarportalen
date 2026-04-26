@@ -124,7 +124,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
   const progressPercent = Math.round((completedCount / steps.length) * 100)
 
   return (
-    <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
+    <div className="bg-white rounded-xl  border border-slate-100 p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="font-semibold text-slate-800 text-lg">Din väg till jobbet</h3>
@@ -136,7 +136,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
           </p>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-teal-600">
+          <div className="text-2xl font-bold text-brand-900">
             {completedCount}/{steps.length}
           </div>
           <div className="text-xs text-slate-600">steg klara</div>
@@ -146,7 +146,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       {/* Progress bar */}
       <div className="h-2 bg-slate-100 rounded-full mb-6 overflow-hidden">
         <div 
-          className="h-full bg-gradient-to-r from-teal-500 to-teal-600 rounded-full transition-all duration-1000 ease-out"
+          className="h-full bg-gradient-to-r from-brand-700 to-brand-900 rounded-full transition-all duration-1000 ease-out"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
@@ -163,19 +163,19 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
                 isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
               } ${
                 step.completed 
-                  ? 'bg-teal-50 border border-teal-100' 
+                  ? 'bg-brand-50 border border-brand-100' 
                   : step.locked
                     ? 'bg-slate-50 opacity-60'
-                    : 'bg-white border border-slate-200 hover:border-teal-300 hover:shadow-sm'
+                    : 'bg-white border border-slate-200 hover:border-brand-300 hover:'
               }`}
             >
               {/* Icon/Status */}
               <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${
                 step.completed
-                  ? 'bg-teal-500 text-white'
+                  ? 'bg-brand-700 text-white'
                   : step.locked
                     ? 'bg-slate-200 text-slate-600'
-                    : 'bg-teal-100 text-teal-600'
+                    : 'bg-brand-100 text-brand-900'
               }`}>
                 {step.completed ? (
                   <CheckCircle2 className="w-5 h-5" />
@@ -190,12 +190,12 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h4 className={`font-medium ${
-                    step.completed ? 'text-teal-900' : 'text-slate-800'
+                    step.completed ? 'text-brand-900' : 'text-slate-800'
                   }`}>
                     {step.title}
                   </h4>
                   {step.completed && (
-                    <span className="text-xs bg-teal-200 text-teal-800 px-2 py-0.5 rounded-full">
+                    <span className="text-xs bg-brand-200 text-brand-900 px-2 py-0.5 rounded-full">
                       Klar
                     </span>
                   )}
@@ -211,7 +211,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
               {step.locked ? (
                 <span
                   className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg text-slate-600 cursor-not-allowed ${
-                    step.completed ? 'bg-teal-100 text-teal-700' : 'bg-slate-100'
+                    step.completed ? 'bg-brand-100 text-brand-900' : 'bg-slate-100'
                   }`}
                 >
                   {step.action}
@@ -221,8 +221,8 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
                   to={step.href}
                   className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${
                     step.completed
-                      ? 'text-teal-700 bg-teal-100 hover:bg-teal-200'
-                      : 'text-teal-600 bg-teal-50 hover:bg-teal-100'
+                      ? 'text-brand-900 bg-brand-100 hover:bg-brand-200'
+                      : 'text-brand-900 bg-brand-50 hover:bg-brand-100'
                   }`}
                 >
                   {step.action}
@@ -234,7 +234,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       </div>
 
       {/* Motivational message */}
-      <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-teal-50 rounded-xl border border-amber-100">
+      <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-brand-50 rounded-xl border border-amber-100">
         <p className="text-sm text-slate-700">
           {progressPercent === 0 ? (
             'Varje resa börjar med ett första steg. Du kan göra det! 💪'

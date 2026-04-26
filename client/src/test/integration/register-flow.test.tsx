@@ -89,7 +89,7 @@ describe('Register Flow Integration', () => {
 
     // Requirements should show as met (green checkmarks appear)
     await waitFor(() => {
-      const checkmarks = document.querySelectorAll('.text-green-500')
+      const checkmarks = document.querySelectorAll('.text-brand-700')
       expect(checkmarks.length).toBeGreaterThan(0)
     })
   })

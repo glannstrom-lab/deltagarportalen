@@ -128,12 +128,12 @@ export function WellnessConsentGate({
   // Full prompt
   return (
     <div className={cn(
-      "p-6 rounded-2xl border-2 border-dashed border-pink-200 dark:border-pink-800",
+      "p-6 rounded-xl border-2 border-dashed border-pink-200 dark:border-pink-800",
       "bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20",
       className
     )}>
       <div className="text-center max-w-md mx-auto">
-        <div className="w-16 h-16 rounded-2xl bg-pink-100 dark:bg-pink-900/50 flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 rounded-xl bg-pink-100 dark:bg-pink-900/50 flex items-center justify-center mx-auto mb-4">
           <Heart className="w-8 h-8 text-pink-600 dark:text-pink-400" />
         </div>
 
@@ -201,8 +201,8 @@ export function WellnessConsentGate({
           </p>
         </div>
 
-        <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg text-left">
-          <p className="text-xs text-green-700 dark:text-green-300">
+        <div className="mb-4 p-3 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-900/50 rounded-lg text-left">
+          <p className="text-xs text-brand-900 dark:text-brand-300">
             <strong>{t('wellness.consent.canWithdraw') || 'Du kan när som helst:'}</strong>
             <ul className="mt-2 space-y-1">
               <li>• {t('wellness.consent.withdrawDetail1') || 'Dra tillbaka ditt samtycke i Inställningar'}</li>

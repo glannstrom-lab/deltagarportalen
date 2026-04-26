@@ -113,14 +113,14 @@ export default function Register() {
             src="/logo-jobin.png"
             alt="Jobin"
             loading="eager"
-            className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white dark:bg-stone-800"
+            className="w-16 h-16 rounded-xl mx-auto mb-4 object-contain bg-white dark:bg-stone-800"
           />
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Jobin</h1>
           <p className="text-gray-600 dark:text-gray-300 mt-1">{t('auth.pathStartsHere')}</p>
         </div>
 
         {/* Register Card */}
-        <div className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-2xl shadow-xl p-8">
+        <div className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-8">
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 text-center">{t('auth.createAccount')}</h2>
           <p className="text-gray-600 dark:text-gray-300 text-center mb-6">{t('auth.firstStep')}</p>
 
@@ -133,7 +133,7 @@ export default function Register() {
               setIsGoogleLoading(false)
             }}
             disabled={isGoogleLoading}
-            className="w-full bg-white dark:bg-stone-700 hover:bg-stone-50 dark:hover:bg-stone-600 border border-stone-300 dark:border-stone-600 text-gray-700 dark:text-gray-200 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
+            className="w-full bg-white dark:bg-stone-700 hover:bg-stone-50 dark:hover:bg-stone-600 border border-stone-300 dark:border-stone-600 text-gray-700 dark:text-gray-200 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
           >
             {isGoogleLoading ? (
               <Loader2 className="animate-spin" size={20} />
@@ -201,7 +201,7 @@ export default function Register() {
                     value={values.firstName}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                       touched.firstName && errors.firstName
                         ? 'border-red-300 dark:border-red-700 focus:border-red-500'
                         : 'border-stone-300 dark:border-stone-600'
@@ -228,7 +228,7 @@ export default function Register() {
                   value={values.lastName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.lastName && errors.lastName
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
                       : 'border-stone-300 dark:border-stone-600'
@@ -263,7 +263,7 @@ export default function Register() {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.email && errors.email
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
                       : 'border-stone-300 dark:border-stone-600'
@@ -298,7 +298,7 @@ export default function Register() {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.password && errors.password
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
                       : 'border-stone-300 dark:border-stone-600'
@@ -332,12 +332,12 @@ export default function Register() {
                           values.password === ''
                             ? 'text-gray-600 dark:text-gray-300'
                             : isPassed
-                              ? 'text-green-600 dark:text-green-400'
+                              ? 'text-brand-900 dark:text-brand-400'
                               : 'text-gray-600 dark:text-gray-400'
                         }`}
                       >
                         {isPassed ? (
-                          <Check size={16} className="text-green-500 dark:text-green-400" />
+                          <Check size={16} className="text-brand-700 dark:text-brand-400" />
                         ) : (
                           <X size={16} className="text-stone-300 dark:text-stone-500" />
                         )}
@@ -347,7 +347,7 @@ export default function Register() {
                   })}
                 </ul>
                 {isPasswordValid && (
-                  <p className="text-sm text-green-600 dark:text-green-400 font-medium mt-2">
+                  <p className="text-sm text-brand-900 dark:text-brand-400 font-medium mt-2">
                     {t('auth.passwordSecure')}
                   </p>
                 )}
@@ -375,7 +375,7 @@ export default function Register() {
                   value={values.confirmPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.confirmPassword && errors.confirmPassword
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
                       : 'border-stone-300 dark:border-stone-600'
@@ -388,7 +388,7 @@ export default function Register() {
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
               )}
               {values.confirmPassword && values.password === values.confirmPassword && !errors.confirmPassword && (
-                <p className="mt-2 text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
+                <p className="mt-2 text-sm text-brand-900 dark:text-brand-400 flex items-center gap-1">
                   <Check size={16} />
                   {t('auth.passwordsMatch')}
                 </p>
@@ -408,11 +408,11 @@ export default function Register() {
                   checked={values.acceptTerms}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700"
+                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-700 dark:focus:ring-brand-400 bg-white dark:bg-stone-700"
                 />
                 <label htmlFor="acceptTerms" className="text-sm text-gray-600 dark:text-gray-300">
                   {t('auth.consent.acceptTerms')}{' '}
-                  <Link to="/terms" target="_blank" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline">
+                  <Link to="/terms" target="_blank" className="text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 hover:underline">
                     {t('auth.consent.termsLink')}
                   </Link>
                   {' '}<span className="text-red-500 dark:text-red-400">*</span>
@@ -431,11 +431,11 @@ export default function Register() {
                   checked={values.acceptPrivacy}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700"
+                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-700 dark:focus:ring-brand-400 bg-white dark:bg-stone-700"
                 />
                 <label htmlFor="acceptPrivacy" className="text-sm text-gray-600 dark:text-gray-300">
                   {t('auth.consent.acceptPrivacy')}{' '}
-                  <Link to="/privacy" target="_blank" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline">
+                  <Link to="/privacy" target="_blank" className="text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 hover:underline">
                     {t('auth.consent.privacyLink')}
                   </Link>
                   {' '}<span className="text-red-500 dark:text-red-400">*</span>
@@ -453,7 +453,7 @@ export default function Register() {
                   name="acceptAiProcessing"
                   checked={values.acceptAiProcessing}
                   onChange={handleChange}
-                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700"
+                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-700 dark:focus:ring-brand-400 bg-white dark:bg-stone-700"
                 />
                 <div>
                   <label htmlFor="acceptAiProcessing" className="text-sm text-gray-600 dark:text-gray-300">
@@ -470,7 +470,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={isSubmitting || !isPasswordValid || !values.acceptTerms || !values.acceptPrivacy}
-              className="w-full bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
+              className="w-full bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-700 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
             >
               {isSubmitting ? (
                 <>
@@ -492,7 +492,7 @@ export default function Register() {
               {t('auth.hasAccount')}{' '}
               <Link
                 to="/login"
-                className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-semibold"
+                className="text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-semibold"
               >
                 {t('auth.loginHere')}
               </Link>
@@ -504,7 +504,7 @@ export default function Register() {
         <div className="mt-6 text-center">
           <Link
             to="/"
-            className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 text-sm"
+            className="text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 text-sm"
           >
             ← {t('auth.backToHome')}
           </Link>

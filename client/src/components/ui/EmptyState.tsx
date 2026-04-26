@@ -302,8 +302,8 @@ export function IllustratedEmptyState({
     ),
     success: (
       <svg viewBox="0 0 120 120" className="w-32 h-32 text-slate-300" fill="currentColor">
-        <circle cx="60" cy="60" r="35" className="text-green-100" />
-        <path d="M45 60l10 10 20-20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="text-green-500" fill="none" />
+        <circle cx="60" cy="60" r="35" className="text-brand-100" />
+        <path d="M45 60l10 10 20-20" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="text-brand-700" fill="none" />
       </svg>
     ),
     error: (

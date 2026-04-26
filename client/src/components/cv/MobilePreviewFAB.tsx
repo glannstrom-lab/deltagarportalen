@@ -20,7 +20,7 @@ export function MobilePreviewFAB({ data }: MobilePreviewFABProps) {
       {/* FAB Button - positioned above navigation buttons */}
       <button
         onClick={() => setIsOpen(true)}
-        className="lg:hidden fixed bottom-24 right-4 z-40 w-14 h-14 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center"
+        className="lg:hidden fixed bottom-24 right-4 z-40 w-14 h-14 bg-indigo-600 text-white rounded-full hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center"
         aria-label="Förhandsgranska CV"
       >
         <Eye className="w-6 h-6" />
@@ -31,7 +31,7 @@ export function MobilePreviewFAB({ data }: MobilePreviewFABProps) {
         <div className="lg:hidden fixed inset-0 z-50 bg-slate-900/50">
           <div className="absolute inset-x-0 bottom-0 top-0 bg-slate-100 flex flex-col animate-in slide-in-from-bottom duration-300">
             {/* Header */}
-            <div className="flex items-center justify-between p-4 bg-white border-b shadow-sm">
+            <div className="flex items-center justify-between p-4 bg-white border-b">
               <h2 className="font-semibold text-slate-800">Förhandsvisning</h2>
               <button 
                 onClick={() => setIsOpen(false)}
@@ -44,7 +44,7 @@ export function MobilePreviewFAB({ data }: MobilePreviewFABProps) {
             
             {/* Preview Content */}
             <div className="flex-1 overflow-y-auto p-4">
-              <div className="bg-white shadow-lg rounded-lg overflow-hidden max-w-2xl mx-auto">
+              <div className="bg-white rounded-lg overflow-hidden max-w-2xl mx-auto">
                 <CVPreview data={data} />
               </div>
             </div>

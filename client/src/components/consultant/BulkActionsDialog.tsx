@@ -71,7 +71,7 @@ const AVAILABLE_TAGS = [
   { id: 'followup', label: 'Behöver uppföljning', color: 'amber' },
   { id: 'priority', label: 'Prioriterad', color: 'rose' },
   { id: 'ready', label: 'Redo för jobb', color: 'emerald' },
-  { id: 'interview', label: 'Intervjuträning', color: 'teal' },
+  { id: 'interview', label: 'Intervjuträning', color: 'brand' },
   { id: 'cv', label: 'CV-förbättring', color: 'blue' },
   { id: 'motivation', label: 'Motivationsstöd', color: 'orange' },
 ]
@@ -336,12 +336,12 @@ export function BulkActionsDialog({
       />
 
       {/* Dialog */}
-      <div className="relative z-10 w-full max-w-lg bg-white dark:bg-stone-900 rounded-2xl shadow-xl">
+      <div className="relative z-10 w-full max-w-lg bg-white dark:bg-stone-900 rounded-xl">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-stone-200 dark:border-stone-700">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
-              <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <div className="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center">
+              <Icon className="w-5 h-5 text-brand-900 dark:text-brand-400" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
@@ -391,7 +391,7 @@ export function BulkActionsDialog({
                     </span>
                   ))}
                   {selectedParticipants.length > 5 && (
-                    <span className="px-2 py-1 bg-teal-100 dark:bg-teal-900/40 rounded-lg text-xs text-teal-600 dark:text-teal-400">
+                    <span className="px-2 py-1 bg-brand-100 dark:bg-brand-900/40 rounded-lg text-xs text-brand-900 dark:text-brand-400">
                       +{selectedParticipants.length - 5} till
                     </span>
                   )}
@@ -414,7 +414,7 @@ export function BulkActionsDialog({
                           className={cn(
                             'p-3 rounded-xl text-left transition-all',
                             selectedTemplate === template.id
-                              ? 'bg-teal-100 dark:bg-teal-900/40 ring-2 ring-teal-500'
+                              ? 'bg-brand-100 dark:bg-brand-900/40 ring-2 ring-brand-700'
                               : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
                           )}
                         >
@@ -443,7 +443,7 @@ export function BulkActionsDialog({
                         'w-full px-4 py-3 rounded-xl',
                         'bg-stone-100 dark:bg-stone-800',
                         'border-2 border-transparent',
-                        'focus:border-teal-500 focus:outline-none',
+                        'focus:border-brand-700 focus:outline-none',
                         'text-stone-900 dark:text-stone-100',
                         'placeholder:text-stone-600',
                         'resize-none'
@@ -464,7 +464,7 @@ export function BulkActionsDialog({
                         amber: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 ring-amber-500',
                         rose: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 ring-rose-500',
                         emerald: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 ring-emerald-500',
-                        teal: 'bg-teal-100 text-teal-800 dark:bg-teal-900/40 dark:text-teal-300 ring-teal-500',
+                        brand: 'bg-brand-100 text-brand-900 dark:bg-brand-900/40 dark:text-brand-300 ring-brand-700',
                         blue: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 ring-blue-500',
                         orange: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 ring-orange-500',
                       }
@@ -509,7 +509,7 @@ export function BulkActionsDialog({
                           'p-4 rounded-xl text-center transition-all',
                           format.disabled && 'opacity-50 cursor-not-allowed',
                           exportFormat === format.id
-                            ? 'bg-teal-100 dark:bg-teal-900/40 ring-2 ring-teal-500'
+                            ? 'bg-brand-100 dark:bg-brand-900/40 ring-2 ring-brand-700'
                             : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
                         )}
                       >
@@ -547,7 +547,7 @@ export function BulkActionsDialog({
                           className={cn(
                             'w-full p-3 rounded-xl flex items-center justify-between transition-all',
                             newStatus === status.value
-                              ? 'ring-2 ring-teal-500 bg-white dark:bg-stone-800'
+                              ? 'ring-2 ring-brand-700 bg-white dark:bg-stone-800'
                               : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
                           )}
                         >
@@ -560,7 +560,7 @@ export function BulkActionsDialog({
                             </span>
                           </div>
                           {newStatus === status.value && (
-                            <Check className="w-5 h-5 text-teal-600" />
+                            <Check className="w-5 h-5 text-brand-900" />
                           )}
                         </button>
                       )

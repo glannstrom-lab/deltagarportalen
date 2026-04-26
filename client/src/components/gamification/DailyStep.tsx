@@ -368,7 +368,7 @@ function StepBadge({ count, total = 3 }: { count: number; total?: number }) {
             key={i}
             className={`w-6 h-6 rounded-full flex items-center justify-center text-xs border-2 border-white transition-all duration-300 ${
               i < count 
-                ? 'bg-teal-500 text-white' 
+                ? 'bg-brand-700 text-white' 
                 : 'bg-slate-200 text-slate-600'
             }`}
           >
@@ -422,7 +422,7 @@ function TaskCard({
 }) {
   const categoryColors = {
     cv: 'bg-blue-50 border-blue-200 text-blue-700',
-    application: 'bg-teal-50 border-teal-200 text-teal-700',
+    application: 'bg-brand-50 border-brand-200 text-brand-900',
     wellbeing: 'bg-rose-50 border-rose-200 text-rose-700',
     learning: 'bg-amber-50 border-amber-200 text-amber-700'
   }
@@ -441,9 +441,9 @@ function TaskCard({
   }
 
   return (
-    <div className={`rounded-xl border-2 p-4 transition-all hover:shadow-md ${categoryColors[task.category]}`}>
+    <div className={`rounded-xl border-2 p-4 transition-all hover: ${categoryColors[task.category]}`}>
       <div className="flex items-start gap-4">
-        <div className="p-3 bg-white rounded-xl shadow-sm">
+        <div className="p-3 bg-white rounded-xl">
           {task.icon}
         </div>
         <div className="flex-1 min-w-0">
@@ -767,7 +767,7 @@ export function DailyStep({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
+    <div className="bg-white rounded-xl  border border-slate-100 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -789,20 +789,20 @@ export function DailyStep({
 
       {/* Motivationsbooster - visas vid första besöket */}
       {showMotivationBooster && currentBooster && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200 rounded-xl animate-in fade-in slide-in-from-top-2">
+        <div className="mb-6 p-4 bg-gradient-to-r from-brand-50 to-emerald-50 border border-brand-200 rounded-xl animate-in fade-in slide-in-from-top-2">
           <div className="flex items-start gap-3">
             <span className="text-2xl">{currentBooster.icon}</span>
             <div className="flex-1">
-              <p className="text-sm font-medium text-teal-800">
+              <p className="text-sm font-medium text-brand-900">
                 {currentBooster.message}
               </p>
-              <p className="text-xs text-teal-600 mt-1">
+              <p className="text-xs text-brand-900 mt-1">
                 {todayTip}
               </p>
             </div>
             <button 
               onClick={() => setShowMotivationBooster(false)}
-              className="text-teal-400 hover:text-teal-600"
+              className="text-brand-400 hover:text-brand-900"
             >
               <X className="w-4 h-4" />
             </button>
@@ -839,7 +839,7 @@ export function DailyStep({
         {/* Progress bar för dagen */}
         <div className="relative h-3 bg-slate-200 rounded-full overflow-hidden">
           <div 
-            className="absolute h-full bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 rounded-full transition-all duration-700 ease-out"
+            className="absolute h-full bg-gradient-to-r from-brand-400 via-emerald-400 to-brand-700 rounded-full transition-all duration-700 ease-out"
             style={{ width: `${dailyProgress}%` }}
           />
           
@@ -888,7 +888,7 @@ export function DailyStep({
                   w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium
                   transition-all duration-300
                   ${day.status === 'completed' 
-                    ? 'bg-teal-500 text-white shadow-md scale-110' 
+                    ? 'bg-brand-700 text-white scale-110' 
                     : day.status === 'missed'
                     ? 'bg-slate-100 text-slate-600'
                     : day.status === 'rest'
@@ -916,7 +916,7 @@ export function DailyStep({
         {/* Progress bar */}
         <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden">
           <div 
-            className="absolute h-full bg-gradient-to-r from-teal-400 to-teal-500 rounded-full transition-all duration-1000 ease-out"
+            className="absolute h-full bg-gradient-to-r from-brand-400 to-brand-700 rounded-full transition-all duration-1000 ease-out"
             style={{ width: `${weekProgress}%` }}
           />
         </div>
@@ -954,7 +954,7 @@ export function DailyStep({
               className={`
                 flex-1 py-2 px-3 rounded-lg border-2 text-sm font-medium transition-all
                 ${energyLevel === level 
-                  ? energyLabels[level].color + ' border-current shadow-sm' 
+                  ? energyLabels[level].color + ' border-current' 
                   : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'}
               `}
             >
@@ -981,7 +981,7 @@ export function DailyStep({
           <div className="text-5xl mb-3">
             {todayCompletedCount === dailyGoal ? '🏆' : todayCompletedCount === 2 ? '⭐' : '🎉'}
           </div>
-          <p className="text-lg font-semibold text-teal-700">
+          <p className="text-lg font-semibold text-brand-900">
             {todayCompletedCount === dailyGoal 
               ? 'Du klarade dagens mål! Fantastiskt!' 
               : todayCompletedCount === 2 
@@ -995,9 +995,9 @@ export function DailyStep({
           </p>
           
           {/* Total steps counter */}
-          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-teal-50 rounded-full">
-            <Star className="w-4 h-4 text-teal-500 fill-current" />
-            <span className="text-sm text-teal-700">
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-brand-50 rounded-full">
+            <Star className="w-4 h-4 text-brand-700 fill-current" />
+            <span className="text-sm text-brand-900">
               Du har tagit <strong>{totalSteps + todayCompletedCount}</strong> steg totalt!
             </span>
           </div>
@@ -1033,7 +1033,7 @@ export function DailyStep({
               <p>Inga uppgifter tillgängliga just nu</p>
               <button
                 onClick={() => setDismissedTasks([])}
-                className="mt-2 text-sm text-teal-600 hover:underline"
+                className="mt-2 text-sm text-brand-900 hover:underline"
               >
                 Visa alla uppgifter igen
               </button>
@@ -1081,7 +1081,7 @@ export function DailyStep({
         <div className="mt-6 pt-4 border-t border-slate-100">
           <div className="flex items-center justify-between">
             <p className="text-sm text-slate-700">
-              Du har gjort <span className="font-semibold text-teal-600">{completedTasks.length}</span> steg denna vecka.
+              Du har gjort <span className="font-semibold text-brand-900">{completedTasks.length}</span> steg denna vecka.
             </p>
             <span className="text-lg">🌟</span>
           </div>

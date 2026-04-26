@@ -45,7 +45,7 @@ export default function MarketStats() {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="w-8 h-8 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-4" />
+        <div className="w-8 h-8 border-4 border-brand-200 border-t-brand-900 rounded-full animate-spin mx-auto mb-4" />
         <p className="text-slate-600">Laddar marknadsstatistik...</p>
       </div>
     )
@@ -70,12 +70,12 @@ export default function MarketStats() {
                   {stat.value.toLocaleString('sv-SE')}
                 </p>
               </div>
-              <div className="p-3 bg-teal-100 rounded-xl">
-                <BarChart3 className="w-6 h-6 text-teal-600" />
+              <div className="p-3 bg-brand-100 rounded-xl">
+                <BarChart3 className="w-6 h-6 text-brand-900" />
               </div>
             </div>
             {stat.change && (
-              <p className={`text-sm mt-2 ${stat.trend === 'up' ? 'text-green-600' : 'text-slate-600'}`}>
+              <p className={`text-sm mt-2 ${stat.trend === 'up' ? 'text-brand-900' : 'text-slate-600'}`}>
                 {stat.trend === 'up' ? '+' : ''}{stat.change}% sedan förra månaden
               </p>
             )}
@@ -94,7 +94,7 @@ export default function MarketStats() {
             <div key={idx} className="bg-white p-4 rounded-lg border border-amber-100">
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-medium text-slate-900">{job.occupation}</h4>
-                <span className="text-green-600 font-bold text-sm">+{job.growth}%</span>
+                <span className="text-brand-900 font-bold text-sm">+{job.growth}%</span>
               </div>
               <p className="text-sm text-slate-600">{job.description}</p>
             </div>
@@ -106,7 +106,7 @@ export default function MarketStats() {
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-200">
           <div className="flex items-center gap-2">
-            <Star className="w-5 h-5 text-teal-600" />
+            <Star className="w-5 h-5 text-brand-900" />
             <h3 className="font-semibold text-slate-900">Mest efterfrågade kompetenser</h3>
           </div>
         </div>
@@ -134,7 +134,7 @@ export default function MarketStats() {
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <div className="p-6 border-b border-slate-200">
           <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-teal-600" />
+            <MapPin className="w-5 h-5 text-brand-900" />
             <h3 className="font-semibold text-slate-900">Jobb per region</h3>
           </div>
         </div>
@@ -143,7 +143,7 @@ export default function MarketStats() {
             <div key={idx} className="p-4 hover:bg-slate-50">
               <div className="flex items-center justify-between mb-2">
                 <h4 className="font-medium text-slate-900">{region.region}</h4>
-                <span className={`text-sm font-medium ${region.growth > 0 ? 'text-green-600' : 'text-red-600'}`}>
+                <span className={`text-sm font-medium ${region.growth > 0 ? 'text-brand-900' : 'text-red-600'}`}>
                   {region.growth > 0 ? '+' : ''}{region.growth}%
                 </span>
               </div>
@@ -155,7 +155,7 @@ export default function MarketStats() {
               </div>
               <div className="mt-2 w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-teal-500"
+                  className="h-full bg-brand-700"
                   style={{ width: `${Math.min((region.totalJobs / 20000) * 100, 100)}%` }}
                 />
               </div>
@@ -167,7 +167,7 @@ export default function MarketStats() {
       {/* Salary Info */}
       <div className="bg-white p-6 rounded-xl border border-slate-200">
         <div className="flex items-center gap-2 mb-4">
-          <DollarSign className="w-5 h-5 text-teal-600" />
+          <DollarSign className="w-5 h-5 text-brand-900" />
           <h3 className="font-semibold text-slate-900">Löneinformation</h3>
         </div>
         <p className="text-slate-600 text-sm">
@@ -175,13 +175,13 @@ export default function MarketStats() {
           beroende på erfarenhet, utbildning och arbetsplats.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm">
+          <span className="px-3 py-1 bg-brand-50 text-brand-900 rounded-full text-sm">
             Utvecklare: ~45 000 kr/mån
           </span>
-          <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm">
+          <span className="px-3 py-1 bg-brand-50 text-brand-900 rounded-full text-sm">
             Sjuksköterska: ~38 000 kr/mån
           </span>
-          <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm">
+          <span className="px-3 py-1 bg-brand-50 text-brand-900 rounded-full text-sm">
             Lärare: ~35 000 kr/mån
           </span>
         </div>

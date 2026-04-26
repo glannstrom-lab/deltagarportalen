@@ -99,7 +99,7 @@ export default function RoutinesTab() {
         animate={{ opacity: 1, y: 0 }}
         className="grid grid-cols-2 gap-4"
       >
-        <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
+        <Card className="p-6 bg-gradient-to-br from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 border-emerald-100 dark:border-emerald-800">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Idag</p>
@@ -138,7 +138,7 @@ export default function RoutinesTab() {
             initial={{ width: 0 }}
             animate={{ width: `${completionPercentage}%` }}
             transition={{ duration: 0.5 }}
-            className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400"
+            className="h-full bg-gradient-to-r from-emerald-500 to-brand-700 dark:from-emerald-400 dark:to-brand-400"
           />
         </div>
       </div>
@@ -292,7 +292,7 @@ export default function RoutinesTab() {
       </Card>
 
       {/* Suggested Routines - Templates */}
-      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
+      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 border-emerald-100 dark:border-emerald-800">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.suggestedRoutines')}</h3>
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Förslagade rutiner som kan hjälpa dig få en strukturerad dag:</p>
         <div className="space-y-2">
@@ -331,7 +331,7 @@ export default function RoutinesTab() {
         <div className="grid grid-cols-2 gap-3">
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 border-2 border-orange-200 dark:border-orange-800 cursor-pointer hover:shadow-md transition-all"
+            className="p-4 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 border-2 border-orange-200 dark:border-orange-800 cursor-pointer hover: transition-all"
           >
             <Sun className="w-6 h-6 text-orange-600 dark:text-orange-400 mb-2" />
             <h4 className="font-semibold text-orange-900 dark:text-orange-200">Morgon-rutin</h4>
@@ -341,12 +341,12 @@ export default function RoutinesTab() {
 
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 border-2 border-teal-200 dark:border-teal-800 cursor-pointer hover:shadow-md transition-all"
+            className="p-4 rounded-xl bg-gradient-to-br from-emerald-100 to-brand-100 dark:from-emerald-900/30 dark:to-brand-900/30 border-2 border-brand-200 dark:border-brand-900 cursor-pointer hover: transition-all"
           >
-            <Moon className="w-6 h-6 text-teal-600 dark:text-teal-400 mb-2" />
-            <h4 className="font-semibold text-teal-900 dark:text-teal-200">Kväll-rutin</h4>
-            <p className="text-xs text-teal-800 dark:text-teal-300 mt-1">4 aktiviteter för bättre sömn</p>
-            <p className="text-xs text-teal-700 dark:text-teal-400 mt-2">20:00 - 21:30</p>
+            <Moon className="w-6 h-6 text-brand-900 dark:text-brand-400 mb-2" />
+            <h4 className="font-semibold text-brand-900 dark:text-brand-200">Kväll-rutin</h4>
+            <p className="text-xs text-brand-900 dark:text-brand-300 mt-1">4 aktiviteter för bättre sömn</p>
+            <p className="text-xs text-brand-900 dark:text-brand-400 mt-2">20:00 - 21:30</p>
           </motion.div>
         </div>
       </Card>

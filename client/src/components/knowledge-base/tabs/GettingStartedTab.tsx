@@ -242,7 +242,7 @@ export default function GettingStartedTab() {
 
       {/* Completion celebration */}
       {completedCount === steps.length && (
-        <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-100">
+        <Card className="bg-gradient-to-r from-emerald-50 to-brand-50 border-emerald-100">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-emerald-600" />

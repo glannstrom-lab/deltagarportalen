@@ -184,9 +184,9 @@ export function AIAssistant() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "fixed bottom-24 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
-          "bg-gradient-to-r from-teal-500 to-sky-500 text-white font-medium",
-          "hover:shadow-xl transition-shadow"
+          "fixed bottom-24 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full",
+          "bg-gradient-to-r from-brand-700 to-sky-500 text-white font-medium",
+          "hover: transition-shadow"
         )}
       >
         <Brain size={20} />
@@ -209,10 +209,10 @@ export function AIAssistant() {
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white dark:bg-stone-900 rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
+              className="bg-white dark:bg-stone-900 rounded-t-3xl sm:rounded-xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-teal-500 to-sky-500 p-6 text-white">
+              <div className="bg-gradient-to-r from-brand-700 to-sky-500 p-6 text-white">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
@@ -244,7 +244,7 @@ export function AIAssistant() {
                       className={cn(
                         "px-4 py-2 rounded-full text-sm font-medium transition-colors",
                         activeTab === tab
-                          ? 'bg-white text-teal-600'
+                          ? 'bg-white text-brand-900'
                           : 'bg-white/20 text-white hover:bg-white/30'
                       )}
                     >
@@ -280,10 +280,10 @@ function OverviewTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: str
   return (
     <div className="space-y-6">
       {/* Prediction Card */}
-      <div className="p-5 bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-2xl border border-teal-200 dark:border-teal-800">
+      <div className="p-5 bg-gradient-to-br from-brand-50 to-sky-50 dark:from-brand-900/30 dark:to-sky-900/30 rounded-xl border border-brand-200 dark:border-brand-900">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
-            <Target size={20} className="text-teal-600 dark:text-teal-400" />
+          <div className="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-900/50 flex items-center justify-center">
+            <Target size={20} className="text-brand-900 dark:text-brand-400" />
           </div>
           <div>
             <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('ai.assistant.overview.yourForecast')}</h3>
@@ -292,7 +292,7 @@ function OverviewTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: str
         </div>
 
         <div className="flex items-end gap-2 mb-2">
-          <span className="text-4xl font-bold text-teal-600 dark:text-teal-400">
+          <span className="text-4xl font-bold text-brand-900 dark:text-brand-400">
             {analysis.predictedInterviewChance}%
           </span>
           <span className="text-slate-600 dark:text-stone-400 mb-1">{t('ai.assistant.overview.interviewChance')}</span>
@@ -304,12 +304,12 @@ function OverviewTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: str
           </p>
         )}
         
-        <div className="mt-4 h-2 bg-teal-200 dark:bg-teal-800 rounded-full overflow-hidden">
+        <div className="mt-4 h-2 bg-brand-200 dark:bg-brand-900 rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${analysis.predictedInterviewChance}%` }}
             transition={{ duration: 1 }}
-            className="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full"
+            className="h-full bg-gradient-to-r from-brand-700 to-sky-500 rounded-full"
           />
         </div>
       </div>
@@ -375,7 +375,7 @@ function InsightsTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: str
           className="p-4 bg-slate-50 dark:bg-stone-800 rounded-xl border border-slate-100 dark:border-stone-700 flex items-start gap-3"
         >
           <div className="w-8 h-8 rounded-lg bg-white dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
-            <Zap size={16} className="text-teal-500" />
+            <Zap size={16} className="text-brand-700" />
           </div>
           <p className="text-slate-700 dark:text-stone-300">{insight}</p>
         </motion.div>
@@ -388,7 +388,7 @@ function ActionsTab({ analysis, onClose, t }: { analysis: BehaviorAnalysis; onCl
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-        <Target size={18} className="text-teal-500" />
+        <Target size={18} className="text-brand-700" />
         {t('ai.assistant.actionsTab.title')}
       </h3>
 
@@ -401,16 +401,16 @@ function ActionsTab({ analysis, onClose, t }: { analysis: BehaviorAnalysis; onCl
           className={cn(
             "p-4 rounded-xl border transition-all",
             action.priority === 'high'
-              ? 'bg-teal-50 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800'
+              ? 'bg-brand-50 dark:bg-brand-900/30 border-brand-200 dark:border-brand-900'
               : 'bg-slate-50 dark:bg-stone-800 border-slate-200 dark:border-stone-700'
           )}
         >
           <div className="flex items-start gap-3">
             <div className={cn(
               "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-              action.priority === 'high' ? 'bg-teal-100 dark:bg-teal-900/50' : 'bg-white dark:bg-stone-700'
+              action.priority === 'high' ? 'bg-brand-100 dark:bg-brand-900/50' : 'bg-white dark:bg-stone-700'
             )}>
-              <Sparkles size={18} className="text-teal-600 dark:text-teal-400" />
+              <Sparkles size={18} className="text-brand-900 dark:text-brand-400" />
             </div>
             <div className="flex-1">
               <h4 className="font-semibold text-slate-800 dark:text-stone-100">{action.action}</h4>

@@ -12,16 +12,16 @@
      ======================================== */
 
   /* Primary - Soft Teal (Sidebar & Primary Actions) */
-  --pastel-teal-50: #f0fdfa;
-  --pastel-teal-100: #ccfbf1;
-  --pastel-teal-200: #99f6e4;
-  --pastel-teal-300: #5eead4;
-  --pastel-teal-400: #2dd4bf;
-  --pastel-teal-500: #14b8a6;
-  --pastel-teal-600: #0d9488;
-  --pastel-teal-700: #0f766e;
-  --pastel-teal-800: #115e59;
-  --pastel-teal-900: #134e4a;
+  --pastel-brand-50: #f0fdfa;
+  --pastel-brand-100: #ccfbf1;
+  --pastel-brand-200: #99f6e4;
+  --pastel-brand-300: #5eead4;
+  --pastel-brand-400: #2dd4bf;
+  --pastel-brand-700: #14b8a6;
+  --pastel-brand-900: #0d9488;
+  --pastel-brand-900: #0f766e;
+  --pastel-brand-900: #115e59;
+  --pastel-brand-900: #134e4a;
 
   /* Warm Cream - Page backgrounds */
   --pastel-cream-50: #fefdfb;
@@ -92,21 +92,21 @@
   --text-subtle: #a8a29e;
 
   /* Sidebar */
-  --sidebar-bg: linear-gradient(180deg, var(--pastel-teal-50) 0%, #ffffff 50%, var(--pastel-gray-50) 100%);
-  --sidebar-border: var(--pastel-teal-100);
+  --sidebar-bg: linear-gradient(180deg, var(--pastel-brand-50) 0%, #ffffff 50%, var(--pastel-gray-50) 100%);
+  --sidebar-border: var(--pastel-brand-100);
   --sidebar-text: var(--pastel-gray-600);
-  --sidebar-text-active: var(--pastel-teal-800);
-  --sidebar-item-active-bg: var(--pastel-teal-100);
-  --sidebar-item-hover-bg: var(--pastel-teal-50);
+  --sidebar-text-active: var(--pastel-brand-900);
+  --sidebar-item-active-bg: var(--pastel-brand-100);
+  --sidebar-item-hover-bg: var(--pastel-brand-50);
 
   /* Header */
   --header-bg: rgba(255, 255, 255, 0.9);
-  --header-border: var(--pastel-teal-100);
+  --header-border: var(--pastel-brand-100);
 
   /* Inputs */
   --input-bg: #ffffff;
   --input-border: #e7e5e4;
-  --input-border-focus: var(--pastel-teal-400);
+  --input-border-focus: var(--pastel-brand-400);
   --input-ring: rgba(20, 184, 166, 0.2);
 
   /* Module Cards */
@@ -127,8 +127,8 @@
   --module-jobs-accent: var(--pastel-peach-500);
 
   /* Buttons */
-  --btn-primary-bg: var(--pastel-teal-500);
-  --btn-primary-hover: var(--pastel-teal-600);
+  --btn-primary-bg: var(--pastel-brand-700);
+  --btn-primary-hover: var(--pastel-brand-900);
   --btn-primary-text: #ffffff;
   --btn-secondary-bg: #ffffff;
   --btn-secondary-border: var(--pastel-gray-200);
@@ -141,16 +141,16 @@
 
 .dark {
   /* Primary - Soft Teal - DARK */
-  --pastel-teal-50: #042f2e;
-  --pastel-teal-100: #134e4a;
-  --pastel-teal-200: #115e59;
-  --pastel-teal-300: #0f766e;
-  --pastel-teal-400: #0d9488;
-  --pastel-teal-500: #14b8a6;
-  --pastel-teal-600: #2dd4bf;
-  --pastel-teal-700: #5eead4;
-  --pastel-teal-800: #99f6e4;
-  --pastel-teal-900: #ccfbf1;
+  --pastel-brand-50: #042f2e;
+  --pastel-brand-100: #134e4a;
+  --pastel-brand-200: #115e59;
+  --pastel-brand-300: #0f766e;
+  --pastel-brand-400: #0d9488;
+  --pastel-brand-700: #14b8a6;
+  --pastel-brand-900: #2dd4bf;
+  --pastel-brand-900: #5eead4;
+  --pastel-brand-900: #99f6e4;
+  --pastel-brand-900: #ccfbf1;
 
   /* Warm Cream - Page backgrounds - DARK */
   --pastel-cream-50: #0c0a09;
@@ -482,7 +482,7 @@
    PASTEL UTILITIES
    ======================================== */
 
-.bg-pastel-teal { background-color: var(--pastel-teal-50); }
+.bg-pastel-brand { background-color: var(--pastel-brand-50); }
 .bg-pastel-cream { background-color: var(--pastel-cream-50); }
 .bg-pastel-sage { background-color: var(--pastel-sage-50); }
 .bg-pastel-peach { background-color: var(--pastel-peach-50); }
@@ -490,13 +490,13 @@
 .bg-pastel-sky { background-color: var(--pastel-sky-50); }
 .bg-pastel-rose { background-color: var(--pastel-rose-50); }
 
-.text-pastel-teal { color: var(--pastel-teal-600); }
+.text-pastel-brand { color: var(--pastel-brand-900); }
 .text-pastel-sage { color: var(--pastel-sage-600); }
 .text-pastel-peach { color: var(--pastel-peach-500); }
 .text-pastel-lavender { color: var(--pastel-lavender-500); }
 .text-pastel-sky { color: var(--pastel-sky-500); }
 
-.border-pastel-teal { border-color: var(--pastel-teal-200); }
+.border-pastel-brand { border-color: var(--pastel-brand-200); }
 .border-pastel-sage { border-color: var(--pastel-sage-200); }
 .border-pastel-peach { border-color: var(--pastel-peach-200); }
 .border-pastel-lavender { border-color: var(--pastel-lavender-200); }
@@ -505,8 +505,8 @@
    GENTLE GRADIENTS
    ======================================== */
 
-.gradient-gentle-teal {
-  background: linear-gradient(135deg, var(--pastel-teal-50) 0%, var(--pastel-teal-100) 100%);
+.gradient-gentle-brand {
+  background: linear-gradient(135deg, var(--pastel-brand-50) 0%, var(--pastel-brand-100) 100%);
 }
 
 .gradient-gentle-warm {
@@ -518,7 +518,7 @@
 }
 
 .gradient-gentle-nature {
-  background: linear-gradient(135deg, var(--pastel-sage-50) 0%, var(--pastel-teal-50) 100%);
+  background: linear-gradient(135deg, var(--pastel-sage-50) 0%, var(--pastel-brand-50) 100%);
 }
 
 /* ========================================
@@ -532,7 +532,7 @@
 }
 
 .progress-pastel-bar {
-  background: linear-gradient(90deg, var(--pastel-teal-400) 0%, var(--pastel-teal-500) 100%);
+  background: linear-gradient(90deg, var(--pastel-brand-400) 0%, var(--pastel-brand-700) 100%);
   border-radius: 9999px;
   transition: width 0.5s ease;
 }
@@ -560,14 +560,14 @@
    ======================================== */
 
 .section-header {
-  background: linear-gradient(to right, var(--pastel-teal-500), var(--pastel-teal-600));
+  background: linear-gradient(to right, var(--pastel-brand-700), var(--pastel-brand-900));
   color: white;
   padding: 1.5rem;
   border-radius: 0 0 1.5rem 1.5rem;
 }
 
 .dark .section-header {
-  background: linear-gradient(to right, var(--pastel-teal-700), var(--pastel-teal-800));
+  background: linear-gradient(to right, var(--pastel-brand-900), var(--pastel-brand-900));
 }
 
 /* ========================================
@@ -587,24 +587,24 @@
 }
 
 .pastel-tab:hover {
-  background-color: var(--pastel-teal-50);
-  color: var(--pastel-teal-700);
+  background-color: var(--pastel-brand-50);
+  color: var(--pastel-brand-900);
 }
 
 .pastel-tab.active {
-  background-color: var(--pastel-teal-100);
-  color: var(--pastel-teal-700);
+  background-color: var(--pastel-brand-100);
+  color: var(--pastel-brand-900);
   font-weight: 500;
 }
 
 .dark .pastel-tab:hover {
-  background-color: var(--pastel-teal-100);
-  color: var(--pastel-teal-600);
+  background-color: var(--pastel-brand-100);
+  color: var(--pastel-brand-900);
 }
 
 .dark .pastel-tab.active {
-  background-color: var(--pastel-teal-100);
-  color: var(--pastel-teal-500);
+  background-color: var(--pastel-brand-100);
+  color: var(--pastel-brand-700);
 }
 
 /* ========================================
@@ -625,19 +625,19 @@
 }
 
 .pastel-chip:hover {
-  border-color: var(--pastel-teal-300);
+  border-color: var(--pastel-brand-300);
 }
 
 .pastel-chip.selected {
-  background-color: var(--pastel-teal-100);
-  border-color: var(--pastel-teal-300);
-  color: var(--pastel-teal-700);
+  background-color: var(--pastel-brand-100);
+  border-color: var(--pastel-brand-300);
+  color: var(--pastel-brand-900);
 }
 
 .dark .pastel-chip.selected {
-  background-color: var(--pastel-teal-100);
-  border-color: var(--pastel-teal-400);
-  color: var(--pastel-teal-500);
+  background-color: var(--pastel-brand-100);
+  border-color: var(--pastel-brand-400);
+  color: var(--pastel-brand-700);
 }
 
 /* ========================================
@@ -674,7 +674,7 @@ input[type="range"].pastel-range::-webkit-slider-thumb {
   appearance: none;
   width: 1.25rem;
   height: 1.25rem;
-  background: var(--pastel-teal-500);
+  background: var(--pastel-brand-700);
   border-radius: 50%;
   cursor: pointer;
   border: 2px solid white;
@@ -684,7 +684,7 @@ input[type="range"].pastel-range::-webkit-slider-thumb {
 
 input[type="range"].pastel-range::-webkit-slider-thumb:hover {
   transform: scale(1.1);
-  background: var(--pastel-teal-600);
+  background: var(--pastel-brand-900);
 }
 
 /* ========================================
@@ -704,8 +704,8 @@ input[type="checkbox"].pastel-checkbox {
 }
 
 input[type="checkbox"].pastel-checkbox:checked {
-  background-color: var(--pastel-teal-500);
-  border-color: var(--pastel-teal-500);
+  background-color: var(--pastel-brand-700);
+  border-color: var(--pastel-brand-700);
   background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
   background-size: 100% 100%;
   background-position: center;
@@ -734,12 +734,12 @@ input[type="checkbox"].pastel-checkbox:focus {
   width: 4rem;
   height: 4rem;
   border-radius: 1rem;
-  background: linear-gradient(135deg, var(--pastel-teal-100) 0%, var(--pastel-teal-200) 100%);
-  color: var(--pastel-teal-600);
+  background: linear-gradient(135deg, var(--pastel-brand-100) 0%, var(--pastel-brand-200) 100%);
+  color: var(--pastel-brand-900);
   margin-bottom: 1rem;
 }
 
 .dark .pastel-empty-state-icon {
-  background: linear-gradient(135deg, var(--pastel-teal-100) 0%, var(--pastel-teal-200) 100%);
-  color: var(--pastel-teal-500);
+  background: linear-gradient(135deg, var(--pastel-brand-100) 0%, var(--pastel-brand-200) 100%);
+  color: var(--pastel-brand-700);
 }

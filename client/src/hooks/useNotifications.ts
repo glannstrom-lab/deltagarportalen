@@ -369,8 +369,8 @@ export const notificationConfig: Record<NotificationType, {
   },
   job_match: {
     icon: 'Briefcase',
-    color: 'text-green-600',
-    bgColor: 'bg-green-100',
+    color: 'text-brand-900',
+    bgColor: 'bg-brand-100',
     label: 'Jobbmatchning',
   },
   discussion: {
@@ -399,8 +399,8 @@ export const notificationConfig: Record<NotificationType, {
   },
   success: {
     icon: 'CheckCircle',
-    color: 'text-green-600',
-    bgColor: 'bg-green-100',
+    color: 'text-brand-900',
+    bgColor: 'bg-brand-100',
     label: 'Framgång',
   },
   warning: {

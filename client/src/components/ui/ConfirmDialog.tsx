@@ -133,7 +133,7 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
           {/* Dialog Content */}
           <div
             ref={dialogRef}
-            className="relative w-full max-w-md bg-white dark:bg-stone-900 rounded-2xl shadow-xl animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-md bg-white dark:bg-stone-900 rounded-xl animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button */}

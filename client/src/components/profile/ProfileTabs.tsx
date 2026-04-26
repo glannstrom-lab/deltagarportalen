@@ -95,7 +95,7 @@ export function ProfileTabs() {
                   'flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all',
                   'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2',
                   isActive
-                    ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 shadow-sm'
+                    ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300'
                     : 'text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200'
                 )}
               >
@@ -140,7 +140,7 @@ export function ProfileTabs() {
                 'flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all',
                 'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2',
                 isActive
-                  ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 shadow-sm'
+                  ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300'
                   : 'text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-brand-50 dark:hover:bg-stone-700/50'
               )}
             >

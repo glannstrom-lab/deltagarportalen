@@ -14,8 +14,8 @@ interface MoodCheckProps {
 }
 
 const moodOptions = [
-  { value: 5, emoji: '😊', label: 'Bra', color: 'text-green-500', bg: 'bg-green-50', border: 'border-green-200' },
-  { value: 4, emoji: '🙂', label: 'Ganska bra', color: 'text-teal-500', bg: 'bg-teal-50', border: 'border-teal-200' },
+  { value: 5, emoji: '😊', label: 'Bra', color: 'text-brand-700', bg: 'bg-brand-50', border: 'border-brand-200' },
+  { value: 4, emoji: '🙂', label: 'Ganska bra', color: 'text-brand-700', bg: 'bg-brand-50', border: 'border-brand-200' },
   { value: 3, emoji: '😐', label: 'Okej', color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-200' },
   { value: 2, emoji: '😔', label: 'Tungt', color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-200' },
   { value: 1, emoji: '😢', label: 'Mycket tungt', color: 'text-rose-500', bg: 'bg-rose-50', border: 'border-rose-200' },
@@ -129,7 +129,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6 flex items-center justify-center">
+      <div className="bg-white rounded-xl  border border-slate-100 p-6 flex items-center justify-center">
         <Loader2 className="w-5 h-5 text-slate-600 animate-spin" />
         <span className="ml-2 text-sm text-slate-700">Laddar...</span>
       </div>
@@ -140,7 +140,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
     const moodOption = moodOptions.find(m => m.value === selectedMood)
     
     return (
-      <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
+      <div className="bg-white rounded-xl  border border-slate-100 p-6">
         <div className="text-center">
           <div className="text-4xl mb-2">{moodOption?.emoji}</div>
           <p className="text-lg font-medium text-slate-800">
@@ -158,7 +158,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
                   Snitt: {getAverageMood()}/5
                 </div>
                 <div className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  getMoodTrend() === 'improving' ? 'bg-green-100 text-green-700' :
+                  getMoodTrend() === 'improving' ? 'bg-brand-100 text-brand-900' :
                   getMoodTrend() === 'declining' ? 'bg-rose-100 text-rose-700' :
                   'bg-slate-100 text-slate-700'
                 }`}>
@@ -175,7 +175,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
+    <div className="bg-white rounded-xl  border border-slate-100 p-6">
       <div className="flex items-center gap-2 mb-4">
         <Heart className="w-5 h-5 text-rose-500" />
         <h3 className="font-semibold text-slate-800">Hur mår du idag?</h3>
@@ -199,7 +199,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
             disabled={isSaving}
             className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${
               selectedMood === option.value
-                ? `${option.bg} ${option.border} ring-2 ring-offset-2 ring-teal-500`
+                ? `${option.bg} ${option.border} ring-2 ring-offset-2 ring-brand-700`
                 : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'
             } ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
             aria-label={`Mood: ${option.label}`}
@@ -251,7 +251,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Vill du skriva något om hur du mår? (frivilligt)"
-            className="w-full p-3 border border-slate-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            className="w-full p-3 border border-slate-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-transparent"
             rows={3}
             maxLength={200}
             disabled={isSaving}
@@ -263,7 +263,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
           <button
             onClick={handleSubmit}
             disabled={isSaving}
-            className="w-full mt-3 bg-teal-600 text-white py-3 rounded-xl font-medium hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full mt-3 bg-brand-900 text-white py-3 rounded-xl font-medium hover:bg-brand-900 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
             {isSaving ? 'Sparar...' : 'Spara'}

@@ -52,8 +52,8 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl p-8 text-center">
-        <Loader2 size={48} className="mx-auto text-teal-600 animate-spin mb-4" />
+      <div className="bg-white rounded-xl p-8 text-center">
+        <Loader2 size={48} className="mx-auto text-brand-900 animate-spin mb-4" />
         <h3 className="text-lg font-semibold text-slate-800">Bygger din karriärväg...</h3>
         <p className="text-slate-700">Vi söker utbildningar och jobb</p>
       </div>
@@ -62,7 +62,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
 
   if (error || !careerPath) {
     return (
-      <div className="bg-slate-50 rounded-2xl p-8 text-center">
+      <div className="bg-slate-50 rounded-xl p-8 text-center">
         <p className="text-slate-600">Karriärvägen kunde inte laddas</p>
       </div>
     )
@@ -177,7 +177,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
       id: 3,
       title: 'Tillgängliga jobb',
       icon: Briefcase,
-      color: 'bg-green-100 text-green-700',
+      color: 'bg-brand-100 text-brand-900',
       content: (
         <div className="space-y-4">
           <p className="text-slate-700">
@@ -189,7 +189,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
               <Link
                 key={i}
                 to={`/jobs?search=${encodeURIComponent(job.headline)}`}
-                className="block bg-white border border-slate-200 rounded-lg p-4 hover:border-green-400 hover:shadow-md transition-all"
+                className="block bg-white border border-slate-200 rounded-lg p-4 hover:border-brand-400 hover: transition-all"
               >
                 <h5 className="font-semibold text-slate-800 mb-1">{job.headline}</h5>
                 {job.employer?.name && (
@@ -201,7 +201,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
 
           <Link
             to={`/jobs?search=${encodeURIComponent(careerPath.occupation)}`}
-            className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium"
+            className="inline-flex items-center justify-center gap-2 w-full px-4 py-3 bg-brand-900 text-white rounded-lg hover:bg-brand-900 font-medium"
           >
             Se alla lediga jobb
             <ArrowRight size={18} />
@@ -212,8 +212,8 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
   ]
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-      <div className="bg-gradient-to-r from-teal-600 to-blue-600 p-6 text-white">
+    <div className="bg-white rounded-xl overflow-hidden">
+      <div className="bg-gradient-to-r from-brand-900 to-blue-600 p-6 text-white">
         <h3 className="text-xl font-bold flex items-center gap-2">
           <MapPin size={24} />
           Din karriärväg
@@ -262,7 +262,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
         {careerPath.salary_range && (
           <div className="mt-6 pt-6 border-t">
             <h4 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-              <TrendingUp size={18} className="text-teal-600" />
+              <TrendingUp size={18} className="text-brand-900" />
               Marknadsinformation
             </h4>
             <div className="grid grid-cols-2 gap-4">
@@ -276,7 +276,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
               <div className="bg-slate-50 rounded-lg p-4">
                 <TrendingUp size={16} className="text-slate-600 mb-1" />
                 <p className={`text-lg font-bold ${
-                  careerPath.demand_trend === 'increasing' ? 'text-green-600' :
+                  careerPath.demand_trend === 'increasing' ? 'text-brand-900' :
                   careerPath.demand_trend === 'decreasing' ? 'text-red-600' :
                   'text-yellow-600'
                 }`}>

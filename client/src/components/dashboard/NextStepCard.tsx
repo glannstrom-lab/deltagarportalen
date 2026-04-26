@@ -24,14 +24,14 @@ interface NextStepCardProps {
 // Enhanced color system
 const colorSchemes = {
   violet: {
-    gradient: 'from-teal-500 to-sky-600',
-    bg: 'bg-teal-50',
-    bgLight: 'bg-teal-100',
-    text: 'text-teal-700',
-    ring: 'focus:ring-teal-500'
+    gradient: 'from-brand-700 to-sky-600',
+    bg: 'bg-brand-50',
+    bgLight: 'bg-brand-100',
+    text: 'text-brand-900',
+    ring: 'focus:ring-brand-700'
   },
-  teal: {
-    gradient: 'from-teal-500 to-emerald-600',
+  brand: {
+    gradient: 'from-brand-700 to-emerald-600',
     bg: 'bg-emerald-50',
     bgLight: 'bg-emerald-100',
     text: 'text-emerald-700',
@@ -79,7 +79,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
         link: '/interest-guide',
         icon: <Compass size={24} />,
         time: '5 min',
-        color: colorSchemes.teal,
+        color: colorSchemes.brand,
         priority: 'high'
       }
     }
@@ -159,10 +159,10 @@ export function NextStepCard({ data }: NextStepCardProps) {
   if (!isExpanded) {
     return (
       <div className={cn(
-        "rounded-2xl border-2 transition-all duration-300",
+        "rounded-xl border-2 transition-all duration-300",
         step.color.bgLight,
         "border-transparent hover:border-slate-200",
-        "hover:shadow-lg"
+        "hover:"
       )}>
         <button
           onClick={() => setIsExpanded(true)}
@@ -170,7 +170,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
         >
           <div className="flex items-center gap-4">
             <div className={cn(
-              "w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg",
+              "w-12 h-12 rounded-xl flex items-center justify-center text-white",
               "bg-gradient-to-br",
               step.color.gradient
             )}>
@@ -193,8 +193,8 @@ export function NextStepCard({ data }: NextStepCardProps) {
               {step.time}
             </span>
             <div className={cn(
-              "w-10 h-10 rounded-xl flex items-center justify-center shadow-sm",
-              "bg-white dark:bg-stone-800 group-hover:shadow-md transition-all duration-200",
+              "w-10 h-10 rounded-xl flex items-center justify-center",
+              "bg-white dark:bg-stone-800 group-hover: transition-all duration-200",
               "group-hover:scale-105"
             )}>
               <ChevronDown size={18} className="text-slate-600 dark:text-stone-400" />
@@ -215,14 +215,14 @@ export function NextStepCard({ data }: NextStepCardProps) {
       <Link 
         to={step.link} 
         className={cn(
-          "block focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-2xl",
+          "block focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-xl",
           step.color.ring
         )}
       >
         <div className={cn(
-          "relative overflow-hidden rounded-2xl bg-gradient-to-br p-6 transition-all duration-300",
+          "relative overflow-hidden rounded-xl bg-gradient-to-br p-6 transition-all duration-300",
           step.color.gradient,
-          "hover:shadow-2xl",
+          "hover:",
           isHovered ? "-translate-y-1" : "translate-y-0"
         )}>
           {/* Animated background decorations */}
@@ -273,7 +273,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
             {/* Content */}
             <div className="flex items-start gap-5">
               <div className={cn(
-                "w-14 h-14 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white shadow-inner transition-transform duration-300",
+                "w-14 h-14 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white transition-transform duration-300",
                 isHovered && "scale-110"
               )}>
                 {step.icon}
@@ -292,8 +292,8 @@ export function NextStepCard({ data }: NextStepCardProps) {
                     {step.time}
                   </span>
                   <span className={cn(
-                    "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-slate-900 font-bold shadow-lg transition-all duration-200",
-                    "group-hover:bg-white/95 group-hover:shadow-xl",
+                    "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-slate-900 font-bold transition-all duration-200",
+                    "group-hover:bg-white/95 group-hover:",
                     "group-hover:gap-3"
                   )}>
                     {step.action}

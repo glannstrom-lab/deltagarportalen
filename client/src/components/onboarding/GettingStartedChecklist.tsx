@@ -260,7 +260,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
   if (isAllComplete) {
     return (
       <div className={cn(
-        'bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 rounded-2xl shadow-sm border border-emerald-200 p-6 animate-in fade-in slide-in-from-bottom-4',
+        'bg-gradient-to-r from-emerald-50 via-brand-50 to-cyan-50 rounded-xl border border-emerald-200 p-6 animate-in fade-in slide-in-from-bottom-4',
         className
       )}>
         <div className="flex items-center gap-4">
@@ -299,7 +299,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
           </div>
           <button
             onClick={handleUnsnooze}
-            className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+            className="flex items-center gap-2 px-3 py-2 min-h-[44px] text-sm font-medium text-brand-900 hover:bg-brand-50 rounded-lg transition-colors"
           >
             <Play className="w-4 h-4" />
             Fortsätt
@@ -310,17 +310,17 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
   }
 
   return (
-    <div className={cn('bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden', className)}>
+    <div className={cn('bg-white rounded-xl border border-slate-200 overflow-hidden', className)}>
       {/* Header */}
       <button
         onClick={onToggle}
-        className="w-full p-5 bg-gradient-to-r from-teal-50 to-sky-50 border-b border-slate-100 text-left hover:from-teal-100 hover:to-sky-100 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-teal-500 min-h-[44px]"
+        className="w-full p-5 bg-gradient-to-r from-brand-50 to-sky-50 border-b border-slate-100 text-left hover:from-brand-100 hover:to-sky-100 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-brand-700 min-h-[44px]"
       >
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-2">
-              <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-teal-600" />
+              <div className="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-brand-900" />
               </div>
               <div>
                 <h3 className="font-bold text-slate-800">Steg {completedCount + 1} av {totalCount}</h3>
@@ -333,7 +333,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
             {/* Progress Bar */}
             <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-teal-500 to-sky-500 transition-all duration-500 rounded-full"
+                className="h-full bg-gradient-to-r from-brand-700 to-sky-500 transition-all duration-500 rounded-full"
                 style={{ width: `${progress}%` }}
                 role="progressbar"
                 aria-valuenow={Math.round(progress)}
@@ -376,14 +376,14 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
                 className={cn(
                   'w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left group min-h-[44px]',
                   isNext
-                    ? 'border-teal-200 bg-teal-50 hover:bg-teal-100 hover:border-teal-300'
+                    ? 'border-brand-200 bg-brand-50 hover:bg-brand-100 hover:border-brand-300'
                     : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50',
                   isRecent && 'ring-2 ring-emerald-400 animate-pulse'
                 )}
               >
                 <div className={cn(
                   'w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-transform group-hover:scale-110',
-                  isNext ? 'bg-teal-500 text-white' : 'bg-slate-100 text-slate-700 group-hover:bg-slate-200'
+                  isNext ? 'bg-brand-700 text-white' : 'bg-slate-100 text-slate-700 group-hover:bg-slate-200'
                 )}>
                   <Icon className="w-6 h-6" />
                 </div>
@@ -396,7 +396,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
                       {item.label}
                     </span>
                     {isNext && (
-                      <span className="px-2 py-0.5 text-[10px] font-bold bg-teal-500 text-white rounded-full">
+                      <span className="px-2 py-0.5 text-[10px] font-bold bg-brand-700 text-white rounded-full">
                         NÄSTA
                       </span>
                     )}
@@ -409,7 +409,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
                 </div>
                 <ChevronRight className={cn(
                   'w-5 h-5 transition-all',
-                  isNext ? 'text-teal-400 group-hover:text-teal-600' : 'text-slate-300 group-hover:text-slate-600',
+                  isNext ? 'text-brand-400 group-hover:text-brand-900' : 'text-slate-300 group-hover:text-slate-600',
                   'group-hover:translate-x-0.5'
                 )} />
               </button>

@@ -55,8 +55,8 @@ export default function EmptyState({
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center animate-fade-in-up">
       {/* Icon */}
       <div className="relative mb-6">
-        <div className="w-24 h-24 bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/40 dark:to-teal-900/20 rounded-full flex items-center justify-center">
-          <IconComponent className="w-12 h-12 text-teal-600 dark:text-teal-400" />
+        <div className="w-24 h-24 bg-gradient-to-br from-brand-100 to-brand-50 dark:from-brand-900/40 dark:to-brand-900/20 rounded-full flex items-center justify-center">
+          <IconComponent className="w-12 h-12 text-brand-900 dark:text-brand-400" />
         </div>
         <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center">
           <Plus className="w-5 h-5 text-amber-600 dark:text-amber-400" />
@@ -87,7 +87,7 @@ export default function EmptyState({
         {action && (
           <button
             onClick={action.onClick}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-all hover:shadow-lg hover:shadow-teal-500/25 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-900 text-white rounded-xl font-medium hover:bg-brand-900 transition-all hover: hover:/25 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-2"
           >
             {action.icon}
             {action.label}
@@ -97,7 +97,7 @@ export default function EmptyState({
         {secondaryAction && (
           <button
             onClick={secondaryAction.onClick}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700"
           >
             {secondaryAction.label}
           </button>

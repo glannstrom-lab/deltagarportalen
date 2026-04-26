@@ -3,7 +3,7 @@
  */
 
 export type WidgetStatus = 'empty' | 'in-progress' | 'complete' | 'error'
-export type WidgetColor = 'violet' | 'teal' | 'blue' | 'orange' | 'green' | 'rose' | 'amber' | 'indigo'
+export type WidgetColor = 'violet' | 'brand' | 'blue' | 'orange' | 'green' | 'rose' | 'amber' | 'indigo'
 
 export interface DashboardWidgetData {
   // CV - uppdaterad med data från alla 5 tabs

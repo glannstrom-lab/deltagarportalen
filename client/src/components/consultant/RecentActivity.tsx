@@ -20,8 +20,8 @@ const recentActivities = [
     message: 'Anna Andersson accepterade inbjudan',
     time: '2 timmar sedan',
     icon: UserPlus,
-    iconColor: 'text-green-600',
-    bgColor: 'bg-green-100',
+    iconColor: 'text-brand-900',
+    bgColor: 'bg-brand-100',
   },
   {
     id: 2,
@@ -54,7 +54,7 @@ const recentActivities = [
 
 export const RecentActivity: React.FC = () => {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <div className="bg-white rounded-lg border border-gray-200 p-6">
       <h3 className="font-semibold text-gray-900 mb-4">Senaste aktivitet</h3>
       <div className="space-y-4">
         {recentActivities.map((activity) => (

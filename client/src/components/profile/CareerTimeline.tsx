@@ -210,7 +210,7 @@ export function CareerTimeline({ className }: Props) {
                       </p>
                     </div>
                     {item.current && (
-                      <span className="px-2 py-0.5 text-xs font-medium bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 rounded-full">
+                      <span className="px-2 py-0.5 text-xs font-medium bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300 rounded-full">
                         {t('profile.careerTimeline.current')}
                       </span>
                     )}

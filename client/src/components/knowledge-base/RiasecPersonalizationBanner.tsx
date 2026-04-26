@@ -65,24 +65,24 @@ export function RiasecPersonalizationBanner({ className, compact = false }: Rias
     <Link
       to="/interest-guide"
       className={cn(
-        "block bg-gradient-to-r from-teal-50 to-sky-50 rounded-xl border border-teal-200 p-4 hover:border-teal-300 transition-colors",
+        "block bg-gradient-to-r from-brand-50 to-sky-50 rounded-xl border border-brand-200 p-4 hover:border-brand-300 transition-colors",
         className
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Compass className="w-5 h-5 text-teal-600" />
+        <div className="w-10 h-10 bg-brand-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Compass className="w-5 h-5 text-brand-900" />
         </div>
         <div className="flex-1">
           <h4 className="font-semibold text-slate-800 flex items-center gap-2">
             Få personaliserade rekommendationer
-            <Sparkles className="w-4 h-4 text-teal-500" />
+            <Sparkles className="w-4 h-4 text-brand-700" />
           </h4>
           <p className="text-sm text-slate-600">
             Gör intresseguiden för att få innehåll anpassat efter dina intressen
           </p>
         </div>
-        <ChevronRight className="w-5 h-5 text-teal-400" />
+        <ChevronRight className="w-5 h-5 text-brand-400" />
       </div>
     </Link>
   )

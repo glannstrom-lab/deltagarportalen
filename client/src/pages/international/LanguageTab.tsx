@@ -206,7 +206,7 @@ export default function LanguageTab() {
               href={resource.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-sky-300 dark:hover:border-sky-600 hover:shadow-md transition-all group"
+              className="p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-sky-300 dark:hover:border-sky-600 hover: transition-all group"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">

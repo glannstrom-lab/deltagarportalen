@@ -49,7 +49,7 @@ export function JourneyPhaseDetail({
       />
 
       {/* Modal */}
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden">
+      <div className="relative bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="relative bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6">
           <button
@@ -60,7 +60,7 @@ export function JourneyPhaseDetail({
           </button>
 
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-xl bg-white/20 flex items-center justify-center">
               <Icon className="w-8 h-8" />
             </div>
             <div>

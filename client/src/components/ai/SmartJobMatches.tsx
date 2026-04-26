@@ -51,11 +51,11 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
   if (loading) {
     return (
       <div className={cn(
-        "bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700 p-6",
+        "bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6",
         className
       )}>
         <div className="flex items-center justify-center py-8">
-          <Loader2 size={24} className="animate-spin text-teal-500" />
+          <Loader2 size={24} className="animate-spin text-brand-700" />
         </div>
       </div>
     )
@@ -67,12 +67,12 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
   if (!hasMatches && !hasSimilarRoles) {
     return (
       <div className={cn(
-        "bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-2xl border border-teal-200 dark:border-teal-800 p-6",
+        "bg-gradient-to-br from-brand-50 to-sky-50 dark:from-brand-900/30 dark:to-sky-900/30 rounded-xl border border-brand-200 dark:border-brand-900 p-6",
         className
       )}>
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/50 rounded-xl flex items-center justify-center">
-            <Sparkles size={20} className="text-teal-600 dark:text-teal-400" />
+          <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/50 rounded-xl flex items-center justify-center">
+            <Sparkles size={20} className="text-brand-900 dark:text-brand-400" />
           </div>
           <div>
             <h3 className="font-semibold text-slate-900 dark:text-stone-100">{t('ai.smartMatches.title')}</h3>
@@ -83,7 +83,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
         </p>
         <Link
           to="/cv"
-          className="inline-flex items-center gap-2 mt-3 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
+          className="inline-flex items-center gap-2 mt-3 text-sm text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-medium"
         >
           {t('ai.smartMatches.completeCV')}
           <ChevronRight size={16} />
@@ -94,11 +94,11 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
 
   return (
     <div className={cn(
-      "bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700 overflow-hidden",
+      "bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden",
       className
     )}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-teal-500 to-sky-600 px-6 py-4">
+      <div className="bg-gradient-to-r from-brand-700 to-sky-600 px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
             <Sparkles size={20} className="text-white" />
@@ -123,7 +123,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             className={cn(
               "flex-1 px-4 py-3 text-sm font-medium transition-colors",
               activeTab === 'matches'
-                ? "text-teal-600 dark:text-teal-400 border-b-2 border-teal-600 dark:border-teal-400"
+                ? "text-brand-900 dark:text-brand-400 border-b-2 border-brand-900 dark:border-brand-400"
                 : "text-slate-600 dark:text-stone-400 hover:text-slate-900 dark:hover:text-stone-100"
             )}
           >
@@ -134,7 +134,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             className={cn(
               "flex-1 px-4 py-3 text-sm font-medium transition-colors",
               activeTab === 'roles'
-                ? "text-teal-600 dark:text-teal-400 border-b-2 border-teal-600 dark:border-teal-400"
+                ? "text-brand-900 dark:text-brand-400 border-b-2 border-brand-900 dark:border-brand-400"
                 : "text-slate-600 dark:text-stone-400 hover:text-slate-900 dark:hover:text-stone-100"
             )}
           >
@@ -153,7 +153,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
 
             <Link
               to="/job-search"
-              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
+              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-medium hover:bg-brand-50 dark:hover:bg-brand-900/30 rounded-lg transition-colors"
             >
               {t('ai.smartMatches.seeAllJobs')}
               <ChevronRight size={16} />
@@ -188,7 +188,7 @@ const JobMatchCard = memo(function JobMatchCard({ match, unknownEmployerLabel }:
   const matchPercentage = Math.round(similarity * 100)
 
   const getMatchColor = (score: number) => {
-    if (score >= 70) return 'text-green-600 bg-green-50 border-green-200'
+    if (score >= 70) return 'text-brand-900 bg-brand-50 border-brand-200'
     if (score >= 50) return 'text-amber-600 bg-amber-50 border-amber-200'
     return 'text-slate-600 bg-slate-50 border-slate-200'
   }
@@ -229,7 +229,7 @@ const JobMatchCard = memo(function JobMatchCard({ match, unknownEmployerLabel }:
         
         <Link
           to={`/job-search?highlight=${job.id}`}
-          className="flex-shrink-0 p-2 text-teal-600 hover:bg-teal-100 rounded-lg transition-colors"
+          className="flex-shrink-0 p-2 text-brand-900 hover:bg-brand-100 rounded-lg transition-colors"
         >
           <ChevronRight size={20} />
         </Link>
@@ -254,7 +254,7 @@ const SimilarRoleCard = memo(function SimilarRoleCard({ role, overlapLabel, toLe
             <span className={cn(
               "px-2 py-0.5 rounded-full text-xs font-medium",
               matchPercentage >= 60
-                ? "bg-green-100 text-green-700" :
+                ? "bg-brand-100 text-brand-900" :
               matchPercentage >= 40
                 ? "bg-amber-100 text-amber-700"
                 : "bg-slate-100 text-slate-600"
@@ -273,7 +273,7 @@ const SimilarRoleCard = memo(function SimilarRoleCard({ role, overlapLabel, toLe
               {role.transferableSkills.map((skill, idx) => (
                 <span 
                   key={idx}
-                  className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs"
+                  className="px-2 py-0.5 bg-brand-100 text-brand-900 rounded text-xs"
                 >
                   <CheckCircle2 size={10} className="inline mr-1" />
                   {skill}
@@ -305,7 +305,7 @@ const SimilarRoleCard = memo(function SimilarRoleCard({ role, overlapLabel, toLe
         
         <Link
           to={`/job-search?query=${encodeURIComponent(role.role)}`}
-          className="flex-shrink-0 p-2 text-teal-600 hover:bg-teal-100 rounded-lg transition-colors"
+          className="flex-shrink-0 p-2 text-brand-900 hover:bg-brand-100 rounded-lg transition-colors"
         >
           <ChevronRight size={20} />
         </Link>
@@ -345,11 +345,11 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
   if (loading) {
     return (
       <div className={cn(
-        "bg-white rounded-2xl shadow-sm border border-slate-200 p-6",
+        "bg-white rounded-xl border border-slate-200 p-6",
         className
       )}>
         <div className="flex items-center justify-center py-8">
-          <Loader2 size={24} className="animate-spin text-teal-500" />
+          <Loader2 size={24} className="animate-spin text-brand-700" />
         </div>
       </div>
     )
@@ -358,12 +358,12 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
   if (gaps.length === 0) {
     return (
       <div className={cn(
-        "bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border border-green-200 p-6",
+        "bg-gradient-to-br from-brand-50 to-emerald-50 rounded-xl border border-brand-200 p-6",
         className
       )}>
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
-            <CheckCircle2 size={20} className="text-green-600" />
+          <div className="w-10 h-10 bg-brand-100 rounded-xl flex items-center justify-center">
+            <CheckCircle2 size={20} className="text-brand-900" />
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">Bra kompetensprofil!</h3>
@@ -379,7 +379,7 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
 
   return (
     <div className={cn(
-      "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden",
+      "bg-white rounded-xl border border-slate-200 overflow-hidden",
       className
     )}>
       {/* Header */}
@@ -436,7 +436,7 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
                       </span>
                     )}
                     {gap.newJobsIfLearned && (
-                      <span className="flex items-center gap-1 text-green-600 font-medium">
+                      <span className="flex items-center gap-1 text-brand-900 font-medium">
                         <Target size={12} />
                         +{gap.newJobsIfLearned} nya jobb
                       </span>
@@ -445,7 +445,7 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
                 )}
               </div>
               
-              <button className="flex-shrink-0 p-2 text-teal-600 hover:bg-teal-100 rounded-lg transition-colors">
+              <button className="flex-shrink-0 p-2 text-brand-900 hover:bg-brand-100 rounded-lg transition-colors">
                 <Lightbulb size={18} />
               </button>
             </div>

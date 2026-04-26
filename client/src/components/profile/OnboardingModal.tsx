@@ -129,7 +129,7 @@ export function OnboardingModal() {
         ref={modalRef}
         tabIndex={-1}
         className={cn(
-          'w-full max-w-md bg-white dark:bg-stone-900 rounded-2xl shadow-2xl overflow-hidden',
+          'w-full max-w-md bg-white dark:bg-stone-900 rounded-xl overflow-hidden',
           'transform transition-all duration-200',
           isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
         )}
@@ -145,7 +145,7 @@ export function OnboardingModal() {
           </button>
 
           <div className="flex items-center justify-center mb-4">
-            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+            <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
               {currentStep.icon}
             </div>
           </div>

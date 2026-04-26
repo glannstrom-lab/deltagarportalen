@@ -25,21 +25,21 @@ const colorClasses: Record<string, {
     hover: 'hover:bg-emerald-100',
     text: 'text-emerald-700',
     border: 'border-emerald-200',
-    shadow: 'hover:shadow-emerald-100'
+    shadow: 'hover:'
   },
-  teal: {
-    bg: 'bg-teal-50',
-    hover: 'hover:bg-teal-100',
-    text: 'text-teal-700',
-    border: 'border-teal-200',
-    shadow: 'hover:shadow-teal-100'
+  brand: {
+    bg: 'bg-brand-50',
+    hover: 'hover:bg-brand-100',
+    text: 'text-brand-900',
+    border: 'border-brand-200',
+    shadow: 'hover:'
   },
   blue: {
     bg: 'bg-blue-50',
     hover: 'hover:bg-blue-100',
     text: 'text-blue-700',
     border: 'border-blue-200',
-    shadow: 'hover:shadow-blue-100'
+    shadow: 'hover:'
   }
 }
 
@@ -68,7 +68,7 @@ export function QuickActions() {
       labelKey: 'dashboard.quickActions.fifteenMin',
       descriptionKey: 'dashboard.quickActions.focusedTime',
       icon: <Zap size={20} />,
-      color: 'teal',
+      color: 'brand',
       suggestions: [
         { labelKey: 'dashboard.quickActions.writeApplication', link: '/job-search' },
         { labelKey: 'dashboard.quickActions.updateCVSection', link: '/cv' },
@@ -121,11 +121,11 @@ export function QuickActions() {
               onMouseEnter={() => setHoveredAction(index)}
               onMouseLeave={() => setHoveredAction(null)}
               className={cn(
-                "relative group p-4 rounded-2xl border-2 text-left transition-all duration-300",
+                "relative group p-4 rounded-xl border-2 text-left transition-all duration-300",
                 "focus:outline-none focus:ring-2 focus:ring-offset-2",
                 colors.bg,
                 colors.border,
-                "hover:-translate-y-1 hover:shadow-lg",
+                "hover:-translate-y-1 hover:",
                 colors.shadow,
                 isSelected && "ring-2 ring-offset-2 ring-slate-400"
               )}
@@ -168,7 +168,7 @@ export function QuickActions() {
       {/* Expanded suggestions */}
       {selectedDuration && (
         <div
-          className="animate-fade-in-up bg-white dark:bg-stone-900 rounded-2xl border-2 border-slate-200 dark:border-stone-700 p-4"
+          className="animate-fade-in-up bg-white dark:bg-stone-900 rounded-xl border-2 border-slate-200 dark:border-stone-700 p-4"
           style={{ animationDelay: '0ms' }}
         >
           <p className="text-sm font-medium text-slate-700 dark:text-stone-300 mb-3">
@@ -183,10 +183,10 @@ export function QuickActions() {
                   onClick={() => handleSuggestionClick(suggestion.link)}
                   className={cn(
                     "text-left px-4 py-3 rounded-xl text-sm",
-                    "bg-slate-50 dark:bg-stone-800 hover:bg-teal-50 dark:hover:bg-teal-900/30 hover:text-teal-700 dark:hover:text-teal-400",
-                    "border border-slate-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700",
+                    "bg-slate-50 dark:bg-stone-800 hover:bg-brand-50 dark:hover:bg-brand-900/30 hover:text-brand-900 dark:hover:text-brand-400",
+                    "border border-slate-200 dark:border-stone-700 hover:border-brand-200 dark:hover:border-brand-900",
                     "transition-all duration-200",
-                    "hover:-translate-y-0.5 hover:shadow-md",
+                    "hover:-translate-y-0.5 hover:",
                     "text-slate-800 dark:text-stone-200"
                   )}
                   style={{ animationDelay: `${idx * 50}ms` }}

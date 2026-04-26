@@ -43,7 +43,7 @@ export function SupportiveLanguage({
   }, [type, emotionalState, progressPercent])
 
   const styles = {
-    encouragement: 'bg-teal-50 border-teal-200 text-teal-800',
+    encouragement: 'bg-brand-50 border-brand-200 text-brand-900',
     break: 'bg-amber-50 border-amber-200 text-amber-800',
     progress: 'bg-blue-50 border-blue-200 text-blue-800',
     welcome: 'bg-purple-50 border-purple-200 text-purple-800'
@@ -78,8 +78,8 @@ export function EnergyMessage({
   const message = messages[Math.floor(Math.random() * messages.length)]
   
   const styles = {
-    high: 'bg-green-50 border-green-200 text-green-800',
-    medium: 'bg-teal-50 border-teal-200 text-teal-800',
+    high: 'bg-brand-50 border-brand-200 text-brand-900',
+    medium: 'bg-brand-50 border-brand-200 text-brand-900',
     low: 'bg-amber-50 border-amber-200 text-amber-800',
     veryLow: 'bg-orange-50 border-orange-200 text-orange-800',
     exhausted: 'bg-rose-50 border-rose-200 text-rose-800'

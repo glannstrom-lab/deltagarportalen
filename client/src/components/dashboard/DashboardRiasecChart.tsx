@@ -1,6 +1,6 @@
 /**
  * RIASEC Radar Chart - Clean minimal design
- * Single accent color (brand teal), simple labels
+ * Single accent color (brand brand), simple labels
  */
 
 import type { RiasecScores } from '@/hooks/useInterestProfile'

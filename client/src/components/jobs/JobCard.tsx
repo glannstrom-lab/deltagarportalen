@@ -184,7 +184,7 @@ export function JobCard({
   }
 
   const getMatchColor = (percentage: number) => {
-    if (percentage >= 80) return 'text-green-600 bg-green-50'
+    if (percentage >= 80) return 'text-brand-900 bg-brand-50'
     if (percentage >= 60) return 'text-yellow-600 bg-yellow-50'
     return 'text-orange-600 bg-orange-50'
   }
@@ -226,7 +226,7 @@ export function JobCard({
 
   return (
     <div
-      className="bg-white dark:bg-stone-900 rounded-2xl p-5 shadow-sm border border-slate-200 dark:border-stone-700 hover:shadow-md transition-all cursor-pointer"
+      className="bg-white dark:bg-stone-900 rounded-xl p-5 border border-slate-200 dark:border-stone-700 hover: transition-all cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleCardClick}
@@ -274,7 +274,7 @@ export function JobCard({
                 {matchingSkills.slice(0, 3).map((skill, index) => (
                   <span 
                     key={index}
-                    className="text-xs px-2 py-1 bg-green-100 text-green-700 rounded-full flex items-center gap-1"
+                    className="text-xs px-2 py-1 bg-brand-100 text-brand-900 rounded-full flex items-center gap-1"
                   >
                     <CheckCircle size={10} />
                     {skill}
@@ -356,7 +356,7 @@ export function JobCard({
             </span>
           )}
           {normalizedJob.application_details?.via_af && (
-            <span className="text-teal-600 flex items-center gap-1">
+            <span className="text-brand-900 flex items-center gap-1">
               🏛️ {t('jobs.card.viaAF')}
             </span>
           )}

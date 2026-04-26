@@ -14,8 +14,8 @@ export function Header() {
           </p>
           <p className="text-xs text-slate-700 dark:text-stone-400">{user?.email}</p>
         </div>
-        <div className="w-9 h-9 bg-teal-100 dark:bg-teal-900 rounded-full flex items-center justify-center">
-          <User size={18} className="text-teal-600 dark:text-teal-400" />
+        <div className="w-9 h-9 bg-brand-100 dark:bg-brand-900 rounded-full flex items-center justify-center">
+          <User size={18} className="text-brand-900 dark:text-brand-400" />
         </div>
       </Link>
     </header>

@@ -33,8 +33,8 @@ export const ConsultantStats: React.FC<ConsultantStatsProps> = ({ stats }) => {
       label: t('consultant.stats.activeParticipants'),
       value: stats.active,
       icon: UserCheck,
-      color: 'text-green-600 dark:text-green-400',
-      bgColor: 'bg-green-100 dark:bg-green-900/30',
+      color: 'text-brand-900 dark:text-brand-400',
+      bgColor: 'bg-brand-100 dark:bg-brand-900/30',
     },
     {
       label: t('consultant.stats.needsAttention'),
@@ -57,7 +57,7 @@ export const ConsultantStats: React.FC<ConsultantStatsProps> = ({ stats }) => {
       {cards.map((card, index) => (
         <div
           key={index}
-          className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-6"
+          className="bg-white dark:bg-stone-900 rounded-lg border border-gray-200 dark:border-stone-700 p-6"
         >
           <div className="flex items-center justify-between">
             <div>

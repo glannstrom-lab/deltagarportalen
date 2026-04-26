@@ -23,7 +23,7 @@ interface EmptyStateProps {
 const emptyStateConfig = {
   cv: {
     icon: FileText,
-    color: 'teal',
+    color: 'brand',
     defaultTitle: 'Inget CV än',
     defaultDescription: 'Skapa ditt CV för att komma igång med jobbsökandet',
     defaultAction: 'Skapa CV',
@@ -63,7 +63,7 @@ const emptyStateConfig = {
   },
   learning: {
     icon: BookOpen,
-    color: 'teal',
+    color: 'brand',
     defaultTitle: 'Inga lektioner påbörjade',
     defaultDescription: 'Börja din utvecklingsresa med våra mikro-lektioner',
     defaultAction: 'Börja lära',
@@ -72,11 +72,11 @@ const emptyStateConfig = {
 }
 
 const colorClasses: Record<string, { bg: string; text: string; border: string; button: string }> = {
-  teal: {
-    bg: 'bg-teal-50',
-    text: 'text-teal-700',
-    border: 'border-teal-200',
-    button: 'bg-teal-600 hover:bg-teal-700'
+  brand: {
+    bg: 'bg-brand-50',
+    text: 'text-brand-900',
+    border: 'border-brand-200',
+    button: 'bg-brand-900 hover:bg-brand-900'
   },
   blue: {
     bg: 'bg-blue-50',
@@ -96,11 +96,11 @@ const colorClasses: Record<string, { bg: string; text: string; border: string; b
     border: 'border-amber-200',
     button: 'bg-amber-600 hover:bg-amber-700'
   },
-  teal: {
-    bg: 'bg-teal-50',
-    text: 'text-teal-700',
-    border: 'border-teal-200',
-    button: 'bg-teal-600 hover:bg-teal-700'
+  brand: {
+    bg: 'bg-brand-50',
+    text: 'text-brand-900',
+    border: 'border-brand-200',
+    button: 'bg-brand-900 hover:bg-brand-900'
   }
 }
 
@@ -123,14 +123,14 @@ export function EmptyState({
 
   const content = (
     <div className={cn(
-      "flex flex-col items-center text-center py-12 px-6 rounded-2xl border-2 border-dashed transition-all duration-200",
+      "flex flex-col items-center text-center py-12 px-6 rounded-xl border-2 border-dashed transition-all duration-200",
       colors.bg,
       colors.border,
-      "hover:border-solid hover:shadow-md"
+      "hover:border-solid hover:"
     )}>
       {/* Icon with gradient background */}
       <div className={cn(
-        "w-20 h-20 rounded-3xl flex items-center justify-center mb-6 shadow-lg",
+        "w-20 h-20 rounded-xl flex items-center justify-center mb-6",
         "empty-state-icon", // Use the gradient utility
         "animate-bounce-subtle",
         colors.text
@@ -170,7 +170,7 @@ export function EmptyState({
           onClick={onAction}
           className={cn(
             "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-200",
-            "hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0",
+            "hover: hover:-translate-y-0.5 active:translate-y-0",
             "focus:outline-none focus:ring-2 focus:ring-offset-2",
             colors.button
           )}
@@ -183,7 +183,7 @@ export function EmptyState({
           to={finalLink}
           className={cn(
             "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-200",
-            "hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0",
+            "hover: hover:-translate-y-0.5 active:translate-y-0",
             "focus:outline-none focus:ring-2 focus:ring-offset-2",
             colors.button
           )}
@@ -214,7 +214,7 @@ export function EmptyStateCompact({
       colors.border
     )}>
       <div className={cn(
-        "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-white shadow-sm",
+        "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-white",
         colors.text
       )}>
         <Icon size={20} />

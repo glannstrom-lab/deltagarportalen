@@ -72,7 +72,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="p-6 border-b border-slate-200 flex items-center justify-between">
           <div>
@@ -133,7 +133,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                     onClick={() => handleSelectTemplate(template)}
                     className={`w-full p-4 text-left border-2 rounded-xl transition-all ${
                       selectedTemplate?.id === template.id
-                        ? 'border-teal-500 bg-teal-50'
+                        ? 'border-brand-700 bg-brand-50'
                         : 'border-slate-200 hover:border-slate-300'
                     }`}
                   >
@@ -143,7 +143,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                         <p className="text-sm text-slate-700 mt-1">{template.subject}</p>
                       </div>
                       {template.isDefault && (
-                        <span className="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
+                        <span className="px-2 py-1 bg-brand-100 text-brand-900 text-xs rounded-full">
                           Standard
                         </span>
                       )}
@@ -164,7 +164,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-700"
                 />
               </div>
 
@@ -176,7 +176,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                   value={coverLetter}
                   onChange={(e) => setCoverLetter(e.target.value)}
                   rows={12}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 font-mono text-sm"
+                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-700 font-mono text-sm"
                 />
                 <p className="text-xs text-slate-700 mt-1">
                   Redigera mallen så den passar dig och jobbet. Se till att alla [PLACEHOLDERS] ersätts.
@@ -192,7 +192,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                 </button>
                 <button
                   onClick={() => setStep('confirm')}
-                  className="flex-1 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700"
+                  className="flex-1 py-2 bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900"
                 >
                   Granska & skicka
                 </button>
@@ -238,7 +238,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                 {job.application_details?.email ? (
                   <button
                     onClick={prepareEmail}
-                    className="flex-1 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 flex items-center justify-center gap-2"
+                    className="flex-1 py-3 bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900 flex items-center justify-center gap-2"
                   >
                     <Send className="w-5 h-5" />
                     Öppna e-postprogram
@@ -247,7 +247,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                   <button
                     onClick={handleSend}
                     disabled={saving}
-                    className="flex-1 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="flex-1 py-3 bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900 flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {saving ? (
                       <>
@@ -268,8 +268,8 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
 
           {step === 'success' && (
             <div className="text-center py-8">
-              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="w-8 h-8 text-green-600" />
+              <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="w-8 h-8 text-brand-900" />
               </div>
               <h3 className="text-xl font-semibold text-slate-900 mb-2">
                 Ansökan skickad!
@@ -279,7 +279,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
               </p>
               <button
                 onClick={onClose}
-                className="px-6 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700"
+                className="px-6 py-3 bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900"
               >
                 Stäng
               </button>

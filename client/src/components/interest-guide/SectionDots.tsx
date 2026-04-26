@@ -41,9 +41,9 @@ export function SectionDots({
               className={`
                 group relative flex items-center gap-2 px-3 py-2 rounded-xl transition-all duration-300
                 ${isCurrent 
-                  ? `${sectionColors[section.id]} text-white shadow-lg scale-105` 
+                  ? `${sectionColors[section.id]} text-white scale-105` 
                   : isCompleted
-                    ? 'bg-white text-gray-700 border border-gray-200 hover:border-gray-300 shadow-sm'
+                    ? 'bg-white text-gray-700 border border-gray-200 hover:border-gray-300'
                     : 'bg-white text-gray-400 border border-gray-100 hover:border-gray-200'
                 }
               `}
@@ -55,7 +55,7 @@ export function SectionDots({
               
               {/* Completed checkmark */}
               {isCompleted && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-brand-700 rounded-full flex items-center justify-center">
                   <svg className="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                   </svg>
@@ -65,7 +65,7 @@ export function SectionDots({
             
             {/* Connector line */}
             {index < sections.length - 1 && (
-              <div className={`w-4 sm:w-6 h-0.5 ${isCompleted ? 'bg-green-400' : 'bg-gray-200'}`} />
+              <div className={`w-4 sm:w-6 h-0.5 ${isCompleted ? 'bg-brand-400' : 'bg-gray-200'}`} />
             )}
           </div>
         )

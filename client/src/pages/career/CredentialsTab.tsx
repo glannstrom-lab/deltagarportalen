@@ -128,7 +128,7 @@ export default function CredentialsTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-brand-900" />
         <span className="ml-3 text-gray-600 dark:text-gray-400">{t('common.loading')}</span>
       </div>
     )
@@ -137,10 +137,10 @@ export default function CredentialsTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-teal-50 to-violet-50 dark:from-teal-900/20 dark:to-violet-900/20 border-teal-100 dark:border-teal-800">
+      <Card className="bg-gradient-to-r from-brand-50 to-violet-50 dark:from-brand-900/20 dark:to-violet-900/20 border-brand-100 dark:border-brand-900">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
-            <GraduationCap className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+          <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center shrink-0">
+            <GraduationCap className="w-6 h-6 text-brand-900 dark:text-brand-400" />
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('career.credentials.title')}</h2>
@@ -171,7 +171,7 @@ export default function CredentialsTab() {
 
       {/* Add form */}
       {isAdding ? (
-        <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
+        <Card className="border-brand-200 dark:border-brand-900 bg-white dark:bg-stone-800">
           <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.credentials.addCredential')}</h3>
           <div className="space-y-4">
             <div>
@@ -180,7 +180,7 @@ export default function CredentialsTab() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                 placeholder={t('career.credentials.form.namePlaceholder')}
               />
             </div>
@@ -191,7 +191,7 @@ export default function CredentialsTab() {
                   type="text"
                   value={formData.issuer}
                   onChange={(e) => setFormData(prev => ({ ...prev, issuer: e.target.value }))}
-                  className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                  className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                   placeholder={t('career.credentials.form.issuerPlaceholder')}
                 />
               </div>
@@ -200,7 +200,7 @@ export default function CredentialsTab() {
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CredentialType }))}
-                  className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100"
+                  className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 text-gray-800 dark:text-gray-100"
                 >
                   <option value="certification">{t('career.credentials.types.certification')}</option>
                   <option value="degree">{t('career.credentials.types.degree')}</option>
@@ -215,11 +215,11 @@ export default function CredentialsTab() {
                 type="date"
                 value={formData.targetDate}
                 onChange={(e) => setFormData(prev => ({ ...prev, targetDate: e.target.value }))}
-                className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100"
+                className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 text-gray-800 dark:text-gray-100"
               />
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleAdd} disabled={!formData.name.trim() || isSaving} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
+              <Button onClick={handleAdd} disabled={!formData.name.trim() || isSaving} className="bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-900">
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null}
                 {t('common.add')}
               </Button>
@@ -230,7 +230,7 @@ export default function CredentialsTab() {
           </div>
         </Card>
       ) : (
-        <Button onClick={() => setIsAdding(true)} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
+        <Button onClick={() => setIsAdding(true)} className="bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-900">
           <Plus className="w-4 h-4 mr-1" />
           {t('career.credentials.addCredential')}
         </Button>
@@ -358,10 +358,10 @@ export default function CredentialsTab() {
               key={cred.name}
               onClick={() => handleAddPopular(cred)}
               disabled={isSaving}
-              className="flex items-center gap-3 p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all text-left group disabled:opacity-50"
+              className="flex items-center gap-3 p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900 hover:bg-brand-50 dark:hover:bg-brand-900/20 transition-all text-left group disabled:opacity-50"
             >
-              <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center group-hover:bg-teal-200 dark:group-hover:bg-teal-900/50">
-                <Plus className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <div className="w-8 h-8 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center group-hover:bg-brand-200 dark:group-hover:bg-brand-900/50">
+                <Plus className="w-4 h-4 text-brand-900 dark:text-brand-400" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-gray-800 dark:text-gray-100 text-sm truncate">{cred.name}</p>

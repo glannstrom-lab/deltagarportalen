@@ -185,7 +185,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             placeholder={t('jobs.filters.searchPlaceholder')}
             value={filters.search}
             onChange={(e) => updateFilter('search', e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-transparent text-sm"
           />
         </div>
       </FilterSection>
@@ -201,14 +201,14 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               placeholder={t('jobs.filters.locationPlaceholder')}
               value={filters.location}
               onChange={(e) => updateFilter('location', e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
+              className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 text-sm"
             />
           </div>
 
           {/* Avstånd */}
           {filters.location && (
-            <div className="bg-teal-50 p-3 rounded-xl">
-              <label className="text-sm font-medium text-teal-900 mb-2 block">
+            <div className="bg-brand-50 p-3 rounded-xl">
+              <label className="text-sm font-medium text-brand-900 mb-2 block">
                 {t('jobs.filters.distance', { km: filters.distanceKm })}
               </label>
               <input
@@ -218,9 +218,9 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
                 step="5"
                 value={filters.distanceKm}
                 onChange={(e) => updateFilter('distanceKm', parseInt(e.target.value))}
-                className="w-full accent-teal-600"
+                className="w-full accent-brand-900"
               />
-              <div className="flex justify-between text-xs text-teal-600 mt-1">
+              <div className="flex justify-between text-xs text-brand-900 mt-1">
                 <span>5 km</span>
                 <span>100 km</span>
                 <span>200 km</span>
@@ -232,7 +232,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           <select
             value={filters.region}
             onChange={(e) => updateFilter('region', e.target.value)}
-            className="w-full px-4 py-2.5 border border-slate-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm bg-white dark:bg-stone-800 dark:text-stone-100"
+            className="w-full px-4 py-2.5 border border-slate-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 text-sm bg-white dark:bg-stone-800 dark:text-stone-100"
           >
             <option value="">{t('jobs.filters.allRegions')}</option>
             {swedishRegions.map(region => (
@@ -256,7 +256,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               onClick={() => updateFilter('publishedWithin', option.value as any)}
               className={`px-3 py-2.5 text-sm rounded-xl transition-colors text-left ${
                 filters.publishedWithin === option.value
-                  ? 'bg-teal-100 text-teal-700 font-medium border-2 border-teal-200'
+                  ? 'bg-brand-100 text-brand-900 font-medium border-2 border-brand-200'
                   : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
               }`}
             >
@@ -275,7 +275,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               onClick={() => toggleArrayFilter('workArrangement', type.id)}
               className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${
                 filters.workArrangement.includes(type.id)
-                  ? 'bg-teal-100 text-teal-700 border-2 border-teal-200'
+                  ? 'bg-brand-100 text-brand-900 border-2 border-brand-200'
                   : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
               }`}
             >
@@ -298,7 +298,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               onClick={() => toggleArrayFilter('employmentType', type.id)}
               className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl transition-colors ${
                 filters.employmentType.includes(type.id)
-                  ? 'bg-teal-600 text-white'
+                  ? 'bg-brand-900 text-white'
                   : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-200 dark:hover:bg-stone-700'
               }`}
             >
@@ -364,7 +364,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               onClick={() => toggleArrayFilter('language', lang.id)}
               className={`px-3 py-2 text-sm rounded-xl transition-colors ${
                 filters.language.includes(lang.id)
-                  ? 'bg-teal-600 text-white'
+                  ? 'bg-brand-900 text-white'
                   : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-200 dark:hover:bg-stone-700'
               }`}
             >
@@ -381,7 +381,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             type="checkbox"
             checked={filters.drivingLicense}
             onChange={(e) => updateFilter('drivingLicense', e.target.checked)}
-            className="w-5 h-5 rounded border-slate-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500"
+            className="w-5 h-5 rounded border-slate-300 dark:border-stone-600 text-brand-900 focus:ring-brand-700"
           />
           <div>
             <div className="font-medium text-sm text-slate-700 dark:text-stone-300">{t('jobs.filters.drivingLicenseRequired')}</div>
@@ -392,8 +392,8 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
 
       {/* Match percentage */}
       <FilterSection title={t('jobs.filters.cvMatch')} section="match" icon={Sliders}>
-        <div className="bg-gradient-to-r from-teal-50 to-sky-50 p-4 rounded-xl">
-          <label className="text-sm font-medium text-teal-900 mb-3 block">
+        <div className="bg-gradient-to-r from-brand-50 to-sky-50 p-4 rounded-xl">
+          <label className="text-sm font-medium text-brand-900 mb-3 block">
             {t('jobs.filters.minMatch', { percent: filters.minMatchPercentage })}
           </label>
           <input
@@ -403,9 +403,9 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             step="5"
             value={filters.minMatchPercentage}
             onChange={(e) => updateFilter('minMatchPercentage', parseInt(e.target.value))}
-            className="w-full accent-teal-600"
+            className="w-full accent-brand-900"
           />
-          <div className="flex justify-between text-xs text-teal-600 mt-2">
+          <div className="flex justify-between text-xs text-brand-900 mt-2">
             <span>{t('jobs.filters.noMin')}</span>
             <span>50%</span>
             <span>{t('jobs.filters.perfectMatch')}</span>
@@ -418,11 +418,11 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
   return (
     <>
       {/* Desktop filter panel */}
-      <div className="hidden lg:block bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700 overflow-hidden">
+      <div className="hidden lg:block bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-stone-700">
           <div className="flex items-center gap-2">
-            <Filter size={20} className="text-teal-600" />
+            <Filter size={20} className="text-brand-900" />
             <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('jobs.filters.title')}</h3>
           </div>
           {hasActiveFilters && (
@@ -460,12 +460,12 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       <div className="lg:hidden">
         <button
           onClick={() => setShowMobileFilters(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-700 rounded-xl text-slate-700 dark:text-stone-300 font-medium shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-700 rounded-xl text-slate-700 dark:text-stone-300 font-medium"
         >
           <Filter size={18} />
           {t('jobs.filters.title')}
           {activeFilterCount > 0 && (
-            <span className="ml-1 px-2 py-0.5 bg-teal-600 text-white text-xs rounded-full">
+            <span className="ml-1 px-2 py-0.5 bg-brand-900 text-white text-xs rounded-full">
               {activeFilterCount}
             </span>
           )}
@@ -478,7 +478,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className="absolute inset-0 bg-black/50"
               onClick={() => setShowMobileFilters(false)}
             />
-            <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white dark:bg-stone-900 shadow-xl overflow-hidden flex flex-col">
+            <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white dark:bg-stone-900 overflow-hidden flex flex-col">
               {/* Mobile header */}
               <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-stone-700 bg-white dark:bg-stone-900">
                 <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('jobs.filters.filterJobs')}</h3>
@@ -505,7 +505,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
                 </button>
                 <button
                   onClick={() => setShowMobileFilters(false)}
-                  className="flex-1 px-4 py-3 bg-teal-600 text-white rounded-xl font-medium"
+                  className="flex-1 px-4 py-3 bg-brand-900 text-white rounded-xl font-medium"
                 >
                   {t('jobs.filters.showJobs', { count: jobCount })}
                 </button>

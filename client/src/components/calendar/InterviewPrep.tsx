@@ -86,7 +86,7 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
           {/* Dress code */}
           <div className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-indigo-100 dark:border-indigo-800">
             <div className="flex items-start gap-3">
-              <Shirt className="w-5 h-5 text-teal-500 dark:text-teal-400 mt-0.5" />
+              <Shirt className="w-5 h-5 text-brand-700 dark:text-brand-400 mt-0.5" />
               <div>
                 <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('calendar.interviewPrep.dressRecommendation')}</h4>
                 <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">{getDressCode()}</p>
@@ -113,13 +113,13 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
           {/* Questions to ask */}
           <div className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-indigo-100 dark:border-indigo-800">
             <div className="flex items-center gap-2 mb-3">
-              <FileText className="w-5 h-5 text-green-500 dark:text-green-400" />
+              <FileText className="w-5 h-5 text-brand-700 dark:text-brand-400" />
               <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('calendar.interviewPrep.questionsToAsk')}</h4>
             </div>
             <div className="space-y-2">
               {interviewQuestions.questionsToAsk.map((q, i) => (
                 <div key={i} className="flex items-start gap-2 text-sm">
-                  <CheckCircle className="w-4 h-4 text-green-500 dark:text-green-400 mt-0.5" />
+                  <CheckCircle className="w-4 h-4 text-brand-700 dark:text-brand-400 mt-0.5" />
                   <span className="text-stone-700 dark:text-stone-300">{q}</span>
                 </div>
               ))}

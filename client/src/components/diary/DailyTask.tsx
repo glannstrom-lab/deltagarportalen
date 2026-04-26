@@ -64,8 +64,8 @@ const dailyTasks: Task[] = [
 ]
 
 const typeConfig = {
-  diary: { color: 'bg-teal-100 text-teal-700 border-teal-200', icon: Sparkles },
-  exercise: { color: 'bg-teal-100 text-teal-700 border-teal-200', icon: CheckCircle2 },
+  diary: { color: 'bg-brand-100 text-brand-900 border-brand-200', icon: Sparkles },
+  exercise: { color: 'bg-brand-100 text-brand-900 border-brand-200', icon: CheckCircle2 },
   cv: { color: 'bg-blue-100 text-blue-700 border-blue-200', icon: CheckCircle2 },
   jobsearch: { color: 'bg-emerald-100 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
   networking: { color: 'bg-amber-100 text-amber-700 border-amber-200', icon: CheckCircle2 },
@@ -177,7 +177,7 @@ export function DailyTask() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border-2 border-slate-200 p-5 bg-white">
+      <div className="rounded-xl border-2 border-slate-200 p-5 bg-white">
         <div className="animate-pulse flex space-x-4">
           <div className="w-12 h-12 bg-slate-200 rounded-xl"></div>
           <div className="flex-1 space-y-2 py-1">
@@ -191,17 +191,17 @@ export function DailyTask() {
 
   return (
     <div className={cn(
-      'rounded-2xl border-2 p-5 transition-all',
+      'rounded-xl border-2 p-5 transition-all',
       completed 
         ? 'bg-slate-50 border-slate-200 opacity-75' 
-        : 'bg-white border-slate-200 hover:border-teal-300 shadow-sm'
+        : 'bg-white border-slate-200 hover:border-brand-300'
     )}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className={cn(
             'w-12 h-12 rounded-xl flex items-center justify-center transition-colors',
-            completed ? 'bg-green-100 text-green-600' : config.color.split(' ')[0] + ' ' + config.color.split(' ')[1]
+            completed ? 'bg-brand-100 text-brand-900' : config.color.split(' ')[0] + ' ' + config.color.split(' ')[1]
           )}>
             <Icon size={24} />
           </div>
@@ -255,7 +255,7 @@ export function DailyTask() {
             'flex-1 py-2.5 px-4 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2',
             completed
               ? 'bg-slate-200 text-slate-600 hover:bg-slate-300'
-              : 'bg-teal-600 text-white hover:bg-teal-700'
+              : 'bg-brand-900 text-white hover:bg-brand-900'
           )}
         >
           {completed ? (
@@ -288,7 +288,7 @@ export function DailyTask() {
       {/* Completion Message */}
       {completed && (
         <div className="mt-4 pt-4 border-t border-slate-200">
-          <p className="text-sm text-green-700 flex items-center gap-2">
+          <p className="text-sm text-brand-900 flex items-center gap-2">
             <Sparkles size={16} className="text-amber-500" />
             Bra jobbat! Du är ett steg närmare ditt mål.
           </p>

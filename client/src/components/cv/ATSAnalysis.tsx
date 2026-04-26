@@ -273,7 +273,7 @@ export function ATSAnalysis() {
   }
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600 bg-green-100'
+    if (score >= 80) return 'text-brand-900 bg-brand-100'
     if (score >= 60) return 'text-amber-600 bg-amber-100'
     return 'text-red-600 bg-red-100'
   }
@@ -296,16 +296,16 @@ export function ATSAnalysis() {
     <div className="space-y-6">
       {/* ATS Analyzer Widget - Hämtar och analyserar användarens CV */}
       {loadingCV ? (
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 p-6">
+        <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
           <div className="flex items-center justify-center gap-3 py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-teal-600 dark:text-teal-400" />
+            <Loader2 className="w-6 h-6 animate-spin text-brand-900 dark:text-brand-400" />
             <span className="text-stone-600 dark:text-stone-400">{t('cv.ats.loadingCV')}</span>
           </div>
         </div>
       ) : cvData ? (
-        <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-5">
+        <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
           <div className="flex items-center gap-2 mb-4">
-            <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-brand-700 rounded-lg flex items-center justify-center">
               <Target className="w-4 h-4 text-white" />
             </div>
             <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.ats.analysisTitle')}</h3>
@@ -316,7 +316,7 @@ export function ATSAnalysis() {
           <ATSAnalyzer cvData={cvData} />
         </div>
       ) : (
-        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-200 dark:border-amber-800 p-6">
+        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800 p-6">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
               <FileText className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -338,19 +338,19 @@ export function ATSAnalysis() {
       )}
 
       {/* Score Card */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 p-6">
+      <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
         <div className="flex flex-col md:flex-row md:items-center gap-6">
           {/* Score Circle */}
           <div className="flex items-center justify-center">
             <div className={cn(
               'w-32 h-32 rounded-full flex flex-col items-center justify-center border-4',
-              percentage >= 80 ? 'border-green-500 bg-green-50 dark:bg-green-900/30' :
+              percentage >= 80 ? 'border-brand-700 bg-brand-50 dark:bg-brand-900/30' :
               percentage >= 60 ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/30' :
               'border-red-500 bg-red-50 dark:bg-red-900/30'
             )}>
               <span className={cn(
                 'text-4xl font-bold',
-                percentage >= 80 ? 'text-green-600 dark:text-green-400' :
+                percentage >= 80 ? 'text-brand-900 dark:text-brand-400' :
                 percentage >= 60 ? 'text-amber-600 dark:text-amber-400' :
                 'text-red-600 dark:text-red-400'
               )}>
@@ -374,7 +374,7 @@ export function ATSAnalysis() {
               <button
                 onClick={runAnalysis}
                 disabled={isAnalyzing}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-brand-900 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors disabled:opacity-50"
               >
                 <RefreshCw className={cn('w-4 h-4', isAnalyzing && 'animate-spin')} />
                 {isAnalyzing ? t('cv.ats.analyzing') : t('cv.ats.runAnalysis')}
@@ -391,11 +391,11 @@ export function ATSAnalysis() {
 
           {/* Quick Stats */}
           <div className="grid grid-cols-2 gap-4 min-w-[200px]">
-            <div className="text-center p-3 bg-green-50 dark:bg-green-900/30 rounded-xl">
-              <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+            <div className="text-center p-3 bg-brand-50 dark:bg-brand-900/30 rounded-xl">
+              <div className="text-2xl font-bold text-brand-900 dark:text-brand-400">
                 {checks.filter(c => c.status === 'pass').length}
               </div>
-              <div className="text-xs text-green-700 dark:text-green-400">{t('cv.ats.passed')}</div>
+              <div className="text-xs text-brand-900 dark:text-brand-400">{t('cv.ats.passed')}</div>
             </div>
             <div className="text-center p-3 bg-amber-50 dark:bg-amber-900/30 rounded-xl">
               <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
@@ -415,7 +415,7 @@ export function ATSAnalysis() {
           const categoryChecks = checks.filter(c => c.category === category)
 
           return (
-            <div key={category} className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+            <div key={category} className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
               <div className="px-6 py-4 bg-stone-50 dark:bg-stone-800 border-b border-stone-100 dark:border-stone-700">
                 <h4 className="font-semibold text-stone-800 dark:text-stone-100">{label}</h4>
               </div>
@@ -427,7 +427,7 @@ export function ATSAnalysis() {
                       {/* Status Icon */}
                       <div className={cn(
                         'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
-                        check.status === 'pass' && 'bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400',
+                        check.status === 'pass' && 'bg-brand-100 dark:bg-brand-900/50 text-brand-900 dark:text-brand-400',
                         check.status === 'warning' && 'bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400',
                         check.status === 'fail' && 'bg-red-100 dark:bg-red-900/50 text-red-600 dark:text-red-400',
                         check.status === 'neutral' && 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300'
@@ -457,17 +457,17 @@ export function ATSAnalysis() {
                         <div className="mt-3">
                           <button
                             onClick={() => setShowDetails(showDetails === check.id ? null : check.id)}
-                            className="text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium flex items-center gap-1"
+                            className="text-sm text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-medium flex items-center gap-1"
                           >
                             {showDetails === check.id ? t('cv.ats.hideTips') : t('cv.ats.showTips')}
                             <ArrowRight className={cn('w-4 h-4 transition-transform', showDetails === check.id && 'rotate-90')} />
                           </button>
 
                           {showDetails === check.id && (
-                            <div className="mt-3 p-4 bg-teal-50 dark:bg-teal-900/30 rounded-xl">
+                            <div className="mt-3 p-4 bg-brand-50 dark:bg-brand-900/30 rounded-xl">
                               <ul className="space-y-2">
                                 {check.tips.map((tip, i) => (
-                                  <li key={i} className="flex items-start gap-2 text-sm text-teal-800 dark:text-teal-300">
+                                  <li key={i} className="flex items-start gap-2 text-sm text-brand-900 dark:text-brand-300">
                                     <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0" />
                                     {tip}
                                   </li>
@@ -487,7 +487,7 @@ export function ATSAnalysis() {
       </div>
 
       {/* Info Box */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border border-blue-100 dark:border-blue-800">
+      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-100 dark:border-blue-800">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
             <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -505,14 +505,14 @@ export function ATSAnalysis() {
       </div>
 
       {/* CTA */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-brand-50 to-sky-50 dark:from-brand-900/20 dark:to-sky-900/20 rounded-xl">
         <div>
           <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.ats.cta.title')}</h3>
           <p className="text-stone-600 dark:text-stone-400 text-sm">{t('cv.ats.cta.description')}</p>
         </div>
         <a
           href="/cv"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-brand-900 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors"
         >
           <Award className="w-5 h-5" />
           {t('cv.ats.cta.button')}

@@ -136,10 +136,10 @@ export function KeywordMatcher({ cvData, jobDescription = '' }: KeywordMatcherPr
   }
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div className="bg-white rounded-xl p-6 border border-slate-200">
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-teal-50 rounded-lg">
-          <FileSearch className="w-5 h-5 text-teal-600" />
+        <div className="p-2 bg-brand-50 rounded-lg">
+          <FileSearch className="w-5 h-5 text-brand-900" />
         </div>
         <div>
           <h3 className="font-semibold text-slate-800">Matcha mot jobbannons</h3>
@@ -156,12 +156,12 @@ export function KeywordMatcher({ cvData, jobDescription = '' }: KeywordMatcherPr
             setHasAnalyzed(false)
           }}
           placeholder="Klistra in texten från en jobbannons här..."
-          className="w-full p-3 border border-slate-200 rounded-xl resize-y min-h-[120px] text-sm focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+          className="w-full p-3 border border-slate-200 rounded-xl resize-y min-h-[120px] text-sm focus:ring-2 focus:ring-brand-700 focus:border-transparent"
         />
         <button
           onClick={() => setHasAnalyzed(true)}
           disabled={!jobText.trim()}
-          className="mt-2 w-full py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 disabled:bg-slate-200 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+          className="mt-2 w-full py-2 bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900 disabled:bg-slate-200 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
         >
           <FileSearch className="w-4 h-4" />
           Analysera matchning
@@ -174,7 +174,7 @@ export function KeywordMatcher({ cvData, jobDescription = '' }: KeywordMatcherPr
           {/* Match Score */}
           <div className="text-center p-4 bg-slate-50 rounded-xl">
             <div className={`inline-flex items-center justify-center w-20 h-20 rounded-full mb-2 ${
-              analysis.matchPercentage >= 80 ? 'bg-green-100 text-green-600' :
+              analysis.matchPercentage >= 80 ? 'bg-brand-100 text-brand-900' :
               analysis.matchPercentage >= 50 ? 'bg-amber-100 text-amber-600' :
               'bg-rose-100 text-rose-600'
             }`}>
@@ -194,21 +194,21 @@ export function KeywordMatcher({ cvData, jobDescription = '' }: KeywordMatcherPr
                   <div 
                     key={match.keyword}
                     className={`flex items-center gap-3 p-2 rounded-lg ${
-                      match.found ? 'bg-green-50' : 'bg-rose-50'
+                      match.found ? 'bg-brand-50' : 'bg-rose-50'
                     }`}
                   >
                     {match.found ? (
-                      <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                      <CheckCircle className="w-4 h-4 text-brand-700 flex-shrink-0" />
                     ) : (
                       <XCircle className="w-4 h-4 text-rose-500 flex-shrink-0" />
                     )}
                     <span className={`text-sm flex-1 ${
-                      match.found ? 'text-green-800' : 'text-rose-800'
+                      match.found ? 'text-brand-900' : 'text-rose-800'
                     }`}>
                       {match.keyword}
                     </span>
                     {match.found && match.matchedIn.length > 0 && (
-                      <span className="text-xs text-green-600">
+                      <span className="text-xs text-brand-900">
                         {match.matchedIn.join(', ')}
                       </span>
                     )}
@@ -272,13 +272,13 @@ export function KeywordMatcher({ cvData, jobDescription = '' }: KeywordMatcherPr
           {analysis.suggestions.length > 0 && (
             <div className="border-t border-slate-200 pt-4">
               <h4 className="font-medium text-slate-700 mb-2 flex items-center gap-2">
-                <ArrowRight className="w-4 h-4 text-teal-600" />
+                <ArrowRight className="w-4 h-4 text-brand-900" />
                 Rekommendationer
               </h4>
               <ul className="space-y-1">
                 {analysis.suggestions.map((suggestion, index) => (
                   <li key={index} className="text-sm text-slate-600 flex items-start gap-2">
-                    <span className="text-teal-500 mt-1">•</span>
+                    <span className="text-brand-700 mt-1">•</span>
                     {suggestion}
                   </li>
                 ))}

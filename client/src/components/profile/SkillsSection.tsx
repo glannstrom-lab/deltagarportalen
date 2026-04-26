@@ -260,7 +260,7 @@ export function SkillsSection({ className }: Props) {
                 id={suggestionsId}
                 role="listbox"
                 aria-label={t('profile.skills.suggestions')}
-                className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg shadow-lg z-10 py-1"
+                className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg z-10 py-1"
               >
                 {filteredSuggestions.map(s => (
                   <li key={s.value} role="option" aria-selected={false}>

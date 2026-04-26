@@ -65,7 +65,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
       value: `${stats.cvProgress}%`,
       change: stats.cvProgressChange > 0 ? `+${stats.cvProgressChange}%` : null,
       changeType: 'positive' as const,
-      color: 'text-teal-600 bg-teal-100'
+      color: 'text-brand-900 bg-brand-100'
     },
     {
       icon: <Briefcase size={18} />,
@@ -146,7 +146,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className={cn(
-        "bg-gradient-to-br from-slate-50 to-slate-100 dark:from-stone-900 dark:to-stone-800 rounded-2xl border border-slate-200 dark:border-stone-700 overflow-hidden",
+        "bg-gradient-to-br from-slate-50 to-slate-100 dark:from-stone-900 dark:to-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden",
         className
       )}
     >
@@ -156,7 +156,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
         className="w-full p-4 flex items-center justify-between hover:bg-slate-100/50 dark:hover:bg-stone-700/50 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-100 to-teal-100 dark:from-sky-900/50 dark:to-teal-900/50 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-100 to-brand-100 dark:from-sky-900/50 dark:to-brand-900/50 flex items-center justify-center">
             <Calendar size={20} className="text-sky-600 dark:text-sky-400" />
           </div>
           <div className="text-left">
@@ -187,10 +187,10 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
           className="border-t border-slate-200 dark:border-stone-700"
         >
           {/* Motivational Message */}
-          <div className="p-4 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 border-b border-slate-200 dark:border-stone-700">
+          <div className="p-4 bg-gradient-to-r from-brand-50 to-sky-50 dark:from-brand-900/30 dark:to-sky-900/30 border-b border-slate-200 dark:border-stone-700">
             <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white dark:bg-stone-800 flex items-center justify-center shadow-sm">
-                <Award size={16} className="text-teal-600 dark:text-teal-400" />
+              <div className="w-8 h-8 rounded-lg bg-white dark:bg-stone-800 flex items-center justify-center">
+                <Award size={16} className="text-brand-900 dark:text-brand-400" />
               </div>
               <div>
                 <h4 className="font-semibold text-slate-800 dark:text-stone-100 text-sm">{motivation.title}</h4>
@@ -240,7 +240,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
                   initial={{ width: 0 }}
                   animate={{ width: '66%' }}
                   transition={{ duration: 0.5, delay: 0.3 }}
-                  className="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-brand-700 to-sky-500 rounded-full"
                 />
               </div>
               <div className="mt-3 space-y-2">
@@ -280,7 +280,7 @@ export function WeeklySummaryBadge() {
   const weeklyProgress = 66
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-teal-100 to-sky-100 text-teal-700 text-xs font-medium">
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-brand-100 to-sky-100 text-brand-900 text-xs font-medium">
       <TrendingUp size={14} />
       <span>{t('dashboard.weeklySummary.weekBadge', { progress: weeklyProgress })}</span>
     </div>

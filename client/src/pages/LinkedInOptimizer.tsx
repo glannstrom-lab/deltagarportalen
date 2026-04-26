@@ -158,11 +158,11 @@ export default function LinkedInOptimizer() {
             onClick={() => { setAktivTab(tab.id as any); setResultat(''); }}
             className={`p-3 rounded-xl border-2 text-left transition-all text-sm ${
               aktivTab === tab.id
-                ? 'border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20'
-                : 'border-stone-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700 bg-white dark:bg-stone-800'
+                ? 'border-brand-700 dark:border-brand-400 bg-brand-50 dark:bg-brand-900/20'
+                : 'border-stone-200 dark:border-stone-700 hover:border-brand-200 dark:hover:border-brand-900 bg-white dark:bg-stone-800'
             }`}
           >
-            <tab.icon className={`w-5 h-5 mb-1 ${aktivTab === tab.id ? 'text-teal-600 dark:text-teal-400' : 'text-slate-600 dark:text-stone-400'}`} />
+            <tab.icon className={`w-5 h-5 mb-1 ${aktivTab === tab.id ? 'text-brand-900 dark:text-brand-400' : 'text-slate-600 dark:text-stone-400'}`} />
             <div className="font-medium text-slate-800 dark:text-stone-200 text-xs">{tab.label}</div>
           </button>
         ))}
@@ -181,14 +181,14 @@ export default function LinkedInOptimizer() {
                   placeholder={t('linkedInOptimizer.headline.jobTitlePlaceholder')}
                   value={formData.headline.yrke}
                   onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, yrke: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.headline.specializationPlaceholder')}
                   value={formData.headline.erfarenhet}
                   onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, erfarenhet: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <div className="bg-sky-50 dark:bg-sky-900/20 p-4 rounded-lg border border-sky-200 dark:border-sky-800">
                   <p className="text-sm text-sky-800 dark:text-sky-300"><strong>{t('linkedInOptimizer.headline.tipLabel')}:</strong> {t('linkedInOptimizer.headline.tipText')}</p>
@@ -205,21 +205,21 @@ export default function LinkedInOptimizer() {
                   value={formData.about.bakgrund}
                   onChange={(e) => setFormData({ ...formData, about: { ...formData.about, bakgrund: e.target.value } })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <textarea
                   placeholder={t('linkedInOptimizer.about.strengthsPlaceholder')}
                   value={formData.about.styrkor}
                   onChange={(e) => setFormData({ ...formData, about: { ...formData.about, styrkor: e.target.value } })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.about.goalsPlaceholder')}
                   value={formData.about.mal}
                   onChange={(e) => setFormData({ ...formData, about: { ...formData.about, mal: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
               </div>
             )}
@@ -233,12 +233,12 @@ export default function LinkedInOptimizer() {
                   value={formData.post.amne}
                   onChange={(e) => setFormData({ ...formData, post: { ...formData.post, amne: e.target.value } })}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <select
                   value={formData.post.ton}
                   onChange={(e) => setFormData({ ...formData, post: { ...formData.post, ton: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 >
                   <option value="professionell">{t('linkedInOptimizer.post.tones.professional')}</option>
                   <option value="personlig">{t('linkedInOptimizer.post.tones.personal')}</option>
@@ -257,21 +257,21 @@ export default function LinkedInOptimizer() {
                   placeholder={t('linkedInOptimizer.connection.namePlaceholder')}
                   value={formData.connection.namn}
                   onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, namn: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.connection.rolePlaceholder')}
                   value={formData.connection.roll}
                   onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, roll: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <textarea
                   placeholder={t('linkedInOptimizer.connection.purposePlaceholder')}
                   value={formData.connection.syfte}
                   onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, syfte: e.target.value } })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
               </div>
             )}
@@ -279,7 +279,7 @@ export default function LinkedInOptimizer() {
             <Button
               onClick={generera}
               disabled={isLoading}
-              className="w-full mt-6 bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
+              className="w-full mt-6 bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-700"
             >
               {isLoading ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -294,12 +294,12 @@ export default function LinkedInOptimizer() {
 
           {/* Resultat */}
           {resultat && (
-            <Card className="p-6 bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-sky-200 dark:border-sky-800">
+            <Card className="p-6 bg-gradient-to-br from-sky-50 to-brand-50 dark:from-sky-900/20 dark:to-brand-900/20 border-sky-200 dark:border-sky-800">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.result.title')}</h3>
                 <button
                   onClick={kopiera}
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-brand-900 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/30 rounded-lg transition-colors"
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   {copied ? t('linkedInOptimizer.result.copied') : t('linkedInOptimizer.result.copy')}
@@ -318,14 +318,14 @@ export default function LinkedInOptimizer() {
         /* Audit View */
         <div className="space-y-6">
           {/* Completeness Overview */}
-          <Card className="p-6 bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-sky-200 dark:border-sky-800">
+          <Card className="p-6 bg-gradient-to-br from-sky-50 to-brand-50 dark:from-sky-900/20 dark:to-brand-900/20 border-sky-200 dark:border-sky-800">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-                <Shield className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                <Shield className="w-6 h-6 text-brand-900 dark:text-brand-400" />
                 {t('linkedInOptimizer.audit.profileHealth')}
               </h2>
               <div className="text-right">
-                <p className="text-4xl font-bold text-teal-600 dark:text-teal-400">{auditGrade}</p>
+                <p className="text-4xl font-bold text-brand-900 dark:text-brand-400">{auditGrade}</p>
                 <p className="text-xs text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.audit.grade')}</p>
               </div>
             </div>
@@ -333,7 +333,7 @@ export default function LinkedInOptimizer() {
             <div className="space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-sm font-medium text-slate-700 dark:text-stone-300">{t('linkedInOptimizer.audit.profileCompleted')}</span>
-                <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{profileCompleteness}%</span>
+                <span className="text-sm font-bold text-brand-900 dark:text-brand-400">{profileCompleteness}%</span>
               </div>
               <Progress value={profileCompleteness} className="h-4" />
               <p className="text-xs text-slate-600 dark:text-stone-400 mt-2">{t('linkedInOptimizer.audit.recommendation')}</p>
@@ -386,7 +386,7 @@ export default function LinkedInOptimizer() {
                                 updated[auditSections.indexOf(section)].checklist[idx].completed = !item.completed
                                 setAuditSections(updated)
                               }}
-                              className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 cursor-pointer"
+                              className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-brand-900 cursor-pointer"
                             />
                             <span className={item.completed ? 'line-through text-slate-500 dark:text-stone-500' : 'text-slate-700 dark:text-stone-300'}>{item.item}</span>
                           </label>
@@ -413,7 +413,7 @@ export default function LinkedInOptimizer() {
                     <div>
                       <button
                         onClick={() => setShowKeywords(!showKeywords)}
-                        className="flex items-center gap-2 text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300"
+                        className="flex items-center gap-2 text-sm font-medium text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300"
                       >
                         {showKeywords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         {showKeywords ? t('linkedInOptimizer.audit.hideKeywords') : t('linkedInOptimizer.audit.showKeywords')}
@@ -421,7 +421,7 @@ export default function LinkedInOptimizer() {
                       {showKeywords && (
                         <div className="flex flex-wrap gap-2 mt-2">
                           {section.keywords.map((kw, idx) => (
-                            <span key={idx} className="text-xs bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 px-2 py-1 rounded-full">
+                            <span key={idx} className="text-xs bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400 px-2 py-1 rounded-full">
                               {kw}
                             </span>
                           ))}

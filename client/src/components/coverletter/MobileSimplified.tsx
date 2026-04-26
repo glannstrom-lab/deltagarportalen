@@ -173,7 +173,7 @@ export function MobileSimplified({
                   )}
                   <button
                     onClick={() => handleLoadJobAndClose(job)}
-                    className="mt-3 w-full py-2.5 px-3 bg-teal-500 text-white text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
+                    className="mt-3 w-full py-2.5 px-3 bg-brand-700 text-white text-sm font-medium rounded-lg hover:bg-brand-900 transition-colors"
                   >
                     Använd detta jobb
                   </button>
@@ -196,14 +196,14 @@ export function MobileSimplified({
               className={`
                 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
                 transition-colors duration-300
-                ${step === s.id ? 'bg-teal-500 text-white' : 
-                  index < currentStepIndex ? 'bg-teal-100 text-teal-700' : 'bg-slate-100 text-slate-600'}
+                ${step === s.id ? 'bg-brand-700 text-white' : 
+                  index < currentStepIndex ? 'bg-brand-100 text-brand-900' : 'bg-slate-100 text-slate-600'}
               `}
             >
               {index < currentStepIndex ? '✓' : index + 1}
             </div>
             {index < steps.length - 1 && (
-              <div className={`w-4 h-0.5 mx-1 ${index < currentStepIndex ? 'bg-teal-300' : 'bg-slate-200'}`} />
+              <div className={`w-4 h-0.5 mx-1 ${index < currentStepIndex ? 'bg-brand-300' : 'bg-slate-200'}`} />
             )}
           </div>
         ))}
@@ -250,7 +250,7 @@ export function MobileSimplified({
               <p className="text-sm font-medium text-slate-700">Hämta från sparade jobb:</p>
               <button
                 onClick={() => setShowSavedJobs(true)}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg text-sm font-medium transition-colors border border-teal-200"
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-brand-50 hover:bg-brand-100 text-brand-900 rounded-lg text-sm font-medium transition-colors border border-brand-200"
               >
                 <Briefcase className="w-4 h-4" />
                 Välj bland {savedJobsCount} sparade jobb
@@ -267,7 +267,7 @@ export function MobileSimplified({
                 value={company}
                 onChange={(e) => onCompanyChange(e.target.value)}
                 placeholder="t.ex. Acme AB"
-                className="w-full px-4 py-3 text-lg rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none"
+                className="w-full px-4 py-3 text-lg rounded-lg border border-slate-200 focus:border-brand-700 focus:ring-2 focus:ring-brand-200 outline-none"
                 autoFocus
               />
             </div>
@@ -286,7 +286,7 @@ export function MobileSimplified({
                 value={jobTitle}
                 onChange={(e) => onJobTitleChange(e.target.value)}
                 placeholder="t.ex. Projektledare"
-                className="w-full px-4 py-3 text-lg rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none"
+                className="w-full px-4 py-3 text-lg rounded-lg border border-slate-200 focus:border-brand-700 focus:ring-2 focus:ring-brand-200 outline-none"
                 autoFocus
               />
             </div>
@@ -297,7 +297,7 @@ export function MobileSimplified({
                   <button
                     key={title}
                     onClick={() => onJobTitleChange(title)}
-                    className="px-3 py-1.5 bg-slate-100 hover:bg-teal-50 text-slate-600 hover:text-teal-700 text-sm rounded-full transition-colors"
+                    className="px-3 py-1.5 bg-slate-100 hover:bg-brand-50 text-slate-600 hover:text-brand-900 text-sm rounded-full transition-colors"
                   >
                     {title}
                   </button>
@@ -311,8 +311,8 @@ export function MobileSimplified({
           <div className="space-y-5">
             {/* Vald jobbinfo */}
             {(company || jobTitle) && (
-              <div className="p-3 bg-teal-50 rounded-lg border border-teal-100">
-                <p className="text-xs text-teal-600 font-medium uppercase">Valt jobb:</p>
+              <div className="p-3 bg-brand-50 rounded-lg border border-brand-100">
+                <p className="text-xs text-brand-900 font-medium uppercase">Valt jobb:</p>
                 <p className="font-medium text-slate-800">{jobTitle}</p>
                 {company && <p className="text-sm text-slate-600">{company}</p>}
               </div>
@@ -333,7 +333,7 @@ export function MobileSimplified({
                 onChange={(e) => onJobAdChange(e.target.value)}
                 placeholder="Klistra in jobbannonsen här..."
                 rows={5}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-none"
+                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-brand-700 focus:ring-2 focus:ring-brand-200 outline-none resize-none"
               />
               <p className="text-xs text-slate-700">
                 Ju mer information du ger, desto bättre blir brevet
@@ -350,7 +350,7 @@ export function MobileSimplified({
                 onChange={(e) => onExtraKeywordsChange(e.target.value)}
                 placeholder="T.ex. certifieringar, mjuka kompetenser, specifika verktyg..."
                 rows={2}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-none"
+                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-brand-700 focus:ring-2 focus:ring-brand-200 outline-none resize-none"
               />
             </div>
 
@@ -367,7 +367,7 @@ export function MobileSimplified({
                     onClick={() => onTonChange(t)}
                     className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
                       ton === t
-                        ? 'bg-teal-500 text-white'
+                        ? 'bg-brand-700 text-white'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                     }`}
                   >
@@ -401,7 +401,7 @@ export function MobileSimplified({
                       }}
                       className={`w-full text-left p-3 rounded-lg border transition-colors ${
                         selectedTemplate === template.id
-                          ? 'border-teal-500 bg-teal-50'
+                          ? 'border-brand-700 bg-brand-50'
                           : 'border-slate-200 hover:border-slate-300'
                       }`}
                     >
@@ -432,7 +432,7 @@ export function MobileSimplified({
                   }}
                   placeholder="Ditt personliga brev visas här..."
                   rows={10}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-y"
+                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-brand-700 focus:ring-2 focus:ring-brand-200 outline-none resize-y"
                 />
                 
                 <WordCounter 
@@ -455,7 +455,7 @@ export function MobileSimplified({
                   <button
                     onClick={handleSaveLetter}
                     disabled={isSaving || !tempLetter.trim()}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-teal-500 hover:bg-teal-600 disabled:bg-slate-300 text-white rounded-lg font-medium transition-colors"
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-brand-700 hover:bg-brand-900 disabled:bg-slate-300 text-white rounded-lg font-medium transition-colors"
                   >
                     {isSaving ? (
                       <>
@@ -503,7 +503,7 @@ export function MobileSimplified({
           <Button
             onClick={handleNext}
             disabled={!canProceed()}
-            className="flex-1 py-3 text-base bg-teal-500 hover:bg-teal-600"
+            className="flex-1 py-3 text-base bg-brand-700 hover:bg-brand-900"
           >
             Nästa
             <ChevronRight className="w-5 h-5 ml-1" />
@@ -512,7 +512,7 @@ export function MobileSimplified({
           <Button
             onClick={onGenerate}
             disabled={isGenerating || (!letter && (jobAd.length < 10 && !hasCV))}
-            className="flex-1 py-3 text-base bg-teal-500 hover:bg-teal-600"
+            className="flex-1 py-3 text-base bg-brand-700 hover:bg-brand-900"
           >
             {isGenerating ? (
               <>

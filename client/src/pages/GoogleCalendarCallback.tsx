@@ -73,7 +73,7 @@ export default function GoogleCalendarCallback() {
       <Card className="max-w-md w-full p-8 text-center">
         {status === 'loading' && (
           <>
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-brand-700 rounded-xl flex items-center justify-center mx-auto mb-6">
               <CalendarDays className="w-10 h-10 text-white" />
             </div>
             <LoadingState
@@ -97,7 +97,7 @@ export default function GoogleCalendarCallback() {
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               Din kalender är nu synkroniserad. Dina Google-händelser kommer visas i din kalender.
             </p>
-            <div className="animate-pulse text-teal-600 dark:text-teal-400 text-sm">
+            <div className="animate-pulse text-brand-900 dark:text-brand-400 text-sm">
               Omdirigerar till kalendern...
             </div>
           </>

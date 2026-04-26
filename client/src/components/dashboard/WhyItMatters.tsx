@@ -60,7 +60,7 @@ export function WhyItMattersTooltip({
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-teal-600 transition-colors"
+        className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-brand-900 transition-colors"
       >
         <HelpCircle size={14} />
         <span>Varför?</span>
@@ -72,7 +72,7 @@ export function WhyItMattersTooltip({
             initial={{ opacity: 0, y: 5, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 5, scale: 0.95 }}
-            className="absolute z-50 left-0 top-full mt-2 w-64 p-3 bg-white rounded-xl shadow-lg border border-slate-200"
+            className="absolute z-50 left-0 top-full mt-2 w-64 p-3 bg-white rounded-xl border border-slate-200"
           >
             <div className="text-sm text-slate-700">
               <p className="font-medium text-slate-900 mb-1">{title}</p>
@@ -104,7 +104,7 @@ export function WhyItMattersExpandable({
     <div className="mt-3">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-medium transition-colors"
+        className="flex items-center gap-2 text-sm text-brand-900 hover:text-brand-900 font-medium transition-colors"
       >
         <Lightbulb size={16} />
         <span>Varför är detta viktigt?</span>
@@ -124,10 +124,10 @@ export function WhyItMattersExpandable({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="mt-3 p-4 bg-gradient-to-br from-teal-50 to-sky-50 rounded-xl border border-teal-100">
+            <div className="mt-3 p-4 bg-gradient-to-br from-brand-50 to-sky-50 rounded-xl border border-brand-100">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm flex-shrink-0">
-                  <Lightbulb size={16} className="text-teal-500" />
+                <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
+                  <Lightbulb size={16} className="text-brand-700" />
                 </div>
                 <div className="flex-1">
                   <h4 className="font-semibold text-slate-800 mb-1">{title}</h4>

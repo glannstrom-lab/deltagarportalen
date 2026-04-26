@@ -61,7 +61,7 @@ export function SkillGapAnalysis({
   }
 
   return (
-    <div className={cn('bg-white rounded-2xl border border-slate-200 overflow-hidden', className)}>
+    <div className={cn('bg-white rounded-xl border border-slate-200 overflow-hidden', className)}>
       {/* Header */}
       <div className="p-6 border-b border-slate-100 bg-gradient-to-r from-indigo-50 to-purple-50">
         <div className="flex items-center gap-3 mb-4">
@@ -77,7 +77,7 @@ export function SkillGapAnalysis({
         {/* Match score */}
         <div className="flex items-center gap-4">
           <div className={cn(
-            'w-20 h-20 rounded-2xl flex items-center justify-center',
+            'w-20 h-20 rounded-xl flex items-center justify-center',
             matchPercentage >= 80 ? 'bg-emerald-100' :
             matchPercentage >= 60 ? 'bg-amber-100' : 'bg-rose-100'
           )}>

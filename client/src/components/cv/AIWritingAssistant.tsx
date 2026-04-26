@@ -18,9 +18,9 @@ type FeatureType = 'improve' | 'quantify' | 'translate' | 'generate'
 
 const featureIcons: Record<FeatureType, { icon: typeof Zap; color: string }> = {
   improve: { icon: Zap, color: 'text-amber-500' },
-  quantify: { icon: TrendingUp, color: 'text-green-500' },
+  quantify: { icon: TrendingUp, color: 'text-brand-700' },
   translate: { icon: Globe, color: 'text-blue-500' },
-  generate: { icon: Sparkles, color: 'text-teal-500' }
+  generate: { icon: Sparkles, color: 'text-brand-700' }
 }
 
 export function AIWritingAssistant({ content, onChange, type }: AIWritingAssistantProps) {
@@ -122,7 +122,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
     <div className="mt-2">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-medium"
+        className="flex items-center gap-2 text-sm text-brand-900 hover:text-brand-900 font-medium"
       >
         <Shield size={16} />
         <Sparkles size={16} />
@@ -130,7 +130,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
       </button>
 
       {isOpen && (
-        <div className="mt-3 p-4 bg-teal-50 dark:bg-teal-900/30 rounded-xl border border-teal-200 dark:border-teal-800">
+        <div className="mt-3 p-4 bg-brand-50 dark:bg-brand-900/30 rounded-xl border border-brand-200 dark:border-brand-900">
           {/* Säkerhetsbadge */}
           <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-lg">
             <Shield className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -156,7 +156,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
                   key={key}
                   onClick={() => callSecureAI(key)}
                   disabled={loading}
-                  className="flex flex-col items-center gap-1 px-3 py-2 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-700 rounded-lg text-sm text-slate-700 dark:text-stone-300 hover:bg-slate-50 dark:hover:bg-stone-700 hover:border-teal-300 dark:hover:border-teal-600 transition-colors disabled:opacity-50"
+                  className="flex flex-col items-center gap-1 px-3 py-2 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-700 rounded-lg text-sm text-slate-700 dark:text-stone-300 hover:bg-slate-50 dark:hover:bg-stone-700 hover:border-brand-300 dark:hover:border-brand-900 transition-colors disabled:opacity-50"
                   title={feat.description}
                 >
                   <Icon size={18} className={feat.color} />
@@ -188,7 +188,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
               </div>
               <button
                 onClick={applyPowerWords}
-                className="mt-2 flex items-center gap-1 px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700"
+                className="mt-2 flex items-center gap-1 px-3 py-1.5 bg-brand-900 text-white text-sm rounded-lg hover:bg-brand-900"
               >
                 <Wand2 size={14} />
                 {t('cv.aiWriting.replaceAutomatically')}
@@ -199,7 +199,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
           {/* Loading */}
           {loading && (
             <div className="p-4 bg-white dark:bg-stone-800 rounded-lg border border-slate-200 dark:border-stone-700 text-center">
-              <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-teal-600 dark:text-teal-400" />
+              <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-brand-900 dark:text-brand-400" />
               <p className="text-sm text-slate-600 dark:text-stone-400">{t('cv.aiWriting.aiWorking')}</p>
               <p className="text-xs text-slate-600 dark:text-stone-500 mt-1">{t('cv.aiWriting.mayTakeSeconds')}</p>
             </div>
@@ -219,7 +219,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
                     setSuggestion('')
                     setActiveFeature(null)
                   }}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700"
+                  className="flex items-center gap-1 px-3 py-1.5 bg-brand-900 text-white text-sm rounded-lg hover:bg-brand-900"
                 >
                   <Check size={14} />
                   {t('cv.aiWriting.use')}

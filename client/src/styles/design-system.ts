@@ -1,12 +1,14 @@
 /**
  * Central Design System för Deltagarportalen
- * "Calm & Capable" Palett - UPPDATERAD
+ * Uppdaterad enligt DESIGN.md - en enda varumärkesfärg
  *
- * Ändringar:
- * - Primärfärg: Teal (lugnande & professionell)
- * - Sekundär: Sky (öppen & möjligheter)
- * - Slate → Warm Stone (mer inbjudande)
- * - Justerade semantiska färger för bättre kontrast
+ * Färgsystem:
+ * - brand-900: #0F6E56 (solid - CTA, aktiva tillstånd)
+ * - brand-300: #9FE1CB (mid - borders på tintade ytor)
+ * - brand-100: #E1F5EE (ljus - aktivt menyval, positiv KPI-tint)
+ * - brand-zone: #F0F9F5 (tona - zon-bakgrund)
+ *
+ * Status: orange (varning), röd (destruktiv), grön undviks
  */
 
 import { cn } from '@/lib/utils'
@@ -15,19 +17,20 @@ import { cn } from '@/lib/utils'
 // FÄRGSYSTEM - NYA "Calm & Capable" Färger
 // ============================================
 export const colors = {
-  // NY: Primärfärg - Teal
+  // Primärfärg - Brand (enligt DESIGN.md)
   primary: {
-    50: 'bg-teal-50',
-    100: 'bg-teal-100',
-    200: 'bg-teal-200',
-    300: 'bg-teal-300',
-    500: 'bg-teal-500',
-    600: 'bg-teal-600',   // Huvudfärg
-    700: 'bg-teal-700',   // Hover
-    text: 'text-teal-600',
-    textLight: 'text-teal-700',
-    border: 'border-teal-200',
-    ring: 'ring-teal-500',
+    50: 'bg-brand-50',
+    100: 'bg-brand-100',    // Ljus - aktivt menyval
+    200: 'bg-brand-200',
+    300: 'bg-brand-300',    // Mid - borders på tintade ytor
+    500: 'bg-brand-700',
+    600: 'bg-brand-900',    // Solid - CTA, aktiva tillstånd
+    700: 'bg-brand-900',    // Hover (samma, använd opacity)
+    text: 'text-brand-900',
+    textLight: 'text-brand-700',
+    border: 'border-brand-300',
+    ring: 'ring-brand-900',
+    zone: 'bg-brand-zone',  // Zon-bakgrund
   },
   
   // NY: Neutrala färger - Warm Stone (istället för Slate)
@@ -90,41 +93,43 @@ export const colors = {
 }
 
 // ============================================
-// SHADOWS
+// SHADOWS - undviks enligt DESIGN.md, använd border/tint istället
 // ============================================
 export const shadows = {
-  sm: 'shadow-sm',
-  DEFAULT: 'shadow',
-  md: 'shadow-md',
-  lg: 'shadow-lg',
-  xl: 'shadow-xl',
-  inner: 'shadow-inner',
-  // Specifika användningsområden
-  card: 'shadow-sm',
-  cardHover: 'shadow-md',
-  elevated: 'shadow-lg',
-  modal: 'shadow-xl',
-  button: 'shadow-sm',
-  buttonHover: 'shadow',
+  sm: '',
+  DEFAULT: '',
+  md: '',
+  lg: '',
+  xl: '',
+  inner: '',
+  // Specifika användningsområden - alla tomma
+  card: '',
+  cardHover: '',
+  elevated: '',
+  modal: '',
+  button: '',
+  buttonHover: '',
 }
 
 // ============================================
-// BORDER RADIUS
+// BORDER RADIUS - enligt DESIGN.md
 // ============================================
 export const radius = {
-  sm: 'rounded-md',      // 6px
-  DEFAULT: 'rounded-lg', // 8px
-  lg: 'rounded-xl',      // 12px
-  xl: 'rounded-2xl',     // 16px
-  '2xl': 'rounded-3xl',  // 24px
-  full: 'rounded-full',
-  // Specifika användningsområden
-  button: 'rounded-lg',
-  input: 'rounded-lg',
-  card: 'rounded-xl',
-  cardLarge: 'rounded-2xl',
-  modal: 'rounded-2xl',
-  badge: 'rounded-full',
+  sm: 'rounded-md',      // 6px - småknappar
+  DEFAULT: 'rounded-lg', // 8px - kort
+  lg: 'rounded-xl',      // 12px - paneler
+  xl: 'rounded-xl',      // 12px (max enligt DESIGN.md)
+  '2xl': 'rounded-xl',   // 12px (begränsa till max)
+  full: 'rounded-full',  // Pills: 14px
+  // Specifika användningsområden enligt DESIGN.md
+  button: 'rounded-md',   // 6px för småknappar
+  buttonLarge: 'rounded-lg', // 8px för stora knappar
+  input: 'rounded-lg',    // 8px
+  card: 'rounded-lg',     // 8px för kort
+  panel: 'rounded-xl',    // 12px för paneler
+  cardLarge: 'rounded-xl',
+  modal: 'rounded-xl',    // 12px
+  badge: 'rounded-full',  // pill-taggar
   avatar: 'rounded-full',
 }
 
@@ -162,9 +167,9 @@ export const animations = {
   press: 'active:scale-[0.98] transition-transform duration-150',
   lift: 'hover:-translate-y-0.5 transition-transform duration-200',
   liftLarge: 'hover:-translate-y-1 transition-transform duration-200',
-  // Focus states - UPPDATERAD med teal
-  focusRing: 'focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500',
-  focusVisible: 'focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2',
+  // Focus states - enligt DESIGN.md
+  focusRing: 'focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-900',
+  focusVisible: 'focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2',
   // Loading
   pulse: 'animate-pulse',
   spin: 'animate-spin',
@@ -197,49 +202,42 @@ export const typography = {
 // KOMPONENT-KLASSER (Helper functions)
 // ============================================
 
-// Button varianter - UPPDATERADE med nya färger och förbättrad tillgänglighet
+// Button varianter - enligt DESIGN.md
 export const buttonVariants = {
   primary: cn(
-    'bg-teal-600 text-white hover:bg-teal-700',
-    shadows.button,
-    'hover:shadow',
-    animations.press,
+    'bg-brand-900 text-white hover:bg-brand-900/90',
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2'
   ),
   secondary: cn(
-    'bg-white border border-stone-200 text-stone-700',
-    'hover:bg-stone-50 hover:border-stone-300',
-    animations.press,
+    'bg-white border border-stone-200 text-brand-900',
+    'hover:bg-brand-50 hover:border-stone-300',
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2'
   ),
   outline: cn(
-    'bg-transparent border-2 border-teal-600 text-teal-600',
-    'hover:bg-teal-50',
-    animations.press,
+    'bg-transparent border border-stone-200 text-brand-900',
+    'hover:bg-brand-50',
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2'
   ),
   ghost: cn(
     'bg-transparent text-stone-600',
-    'hover:bg-stone-100 hover:text-stone-900',
-    animations.press,
+    'hover:bg-brand-50 hover:text-stone-900',
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2'
   ),
   danger: cn(
     'bg-red-50 text-red-600 border border-red-200',
     'hover:bg-red-100 hover:border-red-300',
-    animations.press,
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
@@ -249,51 +247,52 @@ export const buttonVariants = {
     'w-10 h-10 rounded-lg',
     'inline-flex items-center justify-center',
     'text-stone-600 hover:bg-stone-100',
-    animations.press,
     'transition-colors duration-200',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2'
   ),
 }
 
-// Card varianter - UPPDATERADE med stone
+// Card varianter - enligt DESIGN.md (8px radius, ingen skugga)
 export const cardVariants = {
   default: cn(
     'bg-white',
-    radius.card,
-    shadows.card,
+    'rounded-lg',  // 8px enligt DESIGN.md
     colors.neutral.border,
     'border',
     spacing.card
   ),
   hover: cn(
     'bg-white',
-    radius.card,
-    shadows.card,
+    'rounded-lg',
     colors.neutral.border,
     'border',
     spacing.card,
-    'hover:shadow-md',
-    animations.lift,
-    'transition-all duration-200'
+    'hover:border-brand-300',
+    'transition-colors duration-200'
   ),
   elevated: cn(
     'bg-white',
-    radius.cardLarge,
-    shadows.elevated,
+    'rounded-xl',  // 12px för paneler
     colors.neutral.border,
     'border',
     spacing.card
   ),
   flat: cn(
     'bg-white',
-    radius.card,
+    'rounded-lg',
     colors.neutral.border,
     'border',
     spacing.card
   ),
+  tinted: cn(
+    'bg-brand-zone',
+    'rounded-lg',
+    'border border-brand-300',
+    spacing.card
+  ),
 }
 
-// Input styling - UPPDATERAD med stone och teal
+// Input styling - UPPDATERAD med stone och brand
 export const inputBase = cn(
   'w-full',
   spacing.input,
@@ -312,11 +311,11 @@ export const labelBase = cn(
   typography.label
 )
 
-// Badge styling - UPPDATERAD
+// Badge styling - enligt DESIGN.md (14px radius för pills)
 export const badgeVariants = {
   default: 'bg-stone-100 text-stone-700 px-2 py-0.5 text-xs font-medium rounded-full',
-  primary: 'bg-teal-100 text-teal-700 px-2 py-0.5 text-xs font-medium rounded-full',
-  success: 'bg-emerald-100 text-emerald-700 px-2 py-0.5 text-xs font-medium rounded-full',
+  primary: 'bg-brand-100 text-brand-900 px-2 py-0.5 text-xs font-medium rounded-full',
+  success: 'bg-brand-100 text-brand-900 px-2 py-0.5 text-xs font-medium rounded-full',
   warning: 'bg-amber-100 text-amber-700 px-2 py-0.5 text-xs font-medium rounded-full',
   error: 'bg-red-100 text-red-700 px-2 py-0.5 text-xs font-medium rounded-full',
 }
@@ -455,9 +454,9 @@ export const responsive = {
 
   // Responsive borders and radius
   radius: {
-    card: 'rounded-lg sm:rounded-xl md:rounded-2xl',
+    card: 'rounded-lg sm:rounded-xl md:rounded-xl',
     button: 'rounded-md sm:rounded-lg',
-    modal: 'rounded-t-2xl sm:rounded-2xl',
+    modal: 'rounded-t-2xl sm:rounded-xl',
   },
 }
 
@@ -495,20 +494,20 @@ export const states = {
 }
 
 // ============================================
-// NY: Gradients för "Calm & Capable"
+// Gradients (undviks enligt DESIGN.md, använd solida färger)
 // ============================================
 export const gradients = {
-  primary: 'bg-gradient-to-r from-teal-600 to-teal-700',
-  hero: 'bg-gradient-to-br from-teal-50 to-stone-50',
-  success: 'bg-gradient-to-r from-emerald-500 to-teal-600',
-  card: 'bg-gradient-to-b from-white to-stone-50',
+  primary: 'bg-brand-900',
+  hero: 'bg-brand-zone',
+  success: 'bg-brand-900',
+  card: 'bg-white',
 }
 
 // ============================================
-// NY: Focus states specifika
+// Focus states - enligt DESIGN.md
 // ============================================
 export const focusStates = {
-  primary: 'focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500',
+  primary: 'focus:outline-none focus:ring-2 focus:ring-brand-900 focus:ring-offset-2',
   neutral: 'focus:outline-none focus:ring-2 focus:ring-stone-400/30 focus:border-stone-400',
 }
 

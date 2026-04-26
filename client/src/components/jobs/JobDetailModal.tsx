@@ -79,7 +79,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
       aria-labelledby={titleId}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
+      <div className="bg-white dark:bg-stone-900 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-slate-200 dark:border-stone-700 p-6 flex items-start justify-between">
           <div>
@@ -109,7 +109,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
                 </div>
                 <div className="flex-1">
                   {matchResult.matchingSkills.length > 0 && (
-                    <p className="text-sm text-green-700 dark:text-green-400 mb-1">
+                    <p className="text-sm text-brand-900 dark:text-brand-400 mb-1">
                       ✅ {t('jobs.modal.matchingSkills')}: {matchResult.matchingSkills.join(', ')}
                     </p>
                   )}
@@ -208,7 +208,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
           {/* Dela med konsulent */}
           <button
             onClick={() => setShowShareDialog(true)}
-            className="flex items-center gap-2 px-4 py-3 border-2 border-teal-200 text-teal-700 rounded-xl hover:bg-teal-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-3 border-2 border-brand-200 text-brand-900 rounded-xl hover:bg-brand-50 transition-colors"
           >
             <Share2 size={18} />
             {t('jobs.modal.share')}

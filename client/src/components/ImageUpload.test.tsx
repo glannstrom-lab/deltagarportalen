@@ -103,8 +103,8 @@ describe('ImageUpload', () => {
     // Simulate drag over
     fireEvent.dragOver(dropZone)
     
-    // Check that the drag styles are applied (component uses teal, not violet)
-    expect(dropZone.className).toContain('border-teal-500')
+    // Check that the drag styles are applied (component uses brand, not violet)
+    expect(dropZone.className).toContain('border-brand-700')
     
     // Simulate drop
     fireEvent.drop(dropZone, {

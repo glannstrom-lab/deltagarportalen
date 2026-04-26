@@ -25,13 +25,13 @@ export const CVWidget = memo(function CVWidget({
         to="/cv"
         className={cn(
           "group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border transition-all duration-200",
-          "hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md",
+          "hover:border-brand-300 dark:hover:border-brand-900 hover:",
           isComplete ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-slate-700"
         )}
       >
         <div className={cn(
           "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0",
-          isComplete ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400" : "bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400"
+          isComplete ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400" : "bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400"
         )}>
           {isComplete ? <CheckCircle2 size={16} /> : <FileText size={16} />}
         </div>
@@ -41,7 +41,7 @@ export const CVWidget = memo(function CVWidget({
             {isComplete ? t('cvWidget.complete') : `${progress}%`}
           </p>
         </div>
-        <ChevronRight size={14} className="text-slate-300 dark:text-slate-600 group-hover:text-teal-500 dark:group-hover:text-teal-400 transition-colors" />
+        <ChevronRight size={14} className="text-slate-300 dark:text-slate-600 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors" />
       </Link>
     )
   }
@@ -53,7 +53,7 @@ export const CVWidget = memo(function CVWidget({
         to="/cv"
         className={cn(
           "group block bg-white dark:bg-slate-800 p-4 rounded-xl border transition-all duration-200",
-          "hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-lg hover:-translate-y-0.5",
+          "hover:border-brand-300 dark:hover:border-brand-900 hover: hover:-translate-y-0.5",
           isComplete ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20" : "border-slate-200 dark:border-slate-700"
         )}
       >
@@ -61,7 +61,7 @@ export const CVWidget = memo(function CVWidget({
           <div className="flex items-center gap-2">
             <div className={cn(
               "w-9 h-9 rounded-lg flex items-center justify-center",
-              isComplete ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400" : "bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400"
+              isComplete ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400" : "bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400"
             )}>
               {isComplete ? <CheckCircle2 size={18} /> : <FileText size={18} />}
             </div>
@@ -72,13 +72,13 @@ export const CVWidget = memo(function CVWidget({
               </p>
             </div>
           </div>
-          <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-teal-500 dark:group-hover:text-teal-400 transition-colors" />
+          <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-brand-700 dark:group-hover:text-brand-400 transition-colors" />
         </div>
 
         <div className="flex items-center gap-3">
           <span className={cn(
             "text-2xl font-bold",
-            isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-teal-600 dark:text-teal-400"
+            isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-brand-900 dark:text-brand-400"
           )}>
             {progress}%
           </span>
@@ -86,7 +86,7 @@ export const CVWidget = memo(function CVWidget({
             <div
               className={cn(
                 "h-full rounded-full transition-all duration-500",
-                isComplete ? "bg-emerald-500" : "bg-teal-500"
+                isComplete ? "bg-emerald-500" : "bg-brand-700"
               )}
               style={{ width: `${progress}%` }}
             />
@@ -102,7 +102,7 @@ export const CVWidget = memo(function CVWidget({
       to="/cv"
       className={cn(
         "group block bg-white dark:bg-slate-800 p-5 rounded-xl border transition-all duration-200",
-        "hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-lg",
+        "hover:border-brand-300 dark:hover:border-brand-900 hover:",
         isComplete ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-slate-700"
       )}
     >
@@ -112,7 +112,7 @@ export const CVWidget = memo(function CVWidget({
             "w-12 h-12 rounded-xl flex items-center justify-center",
             isComplete
               ? "bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/40 dark:to-emerald-800/40 text-emerald-600 dark:text-emerald-400"
-              : "bg-gradient-to-br from-teal-100 to-sky-100 dark:from-teal-900/40 dark:to-sky-900/40 text-teal-600 dark:text-teal-400"
+              : "bg-gradient-to-br from-brand-100 to-sky-100 dark:from-brand-900/40 dark:to-sky-900/40 text-brand-900 dark:text-brand-400"
           )}>
             {isComplete ? <CheckCircle2 size={24} /> : <FileText size={24} />}
           </div>
@@ -123,7 +123,7 @@ export const CVWidget = memo(function CVWidget({
             </p>
           </div>
         </div>
-        <ChevronRight size={18} className="text-slate-300 dark:text-slate-600 group-hover:text-teal-500 dark:group-hover:text-teal-400 mt-1 transition-colors" />
+        <ChevronRight size={18} className="text-slate-300 dark:text-slate-600 group-hover:text-brand-700 dark:group-hover:text-brand-400 mt-1 transition-colors" />
       </div>
 
       {/* Progress Section */}
@@ -132,7 +132,7 @@ export const CVWidget = memo(function CVWidget({
           <span className="text-sm text-slate-500 dark:text-slate-400">{t('cvWidget.progress')}</span>
           <span className={cn(
             "text-lg font-bold",
-            isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-teal-600 dark:text-teal-400"
+            isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-brand-900 dark:text-brand-400"
           )}>
             {progress}%
           </span>
@@ -143,7 +143,7 @@ export const CVWidget = memo(function CVWidget({
               "h-full rounded-full transition-all duration-500",
               isComplete
                 ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
-                : "bg-gradient-to-r from-teal-500 to-sky-500"
+                : "bg-gradient-to-r from-brand-700 to-sky-500"
             )}
             style={{ width: `${progress}%` }}
           />
@@ -160,18 +160,18 @@ export const CVWidget = memo(function CVWidget({
           </div>
         </div>
       ) : !hasCV ? (
-        <div className="flex items-center gap-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-100 dark:border-teal-800 mb-4">
-          <Sparkles size={20} className="text-teal-500 dark:text-teal-400" />
+        <div className="flex items-center gap-3 p-3 bg-brand-50 dark:bg-brand-900/20 rounded-lg border border-brand-100 dark:border-brand-900 mb-4">
+          <Sparkles size={20} className="text-brand-700 dark:text-brand-400" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-teal-800 dark:text-teal-300">{t('cvWidget.createYourCV')}</p>
-            <p className="text-xs text-teal-600 dark:text-teal-400">{t('cvWidget.onlyTakesMinutes')}</p>
+            <p className="text-sm font-medium text-brand-900 dark:text-brand-300">{t('cvWidget.createYourCV')}</p>
+            <p className="text-xs text-brand-900 dark:text-brand-400">{t('cvWidget.onlyTakesMinutes')}</p>
           </div>
         </div>
       ) : null}
 
       {/* Quick Actions */}
       <div className="flex gap-2">
-        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 group-hover:bg-teal-100 dark:group-hover:bg-teal-900/40 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors">
+        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 group-hover:bg-brand-100 dark:group-hover:bg-brand-900/40 group-hover:text-brand-900 dark:group-hover:text-brand-400 transition-colors">
           <Edit size={12} />
           {hasCV ? t('cvWidget.edit') : t('cvWidget.create')}
         </span>

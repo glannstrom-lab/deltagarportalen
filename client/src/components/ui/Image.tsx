@@ -341,7 +341,7 @@ export const Avatar = ({
     return (
       <div
         className={cn(
-          'rounded-full bg-gradient-to-br from-teal-500 to-sky-600 flex items-center justify-center text-white font-medium',
+          'rounded-full bg-gradient-to-br from-brand-700 to-sky-600 flex items-center justify-center text-white font-medium',
           sizeClasses[size],
           className
         )}

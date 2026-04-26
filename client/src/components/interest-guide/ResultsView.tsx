@@ -199,7 +199,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
 
       {/* Quick Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 border border-red-100">
+        <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-xl p-5 border border-red-100">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center">
               <Target className="w-5 h-5 text-white" />
@@ -216,7 +216,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-100">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
               <Brain className="w-5 h-5 text-white" />
@@ -228,9 +228,9 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-5 border border-green-100">
+        <div className="bg-gradient-to-br from-brand-50 to-brand-50 rounded-xl p-5 border border-brand-100">
           <div className="flex items-center gap-3 mb-3">
-            <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-brand-700 rounded-xl flex items-center justify-center">
               <Heart className="w-5 h-5 text-white" />
             </div>
             <h3 className="font-semibold text-gray-900">Dina styrkor</h3>
@@ -263,7 +263,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           onClick={() => setActiveTab('profile')}
           className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
             activeTab === 'profile'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-200'
+              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white '
               : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
           }`}
         >
@@ -274,7 +274,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           onClick={() => setActiveTab('jobs')}
           className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
             activeTab === 'jobs'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-200'
+              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white '
               : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
           }`}
         >
@@ -290,10 +290,10 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
       {activeTab === 'profile' && (
         <div className="space-y-8">
           {/* RIASEC Section */}
-          <section className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
+          <section className="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Target className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -311,7 +311,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </div>
 
               {/* Pedagogisk info om RIASEC */}
-              <div className="bg-gray-50 rounded-2xl p-6 mb-6">
+              <div className="bg-gray-50 rounded-xl p-6 mb-6">
                 <button
                   onClick={() => toggleInfo('riasec')}
                   className="flex items-center justify-between w-full text-left"
@@ -334,9 +334,9 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                               type.key === 'R' ? 'bg-red-500' :
                               type.key === 'I' ? 'bg-blue-500' :
                               type.key === 'A' ? 'bg-purple-500' :
-                              type.key === 'S' ? 'bg-green-500' :
+                              type.key === 'S' ? 'bg-brand-700' :
                               type.key === 'E' ? 'bg-amber-500' :
-                              'bg-teal-500'
+                              'bg-brand-700'
                             }`}>{type.key}</span>
                             <span className="font-semibold text-gray-900">{type.name}</span>
                           </div>
@@ -350,7 +350,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </div>
 
               {/* Din tolkning */}
-              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
+              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
                 <div className="flex items-start gap-3">
                   <Info className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
                   <div>
@@ -367,10 +367,10 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           </section>
 
           {/* Big Five Section */}
-          <section className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
+          <section className="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Brain className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -388,7 +388,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </div>
 
               {/* Pedagogisk info om Big Five */}
-              <div className="bg-gray-50 rounded-2xl p-6 mb-6">
+              <div className="bg-gray-50 rounded-xl p-6 mb-6">
                 <button
                   onClick={() => toggleInfo('bigfive')}
                   className="flex items-center justify-between w-full text-left"
@@ -426,7 +426,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </div>
 
               {/* Din tolkning */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100">
                 <div className="flex items-start gap-3">
                   <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                   <div>
@@ -442,10 +442,10 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           </section>
 
           {/* ICF Section - Wrapped with GDPR Art. 9 health data consent gate */}
-          <section className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
+          <section className="bg-white rounded-xl border border-gray-200 overflow-hidden">
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-brand-700 to-brand-700 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -465,7 +465,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </HealthConsentGate>
 
               {/* Pedagogisk info om ICF */}
-              <div className="bg-gray-50 rounded-2xl p-6 mb-6">
+              <div className="bg-gray-50 rounded-xl p-6 mb-6">
                 <button
                   onClick={() => toggleInfo('icf')}
                   className="flex items-center justify-between w-full text-left"
@@ -484,9 +484,9 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                       beskriva hälsa och funktionsförmåga. Det fokuserar på vad du <em>kan</em> göra, inte på eventuella begränsningar.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="bg-green-50 rounded-xl p-4 border border-green-200">
-                        <h5 className="font-semibold text-green-800 mb-2">🟢 Gröna områden (4-5)</h5>
-                        <p className="text-sm text-green-700">Dina styrkor! Dessa områden ger dig fördelar på arbetsmarknaden.</p>
+                      <div className="bg-brand-50 rounded-xl p-4 border border-brand-200">
+                        <h5 className="font-semibold text-brand-900 mb-2">🟢 Gröna områden (4-5)</h5>
+                        <p className="text-sm text-brand-900">Dina styrkor! Dessa områden ger dig fördelar på arbetsmarknaden.</p>
                       </div>
                       <div className="bg-amber-50 rounded-xl p-4 border border-amber-200">
                         <h5 className="font-semibold text-amber-800 mb-2">🟡 Gul/Röda områden (1-3)</h5>
@@ -502,12 +502,12 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </div>
 
               {/* Viktigt meddelande */}
-              <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-6 border border-green-100">
+              <div className="bg-gradient-to-r from-brand-50 to-brand-50 rounded-xl p-6 border border-brand-100">
                 <div className="flex items-start gap-3">
-                  <Info className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <Info className="w-5 h-5 text-brand-900 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-semibold text-green-900 mb-1">Kom ihåg</h4>
-                    <p className="text-green-800 text-sm leading-relaxed">
+                    <h4 className="font-semibold text-brand-900 mb-1">Kom ihåg</h4>
+                    <p className="text-brand-900 text-sm leading-relaxed">
                       Dina förutsättningar är inte statiska - de kan förändras över tid och variera beroende på situation. 
                       Det viktiga är att hitta ett yrke där du kan använda dina styrkor och få stöd där det behövs. 
                       Med rätt anpassningar kan de flesta yrken fungera för de flesta människor.
@@ -524,7 +524,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
       {activeTab === 'jobs' && (
         <div className="space-y-6">
           {/* Intro text */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
+          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 border border-indigo-100">
             <h3 className="font-semibold text-indigo-900 mb-2 flex items-center gap-2">
               <Briefcase className="w-5 h-5" />
               Dina yrkesmatchningar
@@ -567,7 +567,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
 
           {/* Compare bar */}
           {selectedJobs.size > 0 && (
-            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-xl shadow-xl border border-gray-200 p-4 flex items-center gap-4 z-50 max-w-md w-full mx-4">
+            <div className="fixed bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-xl border border-gray-200 p-4 flex items-center gap-4 z-50 max-w-md w-full mx-4">
               <div className="flex items-center gap-2">
                 <CheckSquare className="w-5 h-5 text-indigo-600" />
                 <span className="font-medium">{selectedJobs.size} valda</span>
@@ -617,7 +617,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           onClick={() => setShowComparison(false)}
         >
           <div 
-            className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-auto p-6"
+            className="bg-white rounded-xl max-w-4xl w-full max-h-[90vh] overflow-auto p-6"
             onClick={e => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">
@@ -645,7 +645,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                     {selectedMatches.map(m => (
                       <td key={m.occupation.id} className="p-3 border-b text-center">
                         <span className={`inline-flex items-center justify-center w-12 h-12 rounded-full font-bold ${
-                          m.matchPercentage >= 80 ? 'bg-green-100 text-green-700' :
+                          m.matchPercentage >= 80 ? 'bg-brand-100 text-brand-900' :
                           m.matchPercentage >= 60 ? 'bg-amber-100 text-amber-700' :
                           'bg-red-100 text-red-700'
                         }`}>

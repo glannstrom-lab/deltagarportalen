@@ -73,7 +73,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
 
   if (participants.length === 0) {
     return (
-      <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-12 text-center">
+      <div className="bg-white dark:bg-stone-900 rounded-lg border border-gray-200 dark:border-stone-700 p-12 text-center">
         <User className="w-16 h-16 text-gray-300 dark:text-stone-600 mx-auto mb-4" />
         <h3 className="text-lg font-medium text-gray-900 dark:text-stone-100 mb-2">{t('consultant.participants.noParticipants')}</h3>
         <p className="text-gray-500 dark:text-stone-400 mb-6">
@@ -95,7 +95,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
         {participants.map((p) => (
           <div
             key={p.participant_id}
-            className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-6 hover:shadow-md transition-shadow"
+            className="bg-white dark:bg-stone-900 rounded-lg border border-gray-200 dark:border-stone-700 p-6 hover: transition-shadow"
           >
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -167,7 +167,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
 
   // List view
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 overflow-hidden">
+    <div className="bg-white dark:bg-stone-900 rounded-lg border border-gray-200 dark:border-stone-700 overflow-hidden">
       <table className="min-w-full divide-y divide-gray-200 dark:divide-stone-700">
         <thead className="bg-gray-50 dark:bg-stone-800">
           <tr>

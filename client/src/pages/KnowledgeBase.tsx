@@ -113,7 +113,7 @@ export default function KnowledgeBase() {
           <p className="text-gray-600 dark:text-gray-300">{t('knowledgeBase.couldNotLoad')}</p>
           <button
             onClick={() => window.location.reload()}
-            className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline mt-2"
+            className="text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 hover:underline mt-2"
           >
             {t('knowledgeBase.tryAgain')}
           </button>

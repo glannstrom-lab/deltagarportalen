@@ -107,7 +107,7 @@ export function TopBar() {
             </button>
 
             {showLangMenu && (
-              <div className="absolute right-0 top-full mt-1 w-32 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-50">
+              <div className="absolute right-0 top-full mt-1 w-32 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 py-1 z-50">
                 <button
                   onClick={() => changeLanguage('sv')}
                   className={cn(
@@ -183,7 +183,7 @@ export function TopBar() {
 
             {/* User dropdown */}
             {showUserMenu && (
-              <div className="absolute right-0 top-full mt-1 w-56 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 overflow-hidden z-50">
+              <div className="absolute right-0 top-full mt-1 w-56 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 overflow-hidden z-50">
                 {/* User Info */}
                 <div className="px-4 py-3 border-b border-stone-100 dark:border-stone-700">
                   <p className="font-medium text-stone-900 dark:text-stone-100">

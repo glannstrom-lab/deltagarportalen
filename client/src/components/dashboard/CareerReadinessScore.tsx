@@ -92,13 +92,13 @@ function SectionProgressBar({ section }: { section: ProgressSection }) {
   const Icon = iconMap[section.icon] || Target
 
   const colorClasses: Record<string, string> = {
-    violet: 'bg-teal-500',
+    violet: 'bg-brand-700',
     indigo: 'bg-sky-500',
     amber: 'bg-amber-500',
     blue: 'bg-blue-500',
     emerald: 'bg-emerald-500',
     rose: 'bg-rose-500',
-    teal: 'bg-teal-500',
+    brand: 'bg-brand-700',
     sky: 'bg-sky-500',
   }
 
@@ -136,7 +136,7 @@ function RecommendationCard({ recommendation }: { recommendation: Recommendation
     <Link
       to={recommendation.link}
       className={cn(
-        'block p-3 rounded-lg border-l-4 transition-all hover:shadow-sm',
+        'block p-3 rounded-lg border-l-4 transition-all hover:',
         priorityColors[recommendation.priority]
       )}
     >
@@ -224,7 +224,7 @@ export function CareerReadinessScore({
         <ScoreRing score={progress.careerReadinessScore} size="lg" />
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Target className="w-5 h-5 text-teal-600" />
+            <Target className="w-5 h-5 text-brand-900" />
             <h2 className="text-xl font-bold text-slate-900">Karriärberedskap</h2>
           </div>
           <p className="text-slate-600 mb-3">{progress.careerReadinessLabel}</p>
@@ -239,7 +239,7 @@ export function CareerReadinessScore({
             </div>
             {progress.hasRiasecProfile && progress.dominantTypes.length > 0 && (
               <div className="flex items-center gap-1.5">
-                <Compass className="w-4 h-4 text-teal-500" />
+                <Compass className="w-4 h-4 text-brand-700" />
                 <span className="text-slate-600">
                   {progress.dominantTypes[0].nameSv}
                 </span>
@@ -303,7 +303,7 @@ export function CareerReadinessWidget() {
 
   return (
     <Link to="/journey" className="block">
-      <Card className="p-4 hover:shadow-md transition-shadow">
+      <Card className="p-4 hover: transition-shadow">
         <div className="flex items-center gap-4">
           <ScoreRing score={progress.careerReadinessScore} size="sm" />
           <div className="flex-1 min-w-0">

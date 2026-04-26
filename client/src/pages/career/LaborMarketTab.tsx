@@ -64,7 +64,7 @@ export default function LaborMarketTab() {
   const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
     switch (trend) {
       case 'up':
-        return <TrendingUp className="w-4 h-4 text-green-500" />
+        return <TrendingUp className="w-4 h-4 text-brand-700" />
       case 'down':
         return <TrendingDown className="w-4 h-4 text-red-500" />
       default:
@@ -75,7 +75,7 @@ export default function LaborMarketTab() {
   const getTrendColor = (trend: 'up' | 'down' | 'stable') => {
     switch (trend) {
       case 'up':
-        return 'text-green-600 dark:text-green-400'
+        return 'text-brand-900 dark:text-brand-400'
       case 'down':
         return 'text-red-600 dark:text-red-400'
       default:
@@ -86,7 +86,7 @@ export default function LaborMarketTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16" role="status" aria-live="polite">
-        <RefreshCw className="w-8 h-8 animate-spin text-teal-600 mr-3" aria-hidden="true" />
+        <RefreshCw className="w-8 h-8 animate-spin text-brand-900 mr-3" aria-hidden="true" />
         <span className="text-stone-600 dark:text-stone-400">
           {lang === 'en' ? 'Loading market data...' : 'Laddar marknadsdata...'}
         </span>
@@ -132,8 +132,8 @@ export default function LaborMarketTab() {
       {/* Key Stats */}
       {marketStats && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="p-4 text-center bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border-teal-200 dark:border-teal-800">
-            <Briefcase className="w-8 h-8 text-teal-600 dark:text-teal-400 mx-auto mb-2" />
+          <Card className="p-4 text-center bg-gradient-to-br from-brand-50 to-sky-50 dark:from-brand-900/20 dark:to-sky-900/20 border-brand-200 dark:border-brand-900">
+            <Briefcase className="w-8 h-8 text-brand-900 dark:text-brand-400 mx-auto mb-2" />
             <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">
               {marketStats.total_jobs.toLocaleString('sv-SE')}
             </div>
@@ -142,8 +142,8 @@ export default function LaborMarketTab() {
             </div>
           </Card>
 
-          <Card className="p-4 text-center bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200 dark:border-green-800">
-            <TrendingUp className="w-8 h-8 text-green-600 dark:text-green-400 mx-auto mb-2" />
+          <Card className="p-4 text-center bg-gradient-to-br from-brand-50 to-emerald-50 dark:from-brand-900/20 dark:to-emerald-900/20 border-brand-200 dark:border-brand-900">
+            <TrendingUp className="w-8 h-8 text-brand-900 dark:text-brand-400 mx-auto mb-2" />
             <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">
               +{marketStats.new_jobs_week.toLocaleString('sv-SE')}
             </div>
@@ -213,7 +213,7 @@ export default function LaborMarketTab() {
         {/* Popular Occupations */}
         <Card className="p-5">
           <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-            <Briefcase className="w-5 h-5 text-teal-500" />
+            <Briefcase className="w-5 h-5 text-brand-700" />
             {lang === 'en' ? 'Most Searched Occupations' : 'Mest sökta yrken'}
           </h3>
           <div className="space-y-3">
@@ -223,7 +223,7 @@ export default function LaborMarketTab() {
                 className="flex items-center justify-between p-3 rounded-lg bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 text-xs font-medium flex items-center justify-center">
+                  <span className="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-900 dark:text-brand-300 text-xs font-medium flex items-center justify-center">
                     {i + 1}
                   </span>
                   <span className="font-medium text-stone-800 dark:text-stone-200">
@@ -263,7 +263,7 @@ export default function LaborMarketTab() {
                   {region.region.replace(' län', '')}
                 </div>
                 {region.growth_percent > 0 && (
-                  <div className="text-xs text-green-600 dark:text-green-400 mt-1">
+                  <div className="text-xs text-brand-900 dark:text-brand-400 mt-1">
                     +{region.growth_percent}%
                   </div>
                 )}
@@ -281,7 +281,7 @@ export default function LaborMarketTab() {
             href="https://arbetsformedlingen.se"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-teal-600 dark:text-teal-400 hover:underline"
+            className="text-brand-900 dark:text-brand-400 hover:underline"
           >
             Arbetsförmedlingen
           </a>

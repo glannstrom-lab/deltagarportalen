@@ -128,12 +128,12 @@ export function HealthConsentGate({
   // Full prompt
   return (
     <div className={cn(
-      "p-6 rounded-2xl border-2 border-dashed border-indigo-200 dark:border-indigo-800",
+      "p-6 rounded-xl border-2 border-dashed border-indigo-200 dark:border-indigo-800",
       "bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20",
       className
     )}>
       <div className="text-center max-w-md mx-auto">
-        <div className="w-16 h-16 rounded-2xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center mx-auto mb-4">
           <Brain className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
         </div>
 

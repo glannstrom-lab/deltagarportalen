@@ -104,7 +104,7 @@ export function JourneyCelebration({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
           transition={{ type: 'spring', duration: 0.5 }}
-          className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden max-h-[90vh] flex flex-col"
+          className="relative bg-white rounded-xl max-w-md w-full overflow-hidden max-h-[90vh] flex flex-col"
         >
           {/* Close button */}
           <button

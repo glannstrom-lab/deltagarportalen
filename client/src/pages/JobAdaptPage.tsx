@@ -75,7 +75,7 @@ export default function JobAdaptPage() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="flex items-center gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
+          <Loader2 className="w-6 h-6 animate-spin text-brand-900" />
           <span className="text-stone-600 dark:text-stone-400">
             {t('common.loading', 'Laddar...')}
           </span>
@@ -88,9 +88,9 @@ export default function JobAdaptPage() {
   if (!cvData || (!cvData.firstName && !cvData.summary && cvData.skills?.length === 0)) {
     return (
       <div className="max-w-2xl mx-auto py-12">
-        <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
-            <FileText className="w-8 h-8 text-teal-600 dark:text-teal-400" />
+        <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-8 text-center">
+          <div className="w-16 h-16 mx-auto mb-4 bg-brand-100 dark:bg-brand-900/30 rounded-full flex items-center justify-center">
+            <FileText className="w-8 h-8 text-brand-900 dark:text-brand-400" />
           </div>
           <h2 className="text-xl font-bold text-stone-800 dark:text-stone-200 mb-2">
             {t('cv.jobAdapt.noCVTitle', 'Skapa ett CV först')}
@@ -100,7 +100,7 @@ export default function JobAdaptPage() {
           </p>
           <Link
             to="/cv"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-brand-900 text-white rounded-xl hover:bg-brand-900 transition-colors font-medium"
           >
             {t('cv.jobAdapt.createCV', 'Skapa CV')}
             <ArrowRight className="w-5 h-5" />
@@ -132,7 +132,7 @@ export default function JobAdaptPage() {
       />
 
       {/* Current CV Summary */}
-      <div className="mt-8 bg-white dark:bg-stone-800 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-6">
+      <div className="mt-8 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
         <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4">
           {t('cv.jobAdapt.currentCV', 'Ditt nuvarande CV')}
         </h3>
@@ -166,7 +166,7 @@ export default function JobAdaptPage() {
               {cvData.skills.slice(0, 10).map((skill) => (
                 <span
                   key={skill.id}
-                  className="px-3 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-full text-sm"
+                  className="px-3 py-1 bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 rounded-full text-sm"
                 >
                   {skill.name}
                 </span>
@@ -183,7 +183,7 @@ export default function JobAdaptPage() {
         <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
           <Link
             to="/cv"
-            className="text-teal-600 dark:text-teal-400 hover:underline text-sm font-medium"
+            className="text-brand-900 dark:text-brand-400 hover:underline text-sm font-medium"
           >
             {t('cv.jobAdapt.editCV', 'Redigera CV')} &rarr;
           </Link>

@@ -44,7 +44,7 @@ export const InterviewPrep: React.FC<InterviewPrepProps> = ({ jobTitle }) => {
           <p className="text-3xl font-bold">{progress.totalSessions}</p>
         </div>
         
-        <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-4 text-white">
+        <div className="bg-gradient-to-br from-brand-700 to-brand-900 rounded-xl p-4 text-white">
           <div className="flex items-center gap-2 mb-2">
             <TrendingUp className="w-5 h-5" />
             <span className="text-sm font-medium opacity-90">Medelconfidence</span>
@@ -74,7 +74,7 @@ export const InterviewPrep: React.FC<InterviewPrepProps> = ({ jobTitle }) => {
       </div>
 
       {/* Quick start */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
+      <div className="bg-white rounded-xl p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
           <Target className="w-6 h-6 text-primary-600" />
           Välj en övning
@@ -90,7 +90,7 @@ export const InterviewPrep: React.FC<InterviewPrepProps> = ({ jobTitle }) => {
               <div className="flex items-start justify-between mb-2">
                 <span className={`
                   text-xs font-semibold px-2 py-1 rounded-full
-                  ${interview.difficulty === 'easy' ? 'bg-green-100 text-green-700' : ''}
+                  ${interview.difficulty === 'easy' ? 'bg-brand-100 text-brand-900' : ''}
                   ${interview.difficulty === 'medium' ? 'bg-amber-100 text-amber-700' : ''}
                   ${interview.difficulty === 'hard' ? 'bg-red-100 text-red-700' : ''}
                 `}>
@@ -123,7 +123,7 @@ export const InterviewPrep: React.FC<InterviewPrepProps> = ({ jobTitle }) => {
   );
 
   const renderTips = () => (
-    <div className="bg-white rounded-xl shadow-lg p-6">
+    <div className="bg-white rounded-xl p-6">
       <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
         <BookOpen className="w-6 h-6 text-primary-600" />
         Tips inför intervjun

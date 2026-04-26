@@ -165,8 +165,8 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
   if (success) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-md w-full p-8 text-center">
-          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+        <div className="bg-white dark:bg-gray-800 rounded-lg max-w-md w-full p-8 text-center">
+          <CheckCircle className="w-16 h-16 text-brand-700 mx-auto mb-4" />
           {success === 'invite' ? (
             <>
               <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">
@@ -193,7 +193,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-lg max-w-lg w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <div>

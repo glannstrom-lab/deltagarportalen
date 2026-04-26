@@ -19,7 +19,7 @@ export interface BaseWidgetProps {
   title: string
   to: string
   icon: LucideIcon
-  color: 'teal' | 'blue' | 'rose' | 'amber' | 'emerald' | 'sky' | 'orange' | 'cyan'
+  color: 'brand' | 'blue' | 'rose' | 'amber' | 'emerald' | 'sky' | 'orange' | 'cyan'
 
   // Optional
   size?: 'small' | 'medium'
@@ -44,14 +44,14 @@ export interface BaseWidgetProps {
 }
 
 const colorClasses = {
-  teal: {
-    icon: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
+  brand: {
+    icon: 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400',
     iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
-    hover: 'hover:border-teal-300 dark:hover:border-teal-600',
-    progress: 'bg-teal-500',
+    hover: 'hover:border-brand-300 dark:hover:border-brand-900',
+    progress: 'bg-brand-700',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-teal-600 dark:text-teal-400',
-    light: 'bg-teal-50 dark:bg-teal-900/20',
+    accent: 'text-brand-900 dark:text-brand-400',
+    light: 'bg-brand-50 dark:bg-brand-900/20',
   },
   blue: {
     icon: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
@@ -148,7 +148,7 @@ export const BaseWidget = memo(function BaseWidget({
     <Link
       to={to}
       className={cn(
-        "group block bg-white dark:bg-slate-800 rounded-2xl border-2",
+        "group block bg-white dark:bg-slate-800 rounded-xl border-2",
         "card-interactive", // Consistent hover lift effect
         "focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900",
         colors.hover,

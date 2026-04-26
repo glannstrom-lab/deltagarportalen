@@ -27,16 +27,16 @@ const EVENT_CONFIG: Record<HistoryEventType, {
   bgColor: string
   label: string
 }> = {
-  created: { icon: Sparkles, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Skapad' },
+  created: { icon: Sparkles, color: 'text-brand-900', bgColor: 'bg-brand-100', label: 'Skapad' },
   status_change: { icon: Send, color: 'text-blue-600', bgColor: 'bg-blue-100', label: 'Status ändrad' },
-  note_added: { icon: MessageSquare, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Anteckning tillagd' },
-  note_updated: { icon: MessageSquare, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Anteckning uppdaterad' },
+  note_added: { icon: MessageSquare, color: 'text-brand-900', bgColor: 'bg-brand-100', label: 'Anteckning tillagd' },
+  note_updated: { icon: MessageSquare, color: 'text-brand-900', bgColor: 'bg-brand-100', label: 'Anteckning uppdaterad' },
   document_attached: { icon: FileText, color: 'text-sky-600', bgColor: 'bg-sky-100', label: 'Dokument bifogat' },
   reminder_set: { icon: Bell, color: 'text-amber-600', bgColor: 'bg-amber-100', label: 'Påminnelse satt' },
-  reminder_completed: { icon: CheckCircle, color: 'text-green-600', bgColor: 'bg-green-100', label: 'Påminnelse klar' },
+  reminder_completed: { icon: CheckCircle, color: 'text-brand-900', bgColor: 'bg-brand-100', label: 'Påminnelse klar' },
   contact_added: { icon: User, color: 'text-cyan-600', bgColor: 'bg-cyan-100', label: 'Kontakt tillagd' },
   contact_updated: { icon: User, color: 'text-cyan-600', bgColor: 'bg-cyan-100', label: 'Kontakt uppdaterad' },
-  interview_scheduled: { icon: Users, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Intervju bokad' },
+  interview_scheduled: { icon: Users, color: 'text-brand-900', bgColor: 'bg-brand-100', label: 'Intervju bokad' },
   offer_received: { icon: Trophy, color: 'text-amber-600', bgColor: 'bg-amber-100', label: 'Erbjudande mottaget' },
   archived: { icon: Archive, color: 'text-slate-600', bgColor: 'bg-slate-100', label: 'Arkiverad' }
 }

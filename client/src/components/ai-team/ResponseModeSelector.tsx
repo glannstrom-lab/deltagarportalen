@@ -35,9 +35,9 @@ export function ResponseModeSelector({ className }: ResponseModeSelectorProps) {
             className={cn(
               'flex-1 px-3 py-2 rounded-lg text-xs font-medium',
               'transition-all duration-200',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500',
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700',
               responseMode === mode
-                ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-sm'
+                ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100'
                 : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
             )}
             aria-pressed={responseMode === mode}

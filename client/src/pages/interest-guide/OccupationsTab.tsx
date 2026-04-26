@@ -157,7 +157,7 @@ export default function OccupationsTab() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6"
+          className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-xl flex items-center justify-center mx-auto mb-6"
         >
           <ClipboardList className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </motion.div>
@@ -211,14 +211,14 @@ export default function OccupationsTab() {
         transition={{ delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-4 gap-4"
       >
-        <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
+        <Card className="p-4 bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900/20 dark:to-brand-900/20 border-brand-200 dark:border-brand-900">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-green-200 dark:bg-green-800/50 rounded-lg flex items-center justify-center">
-              <Star className="w-5 h-5 text-green-600 dark:text-green-400" />
+            <div className="w-10 h-10 bg-brand-200 dark:bg-brand-900/50 rounded-lg flex items-center justify-center">
+              <Star className="w-5 h-5 text-brand-900 dark:text-brand-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-green-900 dark:text-green-100">{stats.excellentMatches}</p>
-              <p className="text-xs text-green-700 dark:text-green-300">Utmärkta (90%+)</p>
+              <p className="text-2xl font-bold text-brand-900 dark:text-brand-100">{stats.excellentMatches}</p>
+              <p className="text-xs text-brand-900 dark:text-brand-300">Utmärkta (90%+)</p>
             </div>
           </div>
         </Card>
@@ -371,13 +371,13 @@ export default function OccupationsTab() {
               >
                 {index < 3 && !searchQuery && filterUni === null && (
                   <div className="absolute -left-4 -top-2 z-10">
-                    <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg border-2 border-white dark:border-stone-800">
+                    <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 rounded-full flex items-center justify-center text-white text-xs font-bold border-2 border-white dark:border-stone-800">
                       {index + 1}
                     </div>
                   </div>
                 )}
                 <Card
-                  className="p-5 hover:shadow-md transition-all cursor-pointer bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700"
+                  className="p-5 hover: transition-all cursor-pointer bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700"
                   onClick={() => setExpandedOccupation(expandedOccupation === match.occupation.id ? null : match.occupation.id)}
                 >
                   <div className="flex items-start gap-4">
@@ -406,7 +406,7 @@ export default function OccupationsTab() {
                       {/* Tags */}
                       <div className="flex flex-wrap gap-2">
                         {match.occupation.prognosis === 'growing' && (
-                          <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-2.5 py-1 rounded-full font-medium">
+                          <span className="text-xs bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 px-2.5 py-1 rounded-full font-medium">
                             Växande
                           </span>
                         )}

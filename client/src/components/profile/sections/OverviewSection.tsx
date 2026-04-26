@@ -173,7 +173,7 @@ export function OverviewSection() {
       {!interestLoading && !interestProfile.hasResult && (
         <Link
           to="/interest-guide"
-          className="md:col-span-2 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-5 border border-amber-200 dark:border-amber-800/50 flex items-center gap-4 hover:shadow-lg transition-shadow group"
+          className="md:col-span-2 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800/50 flex items-center gap-4 hover: transition-shadow group"
         >
           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" aria-hidden="true" />

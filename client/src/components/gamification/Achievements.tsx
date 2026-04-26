@@ -74,7 +74,7 @@ export const Achievements: React.FC = () => {
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
       CV: 'bg-blue-100 text-blue-700 border-blue-200',
-      JOBS: 'bg-green-100 text-green-700 border-green-200',
+      JOBS: 'bg-brand-100 text-brand-900 border-brand-200',
       LOGIN: 'bg-orange-100 text-orange-700 border-orange-200',
       NETWORK: 'bg-purple-100 text-purple-700 border-purple-200',
       SKILL: 'bg-pink-100 text-pink-700 border-pink-200',
@@ -89,7 +89,7 @@ export const Achievements: React.FC = () => {
   const earnedCount = achievements.filter(a => a.earned).length;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+    <div className="bg-white rounded-xl border border-gray-200 p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-gray-900">Achievements</h3>
         <span className="text-sm text-gray-500">

@@ -36,7 +36,7 @@ export function KpiCard({
       isPositive
         ? 'bg-brand-50 border border-brand-300 dark:bg-brand-900/20 dark:border-brand-700'
         : 'bg-white border border-stone-200 dark:bg-stone-900 dark:border-stone-700',
-      to && 'hover:shadow-sm cursor-pointer',
+      to && 'hover: cursor-pointer',
       to && isPositive && 'hover:border-brand-400',
       to && !isPositive && 'hover:border-stone-300 dark:hover:border-stone-600'
     )}>

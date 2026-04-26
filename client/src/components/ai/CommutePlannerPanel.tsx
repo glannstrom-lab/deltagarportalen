@@ -247,9 +247,9 @@ export function CommutePlannerPanel({
 
               {/* Bike */}
               {result.bike && (
-                <div className="p-4 rounded-xl border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
+                <div className="p-4 rounded-xl border-2 border-brand-200 dark:border-brand-900 bg-brand-50 dark:bg-brand-900/20">
                   <div className="flex items-center gap-2 mb-3">
-                    <Bike className="w-5 h-5 text-green-600 dark:text-green-400" />
+                    <Bike className="w-5 h-5 text-brand-900 dark:text-brand-400" />
                     <span className="font-medium text-slate-800 dark:text-slate-200">
                       Cykel
                     </span>
@@ -269,11 +269,11 @@ export function CommutePlannerPanel({
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-slate-700">Kostnad</span>
-                      <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                      <span className="text-sm font-bold text-brand-900 dark:text-brand-400">
                         0 kr
                       </span>
                     </div>
-                    <p className="text-xs text-slate-700 pt-2 border-t border-green-200 dark:border-green-800">
+                    <p className="text-xs text-slate-700 pt-2 border-t border-brand-200 dark:border-brand-900">
                       {result.bike.feasibility}
                     </p>
                   </div>
@@ -283,9 +283,9 @@ export function CommutePlannerPanel({
 
             {/* Recommendation */}
             {result.recommendation && (
-              <div className="p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-brand-50 to-sky-50 dark:from-brand-900/20 dark:to-sky-900/20 border border-brand-200 dark:border-brand-900">
                 <div className="flex items-start gap-3">
-                  <Lightbulb className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                  <Lightbulb className="w-5 h-5 text-brand-900 dark:text-brand-400 flex-shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
                       Rekommendation

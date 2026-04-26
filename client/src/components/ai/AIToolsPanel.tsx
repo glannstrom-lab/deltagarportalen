@@ -35,7 +35,7 @@ export function AIToolsPanel({ cvData, onApplyToSummary }: AIToolsPanelProps) {
   const activeToolConfig = tools.find(t => t.id === activeTool)
 
   return (
-    <Card className="p-4 border-teal-100 dark:border-teal-900 bg-gradient-to-br from-teal-50/50 to-sky-50/30 dark:from-teal-900/20 dark:to-sky-900/10">
+    <Card className="p-4 border-brand-100 dark:border-brand-900 bg-gradient-to-br from-brand-50/50 to-sky-50/30 dark:from-brand-900/20 dark:to-sky-900/10">
       <div className="space-y-4">
         {/* Header */}
         <div 
@@ -43,8 +43,8 @@ export function AIToolsPanel({ cvData, onApplyToSummary }: AIToolsPanelProps) {
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <div className="w-10 h-10 rounded-full bg-brand-100 dark:bg-brand-900/50 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-brand-900 dark:text-brand-400" />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-stone-100">{t('ai.tools.title')}</h3>
@@ -67,10 +67,10 @@ export function AIToolsPanel({ cvData, onApplyToSummary }: AIToolsPanelProps) {
                 <button
                   key={tool.id}
                   onClick={() => setActiveTool(tool.id)}
-                  className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-stone-800 border border-gray-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700 hover:shadow-sm transition-all text-left"
+                  className="flex items-start gap-3 p-3 rounded-xl bg-white dark:bg-stone-800 border border-gray-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900 hover: transition-all text-left"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-teal-50 dark:bg-teal-900/50 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                  <div className="w-8 h-8 rounded-lg bg-brand-50 dark:bg-brand-900/50 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-4 h-4 text-brand-900 dark:text-brand-400" />
                   </div>
                   <div>
                     <p className="font-medium text-gray-900 dark:text-stone-100 text-sm">{tool.title}</p>

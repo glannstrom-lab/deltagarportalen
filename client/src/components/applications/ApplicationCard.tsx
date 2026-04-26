@@ -73,8 +73,8 @@ export function ApplicationCard({
     return (
       <div
         className={cn(
-          "bg-white rounded-lg border p-3 cursor-pointer hover:shadow-md transition-all",
-          isDragging && "shadow-lg ring-2 ring-teal-400 rotate-2",
+          "bg-white rounded-lg border p-3 cursor-pointer hover: transition-all",
+          isDragging && " ring-2 ring-brand-400 rotate-2",
           isStale && "border-amber-300"
         )}
         onClick={() => onViewDetails?.(application)}
@@ -107,8 +107,8 @@ export function ApplicationCard({
   return (
     <Card
       className={cn(
-        "p-4 hover:shadow-md transition-all cursor-pointer group",
-        isDragging && "shadow-lg ring-2 ring-teal-400",
+        "p-4 hover: transition-all cursor-pointer group",
+        isDragging && " ring-2 ring-brand-400",
         isStale && "border-amber-200 bg-amber-50/30"
       )}
       onClick={() => onViewDetails?.(application)}
@@ -158,7 +158,7 @@ export function ApplicationCard({
                           setShowStatusMenu(false)
                         }}
                       />
-                      <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20 min-w-[140px]">
+                      <div className="absolute right-0 mt-1 bg-white rounded-lg border border-slate-200 py-1 z-20 min-w-[140px]">
                         {getNextStatuses(application.status).map((status) => {
                           const config = APPLICATION_STATUS_CONFIG[status]
                           return (
@@ -204,7 +204,7 @@ export function ApplicationCard({
                           setShowMenu(false)
                         }}
                       />
-                      <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20 min-w-[150px]">
+                      <div className="absolute right-0 mt-1 bg-white rounded-lg border border-slate-200 py-1 z-20 min-w-[150px]">
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
@@ -290,7 +290,7 @@ export function ApplicationCard({
 
             {/* Has CV */}
             {application.cvVersionId && (
-              <span className="px-2 py-0.5 rounded text-xs bg-teal-100 text-teal-700 flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded text-xs bg-brand-100 text-brand-900 flex items-center gap-1">
                 <FileText className="w-3 h-3" />
                 CV
               </span>
@@ -298,7 +298,7 @@ export function ApplicationCard({
 
             {/* Has cover letter */}
             {application.coverLetterId && (
-              <span className="px-2 py-0.5 rounded text-xs bg-teal-100 text-teal-700 flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded text-xs bg-brand-100 text-brand-900 flex items-center gap-1">
                 <FileText className="w-3 h-3" />
                 Brev
               </span>

@@ -286,7 +286,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
         {nextFollowUp ? (
           <div className="p-4 bg-amber-50 rounded-xl border border-amber-200">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
+              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center">
                 <Calendar size={24} className="text-amber-500" />
               </div>
               <div className="flex-1">
@@ -312,7 +312,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
         {total === 0 && (
           <div className="p-6 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border border-orange-100">
             <div className="flex items-start gap-4">
-              <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
+              <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center">
                 <Send size={28} className="text-orange-600" />
               </div>
               <div className="flex-1">

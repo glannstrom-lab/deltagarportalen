@@ -139,7 +139,7 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
                       onClick={() => handleSelect(option.level)}
                       whileTap={{ scale: 0.98 }}
                       className={cn(
-                        "w-full p-4 rounded-2xl border-2 transition-all text-left",
+                        "w-full p-4 rounded-xl border-2 transition-all text-left",
                         "active:scale-[0.98]"
                       )}
                       style={{
@@ -215,7 +215,7 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
                     <ul className="space-y-2">
                       {selectedOption.features.map((feature, i) => (
                         <li key={i} className="flex items-center gap-2 text-sm text-slate-600">
-                          <Sparkles size={14} className="text-teal-500" />
+                          <Sparkles size={14} className="text-brand-700" />
                           {feature}
                         </li>
                       ))}
@@ -224,7 +224,7 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
 
                   <button
                     onClick={handleConfirm}
-                    className="w-full py-4 rounded-xl bg-gradient-to-r from-teal-500 to-sky-600 text-white font-semibold active:scale-[0.98] transition-transform"
+                    className="w-full py-4 rounded-xl bg-gradient-to-r from-brand-700 to-sky-600 text-white font-semibold active:scale-[0.98] transition-transform"
                   >
                     Bekräfta
                   </button>

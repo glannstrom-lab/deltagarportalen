@@ -199,7 +199,7 @@ export function CompletionGuide({
             <div className={cn(
               'w-8 h-8 rounded-lg flex items-center justify-center',
               item.completed
-                ? 'bg-green-100 dark:bg-green-900/40 text-green-600 dark:text-green-400'
+                ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400'
                 : getPriorityColor(item.priority)
             )}>
               {item.completed ? (
@@ -242,12 +242,12 @@ export function CompletionGuide({
       </div>
 
       {completionPercent === 100 && (
-        <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-200 dark:border-green-800/50 text-center">
-          <CheckCircle className="w-8 h-8 text-green-500 mx-auto mb-2" />
-          <p className="text-sm font-medium text-green-800 dark:text-green-300">
+        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 rounded-xl border border-brand-200 dark:border-brand-900/50 text-center">
+          <CheckCircle className="w-8 h-8 text-brand-700 mx-auto mb-2" />
+          <p className="text-sm font-medium text-brand-900 dark:text-brand-300">
             {t('profile.completionGuide.profileComplete')}
           </p>
-          <p className="text-xs text-green-600 dark:text-green-400">
+          <p className="text-xs text-brand-900 dark:text-brand-400">
             {t('profile.completionGuide.allInfoFilled')}
           </p>
         </div>

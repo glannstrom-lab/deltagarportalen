@@ -300,7 +300,7 @@ export function TagInput({
               id={listboxId}
               role="listbox"
               aria-label={t('common.suggestions')}
-              className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded shadow-lg z-10 py-0.5 max-h-40 overflow-y-auto"
+              className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded z-10 py-0.5 max-h-40 overflow-y-auto"
             >
               {filteredSuggestions.map(({ label }, index) => (
                 <li

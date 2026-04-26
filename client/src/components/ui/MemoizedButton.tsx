@@ -47,14 +47,14 @@ const MemoizedButton = memo(function MemoizedButton({
     }
   }, [disabled, loading, onClick]);
 
-  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variantStyles = {
-    primary: 'bg-teal-600 text-white hover:bg-teal-700 active:bg-teal-800 shadow-sm',
+    primary: 'bg-brand-900 text-white hover:bg-brand-900 active:bg-brand-900',
     secondary: 'bg-slate-100 text-slate-900 hover:bg-slate-200 active:bg-slate-300',
-    outline: 'border-2 border-teal-600 text-teal-600 hover:bg-teal-50 active:bg-teal-100',
+    outline: 'border-2 border-brand-900 text-brand-900 hover:bg-brand-50 active:bg-brand-100',
     ghost: 'text-slate-700 hover:bg-slate-100 active:bg-slate-200',
-    danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 shadow-sm'
+    danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800'
   };
 
   const sizeStyles = {

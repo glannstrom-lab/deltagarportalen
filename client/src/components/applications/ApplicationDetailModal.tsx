@@ -124,7 +124,7 @@ export function ApplicationDetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
-      <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-t-2xl sm:rounded-xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-slate-100 p-4">
           <div className="flex items-start justify-between gap-4">
@@ -186,7 +186,7 @@ export function ApplicationDetailModal({
               {showStatusMenu && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setShowStatusMenu(false)} />
-                  <div className="absolute left-0 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20 min-w-[160px]">
+                  <div className="absolute left-0 mt-1 bg-white rounded-lg border border-slate-200 py-1 z-20 min-w-[160px]">
                     {getNextStatuses(application.status).map((status) => {
                       const config = APPLICATION_STATUS_CONFIG[status]
                       return (
@@ -263,7 +263,7 @@ export function ApplicationDetailModal({
                 className={cn(
                   "py-3 px-1 text-sm font-medium border-b-2 transition-colors",
                   activeTab === tab.id
-                    ? "border-teal-600 text-teal-600"
+                    ? "border-brand-900 text-brand-900"
                     : "border-transparent text-slate-700 hover:text-slate-700"
                 )}
               >
@@ -301,14 +301,14 @@ export function ApplicationDetailModal({
                   <h4 className="text-sm font-medium text-slate-700">Dokument</h4>
                   <button
                     onClick={() => setActiveTab('documents')}
-                    className="text-xs text-teal-600 hover:text-teal-700 font-medium"
+                    className="text-xs text-brand-900 hover:text-brand-900 font-medium"
                   >
                     Hantera →
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {selectedCVId ? (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-brand-100 text-brand-900 rounded text-xs">
                       <FileText className="w-3 h-3" />
                       CV kopplat
                     </span>
@@ -319,7 +319,7 @@ export function ApplicationDetailModal({
                     </span>
                   )}
                   {selectedCoverLetterId ? (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-brand-100 text-brand-900 rounded text-xs">
                       <FileText className="w-3 h-3" />
                       Brev kopplat
                     </span>
@@ -388,7 +388,7 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-900" />
                 </div>
               ) : history.length === 0 ? (
                 <div className="text-center py-8 text-slate-700">
@@ -424,7 +424,7 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-900" />
                 </div>
               ) : contacts.length === 0 ? (
                 <div className="text-center py-8 text-slate-700">
@@ -464,7 +464,7 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-brand-900" />
                 </div>
               ) : reminders.filter(r => !r.isCompleted).length === 0 ? (
                 <div className="text-center py-8 text-slate-700">
@@ -489,7 +489,7 @@ export function ApplicationDetailModal({
                           {reminder.reminderTime && ` kl ${reminder.reminderTime.slice(0, 5)}`}
                         </p>
                       </div>
-                      <button className="p-2 hover:bg-green-50 rounded-lg text-slate-600 hover:text-green-600">
+                      <button className="p-2 hover:bg-brand-50 rounded-lg text-slate-600 hover:text-brand-900">
                         <CheckCircle className="w-5 h-5" />
                       </button>
                     </div>

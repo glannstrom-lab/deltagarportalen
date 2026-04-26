@@ -78,10 +78,10 @@ export function InterviewPrepPanel({
   if (!result && !isLoading && !error) {
     return (
       <AiConsentGate compact featureName="Intervjuförberedelse">
-        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20', className)}>
+        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-brand-50 to-sky-50 dark:from-brand-900/20 dark:to-sky-900/20', className)}>
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/50">
-              <MessageSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <div className="p-2 rounded-lg bg-brand-100 dark:bg-brand-900/50">
+              <MessageSquare className="w-5 h-5 text-brand-900 dark:text-brand-400" />
             </div>
             <div className="flex-1">
               <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
@@ -235,8 +235,8 @@ export function InterviewPrepPanel({
               title="Löneförväntningar"
               icon={<DollarSign className="w-4 h-4" />}
             >
-              <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 mb-3">
-                <p className="text-sm font-medium text-green-800 dark:text-green-200">
+              <div className="p-3 rounded-lg bg-brand-50 dark:bg-brand-900/20 mb-3">
+                <p className="text-sm font-medium text-brand-900 dark:text-brand-200">
                   Förväntat löneintervall: {result.salaryExpectations.range}
                 </p>
               </div>

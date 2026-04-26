@@ -133,7 +133,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
           {topReminder.action && (
             <button
               onClick={() => handleAction(topReminder)}
-              className="p-2 text-teal-600 hover:bg-teal-50 rounded-lg"
+              className="p-2 text-brand-900 hover:bg-brand-50 rounded-lg"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -144,13 +144,13 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
   }
 
   return (
-    <div className={cn('bg-white rounded-2xl border border-slate-200 overflow-hidden', className)}>
+    <div className={cn('bg-white rounded-xl border border-slate-200 overflow-hidden', className)}>
       {/* Header */}
       <div className="p-5 border-b border-slate-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
-              <Bell className="w-5 h-5 text-teal-600" />
+            <div className="w-10 h-10 bg-brand-100 rounded-xl flex items-center justify-center">
+              <Bell className="w-5 h-5 text-brand-900" />
             </div>
             <div>
               <h3 className="font-semibold text-slate-800">Smart påminnelser</h3>
@@ -184,7 +184,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                 type="checkbox"
                 checked={preferences.pushNotifications}
                 onChange={(e) => updatePreferences({ pushNotifications: e.target.checked })}
-                className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                className="w-5 h-5 rounded border-slate-300 text-brand-900 focus:ring-brand-700"
               />
             </label>
             
@@ -196,7 +196,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                 onChange={(e) => updatePreferences({ 
                   quietHours: { ...preferences.quietHours, enabled: e.target.checked }
                 })}
-                className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                className="w-5 h-5 rounded border-slate-300 text-brand-900 focus:ring-brand-700"
               />
             </label>
 
@@ -246,13 +246,13 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                     reminder.type === 'followUp' && 'bg-amber-100',
                     reminder.type === 'deadline' && 'bg-rose-100',
                     reminder.type === 'milestone' && 'bg-emerald-100',
-                    reminder.type === 'insight' && 'bg-teal-100'
+                    reminder.type === 'insight' && 'bg-brand-100'
                   )}>
                     {reminder.type === 'application' && <Briefcase className="w-5 h-5 text-blue-600" />}
                     {reminder.type === 'followUp' && <TrendingUp className="w-5 h-5 text-amber-600" />}
                     {reminder.type === 'deadline' && <Clock className="w-5 h-5 text-rose-600" />}
                     {reminder.type === 'milestone' && <Zap className="w-5 h-5 text-emerald-600" />}
-                    {reminder.type === 'insight' && <Bell className="w-5 h-5 text-teal-600" />}
+                    {reminder.type === 'insight' && <Bell className="w-5 h-5 text-brand-900" />}
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -279,7 +279,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                       {reminder.action && (
                         <button
                           onClick={() => handleAction(reminder)}
-                          className="px-3 py-1.5 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors"
+                          className="px-3 py-1.5 bg-brand-900 text-white text-sm font-medium rounded-lg hover:bg-brand-900 transition-colors"
                         >
                           {reminder.action.label}
                         </button>

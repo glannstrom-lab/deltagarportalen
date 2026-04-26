@@ -155,7 +155,7 @@ const AUDIT_QUESTIONS: AuditQuestion[] = [
 
 const CATEGORIES = {
   online: { label: 'Digital närvaro', color: 'blue', icon: Linkedin },
-  content: { label: 'Innehåll', color: 'teal', icon: FileText },
+  content: { label: 'Innehåll', color: 'brand', icon: FileText },
   network: { label: 'Nätverk', color: 'emerald', icon: Users },
   consistency: { label: 'Konsekvens', color: 'amber', icon: Target },
 }
@@ -254,7 +254,7 @@ export default function BrandAuditTab() {
         aria-live="polite"
         aria-busy="true"
       >
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" aria-hidden="true" />
+        <Loader2 className="w-8 h-8 animate-spin text-brand-900" aria-hidden="true" />
         <span className="sr-only">Laddar varumärkesaudit...</span>
       </div>
     )
@@ -263,9 +263,9 @@ export default function BrandAuditTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 border-teal-100 dark:border-teal-800">
+      <Card className="bg-gradient-to-r from-brand-50 to-sky-50 dark:from-brand-900/30 dark:to-sky-900/30 border-brand-100 dark:border-brand-900">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-sky-500 dark:from-teal-600 dark:to-sky-600 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-gradient-to-br from-brand-700 to-sky-500 dark:from-brand-900 dark:to-sky-600 rounded-xl flex items-center justify-center shrink-0">
             <ClipboardCheck className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
@@ -292,10 +292,10 @@ export default function BrandAuditTab() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
           >
-            <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
+            <Card className="border-brand-200 dark:border-brand-900 bg-white dark:bg-stone-800">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                  <BarChart3 className="w-5 h-5 text-brand-900 dark:text-brand-400" />
                   Din poäng
                 </h3>
                 <Button
@@ -392,9 +392,9 @@ export default function BrandAuditTab() {
 
       {/* Recommended Actions */}
       {recommendedActions.length > 0 && totalScore < 80 && (
-        <Card className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 border-teal-100 dark:border-teal-800">
-          <h3 className="font-semibold text-teal-900 dark:text-teal-100 mb-3 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+        <Card className="bg-gradient-to-r from-brand-50 to-sky-50 dark:from-brand-900/30 dark:to-sky-900/30 border-brand-100 dark:border-brand-900">
+          <h3 className="font-semibold text-brand-900 dark:text-brand-100 mb-3 flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-brand-900 dark:text-brand-400" />
             Rekommenderade nästa steg
           </h3>
           <div className="space-y-2">
@@ -402,13 +402,13 @@ export default function BrandAuditTab() {
               <Link
                 key={action.id}
                 to={action.actionLink!}
-                className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-xl border border-teal-100 dark:border-teal-700 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-sm transition-all group"
+                className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-xl border border-brand-100 dark:border-brand-900 hover:border-brand-300 dark:hover:border-brand-900 hover: transition-all group"
               >
                 <div>
                   <p className="font-medium text-gray-800 dark:text-gray-100">{action.actionLabel}</p>
                   <p className="text-sm text-gray-600 dark:text-gray-300">{action.question}</p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-brand-900 dark:group-hover:text-brand-400 transition-colors" />
               </Link>
             ))}
           </div>
@@ -427,7 +427,7 @@ export default function BrandAuditTab() {
                 <Icon className={cn(
                   "w-5 h-5",
                   category.color === 'blue' && "text-blue-600 dark:text-blue-400",
-                  category.color === 'teal' && "text-teal-600 dark:text-teal-400",
+                  category.color === 'brand' && "text-brand-900 dark:text-brand-400",
                   category.color === 'emerald' && "text-emerald-600 dark:text-emerald-400",
                   category.color === 'amber' && "text-amber-600 dark:text-amber-400"
                 )} />
@@ -470,7 +470,7 @@ export default function BrandAuditTab() {
                       <Link
                         to={question.actionLink}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-xs px-2 py-1 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 rounded-full hover:bg-teal-200 dark:hover:bg-teal-800/50 transition-colors"
+                        className="text-xs px-2 py-1 bg-brand-100 dark:bg-brand-900/50 text-brand-900 dark:text-brand-300 rounded-full hover:bg-brand-200 dark:hover:bg-brand-900/50 transition-colors"
                       >
                         {question.actionLabel}
                       </Link>
@@ -485,14 +485,14 @@ export default function BrandAuditTab() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="ml-8 mt-2 p-3 bg-teal-50 dark:bg-teal-900/30 rounded-lg border border-teal-100 dark:border-teal-700"
+                          className="ml-8 mt-2 p-3 bg-brand-50 dark:bg-brand-900/30 rounded-lg border border-brand-100 dark:border-brand-900"
                         >
-                          <p className="text-sm text-teal-800 dark:text-teal-200">
+                          <p className="text-sm text-brand-900 dark:text-brand-200">
                             {question.tip}
                           </p>
                           <button
                             onClick={() => setExpandedTip(null)}
-                            className="text-xs text-teal-600 dark:text-teal-400 mt-2 hover:underline"
+                            className="text-xs text-brand-900 dark:text-brand-400 mt-2 hover:underline"
                           >
                             Dölj tips
                           </button>
@@ -500,7 +500,7 @@ export default function BrandAuditTab() {
                       ) : (
                         <button
                           onClick={() => setExpandedTip(question.id)}
-                          className="ml-8 mt-1 text-xs text-gray-600 dark:text-gray-400 hover:text-teal-600 dark:hover:text-teal-400"
+                          className="ml-8 mt-1 text-xs text-gray-600 dark:text-gray-400 hover:text-brand-900 dark:hover:text-brand-400"
                         >
                           Visa tips
                         </button>

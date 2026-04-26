@@ -147,7 +147,7 @@ const statusLabels: Record<string, { label: string; color: string; bg: string; i
   'APPLIED': { label: 'Ansökt', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/30', icon: CheckCircle2 },
   'INTERVIEW': { label: 'Intervju', color: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-100 dark:bg-sky-900/30', icon: Sparkles },
   'REJECTED': { label: 'Avslag', color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30', icon: X },
-  'ACCEPTED': { label: 'Erbjudande', color: 'text-green-600 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-900/30', icon: Award },
+  'ACCEPTED': { label: 'Erbjudande', color: 'text-brand-900 dark:text-brand-400', bg: 'bg-brand-100 dark:bg-brand-900/30', icon: Award },
 }
 
 // Compact Stats Card Component
@@ -165,7 +165,7 @@ function StatCard({
   link?: string
 }) {
   const content = (
-    <div className={`bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700 hover:shadow-md transition-all group ${link ? 'cursor-pointer' : ''}`}>
+    <div className={`bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700 hover: transition-all group ${link ? 'cursor-pointer' : ''}`}>
       <div className="flex items-center gap-3">
         <div className={`w-10 h-10 ${color} rounded-lg flex items-center justify-center flex-shrink-0`}>
           <Icon className="w-5 h-5 text-white" />
@@ -204,7 +204,7 @@ function DocumentCard({
   color: string
 }) {
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover:shadow-md transition-all group">
+    <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover: transition-all group">
       <div className="p-3">
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 ${color} rounded-lg flex items-center justify-center flex-shrink-0`}>
@@ -549,7 +549,7 @@ export default function Resources() {
     'APPLIED': { label: t('resources.status.applied'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/30', icon: CheckCircle2 },
     'INTERVIEW': { label: t('resources.status.interview'), color: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-100 dark:bg-sky-900/30', icon: Sparkles },
     'REJECTED': { label: t('resources.status.rejected'), color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30', icon: X },
-    'ACCEPTED': { label: t('resources.status.accepted'), color: 'text-green-600 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-900/30', icon: Award },
+    'ACCEPTED': { label: t('resources.status.accepted'), color: 'text-brand-900 dark:text-brand-400', bg: 'bg-brand-100 dark:bg-brand-900/30', icon: Award },
   }
 
   if (loading) {
@@ -561,7 +561,7 @@ export default function Resources() {
           aria-live="polite"
           aria-busy="true"
         >
-          <Loader2 className="animate-spin text-teal-600" size={48} aria-hidden="true" />
+          <Loader2 className="animate-spin text-brand-900" size={48} aria-hidden="true" />
           <span className="sr-only">{t('common.loading')}</span>
         </div>
       </PageLayout>
@@ -575,9 +575,9 @@ export default function Resources() {
       showTabs={false}
     >
       {/* Stats Overview */}
-      <div className="bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-700 dark:from-teal-600 dark:via-teal-700 dark:to-cyan-800 rounded-2xl p-6 mb-6 text-white shadow-xl shadow-teal-500/20 dark:shadow-teal-900/30">
+      <div className="bg-gradient-to-br from-brand-700 via-brand-900 to-cyan-700 dark:from-brand-900 dark:via-brand-900 dark:to-cyan-800 rounded-xl p-6 mb-6 text-white /20 dark:/30">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <p className="text-teal-100 text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
+          <p className="text-brand-100 text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
           <Link
             to="/cv"
             className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-colors backdrop-blur-sm border border-white/20"
@@ -594,7 +594,7 @@ export default function Resources() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{savedJobs.length}</p>
-                <p className="text-xs text-teal-200">{t('resources.stats.savedJobs')}</p>
+                <p className="text-xs text-brand-200">{t('resources.stats.savedJobs')}</p>
               </div>
             </div>
           </Link>
@@ -605,18 +605,18 @@ export default function Resources() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{cvVersions.length + coverLetters.length}</p>
-                <p className="text-xs text-teal-200">{t('resources.stats.documents')}</p>
+                <p className="text-xs text-brand-200">{t('resources.stats.documents')}</p>
               </div>
             </div>
           </div>
           <Link to="/knowledge-base" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-4 transition-colors border border-white/10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-teal-400/20 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-teal-200" />
+              <div className="w-10 h-10 bg-brand-400/20 rounded-lg flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-brand-200" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{bookmarkedArticles.length}</p>
-                <p className="text-xs text-teal-200">{t('resources.stats.bookmarks')}</p>
+                <p className="text-xs text-brand-200">{t('resources.stats.bookmarks')}</p>
               </div>
             </div>
           </Link>
@@ -627,7 +627,7 @@ export default function Resources() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{uploadedFiles.length}</p>
-                <p className="text-xs text-teal-200">{t('resources.stats.files')}</p>
+                <p className="text-xs text-brand-200">{t('resources.stats.files')}</p>
               </div>
             </div>
           </div>
@@ -635,7 +635,7 @@ export default function Resources() {
       </div>
 
       {/* Tabs & Search - Modern */}
-      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-4 mb-6 shadow-sm">
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 mb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Tabs */}
           <div className="flex flex-wrap gap-1.5">
@@ -645,14 +645,14 @@ export default function Resources() {
                 onClick={() => setSearchParams({ tab: tab.id })}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   activeTab === tab.id
-                    ? 'bg-teal-600 dark:bg-teal-700 text-white shadow-sm'
+                    ? 'bg-brand-900 dark:bg-brand-900 text-white'
                     : 'text-gray-600 dark:text-gray-300 hover:bg-stone-100 dark:hover:bg-stone-700'
                 }`}
               >
                 {tab.label}
                 {tab.count > 0 && (
                   <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                    activeTab === tab.id ? 'bg-teal-500 dark:bg-teal-600 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
+                    activeTab === tab.id ? 'bg-brand-700 dark:bg-brand-900 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
                   }`}>
                     {tab.count}
                   </span>
@@ -670,19 +670,19 @@ export default function Resources() {
                 placeholder={t('resources.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-sm border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none w-full md:w-48"
+                className="pl-8 pr-3 py-1.5 text-sm border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-brand-700 focus:border-transparent outline-none w-full md:w-48"
               />
             </div>
             <div className="flex bg-stone-100 dark:bg-stone-700 rounded-lg p-0.5">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-stone-600 shadow-sm text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'}`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-stone-600 text-brand-900 dark:text-brand-400' : 'text-gray-500 dark:text-gray-400'}`}
               >
                 <Grid3X3 size={16} />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-stone-600 shadow-sm text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'}`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-stone-600 text-brand-900 dark:text-brand-400' : 'text-gray-500 dark:text-gray-400'}`}
               >
                 <List size={16} />
               </button>
@@ -695,10 +695,10 @@ export default function Resources() {
       <div className="space-y-6">
         {/* Saved CV Versions Section */}
         {(activeTab === 'all' || activeTab === 'documents') && cvVersions.length > 0 && (
-          <section className="bg-gradient-to-br from-amber-50/50 via-white to-orange-50/50 dark:from-amber-900/20 dark:via-stone-900 dark:to-orange-900/20 rounded-2xl p-5 border border-amber-100/50 dark:border-amber-800/50">
+          <section className="bg-gradient-to-br from-amber-50/50 via-white to-orange-50/50 dark:from-amber-900/20 dark:via-stone-900 dark:to-orange-900/20 rounded-xl p-5 border border-amber-100/50 dark:border-amber-800/50">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+                <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center /20">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -708,7 +708,7 @@ export default function Resources() {
               </div>
               <Link
                 to="/cv"
-                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors"
               >
                 <Plus size={16} />
                 Ny version
@@ -718,7 +718,7 @@ export default function Resources() {
               {cvVersions.map((version) => {
                 const versionData = version.data || {}
                 return (
-                  <div key={version.id} className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden hover:shadow-lg hover:border-amber-200 dark:hover:border-amber-700 transition-all group">
+                  <div key={version.id} className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden hover: hover:border-amber-200 dark:hover:border-amber-700 transition-all group">
                     <div className="p-4 border-b border-slate-100 dark:border-stone-700">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
@@ -729,7 +729,7 @@ export default function Resources() {
                         </div>
                         <button
                           onClick={() => setPreviewModal({type: 'cv', data: versionData as CVData})}
-                          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-brand-900 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/30 rounded-lg transition-colors"
                           title="Förhandsgranska"
                         >
                           <Eye size={16} />
@@ -789,10 +789,10 @@ export default function Resources() {
 
         {/* Current CV (if no versions saved, show current) */}
         {(activeTab === 'all' || activeTab === 'documents') && hasCV && cvData && cvVersions.length === 0 && (
-          <section className="bg-gradient-to-br from-amber-50/50 via-white to-orange-50/50 dark:from-amber-900/20 dark:via-stone-900 dark:to-orange-900/20 rounded-2xl p-5 border border-amber-100/50 dark:border-amber-800/50">
+          <section className="bg-gradient-to-br from-amber-50/50 via-white to-orange-50/50 dark:from-amber-900/20 dark:via-stone-900 dark:to-orange-900/20 rounded-xl p-5 border border-amber-100/50 dark:border-amber-800/50">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center /20">
                   <FileText className="w-7 h-7 text-white" />
                 </div>
                 <div>
@@ -807,7 +807,7 @@ export default function Resources() {
               <div className="flex items-center gap-2 flex-wrap">
                 <Link
                   to="/cv"
-                  className="flex items-center gap-1.5 px-4 py-2 text-sm bg-white dark:bg-stone-800 text-amber-700 dark:text-amber-400 rounded-lg font-medium hover:bg-amber-50 dark:hover:bg-amber-900/30 border border-amber-200 dark:border-amber-700 transition-colors shadow-sm"
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm bg-white dark:bg-stone-800 text-amber-700 dark:text-amber-400 rounded-lg font-medium hover:bg-amber-50 dark:hover:bg-amber-900/30 border border-amber-200 dark:border-amber-700 transition-colors"
                 >
                   <Edit2 className="w-4 h-4" />
                   Redigera
@@ -822,7 +822,7 @@ export default function Resources() {
                 />
                 <button
                   onClick={() => generateCVWord(cvData)}
-                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors shadow-sm"
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
                 >
                   <FileDown className="w-4 h-4" />
                   Word
@@ -878,7 +878,7 @@ export default function Resources() {
               </h3>
               <Link
                 to="/cover-letter"
-                className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium flex items-center gap-1"
+                className="text-xs text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-medium flex items-center gap-1"
               >
                 {t('resources.createNew')}
                 <Plus size={14} />
@@ -893,12 +893,12 @@ export default function Resources() {
                   type={letter.ai_generated ? t('resources.aiGenerated') : t('resources.manual')}
                   date={new Date(letter.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                   icon={FileText}
-                  color="bg-gradient-to-br from-sky-500 to-teal-500"
+                  color="bg-gradient-to-br from-sky-500 to-brand-700"
                   actions={
                     <>
                       <button
                         onClick={() => setPreviewModal({type: 'letter', data: letter})}
-                        className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded transition-colors"
+                        className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 dark:text-slate-400 hover:text-brand-900 dark:hover:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/30 rounded transition-colors"
                       >
                         <Eye size={14} />
                         {t('resources.read')}
@@ -906,7 +906,7 @@ export default function Resources() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => handleDownloadLetter(letter, 'pdf')}
-                          className="flex items-center gap-1 px-2 py-1 text-xs bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 text-xs bg-brand-900 text-white rounded hover:bg-brand-900 transition-colors"
                         >
                           <FileDown size={14} />
                           PDF
@@ -937,7 +937,7 @@ export default function Resources() {
               </h3>
               <Link
                 to="/applications"
-                className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium flex items-center gap-1"
+                className="text-xs text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-medium flex items-center gap-1"
               >
                 {t('resources.jobTracker')}
                 <ChevronRight size={14} />
@@ -1012,7 +1012,7 @@ export default function Resources() {
             {activeTab === 'all' && filteredJobs.length > 5 && (
               <button
                 onClick={() => setSearchParams({ tab: 'jobs' })}
-                className="w-full mt-2 py-2 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
+                className="w-full mt-2 py-2 text-sm text-brand-900 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/30 rounded-lg transition-colors"
               >
                 Visa alla {filteredJobs.length} jobb →
               </button>
@@ -1025,12 +1025,12 @@ export default function Resources() {
           <section>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                <BookOpen className="text-teal-600 dark:text-teal-400" size={18} />
+                <BookOpen className="text-brand-900 dark:text-brand-400" size={18} />
                 {t('resources.bookmarkedArticles')} ({bookmarkedArticles.length})
               </h3>
               <Link
                 to="/knowledge-base"
-                className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium flex items-center gap-1"
+                className="text-xs text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-medium flex items-center gap-1"
               >
                 {t('resources.explore')}
                 <ChevronRight size={14} />
@@ -1041,15 +1041,15 @@ export default function Resources() {
                 <Link
                   key={article.id}
                   to={`/knowledge-base/article/${article.id}`}
-                  className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 p-3 hover:shadow-md transition-all group flex items-center gap-3"
+                  className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 p-3 hover: transition-all group flex items-center gap-3"
                 >
-                  <div className="w-9 h-9 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="w-9 h-9 bg-gradient-to-br from-brand-700 to-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
                     <BookOpen className="w-4 h-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-slate-800 dark:text-slate-100 text-sm truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{article.title}</h4>
+                    <h4 className="font-medium text-slate-800 dark:text-slate-100 text-sm truncate group-hover:text-brand-900 dark:group-hover:text-brand-400 transition-colors">{article.title}</h4>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="px-1.5 py-0.5 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-xs rounded">
+                      <span className="px-1.5 py-0.5 bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 text-xs rounded">
                         {article.category}
                       </span>
                       {article.readingTime && (
@@ -1087,7 +1087,7 @@ export default function Resources() {
               {uploadedFiles.map((file) => (
                 <div
                   key={file.id}
-                  className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 p-3 hover:shadow-md transition-all flex items-center gap-2"
+                  className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 p-3 hover: transition-all flex items-center gap-2"
                 >
                   <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                     <File className="w-4 h-4 text-amber-600 dark:text-amber-400" />
@@ -1123,7 +1123,7 @@ export default function Resources() {
             <div className="flex flex-wrap justify-center gap-2">
               <Link
                 to="/cv"
-                className="px-4 py-2 text-sm bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 text-white rounded-lg font-medium hover:from-teal-600 hover:to-teal-700 transition-all"
+                className="px-4 py-2 text-sm bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900 text-white rounded-lg font-medium hover:from-brand-900 hover:to-brand-900 transition-all"
               >
                 {t('resources.createCV')}
               </Link>
@@ -1245,12 +1245,12 @@ export default function Resources() {
                     {cv.languages && cv.languages.length > 0 && (
                       <div>
                         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
-                          <Languages size={16} className="text-teal-500 dark:text-teal-400" />
+                          <Languages size={16} className="text-brand-700 dark:text-brand-400" />
                           Språk
                         </h3>
                         <div className="flex flex-wrap gap-2">
                           {cv.languages.map((lang, i) => (
-                            <span key={i} className="px-2 py-1 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-xs rounded">
+                            <span key={i} className="px-2 py-1 bg-brand-50 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 text-xs rounded">
                               {lang.language} ({lang.level})
                             </span>
                           ))}
@@ -1285,7 +1285,7 @@ export default function Resources() {
                   <div className="pt-3 mt-4 border-t border-slate-100 dark:border-stone-700 flex gap-2">
                     <button
                       onClick={() => handleDownloadLetter(previewModal.data as CoverLetter, 'pdf')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900 transition-colors"
                     >
                       <FileDown size={14} />
                       Ladda ner PDF

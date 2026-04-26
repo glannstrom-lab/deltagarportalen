@@ -11,11 +11,11 @@ interface QuickActionButtonProps {
   icon: React.ElementType
   label: string
   to: string
-  color?: 'teal' | 'sky' | 'amber'
+  color?: 'brand' | 'sky' | 'amber'
 }
 
 const colorClasses = {
-  teal: 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 hover:bg-teal-200 dark:hover:bg-teal-900/60 focus-visible:ring-teal-500',
+  brand: 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300 hover:bg-brand-200 dark:hover:bg-brand-900/60 focus-visible:ring-brand-700',
   sky: 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 hover:bg-sky-200 dark:hover:bg-sky-900/60 focus-visible:ring-sky-500',
   amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/60 focus-visible:ring-amber-500',
 }
@@ -24,7 +24,7 @@ export function QuickActionButton({
   icon: Icon,
   label,
   to,
-  color = 'teal'
+  color = 'brand'
 }: QuickActionButtonProps) {
   return (
     <Link

@@ -50,7 +50,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
   }
 
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
+    <div className="bg-white dark:bg-stone-800 rounded-xl border border-brand-100 dark:border-stone-700 overflow-hidden">
       {/* Header row */}
       <div className="grid grid-cols-8 border-b border-stone-200 dark:border-stone-700">
         <div className="p-3 border-r border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-800" />
@@ -59,12 +59,12 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
             key={i}
             onClick={() => onDateClick(date)}
             className={`p-3 text-center border-r border-stone-100 dark:border-stone-700 last:border-r-0 transition-colors ${
-              isToday(date) ? 'bg-teal-50 dark:bg-teal-900/20' : 'hover:bg-stone-50 dark:hover:bg-stone-700'
+              isToday(date) ? 'bg-brand-50 dark:bg-brand-900/20' : 'hover:bg-stone-50 dark:hover:bg-stone-700'
             }`}
           >
             <p className="text-xs font-medium text-stone-700 dark:text-stone-300 uppercase">{days[i]}</p>
             <p className={`text-lg font-semibold mt-1 ${
-              isToday(date) ? 'text-teal-700 dark:text-teal-400' : 'text-stone-900 dark:text-stone-100'
+              isToday(date) ? 'text-brand-900 dark:text-brand-400' : 'text-stone-900 dark:text-stone-100'
             }`}>
               {date.getDate()}
             </p>
@@ -87,7 +87,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
               return (
                 <div
                   key={dayIndex}
-                  className="p-1 border-r border-stone-100 dark:border-stone-700 last:border-r-0 relative hover:bg-teal-50/50 dark:hover:bg-teal-900/20 hover:border-teal-200 dark:hover:border-teal-700 transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
+                  className="p-1 border-r border-stone-100 dark:border-stone-700 last:border-r-0 relative hover:bg-brand-50/50 dark:hover:bg-brand-900/20 hover:border-brand-200 dark:hover:border-brand-900 transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-inset"
                 >
                   {dayEvents.map((event) => {
                     const config = eventTypeConfig[event.type]
@@ -96,7 +96,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
                       <button
                         key={event.id}
                         onClick={() => onEventClick(event)}
-                        className={`w-full text-left p-2 rounded-lg mb-1 ${config.bgColor} ${config.borderColor} border hover:shadow-sm transition-all`}
+                        className={`w-full text-left p-2 rounded-lg mb-1 ${config.bgColor} ${config.borderColor} border hover: transition-all`}
                       >
                         <div className="flex items-center gap-1.5">
                           <Icon size={12} className={config.color} />

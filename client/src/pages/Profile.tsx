@@ -60,7 +60,7 @@ class ProfileErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
+        <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
           <p className="text-red-700 dark:text-red-300 font-medium">
             {i18n.t('profile.errorLoadingSection')}
           </p>

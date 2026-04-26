@@ -50,10 +50,10 @@ export default function EnhancedArticleCard({
     return (
       <Link
         to={articleUrl}
-        className="group flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+        className="group flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2"
       >
         <div className="flex-1 min-w-0">
-          <h4 className="font-medium text-slate-800 group-hover:text-teal-700 truncate">
+          <h4 className="font-medium text-slate-800 group-hover:text-brand-900 truncate">
             {article.title}
           </h4>
           <div className="flex items-center gap-2 mt-1">
@@ -62,7 +62,7 @@ export default function EnhancedArticleCard({
             )}
           </div>
         </div>
-        <ChevronRight size={16} className="text-slate-300 group-hover:text-teal-500" />
+        <ChevronRight size={16} className="text-slate-300 group-hover:text-brand-700" />
       </Link>
     )
   }
@@ -71,14 +71,14 @@ export default function EnhancedArticleCard({
     return (
       <Link
         to={articleUrl}
-        className="group block bg-gradient-to-br from-teal-50 to-blue-50 rounded-xl p-6 hover:shadow-md transition-all"
+        className="group block bg-gradient-to-br from-brand-50 to-blue-50 rounded-xl p-6 hover: transition-all"
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
-            <span className="inline-block px-2 py-1 bg-teal-100 text-teal-700 text-xs font-medium rounded-full mb-3">
+            <span className="inline-block px-2 py-1 bg-brand-100 text-brand-900 text-xs font-medium rounded-full mb-3">
               {categoryNameMap[article.category] || article.category}
             </span>
-            <h3 className="text-lg font-semibold text-slate-800 group-hover:text-teal-700 mb-2">
+            <h3 className="text-lg font-semibold text-slate-800 group-hover:text-brand-900 mb-2">
               {article.title}
             </h3>
             <p className="text-slate-600 text-sm line-clamp-2 mb-4">
@@ -90,7 +90,7 @@ export default function EnhancedArticleCard({
               )}
             </div>
           </div>
-          <ChevronRight size={24} className="text-slate-300 group-hover:text-teal-500 mt-1 shrink-0" />
+          <ChevronRight size={24} className="text-slate-300 group-hover:text-brand-700 mt-1 shrink-0" />
         </div>
       </Link>
     )
@@ -99,17 +99,17 @@ export default function EnhancedArticleCard({
   return (
     <Link
       to={articleUrl}
-      className="group block card hover:shadow-md transition-all"
+      className="group block card hover: transition-all"
     >
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 flex-wrap mb-2">
-            <span className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-teal-100 text-teal-700">
+            <span className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-brand-100 text-brand-900">
               {categoryNameMap[article.category] || article.category}
             </span>
           </div>
           
-          <h3 className="font-semibold text-slate-800 group-hover:text-teal-700 transition-colors mb-2">
+          <h3 className="font-semibold text-slate-800 group-hover:text-brand-900 transition-colors mb-2">
             {article.title}
           </h3>
           
@@ -152,7 +152,7 @@ export default function EnhancedArticleCard({
           )}
         </div>
         
-        <ChevronRight size={20} className="text-slate-300 group-hover:text-teal-500 mt-1 shrink-0" />
+        <ChevronRight size={20} className="text-slate-300 group-hover:text-brand-700 mt-1 shrink-0" />
       </div>
     </Link>
   )

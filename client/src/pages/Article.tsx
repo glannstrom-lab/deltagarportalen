@@ -152,7 +152,7 @@ export default function Article() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 dark:border-teal-400"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-900 dark:border-brand-400"></div>
       </div>
     )
   }
@@ -168,7 +168,7 @@ export default function Article() {
             : t('article.invalidIdFormat', { id })
           }
         </p>
-        <Link to="/knowledge-base" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline mt-2 inline-block">
+        <Link to="/knowledge-base" className="text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 hover:underline mt-2 inline-block">
           {t('article.backToKnowledgeBase')}
         </Link>
       </div>
@@ -182,7 +182,7 @@ export default function Article() {
         <p className="text-gray-600 dark:text-gray-300 text-sm mt-1 mb-4">
           ID: {id}
         </p>
-        <Link to="/knowledge-base" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline mt-2 inline-block">
+        <Link to="/knowledge-base" className="text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 hover:underline mt-2 inline-block">
           {t('article.backToKnowledgeBase')}
         </Link>
       </div>
@@ -206,7 +206,7 @@ export default function Article() {
       {/* Back button */}
       <button
         onClick={() => navigate('/knowledge-base')}
-        className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 mb-6 transition-colors"
+        className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-brand-900 dark:hover:text-brand-400 mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
         {t('article.backToKnowledgeBase')}
@@ -216,7 +216,7 @@ export default function Article() {
       <article className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-6 mb-8">
         {/* Category & Meta */}
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="inline-block px-3 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 text-sm font-medium rounded-full">
+          <span className="inline-block px-3 py-1 bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400 text-sm font-medium rounded-full">
             {article.category}
           </span>
         </div>
@@ -246,7 +246,7 @@ export default function Article() {
 
         {/* Summary */}
         {article.summary && (
-          <div className="p-4 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-lg mb-6 border border-teal-100 dark:border-teal-800">
+          <div className="p-4 bg-gradient-to-r from-brand-50 to-cyan-50 dark:from-brand-900/20 dark:to-cyan-900/20 rounded-lg mb-6 border border-brand-100 dark:border-brand-900">
             <p className="text-gray-700 dark:text-gray-200 font-medium italic">
               {article.summary}
             </p>
@@ -266,7 +266,7 @@ export default function Article() {
               <button
                 onClick={() => changeFontSize('normal')}
                 className={`px-2 py-1 rounded text-sm font-medium transition-colors ${
-                  fontSize === 'normal' ? 'bg-white dark:bg-stone-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-600 dark:text-gray-300'
+                  fontSize === 'normal' ? 'bg-white dark:bg-stone-600 text-gray-800 dark:text-gray-100' : 'text-gray-600 dark:text-gray-300'
                 }`}
                 title={t('article.fontSizeNormal')}
               >
@@ -275,7 +275,7 @@ export default function Article() {
               <button
                 onClick={() => changeFontSize('large')}
                 className={`px-2 py-1 rounded text-base font-medium transition-colors ${
-                  fontSize === 'large' ? 'bg-white dark:bg-stone-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-600 dark:text-gray-300'
+                  fontSize === 'large' ? 'bg-white dark:bg-stone-600 text-gray-800 dark:text-gray-100' : 'text-gray-600 dark:text-gray-300'
                 }`}
                 title={t('article.fontSizeLarge')}
               >
@@ -284,7 +284,7 @@ export default function Article() {
               <button
                 onClick={() => changeFontSize('xlarge')}
                 className={`px-2 py-1 rounded text-lg font-medium transition-colors ${
-                  fontSize === 'xlarge' ? 'bg-white dark:bg-stone-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-600 dark:text-gray-300'
+                  fontSize === 'xlarge' ? 'bg-white dark:bg-stone-600 text-gray-800 dark:text-gray-100' : 'text-gray-600 dark:text-gray-300'
                 }`}
                 title={t('article.fontSizeXLarge')}
               >
@@ -297,7 +297,7 @@ export default function Article() {
               onClick={toggleBookmark}
               className={`p-2 rounded-lg transition-colors ${
                 isBookmarked
-                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400'
+                  ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400'
                   : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
               }`}
               title={isBookmarked ? t('article.removeBookmark') : t('article.saveBookmark')}
@@ -368,7 +368,7 @@ export default function Article() {
               return (
                 <blockquote
                   key={index}
-                  className="border-l-4 border-teal-500 dark:border-teal-400 pl-4 italic text-gray-600 dark:text-gray-300 my-6"
+                  className="border-l-4 border-brand-700 dark:border-brand-400 pl-4 italic text-gray-600 dark:text-gray-300 my-6"
                 >
                   {paragraph.replace('> ', '')}
                 </blockquote>
@@ -402,7 +402,7 @@ export default function Article() {
                   to={action.href}
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                     action.type === 'primary'
-                      ? 'bg-teal-600 dark:bg-teal-700 text-white hover:bg-teal-700 dark:hover:bg-teal-600'
+                      ? 'bg-brand-900 dark:bg-brand-900 text-white hover:bg-brand-900 dark:hover:bg-brand-900'
                       : 'bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 text-gray-700 dark:text-gray-200 hover:bg-stone-50 dark:hover:bg-stone-600'
                   }`}
                 >
@@ -455,7 +455,7 @@ export default function Article() {
       {relatedExercises.length > 0 && (
         <section className="mb-8">
           <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-            <Dumbbell className="text-teal-600 dark:text-teal-400" size={24} />
+            <Dumbbell className="text-brand-900 dark:text-brand-400" size={24} />
             {t('article.relatedExercises')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -465,21 +465,21 @@ export default function Article() {
                 <Link
                   key={exercise.id}
                   to={`/exercises`}
-                  className="group block bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-4 hover:shadow-md transition-all border-l-4 border-l-teal-500 dark:border-l-teal-400"
+                  className="group block bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-4 hover: transition-all border-l-4 border-l-brand-700 dark:border-l-brand-400"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                    <div className="w-12 h-12 rounded-xl bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-6 h-6 text-brand-900 dark:text-brand-400" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mb-1">
+                      <h3 className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-brand-900 dark:group-hover:text-brand-400 transition-colors mb-1">
                         {exercise.title}
                       </h3>
                       <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-2">
                         {exercise.description}
                       </p>
                       <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
-                        <span className="px-2 py-0.5 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 rounded-full">
+                        <span className="px-2 py-0.5 bg-brand-50 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400 rounded-full">
                           {exercise.category}
                         </span>
                         <span>•</span>
@@ -512,9 +512,9 @@ export default function Article() {
       )}
 
       {/* Help section */}
-      <section className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border border-teal-100 dark:border-teal-800 rounded-xl p-6">
+      <section className="bg-gradient-to-br from-brand-50 to-cyan-50 dark:from-brand-900/20 dark:to-cyan-900/20 border border-brand-100 dark:border-brand-900 rounded-xl p-6">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 rounded-xl flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900 rounded-xl flex items-center justify-center flex-shrink-0">
             <Lightbulb size={24} className="text-white" />
           </div>
           <div>
@@ -524,7 +524,7 @@ export default function Article() {
             </p>
             <Link
               to="/diary"
-              className="inline-flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium hover:underline"
+              className="inline-flex items-center gap-2 text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-medium hover:underline"
             >
               {t('article.bookMeeting')}
               <ExternalLink size={16} />

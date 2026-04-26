@@ -51,7 +51,7 @@ export function QuickActionBanner({
     borderColor: string
   }> = {
     cv_saved: {
-      icon: <CheckCircle2 size={20} className="text-green-600" />,
+      icon: <CheckCircle2 size={20} className="text-brand-900" />,
       title: 'CV:t är sparat!',
       message: 'Nu är det dags att hitta jobb som matchar dina kompetenser.',
       primaryAction: {
@@ -62,11 +62,11 @@ export function QuickActionBanner({
         label: 'Optimera CV:t ytterligare',
         to: '/cv'
       },
-      bgColor: 'bg-green-50',
-      borderColor: 'border-green-200'
+      bgColor: 'bg-brand-50',
+      borderColor: 'border-brand-200'
     },
     job_saved: {
-      icon: <Briefcase size={20} className="text-teal-600" />,
+      icon: <Briefcase size={20} className="text-brand-900" />,
       title: `Jobbet "${data?.title?.substring(0, 30) || ''}..." sparat!`,
       message: 'Vill du skriva ett personligt brev medan du har jobbet i minnet?',
       primaryAction: {
@@ -81,11 +81,11 @@ export function QuickActionBanner({
         label: 'Se sparade jobb',
         to: '/job-search'
       },
-      bgColor: 'bg-teal-50',
-      borderColor: 'border-teal-200'
+      bgColor: 'bg-brand-50',
+      borderColor: 'border-brand-200'
     },
     letter_saved: {
-      icon: <FileText size={20} className="text-teal-600" />,
+      icon: <FileText size={20} className="text-brand-900" />,
       title: 'Personligt brev sparat!',
       message: 'Bra jobbat! När du hittar fler intressanta jobb kan du använda detta som mall.',
       primaryAction: {
@@ -96,8 +96,8 @@ export function QuickActionBanner({
         label: 'Se alla brev',
         to: '/cover-letter'
       },
-      bgColor: 'bg-teal-50',
-      borderColor: 'border-teal-200'
+      bgColor: 'bg-brand-50',
+      borderColor: 'border-brand-200'
     },
     profile_complete: {
       icon: <Sparkles size={20} className="text-amber-600" />,
@@ -215,7 +215,7 @@ export function JobTrackerActions({
     <div className="flex items-center gap-1">
       <button
         onClick={() => navigate(`/cover-letter?jobId=${jobId}&company=${encodeURIComponent(employer)}&title=${encodeURIComponent(jobTitle)}`)}
-        className="p-1.5 text-slate-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+        className="p-1.5 text-slate-700 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors"
         title="Skriv personligt brev"
       >
         <FileText size={16} />
@@ -223,7 +223,7 @@ export function JobTrackerActions({
       
       <button
         onClick={() => navigate(`/cv?optimizeFor=${jobId}`)}
-        className="p-1.5 text-slate-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+        className="p-1.5 text-slate-700 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors"
         title="Optimera CV för detta jobb"
       >
         <Sparkles size={16} />
@@ -232,7 +232,7 @@ export function JobTrackerActions({
       {status !== 'APPLIED' && (
         <button
           onClick={() => onStatusChange?.('APPLIED')}
-          className="p-1.5 text-slate-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+          className="p-1.5 text-slate-700 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors"
           title="Markera som ansökt"
         >
           <CheckCircle2 size={16} />
@@ -255,7 +255,7 @@ export function FloatingBackButton({
   return (
     <Link
       to={to}
-      className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-teal-500 text-white rounded-full shadow-lg hover:bg-teal-600 hover:shadow-xl transition-all hover:-translate-y-0.5"
+      className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-brand-700 text-white rounded-full hover:bg-brand-900 hover: transition-all hover:-translate-y-0.5"
     >
       <ArrowRight size={18} />
       <span className="font-medium text-sm">{label}</span>

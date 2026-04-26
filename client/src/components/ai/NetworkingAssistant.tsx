@@ -216,7 +216,7 @@ export function NetworkingAssistant({
                   className={cn(
                     'p-2 rounded-lg transition-colors',
                     copied
-                      ? 'bg-green-100 text-green-600'
+                      ? 'bg-brand-100 text-brand-900'
                       : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                   )}
                 >
@@ -273,7 +273,7 @@ export function NetworkingAssistant({
                 <ol className="space-y-2">
                   {result.followUpStrategy.map((step, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center text-xs font-medium text-teal-600 dark:text-teal-400">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/50 flex items-center justify-center text-xs font-medium text-brand-900 dark:text-brand-400">
                         {i + 1}
                       </span>
                       <span className="text-sm text-slate-700 dark:text-slate-300 pt-0.5">

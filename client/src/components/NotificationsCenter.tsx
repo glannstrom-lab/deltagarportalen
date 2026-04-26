@@ -93,7 +93,7 @@ export default function NotificationsCenter() {
       {/* Bell button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-40 flex items-center gap-2 px-4 py-3 bg-white text-slate-700 rounded-full shadow-lg hover:shadow-xl transition-all border border-slate-200"
+        className="fixed bottom-6 left-6 z-40 flex items-center gap-2 px-4 py-3 bg-white text-slate-700 rounded-full hover: transition-all border border-slate-200"
       >
         <div className="relative">
           <Bell className="w-5 h-5" />
@@ -111,12 +111,12 @@ export default function NotificationsCenter() {
       {/* Modal */}
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[85vh] overflow-hidden">
             {/* Header */}
             <div className="p-6 border-b border-slate-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-teal-100 rounded-xl">
-                  <Bell className="w-5 h-5 text-teal-600" />
+                <div className="p-2 bg-brand-100 rounded-xl">
+                  <Bell className="w-5 h-5 text-brand-900" />
                 </div>
                 <div>
                   <h2 className="text-xl font-bold text-slate-900">
@@ -133,7 +133,7 @@ export default function NotificationsCenter() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowSettings(!showSettings)}
-                  className={`p-2 rounded-lg transition-colors ${showSettings ? 'bg-teal-100 text-teal-600' : 'hover:bg-slate-100'}`}
+                  className={`p-2 rounded-lg transition-colors ${showSettings ? 'bg-brand-100 text-brand-900' : 'hover:bg-slate-100'}`}
                   title={showSettings ? 'Visa notifikationer' : 'Hantera bevakningar'}
                 >
                   <Settings className="w-5 h-5" />
@@ -161,13 +161,13 @@ export default function NotificationsCenter() {
                         value={newAlertQuery}
                         onChange={(e) => setNewAlertQuery(e.target.value)}
                         placeholder="T.ex. 'utvecklare', 'sjuksköterska', 'lärare'..."
-                        className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
+                        className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-700"
                         onKeyPress={(e) => e.key === 'Enter' && handleCreateAlert()}
                       />
                       <button
                         onClick={handleCreateAlert}
                         disabled={!newAlertQuery.trim()}
-                        className="px-4 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 disabled:opacity-50 flex items-center gap-2"
+                        className="px-4 py-2 bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900 disabled:opacity-50 flex items-center gap-2"
                       >
                         <Plus className="w-4 h-4" />
                         Lägg till
@@ -200,7 +200,7 @@ export default function NotificationsCenter() {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleCheckNow(alert)}
-                              className="px-3 py-1.5 text-sm text-teal-600 hover:bg-teal-50 rounded-lg"
+                              className="px-3 py-1.5 text-sm text-brand-900 hover:bg-brand-50 rounded-lg"
                             >
                               Kontrollera nu
                             </button>
@@ -236,7 +236,7 @@ export default function NotificationsCenter() {
                           </span>
                           <button
                             onClick={handleMarkAllAsRead}
-                            className="text-sm text-teal-600 hover:text-teal-700 font-medium"
+                            className="text-sm text-brand-900 hover:text-brand-900 font-medium"
                           >
                             Markera alla som lästa
                           </button>
@@ -246,7 +246,7 @@ export default function NotificationsCenter() {
                         <div
                           key={notification.id}
                           className={`p-4 hover:bg-slate-50 transition-colors cursor-pointer ${
-                            !notification.read ? 'bg-teal-50/30' : ''
+                            !notification.read ? 'bg-brand-50/30' : ''
                           }`}
                           onClick={() => {
                             handleMarkAsRead(notification.id)
@@ -254,8 +254,8 @@ export default function NotificationsCenter() {
                           }}
                         >
                           <div className="flex items-start gap-3">
-                            <div className={`p-2 rounded-lg ${!notification.read ? 'bg-teal-100' : 'bg-slate-100'}`}>
-                              <Briefcase className={`w-4 h-4 ${!notification.read ? 'text-teal-600' : 'text-slate-700'}`} />
+                            <div className={`p-2 rounded-lg ${!notification.read ? 'bg-brand-100' : 'bg-slate-100'}`}>
+                              <Briefcase className={`w-4 h-4 ${!notification.read ? 'text-brand-900' : 'text-slate-700'}`} />
                             </div>
                             <div className="flex-1">
                               <h4 className={`font-medium ${!notification.read ? 'text-slate-900' : 'text-slate-700'}`}>
@@ -276,7 +276,7 @@ export default function NotificationsCenter() {
                               </div>
                             </div>
                             {!notification.read && (
-                              <div className="w-2 h-2 bg-teal-500 rounded-full mt-2" />
+                              <div className="w-2 h-2 bg-brand-700 rounded-full mt-2" />
                             )}
                           </div>
                         </div>
@@ -293,7 +293,7 @@ export default function NotificationsCenter() {
       {/* Job Detail Modal */}
       {selectedJob && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
+          <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h2 className="text-xl font-bold text-slate-900">{selectedJob.headline}</h2>
@@ -319,7 +319,7 @@ export default function NotificationsCenter() {
                 href={selectedJob.application_details.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700"
+                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900"
               >
                 <Briefcase className="w-4 h-4" />
                 Ansök nu

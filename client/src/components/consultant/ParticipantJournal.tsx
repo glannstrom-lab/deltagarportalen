@@ -49,7 +49,7 @@ interface ParticipantJournalProps {
 
 const categoryConfig: Record<NoteCategory, { label: string; color: string; icon: typeof BookOpen }> = {
   GENERAL: { label: 'Anteckning', color: 'bg-slate-100 text-slate-700', icon: BookOpen },
-  PROGRESS: { label: 'Framsteg', color: 'bg-green-100 text-green-700', icon: TrendingUp },
+  PROGRESS: { label: 'Framsteg', color: 'bg-brand-100 text-brand-900', icon: TrendingUp },
   CONCERN: { label: 'Oro', color: 'bg-amber-100 text-amber-700', icon: AlertCircle },
   GOAL: { label: 'Mål', color: 'bg-indigo-100 text-indigo-700', icon: Target },
 }
@@ -148,7 +148,7 @@ export function ParticipantJournal({
   }, {} as Record<string, JournalEntry[]>)
 
   return (
-    <div className={cn('bg-white rounded-2xl shadow-sm border border-slate-200', className)}>
+    <div className={cn('bg-white rounded-xl border border-slate-200', className)}>
       {/* Header */}
       <div className="p-6 border-b border-slate-100">
         <div className="flex items-center justify-between">
@@ -278,7 +278,7 @@ export function ParticipantJournal({
                         className={cn(
                           'p-4 rounded-xl border transition-all',
                           entry.category === 'GOAL' && entry.isCompleted
-                            ? 'bg-green-50 border-green-200'
+                            ? 'bg-brand-50 border-brand-200'
                             : 'bg-white border-slate-200'
                         )}
                       >
@@ -338,7 +338,7 @@ export function ParticipantJournal({
                                   className={cn(
                                     'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                                     entry.isCompleted
-                                      ? 'bg-green-100 text-green-700'
+                                      ? 'bg-brand-100 text-brand-900'
                                       : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                   )}
                                 >

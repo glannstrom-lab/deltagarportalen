@@ -112,8 +112,8 @@ export function IconButton({
       'hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-stone-100'
     ),
     primary: cn(
-      'bg-teal-500 text-white',
-      'hover:bg-teal-600'
+      'bg-brand-900 text-white',
+      'hover:bg-brand-900/90'
     ),
   }
   
@@ -130,7 +130,7 @@ export function IconButton({
       className={cn(
         'inline-flex items-center justify-center rounded-lg',
         'transition-all duration-200',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2',
         animations.press,
         variantClasses[variant],
         sizeClasses[size],

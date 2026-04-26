@@ -103,7 +103,7 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-200">
           <h2 className="text-lg font-bold text-gray-900 flex items-center gap-2">
@@ -124,7 +124,7 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
             <LoadingState message="Hämtar konsulent..." size="sm" />
           ) : success ? (
             <div className="text-center py-8">
-              <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
+              <CheckCircle className="w-16 h-16 text-brand-700 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
                 Jobbet har delats!
               </h3>

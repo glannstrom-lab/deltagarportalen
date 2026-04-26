@@ -52,7 +52,7 @@ export function CVExport({ cvData }: CVExportProps) {
 
   if (!cvData) {
     return (
-      <div className="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-stone-700">
+      <div className="bg-white dark:bg-stone-900 rounded-xl p-6 border border-slate-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
             <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -751,7 +751,7 @@ export function CVExport({ cvData }: CVExportProps) {
       </div>
 
       {/* UI */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-stone-700">
+      <div className="bg-white dark:bg-stone-900 rounded-xl p-6 border border-slate-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
             <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />

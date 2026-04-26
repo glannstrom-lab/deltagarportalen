@@ -72,12 +72,12 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
       >
         {isPlaying && !isPaused ? (
           <>
-            <Pause size={16} className="text-teal-600" />
+            <Pause size={16} className="text-brand-900" />
             <span>Pausa</span>
           </>
         ) : (
           <>
-            <Play size={16} className="text-teal-600" />
+            <Play size={16} className="text-brand-900" />
             <span>Lyssna</span>
           </>
         )}

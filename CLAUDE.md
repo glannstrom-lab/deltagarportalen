@@ -161,6 +161,47 @@ const response = await fetch('/api/ai', {
 
 ---
 
+## UI/Design-instruktioner
+
+### Innan du ändrar UI
+1. **Läs `docs/DESIGN.md`** — den definierar färg, form, hierarki
+2. **Kolla `7.png`** i rotmappen som designreferens
+3. **Sök i `components/ui/`** om komponenten redan finns — återanvänd alltid, kopiera aldrig
+
+### När du redesignar en sida
+1. Be om eller hänvisa till en screenshot av nuvarande sida
+2. Lista vilka designprinciper som bryts
+3. Föreslå förändringar komponent för komponent
+4. Visa diff innan implementation
+
+### Innan du lägger till en ny färg
+**Stopp.** Använd befintliga tokens i `tailwind.config.ts`.
+Om du verkligen behöver en ny färg — fråga först.
+
+### Innan du lägger till en ny komponent
+Sök i `components/ui/` och `components/dashboard/`. Om något liknande finns, utöka det med en variant istället för att skapa nytt.
+
+### Komponentkatalog
+```
+components/
+  ui/
+    Card.tsx           — bas-kort
+    Button.tsx         — primär/sekundär/ghost
+    Progress.tsx       — progress bars
+    StatCard.tsx       — KPI-kort variant
+  dashboard/
+    KpiCard.tsx        — neutral och tinted variant
+    NextStepCard.tsx   — turkos CTA-banner
+    GettingStartedChecklist.tsx  — "Kom igång" checklista
+    OnboardingStep.tsx — steg i onboarding
+  layout/
+    Sidebar.tsx        — sidomeny
+    TopBar.tsx         — topbar
+    PageLayout.tsx     — wrapper för sidor
+```
+
+---
+
 ## Lärdomar från Felsökning
 
 ### 2026-04-09: White Screen på Landing Page

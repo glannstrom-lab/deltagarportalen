@@ -209,7 +209,7 @@ function CareerWidgetLarge({
               <Link
                 key={tab.id}
                 to={tab.path}
-                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all hover:shadow-sm ${tab.color}`}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all hover: ${tab.color}`}
               >
                 <tab.icon size={18} />
                 <span className="text-xs font-medium">{t(tab.labelKey)}</span>

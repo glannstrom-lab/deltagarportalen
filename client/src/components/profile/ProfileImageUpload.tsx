@@ -83,7 +83,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
       {/* Image */}
       <div
         className={cn(
-          'relative rounded-2xl overflow-hidden bg-brand-900 flex items-center justify-center shadow-lg flex-shrink-0',
+          'relative rounded-xl overflow-hidden bg-brand-900 flex items-center justify-center flex-shrink-0',
           sizeClasses[size]
         )}
       >

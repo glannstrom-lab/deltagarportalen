@@ -84,7 +84,7 @@ export function QuestionCard({
     if (percentage < 0.25) return 'from-red-400 to-orange-400'
     if (percentage < 0.5) return 'from-orange-400 to-yellow-400'
     if (percentage < 0.75) return 'from-yellow-400 to-emerald-400'
-    return 'from-emerald-400 to-green-500'
+    return 'from-emerald-400 to-brand-700'
   }
 
   // Beräkna progress
@@ -92,11 +92,11 @@ export function QuestionCard({
   const remaining = totalQuestions - questionNumber
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 p-6 sm:p-8 relative">
+    <div className="bg-white rounded-xl /50 border border-gray-100 p-6 sm:p-8 relative">
       {/* Paus-confirmation modal */}
       {showPauseConfirm && (
         <div
-          className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10"
+          className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-xl flex items-center justify-center z-10"
           role="dialog"
           aria-modal="true"
           aria-labelledby="pause-dialog-title"
@@ -223,7 +223,7 @@ export function QuestionCard({
                   className={`
                     w-8 h-8 rounded-full border-4 transition-all duration-200 ease-out cursor-pointer
                     ${isCurrent
-                      ? 'bg-white border-indigo-600 scale-110 shadow-lg'
+                      ? 'bg-white border-indigo-600 scale-110'
                       : isActive
                         ? 'bg-white border-emerald-400 hover:scale-105'
                         : 'bg-white border-gray-300 hover:scale-105 hover:border-gray-400'
@@ -337,7 +337,7 @@ export function ResumeModal({
       aria-labelledby="resume-dialog-title"
       aria-describedby="resume-dialog-description"
     >
-      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in-95">
+      <div className="bg-white rounded-xl max-w-md w-full p-6 animate-in fade-in zoom-in-95">
         <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <RotateCcw className="w-8 h-8 text-indigo-600" aria-hidden="true" />
         </div>

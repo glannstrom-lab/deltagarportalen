@@ -21,9 +21,9 @@ const ENERGY_OPTIONS: EnergyOption[] = [
     icon: Battery,
     label: 'Låg energi',
     description: 'Visa endast korta kurser (under 15 min)',
-    color: 'text-green-600',
-    bgColor: 'bg-green-50 hover:bg-green-100',
-    borderColor: 'border-green-200'
+    color: 'text-brand-900',
+    bgColor: 'bg-brand-50 hover:bg-brand-100',
+    borderColor: 'border-brand-200'
   },
   {
     level: 'MEDIUM',
@@ -47,7 +47,7 @@ const ENERGY_OPTIONS: EnergyOption[] = [
 
 export default function EnergyLevelSelector({ value, onChange }: EnergyLevelSelectorProps) {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div className="bg-white rounded-xl p-6 border border-slate-200">
       <div className="flex items-center gap-2 mb-4">
         <BatteryFull className="text-slate-600" size={20} />
         <h3 className="font-medium text-slate-700">Hur är din energi idag?</h3>

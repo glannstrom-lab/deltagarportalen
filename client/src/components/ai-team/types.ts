@@ -22,7 +22,7 @@ export interface Agent {
   quickActions: QuickAction[]
 }
 
-export type AgentColor = 'teal' | 'rose' | 'violet' | 'amber' | 'sky'
+export type AgentColor = 'brand' | 'rose' | 'violet' | 'amber' | 'sky'
 
 // Response mode types
 export type ResponseMode = 'short' | 'medium' | 'detailed'
@@ -96,12 +96,12 @@ export const agentColorClasses: Record<AgentColor, {
   border: string
   ring: string
 }> = {
-  teal: {
-    bg: 'bg-teal-500',
-    bgLight: 'bg-teal-50 dark:bg-teal-900/30',
-    text: 'text-teal-600 dark:text-teal-400',
-    border: 'border-teal-200 dark:border-teal-800',
-    ring: 'ring-teal-500',
+  brand: {
+    bg: 'bg-brand-700',
+    bgLight: 'bg-brand-50 dark:bg-brand-900/30',
+    text: 'text-brand-900 dark:text-brand-400',
+    border: 'border-brand-200 dark:border-brand-900',
+    ring: 'ring-brand-700',
   },
   rose: {
     bg: 'bg-rose-500',

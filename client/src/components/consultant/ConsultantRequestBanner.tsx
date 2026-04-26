@@ -112,11 +112,11 @@ export const ConsultantRequestBanner: React.FC = () => {
         return (
           <div
             key={request.id}
-            className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800 rounded-xl p-4 shadow-sm"
+            className="bg-gradient-to-r from-brand-50 to-sky-50 dark:from-brand-900/20 dark:to-sky-900/20 border border-brand-200 dark:border-brand-900 rounded-xl p-4"
           >
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-teal-100 dark:bg-teal-800 rounded-full flex items-center justify-center">
-                <UserPlus className="w-6 h-6 text-teal-600 dark:text-teal-300" aria-hidden="true" />
+              <div className="flex-shrink-0 w-12 h-12 bg-brand-100 dark:bg-brand-900 rounded-full flex items-center justify-center">
+                <UserPlus className="w-6 h-6 text-brand-900 dark:text-brand-300" aria-hidden="true" />
               </div>
 
               <div className="flex-1 min-w-0">
@@ -142,7 +142,7 @@ export const ConsultantRequestBanner: React.FC = () => {
                   <button
                     onClick={() => handleAccept(request.id)}
                     disabled={responding === request.id}
-                    className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 transition-colors text-sm font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-brand-900 text-white rounded-lg hover:bg-brand-900 disabled:opacity-50 transition-colors text-sm font-medium"
                   >
                     {responding === request.id ? (
                       <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />

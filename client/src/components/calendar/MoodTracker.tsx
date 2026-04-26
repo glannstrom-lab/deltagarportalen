@@ -121,7 +121,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
                   onClick={() => setEnergy(level as 1 | 2 | 3 | 4 | 5)}
                   className={`flex-1 p-2 rounded-lg border-2 transition-all ${
                     energy === level
-                      ? 'border-green-500 bg-green-50'
+                      ? 'border-brand-700 bg-brand-50'
                       : 'border-transparent hover:bg-white/50'
                   }`}
                 >
@@ -152,8 +152,8 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
                   }`}
                 >
                   <div className={`h-2 w-full rounded-full ${
-                    level === 1 ? 'bg-green-200' :
-                    level === 2 ? 'bg-green-300' :
+                    level === 1 ? 'bg-brand-200' :
+                    level === 2 ? 'bg-brand-300' :
                     level === 3 ? 'bg-yellow-300' :
                     level === 4 ? 'bg-orange-400' : 'bg-red-500'
                   }`} />

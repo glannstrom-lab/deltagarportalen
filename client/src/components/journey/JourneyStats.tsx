@@ -68,8 +68,8 @@ export function JourneyStats({ stats }: JourneyStatsProps) {
       icon: BookOpen,
       label: 'Artiklar lästa',
       value: stats.articlesRead.toString(),
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-100'
+      color: 'text-brand-900',
+      bgColor: 'bg-brand-100'
     },
     {
       icon: FileText,

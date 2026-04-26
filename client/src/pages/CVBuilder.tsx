@@ -67,7 +67,7 @@ const TEMPLATES = [
     id: 'centered', 
     name: 'Centrerad', 
     desc: 'Hero-design med stort foto och gradient',
-    preview: 'bg-gradient-to-br from-teal-500 to-sky-500',
+    preview: 'bg-gradient-to-br from-brand-700 to-sky-500',
     features: ['Gradient header', 'Centrerat foto', 'Timeline']
   },
   { 
@@ -118,11 +118,11 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
   const progress = (completedSteps.length / totalSteps) * 100
 
   return (
-    <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-4 mb-6">
+    <div className="bg-gradient-to-r from-brand-50 via-white to-sky-50 dark:from-brand-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-xl border border-brand-200 dark:border-brand-900/50 p-4 mb-6">
       {/* Progress header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-teal-800 dark:text-teal-300">
+          <span className="text-sm font-semibold text-brand-900 dark:text-brand-300">
             Steg {currentStep} av {totalSteps}
           </span>
           <span className="text-xs text-stone-500 dark:text-stone-400">•</span>
@@ -130,15 +130,15 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
             ~{remainingMinutes} min kvar
           </span>
         </div>
-        <span className="text-sm font-medium text-teal-600 dark:text-teal-400">
+        <span className="text-sm font-medium text-brand-900 dark:text-brand-400">
           {Math.round(progress)}% klart
         </span>
       </div>
 
       {/* Visual progress bar */}
-      <div className="h-2 bg-teal-100 dark:bg-teal-900/40 rounded-full overflow-hidden mb-4">
+      <div className="h-2 bg-brand-100 dark:bg-brand-900/40 rounded-full overflow-hidden mb-4">
         <div
-          className="h-full bg-gradient-to-r from-teal-500 to-sky-500 transition-all duration-500 rounded-full"
+          className="h-full bg-gradient-to-r from-brand-700 to-sky-500 transition-all duration-500 rounded-full"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -157,7 +157,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 onClick={() => onStepClick(stepNum)}
                 className={cn(
                   "flex flex-col items-center gap-1 group min-w-[44px] min-h-[44px] py-1",
-                  "focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 rounded-lg"
+                  "focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2 rounded-lg"
                 )}
                 aria-label={`Gå till steg ${stepNum}: ${step.title}`}
                 aria-current={isActive ? 'step' : undefined}
@@ -165,7 +165,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 <div className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all",
                   isActive
-                    ? "bg-teal-600 dark:bg-teal-500 text-white shadow-lg ring-4 ring-teal-100 dark:ring-teal-900/50"
+                    ? "bg-brand-900 dark:bg-brand-700 text-white ring-4 ring-brand-100 dark:ring-brand-900/50"
                     : isCompleted
                       ? "bg-emerald-500 text-white"
                       : "bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 group-hover:bg-stone-200 dark:group-hover:bg-stone-600"
@@ -174,7 +174,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 </div>
                 <span className={cn(
                   "text-xs font-medium hidden sm:block",
-                  isActive ? "text-teal-600 dark:text-teal-400" : isCompleted ? "text-emerald-600 dark:text-emerald-400" : "text-stone-600 dark:text-stone-400"
+                  isActive ? "text-brand-900 dark:text-brand-400" : isCompleted ? "text-emerald-600 dark:text-emerald-400" : "text-stone-600 dark:text-stone-400"
                 )}>
                   {step.title}
                 </span>
@@ -197,10 +197,10 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
       </div>
 
       {/* Current step description - more prominent on mobile */}
-      <div className="mt-3 pt-3 border-t border-teal-100 dark:border-teal-800/30">
+      <div className="mt-3 pt-3 border-t border-brand-100 dark:border-brand-900/30">
         <div className="sm:text-center">
           <p className="text-sm sm:text-sm text-stone-600 dark:text-stone-400">
-            <span className="font-semibold text-teal-700 dark:text-teal-300 sm:font-medium sm:text-stone-800 dark:sm:text-stone-200">
+            <span className="font-semibold text-brand-900 dark:text-brand-300 sm:font-medium sm:text-stone-800 dark:sm:text-stone-200">
               Steg {currentStep}: {STEPS[currentStep - 1]?.title}
             </span>
             <span className="hidden sm:inline"> – </span>
@@ -216,7 +216,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
 
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("bg-white dark:bg-stone-800/50 rounded-2xl shadow-sm border border-teal-100 dark:border-teal-800/30 p-4 sm:p-6", className)}>
+    <div className={cn("bg-white dark:bg-stone-800/50 rounded-xl border border-brand-100 dark:border-brand-900/30 p-4 sm:p-6", className)}>
       {children}
     </div>
   )
@@ -237,7 +237,7 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-4 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500 text-base bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500"
+        className="w-full px-4 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700/20 dark:focus:ring-brand-400/30 focus:border-brand-400 dark:focus:border-brand-700 text-base bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500"
       />
     </div>
   )
@@ -502,16 +502,16 @@ export default function CVBuilder() {
               key={tpl.id}
               onClick={() => setData({ ...data, template: tpl.id })}
               className={cn(
-                "group relative overflow-hidden rounded-2xl border-2 text-left transition-all",
+                "group relative overflow-hidden rounded-xl border-2 text-left transition-all",
                 selected
-                  ? "border-sky-500 ring-2 ring-sky-500 ring-offset-2 dark:ring-offset-stone-900 shadow-xl"
-                  : "border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-600 hover:shadow-lg"
+                  ? "border-sky-500 ring-2 ring-sky-500 ring-offset-2 dark:ring-offset-stone-900"
+                  : "border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-600 hover:"
               )}
             >
               {/* Preview thumbnail */}
               <div className={cn("h-36 w-full relative", tpl.preview)}>
                 {selected && (
-                  <div className="absolute top-3 right-3 bg-sky-500 text-white rounded-full p-1.5 shadow-lg">
+                  <div className="absolute top-3 right-3 bg-sky-500 text-white rounded-full p-1.5">
                     <Check className="w-5 h-5" />
                   </div>
                 )}
@@ -519,7 +519,7 @@ export default function CVBuilder() {
                 {/* Mock layout preview */}
                 <div className="absolute inset-0 flex items-center justify-center p-4">
                   {tpl.id === 'sidebar' && (
-                    <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
+                    <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2">
                       <div className="w-1/3 bg-stone-700 rounded" />
                       <div className="w-2/3 space-y-1">
                         <div className="h-3 bg-stone-200 rounded w-3/4" />
@@ -528,20 +528,20 @@ export default function CVBuilder() {
                     </div>
                   )}
                   {tpl.id === 'centered' && (
-                    <div className="flex flex-col items-center w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-sky-400 mb-2" />
+                    <div className="flex flex-col items-center w-full h-20 bg-white/90 rounded-lg p-2">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-400 to-sky-400 mb-2" />
                       <div className="h-3 bg-stone-200 rounded w-1/2" />
                     </div>
                   )}
                   {tpl.id === 'minimal' && (
-                    <div className="w-full h-20 bg-white/90 rounded-lg p-3 shadow-sm space-y-2">
+                    <div className="w-full h-20 bg-white/90 rounded-lg p-3 space-y-2">
                       <div className="h-3 bg-stone-800 rounded w-1/3" />
                       <div className="h-2 bg-stone-200 rounded w-full" />
                       <div className="h-2 bg-stone-200 rounded w-2/3" />
                     </div>
                   )}
                   {tpl.id === 'creative' && (
-                    <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
+                    <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2">
                       <div className="w-2/5 bg-pink-500 rounded" />
                       <div className="w-3/5 grid grid-cols-2 gap-1">
                         <div className="bg-pink-100 rounded" />
@@ -550,13 +550,13 @@ export default function CVBuilder() {
                     </div>
                   )}
                   {tpl.id === 'executive' && (
-                    <div className="w-full h-20 bg-stone-800 rounded-lg p-3 shadow-sm">
+                    <div className="w-full h-20 bg-stone-800 rounded-lg p-3">
                       <div className="h-3 bg-amber-400 rounded w-1/2 mb-2" />
                       <div className="h-2 bg-stone-600 rounded w-full" />
                     </div>
                   )}
                   {tpl.id === 'nordic' && (
-                    <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
+                    <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2">
                       <div className="w-1/3 bg-sky-100 rounded" />
                       <div className="w-2/3 space-y-1">
                         <div className="h-3 bg-sky-200 rounded w-3/4" />
@@ -593,7 +593,7 @@ export default function CVBuilder() {
       </div>
 
       {data.template && (
-        <div className="p-5 bg-sky-50 dark:bg-sky-900/20 rounded-2xl border border-sky-100 dark:border-sky-800/50">
+        <div className="p-5 bg-sky-50 dark:bg-sky-900/20 rounded-xl border border-sky-100 dark:border-sky-800/50">
           <div className="flex items-start gap-3">
             <div className="bg-sky-500 text-white rounded-full p-1 mt-0.5">
               <Check className="w-4 h-4" />
@@ -618,7 +618,7 @@ export default function CVBuilder() {
       <Card className="relative">
         {/* Loading overlay for image upload */}
         {isImageUploading && (
-          <div className="absolute inset-0 bg-white/80 dark:bg-stone-900/80 rounded-2xl flex items-center justify-center z-10">
+          <div className="absolute inset-0 bg-white/80 dark:bg-stone-900/80 rounded-xl flex items-center justify-center z-10">
             <div className="flex items-center gap-3">
               <Loader2 className="w-5 h-5 animate-spin text-sky-600" />
               <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('cvBuilder.profileImage.uploading')}</span>
@@ -741,7 +741,7 @@ export default function CVBuilder() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.languages')}</h3>
-          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'good' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'good' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-brand-900 dark:text-brand-400 bg-brand-900/10 rounded-lg hover:bg-brand-900/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.languages.length > 0 && (
           <div className="space-y-2">
@@ -783,7 +783,7 @@ export default function CVBuilder() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.certificates')}</h3>
-          <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-brand-900 dark:text-brand-400 bg-brand-900/10 rounded-lg hover:bg-brand-900/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.certificates.length > 0 && (
           <div className="space-y-2">
@@ -800,7 +800,7 @@ export default function CVBuilder() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.links')}</h3>
-          <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-brand-900 dark:text-brand-400 bg-brand-900/10 rounded-lg hover:bg-brand-900/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.links.length > 0 && (
           <div className="space-y-2">
@@ -835,7 +835,7 @@ export default function CVBuilder() {
     return (
       <div className="max-w-7xl mx-auto flex items-center justify-center py-12">
         <div className="flex items-center gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
+          <Loader2 className="w-6 h-6 animate-spin text-brand-900" />
           <span className="text-stone-600 dark:text-stone-400">{t('cvBuilder.loading', 'Laddar...')}</span>
         </div>
       </div>
@@ -864,7 +864,7 @@ export default function CVBuilder() {
         <div className="text-center">
           <button
             onClick={() => setShowQuickMode(false)}
-            className="px-6 py-3 text-teal-600 dark:text-teal-400 font-medium hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-xl transition-colors"
+            className="px-6 py-3 text-brand-900 dark:text-brand-400 font-medium hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-xl transition-colors"
           >
             {t('cv.welcome.fullBuilder', 'Eller använd den fullständiga CV-byggaren')}
           </button>
@@ -885,7 +885,7 @@ export default function CVBuilder() {
         <button
           onClick={save}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-brand-900 text-white rounded-lg hover:bg-brand-900 disabled:opacity-50 text-sm font-medium"
           title={t('cvBuilder.actions.saveManually')}
         >
           <Save className="w-4 h-4" />
@@ -934,7 +934,7 @@ export default function CVBuilder() {
               <ChevronLeft className="w-5 h-5" />
               {t('cvBuilder.actions.previous')}
             </button>
-            <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 disabled:opacity-50 font-medium">
+            <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-brand-900 text-white rounded-xl hover:bg-brand-900 disabled:opacity-50 font-medium">
               {t('cvBuilder.actions.next')}
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -947,8 +947,8 @@ export default function CVBuilder() {
         {/* Right: Preview + Tools (desktop) */}
         <div className="hidden lg:block space-y-6">
           {/* Preview - Clean A4 look */}
-          <div className="bg-stone-100 dark:bg-stone-800 rounded-2xl p-6">
-            <div className="bg-white dark:bg-stone-900 shadow-lg rounded-lg overflow-hidden max-h-[700px] overflow-y-auto">
+          <div className="bg-stone-100 dark:bg-stone-800 rounded-xl p-6">
+            <div className="bg-white dark:bg-stone-900 rounded-lg overflow-hidden max-h-[700px] overflow-y-auto">
               <CVPreview data={data} />
             </div>
           </div>
@@ -957,7 +957,7 @@ export default function CVBuilder() {
           <ContextualKnowledgeWidget context="cv-building" variant="full" />
 
           {/* Help - Show onboarding again */}
-          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-5">
+          <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
             <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-2">{t('cvBuilder.help.title')}</h3>
             <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
               {t('cvBuilder.help.description')}
@@ -981,14 +981,14 @@ export default function CVBuilder() {
 
           {/* AI Tools */}
           {step === 3 && (
-            <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-2xl shadow-sm border border-teal-200 dark:border-teal-800/50 p-5">
+            <div className="bg-gradient-to-br from-brand-50 to-sky-50 dark:from-brand-900/30 dark:to-sky-900/30 rounded-xl border border-brand-200 dark:border-brand-900/50 p-5">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-brand-700 rounded-lg flex items-center justify-center">
                   <Lightbulb className="w-4 h-4 text-white" />
                 </div>
-                <h3 className="font-semibold text-teal-900 dark:text-teal-100">{t('cvBuilder.help.aiWriting')}</h3>
+                <h3 className="font-semibold text-brand-900 dark:text-brand-100">{t('cvBuilder.help.aiWriting')}</h3>
               </div>
-              <p className="text-sm text-teal-700 dark:text-teal-300 mb-3">
+              <p className="text-sm text-brand-900 dark:text-brand-300 mb-3">
                 {t('cvBuilder.help.aiWritingDesc')}
               </p>
               <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
@@ -996,7 +996,7 @@ export default function CVBuilder() {
           )}
 
           {/* Versions */}
-          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-5">
+          <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
             <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-3">{t('cvBuilder.versions.title')}</h3>
             {showSaveVersion ? (
               <div className="space-y-2 mb-3">
@@ -1008,14 +1008,14 @@ export default function CVBuilder() {
                   className="w-full px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                 />
                 <div className="flex gap-2">
-                  <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-teal-600 text-white text-sm rounded-lg">{t('cvBuilder.versions.save')}</button>
+                  <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-brand-900 text-white text-sm rounded-lg">{t('cvBuilder.versions.save')}</button>
                   <button onClick={() => setShowSaveVersion(false)} className="flex-1 px-3 py-2 border border-stone-300 dark:border-stone-600 text-sm rounded-lg text-stone-700 dark:text-stone-300">{t('cvBuilder.versions.cancel')}</button>
                 </div>
               </div>
             ) : (
               <button
                 onClick={() => setShowSaveVersion(true)}
-                className="w-full mb-3 px-4 py-2 border border-teal-600 dark:border-teal-500 text-teal-600 dark:text-teal-400 rounded-lg text-sm hover:bg-teal-600/5 dark:hover:bg-teal-600/10"
+                className="w-full mb-3 px-4 py-2 border border-brand-900 dark:border-brand-700 text-brand-900 dark:text-brand-400 rounded-lg text-sm hover:bg-brand-900/5 dark:hover:bg-brand-900/10"
               >
                 {t('cvBuilder.versions.saveCurrentVersion')}
               </button>
@@ -1032,7 +1032,7 @@ export default function CVBuilder() {
                     </div>
                     <button
                       onClick={() => restoreVersion(v.id)}
-                      className="text-xs text-teal-600 dark:text-teal-400 hover:bg-teal-600/10 px-2 py-1 rounded"
+                      className="text-xs text-brand-900 dark:text-brand-400 hover:bg-brand-900/10 px-2 py-1 rounded"
                     >
                       {t('cvBuilder.actions.restore')}
                     </button>
@@ -1073,7 +1073,7 @@ export default function CVBuilder() {
         <button
           onClick={() => setStep(Math.min(STEPS.length, step + 1))}
           disabled={step === STEPS.length}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 disabled:opacity-50 font-medium"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-brand-900 text-white rounded-xl hover:bg-brand-900 disabled:opacity-50 font-medium"
         >
           {t('cvBuilder.actions.next')}
           <ChevronRight className="w-5 h-5" />

@@ -121,7 +121,7 @@ export function ProfileHeader() {
   const alerts = getAlerts()
 
   return (
-    <header className="bg-brand-zone dark:bg-brand-900/10 rounded-2xl mb-4 overflow-hidden">
+    <header className="bg-brand-zone dark:bg-brand-900/10 rounded-xl mb-4 overflow-hidden">
       {/* Profile Info */}
       <div className="p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4">
         <ProfileImageUpload

@@ -35,8 +35,8 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
   if (loading) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-        <div className="bg-white rounded-2xl p-8 text-center">
-          <div className="w-16 h-16 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-4" />
+        <div className="bg-white rounded-xl p-8 text-center">
+          <div className="w-16 h-16 border-4 border-brand-200 border-t-brand-900 rounded-full animate-spin mx-auto mb-4" />
           <p className="text-slate-600">Analyserar din matchning...</p>
         </div>
       </div>
@@ -46,22 +46,22 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
   if (!analysis) return null
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600'
-    if (score >= 60) return 'text-teal-600'
+    if (score >= 80) return 'text-brand-900'
+    if (score >= 60) return 'text-brand-900'
     if (score >= 40) return 'text-amber-600'
     return 'text-red-600'
   }
 
   const getScoreBg = (score: number) => {
-    if (score >= 80) return 'bg-green-100'
-    if (score >= 60) return 'bg-teal-100'
+    if (score >= 80) return 'bg-brand-100'
+    if (score >= 60) return 'bg-brand-100'
     if (score >= 40) return 'bg-amber-100'
     return 'bg-red-100'
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="p-6 border-b border-slate-200">
           <div className="flex items-center justify-between">
@@ -100,12 +100,12 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
           </div>
 
           {/* Assessment */}
-          <div className="p-4 bg-teal-50 rounded-xl border border-teal-100">
+          <div className="p-4 bg-brand-50 rounded-xl border border-brand-100">
             <div className="flex items-start gap-3">
-              <Award className="w-5 h-5 text-teal-600 mt-0.5" />
+              <Award className="w-5 h-5 text-brand-900 mt-0.5" />
               <div>
-                <h3 className="font-semibold text-teal-900">Bedömning</h3>
-                <p className="text-teal-700 mt-1">{analysis.overallAssessment}</p>
+                <h3 className="font-semibold text-brand-900">Bedömning</h3>
+                <p className="text-brand-900 mt-1">{analysis.overallAssessment}</p>
               </div>
             </div>
           </div>
@@ -114,14 +114,14 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
           {analysis.matchedSkills.length > 0 && (
             <div>
               <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-500" />
+                <CheckCircle className="w-5 h-5 text-brand-700" />
                 Matchande kompetenser ({analysis.matchedSkills.length})
               </h3>
               <div className="flex flex-wrap gap-2">
                 {analysis.matchedSkills.map((skill, idx) => (
                   <span 
                     key={idx}
-                    className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm"
+                    className="px-3 py-1 bg-brand-100 text-brand-900 rounded-full text-sm"
                   >
                     {skill}
                   </span>
@@ -158,7 +158,7 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
           {/* Recommendations */}
           <div>
             <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-teal-500" />
+              <TrendingUp className="w-5 h-5 text-brand-700" />
               Rekommendationer
             </h3>
             <ul className="space-y-2">
@@ -167,7 +167,7 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
                   key={idx}
                   className="flex items-start gap-2 text-slate-700"
                 >
-                  <span className="text-teal-500 mt-1">•</span>
+                  <span className="text-brand-700 mt-1">•</span>
                   {rec}
                 </li>
               ))}

@@ -192,7 +192,7 @@ export function DocumentsSection({ className }: Props) {
           aria-modal="true"
           aria-labelledby="upload-modal-title"
         >
-          <div className="bg-white dark:bg-stone-800 rounded-2xl p-6 max-w-md w-full space-y-4">
+          <div className="bg-white dark:bg-stone-800 rounded-xl p-6 max-w-md w-full space-y-4">
             <div className="flex items-center justify-between">
               <h3 id="upload-modal-title" className="font-semibold text-stone-800 dark:text-stone-200">
                 {t('profile.documents.uploadDocument')}

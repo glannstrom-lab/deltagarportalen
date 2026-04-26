@@ -108,7 +108,7 @@ export function CVSaveTest() {
   }
 
   return (
-    <div className="p-5 bg-white rounded-2xl border-2 border-slate-200 shadow-sm">
+    <div className="p-5 bg-white rounded-xl border-2 border-slate-200">
       <h3 className="text-lg font-bold text-slate-800 mb-2">CV-spar test</h3>
       <p className="text-sm text-slate-700 mb-4">
         Klicka för att testa om arbetslivserfarenhet sparas korrekt.

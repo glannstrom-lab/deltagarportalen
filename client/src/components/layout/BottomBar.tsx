@@ -401,13 +401,13 @@ export function BottomBar() {
 
   // Färg baserat på CV-score
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-500'
+    if (score >= 80) return 'text-brand-700'
     if (score >= 50) return 'text-yellow-500'
     return 'text-slate-600'
   }
 
   const getScoreBg = (score: number) => {
-    if (score >= 80) return 'bg-green-100'
+    if (score >= 80) return 'bg-brand-100'
     if (score >= 50) return 'bg-yellow-100'
     return 'bg-slate-100'
   }
@@ -418,7 +418,7 @@ export function BottomBar() {
   return (
     <>
       {/* Smart Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-stone-900 border-t border-slate-200/80 dark:border-stone-700 px-4 py-2 z-30 shadow-lg shadow-slate-200/50 dark:shadow-stone-900/50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-stone-900 border-t border-slate-200/80 dark:border-stone-700 px-4 py-2 z-30 /50 dark:/50">
         <div className="max-w-7xl mx-auto">
           
           {/* Övre rad - Stats & Primary Action */}
@@ -458,15 +458,15 @@ export function BottomBar() {
 
               {/* Dagliga uppgifter */}
               <div className="hidden md:flex items-center gap-2 px-3 py-2">
-                <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
-                  <CheckCircle2 size={18} className="text-teal-600" />
+                <div className="w-10 h-10 bg-brand-100 rounded-xl flex items-center justify-center">
+                  <CheckCircle2 size={18} className="text-brand-900" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-700 dark:text-stone-400">{t('layout.bottomBar.dailyGoals')}</p>
                   <div className="flex items-center gap-2">
                     <div className="w-16 h-1.5 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-teal-500 rounded-full transition-all"
+                        className="h-full bg-brand-700 rounded-full transition-all"
                         style={{ width: `${taskProgress}%` }}
                       />
                     </div>
@@ -507,9 +507,9 @@ export function BottomBar() {
                 <Link
                   to={primaryAction.path}
                   className={cn(
-                    "flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium transition-all hover:shadow-lg hover:shadow-teal-500/25",
+                    "flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium transition-all hover: hover:/25",
                     primaryAction.priority === 'high'
-                      ? "bg-gradient-to-r from-teal-500 to-sky-500 hover:from-teal-400 hover:to-sky-400"
+                      ? "bg-gradient-to-r from-brand-700 to-sky-500 hover:from-brand-400 hover:to-sky-400"
                       : "bg-slate-700 hover:bg-slate-600"
                   )}
                 >
@@ -533,9 +533,9 @@ export function BottomBar() {
                     to={step.path}
                     onClick={() => setShowNextSteps(false)}
                     className={cn(
-                      "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all hover:shadow-sm",
+                      "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all hover:",
                       step.priority === 'high'
-                        ? "bg-teal-50 dark:bg-teal-900/40 border-teal-100 dark:border-teal-800 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-900/60"
+                        ? "bg-brand-50 dark:bg-brand-900/40 border-brand-100 dark:border-brand-900 text-brand-900 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/60"
                         : "bg-white dark:bg-stone-800 border-slate-200 dark:border-stone-700 text-slate-700 dark:text-stone-300 hover:bg-slate-50 dark:hover:bg-stone-700"
                     )}
                   >

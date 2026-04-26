@@ -201,7 +201,7 @@ export function ApplicationsPipeline({
       {/* Toolbar */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <span className="px-3 py-1.5 bg-teal-100 text-teal-700 rounded-full text-sm font-medium">
+          <span className="px-3 py-1.5 bg-brand-100 text-brand-900 rounded-full text-sm font-medium">
             {stats.active} aktiva
           </span>
           <span className="text-sm text-slate-700 hidden sm:inline">
@@ -217,7 +217,7 @@ export function ApplicationsPipeline({
               className={cn(
                 "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-sm",
                 priorityFilter
-                  ? "border-teal-300 bg-teal-50 text-teal-700"
+                  ? "border-brand-300 bg-brand-50 text-brand-900"
                   : "border-slate-200 hover:bg-slate-50 text-slate-600"
               )}
             >
@@ -231,12 +231,12 @@ export function ApplicationsPipeline({
             {showFilters && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowFilters(false)} />
-                <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20 min-w-[150px]">
+                <div className="absolute right-0 mt-1 bg-white rounded-lg border border-slate-200 py-1 z-20 min-w-[150px]">
                   <button
                     onClick={() => { setPriorityFilter(null); setShowFilters(false) }}
                     className={cn(
                       "w-full text-left px-3 py-2 text-sm hover:bg-slate-50",
-                      !priorityFilter && "text-teal-600 bg-teal-50"
+                      !priorityFilter && "text-brand-900 bg-brand-50"
                     )}
                   >
                     Alla prioriteter
@@ -245,7 +245,7 @@ export function ApplicationsPipeline({
                     onClick={() => { setPriorityFilter('high'); setShowFilters(false) }}
                     className={cn(
                       "w-full text-left px-3 py-2 text-sm hover:bg-slate-50",
-                      priorityFilter === 'high' && "text-teal-600 bg-teal-50"
+                      priorityFilter === 'high' && "text-brand-900 bg-brand-50"
                     )}
                   >
                     Hög prioritet
@@ -254,7 +254,7 @@ export function ApplicationsPipeline({
                     onClick={() => { setPriorityFilter('medium'); setShowFilters(false) }}
                     className={cn(
                       "w-full text-left px-3 py-2 text-sm hover:bg-slate-50",
-                      priorityFilter === 'medium' && "text-teal-600 bg-teal-50"
+                      priorityFilter === 'medium' && "text-brand-900 bg-brand-50"
                     )}
                   >
                     Medium prioritet
@@ -263,7 +263,7 @@ export function ApplicationsPipeline({
                     onClick={() => { setPriorityFilter('low'); setShowFilters(false) }}
                     className={cn(
                       "w-full text-left px-3 py-2 text-sm hover:bg-slate-50",
-                      priorityFilter === 'low' && "text-teal-600 bg-teal-50"
+                      priorityFilter === 'low' && "text-brand-900 bg-brand-50"
                     )}
                   >
                     Låg prioritet
@@ -335,8 +335,8 @@ export function ApplicationsPipeline({
       {/* Empty state */}
       {stats.total === 0 && (
         <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Bookmark className="w-8 h-8 text-teal-600" />
+          <div className="w-16 h-16 bg-brand-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <Bookmark className="w-8 h-8 text-brand-900" />
           </div>
           <h3 className="text-xl font-semibold text-slate-700 mb-2">
             Inga ansökningar än

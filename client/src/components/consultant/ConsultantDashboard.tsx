@@ -141,7 +141,7 @@ export const ConsultantDashboard: React.FC = () => {
           {/* Main Content - Participant List */}
           <div className="lg:col-span-2">
             {/* Filters */}
-            <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-4 mb-6">
+            <div className="bg-white dark:bg-stone-900 rounded-lg border border-gray-200 dark:border-stone-700 p-4 mb-6">
               <div className="flex flex-wrap items-center gap-4">
                 <div className="flex-1 min-w-[200px]">
                   <div className="relative">
@@ -196,7 +196,7 @@ export const ConsultantDashboard: React.FC = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <div className="bg-white dark:bg-stone-900 rounded-lg shadow-sm border border-gray-200 dark:border-stone-700 p-6">
+            <div className="bg-white dark:bg-stone-900 rounded-lg border border-gray-200 dark:border-stone-700 p-6">
               <h3 className="font-semibold text-gray-900 dark:text-stone-100 mb-4">{t('consultant.dashboard.quickActions.title')}</h3>
               <div className="space-y-3">
                 <button className="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg hover:bg-gray-50 dark:hover:bg-stone-800 transition-colors">

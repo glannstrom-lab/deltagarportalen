@@ -224,7 +224,7 @@ export default function HealthTab() {
   return (
     <div className="space-y-6">
       {/* Mood Logging - Prominent at top */}
-      <Card className="p-4 sm:p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200 dark:border-emerald-800">
+      <Card className="p-4 sm:p-6 bg-gradient-to-br from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 border-emerald-200 dark:border-emerald-800">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
@@ -327,7 +327,7 @@ export default function HealthTab() {
       </Card>
 
       {/* Daily Quote */}
-      <Card className="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
+      <Card className="p-5 bg-gradient-to-br from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 border-emerald-100 dark:border-emerald-800">
         <div className="flex items-start gap-4">
           <Quote className="w-6 h-6 text-emerald-400 dark:text-emerald-500 flex-shrink-0" />
           <div>
@@ -394,7 +394,7 @@ export default function HealthTab() {
         {wellnessTips.map((tip) => {
           const Icon = tip.icon
           return (
-            <Card key={tip.id} className="p-4 hover:shadow-md transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <Card key={tip.id} className="p-4 hover: transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
               <div className="flex items-start gap-3">
                 <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0", tip.color)}>
                   <Icon className="w-5 h-5" />

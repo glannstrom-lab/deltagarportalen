@@ -77,8 +77,8 @@ describe('DashboardSkeleton', () => {
 
     it('should render hero section skeleton', () => {
       const { container } = render(<DashboardSkeleton />)
-      // Hero section has rounded-2xl and mb-4 or mb-6
-      const heroSection = container.querySelector('.rounded-2xl.mb-4')
+      // Hero section has rounded-xl and mb-4 or mb-6
+      const heroSection = container.querySelector('.rounded-xl.mb-4')
       expect(heroSection).toBeInTheDocument()
     })
 

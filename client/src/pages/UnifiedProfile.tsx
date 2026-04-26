@@ -72,7 +72,7 @@ export default function UnifiedProfilePage() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700 overflow-hidden mb-6">
+      <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden mb-6">
         {/* Cover / Banner */}
         <div className="h-32 bg-brand-900" />
         
@@ -81,7 +81,7 @@ export default function UnifiedProfilePage() {
           <div className="flex flex-col sm:flex-row items-start gap-4 -mt-12">
             {/* Avatar */}
             <div className="relative">
-              <div className="w-24 h-24 rounded-2xl border-4 border-white dark:border-stone-800 bg-white dark:bg-stone-800 shadow-lg overflow-hidden">
+              <div className="w-24 h-24 rounded-xl border-4 border-white dark:border-stone-800 bg-white dark:bg-stone-800 overflow-hidden">
                 {core?.profileImageUrl ? (
                   <img 
                     src={core.profileImageUrl} 
@@ -94,7 +94,7 @@ export default function UnifiedProfilePage() {
                   </div>
                 )}
               </div>
-              <label className="absolute -bottom-1 -right-1 w-8 h-8 bg-brand-900 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md hover:bg-brand-900/90 transition-colors">
+              <label className="absolute -bottom-1 -right-1 w-8 h-8 bg-brand-900 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-brand-900/90 transition-colors">
                 <Camera size={14} />
                 <input
                   type="file"
@@ -174,7 +174,7 @@ export default function UnifiedProfilePage() {
               </span>
               <span className={cn(
                 "text-sm font-bold",
-                completeness >= 80 ? "text-green-600" :
+                completeness >= 80 ? "text-brand-900" :
                 completeness >= 50 ? "text-amber-600" : "text-rose-600"
               )}>
                 {completeness}%
@@ -184,7 +184,7 @@ export default function UnifiedProfilePage() {
               <div
                 className={cn(
                   "h-full transition-all duration-500",
-                  completeness >= 80 ? "bg-green-500" :
+                  completeness >= 80 ? "bg-brand-700" :
                   completeness >= 50 ? "bg-amber-500" : "bg-rose-500"
                 )}
                 style={{ width: `${completeness}%` }}
@@ -509,30 +509,30 @@ export default function UnifiedProfilePage() {
             {/* Data Usage */}
             <Section title={t('unifiedProfile.sections.dataUsage')} icon={CheckCircle2}>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-brand-50 dark:bg-brand-900/30 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
+                    <CheckCircle2 size={20} className="text-brand-900 dark:text-brand-400" />
                     <span className="text-slate-700 dark:text-stone-300">{t('unifiedProfile.dataUsageLabels.cvBuilder')}</span>
                   </div>
-                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">
+                  <span className="text-sm text-brand-900 dark:text-brand-400 font-medium">
                     {professional?.workExperience && professional.workExperience.length > 0 ? t('unifiedProfile.dataUsageLabels.active') : t('unifiedProfile.dataUsageLabels.empty')}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-brand-50 dark:bg-brand-900/30 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
+                    <CheckCircle2 size={20} className="text-brand-900 dark:text-brand-400" />
                     <span className="text-slate-700 dark:text-stone-300">{t('unifiedProfile.dataUsageLabels.coverLetter')}</span>
                   </div>
-                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">
+                  <span className="text-sm text-brand-900 dark:text-brand-400 font-medium">
                     {usage?.coverLettersCount ? t('unifiedProfile.dataUsageLabels.saved', { count: usage.coverLettersCount }) : t('unifiedProfile.dataUsageLabels.noLetters')}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-brand-50 dark:bg-brand-900/30 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
+                    <CheckCircle2 size={20} className="text-brand-900 dark:text-brand-400" />
                     <span className="text-slate-700 dark:text-stone-300">{t('unifiedProfile.dataUsageLabels.jobTracker')}</span>
                   </div>
-                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">
+                  <span className="text-sm text-brand-900 dark:text-brand-400 font-medium">
                     {usage?.applicationsCount ? t('unifiedProfile.dataUsageLabels.applicationsCount', { count: usage.applicationsCount }) : t('unifiedProfile.dataUsageLabels.noApplications')}
                   </span>
                 </div>
@@ -559,7 +559,7 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl shadow-sm border border-slate-200 dark:border-stone-700 p-6">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
       <h3 className="flex items-center gap-2 font-semibold text-slate-900 dark:text-stone-100 mb-4">
         <Icon size={20} className="text-brand-900" />
         {title}

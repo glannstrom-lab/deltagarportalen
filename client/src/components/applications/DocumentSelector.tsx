@@ -54,19 +54,19 @@ export function DocumentSelector({
         </label>
 
         {selectedCV ? (
-          <div className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-brand-50 border border-brand-200 rounded-lg">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-teal-600" />
-              <span className="font-medium text-teal-900">{selectedCV.name}</span>
-              <span className="text-xs text-teal-600">
+              <FileText className="w-4 h-4 text-brand-900" />
+              <span className="font-medium text-brand-900">{selectedCV.name}</span>
+              <span className="text-xs text-brand-900">
                 {new Date(selectedCV.created_at).toLocaleDateString('sv-SE')}
               </span>
             </div>
             <button
               onClick={() => onSelectCV(null)}
-              className="p-1 hover:bg-teal-100 rounded"
+              className="p-1 hover:bg-brand-100 rounded"
             >
-              <X className="w-4 h-4 text-teal-600" />
+              <X className="w-4 h-4 text-brand-900" />
             </button>
           </div>
         ) : (
@@ -82,13 +82,13 @@ export function DocumentSelector({
             {showCVDropdown && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowCVDropdown(false)} />
-                <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-lg max-h-60 overflow-y-auto">
                   {cvVersions.length === 0 ? (
                     <div className="p-4 text-center">
                       <p className="text-sm text-slate-700 mb-2">Inga CV-versioner sparade</p>
                       <Link
                         to="/cv"
-                        className="text-sm text-teal-600 hover:text-teal-700 font-medium"
+                        className="text-sm text-brand-900 hover:text-brand-900 font-medium"
                       >
                         Skapa CV →
                       </Link>
@@ -122,7 +122,7 @@ export function DocumentSelector({
         {cvVersions.length > 0 && !selectedCV && (
           <Link
             to="/cv"
-            className="mt-2 inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-700"
+            className="mt-2 inline-flex items-center gap-1 text-xs text-brand-900 hover:text-brand-900"
           >
             <Plus className="w-3 h-3" />
             Skapa ny CV-version
@@ -137,15 +137,15 @@ export function DocumentSelector({
         </label>
 
         {selectedLetter ? (
-          <div className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-brand-50 border border-brand-200 rounded-lg">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-teal-600" />
+              <FileText className="w-4 h-4 text-brand-900" />
               <div>
-                <span className="font-medium text-teal-900">
+                <span className="font-medium text-brand-900">
                   {selectedLetter.title || `${selectedLetter.company_name || 'Brev'}`}
                 </span>
                 {selectedLetter.job_title && (
-                  <span className="text-xs text-teal-600 ml-2">
+                  <span className="text-xs text-brand-900 ml-2">
                     ({selectedLetter.job_title})
                   </span>
                 )}
@@ -153,9 +153,9 @@ export function DocumentSelector({
             </div>
             <button
               onClick={() => onSelectCoverLetter(null)}
-              className="p-1 hover:bg-teal-100 rounded"
+              className="p-1 hover:bg-brand-100 rounded"
             >
-              <X className="w-4 h-4 text-teal-600" />
+              <X className="w-4 h-4 text-brand-900" />
             </button>
           </div>
         ) : (
@@ -171,13 +171,13 @@ export function DocumentSelector({
             {showLetterDropdown && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowLetterDropdown(false)} />
-                <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-lg max-h-60 overflow-y-auto">
                   {coverLetters.length === 0 ? (
                     <div className="p-4 text-center">
                       <p className="text-sm text-slate-700 mb-2">Inga personliga brev sparade</p>
                       <Link
                         to={`/cover-letter${companyName ? `?company=${encodeURIComponent(companyName)}` : ''}${jobTitle ? `&title=${encodeURIComponent(jobTitle)}` : ''}`}
-                        className="text-sm text-teal-600 hover:text-teal-700 font-medium"
+                        className="text-sm text-brand-900 hover:text-brand-900 font-medium"
                       >
                         Skapa brev →
                       </Link>
@@ -214,7 +214,7 @@ export function DocumentSelector({
         {coverLetters.length > 0 && !selectedLetter && (
           <Link
             to={`/cover-letter${companyName ? `?company=${encodeURIComponent(companyName)}` : ''}${jobTitle ? `&title=${encodeURIComponent(jobTitle)}` : ''}`}
-            className="mt-2 inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-700"
+            className="mt-2 inline-flex items-center gap-1 text-xs text-brand-900 hover:text-brand-900"
           >
             <Plus className="w-3 h-3" />
             Skapa nytt brev för denna ansökan

@@ -70,7 +70,7 @@ export default function StatsTab() {
       {/* Overview Stats */}
       <div>
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
-          <TrendingUp className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+          <TrendingUp className="w-5 h-5 text-brand-700 dark:text-brand-400" />
           {t('spontaneous.stats.overview')}
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -92,8 +92,8 @@ export default function StatsTab() {
             label={t('spontaneous.stats.responses')}
             value={totalResponses}
             icon={CheckCircle}
-            color="text-green-600"
-            bgColor="bg-green-100 dark:bg-green-900/30"
+            color="text-brand-900"
+            bgColor="bg-brand-100 dark:bg-brand-900/30"
           />
           <StatCard
             label={t('spontaneous.stats.waiting')}
@@ -109,7 +109,7 @@ export default function StatsTab() {
       <div className="grid md:grid-cols-2 gap-6">
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <h3 className="font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
-            <Target className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+            <Target className="w-5 h-5 text-brand-700 dark:text-brand-400" />
             {t('spontaneous.stats.responseRate')}
           </h3>
 
@@ -122,7 +122,7 @@ export default function StatsTab() {
                 </div>
                 <div className="h-3 bg-slate-200 dark:bg-stone-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-teal-500 rounded-full transition-all"
+                    className="h-full bg-brand-700 rounded-full transition-all"
                     style={{ width: `${responseRate}%` }}
                   />
                 </div>
@@ -163,7 +163,7 @@ export default function StatsTab() {
       {/* Upcoming Follow-ups */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
-          <Calendar className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+          <Calendar className="w-5 h-5 text-brand-700 dark:text-brand-400" />
           {t('spontaneous.followups.title')}
         </h3>
 
@@ -199,7 +199,7 @@ export default function StatsTab() {
       </Card>
 
       {/* Tips */}
-      <Card className="p-6 bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-sky-200 dark:border-sky-800">
+      <Card className="p-6 bg-gradient-to-br from-sky-50 to-brand-50 dark:from-sky-900/20 dark:to-brand-900/20 border-sky-200 dark:border-sky-800">
         <h3 className="font-semibold mb-2 text-slate-800 dark:text-stone-100">{t('spontaneous.tips.title')}</h3>
         <ul className="text-sm text-slate-600 dark:text-stone-400 space-y-1.5">
           <li>{t('spontaneous.tips.tip1')}</li>

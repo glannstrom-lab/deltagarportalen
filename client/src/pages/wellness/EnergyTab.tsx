@@ -120,7 +120,7 @@ export default function EnergyTab() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800"
+        className="p-4 bg-gradient-to-r from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800"
       >
         <div className="flex items-start gap-3">
           <Lightbulb className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
@@ -178,7 +178,7 @@ export default function EnergyTab() {
                   className={cn(
                     'w-8 h-8 rounded-lg font-semibold text-xs transition-all',
                     isSelected
-                      ? 'bg-emerald-600 dark:bg-emerald-500 text-white scale-110 shadow-lg'
+                      ? 'bg-emerald-600 dark:bg-emerald-500 text-white scale-110'
                       : 'bg-stone-100 dark:bg-stone-600 text-gray-600 dark:text-gray-200 hover:bg-stone-200 dark:hover:bg-stone-500'
                   )}
                 >
@@ -224,7 +224,7 @@ export default function EnergyTab() {
                 key={index}
                 className="flex items-center gap-4 p-4 rounded-xl bg-stone-50 dark:bg-stone-700 border border-transparent"
               >
-                <div className="w-12 h-12 rounded-xl bg-white dark:bg-stone-600 flex items-center justify-center shadow-sm">
+                <div className="w-12 h-12 rounded-xl bg-white dark:bg-stone-600 flex items-center justify-center">
                   <Icon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <div>
@@ -238,7 +238,7 @@ export default function EnergyTab() {
       </Card>
 
       {/* Weekly Summary Stats */}
-      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
+      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 border-emerald-100 dark:border-emerald-800">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Calendar className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           Veckovyn
@@ -287,7 +287,7 @@ export default function EnergyTab() {
                     {[
                       { time: 'M', value: log.morning, color: 'bg-emerald-400 dark:bg-emerald-500' },
                       { time: 'A', value: log.afternoon, color: 'bg-emerald-500 dark:bg-emerald-600' },
-                      { time: 'K', value: log.evening, color: 'bg-teal-500 dark:bg-teal-600' },
+                      { time: 'K', value: log.evening, color: 'bg-brand-700 dark:bg-brand-900' },
                     ].map(({ time, value, color }) => (
                       <div key={time} className="flex-1 flex flex-col items-center gap-1">
                         <div className="w-full bg-stone-200 dark:bg-stone-600 rounded-lg h-6 relative overflow-hidden">

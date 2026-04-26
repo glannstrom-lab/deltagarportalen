@@ -245,7 +245,7 @@ export default function DashboardNew() {
         <DashboardWidget
           title={t('dashboard.widgets.interestGuide.title')}
           icon={Compass}
-          color="teal"
+          color="brand"
           to="/interest-guide"
           statusText={widgetData.interestGuide.hasResult
             ? t('dashboard.widgets.interestGuide.matches', { count: widgetData.interestGuide.matches })

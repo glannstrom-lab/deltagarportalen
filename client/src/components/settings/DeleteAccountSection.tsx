@@ -250,10 +250,10 @@ export function DeleteAccountSection() {
     <div className="space-y-6">
       {/* Success/Error Messages */}
       {success && (
-        <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl flex items-start gap-3">
-          <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-green-800 dark:text-green-200">{success}</p>
-          <button onClick={() => setSuccess(null)} className="ml-auto text-green-600 hover:text-green-800">
+        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-900 rounded-xl flex items-start gap-3">
+          <CheckCircle className="w-5 h-5 text-brand-900 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-brand-900 dark:text-brand-200">{success}</p>
+          <button onClick={() => setSuccess(null)} className="ml-auto text-brand-900 hover:text-brand-900">
             <XCircle className="w-4 h-4" />
           </button>
         </div>
@@ -401,7 +401,7 @@ export function DeleteAccountSection() {
       {/* Confirmation Dialog - Request with Grace Period */}
       {showConfirmDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="w-full max-w-md bg-white dark:bg-stone-800 rounded-2xl shadow-xl">
+          <div className="w-full max-w-md bg-white dark:bg-stone-800 rounded-xl">
             <div className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-full bg-amber-100 dark:bg-amber-900/30">
@@ -467,7 +467,7 @@ export function DeleteAccountSection() {
       {/* Immediate Deletion Dialog */}
       {showImmediateDialog && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="w-full max-w-md bg-white dark:bg-stone-800 rounded-2xl shadow-xl">
+          <div className="w-full max-w-md bg-white dark:bg-stone-800 rounded-xl">
             <div className="p-6">
               <div className="flex items-center gap-3 mb-4">
                 <div className="p-2 rounded-full bg-red-100 dark:bg-red-900/30">

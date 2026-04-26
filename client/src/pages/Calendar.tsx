@@ -188,9 +188,9 @@ export default function Calendar() {
     }
 
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-brand-100 dark:border-stone-700 overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-7 border-b border-teal-100 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
+        <div className="grid grid-cols-7 border-b border-brand-100 dark:border-stone-700 bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900">
           {days.map((day) => (
             <div key={day} className="py-3 text-center text-sm font-medium text-white">
               {day}
@@ -213,11 +213,11 @@ export default function Calendar() {
               <button
                 key={day}
                 onClick={() => handleDateClick(new Date(dateStr))}
-                className="h-28 border-b border-r border-stone-100 dark:border-stone-700 p-2 text-left transition-colors relative overflow-hidden hover:bg-teal-50 dark:hover:bg-stone-700/50"
+                className="h-28 border-b border-r border-stone-100 dark:border-stone-700 p-2 text-left transition-colors relative overflow-hidden hover:bg-brand-50 dark:hover:bg-stone-700/50"
               >
                 <span className={`
                   inline-flex items-center justify-center w-7 h-7 text-sm rounded-full
-                  ${isToday ? 'bg-teal-600 dark:bg-teal-500 text-white font-semibold' : 'text-stone-700 dark:text-stone-200'}
+                  ${isToday ? 'bg-brand-900 dark:bg-brand-700 text-white font-semibold' : 'text-stone-700 dark:text-stone-200'}
                 `}>
                   {day}
                 </span>
@@ -256,8 +256,8 @@ export default function Calendar() {
     )
 
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-teal-100 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-brand-100 dark:border-stone-700 overflow-hidden">
+        <div className="p-4 border-b border-brand-100 dark:border-stone-700 bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900">
           <h3 className="font-semibold text-white">{t('calendar.upcomingEvents')}</h3>
         </div>
         <div className="divide-y divide-stone-100 dark:divide-stone-700">
@@ -270,7 +270,7 @@ export default function Calendar() {
               <button
                 key={event.id}
                 onClick={() => handleEventClick(event)}
-                className={`w-full p-4 text-left hover:bg-teal-50 dark:hover:bg-stone-700/50 transition-colors flex items-start gap-4 ${
+                className={`w-full p-4 text-left hover:bg-brand-50 dark:hover:bg-stone-700/50 transition-colors flex items-start gap-4 ${
                   isPast ? 'opacity-50' : ''
                 }`}
               >
@@ -304,7 +304,7 @@ export default function Calendar() {
               </p>
               <button
                 onClick={handleCreateEvent}
-                className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
+                className="mt-4 px-4 py-2 bg-brand-900 text-white rounded-lg hover:bg-brand-900 transition-colors text-sm font-medium"
               >
                 {t('calendar.newEvent')}
               </button>
@@ -323,7 +323,7 @@ export default function Calendar() {
         actions={
           <button
             onClick={handleCreateEvent}
-            className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-brand-900 text-white rounded-xl hover:bg-brand-900 transition-colors font-medium text-sm"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
@@ -338,7 +338,7 @@ export default function Calendar() {
 
           {/* Visible status toast */}
           {statusMessage && (
-            <div className="fixed bottom-4 right-4 z-50 px-4 py-3 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg border border-green-200 dark:border-green-800 shadow-lg flex items-center gap-2">
+            <div className="fixed bottom-4 right-4 z-50 px-4 py-3 bg-brand-50 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 rounded-lg border border-brand-200 dark:border-brand-900 flex items-center gap-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
@@ -365,7 +365,7 @@ export default function Calendar() {
 
           {loading && (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
+              <Loader2 className="w-8 h-8 text-brand-900 dark:text-brand-400 animate-spin" />
               <span className="ml-3 text-stone-600 dark:text-stone-300">{t('common.loading')}</span>
             </div>
           )}
@@ -421,8 +421,8 @@ export default function Calendar() {
       {/* Saving overlay */}
       {isSaving && (
         <div className="fixed inset-0 bg-black/20 z-[60] flex items-center justify-center">
-          <div className="bg-white dark:bg-stone-800 rounded-lg p-4 flex items-center gap-3 shadow-lg">
-            <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
+          <div className="bg-white dark:bg-stone-800 rounded-lg p-4 flex items-center gap-3">
+            <Loader2 className="w-5 h-5 text-brand-900 animate-spin" />
             <span className="text-stone-700 dark:text-stone-300">{t('common.loading')}</span>
           </div>
         </div>

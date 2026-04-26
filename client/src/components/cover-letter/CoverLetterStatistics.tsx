@@ -66,8 +66,8 @@ export function CoverLetterStatistics() {
           Här samlas en översikt över dina ansökningar – hur många du skickat, 
           vilka som fått svar och var du är i processen.
         </p>
-        <div className="bg-teal-50 rounded-xl p-4 max-w-md mx-auto">
-          <p className="text-sm text-teal-700">
+        <div className="bg-brand-50 rounded-xl p-4 max-w-md mx-auto">
+          <p className="text-sm text-brand-900">
             💡 <strong>Det börjar här:</strong> När du skickat ditt första personliga 
             brev börjar statistiken växa. Tänk på att varje ansökan är ett steg framåt, 
             oavsett utfallet.
@@ -131,7 +131,7 @@ export function CoverLetterStatistics() {
                     className={cn(
                       'px-3 py-1 text-sm font-medium rounded-md transition-colors',
                       timeRange === range
-                        ? 'bg-white text-slate-800 shadow-sm'
+                        ? 'bg-white text-slate-800'
                         : 'text-slate-700 hover:text-slate-700'
                     )}
                   >
@@ -223,7 +223,7 @@ export function CoverLetterStatistics() {
         {/* Höger kolumn - Insights och tips */}
         <div className="space-y-6">
           {/* Insights */}
-          <Card className="p-6 bg-gradient-to-br from-teal-50 to-sky-50 border-teal-100">
+          <Card className="p-6 bg-gradient-to-br from-brand-50 to-sky-50 border-brand-100">
             <div className="flex items-center gap-2 mb-4">
               <Lightbulb className="w-5 h-5 text-sky-600" />
               <h3 className="font-semibold text-slate-800">Dina styrkor</h3>
@@ -266,7 +266,7 @@ export function CoverLetterStatistics() {
               <p className="text-sm text-slate-700 mb-4">brev skickade</p>
               <div className="bg-slate-100 rounded-full h-3 overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full transition-all"
+                  className="h-full bg-gradient-to-r from-brand-700 to-sky-500 rounded-full transition-all"
                   style={{ width: `${Math.min(100, (mockStats.thisMonth.sent / 5) * 100)}%` }}
                 />
               </div>
@@ -306,7 +306,7 @@ export function CoverLetterStatistics() {
       </div>
 
       {/* Uppmuntrande footer */}
-      <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-100">
+      <div className="bg-gradient-to-r from-emerald-50 to-brand-50 rounded-xl p-4 border border-emerald-100">
         <p className="text-sm text-emerald-800 text-center">
           💚 <strong>Kom ihåg:</strong> Det är inte alltid personligt när man inte får svar. 
           Arbetsgivare får ofta väldigt många ansökningar. Fortsätt kämpa!

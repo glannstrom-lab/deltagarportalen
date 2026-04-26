@@ -144,7 +144,7 @@ export function ContextualHelp({ context, data, onApplySuggestion }: ContextualH
 
   const getIcon = (type: HelpTip['type']) => {
     switch (type) {
-      case 'success': return <CheckCircle className="w-5 h-5 text-green-500" />
+      case 'success': return <CheckCircle className="w-5 h-5 text-brand-700" />
       case 'warning': return <AlertCircle className="w-5 h-5 text-amber-500" />
       case 'info': return <Info className="w-5 h-5 text-blue-500" />
       default: return <Lightbulb className="w-5 h-5 text-purple-500" />
@@ -153,7 +153,7 @@ export function ContextualHelp({ context, data, onApplySuggestion }: ContextualH
 
   const getStyles = (type: HelpTip['type']) => {
     switch (type) {
-      case 'success': return 'bg-green-50 border-green-200'
+      case 'success': return 'bg-brand-50 border-brand-200'
       case 'warning': return 'bg-amber-50 border-amber-200'
       case 'info': return 'bg-blue-50 border-blue-200'
       default: return 'bg-purple-50 border-purple-200'

@@ -76,7 +76,7 @@ function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
   // Check if company is active
   if (verksamOrg?.kod === 'JA') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-brand-100 text-brand-900 dark:bg-brand-900/30 dark:text-brand-400">
         <CheckCircle2 className="w-3 h-3" />
         {t('spontaneous.companyStatus.active')}
       </span>
@@ -324,7 +324,7 @@ export default function SearchTab() {
       {/* Search Section */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
-          <Search className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+          <Search className="w-5 h-5 text-brand-700 dark:text-brand-400" />
           {t('spontaneous.search.title')}
         </h2>
 
@@ -334,7 +334,7 @@ export default function SearchTab() {
             variant={searchMode === 'ai' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSearchMode('ai')}
-            className={`flex items-center gap-2 ${searchMode === 'ai' ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
+            className={`flex items-center gap-2 ${searchMode === 'ai' ? 'bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-700' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Sparkles className="w-4 h-4" />
             {t('spontaneous.search.aiSearch')}
@@ -343,7 +343,7 @@ export default function SearchTab() {
             variant={searchMode === 'orgnr' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSearchMode('orgnr')}
-            className={`flex items-center gap-2 ${searchMode === 'orgnr' ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
+            className={`flex items-center gap-2 ${searchMode === 'orgnr' ? 'bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-700' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Hash className="w-4 h-4" />
             {t('spontaneous.search.orgNumber')}
@@ -360,7 +360,7 @@ export default function SearchTab() {
                 href="https://allabolag.se"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-teal-500 dark:text-teal-400 hover:underline inline-flex items-center gap-1"
+                className="text-brand-700 dark:text-brand-400 hover:underline inline-flex items-center gap-1"
               >
                 allabolag.se
                 <ExternalLink className="w-3 h-3" />
@@ -372,7 +372,7 @@ export default function SearchTab() {
         <div className="flex gap-3">
           <div className="flex-1 relative">
             {searchMode === 'ai' ? (
-              <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400 dark:text-teal-500" />
+              <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-brand-400 dark:text-brand-700" />
             ) : (
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 dark:text-stone-400" />
             )}
@@ -392,7 +392,7 @@ export default function SearchTab() {
           <Button
             onClick={handleSearch}
             disabled={isSearching || !searchQuery.trim()}
-            className="min-w-[100px] bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
+            className="min-w-[100px] bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-700"
           >
             {isSearching ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -418,7 +418,7 @@ export default function SearchTab() {
           <div className="flex justify-between items-start gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Building2 className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+                <Building2 className="w-5 h-5 text-brand-700 dark:text-brand-400" />
                 <h3 className="text-xl font-semibold text-slate-800 dark:text-stone-100">{searchResult.name}</h3>
                 {/* Company Status Indicator */}
                 {searchResult._raw && (
@@ -496,7 +496,7 @@ export default function SearchTab() {
               {/* Annual Reports Section */}
               <div className="mt-6 pt-4 border-t border-stone-200 dark:border-stone-700">
                 <div className="flex items-center gap-2 mb-3">
-                  <FileText className="w-4 h-4 text-teal-500 dark:text-teal-400" />
+                  <FileText className="w-4 h-4 text-brand-700 dark:text-brand-400" />
                   <p className="text-sm font-medium text-slate-800 dark:text-stone-200">{t('spontaneous.annualReports')}</p>
                   {isLoadingDocs && <Loader2 className="w-4 h-4 animate-spin text-slate-600 dark:text-stone-400" />}
                 </div>
@@ -540,7 +540,7 @@ export default function SearchTab() {
                 onClick={handleSave}
                 disabled={isSaving || alreadySaved}
                 variant={alreadySaved ? 'outline' : 'default'}
-                className={alreadySaved ? 'border-stone-200 dark:border-stone-700' : 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500'}
+                className={alreadySaved ? 'border-stone-200 dark:border-stone-700' : 'bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-700'}
               >
                 {isSaving ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -560,7 +560,7 @@ export default function SearchTab() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-lg font-semibold flex items-center gap-2 text-slate-800 dark:text-stone-100">
-                <Sparkles className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+                <Sparkles className="w-5 h-5 text-brand-700 dark:text-brand-400" />
                 {t('spontaneous.searchResults')}
               </h3>
               {aiSearchStats && (
@@ -585,7 +585,7 @@ export default function SearchTab() {
                   size="sm"
                   onClick={handleSaveSelected}
                   disabled={isSearching}
-                  className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
+                  className="bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-700"
                 >
                   <Save className="w-4 h-4 mr-1" />
                   {t('spontaneous.saveSelected', { count: selectedForSave.size })}
@@ -624,12 +624,12 @@ export default function SearchTab() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <Building2 className="w-4 h-4 text-teal-500 dark:text-teal-400 flex-shrink-0" />
+                        <Building2 className="w-4 h-4 text-brand-700 dark:text-brand-400 flex-shrink-0" />
                         <h4 className="font-semibold truncate text-slate-800 dark:text-stone-100">{company.name}</h4>
 
                         {/* Verification badge */}
                         {company.verified ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-brand-100 text-brand-900 dark:bg-brand-900/30 dark:text-brand-400">
                             <CheckCircle2 className="w-3 h-3" />
                             {t('spontaneous.verified')}
                           </span>
@@ -691,7 +691,7 @@ export default function SearchTab() {
                         variant="outline"
                         size="sm"
                         onClick={() => setExpandedAnalysis(expandedAnalysis === company.orgNumber ? null : (company.orgNumber || `idx-${index}`))}
-                        className="text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800 hover:bg-teal-50 dark:hover:bg-teal-900/20"
+                        className="text-brand-900 dark:text-brand-400 border-brand-200 dark:border-brand-900 hover:bg-brand-50 dark:hover:bg-brand-900/20"
                       >
                         <Sparkles className="w-4 h-4" />
                       </Button>
@@ -746,7 +746,7 @@ export default function SearchTab() {
             </>
           ) : (
             <>
-              <li>{t('spontaneous.tips.orgTip1')} <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-teal-500 dark:text-teal-400 hover:underline">allabolag.se</a></li>
+              <li>{t('spontaneous.tips.orgTip1')} <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-brand-700 dark:text-brand-400 hover:underline">allabolag.se</a></li>
               <li>{t('spontaneous.tips.tip2')}</li>
               <li>{t('spontaneous.tips.tip3')}</li>
               <li>{t('spontaneous.tips.tip4')}</li>

@@ -278,7 +278,7 @@ export function EnergyLevelSelector({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mb-4"
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-brand-700 flex items-center justify-center mb-4"
         >
           <Sparkles className="w-10 h-10 text-white" />
         </motion.div>
@@ -374,7 +374,7 @@ export function EnergyLevelSelector({
           className={cn(
             "flex-1 transition-all",
             selectedLevel
-              ? 'bg-gradient-to-r from-teal-500 to-sky-600 hover:from-teal-600 hover:to-sky-700'
+              ? 'bg-gradient-to-r from-brand-700 to-sky-600 hover:from-brand-900 hover:to-sky-700'
               : ''
           )}
         >
@@ -413,7 +413,7 @@ export function EnergyLevelBadge({
     <button
       onClick={onClick}
       className={cn(
-        "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium transition-all hover:shadow-sm",
+        "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium transition-all hover:",
         colors[level]
       )}
       title="Klicka för att ändra energinivå"
@@ -447,7 +447,7 @@ export function EnergyLevelModal({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.9, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+            className="bg-white rounded-xl max-w-md w-full overflow-hidden"
           >
             <EnergyLevelSelector onComplete={onClose} showLater={false} />
           </motion.div>

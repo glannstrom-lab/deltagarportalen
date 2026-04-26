@@ -68,8 +68,8 @@ const statusConfig: Record<SpontaneousStatus, {
   response_positive: {
     labelKey: 'spontaneous.status.response_positive',
     icon: CheckCircle,
-    color: 'text-green-600',
-    bgColor: 'bg-green-100 dark:bg-green-900/30',
+    color: 'text-brand-900',
+    bgColor: 'bg-brand-100 dark:bg-brand-900/30',
   },
   response_negative: {
     labelKey: 'spontaneous.status.response_negative',
@@ -140,11 +140,11 @@ function CompanyCard({
   }
 
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+    <Card className="p-4 hover: transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
       <div className="flex justify-between items-start gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <Building2 className="w-4 h-4 text-teal-500 dark:text-teal-400 flex-shrink-0" />
+            <Building2 className="w-4 h-4 text-brand-700 dark:text-brand-400 flex-shrink-0" />
             <h3 className="font-semibold truncate text-slate-800 dark:text-stone-100">{company.company_name}</h3>
           </div>
 
@@ -210,7 +210,7 @@ function CompanyCard({
                   autoFocus
                 />
                 <div className="flex gap-2">
-                  <Button size="sm" onClick={handleSaveNotes} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500">{t('common.save')}</Button>
+                  <Button size="sm" onClick={handleSaveNotes} className="bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-700">{t('common.save')}</Button>
                   <Button size="sm" variant="outline" onClick={() => setIsEditingNotes(false)} className="border-stone-200 dark:border-stone-700">{t('common.cancel')}</Button>
                 </div>
               </div>
@@ -254,7 +254,7 @@ function CompanyCard({
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => onUpdateStatus('response_positive')}>
-              <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+              <CheckCircle className="w-4 h-4 mr-2 text-brand-900" />
               {t('spontaneous.status.response_positive')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onUpdateStatus('response_negative')}>
@@ -379,7 +379,7 @@ export default function MyCompaniesTab() {
               variant={filter === option.value ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilter(option.value)}
-              className={`flex-shrink-0 ${filter === option.value ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
+              className={`flex-shrink-0 ${filter === option.value ? 'bg-brand-700 hover:bg-brand-900 dark:bg-brand-900 dark:hover:bg-brand-700' : 'border-stone-200 dark:border-stone-700'}`}
             >
               {t(option.labelKey)}
               {option.value !== 'all' && (

@@ -22,7 +22,7 @@ const EDUCATION_TYPES = [
   { value: 'all', label: 'Alla typer', color: 'bg-slate-100 text-slate-700' },
   { value: 'yrkeshogskola', label: 'Yrkeshögskola', color: 'bg-blue-100 text-blue-700' },
   { value: 'universitet', label: 'Universitet', color: 'bg-purple-100 text-purple-700' },
-  { value: 'komvux', label: 'Komvux', color: 'bg-green-100 text-green-700' },
+  { value: 'komvux', label: 'Komvux', color: 'bg-brand-100 text-brand-900' },
   { value: 'folkhogskola', label: 'Folkhögskola', color: 'bg-orange-100 text-orange-700' },
   { value: 'arbetsmarknadsutbildning', label: 'Arbetsmarknad', color: 'bg-red-100 text-red-700' },
 ] as const;
@@ -266,7 +266,7 @@ export default function EducationOverview() {
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Header - Responsiv */}
-      <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-4 sm:p-8 text-white">
+      <div className="bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl p-4 sm:p-8 text-white">
         <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
             <GraduationCap size={24} />
@@ -287,7 +287,7 @@ export default function EducationOverview() {
 
       {/* Sparade utbildningar */}
       {savedEducations.length > 0 && (
-        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+        <div className="bg-white rounded-xl p-4 sm:p-6 border border-slate-200">
           <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
             <Bookmark className="text-blue-500" size={16} />
             Dina sparade utbildningar ({savedEducations.length})
@@ -309,7 +309,7 @@ export default function EducationOverview() {
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
                   edu.status === 'interested' ? 'bg-slate-200 text-slate-600' :
                   edu.status === 'applied' ? 'bg-yellow-100 text-yellow-700' :
-                  edu.status === 'enrolled' ? 'bg-green-100 text-green-700' :
+                  edu.status === 'enrolled' ? 'bg-brand-100 text-brand-900' :
                   'bg-blue-100 text-blue-700'
                 }`}>
                   {edu.status === 'interested' ? 'Intresserad' :
@@ -323,7 +323,7 @@ export default function EducationOverview() {
       )}
 
       {/* Sök och filter */}
-      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+      <div className="bg-white rounded-xl p-4 sm:p-6 border border-slate-200 space-y-4">
         {/* Sök */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
@@ -457,7 +457,7 @@ export default function EducationOverview() {
             {filteredCourses.map((course, idx) => (
               <div
                 key={course.code || idx}
-                className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all"
+                className="bg-white rounded-xl sm:rounded-xl p-4 sm:p-5 border border-slate-200 hover:border-blue-300 hover: transition-all"
               >
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                   {/* Innehåll */}
@@ -522,7 +522,7 @@ export default function EducationOverview() {
                       disabled={isEducationSaved(course.code || course.title)}
                       className={`flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 rounded-lg text-sm font-medium transition-colors min-h-[44px] ${
                         isEducationSaved(course.code || course.title)
-                          ? 'bg-green-50 text-green-600 border border-green-200 cursor-default'
+                          ? 'bg-brand-50 text-brand-900 border border-brand-200 cursor-default'
                           : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
                       }`}
                     >
@@ -548,7 +548,7 @@ export default function EducationOverview() {
 
       {/* Inga resultat med filter */}
       {!loading && courses.length > 0 && filteredCourses.length === 0 && (
-        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 text-center">
+        <div className="bg-white rounded-xl p-6 sm:p-8 border border-slate-200 text-center">
           <Filter size={40} className="text-slate-300 mx-auto mb-3" />
           <h3 className="text-base sm:text-lg font-medium text-slate-800 mb-2">
             Inga utbildningar matchar filtren
@@ -567,7 +567,7 @@ export default function EducationOverview() {
 
       {/* Inga utbildningar hittades */}
       {!loading && courses.length === 0 && occupation && (
-        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 text-center">
+        <div className="bg-white rounded-xl p-6 sm:p-8 border border-slate-200 text-center">
           <BookOpen size={40} className="text-slate-300 mx-auto mb-3" />
           <h3 className="text-base sm:text-lg font-medium text-slate-800 mb-2">
             Inga utbildningar hittades
@@ -580,7 +580,7 @@ export default function EducationOverview() {
 
       {/* Tomt tillstånd - välkomst */}
       {!loading && !occupation && (
-        <div className="bg-white rounded-2xl p-6 sm:p-12 shadow-sm border border-slate-200 text-center">
+        <div className="bg-white rounded-xl p-6 sm:p-12 border border-slate-200 text-center">
           <GraduationCap size={48} className="text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg sm:text-xl font-medium text-slate-800 mb-2">
             Hitta din utbildning
@@ -600,7 +600,7 @@ export default function EducationOverview() {
       )}
 
       {/* Info-kort */}
-      <div className="bg-blue-50 rounded-2xl p-4 sm:p-6 border border-blue-100">
+      <div className="bg-blue-50 rounded-xl p-4 sm:p-6 border border-blue-100">
         <div className="flex flex-col sm:flex-row items-start gap-4">
           <div className="w-10 h-10 bg-blue-500 text-white rounded-xl flex items-center justify-center shrink-0">
             <Award size={20} />

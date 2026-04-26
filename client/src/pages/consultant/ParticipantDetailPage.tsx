@@ -428,7 +428,7 @@ export function ParticipantDetailPage() {
       <Card className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-start gap-6">
           {/* Avatar */}
-          <div className="w-20 h-20 rounded-2xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-2xl font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">
+          <div className="w-20 h-20 rounded-xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-2xl font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">
             {getInitials()}
           </div>
 
@@ -629,7 +629,7 @@ export function ParticipantDetailPage() {
                 GENERAL: 'border-stone-200 dark:border-stone-700',
                 PROGRESS: 'border-emerald-200 dark:border-emerald-800',
                 CONCERN: 'border-amber-200 dark:border-amber-800',
-                GOAL: 'border-teal-200 dark:border-teal-800',
+                GOAL: 'border-brand-200 dark:border-brand-900',
               }
               return (
                 <Card key={entry.id} className={cn('p-4 border-l-4', categoryColors[entry.category])}>

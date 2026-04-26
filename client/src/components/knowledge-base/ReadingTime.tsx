@@ -12,7 +12,7 @@ export default function ReadingTime({
   variant = 'default' 
 }: ReadingTimeProps) {
   const getCategory = () => {
-    if (minutes <= 5) return { label: 'Snabb', color: 'text-green-600', bgColor: 'bg-green-50' }
+    if (minutes <= 5) return { label: 'Snabb', color: 'text-brand-900', bgColor: 'bg-brand-50' }
     if (minutes <= 10) return { label: 'Medel', color: 'text-blue-600', bgColor: 'bg-blue-50' }
     return { label: 'Djup', color: 'text-purple-600', bgColor: 'bg-purple-50' }
   }

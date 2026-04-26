@@ -1,92 +1,107 @@
 # Designprinciper för jobin.se
 
-## Färgfilosofi
+## Kontext
+Vår målgrupp är personer i jobbsökar- eller rehabprocess.
+Många är i en utsatt situation. Tonen ska vara stödjande,
+inte stressande. Tänk Headspace, inte Linear.
 
-Vi använder en varumärkesfärg (turkos) i fyra intensiteter. Tinten används som grupperande signal för zoner som hör ihop tematiskt, inte som dekoration. Solid accent används för CTA, status och progress. Neutral vit/grå reserveras för data utan emotionell laddning.
-
-## Färgskala (60/30/10-fördelning)
+## Färgsystem
+En enda varumärkesfärg: turkos #0F6E56.
+Används i fyra intensiteter:
 
 | Token | Hex | Användning |
 |-------|-----|------------|
-| `brand-900` | `#0F6E56` | Solid accent: CTA-knappar, aktiva ikoner, progress-bars, checkmarks |
-| `brand-300` | `#9FE1CB` | Borders på tintade ytor |
-| `brand-100` | `#E1F5EE` | Aktiva menyval, positiv KPI-tint, markerad rad |
-| `brand-50` | `#F5FBF9` | Lättaste tinten, hover-state |
-| `brand-zone` | `#F0F9F5` | Zon-bakgrund för grupperade kort (t.ex. "Kom igång" + "Intresseprofil") |
+| `brand-900` | `#0F6E56` | Solid — CTA, aktiva tillstånd, progress, status "bra" |
+| `brand-300` | `#9FE1CB` | Mid — borders på tintade ytor |
+| `brand-100` | `#E1F5EE` | Ljus — aktivt menyval, "positiv" KPI-tint |
+| `brand-zone` | `#F0F9F5` | Tona — zon-bakgrund för grupperade kort |
 
 ### Status
-- **Orange:** varning/notis
-- **Röd:** destruktiva åtgärder
-- **Grön:** undviks (krockar med accent)
+- **Orange** — varning, notiser
+- **Röd** — destruktivt (ta bort, logga ut är INTE destruktivt)
+- **Grön** — undviks (krockar med accent)
 
-### Bakgrund
-- **Vit** (`#FFFFFF`): primär, neutral data
-- **Ljusgrå** (`#F5F5F4`): sekundär
-- **brand-zone**: utvecklingszoner, grupperade kort
+## Färg som semantik
+Tinten är inte dekoration. Den används bara när något hör ihop:
+- Två kort som är samma "tema" (utveckling, hälsa, ekonomi) får samma tint
+- Ett KPI-kort med positivt värde får tint, ett med 0 får inte
+- En CTA-knapp får solid färg, en sekundär knapp får inte
+
+**Om du inte kan motivera färgen semantiskt — använd vit/grå.**
+
+## När pastellfärger är tillåtna
+
+Pastellfärger är ett verktyg för KATEGORISERING, inte dekoration.
+De används bara när:
+
+1. Det finns 3-6 distinkta, jämbördiga kategorier
+   (inte mer, inte färre)
+2. Användaren behöver kunna sortera/skanna visuellt
+3. Kategorierna är meningsfullt olika
+   (inte bara "olika kort" utan "olika typer av saker")
+
+När pastell används:
+- Samma färg på filterknapp som på kort av samma kategori
+- Färgen ska vara TYDLIG nog att fungera
+  (en 4px remsa eller solid bakgrund på taggen, inte bara en hint)
+- Max 6 kategorier. Behöver du fler — gruppera dem.
+- Varje kategorifärg dokumenteras i DESIGN.md med namn och hex-värde
+
+Pastell är INTE tillåtet för:
+- KPI-kort (de mäter samma sak)
+- Statusmarkeringar (använd semantiska färger)
+- "Snyggare" — om färgen inte särskiljer en kategori, är den dekoration
+
+### Kategorifärger (tillåtna pasteller)
+
+| Namn | Bakgrund | Text |
+|------|----------|------|
+| Blå | `#DBEAFE` | `#1E40AF` |
+| Grön | `#D1FAE5` | `#065F46` |
+| Rosa | `#FCE7F3` | `#9F1239` |
+| Lila | `#EDE9FE` | `#5B21B6` |
+| Gul | `#FEF3C7` | `#92400E` |
+| Orange | `#FFEDD5` | `#9A3412` |
 
 ## Form
-
-- **Border:** `0.5px solid` neutral (`#E7E5E4`), inte färgad
-- **Radius:**
-  - `6px` småknappar
-  - `8px` kort
-  - `12px` paneler
-- **Skuggor:** Undviks. Använd border istället för att skapa separation.
+- **Border:** 0.5px solid neutral
+- **Radius:** 6px småknappar, 8px kort, 12px paneler, 14px pill-taggar
+- **Skuggor:** undviks. Använd border eller tint istället.
 
 ## Hierarki
-
-- En primär CTA per vy (solid `brand-900` bakgrund)
-- Positiva KPI-kort får `brand-50` bakgrund med `brand-300` border
-- Neutrala KPI-kort: vit bakgrund
-- Utvecklingszoner (Kom igång, Intresseprofil) grupperas med `brand-zone` bakgrund
-- Sektionsrubriker i versaler/spärrad (`uppercase tracking-wider`)
+- En primär CTA per vy. Den får solid turkos.
+- KPI-kort: siffran bär vikten. Etikett liten/grå, siffra stor/mörk eller turkos.
+- Sektionsrubriker: 14px, weight 500.
 
 ## Komponenter
 
 ### Knappar
-- **Primär:** `bg-brand-900` (`#0F6E56`), vit text
-- **Sekundär:** Vit bakgrund, `brand-900` text
-- **Ghost:** Endast text, hover ger `brand-50` bakgrund
+- **Primär:** `bg-brand-900`, vit text
+- **Sekundär:** vit bakgrund, `brand-900` text, neutral border
+- **Ghost:** endast text, hover ger `brand-50` bakgrund
 
-### Ikonknappar (topbar)
-- Storlek: `32px`
-- Bakgrund: transparent
-- Hover: `background-secondary`
-
-### Taggar/Pills
-- Alltid neutral grå bakgrund
-- Ingen kategorifärg utan semantisk anledning
-
-### Tabs
-- Aktiv: `brand-100` bakgrund, `brand-900` text
-- Inaktiv: transparent, hover `brand-50`
-
-### Sidebar
-- **Aktivt menyval:** `brand-100` bakgrund, `brand-900` text och ikon
-- **Inaktiva menyval:** ikoner i `brand-900`, text i `stone-700`
-- **Användarblock:** `brand-zone` bakgrund, turkos avatar
-- Grupprubrik i versaler, dämpad färg
+### Kort
+- **Default:** vit bakgrund, `border-stone-200`
+- **Tinted:** `bg-brand-zone`, används när kort hör ihop tematiskt
 
 ### KPI-kort
-- **Positiva värden:** `brand-50` bakgrund, `brand-300` border, värde i `brand-900`
-- **Neutrala värden:** vit bakgrund, `stone-200` border
-- Status med liten färgad prick (● Uppdaterat)
+- **Positivt värde:** `brand-zone` bakgrund, `brand-300` border
+- **Neutralt/noll:** vit bakgrund, `stone-200` border
 
-## Typografi
+### Tabs
+- **Aktiv:** `brand-100` bakgrund, `brand-900` text
+- **Inaktiv:** transparent, hover `brand-50`
 
-- **Rubriker:** `font-semibold` eller `font-bold`
-- **Brödtext:** `text-stone-600` (dark: `text-stone-400`)
-- **Dämpad text:** `text-stone-500`
-- **Länkar:** `text-brand-900`, understruken vid hover
+### Taggar/Pills
+- Radius: 14px
+- Neutral grå bakgrund som default
+- Tint endast med semantisk motivering
 
-## Spacing
-
-- Konsekvent 4px-grid (`p-1` = 4px, `p-2` = 8px, etc.)
-- Sektioner: `gap-6` (24px)
-- Inuti kort: `p-4` eller `p-5`
+### Progress
+- Bar: `brand-900` på `brand-100` bakgrund
+- Text: procent i `brand-900` om > 50%
 
 ## Tillgänglighet
-
 - Fokusring: `ring-2 ring-brand-900 ring-offset-2`
 - Kontrast: WCAG 2.1 AA minimum
 - Touch targets: minst 44px

@@ -111,7 +111,7 @@ export function AISummary({ className }: Props) {
                 className={cn(
                   'p-2 rounded-lg transition-colors',
                   copied
-                    ? 'bg-green-100 dark:bg-green-900/40 text-green-600'
+                    ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900'
                     : 'hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500'
                 )}
                 aria-label={copied ? t('common.copied') : t('profile.aiSummary.copy')}

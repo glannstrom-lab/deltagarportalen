@@ -60,7 +60,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
               isActive
-                ? 'bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 shadow-sm'
+                ? 'bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100'
                 : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-white/50 dark:hover:bg-stone-700/50'
             )}
           >
@@ -94,7 +94,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
               isActive
-                ? 'bg-brand-600 text-white shadow-lg shadow-brand-600/25'
+                ? 'bg-brand-600 text-white /25'
                 : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
             )}
           >
@@ -205,7 +205,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
               'text-sm font-medium transition-all duration-200 ease-out whitespace-nowrap',
               isCompact ? 'px-2.5 py-1.5 min-h-[36px]' : 'px-4 py-2 min-h-[44px]',
               isActive
-                ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300 shadow-sm'
+                ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-700 dark:text-brand-300'
                 : 'text-stone-600 dark:text-stone-400 hover:bg-brand-50 dark:hover:bg-stone-700'
             )}
           >
@@ -248,7 +248,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
           'w-full flex items-center justify-between',
           'px-4 py-3 rounded-xl',
           'bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700',
-          'text-stone-800 dark:text-stone-100 shadow-sm',
+          'text-stone-800 dark:text-stone-100',
           'transition-all duration-200',
           'active:scale-[0.99]',
           'min-h-[48px]' // Touch-friendly minimum height
@@ -265,7 +265,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
       </button>
 
       {isExpanded && (
-        <div className="mt-2 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 shadow-xl overflow-hidden">
+        <div className="mt-2 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
           {tabs.map((tab, index) => {
             const Icon = tab.icon
             const isActive = isTabActive(tab.path)
@@ -337,7 +337,7 @@ export function PageHeader({ title, description, tabs, tabVariant = 'minimal', a
   return (
     <div className={cn(
       'bg-white dark:bg-stone-900',
-      'rounded-2xl border border-stone-200 dark:border-stone-700',
+      'rounded-xl border border-stone-200 dark:border-stone-700',
       className
     )}>
       {/* Header content */}

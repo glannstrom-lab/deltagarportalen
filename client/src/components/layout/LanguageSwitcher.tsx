@@ -72,7 +72,7 @@ export function LanguageSwitcher() {
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           'w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200',
-          'shadow-sm hover:shadow-md focus:outline-none',
+          ' hover: focus:outline-none',
           isOpen
             ? 'bg-sky-100 dark:bg-sky-900/40 ring-2 ring-sky-400/50'
             : 'bg-sky-100/80 hover:bg-sky-200/90 dark:bg-sky-900/40 dark:hover:bg-sky-800/50'
@@ -82,14 +82,14 @@ export function LanguageSwitcher() {
         aria-haspopup="listbox"
         title={t('language.select', 'Välj språk')}
       >
-        <CurrentFlag className="w-6 h-4 rounded-sm shadow-sm" />
+        <CurrentFlag className="w-6 h-4 rounded-sm" />
       </button>
 
       {isOpen && (
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
           <div
-            className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
+            className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-stone-800 rounded-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
             role="listbox"
             aria-label={t('language.select', 'Välj språk')}
           >
@@ -117,7 +117,7 @@ export function LanguageSwitcher() {
                     aria-selected={lang.code === currentLanguage.code}
                   >
                     <div className="flex items-center gap-3">
-                      <LangFlag className="w-7 h-5 rounded-sm shadow-sm" />
+                      <LangFlag className="w-7 h-5 rounded-sm" />
                       <span
                         className={cn(
                           'text-sm font-medium',

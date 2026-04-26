@@ -39,7 +39,7 @@ export function QuickActions({ hasCV, hasInterestResult }: QuickActionsProps) {
           <Link
             key={action.path}
             to={action.path}
-            className="flex items-center gap-4 p-3 rounded-2xl hover:bg-slate-50 transition-colors group"
+            className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-colors group"
           >
             <div className={`w-12 h-12 ${action.color} rounded-xl flex items-center justify-center text-white`}>
               <action.icon size={24} />

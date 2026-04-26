@@ -90,7 +90,7 @@ export const OnboardingFlow: React.FC = () => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full overflow-hidden">
+      <div className="bg-white rounded-xl max-w-lg w-full overflow-hidden">
         <div className="h-1 bg-gray-200">
           <div className="h-full bg-primary-600 transition-all duration-300" style={{ width: `${progress}%` }} />
         </div>

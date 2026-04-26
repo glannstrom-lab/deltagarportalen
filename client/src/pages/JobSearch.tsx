@@ -214,7 +214,7 @@ function SearchTab() {
   return (
     <div className="space-y-4">
       {/* Collapsible Search & Filter Section */}
-      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
         {/* Header - Always visible, clickable to toggle */}
         <button
           onClick={() => setIsSearchExpanded(!isSearchExpanded)}
@@ -284,7 +284,7 @@ function SearchTab() {
                   id="job-search-suggestions"
                   role="listbox"
                   aria-label={t('jobSearch.suggestions')}
-                  className="absolute z-20 w-full mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl shadow-lg"
+                  className="absolute z-20 w-full mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl"
                 >
                   {suggestions.map((suggestion, idx) => (
                     <button
@@ -475,7 +475,7 @@ function SearchTab() {
                   }
                 }}
                 aria-label={`${job.headline} - ${job.employer?.name || t('common.employerNotSpecified')}`}
-                className="bg-white dark:bg-stone-800 rounded-xl sm:rounded-2xl border border-stone-200 dark:border-stone-700 p-4 sm:p-5 hover:border-brand-600 dark:hover:border-brand-500 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-600 focus:ring-offset-2 dark:focus:ring-offset-stone-900"
+                className="bg-white dark:bg-stone-800 rounded-xl sm:rounded-xl border border-stone-200 dark:border-stone-700 p-4 sm:p-5 hover:border-brand-600 dark:hover:border-brand-500 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-600 focus:ring-offset-2 dark:focus:ring-offset-stone-900"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1 min-w-0">
@@ -600,7 +600,7 @@ function SearchTab() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="job-modal-title"
-            className="bg-white dark:bg-stone-800 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-stone-800 rounded-t-2xl sm:rounded-xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
           >
             <div className="sticky top-0 bg-white dark:bg-stone-800 border-b border-stone-100 dark:border-stone-700 p-3 sm:p-4 flex items-center justify-between">
               <h2 id="job-modal-title" className="text-base sm:text-lg font-semibold text-slate-900 dark:text-stone-100 pr-8 line-clamp-1">{selectedJob.headline}</h2>
@@ -804,7 +804,7 @@ function SavedJobsTab() {
   if (onlySaved.length === 0) {
     return (
       <Card className="p-12 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="w-16 h-16 bg-stone-100 dark:bg-stone-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-stone-100 dark:bg-stone-700 rounded-xl flex items-center justify-center mx-auto mb-4">
           <Bookmark className="w-8 h-8 text-slate-600 dark:text-stone-400" />
         </div>
         <h3 className="text-xl font-semibold text-slate-700 dark:text-stone-200 mb-2">{t('jobSearch.noSavedJobsTitle')}</h3>
@@ -841,7 +841,7 @@ function SavedJobsTab() {
         {filteredJobs.map((job) => {
           const jobData = job.jobData;
           return (
-            <Card key={job.id} className="p-5 hover:shadow-md transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <Card key={job.id} className="p-5 hover: transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
               <div className="flex items-start gap-4">
                 {/* Company logo placeholder */}
                 <div className="w-12 h-12 bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-700 dark:to-stone-600 rounded-xl flex items-center justify-center flex-shrink-0">

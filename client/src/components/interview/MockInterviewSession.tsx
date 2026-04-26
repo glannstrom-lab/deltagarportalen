@@ -82,7 +82,7 @@ export const MockInterviewSession: React.FC<MockInterviewSessionProps> = ({
   const analysis = showFeedback ? analyzeStarAnswer(notes) : null;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+    <div className="bg-white rounded-xl overflow-hidden">
       {/* Header */}
       <div className="bg-primary-600 text-white p-4 flex items-center justify-between">
         <div>
@@ -186,7 +186,7 @@ export const MockInterviewSession: React.FC<MockInterviewSessionProps> = ({
         {showFeedback && analysis && (
           <div className={`
             rounded-lg p-4
-            ${analysis.score >= 75 ? 'bg-green-50 border border-green-200' : ''}
+            ${analysis.score >= 75 ? 'bg-brand-50 border border-brand-200' : ''}
             ${analysis.score >= 50 && analysis.score < 75 ? 'bg-amber-50 border border-amber-200' : ''}
             ${analysis.score < 50 ? 'bg-red-50 border border-red-200' : ''}
           `}>
@@ -200,7 +200,7 @@ export const MockInterviewSession: React.FC<MockInterviewSessionProps> = ({
                 <p className="text-sm font-medium text-gray-700">Bra:</p>
                 <ul className="text-sm space-y-1">
                   {analysis.feedback.map((f, i) => (
-                    <li key={i} className="text-green-700">{f}</li>
+                    <li key={i} className="text-brand-900">{f}</li>
                   ))}
                 </ul>
               </div>

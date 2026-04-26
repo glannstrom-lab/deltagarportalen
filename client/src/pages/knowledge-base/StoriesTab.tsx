@@ -66,7 +66,7 @@ const stories: Story[] = [
     id: '3',
     name: 'Sofia, 28',
     avatar: 'S',
-    avatarColor: 'from-emerald-400 to-teal-400',
+    avatarColor: 'from-emerald-400 to-brand-400',
     occupation: 'Sjuksköterska',
     background: 'Nyexaminerad med osäkerhet',
     category: 'Nyexaminerad',
@@ -146,15 +146,15 @@ export default function StoriesTab() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Card className="p-6 bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50 dark:from-teal-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800">
+        <Card className="p-6 bg-gradient-to-br from-brand-50 via-cyan-50 to-sky-50 dark:from-brand-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border border-brand-200 dark:border-brand-900">
           <div className="flex items-start gap-4">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', delay: 0.1 }}
-              className="w-14 h-14 bg-white dark:bg-stone-700 rounded-2xl flex items-center justify-center shadow-md"
+              className="w-14 h-14 bg-white dark:bg-stone-700 rounded-xl flex items-center justify-center"
             >
-              <Quote className="w-7 h-7 text-teal-600 dark:text-teal-400" />
+              <Quote className="w-7 h-7 text-brand-900 dark:text-brand-400" />
             </motion.div>
             <div>
               <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Framgångsberättelser</h3>
@@ -173,13 +173,13 @@ export default function StoriesTab() {
         transition={{ delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-4 gap-4"
       >
-        <Card className="p-4 bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 border-teal-200 dark:border-teal-800">
-          <p className="text-3xl font-bold text-teal-600 dark:text-teal-400">127</p>
-          <p className="text-xs text-teal-700 dark:text-teal-300 mt-1">Berättelser</p>
+        <Card className="p-4 bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900/20 dark:to-brand-900/20 border-brand-200 dark:border-brand-900">
+          <p className="text-3xl font-bold text-brand-900 dark:text-brand-400">127</p>
+          <p className="text-xs text-brand-900 dark:text-brand-300 mt-1">Berättelser</p>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
-          <p className="text-3xl font-bold text-green-600 dark:text-green-400">89%</p>
-          <p className="text-xs text-green-700 dark:text-green-300 mt-1">Hittade jobb</p>
+        <Card className="p-4 bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900/20 dark:to-brand-900/20 border-brand-200 dark:border-brand-900">
+          <p className="text-3xl font-bold text-brand-900 dark:text-brand-400">89%</p>
+          <p className="text-xs text-brand-900 dark:text-brand-300 mt-1">Hittade jobb</p>
         </Card>
         <Card className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-amber-200 dark:border-amber-800">
           <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">6.2</p>
@@ -212,7 +212,7 @@ export default function StoriesTab() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-4 py-2 border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 cursor-pointer"
+            className="px-4 py-2 border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-brand-700 cursor-pointer"
           >
             <option value="recent">Senaste först</option>
             <option value="popular">Mest sedda</option>
@@ -229,7 +229,7 @@ export default function StoriesTab() {
               className={cn(
                 'px-4 py-2 rounded-full text-sm font-medium transition-all',
                 selectedCategory === cat
-                  ? 'bg-teal-600 dark:bg-teal-700 text-white shadow-md'
+                  ? 'bg-brand-900 dark:bg-brand-900 text-white'
                   : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-200 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
@@ -241,7 +241,7 @@ export default function StoriesTab() {
         {/* Results count */}
         {searchQuery || selectedCategory !== 'Alla' ? (
           <p className="text-sm text-gray-600 dark:text-gray-300">
-            Visar <span className="font-semibold text-teal-600 dark:text-teal-400">{filteredStories.length}</span> av{' '}
+            Visar <span className="font-semibold text-brand-900 dark:text-brand-400">{filteredStories.length}</span> av{' '}
             <span className="font-semibold">{stories.length}</span> berättelser
           </p>
         ) : null}
@@ -253,21 +253,21 @@ export default function StoriesTab() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <Card className="p-6 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border-teal-200 dark:border-teal-800">
+        <Card className="p-6 bg-gradient-to-r from-brand-50 to-cyan-50 dark:from-brand-900/20 dark:to-cyan-900/20 border-brand-200 dark:border-brand-900">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <motion.div
                 whileHover={{ scale: 1.1 }}
-                className="w-12 h-12 bg-white dark:bg-stone-700 rounded-xl flex items-center justify-center shadow-sm"
+                className="w-12 h-12 bg-white dark:bg-stone-700 rounded-xl flex items-center justify-center"
               >
-                <Users className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                <Users className="w-6 h-6 text-brand-900 dark:text-brand-400" />
               </motion.div>
               <div>
                 <h4 className="font-semibold text-gray-800 dark:text-gray-100">Hitta en mentor</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-300">Matchas med någon som har liknande bakgrund</p>
               </div>
             </div>
-            <Button className="gap-2 bg-teal-600 dark:bg-teal-700 hover:bg-teal-700 dark:hover:bg-teal-600">
+            <Button className="gap-2 bg-brand-900 dark:bg-brand-900 hover:bg-brand-900 dark:hover:bg-brand-900">
               Hitta matchning
               <ChevronRight className="w-4 h-4" />
             </Button>
@@ -299,7 +299,7 @@ export default function StoriesTab() {
                 transition={{ delay: index * 0.05 }}
               >
                 <Card
-                  className="p-6 hover:shadow-lg transition-all cursor-pointer bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700"
+                  className="p-6 hover: transition-all cursor-pointer bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700"
                   onClick={() => setExpandedStory(expandedStory === story.id ? null : story.id)}
                 >
                   <div className="flex items-start gap-4">
@@ -307,7 +307,7 @@ export default function StoriesTab() {
                     <motion.div
                       whileHover={{ scale: 1.05 }}
                       className={cn(
-                        'w-16 h-16 rounded-full bg-gradient-to-br flex items-center justify-center flex-shrink-0 text-white font-bold text-xl shadow-md',
+                        'w-16 h-16 rounded-full bg-gradient-to-br flex items-center justify-center flex-shrink-0 text-white font-bold text-xl',
                         `${story.avatarColor}`
                       )}
                     >
@@ -319,7 +319,7 @@ export default function StoriesTab() {
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div>
                           <h4 className="text-lg font-bold text-gray-800 dark:text-gray-100">{story.name}</h4>
-                          <p className="text-teal-600 dark:text-teal-400 font-semibold">{story.occupation}</p>
+                          <p className="text-brand-900 dark:text-brand-400 font-semibold">{story.occupation}</p>
                           <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">{story.background}</p>
                         </div>
                         <div className="flex gap-2 flex-wrap justify-end">
@@ -338,13 +338,13 @@ export default function StoriesTab() {
                       </div>
 
                       {/* Summary/Quote */}
-                      <blockquote className="mt-3 text-gray-700 dark:text-gray-200 italic border-l-4 border-teal-300 dark:border-teal-600 pl-4 py-2 bg-stone-50 dark:bg-stone-900/50 rounded-r-lg">
+                      <blockquote className="mt-3 text-gray-700 dark:text-gray-200 italic border-l-4 border-brand-300 dark:border-brand-900 pl-4 py-2 bg-stone-50 dark:bg-stone-900/50 rounded-r-lg">
                         "{story.summary}"
                       </blockquote>
 
                       {/* Bottom Info Row */}
                       <div className="flex items-center gap-3 mt-4 flex-wrap">
-                        <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold">
+                        <span className="px-3 py-1 bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400 rounded-full text-xs font-semibold">
                           {story.duration}
                         </span>
                         {story.readingTime && (
@@ -407,11 +407,11 @@ export default function StoriesTab() {
                           />
                           Spara
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-medium">
+                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-brand-900 dark:hover:text-brand-400 transition-colors font-medium">
                           <MessageCircle className="w-4 h-4" />
                           Kommentera
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-medium">
+                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-brand-900 dark:hover:text-brand-400 transition-colors font-medium">
                           <Share2 className="w-4 h-4" />
                           Dela
                         </button>
@@ -455,7 +455,7 @@ export default function StoriesTab() {
       >
         <Card className="p-6 bg-stone-50 dark:bg-stone-900/50 border-stone-200 dark:border-stone-700">
           <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-2">
-            <MessageCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <MessageCircle className="w-5 h-5 text-brand-900 dark:text-brand-400" />
             Ställ dina frågor anonymt
           </h4>
           <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
@@ -466,7 +466,7 @@ export default function StoriesTab() {
               placeholder="Vad undrar du över?"
               className="flex-1"
             />
-            <Button className="bg-teal-600 dark:bg-teal-700 hover:bg-teal-700 dark:hover:bg-teal-600 whitespace-nowrap">
+            <Button className="bg-brand-900 dark:bg-brand-900 hover:bg-brand-900 dark:hover:bg-brand-900 whitespace-nowrap">
               Skicka fråga
             </Button>
           </div>
@@ -487,7 +487,7 @@ export default function StoriesTab() {
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.6 }}
-              className="w-14 h-14 bg-white dark:bg-stone-700 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0"
+              className="w-14 h-14 bg-white dark:bg-stone-700 rounded-xl flex items-center justify-center flex-shrink-0"
             >
               <Zap className="w-7 h-7 text-amber-600 dark:text-amber-400" />
             </motion.div>
@@ -514,12 +514,12 @@ export default function StoriesTab() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <Card className="p-4 bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
+          <Card className="p-4 bg-brand-50 dark:bg-brand-900/20 border-brand-200 dark:border-brand-900">
             <div className="flex items-start gap-3">
-              <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400 mt-0.5 flex-shrink-0" />
+              <TrendingUp className="w-5 h-5 text-brand-900 dark:text-brand-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
-                  Förslag: Läs berättelser från kategori "<span className="text-teal-600 dark:text-teal-400">{selectedCategory}</span>"
+                  Förslag: Läs berättelser från kategori "<span className="text-brand-900 dark:text-brand-400">{selectedCategory}</span>"
                 </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                   Vi har valt ut de mest inspirerande berättelserna för din situation.

@@ -15,8 +15,8 @@ export function PageCard({ children, className, hover = true }: PageCardProps) {
   return (
     <div 
       className={cn(
-        "bg-white dark:bg-stone-900 rounded-2xl border-2 border-slate-200 dark:border-stone-700 p-5 sm:p-6",
-        hover && "hover:border-slate-300 dark:hover:border-stone-600 hover:shadow-xl hover:-translate-y-1",
+        "bg-white dark:bg-stone-900 rounded-xl border-2 border-slate-200 dark:border-stone-700 p-5 sm:p-6",
+        hover && "hover:border-slate-300 dark:hover:border-stone-600 hover: hover:-translate-y-1",
         "transition-all duration-300",
         className
       )}
@@ -35,8 +35,8 @@ export function PageCardLink({ children, to, className }: PageCardLinkProps) {
     <Link 
       to={to}
       className={cn(
-        "block bg-white dark:bg-stone-900 rounded-2xl border-2 border-slate-200 dark:border-stone-700 p-5 sm:p-6",
-        "hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-xl hover:-translate-y-1",
+        "block bg-white dark:bg-stone-900 rounded-xl border-2 border-slate-200 dark:border-stone-700 p-5 sm:p-6",
+        "hover:border-brand-300 dark:hover:border-brand-900 hover: hover:-translate-y-1",
         "transition-all duration-300",
         className
       )}

@@ -100,7 +100,7 @@ export function VoiceInput({ onTranscript, placeholder, className = '' }: VoiceI
 
       {showPrivacyNotice && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-6 max-w-md w-full">
+          <div className="bg-white rounded-xl p-6 max-w-md w-full">
             <div className="flex items-center gap-3 mb-4">
               <div className="p-2 bg-amber-100 rounded-full">
                 <Mic className="w-5 h-5 text-amber-600" />
@@ -116,11 +116,11 @@ export function VoiceInput({ onTranscript, placeholder, className = '' }: VoiceI
 
             <ul className="text-sm text-slate-600 mb-6 space-y-2">
               <li className="flex items-start gap-2">
-                <span className="text-green-500">✓</span>
+                <span className="text-brand-700">✓</span>
                 <span>Rösten omvandlas direkt till text i din enhet</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="text-green-500">✓</span>
+                <span className="text-brand-700">✓</span>
                 <span>Du kan alltid skriva istället om du föredrar det</span>
               </li>
             </ul>
@@ -134,7 +134,7 @@ export function VoiceInput({ onTranscript, placeholder, className = '' }: VoiceI
               </button>
               <button
                 onClick={handlePrivacyAccept}
-                className="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+                className="flex-1 px-4 py-2 bg-brand-900 text-white rounded-lg hover:bg-brand-900 transition-colors"
               >
                 Jag förstår
               </button>

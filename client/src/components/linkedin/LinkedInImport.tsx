@@ -79,7 +79,7 @@ export const LinkedInImport: React.FC<LinkedInImportProps> = ({
 
   if (isConnecting) {
     return (
-      <div className="bg-white rounded-xl shadow-lg p-8 text-center">
+      <div className="bg-white rounded-xl p-8 text-center">
         <LoadingState
           message="Ansluter till LinkedIn..."
           submessage="Detta kan ta några sekunder"
@@ -91,7 +91,7 @@ export const LinkedInImport: React.FC<LinkedInImportProps> = ({
 
   if (previewProfile) {
     return (
-      <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+      <div className="bg-white rounded-xl overflow-hidden">
         {/* Header */}
         <div className="bg-[#0077B5] text-white p-4 flex items-center gap-3">
           <Linkedin className="w-8 h-8" />
@@ -196,7 +196,7 @@ export const LinkedInImport: React.FC<LinkedInImportProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-lg p-6">
+    <div className="bg-white rounded-xl p-6">
       <div className="text-center space-y-4">
         {/* LinkedIn logo */}
         <div className="w-16 h-16 bg-[#0077B5] rounded-xl flex items-center justify-center mx-auto">
@@ -216,19 +216,19 @@ export const LinkedInImport: React.FC<LinkedInImportProps> = ({
         {/* Benefits */}
         <div className="text-left max-w-sm mx-auto space-y-2 py-4">
           <div className="flex items-start gap-3">
-            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="w-5 h-5 text-brand-700 flex-shrink-0 mt-0.5" />
             <span className="text-sm text-gray-600">
               Spara tid - informationen fylls i automatiskt
             </span>
           </div>
           <div className="flex items-start gap-3">
-            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="w-5 h-5 text-brand-700 flex-shrink-0 mt-0.5" />
             <span className="text-sm text-gray-600">
               Du kan redigera allt efter import
             </span>
           </div>
           <div className="flex items-start gap-3">
-            <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+            <CheckCircle className="w-5 h-5 text-brand-700 flex-shrink-0 mt-0.5" />
             <span className="text-sm text-gray-600">
               Din information hanteras säkert
             </span>

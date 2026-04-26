@@ -78,7 +78,7 @@ export default function SkillSuggestions({
 
   if (loading) {
     return (
-      <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
+      <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
         <div className="flex items-center gap-3">
           <Loader2 size={20} className="animate-spin text-blue-500" />
           <p className="text-sm text-blue-700">Hämtar kompetensförslag...</p>
@@ -95,7 +95,7 @@ export default function SkillSuggestions({
   const availableSuggestions = suggestions.filter(s => !s.isAdded);
 
   return (
-    <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200">
+    <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
@@ -147,7 +147,7 @@ export default function SkillSuggestions({
                   .map((skill) => (
                     <span
                       key={skill.id}
-                      className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-lg"
+                      className="inline-flex items-center gap-1 px-2 py-1 bg-brand-100 text-brand-900 text-xs rounded-lg"
                     >
                       <Check size={12} />
                       {skill.preferred_label}

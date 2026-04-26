@@ -25,7 +25,7 @@ export const ExercisesWidget = memo(function ExercisesWidget({
     return (
       <Link
         to="/exercises"
-        className="group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md transition-all duration-200"
+        className="group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover: transition-all duration-200"
       >
         <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
           <Dumbbell size={16} />
@@ -49,7 +49,7 @@ export const ExercisesWidget = memo(function ExercisesWidget({
     return (
       <Link
         to="/exercises"
-        className="group block bg-white dark:bg-stone-900 p-4 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+        className="group block bg-white dark:bg-stone-900 p-4 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover: hover:-translate-y-0.5 transition-all duration-200"
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -82,11 +82,11 @@ export const ExercisesWidget = memo(function ExercisesWidget({
   return (
     <Link
       to="/exercises"
-      className="group block bg-white dark:bg-stone-900 p-5 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-lg transition-all duration-200"
+      className="group block bg-white dark:bg-stone-900 p-5 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover: transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-100 to-brand-100 dark:from-emerald-900/40 dark:to-brand-900/40 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
             <Dumbbell size={24} />
           </div>
           <div>
@@ -110,7 +110,7 @@ export const ExercisesWidget = memo(function ExercisesWidget({
         </div>
         <div className="h-3 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-500 transition-all duration-500"
+            className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-brand-700 transition-all duration-500"
             style={{ width: `${completionRate}%` }}
           />
         </div>

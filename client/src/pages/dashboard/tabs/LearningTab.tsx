@@ -85,7 +85,7 @@ export default function LearningTab() {
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
+          <Loader2 className="w-8 h-8 text-brand-700 animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-slate-700 dark:text-stone-300">{t('dashboard.learning.loading')}</p>
         </div>
       </div>
@@ -154,7 +154,7 @@ export default function LearningTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-            <BookOpen className="text-teal-500" size={28} />
+            <BookOpen className="text-brand-700" size={28} />
             {t('dashboard.learning.title')}
           </h2>
           <p className="text-slate-700 dark:text-stone-300">{t('dashboard.learning.subtitle')}</p>
@@ -203,7 +203,7 @@ export default function LearningTab() {
       {/* Recommended articles */}
       <Section
         title={hasInterestProfile ? t('dashboard.learning.personalizedForYou') : t('dashboard.learning.recommendedForYou')}
-        icon={hasInterestProfile ? <Compass className="text-amber-500" /> : <Star className="text-teal-500" />}
+        icon={hasInterestProfile ? <Compass className="text-amber-500" /> : <Star className="text-brand-700" />}
       >
         {hasInterestProfile && (
           <p className="text-sm text-slate-700 dark:text-stone-300 -mt-2 mb-4 flex items-center gap-1">
@@ -299,7 +299,7 @@ function ProgressSummary({ progress, t }: ProgressSummaryProps) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <StatCard
-        icon={<FileText className="text-teal-500" />}
+        icon={<FileText className="text-brand-700" />}
         value={progress.articlesRead}
         label={t('dashboard.learning.stats.articlesRead')}
         color="violet"
@@ -335,7 +335,7 @@ interface StatCardProps {
 
 function StatCard({ icon, value, label, color }: StatCardProps) {
   const bgColors = {
-    violet: 'bg-teal-50 dark:bg-teal-900/40',
+    violet: 'bg-brand-50 dark:bg-brand-900/40',
     emerald: 'bg-emerald-50 dark:bg-emerald-900/40',
     amber: 'bg-amber-50 dark:bg-amber-900/40',
     orange: 'bg-orange-50 dark:bg-orange-900/40'
@@ -362,10 +362,10 @@ interface DailyTipCardProps {
 
 function DailyTipCard({ tip }: DailyTipCardProps) {
   return (
-    <div className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-xl border border-teal-100 dark:border-teal-700 p-4">
+    <div className="bg-gradient-to-r from-brand-50 to-sky-50 dark:from-brand-900/30 dark:to-sky-900/30 rounded-xl border border-brand-100 dark:border-brand-900 p-4">
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/40 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Lightbulb className="text-teal-600 dark:text-teal-400" size={20} />
+        <div className="w-10 h-10 bg-brand-100 dark:bg-brand-900/40 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Lightbulb className="text-brand-900 dark:text-brand-400" size={20} />
         </div>
         <div>
           <h4 className="font-semibold text-slate-800 dark:text-stone-100">{tip.title}</h4>
@@ -433,21 +433,21 @@ function ArticleCard({ article, onClick, showProgress, showRelevance, t }: Artic
         article.isCompleted
           ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20"
           : hasHighRelevance
-            ? "border-amber-200 dark:border-amber-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md"
-            : "border-slate-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md"
+            ? "border-amber-200 dark:border-amber-700 hover:border-amber-300 dark:hover:border-amber-600 hover:"
+            : "border-slate-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900 hover:"
       )}
     >
       <div className="flex items-start gap-3">
         <div className={cn(
           "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
-          article.isCompleted ? "bg-emerald-100 dark:bg-emerald-900/40" : hasHighRelevance ? "bg-amber-100 dark:bg-amber-900/40" : "bg-teal-100 dark:bg-teal-900/40"
+          article.isCompleted ? "bg-emerald-100 dark:bg-emerald-900/40" : hasHighRelevance ? "bg-amber-100 dark:bg-amber-900/40" : "bg-brand-100 dark:bg-brand-900/40"
         )}>
           {article.isCompleted ? (
             <CheckCircle2 className="text-emerald-600 dark:text-emerald-400" size={20} />
           ) : hasHighRelevance ? (
             <Compass className="text-amber-600 dark:text-amber-400" size={20} />
           ) : (
-            <FileText className="text-teal-600 dark:text-teal-400" size={20} />
+            <FileText className="text-brand-900 dark:text-brand-400" size={20} />
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -479,7 +479,7 @@ function ArticleCard({ article, onClick, showProgress, showRelevance, t }: Artic
             <div className="mt-2">
               <div className="h-1.5 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-teal-500 rounded-full"
+                  className="h-full bg-brand-700 rounded-full"
                   style={{ width: `${article.progress}%` }}
                 />
               </div>
@@ -526,8 +526,8 @@ function ExerciseCard({ exercise, onClick, showRelevance, t }: ExerciseCardProps
         exercise.isCompleted
           ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20"
           : hasHighRelevance
-            ? "border-amber-200 dark:border-amber-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md"
-            : "border-slate-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md"
+            ? "border-amber-200 dark:border-amber-700 hover:border-amber-300 dark:hover:border-amber-600 hover:"
+            : "border-slate-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover:"
       )}
     >
       <div className="flex items-start gap-3">
@@ -598,7 +598,7 @@ function CategoryCard({ category, onClick, t }: CategoryCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white dark:bg-stone-900 p-4 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all cursor-pointer"
+      className="bg-white dark:bg-stone-900 p-4 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-blue-300 dark:hover:border-blue-600 hover: transition-all cursor-pointer"
     >
       <div className="flex items-center justify-between mb-2">
         <h4 className="font-semibold text-slate-800 dark:text-stone-100">{category.name}</h4>
@@ -642,7 +642,7 @@ function CategoryView({ category, articles, isLoading, onBack, onSelectArticle, 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-brand-700 animate-spin" />
       </div>
     )
   }
@@ -717,11 +717,11 @@ function ArticleView({ article, onBack, onComplete, t }: ArticleViewProps) {
         {t('common.back')}
       </button>
 
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-slate-200 dark:border-stone-700 overflow-hidden">
+      <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden">
         {/* Header */}
         <div className="p-6 border-b border-slate-100 dark:border-stone-700">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs px-2 py-1 bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-400 rounded-full">
+            <span className="text-xs px-2 py-1 bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400 rounded-full">
               {article.category}
             </span>
             <span className="text-xs text-slate-700 dark:text-stone-300 flex items-center gap-1">
@@ -792,7 +792,7 @@ function ExerciseView({ exercise, onBack, t }: ExerciseViewProps) {
         {t('common.back')}
       </button>
 
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-slate-200 dark:border-stone-700 p-6">
+      <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-2">

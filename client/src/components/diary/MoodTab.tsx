@@ -17,7 +17,7 @@ const MOOD_CONFIG = [
   { value: 1, emoji: '😢', label: 'Mycket dåligt', color: 'bg-rose-500', bgColor: 'bg-rose-100', textColor: 'text-rose-700' },
   { value: 2, emoji: '😔', label: 'Dåligt', color: 'bg-orange-500', bgColor: 'bg-orange-100', textColor: 'text-orange-700' },
   { value: 3, emoji: '😐', label: 'Okej', color: 'bg-yellow-500', bgColor: 'bg-yellow-100', textColor: 'text-yellow-700' },
-  { value: 4, emoji: '🙂', label: 'Bra', color: 'bg-green-500', bgColor: 'bg-green-100', textColor: 'text-green-700' },
+  { value: 4, emoji: '🙂', label: 'Bra', color: 'bg-brand-700', bgColor: 'bg-brand-100', textColor: 'text-brand-900' },
   { value: 5, emoji: '😄', label: 'Mycket bra', color: 'bg-emerald-500', bgColor: 'bg-emerald-100', textColor: 'text-emerald-700' },
 ]
 
@@ -103,7 +103,7 @@ function LevelSlider({
         max={5}
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value))}
-        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
+        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-brand-900"
       />
       <div className="flex justify-between text-xs text-slate-600">
         <span>{lowLabel}</span>
@@ -165,7 +165,7 @@ function TodayLogger() {
           </p>
         </div>
         {todayMood && (
-          <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-1">
+          <span className="px-3 py-1 bg-brand-100 text-brand-900 rounded-full text-sm font-medium flex items-center gap-1">
             <Check className="w-4 h-4" />
             Loggat
           </span>
@@ -222,7 +222,7 @@ function TodayLogger() {
                 className={cn(
                   "px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5",
                   activities.includes(activity.id)
-                    ? "bg-teal-100 text-teal-700 ring-2 ring-teal-300"
+                    ? "bg-brand-100 text-brand-900 ring-2 ring-brand-300"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 )}
               >
@@ -243,7 +243,7 @@ function TodayLogger() {
             onChange={(e) => setNote(e.target.value)}
             placeholder="Något speciellt som påverkade din dag?"
             rows={3}
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 resize-none"
           />
         </div>
 
@@ -326,7 +326,7 @@ function MoodCalendar() {
               key={day}
               className={cn(
                 "aspect-square flex items-center justify-center rounded-lg text-sm",
-                isToday && "ring-2 ring-teal-400 ring-offset-1",
+                isToday && "ring-2 ring-brand-400 ring-offset-1",
                 moodConfig ? moodConfig.bgColor : "bg-slate-50"
               )}
               title={moodLog ? `Humör: ${moodLog.mood_level}/5` : ''}
@@ -394,8 +394,8 @@ function MoodStats() {
         <div className="flex items-center gap-1 sm:gap-2">
           {trend === 'up' && (
             <>
-              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
-              <span className="text-sm text-green-600 font-medium">Uppåt</span>
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-brand-700" />
+              <span className="text-sm text-brand-900 font-medium">Uppåt</span>
             </>
           )}
           {trend === 'down' && (
@@ -467,7 +467,7 @@ export function MoodTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-900" />
       </div>
     )
   }

@@ -33,10 +33,10 @@ const getIcon = (iconName: string): React.ElementType => {
 // Color mapping for Tailwind
 const colorClasses: Record<string, { bg: string; text: string; border: string; progress: string }> = {
   violet: {
-    bg: 'bg-teal-100 dark:bg-teal-900/40',
-    text: 'text-teal-600 dark:text-teal-400',
-    border: 'border-teal-200 dark:border-teal-700',
-    progress: 'bg-teal-500'
+    bg: 'bg-brand-100 dark:bg-brand-900/40',
+    text: 'text-brand-900 dark:text-brand-400',
+    border: 'border-brand-200 dark:border-brand-900',
+    progress: 'bg-brand-700'
   },
   blue: {
     bg: 'bg-blue-100 dark:bg-blue-900/40',
@@ -68,11 +68,11 @@ const colorClasses: Record<string, { bg: string; text: string; border: string; p
     border: 'border-rose-200 dark:border-rose-700',
     progress: 'bg-rose-500'
   },
-  teal: {
-    bg: 'bg-teal-100 dark:bg-teal-900/40',
-    text: 'text-teal-600 dark:text-teal-400',
-    border: 'border-teal-200 dark:border-teal-700',
-    progress: 'bg-teal-500'
+  brand: {
+    bg: 'bg-brand-100 dark:bg-brand-900/40',
+    text: 'text-brand-900 dark:text-brand-400',
+    border: 'border-brand-200 dark:border-brand-900',
+    progress: 'bg-brand-700'
   },
   orange: {
     bg: 'bg-orange-100 dark:bg-orange-900/40',
@@ -183,7 +183,7 @@ export default function ActivityTab() {
       {inProgressMilestones.length > 0 && (
         <section>
           <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-            <TrendingUp size={20} className="text-teal-500" />
+            <TrendingUp size={20} className="text-brand-700" />
             {t('dashboard.activity.sections.activeMilestones')}
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
@@ -295,7 +295,7 @@ function LevelProgress({ level, title, currentPoints, nextLevelPoints, t }: {
     : 100
 
   return (
-    <div className="bg-gradient-to-r from-teal-500 to-sky-600 rounded-2xl p-6 text-white">
+    <div className="bg-gradient-to-r from-brand-700 to-sky-600 rounded-xl p-6 text-white">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
@@ -351,7 +351,7 @@ function MilestoneCard({ milestone, progressLabel }: { milestone: Milestone; pro
       to={route}
       className={cn(
         "group block bg-white dark:bg-stone-800 rounded-xl border-2 p-5 transition-all duration-200",
-        "hover:shadow-lg hover:-translate-y-0.5",
+        "hover: hover:-translate-y-0.5",
         colors.border
       )}
     >
@@ -365,7 +365,7 @@ function MilestoneCard({ milestone, progressLabel }: { milestone: Milestone; pro
             <p className="text-sm text-stone-500 dark:text-stone-400">{m.description}</p>
           </div>
         </div>
-        <ChevronRight size={20} className="text-stone-300 dark:text-stone-400 group-hover:text-teal-500 transition-colors" />
+        <ChevronRight size={20} className="text-stone-300 dark:text-stone-400 group-hover:text-brand-700 transition-colors" />
       </div>
 
       <div className="space-y-2">
@@ -404,7 +404,7 @@ function MilestoneCardCompact({ milestone }: { milestone: Milestone }) {
   return (
     <Link
       to={route}
-      className="group flex items-center gap-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md transition-all"
+      className="group flex items-center gap-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:border-brand-300 dark:hover:border-brand-900 hover: transition-all"
     >
       <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0", colors.bg)}>
         <Icon size={20} className={colors.text} />
@@ -416,7 +416,7 @@ function MilestoneCardCompact({ milestone }: { milestone: Milestone }) {
           +{m.reward_points} XP
         </p>
       </div>
-      <ChevronRight size={16} className="text-stone-300 group-hover:text-teal-500 transition-colors" />
+      <ChevronRight size={16} className="text-stone-300 group-hover:text-brand-700 transition-colors" />
     </Link>
   )
 }
@@ -491,7 +491,7 @@ function ActivityItem({ activity }: { activity: ActivityLog }) {
       </div>
       <div className="text-right flex-shrink-0">
         {activity.points_earned > 0 && (
-          <p className="text-sm font-medium text-teal-600 dark:text-teal-400">+{activity.points_earned} XP</p>
+          <p className="text-sm font-medium text-brand-900 dark:text-brand-400">+{activity.points_earned} XP</p>
         )}
         <p className="text-xs text-stone-600">{formatActivityTime(activity.created_at)}</p>
       </div>
@@ -525,7 +525,7 @@ function ActivityTabSkeleton() {
           <div key={i} className="bg-stone-200 dark:bg-stone-700 rounded-xl h-32" />
         ))}
       </div>
-      <div className="bg-stone-200 dark:bg-stone-700 rounded-2xl h-32" />
+      <div className="bg-stone-200 dark:bg-stone-700 rounded-xl h-32" />
       <div className="space-y-4">
         <div className="h-6 bg-stone-200 dark:bg-stone-700 rounded w-48" />
         <div className="grid gap-4 md:grid-cols-2">
