@@ -79,18 +79,7 @@ export function Sidebar({ onClose }: SidebarProps) {
 
   return (
     <aside className="h-full flex flex-col w-64 bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800">
-      {/* Logo */}
-      <div className="px-4 py-5 border-b border-stone-100 dark:border-stone-800">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-brand-600 rounded-lg" />
-          <div>
-            <p className="font-semibold text-stone-900 dark:text-stone-100">jobin.se</p>
-            <p className="text-xs text-stone-500 dark:text-stone-400">Din jobbportal</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Navigation */}
+      {/* Navigation - no duplicate logo here, it's in TopBar */}
       <nav className="flex-1 overflow-y-auto px-3 py-4">
         {navGroups.map((group) => {
           const isGroupExpanded = expandedGroups.includes(group.id)
@@ -98,10 +87,12 @@ export function Sidebar({ onClose }: SidebarProps) {
 
           return (
             <div key={group.id} className="mb-4">
-              {/* Group label */}
-              <p className="px-3 mb-1 text-[11px] font-semibold text-stone-400 dark:text-stone-500 uppercase tracking-wider">
-                {t(group.labelKey)}
-              </p>
+              {/* Group label - hide for first group to avoid "ÖVERSIKT" / "Översikt" clash */}
+              {group.id !== 'overview' && (
+                <p className="px-3 mb-1 text-[11px] font-semibold text-stone-400 dark:text-stone-500 uppercase tracking-wider">
+                  {t(group.labelKey)}
+                </p>
+              )}
 
               {/* Group items */}
               <div className="space-y-0.5">
@@ -197,7 +188,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           />
           <button
             onClick={() => signOut()}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-stone-600 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
           >
             <LogOut className="w-5 h-5" />
             <span className="text-sm">{t('nav.logout')}</span>

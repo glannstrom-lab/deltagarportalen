@@ -98,7 +98,7 @@ export function DashboardRiasecChart({ scores, size = 180 }: DashboardRiasecChar
         <polygon
           points={polygonPoints}
           fill="#0F6E56"
-          fillOpacity="0.2"
+          fillOpacity="0.25"
           stroke="#0F6E56"
           strokeWidth="2"
         />
