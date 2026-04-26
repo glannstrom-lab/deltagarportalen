@@ -58,16 +58,19 @@ export function Sidebar({ onClose }: SidebarProps) {
         }}
         className={cn(
           'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-150',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-inset',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-inset',
           isActive
-            ? 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 font-medium'
-            : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100'
+            ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 font-medium'
+            : 'text-stone-700 dark:text-stone-300 hover:bg-brand-50 dark:hover:bg-stone-800'
         )}
       >
-        <Icon className="w-5 h-5 shrink-0" />
+        <Icon className={cn(
+          'w-5 h-5 shrink-0',
+          isActive ? 'text-brand-900 dark:text-brand-400' : 'text-brand-900 dark:text-brand-500'
+        )} />
         <span className="text-sm flex-1">{label}</span>
         {showBadge && (
-          <span className="px-1.5 py-0.5 text-[10px] font-medium bg-brand-600 text-white rounded">
+          <span className="px-1.5 py-0.5 text-[10px] font-medium bg-brand-900 text-white rounded">
             {t('common.new')}
           </span>
         )}
@@ -161,11 +164,11 @@ export function Sidebar({ onClose }: SidebarProps) {
         )}
       </nav>
 
-      {/* User section */}
-      <div className="p-3 border-t border-stone-100 dark:border-stone-800">
+      {/* User section - Zone background */}
+      <div className="p-3 bg-brand-zone dark:bg-brand-900/10 border-t border-brand-100 dark:border-stone-800">
         {/* User info */}
         <div className="flex items-center gap-3 px-2 py-2 mb-2">
-          <div className="w-9 h-9 rounded-full bg-brand-600 flex items-center justify-center text-white text-sm font-medium shrink-0">
+          <div className="w-9 h-9 rounded-full bg-brand-900 flex items-center justify-center text-white text-sm font-medium shrink-0">
             {user?.first_name?.[0] || user?.email?.[0] || '?'}
           </div>
           <div className="flex-1 min-w-0">
@@ -190,7 +193,7 @@ export function Sidebar({ onClose }: SidebarProps) {
             onClick={() => signOut()}
             className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-5 h-5 text-brand-900 dark:text-brand-500" />
             <span className="text-sm">{t('nav.logout')}</span>
           </button>
         </div>

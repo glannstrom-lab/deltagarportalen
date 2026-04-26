@@ -1,7 +1,8 @@
 /**
  * KPI Card Component for Dashboard
- * Clean, minimal design with neutral backgrounds and status dots
- * Single accent color approach - no gradient backgrounds
+ * 60/30/10 color distribution:
+ * - Positive KPIs: tinted background (brand-50) with brand-300 border
+ * - Neutral KPIs: white background
  */
 
 import { Link } from 'react-router-dom'
@@ -13,14 +14,8 @@ interface KpiCardProps {
   value: string | number
   subtext?: string
   status?: 'active' | 'updated' | 'pending' | 'none'
+  variant?: 'positive' | 'neutral'
   to?: string
-}
-
-const statusConfig = {
-  active: { dot: 'bg-brand-600', text: 'text-brand-600' },
-  updated: { dot: 'bg-brand-600', text: 'text-brand-600' },
-  pending: { dot: 'bg-stone-400', text: 'text-stone-500' },
-  none: { dot: '', text: 'text-stone-500' },
 }
 
 export function KpiCard({
@@ -29,16 +24,21 @@ export function KpiCard({
   value,
   subtext,
   status = 'none',
+  variant = 'neutral',
   to
 }: KpiCardProps) {
   const displayValue = typeof value === 'number' ? Math.max(0, value) : value
-  const statusStyle = statusConfig[status]
+  const isPositive = variant === 'positive'
 
   const content = (
     <div className={cn(
-      'bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-4 sm:p-5',
-      'transition-all duration-200',
-      to && 'hover:border-stone-300 dark:hover:border-stone-600 hover:shadow-sm cursor-pointer'
+      'rounded-xl p-4 sm:p-5 transition-all duration-200',
+      isPositive
+        ? 'bg-brand-50 border border-brand-300 dark:bg-brand-900/20 dark:border-brand-700'
+        : 'bg-white border border-stone-200 dark:bg-stone-900 dark:border-stone-700',
+      to && 'hover:shadow-sm cursor-pointer',
+      to && isPositive && 'hover:border-brand-400',
+      to && !isPositive && 'hover:border-stone-300 dark:hover:border-stone-600'
     )}>
       {/* Label */}
       <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 font-medium mb-1">
@@ -46,7 +46,12 @@ export function KpiCard({
       </p>
 
       {/* Value */}
-      <p className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100 mb-1">
+      <p className={cn(
+        'text-2xl sm:text-3xl font-bold mb-1',
+        isPositive
+          ? 'text-brand-900 dark:text-brand-400'
+          : 'text-stone-900 dark:text-stone-100'
+      )}>
         {displayValue}
       </p>
 
@@ -54,9 +59,15 @@ export function KpiCard({
       {subtext && (
         <div className="flex items-center gap-1.5">
           {status !== 'none' && (
-            <span className={cn('w-2 h-2 rounded-full', statusStyle.dot)} />
+            <span className={cn(
+              'w-2 h-2 rounded-full',
+              isPositive ? 'bg-brand-900' : 'bg-stone-400'
+            )} />
           )}
-          <span className={cn('text-xs sm:text-sm', statusStyle.text)}>
+          <span className={cn(
+            'text-xs sm:text-sm',
+            isPositive ? 'text-brand-700 dark:text-brand-400' : 'text-stone-500'
+          )}>
             {subtext}
           </span>
         </div>
@@ -69,7 +80,7 @@ export function KpiCard({
       <Link
         to={to}
         aria-label={`${label}: ${displayValue}${subtext ? `, ${subtext}` : ''}`}
-        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2 rounded-xl block"
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2 rounded-xl block"
       >
         {content}
       </Link>

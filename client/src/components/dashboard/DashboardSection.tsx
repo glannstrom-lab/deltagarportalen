@@ -1,7 +1,7 @@
 /**
  * Dashboard Section Component
- * Clean card style with optional progress bar
- * Minimal design - white background, subtle border
+ * Zone-style card with progress bar
+ * Uses brand-zone background for grouped content
  */
 
 import { cn } from '@/lib/utils'
@@ -12,6 +12,7 @@ interface DashboardSectionProps {
   progress?: number // 0-100, shows progress bar if provided
   children: React.ReactNode
   className?: string
+  variant?: 'default' | 'zone'
 }
 
 export function DashboardSection({
@@ -19,11 +20,15 @@ export function DashboardSection({
   badge,
   progress,
   children,
-  className
+  className,
+  variant = 'zone'
 }: DashboardSectionProps) {
   return (
     <div className={cn(
-      'bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700',
+      'rounded-xl',
+      variant === 'zone'
+        ? 'bg-brand-zone dark:bg-brand-900/10'
+        : 'bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700',
       className
     )}>
       {/* Header */}
@@ -33,7 +38,7 @@ export function DashboardSection({
             {title}
           </h3>
           {badge && (
-            <span className="text-sm text-stone-500 dark:text-stone-400">
+            <span className="text-sm text-brand-700 dark:text-brand-400 font-medium">
               {badge}
             </span>
           )}
@@ -41,9 +46,9 @@ export function DashboardSection({
 
         {/* Progress bar */}
         {typeof progress === 'number' && (
-          <div className="h-1.5 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
+          <div className="h-2 bg-brand-100 dark:bg-stone-800 rounded-full overflow-hidden">
             <div
-              className="h-full bg-brand-600 rounded-full transition-all duration-500"
+              className="h-full bg-brand-900 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
             />
           </div>

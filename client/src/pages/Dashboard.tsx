@@ -97,34 +97,34 @@ export default function DashboardPage() {
             </div>
             <div className="text-right">
               <p className="text-sm text-stone-500 dark:text-stone-400">Redo för jobb</p>
-              <p className="text-lg font-semibold text-brand-600">
+              <p className="text-lg font-semibold text-brand-900 dark:text-brand-400">
                 {progressPercent}% · {onboardingProgress.completed} av {onboardingProgress.total} klart
               </p>
             </div>
           </div>
 
-          {/* Next Step Banner - THE ONLY colored element - always show if not 100% */}
+          {/* Next Step Banner - Primary CTA, most important element */}
           {nextStep && (
             <Link
               to={nextStep.path}
-              className="block bg-brand-600 rounded-xl p-5 sm:p-6 text-white hover:bg-brand-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
+              className="block bg-brand-900 rounded-xl p-5 sm:p-6 text-white hover:bg-brand-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2"
             >
-              <p className="text-xs text-white/70 uppercase tracking-wider font-medium mb-1">
+              <p className="text-xs text-white/80 uppercase tracking-wider font-medium mb-1">
                 Ditt nästa steg
               </p>
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
                   <h2 className="text-lg sm:text-xl font-bold">{t(nextStep.titleKey)}</h2>
-                  <p className="text-sm text-white/70 truncate">{t(nextStep.descriptionKey)}</p>
+                  <p className="text-sm text-white/80 truncate">{t(nextStep.descriptionKey)}</p>
                 </div>
-                <div className="flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors rounded-lg px-4 py-2 text-sm font-medium shrink-0">
+                <div className="flex items-center gap-2 bg-white text-brand-900 hover:bg-brand-50 transition-colors rounded-lg px-4 py-2 text-sm font-semibold shrink-0">
                   Starta <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
             </Link>
           )}
 
-          {/* KPI Cards - Neutral white backgrounds */}
+          {/* KPI Cards - Positive values get tinted backgrounds */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <KpiCard
               icon={FileText}
@@ -132,6 +132,7 @@ export default function DashboardPage() {
               value={`${dashboardData?.cv?.progress || 0}%`}
               subtext={dashboardData?.cv?.hasCV ? 'Uppdaterat' : 'Inga ännu'}
               status={dashboardData?.cv?.hasCV ? 'updated' : 'pending'}
+              variant={dashboardData?.cv?.hasCV ? 'positive' : 'neutral'}
               to="/cv"
             />
             <KpiCard
@@ -140,6 +141,7 @@ export default function DashboardPage() {
               value={dashboardData?.jobs?.savedCount || 0}
               subtext={dashboardData?.jobs?.savedCount ? 'Sparade' : 'Inga än'}
               status={dashboardData?.jobs?.savedCount ? 'active' : 'pending'}
+              variant={dashboardData?.jobs?.savedCount ? 'positive' : 'neutral'}
               to="/job-search"
             />
             <KpiCard
@@ -148,6 +150,7 @@ export default function DashboardPage() {
               value={dashboardData?.applications?.total || 0}
               subtext={dashboardData?.applications?.total ? 'Skickade' : 'Inga än'}
               status={dashboardData?.applications?.total ? 'active' : 'pending'}
+              variant={dashboardData?.applications?.total ? 'positive' : 'neutral'}
               to="/applications"
             />
             <KpiCard
@@ -156,6 +159,7 @@ export default function DashboardPage() {
               value={dashboardData?.activity?.streakDays ? `${dashboardData.activity.streakDays}d` : 'Idag'}
               subtext="Aktiv"
               status="active"
+              variant="positive"
             />
           </div>
 
@@ -198,9 +202,9 @@ export default function DashboardPage() {
 
             {/* Sidebar column */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Interest Profile */}
+              {/* Interest Profile - Zone background to group with "Kom igång" */}
               {interestProfile?.hasResult && interestProfile.riasecScores ? (
-                <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
+                <div className="bg-brand-zone dark:bg-brand-900/10 rounded-xl p-5">
                   <h3 className="text-base font-semibold text-stone-900 dark:text-stone-100 mb-4">
                     Din intresseprofil
                   </h3>
@@ -211,13 +215,13 @@ export default function DashboardPage() {
                     {interestProfile.dominantTypes.slice(0, 2).map((type) => (
                       <div key={type.code} className="flex items-center justify-between text-sm">
                         <span className="text-stone-600 dark:text-stone-400">{t(`riasec.${type.code}`)}</span>
-                        <span className="font-medium text-stone-900 dark:text-stone-100">{type.score}%</span>
+                        <span className="font-medium text-brand-900 dark:text-brand-400">{type.score}%</span>
                       </div>
                     ))}
                   </div>
                   <Link
                     to="/interest-guide"
-                    className="flex items-center justify-center gap-1 mt-4 py-2 text-sm text-brand-600 hover:text-brand-700 font-medium transition-colors"
+                    className="flex items-center justify-center gap-1 mt-4 py-2 text-sm text-brand-900 hover:text-brand-700 font-semibold transition-colors"
                   >
                     Visa mer <ChevronRight className="w-4 h-4" />
                   </Link>
@@ -225,34 +229,34 @@ export default function DashboardPage() {
               ) : (
                 <Link
                   to="/interest-guide"
-                  className="block bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5 hover:border-brand-600 transition-colors group"
+                  className="block bg-brand-zone dark:bg-brand-900/10 rounded-xl p-5 hover:bg-brand-100 transition-colors group"
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-brand-600 rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-brand-900 rounded-lg flex items-center justify-center">
                       <Compass className="w-5 h-5 text-white" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-stone-900 dark:text-stone-100">Hitta dina intressen</h3>
-                      <p className="text-sm text-stone-500">Ta intresseguiden</p>
+                      <p className="text-sm text-brand-700 dark:text-brand-400">Ta intresseguiden</p>
                     </div>
                   </div>
                   <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
                     Upptäck vilka yrken som passar din personlighet
                   </p>
-                  <span className="text-sm text-brand-600 font-medium group-hover:underline">
+                  <span className="text-sm text-brand-900 font-semibold group-hover:underline">
                     Starta guiden →
                   </span>
                 </Link>
               )}
 
-              {/* Wellness - simplified */}
+              {/* Wellness */}
               <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
                 <h3 className="text-base font-semibold text-stone-900 dark:text-stone-100 mb-3">
                   Välmående
                 </h3>
                 <Link
                   to="/wellness"
-                  className="text-sm text-brand-600 hover:text-brand-700 font-medium"
+                  className="text-sm text-brand-900 hover:text-brand-700 font-medium"
                 >
                   Logga ditt mående idag →
                 </Link>

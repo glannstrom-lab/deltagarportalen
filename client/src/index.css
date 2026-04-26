@@ -59,17 +59,18 @@
   --color-accent-green: #10b981;
   --color-accent-pink: #ec4899;
 
-  /* BRAND - Huvudaccentfärg (#0F6E56 turkos) */
-  --color-brand-50: #f0fdf9;
-  --color-brand-100: #ccfbef;
-  --color-brand-200: #9af5df;
-  --color-brand-300: #5fe9ca;
-  --color-brand-400: #2dd4b1;
-  --color-brand-500: #14b89a;
-  --color-brand-600: #0F6E56;
-  --color-brand-700: #0d5c48;
-  --color-brand-800: #0f4a3b;
-  --color-brand-900: #103d32;
+  /* BRAND - Huvudaccentfärg (turkos) - 60/30/10 fördelning */
+  --color-brand-50: #F5FBF9;   /* lättaste tinten */
+  --color-brand-100: #E1F5EE;  /* aktivt menyval, positiv KPI-tint */
+  --color-brand-200: #C3EBD9;
+  --color-brand-300: #9FE1CB;  /* borders på tintade ytor */
+  --color-brand-400: #5FCCA8;
+  --color-brand-500: #2EB88A;
+  --color-brand-600: #1A9B70;
+  --color-brand-700: #0F6E56;  /* solid accent, alias till 900 */
+  --color-brand-800: #0d5c48;
+  --color-brand-900: #0F6E56;  /* solid accent, CTA, aktiv ikon */
+  --color-brand-zone: #F0F9F5; /* zon-bakgrund för grupperade kort */
 
   --color-page: #fafaf9;
   --color-page-dark: #f5f5f4;

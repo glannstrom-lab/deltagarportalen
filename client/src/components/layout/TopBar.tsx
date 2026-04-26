@@ -86,7 +86,7 @@ export function TopBar() {
 
         {/* Left - Logo */}
         <Link to="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-brand-600 rounded-lg" />
+          <div className="w-8 h-8 bg-brand-900 rounded-lg" />
           <span className="text-lg font-bold text-stone-900 dark:text-stone-100">
             jobin.se
           </span>
