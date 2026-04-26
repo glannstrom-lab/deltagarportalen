@@ -2,6 +2,7 @@
  * External Resources Page - Links to external job seeker resources
  * Arbetsförmedlingen Play, SACO, TCO, etc.
  */
+import React from 'react'
 import { PageLayout } from '@/components/layout/index'
 import { ExternalLink, Play, BookOpen, FileText, Users, Building2, GraduationCap, Globe, Briefcase, Scale, Heart, Headphones, Search, Laptop, Rocket, Wrench, Coffee, MessageCircle, Lightbulb, Award, Accessibility, Handshake, MapPin, Clock, Palette, Code, Stethoscope, Baby, UserPlus, Calendar, Languages, Leaf, Shield, Home, RefreshCw, Brain, Sparkles, Target, Landmark, Camera, Gavel, Newspaper, Database, PenTool, Zap, Video, BookMarked, Megaphone, Lock, Coins, Hammer, Train, ShoppingCart, Network } from '@/components/ui/icons'
 
@@ -3233,9 +3234,43 @@ const categoryLabels: Record<string, { title: string; description: string }> = {
   },
 }
 
-const categoryOrder = ['jobs', 'staffing', 'public-sector', 'niche', 'nonprofit', 'creative', 'science', 'legal', 'youth', 'senior', 'regional', 'international', 'remote', 'freelance', 'green', 'video', 'podcasts', 'guide', 'ai-tools', 'interview', 'salary', 'assessment', 'portfolio', 'language', 'learning', 'certifications', 'soft-skills', 'coworking', 'networking', 'startup', 'career-change', 'organization', 'diversity', 'accessibility', 'support']
+// Group categories into main tabs
+const mainTabs = {
+  'hitta-jobb': {
+    label: 'Hitta jobb',
+    icon: Briefcase,
+    categories: ['jobs', 'staffing', 'public-sector', 'niche', 'nonprofit', 'creative', 'science', 'legal', 'youth', 'senior', 'regional', 'international', 'remote', 'freelance', 'green']
+  },
+  'larande': {
+    label: 'Lärande',
+    icon: GraduationCap,
+    categories: ['learning', 'certifications', 'language', 'video', 'podcasts', 'soft-skills']
+  },
+  'karriar': {
+    label: 'Karriär',
+    icon: Target,
+    categories: ['guide', 'ai-tools', 'interview', 'salary', 'assessment', 'portfolio', 'networking', 'coworking']
+  },
+  'stod': {
+    label: 'Stöd',
+    icon: Heart,
+    categories: ['organization', 'career-change', 'diversity', 'accessibility', 'support']
+  },
+  'starta-eget': {
+    label: 'Starta eget',
+    icon: Rocket,
+    categories: ['startup']
+  }
+}
 
-function ResourceCard({ resource }: { resource: ExternalResource }) {
+// Featured/popular resources (shown at top)
+const featuredResourceIds = [
+  'af-play', 'indeed', 'linkedin-jobs', 'chatgpt', 'allastudier',
+  'unionen', 'trr', 'jobscan'
+]
+
+// Compact resource card for grid display
+function CompactResourceCard({ resource }: { resource: ExternalResource }) {
   const IconComponent = resource.icon
 
   return (
@@ -3243,95 +3278,287 @@ function ResourceCard({ resource }: { resource: ExternalResource }) {
       href={resource.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block bg-white dark:bg-stone-800/50 rounded-xl p-5 border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-500 hover:shadow-lg transition-all duration-200 hover:-translate-y-0.5"
+      className="group flex items-center gap-3 p-3 bg-white dark:bg-stone-800/50 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-500 hover:shadow-md transition-all"
     >
-      <div className="flex items-start gap-4">
-        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 flex items-center justify-center group-hover:from-teal-100 group-hover:to-sky-100 dark:group-hover:from-teal-900/50 dark:group-hover:to-sky-900/50 transition-colors">
+      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 flex items-center justify-center">
+        <IconComponent className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <span className="font-medium text-sm text-stone-900 dark:text-stone-100 truncate group-hover:text-teal-700 dark:group-hover:text-teal-400">
+            {resource.name}
+          </span>
+          <ExternalLink className="w-3 h-3 text-stone-400 flex-shrink-0" />
+        </div>
+        <p className="text-xs text-stone-500 dark:text-stone-400 truncate">
+          {resource.description}
+        </p>
+      </div>
+    </a>
+  )
+}
+
+// Featured resource card (larger, with description)
+function FeaturedResourceCard({ resource }: { resource: ExternalResource }) {
+  const IconComponent = resource.icon
+
+  return (
+    <a
+      href={resource.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group block p-4 bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-500 hover:shadow-lg transition-all"
+    >
+      <div className="flex items-start gap-3">
+        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-teal-100 to-sky-100 dark:from-teal-900/50 dark:to-sky-900/50 flex items-center justify-center">
           <IconComponent className="w-6 h-6 text-teal-600 dark:text-teal-400" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors">
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100 group-hover:text-teal-700 dark:group-hover:text-teal-400">
               {resource.name}
             </h3>
-            <ExternalLink className="w-4 h-4 text-stone-400 group-hover:text-teal-500 transition-colors" />
+            <ExternalLink className="w-4 h-4 text-stone-400" />
           </div>
           <p className="mt-1 text-sm text-stone-600 dark:text-stone-400 line-clamp-2">
             {resource.description}
           </p>
-          {resource.tags && resource.tags.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {resource.tags.map(tag => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
       </div>
     </a>
   )
 }
 
-function CategorySection({ category, resources }: { category: string; resources: ExternalResource[] }) {
+// Collapsible category section
+function CollapsibleCategory({
+  category,
+  resources,
+  isExpanded,
+  onToggle
+}: {
+  category: string
+  resources: ExternalResource[]
+  isExpanded: boolean
+  onToggle: () => void
+}) {
   const { title, description } = categoryLabels[category]
 
   return (
-    <section className="space-y-4">
-      <div>
-        <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">{title}</h2>
-        <p className="text-sm text-stone-500 dark:text-stone-400">{description}</p>
-      </div>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {resources.map(resource => (
-          <ResourceCard key={resource.id} resource={resource} />
-        ))}
-      </div>
-    </section>
+    <div className="border border-stone-200 dark:border-stone-700 rounded-xl overflow-hidden">
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center justify-between p-4 bg-white dark:bg-stone-800/50 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors text-left"
+      >
+        <div className="flex items-center gap-3">
+          <span className="font-semibold text-stone-900 dark:text-stone-100">{title}</span>
+          <span className="text-xs px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300">
+            {resources.length}
+          </span>
+        </div>
+        <svg
+          className={`w-5 h-5 text-stone-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+      {isExpanded && (
+        <div className="p-4 pt-0 bg-white dark:bg-stone-800/50">
+          <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">{description}</p>
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {resources.map(resource => (
+              <CompactResourceCard key={resource.id} resource={resource} />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   )
 }
 
 export default function ExternalResources() {
-  // Group resources by category
-  const resourcesByCategory = categoryOrder.reduce((acc, category) => {
-    acc[category] = externalResources.filter(r => r.category === category)
-    return acc
-  }, {} as Record<string, ExternalResource[]>)
+  const [searchQuery, setSearchQuery] = React.useState('')
+  const [activeTab, setActiveTab] = React.useState<string | null>(null)
+  const [expandedCategories, setExpandedCategories] = React.useState<Set<string>>(new Set())
+
+  // Filter resources based on search
+  const filteredResources = React.useMemo(() => {
+    if (!searchQuery.trim()) return externalResources
+    const query = searchQuery.toLowerCase()
+    return externalResources.filter(r =>
+      r.name.toLowerCase().includes(query) ||
+      r.description.toLowerCase().includes(query) ||
+      r.tags?.some(tag => tag.toLowerCase().includes(query))
+    )
+  }, [searchQuery])
+
+  // Group filtered resources by category
+  const resourcesByCategory = React.useMemo(() => {
+    return filteredResources.reduce((acc, resource) => {
+      if (!acc[resource.category]) acc[resource.category] = []
+      acc[resource.category].push(resource)
+      return acc
+    }, {} as Record<string, ExternalResource[]>)
+  }, [filteredResources])
+
+  // Get featured resources
+  const featuredResources = React.useMemo(() => {
+    return featuredResourceIds
+      .map(id => externalResources.find(r => r.id === id))
+      .filter((r): r is ExternalResource => r !== undefined)
+  }, [])
+
+  // Get categories for active tab
+  const activeCategories = activeTab
+    ? mainTabs[activeTab as keyof typeof mainTabs]?.categories || []
+    : Object.values(mainTabs).flatMap(t => t.categories)
+
+  // Toggle category expansion
+  const toggleCategory = (category: string) => {
+    setExpandedCategories(prev => {
+      const next = new Set(prev)
+      if (next.has(category)) {
+        next.delete(category)
+      } else {
+        next.add(category)
+      }
+      return next
+    })
+  }
+
+  // Expand all categories in view
+  const expandAll = () => {
+    setExpandedCategories(new Set(activeCategories))
+  }
+
+  // Collapse all
+  const collapseAll = () => {
+    setExpandedCategories(new Set())
+  }
+
+  const isSearching = searchQuery.trim().length > 0
 
   return (
     <PageLayout
       title="Externa resurser"
-      description="Användbara länkar och resurser för jobbsökande"
+      description={`${externalResources.length} användbara länkar för jobbsökande`}
       icon={ExternalLink}
       domain="info"
-      className="space-y-8 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen"
+      className="space-y-6 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen"
     >
-      {/* Intro section */}
-      <div className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl p-6 border border-teal-100 dark:border-teal-800/50">
-        <div className="flex items-start gap-4">
-          <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-white dark:bg-stone-800 shadow-sm flex items-center justify-center">
-            <Globe className="w-6 h-6 text-teal-600 dark:text-teal-400" />
-          </div>
-          <div>
-            <h2 className="font-semibold text-stone-900 dark:text-stone-100">Extern kunskap</h2>
-            <p className="mt-1 text-sm text-stone-600 dark:text-stone-400">
-              Här har vi samlat värdefulla externa resurser som kan hjälpa dig i ditt jobbsökande.
-              Allt från Arbetsförmedlingens videomaterial till fackförbundens karriärguider och utbildningsportaler.
-            </p>
-          </div>
-        </div>
+      {/* Search bar */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+        <input
+          type="text"
+          placeholder="Sök bland resurser..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full pl-12 pr-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </div>
 
-      {/* Resource sections by category */}
-      {categoryOrder.map(category => {
-        const resources = resourcesByCategory[category]
-        if (!resources || resources.length === 0) return null
-        return <CategorySection key={category} category={category} resources={resources} />
-      })}
+      {/* Search results info */}
+      {isSearching && (
+        <div className="text-sm text-stone-600 dark:text-stone-400">
+          Hittade <span className="font-semibold text-teal-600">{filteredResources.length}</span> resurser för "{searchQuery}"
+        </div>
+      )}
+
+      {/* Show search results directly if searching */}
+      {isSearching ? (
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredResources.map(resource => (
+            <CompactResourceCard key={resource.id} resource={resource} />
+          ))}
+        </div>
+      ) : (
+        <>
+          {/* Featured resources */}
+          <section>
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-5 h-5 text-amber-500" />
+              <h2 className="font-semibold text-stone-900 dark:text-stone-100">Populära resurser</h2>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {featuredResources.map(resource => (
+                <FeaturedResourceCard key={resource.id} resource={resource} />
+              ))}
+            </div>
+          </section>
+
+          {/* Main tabs */}
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setActiveTab(null)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                activeTab === null
+                  ? 'bg-teal-600 text-white'
+                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+              }`}
+            >
+              Alla
+            </button>
+            {Object.entries(mainTabs).map(([key, { label, icon: TabIcon }]) => (
+              <button
+                key={key}
+                onClick={() => setActiveTab(key)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                  activeTab === key
+                    ? 'bg-teal-600 text-white'
+                    : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
+                }`}
+              >
+                <TabIcon className="w-4 h-4" />
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Expand/collapse controls */}
+          <div className="flex items-center gap-4 text-sm">
+            <button
+              onClick={expandAll}
+              className="text-teal-600 hover:text-teal-700 dark:text-teal-400"
+            >
+              Visa alla
+            </button>
+            <button
+              onClick={collapseAll}
+              className="text-stone-500 hover:text-stone-600 dark:text-stone-400"
+            >
+              Dölj alla
+            </button>
+          </div>
+
+          {/* Category accordions */}
+          <div className="space-y-3">
+            {activeCategories
+              .filter(category => resourcesByCategory[category]?.length > 0)
+              .map(category => (
+                <CollapsibleCategory
+                  key={category}
+                  category={category}
+                  resources={resourcesByCategory[category]}
+                  isExpanded={expandedCategories.has(category)}
+                  onToggle={() => toggleCategory(category)}
+                />
+              ))}
+          </div>
+        </>
+      )}
 
       {/* Disclaimer */}
       <div className="text-center py-6 text-sm text-stone-500 dark:text-stone-400">
