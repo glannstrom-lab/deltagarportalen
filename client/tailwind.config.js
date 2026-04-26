@@ -8,35 +8,110 @@ export default {
   theme: {
     extend: {
       colors: {
-        // NYTT: Primärfärg - Violet (mer mänsklig och inspirerande)
-        primary: {
-          50: '#f5f3ff',
-          100: '#ede9fe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',  // Huvudprimärfärg
-          700: '#6d28d9',
-          800: '#5b21b6',
-          900: '#4c1d95',
+        // === SEMANTIC DOMAIN COLORS ===
+
+        // ACTION domain - Turkos (CTA, brand, primära handlingar)
+        teal: {
+          50: '#E1F5EE',   // Background
+          100: '#C3EBD9',
+          200: '#A5E1C4',
+          300: '#9FE1CB',  // Accent
+          400: '#6DD4B4',
+          500: '#3BC79D',
+          600: '#1A9E76',
+          700: '#148860',
+          800: '#0F7249',
+          900: '#0F6E56',  // Solid
         },
 
-        // NYTT: Neutrala färger - Warm Stone (istället för kall Slate)
+        // INFO domain - Blå (sparade jobb, information, referens)
+        blue: {
+          50: '#DCEBFB',   // Background
+          100: '#C5DCF7',
+          200: '#AECDF3',
+          300: '#9EC5ED',  // Accent
+          400: '#78B0E5',
+          500: '#529BDD',
+          600: '#3280C7',
+          700: '#2769A8',
+          800: '#1E5A9C',  // Solid (alt)
+          900: '#1E5A9C',  // Solid
+        },
+
+        // ACTIVITY domain - Persika (utåtriktad aktivitet, ansökningar)
+        peach: {
+          50: '#FFE8D6',   // Background
+          100: '#FFDCC0',
+          200: '#FFD0AA',
+          300: '#F4B988',  // Accent
+          400: '#E9A060',
+          500: '#DE8738',
+          600: '#C46E20',
+          700: '#B05A1A',  // Solid (alt)
+          800: '#9C4A14',
+          900: '#B05A1A',  // Solid
+        },
+
+        // WELLBEING domain - Rosa (mående, hälsa, personliga känslor)
+        pink: {
+          50: '#FBE2EC',   // Background
+          100: '#F8D0DE',
+          200: '#F5BED0',
+          300: '#F0A8C0',  // Accent
+          400: '#E88AA8',
+          500: '#E06C90',
+          600: '#C94A72',
+          700: '#B23358',
+          800: '#9F1F4D',  // Solid (alt)
+          900: '#9F1F4D',  // Solid
+        },
+
+        // COACHING domain - Lila (självkännedom, reflektion, intresseguide)
+        purple: {
+          50: '#E8E1F4',   // Background
+          100: '#DDD3EE',
+          200: '#D2C5E8',
+          300: '#BFA9E0',  // Accent
+          400: '#A88AD4',
+          500: '#916BC8',
+          600: '#7A4FBA',
+          700: '#6840A2',
+          800: '#5B3F8F',  // Solid (alt)
+          900: '#5B3F8F',  // Solid
+        },
+
+        // === NEUTRAL COLORS ===
+        canvas: '#FAFAF8',  // Page background
+
         neutral: {
-          50: '#fafaf9',   // Huvudbakgrund
-          100: '#f5f5f4',
-          200: '#e7e5e4',  // Kanter
-          300: '#d6d3d1',
-          400: '#a8a29e',  // Sekundär text
-          500: '#78716c',
-          600: '#57534e',  // Brödtext
-          700: '#44403c',  // Rubriker
-          800: '#292524',
-          900: '#1c1917',
+          50: '#F1F1EE',   // Card backgrounds
+          100: '#E8E8E5',
+          200: '#DDDDD9',  // Borders
+          300: '#C8C8C4',
+          400: '#A8A8A3',
+          500: '#888780',  // Secondary text
+          600: '#68675F',
+          700: '#484740',
+          800: '#38372F',
+          900: '#2C2C2A',  // Primary text
         },
 
-        // BAKÅTKOMPATIBEL: Slate behålls för nuvarande kod
+        // === BACKWARDS COMPATIBLE ===
+        // Stone (mapped to neutral)
+        stone: {
+          50: '#F1F1EE',
+          100: '#E8E8E5',
+          200: '#DDDDD9',
+          300: '#C8C8C4',
+          400: '#A8A8A3',
+          500: '#888780',
+          600: '#68675F',
+          700: '#484740',
+          800: '#38372F',
+          900: '#2C2C2A',
+        },
+
+        // Slate (legacy)
         slate: {
           50: '#f8fafc',
           100: '#f1f5f9',
@@ -50,24 +125,10 @@ export default {
           900: '#0f172a',
         },
 
-        // Sekundärfärg - Teal (för hälsa/välmående)
-        secondary: {
-          50: '#f0fdfa',
-          100: '#ccfbf1',
-          200: '#99f6e4',
-          300: '#5eead4',
-          400: '#2dd4bf',
-          500: '#14b8a6',
-          600: '#0d9488',
-          700: '#0f766e',
-          800: '#115e59',
-          900: '#134e4a',
-        },
-
-        // Semantiska färger - justerade för bättre kontrast
+        // === STATUS COLORS ===
         success: {
           light: '#d1fae5',
-          DEFAULT: '#059669',  // Mörkare för WCAG AA
+          DEFAULT: '#059669',
           dark: '#047857',
         },
         warning: {
@@ -80,24 +141,40 @@ export default {
           DEFAULT: '#dc2626',
           dark: '#b91c1c',
         },
+
+        // === SEMANTIC TOKENS ===
+        action: {
+          DEFAULT: '#0F6E56',
+          bg: '#E1F5EE',
+          accent: '#9FE1CB',
+        },
         info: {
+          DEFAULT: '#1E5A9C',
+          bg: '#DCEBFB',
+          accent: '#9EC5ED',
           light: '#dbeafe',
-          DEFAULT: '#2563eb',
           dark: '#1d4ed8',
         },
-
-        // Bakgrundsfärger
-        page: {
-          DEFAULT: '#fafaf9',  // Neutral-50
-          dark: '#f5f5f4',     // Neutral-100
+        activity: {
+          DEFAULT: '#B05A1A',
+          bg: '#FFE8D6',
+          accent: '#F4B988',
+        },
+        wellbeing: {
+          DEFAULT: '#9F1F4D',
+          bg: '#FBE2EC',
+          accent: '#F0A8C0',
+        },
+        coaching: {
+          DEFAULT: '#5B3F8F',
+          bg: '#E8E1F4',
+          accent: '#BFA9E0',
         },
 
-        // Accentfärger (behålls för kompatibilitet)
-        accent: {
-          orange: '#f97316',
-          blue: '#3b82f6',
-          green: '#10b981',
-          pink: '#ec4899',
+        // Page background
+        page: {
+          DEFAULT: '#FAFAF8',
+          dark: '#F1F1EE',
         },
       },
 

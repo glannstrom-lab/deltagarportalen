@@ -12,8 +12,6 @@ import JobAdaptPage from './JobAdaptPage'
 import { MyCVs } from '@/components/cv/MyCVs'
 import { ATSAnalysis } from '@/components/cv/ATSAnalysis'
 import { CVTips } from '@/components/cv/CVTips'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 import { SaveIndicator } from '@/components/cv/SaveIndicator'
 
 export default function CVPage() {
@@ -38,6 +36,7 @@ export default function CVPage() {
         showTabs={true}
         actions={isBuilderPage ? <SaveIndicator /> : undefined}
         className="space-y-6"
+        domain="coaching"
       >
         <Routes>
           <Route path="/" element={<CVBuilder />} />
@@ -48,7 +47,6 @@ export default function CVPage() {
           <Route path="*" element={<Navigate to="/cv" replace />} />
         </Routes>
       </PageLayout>
-      <HelpButton content={helpContent.cv} />
     </>
   )
 }

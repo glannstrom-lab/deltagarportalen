@@ -11,16 +11,14 @@ import {
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { JournalTab, MoodTab, GoalsTab, GratitudeTab } from '@/components/diary'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 import { useDiaryStreaks } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui'
 import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 
-// Tab configuration
+// Tab configuration - coaching domain uses purple
 const TAB_DEFS = [
-  { id: 'journal', labelKey: 'diary.tabs.journal', icon: BookHeart, color: 'teal' },
+  { id: 'journal', labelKey: 'diary.tabs.journal', icon: BookHeart, color: 'purple' },
   { id: 'mood', labelKey: 'diary.tabs.mood', icon: Smile, color: 'amber' },
   { id: 'goals', labelKey: 'diary.tabs.goals', icon: Target, color: 'blue' },
   { id: 'gratitude', labelKey: 'diary.tabs.gratitude', icon: Heart, color: 'rose' },
@@ -42,7 +40,7 @@ function TabNavigation({
   return (
     <div className="flex items-center justify-between gap-4">
       <div className={cn(
-        "flex gap-1 p-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl overflow-x-auto scrollbar-hide flex-1",
+        "flex gap-1 p-1 bg-purple-50 dark:bg-purple-900/30 rounded-xl overflow-x-auto scrollbar-hide flex-1",
       )}>
         {TAB_DEFS.map((tab) => {
           const Icon = tab.icon
@@ -63,10 +61,10 @@ function TabNavigation({
             >
               <Icon className={cn(
                 "w-4 h-4 flex-shrink-0",
-                isActive && tab.color === 'teal' && "text-teal-600 dark:text-teal-400",
+                isActive && tab.color === 'purple' && "text-purple-900 dark:text-purple-400",
                 isActive && tab.color === 'amber' && "text-amber-600 dark:text-amber-400",
-                isActive && tab.color === 'blue' && "text-blue-600 dark:text-blue-400",
-                isActive && tab.color === 'rose' && "text-rose-600 dark:text-rose-400"
+                isActive && tab.color === 'blue' && "text-blue-900 dark:text-blue-400",
+                isActive && tab.color === 'rose' && "text-pink-900 dark:text-pink-400"
               )} />
               <span className="hidden xs:inline sm:inline">{t(tab.labelKey)}</span>
             </button>
@@ -196,6 +194,7 @@ export default function Diary() {
       title={t('diary.title')}
       description={t('diary.description')}
       showTabs={false}
+      domain="coaching"
     >
       <WellnessConsentGate>
       <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
@@ -215,7 +214,6 @@ export default function Diary() {
         </div>
       </div>
       </WellnessConsentGate>
-      <HelpButton content={helpContent.diary} />
     </PageLayout>
   )
 }

@@ -10,8 +10,6 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { careerTabDefs } from '../data/careerTabs'
 import { userApi } from '@/services/api'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 
 // Tab components
 import LaborMarketTab from './career/LaborMarketTab'
@@ -49,6 +47,7 @@ export default function CareerPage() {
         tabVariant="glass"
         showTabs={true}
         className="space-y-6"
+        domain="coaching"
       >
         <Routes>
           <Route path="/" element={<LaborMarketTab />} />
@@ -59,7 +58,6 @@ export default function CareerPage() {
           <Route path="*" element={<Navigate to="/career" replace />} />
         </Routes>
       </PageLayout>
-      <HelpButton content={helpContent.career} />
     </>
   )
 }

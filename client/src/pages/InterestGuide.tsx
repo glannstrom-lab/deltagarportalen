@@ -7,8 +7,6 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { LoadingState } from '@/components/ui'
 import { interestGuideTabDefs } from '@/data/interestGuideTabs'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 
 // Lazy load tab components
 const TestTab = lazy(() => import('./interest-guide/TestTab'))
@@ -20,7 +18,7 @@ const HistoryTab = lazy(() => import('./interest-guide/HistoryTab'))
 function TabLoading() {
   const { t } = useTranslation()
   return (
-    <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
+    <div className="flex items-center justify-center py-12 bg-stone-50 dark:bg-stone-900">
       <LoadingState title={t('common.loading')} size="lg" />
     </div>
   )
@@ -42,6 +40,7 @@ export default function InterestGuide() {
         subtitle={t('interestGuide.discover')}
         tabs={interestGuideTabs}
         tabVariant="glass"
+        domain="coaching"
       >
         <Suspense fallback={<TabLoading />}>
           <Routes>
@@ -54,7 +53,6 @@ export default function InterestGuide() {
           </Routes>
         </Suspense>
       </PageLayout>
-      <HelpButton content={helpContent.interestGuide} />
     </>
   )
 }

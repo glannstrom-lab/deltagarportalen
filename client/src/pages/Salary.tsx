@@ -31,6 +31,7 @@ export default function SalaryPage() {
       tabVariant="glass"
       showTabs={true}
       className="space-y-6"
+      domain="coaching"
     >
       <Routes>
         <Route path="/" element={<SalaryCalculatorTab />} />

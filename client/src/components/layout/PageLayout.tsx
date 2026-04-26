@@ -1,6 +1,7 @@
 /**
  * Page Layout with Tabs
  * Wraps page content with tabs for better navigation
+ * Supports semantic color domains from DESIGN.md
  */
 
 import { useLocation } from 'react-router-dom'
@@ -9,6 +10,9 @@ import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
 
 type TabVariant = 'minimal' | 'pills' | 'floating' | 'underline' | 'glass'
+
+/** Semantic color domains - each maps to a specific activity type */
+export type ColorDomain = 'action' | 'info' | 'activity' | 'wellbeing' | 'coaching'
 
 interface PageLayoutProps {
   children: React.ReactNode
@@ -23,6 +27,9 @@ interface PageLayoutProps {
   showHeader?: boolean
   className?: string
   contentClassName?: string
+  /** Semantic color domain for accent colors */
+  domain?: ColorDomain
+  icon?: React.ComponentType<{ className?: string }>
 }
 
 export function PageLayout({
@@ -38,21 +45,23 @@ export function PageLayout({
   showHeader = true,
   className,
   contentClassName,
+  domain,
+  icon,
 }: PageLayoutProps) {
   const location = useLocation()
   // Support both "tabs" and "customTabs" props for flexibility
   const tabs = tabsProp || customTabs || (showTabs ? getTabsForPath(location.pathname) : [])
-  
+
   // Don't show tabs if there's only one tab
   const shouldShowTabs = tabs.length > 1 && showTabs
 
   return (
     <div className={cn(
-      'min-h-screen bg-gradient-to-b from-stone-50 via-white to-stone-50/50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800',
+      'min-h-screen bg-stone-50 dark:bg-stone-900',
       'space-y-4 sm:space-y-5 md:space-y-6',
       'page-transition',
       className
-    )}>
+    )} data-domain={domain}>
       {/* Page Header with Tabs */}
       {showHeader && (title || shouldShowTabs) && (
         <PageHeader

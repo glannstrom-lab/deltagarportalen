@@ -7,8 +7,6 @@ import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ConsultantRequestBanner } from '@/components/consultant/ConsultantRequestBanner'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { useDashboardDataQuery } from '@/hooks/useDashboardData'
@@ -137,14 +135,14 @@ export default function DashboardPage() {
             </Link>
           )}
 
-          {/* KPI Cards */}
+          {/* KPI Cards - using semantic domain colors */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <KpiCard
               icon={FileText}
               label="CV-progress"
               value={`${dashboardData?.cv?.progress || 0}%`}
               subtext={dashboardData?.cv?.hasCV ? 'Uppdaterat' : 'Ej påbörjat'}
-              color="peach"
+              color="coaching"
               to="/cv"
             />
             <KpiCard
@@ -152,7 +150,7 @@ export default function DashboardPage() {
               label="Sparade jobb"
               value={dashboardData?.jobs?.savedCount || 0}
               subtext={dashboardData?.jobs?.savedCount ? 'Sparade' : 'Inga än'}
-              color="lavender"
+              color="info"
               to="/job-search"
             />
             <KpiCard
@@ -160,7 +158,7 @@ export default function DashboardPage() {
               label="Ansökningar"
               value={dashboardData?.applications?.total || 0}
               subtext={dashboardData?.applications?.total ? 'Skickade' : 'Inga än'}
-              color="sky"
+              color="activity"
               to="/applications"
             />
             <KpiCard
@@ -168,7 +166,7 @@ export default function DashboardPage() {
               label="Aktivitet"
               value={dashboardData?.activity?.streakDays ? `${dashboardData.activity.streakDays}d` : 'Idag'}
               subtext="Aktiv"
-              color="mint"
+              color="action"
             />
           </div>
 
@@ -223,7 +221,7 @@ export default function DashboardPage() {
 
             {/* Sidebar column */}
             <div className="lg:col-span-2 space-y-6">
-              {/* Interest Profile */}
+              {/* Interest Profile - coaching domain (purple/lila) */}
               {interestProfile?.hasResult && interestProfile.riasecScores ? (
                 <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
                   <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4">
@@ -236,13 +234,13 @@ export default function DashboardPage() {
                     {interestProfile.dominantTypes.slice(0, 3).map((type, i) => (
                       <div key={type.code} className="flex items-center justify-between text-sm">
                         <span className="text-stone-600 dark:text-stone-400">{t(`riasec.${type.code}`)}</span>
-                        <span className="font-medium text-teal-600 dark:text-teal-400">{type.score}%</span>
+                        <span className="font-medium text-purple-900 dark:text-purple-400">{type.score}%</span>
                       </div>
                     ))}
                   </div>
                   <Link
                     to="/interest-guide"
-                    className="flex items-center justify-center gap-1 mt-4 py-2 text-sm text-teal-600 hover:text-teal-700 font-medium"
+                    className="flex items-center justify-center gap-1 mt-4 py-2 text-sm text-purple-900 hover:text-purple-700 font-medium"
                   >
                     Se mer <ChevronRight className="w-4 h-4" />
                   </Link>
@@ -250,31 +248,31 @@ export default function DashboardPage() {
               ) : (
                 <Link
                   to="/interest-guide"
-                  className="block bg-violet-50 dark:bg-violet-900/20 rounded-xl border border-violet-100 dark:border-violet-800 p-5 hover:bg-violet-100 dark:hover:bg-violet-900/30 transition-colors"
+                  className="block bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-purple-300 dark:border-purple-800 p-5 hover:bg-purple-100 dark:hover:bg-purple-900/30 transition-colors"
                 >
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-10 h-10 bg-violet-100 dark:bg-violet-900/40 rounded-lg flex items-center justify-center">
-                      <Compass className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                    <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/40 rounded-lg flex items-center justify-center">
+                      <Compass className="w-5 h-5 text-purple-900 dark:text-purple-400" />
                     </div>
                     <div>
                       <h3 className="font-semibold text-stone-800 dark:text-stone-100">Hitta dina intressen</h3>
-                      <p className="text-sm text-violet-600 dark:text-violet-400">Ta intresseguiden</p>
+                      <p className="text-sm text-purple-900 dark:text-purple-400">Ta intresseguiden</p>
                     </div>
                   </div>
                   <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
                     Upptäck vilka yrken som passar din personlighet
                   </p>
-                  <span className="text-sm text-violet-600 dark:text-violet-400 font-medium">
+                  <span className="text-sm text-purple-900 dark:text-purple-400 font-medium">
                     Starta guiden →
                   </span>
                 </Link>
               )}
 
-              {/* Wellness */}
+              {/* Wellness - wellbeing domain (pink/rosa) */}
               <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-rose-50 dark:bg-rose-900/20 rounded-lg flex items-center justify-center">
-                    <Heart className="w-5 h-5 text-rose-500" />
+                  <div className="w-10 h-10 bg-pink-50 dark:bg-pink-900/20 rounded-lg flex items-center justify-center">
+                    <Heart className="w-5 h-5 text-pink-900 dark:text-pink-400" />
                   </div>
                   <h3 className="font-semibold text-stone-800 dark:text-stone-100">Välmående</h3>
                 </div>
@@ -283,7 +281,7 @@ export default function DashboardPage() {
                 </p>
                 <Link
                   to="/wellness"
-                  className="inline-flex items-center gap-1 text-sm text-rose-600 dark:text-rose-400 hover:text-rose-700 font-medium"
+                  className="inline-flex items-center gap-1 text-sm text-pink-900 dark:text-pink-400 hover:text-pink-700 font-medium"
                 >
                   Logga ditt mående <ArrowRight className="w-4 h-4" />
                 </Link>
@@ -291,7 +289,6 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-        <HelpButton content={helpContent.dashboard} />
       </main>
     </div>
   )

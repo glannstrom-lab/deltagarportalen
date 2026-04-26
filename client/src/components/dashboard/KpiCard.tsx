@@ -1,7 +1,7 @@
 /**
- * KPI Card Component - Clean Pastel Design
- * White background with soft pastel icon circles
- * No gradients, minimal shadows, clean typography
+ * KPI Card Component - Semantic Domain Colors
+ * Uses semantic color domains from DESIGN.md
+ * Clean white cards with domain-colored icon circles
  */
 
 import { Link } from 'react-router-dom'
@@ -13,41 +13,42 @@ interface KpiCardProps {
   label: string
   value: string | number
   subtext?: string
-  color?: 'teal' | 'peach' | 'lavender' | 'mint' | 'sky' | 'amber'
+  /** Semantic domain color - maps to activity domains */
+  color?: 'action' | 'info' | 'activity' | 'wellbeing' | 'coaching'
   to?: string
 }
 
-// Soft pastel color palette
+// Semantic domain color palette (from DESIGN.md)
 const colorConfig = {
-  teal: {
+  // Turkos - CTA, brand, primära handlingar
+  action: {
     iconBg: 'bg-teal-50',
-    iconColor: 'text-teal-600',
-    dotColor: 'bg-teal-400',
+    iconColor: 'text-teal-900',
+    dotColor: 'bg-teal-300',
   },
-  peach: {
-    iconBg: 'bg-orange-50',
-    iconColor: 'text-orange-500',
-    dotColor: 'bg-orange-300',
+  // Blå - sparade jobb, information, referens
+  info: {
+    iconBg: 'bg-blue-50',
+    iconColor: 'text-blue-900',
+    dotColor: 'bg-blue-300',
   },
-  lavender: {
-    iconBg: 'bg-violet-50',
-    iconColor: 'text-violet-500',
-    dotColor: 'bg-violet-300',
+  // Persika - utåtriktad aktivitet, ansökningar
+  activity: {
+    iconBg: 'bg-peach-50',
+    iconColor: 'text-peach-900',
+    dotColor: 'bg-peach-300',
   },
-  mint: {
-    iconBg: 'bg-emerald-50',
-    iconColor: 'text-emerald-500',
-    dotColor: 'bg-emerald-300',
+  // Rosa - mående, hälsa, personliga känslor
+  wellbeing: {
+    iconBg: 'bg-pink-50',
+    iconColor: 'text-pink-900',
+    dotColor: 'bg-pink-300',
   },
-  sky: {
-    iconBg: 'bg-sky-50',
-    iconColor: 'text-sky-500',
-    dotColor: 'bg-sky-300',
-  },
-  amber: {
-    iconBg: 'bg-amber-50',
-    iconColor: 'text-amber-500',
-    dotColor: 'bg-amber-300',
+  // Lila - självkännedom, reflektion, intresseguide
+  coaching: {
+    iconBg: 'bg-purple-50',
+    iconColor: 'text-purple-900',
+    dotColor: 'bg-purple-300',
   },
 }
 
