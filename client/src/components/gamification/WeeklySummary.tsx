@@ -58,10 +58,10 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
       color: 'bg-blue-50 text-blue-700'
     },
     {
-      icon: <FileText className="w-5 h-5 text-brand-700" />,
+      icon: <FileText className="w-5 h-5 text-teal-500" />,
       label: 'CV framsteg',
       value: `${stats.cvProgress}%`,
-      color: 'bg-brand-50 text-brand-900'
+      color: 'bg-teal-50 text-teal-700'
     },
     {
       icon: <Briefcase className="w-5 h-5 text-amber-500" />,
@@ -70,10 +70,10 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
       color: 'bg-amber-50 text-amber-700'
     },
     {
-      icon: <CheckCircle2 className="w-5 h-5 text-brand-700" />,
+      icon: <CheckCircle2 className="w-5 h-5 text-green-500" />,
       label: 'Steg avklarade',
       value: stats.stepsCompleted.toString(),
-      color: 'bg-brand-50 text-brand-900'
+      color: 'bg-green-50 text-green-700'
     }
   ]
 
@@ -84,9 +84,9 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
       aria-modal="true"
       aria-labelledby="weekly-summary-title"
     >
-      <div className="bg-white rounded-xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-300">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-300">
         {/* Header */}
-        <div className="bg-gradient-to-br from-brand-700 to-brand-900 text-white p-6 rounded-t-3xl">
+        <div className="bg-gradient-to-br from-teal-500 to-teal-600 text-white p-6 rounded-t-3xl">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
@@ -107,7 +107,7 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
           >
             Din vecka i siffror
           </h2>
-          <p className="text-brand-100 text-sm">
+          <p className="text-teal-100 text-sm">
             {new Date().toLocaleDateString('sv-SE', { month: 'long', day: 'numeric' })} - idag
           </p>
         </div>
@@ -148,7 +148,7 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
 
           {/* Comparison */}
           <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl mb-6">
-            <TrendingUp className="w-5 h-5 text-brand-700 flex-shrink-0" />
+            <TrendingUp className="w-5 h-5 text-teal-500 flex-shrink-0" />
             <p className="text-sm text-slate-600">
               Du har varit aktiv <strong>{stats.logins} dagar</strong> denna vecka. 
               {stats.logins >= 3 
@@ -163,18 +163,18 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
             <ul className="space-y-2">
               {stats.cvProgress < 100 && (
                 <li className="flex items-center gap-2 text-sm text-slate-600">
-                  <div className="w-1.5 h-1.5 bg-brand-700 rounded-full" />
+                  <div className="w-1.5 h-1.5 bg-teal-500 rounded-full" />
                   Färdigställ ditt CV
                 </li>
               )}
               {stats.applications === 0 && (
                 <li className="flex items-center gap-2 text-sm text-slate-600">
-                  <div className="w-1.5 h-1.5 bg-brand-700 rounded-full" />
+                  <div className="w-1.5 h-1.5 bg-teal-500 rounded-full" />
                   Skicka din första ansökan
                 </li>
               )}
               <li className="flex items-center gap-2 text-sm text-slate-600">
-                <div className="w-1.5 h-1.5 bg-brand-700 rounded-full" />
+                <div className="w-1.5 h-1.5 bg-teal-500 rounded-full" />
                 Fortsätt ta små steg varje dag
               </li>
             </ul>
@@ -185,7 +185,7 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
         <div className="p-4 border-t border-slate-100">
           <button
             onClick={onClose}
-            className="w-full bg-brand-900 text-white py-3 rounded-xl font-semibold hover:bg-brand-900 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700"
+            className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             Fortsätt mot nya mål! 🚀
           </button>

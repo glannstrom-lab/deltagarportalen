@@ -35,7 +35,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white rounded-xl p-4 text-center">
+        <div className="bg-white rounded-xl p-4 text-center shadow-sm">
           <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center mx-auto mb-2">
             <TrendingUp className="w-5 h-5 text-indigo-600" />
           </div>
@@ -45,7 +45,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
           <div className="text-xs text-slate-700">dagar aktiv</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 text-center">
+        <div className="bg-white rounded-xl p-4 text-center shadow-sm">
           <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center mx-auto mb-2">
             <Zap className="w-5 h-5 text-amber-600" />
           </div>
@@ -55,7 +55,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
           <div className="text-xs text-slate-700">XP intjänat</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 text-center">
+        <div className="bg-white rounded-xl p-4 text-center shadow-sm">
           <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-2">
             <Send className="w-5 h-5 text-emerald-600" />
           </div>
@@ -65,7 +65,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
           <div className="text-xs text-slate-700">ansökningar</div>
         </div>
 
-        <div className="bg-white rounded-xl p-4 text-center">
+        <div className="bg-white rounded-xl p-4 text-center shadow-sm">
           <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-2">
             <BookOpen className="w-5 h-5 text-purple-600" />
           </div>

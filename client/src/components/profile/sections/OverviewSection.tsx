@@ -62,7 +62,7 @@ export function OverviewSection() {
       className="grid gap-4 md:grid-cols-2"
     >
       {/* Contact info */}
-      <SectionCard title={t('profile.overview.contactInfo')} icon={<User className="w-4 h-4" />}>
+      <SectionCard title={t('profile.overview.contactInfo')} icon={<User className="w-4 h-4" />} colorScheme="teal">
         <div className="grid gap-3">
           <div className="grid grid-cols-2 gap-3">
             <CompactInput
@@ -100,7 +100,7 @@ export function OverviewSection() {
       </SectionCard>
 
       {/* Desired jobs */}
-      <SectionCard title={t('profile.overview.desiredJobs')} icon={<Briefcase className="w-4 h-4" />}>
+      <SectionCard title={t('profile.overview.desiredJobs')} icon={<Briefcase className="w-4 h-4" />} colorScheme="sky">
         <TagInput
           tags={preferences.desired_jobs || []}
           onAdd={addJob}
@@ -108,12 +108,13 @@ export function OverviewSection() {
           suggestions={SUGGESTED_JOBS}
           placeholder={t('profile.overview.desiredJobsPlaceholder')}
           maxTags={5}
+          colorScheme="sky"
           hint={t('profile.overview.desiredJobsHint')}
         />
       </SectionCard>
 
       {/* Interests */}
-      <SectionCard title={t('profile.overview.interests')} icon={<Heart className="w-4 h-4" />}>
+      <SectionCard title={t('profile.overview.interests')} icon={<Heart className="w-4 h-4" />} colorScheme="amber">
         <TagInput
           tags={preferences.interests || []}
           onAdd={addInterest}
@@ -121,13 +122,14 @@ export function OverviewSection() {
           suggestions={SUGGESTED_INTERESTS}
           placeholder={t('profile.overview.interestsPlaceholder')}
           maxTags={5}
+          colorScheme="amber"
           hint={t('profile.overview.interestsHint')}
         />
       </SectionCard>
 
       {/* RIASEC profile */}
       {!interestLoading && interestProfile.hasResult && (
-        <SectionCard title={t('profile.overview.interestProfile')} icon={<Compass className="w-4 h-4" />}>
+        <SectionCard title={t('profile.overview.interestProfile')} icon={<Compass className="w-4 h-4" />} colorScheme="teal">
           <div className="space-y-2">
             {interestProfile.dominantTypes.slice(0, 3).map((type, i) => {
               const rt = RIASEC_TYPES[type.code]
@@ -139,7 +141,7 @@ export function OverviewSection() {
                     {typeName}
                   </span>
                   <div
-                    className="w-20 h-1.5 bg-brand-100 dark:bg-stone-700 rounded-full overflow-hidden"
+                    className="w-20 h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden"
                     role="progressbar"
                     aria-valuenow={type.score}
                     aria-valuemin={0}
@@ -147,7 +149,7 @@ export function OverviewSection() {
                     aria-label={`${typeName}: ${type.score}%`}
                   >
                     <div
-                      className="h-full bg-brand-900 dark:bg-brand-400 rounded-full"
+                      className="h-full bg-amber-500 dark:bg-amber-400 rounded-full"
                       style={{ width: `${type.score}%` }}
                     />
                   </div>
@@ -160,7 +162,7 @@ export function OverviewSection() {
           </div>
           <Link
             to="/interest-guide"
-            className="inline-flex items-center gap-1 mt-3 text-xs text-brand-900 dark:text-brand-400 hover:underline"
+            className="inline-flex items-center gap-1 mt-3 text-xs text-teal-600 dark:text-teal-400 hover:underline"
           >
             {t('profile.overview.redoGuide')} <ChevronRight className="w-3 h-3" aria-hidden="true" />
           </Link>
@@ -171,18 +173,18 @@ export function OverviewSection() {
       {!interestLoading && !interestProfile.hasResult && (
         <Link
           to="/interest-guide"
-          className="md:col-span-2 bg-brand-zone dark:bg-brand-900/10 rounded-lg p-5 border border-brand-300 dark:border-brand-800/50 flex items-center gap-4 hover:bg-brand-100 dark:hover:bg-brand-900/20 transition-colors group"
+          className="md:col-span-2 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-5 border border-amber-200 dark:border-amber-800/50 flex items-center gap-4 hover:shadow-lg transition-shadow group"
         >
-          <div className="w-12 h-12 rounded-lg bg-brand-900 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
           <div className="flex-1">
-            <p className="font-bold text-stone-800 dark:text-stone-100">{t('profile.overview.discoverStrengths')}</p>
-            <p className="text-sm text-stone-600 dark:text-stone-400">
+            <p className="font-bold text-amber-800 dark:text-amber-300">{t('profile.overview.discoverStrengths')}</p>
+            <p className="text-sm text-amber-600 dark:text-amber-400">
               {t('profile.overview.takeInterestGuide')}
             </p>
           </div>
-          <ChevronRight className="w-5 h-5 text-brand-900 dark:text-brand-400 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+          <ChevronRight className="w-5 h-5 text-amber-400 dark:text-amber-500 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
         </Link>
       )}
     </div>

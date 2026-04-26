@@ -61,7 +61,7 @@ export default function UnifiedProfilePage() {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="flex items-center justify-center h-64">
-          <Loader2 size={32} className="animate-spin text-brand-900" />
+          <Loader2 size={32} className="animate-spin text-teal-500" />
         </div>
       </div>
     )
@@ -72,16 +72,16 @@ export default function UnifiedProfilePage() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Header */}
-      <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden mb-6">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700 overflow-hidden mb-6">
         {/* Cover / Banner */}
-        <div className="h-32 bg-brand-900" />
+        <div className="h-32 bg-gradient-to-r from-teal-500 via-sky-500 to-cyan-500" />
         
         {/* Profile Info */}
         <div className="px-6 pb-6">
           <div className="flex flex-col sm:flex-row items-start gap-4 -mt-12">
             {/* Avatar */}
             <div className="relative">
-              <div className="w-24 h-24 rounded-xl border-4 border-white dark:border-stone-800 bg-white dark:bg-stone-800 overflow-hidden">
+              <div className="w-24 h-24 rounded-2xl border-4 border-white dark:border-stone-800 bg-white dark:bg-stone-800 shadow-lg overflow-hidden">
                 {core?.profileImageUrl ? (
                   <img 
                     src={core.profileImageUrl} 
@@ -94,7 +94,7 @@ export default function UnifiedProfilePage() {
                   </div>
                 )}
               </div>
-              <label className="absolute -bottom-1 -right-1 w-8 h-8 bg-brand-900 text-white rounded-full flex items-center justify-center cursor-pointer hover:bg-brand-900/90 transition-colors">
+              <label className="absolute -bottom-1 -right-1 w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md hover:bg-teal-600 transition-colors">
                 <Camera size={14} />
                 <input
                   type="file"
@@ -156,7 +156,7 @@ export default function UnifiedProfilePage() {
                   <button
                     onClick={handleSaveCore}
                     disabled={saving}
-                    className="flex items-center gap-2 px-4 py-2 bg-brand-900 text-white rounded-lg hover:bg-brand-900/90 disabled:opacity-50 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 disabled:opacity-50 transition-colors"
                   >
                     {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                     {t('unifiedProfile.save')}
@@ -174,7 +174,7 @@ export default function UnifiedProfilePage() {
               </span>
               <span className={cn(
                 "text-sm font-bold",
-                completeness >= 80 ? "text-brand-900" :
+                completeness >= 80 ? "text-green-600" :
                 completeness >= 50 ? "text-amber-600" : "text-rose-600"
               )}>
                 {completeness}%
@@ -184,7 +184,7 @@ export default function UnifiedProfilePage() {
               <div
                 className={cn(
                   "h-full transition-all duration-500",
-                  completeness >= 80 ? "bg-brand-700" :
+                  completeness >= 80 ? "bg-green-500" :
                   completeness >= 50 ? "bg-amber-500" : "bg-rose-500"
                 )}
                 style={{ width: `${completeness}%` }}
@@ -213,7 +213,7 @@ export default function UnifiedProfilePage() {
             className={cn(
               "flex items-center gap-2 px-4 py-3 font-medium transition-colors border-b-2 -mb-px",
               activeTab === tab.id
-                ? "text-brand-900 dark:text-brand-400 border-brand-900 dark:border-brand-400"
+                ? "text-teal-600 dark:text-teal-400 border-teal-600 dark:border-teal-400"
                 : "text-slate-600 dark:text-stone-400 border-transparent hover:text-slate-900 dark:hover:text-stone-100"
             )}
           >
@@ -267,7 +267,7 @@ export default function UnifiedProfilePage() {
                       onChange={(e) => setEditedCore(prev => ({ ...prev, summary: e.target.value }))}
                       placeholder={t('unifiedProfile.fields.summaryPlaceholder')}
                       rows={3}
-                      className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-slate-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-900"
+                      className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-slate-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                 </div>
@@ -291,7 +291,7 @@ export default function UnifiedProfilePage() {
                 {professional?.skills?.map((skill, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-brand-100 dark:bg-brand-900/50 text-brand-900 dark:text-brand-300 rounded-full text-sm"
+                    className="px-3 py-1 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 rounded-full text-sm"
                   >
                     {skill}
                   </span>
@@ -299,7 +299,7 @@ export default function UnifiedProfilePage() {
                 {(!professional?.skills || professional.skills.length === 0) && (
                   <p className="text-slate-700 dark:text-stone-300 text-sm">
                     {t('unifiedProfile.noSkills')}{' '}
-                    <Link to="/cv" className="text-brand-900 hover:underline">
+                    <Link to="/cv" className="text-teal-600 hover:underline">
                       {t('unifiedProfile.addInCVBuilder')}
                     </Link>
                   </p>
@@ -325,7 +325,7 @@ export default function UnifiedProfilePage() {
                   {professional.workExperience.length > 3 && (
                     <Link
                       to="/cv"
-                      className="text-sm text-brand-900 hover:underline flex items-center gap-1"
+                      className="text-sm text-teal-600 hover:underline flex items-center gap-1"
                     >
                       {t('unifiedProfile.seeAllExperiences', { count: professional.workExperience.length })}
                       <ChevronRight size={14} />
@@ -335,7 +335,7 @@ export default function UnifiedProfilePage() {
               ) : (
                 <p className="text-slate-700 dark:text-stone-300 text-sm">
                   {t('unifiedProfile.noExperience')}{' '}
-                  <Link to="/cv" className="text-brand-900 hover:underline">
+                  <Link to="/cv" className="text-teal-600 hover:underline">
                     {t('unifiedProfile.addInCVBuilder')}
                   </Link>
                 </p>
@@ -361,7 +361,7 @@ export default function UnifiedProfilePage() {
               ) : (
                 <p className="text-slate-700 dark:text-stone-300 text-sm">
                   {t('unifiedProfile.noEducation')}{' '}
-                  <Link to="/cv" className="text-brand-900 hover:underline">
+                  <Link to="/cv" className="text-teal-600 hover:underline">
                     {t('unifiedProfile.addInCVBuilder')}
                   </Link>
                 </p>
@@ -386,13 +386,13 @@ export default function UnifiedProfilePage() {
                           <span className="text-sm font-medium capitalize text-slate-700 dark:text-stone-300">
                             {t(`unifiedProfile.riasec.${type}`)}
                           </span>
-                          <span className="text-sm font-bold text-brand-900 dark:text-brand-400">
+                          <span className="text-sm font-bold text-teal-600 dark:text-teal-400">
                             {Math.round(score * 100)}%
                           </span>
                         </div>
                         <div className="h-1.5 bg-slate-200 dark:bg-stone-700 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-brand-900 rounded-full"
+                            className="h-full bg-teal-500 rounded-full"
                             style={{ width: `${score * 100}%` }}
                           />
                         </div>
@@ -401,7 +401,7 @@ export default function UnifiedProfilePage() {
                   </div>
                   <Link
                     to="/interest-guide"
-                    className="text-sm text-brand-900 hover:underline"
+                    className="text-sm text-teal-600 hover:underline"
                   >
                     {t('unifiedProfile.retakeInterestGuide')}
                   </Link>
@@ -414,7 +414,7 @@ export default function UnifiedProfilePage() {
                   </p>
                   <Link
                     to="/interest-guide"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-brand-900 text-white rounded-lg hover:bg-brand-900/90"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600"
                   >
                     {t('unifiedProfile.takeInterestGuide')}
                   </Link>
@@ -430,7 +430,7 @@ export default function UnifiedProfilePage() {
                     <Link
                       key={idx}
                       to={`/job-search?query=${encodeURIComponent(occupation)}`}
-                      className="px-4 py-2 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-700 rounded-lg text-slate-700 dark:text-stone-300 hover:border-brand-300 dark:hover:border-brand-900/50 hover:bg-brand-50 dark:hover:bg-brand-900/30 transition-colors"
+                      className="px-4 py-2 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-700 rounded-lg text-slate-700 dark:text-stone-300 hover:border-teal-300 dark:hover:border-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/30 transition-colors"
                     >
                       {occupation}
                     </Link>
@@ -464,7 +464,7 @@ export default function UnifiedProfilePage() {
                   {career.preferredRoles.map((role, idx) => (
                     <span
                       key={idx}
-                      className="px-3 py-1.5 bg-brand-100 dark:bg-brand-900/50 text-brand-900 dark:text-brand-300 rounded-full text-sm"
+                      className="px-3 py-1.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 rounded-full text-sm"
                     >
                       {role}
                     </span>
@@ -509,30 +509,30 @@ export default function UnifiedProfilePage() {
             {/* Data Usage */}
             <Section title={t('unifiedProfile.sections.dataUsage')} icon={CheckCircle2}>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-brand-50 dark:bg-brand-900/30 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <CheckCircle2 size={20} className="text-brand-900 dark:text-brand-400" />
+                    <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
                     <span className="text-slate-700 dark:text-stone-300">{t('unifiedProfile.dataUsageLabels.cvBuilder')}</span>
                   </div>
-                  <span className="text-sm text-brand-900 dark:text-brand-400 font-medium">
+                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">
                     {professional?.workExperience && professional.workExperience.length > 0 ? t('unifiedProfile.dataUsageLabels.active') : t('unifiedProfile.dataUsageLabels.empty')}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-brand-50 dark:bg-brand-900/30 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <CheckCircle2 size={20} className="text-brand-900 dark:text-brand-400" />
+                    <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
                     <span className="text-slate-700 dark:text-stone-300">{t('unifiedProfile.dataUsageLabels.coverLetter')}</span>
                   </div>
-                  <span className="text-sm text-brand-900 dark:text-brand-400 font-medium">
+                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">
                     {usage?.coverLettersCount ? t('unifiedProfile.dataUsageLabels.saved', { count: usage.coverLettersCount }) : t('unifiedProfile.dataUsageLabels.noLetters')}
                   </span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-brand-50 dark:bg-brand-900/30 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/30 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <CheckCircle2 size={20} className="text-brand-900 dark:text-brand-400" />
+                    <CheckCircle2 size={20} className="text-green-600 dark:text-green-400" />
                     <span className="text-slate-700 dark:text-stone-300">{t('unifiedProfile.dataUsageLabels.jobTracker')}</span>
                   </div>
-                  <span className="text-sm text-brand-900 dark:text-brand-400 font-medium">
+                  <span className="text-sm text-green-700 dark:text-green-400 font-medium">
                     {usage?.applicationsCount ? t('unifiedProfile.dataUsageLabels.applicationsCount', { count: usage.applicationsCount }) : t('unifiedProfile.dataUsageLabels.noApplications')}
                   </span>
                 </div>
@@ -559,9 +559,9 @@ function Section({
   children: React.ReactNode
 }) {
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
+    <div className="bg-white dark:bg-stone-900 rounded-xl shadow-sm border border-slate-200 dark:border-stone-700 p-6">
       <h3 className="flex items-center gap-2 font-semibold text-slate-900 dark:text-stone-100 mb-4">
-        <Icon size={20} className="text-brand-900" />
+        <Icon size={20} className="text-teal-500" />
         {title}
       </h3>
       {children}
@@ -605,7 +605,7 @@ function Input({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-slate-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-900"
+        className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-slate-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
       />
     </div>
   )

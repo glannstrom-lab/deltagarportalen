@@ -141,7 +141,7 @@ export const SuperAdminPanel: React.FC = () => {
             </div>
 
             {/* Users Table */}
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
@@ -192,7 +192,7 @@ export const SuperAdminPanel: React.FC = () => {
                       <td className="px-6 py-4">
                         <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                           user.status === 'ACTIVE'
-                            ? 'bg-brand-100 text-brand-900'
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-gray-100 text-gray-800'
                         }`}>
                           {user.status === 'ACTIVE' ? (
@@ -218,17 +218,17 @@ export const SuperAdminPanel: React.FC = () => {
 
         {activeTab === 'stats' && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <p className="text-sm text-gray-500">Totalt antal användare</p>
               <p className="text-3xl font-bold text-gray-900">{users.length}</p>
             </div>
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <p className="text-sm text-gray-500">Konsulenter</p>
               <p className="text-3xl font-bold text-gray-900">
                 {users.filter(u => u.role === 'CONSULTANT').length}
               </p>
             </div>
-            <div className="bg-white p-6 rounded-lg border border-gray-200">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
               <p className="text-sm text-gray-500">Deltagare</p>
               <p className="text-3xl font-bold text-gray-900">
                 {users.filter(u => u.role === 'USER').length}
@@ -238,7 +238,7 @@ export const SuperAdminPanel: React.FC = () => {
         )}
 
         {activeTab === 'settings' && (
-          <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <h3 className="text-lg font-medium text-gray-900 mb-4">Systeminställningar</h3>
             <p className="text-gray-500">Kommer snart...</p>
           </div>

@@ -73,8 +73,8 @@ export function CardHeader({
     )}>
       <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
         {icon && (
-          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center">
-            <span className="text-brand-900 dark:text-brand-400 [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5">{icon}</span>
+          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-teal-50 dark:bg-teal-900/30 flex items-center justify-center">
+            <span className="text-teal-600 dark:text-teal-400 [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5">{icon}</span>
           </div>
         )}
         <div className="flex-1 min-w-0">
@@ -186,7 +186,7 @@ export function StatCard({
 }: StatCardProps) {
   const colorClasses = {
     default: 'bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-300',
-    violet: 'bg-brand-50 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400',
+    violet: 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400',
     green: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
     amber: 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
     blue: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
@@ -320,8 +320,8 @@ export function ActionCard({
         animations.press,
         animations.lift,
         isSelected
-          ? 'border-brand-700 ring-2 ring-brand-700 ring-offset-2 dark:ring-offset-stone-900'
-          : 'border-stone-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900 hover:',
+          ? 'border-teal-500 ring-2 ring-teal-500 ring-offset-2 dark:ring-offset-stone-900'
+          : 'border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md',
         className
       )}
       {...props}
@@ -331,7 +331,7 @@ export function ActionCard({
           <div className={cn(
             'w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0',
             '[&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6',
-            isSelected ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
+            isSelected ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300'
           )}>
             {icon}
           </div>
@@ -340,7 +340,7 @@ export function ActionCard({
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-100">{title}</h3>
             {badge && (
-              <span className="px-1.5 sm:px-2 py-0.5 bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 text-[10px] sm:text-xs font-medium rounded-full">
+              <span className="px-1.5 sm:px-2 py-0.5 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-[10px] sm:text-xs font-medium rounded-full">
                 {badge}
               </span>
             )}

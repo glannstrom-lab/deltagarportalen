@@ -116,9 +116,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   phone: {
     label: 'Telefonintervju',
     labelEn: 'Phone Screen',
-    color: 'text-brand-900',
-    bgColor: 'bg-brand-100',
-    borderColor: 'border-brand-300',
+    color: 'text-teal-700',
+    bgColor: 'bg-teal-100',
+    borderColor: 'border-teal-300',
     icon: 'Phone',
     order: 4,
     isTerminal: false
@@ -126,9 +126,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   interview: {
     label: 'Intervju',
     labelEn: 'Interview',
-    color: 'text-brand-900',
-    bgColor: 'bg-brand-100',
-    borderColor: 'border-brand-300',
+    color: 'text-teal-700',
+    bgColor: 'bg-teal-100',
+    borderColor: 'border-teal-300',
     icon: 'Users',
     order: 5,
     isTerminal: false
@@ -156,9 +156,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   accepted: {
     label: 'Accepterad',
     labelEn: 'Accepted',
-    color: 'text-brand-900',
-    bgColor: 'bg-brand-100',
-    borderColor: 'border-brand-300',
+    color: 'text-green-700',
+    bgColor: 'bg-green-100',
+    borderColor: 'border-green-300',
     icon: 'CheckCircle',
     order: 8,
     isTerminal: true

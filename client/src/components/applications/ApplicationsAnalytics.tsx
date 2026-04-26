@@ -39,7 +39,7 @@ function StatCard({ title, value, subtitle, icon: Icon, trend, color = 'text-sla
         {trend && (
           <div className={cn(
             "flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full",
-            trend.isPositive ? "bg-brand-100 text-brand-900" : "bg-red-100 text-red-700"
+            trend.isPositive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
           )}>
             {trend.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
             {trend.value}%
@@ -80,7 +80,7 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
-        <PieChart className="w-5 h-5 text-brand-900" />
+        <PieChart className="w-5 h-5 text-teal-600" />
         <h3 className="font-semibold text-slate-900">Statusfördelning</h3>
       </div>
 
@@ -160,7 +160,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
               </div>
               <div className="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-brand-700 to-sky-500 rounded-full flex items-center justify-end px-2"
+                  className="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full flex items-center justify-end px-2"
                   style={{ width: `${width}%` }}
                 >
                   <span className="text-xs font-medium text-white">{stage.count}</span>
@@ -189,7 +189,7 @@ function RecentActivity({ applications }: { applications: any[] }) {
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
-        <Clock className="w-5 h-5 text-brand-900" />
+        <Clock className="w-5 h-5 text-teal-600" />
         <h3 className="font-semibold text-slate-900">Senaste aktivitet</h3>
       </div>
 
@@ -278,8 +278,8 @@ export function ApplicationsAnalytics() {
           value={stats.total}
           subtitle={`${metrics.recentCount} senaste 30 dagarna`}
           icon={Briefcase}
-          color="text-brand-900"
-          bgColor="bg-brand-100"
+          color="text-teal-600"
+          bgColor="bg-teal-100"
         />
         <StatCard
           title="Aktiva"
@@ -294,16 +294,16 @@ export function ApplicationsAnalytics() {
           value={`${metrics.interviewRate}%`}
           subtitle="Av inskickade ansökningar"
           icon={Users}
-          color="text-brand-900"
-          bgColor="bg-brand-100"
+          color="text-teal-600"
+          bgColor="bg-teal-100"
         />
         <StatCard
           title="Behöver uppföljning"
           value={metrics.staleCount}
           subtitle="Ej uppdaterade 7+ dagar"
           icon={Clock}
-          color={metrics.staleCount > 0 ? "text-amber-600" : "text-brand-900"}
-          bgColor={metrics.staleCount > 0 ? "bg-amber-100" : "bg-brand-100"}
+          color={metrics.staleCount > 0 ? "text-amber-600" : "text-green-600"}
+          bgColor={metrics.staleCount > 0 ? "bg-amber-100" : "bg-green-100"}
         />
       </div>
 
@@ -340,7 +340,7 @@ export function ApplicationsAnalytics() {
               </div>
               <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-brand-700 rounded-full"
+                  className="h-full bg-teal-500 rounded-full"
                   style={{ width: `${metrics.interviewRate}%` }}
                 />
               </div>
@@ -362,7 +362,7 @@ export function ApplicationsAnalytics() {
       {/* Empty state */}
       {stats.total === 0 && (
         <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-slate-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <BarChart3 className="w-8 h-8 text-slate-600" />
           </div>
           <h3 className="text-xl font-semibold text-slate-700 mb-2">Ingen data än</h3>

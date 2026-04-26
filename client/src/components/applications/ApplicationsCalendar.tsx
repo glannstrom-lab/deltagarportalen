@@ -21,8 +21,8 @@ const REMINDER_TYPE_CONFIG: Record<ReminderType, {
   label: string
 }> = {
   follow_up: { icon: Bell, color: 'text-amber-600', bgColor: 'bg-amber-100', label: 'Uppföljning' },
-  interview: { icon: Users, color: 'text-brand-900', bgColor: 'bg-brand-100', label: 'Intervju' },
-  phone_screen: { icon: Phone, color: 'text-brand-900', bgColor: 'bg-brand-100', label: 'Telefonintervju' },
+  interview: { icon: Users, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Intervju' },
+  phone_screen: { icon: Phone, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Telefonintervju' },
   assessment: { icon: FileCheck, color: 'text-sky-600', bgColor: 'bg-sky-100', label: 'Arbetsprov' },
   deadline: { icon: AlertCircle, color: 'text-red-600', bgColor: 'bg-red-100', label: 'Deadline' },
   custom: { icon: Bell, color: 'text-slate-600', bgColor: 'bg-slate-100', label: 'Påminnelse' }
@@ -59,7 +59,7 @@ function ReminderCard({
             </div>
             <button
               onClick={() => onComplete(reminder.id)}
-              className="p-2 hover:bg-brand-50 rounded-lg transition-colors text-slate-600 hover:text-brand-900"
+              className="p-2 hover:bg-green-50 rounded-lg transition-colors text-slate-600 hover:text-green-600"
               title="Markera som klar"
             >
               <CheckCircle className="w-5 h-5" />
@@ -137,9 +137,9 @@ export function ApplicationsCalendar() {
         </div>
 
         {todayReminders.length === 0 ? (
-          <Card className="p-8 text-center bg-brand-50 border-brand-100">
-            <CheckCircle className="w-12 h-12 text-brand-400 mx-auto mb-3" />
-            <p className="text-brand-900 font-medium">Allt klart för idag!</p>
+          <Card className="p-8 text-center bg-green-50 border-green-100">
+            <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
+            <p className="text-green-700 font-medium">Allt klart för idag!</p>
           </Card>
         ) : (
           <div className="space-y-3">

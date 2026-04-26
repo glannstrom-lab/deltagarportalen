@@ -121,7 +121,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
           'bg-white dark:bg-stone-800',
           'border border-stone-200 dark:border-stone-700',
           'hover:border-stone-300 dark:hover:border-stone-600',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500',
           'transition-colors'
         )}
         aria-haspopup="listbox"
@@ -150,7 +150,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
             'absolute z-50 w-full mt-2',
             'bg-white dark:bg-stone-800',
             'border border-stone-200 dark:border-stone-700',
-            'rounded-xl',
+            'rounded-xl shadow-lg',
             'overflow-hidden'
           )}
           role="listbox"
@@ -217,7 +217,7 @@ function PersonalityOption({ personality, isSelected, onSelect }: PersonalityOpt
         'px-3 py-2 rounded-lg',
         'transition-colors',
         isSelected
-          ? 'bg-brand-50 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300'
+          ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
           : 'hover:bg-stone-100 dark:hover:bg-stone-700'
       )}
       role="option"
@@ -230,7 +230,7 @@ function PersonalityOption({ personality, isSelected, onSelect }: PersonalityOpt
         </span>
       </div>
       {isSelected && (
-        <Check className="w-4 h-4 text-brand-900 dark:text-brand-400 flex-shrink-0" aria-hidden="true" />
+        <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0" aria-hidden="true" />
       )}
     </button>
   )

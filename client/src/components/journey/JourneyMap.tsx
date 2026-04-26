@@ -69,12 +69,12 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
                       relative w-16 h-16 rounded-full flex items-center justify-center
                       transition-all duration-300 transform
                       ${isCompleted
-                        ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white '
+                        ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-200'
                         : isCurrent
-                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white  scale-110'
+                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-200 scale-110'
                           : isLocked
                             ? 'bg-slate-100 text-slate-600 cursor-not-allowed'
-                            : 'bg-white border-2 border-slate-200 text-slate-600 hover:border-indigo-300 hover:'
+                            : 'bg-white border-2 border-slate-200 text-slate-600 hover:border-indigo-300 hover:shadow-md'
                       }
                     `}
                   >
@@ -117,7 +117,7 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
 
                   {/* Hover Tooltip */}
                   {hoveredPhase === phase.id && !isLocked && (
-                    <div className="absolute top-20 mt-8 bg-slate-900 text-white text-xs rounded-lg px-3 py-2 max-w-[200px] z-10">
+                    <div className="absolute top-20 mt-8 bg-slate-900 text-white text-xs rounded-lg px-3 py-2 max-w-[200px] z-10 shadow-xl">
                       <div className="font-medium mb-1">{phase.name}</div>
                       <div className="text-slate-300">{phase.description}</div>
                       <div className="absolute -top-2 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-900" />

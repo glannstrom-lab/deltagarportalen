@@ -61,7 +61,7 @@ export function LanguageSelector() {
         className={cn(
           'w-9 h-9 flex items-center justify-center rounded-lg transition-colors',
           isOpen
-            ? 'bg-brand-100 dark:bg-brand-900/30'
+            ? 'bg-teal-100 dark:bg-teal-900/30'
             : 'hover:bg-stone-100 dark:hover:bg-stone-800'
         )}
         aria-label={t('language.select')}
@@ -71,7 +71,7 @@ export function LanguageSelector() {
         <Globe
           size={18}
           className={cn(
-            isOpen ? 'text-brand-900 dark:text-brand-400' : 'text-stone-500 dark:text-stone-600'
+            isOpen ? 'text-teal-600 dark:text-teal-400' : 'text-stone-500 dark:text-stone-600'
           )}
         />
       </button>
@@ -80,7 +80,7 @@ export function LanguageSelector() {
         <>
           <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
           <div
-            className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-stone-800 rounded-xl border border-stone-100 dark:border-stone-700 py-1 z-50"
+            className="absolute right-0 top-full mt-2 w-40 bg-white dark:bg-stone-800 rounded-xl shadow-xl border border-stone-100 dark:border-stone-700 py-1 z-50"
             role="listbox"
             aria-label={t('language.select')}
           >
@@ -91,7 +91,7 @@ export function LanguageSelector() {
                 className={cn(
                   'w-full flex items-center gap-3 px-3 py-2.5 text-left transition-colors',
                   lang.code === currentLanguage.code
-                    ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-900 dark:text-brand-300'
+                    ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300'
                     : 'hover:bg-stone-50 dark:hover:bg-stone-700/50 text-stone-700 dark:text-stone-200'
                 )}
                 role="option"

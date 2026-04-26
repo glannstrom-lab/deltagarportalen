@@ -48,7 +48,7 @@ const STEPS: StepInfo[] = [
     title: 'Välj din väg',
     description: 'Vad vill du börja med? Du kan alltid byta senare.',
     estimatedMinutes: 1,
-    icon: <Compass className="w-10 h-10 text-brand-900" />
+    icon: <Compass className="w-10 h-10 text-teal-600" />
   },
   {
     id: 'first-win',
@@ -227,9 +227,9 @@ export default function Onboarding() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="bg-white rounded-xl max-w-xl w-full overflow-hidden animate-scale-in">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden animate-scale-in">
         {/* Header with progress */}
-        <div className="bg-gradient-to-r from-brand-900 to-brand-900 p-6 text-white relative">
+        <div className="bg-gradient-to-r from-teal-600 to-teal-700 p-6 text-white relative">
           <button
             onClick={handleClose}
             className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors"
@@ -282,9 +282,9 @@ export default function Onboarding() {
         {/* Celebration overlay */}
         {showCelebration && (
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center z-10">
-            <div className="bg-white/90 rounded-xl p-6 animate-bounce">
+            <div className="bg-white/90 rounded-2xl p-6 shadow-2xl animate-bounce">
               <PartyPopper className="w-12 h-12 text-amber-500 mx-auto" />
-              <p className="text-center font-bold text-brand-900 mt-2">Steg klart! 🎉</p>
+              <p className="text-center font-bold text-teal-700 mt-2">Steg klart! 🎉</p>
             </div>
           </div>
         )}
@@ -316,12 +316,12 @@ export default function Onboarding() {
                   onClick={() => handleEnergySelect('low')}
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
                     energyLevel === 'low'
-                      ? 'border-brand-700 bg-brand-50'
-                      : 'border-slate-200 hover:border-brand-300 hover:bg-slate-50'
+                      ? 'border-teal-500 bg-teal-50 shadow-md'
+                      : 'border-slate-200 hover:border-teal-300 hover:bg-slate-50'
                   }`}
                 >
                   <div className="flex justify-center mb-2">
-                    <Snail className="w-8 h-8 text-brand-900" />
+                    <Snail className="w-8 h-8 text-teal-600" />
                   </div>
                   <div className="font-semibold text-slate-700 text-sm">Utforska lugnt</div>
                   <div className="text-xs text-slate-700 mt-1">Visa mig bara det viktigaste</div>
@@ -330,7 +330,7 @@ export default function Onboarding() {
                   onClick={() => handleEnergySelect('medium')}
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
                     energyLevel === 'medium'
-                      ? 'border-blue-500 bg-blue-50'
+                      ? 'border-blue-500 bg-blue-50 shadow-md'
                       : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
                   }`}
                 >
@@ -344,7 +344,7 @@ export default function Onboarding() {
                   onClick={() => handleEnergySelect('high')}
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
                     energyLevel === 'high'
-                      ? 'border-orange-500 bg-orange-50'
+                      ? 'border-orange-500 bg-orange-50 shadow-md'
                       : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
                   }`}
                 >
@@ -367,8 +367,8 @@ export default function Onboarding() {
             <div className="space-y-5 max-w-lg mx-auto">
               {/* Welcome message with user's name */}
               {user?.firstName && (
-                <div className="bg-brand-50 rounded-xl p-4 text-center">
-                  <p className="text-sm text-brand-900">
+                <div className="bg-teal-50 rounded-xl p-4 text-center">
+                  <p className="text-sm text-teal-700">
                     Hej <strong>{user.firstName}</strong>! Din profil är redo.
                   </p>
                 </div>
@@ -384,7 +384,7 @@ export default function Onboarding() {
                   onClick={() => setSelectedPath('interest')}
                   className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4 ${
                     selectedPath === 'interest'
-                      ? 'border-sky-500 bg-sky-50'
+                      ? 'border-sky-500 bg-sky-50 shadow-md'
                       : 'border-slate-200 hover:border-sky-300 hover:bg-slate-50'
                   }`}
                 >
@@ -405,12 +405,12 @@ export default function Onboarding() {
                   onClick={() => setSelectedPath('cv')}
                   className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4 ${
                     selectedPath === 'cv'
-                      ? 'border-brand-700 bg-brand-50'
-                      : 'border-slate-200 hover:border-brand-300 hover:bg-slate-50'
+                      ? 'border-teal-500 bg-teal-50 shadow-md'
+                      : 'border-slate-200 hover:border-teal-300 hover:bg-slate-50'
                   }`}
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                    selectedPath === 'cv' ? 'bg-brand-700 text-white' : 'bg-brand-100 text-brand-900'
+                    selectedPath === 'cv' ? 'bg-teal-500 text-white' : 'bg-teal-100 text-teal-600'
                   }`}>
                     <FileText className="w-6 h-6" />
                   </div>
@@ -418,7 +418,7 @@ export default function Onboarding() {
                     <div className="font-semibold text-slate-800">Jag vet vad jag vill men behöver CV</div>
                     <div className="text-sm text-slate-700">Använd vår CV-byggare för att skapa ett professionellt CV</div>
                   </div>
-                  {selectedPath === 'cv' && <CheckCircle className="w-5 h-5 text-brand-700" />}
+                  {selectedPath === 'cv' && <CheckCircle className="w-5 h-5 text-teal-500" />}
                 </button>
 
                 {/* Path 3: Job Search */}
@@ -426,7 +426,7 @@ export default function Onboarding() {
                   onClick={() => setSelectedPath('jobs')}
                   className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4 ${
                     selectedPath === 'jobs'
-                      ? 'border-blue-500 bg-blue-50'
+                      ? 'border-blue-500 bg-blue-50 shadow-md'
                       : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
                   }`}
                 >
@@ -452,18 +452,18 @@ export default function Onboarding() {
           {/* Step 3: First Win - Based on selected path */}
           {currentStep === 2 && (
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-brand-50 to-emerald-50 rounded-xl p-6 border border-brand-100">
+              <div className="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl p-6 border border-teal-100">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 bg-brand-100 rounded-xl">
-                    <PartyPopper className="w-6 h-6 text-brand-900" />
+                  <div className="p-3 bg-teal-100 rounded-xl">
+                    <PartyPopper className="w-6 h-6 text-teal-600" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-brand-900 mb-1">
+                    <h3 className="font-bold text-teal-900 mb-1">
                       {selectedPath === 'interest' && 'Bra val att börja med intressen!'}
                       {selectedPath === 'cv' && 'Dags att skapa ett CV som sticker ut!'}
                       {selectedPath === 'jobs' && 'Redo att hitta ditt nya jobb!'}
                     </h3>
-                    <p className="text-brand-900 text-sm">
+                    <p className="text-teal-700 text-sm">
                       {energyLevel === 'low' 
                         ? 'Ta det i din takt. Du kan alltid pausa och fortsätta senare.'
                         : energyLevel === 'medium'
@@ -479,13 +479,13 @@ export default function Onboarding() {
                 <h4 className="font-semibold text-slate-700 mb-4 text-center">Dina val</h4>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-sm">
-                    <CheckCircle className="w-5 h-5 text-brand-700" />
+                    <CheckCircle className="w-5 h-5 text-green-500" />
                     <span className="text-slate-600">Tempo: <span className="font-medium text-slate-800">
                       {energyLevel === 'high' ? 'Kom igång snabbt' : energyLevel === 'medium' ? 'Steg för steg' : 'Utforska lugnt'}
                     </span></span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
-                    <CheckCircle className="w-5 h-5 text-brand-700" />
+                    <CheckCircle className="w-5 h-5 text-green-500" />
                     <span className="text-slate-600">Din väg: <span className="font-medium text-slate-800">
                       {selectedPath === 'interest' && 'Upptäcka yrken med intresseguiden'}
                       {selectedPath === 'cv' && 'Skapa professionellt CV'}
@@ -494,7 +494,7 @@ export default function Onboarding() {
                   </div>
                   {user?.firstName && (
                     <div className="flex items-center gap-3 text-sm">
-                      <CheckCircle className="w-5 h-5 text-brand-700" />
+                      <CheckCircle className="w-5 h-5 text-green-500" />
                       <span className="text-slate-600">Profil: <span className="font-medium text-slate-800">{user.firstName}</span></span>
                     </div>
                   )}
@@ -525,7 +525,7 @@ export default function Onboarding() {
               <button
                 onClick={handleNext}
                 disabled={!isStepValid()}
-                className="flex items-center gap-2 px-6 py-2.5 bg-brand-900 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center gap-2 px-6 py-2.5 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Nästa
                 <ChevronRight className="w-5 h-5" />
@@ -539,7 +539,7 @@ export default function Onboarding() {
                   else if (selectedPath === 'jobs') navigate('/job-search')
                   else navigate('/')
                 }}
-                className="flex items-center gap-2 px-6 py-2.5 bg-brand-900 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors"
+                className="flex items-center gap-2 px-6 py-2.5 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
               >
                 <CheckCircle className="w-5 h-5" />
                 {selectedPath === 'interest' && 'Starta intresseguiden'}
@@ -606,31 +606,31 @@ export function OnboardingReminder() {
   if (!isVisible) return null
 
   return (
-    <div className="bg-gradient-to-r from-brand-50/80 to-emerald-50/80 border border-brand-100 rounded-xl p-4 mb-4 animate-fade-in backdrop-blur-sm">
+    <div className="bg-gradient-to-r from-teal-50/80 to-emerald-50/80 border border-teal-100 rounded-xl p-4 mb-4 animate-fade-in backdrop-blur-sm">
       <div className="flex items-center gap-4">
-        <div className="p-2 bg-brand-100/50 rounded-lg">
-          <Sparkles className="w-5 h-5 text-brand-900" />
+        <div className="p-2 bg-teal-100/50 rounded-lg">
+          <Sparkles className="w-5 h-5 text-teal-600" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-brand-900">
+          <p className="text-sm font-medium text-teal-900">
             {hasProgress 
               ? `Fortsätt där du slutade (steg ${progressStep} av 3)` 
               : 'Välkommen! Vill du komma igång med din jobbsökarresa?'}
           </p>
-          <p className="text-xs text-brand-900/70 mt-0.5">
+          <p className="text-xs text-teal-700/70 mt-0.5">
             Välj ditt tempo och kom igång med din jobbsökarresa
           </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           <button
             onClick={handleResume}
-            className="px-4 py-1.5 bg-brand-900 text-white rounded-lg text-sm font-medium hover:bg-brand-900 transition-colors"
+            className="px-4 py-1.5 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors"
           >
             {hasProgress ? 'Fortsätt' : 'Starta'}
           </button>
           <button
             onClick={handleDismiss}
-            className="p-1.5 text-brand-900/60 hover:text-brand-900 hover:bg-brand-100/50 rounded-lg transition-colors"
+            className="p-1.5 text-teal-600/60 hover:text-teal-600 hover:bg-teal-100/50 rounded-lg transition-colors"
             title="Stäng"
           >
             <X className="w-4 h-4" />

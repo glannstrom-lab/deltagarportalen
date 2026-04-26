@@ -52,19 +52,19 @@ const rarityColors: Record<string, { bg: string; border: string; text: string; g
     bg: 'bg-blue-50',
     border: 'border-blue-200',
     text: 'text-blue-600',
-    glow: ''
+    glow: 'shadow-blue-200'
   },
   epic: {
     bg: 'bg-purple-50',
     border: 'border-purple-200',
     text: 'text-purple-600',
-    glow: ''
+    glow: 'shadow-purple-200'
   },
   legendary: {
     bg: 'bg-gradient-to-br from-amber-50 to-orange-50',
     border: 'border-amber-300',
     text: 'text-amber-600',
-    glow: ''
+    glow: 'shadow-amber-200 shadow-lg'
   }
 }
 
@@ -141,7 +141,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center ">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-200">
             <Trophy className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -273,7 +273,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
             onClick={() => setSelectedAchievement(null)}
           />
 
-          <div className="relative bg-white rounded-xl max-w-sm w-full overflow-hidden">
+          <div className="relative bg-white rounded-2xl shadow-2xl max-w-sm w-full overflow-hidden">
             {/* Header with gradient based on rarity */}
             <div className={`
               p-6 text-center
@@ -284,7 +284,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
                   : selectedAchievement.rarity === 'rare'
                     ? 'bg-gradient-to-br from-blue-500 to-cyan-500'
                     : selectedAchievement.rarity === 'uncommon'
-                      ? 'bg-gradient-to-br from-emerald-500 to-brand-700'
+                      ? 'bg-gradient-to-br from-emerald-500 to-teal-500'
                       : 'bg-gradient-to-br from-slate-500 to-slate-600'
               }
             `}>

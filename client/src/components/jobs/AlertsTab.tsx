@@ -78,7 +78,7 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="presentation">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
       <div
-        className="relative bg-white rounded-xl max-w-md w-full p-6"
+        className="relative bg-white rounded-2xl shadow-xl max-w-md w-full p-6"
         role="dialog"
         aria-modal="true"
         aria-labelledby="create-alert-title"
@@ -329,7 +329,7 @@ function AlertCard({
   return (
     <div className={cn(
       "bg-white rounded-xl border p-5 transition-all",
-      alert.is_active ? "border-slate-200" : "border-slate-100 opacity-60"
+      alert.is_active ? "border-slate-200 shadow-sm" : "border-slate-100 opacity-60"
     )}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
@@ -357,7 +357,7 @@ function AlertCard({
               </span>
             )}
             {alert.remote && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-brand-100 text-brand-900 text-xs rounded-lg">
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-lg">
                 🏠 Distans
               </span>
             )}
@@ -380,7 +380,7 @@ function AlertCard({
             title={alert.is_active ? 'Pausa bevakning' : 'Aktivera bevakning'}
           >
             {alert.is_active ? (
-              <ToggleRight className="w-6 h-6 text-brand-900" />
+              <ToggleRight className="w-6 h-6 text-green-600" />
             ) : (
               <ToggleLeft className="w-6 h-6 text-slate-600" />
             )}
@@ -514,7 +514,7 @@ export function AlertsTab() {
       {/* Alerts list */}
       {alerts.length === 0 ? (
         <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-amber-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Bell className="w-8 h-8 text-amber-600" />
           </div>
           <h3 className="text-xl font-semibold text-slate-700 mb-2">

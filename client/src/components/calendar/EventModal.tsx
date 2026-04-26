@@ -23,8 +23,8 @@ const eventTypeConfigs = [
   { value: 'deadline', labelKey: 'calendar.eventTypes.deadline', color: 'bg-red-100 text-red-700' },
   { value: 'reminder', labelKey: 'calendar.eventTypes.reminder', color: 'bg-stone-100 text-stone-700' },
   { value: 'task', labelKey: 'calendar.eventTypes.task', color: 'bg-purple-100 text-purple-700' },
-  { value: 'followup', labelKey: 'calendar.eventTypes.followup', color: 'bg-brand-100 text-brand-900' },
-  { value: 'preparation', labelKey: 'calendar.eventTypes.preparation', color: 'bg-brand-100 text-brand-900' },
+  { value: 'followup', labelKey: 'calendar.eventTypes.followup', color: 'bg-green-100 text-green-700' },
+  { value: 'preparation', labelKey: 'calendar.eventTypes.preparation', color: 'bg-teal-100 text-teal-700' },
 ]
 
 export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJobTitle, isSaving = false }: EventModalProps) {
@@ -117,7 +117,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
       aria-labelledby={titleId}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white dark:bg-stone-900 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <h2 id={titleId} className="text-xl font-semibold text-stone-900 dark:text-stone-100">
@@ -140,7 +140,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               onClick={() => setActiveTab(tab.id as any)}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
-                  ? 'border-brand-900 text-brand-900 dark:text-brand-400'
+                  ? 'border-teal-600 text-teal-600 dark:text-teal-400'
                   : 'border-transparent text-stone-700 dark:text-stone-300 hover:text-stone-700 dark:hover:text-stone-200'
               }`}
             >
@@ -166,7 +166,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   value={formData.title || ''}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder={t('calendar.modal.titlePlaceholder')}
-                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -201,7 +201,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                       setValidationError(null)
                       setFormData({ ...formData, date: e.target.value })
                     }}
-                    className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                    className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
                 <div>
@@ -213,7 +213,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                       setValidationError(null)
                       setFormData({ ...formData, time: e.target.value })
                     }}
-                    className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                    className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
                 <div>
@@ -225,7 +225,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                       setValidationError(null)
                       setFormData({ ...formData, endTime: e.target.value })
                     }}
-                    className={`mt-1 w-full px-3 py-2 border bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700 ${
+                    className={`mt-1 w-full px-3 py-2 border bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
                       validationError ? 'border-red-500 dark:border-red-500' : 'border-stone-200 dark:border-stone-700'
                     }`}
                     aria-invalid={validationError ? 'true' : 'false'}
@@ -255,7 +255,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   value={formData.location || ''}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   placeholder={t('calendar.modal.locationPlaceholder')}
-                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -266,7 +266,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                     type="checkbox"
                     checked={formData.isVideo || false}
                     onChange={(e) => setFormData({ ...formData, isVideo: e.target.checked })}
-                    className="w-4 h-4 text-brand-900 rounded focus:ring-brand-700"
+                    className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
                   />
                   <span className="text-sm text-stone-700 dark:text-stone-300 flex items-center gap-1">
                     <Video size={14} /> {t('calendar.videoCall')}
@@ -277,7 +277,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                     type="checkbox"
                     checked={formData.isPhone || false}
                     onChange={(e) => setFormData({ ...formData, isPhone: e.target.checked })}
-                    className="w-4 h-4 text-brand-900 rounded focus:ring-brand-700"
+                    className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
                   />
                   <span className="text-sm text-stone-700 dark:text-stone-300 flex items-center gap-1">
                     <Phone size={14} /> {t('calendar.phone')}
@@ -293,7 +293,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   value={formData.with || ''}
                   onChange={(e) => setFormData({ ...formData, with: e.target.value })}
                   placeholder={t('calendar.modal.withPlaceholder')}
-                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -305,7 +305,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder={t('calendar.modal.descriptionPlaceholder')}
                   rows={3}
-                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700 resize-none"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
                 />
               </div>
 

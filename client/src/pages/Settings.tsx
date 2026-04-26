@@ -194,8 +194,8 @@ export default function Settings() {
             ) : (
               <>
                 <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-br from-brand-100 to-brand-50 dark:from-brand-900/30 dark:to-brand-900/20 rounded-full flex items-center justify-center">
-                    <User size={32} className="text-brand-900 dark:text-brand-400" />
+                  <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/30 dark:to-teal-800/20 rounded-full flex items-center justify-center">
+                    <User size={32} className="text-teal-600 dark:text-teal-400" />
                   </div>
                   <div className="text-center sm:text-left">
                     <Button variant="secondary" size="sm">
@@ -247,7 +247,7 @@ export default function Settings() {
                     className={cn(
                       "w-full px-4 py-3 border border-stone-200 dark:border-stone-700 rounded-lg",
                       "bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100",
-                      "focus:ring-2 focus:ring-brand-700/20 focus:border-brand-700 dark:focus:ring-brand-400/20 dark:focus:border-brand-400",
+                      "focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 dark:focus:ring-teal-400/20 dark:focus:border-teal-400",
                       "resize-none text-base transition-theme"
                     )}
                   />
@@ -371,10 +371,10 @@ export default function Settings() {
                     <div className={cn(
                       "p-2 rounded-lg flex-shrink-0",
                       consentData.termsAcceptedAt
-                        ? "bg-brand-100 dark:bg-brand-900/30"
+                        ? "bg-green-100 dark:bg-green-900/30"
                         : "bg-amber-100 dark:bg-amber-900/30"
                     )}>
-                      <FileText size={20} className={consentData.termsAcceptedAt ? "text-brand-900" : "text-amber-600"} />
+                      <FileText size={20} className={consentData.termsAcceptedAt ? "text-green-600" : "text-amber-600"} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -389,13 +389,13 @@ export default function Settings() {
                         {t('settings.privacy.consent.termsDesc')}
                       </p>
                       {consentData.termsAcceptedAt && (
-                        <p className="text-xs text-brand-900 dark:text-brand-400 mt-2 flex items-center gap-1">
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
                           <Check size={14} />
                           {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.termsAcceptedAt) })}
                         </p>
                       )}
                     </div>
-                    <Link to="/terms" target="_blank" className="text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 flex-shrink-0">
+                    <Link to="/terms" target="_blank" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 flex-shrink-0">
                       <ExternalLink size={18} />
                     </Link>
                   </div>
@@ -407,10 +407,10 @@ export default function Settings() {
                     <div className={cn(
                       "p-2 rounded-lg flex-shrink-0",
                       consentData.privacyAcceptedAt
-                        ? "bg-brand-100 dark:bg-brand-900/30"
+                        ? "bg-green-100 dark:bg-green-900/30"
                         : "bg-amber-100 dark:bg-amber-900/30"
                     )}>
-                      <Shield size={20} className={consentData.privacyAcceptedAt ? "text-brand-900" : "text-amber-600"} />
+                      <Shield size={20} className={consentData.privacyAcceptedAt ? "text-green-600" : "text-amber-600"} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
@@ -425,13 +425,13 @@ export default function Settings() {
                         {t('settings.privacy.consent.privacyDesc')}
                       </p>
                       {consentData.privacyAcceptedAt && (
-                        <p className="text-xs text-brand-900 dark:text-brand-400 mt-2 flex items-center gap-1">
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
                           <Check size={14} />
                           {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.privacyAcceptedAt) })}
                         </p>
                       )}
                     </div>
-                    <Link to="/privacy" target="_blank" className="text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 flex-shrink-0">
+                    <Link to="/privacy" target="_blank" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 flex-shrink-0">
                       <ExternalLink size={18} />
                     </Link>
                   </div>
@@ -443,17 +443,17 @@ export default function Settings() {
                     <div className={cn(
                       "p-2 rounded-lg flex-shrink-0",
                       consentData.aiConsentAt
-                        ? "bg-brand-100 dark:bg-brand-900/30"
+                        ? "bg-green-100 dark:bg-green-900/30"
                         : "bg-stone-100 dark:bg-stone-700"
                     )}>
-                      <Brain size={20} className={consentData.aiConsentAt ? "text-brand-900" : "text-stone-500"} />
+                      <Brain size={20} className={consentData.aiConsentAt ? "text-green-600" : "text-stone-500"} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <h4 className="font-medium text-stone-900 dark:text-stone-100">
                           {t('settings.privacy.consent.ai')}
                         </h4>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
                           {t('settings.privacy.consent.optional')}
                         </span>
                       </div>
@@ -461,7 +461,7 @@ export default function Settings() {
                         {t('settings.privacy.consent.aiDesc')}
                       </p>
                       {consentData.aiConsentAt ? (
-                        <p className="text-xs text-brand-900 dark:text-brand-400 mt-2 flex items-center gap-1">
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
                           <Check size={14} />
                           {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.aiConsentAt) })}
                         </p>
@@ -491,17 +491,17 @@ export default function Settings() {
                     <div className={cn(
                       "p-2 rounded-lg flex-shrink-0",
                       consentData.marketingConsentAt
-                        ? "bg-brand-100 dark:bg-brand-900/30"
+                        ? "bg-green-100 dark:bg-green-900/30"
                         : "bg-stone-100 dark:bg-stone-700"
                     )}>
-                      <Mail size={20} className={consentData.marketingConsentAt ? "text-brand-900" : "text-stone-500"} />
+                      <Mail size={20} className={consentData.marketingConsentAt ? "text-green-600" : "text-stone-500"} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <h4 className="font-medium text-stone-900 dark:text-stone-100">
                           {t('settings.privacy.consent.marketing')}
                         </h4>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
                           {t('settings.privacy.consent.optional')}
                         </span>
                       </div>
@@ -509,7 +509,7 @@ export default function Settings() {
                         {t('settings.privacy.consent.marketingDesc')}
                       </p>
                       {consentData.marketingConsentAt ? (
-                        <p className="text-xs text-brand-900 dark:text-brand-400 mt-2 flex items-center gap-1">
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
                           <Check size={14} />
                           {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.marketingConsentAt) })}
                         </p>
@@ -548,7 +548,7 @@ export default function Settings() {
                 <Card variant="flat">
                   <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">{t('settings.privacy.shareActivity')}</h3>
                   <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.shareActivityDesc')}</p>
-                  <button className="text-brand-900 dark:text-brand-400 font-medium text-sm hover:text-brand-900 dark:hover:text-brand-300">
+                  <button className="text-teal-600 dark:text-teal-400 font-medium text-sm hover:text-teal-700 dark:hover:text-teal-300">
                     {t('settings.privacy.learnMore')}
                   </button>
                 </Card>
@@ -656,8 +656,8 @@ export default function Settings() {
               const Icon = section?.icon || User
               return (
                 <>
-                  <div className="p-2 bg-brand-100 dark:bg-brand-900/30 rounded-lg">
-                    <Icon size={20} className="text-brand-900 dark:text-brand-400" />
+                  <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
+                    <Icon size={20} className="text-teal-600 dark:text-teal-400" />
                   </div>
                   <span className="font-medium text-stone-900 dark:text-stone-100">{section?.title}</span>
                 </>
@@ -685,14 +685,14 @@ export default function Settings() {
                   className={cn(
                     "w-full flex items-center gap-3 p-4 text-left transition-colors",
                     activeSection === section.id
-                      ? 'bg-brand-50 dark:bg-brand-900/20 text-brand-900 dark:text-brand-100'
+                      ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-900 dark:text-teal-100'
                       : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
                   )}
                 >
                   <div className={cn(
                     "p-2 rounded-lg",
                     activeSection === section.id
-                      ? 'bg-brand-700 dark:bg-brand-900 text-white'
+                      ? 'bg-teal-500 dark:bg-teal-600 text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400'
                   )}>
                     <Icon size={18} />
@@ -721,19 +721,19 @@ export default function Settings() {
                 className={cn(
                   "w-full flex items-center gap-3 p-4 rounded-xl transition-all text-left relative",
                   isActive
-                    ? 'bg-brand-50 dark:bg-brand-900/20'
+                    ? 'bg-teal-50 dark:bg-teal-900/20'
                     : 'bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700/50'
                 )}
               >
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-brand-700 dark:bg-brand-400 rounded-r-full" />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-teal-500 dark:bg-teal-400 rounded-r-full" />
                 )}
 
                 <div className={cn(
                   "p-2 rounded-lg",
                   isActive
-                    ? 'bg-brand-700 dark:bg-brand-900 text-white'
+                    ? 'bg-teal-500 dark:bg-teal-600 text-white'
                     : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400'
                 )}>
                   <Icon size={20} />
@@ -742,7 +742,7 @@ export default function Settings() {
                   <h3 className={cn(
                     "font-semibold",
                     isActive
-                      ? 'text-brand-900 dark:text-brand-100'
+                      ? 'text-teal-900 dark:text-teal-100'
                       : 'text-stone-900 dark:text-stone-100'
                   )}>
                     {section.title}
@@ -751,7 +751,7 @@ export default function Settings() {
                 </div>
                 <ChevronRight size={18} className={cn(
                   "flex-shrink-0 transition-colors",
-                  isActive ? 'text-brand-700 dark:text-brand-400' : 'text-stone-400 dark:text-stone-500'
+                  isActive ? 'text-teal-500 dark:text-teal-400' : 'text-stone-400 dark:text-stone-500'
                 )} />
               </button>
             )
@@ -813,15 +813,15 @@ function AppearanceSettings() {
               className={cn(
                 "relative p-4 rounded-xl border-2 text-left transition-all",
                 theme === themeOption.id
-                  ? 'border-brand-700 dark:border-brand-400 bg-brand-50 dark:bg-brand-900/20'
-                  : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:border-brand-300 dark:hover:border-brand-900'
+                  ? 'border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20'
+                  : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:border-teal-300 dark:hover:border-teal-600'
               )}
             >
               <div className="text-2xl mb-2">{themeOption.icon}</div>
               <div className={cn(
                 "font-medium",
                 theme === themeOption.id
-                  ? 'text-brand-900 dark:text-brand-100'
+                  ? 'text-teal-900 dark:text-teal-100'
                   : 'text-stone-900 dark:text-stone-100'
               )}>
                 {themeOption.label}
@@ -830,7 +830,7 @@ function AppearanceSettings() {
                 {themeOption.description}
               </div>
               {theme === themeOption.id && (
-                <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-brand-700 dark:bg-brand-400 flex items-center justify-center">
+                <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-teal-500 dark:bg-teal-400 flex items-center justify-center">
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>
@@ -855,7 +855,7 @@ function AppearanceSettings() {
           "border-stone-200 dark:border-stone-700"
         )}>
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-brand-700 dark:bg-brand-900 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-teal-500 dark:bg-teal-600 flex items-center justify-center">
               <span className="text-white text-lg">🎨</span>
             </div>
             <div>

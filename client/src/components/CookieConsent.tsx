@@ -81,7 +81,7 @@ export function CookieConsent() {
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4 md:p-6">
-      <div className="max-w-2xl mx-auto bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+      <div className="max-w-2xl mx-auto bg-white dark:bg-stone-800 rounded-2xl shadow-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
         {/* Main Banner */}
         <div className="p-6">
           <div className="flex items-start gap-4">
@@ -113,7 +113,7 @@ export function CookieConsent() {
                       <span className="text-xs text-stone-600">
                         {t('settings.privacy.consent.required')}
                       </span>
-                      <div className="w-10 h-6 bg-brand-700 rounded-full flex items-center justify-end px-1">
+                      <div className="w-10 h-6 bg-green-500 rounded-full flex items-center justify-end px-1">
                         <div className="w-4 h-4 bg-white rounded-full" />
                       </div>
                     </div>
@@ -133,7 +133,7 @@ export function CookieConsent() {
                       onClick={() => setPreferences(p => ({ ...p, analytics: !p.analytics }))}
                       className={`w-10 h-6 rounded-full flex items-center px-1 transition-colors ${
                         preferences.analytics
-                          ? 'bg-brand-700 justify-end'
+                          ? 'bg-green-500 justify-end'
                           : 'bg-stone-300 dark:bg-stone-600 justify-start'
                       }`}
                     >

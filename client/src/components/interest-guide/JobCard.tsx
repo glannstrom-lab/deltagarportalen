@@ -31,13 +31,13 @@ export function JobCard({
   const { occupation, matchPercentage, isSuitable, needsAdaptation, adaptations, warnings } = match
 
   const getMatchColor = (pct: number) => {
-    if (pct >= 80) return 'text-brand-900 bg-brand-50 border-brand-200'
+    if (pct >= 80) return 'text-green-600 bg-green-50 border-green-200'
     if (pct >= 60) return 'text-amber-600 bg-amber-50 border-amber-200'
     return 'text-red-600 bg-red-50 border-red-200'
   }
 
   const getMatchBarColor = (pct: number) => {
-    if (pct >= 80) return 'from-brand-700 to-emerald-500'
+    if (pct >= 80) return 'from-green-500 to-emerald-500'
     if (pct >= 60) return 'from-amber-500 to-yellow-500'
     return 'from-red-500 to-orange-500'
   }
@@ -45,7 +45,7 @@ export function JobCard({
   const getPrognosisIcon = (prognosis: string) => {
     switch (prognosis) {
       case 'growing':
-        return <TrendingUp className="w-4 h-4 text-brand-900" />
+        return <TrendingUp className="w-4 h-4 text-green-600" />
       case 'declining':
         return <TrendingDown className="w-4 h-4 text-red-600" />
       default:
@@ -68,7 +68,7 @@ export function JobCard({
     <div 
       className={`rounded-xl border-2 transition-all duration-200 ${
         isSuitable 
-          ? 'border-brand-200 bg-brand-50/30' 
+          ? 'border-green-200 bg-green-50/30' 
           : needsAdaptation 
           ? 'border-amber-200 bg-amber-50/30'
           : 'border-red-200 bg-red-50/30'

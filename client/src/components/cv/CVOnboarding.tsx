@@ -127,7 +127,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="relative w-full max-w-lg bg-white rounded-xl overflow-hidden animate-in zoom-in-95 duration-300">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         {/* Header with progress */}
         <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white">
           <div className="flex items-center justify-between mb-4">

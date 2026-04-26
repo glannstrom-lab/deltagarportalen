@@ -296,7 +296,7 @@ export default function MicroLearningHub() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <Loader2 className="w-8 h-8 animate-spin text-brand-900" />
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
       </div>
     );
   }
@@ -304,7 +304,7 @@ export default function MicroLearningHub() {
   return (
     <div className="space-y-8">
       {/* Header med statistik */}
-      <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl p-8 text-white">
+      <div className="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
             <BookOpen size={24} />
@@ -357,7 +357,7 @@ export default function MicroLearningHub() {
 
       {/* Kompetensgap-analys CTA */}
       {learningPaths.length === 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-6">
+        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-6">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
               <Lightbulb className="text-amber-600" size={24} />
@@ -383,7 +383,7 @@ export default function MicroLearningHub() {
 
       {/* Aktiva lärandemål */}
       {learningPaths.length > 0 && (
-        <div className="bg-white rounded-xl p-6 border border-slate-200">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-slate-800 flex items-center gap-2">
               <Target className="text-indigo-500" size={20} />
@@ -500,7 +500,7 @@ export default function MicroLearningHub() {
       )}
 
       {/* Tips-sektion */}
-      <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-100">
+      <div className="bg-indigo-50 rounded-2xl p-6 border border-indigo-100">
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 bg-indigo-500 text-white rounded-xl flex items-center justify-center shrink-0">
             <Heart size={20} />

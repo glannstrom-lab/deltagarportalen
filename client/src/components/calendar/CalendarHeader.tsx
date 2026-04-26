@@ -69,26 +69,26 @@ export function CalendarHeader({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-stone-800 rounded-xl border border-brand-100 dark:border-stone-700 p-4">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-stone-800 rounded-xl border border-teal-100 dark:border-stone-700 p-4">
       <div className="flex items-center gap-3 flex-wrap">
         {/* Navigation */}
         <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-700 rounded-lg p-1" role="group" aria-label={t('calendar.navigation.previous')}>
           <button
             onClick={() => onNavigate('prev')}
-            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-1"
+            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1"
             aria-label={t('calendar.navigation.previous')}
           >
             <ChevronLeft size={18} className="text-stone-600 dark:text-stone-300" aria-hidden="true" />
           </button>
           <button
             onClick={() => onNavigate('today')}
-            className="px-3 py-2 text-sm font-medium text-stone-700 dark:text-stone-200 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-1"
+            className="px-3 py-2 text-sm font-medium text-stone-700 dark:text-stone-200 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1"
           >
             {t('calendar.navigation.today')}
           </button>
           <button
             onClick={() => onNavigate('next')}
-            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-1"
+            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1"
             aria-label={t('calendar.navigation.next')}
           >
             <ChevronRight size={18} className="text-stone-600 dark:text-stone-300" aria-hidden="true" />
@@ -109,9 +109,9 @@ export function CalendarHeader({
             role="tab"
             aria-selected={view === v}
             onClick={() => onViewChange(v)}
-            className={`px-3 py-2 text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-1 ${
+            className={`px-3 py-2 text-sm font-medium rounded-md transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1 ${
               view === v
-                ? 'bg-brand-900 text-white'
+                ? 'bg-teal-600 text-white shadow-sm'
                 : 'text-stone-600 dark:text-stone-300 hover:bg-white dark:hover:bg-stone-600'
             }`}
           >

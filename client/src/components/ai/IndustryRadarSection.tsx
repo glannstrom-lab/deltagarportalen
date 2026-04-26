@@ -186,7 +186,7 @@ export function IndustryRadarSection({
   const getGrowthIcon = (indicator: 'up' | 'stable' | 'down') => {
     switch (indicator) {
       case 'up':
-        return <TrendingUp className="w-4 h-4 text-brand-700" />
+        return <TrendingUp className="w-4 h-4 text-green-500" />
       case 'down':
         return <TrendingDown className="w-4 h-4 text-red-500" />
       default:
@@ -197,7 +197,7 @@ export function IndustryRadarSection({
   const getDemandColor = (level: 'high' | 'medium' | 'low') => {
     switch (level) {
       case 'high':
-        return 'bg-brand-100 text-brand-900 dark:bg-brand-900/50 dark:text-brand-300'
+        return 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
       case 'medium':
         return 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300'
       default:
@@ -211,7 +211,7 @@ export function IndustryRadarSection({
         {/* Collapsible Header */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full p-4 flex items-center justify-between bg-gradient-to-r from-sky-600 to-brand-900 text-white"
+          className="w-full p-4 flex items-center justify-between bg-gradient-to-r from-sky-600 to-teal-600 text-white"
           aria-expanded={isExpanded}
         >
           <div className="flex items-center gap-3">
@@ -274,14 +274,14 @@ export function IndustryRadarSection({
                 {result.trendingIndustries.length > 0 && (
                   <div>
                     <h4 className="text-sm font-semibold text-stone-800 dark:text-stone-200 mb-3 flex items-center gap-2">
-                      <TrendingUp className="w-4 h-4 text-brand-700" aria-hidden="true" />
+                      <TrendingUp className="w-4 h-4 text-green-500" aria-hidden="true" />
                       {t('career.industryRadar.trendingIndustries')}
                     </h4>
                     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                       {result.trendingIndustries.map((industry, i) => (
                         <div
                           key={i}
-                          className="p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900 transition-colors"
+                          className="p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700 transition-colors"
                         >
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium text-sm text-stone-800 dark:text-stone-200">
@@ -291,7 +291,7 @@ export function IndustryRadarSection({
                               {getGrowthIcon(industry.growthIndicator)}
                               <span className={cn(
                                 'text-xs font-medium',
-                                industry.growthIndicator === 'up' && 'text-brand-900 dark:text-brand-400',
+                                industry.growthIndicator === 'up' && 'text-green-600 dark:text-green-400',
                                 industry.growthIndicator === 'down' && 'text-red-600 dark:text-red-400',
                                 industry.growthIndicator === 'stable' && 'text-stone-600 dark:text-stone-400'
                               )}>
@@ -334,7 +334,7 @@ export function IndustryRadarSection({
                             <span className="font-medium text-sm text-stone-800 dark:text-stone-200">
                               {skill.skill}
                             </span>
-                            <span className="text-xs font-medium text-brand-900 dark:text-brand-400">
+                            <span className="text-xs font-medium text-green-600 dark:text-green-400">
                               {skill.demandGrowth}
                             </span>
                           </div>
@@ -376,7 +376,7 @@ export function IndustryRadarSection({
                           <p className="text-xs text-stone-600 dark:text-stone-400 mb-2">
                             {insight.summary}
                           </p>
-                          <p className="text-xs text-brand-900 dark:text-brand-400">
+                          <p className="text-xs text-teal-600 dark:text-teal-400">
                             {t('career.industryRadar.impact')}: {insight.impact}
                           </p>
                         </div>
@@ -387,14 +387,14 @@ export function IndustryRadarSection({
 
                 {/* Personalized Recommendations */}
                 {result.personalizedRecommendations.length > 0 && (
-                  <div className="p-4 rounded-xl bg-gradient-to-br from-brand-50 to-sky-50 dark:from-brand-900/20 dark:to-sky-900/20 border border-brand-200 dark:border-brand-900">
-                    <h4 className="text-sm font-semibold text-brand-900 dark:text-brand-200 mb-3">
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800">
+                    <h4 className="text-sm font-semibold text-teal-800 dark:text-teal-200 mb-3">
                       {t('career.industryRadar.recommendations')}
                     </h4>
                     <ul className="space-y-2">
                       {result.personalizedRecommendations.map((rec, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-brand-400 mt-2 flex-shrink-0" aria-hidden="true" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-2 flex-shrink-0" aria-hidden="true" />
                           <span className="text-sm text-stone-700 dark:text-stone-300">
                             {rec}
                           </span>
@@ -409,7 +409,7 @@ export function IndustryRadarSection({
                   {result.lastUpdated && (
                     <span>{t('career.industryRadar.lastUpdated')}: {result.lastUpdated}</span>
                   )}
-                  <span className="px-2 py-0.5 bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 rounded-full">
+                  <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
                     {i18n.language === 'en' ? 'Live data' : 'Realtidsdata'}
                   </span>
                 </div>

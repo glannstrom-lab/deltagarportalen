@@ -52,7 +52,7 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
   }
 
   return (
-    <div className="absolute top-2 right-2 z-10 bg-white rounded-lg border border-slate-200 p-2 min-w-[140px]">
+    <div className="absolute top-2 right-2 z-10 bg-white rounded-lg shadow-lg border border-slate-200 p-2 min-w-[140px]">
       <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100">
         <span className="text-xs font-medium text-slate-600">Storlek</span>
         <button

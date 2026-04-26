@@ -511,7 +511,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
                 variant="ghost"
                 size="sm"
                 onClick={handleShareWithConsultant}
-                leftIcon={shareSuccess ? <Check className="w-4 h-4 text-brand-700" /> : <Share2 className="w-4 h-4" />}
+                leftIcon={shareSuccess ? <Check className="w-4 h-4 text-green-500" /> : <Share2 className="w-4 h-4" />}
                 aria-label={t('aiTeam.shareWithConsultant')}
               >
                 <span className="hidden sm:inline">
@@ -679,7 +679,7 @@ function EmptyState({ agent, onQuickAction }: EmptyStateProps) {
 
       {/* Welcome speech bubble */}
       <div className={cn(
-        'mt-4 px-4 py-3 rounded-xl max-w-sm',
+        'mt-4 px-4 py-3 rounded-2xl max-w-sm',
         'bg-stone-100 dark:bg-stone-800',
         'border border-stone-200 dark:border-stone-700'
       )}>
@@ -711,7 +711,7 @@ function EmptyState({ agent, onQuickAction }: EmptyStateProps) {
                   'hover:bg-white dark:hover:bg-stone-800',
                   'text-stone-700 dark:text-stone-300',
                   'transition-colors',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700'
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500'
                 )}
               >
                 {t(action.labelKey)}

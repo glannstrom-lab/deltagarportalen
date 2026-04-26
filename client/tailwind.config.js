@@ -98,23 +98,6 @@ export default {
           blue: '#3b82f6',
           green: '#10b981',
           pink: '#ec4899',
-          // NY: Primär accentfärg för hela appen
-          DEFAULT: '#0F6E56',
-          teal: '#0F6E56',
-        },
-
-        // NY: Brand-färg (turkos) - huvudaccentfärg
-        brand: {
-          50: '#f0fdf9',
-          100: '#ccfbef',
-          200: '#9af5df',
-          300: '#5fe9ca',
-          400: '#2dd4b1',
-          500: '#14b89a',
-          600: '#0F6E56',  // Huvudfärg från design
-          700: '#0d5c48',
-          800: '#0f4a3b',
-          900: '#103d32',
         },
       },
 

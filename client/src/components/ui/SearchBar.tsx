@@ -7,7 +7,7 @@ export function SearchBar() {
       <input
         type="text"
         placeholder="Sök..."
-        className="w-full pl-12 pr-4 py-3 bg-white rounded-xl border-none  focus:outline-none focus:ring-2 focus:ring-primary/50"
+        className="w-full pl-12 pr-4 py-3 bg-white rounded-2xl border-none shadow-card focus:outline-none focus:ring-2 focus:ring-primary/50"
       />
     </div>
   )

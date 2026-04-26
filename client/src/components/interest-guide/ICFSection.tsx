@@ -34,7 +34,7 @@ export function ICFSection({ scores }: ICFSectionProps) {
         const adaptation = icfAdaptations[key]
         
         const getColor = (s: number) => {
-          if (s >= 4) return 'text-brand-900 bg-brand-50 border-brand-300'
+          if (s >= 4) return 'text-green-700 bg-green-50 border-green-300'
           if (s >= 3) return 'text-amber-700 bg-amber-50 border-amber-300'
           return 'text-red-700 bg-red-50 border-red-300'
         }
@@ -46,7 +46,7 @@ export function ICFSection({ scores }: ICFSectionProps) {
         }
 
         const getBarColor = (s: number) => {
-          if (s >= 4) return 'from-brand-700 to-emerald-500'
+          if (s >= 4) return 'from-green-500 to-emerald-500'
           if (s >= 3) return 'from-amber-500 to-yellow-500'
           return 'from-red-500 to-orange-500'
         }

@@ -215,7 +215,7 @@ export default function TestTab() {
       <div className="max-w-2xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
         <div className="text-center">
           {/* Success icon */}
-          <div className="w-20 h-20 bg-gradient-to-br from-brand-400 to-emerald-500 dark:from-brand-700 dark:to-emerald-600 rounded-xl flex items-center justify-center mx-auto mb-6 /30 dark:/20">
+          <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 dark:from-green-500 dark:to-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30 dark:shadow-green-600/20">
             <CheckCircle2 className="w-10 h-10 text-white" />
           </div>
 
@@ -230,7 +230,7 @@ export default function TestTab() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <Link
               to="/interest-guide/results"
-              className="group p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all hover:"
+              className="group p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all hover:shadow-lg"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <BarChart3 className="w-6 h-6 text-white" />
@@ -241,7 +241,7 @@ export default function TestTab() {
 
             <Link
               to="/interest-guide/occupations"
-              className="group p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all hover:"
+              className="group p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all hover:shadow-lg"
             >
               <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Briefcase className="w-6 h-6 text-white" />
@@ -349,7 +349,7 @@ export default function TestTab() {
 
         <div className="flex items-center gap-2">
           {showSaveIndicator && (
-            <span className="flex items-center gap-1 text-xs text-brand-900 dark:text-brand-400 bg-brand-50 dark:bg-brand-900/30 px-2 py-1 rounded-full">
+            <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">
               <CheckCircle2 className="w-3 h-3" />
               {t('interestGuide.test.saved')}
             </span>

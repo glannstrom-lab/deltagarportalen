@@ -3291,9 +3291,9 @@ export const riasecColors: Record<string, { bg: string; text: string; gradient: 
   R: { bg: 'bg-red-500', text: 'text-red-500', gradient: 'from-red-500 to-red-600' },
   I: { bg: 'bg-blue-500', text: 'text-blue-500', gradient: 'from-blue-500 to-blue-600' },
   A: { bg: 'bg-purple-500', text: 'text-purple-500', gradient: 'from-purple-500 to-purple-600' },
-  S: { bg: 'bg-brand-700', text: 'text-brand-700', gradient: 'from-brand-700 to-brand-900' },
+  S: { bg: 'bg-green-500', text: 'text-green-500', gradient: 'from-green-500 to-green-600' },
   E: { bg: 'bg-amber-500', text: 'text-amber-500', gradient: 'from-amber-500 to-amber-600' },
-  C: { bg: 'bg-brand-700', text: 'text-brand-700', gradient: 'from-brand-700 to-brand-900' },
+  C: { bg: 'bg-teal-500', text: 'text-teal-500', gradient: 'from-teal-500 to-teal-600' },
 }
 
 export const riasecNames: Record<string, string> = {

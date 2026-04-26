@@ -101,7 +101,7 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
       
       <div className="w-full bg-slate-200 rounded-full h-2 mb-4">
         <div 
-          className="bg-brand-900 h-2 rounded-full transition-all"
+          className="bg-teal-600 h-2 rounded-full transition-all"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -121,8 +121,8 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
               <div className={`
                 flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5
                 ${isChecked 
-                  ? 'bg-brand-900 border-brand-900' 
-                  : 'border-slate-300 hover:border-brand-400'
+                  ? 'bg-teal-600 border-teal-600' 
+                  : 'border-slate-300 hover:border-teal-400'
                 }
               `}>
                 {isChecked && <Check size={14} className="text-white" />}
@@ -136,7 +136,7 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
       </ul>
 
       {progress === 100 && (
-        <div className="mt-4 p-3 bg-brand-100 text-brand-900 rounded-lg text-center text-sm font-medium">
+        <div className="mt-4 p-3 bg-green-100 text-green-700 rounded-lg text-center text-sm font-medium">
           🎉 Bra jobbat! Du har gått igenom allt!
         </div>
       )}

@@ -18,7 +18,7 @@ export const agents: Agent[] = [
     nameKey: 'aiTeam.agents.arbetskonsulent.name',
     descriptionKey: 'aiTeam.agents.arbetskonsulent.description',
     icon: Briefcase,
-    color: 'brand',
+    color: 'teal',
     quickActions: [
       { id: 'cv-tips', labelKey: 'aiTeam.quickActions.cvTips', prompt: 'Ge mig tips för att förbättra mitt CV baserat på min profil. Vad bör jag lyfta fram och vad kan förbättras?', linkTo: '/cv', linkLabelKey: 'aiTeam.quickActions.goToCV' },
       { id: 'job-strategy', labelKey: 'aiTeam.quickActions.jobStrategy', prompt: 'Baserat på min bakgrund, vilken jobbsökningsstrategi passar mig bäst? Var bör jag fokusera mina ansträngningar?', linkTo: '/job-search', linkLabelKey: 'aiTeam.quickActions.goToJobSearch' },
@@ -144,7 +144,7 @@ export function AgentSelector({ className }: AgentSelectorProps) {
                     'bg-white dark:bg-stone-800',
                     'border-2',
                     colors.border,
-                    '',
+                    'shadow-lg',
                     'ring-2 ring-offset-2',
                     colors.ring
                   )
@@ -153,7 +153,7 @@ export function AgentSelector({ className }: AgentSelectorProps) {
                     'border border-stone-200 dark:border-stone-700',
                     'hover:bg-white dark:hover:bg-stone-800',
                     'hover:border-stone-300 dark:hover:border-stone-600',
-                    'hover:'
+                    'hover:shadow-md'
                   )
             )}
             role="radio"

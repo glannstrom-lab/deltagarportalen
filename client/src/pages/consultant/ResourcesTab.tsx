@@ -88,7 +88,7 @@ function TemplateCard({
   const categoryLabels = {
     cv: { label: t('consultant.resources.cv'), color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
     job_search: { label: t('consultant.resources.jobSearch'), color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' },
-    interview: { label: t('consultant.resources.interview'), color: 'bg-brand-100 text-brand-900 dark:bg-brand-900/40 dark:text-brand-300' },
+    interview: { label: t('consultant.resources.interview'), color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300' },
     networking: { label: t('consultant.resources.networking'), color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' },
     skills: { label: t('consultant.resources.skills'), color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' },
   }
@@ -97,7 +97,7 @@ function TemplateCard({
   const isDefault = template.id.startsWith('default-')
 
   return (
-    <Card className="p-4 hover: transition-shadow">
+    <Card className="p-4 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <span className={cn('px-2.5 py-1 rounded-full text-xs font-medium', category.color)}>
           {category.label}
@@ -122,7 +122,7 @@ function TemplateCard({
                 <MoreVertical className="w-4 h-4 text-stone-500 dark:text-stone-400" />
               </button>
               {showMenu && (
-                <div className="absolute right-0 top-full mt-1 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 py-1 z-10 min-w-[120px]">
+                <div className="absolute right-0 top-full mt-1 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-10 min-w-[120px]">
                   <button
                     onClick={() => { onEdit(template); setShowMenu(false) }}
                     className="w-full px-3 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center gap-2"
@@ -176,7 +176,7 @@ function JobCollectionCard({
   t: (key: string) => string
 }) {
   return (
-    <Card className="p-4 hover: transition-shadow">
+    <Card className="p-4 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-xl">
           <Folder className="w-5 h-5 text-amber-600 dark:text-amber-400" />
@@ -239,7 +239,7 @@ function BestPracticeCard({
       className="w-full text-left p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
     >
       <div className="flex items-start gap-3">
-        <div className="p-2 bg-white dark:bg-stone-900 rounded-lg">
+        <div className="p-2 bg-white dark:bg-stone-900 rounded-lg shadow-sm">
           <Icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
         </div>
         <div className="flex-1">
@@ -307,7 +307,7 @@ function TemplateFormDialog({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-stone-900 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
             {template ? t('consultant.resources.form.editTemplate') : t('consultant.resources.form.createTemplate')}
@@ -458,7 +458,7 @@ function TemplateDetailDialog({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-stone-900 rounded-xl w-full max-w-lg">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-lg">
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
             {template.title}
@@ -531,7 +531,7 @@ function BestPracticeDetailDialog({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white dark:bg-stone-900 rounded-xl w-full max-w-lg">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-lg">
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
             {practice.title}

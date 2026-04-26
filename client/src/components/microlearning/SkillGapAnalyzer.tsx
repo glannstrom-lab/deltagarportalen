@@ -150,7 +150,7 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-slate-200">
           <div className="flex items-center gap-3">
@@ -179,7 +179,7 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
         <div className="flex-1 overflow-y-auto p-6">
           {step === 'intro' && (
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-6">
+              <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center">
                     <Sparkles className="text-white" size={24} />

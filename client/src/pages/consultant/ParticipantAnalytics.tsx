@@ -192,7 +192,7 @@ function DetailModal({ participant, onClose, t }: { participant: Participant, on
       <motion.div
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
-        className="bg-white dark:bg-stone-800 rounded-xl p-6 max-w-lg w-full"
+        className="bg-white dark:bg-stone-800 rounded-2xl p-6 max-w-lg w-full"
         onClick={e => e.stopPropagation()}
       >
         <h2 className="text-xl font-bold mb-4 text-stone-900 dark:text-stone-100">{participant.name}</h2>

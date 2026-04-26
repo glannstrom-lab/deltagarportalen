@@ -77,9 +77,9 @@ function SourceToggle({
   onToggle: () => void
 }) {
   const colors = {
-    cv: 'bg-brand-100 text-brand-900 border-brand-300',
+    cv: 'bg-teal-100 text-teal-700 border-teal-300',
     interest: 'bg-amber-100 text-amber-700 border-amber-300',
-    career: 'bg-brand-100 text-brand-900 border-brand-300'
+    career: 'bg-teal-100 text-teal-700 border-teal-300'
   }
 
   return (
@@ -165,14 +165,14 @@ function LocationSelector({
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full mt-2 left-0 w-72 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 z-20 overflow-hidden">
+          <div className="absolute top-full mt-2 left-0 w-72 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 shadow-xl z-20 overflow-hidden">
             <div className="p-3 border-b border-slate-100 dark:border-stone-700">
               <input
                 type="text"
                 placeholder={labels.searchLocation}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
+                className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
             </div>
 
@@ -183,7 +183,7 @@ function LocationSelector({
                     <button
                       key={loc}
                       onClick={() => toggleLocation(loc)}
-                      className="flex items-center gap-1 px-2 py-1 bg-brand-100 text-brand-900 rounded-lg text-xs font-medium hover:bg-brand-200"
+                      className="flex items-center gap-1 px-2 py-1 bg-teal-100 text-teal-700 rounded-lg text-xs font-medium hover:bg-teal-200"
                     >
                       {loc}
                       <X className="w-3 h-3" />
@@ -204,7 +204,7 @@ function LocationSelector({
                     className={cn(
                       "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors",
                       selected.includes(m.label)
-                        ? "bg-brand-100 text-brand-900 font-medium"
+                        ? "bg-teal-100 text-teal-700 font-medium"
                         : "hover:bg-slate-100 dark:hover:bg-stone-800 text-slate-700 dark:text-stone-300"
                     )}
                   >
@@ -256,21 +256,21 @@ const MatchCard = memo(function MatchCard({
   const [showDetails, setShowDetails] = useState(false)
 
   const scoreColor = score >= 70
-    ? 'text-brand-900 bg-brand-100 border-brand-200'
+    ? 'text-green-600 bg-green-100 border-green-200'
     : score >= 50
       ? 'text-amber-600 bg-amber-100 border-amber-200'
       : 'text-slate-600 bg-slate-100 border-slate-200'
 
   const sourceConfig = {
-    cv: { color: 'bg-brand-100 text-brand-900', label: labels.cv, icon: FileText },
+    cv: { color: 'bg-teal-100 text-teal-700', label: labels.cv, icon: FileText },
     interest: { color: 'bg-amber-100 text-amber-700', label: labels.interest, icon: Compass },
-    career: { color: 'bg-brand-100 text-brand-900', label: labels.career, icon: Target }
+    career: { color: 'bg-teal-100 text-teal-700', label: labels.career, icon: Target }
   }
 
   const config = sourceConfig[source]
 
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden hover: transition-shadow">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden hover:shadow-lg transition-shadow">
       <div className="flex items-start gap-4 p-5">
         <div className={cn(
           "w-14 h-14 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border",
@@ -331,7 +331,7 @@ const MatchCard = memo(function MatchCard({
       {showDetails && matchDetails.length > 0 && (
         <div className="px-5 pb-4">
           <p className="text-xs font-medium text-slate-600 dark:text-stone-400 mb-1.5 flex items-center gap-1">
-            <CheckCircle className="w-3 h-3 text-brand-900" />
+            <CheckCircle className="w-3 h-3 text-green-600" />
             {labels.matchesOn}
           </p>
           <div className="flex flex-wrap gap-1">
@@ -383,8 +383,8 @@ function EmptyState({ type, labels }: {
   if (type === 'no-data') {
     return (
       <Card className="p-12 text-center">
-        <div className="w-20 h-20 bg-gradient-to-br from-brand-100 to-sky-100 rounded-xl flex items-center justify-center mx-auto mb-6">
-          <FileText className="w-10 h-10 text-brand-900" />
+        <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-sky-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <FileText className="w-10 h-10 text-teal-600" />
         </div>
         <h3 className="text-2xl font-bold text-slate-800 dark:text-stone-100 mb-3">
           {labels.createProfileFirst}
@@ -876,7 +876,7 @@ export function MatchesTab() {
   return (
     <div className="space-y-6">
       {/* Header with source tabs */}
-      <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-5">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-slate-200 dark:border-stone-700 p-5">
         <div className="flex flex-col gap-4">
           <div>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-stone-100 flex items-center gap-2 mb-2">
@@ -936,12 +936,12 @@ export function MatchesTab() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-gradient-to-br from-brand-50 to-emerald-50 rounded-xl p-4 border border-brand-100">
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
           <div className="flex items-center gap-2 mb-1">
-            <Award className="w-4 h-4 text-brand-900" />
-            <span className="text-sm font-medium text-brand-900">{t('jobs.matches.stats.goodMatch')}</span>
+            <Award className="w-4 h-4 text-green-600" />
+            <span className="text-sm font-medium text-green-700">{t('jobs.matches.stats.goodMatch')}</span>
           </div>
-          <p className="text-2xl font-bold text-brand-900">{stats.high}</p>
+          <p className="text-2xl font-bold text-green-700">{stats.high}</p>
         </div>
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100">
           <div className="flex items-center gap-2 mb-1">

@@ -69,7 +69,7 @@ export const CalendarWidget = memo(function CalendarWidget({
     return (
       <Link
         to="/calendar"
-        className="group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover: transition-all duration-200"
+        className="group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-md transition-all duration-200"
       >
         <div className="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center flex-shrink-0">
           <Calendar size={16} />
@@ -94,7 +94,7 @@ export const CalendarWidget = memo(function CalendarWidget({
     return (
       <Link
         to="/calendar"
-        className="group block bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover: hover:-translate-y-0.5 transition-all duration-200"
+        className="group block bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -133,7 +133,7 @@ export const CalendarWidget = memo(function CalendarWidget({
   return (
     <Link
       to="/calendar"
-      className="group block bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover: transition-all duration-200"
+      className="group block bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">

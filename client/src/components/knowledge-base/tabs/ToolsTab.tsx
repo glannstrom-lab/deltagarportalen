@@ -34,8 +34,8 @@ const appTools: AppTool[] = [
     descriptionKey: 'knowledgeBase.tools.cvBuilder.description',
     icon: FileText,
     link: '/cv',
-    color: 'bg-brand-50 border-brand-100',
-    iconColor: 'bg-brand-100 text-brand-900',
+    color: 'bg-teal-50 border-teal-100',
+    iconColor: 'bg-teal-100 text-teal-600',
   },
   {
     id: 'cover-letter',
@@ -118,7 +118,7 @@ export default function ToolsTab() {
               className="block"
             >
               <Card
-                className={`group hover: transition-all h-full ${tool.color}`}
+                className={`group hover:shadow-lg transition-all h-full ${tool.color}`}
               >
                 {/* Icon */}
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${tool.iconColor}`}>

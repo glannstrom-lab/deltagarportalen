@@ -27,7 +27,7 @@ interface Application {
 const STATUS_CONFIG = {
   applied: { label: 'Skickad', color: 'slate', icon: Clock },
   screening: { label: 'Under granskning', color: 'blue', icon: ClipboardList },
-  interview: { label: 'Intervju', color: 'brand', icon: MessageSquare },
+  interview: { label: 'Intervju', color: 'teal', icon: MessageSquare },
   offer: { label: 'Erbjudande', color: 'emerald', icon: CheckCircle },
   rejected: { label: 'Avslag', color: 'rose', icon: XCircle },
   withdrawn: { label: 'Dragen', color: 'slate', icon: XCircle },
@@ -161,10 +161,10 @@ export function CRMTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-brand-50 to-sky-50 border-brand-100">
+      <Card className="bg-gradient-to-r from-teal-50 to-sky-50 border-teal-100">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center shrink-0">
-            <ClipboardList className="w-6 h-6 text-brand-900" />
+          <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
+            <ClipboardList className="w-6 h-6 text-teal-600" />
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold text-slate-900">Ansöknings-CRM</h2>
@@ -215,7 +215,7 @@ export function CRMTab() {
             <p className="text-xs text-slate-700">Aktiva</p>
           </Card>
           <Card className="text-center py-3">
-            <div className="text-2xl font-bold text-brand-900">{stats.interviews}</div>
+            <div className="text-2xl font-bold text-teal-600">{stats.interviews}</div>
             <p className="text-xs text-slate-700">Intervjuer</p>
           </Card>
           <Card className="text-center py-3">
@@ -227,7 +227,7 @@ export function CRMTab() {
 
       {/* Add/Edit form */}
       {isAdding && (
-        <Card className="border-brand-200">
+        <Card className="border-teal-200">
           <h3 className="font-semibold text-slate-900 mb-4">
             {editingId ? 'Redigera ansökan' : 'Ny jobbansökan'}
           </h3>
@@ -240,7 +240,7 @@ export function CRMTab() {
                   type="text"
                   value={formData.company}
                   onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
                   placeholder="T.ex. Spotify"
                 />
               </div>
@@ -250,7 +250,7 @@ export function CRMTab() {
                   type="text"
                   value={formData.position}
                   onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
                   placeholder="T.ex. Frontend Developer"
                 />
               </div>
@@ -262,7 +262,7 @@ export function CRMTab() {
                 type="url"
                 value={formData.url}
                 onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-700"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
                 placeholder="https://..."
               />
             </div>
@@ -274,7 +274,7 @@ export function CRMTab() {
                   type="text"
                   value={formData.contactName}
                   onChange={(e) => setFormData(prev => ({ ...prev, contactName: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
                   placeholder="Rekryterarens namn"
                 />
               </div>
@@ -284,7 +284,7 @@ export function CRMTab() {
                   type="email"
                   value={formData.contactEmail}
                   onChange={(e) => setFormData(prev => ({ ...prev, contactEmail: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
                   placeholder="recruiter@company.com"
                 />
               </div>
@@ -295,7 +295,7 @@ export function CRMTab() {
               <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-700 min-h-[80px]"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 min-h-[80px]"
                 placeholder="Eventuella anteckningar..."
               />
             </div>
@@ -319,7 +319,7 @@ export function CRMTab() {
             onClick={() => setFilter(null)}
             className={cn(
               "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-              !filter ? "bg-brand-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              !filter ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             )}
           >
             Alla
@@ -330,7 +330,7 @@ export function CRMTab() {
               onClick={() => setFilter(key)}
               className={cn(
                 "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-                filter === key ? "bg-brand-900 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                filter === key ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               )}
             >
               {config.label}
@@ -350,13 +350,13 @@ export function CRMTab() {
             )
 
             return (
-              <Card key={app.id} className="group hover: transition-shadow">
+              <Card key={app.id} className="group hover:shadow-md transition-shadow">
                 <div className="flex items-start gap-4">
                   <div className={cn(
                     "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
                     status.color === 'slate' && "bg-slate-100 text-slate-600",
                     status.color === 'blue' && "bg-blue-100 text-blue-600",
-                    status.color === 'brand' && "bg-brand-100 text-brand-900",
+                    status.color === 'teal' && "bg-teal-100 text-teal-600",
                     status.color === 'emerald' && "bg-emerald-100 text-emerald-600",
                     status.color === 'rose' && "bg-rose-100 text-rose-600"
                   )}>
@@ -426,7 +426,7 @@ export function CRMTab() {
                           className={cn(
                             "px-2 py-1 rounded text-xs font-medium transition-all",
                             app.status === key
-                              ? "bg-brand-900 text-white"
+                              ? "bg-teal-600 text-white"
                               : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                           )}
                         >

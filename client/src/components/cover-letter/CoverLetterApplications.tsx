@@ -319,7 +319,7 @@ function ApplicationCard({
       draggable
       onDragStart={onDragStart}
       className={cn(
-        'p-4 cursor-move hover: transition-all group',
+        'p-4 cursor-move hover:shadow-md transition-all group',
         needsFollowUp && 'border-amber-300 bg-amber-50/50'
       )}
     >

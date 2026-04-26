@@ -122,7 +122,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
   return (
     <Card className="overflow-hidden">
       {/* Header with gradient */}
-      <div className="bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900 p-6 text-white">
+      <div className="bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 p-6 text-white">
         <div className="flex items-center gap-4">
           {consultant.avatar_url ? (
             <img
@@ -140,9 +140,9 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
               {consultant.first_name} {consultant.last_name}
             </h2>
             {consultant.title && (
-              <p className="text-brand-100 text-sm">{consultant.title}</p>
+              <p className="text-teal-100 text-sm">{consultant.title}</p>
             )}
-            <p className="text-brand-100 text-sm mt-1">{t('myConsultant.yourConsultant')}</p>
+            <p className="text-teal-100 text-sm mt-1">{t('myConsultant.yourConsultant')}</p>
           </div>
         </div>
       </div>
@@ -157,8 +157,8 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
             href={`mailto:${consultant.email}`}
             className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors group"
           >
-            <Mail className="w-5 h-5 text-brand-900 dark:text-brand-400" />
-            <span className="text-stone-700 dark:text-stone-300 group-hover:text-brand-900 dark:group-hover:text-brand-400">
+            <Mail className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <span className="text-stone-700 dark:text-stone-300 group-hover:text-teal-600 dark:group-hover:text-teal-400">
               {consultant.email}
             </span>
           </a>
@@ -167,8 +167,8 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
               href={`tel:${consultant.phone}`}
               className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors group"
             >
-              <Phone className="w-5 h-5 text-brand-900 dark:text-brand-400" />
-              <span className="text-stone-700 dark:text-stone-300 group-hover:text-brand-900 dark:group-hover:text-brand-400">
+              <Phone className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <span className="text-stone-700 dark:text-stone-300 group-hover:text-teal-600 dark:group-hover:text-teal-400">
                 {consultant.phone}
               </span>
             </a>
@@ -182,12 +182,12 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
           {t('myConsultant.nextMeeting')}
         </h3>
         {nextMeeting ? (
-          <div className="bg-brand-50 dark:bg-brand-900/20 rounded-xl p-4">
+          <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-4">
             <div className="flex items-start gap-3">
-              <div className="p-2 bg-brand-100 dark:bg-brand-900 rounded-lg">
+              <div className="p-2 bg-teal-100 dark:bg-teal-800 rounded-lg">
                 {(() => {
                   const Icon = meetingTypeIcons[nextMeeting.type]
-                  return <Icon className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+                  return <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                 })()}
               </div>
               <div className="flex-1">
@@ -213,7 +213,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
                     href={nextMeeting.meeting_link}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-sm text-brand-900 dark:text-brand-400 hover:underline mt-2"
+                    className="inline-flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:underline mt-2"
                   >
                     <Video className="w-4 h-4" />
                     {t('myConsultant.joinMeeting')}
@@ -272,7 +272,7 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
     <Card>
       <div className="p-4 border-b border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-2">
-          <Eye className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+          <Eye className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           <h2 className="font-semibold text-stone-900 dark:text-stone-100">
             {t('myConsultant.sharedInfo')}
           </h2>
@@ -297,8 +297,8 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
                 className="w-full flex items-center justify-between p-4 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
               >
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-brand-100 dark:bg-brand-900/40 rounded-lg">
-                    <Icon className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+                  <div className="p-2 bg-teal-100 dark:bg-teal-900/40 rounded-lg">
+                    <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   </div>
                   <span className="font-medium text-stone-900 dark:text-stone-100">
                     {label}
@@ -323,7 +323,7 @@ function SharedInformationSection({ sharedInfo }: { sharedInfo: SharedInfo[] }) 
                       <div key={index} className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           {item.isShared ? (
-                            <Eye className="w-4 h-4 text-brand-700" aria-label={t('myConsultant.sharedWithConsultant')} />
+                            <Eye className="w-4 h-4 text-teal-500" aria-label={t('myConsultant.sharedWithConsultant')} />
                           ) : (
                             <EyeOff className="w-4 h-4 text-stone-400 dark:text-stone-500" aria-label={t('myConsultant.notShared')} />
                           )}
@@ -395,7 +395,7 @@ function MessagesSection({
     <Card className="flex flex-col h-[500px]">
       <div className="p-4 border-b border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-2">
-          <MessageSquare className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+          <MessageSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           <h2 className="font-semibold text-stone-900 dark:text-stone-100">
             {t('myConsultant.messages')}
           </h2>
@@ -418,8 +418,8 @@ function MessagesSection({
           </div>
         ) : messages.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="w-16 h-16 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center mb-4">
-              <MessageSquare className="w-8 h-8 text-brand-900 dark:text-brand-400" />
+            <div className="w-16 h-16 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center mb-4">
+              <MessageSquare className="w-8 h-8 text-teal-600 dark:text-teal-400" />
             </div>
             <p className="text-stone-600 dark:text-stone-400">
               {t('myConsultant.noMessagesYet')}
@@ -439,9 +439,9 @@ function MessagesSection({
                 >
                   <div
                     className={cn(
-                      'max-w-[80%] rounded-xl px-4 py-3',
+                      'max-w-[80%] rounded-2xl px-4 py-3',
                       isOwn
-                        ? 'bg-brand-900 text-white rounded-br-md'
+                        ? 'bg-teal-600 text-white rounded-br-md'
                         : 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-bl-md'
                     )}
                   >
@@ -449,7 +449,7 @@ function MessagesSection({
                     <p
                       className={cn(
                         'text-xs mt-1',
-                        isOwn ? 'text-brand-200' : 'text-stone-500 dark:text-stone-400'
+                        isOwn ? 'text-teal-200' : 'text-stone-500 dark:text-stone-400'
                       )}
                     >
                       {new Date(message.created_at).toLocaleTimeString('sv-SE', {
@@ -483,7 +483,7 @@ function MessagesSection({
               'flex-1 resize-none rounded-xl border border-stone-300 dark:border-stone-600',
               'bg-white dark:bg-stone-800 px-4 py-3',
               'text-stone-900 dark:text-stone-100 placeholder-stone-500',
-              'focus:outline-none focus:ring-2 focus:ring-brand-700 focus:border-transparent',
+              'focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent',
               'transition-colors'
             )}
           />
@@ -537,7 +537,7 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
       <div className="p-4 border-b border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Target className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+            <Target className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             <h2 className="font-semibold text-stone-900 dark:text-stone-100">
               {t('myConsultant.agreedGoals')}
             </h2>
@@ -584,7 +584,7 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
       {/* Encouragement message */}
       {completedCount > 0 && (
         <div className="px-4 pb-4">
-          <div className="bg-gradient-to-r from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 rounded-xl p-4 flex items-center gap-3">
+          <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl p-4 flex items-center gap-3">
             <Sparkles className="w-6 h-6 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
             <p className="text-sm text-emerald-700 dark:text-emerald-300">
               {t('myConsultant.greatJob', { count: completedCount })}
@@ -616,7 +616,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
             'text-stone-700 dark:text-stone-300'
           )}
         >
-          <Mail className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+          <Mail className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           <span className="font-medium">{t('myConsultant.sendEmail')}</span>
         </a>
         {consultant.phone && (
@@ -628,7 +628,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
               'text-stone-700 dark:text-stone-300'
             )}
           >
-            <Phone className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+            <Phone className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             <span className="font-medium">{t('myConsultant.call')}</span>
           </a>
         )}
@@ -636,7 +636,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
           onClick={onBookMeeting}
           className={cn(
             'flex items-center gap-3 p-4 rounded-xl transition-all duration-200',
-            'bg-gradient-to-r from-brand-700 to-brand-900 hover:from-brand-900 hover:to-brand-900',
+            'bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700',
             'text-white'
           )}
         >

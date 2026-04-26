@@ -47,7 +47,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
     <div className="max-w-2xl mx-auto">
       {/* Header */}
       <div className="text-center mb-10">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600  mb-5">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-200 mb-5">
           <Sparkles className="w-8 h-8 text-white" />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -59,9 +59,9 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
       </div>
 
       {/* What's included */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 text-brand-700" />
+          <CheckCircle2 className="w-5 h-5 text-green-500" />
           Detta får du
         </h2>
         
@@ -73,8 +73,8 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
             'Matchning med 80+ yrken och anpassningsförslag',
           ].map((item, index) => (
             <div key={index} className="flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-brand-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                <svg className="w-3 h-3 text-brand-900" fill="currentColor" viewBox="0 0 20 20">
+              <div className="w-5 h-5 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg className="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                 </svg>
               </div>
@@ -85,7 +85,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
       </div>
 
       {/* Sections preview */}
-      <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
         <h2 className="font-semibold text-gray-900 mb-4">4 delar att besvara</h2>
         
         <div className="space-y-3">
@@ -129,7 +129,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
             <Button
               onClick={onContinue}
               size="lg"
-              className="w-full bg-gradient-to-r from-brand-900 to-emerald-600 hover:from-brand-900 hover:to-emerald-700 text-white py-6 text-base rounded-xl "
+              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-6 text-base rounded-xl shadow-lg shadow-green-200"
             >
               Fortsätt där du slutade
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -147,7 +147,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
           <Button
             onClick={onStart}
             size="lg"
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-6 text-base rounded-xl "
+            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-6 text-base rounded-xl shadow-lg shadow-indigo-200"
           >
             Starta Intresseguiden
             <ArrowRight className="w-5 h-5 ml-2" />

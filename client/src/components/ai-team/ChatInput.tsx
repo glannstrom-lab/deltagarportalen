@@ -78,7 +78,7 @@ export function ChatInput({
               : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400',
             'hover:bg-stone-200 dark:hover:bg-stone-700',
             'disabled:opacity-50 disabled:cursor-not-allowed',
-            'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-2'
+            'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
           )}
           aria-label={isRecording ? t('aiTeam.voice.stopRecording') : t('aiTeam.voice.startRecording')}
           title={isRecording ? t('aiTeam.voice.stopRecording') : t('aiTeam.voice.startRecording')}
@@ -98,8 +98,8 @@ export function ChatInput({
             'px-4 py-3 rounded-xl',
             'bg-stone-50 dark:bg-stone-800',
             'border border-stone-200 dark:border-stone-700',
-            'focus:border-brand-700 dark:focus:border-brand-400',
-            'focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900',
+            'focus:border-teal-500 dark:focus:border-teal-400',
+            'focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900',
             'outline-none transition-colors',
             'text-stone-900 dark:text-stone-100',
             'placeholder:text-stone-400 dark:placeholder:text-stone-500',

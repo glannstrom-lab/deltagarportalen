@@ -245,10 +245,10 @@ export default function NegotiationTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-brand-50 to-brand-100 dark:from-brand-900/20 dark:to-brand-900/20 border-brand-200 dark:border-brand-900">
+      <Card className="bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 border-teal-200 dark:border-teal-700">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center shrink-0">
-            <TrendingUp className="w-6 h-6 text-brand-900 dark:text-brand-400" />
+          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
+            <TrendingUp className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t('salary.negotiation.title')}</h2>
@@ -260,12 +260,12 @@ export default function NegotiationTab() {
       </Card>
 
       {/* Swedish context note */}
-      <Card className="bg-brand-50 dark:bg-brand-900/20 border-brand-200 dark:border-brand-900">
+      <Card className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-brand-900 dark:text-brand-400 shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-brand-900 dark:text-brand-100">{t('salary.negotiation.swedishMarket')}</p>
-            <p className="text-sm text-brand-900 dark:text-brand-300 mt-1">
+            <p className="font-medium text-teal-900 dark:text-teal-100">{t('salary.negotiation.swedishMarket')}</p>
+            <p className="text-sm text-teal-700 dark:text-teal-300 mt-1">
               {t('salary.negotiation.swedishMarketDesc')}
             </p>
           </div>
@@ -275,7 +275,7 @@ export default function NegotiationTab() {
       {/* Step-by-step guide */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Target className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+          <Target className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           {t('salary.negotiation.fiveSteps')}
         </h3>
 
@@ -285,7 +285,7 @@ export default function NegotiationTab() {
               key={step.id}
               className={cn(
                 "border rounded-xl overflow-hidden transition-all",
-                expandedStep === step.id ? "border-brand-200 dark:border-brand-900 bg-brand-50/30 dark:bg-brand-900/10" : "border-stone-200 dark:border-stone-600"
+                expandedStep === step.id ? "border-teal-200 dark:border-teal-600 bg-teal-50/30 dark:bg-teal-900/10" : "border-stone-200 dark:border-stone-600"
               )}
             >
               <button
@@ -296,7 +296,7 @@ export default function NegotiationTab() {
                   <div className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm",
                     expandedStep === step.id
-                      ? "bg-brand-900 dark:bg-brand-700 text-white"
+                      ? "bg-teal-600 dark:bg-teal-500 text-white"
                       : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400"
                   )}>
                     {step.id}
@@ -321,7 +321,7 @@ export default function NegotiationTab() {
                     <ul className="space-y-2">
                       {step.tips.map((tip, idx) => (
                         <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
-                          <CheckCircle className="w-4 h-4 text-brand-700 dark:text-brand-400 shrink-0 mt-0.5" />
+                          <CheckCircle className="w-4 h-4 text-teal-500 dark:text-teal-400 shrink-0 mt-0.5" />
                           {tip}
                         </li>
                       ))}
@@ -336,7 +336,7 @@ export default function NegotiationTab() {
                     </p>
                     <div className="space-y-2">
                       {step.phrases.map((phrase, idx) => (
-                        <div key={idx} className="p-3 bg-white dark:bg-stone-700 rounded-lg border border-brand-100 dark:border-brand-900 text-sm text-gray-700 dark:text-gray-300 italic">
+                        <div key={idx} className="p-3 bg-white dark:bg-stone-700 rounded-lg border border-teal-100 dark:border-teal-800 text-sm text-gray-700 dark:text-gray-300 italic">
                           {phrase}
                         </div>
                       ))}
@@ -351,16 +351,16 @@ export default function NegotiationTab() {
 
       {/* Do and Don't */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="border-brand-200 dark:border-brand-900 bg-white dark:bg-stone-800">
-          <h3 className="font-semibold text-brand-900 dark:text-brand-200 mb-4 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+        <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
+          <h3 className="font-semibold text-teal-800 dark:text-teal-200 mb-4 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             {t('salary.negotiation.doThis')}
           </h3>
           <ul className="space-y-3">
             {DO_AND_DONT.do.map((item, idx) => (
               <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
-                <div className="w-5 h-5 bg-brand-100 dark:bg-brand-900/30 rounded-full flex items-center justify-center shrink-0">
-                  <CheckCircle className="w-3 h-3 text-brand-900 dark:text-brand-400" />
+                <div className="w-5 h-5 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center shrink-0">
+                  <CheckCircle className="w-3 h-3 text-teal-600 dark:text-teal-400" />
                 </div>
                 {item}
               </li>
@@ -387,10 +387,10 @@ export default function NegotiationTab() {
       </div>
 
       {/* Preparation Checklist */}
-      <Card className="border-brand-200 dark:border-brand-900 bg-white dark:bg-stone-800">
+      <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+            <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             {t('salary.negotiation.preparationChecklist')}
           </h3>
           <Button
@@ -407,11 +407,11 @@ export default function NegotiationTab() {
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('salary.negotiation.completion')}</span>
-            <span className="text-sm font-bold text-brand-900 dark:text-brand-400">{completedCount}/{checklist.length}</span>
+            <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{completedCount}/{checklist.length}</span>
           </div>
           <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-brand-700 dark:bg-brand-400"
+              className="h-full bg-teal-500 dark:bg-teal-400"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercent}%` }}
               transition={{ duration: 0.3 }}
@@ -425,13 +425,13 @@ export default function NegotiationTab() {
             <button
               key={item.id}
               onClick={() => toggleChecklistItem(item.id)}
-              className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-brand-50/50 dark:hover:bg-brand-900/20 transition-colors text-left group"
+              className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-teal-50/50 dark:hover:bg-teal-900/20 transition-colors text-left group"
             >
               <div className={cn(
                 'w-5 h-5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all mt-0.5',
                 item.completed
-                  ? 'bg-brand-700 dark:bg-brand-400 border-brand-700 dark:border-brand-400'
-                  : 'border-stone-300 dark:border-stone-500 group-hover:border-brand-700 dark:group-hover:border-brand-400'
+                  ? 'bg-teal-500 dark:bg-teal-400 border-teal-500 dark:border-teal-400'
+                  : 'border-stone-300 dark:border-stone-500 group-hover:border-teal-500 dark:group-hover:border-teal-400'
               )}>
                 {item.completed && <CheckCircle className="w-4 h-4 text-white" />}
               </div>
@@ -464,7 +464,7 @@ export default function NegotiationTab() {
                   setSelectedScenario(scenario)
                   setShowScenario(true)
                 }}
-                className="p-4 bg-white dark:bg-stone-700 rounded-xl border border-sky-200 dark:border-sky-700 hover:border-sky-400 dark:hover:border-sky-500 hover: transition-all text-left group"
+                className="p-4 bg-white dark:bg-stone-700 rounded-xl border border-sky-200 dark:border-sky-700 hover:border-sky-400 dark:hover:border-sky-500 hover:shadow-md transition-all text-left group"
               >
                 <p className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">{scenario.title}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{scenario.description}</p>
@@ -491,7 +491,7 @@ export default function NegotiationTab() {
               {/* Salary comparison */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                 {selectedScenario.currentSalary > 0 && (
-                  <div className="bg-brand-50 dark:bg-brand-900/30 rounded-lg p-3">
+                  <div className="bg-teal-50 dark:bg-teal-900/30 rounded-lg p-3">
                     <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.negotiation.current')}</p>
                     <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.currentSalary.toLocaleString('sv-SE')} kr</p>
                   </div>
@@ -500,7 +500,7 @@ export default function NegotiationTab() {
                   <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.negotiation.market')}</p>
                   <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.marketRate.toLocaleString('sv-SE')} kr</p>
                 </div>
-                <div className="bg-brand-50 dark:bg-brand-900/30 rounded-lg p-3">
+                <div className="bg-teal-50 dark:bg-teal-900/30 rounded-lg p-3">
                   <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.negotiation.targetSalary')}</p>
                   <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.targetSalary.toLocaleString('sv-SE')} kr</p>
                 </div>
@@ -526,7 +526,7 @@ export default function NegotiationTab() {
                     </div>
                     <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-brand-700 dark:bg-brand-400"
+                        className="h-full bg-teal-500 dark:bg-teal-400"
                         style={{
                           width: `${Math.min(100, ((selectedScenario.targetSalary - selectedScenario.currentSalary) / selectedScenario.currentSalary) * 100)}%`
                         }}
@@ -540,7 +540,7 @@ export default function NegotiationTab() {
                     <span className={cn(
                       'font-medium',
                       selectedScenario.targetSalary > selectedScenario.marketRate
-                        ? 'text-brand-900 dark:text-brand-400'
+                        ? 'text-teal-600 dark:text-teal-400'
                         : selectedScenario.targetSalary < selectedScenario.marketRate
                         ? 'text-amber-600 dark:text-amber-400'
                         : 'text-gray-600 dark:text-gray-400'

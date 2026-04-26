@@ -100,7 +100,7 @@ export default function HistoryTab() {
   if (history.length === 0) {
     return (
       <div className="max-w-lg mx-auto text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen">
-        <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-xl flex items-center justify-center mx-auto mb-6">
+        <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <History className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">{t('interestGuide.history.noHistory')}</h2>
@@ -140,7 +140,7 @@ export default function HistoryTab() {
 
       {/* Current Profile Summary */}
       {currentProfile && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800 mb-8">
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800 mb-8">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
               <Target className="w-6 h-6 text-white" />
@@ -206,7 +206,7 @@ export default function HistoryTab() {
               </div>
               <div className="flex items-center gap-2">
                 {entry.id === 'current' && (
-                  <span className="px-2 py-0.5 bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 rounded text-xs font-medium">
+                  <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-xs font-medium">
                     Aktuell
                   </span>
                 )}

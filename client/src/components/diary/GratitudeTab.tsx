@@ -71,7 +71,7 @@ function TodayGratitude() {
           </div>
         </div>
         {hasLoggedToday && (
-          <span className="px-3 py-1 bg-brand-100 text-brand-900 rounded-full text-sm font-medium flex items-center gap-1">
+          <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium flex items-center gap-1">
             <Check className="w-4 h-4" />
             Loggat
           </span>

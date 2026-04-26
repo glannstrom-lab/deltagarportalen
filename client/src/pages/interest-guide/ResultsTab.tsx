@@ -144,7 +144,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   const getChangeIndicator = (current: number, previous: number) => {
     const diff = current - previous
     if (Math.abs(diff) < 3) return { icon: Minus, color: 'text-gray-400 dark:text-gray-500', text: 'Oförändrad' }
-    if (diff > 0) return { icon: TrendingUp, color: 'text-brand-700 dark:text-brand-400', text: `+${diff}` }
+    if (diff > 0) return { icon: TrendingUp, color: 'text-green-500 dark:text-green-400', text: `+${diff}` }
     return { icon: TrendingDown, color: 'text-red-500 dark:text-red-400', text: `${diff}` }
   }
 
@@ -163,7 +163,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-xl flex items-center justify-center mx-auto mb-6"
+          className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6"
         >
           <ClipboardList className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </motion.div>
@@ -218,14 +218,14 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900/20 dark:to-brand-900/20 border-brand-200 dark:border-brand-900">
+        <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-brand-900 dark:text-brand-400 font-medium mb-2">Bra matchningar</p>
-              <p className="text-2xl font-bold text-brand-900 dark:text-brand-100">{goodMatches}</p>
-              <p className="text-xs text-brand-900 dark:text-brand-300 mt-1">yrken (70%+)</p>
+              <p className="text-sm text-green-600 dark:text-green-400 font-medium mb-2">Bra matchningar</p>
+              <p className="text-2xl font-bold text-green-900 dark:text-green-100">{goodMatches}</p>
+              <p className="text-xs text-green-700 dark:text-green-300 mt-1">yrken (70%+)</p>
             </div>
-            <Trophy className="w-6 h-6 text-brand-900 dark:text-brand-400 opacity-50" />
+            <Trophy className="w-6 h-6 text-green-600 dark:text-green-400 opacity-50" />
           </div>
         </Card>
 
@@ -487,7 +487,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
       >
         <Link
           to="/cv"
-          className="block bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-xl p-6 text-white hover: transition-all hover:scale-[1.01] group"
+          className="block bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] group"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">

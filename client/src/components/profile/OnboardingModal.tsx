@@ -129,13 +129,13 @@ export function OnboardingModal() {
         ref={modalRef}
         tabIndex={-1}
         className={cn(
-          'w-full max-w-md bg-white dark:bg-stone-900 rounded-xl overflow-hidden',
+          'w-full max-w-md bg-white dark:bg-stone-900 rounded-2xl shadow-2xl overflow-hidden',
           'transform transition-all duration-200',
           isClosing ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
         )}
       >
         {/* Header */}
-        <div className="relative bg-brand-900 px-6 py-8 text-white">
+        <div className="relative bg-gradient-to-r from-teal-500 to-sky-500 px-6 py-8 text-white">
           <button
             onClick={handleClose}
             className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
@@ -145,7 +145,7 @@ export function OnboardingModal() {
           </button>
 
           <div className="flex items-center justify-center mb-4">
-            <div className="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center">
+            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
               {currentStep.icon}
             </div>
           </div>
@@ -161,7 +161,7 @@ export function OnboardingModal() {
             {t(currentStep.descriptionKey)}
           </p>
 
-          <p className="text-sm text-brand-900 dark:text-brand-400 text-center font-medium">
+          <p className="text-sm text-teal-600 dark:text-teal-400 text-center font-medium">
             {t(currentStep.encouragementKey)}
           </p>
 
@@ -197,7 +197,7 @@ export function OnboardingModal() {
               className={cn(
                 'w-2 h-2 rounded-full transition-all',
                 index === onboardingStep
-                  ? 'w-6 bg-brand-900'
+                  ? 'w-6 bg-teal-500'
                   : 'bg-stone-300 dark:bg-stone-600 hover:bg-stone-400'
               )}
               aria-label={t('profile.onboarding.stepOf', { step: index + 1, total: ONBOARDING_STEPS.length })}
@@ -231,7 +231,7 @@ export function OnboardingModal() {
 
           <button
             onClick={handleNext}
-            className="flex items-center gap-1 px-4 py-2 bg-brand-900 hover:bg-brand-900/90 text-white text-sm font-medium rounded-lg transition-colors"
+            className="flex items-center gap-1 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium rounded-lg transition-colors"
           >
             {isLastStep ? t('profile.onboarding.getStarted') : t('profile.onboarding.next')}
             {!isLastStep && <ChevronRight className="w-4 h-4" />}

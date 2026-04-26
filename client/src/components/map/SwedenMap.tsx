@@ -135,7 +135,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
   `
 
   return (
-    <div className={cn("bg-white rounded-xl border border-slate-200 overflow-hidden", className)}>
+    <div className={cn("bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden", className)}>
       {/* Header */}
       <div className="p-4 border-b border-slate-100">
         <div className="flex items-center justify-between mb-3">
@@ -157,7 +157,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
               onClick={() => setViewMode('map')}
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                viewMode === 'map' ? "bg-white text-blue-600" : "text-slate-700"
+                viewMode === 'map' ? "bg-white shadow-sm text-blue-600" : "text-slate-700"
               )}
               title="Kartvy"
             >
@@ -167,7 +167,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
               onClick={() => setViewMode('list')}
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                viewMode === 'list' ? "bg-white text-blue-600" : "text-slate-700"
+                viewMode === 'list' ? "bg-white shadow-sm text-blue-600" : "text-slate-700"
               )}
               title="Listvy"
             >
@@ -177,7 +177,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
               onClick={() => setViewMode('grid')}
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                viewMode === 'grid' ? "bg-white text-blue-600" : "text-slate-700"
+                viewMode === 'grid' ? "bg-white shadow-sm text-blue-600" : "text-slate-700"
               )}
               title="Rutnät"
             >
@@ -266,7 +266,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                           : isHovered 
                             ? "border-blue-400 ring-2 ring-blue-50"
                             : hasJobs 
-                              ? "border-white"
+                              ? "border-white shadow-md"
                               : "border-slate-200",
                         isHovered && "scale-110"
                       )}
@@ -291,7 +291,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                     {/* Tooltip */}
                     {(isHovered || isSelected) && (
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 pointer-events-none z-30">
-                        <div className="bg-slate-900 text-white text-sm rounded-xl py-2 px-3 whitespace-nowrap">
+                        <div className="bg-slate-900 text-white text-sm rounded-xl py-2 px-3 shadow-xl whitespace-nowrap">
                           <div className="font-semibold">{region.name}</div>
                           <div className="flex items-center gap-1.5 mt-1 text-slate-300 text-xs">
                             <Briefcase className="w-3.5 h-3.5" />

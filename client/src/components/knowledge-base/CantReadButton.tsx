@@ -36,7 +36,7 @@ export function CantReadButton({
       {/* Supportive message toast */}
       {showMessage && (
         <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-4">
-          <div className="bg-brand-900 text-white px-6 py-3 rounded-xl flex items-center gap-3">
+          <div className="bg-teal-600 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3">
             <Heart className="w-5 h-5 fill-current" />
             <p>{getSupportiveMessage('save_for_later')}</p>
           </div>

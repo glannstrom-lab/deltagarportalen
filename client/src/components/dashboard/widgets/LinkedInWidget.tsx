@@ -29,7 +29,7 @@ export const LinkedInWidget = memo(function LinkedInWidget({
         to="/linkedin-optimizer"
         className={cn(
           "group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border transition-all duration-200",
-          "hover:border-blue-300 dark:hover:border-blue-600 hover:",
+          "hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md",
           isOptimized ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-stone-700"
         )}
       >
@@ -59,7 +59,7 @@ export const LinkedInWidget = memo(function LinkedInWidget({
         to="/linkedin-optimizer"
         className={cn(
           "group block bg-white dark:bg-stone-900 p-4 rounded-xl border transition-all duration-200",
-          "hover:border-blue-300 dark:hover:border-blue-600 hover: hover:-translate-y-0.5",
+          "hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg hover:-translate-y-0.5",
           isOptimized ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20" : "border-slate-200 dark:border-stone-700"
         )}
       >
@@ -104,7 +104,7 @@ export const LinkedInWidget = memo(function LinkedInWidget({
       to="/linkedin-optimizer"
       className={cn(
         "group block bg-white dark:bg-stone-900 p-5 rounded-xl border transition-all duration-200",
-        "hover:border-blue-300 dark:hover:border-blue-600 hover:",
+        "hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg",
         isOptimized ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-stone-700"
       )}
     >
@@ -113,7 +113,7 @@ export const LinkedInWidget = memo(function LinkedInWidget({
           <div className={cn(
             "w-12 h-12 rounded-xl flex items-center justify-center",
             isOptimized
-              ? "bg-gradient-to-br from-emerald-100 to-brand-100 dark:from-emerald-900/40 dark:to-brand-900/40 text-emerald-600 dark:text-emerald-400"
+              ? "bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/40 dark:to-teal-900/40 text-emerald-600 dark:text-emerald-400"
               : "bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40 text-blue-600 dark:text-blue-400"
           )}>
             <Linkedin size={24} />
@@ -142,7 +142,7 @@ export const LinkedInWidget = memo(function LinkedInWidget({
               className={cn(
                 "h-full rounded-full transition-all duration-500",
                 isOptimized
-                  ? "bg-gradient-to-r from-emerald-400 to-brand-700"
+                  ? "bg-gradient-to-r from-emerald-400 to-teal-500"
                   : "bg-gradient-to-r from-blue-400 to-cyan-500"
               )}
               style={{ width: `${profileScore}%` }}

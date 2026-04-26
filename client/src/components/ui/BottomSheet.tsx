@@ -93,7 +93,7 @@ export function BottomSheet({
       <div
         className={cn(
           'fixed bottom-0 left-0 right-0 z-50',
-          'bg-white dark:bg-stone-900 rounded-t-3xl',
+          'bg-white dark:bg-stone-900 rounded-t-3xl shadow-2xl',
           'flex flex-col',
           'transition-transform duration-300 ease-out',
           isOpen ? 'translate-y-0' : 'translate-y-full',

@@ -98,10 +98,10 @@ export default function Help() {
             <Link
               key={item.titleKey}
               to={item.link}
-              className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover: hover:border-brand-200 dark:hover:border-brand-900 transition-all text-center"
+              className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:shadow-md hover:border-teal-200 dark:hover:border-teal-700 transition-all text-center"
             >
-              <div className="w-10 h-10 bg-brand-50 dark:bg-brand-900/30 rounded-lg flex items-center justify-center mx-auto mb-2">
-                <Icon className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+              <div className="w-10 h-10 bg-teal-50 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mx-auto mb-2">
+                <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               </div>
               <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm">{t(item.titleKey)}</h3>
               <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">{t(item.descKey)}</p>
@@ -116,7 +116,7 @@ export default function Help() {
           const Icon = category.icon
           return (
             <section key={category.titleKey} className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
-              <div className="px-6 py-4 bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900 flex items-center gap-3">
+              <div className="px-6 py-4 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 flex items-center gap-3">
                 <Icon className="w-5 h-5 text-white" />
                 <h2 className="font-semibold text-white">{t(category.titleKey)}</h2>
               </div>
@@ -128,7 +128,7 @@ export default function Help() {
                     {item.link && (
                       <Link
                         to={item.link}
-                        className="inline-flex items-center gap-1 text-sm text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-medium"
+                        className="inline-flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
                       >
                         {t('helpPage.goTo', { section: t(category.titleKey).toLowerCase() })}
                         <ChevronRight className="w-4 h-4" />
@@ -143,7 +143,7 @@ export default function Help() {
       </div>
 
       {/* Contact Section */}
-      <section className="mt-10 bg-gradient-to-br from-brand-50 to-cyan-50 dark:from-brand-900/20 dark:to-cyan-900/20 rounded-xl border border-brand-100 dark:border-brand-900 p-6">
+      <section className="mt-10 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-xl border border-teal-100 dark:border-teal-800 p-6">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <div className="flex-1 text-center md:text-left">
             <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
@@ -155,7 +155,7 @@ export default function Help() {
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
               <Link
                 to="/diary"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-brand-900 dark:bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900 dark:hover:bg-brand-900 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 dark:bg-teal-700 text-white rounded-lg font-medium hover:bg-teal-700 dark:hover:bg-teal-600 transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
                 {t('helpPage.bookMeeting')}
@@ -169,8 +169,8 @@ export default function Help() {
               </a>
             </div>
           </div>
-          <div className="w-16 h-16 bg-white dark:bg-stone-700 rounded-xl flex items-center justify-center">
-            <MessageCircle className="w-8 h-8 text-brand-900 dark:text-brand-400" />
+          <div className="w-16 h-16 bg-white dark:bg-stone-700 rounded-2xl flex items-center justify-center shadow-sm">
+            <MessageCircle className="w-8 h-8 text-teal-600 dark:text-teal-400" />
           </div>
         </div>
       </section>

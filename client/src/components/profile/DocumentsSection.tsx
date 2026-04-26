@@ -152,7 +152,7 @@ export function DocumentsSection({ className }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 text-brand-900 animate-spin" />
+        <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
       </div>
     )
   }
@@ -163,7 +163,7 @@ export function DocumentsSection({ className }: Props) {
       <button
         type="button"
         onClick={() => fileInputRef.current?.click()}
-        className="w-full border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-xl p-6 text-center cursor-pointer hover:border-brand-300 dark:hover:border-brand-900/50 hover:bg-brand-50/50 dark:hover:bg-brand-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-900 focus:ring-offset-2"
+        className="w-full border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-xl p-6 text-center cursor-pointer hover:border-teal-400 dark:hover:border-teal-500 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
         aria-label={t('profile.documents.uploadDocument')}
       >
         <Upload className="w-8 h-8 mx-auto text-stone-400 dark:text-stone-500 mb-2" aria-hidden="true" />
@@ -192,7 +192,7 @@ export function DocumentsSection({ className }: Props) {
           aria-modal="true"
           aria-labelledby="upload-modal-title"
         >
-          <div className="bg-white dark:bg-stone-800 rounded-xl p-6 max-w-md w-full space-y-4">
+          <div className="bg-white dark:bg-stone-800 rounded-2xl p-6 max-w-md w-full space-y-4">
             <div className="flex items-center justify-between">
               <h3 id="upload-modal-title" className="font-semibold text-stone-800 dark:text-stone-200">
                 {t('profile.documents.uploadDocument')}
@@ -207,7 +207,7 @@ export function DocumentsSection({ className }: Props) {
             </div>
 
             <div className="p-3 bg-stone-50 dark:bg-stone-700 rounded-lg flex items-center gap-3">
-              <FileText className="w-5 h-5 text-brand-900" />
+              <FileText className="w-5 h-5 text-teal-500" />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-stone-800 dark:text-stone-200 truncate">
                   {selectedFile.name}
@@ -226,7 +226,7 @@ export function DocumentsSection({ className }: Props) {
                   value={formData.name}
                   onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   placeholder={t('profile.documents.namePlaceholder')}
-                  className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+                  className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                 />
               </div>
 
@@ -237,7 +237,7 @@ export function DocumentsSection({ className }: Props) {
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as ProfileDocument['type'] }))}
-                  className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+                  className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                 >
                   {DOCUMENT_TYPES.map(dt => (
                     <option key={dt.value} value={dt.value}>{t(dt.labelKey)}</option>
@@ -254,7 +254,7 @@ export function DocumentsSection({ className }: Props) {
                   value={formData.issuer}
                   onChange={(e) => setFormData(prev => ({ ...prev, issuer: e.target.value }))}
                   placeholder={t('profile.documents.issuerPlaceholder')}
-                  className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+                  className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                 />
               </div>
 
@@ -267,7 +267,7 @@ export function DocumentsSection({ className }: Props) {
                     type="date"
                     value={formData.issue_date}
                     onChange={(e) => setFormData(prev => ({ ...prev, issue_date: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+                    className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                   />
                 </div>
                 <div>
@@ -278,7 +278,7 @@ export function DocumentsSection({ className }: Props) {
                     type="date"
                     value={formData.expiry_date}
                     onChange={(e) => setFormData(prev => ({ ...prev, expiry_date: e.target.value }))}
-                    className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+                    className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                   />
                 </div>
               </div>
@@ -292,7 +292,7 @@ export function DocumentsSection({ className }: Props) {
                   onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
                   placeholder={t('profile.documents.descriptionPlaceholder')}
                   rows={2}
-                  className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+                  className="w-full px-3 py-2 bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-lg text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
                 />
               </div>
             </div>
@@ -307,7 +307,7 @@ export function DocumentsSection({ className }: Props) {
               <button
                 onClick={handleUpload}
                 disabled={!formData.name || uploading}
-                className="flex-1 px-4 py-2 bg-brand-900 hover:bg-brand-900/90 text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {uploading ? (
                   <>
@@ -334,8 +334,8 @@ export function DocumentsSection({ className }: Props) {
               key={doc.id}
               className="flex items-center gap-3 p-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700"
             >
-              <div className="w-10 h-10 rounded-lg bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center">
-                <FileText className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+              <div className="w-10 h-10 rounded-lg bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+                <FileText className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               </div>
 
               <div className="flex-1 min-w-0">
@@ -370,7 +370,7 @@ export function DocumentsSection({ className }: Props) {
                 href={doc.file_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 text-brand-900 hover:bg-brand-50 dark:hover:bg-brand-900/40 rounded-lg transition-colors"
+                className="p-2 text-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/40 rounded-lg transition-colors"
                 aria-label={t('profile.documents.openInNewWindow', { name: doc.name })}
               >
                 <ExternalLink className="w-4 h-4" aria-hidden="true" />

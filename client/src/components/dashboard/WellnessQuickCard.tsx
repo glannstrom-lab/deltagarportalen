@@ -20,8 +20,8 @@ const MOOD_OPTIONS = [
   { value: 1, emoji: '😢', label: 'Dåligt', color: 'from-rose-400 to-rose-500' },
   { value: 2, emoji: '😕', label: 'Lite nere', color: 'from-orange-400 to-orange-500' },
   { value: 3, emoji: '😐', label: 'Okej', color: 'from-amber-400 to-yellow-500' },
-  { value: 4, emoji: '🙂', label: 'Bra', color: 'from-emerald-400 to-brand-700' },
-  { value: 5, emoji: '😊', label: 'Fantastiskt', color: 'from-brand-400 to-cyan-500' },
+  { value: 4, emoji: '🙂', label: 'Bra', color: 'from-emerald-400 to-teal-500' },
+  { value: 5, emoji: '😊', label: 'Fantastiskt', color: 'from-teal-400 to-cyan-500' },
 ]
 
 function getMoodFromValue(mood: number | string): typeof MOOD_OPTIONS[0] | undefined {
@@ -56,12 +56,12 @@ export function WellnessQuickCard({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-xl border border-rose-200/60 dark:border-rose-800/40 bg-gradient-to-br from-rose-50 via-pink-50/50 to-white dark:from-rose-900/20 dark:via-pink-900/10 dark:to-stone-900/50  transition-shadow duration-300 hover:">
+    <div className="relative overflow-hidden rounded-2xl border border-rose-200/60 dark:border-rose-800/40 bg-gradient-to-br from-rose-50 via-pink-50/50 to-white dark:from-rose-900/20 dark:via-pink-900/10 dark:to-stone-900/50 shadow-bento transition-shadow duration-300 hover:shadow-bento-hover">
       {/* Header */}
       <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center  dark:/30">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center shadow-lg shadow-rose-200 dark:shadow-rose-900/30">
               <Heart className="w-5 h-5 text-white" aria-hidden="true" />
             </div>
             <div>
@@ -122,7 +122,7 @@ export function WellnessQuickCard({
                     'hover:scale-110 active:scale-95',
                     'focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2',
                     selectedMood === mood.value
-                      ? `bg-gradient-to-br ${mood.color}`
+                      ? `bg-gradient-to-br ${mood.color} shadow-lg`
                       : 'bg-white/60 dark:bg-stone-800/40 hover:bg-white dark:hover:bg-stone-800/60'
                   )}
                   aria-label={mood.label}

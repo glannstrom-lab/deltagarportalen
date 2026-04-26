@@ -152,7 +152,7 @@ export default function StorageTest() {
 
   const getStatusIcon = (status: TestResult['status']) => {
     switch (status) {
-      case 'success': return <Check className="w-6 h-6 text-brand-700" />
+      case 'success': return <Check className="w-6 h-6 text-green-500" />
       case 'error': return <X className="w-6 h-6 text-red-500" />
       case 'running': return <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
       default: return <div className="w-6 h-6 rounded-full border-2 border-slate-300" />
@@ -171,7 +171,7 @@ export default function StorageTest() {
         </p>
 
         {/* User info */}
-        <div className="bg-white rounded-xl p-4 mb-6 border border-slate-200">
+        <div className="bg-white rounded-xl p-4 mb-6 shadow-sm border border-slate-200">
           <p className="text-sm text-slate-700">Inloggad användare:</p>
           <p className="font-medium text-slate-800">{user?.email || 'Inte inloggad'}</p>
           <p className="text-xs text-slate-600 mt-1">User ID: {user?.id || 'N/A'}</p>
@@ -201,8 +201,8 @@ export default function StorageTest() {
           {results.map((result, index) => (
             <div 
               key={index}
-              className={`bg-white rounded-xl p-4 border-l-4 ${
-                result.status === 'success' ? 'border-brand-700' :
+              className={`bg-white rounded-xl p-4 shadow-sm border-l-4 ${
+                result.status === 'success' ? 'border-green-500' :
                 result.status === 'error' ? 'border-red-500' :
                 result.status === 'running' ? 'border-blue-500' :
                 'border-slate-300'
@@ -214,7 +214,7 @@ export default function StorageTest() {
                   <h3 className="font-semibold text-slate-800">{result.name}</h3>
                   <p className={`text-sm ${
                     result.status === 'error' ? 'text-red-600' :
-                    result.status === 'success' ? 'text-brand-900' :
+                    result.status === 'success' ? 'text-green-600' :
                     'text-slate-600'
                   }`}>
                     {result.message}
@@ -232,12 +232,12 @@ export default function StorageTest() {
 
         {/* Summary */}
         {allSuccess && (
-          <div className="mt-6 p-4 bg-brand-50 border border-brand-200 rounded-xl">
-            <div className="flex items-center gap-2 text-brand-900">
+          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+            <div className="flex items-center gap-2 text-green-700">
               <Check className="w-5 h-5" />
               <span className="font-semibold">Alla tester lyckades!</span>
             </div>
-            <p className="text-brand-900 text-sm mt-1">
+            <p className="text-green-600 text-sm mt-1">
               Storage är korrekt konfigurerat. Bilduppladdning till CV ska fungera nu.
             </p>
             {testImage && (

@@ -128,7 +128,7 @@ export function InsightsPanel({
       case 'medium':
         return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
       case 'low':
-        return 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300'
+        return 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
     }
   }
 
@@ -142,7 +142,7 @@ export function InsightsPanel({
     return (
       <Card className="p-6">
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-brand-900" />
+          <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
           <span className="ml-2 text-stone-600 dark:text-stone-400">Analyserar data...</span>
         </div>
       </Card>
@@ -156,7 +156,7 @@ export function InsightsPanel({
     return (
       <Link
         to={topInsight.actionPath}
-        className="flex items-center gap-3 p-4 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 hover: transition-shadow"
+        className="flex items-center gap-3 p-4 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 hover:shadow-md transition-shadow"
       >
         <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', getInsightColor(topInsight.type))}>
           {getInsightIcon(topInsight.type)}

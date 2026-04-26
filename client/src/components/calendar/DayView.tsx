@@ -35,10 +35,10 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-xl border border-brand-100 dark:border-stone-700 overflow-hidden">
+    <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
       {/* Day header */}
-      <div className={`p-4 border-b border-stone-200 dark:border-stone-700 ${isToday ? 'bg-brand-50 dark:bg-brand-900/20' : 'bg-stone-50 dark:bg-stone-800'}`}>
-        <h2 className={`text-xl font-semibold ${isToday ? 'text-brand-900 dark:text-brand-100' : 'text-stone-900 dark:text-stone-100'}`}>
+      <div className={`p-4 border-b border-stone-200 dark:border-stone-700 ${isToday ? 'bg-teal-50 dark:bg-teal-900/20' : 'bg-stone-50 dark:bg-stone-800'}`}>
+        <h2 className={`text-xl font-semibold ${isToday ? 'text-teal-900 dark:text-teal-100' : 'text-stone-900 dark:text-stone-100'}`}>
           {date.toLocaleDateString(i18n.language === 'sv' ? 'sv-SE' : 'en-US', {
             weekday: 'long',
             year: 'numeric',
@@ -46,7 +46,7 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
             day: 'numeric',
           })}
         </h2>
-        {isToday && <span className="text-sm text-brand-900 dark:text-brand-400 font-medium">{t('calendar.today')}</span>}
+        {isToday && <span className="text-sm text-teal-700 dark:text-teal-400 font-medium">{t('calendar.today')}</span>}
       </div>
 
       {/* Timeline */}
@@ -73,7 +73,7 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
                     <button
                       key={event.id}
                       onClick={() => onEventClick(event)}
-                      className={`w-full text-left p-3 rounded-xl ${config.bgColor} ${config.borderColor} border hover: transition-all`}
+                      className={`w-full text-left p-3 rounded-xl ${config.bgColor} ${config.borderColor} border hover:shadow-md transition-all`}
                     >
                       <div className="flex items-start gap-3">
                         <div className={`p-2 rounded-lg bg-white/50 dark:bg-stone-800/50`}>

@@ -32,7 +32,7 @@ const exerciseDefs = [
 
 // Config definitions with i18n keys
 const difficultyDefs = {
-  easy: { labelKey: 'wellness.cognitive.difficulty.easy', color: 'text-brand-900 dark:text-brand-400', bg: 'bg-brand-100 dark:bg-brand-900/30' },
+  easy: { labelKey: 'wellness.cognitive.difficulty.easy', color: 'text-green-600 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-900/30' },
   medium: { labelKey: 'wellness.cognitive.difficulty.medium', color: 'text-yellow-600 dark:text-yellow-400', bg: 'bg-yellow-100 dark:bg-yellow-900/30' },
   hard: { labelKey: 'wellness.cognitive.difficulty.hard', color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30' },
 }
@@ -254,7 +254,7 @@ export default function CognitiveTab() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-emerald-500 to-brand-700 dark:from-emerald-600 dark:to-brand-900 rounded-xl p-6 text-white"
+        className="bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-600 dark:to-teal-600 rounded-xl p-6 text-white shadow-lg"
       >
         <div className="flex items-center justify-between">
           <div>
@@ -412,7 +412,7 @@ export default function CognitiveTab() {
                       {exercise.duration} {t('wellness.cognitive.min')}
                     </span>
                     {hasGame && (
-                      <span className="text-xs px-2 py-1 rounded-full bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400">
+                      <span className="text-xs px-2 py-1 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400">
                         Spel
                       </span>
                     )}

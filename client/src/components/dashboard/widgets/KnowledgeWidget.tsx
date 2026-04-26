@@ -25,7 +25,7 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
     return (
       <Link
         to="/knowledge-base"
-        className="group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover: transition-all duration-200"
+        className="group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md transition-all duration-200"
       >
         <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
           <BookOpen size={16} />
@@ -48,7 +48,7 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
     return (
       <Link
         to="/knowledge-base"
-        className="group block bg-white dark:bg-stone-900 p-4 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover: hover:-translate-y-0.5 transition-all duration-200"
+        className="group block bg-white dark:bg-stone-900 p-4 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -81,7 +81,7 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
   return (
     <Link
       to="/knowledge-base"
-      className="group block bg-white dark:bg-stone-900 p-5 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover: transition-all duration-200"
+      className="group block bg-white dark:bg-stone-900 p-5 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">

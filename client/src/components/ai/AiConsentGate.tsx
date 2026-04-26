@@ -62,7 +62,7 @@ export function AiConsentGate({
   if (isLoading) {
     return (
       <div className={cn("flex items-center justify-center p-4", className)}>
-        <Loader2 className="w-5 h-5 animate-spin text-brand-700" />
+        <Loader2 className="w-5 h-5 animate-spin text-teal-500" />
       </div>
     )
   }
@@ -76,19 +76,19 @@ export function AiConsentGate({
   if (compact) {
     return (
       <div className={cn(
-        "p-4 rounded-xl border-2 border-dashed border-brand-200 dark:border-brand-900",
-        "bg-brand-50/50 dark:bg-brand-900/20",
+        "p-4 rounded-xl border-2 border-dashed border-teal-200 dark:border-teal-800",
+        "bg-teal-50/50 dark:bg-teal-900/20",
         className
       )}>
         <div className="flex items-start gap-3">
-          <div className="p-2 rounded-lg bg-brand-100 dark:bg-brand-900/50 flex-shrink-0">
-            <Brain className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+          <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/50 flex-shrink-0">
+            <Brain className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-brand-900 dark:text-brand-100 text-sm">
+            <h4 className="font-medium text-teal-900 dark:text-teal-100 text-sm">
               {t('ai.consent.requiredTitle')}
             </h4>
-            <p className="text-xs text-brand-900 dark:text-brand-300 mt-1">
+            <p className="text-xs text-teal-700 dark:text-teal-300 mt-1">
               {featureName
                 ? t('ai.consent.requiredForFeature', { feature: featureName })
                 : t('ai.consent.requiredDesc')}
@@ -99,7 +99,7 @@ export function AiConsentGate({
                 disabled={isGranting}
                 className={cn(
                   "px-3 py-1.5 text-xs font-medium rounded-lg transition-colors",
-                  "bg-brand-900 text-white hover:bg-brand-900",
+                  "bg-teal-600 text-white hover:bg-teal-700",
                   "disabled:opacity-50 disabled:cursor-not-allowed",
                   "flex items-center gap-1.5"
                 )}
@@ -113,7 +113,7 @@ export function AiConsentGate({
               </button>
               <Link
                 to="/settings"
-                className="text-xs text-brand-900 dark:text-brand-400 hover:underline flex items-center gap-1"
+                className="text-xs text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
               >
                 <Settings className="w-3 h-3" />
                 {t('ai.consent.manageInSettings')}
@@ -131,40 +131,40 @@ export function AiConsentGate({
   // Full prompt
   return (
     <div className={cn(
-      "p-6 rounded-xl border-2 border-dashed border-brand-200 dark:border-brand-900",
-      "bg-gradient-to-br from-brand-50 to-sky-50 dark:from-brand-900/20 dark:to-sky-900/20",
+      "p-6 rounded-2xl border-2 border-dashed border-teal-200 dark:border-teal-800",
+      "bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20",
       className
     )}>
       <div className="text-center max-w-md mx-auto">
-        <div className="w-16 h-16 rounded-xl bg-brand-100 dark:bg-brand-900/50 flex items-center justify-center mx-auto mb-4">
-          <Brain className="w-8 h-8 text-brand-900 dark:text-brand-400" />
+        <div className="w-16 h-16 rounded-2xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center mx-auto mb-4">
+          <Brain className="w-8 h-8 text-teal-600 dark:text-teal-400" />
         </div>
 
-        <h3 className="text-lg font-semibold text-brand-900 dark:text-brand-100 mb-2">
+        <h3 className="text-lg font-semibold text-teal-900 dark:text-teal-100 mb-2">
           {t('ai.consent.fullTitle')}
         </h3>
 
-        <p className="text-sm text-brand-900 dark:text-brand-300 mb-4">
+        <p className="text-sm text-teal-700 dark:text-teal-300 mb-4">
           {featureName
             ? t('ai.consent.fullDescWithFeature', { feature: featureName })
             : t('ai.consent.fullDesc')}
         </p>
 
         <div className="p-4 bg-white/60 dark:bg-stone-800/60 rounded-xl text-left mb-4">
-          <h4 className="text-sm font-medium text-brand-900 dark:text-brand-100 mb-2">
+          <h4 className="text-sm font-medium text-teal-900 dark:text-teal-100 mb-2">
             {t('ai.consent.whatThisMeans')}
           </h4>
-          <ul className="space-y-2 text-xs text-brand-900 dark:text-brand-300">
+          <ul className="space-y-2 text-xs text-teal-700 dark:text-teal-300">
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-400 mt-1.5 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-1.5 flex-shrink-0" />
               {t('ai.consent.point1')}
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-400 mt-1.5 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-1.5 flex-shrink-0" />
               {t('ai.consent.point2')}
             </li>
             <li className="flex items-start gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-brand-400 mt-1.5 flex-shrink-0" />
+              <span className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-1.5 flex-shrink-0" />
               {t('ai.consent.point3')}
             </li>
           </ul>
@@ -176,7 +176,7 @@ export function AiConsentGate({
             disabled={isGranting}
             className={cn(
               "w-full sm:w-auto px-5 py-2.5 font-medium rounded-xl transition-colors",
-              "bg-brand-900 text-white hover:bg-brand-900",
+              "bg-teal-600 text-white hover:bg-teal-700",
               "disabled:opacity-50 disabled:cursor-not-allowed",
               "flex items-center justify-center gap-2"
             )}
@@ -193,9 +193,9 @@ export function AiConsentGate({
             to="/settings"
             className={cn(
               "w-full sm:w-auto px-5 py-2.5 font-medium rounded-xl transition-colors",
-              "border border-brand-300 dark:border-brand-900",
-              "text-brand-900 dark:text-brand-300",
-              "hover:bg-brand-100 dark:hover:bg-brand-900/30",
+              "border border-teal-300 dark:border-teal-700",
+              "text-teal-700 dark:text-teal-300",
+              "hover:bg-teal-100 dark:hover:bg-teal-900/30",
               "flex items-center justify-center gap-2"
             )}
           >
@@ -208,9 +208,9 @@ export function AiConsentGate({
           <p className="text-sm text-red-600 dark:text-red-400 mt-3">{grantError}</p>
         )}
 
-        <p className="text-xs text-brand-700 dark:text-brand-400 mt-4">
+        <p className="text-xs text-teal-500 dark:text-teal-400 mt-4">
           {t('ai.consent.canWithdraw')}{' '}
-          <Link to="/privacy" className="underline hover:text-brand-900 dark:hover:text-brand-300">
+          <Link to="/privacy" className="underline hover:text-teal-700 dark:hover:text-teal-300">
             {t('ai.consent.privacyPolicy')}
           </Link>
         </p>

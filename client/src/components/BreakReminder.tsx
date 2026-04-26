@@ -119,7 +119,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
     if (secondsActive > REMINDER_INTERVAL * 0.5 && !isPaused) {
       const minutesLeft = Math.ceil((REMINDER_INTERVAL - secondsActive) / 60)
       return (
-        <div className="fixed bottom-24 right-6 z-30 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full border border-stone-200 text-sm text-stone-600 flex items-center gap-2">
+        <div className="fixed bottom-24 right-6 z-30 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-slate-200 text-sm text-slate-600 flex items-center gap-2">
           <Clock size={14} />
           Paus om {minutesLeft} min
         </div>
@@ -130,24 +130,24 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-xl border border-stone-200 max-w-md w-full p-6">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
         {/* Icon */}
-        <div className="w-16 h-16 bg-brand-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Coffee className="w-8 h-8 text-brand-900" />
+        <div className="w-16 h-16 bg-gradient-to-br from-teal-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Coffee className="w-8 h-8 text-teal-600" />
         </div>
 
         {/* Content */}
-        <h2 className="text-xl font-bold text-stone-900 text-center mb-2">
+        <h2 className="text-xl font-bold text-slate-900 text-center mb-2">
           Dags för en paus?
         </h2>
-        <p className="text-stone-600 text-center mb-6">
+        <p className="text-slate-600 text-center mb-6">
           Du har varit aktiv i {workDuration} minuter. Det är okej att ta en paus - 
           allt sparas automatiskt.
         </p>
 
         {/* Suggestion */}
-        <div className="p-4 bg-brand-zone rounded-lg mb-6">
-          <p className="text-sm text-brand-900 font-medium">
+        <div className="p-4 bg-teal-50 rounded-xl mb-6">
+          <p className="text-sm text-teal-800 font-medium">
             💡 Förslag: Sträck på dig, drick vatten, eller titta ut genom fönstret.
           </p>
         </div>
@@ -156,7 +156,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
         <div className="space-y-3">
           <button
             onClick={takeBreak}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-brand-900 text-white rounded-lg font-semibold hover:bg-brand-900/90 transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-semibold hover:bg-teal-700 transition-colors"
           >
             <CheckCircle size={18} />
             Ja, ta en paus
@@ -164,7 +164,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
           
           <button
             onClick={dismissReminder}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-stone-100 text-stone-700 rounded-lg font-medium hover:bg-stone-200 transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
           >
             <X size={18} />
             Fortsätt jobba
@@ -172,7 +172,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
         </div>
 
         {/* Gentle note */}
-        <p className="text-xs text-stone-600 text-center mt-4">
+        <p className="text-xs text-slate-600 text-center mt-4">
           Du kan alltid pausa när du vill. Din hälsa är viktigare än något jobb.
         </p>
       </div>

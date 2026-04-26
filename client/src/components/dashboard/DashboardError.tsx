@@ -18,7 +18,7 @@ export function DashboardError({ error, onRetry }: DashboardErrorProps) {
       aria-live="assertive"
     >
       <div className="max-w-5xl mx-auto">
-        <div className="bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800/50 p-6 sm:p-8 text-center">
+        <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800/50 p-6 sm:p-8 text-center">
           <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
             <AlertTriangle className="w-7 h-7 text-red-600 dark:text-red-400" aria-hidden="true" />
           </div>

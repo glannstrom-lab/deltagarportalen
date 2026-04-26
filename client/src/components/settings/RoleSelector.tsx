@@ -28,8 +28,8 @@ const roleConfig: Record<UserRole, {
     label: 'Konsulent',
     description: 'Hantera dina deltagare och se deras framsteg',
     icon: Users,
-    color: 'text-brand-900',
-    bgColor: 'bg-brand-50',
+    color: 'text-teal-600',
+    bgColor: 'bg-teal-50',
   },
   ADMIN: {
     label: 'Admin',
@@ -42,8 +42,8 @@ const roleConfig: Record<UserRole, {
     label: 'Superadmin',
     description: 'Fullständig systemåtkomst',
     icon: Crown,
-    color: 'text-brand-900',
-    bgColor: 'bg-brand-50',
+    color: 'text-teal-600',
+    bgColor: 'bg-teal-50',
   },
 }
 
@@ -107,7 +107,7 @@ export function RoleSelector() {
                 className={cn(
                   'flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left',
                   isActive
-                    ? 'border-brand-700 bg-brand-50/50'
+                    ? 'border-teal-500 bg-teal-50/50'
                     : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                 )}
               >
@@ -122,7 +122,7 @@ export function RoleSelector() {
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-slate-900">{config.label}</span>
                     {isActive && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-brand-100 text-brand-900 text-xs font-medium">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-teal-100 text-teal-700 text-xs font-medium">
                         <CheckCircle2 className="w-3 h-3" />
                         Aktiv
                       </span>
@@ -134,7 +134,7 @@ export function RoleSelector() {
                 <div className={cn(
                   'w-6 h-6 rounded-full border-2 flex items-center justify-center',
                   isActive
-                    ? 'border-brand-700 bg-brand-700'
+                    ? 'border-teal-500 bg-teal-500'
                     : 'border-slate-300'
                 )}>
                   {isActive && <CheckCircle2 className="w-4 h-4 text-white" />}
@@ -155,7 +155,7 @@ export function RoleSelector() {
                   setSelectedRoles(userRoles)
                   setIsEditing(true)
                 }}
-                className="text-sm text-brand-900 hover:text-brand-900 font-medium"
+                className="text-sm text-teal-600 hover:text-teal-700 font-medium"
               >
                 Hantera tillgängliga roller
               </button>
@@ -174,7 +174,7 @@ export function RoleSelector() {
                         className={cn(
                           'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all',
                           isSelected
-                            ? 'border-brand-300 bg-brand-50'
+                            ? 'border-teal-300 bg-teal-50'
                             : 'border-slate-200 hover:border-slate-300'
                         )}
                       >
@@ -182,7 +182,7 @@ export function RoleSelector() {
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => toggleRole(role)}
-                          className="w-4 h-4 text-brand-900 rounded border-slate-300 focus:ring-brand-700"
+                          className="w-4 h-4 text-teal-600 rounded border-slate-300 focus:ring-teal-500"
                         />
                         <Icon className={cn('w-5 h-5', config.color)} />
                         <div>
@@ -198,7 +198,7 @@ export function RoleSelector() {
                   <button
                     onClick={handleSaveRoles}
                     disabled={isSaving || selectedRoles.length === 0}
-                    className="px-4 py-2 bg-brand-900 text-white rounded-lg font-medium hover:bg-brand-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {isSaving ? 'Sparar...' : 'Spara roller'}
                   </button>

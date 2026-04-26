@@ -26,7 +26,7 @@ interface StatusColumn {
 const getColumns = (t: (key: string) => string): StatusColumn[] => [
   { status: 'applied', title: t('jobs.applications.status.applied'), color: 'text-blue-600', bgColor: 'bg-blue-50 border-blue-200', icon: Send },
   { status: 'interview', title: t('jobs.applications.status.interview'), color: 'text-amber-600', bgColor: 'bg-amber-50 border-amber-200', icon: Calendar },
-  { status: 'offer', title: t('jobs.applications.status.offer'), color: 'text-brand-900', bgColor: 'bg-brand-50 border-brand-200', icon: CheckCircle },
+  { status: 'offer', title: t('jobs.applications.status.offer'), color: 'text-green-600', bgColor: 'bg-green-50 border-green-200', icon: CheckCircle },
   { status: 'rejected', title: t('jobs.applications.status.rejected'), color: 'text-slate-700', bgColor: 'bg-slate-50 border-slate-200', icon: XCircle }
 ]
 
@@ -56,7 +56,7 @@ function ApplicationCard({
   const hasNotes = job.notes && job.notes.trim().length > 0
 
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-4 hover: transition-shadow">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-4 shadow-sm hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex-1 min-w-0">
@@ -81,7 +81,7 @@ function ApplicationCard({
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-8 z-20 bg-white dark:bg-stone-900 rounded-lg border border-slate-200 dark:border-stone-700 py-1 min-w-[160px]">
+              <div className="absolute right-0 top-8 z-20 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-slate-200 dark:border-stone-700 py-1 min-w-[160px]">
                 <div className="px-2 py-1 text-xs font-medium text-slate-600 dark:text-stone-400 uppercase">{labels.changeStatus}</div>
                 {columns.map(col => (
                   <button
@@ -198,9 +198,9 @@ function StatsHeader({ jobs, labels }: {
         <div className="text-lg sm:text-2xl font-bold text-amber-600">{stats.interview}</div>
         <div className="text-[10px] sm:text-xs text-amber-600">{labels.interview}</div>
       </div>
-      <div className="bg-brand-50 rounded-xl border border-brand-200 p-2 sm:p-4 text-center hidden sm:block">
-        <div className="text-lg sm:text-2xl font-bold text-brand-900">{stats.offer}</div>
-        <div className="text-[10px] sm:text-xs text-brand-900">{labels.offer}</div>
+      <div className="bg-green-50 rounded-xl border border-green-200 p-2 sm:p-4 text-center hidden sm:block">
+        <div className="text-lg sm:text-2xl font-bold text-green-600">{stats.offer}</div>
+        <div className="text-[10px] sm:text-xs text-green-600">{labels.offer}</div>
       </div>
       <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-2 sm:p-4 text-center hidden sm:block">
         <div className="text-lg sm:text-2xl font-bold text-indigo-600">{responseRate}%</div>
@@ -262,7 +262,7 @@ export function ApplicationsTab() {
   if (applications.length === 0) {
     return (
       <Card className="p-12 text-center">
-        <div className="w-16 h-16 bg-slate-100 dark:bg-stone-800 rounded-xl flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-slate-100 dark:bg-stone-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
           <Send className="w-8 h-8 text-slate-600 dark:text-stone-400" />
         </div>
         <h3 className="text-xl font-semibold text-slate-700 dark:text-stone-300 mb-2">
@@ -292,7 +292,7 @@ export function ApplicationsTab() {
           const columnJobs = applications.filter(j => j.status === column.status)
 
           return (
-            <div key={column.status} className={cn("rounded-xl border p-4", column.bgColor)}>
+            <div key={column.status} className={cn("rounded-2xl border p-4", column.bgColor)}>
               {/* Column Header */}
               <div className="flex items-center gap-2 mb-4">
                 <column.icon className={cn("w-5 h-5", column.color)} />
@@ -302,7 +302,7 @@ export function ApplicationsTab() {
                   column.color,
                   column.status === 'applied' && 'bg-blue-100',
                   column.status === 'interview' && 'bg-amber-100',
-                  column.status === 'offer' && 'bg-brand-100',
+                  column.status === 'offer' && 'bg-green-100',
                   column.status === 'rejected' && 'bg-slate-200'
                 )}>
                   {columnJobs.length}

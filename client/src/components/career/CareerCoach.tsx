@@ -320,7 +320,7 @@ export default function CareerCoach() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#4f46e5] to-purple-600 rounded-xl p-8 text-white">
+      <div className="bg-gradient-to-br from-[#4f46e5] to-purple-600 rounded-2xl p-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
             <Target size={24} />
@@ -352,7 +352,7 @@ export default function CareerCoach() {
 
       {/* Sparade vägar */}
       {showHistory && savedPaths.length > 0 && (
-        <div className="bg-white rounded-xl p-6 border border-slate-200">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
           <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
             <Star className="text-amber-500" size={20} />
             Dina sparade karriärvägar
@@ -371,7 +371,7 @@ export default function CareerCoach() {
                     <span className="font-medium text-[#4f46e5]">{path.target_occupation}</span>
                   </div>
                   <div className="hidden sm:flex items-center gap-2 text-xs text-slate-700">
-                    <span className="px-2 py-1 bg-brand-100 text-brand-900 rounded-full">
+                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full">
                       +{(path.salary_increase / 1000).toFixed(0)}k kr
                     </span>
                     <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
@@ -397,7 +397,7 @@ export default function CareerCoach() {
       )}
 
       {/* Input-formulär */}
-      <div className="bg-white rounded-xl p-6 border border-slate-200">
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
         <h3 className="font-semibold text-slate-800 mb-4">Din karriärsituation</h3>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -467,7 +467,7 @@ export default function CareerCoach() {
 
       {/* Resultat */}
       {loading && (
-        <div className="bg-white rounded-xl p-8 border border-slate-200 text-center">
+        <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
           <div className="animate-spin w-10 h-10 border-3 border-[#4f46e5] border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-slate-600">AI:n skapar din personliga karriärplan...</p>
           <p className="text-sm text-slate-600 mt-2">Analyserar kompetensöverföring och skapar skräddarsydda steg</p>
@@ -477,7 +477,7 @@ export default function CareerCoach() {
       {!loading && careerPath && (
         <>
           {/* Översikt */}
-          <div className="bg-white rounded-xl p-6 border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="text-center">
@@ -496,9 +496,9 @@ export default function CareerCoach() {
               </div>
               
               <div className="flex items-center gap-6">
-                <div className="text-center px-4 py-2 bg-brand-50 rounded-xl">
+                <div className="text-center px-4 py-2 bg-green-50 rounded-xl">
                   <p className="text-xs text-slate-700">Löneökning</p>
-                  <p className="text-lg font-bold text-brand-900">+{formatSalary(careerPath.salaryIncrease)}</p>
+                  <p className="text-lg font-bold text-green-600">+{formatSalary(careerPath.salaryIncrease)}</p>
                 </div>
                 <div className="text-center px-4 py-2 bg-blue-50 rounded-xl">
                   <p className="text-xs text-slate-700">Tidslinje</p>
@@ -522,7 +522,7 @@ export default function CareerCoach() {
             {careerPath.steps && careerPath.steps.length > 0 ? careerPath.steps.map((step) => (
               <div
                 key={step.order}
-                className="bg-white rounded-xl p-6 border border-slate-200"
+                className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200"
               >
                 <div className="flex items-start gap-4">
                   <div className="w-10 h-10 bg-[#4f46e5] text-white rounded-full flex items-center justify-center font-bold shrink-0">
@@ -571,7 +571,7 @@ export default function CareerCoach() {
                 </div>
               </div>
             )) : (
-              <div className="bg-white rounded-xl p-8 border border-slate-200 text-center">
+              <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
                 <p className="text-slate-700">Inga steg kunde genereras. Försök igen.</p>
               </div>
             )}
@@ -579,7 +579,7 @@ export default function CareerCoach() {
 
           {/* AI Analys */}
           {careerPath.analysis && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
               <h3 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
                 <Briefcase className="text-blue-600" size={20} />
                 AI:s analys av din karriärövergång
@@ -590,14 +590,14 @@ export default function CareerCoach() {
 
           {/* Marknadsanalys */}
           {careerPath.marketAnalysis && (
-            <div className="bg-white rounded-xl p-6 border border-slate-200">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <TrendingUp className="text-brand-900" size={20} />
+                <TrendingUp className="text-green-600" size={20} />
                 Marknadsanalys
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-4 bg-brand-50 rounded-xl">
-                  <p className="text-sm text-brand-900 font-medium mb-1">Löneutveckling</p>
+                <div className="p-4 bg-green-50 rounded-xl">
+                  <p className="text-sm text-green-700 font-medium mb-1">Löneutveckling</p>
                   <p className="text-slate-700 text-sm">{careerPath.marketAnalysis.salaryIncrease}</p>
                 </div>
                 <div className="p-4 bg-blue-50 rounded-xl">
@@ -618,7 +618,7 @@ export default function CareerCoach() {
 
           {/* Nyckelkompetenser */}
           {careerPath.keySkills && careerPath.keySkills.length > 0 && (
-            <div className="bg-white rounded-xl p-6 border border-slate-200">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
                 <Award className="text-amber-500" size={20} />
                 Viktiga kompetenser för {careerPath.target.occupation}
@@ -635,7 +635,7 @@ export default function CareerCoach() {
 
           {/* Utmaningar */}
           {careerPath.challenges && careerPath.challenges.length > 0 && (
-            <div className="bg-white rounded-xl p-6 border border-slate-200">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
                 <MapPin className="text-red-500" size={20} />
                 Möjliga utmaningar att förbereda sig för
@@ -655,9 +655,9 @@ export default function CareerCoach() {
 
           {/* Löneutveckling */}
           {careerPath.salaryProgression && careerPath.salaryProgression.length > 0 && (
-            <div className="bg-white rounded-xl p-6 border border-slate-200">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <DollarSign className="text-brand-900" size={20} />
+                <DollarSign className="text-green-600" size={20} />
                 Uppskattad löneutveckling
               </h3>
               <div className="space-y-3">
@@ -666,8 +666,8 @@ export default function CareerCoach() {
                     <div className="w-20 font-medium text-slate-700">{stage.stage}</div>
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <div className="h-2 bg-brand-700 rounded-full" style={{ width: `${Math.min(100, (stage.estimatedSalary / 80000) * 100)}%` }} />
-                        <span className="font-semibold text-brand-900">
+                        <div className="h-2 bg-green-500 rounded-full" style={{ width: `${Math.min(100, (stage.estimatedSalary / 80000) * 100)}%` }} />
+                        <span className="font-semibold text-green-700">
                           {stage.estimatedSalary.toLocaleString()} kr
                         </span>
                       </div>
@@ -715,7 +715,7 @@ export default function CareerCoach() {
       )}
 
       {!loading && !careerPath && (
-        <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+        <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <Target size={48} className="text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-800 mb-2">Planera din karriär med AI</h3>
           <p className="text-slate-700 max-w-md mx-auto">

@@ -26,7 +26,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
   const tips = getOverallTips(percentage)
   
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6">
       {/* Main progress */}
       <div className="flex items-center gap-4 mb-4">
         <div className="flex-1">
@@ -67,7 +67,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
                 ${isCurrent 
                   ? 'bg-indigo-100 text-indigo-700 font-medium' 
                   : isCompleted 
-                    ? 'bg-brand-50 text-brand-900' 
+                    ? 'bg-green-50 text-green-700' 
                     : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
                 }
               `}
@@ -92,7 +92,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
               key={section.name}
               className={`p-2 rounded-lg text-center ${
                 section.score === section.max 
-                  ? 'bg-brand-50 text-brand-900' 
+                  ? 'bg-green-50 text-green-700' 
                   : section.score > 0 
                     ? 'bg-amber-50 text-amber-700'
                     : 'bg-slate-50 text-slate-700'

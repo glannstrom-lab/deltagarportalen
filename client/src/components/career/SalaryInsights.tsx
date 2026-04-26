@@ -169,7 +169,7 @@ export default function SalaryInsights() {
     <div className="space-y-6">
       {/* Sparade sökningar */}
       {savedSearches.length > 0 && (
-        <div className="bg-white rounded-xl p-4 border border-slate-200">
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
           <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
             <Star className="text-amber-500" size={16} />
             Dina sparade lönejämförelser
@@ -178,17 +178,17 @@ export default function SalaryInsights() {
             {savedSearches.map((search) => (
               <div
                 key={search.id}
-                className="flex items-center gap-2 px-3 py-2 bg-brand-50 rounded-lg group"
+                className="flex items-center gap-2 px-3 py-2 bg-green-50 rounded-lg group"
               >
                 <button
                   onClick={() => handleSelectOccupation({ id: search.occupation, label: search.occupation })}
-                  className="text-sm text-brand-900 hover:text-brand-900 font-medium"
+                  className="text-sm text-green-700 hover:text-green-800 font-medium"
                 >
                   {search.occupation}
                 </button>
                 <button
                   onClick={() => deleteSavedSearch(search.id)}
-                  className="text-brand-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="text-green-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
                 >
                   <Trash2 size={14} />
                 </button>
@@ -199,10 +199,10 @@ export default function SalaryInsights() {
       )}
 
       {/* Header */}
-      <div className="bg-white rounded-xl p-6 border border-slate-200">
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-brand-100 rounded-xl flex items-center justify-center">
-            <DollarSign className="text-brand-900" size={24} />
+          <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+            <DollarSign className="text-green-600" size={24} />
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-800">Löneinsikter</h2>
@@ -222,7 +222,7 @@ export default function SalaryInsights() {
       </div>
 
       {loading && (
-        <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+        <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <div className="animate-spin w-10 h-10 border-3 border-[#4f46e5] border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-slate-600">Hämtar lönestatistik...</p>
         </div>
@@ -232,7 +232,7 @@ export default function SalaryInsights() {
         <>
           {/* Huvudstatistik */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gradient-to-br from-brand-700 to-emerald-600 rounded-xl p-6 text-white">
+            <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white">
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign size={20} className="opacity-80" />
                 <span className="text-sm opacity-80">Medianlön</span>
@@ -241,7 +241,7 @@ export default function SalaryInsights() {
               <p className="text-sm opacity-80 mt-1">per månad före skatt</p>
             </div>
 
-            <div className="bg-white rounded-xl p-6 border border-slate-200">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp size={20} className="text-blue-500" />
                 <span className="text-sm text-slate-700">Lönepåverkan</span>
@@ -249,24 +249,24 @@ export default function SalaryInsights() {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Certifieringar:</span>
-                  <span className="font-medium text-brand-900">+5-10%</span>
+                  <span className="font-medium text-green-600">+5-10%</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Byta jobb:</span>
-                  <span className="font-medium text-brand-900">+10-15%</span>
+                  <span className="font-medium text-green-600">+10-15%</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Specialist:</span>
-                  <span className="font-medium text-brand-900">+15-20%</span>
+                  <span className="font-medium text-green-600">+15-20%</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Ledarskap:</span>
-                  <span className="font-medium text-brand-900">+20-30%</span>
+                  <span className="font-medium text-green-600">+20-30%</span>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white rounded-xl p-6 border border-slate-200">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-2">
                 <Briefcase size={20} className="text-purple-500" />
                 <span className="text-sm text-slate-700">Marknadsläge</span>
@@ -278,7 +278,7 @@ export default function SalaryInsights() {
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Tillväxt:</span>
-                  <span className="font-medium text-brand-900">+{salaryData.trends.growth}%</span>
+                  <span className="font-medium text-green-600">+{salaryData.trends.growth}%</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-slate-600">Konkurrens:</span>
@@ -289,7 +289,7 @@ export default function SalaryInsights() {
           </div>
 
           {/* Lönespridning */}
-          <div className="bg-white rounded-xl p-6 border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
             <h3 className="font-semibold text-slate-800 mb-4">Lönespridning</h3>
             
             <div className="relative pt-8 pb-4">
@@ -319,7 +319,7 @@ export default function SalaryInsights() {
                   className="absolute top-1/2 -translate-y-1/2 -translate-x-1/2"
                   style={{ left: '50%' }}
                 >
-                  <div className="w-5 h-5 bg-[#4f46e5] border-2 border-white rounded-full" />
+                  <div className="w-5 h-5 bg-[#4f46e5] border-2 border-white rounded-full shadow-lg" />
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center">
                     <p className="text-xs text-slate-700">Median</p>
                     <p className="text-sm font-bold text-[#4f46e5]">{formatSalary(salaryData.median)}</p>
@@ -347,7 +347,7 @@ export default function SalaryInsights() {
           </div>
 
           {/* Regional lönestatistik */}
-          <div className="bg-white rounded-xl p-6 border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
             <div className="flex items-center gap-2 mb-4">
               <MapPin className="text-[#4f46e5]" size={20} />
               <h3 className="font-semibold text-slate-800">Lön per region</h3>
@@ -375,7 +375,7 @@ export default function SalaryInsights() {
                       </div>
                     </div>
                     <span className={`text-xs font-medium w-16 text-right ${
-                      diff > 0 ? 'text-brand-900' : diff < 0 ? 'text-red-500' : 'text-slate-700'
+                      diff > 0 ? 'text-green-600' : diff < 0 ? 'text-red-500' : 'text-slate-700'
                     }`}>
                       {diff > 0 ? '+' : ''}{((diff / salaryData.median) * 100).toFixed(0)}%
                     </span>
@@ -386,7 +386,7 @@ export default function SalaryInsights() {
           </div>
 
           {/* Erfarenhet vs Lön */}
-          <div className="bg-white rounded-xl p-6 border border-slate-200">
+          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
             <div className="flex items-center gap-2 mb-4">
               <Award className="text-[#4f46e5]" size={20} />
               <h3 className="font-semibold text-slate-800">Lön per erfarenhetsnivå</h3>
@@ -415,7 +415,7 @@ export default function SalaryInsights() {
             <button
               onClick={saveSalarySearch}
               disabled={saving}
-              className="flex items-center gap-2 px-6 py-3 bg-brand-700 text-white rounded-xl font-medium hover:bg-brand-900 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
             >
               {saving ? (
                 <>
@@ -432,7 +432,7 @@ export default function SalaryInsights() {
           </div>
 
           {/* Tips för löneökning */}
-          <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200">
+          <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200">
             <div className="flex items-start gap-3">
               <Info className="text-amber-600 shrink-0 mt-0.5" size={20} />
               <div>
@@ -462,7 +462,7 @@ export default function SalaryInsights() {
           {/* Datakälla */}
           <div className="text-center">
             {salaryData.source && (
-              <p className="text-xs text-brand-900 font-medium mb-1">
+              <p className="text-xs text-green-600 font-medium mb-1">
                 ✓ Data från: {salaryData.source}
               </p>
             )}
@@ -474,7 +474,7 @@ export default function SalaryInsights() {
       )}
 
       {!loading && !salaryData && selectedOccupation && (
-        <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+        <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <Info size={48} className="text-amber-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-800 mb-2">Ingen lönedata tillgänglig</h3>
           <p className="text-slate-700 mb-4">
@@ -487,7 +487,7 @@ export default function SalaryInsights() {
       )}
 
       {!loading && !salaryData && !selectedOccupation && (
-        <div className="bg-white rounded-xl p-12 border border-slate-200 text-center">
+        <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <Search size={48} className="text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-800 mb-2">Sök ett yrke för att se lönestatistik</h3>
           <p className="text-slate-700">Vi visar medianlön, lönespridning och regionala skillnader baserat på riktiga jobbannonser</p>

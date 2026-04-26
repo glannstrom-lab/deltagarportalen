@@ -228,7 +228,7 @@ export function ContinueWhereYouLeft() {
   if (!isVisible || activities.length === 0) return null
 
   return (
-    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 p-5 animate-in fade-in slide-in-from-bottom-4">
+    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 p-5 animate-in fade-in slide-in-from-bottom-4">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center">
@@ -256,7 +256,7 @@ export function ContinueWhereYouLeft() {
             <button
               key={activity.id}
               onClick={() => navigate(activity.path)}
-              className="w-full flex items-center gap-4 p-4 bg-white rounded-xl border border-indigo-100 hover:border-indigo-300 hover: transition-all text-left group"
+              className="w-full flex items-center gap-4 p-4 bg-white rounded-xl border border-indigo-100 hover:border-indigo-300 hover:shadow-sm transition-all text-left group"
             >
               <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-indigo-500 transition-colors">
                 <Icon className="w-6 h-6 text-indigo-600 group-hover:text-white transition-colors" />

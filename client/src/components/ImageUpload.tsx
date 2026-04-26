@@ -172,9 +172,9 @@ export function ImageUpload({
         className={cn(
           'relative cursor-pointer transition-all duration-200 rounded-xl overflow-hidden',
           'border-2 border-dashed',
-          isDragging && 'border-brand-700 bg-brand-50 scale-[1.02]',
-          !isDragging && !previewUrl && 'border-slate-300 hover:border-brand-400 hover:bg-slate-50',
-          previewUrl && 'border-solid border-brand-200'
+          isDragging && 'border-teal-500 bg-teal-50 scale-[1.02]',
+          !isDragging && !previewUrl && 'border-slate-300 hover:border-teal-400 hover:bg-slate-50',
+          previewUrl && 'border-solid border-teal-200'
         )}
       >
         <input
@@ -237,7 +237,7 @@ export function ImageUpload({
           <div className="p-8 flex flex-col items-center justify-center text-center min-h-[200px]">
             <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
               {isUploading ? (
-                <Loader2 className="w-8 h-8 text-brand-900 animate-spin" />
+                <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
               ) : (
                 <User className="w-8 h-8 text-slate-600" />
               )}
@@ -386,7 +386,7 @@ export function CompactImageUpload({
       <div className="relative">
         <div className={cn(
           'w-20 h-20 rounded-full overflow-hidden bg-slate-100 flex items-center justify-center',
-          (value || localPreview) ? 'ring-2 ring-brand-700 ring-offset-2' : 'border-2 border-dashed border-slate-300'
+          (value || localPreview) ? 'ring-2 ring-teal-500 ring-offset-2' : 'border-2 border-dashed border-slate-300'
         )}>
           {value || localPreview ? (
             <img
@@ -449,7 +449,7 @@ export function CompactImageUpload({
         )}
         
         {pasteMessage && (
-          <p className="text-xs text-brand-900 flex items-center gap-1">
+          <p className="text-xs text-green-600 flex items-center gap-1">
             <Clipboard className="w-3 h-3" />
             {pasteMessage}
           </p>

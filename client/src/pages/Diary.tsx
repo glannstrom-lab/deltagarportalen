@@ -20,7 +20,7 @@ import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 
 // Tab configuration
 const TAB_DEFS = [
-  { id: 'journal', labelKey: 'diary.tabs.journal', icon: BookHeart, color: 'brand' },
+  { id: 'journal', labelKey: 'diary.tabs.journal', icon: BookHeart, color: 'teal' },
   { id: 'mood', labelKey: 'diary.tabs.mood', icon: Smile, color: 'amber' },
   { id: 'goals', labelKey: 'diary.tabs.goals', icon: Target, color: 'blue' },
   { id: 'gratitude', labelKey: 'diary.tabs.gratitude', icon: Heart, color: 'rose' },
@@ -57,13 +57,13 @@ function TabNavigation({
                 "font-medium text-xs sm:text-sm transition-all whitespace-nowrap",
                 "min-h-[44px]",
                 isActive
-                  ? "bg-white dark:bg-stone-800 text-gray-800 dark:text-gray-100"
+                  ? "bg-white dark:bg-stone-800 text-gray-800 dark:text-gray-100 shadow-sm"
                   : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-white/50 dark:hover:bg-stone-700/50"
               )}
             >
               <Icon className={cn(
                 "w-4 h-4 flex-shrink-0",
-                isActive && tab.color === 'brand' && "text-brand-900 dark:text-brand-400",
+                isActive && tab.color === 'teal' && "text-teal-600 dark:text-teal-400",
                 isActive && tab.color === 'amber' && "text-amber-600 dark:text-amber-400",
                 isActive && tab.color === 'blue' && "text-blue-600 dark:text-blue-400",
                 isActive && tab.color === 'rose' && "text-rose-600 dark:text-rose-400"
@@ -112,7 +112,7 @@ function AchievementBanner() {
       emoji: '✍️',
       title: t('diary.achievements.thousandWords.title'),
       description: t('diary.achievements.thousandWords.description'),
-      color: 'from-sky-50 to-brand-50 dark:from-sky-900/30 dark:to-brand-900/30 border-sky-200 dark:border-sky-800'
+      color: 'from-sky-50 to-teal-50 dark:from-sky-900/30 dark:to-teal-900/30 border-sky-200 dark:border-sky-800'
     }
   } else if (longestStreak >= 14) {
     achievement = {
@@ -128,7 +128,7 @@ function AchievementBanner() {
   return (
     <Card className={cn("p-4 bg-gradient-to-r border", achievement.color)}>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-white dark:bg-stone-700 rounded-lg flex items-center justify-center text-xl flex-shrink-0">
+        <div className="w-10 h-10 bg-white dark:bg-stone-700 rounded-lg flex items-center justify-center text-xl shadow-sm flex-shrink-0">
           {achievement.emoji}
         </div>
         <div className="flex-1 min-w-0">

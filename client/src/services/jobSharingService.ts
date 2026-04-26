@@ -285,7 +285,7 @@ export function getStatusColor(status: SharedJob['status']): string {
   const colors: Record<string, string> = {
     pending: 'bg-amber-100 text-amber-800',
     reviewed: 'bg-blue-100 text-blue-800',
-    approved: 'bg-brand-100 text-brand-900',
+    approved: 'bg-green-100 text-green-800',
     rejected: 'bg-red-100 text-red-800',
   };
   return colors[status] || 'bg-gray-100 text-gray-800';

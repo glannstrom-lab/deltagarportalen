@@ -129,7 +129,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                   onDragEnd={handleDragEnd}
                   className={`
                     bg-white border rounded-xl overflow-hidden transition-all
-                    ${isExpanded ? 'border-purple-300' : 'border-slate-200 hover:border-slate-300'}
+                    ${isExpanded ? 'border-purple-300 shadow-md' : 'border-slate-200 hover:border-slate-300'}
                     ${draggedId === ed.id ? 'opacity-50' : ''}
                   `}
                 >
@@ -144,7 +144,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                     
                     <div className={`
                       w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
-                      ${status.complete ? 'bg-brand-100 text-brand-900' : 'bg-amber-100 text-amber-600'}
+                      ${status.complete ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}
                     `}>
                       {status.complete ? (
                         <CheckCircle className="w-5 h-5" />

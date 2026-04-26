@@ -58,20 +58,7 @@
   --color-accent-blue: #3b82f6;
   --color-accent-green: #10b981;
   --color-accent-pink: #ec4899;
-
-  /* BRAND - Huvudaccentfärg (turkos) - 60/30/10 fördelning */
-  --color-brand-50: #F5FBF9;   /* lättaste tinten */
-  --color-brand-100: #E1F5EE;  /* aktivt menyval, positiv KPI-tint */
-  --color-brand-200: #C3EBD9;
-  --color-brand-300: #9FE1CB;  /* borders på tintade ytor */
-  --color-brand-400: #5FCCA8;
-  --color-brand-500: #2EB88A;
-  --color-brand-600: #1A9B70;
-  --color-brand-700: #0F6E56;  /* solid accent, alias till 900 */
-  --color-brand-800: #0d5c48;
-  --color-brand-900: #0F6E56;  /* solid accent, CTA, aktiv ikon */
-  --color-brand-zone: #F0F9F5; /* zon-bakgrund för grupperade kort */
-
+  
   --color-page: #fafaf9;
   --color-page-dark: #f5f5f4;
   
@@ -774,8 +761,8 @@
       0 16px 40px rgba(0, 0, 0, 0.1);
   }
 
-  .shadow-glow-brand {
-    box-shadow: 0 0 20px rgba(15, 110, 86, 0.3);
+  .shadow-glow-teal {
+    box-shadow: 0 0 20px rgba(20, 184, 166, 0.3);
   }
   .shadow-glow-sky {
     box-shadow: 0 0 20px rgba(14, 165, 233, 0.3);
@@ -825,11 +812,11 @@
      GRADIENT BACKGROUNDS
      ============================================ */
 
-  .bg-gradient-brand {
-    background: linear-gradient(135deg, #0F6E56 0%, #0F6E56 100%);
+  .bg-gradient-teal-sky {
+    background: linear-gradient(135deg, #14b8a6 0%, #0ea5e9 100%);
   }
-  .bg-gradient-brand-light {
-    background: linear-gradient(135deg, #E1F5EE 0%, #F0F9F5 100%);
+  .bg-gradient-teal-emerald {
+    background: linear-gradient(135deg, #14b8a6 0%, #10b981 100%);
   }
   .bg-gradient-amber-orange {
     background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
@@ -839,8 +826,8 @@
   }
 
   /* Subtle background gradients for cards */
-  .bg-gradient-subtle-brand {
-    background: linear-gradient(135deg, rgba(15, 110, 86, 0.05) 0%, rgba(15, 110, 86, 0.03) 100%);
+  .bg-gradient-subtle-teal {
+    background: linear-gradient(135deg, rgba(20, 184, 166, 0.05) 0%, rgba(14, 165, 233, 0.05) 100%);
   }
   .bg-gradient-subtle-amber {
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.05) 0%, rgba(249, 115, 22, 0.05) 100%);

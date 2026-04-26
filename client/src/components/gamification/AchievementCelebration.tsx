@@ -65,7 +65,7 @@ export function AchievementCelebration({ achievement, onClose }: AchievementCele
       aria-modal="true"
       aria-labelledby="achievement-title"
     >
-      <div className="bg-white rounded-xl max-w-sm w-full p-8 text-center transform animate-in zoom-in-95 duration-300">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-8 text-center transform animate-in zoom-in-95 duration-300">
         <div className="text-6xl mb-4 animate-bounce">
           {achievement.icon}
         </div>
@@ -80,7 +80,7 @@ export function AchievementCelebration({ achievement, onClose }: AchievementCele
         </p>
         <button
           onClick={onClose}
-          className="w-full bg-brand-900 text-white py-3 rounded-xl font-semibold hover:bg-brand-900 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700 focus:ring-offset-2"
+          className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
         >
           Fortsätt! 🎉
         </button>

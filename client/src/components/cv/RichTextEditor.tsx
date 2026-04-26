@@ -231,7 +231,7 @@ export function RichTextEditor({
             <div
               className={`h-full transition-all duration-300 ${
                 charPercentage > 90 ? 'bg-red-500' :
-                charPercentage > 75 ? 'bg-amber-500' : 'bg-brand-700'
+                charPercentage > 75 ? 'bg-amber-500' : 'bg-green-500'
               }`}
               style={{ width: `${Math.min(charPercentage, 100)}%` }}
             />

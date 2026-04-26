@@ -14,7 +14,7 @@ import { cn } from '@/lib/utils'
 // Contact definitions with i18n keys
 const emergencyContactDefs = [
   { nameKey: 'wellness.crisis.contacts.1177.name', number: '1177', descKey: 'wellness.crisis.contacts.1177.description', color: 'bg-blue-500' },
-  { nameKey: 'wellness.crisis.contacts.bup.name', number: '08-123 150 00', descKey: 'wellness.crisis.contacts.bup.description', color: 'bg-brand-700' },
+  { nameKey: 'wellness.crisis.contacts.bup.name', number: '08-123 150 00', descKey: 'wellness.crisis.contacts.bup.description', color: 'bg-green-500' },
   { nameKey: 'wellness.crisis.contacts.healthcare.name', number: '08-320 100', descKey: 'wellness.crisis.contacts.healthcare.description', color: 'bg-purple-500' },
   { nameKey: 'wellness.crisis.contacts.112.name', number: '112', descKey: 'wellness.crisis.contacts.112.description', color: 'bg-red-600' },
 ]
@@ -89,7 +89,7 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
           duration: phase === 'breathe-in' ? 4 : phase === 'hold' ? 4 : phase === 'breathe-out' ? 6 : 2,
           ease: 'easeInOut'
         }}
-        className="w-40 h-40 mx-auto mb-8 rounded-full bg-gradient-to-br from-emerald-400 to-brand-700 dark:from-emerald-500 dark:to-brand-900 flex items-center justify-center"
+        className="w-40 h-40 mx-auto mb-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 flex items-center justify-center shadow-lg"
       >
         <Wind className="w-16 h-16 text-white" />
       </motion.div>
@@ -195,7 +195,7 @@ export default function CrisisTab() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-red-600 to-red-700 rounded-xl p-6 text-white"
+        className="bg-gradient-to-r from-red-600 to-red-700 rounded-xl p-6 text-white shadow-xl"
       >
         <div className="flex items-start gap-4">
           <motion.div
@@ -213,7 +213,7 @@ export default function CrisisTab() {
             <div className="flex gap-3 flex-wrap">
               <a
                 href="tel:112"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-red-600 font-bold rounded-xl hover:bg-red-50 transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-red-600 font-bold rounded-xl hover:bg-red-50 transition-colors shadow-lg"
               >
                 <Phone className="w-5 h-5" />
                 Ring 112
@@ -239,7 +239,7 @@ export default function CrisisTab() {
             whileTap={{ scale: 0.95 }}
             href={`tel:${contact.number.replace(/\s/g, '')}`}
             className={cn(
-              'p-4 rounded-xl text-white font-semibold text-center transition-all',
+              'p-4 rounded-xl text-white font-semibold text-center transition-all shadow-lg',
               contact.color
             )}
           >
@@ -251,7 +251,7 @@ export default function CrisisTab() {
       </div>
 
       {/* Breathing Exercise */}
-      <Card className="p-6 border-2 border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20">
+      <Card className="p-6 border-2 border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Wind className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           {t('wellness.crisis.breathingExercise')}
@@ -295,7 +295,7 @@ export default function CrisisTab() {
                   onClick={() => setSelectedGroundingTechnique(index)}
                   className="w-full flex items-start gap-4 p-4 rounded-xl bg-stone-50 dark:bg-stone-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border border-transparent hover:border-emerald-200 dark:hover:border-emerald-700 transition-all text-left"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-stone-600 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-stone-600 flex items-center justify-center shadow-sm flex-shrink-0">
                     <Icon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div className="flex-1">
@@ -322,7 +322,7 @@ export default function CrisisTab() {
               key={index}
               whileHover={{ x: 4 }}
               href={`tel:${contact.number.replace(/\s/g, '')}`}
-              className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-700 border-2 border-stone-200 dark:border-stone-600 hover:border-emerald-300 dark:hover:border-emerald-700 hover: transition-all"
+              className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-700 border-2 border-stone-200 dark:border-stone-600 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md transition-all"
             >
               <div className={cn(
                 'w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0',
@@ -343,7 +343,7 @@ export default function CrisisTab() {
       </Card>
 
       {/* Chat Support */}
-      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 border-2 border-emerald-200 dark:border-emerald-800">
+      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-2 border-emerald-200 dark:border-emerald-800">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           Chatt-stöd
@@ -380,7 +380,7 @@ export default function CrisisTab() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="text-center p-6 bg-gradient-to-r from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 rounded-xl border-2 border-emerald-200 dark:border-emerald-800"
+        className="text-center p-6 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl border-2 border-emerald-200 dark:border-emerald-800"
       >
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}

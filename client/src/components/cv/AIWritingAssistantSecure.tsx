@@ -39,7 +39,7 @@ const features = {
   quantify: {
     label: 'Kvantifiera',
     icon: TrendingUp,
-    color: 'text-brand-700',
+    color: 'text-green-500',
     description: 'Lägg till mätbara resultat och siffror'
   },
   translate: {
@@ -51,7 +51,7 @@ const features = {
   generate: {
     label: 'Generera',
     icon: Sparkles,
-    color: 'text-brand-700',
+    color: 'text-teal-500',
     description: 'Skapa ny text baserat på din input'
   }
 }
@@ -172,7 +172,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
     <div className="mt-2">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-sm text-brand-900 hover:text-brand-900 font-medium"
+        className="flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-medium"
       >
         <Shield size={16} />
         <Sparkles size={16} />
@@ -185,7 +185,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
           {!hasConsent ? (
             <AiConsentGate compact featureName="AI-skrivhjälp" />
           ) : (
-          <div className="p-4 bg-brand-50 rounded-xl border border-brand-200">
+          <div className="p-4 bg-teal-50 rounded-xl border border-teal-200">
           {/* Säkerhetsbadge */}
           <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
             <Shield className="w-4 h-4 text-emerald-600" />
@@ -211,7 +211,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
                   key={key}
                   onClick={() => callSecureAI(key)}
                   disabled={loading}
-                  className="flex flex-col items-center gap-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 hover:bg-slate-50 hover:border-brand-300 transition-colors disabled:opacity-50"
+                  className="flex flex-col items-center gap-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 hover:bg-slate-50 hover:border-teal-300 transition-colors disabled:opacity-50"
                   title={feat.description}
                 >
                   <Icon size={18} className={feat.color} />
@@ -243,7 +243,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
               </div>
               <button
                 onClick={applyPowerWords}
-                className="mt-2 flex items-center gap-1 px-3 py-1.5 bg-brand-900 text-white text-sm rounded-lg hover:bg-brand-900"
+                className="mt-2 flex items-center gap-1 px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700"
               >
                 <Wand2 size={14} />
                 Ersätt automatiskt
@@ -254,7 +254,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
           {/* Suggestion */}
           {loading && (
             <div className="p-4 bg-white rounded-lg border border-slate-200 text-center">
-              <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-brand-900" />
+              <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-teal-600" />
               <p className="text-sm text-slate-600">AI arbetar...</p>
               <p className="text-xs text-slate-600 mt-1">Detta kan ta några sekunder</p>
             </div>
@@ -273,7 +273,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
                     setSuggestion('')
                     setActiveFeature(null)
                   }}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-brand-900 text-white text-sm rounded-lg hover:bg-brand-900"
+                  className="flex items-center gap-1 px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700"
                 >
                   <Check size={14} />
                   Använd

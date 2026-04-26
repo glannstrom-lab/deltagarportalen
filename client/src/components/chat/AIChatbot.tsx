@@ -181,7 +181,7 @@ export function AIChatbot({ className }: AIChatbotProps) {
         <button
           onClick={() => setIsOpen(true)}
           className={cn(
-            'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 bg-gradient-to-r from-brand-700 to-sky-500 rounded-full  flex items-center justify-center text-white hover:scale-110 transition-transform',
+            'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 bg-gradient-to-r from-teal-500 to-sky-500 rounded-full shadow-lg shadow-teal-200 flex items-center justify-center text-white hover:scale-110 transition-transform',
             className
           )}
         >
@@ -191,9 +191,9 @@ export function AIChatbot({ className }: AIChatbotProps) {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-w-96 h-[70vh] sm:h-[600px] max-h-[600px] bg-white rounded-xl border border-slate-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4">
+        <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-w-96 h-[70vh] sm:h-[600px] max-h-[600px] bg-white rounded-2xl shadow-2xl border border-slate-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4">
           {/* Header */}
-          <div className="bg-gradient-to-r from-brand-700 to-sky-500 p-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-teal-500 to-sky-500 p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                 <Bot className="w-6 h-6 text-white" />
@@ -226,10 +226,10 @@ export function AIChatbot({ className }: AIChatbotProps) {
               >
                 <div className={cn(
                   'w-8 h-8 rounded-full flex items-center justify-center shrink-0',
-                  message.role === 'assistant' ? 'bg-brand-100' : 'bg-slate-100'
+                  message.role === 'assistant' ? 'bg-teal-100' : 'bg-slate-100'
                 )}>
                   {message.role === 'assistant' ? (
-                    <Bot className="w-4 h-4 text-brand-900" />
+                    <Bot className="w-4 h-4 text-teal-600" />
                   ) : (
                     <User className="w-4 h-4 text-slate-600" />
                   )}
@@ -240,10 +240,10 @@ export function AIChatbot({ className }: AIChatbotProps) {
                   message.role === 'user' && 'items-end'
                 )}>
                   <div className={cn(
-                    'p-3 rounded-xl text-sm',
+                    'p-3 rounded-2xl text-sm',
                     message.role === 'assistant'
                       ? 'bg-slate-100 text-slate-800 rounded-tl-none'
-                      : 'bg-brand-700 text-white rounded-tr-none'
+                      : 'bg-teal-500 text-white rounded-tr-none'
                   )}>
                     {message.content.split('\n').map((line, i) => (
                       <p key={i} className={i > 0 ? 'mt-2' : ''}>{line}</p>
@@ -257,7 +257,7 @@ export function AIChatbot({ className }: AIChatbotProps) {
                         <button
                           key={suggestion}
                           onClick={() => handleSuggestion(suggestion)}
-                          className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-xs text-slate-600 hover:border-brand-300 hover:text-brand-900 transition-colors"
+                          className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-xs text-slate-600 hover:border-teal-300 hover:text-teal-600 transition-colors"
                         >
                           {suggestion}
                         </button>
@@ -272,7 +272,7 @@ export function AIChatbot({ className }: AIChatbotProps) {
                         <button
                           key={action.label}
                           onClick={() => handleAction(action.url)}
-                          className="px-3 py-1.5 bg-brand-100 text-brand-900 rounded-lg text-xs font-medium hover:bg-brand-200 transition-colors"
+                          className="px-3 py-1.5 bg-teal-100 text-teal-700 rounded-lg text-xs font-medium hover:bg-teal-200 transition-colors"
                         >
                           {action.label}
                         </button>
@@ -285,11 +285,11 @@ export function AIChatbot({ className }: AIChatbotProps) {
             
             {isLoading && (
               <div className="flex gap-3">
-                <div className="w-8 h-8 bg-brand-100 rounded-full flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-brand-900" />
+                <div className="w-8 h-8 bg-teal-100 rounded-full flex items-center justify-center">
+                  <Bot className="w-4 h-4 text-teal-600" />
                 </div>
-                <div className="bg-slate-100 rounded-xl rounded-tl-none p-4">
-                  <Loader2 className="w-5 h-5 animate-spin text-brand-900" />
+                <div className="bg-slate-100 rounded-2xl rounded-tl-none p-4">
+                  <Loader2 className="w-5 h-5 animate-spin text-teal-600" />
                 </div>
               </div>
             )}
@@ -305,12 +305,12 @@ export function AIChatbot({ className }: AIChatbotProps) {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                 placeholder="Skriv din fråga..."
-                className="flex-1 px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 text-sm"
+                className="flex-1 px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
               />
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || isLoading}
-                className="px-4 py-2 bg-brand-700 text-white rounded-xl hover:bg-brand-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 bg-teal-500 text-white rounded-xl hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Send className="w-5 h-5" />
               </button>

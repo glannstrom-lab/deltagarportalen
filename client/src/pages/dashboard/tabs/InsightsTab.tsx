@@ -30,7 +30,7 @@ export default function InsightsTab() {
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-brand-700 animate-spin mx-auto mb-3" aria-hidden="true" />
+          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-slate-700 dark:text-stone-300">{t('dashboard.insights.analyzing')}</p>
         </div>
       </div>
@@ -61,7 +61,7 @@ export default function InsightsTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-            <Brain className="text-brand-700" size={28} />
+            <Brain className="text-teal-500" size={28} />
             {t('dashboard.insights.title')}
           </h2>
           <p className="text-slate-700 dark:text-stone-300">{t('dashboard.insights.subtitle')}</p>
@@ -151,7 +151,7 @@ interface SummaryCardProps {
 
 function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, color }: SummaryCardProps) {
   const colorClasses = {
-    violet: 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400',
+    violet: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
     orange: 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400',
     blue: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
     emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
@@ -200,7 +200,7 @@ function ActivityChart({ dailyActivity, t }: ActivityChartProps) {
   return (
     <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-        <BarChart3 size={20} className="text-brand-700" />
+        <BarChart3 size={20} className="text-teal-500" />
         {t('dashboard.insights.activityLast14Days')}
       </h3>
       <div className="flex items-end justify-between gap-1 h-32">
@@ -216,14 +216,14 @@ function ActivityChart({ dailyActivity, t }: ActivityChartProps) {
                 transition={{ delay: index * 0.03 }}
                 className={cn(
                   "w-full max-w-8 rounded-t-sm",
-                  isToday ? "bg-brand-700" : "bg-brand-200 dark:bg-brand-900",
+                  isToday ? "bg-teal-500" : "bg-teal-200 dark:bg-teal-700",
                   day.count === 0 && "bg-slate-100 dark:bg-stone-700"
                 )}
                 title={`${day.date}: ${t('dashboard.insights.activitiesCount', { count: day.count })}`}
               />
               <span className={cn(
                 "text-xs",
-                isToday ? "text-brand-900 dark:text-brand-400 font-medium" : "text-slate-600 dark:text-stone-400"
+                isToday ? "text-teal-600 dark:text-teal-400 font-medium" : "text-slate-600 dark:text-stone-400"
               )}>
                 {day.dayName}
               </span>
@@ -389,7 +389,7 @@ function RecommendationsSection({ recommendations, expandedId, onToggle, t }: Re
   return (
     <div>
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-        <Target size={20} className="text-brand-700" />
+        <Target size={20} className="text-teal-500" />
         {t('dashboard.insights.personalRecommendations')}
       </h3>
       <div className="space-y-3">
@@ -403,7 +403,7 @@ function RecommendationsSection({ recommendations, expandedId, onToggle, t }: Re
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               className={cn(
-                "bg-white dark:bg-stone-900 p-4 rounded-xl border transition-colors cursor-pointer hover:",
+                "bg-white dark:bg-stone-900 p-4 rounded-xl border transition-colors cursor-pointer hover:shadow-md",
                 priorityColors[rec.priority]
               )}
               onClick={() => onToggle(rec.id)}
@@ -413,11 +413,11 @@ function RecommendationsSection({ recommendations, expandedId, onToggle, t }: Re
                   <div className={cn(
                     "w-10 h-10 rounded-lg flex items-center justify-center",
                     rec.priority === 'high' ? "bg-red-100 dark:bg-red-900/40" :
-                    rec.priority === 'medium' ? "bg-amber-100 dark:bg-amber-900/40" : "bg-brand-100 dark:bg-brand-900/40"
+                    rec.priority === 'medium' ? "bg-amber-100 dark:bg-amber-900/40" : "bg-teal-100 dark:bg-teal-900/40"
                   )}>
                     <Icon size={18} className={cn(
                       rec.priority === 'high' ? "text-red-600 dark:text-red-400" :
-                      rec.priority === 'medium' ? "text-amber-600 dark:text-amber-400" : "text-brand-900 dark:text-brand-400"
+                      rec.priority === 'medium' ? "text-amber-600 dark:text-amber-400" : "text-teal-600 dark:text-teal-400"
                     )} />
                   </div>
                   <div>
@@ -494,7 +494,7 @@ function PatternsSection({ mostActiveDay, mostActiveHour, conversionRate, activi
         {patterns.map((pattern, index) => (
           <div key={index} className="flex items-start gap-3 p-4 bg-slate-50 dark:bg-stone-800 rounded-xl">
             <div className="w-8 h-8 rounded-lg bg-white dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
-              <pattern.icon size={14} className="text-brand-700" />
+              <pattern.icon size={14} className="text-teal-500" />
             </div>
             <p className="text-slate-700 dark:text-stone-300">{pattern.text}</p>
           </div>

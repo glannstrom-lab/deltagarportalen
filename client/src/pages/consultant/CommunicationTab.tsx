@@ -273,7 +273,7 @@ function NewMessageDialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-      <div className="bg-white dark:bg-stone-900 rounded-xl w-full max-w-lg">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-lg">
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <h3 className="font-semibold text-stone-900 dark:text-stone-100">
             {t('consultant.communication.newMessage')}
@@ -905,7 +905,7 @@ export function CommunicationTab() {
       {/* Message Detail Modal */}
       {selectedMessage && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-white dark:bg-stone-900 rounded-xl w-full max-w-lg">
+          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-lg">
             <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-medium">

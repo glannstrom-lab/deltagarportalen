@@ -242,7 +242,7 @@ export function MyCVs() {
   }
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-brand-900 bg-brand-100'
+    if (score >= 80) return 'text-green-600 bg-green-100'
     if (score >= 60) return 'text-amber-600 bg-amber-100'
     return 'text-red-600 bg-red-100'
   }
@@ -250,7 +250,7 @@ export function MyCVs() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-96">
-        <Loader2 className="w-12 h-12 animate-spin text-brand-900 mb-4" />
+        <Loader2 className="w-12 h-12 animate-spin text-teal-600 mb-4" />
         <p className="text-stone-600">{t('cv.myCvs.loading')}</p>
       </div>
     )
@@ -259,17 +259,17 @@ export function MyCVs() {
   return (
     <div className="space-y-6">
       {/* Header med stats */}
-      <div className="bg-gradient-to-r from-brand-50 via-white to-sky-50 dark:from-brand-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-xl border border-brand-200 dark:border-brand-900/50 p-6">
+      <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-brand-900 dark:text-brand-300 mb-1">{t('cv.myCvs.title')}</h2>
-            <p className="text-brand-900 dark:text-brand-400">
+            <h2 className="text-2xl font-bold text-teal-800 dark:text-teal-300 mb-1">{t('cv.myCvs.title')}</h2>
+            <p className="text-teal-600 dark:text-teal-400">
               {t('cv.myCvs.savedCount', { count: cvs.length })}
             </p>
           </div>
           <Link
             to="/cv"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-900 dark:bg-brand-700 text-white rounded-xl font-medium hover:bg-brand-900 dark:hover:bg-brand-900 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 dark:bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-700 dark:hover:bg-teal-600 transition-colors shadow-lg"
           >
             <Plus className="w-5 h-5" />
             {t('cv.myCvs.createNew')}
@@ -278,22 +278,22 @@ export function MyCVs() {
 
         {/* Quick stats */}
         {cvs.length > 0 && (
-          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-brand-200 dark:border-brand-900/50">
+          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-teal-200 dark:border-teal-800/50">
             <div className="text-center">
-              <div className="text-2xl font-bold text-brand-900 dark:text-brand-300">{cvs.length}</div>
-              <div className="text-xs text-brand-900 dark:text-brand-400">{t('cv.myCvs.stats.totalSaved')}</div>
+              <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">{cvs.length}</div>
+              <div className="text-xs text-teal-600 dark:text-teal-400">{t('cv.myCvs.stats.totalSaved')}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-brand-900 dark:text-brand-300">
+              <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">
                 {cvs.filter(c => (c.atsScore || 0) >= 70).length}
               </div>
-              <div className="text-xs text-brand-900 dark:text-brand-400">{t('cv.myCvs.stats.atsApproved')}</div>
+              <div className="text-xs text-teal-600 dark:text-teal-400">{t('cv.myCvs.stats.atsApproved')}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-brand-900 dark:text-brand-300">
+              <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">
                 {formatDate(cvs[0]?.created_at || new Date().toISOString())}
               </div>
-              <div className="text-xs text-brand-900 dark:text-brand-400">{t('cv.myCvs.stats.lastSaved')}</div>
+              <div className="text-xs text-teal-600 dark:text-teal-400">{t('cv.myCvs.stats.lastSaved')}</div>
             </div>
           </div>
         )}
@@ -309,7 +309,7 @@ export function MyCVs() {
             placeholder={t('cv.myCvs.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 bg-white dark:bg-stone-900 dark:text-stone-100"
+            className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-900 dark:text-stone-100"
           />
         </div>
 
@@ -317,7 +317,7 @@ export function MyCVs() {
         <select
           value={selectedTemplate}
           onChange={(e) => setSelectedTemplate(e.target.value)}
-          className="px-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-700 bg-white dark:bg-stone-900 dark:text-stone-100"
+          className="px-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-900 dark:text-stone-100"
           aria-label={t('cv.myCvs.filterByTemplate')}
         >
           {templateFilters.map(tpl => (
@@ -328,7 +328,7 @@ export function MyCVs() {
 
       {/* CV List */}
       {filteredCVs.length === 0 ? (
-        <div className="text-center py-16 bg-stone-50 dark:bg-stone-800 rounded-xl border border-dashed border-stone-300 dark:border-stone-600">
+        <div className="text-center py-16 bg-stone-50 dark:bg-stone-800 rounded-2xl border border-dashed border-stone-300 dark:border-stone-600">
           <div className="w-20 h-20 bg-stone-100 dark:bg-stone-700 rounded-full flex items-center justify-center mx-auto mb-4">
             <Folder className="w-10 h-10 text-stone-600 dark:text-stone-400" />
           </div>
@@ -342,7 +342,7 @@ export function MyCVs() {
           </p>
           <Link
             to="/cv"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-900 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
           >
             <Plus className="w-5 h-5" />
             {t('cv.myCvs.createFirstCV')}
@@ -354,8 +354,8 @@ export function MyCVs() {
             <div
               key={cv.id}
               className={cn(
-                'bg-white dark:bg-stone-900 rounded-xl border-2 p-5 transition-all hover:',
-                cv.isDefault ? 'border-brand-300 dark:border-brand-900 bg-brand-50/30 dark:bg-brand-900/20' : 'border-stone-200 dark:border-stone-700'
+                'bg-white dark:bg-stone-900 rounded-2xl border-2 p-5 transition-all hover:shadow-lg',
+                cv.isDefault ? 'border-teal-300 dark:border-teal-700 bg-teal-50/30 dark:bg-teal-900/20' : 'border-stone-200 dark:border-stone-700'
               )}
             >
               <div className="flex flex-col lg:flex-row lg:items-start gap-4">
@@ -363,7 +363,7 @@ export function MyCVs() {
                 <div className="flex items-start gap-4 flex-1">
                   <div className={cn(
                     'w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0',
-                    cv.isDefault ? 'bg-brand-100 dark:bg-brand-900/50 text-brand-900 dark:text-brand-400' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
+                    cv.isDefault ? 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
                   )}>
                     <FileText className="w-7 h-7" />
                   </div>
@@ -372,7 +372,7 @@ export function MyCVs() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-lg">{cv.name}</h3>
                       {cv.isDefault && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-brand-100 text-brand-900 text-xs font-medium rounded-full">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded-full">
                           <Star className="w-3 h-3 fill-current" />
                           {t('cv.myCvs.default')}
                         </span>
@@ -432,7 +432,7 @@ export function MyCVs() {
                   {/* Preview */}
                   <button
                     onClick={() => setPreviewCV(cv)}
-                    className="p-2 text-stone-600 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors"
+                    className="p-2 text-stone-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                     title={t('common.preview')}
                   >
                     <Eye className="w-5 h-5" />
@@ -441,7 +441,7 @@ export function MyCVs() {
                   {/* Edit */}
                   <button
                     onClick={() => handleEdit(cv)}
-                    className="p-2 text-stone-600 hover:text-brand-900 hover:bg-brand-50 rounded-lg transition-colors"
+                    className="p-2 text-stone-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                     title={t('common.edit')}
                   >
                     <Edit2 className="w-5 h-5" />
@@ -479,7 +479,7 @@ export function MyCVs() {
                           className="fixed inset-0 z-10"
                           onClick={() => setActionMenuOpen(null)}
                         />
-                        <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 py-1 z-20">
+                        <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-stone-800 rounded-xl shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-20">
                           <button
                             onClick={() => handleDuplicate(cv)}
                             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700"
@@ -516,7 +516,7 @@ export function MyCVs() {
       )}
 
       {/* Tips */}
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800">
+      <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -535,7 +535,7 @@ export function MyCVs() {
       {/* Preview Modal */}
       {previewCV && (
         <div className="fixed inset-0 z-50 bg-stone-900/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-stone-900 rounded-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b dark:border-stone-700">
               <div>
@@ -562,7 +562,7 @@ export function MyCVs() {
             
             {/* Preview Content */}
             <div className="flex-1 overflow-y-auto p-6 bg-stone-100 dark:bg-stone-800">
-              <div className="max-w-[210mm] mx-auto bg-white dark:bg-white">
+              <div className="max-w-[210mm] mx-auto bg-white dark:bg-white shadow-lg">
                 <CVPreview data={previewCV.data} />
               </div>
             </div>

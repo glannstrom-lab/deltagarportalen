@@ -192,7 +192,7 @@ export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
           .map((key) => (
             <div
               key={key}
-              className={`w-10 h-10 rounded-lg bg-gradient-to-br ${riasecColors[key].gradient} flex items-center justify-center text-white font-bold`}
+              className={`w-10 h-10 rounded-lg bg-gradient-to-br ${riasecColors[key].gradient} flex items-center justify-center text-white font-bold shadow-md`}
             >
               {key}
             </div>

@@ -8,7 +8,7 @@ import type { DashboardWidgetProps, WidgetStat, WidgetStatus, WidgetColor } from
 const SIDEBAR_COLOR = '#4f46e5'
 
 const categoryColors: Record<WidgetColor, { bg: string; text: string }> = {
-  brand: { bg: 'bg-brand-50', text: 'text-brand-900' },
+  teal: { bg: 'bg-teal-50', text: 'text-teal-600' },
   blue: { bg: 'bg-blue-50', text: 'text-blue-600' },
   green: { bg: 'bg-emerald-50', text: 'text-emerald-600' },
   rose: { bg: 'bg-rose-50', text: 'text-rose-600' },
@@ -62,7 +62,7 @@ export function DashboardWidget({
   }
 
   return (
-    <Card className="p-3 hover: transition-shadow">
+    <Card className="p-3 hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex items-center justify-between mb-1.5">
         <Link to={to} className="flex items-center gap-1.5 group min-w-0 flex-1">

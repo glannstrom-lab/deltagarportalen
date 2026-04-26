@@ -116,7 +116,7 @@ export function DropdownMenuContent({
       <div
         ref={ref}
         className={cn(
-          'absolute z-50 mt-1 bg-white dark:bg-stone-900 rounded-lg border border-slate-200 dark:border-stone-700 py-1 min-w-[180px]',
+          'absolute z-50 mt-1 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-slate-200 dark:border-stone-700 py-1 min-w-[180px]',
           alignmentClasses[align],
           className
         )}

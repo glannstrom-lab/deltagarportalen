@@ -46,7 +46,7 @@ export default function CategoryFilter({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Sök artiklar..."
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
+          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
         />
         {searchQuery && (
           <button
@@ -68,7 +68,7 @@ export default function CategoryFilter({
           onClick={() => onCategoryChange('', '')}
           className={`
             w-full text-left px-3 py-2 rounded-lg text-sm transition-colors
-            ${!selectedCategory ? 'bg-brand-50 text-brand-900 font-medium' : 'text-slate-700 hover:bg-slate-50'}
+            ${!selectedCategory ? 'bg-teal-50 text-teal-700 font-medium' : 'text-slate-700 hover:bg-slate-50'}
           `}
         >
           Alla kategorier
@@ -84,7 +84,7 @@ export default function CategoryFilter({
               className={`
                 w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors
                 ${selectedCategory === category.id 
-                  ? 'bg-brand-50 text-brand-900 font-medium' 
+                  ? 'bg-teal-50 text-teal-700 font-medium' 
                   : 'text-slate-700 hover:bg-slate-50'
                 }
               `}
@@ -109,7 +109,7 @@ export default function CategoryFilter({
                     className={`
                       w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors
                       ${selectedSubcategory === sub.id 
-                        ? 'bg-brand-100/50 text-brand-900' 
+                        ? 'bg-teal-100/50 text-teal-700' 
                         : 'text-slate-600 hover:bg-slate-50'
                       }
                     `}

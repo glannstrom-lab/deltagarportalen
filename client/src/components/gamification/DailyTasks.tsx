@@ -127,7 +127,7 @@ export const DailyTasks: React.FC = () => {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-4">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-semibold text-gray-900">Dagens uppgifter</h3>
         <span className="text-sm text-gray-500">
@@ -141,19 +141,19 @@ export const DailyTasks: React.FC = () => {
             key={task.id}
             className={`flex items-start gap-3 p-3 rounded-lg transition-colors ${
               task.completed 
-                ? 'bg-brand-50 border border-brand-200' 
+                ? 'bg-green-50 border border-green-200' 
                 : 'bg-gray-50 hover:bg-gray-100 cursor-pointer'
             }`}
             onClick={() => !task.completed && completeTask(task.id)}
           >
             {task.completed ? (
-              <CheckCircle2 className="w-5 h-5 text-brand-900 flex-shrink-0 mt-0.5" />
+              <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
             ) : (
               <Circle className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
             )}
             
             <div className="flex-1">
-              <p className={`font-medium ${task.completed ? 'text-brand-900 line-through' : 'text-gray-900'}`}>
+              <p className={`font-medium ${task.completed ? 'text-green-800 line-through' : 'text-gray-900'}`}>
                 {task.title}
               </p>
               <p className="text-sm text-gray-500">{task.description}</p>
@@ -168,8 +168,8 @@ export const DailyTasks: React.FC = () => {
       </div>
 
       {completedCount === tasks.length && tasks.length > 0 && (
-        <div className="mt-4 p-3 bg-brand-100 rounded-lg text-center">
-          <p className="text-brand-900 font-medium">🎉 Alla uppgifter klara för idag!</p>
+        <div className="mt-4 p-3 bg-green-100 rounded-lg text-center">
+          <p className="text-green-800 font-medium">🎉 Alla uppgifter klara för idag!</p>
         </div>
       )}
     </div>

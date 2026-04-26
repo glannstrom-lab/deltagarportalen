@@ -130,11 +130,11 @@ export function ProfileStatusWidget() {
   return (
     <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 bg-brand-50 dark:bg-brand-900/30 border-b border-slate-200 dark:border-stone-700">
+      <div className="px-4 py-3 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 border-b border-slate-200 dark:border-stone-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brand-100 dark:bg-brand-900/50 rounded-lg flex items-center justify-center">
-              <User className="w-4 h-4 text-brand-900 dark:text-brand-400" />
+            <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/50 rounded-lg flex items-center justify-center">
+              <User className="w-4 h-4 text-teal-600 dark:text-teal-400" />
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-stone-100 text-sm">
@@ -144,7 +144,7 @@ export function ProfileStatusWidget() {
           </div>
           <Link
             to="/profile"
-            className="text-xs text-brand-900 dark:text-brand-400 hover:text-brand-900/80 dark:hover:text-brand-300 font-medium flex items-center gap-0.5"
+            className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium flex items-center gap-0.5"
           >
             {t('common.show')} <ChevronRight className="w-3 h-3" />
           </Link>
@@ -180,7 +180,7 @@ export function ProfileStatusWidget() {
                 .slice(0, 2)
                 .map((step, i) => (
                   <div key={i} className="flex items-center gap-2 text-xs text-slate-600 dark:text-stone-400">
-                    <div className="w-1.5 h-1.5 bg-brand-900 dark:bg-brand-400 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-teal-500 dark:bg-teal-400 rounded-full" />
                     <span className="truncate">{step.activity}</span>
                     <span className="text-slate-400 dark:text-stone-500 ml-auto">{step.date}</span>
                   </div>
@@ -211,9 +211,9 @@ export function ProfileStatusCompact() {
   return (
     <Link
       to="/profile"
-      className="flex items-center gap-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-slate-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900/50 transition-colors"
+      className="flex items-center gap-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-slate-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700 transition-colors"
     >
-      <div className="w-10 h-10 bg-brand-900 rounded-xl flex items-center justify-center">
+      <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-sky-600 rounded-xl flex items-center justify-center">
         <User className="w-5 h-5 text-white" />
       </div>
       <div className="flex-1 min-w-0">

@@ -176,7 +176,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
 
   return (
     <div className={cn(
-      "bg-gradient-to-br from-brand-700 to-sky-500 rounded-xl p-6 sm:p-8 text-white",
+      "bg-gradient-to-br from-teal-500 to-sky-500 rounded-3xl p-6 sm:p-8 text-white",
       className
     )}>
       {/* Header */}
@@ -226,7 +226,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
                   className={cn(
                     "w-10 h-10 rounded-full flex items-center justify-center transition-all",
                     isComplete
-                      ? "bg-white text-brand-900"
+                      ? "bg-white text-teal-600"
                       : isCurrent
                         ? "bg-white/30 ring-2 ring-white"
                         : "bg-white/10"
@@ -298,9 +298,9 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
               disabled={!canProceed}
               className={cn(
                 "flex-1 py-4 rounded-xl font-semibold transition-all flex items-center justify-center gap-2",
-                "bg-white text-brand-900 hover:bg-white/90",
+                "bg-white text-teal-600 hover:bg-white/90",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
-                "focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-brand-700"
+                "focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-teal-500"
               )}
             >
               {isLastStep ? (

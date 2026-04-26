@@ -166,8 +166,8 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
 
   return (
     <div className={cn(
-      "bg-gradient-to-br from-sky-50 to-brand-50 dark:from-sky-900/20 dark:to-brand-900/20",
-      "rounded-xl border border-sky-200 dark:border-sky-800/50 overflow-hidden",
+      "bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20",
+      "rounded-2xl border border-sky-200 dark:border-sky-800/50 overflow-hidden",
       className
     )}>
       {/* Header */}
@@ -178,7 +178,7 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
         aria-controls="job-adapt-content"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-brand-700 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-sky-500 to-teal-500 rounded-xl flex items-center justify-center">
             <Target className="w-5 h-5 text-white" />
           </div>
           <div className="text-left">
@@ -226,8 +226,8 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
                 disabled={!jobDescription.trim() || isAnalyzing}
                 className={cn(
                   "w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2",
-                  "bg-gradient-to-r from-sky-500 to-brand-700 text-white",
-                  "hover:from-sky-600 hover:to-brand-900",
+                  "bg-gradient-to-r from-sky-500 to-teal-500 text-white",
+                  "hover:from-sky-600 hover:to-teal-600",
                   "disabled:opacity-50 disabled:cursor-not-allowed",
                   "focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
                 )}

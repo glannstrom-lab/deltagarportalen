@@ -49,7 +49,7 @@ export const RejectionSupport: React.FC<RejectionSupportProps> = ({
   if (selectedMessage) {
     return (
       <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-xl max-w-md w-full p-6">
+        <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
           <div className="text-center mb-6">
             <div className="w-16 h-16 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Heart className="w-8 h-8 text-pink-600" />
@@ -74,7 +74,7 @@ export const RejectionSupport: React.FC<RejectionSupportProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-md w-full p-6">
+      <div className="bg-white rounded-2xl shadow-xl max-w-md w-full p-6">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">

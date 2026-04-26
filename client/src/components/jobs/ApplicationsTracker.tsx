@@ -13,7 +13,7 @@ const statusConfig = {
   saved: { label: 'Sparad', icon: Star, color: 'text-yellow-600 bg-yellow-50' },
   applied: { label: 'Ansökt', icon: Send, color: 'text-blue-600 bg-blue-50' },
   interview: { label: 'Intervju', icon: MessageSquare, color: 'text-purple-600 bg-purple-50' },
-  offer: { label: 'Erbjudande', icon: CheckCircle, color: 'text-brand-900 bg-brand-50' },
+  offer: { label: 'Erbjudande', icon: CheckCircle, color: 'text-green-600 bg-green-50' },
   rejected: { label: 'Avslag', icon: XCircle, color: 'text-red-600 bg-red-50' },
   withdrawn: { label: 'Återtagen', icon: Clock, color: 'text-slate-600 bg-slate-50' },
 }
@@ -34,7 +34,7 @@ export function ApplicationsTracker({ applications, onUpdateStatus, onDelete, on
   const responseCount = applications.filter(a => ['interview', 'offer', 'rejected'].includes(a.status)).length
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="font-semibold text-slate-800">Mina ansökningar</h3>

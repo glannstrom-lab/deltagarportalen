@@ -81,7 +81,7 @@ export class ErrorBoundary extends Component<Props, State> {
       // Default error UI
       return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl max-w-lg w-full p-8 text-center">
+          <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-8 text-center">
             <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <AlertTriangle className="w-10 h-10 text-red-600" />
             </div>
@@ -111,7 +111,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={this.handleReload}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-brand-900 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
               >
                 <RefreshCw className="w-4 h-4" />
                 Ladda om sidan

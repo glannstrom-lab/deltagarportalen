@@ -146,8 +146,8 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
         className={`
           flex items-center justify-center transition-all
           ${variant === 'fixed'
-            ? 'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 px-4 py-3 bg-white text-slate-700 border-2 border-rose-200 rounded-full hover: hover:border-rose-300 hover:bg-rose-50 focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 gap-2 text-sm'
-            : 'w-10 h-10 rounded-xl bg-rose-100/80 hover:bg-rose-200/90 dark:bg-rose-900/40 dark:hover:bg-rose-800/50 hover: focus-visible:ring-2 focus-visible:ring-rose-400'
+            ? 'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 px-4 py-3 bg-white text-slate-700 border-2 border-rose-200 rounded-full shadow-lg hover:shadow-xl hover:border-rose-300 hover:bg-rose-50 focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 gap-2 text-sm'
+            : 'w-10 h-10 rounded-xl bg-rose-100/80 hover:bg-rose-200/90 dark:bg-rose-900/40 dark:hover:bg-rose-800/50 shadow-sm hover:shadow-md focus-visible:ring-2 focus-visible:ring-rose-400'
           }
         `}
         style={{ outline: 'none' }}
@@ -180,7 +180,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
         >
           <div
             ref={modalRef}
-            className="bg-white dark:bg-stone-800 rounded-xl max-w-lg w-full max-h-[85vh] overflow-y-auto"
+            className="bg-white dark:bg-stone-800 rounded-2xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto"
           >
             {/* Header */}
             <div className="sticky top-0 bg-white dark:bg-stone-800 border-b border-slate-100 dark:border-stone-700 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
@@ -201,7 +201,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
               <button
                 ref={closeButtonRef}
                 onClick={() => setIsOpen(false)}
-                className="p-2 text-slate-600 dark:text-stone-400 hover:bg-slate-100 dark:hover:bg-stone-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700"
+                className="p-2 text-slate-600 dark:text-stone-400 hover:bg-slate-100 dark:hover:bg-stone-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
                 aria-label={t('common.close')}
               >
                 <X size={20} aria-hidden="true" />
@@ -212,9 +212,9 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
               {/* Intro text */}
               <div
                 id="crisis-modal-description"
-                className="bg-brand-50 border border-brand-100 rounded-xl p-4"
+                className="bg-teal-50 border border-teal-100 rounded-xl p-4"
               >
-                <p className="text-brand-900 text-sm leading-relaxed">
+                <p className="text-teal-800 text-sm leading-relaxed">
                   {t('crisis.introText')}
                 </p>
               </div>
@@ -269,7 +269,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                       <a
                         key={resource.nameKey}
                         href={`tel:${resource.phone.replace(/\s/g, '')}`}
-                        className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-brand-700"
+                        className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-teal-500"
                       >
                         <div className="p-2 rounded-lg bg-white text-slate-600">
                           <Phone size={18} aria-hidden="true" />
@@ -307,7 +307,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                       href={resource.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-brand-300 hover:bg-brand-50 transition-all focus:outline-none focus:ring-2 focus:ring-brand-700"
+                      className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all focus:outline-none focus:ring-2 focus:ring-teal-500"
                     >
                       <ExternalLink size={18} className="text-slate-600" aria-hidden="true" />
                       <div className="flex-1">
@@ -324,7 +324,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
               </div>
 
               {/* Uppmuntrande avslutning */}
-              <div className="bg-gradient-to-r from-brand-50 to-rose-50 border border-brand-100 rounded-xl p-4 text-center">
+              <div className="bg-gradient-to-r from-teal-50 to-rose-50 border border-teal-100 rounded-xl p-4 text-center">
                 <p className="text-sm text-slate-700">
                   <strong>{t('crisis.youMatter')}</strong> {t('crisis.alwaysHope')}
                 </p>
@@ -335,7 +335,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
             <div className="sticky bottom-0 bg-slate-50 dark:bg-stone-700 border-t border-slate-100 dark:border-stone-600 px-6 py-4 rounded-b-2xl">
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-full bg-white dark:bg-stone-600 border border-slate-300 dark:border-stone-500 text-slate-700 dark:text-stone-200 py-3 rounded-lg font-medium hover:bg-slate-50 dark:hover:bg-stone-500 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-700"
+                className="w-full bg-white dark:bg-stone-600 border border-slate-300 dark:border-stone-500 text-slate-700 dark:text-stone-200 py-3 rounded-lg font-medium hover:bg-slate-50 dark:hover:bg-stone-500 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 {t('common.close')}
               </button>

@@ -34,7 +34,7 @@ export default function RealMarketInsights() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl p-8 border border-slate-200">
+      <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200">
         <div className="flex items-center justify-center h-48">
           <div className="animate-spin w-8 h-8 border-2 border-[#4f46e5] border-t-transparent rounded-full" />
         </div>
@@ -80,7 +80,7 @@ export default function RealMarketInsights() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Populära yrken */}
-        <div className="bg-white rounded-xl p-6 border border-slate-200">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
           <div className="flex items-center gap-2 mb-4">
             <Award className="text-[#4f46e5]" size={24} />
             <h3 className="font-semibold text-slate-800">Mest efterfrågade yrken</h3>
@@ -101,7 +101,7 @@ export default function RealMarketInsights() {
                 <div className="flex items-center gap-2">
                   <span className="text-sm text-slate-700">{occupation.count} jobb</span>
                   {occupation.trend === 'up' && (
-                    <span className="text-brand-700 text-xs font-medium">↑</span>
+                    <span className="text-green-500 text-xs font-medium">↑</span>
                   )}
                 </div>
               </div>
@@ -110,7 +110,7 @@ export default function RealMarketInsights() {
         </div>
 
         {/* Trendande kompetenser */}
-        <div className="bg-white rounded-xl p-6 border border-slate-200">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
           <div className="flex items-center gap-2 mb-4">
             <TrendingUp className="text-[#4f46e5]" size={24} />
             <h3 className="font-semibold text-slate-800">Trendande kompetenser</h3>
@@ -126,12 +126,12 @@ export default function RealMarketInsights() {
                   <span className="font-medium text-slate-800">{skill.skill}</span>
                   <div className="flex items-center gap-2">
                     {skill.average_salary && (
-                      <span className="text-sm text-brand-900 font-medium">
+                      <span className="text-sm text-green-600 font-medium">
                         {Math.round(skill.average_salary / 1000)}k kr
                       </span>
                     )}
                     {skill.trend === 'up' && (
-                      <span className="text-brand-700 text-xs">↑ Växer</span>
+                      <span className="text-green-500 text-xs">↑ Växer</span>
                     )}
                   </div>
                 </div>
@@ -154,7 +154,7 @@ export default function RealMarketInsights() {
 
       {/* Regional statistik */}
       {marketStats?.by_region && (
-        <div className="bg-white rounded-xl p-6 border border-slate-200">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
           <div className="flex items-center gap-2 mb-4">
             <MapPin className="text-[#4f46e5]" size={24} />
             <h3 className="font-semibold text-slate-800">Jobb per region</h3>
@@ -180,7 +180,7 @@ export default function RealMarketInsights() {
                     />
                   </div>
                   {region.growth_percent > 0 && (
-                    <span className="text-xs text-brand-900 font-medium">
+                    <span className="text-xs text-green-600 font-medium">
                       +{region.growth_percent}%
                     </span>
                   )}
@@ -214,12 +214,12 @@ function StatCard({ icon: Icon, label, value, subtext, color }: StatCardProps) {
   const colorClasses = {
     blue: 'bg-blue-50 text-blue-600',
     purple: 'bg-purple-50 text-purple-600',
-    green: 'bg-brand-50 text-brand-900',
+    green: 'bg-green-50 text-green-600',
     orange: 'bg-orange-50 text-orange-600',
   };
 
   return (
-    <div className="bg-white rounded-xl p-5 border border-slate-200">
+    <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200">
       <div className={`w-10 h-10 rounded-xl ${colorClasses[color]} flex items-center justify-center mb-3`}>
         <Icon size={20} />
       </div>

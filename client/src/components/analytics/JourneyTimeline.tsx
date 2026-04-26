@@ -21,9 +21,9 @@ const milestones: Milestone[] = [
 
 export function JourneyTimeline() {
   return (
-    <div className="p-6 bg-white rounded-xl border border-slate-200">
+    <div className="p-6 bg-white rounded-2xl border border-slate-200">
       <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
-        <TrendingUp className="text-brand-700" size={24} />
+        <TrendingUp className="text-teal-500" size={24} />
         Din jobbsökar-resa
       </h2>
 
@@ -40,7 +40,7 @@ export function JourneyTimeline() {
           >
             <div className={cn(
               "relative z-10 w-8 h-8 rounded-full flex items-center justify-center",
-              milestone.type === 'cv' ? 'bg-brand-100 text-brand-900' :
+              milestone.type === 'cv' ? 'bg-teal-100 text-teal-600' :
               milestone.type === 'application' ? 'bg-blue-100 text-blue-600' :
               milestone.type === 'interview' ? 'bg-emerald-100 text-emerald-600' :
               'bg-amber-100 text-amber-600'
@@ -60,9 +60,9 @@ export function JourneyTimeline() {
         ))}
       </div>
 
-      <div className="p-4 bg-brand-50 rounded-xl border border-brand-200">
-        <h4 className="font-semibold text-brand-900 mb-1">Prognos</h4>
-        <p className="text-sm text-brand-900">
+      <div className="p-4 bg-teal-50 rounded-xl border border-teal-200">
+        <h4 className="font-semibold text-teal-800 mb-1">Prognos</h4>
+        <p className="text-sm text-teal-700">
           Baserat på din takt: <span className="font-bold">Jobberbjudande inom 3-4 veckor</span> 
           (konfidens: 78%)
         </p>

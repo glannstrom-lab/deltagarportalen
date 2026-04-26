@@ -58,7 +58,7 @@ export default function Journey() {
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-brand-900 dark:text-brand-400 animate-spin mx-auto mb-4" aria-hidden="true" />
+          <Loader2 className="w-12 h-12 text-teal-600 dark:text-teal-400 animate-spin mx-auto mb-4" aria-hidden="true" />
           <p className="text-gray-600 dark:text-gray-300">{t('journey.loading')}</p>
         </div>
       </div>
@@ -92,7 +92,7 @@ export default function Journey() {
       <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 page-transition">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="text-center mb-12">
-            <div className="w-20 h-20 bg-gradient-to-br from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900 rounded-xl flex items-center justify-center mx-auto mb-6  dark:/30">
+            <div className="w-20 h-20 bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-teal-200 dark:shadow-teal-900/30">
               <Map className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4">
@@ -126,7 +126,7 @@ export default function Journey() {
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900 rounded-xl flex items-center justify-center  dark:/30">
+            <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 rounded-xl flex items-center justify-center shadow-lg shadow-teal-200 dark:shadow-teal-900/30">
               <Map className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -153,7 +153,7 @@ export default function Journey() {
             className={`
               flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
               ${activeTab === 'overview'
-                ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400'
+                ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400'
                 : 'text-gray-600 dark:text-gray-300 hover:bg-stone-100 dark:hover:bg-stone-800'
               }
             `}
@@ -166,7 +166,7 @@ export default function Journey() {
             className={`
               flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
               ${activeTab === 'goals'
-                ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400'
+                ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400'
                 : 'text-gray-600 dark:text-gray-300 hover:bg-stone-100 dark:hover:bg-stone-800'
               }
             `}
@@ -174,7 +174,7 @@ export default function Journey() {
             <Target className="w-4 h-4" />
             {t('journey.tabs.goals')}
             {goals.filter(g => !g.is_completed).length > 0 && (
-              <span className="bg-brand-700 dark:bg-brand-900 text-white text-xs px-1.5 py-0.5 rounded-full">
+              <span className="bg-teal-500 dark:bg-teal-600 text-white text-xs px-1.5 py-0.5 rounded-full">
                 {goals.filter(g => !g.is_completed).length}
               </span>
             )}
@@ -184,7 +184,7 @@ export default function Journey() {
             className={`
               flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
               ${activeTab === 'achievements'
-                ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400'
+                ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400'
                 : 'text-gray-600 dark:text-gray-300 hover:bg-stone-100 dark:hover:bg-stone-800'
               }
             `}
@@ -202,7 +202,7 @@ export default function Journey() {
             className={`
               flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
               ${activeTab === 'stats'
-                ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400'
+                ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400'
                 : 'text-gray-600 dark:text-gray-300 hover:bg-stone-100 dark:hover:bg-stone-800'
               }
             `}
@@ -268,23 +268,23 @@ export default function Journey() {
               {weeklySummary && <JourneyWeekSummary summary={weeklySummary} />}
 
               {/* Tips for goal setting */}
-              <div className="bg-brand-50 dark:bg-brand-900/20 rounded-xl p-6 border border-brand-100 dark:border-brand-900">
-                <h4 className="font-semibold text-brand-900 dark:text-brand-100 mb-3">{t('journey.goalTips.title')}</h4>
-                <ul className="space-y-2 text-sm text-brand-900 dark:text-brand-300">
+              <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-6 border border-teal-100 dark:border-teal-800">
+                <h4 className="font-semibold text-teal-900 dark:text-teal-100 mb-3">{t('journey.goalTips.title')}</h4>
+                <ul className="space-y-2 text-sm text-teal-700 dark:text-teal-300">
                   <li className="flex items-start gap-2">
-                    <span className="text-brand-700 dark:text-brand-400 mt-0.5">•</span>
+                    <span className="text-teal-500 dark:text-teal-400 mt-0.5">•</span>
                     {t('journey.goalTips.tip1')}
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-brand-700 dark:text-brand-400 mt-0.5">•</span>
+                    <span className="text-teal-500 dark:text-teal-400 mt-0.5">•</span>
                     {t('journey.goalTips.tip2')}
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-brand-700 dark:text-brand-400 mt-0.5">•</span>
+                    <span className="text-teal-500 dark:text-teal-400 mt-0.5">•</span>
                     {t('journey.goalTips.tip3')}
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="text-brand-700 dark:text-brand-400 mt-0.5">•</span>
+                    <span className="text-teal-500 dark:text-teal-400 mt-0.5">•</span>
                     {t('journey.goalTips.tip4')}
                   </li>
                 </ul>

@@ -45,7 +45,7 @@ export function AgentAvatar({ agentId, color, size = 'md', className }: AgentAva
     <div
       className={cn(
         'rounded-xl flex items-center justify-center flex-shrink-0',
-        '',
+        'shadow-sm',
         colors.bgLight,
         sizeClasses[size],
         className
@@ -64,7 +64,7 @@ export function AgentAvatarSolid({ agentId, color, size = 'md', className }: Age
     <div
       className={cn(
         'rounded-xl flex items-center justify-center flex-shrink-0',
-        '',
+        'shadow-md',
         colors.bg,
         sizeClasses[size],
         className

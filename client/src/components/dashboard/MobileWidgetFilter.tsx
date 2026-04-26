@@ -19,11 +19,11 @@ export { availableWidgets, type WidgetType, type WidgetFilterItem } from './Widg
 
 // Kompakt variant av availableWidgets för mobil
 const mobileWidgets: WidgetFilterItem[] = [
-  { id: 'cv', label: 'CV', icon: FileText, color: 'text-brand-900 bg-brand-50 border-brand-200' },
+  { id: 'cv', label: 'CV', icon: FileText, color: 'text-teal-600 bg-teal-50 border-teal-200' },
   { id: 'coverLetter', label: 'Brev', icon: Mail, color: 'text-rose-600 bg-rose-50 border-rose-200' },
   { id: 'jobSearch', label: 'Jobb', icon: Briefcase, color: 'text-blue-600 bg-blue-50 border-blue-200' },
   { id: 'career', label: 'Karriär', icon: Target, color: 'text-sky-600 bg-sky-50 border-sky-200' },
-  { id: 'interests', label: 'Intressen', icon: Compass, color: 'text-brand-900 bg-brand-50 border-brand-200' },
+  { id: 'interests', label: 'Intressen', icon: Compass, color: 'text-teal-600 bg-teal-50 border-teal-200' },
   { id: 'exercises', label: 'Övningar', icon: Dumbbell, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { id: 'diary', label: 'Dagbok', icon: BookHeart, color: 'text-rose-600 bg-rose-50 border-rose-200' },
   { id: 'wellness', label: 'Hälsa', icon: Sparkles, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },

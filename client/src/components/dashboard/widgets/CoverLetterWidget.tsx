@@ -65,7 +65,7 @@ const pipelineSteps = [
     key: 'offer',
     labelKey: 'coverLetterWidget.pipeline.offer',
     color: 'emerald',
-    gradient: 'from-emerald-500 to-brand-700',
+    gradient: 'from-emerald-500 to-teal-500',
     bg: 'bg-emerald-50',
     text: 'text-emerald-700',
     border: 'border-emerald-200',
@@ -169,7 +169,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-3">
           <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-rose-50 to-orange-50 rounded-xl border border-rose-100">
-            <div className="w-12 h-12 bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center shadow-sm">
               <FileText size={22} className="text-rose-500" />
             </div>
             <div>
@@ -179,7 +179,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
           </div>
 
           <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border border-orange-100">
-            <div className="w-12 h-12 bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center shadow-sm">
               <Briefcase size={22} className="text-orange-500" />
             </div>
             <div>
@@ -231,7 +231,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
                 return (
                   <div
                     key={letter.id}
-                    className="group flex items-center gap-3 p-2.5 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-rose-300 hover: transition-all cursor-pointer"
+                    className="group flex items-center gap-3 p-2.5 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-rose-300 hover:shadow-sm transition-all cursor-pointer"
                   >
                     <div className="w-9 h-9 bg-rose-50 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-rose-100 transition-colors">
                       <FileText size={16} className="text-rose-500" />
@@ -254,7 +254,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
         {count === 0 && applicationsCount === 0 && (
           <div className="relative overflow-hidden p-4 bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 rounded-xl border border-rose-100">
             <div className="relative flex items-start gap-3">
-              <div className="w-10 h-10 bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
                 <Sparkles size={20} className="text-rose-500" />
               </div>
               <div>
@@ -309,9 +309,9 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4">
           {/* Letters Card */}
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-rose-500 to-orange-500 p-5 text-white">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500 to-orange-500 p-5 text-white">
             <div className="relative z-10 flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl bg-white dark:bg-stone-900/20 backdrop-blur-sm flex items-center justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-white dark:bg-stone-900/20 backdrop-blur-sm flex items-center justify-center">
                 <FileText size={32} className="text-white" />
               </div>
               <div>
@@ -327,9 +327,9 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
           </div>
 
           {/* Applications Card */}
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-500 to-amber-500 p-5 text-white">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 p-5 text-white">
             <div className="relative z-10 flex items-center gap-4">
-              <div className="w-16 h-16 rounded-xl bg-white dark:bg-stone-900/20 backdrop-blur-sm flex items-center justify-center">
+              <div className="w-16 h-16 rounded-2xl bg-white dark:bg-stone-900/20 backdrop-blur-sm flex items-center justify-center">
                 <Briefcase size={32} className="text-white" />
               </div>
               <div>
@@ -347,7 +347,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
 
         {/* Visual Pipeline */}
         {applicationsCount > 0 && applicationsStatus && (
-          <div className="p-5 bg-slate-50 dark:bg-stone-800 rounded-xl border border-slate-100 dark:border-stone-700">
+          <div className="p-5 bg-slate-50 dark:bg-stone-800 rounded-2xl border border-slate-100 dark:border-stone-700">
             <p className="text-sm font-semibold text-slate-700 dark:text-stone-300 mb-4 flex items-center gap-2">
               <TrendingUp size={16} className="text-rose-500" />
               {t('coverLetterWidget.yourApplicationJourney')}
@@ -375,17 +375,17 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                   return (
                     <div key={step.key} className="text-center">
                       <div className={`
-                        relative w-16 h-16 mx-auto rounded-xl flex items-center justify-center mb-2
+                        relative w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-2
                         transition-all duration-300
                         ${isActive
-                          ? `bg-gradient-to-br ${step.gradient} text-white`
+                          ? `bg-gradient-to-br ${step.gradient} text-white shadow-lg shadow-${step.color}-200`
                           : 'bg-white dark:bg-stone-900 border-2 border-slate-200 dark:border-stone-700 text-slate-600 dark:text-stone-400'
                         }
                       `}>
                         <Icon size={28} />
                         {/* Badge count */}
                         <div className={`
-                          absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold
+                          absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold shadow-md
                           ${isActive ? 'bg-white dark:bg-stone-900 text-slate-800 dark:text-stone-100' : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400'}
                         `}>
                           {value}
@@ -449,7 +449,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                 return (
                   <div 
                     key={letter.id}
-                    className="group relative p-3 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-rose-300 hover: transition-all cursor-pointer"
+                    className="group relative p-3 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-rose-300 hover:shadow-md transition-all cursor-pointer"
                     onMouseEnter={() => setHoveredLetter(letter.id)}
                     onMouseLeave={() => setHoveredLetter(null)}
                   >
@@ -507,10 +507,10 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
           </div>
         ) : (
           /* Empty State with CTA */
-          <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 p-6 text-white">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 p-6 text-white">
             <div className="relative z-10">
               <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-white dark:bg-stone-900/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-16 h-16 bg-white dark:bg-stone-900/20 backdrop-blur-sm rounded-2xl flex items-center justify-center flex-shrink-0">
                   <Mail size={32} className="text-white" />
                 </div>
                 <div className="flex-1">
@@ -536,7 +536,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                   </div>
 
                   {/* CTA Button */}
-                  <button className="mt-5 px-5 py-2.5 bg-white dark:bg-stone-900 text-rose-600 font-semibold rounded-xl hover:bg-rose-50 transition-colors flex items-center gap-2">
+                  <button className="mt-5 px-5 py-2.5 bg-white dark:bg-stone-900 text-rose-600 font-semibold rounded-xl hover:bg-rose-50 transition-colors shadow-lg flex items-center gap-2">
                     <Plus size={18} />
                     {t('coverLetterWidget.createNewLetter')}
                     <ArrowRight size={16} />

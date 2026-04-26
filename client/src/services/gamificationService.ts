@@ -40,8 +40,8 @@ const DEFAULT_MILESTONES: Milestone[] = [
   { id: 'ms-17', key: 'reflection_pro', name: 'Reflektions-pro', description: 'Slutför 10 reflektioner', icon: 'PenLine', color: 'rose', category: 'wellness', max_progress: 10, reward_points: 45, sort_order: 17 },
 
   // General Milestones
-  { id: 'ms-18', key: 'first_steps', name: 'Första stegen', description: 'Skapa ditt första CV', icon: 'Footprints', color: 'brand', category: 'general', max_progress: 1, reward_points: 15, sort_order: 18 },
-  { id: 'ms-19', key: 'explorer', name: 'Utforskare', description: 'Besök alla sidor', icon: 'Compass', color: 'brand', category: 'general', max_progress: 8, reward_points: 25, sort_order: 19 },
+  { id: 'ms-18', key: 'first_steps', name: 'Första stegen', description: 'Skapa ditt första CV', icon: 'Footprints', color: 'teal', category: 'general', max_progress: 1, reward_points: 15, sort_order: 18 },
+  { id: 'ms-19', key: 'explorer', name: 'Utforskare', description: 'Besök alla sidor', icon: 'Compass', color: 'teal', category: 'general', max_progress: 8, reward_points: 25, sort_order: 19 },
   { id: 'ms-20', key: 'streak_7', name: '7-dagars streak', description: 'Logga in 7 dagar i rad', icon: 'Flame', color: 'orange', category: 'general', max_progress: 7, reward_points: 35, sort_order: 20 },
   { id: 'ms-21', key: 'streak_30', name: '30-dagars streak', description: 'Logga in 30 dagar i rad', icon: 'Crown', color: 'orange', category: 'general', max_progress: 30, reward_points: 150, sort_order: 21 },
 ]

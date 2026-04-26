@@ -88,7 +88,7 @@ export function AISummary({ className }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 text-brand-900 animate-spin" />
+        <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
       </div>
     )
   }
@@ -111,7 +111,7 @@ export function AISummary({ className }: Props) {
                 className={cn(
                   'p-2 rounded-lg transition-colors',
                   copied
-                    ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900'
+                    ? 'bg-green-100 dark:bg-green-900/40 text-green-600'
                     : 'hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500'
                 )}
                 aria-label={copied ? t('common.copied') : t('profile.aiSummary.copy')}
@@ -154,7 +154,7 @@ export function AISummary({ className }: Props) {
             value={editValue}
             onChange={(e) => setEditValue(e.target.value)}
             rows={6}
-            className="w-full px-4 py-3 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-xl text-sm text-stone-700 dark:text-stone-300 resize-none focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+            className="w-full px-4 py-3 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-xl text-sm text-stone-700 dark:text-stone-300 resize-none focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
           />
           <div className="flex gap-2 justify-end">
             <button
@@ -165,7 +165,7 @@ export function AISummary({ className }: Props) {
             </button>
             <button
               onClick={handleSave}
-              className="px-3 py-1.5 text-sm font-medium bg-brand-900 hover:bg-brand-900/90 text-white rounded-lg transition-colors"
+              className="px-3 py-1.5 text-sm font-medium bg-teal-500 hover:bg-teal-600 text-white rounded-lg transition-colors"
             >
               {t('common.save')}
             </button>

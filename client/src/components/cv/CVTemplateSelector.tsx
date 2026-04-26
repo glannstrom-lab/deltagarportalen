@@ -163,7 +163,7 @@ export function CVTemplateSelector({
             <button
               key={template.id}
               onClick={() => onSelect(template.id)}
-              className={`p-4 rounded-xl border-2 text-left transition-all ${
+              className={`p-4 rounded-2xl border-2 text-left transition-all ${
                 selectedTemplate === template.id
                   ? 'border-[#4f46e5] bg-[#eef2ff]'
                   : 'border-slate-200 hover:border-slate-300'

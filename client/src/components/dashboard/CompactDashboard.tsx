@@ -38,7 +38,7 @@ interface StatCardProps {
 
 const StatCard = memo(function StatCard({ label, value, icon, color }: StatCardProps) {
   const colorClasses: Record<string, string> = {
-    brand: 'bg-brand-50 dark:bg-brand-900/30 text-brand-900 dark:text-brand-400',
+    teal: 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400',
     amber: 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
     blue: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
     emerald: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
@@ -82,7 +82,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
   trend,
 }: CompactWidgetRowProps) {
   const bgColors: Record<string, string> = {
-    brand: 'bg-brand-50 dark:bg-brand-900/30 border-brand-100 dark:border-brand-900',
+    teal: 'bg-teal-50 dark:bg-teal-900/30 border-teal-100 dark:border-teal-800',
     rose: 'bg-rose-50 dark:bg-rose-900/30 border-rose-100 dark:border-rose-800',
     blue: 'bg-blue-50 dark:bg-blue-900/30 border-blue-100 dark:border-blue-800',
     sky: 'bg-sky-50 dark:bg-sky-900/30 border-sky-100 dark:border-sky-800',
@@ -91,7 +91,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
   }
 
   const iconColors: Record<string, string> = {
-    brand: 'text-brand-900 dark:text-brand-400',
+    teal: 'text-teal-600 dark:text-teal-400',
     rose: 'text-rose-600 dark:text-rose-400',
     blue: 'text-blue-600 dark:text-blue-400',
     sky: 'text-sky-600 dark:text-sky-400',
@@ -103,17 +103,17 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
     <Link
       to={to}
       className={cn(
-        'flex items-center gap-4 p-4 rounded-xl border transition-all hover: group',
+        'flex items-center gap-4 p-4 rounded-xl border transition-all hover:shadow-md group',
         bgColors[color] || 'bg-slate-50 border-slate-200'
       )}
     >
-      <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center bg-white dark:bg-stone-800', iconColors[color])}>
+      <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center bg-white dark:bg-stone-800 shadow-sm', iconColors[color])}>
         {icon}
       </div>
       
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
-          <h3 className="font-semibold text-slate-800 dark:text-stone-100 group-hover:text-brand-900 dark:group-hover:text-brand-400 transition-colors">
+          <h3 className="font-semibold text-slate-800 dark:text-stone-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
             {title}
           </h3>
           {badge && (
@@ -223,7 +223,7 @@ export function CompactDashboard() {
           ? t('dashboard.compact.cv.ready')
           : t('dashboard.compact.cv.inProgress', { progress: data.cv.progress })
         : t('dashboard.compact.cv.createProfile'),
-      color: 'brand',
+      color: 'teal',
       progress: data?.cv.progress,
       trend: data?.cv.progress ? `+${data.cv.progress}%` : undefined,
       badge: data?.cv.atsScore ? `ATS ${data.cv.atsScore}` : undefined,
@@ -265,7 +265,7 @@ export function CompactDashboard() {
       subtitle: data?.interest.hasResult
         ? t('dashboard.compact.interests.seeResults')
         : t('dashboard.compact.interests.takeTest'),
-      color: 'brand',
+      color: 'teal',
     },
     {
       id: 'exercises' as WidgetType,
@@ -314,7 +314,7 @@ export function CompactDashboard() {
             label={t('dashboard.compact.stats.cvProfile')}
             value={`${data.cv.progress}%`}
             icon={<TrendingUp size={18} />}
-            color="brand"
+            color="teal"
           />
           {data.cv.atsScore > 0 && (
             <StatCard

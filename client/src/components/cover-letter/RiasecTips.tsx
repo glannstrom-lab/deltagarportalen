@@ -92,7 +92,7 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
                 <div
                   className={cn(
                     "h-full rounded-full transition-all duration-500",
-                    matchScore >= 60 ? "bg-brand-700" :
+                    matchScore >= 60 ? "bg-green-500" :
                       matchScore >= 30 ? "bg-amber-500" : "bg-slate-400"
                   )}
                   style={{ width: `${matchScore}%` }}
@@ -100,7 +100,7 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
               </div>
               <span className={cn(
                 "font-bold text-sm",
-                matchScore >= 60 ? "text-brand-900" :
+                matchScore >= 60 ? "text-green-600" :
                   matchScore >= 30 ? "text-amber-600" : "text-slate-700"
               )}>
                 {matchScore}%

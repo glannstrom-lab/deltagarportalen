@@ -59,7 +59,7 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 bg-[#4f46e5]/10 rounded-lg">
           <Target size={24} style={{ color: '#4f46e5' }} />
@@ -118,14 +118,14 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
           {analysis.foundKeywords.length > 0 && (
             <div>
               <p className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-1">
-                <CheckCircle size={16} className="text-brand-700" />
+                <CheckCircle size={16} className="text-green-500" />
                 Nyckelord du har ({analysis.foundKeywords.length})
               </p>
               <div className="flex flex-wrap gap-2">
                 {analysis.foundKeywords.map((keyword) => (
                   <span
                     key={keyword}
-                    className="px-2 py-1 bg-brand-100 text-brand-900 text-xs rounded-full"
+                    className="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full"
                   >
                     {keyword}
                   </span>

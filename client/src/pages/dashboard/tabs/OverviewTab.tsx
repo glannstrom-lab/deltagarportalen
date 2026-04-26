@@ -203,28 +203,28 @@ function ExpandableCategory({
   items,
   defaultExpanded = true,
   progress,
-  colorScheme = 'brand'
+  colorScheme = 'teal'
 }: {
   title: string
   items: CategoryItem[]
   defaultExpanded?: boolean
   progress?: OnboardingProgress
-  colorScheme?: 'brand' | 'sky' | 'amber'
+  colorScheme?: 'teal' | 'sky' | 'amber'
 }) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
   // Generate stable ID for ARIA
   const categoryId = `category-${title.toLowerCase().replace(/\s+/g, '-').replace(/[åä]/g, 'a').replace(/ö/g, 'o')}`
 
   const colors = {
-    brand: {
-      header: 'from-brand-50 to-brand-100/50 dark:from-brand-900/30 dark:to-brand-900/20',
-      headerText: 'text-brand-900 dark:text-brand-300',
-      headerIcon: 'text-brand-900 dark:text-brand-400',
-      border: 'border-brand-200 dark:border-brand-900/50',
-      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-brand-50 dark:hover:bg-brand-900/20',
-      itemBorder: 'border-brand-100 dark:border-brand-900/30',
-      iconBg: 'bg-brand-100 dark:bg-brand-900/40',
-      iconColor: 'text-brand-900 dark:text-brand-400',
+    teal: {
+      header: 'from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20',
+      headerText: 'text-teal-800 dark:text-teal-300',
+      headerIcon: 'text-teal-600 dark:text-teal-400',
+      border: 'border-teal-200 dark:border-teal-800/50',
+      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-teal-50 dark:hover:bg-teal-900/20',
+      itemBorder: 'border-teal-100 dark:border-teal-800/30',
+      iconBg: 'bg-teal-100 dark:bg-teal-900/40',
+      iconColor: 'text-teal-600 dark:text-teal-400',
       completeBg: 'bg-emerald-100 dark:bg-emerald-900/40',
       completeIcon: 'text-emerald-600 dark:text-emerald-400'
     },
@@ -264,7 +264,7 @@ function ExpandableCategory({
   const showProgress = trackableItems > 0 && progress
 
   return (
-    <div className={cn('rounded-xl border overflow-hidden', c.border)}>
+    <div className={cn('rounded-2xl border overflow-hidden', c.border)}>
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
@@ -319,7 +319,7 @@ function ExpandableCategory({
                     'flex flex-col items-center text-center p-3 sm:p-4 rounded-xl border transition-all group',
                     c.itemBg,
                     c.itemBorder,
-                    'hover: hover:scale-[1.02]'
+                    'hover:shadow-md hover:scale-[1.02]'
                   )}
                 >
                   {/* Icon */}
@@ -479,7 +479,7 @@ export default function OverviewTab() {
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-brand-900 animate-spin mx-auto mb-3" aria-hidden="true" />
+          <Loader2 className="w-8 h-8 text-teal-600 animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-stone-600 dark:text-stone-400">Laddar...</p>
         </div>
       </div>
@@ -495,19 +495,19 @@ export default function OverviewTab() {
       {/* Progress Dashboard */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3" role="region" aria-label="Din framgång">
         {/* Onboarding Progress */}
-        <div className="bg-gradient-to-br from-brand-50 to-brand-100/50 dark:from-brand-900/30 dark:to-brand-900/20 rounded-xl p-3 sm:p-4 border border-brand-200 dark:border-brand-900/50">
+        <div className="bg-gradient-to-br from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20 rounded-xl p-3 sm:p-4 border border-teal-200 dark:border-teal-800/50">
           <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center shrink-0">
-              <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-brand-900 dark:text-brand-400" aria-hidden="true" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center shrink-0">
+              <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
             </div>
-            <span className="text-xs sm:text-sm font-medium text-brand-900 dark:text-brand-300 truncate">Kom igång</span>
+            <span className="text-xs sm:text-sm font-medium text-teal-800 dark:text-teal-300 truncate">Kom igång</span>
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-brand-900 dark:text-brand-100" aria-live="polite">
+          <div className="text-xl sm:text-2xl font-bold text-teal-900 dark:text-teal-100" aria-live="polite">
             {onboardingComplete}/{onboardingTotal}
           </div>
-          <div className="h-1 sm:h-1.5 bg-brand-200 dark:bg-brand-900/50 rounded-full mt-1.5 sm:mt-2 overflow-hidden">
+          <div className="h-1 sm:h-1.5 bg-teal-200 dark:bg-teal-900/50 rounded-full mt-1.5 sm:mt-2 overflow-hidden">
             <div
-              className="h-full bg-brand-700 dark:bg-brand-400 rounded-full transition-all"
+              className="h-full bg-teal-500 dark:bg-teal-400 rounded-full transition-all"
               style={{ width: `${(onboardingComplete / onboardingTotal) * 100}%` }}
               role="progressbar"
               aria-valuenow={(onboardingComplete / onboardingTotal) * 100}
@@ -520,7 +520,7 @@ export default function OverviewTab() {
         {/* Career Plan Progress */}
         <Link
           to="/career?tab=plan"
-          className="bg-gradient-to-br from-sky-50 to-sky-100/50 dark:from-sky-900/30 dark:to-sky-800/20 rounded-xl p-3 sm:p-4 border border-sky-200 dark:border-sky-800/50 hover: transition-shadow"
+          className="bg-gradient-to-br from-sky-50 to-sky-100/50 dark:from-sky-900/30 dark:to-sky-800/20 rounded-xl p-3 sm:p-4 border border-sky-200 dark:border-sky-800/50 hover:shadow-md transition-shadow"
         >
           <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center shrink-0">
@@ -539,7 +539,7 @@ export default function OverviewTab() {
         {/* Skills Match */}
         <Link
           to="/career?tab=skills"
-          className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/30 dark:to-emerald-800/20 rounded-xl p-3 sm:p-4 border border-emerald-200 dark:border-emerald-800/50 hover: transition-shadow"
+          className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/30 dark:to-emerald-800/20 rounded-xl p-3 sm:p-4 border border-emerald-200 dark:border-emerald-800/50 hover:shadow-md transition-shadow"
         >
           <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center shrink-0">
@@ -558,7 +558,7 @@ export default function OverviewTab() {
         {/* Network */}
         <Link
           to="/career?tab=network"
-          className="bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20 rounded-xl p-3 sm:p-4 border border-amber-200 dark:border-amber-800/50 hover: transition-shadow"
+          className="bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20 rounded-xl p-3 sm:p-4 border border-amber-200 dark:border-amber-800/50 hover:shadow-md transition-shadow"
         >
           <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0">
@@ -583,7 +583,7 @@ export default function OverviewTab() {
         title="Kom igång"
         items={ONBOARDING_ITEMS}
         progress={onboardingProgress}
-        colorScheme="brand"
+        colorScheme="teal"
         defaultExpanded={true}
       />
 

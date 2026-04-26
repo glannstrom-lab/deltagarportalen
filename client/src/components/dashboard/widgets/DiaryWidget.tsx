@@ -335,8 +335,8 @@ function DiaryWidgetLarge({
           </div>
         ) : (
           /* Empty state */
-          <div className="p-6 bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl border border-rose-100 text-center">
-            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center mx-auto mb-3">
+          <div className="p-6 bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl border border-rose-100 text-center">
+            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
               <Calendar size={28} className="text-rose-400" />
             </div>
             <h3 className="font-semibold text-rose-900 mb-1">{t('diaryWidget.calendarEmpty')}</h3>

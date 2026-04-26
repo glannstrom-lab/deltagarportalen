@@ -47,7 +47,7 @@ export function SaveIndicator() {
   
   if (saveStatus === 'saved' && lastSavedAt) {
     return (
-      <div className="flex items-center gap-2 text-sm text-brand-900">
+      <div className="flex items-center gap-2 text-sm text-green-600">
         <Check className="w-4 h-4" />
         <span className="hidden sm:inline">Sparad {formatTime(lastSavedAt)}</span>
       </div>

@@ -8,7 +8,7 @@ export function BigFiveChart({ scores }: BigFiveChartProps) {
   const entries = Object.entries(scores) as [keyof BigFiveScores, number][]
   
   const getBarColor = (score: number) => {
-    if (score >= 70) return 'from-brand-700 to-emerald-500'
+    if (score >= 70) return 'from-green-500 to-emerald-500'
     if (score >= 40) return 'from-amber-500 to-yellow-500'
     return 'from-red-500 to-orange-500'
   }

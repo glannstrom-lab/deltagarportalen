@@ -363,16 +363,16 @@ export const eventTypeConfig: Record<EventType, {
   },
   followup: {
     label: 'Uppföljning',
-    color: 'text-brand-900',
-    bgColor: 'bg-brand-100',
-    borderColor: 'border-brand-200',
+    color: 'text-green-700',
+    bgColor: 'bg-green-100',
+    borderColor: 'border-green-200',
     icon: 'RefreshCw',
   },
   preparation: {
     label: 'Förberedelse',
-    color: 'text-brand-900',
-    bgColor: 'bg-brand-100',
-    borderColor: 'border-brand-200',
+    color: 'text-teal-700',
+    bgColor: 'bg-teal-100',
+    borderColor: 'border-teal-200',
     icon: 'BookOpen',
   },
 }

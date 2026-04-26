@@ -164,7 +164,7 @@ export function SmartQuickWinButton() {
         energyLevel: 'medium',
         icon: <Target size={18} />,
         link: '/cv',
-        color: 'bg-brand-100 text-brand-900 border-brand-200',
+        color: 'bg-teal-100 text-teal-700 border-teal-200',
         context: `📈 ${data.cv.progress}% klart`,
         priority: 90,
         whyItMatters: 'Att slutföra påbörjade uppgifter ger en skön känsla',
@@ -268,9 +268,9 @@ export function SmartQuickWinButton() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full",
-          "bg-gradient-to-r from-brand-700 to-sky-600 text-white font-medium",
-          "hover: hover:/25 transition-shadow"
+          "fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
+          "bg-gradient-to-r from-teal-500 to-sky-600 text-white font-medium",
+          "hover:shadow-xl hover:shadow-teal-500/25 transition-shadow"
         )}
       >
         <Sparkles size={18} />
@@ -294,7 +294,7 @@ export function SmartQuickWinButton() {
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-t-3xl sm:rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
             >
               {/* Header */}
               <div className="sticky top-0 bg-white border-b border-slate-100 p-5 rounded-t-3xl">

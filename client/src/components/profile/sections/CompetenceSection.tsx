@@ -29,6 +29,7 @@ export function CompetenceSection() {
       <SectionCard
         title={t('profile.competenceSection.mySkills')}
         icon={<Star className="w-4 h-4" />}
+        colorScheme="amber"
         className="md:col-span-2"
       >
         <SkillsSection />
@@ -38,6 +39,7 @@ export function CompetenceSection() {
       <SectionCard
         title={t('profile.competenceSection.profileSummary')}
         icon={<Sparkles className="w-4 h-4" />}
+        colorScheme="teal"
         className="md:col-span-2"
       >
         <AISummary />
@@ -47,19 +49,20 @@ export function CompetenceSection() {
       <SectionCard
         title={t('profile.competenceSection.certificatesDocuments')}
         icon={<FileText className="w-4 h-4" />}
+        colorScheme="sky"
       >
         <DocumentsSection />
       </SectionCard>
 
-      {/* LinkedIn Import (placeholder) - LinkedIn blue is semantically motivated brand color */}
-      <div className="p-5 bg-white dark:bg-stone-900 rounded-lg border border-stone-200 dark:border-stone-700">
+      {/* LinkedIn Import (placeholder) */}
+      <div className="p-6 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 rounded-2xl border border-sky-200 dark:border-sky-800/50">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-[#0077b5] flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-[#0077b5] flex items-center justify-center flex-shrink-0">
             <Linkedin className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
           <div className="flex-1">
-            <p className="font-semibold text-stone-800 dark:text-stone-100">{t('profile.competenceSection.importFromLinkedIn')}</p>
-            <p className="text-sm text-stone-600 dark:text-stone-400">
+            <p className="font-semibold text-sky-800 dark:text-sky-300">{t('profile.competenceSection.importFromLinkedIn')}</p>
+            <p className="text-sm text-sky-600 dark:text-sky-400">
               {t('profile.competenceSection.importFromLinkedInDesc')}
             </p>
           </div>
@@ -76,6 +79,7 @@ export function CompetenceSection() {
       <SectionCard
         title={t('profile.competenceSection.completionGuide')}
         icon={<CheckCircle className="w-4 h-4" />}
+        colorScheme="sky"
         className="md:col-span-2"
       >
         <CompletionGuide

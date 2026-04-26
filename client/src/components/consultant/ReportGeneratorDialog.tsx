@@ -169,7 +169,7 @@ export function ReportGeneratorDialog({
       {/* Dialog */}
       <div
         className={cn(
-          'relative z-10 w-full bg-white dark:bg-stone-900 rounded-xl',
+          'relative z-10 w-full bg-white dark:bg-stone-900 rounded-2xl shadow-xl',
           'max-h-[90vh] overflow-hidden flex flex-col',
           step === 'preview' ? 'max-w-4xl' : 'max-w-lg'
         )}
@@ -177,8 +177,8 @@ export function ReportGeneratorDialog({
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-stone-200 dark:border-stone-700">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+            <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
@@ -220,7 +220,7 @@ export function ReportGeneratorDialog({
                     'w-full px-4 py-3 rounded-xl',
                     'bg-stone-100 dark:bg-stone-800',
                     'border-2 border-transparent',
-                    'focus:border-brand-700 focus:outline-none',
+                    'focus:border-teal-500 focus:outline-none',
                     'text-stone-900 dark:text-stone-100',
                     'placeholder:text-stone-600'
                   )}
@@ -239,7 +239,7 @@ export function ReportGeneratorDialog({
                     'w-full px-4 py-3 rounded-xl',
                     'bg-stone-100 dark:bg-stone-800',
                     'border-2 border-transparent',
-                    'focus:border-brand-700 focus:outline-none',
+                    'focus:border-teal-500 focus:outline-none',
                     'text-stone-900 dark:text-stone-100'
                   )}
                 >
@@ -261,7 +261,7 @@ export function ReportGeneratorDialog({
                     className={cn(
                       'flex-1 py-2.5 px-4 rounded-xl font-medium transition-all',
                       language === 'sv'
-                        ? 'bg-brand-900 text-white'
+                        ? 'bg-teal-600 text-white'
                         : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300'
                     )}
                   >
@@ -272,7 +272,7 @@ export function ReportGeneratorDialog({
                     className={cn(
                       'flex-1 py-2.5 px-4 rounded-xl font-medium transition-all',
                       language === 'en'
-                        ? 'bg-brand-900 text-white'
+                        ? 'bg-teal-600 text-white'
                         : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300'
                     )}
                   >
@@ -293,7 +293,7 @@ export function ReportGeneratorDialog({
                       className={cn(
                         'p-4 cursor-pointer transition-all',
                         selectedSections.has(section.id)
-                          ? 'ring-2 ring-brand-700 bg-brand-50 dark:bg-brand-900/20'
+                          ? 'ring-2 ring-teal-500 bg-teal-50 dark:bg-teal-900/20'
                           : 'hover:bg-stone-50 dark:hover:bg-stone-800'
                       )}
                       onClick={() => !section.required && toggleSection(section.id)}
@@ -303,7 +303,7 @@ export function ReportGeneratorDialog({
                           className={cn(
                             'w-10 h-10 rounded-lg flex items-center justify-center',
                             selectedSections.has(section.id)
-                              ? 'bg-brand-100 dark:bg-brand-900/40'
+                              ? 'bg-teal-100 dark:bg-teal-900/40'
                               : 'bg-stone-100 dark:bg-stone-800'
                           )}
                         >
@@ -311,7 +311,7 @@ export function ReportGeneratorDialog({
                             className={cn(
                               'w-5 h-5',
                               selectedSections.has(section.id)
-                                ? 'text-brand-900 dark:text-brand-400'
+                                ? 'text-teal-600 dark:text-teal-400'
                                 : 'text-stone-500'
                             )}
                           />
@@ -332,7 +332,7 @@ export function ReportGeneratorDialog({
                           </p>
                         </div>
                         {selectedSections.has(section.id) && (
-                          <CheckCircle2 className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+                          <CheckCircle2 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                         )}
                       </div>
                     </Card>

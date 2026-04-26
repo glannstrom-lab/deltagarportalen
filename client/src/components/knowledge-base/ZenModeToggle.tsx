@@ -30,7 +30,7 @@ export function ZenModeToggle({ isZenMode, onToggle }: ZenModeToggleProps) {
         className={cn(
           "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all",
           isZenMode
-            ? "bg-brand-100 text-brand-900 border border-brand-200"
+            ? "bg-teal-100 text-teal-800 border border-teal-200"
             : "bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200"
         )}
       >
@@ -48,7 +48,7 @@ export function ZenModeToggle({ isZenMode, onToggle }: ZenModeToggleProps) {
       </button>
       
       {showTooltip && !isZenMode && (
-        <div className="absolute top-full left-0 mt-2 w-64 p-3 bg-slate-800 text-white text-sm rounded-lg z-50">
+        <div className="absolute top-full left-0 mt-2 w-64 p-3 bg-slate-800 text-white text-sm rounded-lg shadow-lg z-50">
           <div className="flex items-start gap-2">
             <Info className="w-4 h-4 mt-0.5 shrink-0" />
             <p>
@@ -78,9 +78,9 @@ export function ZenArticleCard({ article, onClick }: ZenArticleCardProps) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left p-4 bg-white rounded-xl border border-slate-100 hover:border-brand-200 hover:bg-brand-50/30 transition-all group"
+      className="w-full text-left p-4 bg-white rounded-xl border border-slate-100 hover:border-teal-200 hover:bg-teal-50/30 transition-all group"
     >
-      <h3 className="font-medium text-slate-800 group-hover:text-brand-900 text-lg mb-2">
+      <h3 className="font-medium text-slate-800 group-hover:text-teal-800 text-lg mb-2">
         {article.title}
       </h3>
       <p className="text-slate-600 text-sm leading-relaxed mb-3">

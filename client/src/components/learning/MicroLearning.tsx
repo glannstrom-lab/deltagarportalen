@@ -52,14 +52,14 @@ export function MicroLearning() {
   return (
     <div className="space-y-3">
       <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-        <BookOpen size={18} className="text-brand-700" />
+        <BookOpen size={18} className="text-teal-500" />
         Dagens mikro-läxa
       </h3>
       {lessons.filter(l => !completed.includes(l.id)).slice(0, 1).map(lesson => (
         <div key={lesson.id} onClick={() => setActiveLesson(lesson)} className="p-3 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-brand-100 flex items-center justify-center">
-              <Play size={16} className="text-brand-900" />
+            <div className="w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center">
+              <Play size={16} className="text-teal-600" />
             </div>
             <div className="flex-1">
               <p className="font-medium text-sm">{lesson.title}</p>

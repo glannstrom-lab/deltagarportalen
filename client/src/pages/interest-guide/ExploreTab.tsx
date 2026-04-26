@@ -97,7 +97,7 @@ export default function ExploreTab() {
   const getPrognosisIcon = (prognosis: string) => {
     switch (prognosis) {
       case 'growing':
-        return <TrendingUp className="w-4 h-4 text-brand-900 dark:text-brand-400" />
+        return <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
       case 'declining':
         return <TrendingDown className="w-4 h-4 text-red-600 dark:text-red-400" />
       default:
@@ -244,7 +244,7 @@ export default function ExploreTab() {
                   onClick={() => setFilterPrognosis('growing')}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterPrognosis === 'growing'
-                      ? 'bg-brand-900 dark:bg-brand-900 text-white'
+                      ? 'bg-green-600 dark:bg-green-700 text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >

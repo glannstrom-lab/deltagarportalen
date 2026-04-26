@@ -50,9 +50,9 @@ import { useEducationSearch } from '@/hooks/useEducationSearch';
 // ============== CONSTANTS ==============
 
 const TYPE_COLORS: Record<string, string> = {
-  yrkeshogskola: 'bg-brand-100 text-brand-900 dark:bg-brand-900/30 dark:text-brand-300',
-  hogskola: 'bg-brand-100 text-brand-900 dark:bg-brand-900/30 dark:text-brand-300',
-  universitet: 'bg-brand-100 text-brand-900 dark:bg-brand-900/30 dark:text-brand-300',
+  yrkeshogskola: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
+  hogskola: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
+  universitet: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
   komvux: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
   folkhogskola: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
 };
@@ -73,7 +73,7 @@ function EducationCard({ education }: { education: Education }) {
   const typeColorClass = TYPE_COLORS[education.type] || 'bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-300';
 
   return (
-    <Card className="group hover: transition-all duration-300 hover:border-brand-300 dark:hover:border-brand-900 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+    <Card className="group hover:shadow-lg transition-all duration-300 hover:border-teal-300 dark:hover:border-teal-600 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
       <div className="p-4 sm:p-5">
         {/* Header */}
         <div className="flex items-start gap-3 mb-3">
@@ -84,7 +84,7 @@ function EducationCard({ education }: { education: Education }) {
             <TypeIcon className="w-5 h-5 text-current" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 line-clamp-2 group-hover:text-brand-900 dark:group-hover:text-brand-400 transition-colors">
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100 line-clamp-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
               {education.title}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
@@ -154,7 +154,7 @@ function EducationCard({ education }: { education: Education }) {
               href={education.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 transition-colors ml-auto"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors ml-auto"
             >
               {t('education.readMore')}
               <ExternalLink className="w-4 h-4" />
@@ -208,12 +208,12 @@ function QuickSearchCard({
         'flex items-start gap-3 p-4 rounded-xl text-left w-full',
         'bg-gradient-to-br from-white to-stone-50 dark:from-stone-800 dark:to-stone-900',
         'border-2 border-stone-200 dark:border-stone-700',
-        'hover:border-brand-300 dark:hover:border-brand-900 hover:',
+        'hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md',
         'transition-all duration-200'
       )}
     >
-      <div className="p-2 rounded-lg bg-brand-100 dark:bg-brand-900/30">
-        <Icon className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+      <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/30">
+        <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
       </div>
       <div>
         <h4 className="font-medium text-gray-800 dark:text-gray-100">{title}</h4>
@@ -336,14 +336,14 @@ export default function Education() {
                 aria-label={t('education.searchPlaceholder')}
               />
               {isSearching && (
-                <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-700 animate-spin" />
+                <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-500 animate-spin" />
               )}
             </div>
             <Button
               type="button"
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className={cn(showFilters && 'bg-brand-50 dark:bg-brand-900/30 border-brand-300 dark:border-brand-900')}
+              className={cn(showFilters && 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-600')}
               aria-expanded={showFilters}
               aria-controls="education-filters"
             >
@@ -424,17 +424,17 @@ export default function Education() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-gray-500 dark:text-gray-400">{t('education.activeFilters')}:</span>
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-brand-100 text-brand-900 dark:bg-brand-900/30 dark:text-brand-300">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
                   "{searchQuery}"
-                  <button onClick={() => setSearchQuery('')} className="hover:text-brand-900 dark:hover:text-brand-200" aria-label={t('education.removeFilter')}>
+                  <button onClick={() => setSearchQuery('')} className="hover:text-teal-900 dark:hover:text-teal-200" aria-label={t('education.removeFilter')}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>
               )}
               {selectedType !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-brand-100 text-brand-900 dark:bg-brand-900/30 dark:text-brand-300">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
                   {educationTypes.find(t => t.id === selectedType)?.label}
-                  <button onClick={() => setSelectedType('all')} className="hover:text-brand-900 dark:hover:text-brand-200" aria-label={t('education.removeFilter')}>
+                  <button onClick={() => setSelectedType('all')} className="hover:text-teal-900 dark:hover:text-teal-200" aria-label={t('education.removeFilter')}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -471,10 +471,10 @@ export default function Education() {
       {!hasSearched && (
         <div className="mt-6 space-y-6">
           {/* Info Banner */}
-          <Card className="bg-gradient-to-r from-brand-50 to-sky-50 dark:from-brand-900/20 dark:to-sky-900/20 border-brand-200 dark:border-brand-900">
+          <Card className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border-teal-200 dark:border-teal-800">
             <div className="p-4 sm:p-5 flex items-start gap-4">
-              <div className="p-2 rounded-lg bg-brand-100 dark:bg-brand-900/30">
-                <Info className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+              <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/30">
+                <Info className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100">
@@ -536,7 +536,7 @@ export default function Education() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
               to="/interest-guide"
-              className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900 transition-colors"
+              className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
             >
               <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
                 <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400" />
@@ -553,7 +553,7 @@ export default function Education() {
             </Link>
             <Link
               to="/skills-gap-analysis"
-              className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900 transition-colors"
+              className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
             >
               <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
                 <Target className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />

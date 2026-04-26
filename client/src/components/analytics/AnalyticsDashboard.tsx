@@ -144,7 +144,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value as any)}
-            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-700"
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="week">Senaste veckan</option>
             <option value="month">Senaste månaden</option>
@@ -167,7 +167,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
             className={cn(
               'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors',
               activeTab === tab.id
-                ? 'border-brand-900 text-brand-900'
+                ? 'border-teal-600 text-teal-600'
                 : 'border-transparent text-slate-700 hover:text-slate-700'
             )}
           >
@@ -188,7 +188,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
               { label: 'Aktivitetstimmar', value: '42h', change: '+8%', positive: true, icon: Clock },
               { label: 'Svarsfrekvens', value: '35%', change: '+5%', positive: true, icon: TrendingUp },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white p-4 rounded-xl border border-slate-200">
+              <div key={stat.label} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
                   <stat.icon className="w-5 h-5 text-slate-600" />
                   <span className={cn(
@@ -206,7 +206,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
 
           {/* Activity Chart */}
           <div className="grid lg:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-xl border border-slate-200">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Aktivitet över tid</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <AreaChart data={activityData}>
@@ -232,7 +232,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
               </ResponsiveContainer>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-slate-200">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Tidsfördelning</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
@@ -264,33 +264,33 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
           </div>
 
           {/* AI Insights */}
-          <div className="bg-gradient-to-br from-brand-50 to-sky-50 p-6 rounded-xl border border-brand-100">
+          <div className="bg-gradient-to-br from-teal-50 to-sky-50 p-6 rounded-xl border border-teal-100">
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-brand-900" />
+              <Zap className="w-5 h-5 text-teal-600" />
               <h3 className="text-lg font-semibold text-slate-900">AI-genererade insikter</h3>
             </div>
             
             <div className="grid md:grid-cols-3 gap-4">
               {insights.map((insight) => (
-                <div key={insight.id} className="bg-white p-4 rounded-lg border border-brand-100">
+                <div key={insight.id} className="bg-white p-4 rounded-lg border border-teal-100">
                   <div className="flex items-start gap-3">
                     <div className={cn(
                       'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
                       insight.type === 'positive' && 'bg-emerald-100',
                       insight.type === 'warning' && 'bg-amber-100',
-                      insight.type === 'insight' && 'bg-brand-100'
+                      insight.type === 'insight' && 'bg-teal-100'
                     )}>
                       <insight.icon className={cn(
                         'w-5 h-5',
                         insight.type === 'positive' && 'text-emerald-600',
                         insight.type === 'warning' && 'text-amber-600',
-                        insight.type === 'insight' && 'text-brand-900'
+                        insight.type === 'insight' && 'text-teal-600'
                       )} />
                     </div>
                     <div>
                       <h4 className="font-medium text-slate-900 text-sm">{insight.title}</h4>
                       <p className="text-xs text-slate-600 mt-1">{insight.description}</p>
-                      <p className="text-xs font-medium text-brand-900 mt-2">{insight.action}</p>
+                      <p className="text-xs font-medium text-teal-600 mt-2">{insight.action}</p>
                     </div>
                   </div>
                 </div>
@@ -304,7 +304,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
       {activeTab === 'skills' && (
         <div className="space-y-6">
           <div className="grid lg:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-xl border border-slate-200">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Kompetensutveckling</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <RadarChart data={skillsData}>
@@ -318,7 +318,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
               </ResponsiveContainer>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-slate-200">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Energi vs Resultat</h3>
               <p className="text-sm text-slate-600 mb-4">
                 Analys visar att du har bäst resultat vid högre energinivåer
@@ -337,7 +337,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
           </div>
 
           {/* Skill Gaps */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200">
+          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
             <h3 className="text-lg font-semibold text-slate-900 mb-4">Rekommenderade kompetenser att utveckla</h3>
             <div className="space-y-3">
               {skillsData
@@ -348,7 +348,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                     <span className="w-32 text-sm font-medium text-slate-700">{skill.skill}</span>
                     <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-brand-700 rounded-full"
+                        className="h-full bg-teal-500 rounded-full"
                         style={{ width: `${skill.current}%` }}
                       />
                     </div>
@@ -365,7 +365,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
       {activeTab === 'predictions' && (
         <div className="space-y-6">
           {/* Main Prediction */}
-          <div className="bg-gradient-to-br from-brand-900 to-sky-700 p-8 rounded-xl text-white">
+          <div className="bg-gradient-to-br from-teal-600 to-sky-700 p-8 rounded-2xl text-white">
             <div className="flex items-center gap-3 mb-6">
               <Brain className="w-8 h-8" />
               <h3 className="text-2xl font-bold">AI Jobbprediktion</h3>
@@ -397,7 +397,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
 
           {/* Factors */}
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-xl border border-slate-200">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Påverkande faktorer</h3>
               <div className="space-y-4">
                 {predictions.factors.map((factor) => (
@@ -434,7 +434,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-slate-200">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Rekommendationer för att snabba upp processen</h3>
               <div className="space-y-3">
                 {[

@@ -51,7 +51,7 @@ export default function MatchingScoreWidget() {
 
   if (loading) {
     return (
-      <div className="bg-white rounded-xl p-6 border border-slate-200">
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
         <div className="flex items-center justify-center h-32">
           <div className="animate-spin w-8 h-8 border-2 border-[#4f46e5] border-t-transparent rounded-full" />
         </div>
@@ -62,21 +62,21 @@ export default function MatchingScoreWidget() {
   if (!data) return null;
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-brand-900';
+    if (score >= 80) return 'text-green-600';
     if (score >= 60) return 'text-blue-600';
     if (score >= 40) return 'text-amber-600';
     return 'text-red-600';
   };
 
   const getScoreBg = (score: number) => {
-    if (score >= 80) return 'bg-brand-50';
+    if (score >= 80) return 'bg-green-50';
     if (score >= 60) return 'bg-blue-50';
     if (score >= 40) return 'bg-amber-50';
     return 'bg-red-50';
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${getScoreBg(data.overallScore)}`}>
@@ -97,7 +97,7 @@ export default function MatchingScoreWidget() {
       <div className="w-full bg-slate-100 rounded-full h-3 mb-6">
         <div
           className={`h-full rounded-full transition-all ${
-            data.overallScore >= 80 ? 'bg-brand-700' :
+            data.overallScore >= 80 ? 'bg-green-500' :
             data.overallScore >= 60 ? 'bg-blue-500' :
             data.overallScore >= 40 ? 'bg-amber-500' : 'bg-red-500'
           }`}
@@ -113,7 +113,7 @@ export default function MatchingScoreWidget() {
           </div>
           <p className="text-2xl font-bold text-slate-800">{data.matchingJobs}</p>
           {data.newJobsToday > 0 && (
-            <p className="text-xs text-brand-900 mt-1">+{data.newJobsToday} nya idag</p>
+            <p className="text-xs text-green-600 mt-1">+{data.newJobsToday} nya idag</p>
           )}
         </div>
         <div className="bg-slate-50 rounded-xl p-4">

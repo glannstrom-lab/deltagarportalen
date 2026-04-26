@@ -62,7 +62,7 @@ export function Logo({
           src="/logo-icon.png"
           alt=""
           loading="eager"
-          className="w-8 h-8 rounded-lg object-contain bg-white"
+          className="w-8 h-8 rounded-lg object-contain bg-white shadow-sm"
         />
         {showText && (
           <span className="font-bold text-base tracking-tight text-white">
@@ -81,7 +81,7 @@ export function Logo({
         alt="Jobin"
         loading="eager"
         className={cn(
-          'rounded-xl object-contain bg-white',
+          'rounded-2xl shadow-lg object-contain bg-white',
           sizes.container
         )}
       />
@@ -90,7 +90,7 @@ export function Logo({
           <h1 className={cn('font-bold text-white', sizes.text)}>
             Jobin
           </h1>
-          <p className="text-brand-200 mt-1 text-sm">
+          <p className="text-teal-200 mt-1 text-sm">
             Vägen till nytt jobb
           </p>
         </div>

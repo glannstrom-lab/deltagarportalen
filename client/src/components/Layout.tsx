@@ -98,7 +98,7 @@ function MobileTopBar() {
   return (
     <>
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-gradient-to-r from-brand-zone via-white to-stone-50 dark:from-brand-900/30 dark:via-stone-900 dark:to-stone-800 border-b border-brand-100 dark:border-stone-700 px-4 py-3 safe-top">
+      <header className="sticky top-0 z-30 bg-gradient-to-r from-teal-50 via-white to-stone-50 dark:from-teal-900/30 dark:via-stone-900 dark:to-stone-800 border-b border-teal-100 dark:border-stone-700 px-4 py-3 safe-top">
         <div className="flex items-center justify-between">
           {/* Vänster: Logo */}
           <Link to="/" className="flex items-center gap-2">
@@ -108,7 +108,7 @@ function MobileTopBar() {
               loading="eager"
               className="h-8 w-auto object-contain"
             />
-            <span className="text-base font-semibold text-brand-900 dark:text-brand-400">jobin.se</span>
+            <span className="text-base font-semibold text-teal-700 dark:text-teal-300">jobin.se</span>
           </Link>
 
           {/* Höger: Notifikationer + Profil + Meny */}
@@ -116,16 +116,16 @@ function MobileTopBar() {
             <NotificationBell variant="compact" />
             <button
               onClick={() => setIsProfileOpen(true)}
-              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-brand-100 dark:hover:bg-stone-700 transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 dark:hover:bg-stone-700 transition-colors"
               aria-label={t('nav.profile')}
             >
-              <div className="w-7 h-7 bg-gradient-to-br from-brand-900 to-brand-700 rounded-full flex items-center justify-center">
+              <div className="w-7 h-7 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
                 <User className="w-3.5 h-3.5 text-white" />
               </div>
             </button>
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-brand-100 dark:hover:bg-stone-700 transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 dark:hover:bg-stone-700 transition-colors"
               aria-label={t('sidebar.menu')}
             >
               <Menu className="w-5 h-5 text-slate-700 dark:text-stone-300" />
@@ -159,7 +159,7 @@ function MobileTopBar() {
       {/* Profil-meny (vänster) */}
       <div
         className={cn(
-          'fixed top-0 left-0 bottom-0 bg-white dark:bg-stone-900 z-50',
+          'fixed top-0 left-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
           'w-[280px] max-w-[80vw]',
           isProfileOpen ? 'translate-x-0' : '-translate-x-full'
@@ -180,7 +180,7 @@ function MobileTopBar() {
         {/* Profil-info */}
         <div className="p-4">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-br from-brand-900 to-brand-700 rounded-full flex items-center justify-center">
+            <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
               <User className="w-7 h-7 text-white" />
             </div>
             <div>
@@ -248,7 +248,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
   return (
     <div
       className={cn(
-        'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50',
+        'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
         'transform transition-transform duration-300 ease-out',
         'w-[300px] max-w-[85vw] flex flex-col',
         isOpen ? 'translate-x-0' : 'translate-x-full'
@@ -279,7 +279,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
               {/* Group Header - Expandable */}
               <button
                 onClick={() => toggleGroup(group.id)}
-                className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold text-brand-900 dark:text-brand-400 uppercase tracking-wider hover:bg-brand-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
+                className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold text-teal-700 dark:text-teal-400 uppercase tracking-wider hover:bg-teal-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
                 aria-expanded={isGroupExpanded}
               >
                 <span>{t(group.labelKey)}</span>
@@ -307,7 +307,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         className={cn(
                           'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                           isActive
-                            ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400 font-medium'
+                            ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
                             : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200'
                         )}
                       >
@@ -398,7 +398,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
           className={cn(
             'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
             location.pathname === '/settings'
-              ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400 font-medium'
+              ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
               : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
           )}
         >
@@ -411,7 +411,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
           className={cn(
             'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
             location.pathname === '/help'
-              ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-400 font-medium'
+              ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
               : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
           )}
         >

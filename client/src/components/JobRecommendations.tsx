@@ -64,7 +64,7 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
     switch (type) {
       case 'similar': return 'bg-blue-100 text-blue-700'
       case 'alternative': return 'bg-amber-100 text-amber-700'
-      case 'progression': return 'bg-brand-100 text-brand-900'
+      case 'progression': return 'bg-green-100 text-green-700'
       case 'related': return 'bg-purple-100 text-purple-700'
       default: return 'bg-slate-100 text-slate-700'
     }
@@ -73,10 +73,10 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
   return (
     <div className="space-y-4">
       {/* Suggestions */}
-      <div className="bg-gradient-to-r from-brand-50 to-emerald-50 p-4 rounded-xl border border-brand-100">
+      <div className="bg-gradient-to-r from-teal-50 to-emerald-50 p-4 rounded-xl border border-teal-100">
         <div className="flex items-center gap-2 mb-3">
-          <Lightbulb className="w-5 h-5 text-brand-900" />
-          <h3 className="font-semibold text-brand-900">
+          <Lightbulb className="w-5 h-5 text-teal-600" />
+          <h3 className="font-semibold text-teal-900">
             Du sökte på "{query}" - kanske är du också intresserad av?
           </h3>
         </div>
@@ -86,15 +86,15 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
             <button
               key={idx}
               onClick={() => onSuggestionClick(suggestion.occupation)}
-              className="group flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-brand-200 hover:border-brand-400 hover: transition-all"
+              className="group flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-teal-200 hover:border-teal-400 hover:shadow-sm transition-all"
             >
-              <span className="text-slate-700 group-hover:text-brand-900">
+              <span className="text-slate-700 group-hover:text-teal-700">
                 {suggestion.occupation}
               </span>
               <span className={`text-xs px-2 py-0.5 rounded-full ${getTypeColor(suggestion.type)}`}>
                 {getTypeLabel(suggestion.type)}
               </span>
-              <ArrowRight className="w-3 h-3 text-slate-600 group-hover:text-brand-700" />
+              <ArrowRight className="w-3 h-3 text-slate-600 group-hover:text-teal-500" />
             </button>
           ))}
         </div>
@@ -104,7 +104,7 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
       {relatedJobs.length > 0 && (
         <div className="bg-white p-4 rounded-xl border border-slate-200">
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp className="w-5 h-5 text-brand-900" />
+            <TrendingUp className="w-5 h-5 text-teal-600" />
             <h3 className="font-semibold text-slate-900">Aktuella jobb inom relaterade områden</h3>
           </div>
           

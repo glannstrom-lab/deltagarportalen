@@ -83,8 +83,8 @@ export function HelpButton({ content }: HelpButtonProps) {
         onClick={() => setIsOpen(true)}
         className={cn(
           'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 w-14 h-14 rounded-full',
-          'bg-gradient-to-br from-brand-700 to-sky-600 text-white',
-          ' /30 hover: hover:/40',
+          'bg-gradient-to-br from-teal-500 to-sky-600 text-white',
+          'shadow-lg shadow-teal-500/30 hover:shadow-xl hover:shadow-teal-500/40',
           'flex items-center justify-center',
           'transition-all duration-300 hover:scale-110 active:scale-95',
           'group'
@@ -115,11 +115,11 @@ export function HelpButton({ content }: HelpButtonProps) {
             ref={modalRef}
             className={cn(
             'relative w-full max-w-lg max-h-[85vh] overflow-hidden',
-            'bg-white rounded-xl',
+            'bg-white rounded-2xl shadow-2xl',
             'animate-in slide-in-from-bottom-4 fade-in duration-300'
           )}>
             {/* Header */}
-            <div className="bg-gradient-to-br from-brand-700 to-sky-600 text-white p-5">
+            <div className="bg-gradient-to-br from-teal-500 to-sky-600 text-white p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
@@ -128,7 +128,7 @@ export function HelpButton({ content }: HelpButtonProps) {
                   <div>
                     <h2 id="help-modal-title" className="text-lg font-bold">{content.title}</h2>
                     {content.description && (
-                      <p className="text-brand-100 text-sm">{content.description}</p>
+                      <p className="text-teal-100 text-sm">{content.description}</p>
                     )}
                   </div>
                 </div>
@@ -166,7 +166,7 @@ export function HelpButton({ content }: HelpButtonProps) {
               {/* FAQ Section */}
               <div>
                 <div className="flex items-center gap-2 text-slate-700 font-semibold mb-3">
-                  <MessageCircle className="w-5 h-5 text-brand-700" aria-hidden="true" />
+                  <MessageCircle className="w-5 h-5 text-teal-500" aria-hidden="true" />
                   <span>Vanliga frågor</span>
                 </div>
                 <div className="space-y-2">

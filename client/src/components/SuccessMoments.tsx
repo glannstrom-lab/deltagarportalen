@@ -156,9 +156,9 @@ export function SuccessProvider({ children }: { children: ReactNode }) {
       case 'streak':
         return 'bg-gradient-to-r from-orange-100 to-red-100 border-orange-300 text-orange-900'
       case 'milestone':
-        return 'bg-gradient-to-r from-brand-100 to-sky-100 border-brand-300 text-brand-900'
+        return 'bg-gradient-to-r from-teal-100 to-sky-100 border-teal-300 text-teal-900'
       default:
-        return 'bg-gradient-to-r from-emerald-100 to-brand-100 border-emerald-300 text-emerald-900'
+        return 'bg-gradient-to-r from-emerald-100 to-teal-100 border-emerald-300 text-emerald-900'
     }
   }
 
@@ -169,7 +169,7 @@ export function SuccessProvider({ children }: { children: ReactNode }) {
       case 'streak':
         return <Flame className="w-5 h-5 text-orange-600" />
       case 'milestone':
-        return <Star className="w-5 h-5 text-brand-900" />
+        return <Star className="w-5 h-5 text-teal-600" />
       default:
         return <CheckCircle2 className="w-5 h-5 text-emerald-600" />
     }
@@ -195,7 +195,7 @@ export function SuccessProvider({ children }: { children: ReactNode }) {
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 100, scale: 0.8 }}
               className={cn(
-                "pointer-events-auto flex items-start gap-3 p-4 rounded-xl border min-w-[300px] max-w-[400px]",
+                "pointer-events-auto flex items-start gap-3 p-4 rounded-xl border shadow-lg min-w-[300px] max-w-[400px]",
                 getToastStyles(toast.type)
               )}
             >
@@ -292,13 +292,13 @@ export function CelebrationOverlay({
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.5, opacity: 0 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-white rounded-xl p-8 text-center max-w-sm w-full"
+            className="bg-white rounded-3xl p-8 text-center max-w-sm w-full shadow-2xl"
           >
             <motion.div
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="w-24 h-24 rounded-full bg-gradient-to-br from-brand-400 to-pink-400 flex items-center justify-center mx-auto mb-6"
+              className="w-24 h-24 rounded-full bg-gradient-to-br from-teal-400 to-pink-400 flex items-center justify-center mx-auto mb-6"
             >
               <span className="text-5xl">{emoji}</span>
             </motion.div>
@@ -306,7 +306,7 @@ export function CelebrationOverlay({
             <p className="text-slate-600 mb-6">{message}</p>
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-brand-700 to-sky-600 text-white font-semibold hover: transition-shadow"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-sky-600 text-white font-semibold hover:shadow-lg transition-shadow"
             >
               Fortsätt! 🚀
             </button>

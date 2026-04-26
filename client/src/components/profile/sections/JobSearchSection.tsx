@@ -61,7 +61,7 @@ export function JobSearchSection() {
       className="grid gap-4 md:grid-cols-2"
     >
       {/* Status & availability */}
-      <SectionCard title={t('profile.jobSearch.statusAvailability')} icon={<Clock className="w-4 h-4" />}>
+      <SectionCard title={t('profile.jobSearch.statusAvailability')} icon={<Clock className="w-4 h-4" />} colorScheme="sky">
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.jobSearch.currentStatus')}
@@ -86,7 +86,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* CV & Activity */}
-      <SectionCard title={t('profile.jobSearch.cvActivity')} icon={<FileText className="w-4 h-4" />}>
+      <SectionCard title={t('profile.jobSearch.cvActivity')} icon={<FileText className="w-4 h-4" />} colorScheme="sky">
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.jobSearch.cvStatus')}
@@ -142,14 +142,14 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Labor market status */}
-      <SectionCard title={t('profile.jobSearch.laborMarketStatus')} icon={<Building2 className="w-4 h-4" />}>
+      <SectionCard title={t('profile.jobSearch.laborMarketStatus')} icon={<Building2 className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-3">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
               type="checkbox"
               checked={preferences.labor_market_status?.registeredAtAF || false}
               onChange={(e) => updateLaborMarketStatus({ registeredAtAF: e.target.checked })}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900 dark:bg-stone-700"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:bg-stone-700"
             />
             <span className="text-sm text-stone-700 dark:text-stone-300">
               {t('profile.jobSearch.registeredAF')}
@@ -160,7 +160,7 @@ export function JobSearchSection() {
               type="checkbox"
               checked={preferences.labor_market_status?.participatingInProgram || false}
               onChange={(e) => updateLaborMarketStatus({ participatingInProgram: e.target.checked })}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900 dark:bg-stone-700"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:bg-stone-700"
             />
             <span className="text-sm text-stone-700 dark:text-stone-300">{t('profile.jobSearch.participatingInProgram')}</span>
           </label>
@@ -177,7 +177,7 @@ export function JobSearchSection() {
               type="checkbox"
               checked={preferences.labor_market_status?.hasActivitySupport || false}
               onChange={(e) => updateLaborMarketStatus({ hasActivitySupport: e.target.checked })}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900 dark:bg-stone-700"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:bg-stone-700"
             />
             <span className="text-sm text-stone-700 dark:text-stone-300">
               {t('profile.jobSearch.hasActivitySupport')}
@@ -187,7 +187,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Mobility */}
-      <SectionCard title={t('profile.jobSearch.mobility')} icon={<Car className="w-4 h-4" />}>
+      <SectionCard title={t('profile.jobSearch.mobility')} icon={<Car className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.jobSearch.driversLicense')}
@@ -202,7 +202,7 @@ export function JobSearchSection() {
                 type="checkbox"
                 checked={preferences.mobility?.hasCar || false}
                 onChange={(e) => updateMobility({ hasCar: e.target.checked })}
-                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 dark:bg-stone-700"
+                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
               />
               <span className="text-sm text-stone-700 dark:text-stone-300">{t('profile.jobSearch.hasCar')}</span>
             </label>
@@ -211,7 +211,7 @@ export function JobSearchSection() {
                 type="checkbox"
                 checked={preferences.mobility?.willingToRelocate || false}
                 onChange={(e) => updateMobility({ willingToRelocate: e.target.checked })}
-                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 dark:bg-stone-700"
+                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
               />
               <span className="text-sm text-stone-700 dark:text-stone-300">{t('profile.jobSearch.canRelocate')}</span>
             </label>
@@ -231,14 +231,14 @@ export function JobSearchSection() {
               aria-valuemin={15}
               aria-valuemax={120}
               aria-valuenow={preferences.mobility?.maxCommuteMinutes || 45}
-              className="w-full h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-brand-900"
+              className="w-full h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-teal-500"
             />
           </div>
         </div>
       </SectionCard>
 
       {/* Support needs (positive language) */}
-      <SectionCard title={t('profile.jobSearch.supportNeeds')} icon={<AlertCircle className="w-4 h-4" />}>
+      <SectionCard title={t('profile.jobSearch.supportNeeds')} icon={<AlertCircle className="w-4 h-4" />} colorScheme="amber">
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.jobSearch.supportAreas')}
@@ -261,7 +261,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Salary & benefits */}
-      <SectionCard title={t('profile.jobSearch.salaryBenefits')} icon={<Wallet className="w-4 h-4" />}>
+      <SectionCard title={t('profile.jobSearch.salaryBenefits')} icon={<Wallet className="w-4 h-4" />} colorScheme="sky">
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <CompactInput
@@ -290,7 +290,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Work preferences */}
-      <SectionCard title={t('profile.jobSearch.workPreferences')} icon={<Building2 className="w-4 h-4" />} className="md:col-span-2">
+      <SectionCard title={t('profile.jobSearch.workPreferences')} icon={<Building2 className="w-4 h-4" />} colorScheme="sky" className="md:col-span-2">
         <div className="grid gap-4 md:grid-cols-3">
           <ChipSelect
             label={t('profile.jobSearch.sector')}

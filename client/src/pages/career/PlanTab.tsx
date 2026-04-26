@@ -194,7 +194,7 @@ export default function PlanTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12" role="status" aria-live="polite">
-        <Loader2 className="w-8 h-8 animate-spin text-brand-900" aria-hidden="true" />
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" aria-hidden="true" />
         <span className="ml-3 text-gray-600 dark:text-gray-400">Laddar karriärplan...</span>
       </div>
     )
@@ -205,8 +205,8 @@ export default function PlanTab() {
       <div className="space-y-6">
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-brand-100 dark:bg-brand-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Target className="w-8 h-8 text-brand-900 dark:text-brand-400" />
+            <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Target className="w-8 h-8 text-teal-600 dark:text-teal-400" />
             </div>
             <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('career.plan.createCareerPlan')}</h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">
@@ -225,20 +225,20 @@ export default function PlanTab() {
                 onChange={(e) => setCurrentSituation(e.target.value)}
                 placeholder={t('career.plan.currentPlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 resize-y text-gray-800 dark:text-gray-100"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 resize-y text-gray-800 dark:text-gray-100"
               />
             </div>
 
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                <Flag className="w-4 h-4 text-brand-700 dark:text-brand-400" />
+                <Flag className="w-4 h-4 text-teal-500 dark:text-teal-400" />
                 {t('career.plan.whereWantToGo')}
               </label>
 
               {/* Favorite occupations suggestions */}
               {favoriteOccupations.length > 0 && !goal && (
-                <div className="mb-3 p-3 bg-brand-50 dark:bg-brand-900/20 rounded-lg border border-brand-200 dark:border-brand-900">
-                  <div className="flex items-center gap-2 text-sm text-brand-900 dark:text-brand-300 mb-2">
+                <div className="mb-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-700">
+                  <div className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300 mb-2">
                     <Heart className="w-4 h-4" />
                     {i18n.language === 'en' ? 'Set goal based on favorites:' : 'Sätt mål baserat på favoriter:'}
                   </div>
@@ -250,7 +250,7 @@ export default function PlanTab() {
                           ? `Get a job as ${fav.occupation_title}`
                           : `Få jobb som ${fav.occupation_title}`
                         )}
-                        className="px-3 py-1.5 text-sm bg-white dark:bg-stone-700 rounded-full border border-brand-300 dark:border-brand-900 text-brand-900 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/30 transition-colors"
+                        className="px-3 py-1.5 text-sm bg-white dark:bg-stone-700 rounded-full border border-teal-300 dark:border-teal-600 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-800/30 transition-colors"
                       >
                         {fav.occupation_title}
                       </button>
@@ -264,7 +264,7 @@ export default function PlanTab() {
                 onChange={(e) => setGoal(e.target.value)}
                 placeholder={t('career.plan.goalPlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 resize-y text-gray-800 dark:text-gray-100"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 resize-y text-gray-800 dark:text-gray-100"
               />
             </div>
 
@@ -278,7 +278,7 @@ export default function PlanTab() {
                 value={timeframe}
                 onChange={(e) => setTimeframe(e.target.value)}
                 placeholder="T.ex. 6 månader, 1 år"
-                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 text-gray-800 dark:text-gray-100"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 text-gray-800 dark:text-gray-100"
               />
             </div>
 
@@ -327,15 +327,15 @@ export default function PlanTab() {
           <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.plan.whyCareerPlan')}</h4>
           <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
             <li className="flex items-start gap-2">
-              <CheckCircle className="w-4 h-4 text-brand-700 dark:text-brand-400 mt-0.5" />
+              <CheckCircle className="w-4 h-4 text-teal-500 dark:text-teal-400 mt-0.5" />
               {t('career.plan.reason1')}
             </li>
             <li className="flex items-start gap-2">
-              <CheckCircle className="w-4 h-4 text-brand-700 dark:text-brand-400 mt-0.5" />
+              <CheckCircle className="w-4 h-4 text-teal-500 dark:text-teal-400 mt-0.5" />
               {t('career.plan.reason2')}
             </li>
             <li className="flex items-start gap-2">
-              <CheckCircle className="w-4 h-4 text-brand-700 dark:text-brand-400 mt-0.5" />
+              <CheckCircle className="w-4 h-4 text-teal-500 dark:text-teal-400 mt-0.5" />
               {t('career.plan.reason3')}
             </li>
           </ul>
@@ -349,8 +349,8 @@ export default function PlanTab() {
       {/* Plan Overview */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-start gap-4 mb-6">
-          <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center">
-            <Target className="w-6 h-6 text-brand-900 dark:text-brand-400" />
+          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
+            <Target className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div className="flex-1">
             <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{t('career.plan.yourCareerPlan')}</h3>
@@ -367,19 +367,19 @@ export default function PlanTab() {
 
         {/* Overall Progress */}
         <div
-          className="mb-6 p-4 bg-gradient-to-r from-brand-50 to-brand-100 dark:from-brand-900/20 dark:to-brand-900/20 rounded-xl border border-brand-200 dark:border-brand-900"
+          className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 rounded-xl border border-teal-200 dark:border-teal-700"
           role="region"
           aria-label="Övergripande framsteg för karriärplan"
         >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-brand-900 dark:text-brand-400" aria-hidden="true" />
+              <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
               <span className="font-semibold text-gray-800 dark:text-gray-100">Övergripande framsteg</span>
             </div>
-            <span className="text-2xl font-bold text-brand-900 dark:text-brand-400" aria-live="polite">{totalProgress}%</span>
+            <span className="text-2xl font-bold text-teal-600 dark:text-teal-400" aria-live="polite">{totalProgress}%</span>
           </div>
           <div
-            className="h-3 bg-white dark:bg-stone-700 rounded-full overflow-hidden border border-brand-200 dark:border-brand-900"
+            className="h-3 bg-white dark:bg-stone-700 rounded-full overflow-hidden border border-teal-200 dark:border-teal-600"
             role="progressbar"
             aria-valuenow={totalProgress}
             aria-valuemin={0}
@@ -387,11 +387,11 @@ export default function PlanTab() {
             aria-label={`Karriärplan framsteg: ${totalProgress}%`}
           >
             <div
-              className="h-full bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-400 dark:to-brand-700 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 transition-all duration-500"
               style={{ width: `${totalProgress}%` }}
             />
           </div>
-          <p className="text-xs text-brand-900 dark:text-brand-300 mt-2" role="status">
+          <p className="text-xs text-teal-700 dark:text-teal-300 mt-2" role="status">
             {completedCount} av {milestones.length} milstolpar slutförda
           </p>
         </div>
@@ -445,7 +445,7 @@ export default function PlanTab() {
               />
             </div>
             <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={addMilestone} disabled={isSaving} className="bg-brand-700 hover:bg-brand-900">
+              <Button size="sm" onClick={addMilestone} disabled={isSaving} className="bg-teal-500 hover:bg-teal-600">
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Spara'}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setIsAddingMilestone(false)}>Avbryt</Button>
@@ -456,7 +456,7 @@ export default function PlanTab() {
         {/* Timeline */}
         <div className="mb-6" role="region" aria-label="Tidslinje för karriärplan">
           <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-brand-900 dark:text-brand-400" aria-hidden="true" />
+            <Calendar className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
             Tidslinje för karriärplan
           </h4>
 
@@ -476,7 +476,7 @@ export default function PlanTab() {
                   }}
                 >
                   {milestone.is_completed ? (
-                    <CheckCircle className="w-4 h-4 text-brand-900 dark:text-brand-400" />
+                    <CheckCircle className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                   ) : (
                     <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500" />
                   )}
@@ -487,7 +487,7 @@ export default function PlanTab() {
                   <div
                     className={cn(
                       "absolute -left-7 top-7 w-0.5 h-20 transition-colors",
-                      milestone.is_completed ? "bg-brand-200 dark:bg-brand-900" : "bg-stone-200 dark:bg-stone-600"
+                      milestone.is_completed ? "bg-teal-200 dark:bg-teal-700" : "bg-stone-200 dark:bg-stone-600"
                     )}
                   />
                 )}
@@ -497,15 +497,15 @@ export default function PlanTab() {
                   className={cn(
                     'p-4 rounded-xl border-2 transition-all',
                     milestone.is_completed
-                      ? 'bg-brand-50 dark:bg-brand-900/20 border-brand-300 dark:border-brand-900'
-                      : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900'
+                      ? 'bg-teal-50 dark:bg-teal-900/20 border-teal-300 dark:border-teal-600'
+                      : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600'
                   )}
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div className="flex-1">
                       <h4 className={cn(
                         'font-semibold',
-                        milestone.is_completed ? 'text-brand-900 dark:text-brand-300 line-through' : 'text-gray-800 dark:text-gray-100'
+                        milestone.is_completed ? 'text-teal-700 dark:text-teal-300 line-through' : 'text-gray-800 dark:text-gray-100'
                       )}>
                         {milestone.title}
                       </h4>
@@ -530,7 +530,7 @@ export default function PlanTab() {
                         className={cn(
                           'px-2 py-1 rounded text-xs font-medium transition-colors flex-shrink-0',
                           milestone.is_completed
-                            ? 'bg-brand-200 dark:bg-brand-900 text-brand-900 dark:text-brand-200'
+                            ? 'bg-teal-200 dark:bg-teal-800 text-teal-700 dark:text-teal-200'
                             : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                         )}
                         aria-pressed={milestone.is_completed}
@@ -553,7 +553,7 @@ export default function PlanTab() {
                     <div className="mb-3">
                       <div className="flex items-center justify-between mb-1">
                         <label htmlFor={`progress-${milestone.id}`} className="text-xs text-gray-600 dark:text-gray-400">Framsteg</label>
-                        <span className="text-xs font-semibold text-brand-900 dark:text-brand-400" aria-live="polite">{milestone.progress || 0}%</span>
+                        <span className="text-xs font-semibold text-teal-600 dark:text-teal-400" aria-live="polite">{milestone.progress || 0}%</span>
                       </div>
                       <input
                         id={`progress-${milestone.id}`}
@@ -562,7 +562,7 @@ export default function PlanTab() {
                         max="100"
                         value={milestone.progress || 0}
                         onChange={(e) => updateMilestoneProgress(milestone.id, parseInt(e.target.value))}
-                        className="w-full h-2 bg-stone-200 dark:bg-stone-600 rounded-full appearance-none cursor-pointer accent-brand-700"
+                        className="w-full h-2 bg-stone-200 dark:bg-stone-600 rounded-full appearance-none cursor-pointer accent-teal-500"
                         aria-label={`Framsteg för ${milestone.title}`}
                         aria-valuetext={`${milestone.progress || 0} procent`}
                       />
@@ -576,7 +576,7 @@ export default function PlanTab() {
                         <li key={stepIndex} className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
                           <div className={cn(
                             'w-1.5 h-1.5 rounded-full flex-shrink-0',
-                            milestone.is_completed ? 'bg-brand-400 dark:bg-brand-700' : 'bg-gray-400 dark:bg-gray-500'
+                            milestone.is_completed ? 'bg-teal-400 dark:bg-teal-500' : 'bg-gray-400 dark:bg-gray-500'
                           )} />
                           {step}
                         </li>

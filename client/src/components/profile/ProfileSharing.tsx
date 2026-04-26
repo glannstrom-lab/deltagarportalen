@@ -134,7 +134,7 @@ export function ProfileSharing({ className }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 text-brand-900 animate-spin" />
+        <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
       </div>
     )
   }
@@ -145,9 +145,9 @@ export function ProfileSharing({ className }: Props) {
       {!showForm ? (
         <button
           onClick={() => setShowForm(true)}
-          className="w-full flex items-center justify-center gap-2 p-4 border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-xl hover:border-brand-300 dark:hover:border-brand-900/50 hover:bg-brand-50/50 dark:hover:bg-brand-900/20 transition-colors"
+          className="w-full flex items-center justify-center gap-2 p-4 border-2 border-dashed border-stone-300 dark:border-stone-600 rounded-xl hover:border-teal-400 dark:hover:border-teal-500 hover:bg-teal-50/50 dark:hover:bg-teal-900/20 transition-colors"
         >
-          <Plus className="w-5 h-5 text-brand-900" />
+          <Plus className="w-5 h-5 text-teal-500" />
           <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
             {t('profile.sharing.createNewLink')}
           </span>
@@ -175,7 +175,7 @@ export function ProfileSharing({ className }: Props) {
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder={t('profile.sharing.namePlaceholder')}
-              className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+              className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
             />
           </div>
 
@@ -197,7 +197,7 @@ export function ProfileSharing({ className }: Props) {
                     type="checkbox"
                     checked={formData[item.key as keyof typeof formData] as boolean}
                     onChange={(e) => setFormData(prev => ({ ...prev, [item.key]: e.target.checked }))}
-                    className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900"
+                    className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
                   />
                   <span className="text-sm text-stone-700 dark:text-stone-300">{t(item.labelKey)}</span>
                 </label>
@@ -213,7 +213,7 @@ export function ProfileSharing({ className }: Props) {
               <select
                 value={formData.expires_in_days}
                 onChange={(e) => setFormData(prev => ({ ...prev, expires_in_days: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+                className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
               >
                 <option value="7">{t('profile.sharing.days', { count: 7 })}</option>
                 <option value="30">{t('profile.sharing.days', { count: 30 })}</option>
@@ -229,7 +229,7 @@ export function ProfileSharing({ className }: Props) {
               <select
                 value={formData.max_views}
                 onChange={(e) => setFormData(prev => ({ ...prev, max_views: parseInt(e.target.value) }))}
-                className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
+                className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
               >
                 <option value="0">{t('profile.sharing.unlimited')}</option>
                 <option value="1">1</option>
@@ -243,7 +243,7 @@ export function ProfileSharing({ className }: Props) {
           <button
             onClick={handleCreate}
             disabled={creating}
-            className="w-full px-4 py-2 bg-brand-900 hover:bg-brand-900/90 text-white rounded-lg text-sm font-medium disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
+            className="w-full px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 transition-colors flex items-center justify-center gap-2"
           >
             {creating ? (
               <>
@@ -276,7 +276,7 @@ export function ProfileSharing({ className }: Props) {
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <Link2 className="w-4 h-4 text-brand-900" />
+                    <Link2 className="w-4 h-4 text-teal-500" />
                     <span className="font-medium text-sm text-stone-800 dark:text-stone-200">
                       {share.name || t('profile.sharing.shareLink')}
                     </span>
@@ -315,7 +315,7 @@ export function ProfileSharing({ className }: Props) {
                     className={cn(
                       'p-2 rounded-lg transition-colors',
                       copied === share.share_code
-                        ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900'
+                        ? 'bg-green-100 dark:bg-green-900/40 text-green-600'
                         : 'hover:bg-stone-100 dark:hover:bg-stone-700 text-stone-500'
                     )}
                     title={t('profile.sharing.copyLink')}

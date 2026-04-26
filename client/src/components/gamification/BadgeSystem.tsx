@@ -198,7 +198,7 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
   const totalCount = userBadges.length
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-6">
+    <div className="bg-white rounded-2xl border border-slate-200 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
@@ -222,7 +222,7 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
             className={cn(
               "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
               filter === cat
-                ? 'bg-brand-100 text-brand-900'
+                ? 'bg-teal-100 text-teal-700'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             )}
           >
@@ -244,7 +244,7 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
             whileTap={{ scale: 0.95 }}
             onClick={() => setSelectedBadge(badge)}
             className={cn(
-              "relative aspect-square rounded-xl border-2 transition-all flex flex-col items-center justify-center p-3",
+              "relative aspect-square rounded-2xl border-2 transition-all flex flex-col items-center justify-center p-3",
               badge.isUnlocked
                 ? getTierStyles(badge.tier)
                 : 'bg-slate-50 border-slate-200 opacity-60'
@@ -341,7 +341,7 @@ function ProgressBadge({ unlocked, total }: { unlocked: number; total: number })
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <Trophy size={16} className="text-brand-900" />
+          <Trophy size={16} className="text-teal-600" />
         </div>
       </div>
     </div>
@@ -371,7 +371,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
         exit={{ scale: 0.9, opacity: 0 }}
         onClick={(e) => e.stopPropagation()}
         className={cn(
-          "bg-white rounded-xl p-8 max-w-sm w-full text-center relative overflow-hidden",
+          "bg-white rounded-3xl p-8 max-w-sm w-full text-center relative overflow-hidden",
           !badge.isUnlocked && 'opacity-90'
         )}
       >
@@ -382,7 +382,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
             badge.tier === 'bronze' ? 'bg-amber-500' :
             badge.tier === 'silver' ? 'bg-slate-400' :
             badge.tier === 'gold' ? 'bg-yellow-400' :
-            'bg-brand-700'
+            'bg-teal-500'
           )} />
         )}
 
@@ -420,7 +420,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
           badge.tier === 'bronze' ? 'text-amber-600' :
           badge.tier === 'silver' ? 'text-slate-700' :
           badge.tier === 'gold' ? 'text-yellow-600' :
-          'text-brand-900'
+          'text-teal-600'
         )}>
           {tierNames[badge.tier]}-nivå
         </p>
@@ -444,7 +444,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(badge.progress / (badge.total || 1)) * 100}%` }}
-                    className="h-full bg-brand-700 rounded-full"
+                    className="h-full bg-teal-500 rounded-full"
                   />
                 </div>
                 <p className="text-xs text-slate-700">
@@ -480,7 +480,7 @@ function getTierStyles(tier: BadgeTier): string {
     case 'gold':
       return 'bg-yellow-50 border-yellow-300 text-yellow-700'
     case 'platinum':
-      return 'bg-brand-50 border-brand-300 text-brand-900'
+      return 'bg-teal-50 border-teal-300 text-teal-700'
     default:
       return 'bg-slate-50 border-slate-200 text-slate-700'
   }

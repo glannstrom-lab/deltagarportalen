@@ -415,12 +415,12 @@ TIPS FÖR FÖRBÄTTRING:
     return (
       <div className="max-w-3xl mx-auto space-y-8 pb-20 min-h-screen p-4 md:p-6">
         {/* Hero Section with soft gradient */}
-        <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-brand-50 via-cyan-50 to-sky-50 dark:from-brand-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 p-8 border border-brand-100 dark:border-brand-900/50">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-brand-200/30 to-cyan-200/30 dark:from-brand-900/20 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-sky-200/30 to-brand-200/30 dark:from-sky-700/20 dark:to-brand-900/20 rounded-full translate-y-1/2 -translate-x-1/2" />
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50 dark:from-teal-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 p-8 border border-teal-100 dark:border-teal-800/50">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-teal-200/30 to-cyan-200/30 dark:from-teal-700/20 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-sky-200/30 to-teal-200/30 dark:from-sky-700/20 dark:to-teal-700/20 rounded-full translate-y-1/2 -translate-x-1/2" />
 
           <div className="relative text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-brand-400 to-cyan-500 dark:from-brand-700 dark:to-cyan-600  dark:/50 mb-2">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 dark:from-teal-500 dark:to-cyan-600 shadow-lg shadow-teal-200 dark:shadow-teal-900/50 mb-2">
               <MessageCircle className="w-8 h-8 text-white" aria-hidden="true" />
             </div>
             <h1 className="text-3xl font-bold text-slate-800 dark:text-stone-100">{t('interviewSimulator.title')}</h1>
@@ -431,7 +431,7 @@ TIPS FÖR FÖRBÄTTRING:
         </div>
 
         {/* Setup Form */}
-        <Card className="p-6 md:p-8 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <Card className="p-6 md:p-8 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
           <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100 mb-6">{t('interviewSimulator.setup.startTraining')}</h2>
           <div className="space-y-5">
             <div>
@@ -445,7 +445,7 @@ TIPS FÖR FÖRBÄTTRING:
                 onChange={(e) => setRoll(e.target.value)}
                 placeholder={t('interviewSimulator.rolePlaceholder')}
                 aria-required="true"
-                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors"
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors"
               />
             </div>
             <div>
@@ -458,7 +458,7 @@ TIPS FÖR FÖRBÄTTRING:
                 value={foretag}
                 onChange={(e) => setForetag(e.target.value)}
                 placeholder={t('interviewSimulator.companyPlaceholder')}
-                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors"
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors"
               />
             </div>
 
@@ -471,7 +471,7 @@ TIPS FÖR FÖRBÄTTRING:
                 id="category-select"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors"
+                className="w-full px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors"
               >
                 <option value="">{t('interviewSimulator.setup.randomQuestions')}</option>
                 {questionCategories.map((cat) => (
@@ -483,7 +483,7 @@ TIPS FÖR FÖRBÄTTRING:
             <Button
               onClick={startaIntervju}
               disabled={!roll.trim() || isLoading}
-              className="w-full bg-gradient-to-r from-brand-700 to-cyan-500 hover:from-brand-900 hover:to-cyan-600 dark:from-brand-900 dark:to-cyan-600 dark:hover:from-brand-700 dark:hover:to-cyan-500 text-white font-medium py-3 rounded-xl  dark:/30 transition-all"
+              className="w-full bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 dark:from-teal-600 dark:to-cyan-600 dark:hover:from-teal-500 dark:hover:to-cyan-500 text-white font-medium py-3 rounded-xl shadow-md shadow-teal-200 dark:shadow-teal-900/30 transition-all"
               aria-busy={isLoading}
             >
               {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" aria-label="Laddar" /> : t('interviewSimulator.startInterview')}
@@ -520,17 +520,17 @@ TIPS FÖR FÖRBÄTTRING:
         {/* Related Exercises */}
         <div className="space-y-4">
           <h3 className="font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-brand-900 dark:text-brand-400" aria-hidden="true" />
+            <Zap className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
             {t('interviewSimulator.relatedExercises')}
           </h3>
           <div className="grid gap-4 sm:grid-cols-3">
             {relatedContent.exercises.map((exercise) => (
               <Card
                 key={exercise.id}
-                className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900 hover: transition-all cursor-pointer group"
+                className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md transition-all cursor-pointer group"
               >
                 <div className="text-2xl mb-2">{exercise.icon}</div>
-                <h4 className="font-medium text-slate-800 dark:text-stone-100 group-hover:text-brand-900 dark:group-hover:text-brand-400 transition-colors">
+                <h4 className="font-medium text-slate-800 dark:text-stone-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
                   {exercise.title}
                 </h4>
                 <p className="text-sm text-slate-600 dark:text-stone-400 mt-1">{exercise.description}</p>
@@ -550,7 +550,7 @@ TIPS FÖR FÖRBÄTTRING:
               <a
                 key={idx}
                 href={article.url}
-                className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-600 hover: transition-all group"
+                className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-600 hover:shadow-md transition-all group"
               >
                 <span className="font-medium text-slate-800 dark:text-stone-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
                   {article.title}
@@ -569,8 +569,8 @@ TIPS FÖR FÖRBÄTTRING:
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-20 min-h-screen p-4 md:p-6">
       {/* Header med progress - improved design */}
-      <Card className="p-6 md:p-8 bg-gradient-to-br from-brand-50 via-cyan-50 to-sky-50 dark:from-brand-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border-brand-200 dark:border-brand-900/50 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-brand-200/30 to-cyan-200/30 dark:from-brand-900/20 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />
+      <Card className="p-6 md:p-8 bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50 dark:from-teal-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border-teal-200 dark:border-teal-800/50 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-teal-200/30 to-cyan-200/30 dark:from-teal-700/20 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />
 
         <div className="relative flex items-center justify-between mb-6">
           <div>
@@ -584,15 +584,15 @@ TIPS FÖR FÖRBÄTTRING:
 
         {/* Stats - improved grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          <div className="bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-brand-100 dark:border-brand-900/50">
+          <div className="bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-teal-100 dark:border-teal-800/50 shadow-sm">
             <p className="text-xs text-slate-600 dark:text-stone-400 mb-1">{t('interviewSimulator.session.questionsAnswered')}</p>
-            <p className="text-3xl font-bold text-brand-900 dark:text-brand-400">{antalFragor}</p>
+            <p className="text-3xl font-bold text-teal-600 dark:text-teal-400">{antalFragor}</p>
           </div>
-          <div className="bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-brand-100 dark:border-brand-900/50">
+          <div className="bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-teal-100 dark:border-teal-800/50 shadow-sm">
             <p className="text-xs text-slate-600 dark:text-stone-400 mb-1">{t('interviewSimulator.session.averageRating')}</p>
-            <p className="text-3xl font-bold text-brand-900 dark:text-brand-400">{avgRating}/5</p>
+            <p className="text-3xl font-bold text-teal-600 dark:text-teal-400">{avgRating}/5</p>
           </div>
-          <div className="col-span-2 md:col-span-1 bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-brand-100 dark:border-brand-900/50">
+          <div className="col-span-2 md:col-span-1 bg-white/80 dark:bg-stone-800/80 backdrop-blur-sm p-4 rounded-xl border border-teal-100 dark:border-teal-800/50 shadow-sm">
             <p className="text-xs text-slate-600 dark:text-stone-400 mb-1">{t('interviewSimulator.timer.timeForAnswer')}</p>
             <p className={`text-3xl font-bold ${timerSeconds < 30 ? 'text-emerald-600 dark:text-emerald-400' : timerSeconds < 60 ? 'text-yellow-600 dark:text-yellow-400' : timerSeconds < 90 ? 'text-orange-600 dark:text-orange-400' : 'text-red-600 dark:text-red-400'}`}>
               {timerSeconds}s
@@ -605,26 +605,26 @@ TIPS FÖR FÖRBÄTTRING:
       {historik.length > 0 && (
         <div className="space-y-4" role="log" aria-live="polite" aria-label={t('interviewSimulator.session.previousAnswers')}>
           <h2 className="font-semibold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-brand-900 dark:text-brand-400" aria-hidden="true" />
+            <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
             {t('interviewSimulator.session.previousAnswers')}
           </h2>
           {historik.map((fs, index) => (
-            <Card key={index} className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <Card key={index} className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
               <div className="space-y-4">
                 {/* Fråga */}
                 <div className="flex gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-100 to-cyan-100 dark:from-brand-900/50 dark:to-cyan-900/50 flex items-center justify-center flex-shrink-0">
-                    <User className="w-5 h-5 text-brand-900 dark:text-brand-400" aria-hidden="true" />
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-100 to-cyan-100 dark:from-teal-900/50 dark:to-cyan-900/50 flex items-center justify-center flex-shrink-0">
+                    <User className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-brand-900 dark:text-brand-400 mb-1">{t('interviewSimulator.session.question')}</p>
+                    <p className="text-sm font-medium text-teal-600 dark:text-teal-400 mb-1">{t('interviewSimulator.session.question')}</p>
                     <p className="text-slate-800 dark:text-stone-200">{fs.fraga}</p>
                   </div>
                 </div>
 
                 {/* Svar */}
                 <div className="flex gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-brand-100 dark:from-emerald-900/50 dark:to-brand-900/50 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/50 dark:to-teal-900/50 flex items-center justify-center flex-shrink-0">
                     <Bot className="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                   </div>
                   <div className="flex-1">
@@ -657,7 +657,7 @@ TIPS FÖR FÖRBÄTTRING:
                   {/* Expanderbar feedback */}
                   <button
                     onClick={() => setExpandedFeedback(expandedFeedback === index ? null : index)}
-                    className="flex items-center gap-2 text-sm text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 transition font-medium"
+                    className="flex items-center gap-2 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition font-medium"
                     aria-expanded={expandedFeedback === index}
                     aria-controls={`feedback-${index}`}
                   >
@@ -677,7 +677,7 @@ TIPS FÖR FÖRBÄTTRING:
                   {expandedFeedback === index && (
                     <div id={`feedback-${index}`} className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-600 space-y-3" aria-live="polite">
                       {fs.feedback && (
-                        <div className="bg-brand-50 dark:bg-brand-900/20 p-4 rounded-xl text-sm text-brand-900 dark:text-brand-300 border border-brand-100 dark:border-brand-900/50">
+                        <div className="bg-teal-50 dark:bg-teal-900/20 p-4 rounded-xl text-sm text-teal-800 dark:text-teal-300 border border-teal-100 dark:border-teal-800/50">
                           <strong>{t('interviewSimulator.session.aiFeedback')}</strong> {fs.feedback}
                         </div>
                       )}
@@ -694,9 +694,9 @@ TIPS FÖR FÖRBÄTTRING:
       )}
 
       {/* Nuvarande fråga - with aria-live for AI questions */}
-      <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800/50" role="region" aria-label="Nuvarande fråga">
+      <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800/50 shadow-sm" role="region" aria-label="Nuvarande fråga">
         <div className="flex gap-4" aria-live="polite">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-400 to-cyan-500 dark:from-brand-700 dark:to-cyan-600 flex items-center justify-center flex-shrink-0  dark:/30">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-500 dark:from-teal-500 dark:to-cyan-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-teal-200 dark:shadow-teal-900/30">
             <User className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
           <div className="flex-1">
@@ -710,7 +710,7 @@ TIPS FÖR FÖRBÄTTRING:
       </Card>
 
       {/* Timer & Answer Input */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
         <div className="space-y-5">
           {/* Isolated Timer Component */}
           <InterviewTimer
@@ -778,7 +778,7 @@ TIPS FÖR FÖRBÄTTRING:
               placeholder={isRecording ? t('interviewSimulator.input.speakNow') : t('interviewSimulator.input.writeOrRecord')}
               rows={5}
               aria-describedby="svar-hints"
-              className={`w-full px-4 py-3 rounded-xl border focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors ${
+              className={`w-full px-4 py-3 rounded-xl border focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 transition-colors ${
                 isRecording ? 'border-red-300 dark:border-red-700' : 'border-stone-200 dark:border-stone-600'
               }`}
             />
@@ -793,7 +793,7 @@ TIPS FÖR FÖRBÄTTRING:
             <Button
               onClick={svara}
               disabled={!anvandarSvar.trim() || isLoading}
-              className="flex-1 bg-gradient-to-r from-brand-700 to-cyan-500 hover:from-brand-900 hover:to-cyan-600 dark:from-brand-900 dark:to-cyan-600 dark:hover:from-brand-700 dark:hover:to-cyan-500 text-white font-medium py-3 rounded-xl  dark:/30"
+              className="flex-1 bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-teal-600 hover:to-cyan-600 dark:from-teal-600 dark:to-cyan-600 dark:hover:from-teal-500 dark:hover:to-cyan-500 text-white font-medium py-3 rounded-xl shadow-md shadow-teal-200 dark:shadow-teal-900/30"
               aria-busy={isLoading}
             >
               {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" aria-label={t('common.loading')} /> : <><Send className="w-4 h-4 mr-2" aria-hidden="true" /> {t('interviewSimulator.input.nextQuestion')}</>}
@@ -854,9 +854,9 @@ TIPS FÖR FÖRBÄTTRING:
 
       {/* Example Answer - improved design */}
       {exampleAnswers[nuvarandeFraga] && (
-        <Card className="p-5 bg-gradient-to-br from-emerald-50 to-brand-50 dark:from-emerald-900/20 dark:to-brand-900/20 border-emerald-200 dark:border-emerald-800/50">
+        <Card className="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200 dark:border-emerald-800/50 shadow-sm">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-brand-700 dark:from-emerald-500 dark:to-brand-900 flex items-center justify-center flex-shrink-0  dark:/30">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 flex items-center justify-center flex-shrink-0 shadow-md shadow-emerald-200 dark:shadow-emerald-900/30">
               <Zap className="w-5 h-5 text-white" aria-hidden="true" />
             </div>
             <div>
@@ -869,27 +869,27 @@ TIPS FÖR FÖRBÄTTRING:
 
       {/* Related content for active session */}
       <div className="grid gap-4 sm:grid-cols-2 pt-4">
-        <Card className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <Card className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
           <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-3 flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
             {t('interviewSimulator.quickTips.title')}
           </h3>
           <ul className="space-y-2 text-sm text-slate-600 dark:text-stone-400">
             <li className="flex items-start gap-2">
-              <span className="text-brand-700 mt-1">•</span>
+              <span className="text-teal-500 mt-1">•</span>
               <span>{t('interviewSimulator.quickTips.tip1')}</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-brand-700 mt-1">•</span>
+              <span className="text-teal-500 mt-1">•</span>
               <span>{t('interviewSimulator.quickTips.tip2')}</span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="text-brand-700 mt-1">•</span>
+              <span className="text-teal-500 mt-1">•</span>
               <span>{t('interviewSimulator.quickTips.tip3')}</span>
             </li>
           </ul>
         </Card>
-        <Card className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <Card className="p-5 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
           <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-3 flex items-center gap-2">
             <Star className="w-5 h-5 text-yellow-500 dark:text-yellow-400" aria-hidden="true" />
             {t('interviewSimulator.progress.title')}
@@ -901,7 +901,7 @@ TIPS FÖR FÖRBÄTTRING:
             </div>
             <div className="w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-brand-400 to-cyan-500 rounded-full transition-all duration-500"
+                className="h-full bg-gradient-to-r from-teal-400 to-cyan-500 rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(antalFragor * 20, 100)}%` }}
               />
             </div>

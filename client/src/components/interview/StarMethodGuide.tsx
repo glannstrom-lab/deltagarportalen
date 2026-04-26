@@ -25,7 +25,7 @@ export const StarMethodGuide: React.FC = () => {
   ];
 
   return (
-    <div className="bg-white rounded-xl p-6 space-y-6">
+    <div className="bg-white rounded-xl shadow-lg p-6 space-y-6">
       <div className="text-center">
         <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <Star className="w-8 h-8 text-amber-600" />
@@ -64,15 +64,15 @@ export const StarMethodGuide: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-brand-50 rounded-xl p-4 border-2 border-brand-100">
-          <div className="w-10 h-10 bg-brand-700 text-white rounded-lg flex items-center justify-center text-xl font-bold mb-3">
+        <div className="bg-green-50 rounded-xl p-4 border-2 border-green-100">
+          <div className="w-10 h-10 bg-green-500 text-white rounded-lg flex items-center justify-center text-xl font-bold mb-3">
             A
           </div>
-          <h3 className="font-bold text-brand-900 mb-2">Action</h3>
-          <p className="text-sm text-brand-900">
+          <h3 className="font-bold text-green-900 mb-2">Action</h3>
+          <p className="text-sm text-green-800">
             Beskriv konkret vad DU gjorde. Använd "jag" istället för "vi".
           </p>
-          <p className="text-xs text-brand-900 mt-2 italic">
+          <p className="text-xs text-green-600 mt-2 italic">
             "Jag bestämde mig för att..." / "Jag tog kontakt med..."
           </p>
         </div>
@@ -108,7 +108,7 @@ export const StarMethodGuide: React.FC = () => {
             <p className="text-gray-700 pt-1">{examples[0].task}</p>
           </div>
           <div className="flex gap-3">
-            <span className="flex-shrink-0 w-8 h-8 bg-brand-700 text-white rounded-full flex items-center justify-center text-sm font-bold">A</span>
+            <span className="flex-shrink-0 w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold">A</span>
             <p className="text-gray-700 pt-1">{examples[0].action}</p>
           </div>
           <div className="flex gap-3">

@@ -61,7 +61,7 @@ export function PhraseBank({ onSelectPhrase }: PhraseBankProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 bg-[#4f46e5]/10 rounded-lg">
           <BookOpen size={24} style={{ color: '#4f46e5' }} />
@@ -99,7 +99,7 @@ export function PhraseBank({ onSelectPhrase }: PhraseBankProps) {
           >
             <span className="text-sm text-slate-700 pr-2">{phrase}</span>
             {copiedIndex === index ? (
-              <Check size={16} className="text-brand-700 flex-shrink-0" />
+              <Check size={16} className="text-green-500 flex-shrink-0" />
             ) : (
               <Copy size={16} className="text-slate-600 group-hover:text-[#4f46e5] flex-shrink-0" />
             )}

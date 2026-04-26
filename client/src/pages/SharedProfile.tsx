@@ -58,7 +58,7 @@ export default function SharedProfile() {
     return (
       <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-brand-900 animate-spin mx-auto mb-3" />
+          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" />
           <p className="text-stone-600 dark:text-stone-400">{t('profile.loading')}</p>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function SharedProfile() {
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-brand-900 hover:bg-brand-900/90 text-white rounded-lg font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             {t('sharedProfile.backToHome')}
@@ -92,11 +92,11 @@ export default function SharedProfile() {
     <div className="min-h-screen bg-stone-50 dark:bg-stone-900 py-8 px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
-        <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden mb-6">
-          <div className="bg-brand-900 h-24" />
+        <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden mb-6">
+          <div className="bg-gradient-to-r from-teal-500 to-sky-500 h-24" />
           <div className="px-6 pb-6 -mt-12">
             <div className="flex items-end gap-4">
-              <div className="w-24 h-24 rounded-xl bg-white dark:bg-stone-700 border-4 border-white dark:border-stone-700 overflow-hidden flex items-center justify-center">
+              <div className="w-24 h-24 rounded-2xl bg-white dark:bg-stone-700 border-4 border-white dark:border-stone-700 shadow-lg overflow-hidden flex items-center justify-center">
                 {profile.profile_image_url ? (
                   <img
                     src={profile.profile_image_url as string}
@@ -118,26 +118,26 @@ export default function SharedProfile() {
 
         {/* Contact info */}
         {share?.show_contact && (
-          <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
+          <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4">
               {t('sharedProfile.contactInfo')}
             </h2>
             <div className="grid gap-3 sm:grid-cols-3">
               {profile.email && (
                 <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-brand-900" />
+                  <Mail className="w-5 h-5 text-teal-500" />
                   <span className="text-sm text-stone-600 dark:text-stone-400">{profile.email as string}</span>
                 </div>
               )}
               {profile.phone && (
                 <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-brand-900" />
+                  <Phone className="w-5 h-5 text-teal-500" />
                   <span className="text-sm text-stone-600 dark:text-stone-400">{profile.phone as string}</span>
                 </div>
               )}
               {profile.location && (
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-brand-900" />
+                  <MapPin className="w-5 h-5 text-teal-500" />
                   <span className="text-sm text-stone-600 dark:text-stone-400">{profile.location as string}</span>
                 </div>
               )}
@@ -147,7 +147,7 @@ export default function SharedProfile() {
 
         {/* AI Summary */}
         {share?.show_summary && profile.ai_summary && (
-          <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
+          <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4">
               {t('sharedProfile.aboutMe')}
             </h2>
@@ -159,7 +159,7 @@ export default function SharedProfile() {
 
         {/* Skills */}
         {share?.show_skills && (profile.skills as unknown[])?.length > 0 && (
-          <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
+          <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
               <Star className="w-5 h-5 text-amber-500" />
               {t('sharedProfile.skills')}
@@ -192,7 +192,7 @@ export default function SharedProfile() {
 
         {/* Work Experience */}
         {share?.show_experience && (profile.work_experience as unknown[])?.length > 0 && (
-          <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
+          <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
               <Briefcase className="w-5 h-5 text-blue-500" />
               {t('sharedProfile.workExperience')}
@@ -208,7 +208,7 @@ export default function SharedProfile() {
               }>).map((job, i) => (
                 <div key={i} className="border-l-2 border-blue-200 dark:border-blue-800 pl-4">
                   <h3 className="font-medium text-stone-800 dark:text-stone-200">{job.title}</h3>
-                  <p className="text-sm text-brand-900 dark:text-brand-400">{job.company}</p>
+                  <p className="text-sm text-teal-600 dark:text-teal-400">{job.company}</p>
                   <p className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1 mt-1">
                     <Calendar className="w-3 h-3" />
                     {formatDate(job.startDate)} - {job.current ? t('common.today') : job.endDate ? formatDate(job.endDate) : ''}
@@ -224,7 +224,7 @@ export default function SharedProfile() {
 
         {/* Education */}
         {share?.show_education && (profile.education as unknown[])?.length > 0 && (
-          <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
+          <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
               <GraduationCap className="w-5 h-5 text-purple-500" />
               {t('sharedProfile.education')}
@@ -238,7 +238,7 @@ export default function SharedProfile() {
               }>).map((edu, i) => (
                 <div key={i} className="border-l-2 border-purple-200 dark:border-purple-800 pl-4">
                   <h3 className="font-medium text-stone-800 dark:text-stone-200">{edu.degree}</h3>
-                  <p className="text-sm text-brand-900 dark:text-brand-400">{edu.school}</p>
+                  <p className="text-sm text-teal-600 dark:text-teal-400">{edu.school}</p>
                   <p className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1 mt-1">
                     <Calendar className="w-3 h-3" />
                     {formatDate(edu.startDate)} - {edu.endDate ? formatDate(edu.endDate) : ''}
@@ -251,7 +251,7 @@ export default function SharedProfile() {
 
         {/* Documents */}
         {share?.show_documents && (profile.documents as unknown[])?.length > 0 && (
-          <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
+          <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-6 mb-6">
             <h2 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
               <FileText className="w-5 h-5 text-sky-500" />
               {t('sharedProfile.documents')}

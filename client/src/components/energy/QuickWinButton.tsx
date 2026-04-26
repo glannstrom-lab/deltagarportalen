@@ -193,7 +193,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
 
   if (variant === 'card') {
     return (
-      <div className={cn('bg-white rounded-xl border border-slate-200 p-5', className)}>
+      <div className={cn('bg-white rounded-2xl shadow-sm border border-slate-200 p-5', className)}>
         <div className="flex items-center gap-3 mb-4">
           <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', colorClasses.bg)}>
             <Zap className="w-5 h-5 text-white" />
@@ -277,7 +277,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          'fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3 rounded-full text-white font-medium transition-all hover: hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2',
+          'fixed bottom-6 right-6 z-40 flex items-center gap-2 px-5 py-3 rounded-full shadow-lg text-white font-medium transition-all hover:shadow-xl hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2',
           colorClasses.bg,
           colorClasses.hover,
           colorClasses.ring,
@@ -299,7 +299,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
           aria-label="Snabba uppgifter"
         >
           <div 
-            className="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95"
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95"
             onClick={e => e.stopPropagation()}
           >
             {/* Header */}
@@ -344,7 +344,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                       'group p-4 rounded-xl border-2 transition-all',
                       completedTasks.has(task.label)
                         ? 'bg-emerald-50 border-emerald-200'
-                        : 'bg-white border-slate-200 hover:border-indigo-200 hover:'
+                        : 'bg-white border-slate-200 hover:border-indigo-200 hover:shadow-sm'
                     )}
                   >
                     <div className="flex items-start gap-3">

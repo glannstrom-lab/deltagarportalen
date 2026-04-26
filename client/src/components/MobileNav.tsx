@@ -44,7 +44,7 @@ export function MobileProfileButton({ onClick }: { onClick: () => void }) {
       className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
       aria-label={t('layout.mobileNav.openProfile')}
     >
-      <div className="w-8 h-8 bg-gradient-to-br from-brand-700 to-sky-500 rounded-full flex items-center justify-center">
+      <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
         <User className="w-4 h-4 text-white" />
       </div>
     </button>
@@ -93,7 +93,7 @@ export function SideMenu({
       {/* Menu */}
       <div
         className={cn(
-          'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50',
+          'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
           'w-[300px] max-w-[85vw]',
           isOpen ? 'translate-x-0' : 'translate-x-full'
@@ -137,7 +137,7 @@ export function SideMenu({
                       className={({ isActive }) => cn(
                         'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                         isActive
-                          ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300 font-medium'
+                          ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
                           : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200 dark:active:bg-stone-600'
                       )}
                     >
@@ -158,7 +158,7 @@ export function SideMenu({
           {/* Consultant Section - visas om aktiv roll är CONSULTANT, ADMIN eller SUPERADMIN */}
           {isConsultant && (
             <div className="border-t border-slate-200 dark:border-stone-700 pt-3 mt-2">
-              <h3 className="px-3 py-2 text-xs font-semibold text-brand-900 dark:text-brand-400 uppercase tracking-wider">
+              <h3 className="px-3 py-2 text-xs font-semibold text-teal-600 dark:text-teal-400 uppercase tracking-wider">
                 {t('sidebar.consultantSection')}
               </h3>
               <div className="space-y-0.5">
@@ -172,8 +172,8 @@ export function SideMenu({
                       className={({ isActive }) => cn(
                         'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                         isActive
-                          ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300 font-medium'
-                          : 'text-brand-900 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/30 active:bg-brand-100 dark:active:bg-brand-900/50'
+                          ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
+                          : 'text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30 active:bg-teal-100 dark:active:bg-teal-900/50'
                       )}
                     >
                       <Icon className="w-5 h-5 flex-shrink-0" />
@@ -227,7 +227,7 @@ export function SideMenu({
                 className={({ isActive }) => cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                   isActive
-                    ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300 font-medium'
+                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
                     : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200 dark:active:bg-stone-600'
                 )}
               >
@@ -241,7 +241,7 @@ export function SideMenu({
                 className={({ isActive }) => cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                   isActive
-                    ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300 font-medium'
+                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
                     : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200 dark:active:bg-stone-600'
                 )}
               >
@@ -255,7 +255,7 @@ export function SideMenu({
                 className={({ isActive }) => cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                   isActive
-                    ? 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300 font-medium'
+                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
                     : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200 dark:active:bg-stone-600'
                 )}
               >

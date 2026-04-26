@@ -35,7 +35,7 @@ export default function Privacy() {
   const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
     <section className="scroll-mt-8" id={title.toLowerCase().replace(/\s+/g, '-')}>
       <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-3">
-        <Icon className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+        <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
         {title}
       </h2>
       {children}
@@ -44,7 +44,7 @@ export default function Privacy() {
 
   const ListItem = ({ title, desc }: { title?: string; desc: string }) => (
     <li className="flex items-start gap-3 text-gray-600 dark:text-gray-300">
-      <span className="w-1.5 h-1.5 bg-brand-700 dark:bg-brand-400 rounded-full mt-2 flex-shrink-0" />
+      <span className="w-1.5 h-1.5 bg-teal-500 dark:bg-teal-400 rounded-full mt-2 flex-shrink-0" />
       <span>
         {title && <strong className="text-gray-800 dark:text-gray-100">{title}</strong>} {desc}
       </span>
@@ -58,14 +58,14 @@ export default function Privacy() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900 rounded-xl flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 rounded-xl flex items-center justify-center text-white font-bold text-xl">
                 J
               </div>
-              <span className="text-xl font-bold text-brand-900 dark:text-brand-400">Jobin</span>
+              <span className="text-xl font-bold text-teal-600 dark:text-teal-400">Jobin</span>
             </Link>
             <Link
               to="/"
-              className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-brand-900 dark:hover:text-brand-400 font-medium transition-colors"
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               {t('privacy.backToHome')}
@@ -77,15 +77,15 @@ export default function Privacy() {
       {/* Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="text-center mb-12">
-          <div className="w-16 h-16 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center mx-auto mb-6">
-            <Shield className="w-8 h-8 text-brand-900 dark:text-brand-400" />
+          <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Shield className="w-8 h-8 text-teal-600 dark:text-teal-400" />
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{t('privacy.title')}</h1>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">{t('privacy.subtitle')}</p>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">{t('privacy.version')}</p>
         </div>
 
-        <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-8 lg:p-12 space-y-10">
+        <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-8 lg:p-12 space-y-10">
           {/* Data Controller */}
           <Section icon={Building2} title={t('privacy.controller.title')}>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">{t('privacy.controller.intro')}</p>
@@ -95,9 +95,9 @@ export default function Privacy() {
               <p>{t('privacy.controller.address')}</p>
               <p>{t('privacy.controller.email')}</p>
             </div>
-            <div className="mt-4 p-4 bg-brand-50 dark:bg-brand-900/20 rounded-xl border border-brand-100 dark:border-brand-900">
-              <p className="font-medium text-brand-900 dark:text-brand-200">{t('privacy.controller.dpo')}</p>
-              <p className="text-brand-900 dark:text-brand-300 text-sm">{t('privacy.controller.dpoDesc')}</p>
+            <div className="mt-4 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-100 dark:border-teal-800">
+              <p className="font-medium text-teal-800 dark:text-teal-200">{t('privacy.controller.dpo')}</p>
+              <p className="text-teal-700 dark:text-teal-300 text-sm">{t('privacy.controller.dpoDesc')}</p>
             </div>
           </Section>
 
@@ -157,7 +157,7 @@ export default function Privacy() {
               <ListItem title={t('privacy.sharing.ai')} desc={t('privacy.sharing.aiDesc')} />
               <ListItem title={t('privacy.sharing.analytics')} desc={t('privacy.sharing.analyticsDesc')} />
             </ul>
-            <p className="mt-4 font-medium text-brand-900 dark:text-brand-300 bg-brand-50 dark:bg-brand-900/20 p-3 rounded-lg border border-brand-100 dark:border-brand-900">
+            <p className="mt-4 font-medium text-green-700 dark:text-green-300 bg-green-50 dark:bg-green-900/20 p-3 rounded-lg border border-green-100 dark:border-green-800">
               {t('privacy.sharing.none')}
             </p>
           </Section>
@@ -212,7 +212,7 @@ export default function Privacy() {
             </ul>
             <Link
               to="/ai-policy"
-              className="mt-4 inline-flex items-center gap-2 text-brand-900 dark:text-brand-400 hover:text-brand-900 dark:hover:text-brand-300 font-medium"
+              className="mt-4 inline-flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
             >
               {t('privacy.automated.moreInfo')}
               <ExternalLink className="w-4 h-4" />
@@ -259,13 +259,13 @@ export default function Privacy() {
           <Section icon={Mail} title={t('privacy.contact.title')}>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
               {t('privacy.contact.text')}{' '}
-              <a href="mailto:privacy@jobin.se" className="text-brand-900 dark:text-brand-400 hover:underline">
+              <a href="mailto:privacy@jobin.se" className="text-teal-600 dark:text-teal-400 hover:underline">
                 privacy@jobin.se
               </a>
             </p>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed mt-2">
               {t('privacy.contact.dpo')}{' '}
-              <a href="mailto:dpo@jobin.se" className="text-brand-900 dark:text-brand-400 hover:underline">
+              <a href="mailto:dpo@jobin.se" className="text-teal-600 dark:text-teal-400 hover:underline">
                 dpo@jobin.se
               </a>
             </p>

@@ -38,7 +38,7 @@ const skillColors: Record<string, string> = {
   leadership: 'from-purple-500 to-pink-500',
   mjuk: 'from-amber-500 to-orange-500',
   soft: 'from-amber-500 to-orange-500',
-  default: 'from-brand-700 to-brand-900'
+  default: 'from-teal-500 to-teal-600'
 }
 
 // Helper to format CV data into a text summary for AI analysis
@@ -433,7 +433,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
 
   const getGapColor = (gap: string) => {
     switch (gap) {
-      case 'none': return 'text-brand-900 dark:text-brand-400 bg-brand-100 dark:bg-brand-900/30'
+      case 'none': return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30'
       case 'small': return 'text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30'
       case 'medium': return 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30'
       case 'large': return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
@@ -448,7 +448,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
     return (
       <div className="max-w-4xl mx-auto flex items-center justify-center py-20">
         <div className="text-center" role="status" aria-live="polite">
-          <Loader2 className="w-8 h-8 text-brand-700 animate-spin mx-auto mb-3" aria-hidden="true" />
+          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-stone-600 dark:text-stone-400">
             {t('skillsGapAnalysis.loadingProfile')}
           </p>
@@ -463,7 +463,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
       <div className="max-w-4xl mx-auto space-y-6 pb-20">
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="status" aria-live="polite" aria-busy="true">
           <div className="flex items-center gap-3 mb-4">
-            <Loader2 className="w-6 h-6 animate-spin text-brand-900" aria-hidden="true" />
+            <Loader2 className="w-6 h-6 animate-spin text-teal-600" aria-hidden="true" />
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
               {t('skillsGapAnalysis.analyzing')}
             </h3>
@@ -497,7 +497,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
               <p className="text-sm text-gray-500">{new Date(currentAnalysis.created_at).toLocaleDateString('sv-SE')}</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-700 to-brand-900 dark:from-brand-400 dark:to-brand-700 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 flex items-center justify-center">
                 <span className="text-2xl font-bold text-white">{currentAnalysis.match_percentage}%</span>
               </div>
               <div className="flex flex-col gap-1">
@@ -520,7 +520,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
             aria-label={`${i18n.language === 'en' ? 'Match against dream job' : 'Matchning mot drömjobb'}: ${currentAnalysis.match_percentage}%`}
           >
             <div
-              className="h-full bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-400 dark:to-brand-700 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 transition-all duration-500"
               style={{ width: `${currentAnalysis.match_percentage}%` }}
             />
           </div>
@@ -541,7 +541,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         {skills.length > 0 && (
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label="Kompetensanalys">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <BarChart3 className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+              <BarChart3 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               {t('skillsGapAnalysis.skillsComparison')}
             </h3>
             <div className="space-y-4" role="list" aria-label="Lista över kompetenser">
@@ -577,12 +577,12 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         {courses.length > 0 && (
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <BookOpen className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+              <BookOpen className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               {t('skillsGapAnalysis.recommendedCourses')}
             </h3>
             <div className="space-y-3">
               {courses.map((course, index) => (
-                <div key={index} className="flex items-center justify-between p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-brand-300 dark:hover:border-brand-900 transition-colors bg-white dark:bg-stone-700">
+                <div key={index} className="flex items-center justify-between p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 transition-colors bg-white dark:bg-stone-700">
                   <div>
                     <h4 className="font-semibold text-gray-800 dark:text-gray-100">{course.title}</h4>
                     <div className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300 mt-1">
@@ -594,7 +594,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                     </div>
                   </div>
                   <div className="text-right">
-                    <span className="text-sm font-medium text-brand-900 dark:text-brand-400">{course.cost}</span>
+                    <span className="text-sm font-medium text-green-600 dark:text-green-400">{course.cost}</span>
                     {course.url && (
                       <Button size="sm" variant="outline" className="mt-1 block" onClick={() => window.open(course.url, '_blank')}>
                         {t('skillsGapAnalysis.learnMore')}
@@ -611,14 +611,14 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         {actionPlan.length > 0 && (
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <Award className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+              <Award className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               {t('skillsGapAnalysis.yourActionPlan')}
             </h3>
             <div className="space-y-3">
               {actionPlan.map((item) => (
                 <div key={item.order} className="flex items-start gap-3 p-3 rounded-lg bg-stone-50 dark:bg-stone-700">
-                  <div className="w-6 h-6 rounded-full bg-brand-100 dark:bg-brand-900/30 flex items-center justify-center flex-shrink-0">
-                    <span className="text-xs font-bold text-brand-900 dark:text-brand-400">{item.order}</span>
+                  <div className="w-6 h-6 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-teal-600 dark:text-teal-400">{item.order}</span>
                   </div>
                   <div>
                     <p className="font-medium text-gray-800 dark:text-gray-100">{item.title}</p>
@@ -631,14 +631,14 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
             {/* Add to Career Plan Button */}
             <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-600">
               {addedToPlan ? (
-                <div className="flex items-center gap-2 p-3 rounded-lg bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-900">
-                  <CheckCircle className="w-5 h-5 text-brand-900 dark:text-brand-400" />
-                  <span className="text-sm text-brand-900 dark:text-brand-200">
+                <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700">
+                  <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                  <span className="text-sm text-green-800 dark:text-green-200">
                     {t('skillsGapAnalysis.addedToCareerPlan')}
                   </span>
                   <Link
                     to="/career/plan"
-                    className="ml-auto text-sm font-medium text-brand-900 dark:text-brand-300 hover:underline"
+                    className="ml-auto text-sm font-medium text-green-700 dark:text-green-300 hover:underline"
                   >
                     {t('skillsGapAnalysis.viewPlan')} →
                   </Link>
@@ -647,7 +647,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                 <Button
                   onClick={addToCareerPlan}
                   disabled={isAddingToPlan}
-                  className="w-full bg-gradient-to-r from-brand-700 to-brand-900 hover:from-brand-900 hover:to-brand-900"
+                  className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700"
                 >
                   {isAddingToPlan ? (
                     <>
@@ -696,11 +696,11 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                   <button
                     key={a.id}
                     onClick={() => selectAnalysis(a)}
-                    className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-brand-300 dark:hover:border-brand-900 transition-colors"
+                    className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <span className="font-medium text-gray-800 dark:text-gray-100">{a.dream_job}</span>
-                      <span className="text-sm text-brand-900 dark:text-brand-400">{a.match_percentage}% match</span>
+                      <span className="text-sm text-teal-600 dark:text-teal-400">{a.match_percentage}% match</span>
                     </div>
                     <span className="text-xs text-gray-500">{new Date(a.created_at).toLocaleDateString('sv-SE')}</span>
                   </button>
@@ -720,8 +720,8 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-brand-100 to-sky-100 dark:from-brand-900/30 dark:to-sky-900/30 mb-2">
-          <Target className="w-7 h-7 text-brand-900 dark:text-brand-400" />
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-teal-100 to-sky-100 dark:from-teal-900/30 dark:to-sky-900/30 mb-2">
+          <Target className="w-7 h-7 text-teal-600 dark:text-teal-400" />
         </div>
         <h1 className="text-2xl font-bold text-slate-800 dark:text-stone-100">{t('skillsGapAnalysis.title')}</h1>
         <p className="text-slate-600 dark:text-stone-400 max-w-2xl mx-auto">
@@ -744,11 +744,11 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
               <button
                 key={analysis.id}
                 onClick={() => selectAnalysis(analysis)}
-                className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-brand-300 dark:hover:border-brand-900 transition-colors"
+                className="w-full text-left p-3 rounded-lg bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-gray-800 dark:text-gray-100">{analysis.dream_job}</span>
-                  <span className="text-sm text-brand-900 dark:text-brand-400">{analysis.match_percentage}% match</span>
+                  <span className="text-sm text-teal-600 dark:text-teal-400">{analysis.match_percentage}% match</span>
                 </div>
                 <span className="text-xs text-gray-500">{new Date(analysis.created_at).toLocaleDateString('sv-SE')}</span>
               </button>
@@ -776,14 +776,14 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           <div className="flex gap-2">
             <Link
               to="/profile"
-              className="text-sm text-brand-900 dark:text-brand-400 hover:underline flex items-center gap-1"
+              className="text-sm text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
             >
               <User className="w-4 h-4" />
               {t('common.profile')}
             </Link>
             <Link
               to="/cv"
-              className="text-sm text-brand-900 dark:text-brand-400 hover:underline flex items-center gap-1"
+              className="text-sm text-teal-600 dark:text-teal-400 hover:underline flex items-center gap-1"
             >
               <FileText className="w-4 h-4" />
               CV
@@ -819,7 +819,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
       {/* Dream Job Input */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-brand-700 to-sky-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-500 to-sky-500 flex items-center justify-center">
             <Search className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -832,8 +832,8 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
 
         {/* Favorite occupations suggestions */}
         {favoriteOccupations.length > 0 && !dreamJob && (
-          <div className="mb-4 p-3 bg-brand-50 dark:bg-brand-900/20 rounded-lg border border-brand-200 dark:border-brand-900">
-            <div className="flex items-center gap-2 text-sm text-brand-900 dark:text-brand-300 mb-2">
+          <div className="mb-4 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-700">
+            <div className="flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300 mb-2">
               <Heart className="w-4 h-4" />
               {t('skillsGapAnalysis.favoriteOccupations')}
             </div>
@@ -842,7 +842,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                 <button
                   key={fav.id}
                   onClick={() => setDreamJob(fav.occupation_title)}
-                  className="px-3 py-1.5 text-sm bg-white dark:bg-stone-700 rounded-full border border-brand-300 dark:border-brand-900 text-brand-900 dark:text-brand-300 hover:bg-brand-100 dark:hover:bg-brand-900/30 transition-colors"
+                  className="px-3 py-1.5 text-sm bg-white dark:bg-stone-700 rounded-full border border-teal-300 dark:border-teal-600 text-teal-700 dark:text-teal-300 hover:bg-teal-100 dark:hover:bg-teal-800/30 transition-colors"
                 >
                   {fav.occupation_title}
                 </button>
@@ -856,7 +856,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           onChange={(e) => setDreamJob(e.target.value)}
           placeholder={t('skillsGapAnalysis.dreamJob.placeholder')}
           rows={6}
-          className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+          className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
         />
         <p className="text-xs text-slate-500 dark:text-stone-400 mt-2">
           {t('skillsGapAnalysis.dreamJob.tip')}
@@ -868,7 +868,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         <Button
           onClick={analyze}
           disabled={!hasProfileData || !dreamJob.trim() || isStreaming}
-          className="px-8 py-4 text-lg bg-gradient-to-r from-brand-700 to-sky-500 hover:from-brand-900 hover:to-sky-600 dark:from-brand-900 dark:to-sky-600 dark:hover:from-brand-700 dark:hover:to-sky-500"
+          className="px-8 py-4 text-lg bg-gradient-to-r from-teal-500 to-sky-500 hover:from-teal-600 hover:to-sky-600 dark:from-teal-600 dark:to-sky-600 dark:hover:from-teal-500 dark:hover:to-sky-500"
         >
           <Sparkles className="w-6 h-6 mr-2" />
           {t('skillsGapAnalysis.analyzeGap')}

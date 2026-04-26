@@ -154,10 +154,10 @@ export default function SalaryCalculatorTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-brand-50 to-brand-100 dark:from-brand-900/20 dark:to-brand-900/20 border-brand-200 dark:border-brand-900">
+      <Card className="bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 border-teal-200 dark:border-teal-700">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center shrink-0">
-            <Calculator className="w-6 h-6 text-brand-900 dark:text-brand-400" />
+          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
+            <Calculator className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t('salary.calculator.title')}</h2>
@@ -182,7 +182,7 @@ export default function SalaryCalculatorTab() {
             <select
               value={occupation}
               onChange={(e) => setOccupation(e.target.value)}
-              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 focus:border-brand-700 dark:focus:border-brand-400 text-gray-800 dark:text-gray-100"
+              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 text-gray-800 dark:text-gray-100"
             >
               <option value="">{t('salary.calculator.selectCategory')}</option>
               {Object.keys(SALARY_DATA).map((occ) => (
@@ -200,7 +200,7 @@ export default function SalaryCalculatorTab() {
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 focus:border-brand-700 dark:focus:border-brand-400 text-gray-800 dark:text-gray-100"
+              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 text-gray-800 dark:text-gray-100"
             >
               <option value="">{t('salary.calculator.selectRegion')}</option>
               {Object.keys(REGION_ADJUSTMENTS).map((reg) => (
@@ -218,7 +218,7 @@ export default function SalaryCalculatorTab() {
             <select
               value={experience}
               onChange={(e) => setExperience(e.target.value)}
-              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-brand-700 dark:focus:ring-brand-400 focus:border-brand-700 dark:focus:border-brand-400 text-gray-800 dark:text-gray-100"
+              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 text-gray-800 dark:text-gray-100"
             >
               <option value="">{t('salary.calculator.selectExperience')}</option>
               {Object.keys(EXPERIENCE_MULTIPLIERS).map((exp) => (
@@ -246,10 +246,10 @@ export default function SalaryCalculatorTab() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
           >
-            <Card className="border-brand-200 dark:border-brand-900 bg-brand-50/50 dark:bg-brand-900/10">
+            <Card className="border-teal-200 dark:border-teal-700 bg-teal-50/50 dark:bg-teal-900/10">
               <div className="flex items-center justify-between gap-2 mb-6">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+                  <Sparkles className="w-5 h-5 text-teal-600 dark:text-teal-400" />
                   <h3 className="font-semibold text-gray-900 dark:text-gray-100">{t('salary.calculator.yourResult')}</h3>
                 </div>
                 <Button
@@ -265,21 +265,21 @@ export default function SalaryCalculatorTab() {
 
               {/* Salary range grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-brand-100 dark:border-brand-900">
+                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800">
                   <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">{t('salary.calculator.minimum')}</p>
                   <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">
                     {calculatedSalary.min.toLocaleString('sv-SE')} kr
                   </p>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{t('salary.calculator.perMonth')}</p>
                 </div>
-                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border-2 border-brand-300 dark:border-brand-900">
-                  <p className="text-sm text-brand-900 dark:text-brand-400 font-medium mb-1">{t('salary.calculator.medianRecommended')}</p>
-                  <p className="text-3xl font-bold text-brand-900 dark:text-brand-300">
+                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border-2 border-teal-300 dark:border-teal-600 shadow-sm">
+                  <p className="text-sm text-teal-600 dark:text-teal-400 font-medium mb-1">{t('salary.calculator.medianRecommended')}</p>
+                  <p className="text-3xl font-bold text-teal-700 dark:text-teal-300">
                     {calculatedSalary.median.toLocaleString('sv-SE')} kr
                   </p>
                   <p className="text-xs text-gray-600 dark:text-gray-400">{t('salary.calculator.perMonth')}</p>
                 </div>
-                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-brand-100 dark:border-brand-900">
+                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800">
                   <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">{t('salary.calculator.maximum')}</p>
                   <p className="text-2xl font-bold text-gray-700 dark:text-gray-200">
                     {calculatedSalary.max.toLocaleString('sv-SE')} kr
@@ -289,7 +289,7 @@ export default function SalaryCalculatorTab() {
               </div>
 
               {/* Net salary section */}
-              <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-brand-100 dark:border-brand-900 mb-4">
+              <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800 mb-4">
                 <button
                   onClick={() => setShowTaxDetail(!showTaxDetail)}
                   className="w-full flex items-center justify-between hover:bg-stone-50/50 dark:hover:bg-stone-600/50 transition-colors"
@@ -308,20 +308,20 @@ export default function SalaryCalculatorTab() {
 
               {/* Annual salary & growth */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-brand-100 dark:border-brand-900">
+                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800">
                   <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">{t('salary.calculator.annualSalaryGross')}</p>
                   <p className="text-xl font-bold text-gray-800 dark:text-gray-100">
                     {(calculatedSalary.median * 12).toLocaleString('sv-SE')} kr
                   </p>
                 </div>
-                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-brand-100 dark:border-brand-900">
+                <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800">
                   <p className="text-sm text-gray-700 dark:text-gray-300 mb-1">{t('salary.calculator.annualIncrease')}</p>
-                  <p className="text-xl font-bold text-brand-900 dark:text-brand-400">+{calculatedSalary.growth}%</p>
+                  <p className="text-xl font-bold text-teal-600 dark:text-teal-400">+{calculatedSalary.growth}%</p>
                 </div>
               </div>
 
               {/* Visual salary range chart */}
-              <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-brand-100 dark:border-brand-900 mb-4">
+              <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-teal-100 dark:border-teal-800 mb-4">
                 <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">{t('salary.calculator.salaryRangeDistribution')}</p>
                 <div className="space-y-3">
                   {/* Min range */}
@@ -332,7 +332,7 @@ export default function SalaryCalculatorTab() {
                     </div>
                     <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-brand-400 dark:bg-brand-700"
+                        className="h-full bg-teal-400 dark:bg-teal-500"
                         style={{ width: `${(calculatedSalary.min / calculatedSalary.max) * 100}%` }}
                       />
                     </div>
@@ -345,7 +345,7 @@ export default function SalaryCalculatorTab() {
                     </div>
                     <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-brand-700 dark:bg-brand-400"
+                        className="h-full bg-teal-500 dark:bg-teal-400"
                         style={{ width: `${(calculatedSalary.median / calculatedSalary.max) * 100}%` }}
                       />
                     </div>
@@ -369,11 +369,11 @@ export default function SalaryCalculatorTab() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="bg-brand-50 dark:bg-brand-900/20 rounded-xl p-4 border border-brand-100 dark:border-brand-900 mb-4"
+                  className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-4 border border-teal-100 dark:border-teal-800 mb-4"
                 >
                   <div className="flex items-start gap-3">
-                    <PieChart className="w-5 h-5 text-brand-900 dark:text-brand-400 shrink-0 mt-0.5" />
-                    <div className="text-sm text-brand-900 dark:text-brand-200">
+                    <PieChart className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
+                    <div className="text-sm text-teal-800 dark:text-teal-200">
                       <p className="font-medium mb-2">{t('salary.calculator.taxDeduction')}</p>
                       <ul className="space-y-1">
                         <li>{t('salary.calculator.primaryTax', { amount: Math.round(calculatedSalary.median * 0.22).toLocaleString('sv-SE') })}</li>
@@ -385,9 +385,9 @@ export default function SalaryCalculatorTab() {
               )}
 
               {/* Info box */}
-              <div className="flex items-start gap-3 p-4 bg-brand-50 dark:bg-brand-900/20 rounded-xl border border-brand-100 dark:border-brand-900">
-                <Info className="w-5 h-5 text-brand-900 dark:text-brand-400 shrink-0 mt-0.5" />
-                <div className="text-sm text-brand-900 dark:text-brand-200">
+              <div className="flex items-start gap-3 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-100 dark:border-teal-800">
+                <Info className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
+                <div className="text-sm text-teal-800 dark:text-teal-200">
                   <p className="font-medium mb-1">{t('salary.calculator.aboutCalculation')}</p>
                   <p>
                     {t('salary.calculator.aboutCalculationText')}
@@ -451,13 +451,13 @@ export default function SalaryCalculatorTab() {
                     <div className="flex items-center gap-2">
                       <div className="flex-1 bg-stone-100 dark:bg-stone-600 rounded-full h-2 overflow-hidden">
                         <div
-                          className="h-full bg-brand-700 dark:bg-brand-400"
+                          className="h-full bg-teal-500 dark:bg-teal-400"
                           style={{ width: `${(calculatedSalary.median / Math.max(calculatedSalary.median, comp.gross)) * 100}%` }}
                         />
                       </div>
                       <span className={cn(
                         'text-xs font-medium ml-2 whitespace-nowrap',
-                        comp.gross > calculatedSalary.median ? 'text-brand-900 dark:text-brand-400' : 'text-gray-700 dark:text-gray-300'
+                        comp.gross > calculatedSalary.median ? 'text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
                       )}>
                         {comp.gross > calculatedSalary.median ? '+' : ''}{((comp.gross - calculatedSalary.median) / calculatedSalary.median * 100).toFixed(1)}%
                       </span>
@@ -483,8 +483,8 @@ export default function SalaryCalculatorTab() {
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">{t('salary.calculator.tipsTitle')}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
-            <div className="w-8 h-8 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center shrink-0">
-              <span className="text-brand-900 dark:text-brand-400 font-bold">1</span>
+            <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-teal-600 dark:text-teal-400 font-bold">1</span>
             </div>
             <div>
               <p className="font-medium text-gray-800 dark:text-gray-100">{t('salary.calculator.tips.buildSkills')}</p>
@@ -492,8 +492,8 @@ export default function SalaryCalculatorTab() {
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
-            <div className="w-8 h-8 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center shrink-0">
-              <span className="text-brand-900 dark:text-brand-400 font-bold">2</span>
+            <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-teal-600 dark:text-teal-400 font-bold">2</span>
             </div>
             <div>
               <p className="font-medium text-gray-800 dark:text-gray-100">{t('salary.calculator.tips.documentResults')}</p>
@@ -501,8 +501,8 @@ export default function SalaryCalculatorTab() {
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
-            <div className="w-8 h-8 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center shrink-0">
-              <span className="text-brand-900 dark:text-brand-400 font-bold">3</span>
+            <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-teal-600 dark:text-teal-400 font-bold">3</span>
             </div>
             <div>
               <p className="font-medium text-gray-800 dark:text-gray-100">{t('salary.calculator.tips.timing')}</p>
@@ -510,8 +510,8 @@ export default function SalaryCalculatorTab() {
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
-            <div className="w-8 h-8 bg-brand-100 dark:bg-brand-900/30 rounded-lg flex items-center justify-center shrink-0">
-              <span className="text-brand-900 dark:text-brand-400 font-bold">4</span>
+            <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center shrink-0">
+              <span className="text-teal-600 dark:text-teal-400 font-bold">4</span>
             </div>
             <div>
               <p className="font-medium text-gray-800 dark:text-gray-100">{t('salary.calculator.tips.knowMarket')}</p>

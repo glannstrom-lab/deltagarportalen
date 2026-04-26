@@ -48,7 +48,7 @@ export default function EducationPathFinder() {
   };
 
   return (
-    <div className="bg-white rounded-xl p-6 border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 bg-[#4f46e5]/10 rounded-xl flex items-center justify-center">
           <GraduationCap className="text-[#4f46e5]" size={24} />

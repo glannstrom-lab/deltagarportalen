@@ -77,7 +77,7 @@ export function RecommendationsPanel({
       case 'medium':
         return 'border-l-amber-500 dark:border-l-amber-400'
       case 'low':
-        return 'border-l-brand-700 dark:border-l-brand-400'
+        return 'border-l-teal-500 dark:border-l-teal-400'
     }
   }
 
@@ -88,7 +88,7 @@ export function RecommendationsPanel({
       case 'medium':
         return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
       case 'low':
-        return 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300'
+        return 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
     }
   }
 
@@ -107,7 +107,7 @@ export function RecommendationsPanel({
     return (
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-center py-8" role="status" aria-live="polite">
-          <Loader2 className="w-6 h-6 animate-spin text-brand-900 mr-2" aria-hidden="true" />
+          <Loader2 className="w-6 h-6 animate-spin text-teal-600 mr-2" aria-hidden="true" />
           <span className="text-gray-600 dark:text-gray-400">Analyserar din aktivitet...</span>
         </div>
       </Card>
@@ -116,13 +116,13 @@ export function RecommendationsPanel({
 
   if (recommendations.length === 0) {
     return (
-      <Card className="p-6 bg-gradient-to-br from-brand-50 to-emerald-50 dark:from-brand-900/20 dark:to-emerald-900/20 border-brand-200 dark:border-brand-900">
+      <Card className="p-6 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 border-teal-200 dark:border-teal-800">
         <div className="text-center py-4">
-          <div className="w-12 h-12 rounded-full bg-brand-100 dark:bg-brand-900/40 flex items-center justify-center mx-auto mb-3">
-            <Sparkles className="w-6 h-6 text-brand-900 dark:text-brand-400" />
+          <div className="w-12 h-12 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center mx-auto mb-3">
+            <Sparkles className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
-          <h3 className="font-semibold text-brand-900 dark:text-brand-100 mb-1">Fantastiskt jobbat!</h3>
-          <p className="text-sm text-brand-900 dark:text-brand-300">
+          <h3 className="font-semibold text-teal-900 dark:text-teal-100 mb-1">Fantastiskt jobbat!</h3>
+          <p className="text-sm text-teal-700 dark:text-teal-300">
             Du har slutfört alla rekommenderade uppgifter. Fortsätt det goda arbetet!
           </p>
         </div>
@@ -180,7 +180,7 @@ export function RecommendationsPanel({
                     ? 'bg-red-100 dark:bg-red-900/30'
                     : rec.priority === 'medium'
                     ? 'bg-amber-100 dark:bg-amber-900/30'
-                    : 'bg-brand-100 dark:bg-brand-900/30'
+                    : 'bg-teal-100 dark:bg-teal-900/30'
                 )}>
                   <Icon className={cn(
                     'w-5 h-5',
@@ -188,7 +188,7 @@ export function RecommendationsPanel({
                       ? 'text-red-600 dark:text-red-400'
                       : rec.priority === 'medium'
                       ? 'text-amber-600 dark:text-amber-400'
-                      : 'text-brand-900 dark:text-brand-400'
+                      : 'text-teal-600 dark:text-teal-400'
                   )} />
                 </div>
 
@@ -226,7 +226,7 @@ export function RecommendationsPanel({
                 </div>
 
                 <div className="flex items-center gap-2 flex-shrink-0">
-                  <span className="text-sm font-medium text-brand-900 dark:text-brand-400 hidden sm:inline">
+                  <span className="text-sm font-medium text-teal-600 dark:text-teal-400 hidden sm:inline">
                     {rec.action}
                   </span>
                   <ChevronRight className="w-4 h-4 text-gray-400" />
@@ -241,7 +241,7 @@ export function RecommendationsPanel({
         <div className="px-4 py-3 bg-stone-50 dark:bg-stone-900/50 border-t border-stone-100 dark:border-stone-700">
           <Link
             to="/recommendations"
-            className="text-sm text-brand-900 dark:text-brand-400 hover:underline flex items-center justify-center gap-1"
+            className="text-sm text-teal-600 dark:text-teal-400 hover:underline flex items-center justify-center gap-1"
           >
             Visa alla rekommendationer
             <ChevronRight className="w-4 h-4" />

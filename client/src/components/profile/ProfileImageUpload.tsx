@@ -83,7 +83,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
       {/* Image */}
       <div
         className={cn(
-          'relative rounded-xl overflow-hidden bg-brand-900 flex items-center justify-center flex-shrink-0',
+          'relative rounded-2xl overflow-hidden bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 flex items-center justify-center shadow-lg flex-shrink-0',
           sizeClasses[size]
         )}
       >
@@ -113,7 +113,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="text-brand-900 dark:text-brand-400 hover:text-brand-900/80 dark:hover:text-brand-300 font-medium disabled:opacity-50"
+          className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium disabled:opacity-50"
         >
           {displayImage ? t('profile.imageUpload.changeImage') : t('common.upload')}
         </button>

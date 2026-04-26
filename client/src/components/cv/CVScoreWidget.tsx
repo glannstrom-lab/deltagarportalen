@@ -80,7 +80,7 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-medium text-slate-700">{section.name}</span>
               <span className={`text-sm font-semibold ${
-                section.score === section.max ? 'text-brand-900' : 'text-slate-700'
+                section.score === section.max ? 'text-green-600' : 'text-slate-700'
               }`}>
                 {section.score}/{section.max}
               </span>
@@ -90,7 +90,7 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
             <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden mb-2">
               <div 
                 className={`h-full transition-all duration-300 ${
-                  section.score === section.max ? 'bg-brand-700' : 'bg-purple-500'
+                  section.score === section.max ? 'bg-green-500' : 'bg-purple-500'
                 }`}
                 style={{ width: `${(section.score / section.max) * 100}%` }}
               />
@@ -102,7 +102,7 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
                 {section.tips.map((tip, i) => (
                   <p key={i} className="text-xs text-slate-700 flex items-start gap-1.5">
                     {section.score === section.max ? (
-                      <CheckCircle className="w-3 h-3 mt-0.5 text-brand-700 flex-shrink-0" />
+                      <CheckCircle className="w-3 h-3 mt-0.5 text-green-500 flex-shrink-0" />
                     ) : (
                       <AlertCircle className="w-3 h-3 mt-0.5 text-amber-500 flex-shrink-0" />
                     )}

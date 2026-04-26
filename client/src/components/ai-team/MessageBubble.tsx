@@ -56,13 +56,13 @@ export function MessageBubble({
       isUser && 'flex-row-reverse'
     )}>
       {isUser ? (
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-700 dark:to-stone-600 flex items-center justify-center flex-shrink-0">
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-700 dark:to-stone-600 flex items-center justify-center flex-shrink-0 shadow-sm">
           <User className="w-4 h-4 text-stone-600 dark:text-stone-300" aria-hidden="true" />
         </div>
       ) : (
         <div className={cn(
           'w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0',
-          'bg-gradient-to-br',
+          'bg-gradient-to-br shadow-sm',
           colors.bgLight,
           colors.text
         )}>
@@ -72,14 +72,14 @@ export function MessageBubble({
       <div className="relative max-w-[80%]">
         <div
           className={cn(
-            'px-4 py-3 rounded-xl',
+            'px-4 py-3 rounded-2xl',
             isUser
-              ? 'bg-gradient-to-br from-brand-700 to-brand-900 text-white /20'
+              ? 'bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-md shadow-teal-500/20'
               : cn(
                   'bg-gradient-to-br from-stone-50 via-stone-100 to-stone-50',
                   'dark:from-stone-800 dark:via-stone-800/90 dark:to-stone-800',
                   'border border-stone-200/80 dark:border-stone-700/80',
-                  '',
+                  'shadow-sm',
                   'text-stone-900 dark:text-stone-100'
                 )
           )}
@@ -108,14 +108,14 @@ export function MessageBubble({
                 'border border-stone-200 dark:border-stone-600',
                 'text-xs text-stone-600 dark:text-stone-400',
                 'hover:text-stone-900 dark:hover:text-stone-200',
-                ' hover:shadow',
+                'shadow-sm hover:shadow',
                 'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-1',
-                isSpeaking && 'bg-brand-50 dark:bg-brand-900/30 border-brand-300 dark:border-brand-900'
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1',
+                isSpeaking && 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-700'
               )}
               aria-label={isSpeaking ? t('aiTeam.voice.stopSpeaking') : t('aiTeam.voice.speak')}
             >
-              <Volume2 className={cn('w-3 h-3', isSpeaking && 'text-brand-700 animate-pulse')} aria-hidden="true" />
+              <Volume2 className={cn('w-3 h-3', isSpeaking && 'text-teal-500 animate-pulse')} aria-hidden="true" />
             </button>
             {/* Create task button */}
             <button
@@ -126,14 +126,14 @@ export function MessageBubble({
                 'border border-stone-200 dark:border-stone-600',
                 'text-xs text-stone-600 dark:text-stone-400',
                 'hover:text-stone-900 dark:hover:text-stone-200',
-                ' hover:shadow',
+                'shadow-sm hover:shadow',
                 'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-1'
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
               )}
               aria-label={taskCreated ? t('aiTeam.calendar.taskCreated') : t('aiTeam.calendar.createTask')}
             >
               {taskCreated ? (
-                <Check className="w-3 h-3 text-brand-700" aria-hidden="true" />
+                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
               ) : (
                 <CalendarPlus className="w-3 h-3" aria-hidden="true" />
               )}
@@ -147,14 +147,14 @@ export function MessageBubble({
                 'border border-stone-200 dark:border-stone-600',
                 'text-xs text-stone-600 dark:text-stone-400',
                 'hover:text-stone-900 dark:hover:text-stone-200',
-                ' hover:shadow',
+                'shadow-sm hover:shadow',
                 'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-1'
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
               )}
               aria-label={diarySaved ? t('aiTeam.savedToDiary') : t('aiTeam.saveToDiary')}
             >
               {diarySaved ? (
-                <Check className="w-3 h-3 text-brand-700" aria-hidden="true" />
+                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
               ) : (
                 <BookOpen className="w-3 h-3" aria-hidden="true" />
               )}
@@ -168,14 +168,14 @@ export function MessageBubble({
                 'border border-stone-200 dark:border-stone-600',
                 'text-xs text-stone-600 dark:text-stone-400',
                 'hover:text-stone-900 dark:hover:text-stone-200',
-                ' hover:shadow',
+                'shadow-sm hover:shadow',
                 'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-700 focus-visible:ring-offset-1'
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
               )}
               aria-label={copied ? t('aiTeam.messageCopied') : t('aiTeam.copyMessage')}
             >
               {copied ? (
-                <Check className="w-3 h-3 text-brand-700" aria-hidden="true" />
+                <Check className="w-3 h-3 text-green-500" aria-hidden="true" />
               ) : (
                 <Copy className="w-3 h-3" aria-hidden="true" />
               )}

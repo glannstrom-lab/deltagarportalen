@@ -67,7 +67,7 @@ export const IncomingSharedJobs: React.FC<IncomingSharedJobsProps> = ({
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-xl p-6">
+      <div className="bg-white rounded-xl shadow-lg p-6">
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
           <Inbox className="w-6 h-6 text-primary-600" />
           Inkomna jobbförslag
@@ -78,7 +78,7 @@ export const IncomingSharedJobs: React.FC<IncomingSharedJobsProps> = ({
   }
 
   return (
-    <div className="bg-white rounded-xl">
+    <div className="bg-white rounded-xl shadow-lg">
       {/* Header med stats */}
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
@@ -101,9 +101,9 @@ export const IncomingSharedJobs: React.FC<IncomingSharedJobsProps> = ({
             <p className="text-2xl font-bold text-blue-600">{stats.reviewed}</p>
             <p className="text-xs text-blue-700">Granskade</p>
           </div>
-          <div className="text-center p-3 bg-brand-50 rounded-lg">
-            <p className="text-2xl font-bold text-brand-900">{stats.approved}</p>
-            <p className="text-xs text-brand-900">Godkända</p>
+          <div className="text-center p-3 bg-green-50 rounded-lg">
+            <p className="text-2xl font-bold text-green-600">{stats.approved}</p>
+            <p className="text-xs text-green-700">Godkända</p>
           </div>
           <div className="text-center p-3 bg-red-50 rounded-lg">
             <p className="text-2xl font-bold text-red-600">{stats.rejected}</p>
@@ -165,7 +165,7 @@ export const IncomingSharedJobs: React.FC<IncomingSharedJobsProps> = ({
       {/* Detail view modal */}
       {selectedJob && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b border-gray-200">
               <h3 className="text-lg font-bold text-gray-900">Granska jobb</h3>
@@ -236,7 +236,7 @@ export const IncomingSharedJobs: React.FC<IncomingSharedJobsProps> = ({
                     <button
                       onClick={() => handleStatusUpdate('approved')}
                       disabled={isUpdating}
-                      className="flex-1 px-4 py-2 bg-brand-900 text-white rounded-lg hover:bg-brand-900 transition-colors flex items-center justify-center gap-2"
+                      className="flex-1 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
                     >
                       <CheckCircle className="w-4 h-4" />
                       Godkänn

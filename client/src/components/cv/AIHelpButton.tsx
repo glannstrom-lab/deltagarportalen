@@ -41,7 +41,7 @@ export function AIHelpButton({ field, onFill }: AIHelpButtonProps) {
         flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium
         transition-all duration-200
         ${state === 'done' 
-          ? 'bg-brand-100 text-brand-900' 
+          ? 'bg-green-100 text-green-700' 
           : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
         }
         ${state !== 'idle' && 'cursor-default'}

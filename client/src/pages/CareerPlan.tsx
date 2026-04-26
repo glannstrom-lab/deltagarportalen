@@ -158,8 +158,8 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-brand-100 to-brand-200 dark:from-brand-900 dark:to-brand-900 mb-2">
-          <MapPin className="w-7 h-7 text-brand-900 dark:text-brand-400" />
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-teal-100 to-teal-200 dark:from-teal-900 dark:to-teal-800 mb-2">
+          <MapPin className="w-7 h-7 text-teal-600 dark:text-teal-400" />
         </div>
         <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{t('careerPlan.title')}</h1>
         <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
@@ -181,13 +181,13 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
                 onChange={(e) => setNuvarande(e.target.value)}
                 placeholder={t('careerPlan.whereAreYouPlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none resize-y text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 outline-none resize-y text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
 
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                <Flag className="w-4 h-4 text-brand-700 dark:text-brand-400" />
+                <Flag className="w-4 h-4 text-teal-500 dark:text-teal-400" />
                 {t('careerPlan.whereToGo')}
               </label>
               <textarea
@@ -195,7 +195,7 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
                 onChange={(e) => setMal(e.target.value)}
                 placeholder={t('careerPlan.whereToGoPlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none resize-y text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 outline-none resize-y text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
 
@@ -208,7 +208,7 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
                 <select
                   value={tidsram}
                   onChange={(e) => setTidsram(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none text-gray-800 dark:text-gray-100"
+                  className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 outline-none text-gray-800 dark:text-gray-100"
                 >
                   <option value="3 månader">{t('careerPlan.timeframes.3months')}</option>
                   <option value="6 månader">{t('careerPlan.timeframes.6months')}</option>
@@ -226,7 +226,7 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
                   value={hinder}
                   onChange={(e) => setHinder(e.target.value)}
                   placeholder={t('careerPlan.obstaclesPlaceholder')}
-                  className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-brand-700 dark:focus:border-brand-400 focus:ring-2 focus:ring-brand-200 dark:focus:ring-brand-900 outline-none text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                  className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 outline-none text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                 />
               </div>
             </div>
@@ -234,7 +234,7 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
             <Button
               onClick={skapaPlan}
               disabled={!nuvarande.trim() || !mal.trim() || isLoading}
-              className="w-full bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900"
+              className="w-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700"
             >
               {isLoading ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -253,10 +253,10 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
       {plan && (
         <>
           {/* Plan Header */}
-          <Card className="p-6 bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900/30 dark:to-brand-900/30 border-brand-200 dark:border-brand-900">
+          <Card className="p-6 bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/30 dark:to-teal-800/30 border-teal-200 dark:border-teal-700">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-                <TrendingUp className="w-6 h-6 text-brand-900 dark:text-brand-400" />
+                <TrendingUp className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                 {t('careerPlan.result.title')}
               </h2>
               <Button variant="outline" size="sm" onClick={downloadPlan}>
@@ -265,14 +265,14 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
             </div>
 
             {/* Progress Overview */}
-            <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-brand-100 dark:border-brand-900 mb-4">
+            <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-teal-100 dark:border-teal-800 mb-4">
               <div className="flex justify-between items-center mb-2">
                 <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{t('careerPlan.result.progress')}</span>
-                <span className="text-sm font-bold text-brand-900 dark:text-brand-400">{Math.round(progressPercent)}%</span>
+                <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{Math.round(progressPercent)}%</span>
               </div>
               <div className="w-full h-3 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-400 dark:to-brand-700 transition-all"
+                  className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 transition-all"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -282,7 +282,7 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
           {/* Milestones Timeline */}
           <div className="space-y-4">
             {plan.map((milestone, idx) => (
-              <Card key={milestone.id} className="p-6 border-l-4 border-l-brand-700 dark:border-l-brand-400 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+              <Card key={milestone.id} className="p-6 border-l-4 border-l-teal-500 dark:border-l-teal-400 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{milestone.title}</h3>
@@ -291,7 +291,7 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
                       {t('careerPlan.result.month', { month: milestone.month })}
                     </p>
                   </div>
-                  <span className="text-sm px-3 py-1 rounded-full bg-brand-100 dark:bg-brand-900/50 text-brand-900 dark:text-brand-300 font-medium">
+                  <span className="text-sm px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 font-medium">
                     {milestone.status === 'planerad' ? t('careerPlan.status.planned') : milestone.status === 'pågår' ? t('careerPlan.status.inProgress') : t('careerPlan.status.completed')}
                   </span>
                 </div>
@@ -307,7 +307,7 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
                         type="checkbox"
                         checked={completedTasks.has(task.id)}
                         onChange={() => toggleTask(task.id)}
-                        className="mt-1 w-5 h-5 rounded border-stone-300 dark:border-stone-600 text-brand-900 dark:text-brand-400 cursor-pointer"
+                        className="mt-1 w-5 h-5 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:text-teal-400 cursor-pointer"
                       />
                       <div className="flex-1">
                         <p className={`text-sm ${completedTasks.has(task.id) ? 'line-through text-gray-500 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>
@@ -320,8 +320,8 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
                 </div>
 
                 {/* Metrics */}
-                <div className="bg-brand-50 dark:bg-brand-900/30 p-3 rounded-lg border border-brand-100 dark:border-brand-900">
-                  <p className="text-sm text-brand-900 dark:text-brand-200 flex items-center gap-2">
+                <div className="bg-teal-50 dark:bg-teal-900/30 p-3 rounded-lg border border-teal-100 dark:border-teal-800">
+                  <p className="text-sm text-teal-800 dark:text-teal-200 flex items-center gap-2">
                     <Zap className="w-4 h-4" />
                     <strong>{t('careerPlan.result.successMetrics')}:</strong> {milestone.metrics}
                   </p>
@@ -331,14 +331,14 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
           </div>
 
           {/* Check-in Prompts */}
-          <Card className="p-6 bg-brand-50 dark:bg-brand-900/20 border-brand-200 dark:border-brand-900">
+          <Card className="p-6 bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
             <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+              <AlertCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               {t('careerPlan.checkIns.title')}
             </h3>
 
             <div className="space-y-3">
-              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-brand-100 dark:border-brand-900">
+              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-teal-100 dark:border-teal-800">
                 <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">{t('careerPlan.checkIns.weekly.title')}</p>
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 ml-4 list-disc">
                   <li>{t('careerPlan.checkIns.weekly.q1')}</li>
@@ -347,7 +347,7 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
                 </ul>
               </div>
 
-              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-brand-100 dark:border-brand-900">
+              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-teal-100 dark:border-teal-800">
                 <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">{t('careerPlan.checkIns.monthly.title')}</p>
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 ml-4 list-disc">
                   <li>{t('careerPlan.checkIns.monthly.q1')}</li>
@@ -378,7 +378,7 @@ ${t('careerPlan.result.successMetrics')}: ${milestone.metrics}
             <Button onClick={() => setPlan(null)} variant="outline" className="flex-1">
               {t('careerPlan.actions.createNew')}
             </Button>
-            <Button className="flex-1 bg-gradient-to-r from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900">
+            <Button className="flex-1 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
               <Send className="w-4 h-4 mr-2" />
               {t('careerPlan.actions.shareByEmail')}
             </Button>

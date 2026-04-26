@@ -123,7 +123,7 @@ export function QuickActions({ onActionClick, className }: QuickActionsProps) {
                 colors.text,
                 colors.border,
                 'border',
-                'hover:',
+                'hover:shadow-md',
                 'active:scale-[0.98]'
               )}
             >

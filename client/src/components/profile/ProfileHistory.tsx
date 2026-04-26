@@ -78,7 +78,7 @@ export function ProfileHistory({ className }: Props) {
 
   const getChangeTypeColor = (type: string) => {
     switch (type) {
-      case 'create': return 'bg-brand-100 text-brand-900 dark:bg-brand-900/40 dark:text-brand-300'
+      case 'create': return 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
       case 'update': return 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
       case 'delete': return 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
       default: return 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300'
@@ -96,7 +96,7 @@ export function ProfileHistory({ className }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 text-brand-900 animate-spin" />
+        <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
       </div>
     )
   }
@@ -153,7 +153,7 @@ export function ProfileHistory({ className }: Props) {
                     </div>
                     <div>
                       <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-1">Nytt värde</p>
-                      <div className="p-2 bg-brand-50 dark:bg-brand-900/20 rounded-lg">
+                      <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
                         <p className="text-xs text-stone-600 dark:text-stone-400 whitespace-pre-wrap break-words">
                           {formatValue(entry.new_value)}
                         </p>

@@ -28,7 +28,7 @@ export const QuestsWidget = memo(function QuestsWidget({
         to="/"
         className={cn(
           "group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border transition-all duration-200",
-          "hover:border-amber-300 dark:hover:border-amber-600 hover:",
+          "hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md",
           isComplete ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-stone-700"
         )}
       >
@@ -61,7 +61,7 @@ export const QuestsWidget = memo(function QuestsWidget({
         to="/"
         className={cn(
           "group block bg-white dark:bg-stone-900 p-4 rounded-xl border transition-all duration-200",
-          "hover:border-amber-300 dark:hover:border-amber-600 hover: hover:-translate-y-0.5",
+          "hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg hover:-translate-y-0.5",
           isComplete ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20" : "border-slate-200 dark:border-stone-700"
         )}
       >
@@ -121,7 +121,7 @@ export const QuestsWidget = memo(function QuestsWidget({
       to="/"
       className={cn(
         "group block bg-white dark:bg-stone-900 p-5 rounded-xl border transition-all duration-200",
-        "hover:border-amber-300 dark:hover:border-amber-600 hover:",
+        "hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg",
         isComplete ? "border-emerald-200 dark:border-emerald-700" : "border-slate-200 dark:border-stone-700"
       )}
     >

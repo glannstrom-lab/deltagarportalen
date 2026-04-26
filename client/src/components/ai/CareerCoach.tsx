@@ -87,7 +87,7 @@ export const CareerCoach: React.FC = () => {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 w-14 h-14 bg-primary-600 text-white rounded-full hover:bg-primary-700 flex items-center justify-center transition-transform hover:scale-110 z-40"
+        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 w-14 h-14 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 flex items-center justify-center transition-transform hover:scale-110 z-40"
       >
         <Sparkles className="w-6 h-6" />
       </button>
@@ -95,7 +95,7 @@ export const CareerCoach: React.FC = () => {
   }
 
   return (
-    <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-96 max-w-96 h-[70vh] sm:h-[500px] max-h-[500px] bg-white rounded-xl flex flex-col z-50 overflow-hidden border border-gray-200">
+    <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 w-[calc(100vw-2rem)] sm:w-96 max-w-96 h-[70vh] sm:h-[500px] max-h-[500px] bg-white rounded-2xl shadow-2xl flex flex-col z-50 overflow-hidden border border-gray-200">
       {/* Header */}
       <div className="bg-primary-600 text-white p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -121,7 +121,7 @@ export const CareerCoach: React.FC = () => {
                 <Bot className="w-4 h-4 text-primary-600" />
               </div>
             )}
-            <div className={`max-w-[80%] p-3 rounded-xl text-sm whitespace-pre-line ${
+            <div className={`max-w-[80%] p-3 rounded-2xl text-sm whitespace-pre-line ${
               message.role === 'user' ? 'bg-primary-600 text-white rounded-br-none' : 'bg-gray-100 text-gray-800 rounded-bl-none'
             }`}>
               {message.content}
@@ -138,7 +138,7 @@ export const CareerCoach: React.FC = () => {
             <div className="w-8 h-8 bg-primary-100 rounded-full flex items-center justify-center">
               <Bot className="w-4 h-4 text-primary-600" />
             </div>
-            <div className="bg-gray-100 p-3 rounded-xl rounded-bl-none">
+            <div className="bg-gray-100 p-3 rounded-2xl rounded-bl-none">
               <div className="flex gap-1">
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" />
                 <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }} />

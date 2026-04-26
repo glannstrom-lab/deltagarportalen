@@ -479,7 +479,7 @@ Varmt tack igen!`
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
-      active: 'bg-brand-100 text-brand-900',
+      active: 'bg-green-100 text-green-700',
       dormant: 'bg-slate-100 text-slate-600',
       reconnect: 'bg-amber-100 text-amber-700'
     }
@@ -499,7 +499,7 @@ Varmt tack igen!`
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl p-8 text-white">
+      <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
             <Users size={24} />
@@ -513,9 +513,9 @@ Varmt tack igen!`
       </div>
 
       {/* AI Strategy Generator */}
-      <div className="bg-gradient-to-br from-brand-50 to-sky-50 rounded-xl p-6 border border-brand-200">
+      <div className="bg-gradient-to-br from-teal-50 to-sky-50 rounded-2xl p-6 border border-teal-200">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-brand-700 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center">
             <Wand2 size={20} className="text-white" />
           </div>
           <div>
@@ -532,10 +532,10 @@ Varmt tack igen!`
               value={occupation}
               onChange={(e) => handleOccupationInput(e.target.value)}
               placeholder="T.ex. Systemutvecklare"
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
             {showOccupationSuggestions && (
-              <div className="absolute z-10 w-full bg-white border border-slate-200 rounded-lg mt-1">
+              <div className="absolute z-10 w-full bg-white border border-slate-200 rounded-lg shadow-lg mt-1">
                 {occupationSuggestions.map((occ) => (
                   <button
                     key={occ}
@@ -543,7 +543,7 @@ Varmt tack igen!`
                       setOccupation(occ)
                       setShowOccupationSuggestions(false)
                     }}
-                    className="w-full text-left px-4 py-2 hover:bg-brand-50 text-sm"
+                    className="w-full text-left px-4 py-2 hover:bg-teal-50 text-sm"
                   >
                     {occ}
                   </button>
@@ -557,7 +557,7 @@ Varmt tack igen!`
             <select
               value={experienceLevel}
               onChange={(e) => setExperienceLevel(e.target.value as any)}
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
               <option value="entry">Junior (0-2 år)</option>
               <option value="mid">Medel (3-7 år)</option>
@@ -584,7 +584,7 @@ Varmt tack igen!`
                   }}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     networkingGoals.includes(goal.id)
-                      ? 'bg-brand-700 text-white'
+                      ? 'bg-teal-500 text-white'
                       : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
                   }`}
                 >
@@ -598,7 +598,7 @@ Varmt tack igen!`
         <button
           onClick={generateNetworkingStrategy}
           disabled={generatingStrategy || !occupation}
-          className="w-full md:w-auto px-6 py-2.5 bg-brand-700 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full md:w-auto px-6 py-2.5 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {generatingStrategy ? (
             <>
@@ -619,7 +619,7 @@ Varmt tack igen!`
             {/* Strategies */}
             <div>
               <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                <Target size={18} className="text-brand-700" />
+                <Target size={18} className="text-teal-500" />
                 Strategier för dig
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -627,7 +627,7 @@ Varmt tack igen!`
                   <div key={idx} className="bg-white rounded-xl p-4 border border-slate-200">
                     <div className="flex items-center gap-2 mb-2">
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        strategy.difficulty === 'easy' ? 'bg-brand-100 text-brand-900' :
+                        strategy.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
                         strategy.difficulty === 'medium' ? 'bg-amber-100 text-amber-700' :
                         'bg-red-100 text-red-700'
                       }`}>
@@ -640,7 +640,7 @@ Varmt tack igen!`
                     <ul className="space-y-1">
                       {strategy.actions.map((action, i) => (
                         <li key={i} className="text-sm text-slate-700 flex items-start gap-2">
-                          <Check size={14} className="text-brand-700 mt-0.5 flex-shrink-0" />
+                          <Check size={14} className="text-teal-500 mt-0.5 flex-shrink-0" />
                           {action}
                         </li>
                       ))}
@@ -653,7 +653,7 @@ Varmt tack igen!`
             {/* Target Contacts */}
             <div>
               <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                <Users size={18} className="text-brand-700" />
+                <Users size={18} className="text-teal-500" />
                 Vilka du bör kontakta
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -663,7 +663,7 @@ Varmt tack igen!`
                     <p className="text-sm text-slate-600 mb-2">{contact.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {contact.whereToFind.map((place, i) => (
-                        <span key={i} className="text-xs px-2 py-1 bg-brand-100 text-brand-900 rounded-full">
+                        <span key={i} className="text-xs px-2 py-1 bg-teal-100 text-teal-700 rounded-full">
                           {place}
                         </span>
                       ))}
@@ -676,7 +676,7 @@ Varmt tack igen!`
             {/* Conversation Starters */}
             <div className="bg-white rounded-xl p-4 border border-slate-200">
               <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                <MessageCircle size={18} className="text-brand-700" />
+                <MessageCircle size={18} className="text-teal-500" />
                 Konversationsöppnare
               </h4>
               <div className="space-y-2">
@@ -685,7 +685,7 @@ Varmt tack igen!`
                     <span className="text-sm text-slate-700">"{starter}"</span>
                     <button
                       onClick={() => handleCopy(starter)}
-                      className="p-1.5 text-slate-600 hover:text-brand-700"
+                      className="p-1.5 text-slate-600 hover:text-teal-500"
                     >
                       <Copy size={14} />
                     </button>
@@ -729,8 +729,8 @@ Varmt tack igen!`
         </div>
 
         <div className="bg-white rounded-xl p-5 border border-slate-200">
-          <div className="w-10 h-10 bg-brand-100 rounded-lg flex items-center justify-center mb-3">
-            <MessageCircle className="text-brand-900" size={20} />
+          <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-3">
+            <MessageCircle className="text-teal-600" size={20} />
           </div>
           <h3 className="font-semibold text-slate-800 mb-1">Följ upp</h3>
           <p className="text-sm text-slate-600">
@@ -743,17 +743,17 @@ Varmt tack igen!`
       </div>
 
       {/* Kontakter */}
-      <div className="bg-white rounded-xl p-6 border border-slate-200">
+      <div className="bg-white rounded-2xl p-6 border border-slate-200">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-            <Users size={20} className="text-brand-700" />
+            <Users size={20} className="text-teal-500" />
             Dina kontakter ({contacts.length})
           </h3>
           <div className="flex gap-2">
             {contacts.length > 0 && (
               <button
                 onClick={() => setShowMessageGenerator(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-brand-100 text-brand-900 rounded-xl font-medium hover:bg-brand-200 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-teal-100 text-teal-700 rounded-xl font-medium hover:bg-teal-200 transition-colors"
               >
                 <Wand2 size={18} />
                 AI-meddelande
@@ -761,7 +761,7 @@ Varmt tack igen!`
             )}
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="flex items-center gap-2 px-4 py-2 bg-brand-700 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors"
             >
               <Plus size={18} />
               Lägg till kontakt
@@ -771,10 +771,10 @@ Varmt tack igen!`
 
         {/* AI Message Generator Modal */}
         {showMessageGenerator && (
-          <div className="mb-6 p-4 bg-brand-50 rounded-xl border border-brand-200">
+          <div className="mb-6 p-4 bg-teal-50 rounded-xl border border-teal-200">
             <div className="flex items-center justify-between mb-4">
               <h4 className="font-medium text-slate-900 flex items-center gap-2">
-                <Wand2 size={18} className="text-brand-700" />
+                <Wand2 size={18} className="text-teal-500" />
                 Skapa personligt meddelande med AI
               </h4>
               <button
@@ -798,7 +798,7 @@ Varmt tack igen!`
                     const contact = contacts.find(c => c.id === e.target.value)
                     setSelectedContactForMessage(contact || null)
                   }}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   <option value="">Välj kontakt...</option>
                   {contacts.map(contact => (
@@ -814,7 +814,7 @@ Varmt tack igen!`
                 <select
                   value={messageType}
                   onChange={(e) => setMessageType(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   <option value="initial">Första kontakten</option>
                   <option value="followup">Uppföljning</option>
@@ -830,14 +830,14 @@ Varmt tack igen!`
                 value={messagePurpose}
                 onChange={(e) => setMessagePurpose(e.target.value)}
                 placeholder="T.ex. Be om råd om karriärbyte, be om referens, etc."
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
             </div>
 
             <button
               onClick={generateCustomMessage}
               disabled={generatingMessage || !selectedContactForMessage || !messagePurpose}
-              className="w-full md:w-auto px-6 py-2 bg-brand-700 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mb-4"
+              className="w-full md:w-auto px-6 py-2 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mb-4"
             >
               {generatingMessage ? (
                 <>
@@ -858,7 +858,7 @@ Varmt tack igen!`
                   <span className="text-sm font-medium text-slate-700">Ditt AI-genererade meddelande:</span>
                   <button
                     onClick={() => handleCopy(generatedMessage)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-100 text-brand-900 rounded-lg text-sm font-medium hover:bg-brand-200"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-100 text-teal-700 rounded-lg text-sm font-medium hover:bg-teal-200"
                   >
                     <Copy size={14} />
                     Kopiera
@@ -879,7 +879,7 @@ Varmt tack igen!`
               onClick={() => setFilterStatus('all')}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 filterStatus === 'all'
-                  ? 'bg-brand-700 text-white'
+                  ? 'bg-teal-500 text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -889,7 +889,7 @@ Varmt tack igen!`
               onClick={() => setFilterStatus('active')}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 filterStatus === 'active'
-                  ? 'bg-brand-700 text-white'
+                  ? 'bg-green-500 text-white'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
@@ -928,7 +928,7 @@ Varmt tack igen!`
                   type="text"
                   value={newContact.name}
                   onChange={(e) => setNewContact({...newContact, name: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   placeholder="T.ex. Anna Andersson"
                   required
                 />
@@ -939,7 +939,7 @@ Varmt tack igen!`
                   type="text"
                   value={newContact.company}
                   onChange={(e) => setNewContact({...newContact, company: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   placeholder="T.ex. Spotify"
                 />
               </div>
@@ -949,7 +949,7 @@ Varmt tack igen!`
                   type="text"
                   value={newContact.role}
                   onChange={(e) => setNewContact({...newContact, role: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   placeholder="T.ex. HR-chef"
                 />
               </div>
@@ -958,7 +958,7 @@ Varmt tack igen!`
                 <select
                   value={newContact.relationship}
                   onChange={(e) => setNewContact({...newContact, relationship: e.target.value as any})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 >
                   <option value="colleague">Kollega</option>
                   <option value="friend">Vän</option>
@@ -973,7 +973,7 @@ Varmt tack igen!`
                   type="email"
                   value={newContact.email}
                   onChange={(e) => setNewContact({...newContact, email: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   placeholder="anna@exempel.se"
                 />
               </div>
@@ -983,7 +983,7 @@ Varmt tack igen!`
                   type="url"
                   value={newContact.linkedin_url}
                   onChange={(e) => setNewContact({...newContact, linkedin_url: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   placeholder="https://linkedin.com/in/..."
                 />
               </div>
@@ -994,9 +994,9 @@ Varmt tack igen!`
               <label className="block text-sm font-medium text-slate-700 mb-1">Taggar</label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {newContact.tags?.map(tag => (
-                  <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 bg-brand-100 text-brand-900 rounded-full text-sm">
+                  <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">
                     {tag}
-                    <button type="button" onClick={() => removeTag(tag)} className="hover:text-brand-900">
+                    <button type="button" onClick={() => removeTag(tag)} className="hover:text-teal-900">
                       <X size={14} />
                     </button>
                   </span>
@@ -1008,7 +1008,7 @@ Varmt tack igen!`
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                  className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                  className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   placeholder="Lägg till tagg (t.ex. 'IT', 'Rekrytering')"
                 />
                 <button
@@ -1026,7 +1026,7 @@ Varmt tack igen!`
               <textarea
                 value={newContact.notes}
                 onChange={(e) => setNewContact({...newContact, notes: e.target.value})}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-700"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 rows={3}
                 placeholder="T.ex. 'Träffades på konferens i maj, skickade CV'"
               />
@@ -1035,7 +1035,7 @@ Varmt tack igen!`
             <div className="flex gap-3">
               <button
                 type="submit"
-                className="flex-1 py-2.5 bg-brand-700 text-white rounded-xl font-medium hover:bg-brand-900 transition-colors"
+                className="flex-1 py-2.5 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors"
               >
                 Spara kontakt
               </button>
@@ -1100,7 +1100,7 @@ Varmt tack igen!`
                       setSelectedContactForMessage(contact)
                       setShowMessageGenerator(true)
                     }}
-                    className="p-2 text-brand-900 hover:bg-brand-50 rounded-lg"
+                    className="p-2 text-teal-600 hover:bg-teal-50 rounded-lg"
                     title="Skapa AI-meddelande"
                   >
                     <Wand2 size={18} />
@@ -1125,7 +1125,7 @@ Varmt tack igen!`
                   )}
                   <button
                     onClick={() => markAsContacted(contact.id)}
-                    className="p-2 text-brand-900 hover:bg-brand-50 rounded-lg"
+                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
                     title="Markera som kontaktad idag"
                   >
                     <Check size={18} />
@@ -1214,7 +1214,7 @@ Varmt tack igen!`
                         className={cn(
                           'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                           copiedId === template.id
-                            ? 'bg-brand-100 text-brand-900'
+                            ? 'bg-green-100 text-green-700'
                             : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                         )}
                       >
@@ -1247,7 +1247,7 @@ Varmt tack igen!`
                           key={index}
                           className="text-sm text-slate-600 flex items-start gap-2"
                         >
-                          <span className="text-brand-700 mt-0.5">•</span>
+                          <span className="text-teal-500 mt-0.5">•</span>
                           {tip}
                         </li>
                       ))}
@@ -1261,17 +1261,17 @@ Varmt tack igen!`
       </div>
 
       {/* CTA */}
-      <div className="bg-gradient-to-r from-brand-700 to-emerald-500 rounded-xl p-6 text-white">
+      <div className="bg-gradient-to-r from-teal-500 to-emerald-500 rounded-2xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold mb-1">Redo att nätverka?</h3>
-            <p className="text-brand-100 text-sm">
+            <p className="text-teal-100 text-sm">
               Börja med någon du redan känner - det är lättare än du tror!
             </p>
           </div>
           <a
             href="#/exercises"
-            className="px-5 py-2.5 bg-white text-brand-900 rounded-xl font-medium hover:bg-brand-50 transition-colors flex items-center gap-2"
+            className="px-5 py-2.5 bg-white text-teal-600 rounded-xl font-medium hover:bg-teal-50 transition-colors flex items-center gap-2"
           >
             <Sparkles size={18} />
             Öva på pitch

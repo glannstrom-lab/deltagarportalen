@@ -200,7 +200,7 @@ export function Autocomplete({
       
       {isOpen && (
         <div
-          className="absolute z-50 w-full mt-1 bg-white rounded-xl 
+          className="absolute z-50 w-full mt-1 bg-white rounded-xl shadow-lg 
                      border border-slate-200 max-h-80 overflow-auto"
         >
           {Object.entries(groupedSuggestions).map(([category, items]) => (

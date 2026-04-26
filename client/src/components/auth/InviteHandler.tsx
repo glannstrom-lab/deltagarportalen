@@ -134,7 +134,7 @@ interface InviteData {
   if (error && !inviteData) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg max-w-md w-full p-8 text-center">
+        <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 text-center">
           <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Ogiltig inbjudan</h2>
           <p className="text-gray-600 mb-6">{error}</p>
@@ -152,8 +152,8 @@ interface InviteData {
   if (success) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg max-w-md w-full p-8 text-center">
-          <CheckCircle className="w-16 h-16 text-brand-700 mx-auto mb-4" />
+        <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8 text-center">
+          <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-gray-900 mb-2">Konto skapat!</h2>
           <p className="text-gray-600 mb-6">
             Ditt konto har skapats. Du omdirigeras till inloggningen...
@@ -165,7 +165,7 @@ interface InviteData {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg max-w-md w-full p-8">
+      <div className="bg-white rounded-lg shadow-lg max-w-md w-full p-8">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-bold text-gray-900">Välkommen!</h1>
           <p className="text-gray-600 mt-2">
@@ -233,19 +233,19 @@ interface InviteData {
               />
             </div>
             <ul className="mt-2 text-xs text-gray-500 space-y-0.5">
-              <li className={formData.password.length >= 12 ? 'text-brand-900' : ''}>
+              <li className={formData.password.length >= 12 ? 'text-green-600' : ''}>
                 {formData.password.length >= 12 ? '✓' : '○'} Minst 12 tecken
               </li>
-              <li className={/[A-Z]/.test(formData.password) ? 'text-brand-900' : ''}>
+              <li className={/[A-Z]/.test(formData.password) ? 'text-green-600' : ''}>
                 {/[A-Z]/.test(formData.password) ? '✓' : '○'} En stor bokstav (A-Z)
               </li>
-              <li className={/[a-z]/.test(formData.password) ? 'text-brand-900' : ''}>
+              <li className={/[a-z]/.test(formData.password) ? 'text-green-600' : ''}>
                 {/[a-z]/.test(formData.password) ? '✓' : '○'} En liten bokstav (a-z)
               </li>
-              <li className={/[0-9]/.test(formData.password) ? 'text-brand-900' : ''}>
+              <li className={/[0-9]/.test(formData.password) ? 'text-green-600' : ''}>
                 {/[0-9]/.test(formData.password) ? '✓' : '○'} En siffra (0-9)
               </li>
-              <li className={/[^A-Za-z0-9]/.test(formData.password) ? 'text-brand-900' : ''}>
+              <li className={/[^A-Za-z0-9]/.test(formData.password) ? 'text-green-600' : ''}>
                 {/[^A-Za-z0-9]/.test(formData.password) ? '✓' : '○'} Ett specialtecken (!@#$%^&*)
               </li>
             </ul>

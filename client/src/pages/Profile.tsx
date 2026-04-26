@@ -60,7 +60,7 @@ class ProfileErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
+        <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
           <p className="text-red-700 dark:text-red-300 font-medium">
             {i18n.t('profile.errorLoadingSection')}
           </p>
@@ -87,7 +87,7 @@ function SectionLoader() {
   return (
     <div className="flex items-center justify-center py-12">
       <div className="text-center">
-        <Loader2 className="w-6 h-6 text-brand-900 dark:text-brand-400 animate-spin mx-auto mb-2" />
+        <Loader2 className="w-6 h-6 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-2" />
         <p className="text-sm text-stone-500 dark:text-stone-400">{t('common.loading')}</p>
       </div>
     </div>
@@ -120,7 +120,7 @@ function InitialLoader() {
   return (
     <div className="flex items-center justify-center py-12">
       <div className="text-center">
-        <Loader2 className="w-8 h-8 text-brand-900 dark:text-brand-400 animate-spin mx-auto mb-3" />
+        <Loader2 className="w-8 h-8 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-3" />
         <p className="text-stone-600 dark:text-stone-400">{t('profile.loading')}</p>
       </div>
     </div>

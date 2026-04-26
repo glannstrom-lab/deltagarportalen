@@ -127,8 +127,8 @@ export const borderRadius = {
   md: '8px',     // rounded-md
   lg: '12px',    // rounded-lg
   xl: '16px',    // rounded-xl (default för kort)
-  '2xl': '20px', // rounded-xl
-  '3xl': '24px', // rounded-xl
+  '2xl': '20px', // rounded-2xl
+  '3xl': '24px', // rounded-3xl
   full: '9999px',
 }
 
@@ -214,7 +214,7 @@ export const widgetTokens = {
   padding: '24px', // p-6
   
   // Border radius för widgets
-  borderRadius: '16px', // rounded-xl
+  borderRadius: '16px', // rounded-2xl
   
   // Skugga för widgets
   shadow: shadows.md,
@@ -229,7 +229,7 @@ export const widgetTokens = {
       border: colors.primary[200],
       text: colors.primary[700],
       icon: colors.primary[500],
-      gradient: 'from-brand-700 to-sky-600',
+      gradient: 'from-teal-500 to-sky-600',
     },
     jobSearch: {
       bg: colors.info.light,
@@ -250,7 +250,7 @@ export const widgetTokens = {
       border: '#a7f3d0',
       text: colors.success.dark,
       icon: colors.success.DEFAULT,
-      gradient: 'from-emerald-500 to-brand-900',
+      gradient: 'from-emerald-500 to-teal-600',
     },
     warning: {
       bg: colors.warning.light,

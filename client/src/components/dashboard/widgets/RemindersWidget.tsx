@@ -81,7 +81,7 @@ export const RemindersWidget = memo(function RemindersWidget({
         link: '/cv',
         progress: data.cv.progress,
         icon: <RotateCcw size={20} />,
-        color: 'brand',
+        color: 'teal',
         interpolation: { days: lastEdited, progress: data.cv.progress }
       })
     }
@@ -151,7 +151,7 @@ export const RemindersWidget = memo(function RemindersWidget({
         link: '/interest-guide',
         progress: (data.interest.answeredQuestions / data.interest.totalQuestions) * 100,
         icon: <Play size={20} />,
-        color: 'brand',
+        color: 'teal',
         interpolation: { answered: data.interest.answeredQuestions, remaining }
       })
     }
@@ -285,7 +285,7 @@ export const RemindersWidget = memo(function RemindersWidget({
                               transition={{ duration: 0.5 }}
                               className={cn(
                                 "h-full rounded-full",
-                                reminder.priority === 'high' ? 'bg-amber-500' : 'bg-brand-700'
+                                reminder.priority === 'high' ? 'bg-amber-500' : 'bg-teal-500'
                               )}
                             />
                           </div>
@@ -295,7 +295,7 @@ export const RemindersWidget = memo(function RemindersWidget({
                         </div>
                       )}
 
-                      <div className="flex items-center gap-2 text-sm font-medium text-brand-900">
+                      <div className="flex items-center gap-2 text-sm font-medium text-teal-600">
                         <span>{t(reminder.actionKey)}</span>
                         <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                       </div>

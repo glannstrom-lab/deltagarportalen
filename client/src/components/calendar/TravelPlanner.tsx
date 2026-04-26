@@ -171,11 +171,11 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
             aria-label={t('calendar.travel.reimbursed')}
           >
             {travel?.reimbursed ? (
-              <CheckCircle className="w-5 h-5 text-brand-900 dark:text-brand-400" aria-hidden="true" />
+              <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" aria-hidden="true" />
             ) : (
               <Circle className="w-5 h-5 text-stone-600 dark:text-stone-400" aria-hidden="true" />
             )}
-            <span className={travel?.reimbursed ? 'text-brand-900 dark:text-brand-400' : 'text-stone-700 dark:text-stone-300'}>
+            <span className={travel?.reimbursed ? 'text-green-600 dark:text-green-400' : 'text-stone-700 dark:text-stone-300'}>
               {t('calendar.travel.reimbursed')}
             </span>
           </button>

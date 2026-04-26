@@ -43,7 +43,7 @@ const CATEGORIES = {
   'work-life': { label: 'Balans', color: 'blue' },
   'growth': { label: 'Utveckling', color: 'emerald' },
   'environment': { label: 'Miljö', color: 'amber' },
-  'leadership': { label: 'Ledarskap', color: 'brand' },
+  'leadership': { label: 'Ledarskap', color: 'teal' },
 }
 
 export function CultureTab() {
@@ -103,10 +103,10 @@ export function CultureTab() {
 
       {/* Selection count */}
       {selectedValues.length > 0 && (
-        <div className="flex items-center justify-between p-4 bg-brand-50 rounded-xl border border-brand-100">
+        <div className="flex items-center justify-between p-4 bg-teal-50 rounded-xl border border-teal-100">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-brand-900" />
-            <span className="font-medium text-brand-900">
+            <Sparkles className="w-5 h-5 text-teal-600" />
+            <span className="font-medium text-teal-900">
               {selectedValues.length} värderingar valda
             </span>
           </div>
@@ -122,20 +122,20 @@ export function CultureTab() {
 
       {/* Analysis */}
       {showResults && selectedValues.length > 0 && (
-        <Card className="border-brand-200">
+        <Card className="border-teal-200">
           <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-brand-900" />
+            <TrendingUp className="w-5 h-5 text-teal-600" />
             Din profil
           </h3>
           <p className="text-slate-600 mb-4">
             Baserat på dina val prioriterar du främst: <strong>{getTopPriorities().join(' och ')}</strong>
           </p>
 
-          <div className="p-4 bg-brand-50 rounded-xl">
-            <p className="text-sm text-brand-900">
+          <div className="p-4 bg-teal-50 rounded-xl">
+            <p className="text-sm text-teal-800">
               <strong>Tips vid jobbsökning:</strong>
             </p>
-            <ul className="text-sm text-brand-900 mt-2 space-y-1">
+            <ul className="text-sm text-teal-700 mt-2 space-y-1">
               <li>• Fråga om dessa aspekter på intervjun</li>
               <li>• Kolla företagets recensioner på Glassdoor</li>
               <li>• Leta efter ledtrådar i jobbannonsen</li>
@@ -160,25 +160,25 @@ export function CultureTab() {
                   className={cn(
                     "flex items-start gap-3 p-4 rounded-xl border transition-all text-left",
                     isSelected
-                      ? "bg-brand-50 border-brand-300 ring-2 ring-brand-200"
+                      ? "bg-teal-50 border-teal-300 ring-2 ring-teal-200"
                       : "bg-slate-50 border-slate-100 hover:border-slate-200"
                   )}
                 >
                   {isSelected ? (
-                    <CheckCircle className="w-5 h-5 text-brand-900 shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
                   ) : (
                     <Circle className="w-5 h-5 text-slate-300 shrink-0 mt-0.5" />
                   )}
                   <div>
                     <p className={cn(
                       "font-medium",
-                      isSelected ? "text-brand-900" : "text-slate-800"
+                      isSelected ? "text-teal-900" : "text-slate-800"
                     )}>
                       {value.label}
                     </p>
                     <p className={cn(
                       "text-sm",
-                      isSelected ? "text-brand-900" : "text-slate-700"
+                      isSelected ? "text-teal-600" : "text-slate-700"
                     )}>
                       {value.description}
                     </p>

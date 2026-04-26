@@ -116,21 +116,21 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
       {/* Fixed progress bar */}
       <div className="fixed top-0 left-0 right-0 h-1 bg-slate-200 z-50">
         <div 
-          className="h-full bg-brand-900 transition-all"
+          className="h-full bg-teal-600 transition-all"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {/* Reading reminder */}
       {showReminder && progress < 100 && (
-        <div className="fixed bottom-4 right-4 bg-white rounded-lg p-4 max-w-sm z-50 animate-slide-up">
+        <div className="fixed bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-sm z-50 animate-slide-up">
           <p className="text-sm text-slate-700 mb-2">
             Du har läst {progress}% av artikeln. Vill du ta en paus eller fortsätta?
           </p>
           <div className="flex gap-2">
             <button 
               onClick={() => setShowReminder(false)}
-              className="px-3 py-1.5 bg-brand-900 text-white text-sm rounded-lg hover:bg-brand-900"
+              className="px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700"
             >
               Fortsätt läsa
             </button>

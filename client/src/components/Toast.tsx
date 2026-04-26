@@ -32,19 +32,19 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
   const [progress, setProgress] = useState(100)
 
   const icons = {
-    success: <CheckCircle className="w-5 h-5 text-brand-700" />,
+    success: <CheckCircle className="w-5 h-5 text-green-500" />,
     error: <XCircle className="w-5 h-5 text-red-500" />,
     warning: <AlertCircle className="w-5 h-5 text-amber-500" />,
     info: <Info className="w-5 h-5 text-blue-500" />,
-    loading: <Loader2 className="w-5 h-5 text-brand-700 animate-spin" />
+    loading: <Loader2 className="w-5 h-5 text-teal-500 animate-spin" />
   }
 
   const styles = {
-    success: 'border-l-4 border-brand-700 bg-white',
+    success: 'border-l-4 border-green-500 bg-white',
     error: 'border-l-4 border-red-500 bg-white',
     warning: 'border-l-4 border-amber-500 bg-white',
     info: 'border-l-4 border-blue-500 bg-white',
-    loading: 'border-l-4 border-brand-700 bg-white'
+    loading: 'border-l-4 border-teal-500 bg-white'
   }
 
   useEffect(() => {
@@ -82,7 +82,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       aria-live={ariaLive}
       aria-atomic="true"
       className={`
-        relative flex items-start gap-3 p-4 rounded-xl
+        relative flex items-start gap-3 p-4 rounded-xl shadow-lg
         transform transition-all duration-300 min-w-[320px] max-w-md
         ${styles[toast.type]}
         ${isExiting ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'}
@@ -108,7 +108,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
               toast.action?.onClick()
               handleRemove()
             }}
-            className="mt-2 text-sm font-medium text-brand-900 hover:text-brand-900 transition-colors"
+            className="mt-2 text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors"
           >
             {toast.action.label}
           </button>

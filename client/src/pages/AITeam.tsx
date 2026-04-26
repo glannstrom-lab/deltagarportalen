@@ -44,7 +44,7 @@ export default function AITeam() {
       {/* Skip link for accessibility */}
       <a
         href="#ai-chat"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-brand-900 focus:text-white focus:rounded-lg focus:"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-teal-600 focus:text-white focus:rounded-lg focus:shadow-lg"
       >
         {t('aiTeam.skipToChat', 'Hoppa till chatten')}
       </a>
@@ -53,13 +53,13 @@ export default function AITeam() {
       <OnboardingModal />
 
       {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-brand-50 via-cyan-50 to-sky-50 dark:from-brand-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border-b border-brand-100 dark:border-brand-900/50">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-brand-200/30 to-cyan-200/30 dark:from-brand-900/20 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-sky-200/30 to-brand-200/30 dark:from-sky-700/20 dark:to-brand-900/20 rounded-full translate-y-1/2 -translate-x-1/2" />
+      <div className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50 dark:from-teal-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border-b border-teal-100 dark:border-teal-800/50">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-teal-200/30 to-cyan-200/30 dark:from-teal-700/20 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-sky-200/30 to-teal-200/30 dark:from-sky-700/20 dark:to-teal-700/20 rounded-full translate-y-1/2 -translate-x-1/2" />
 
         <div className="relative max-w-6xl mx-auto px-4 py-8 sm:py-12">
           <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-brand-400 to-cyan-500 dark:from-brand-700 dark:to-cyan-600  dark:/50">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 dark:from-teal-500 dark:to-cyan-600 shadow-lg shadow-teal-200 dark:shadow-teal-900/50">
               <Users className="w-8 h-8 text-white" aria-hidden="true" />
             </div>
             <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-stone-100">
@@ -107,7 +107,7 @@ export default function AITeam() {
         {/* Agent Selector */}
         <Card className="p-4 sm:p-6">
           <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-brand-900 dark:text-brand-400" aria-hidden="true" />
+            <Sparkles className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
             <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
               {t('aiTeam.selectAgent')}
             </h2>

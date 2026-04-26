@@ -35,7 +35,7 @@ interface MobileWidgetCardProps {
 
 function MobileWidgetCard({ to, icon, title, subtitle, color, badge, badgeColor, progress }: MobileWidgetCardProps) {
   const bgColorClass = {
-    brand: 'bg-brand-50 dark:bg-brand-900/30 border-brand-100 dark:border-brand-900',
+    teal: 'bg-teal-50 dark:bg-teal-900/30 border-teal-100 dark:border-teal-800',
     rose: 'bg-rose-50 dark:bg-rose-900/30 border-rose-100 dark:border-rose-800',
     blue: 'bg-blue-50 dark:bg-blue-900/30 border-blue-100 dark:border-blue-800',
     sky: 'bg-sky-50 dark:bg-sky-900/30 border-sky-100 dark:border-sky-800',
@@ -44,7 +44,7 @@ function MobileWidgetCard({ to, icon, title, subtitle, color, badge, badgeColor,
   }[color] || 'bg-slate-50 dark:bg-stone-800 border-slate-200 dark:border-stone-700'
 
   const iconColorClass = {
-    brand: 'text-brand-900 dark:text-brand-400',
+    teal: 'text-teal-600 dark:text-teal-400',
     rose: 'text-rose-600 dark:text-rose-400',
     blue: 'text-blue-600 dark:text-blue-400',
     sky: 'text-sky-600 dark:text-sky-400',
@@ -170,7 +170,7 @@ export function MobileDashboard() {
           ? t('dashboard.mobile.cv.ready')
           : t('dashboard.mobile.cv.inProgress', { progress: data.cv.progress })
         : t('dashboard.mobile.cv.create'),
-      color: 'brand',
+      color: 'teal',
       progress: data?.cv.progress,
       badge: data?.cv.atsScore ? `ATS ${data.cv.atsScore}` : undefined,
       badgeColor: 'bg-amber-100 text-amber-700',
@@ -211,7 +211,7 @@ export function MobileDashboard() {
       subtitle: data?.interest.hasResult
         ? t('dashboard.mobile.interests.seeResults')
         : t('dashboard.mobile.interests.takeTest'),
-      color: 'brand',
+      color: 'teal',
     },
     {
       id: 'exercises' as WidgetType,

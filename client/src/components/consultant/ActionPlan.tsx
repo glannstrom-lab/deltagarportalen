@@ -300,7 +300,7 @@ export function ActionPlan({
   }, [goals])
 
   return (
-    <div className={cn('bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700', className)}>
+    <div className={cn('bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700', className)}>
       {/* Header med statistik */}
       <div className="p-6 border-b border-slate-100 dark:border-stone-800">
         <div className="flex items-center justify-between mb-4">
@@ -365,7 +365,7 @@ export function ActionPlan({
               <button
                 key={i}
                 onClick={() => applyTemplate(template)}
-                className="text-left p-4 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover: transition-all"
+                className="text-left p-4 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-indigo-300 dark:hover:border-indigo-600 hover:shadow-sm transition-all"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <span className={cn(

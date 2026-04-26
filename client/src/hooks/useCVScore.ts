@@ -187,7 +187,7 @@ export function getScoreColor(percentage: number): string {
   if (percentage < 50) return 'text-orange-500'
   if (percentage < 70) return 'text-yellow-500'
   if (percentage < 90) return 'text-blue-500'
-  return 'text-brand-700'
+  return 'text-green-500'
 }
 
 /**
@@ -198,5 +198,5 @@ export function getScoreBgColor(percentage: number): string {
   if (percentage < 50) return 'bg-orange-500'
   if (percentage < 70) return 'bg-yellow-500'
   if (percentage < 90) return 'bg-blue-500'
-  return 'bg-brand-700'
+  return 'bg-green-500'
 }

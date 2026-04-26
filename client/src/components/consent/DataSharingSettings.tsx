@@ -207,7 +207,7 @@ export function DataSharingSettings() {
               className={cn(
                 "w-12 h-7 rounded-full flex items-center px-1 transition-colors flex-shrink-0",
                 preferences.share_health_data_with_consultant
-                  ? 'bg-brand-700 justify-end'
+                  ? 'bg-green-500 justify-end'
                   : 'bg-slate-300 dark:bg-slate-600 justify-start'
               )}
               title={preferences.share_health_data_with_consultant ? 'Aktiverad' : 'Inaktiverad'}
@@ -241,7 +241,7 @@ export function DataSharingSettings() {
               className={cn(
                 "w-12 h-7 rounded-full flex items-center px-1 transition-colors flex-shrink-0",
                 preferences.share_wellness_data_with_consultant
-                  ? 'bg-brand-700 justify-end'
+                  ? 'bg-green-500 justify-end'
                   : 'bg-slate-300 dark:bg-slate-600 justify-start'
               )}
               title={preferences.share_wellness_data_with_consultant ? 'Aktiverad' : 'Inaktiverad'}
@@ -279,8 +279,8 @@ export function DataSharingSettings() {
 
       {/* Success Message */}
       {saveSuccess && (
-        <div className="p-4 bg-brand-50 dark:bg-brand-900/20 border border-brand-200 dark:border-brand-900/50 rounded-lg">
-          <p className="text-sm text-brand-900 dark:text-brand-300">
+        <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg">
+          <p className="text-sm text-green-700 dark:text-green-300">
             {t('datasharing.savedSuccess') || 'Dina inställningar sparades!'}
           </p>
         </div>

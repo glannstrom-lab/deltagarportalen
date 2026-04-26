@@ -105,7 +105,7 @@ export default function LinkedInCallback() {
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               Din LinkedIn-profil har hämtats. Du skickas nu till CV-byggaren där du kan importera datan.
             </p>
-            <div className="animate-pulse text-brand-900 dark:text-brand-400 text-sm">
+            <div className="animate-pulse text-teal-600 dark:text-teal-400 text-sm">
               Omdirigerar...
             </div>
           </>

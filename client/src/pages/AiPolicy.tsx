@@ -30,7 +30,7 @@ export default function AiPolicy() {
   const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
     <section className="scroll-mt-8">
       <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-3">
-        <Icon className="w-5 h-5 text-brand-900 dark:text-brand-400" />
+        <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
         {title}
       </h2>
       {children}
@@ -40,9 +40,9 @@ export default function AiPolicy() {
   const ListItem = ({ icon: Icon, title, desc, positive = true }: { icon?: any; title?: string; desc: string; positive?: boolean }) => (
     <li className="flex items-start gap-3 text-gray-600 dark:text-gray-300">
       {Icon ? (
-        <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${positive ? 'text-brand-700 dark:text-brand-400' : 'text-red-500 dark:text-red-400'}`} />
+        <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${positive ? 'text-green-500 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`} />
       ) : (
-        <span className="w-1.5 h-1.5 bg-brand-700 dark:bg-brand-400 rounded-full mt-2 flex-shrink-0" />
+        <span className="w-1.5 h-1.5 bg-teal-500 dark:bg-teal-400 rounded-full mt-2 flex-shrink-0" />
       )}
       <span>
         {title && <strong className="text-gray-800 dark:text-gray-100">{title}</strong>} {desc}
@@ -57,14 +57,14 @@ export default function AiPolicy() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-brand-700 to-brand-900 dark:from-brand-900 dark:to-brand-900 rounded-xl flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 rounded-xl flex items-center justify-center text-white font-bold text-xl">
                 J
               </div>
-              <span className="text-xl font-bold text-brand-900 dark:text-brand-400">Jobin</span>
+              <span className="text-xl font-bold text-teal-600 dark:text-teal-400">Jobin</span>
             </Link>
             <Link
               to="/"
-              className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-brand-900 dark:hover:text-brand-400 font-medium transition-colors"
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               {t('aiPolicy.backToHome')}
@@ -76,14 +76,14 @@ export default function AiPolicy() {
       {/* Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="text-center mb-12">
-          <div className="w-16 h-16 bg-brand-100 dark:bg-brand-900/30 rounded-xl flex items-center justify-center mx-auto mb-6">
-            <Bot className="w-8 h-8 text-brand-900 dark:text-brand-400" />
+          <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Bot className="w-8 h-8 text-teal-600 dark:text-teal-400" />
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{t('aiPolicy.title')}</h1>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">{t('aiPolicy.subtitle')}</p>
         </div>
 
-        <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-8 lg:p-12 space-y-10">
+        <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-8 lg:p-12 space-y-10">
           {/* Introduction */}
           <Section icon={Eye} title={t('aiPolicy.intro.title')}>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{t('aiPolicy.intro.text')}</p>
@@ -92,21 +92,21 @@ export default function AiPolicy() {
           {/* AI Models */}
           <Section icon={Brain} title={t('aiPolicy.models.title')}>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">{t('aiPolicy.models.intro')}</p>
-            <div className="bg-gradient-to-br from-brand-50 to-cyan-50 dark:from-brand-900/20 dark:to-cyan-900/20 rounded-xl p-6 border border-brand-100 dark:border-brand-900">
-              <h3 className="font-bold text-brand-900 dark:text-brand-100 text-lg mb-3">{t('aiPolicy.models.openai')}</h3>
-              <p className="text-brand-900 dark:text-brand-200 mb-4">{t('aiPolicy.models.openaiDesc')}</p>
+            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-xl p-6 border border-teal-100 dark:border-teal-800">
+              <h3 className="font-bold text-teal-900 dark:text-teal-100 text-lg mb-3">{t('aiPolicy.models.openai')}</h3>
+              <p className="text-teal-800 dark:text-teal-200 mb-4">{t('aiPolicy.models.openaiDesc')}</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <span className="font-medium text-brand-900 dark:text-brand-300">{t('aiPolicy.models.provider')}</span>
-                  <p className="text-brand-900 dark:text-brand-400">OpenAI, Inc.</p>
+                  <span className="font-medium text-teal-700 dark:text-teal-300">{t('aiPolicy.models.provider')}</span>
+                  <p className="text-teal-600 dark:text-teal-400">OpenAI, Inc.</p>
                 </div>
                 <div>
-                  <span className="font-medium text-brand-900 dark:text-brand-300">{t('aiPolicy.models.purpose')}</span>
-                  <p className="text-brand-900 dark:text-brand-400">CV & Cover Letter</p>
+                  <span className="font-medium text-teal-700 dark:text-teal-300">{t('aiPolicy.models.purpose')}</span>
+                  <p className="text-teal-600 dark:text-teal-400">CV & Cover Letter</p>
                 </div>
                 <div>
-                  <span className="font-medium text-brand-900 dark:text-brand-300">{t('aiPolicy.models.location')}</span>
-                  <p className="text-brand-900 dark:text-brand-400">USA (EU-US DPF)</p>
+                  <span className="font-medium text-teal-700 dark:text-teal-300">{t('aiPolicy.models.location')}</span>
+                  <p className="text-teal-600 dark:text-teal-400">USA (EU-US DPF)</p>
                 </div>
               </div>
             </div>
@@ -117,13 +117,13 @@ export default function AiPolicy() {
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">{t('aiPolicy.dataFlow.intro')}</p>
 
             <div className="space-y-4">
-              <div className="bg-brand-50 dark:bg-brand-900/20 rounded-xl p-4 border border-brand-100 dark:border-brand-900">
-                <h4 className="font-semibold text-brand-900 dark:text-brand-200 mb-2">{t('aiPolicy.dataFlow.cv')}</h4>
-                <p className="text-brand-900 dark:text-brand-300 text-sm">{t('aiPolicy.dataFlow.cvData')}</p>
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-100 dark:border-green-800">
+                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">{t('aiPolicy.dataFlow.cv')}</h4>
+                <p className="text-green-700 dark:text-green-300 text-sm">{t('aiPolicy.dataFlow.cvData')}</p>
               </div>
-              <div className="bg-brand-50 dark:bg-brand-900/20 rounded-xl p-4 border border-brand-100 dark:border-brand-900">
-                <h4 className="font-semibold text-brand-900 dark:text-brand-200 mb-2">{t('aiPolicy.dataFlow.coverLetter')}</h4>
-                <p className="text-brand-900 dark:text-brand-300 text-sm">{t('aiPolicy.dataFlow.coverLetterData')}</p>
+              <div className="bg-green-50 dark:bg-green-900/20 rounded-xl p-4 border border-green-100 dark:border-green-800">
+                <h4 className="font-semibold text-green-800 dark:text-green-200 mb-2">{t('aiPolicy.dataFlow.coverLetter')}</h4>
+                <p className="text-green-700 dark:text-green-300 text-sm">{t('aiPolicy.dataFlow.coverLetterData')}</p>
               </div>
               <div className="bg-red-50 dark:bg-red-900/20 rounded-xl p-4 border border-red-100 dark:border-red-800">
                 <h4 className="font-semibold text-red-800 dark:text-red-200 mb-2">{t('aiPolicy.dataFlow.notSent')}</h4>
@@ -203,7 +203,7 @@ export default function AiPolicy() {
           <Section icon={Mail} title={t('aiPolicy.contact.title')}>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
               {t('aiPolicy.contact.text')}{' '}
-              <a href="mailto:privacy@jobin.se" className="text-brand-900 dark:text-brand-400 hover:underline">
+              <a href="mailto:privacy@jobin.se" className="text-teal-600 dark:text-teal-400 hover:underline">
                 privacy@jobin.se
               </a>
             </p>

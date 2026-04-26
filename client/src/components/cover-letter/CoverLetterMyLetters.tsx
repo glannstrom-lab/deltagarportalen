@@ -322,7 +322,7 @@ export function CoverLetterMyLetters() {
         {filteredLetters.map((letter) => (
           <Card
             key={letter.id}
-            className="p-4 sm:p-5 hover: transition-shadow group"
+            className="p-4 sm:p-5 hover:shadow-md transition-shadow group"
           >
             {/* Mobile: Stack vertically, Desktop: Side by side */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
@@ -430,7 +430,7 @@ export function CoverLetterMyLetters() {
                         id={`letter-menu-${letter.id}`}
                         role="menu"
                         aria-label={`Alternativ för ${letter.title}`}
-                        className="absolute right-0 sm:left-0 top-full mt-1 bg-white rounded-lg border border-slate-200 py-1 min-w-[160px] z-10"
+                        className="absolute right-0 sm:left-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 min-w-[160px] z-10"
                       >
                         <button
                           role="menuitem"

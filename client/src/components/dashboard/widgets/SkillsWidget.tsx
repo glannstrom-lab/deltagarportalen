@@ -27,7 +27,7 @@ export const SkillsWidget = memo(function SkillsWidget({
     return (
       <Link
         to="/skills-gap-analysis"
-        className="group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover: transition-all duration-200"
+        className="group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-md transition-all duration-200"
       >
         <div className="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center flex-shrink-0">
           <BarChart3 size={16} />
@@ -52,7 +52,7 @@ export const SkillsWidget = memo(function SkillsWidget({
     return (
       <Link
         to="/skills-gap-analysis"
-        className="group block bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover: hover:-translate-y-0.5 transition-all duration-200"
+        className="group block bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -95,11 +95,11 @@ export const SkillsWidget = memo(function SkillsWidget({
   return (
     <Link
       to="/skills-gap-analysis"
-      className="group block bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover: transition-all duration-200"
+      className="group block bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 to-brand-100 dark:from-cyan-900/40 dark:to-brand-900/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 to-teal-100 dark:from-cyan-900/40 dark:to-teal-900/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
             <BarChart3 size={24} />
           </div>
           <div>
@@ -126,8 +126,8 @@ export const SkillsWidget = memo(function SkillsWidget({
               className={cn(
                 "h-full rounded-full transition-all duration-500",
                 isGood
-                  ? "bg-gradient-to-r from-emerald-400 to-brand-700"
-                  : "bg-gradient-to-r from-cyan-400 to-brand-700"
+                  ? "bg-gradient-to-r from-emerald-400 to-teal-500"
+                  : "bg-gradient-to-r from-cyan-400 to-teal-500"
               )}
               style={{ width: `${matchScore}%` }}
             />
