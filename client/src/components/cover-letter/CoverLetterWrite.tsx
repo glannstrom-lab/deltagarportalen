@@ -401,7 +401,7 @@ export function CoverLetterWrite() {
                       'w-10 h-10 rounded-full flex items-center justify-center transition-colors',
                       isActive && 'bg-teal-600 text-white',
                       isCompleted && 'bg-emerald-500 text-white',
-                      !isActive && !isCompleted && 'bg-slate-100 text-slate-600'
+                      !isActive && !isCompleted && 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
                     )}
                     aria-hidden="true"
                   >
@@ -413,9 +413,9 @@ export function CoverLetterWrite() {
                   </div>
                   <span className={cn(
                     'text-xs mt-2 font-medium',
-                    isActive && 'text-teal-600',
-                    isCompleted && 'text-emerald-600',
-                    !isActive && !isCompleted && 'text-slate-600'
+                    isActive && 'text-teal-600 dark:text-teal-400',
+                    isCompleted && 'text-emerald-600 dark:text-emerald-400',
+                    !isActive && !isCompleted && 'text-stone-600 dark:text-stone-400'
                   )}>
                     {step.title}
                     {isCompleted && <span className="sr-only"> (slutfört)</span>}
@@ -426,7 +426,7 @@ export function CoverLetterWrite() {
                   <div
                     className={cn(
                       'w-full h-0.5 mx-2',
-                      isCompleted ? 'bg-emerald-500' : 'bg-slate-200'
+                      isCompleted ? 'bg-emerald-500' : 'bg-stone-200 dark:bg-stone-700'
                     )}
                     aria-hidden="true"
                   />
@@ -439,22 +439,22 @@ export function CoverLetterWrite() {
 
       {/* CV Status Banner */}
       {cvData && (
-        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">
-                <User className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center shrink-0">
+                <User className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-medium text-emerald-800 text-sm sm:text-base">
+                <h4 className="font-medium text-emerald-800 dark:text-emerald-200 text-sm sm:text-base">
                   CV-data hämtad
                 </h4>
-                <p className="text-xs sm:text-sm text-emerald-700 truncate">
+                <p className="text-xs sm:text-sm text-emerald-700 dark:text-emerald-300 truncate">
                   {cvData.first_name} {cvData.last_name} • {cvData.skills?.length || 0} kompetenser
                 </p>
               </div>
             </div>
-            <div className="text-xs sm:text-sm text-emerald-600 sm:shrink-0 ml-11 sm:ml-0">
+            <div className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 sm:shrink-0 ml-11 sm:ml-0">
               AI använder detta
             </div>
           </div>
@@ -462,23 +462,23 @@ export function CoverLetterWrite() {
       )}
 
       {!cvData && !loadingCV && (
-        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+        <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-              <User className="w-5 h-5 text-amber-600" />
+            <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center">
+              <User className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             </div>
             <div className="flex-1">
-              <h4 className="font-medium text-amber-800">
+              <h4 className="font-medium text-amber-800 dark:text-amber-200">
                 Inget CV hittades
               </h4>
-              <p className="text-sm text-amber-700">
+              <p className="text-sm text-amber-700 dark:text-amber-300">
                 Skapa ett CV först för bästa resultat. AI kommer generera ett generiskt brev annars.
               </p>
             </div>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => navigate('/cv')}
-              className="text-amber-700 border-amber-300"
+              className="text-amber-700 dark:text-amber-300 border-amber-300 dark:border-amber-700"
             >
               Skapa CV
             </Button>
@@ -609,10 +609,10 @@ function Step1SelectJob({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-slate-800 mb-2">
+        <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-2">
           Välj jobb för brevet
         </h2>
-        <p className="text-slate-600">
+        <p className="text-stone-600 dark:text-stone-400">
           Välj ett av dina sparade jobb eller fyll i information manuellt.
         </p>
       </div>
@@ -620,7 +620,7 @@ function Step1SelectJob({
       {/* Sparade jobb */}
       {savedJobs.length > 0 && (
         <div className="space-y-3">
-          <h3 className="font-medium text-slate-700 flex items-center gap-2">
+          <h3 className="font-medium text-stone-700 dark:text-stone-300 flex items-center gap-2">
             <Heart className="w-4 h-4 text-rose-500" />
             Dina sparade jobb ({savedJobs.length})
           </h3>
@@ -629,9 +629,9 @@ function Step1SelectJob({
               // Extrahera data från job_data JSON
               const title = job.job_data?.headline || 'Okänd titel'
               const company = job.job_data?.employer?.name || 'Okänt företag'
-              const location = job.job_data?.workplace_address?.municipality || 
+              const location = job.job_data?.workplace_address?.municipality ||
                               job.job_data?.workplace_address?.region
-              
+
               return (
                 <div
                   key={job.id}
@@ -648,31 +648,31 @@ function Step1SelectJob({
                   className={cn(
                     'p-4 rounded-xl border-2 cursor-pointer transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2',
                     formData.selectedJobId === job.job_id
-                      ? 'border-teal-500 bg-teal-50'
-                      : 'border-slate-200 hover:border-teal-200 hover:bg-slate-50'
+                      ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
+                      : 'border-stone-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700 hover:bg-stone-50 dark:hover:bg-stone-800'
                   )}
                 >
                   <div className="flex items-start gap-3">
                     <div className={cn(
                       'w-10 h-10 rounded-lg flex items-center justify-center',
                       formData.selectedJobId === job.job_id
-                        ? 'bg-teal-100 text-teal-600'
-                        : 'bg-slate-100 text-slate-700'
+                        ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400'
+                        : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300'
                     )}>
                       <Briefcase size={20} />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-medium text-slate-800">{title}</h4>
-                      <p className="text-sm text-slate-700">{company}</p>
+                      <h4 className="font-medium text-stone-800 dark:text-stone-100">{title}</h4>
+                      <p className="text-sm text-stone-700 dark:text-stone-300">{company}</p>
                       {location && (
-                        <p className="text-xs text-slate-600 flex items-center gap-1 mt-1">
+                        <p className="text-xs text-stone-600 dark:text-stone-400 flex items-center gap-1 mt-1">
                           <MapPin size={12} />
                           {location}
                         </p>
                       )}
                     </div>
                     {formData.selectedJobId === job.job_id && (
-                      <div className="flex items-center gap-1 text-teal-600 text-sm">
+                      <div className="flex items-center gap-1 text-teal-600 dark:text-teal-400 text-sm">
                         <Check size={16} />
                         <span>Vald</span>
                       </div>
@@ -687,16 +687,16 @@ function Step1SelectJob({
 
       {loadingJobs && (
         <div className="text-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-slate-600" />
-          <p className="text-sm text-slate-700 mt-2">Laddar sparade jobb...</p>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-stone-600 dark:text-stone-400" />
+          <p className="text-sm text-stone-700 dark:text-stone-300 mt-2">Laddar sparade jobb...</p>
         </div>
       )}
 
       {!loadingJobs && savedJobs.length === 0 && (
-        <div className="text-center py-6 bg-slate-50 rounded-xl">
-          <Heart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-600">Du har inga sparade jobb än.</p>
-          <p className="text-sm text-slate-700 mt-1">
+        <div className="text-center py-6 bg-stone-50 dark:bg-stone-800 rounded-xl">
+          <Heart className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
+          <p className="text-stone-600 dark:text-stone-400">Du har inga sparade jobb än.</p>
+          <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
             Spara jobb från jobbsökningen för att enkelt skriva brev till dem.
           </p>
         </div>
@@ -705,10 +705,10 @@ function Step1SelectJob({
       {/* Divider */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-slate-200"></div>
+          <div className="w-full border-t border-stone-200 dark:border-stone-700"></div>
         </div>
         <div className="relative flex justify-center">
-          <span className="px-4 bg-white text-sm text-slate-700">eller</span>
+          <span className="px-4 bg-white dark:bg-stone-900 text-sm text-stone-500 dark:text-stone-400">eller</span>
         </div>
       </div>
 
@@ -718,65 +718,65 @@ function Step1SelectJob({
         className={cn(
           'w-full p-4 rounded-xl border-2 transition-all text-left',
           formData.useManualInput
-            ? 'border-teal-500 bg-teal-50'
-            : 'border-slate-200 hover:border-teal-200 hover:bg-slate-50'
+            ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
+            : 'border-stone-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700 hover:bg-stone-50 dark:hover:bg-stone-800'
         )}
       >
         <div className="flex items-center gap-3">
           <div className={cn(
             'w-10 h-10 rounded-lg flex items-center justify-center',
             formData.useManualInput
-              ? 'bg-teal-100 text-teal-600'
-              : 'bg-slate-100 text-slate-700'
+              ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400'
+              : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300'
           )}>
             <Edit3 size={20} />
           </div>
           <div className="flex-1">
-            <h4 className="font-medium text-slate-800">Fyll i manuellt</h4>
-            <p className="text-sm text-slate-700">Skriv företag och jobbinformation själv</p>
+            <h4 className="font-medium text-stone-800 dark:text-stone-100">Fyll i manuellt</h4>
+            <p className="text-sm text-stone-600 dark:text-stone-400">Skriv företag och jobbinformation själv</p>
           </div>
         </div>
       </button>
 
       {/* Manuell form */}
       {formData.useManualInput && (
-        <div className="space-y-4 pt-4 border-t border-slate-200">
+        <div className="space-y-4 pt-4 border-t border-stone-200 dark:border-stone-700">
           <div>
-            <label htmlFor="cl-company" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="cl-company" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
               Företag *
             </label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" aria-hidden="true" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
               <input
                 id="cl-company"
                 type="text"
                 value={formData.company}
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                 placeholder="t.ex. Acme AB"
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="cl-jobtitle" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="cl-jobtitle" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
               Jobbtitel *
             </label>
             <div className="relative">
-              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" aria-hidden="true" />
+              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
               <input
                 id="cl-jobtitle"
                 type="text"
                 value={formData.jobTitle}
                 onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
                 placeholder="t.ex. Projektledare"
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
               />
             </div>
           </div>
 
           <div>
-            <label htmlFor="cl-jobad" className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="cl-jobad" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
               Jobbannons (valfritt men rekommenderat)
             </label>
             <textarea
@@ -785,7 +785,7 @@ function Step1SelectJob({
               onChange={(e) => setFormData({ ...formData, jobAd: e.target.value })}
               placeholder="Klistra in texten från jobbannonsen här..."
               rows={4}
-              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all resize-none"
+              className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all resize-none"
             />
           </div>
         </div>
@@ -793,16 +793,16 @@ function Step1SelectJob({
 
       {/* Vald jobb info */}
       {hasSelectedJob && !formData.useManualInput && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+        <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
           <div className="flex items-center gap-2 mb-2">
-            <Check className="w-5 h-5 text-emerald-600" />
-            <span className="font-medium text-emerald-800">Valt jobb:</span>
+            <Check className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <span className="font-medium text-emerald-800 dark:text-emerald-200">Valt jobb:</span>
           </div>
-          <p className="text-emerald-700">
+          <p className="text-emerald-700 dark:text-emerald-300">
             {formData.jobTitle} på {formData.company}
           </p>
           {formData.jobAd && (
-            <p className="text-sm text-emerald-600 mt-1">
+            <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">
               Jobbannons inkluderad ({formData.jobAd.length} tecken)
             </p>
           )}
@@ -812,7 +812,7 @@ function Step1SelectJob({
   )
 }
 
-// Steg 2: Välj mall (oförändrad)
+// Steg 2: Välj mall
 function Step2Template({
   formData,
   setFormData
@@ -823,10 +823,10 @@ function Step2Template({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-slate-800 mb-2">
+        <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-2">
           Välj en mall som passar
         </h2>
-        <p className="text-slate-600">
+        <p className="text-stone-600 dark:text-stone-400">
           Mallen hjälper dig att strukturera brevet på ett sätt som passar din situation.
         </p>
       </div>
@@ -849,24 +849,24 @@ function Step2Template({
               'p-4 rounded-xl border-2 cursor-pointer transition-all',
               'focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2',
               formData.selectedTemplate === template.id
-                ? 'border-teal-500 bg-teal-50'
-                : 'border-slate-200 hover:border-teal-200 hover:bg-slate-50'
+                ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
+                : 'border-stone-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700 hover:bg-stone-50 dark:hover:bg-stone-800'
             )}
           >
             <div className="flex items-start gap-3">
               <div className={cn(
                 'w-10 h-10 rounded-lg flex items-center justify-center',
                 formData.selectedTemplate === template.id
-                  ? 'bg-teal-100 text-teal-600'
-                  : 'bg-slate-100 text-slate-700'
+                  ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400'
+                  : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300'
               )}>
                 <FileText size={20} />
               </div>
               <div className="flex-1">
-                <h3 className="font-medium text-slate-800">{template.name}</h3>
-                <p className="text-sm text-slate-700 mt-1">{template.description}</p>
+                <h3 className="font-medium text-stone-800 dark:text-stone-100">{template.name}</h3>
+                <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">{template.description}</p>
                 {formData.selectedTemplate === template.id && (
-                  <div className="flex items-center gap-1 mt-2 text-teal-600 text-sm">
+                  <div className="flex items-center gap-1 mt-2 text-teal-600 dark:text-teal-400 text-sm">
                     <Check size={14} />
                     <span>Vald</span>
                   </div>
@@ -893,22 +893,22 @@ function Step3Customize({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-semibold text-slate-800 mb-2">
+        <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-2">
           Anpassa ditt brev
         </h2>
-        <p className="text-slate-600">
+        <p className="text-stone-600 dark:text-stone-400">
           Välj tonläge och lägg till extra information för att göra brevet personligt.
         </p>
       </div>
 
       {/* CV-info */}
       {cvData && (
-        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-          <h4 className="font-medium text-emerald-800 mb-2 flex items-center gap-2">
+        <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-xl p-4">
+          <h4 className="font-medium text-emerald-800 dark:text-emerald-200 mb-2 flex items-center gap-2">
             <Award className="w-4 h-4" />
             Information från ditt CV som AI kommer använda:
           </h4>
-          <ul className="text-sm text-emerald-700 space-y-1">
+          <ul className="text-sm text-emerald-700 dark:text-emerald-300 space-y-1">
             <li>• Namn: {cvData.first_name} {cvData.last_name}</li>
             <li>• Titel: {cvData.title || 'Ej angiven'}</li>
             <li>• Kompetenser: {cvData.skills?.slice(0, 5).join(', ')}{cvData.skills?.length > 5 ? '...' : ''}</li>
@@ -921,7 +921,7 @@ function Step3Customize({
 
       {/* Tonalternativ */}
       <fieldset>
-        <legend className="block text-sm font-medium text-slate-700 mb-3">
+        <legend className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">
           Välj tonläge
         </legend>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3" role="radiogroup">
@@ -938,12 +938,12 @@ function Step3Customize({
               className={cn(
                 'p-3 rounded-lg border-2 text-left transition-all',
                 formData.tone === tone.id
-                  ? 'border-teal-500 bg-teal-50'
-                  : 'border-slate-200 hover:border-teal-200'
+                  ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
+                  : 'border-stone-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700'
               )}
             >
-              <div className="font-medium text-slate-800 text-sm sm:text-base">{tone.label}</div>
-              <div className="text-xs text-slate-700 mt-0.5">{tone.desc}</div>
+              <div className="font-medium text-stone-800 dark:text-stone-100 text-sm sm:text-base">{tone.label}</div>
+              <div className="text-xs text-stone-600 dark:text-stone-400 mt-0.5">{tone.desc}</div>
             </button>
           ))}
         </div>
@@ -951,7 +951,7 @@ function Step3Customize({
 
       {/* Extra motivation */}
       <div>
-        <label htmlFor="cl-motivation" className="block text-sm font-medium text-slate-700 mb-1.5">
+        <label htmlFor="cl-motivation" className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
           Varför vill du ha detta jobb? (valfritt)
         </label>
         <textarea
@@ -960,14 +960,14 @@ function Step3Customize({
           onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
           placeholder="t.ex. Jag vill jobba med hållbarhet och erfarenhet av att..."
           rows={3}
-          className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all resize-none"
+          className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all resize-none"
         />
       </div>
     </div>
   )
 }
 
-// Steg 4: Granska (oförändrad)
+// Steg 4: Granska
 function Step4Review({
   formData,
   generatedLetter,
@@ -986,13 +986,13 @@ function Step4Review({
   if (isGenerating) {
     return (
       <div className="text-center py-12">
-        <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Sparkles className="w-8 h-8 text-teal-600 animate-pulse" />
+        <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Sparkles className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-pulse" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-800 mb-2">
+        <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-2">
           AI skapar ditt personliga brev...
         </h3>
-        <p className="text-slate-600 max-w-md mx-auto">
+        <p className="text-stone-600 dark:text-stone-400 max-w-md mx-auto">
           Vi analyserar ditt CV och jobbannonsen för att skapa ett skräddarsytt brev.
           Detta tar bara några sekunder.
         </p>
@@ -1008,29 +1008,29 @@ function Step4Review({
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-xl font-semibold text-slate-800 mb-2">
+        <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-2">
           Granska och redigera
         </h2>
-        <p className="text-slate-600">
+        <p className="text-stone-600 dark:text-stone-400">
           Här är AI:s förslag baserat på ditt CV och jobbinformation. Gör det personligt!
         </p>
       </div>
 
       {showTips && (
-        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+        <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl p-4">
           <div className="flex items-start gap-3">
-            <Lightbulb className="w-5 h-5 text-amber-600 mt-0.5" />
+            <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400 mt-0.5" />
             <div className="flex-1">
-              <h4 className="font-medium text-amber-800">Tips för att göra det personligt</h4>
-              <ul className="text-sm text-amber-700 mt-2 space-y-1">
+              <h4 className="font-medium text-amber-800 dark:text-amber-200">Tips för att göra det personligt</h4>
+              <ul className="text-sm text-amber-700 dark:text-amber-300 mt-2 space-y-1">
                 <li>• Lägg till ett specifikt skäl till varför just detta företag lockar dig</li>
                 <li>• Nämn något unikt från din erfarenhet som matchar jobbet</li>
                 <li>• Anpassa tonen så det låter som dig</li>
               </ul>
             </div>
-            <button 
+            <button
               onClick={() => setShowTips(false)}
-              className="text-amber-400 hover:text-amber-600"
+              className="text-amber-400 hover:text-amber-600 dark:hover:text-amber-300"
             >
               Dölj
             </button>
@@ -1039,10 +1039,10 @@ function Step4Review({
       )}
 
       {/* Editor */}
-      <div className="border border-slate-200 rounded-xl overflow-hidden">
-        <div className="bg-slate-50 px-4 py-2 border-b border-slate-200 flex items-center justify-between">
-          <span className="text-sm font-medium text-slate-700">Ditt personliga brev</span>
-          <div className="flex items-center gap-2 text-sm text-slate-700">
+      <div className="border border-stone-200 dark:border-stone-700 rounded-xl overflow-hidden">
+        <div className="bg-stone-50 dark:bg-stone-800 px-4 py-2 border-b border-stone-200 dark:border-stone-700 flex items-center justify-between">
+          <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Ditt personliga brev</span>
+          <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
             <span>{editedLetter.length} tecken</span>
             <span>•</span>
             <span>{editedLetter.split(/\s+/).filter(w => w.length > 0).length} ord</span>
@@ -1051,7 +1051,7 @@ function Step4Review({
         <textarea
           value={editedLetter}
           onChange={(e) => setEditedLetter(e.target.value)}
-          className="w-full px-4 py-4 min-h-[300px] outline-none resize-none text-slate-700 leading-relaxed"
+          className="w-full px-4 py-4 min-h-[300px] outline-none resize-none bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-200 leading-relaxed"
           placeholder="Ditt personliga brev visas här..."
         />
       </div>
@@ -1062,8 +1062,8 @@ function Step4Review({
           <Copy size={16} />
           Kopiera
         </Button>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="gap-2 ml-auto"
           onClick={() => setEditedLetter(generatedLetter)}
         >
@@ -1074,32 +1074,32 @@ function Step4Review({
   )
 }
 
-// Steg 5: Klart! (oförändrad)
-function Step5Done({ 
-  editedLetter, 
-  onSave 
-}: { 
+// Steg 5: Klart!
+function Step5Done({
+  editedLetter,
+  onSave
+}: {
   editedLetter: string
-  onSave: () => void 
+  onSave: () => void
 }) {
   return (
     <div className="text-center py-8">
-      <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
-        <Check className="w-10 h-10 text-emerald-600" />
+      <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/40 rounded-full flex items-center justify-center mx-auto mb-6">
+        <Check className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
       </div>
-      
-      <h2 className="text-2xl font-semibold text-slate-800 mb-3">
+
+      <h2 className="text-2xl font-semibold text-stone-800 dark:text-stone-100 mb-3">
         Bra jobbat! 🎉
       </h2>
-      
-      <p className="text-slate-600 max-w-md mx-auto mb-6">
-        Du har skapat ett personligt brev som visar ditt värde. 
+
+      <p className="text-stone-600 dark:text-stone-400 max-w-md mx-auto mb-6">
+        Du har skapat ett personligt brev som visar ditt värde.
         Kom ihåg: Det är okej att gå tillbaka och justera om du vill.
       </p>
 
       {/* Preview */}
-      <div className="bg-slate-50 rounded-xl p-4 text-left mb-6 max-h-48 overflow-y-auto">
-        <p className="text-sm text-slate-600 font-mono whitespace-pre-wrap">
+      <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-4 text-left mb-6 max-h-48 overflow-y-auto">
+        <p className="text-sm text-stone-600 dark:text-stone-400 font-mono whitespace-pre-wrap">
           {editedLetter.slice(0, 300)}...
         </p>
       </div>
@@ -1115,8 +1115,8 @@ function Step5Done({
         </Button>
       </div>
 
-      <p className="text-sm text-slate-700 mt-6">
-        💡 Tips: Spara brevet även om du inte skickar det direkt. 
+      <p className="text-sm text-stone-600 dark:text-stone-400 mt-6">
+        💡 Tips: Spara brevet även om du inte skickar det direkt.
         Du kan återanvända det för liknande jobb!
       </p>
     </div>

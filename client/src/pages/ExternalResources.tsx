@@ -3278,14 +3278,14 @@ function CompactResourceCard({ resource }: { resource: ExternalResource }) {
       href={resource.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-center gap-3 p-3 bg-white dark:bg-stone-800/50 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-500 hover:shadow-md transition-all"
+      className="group flex items-center gap-3 p-3 bg-white dark:bg-stone-800/50 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all"
     >
-      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 flex items-center justify-center">
-        <IconComponent className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/30 dark:to-sky-900/30 flex items-center justify-center">
+        <IconComponent className="w-5 h-5 text-blue-600 dark:text-blue-400" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="font-medium text-sm text-stone-900 dark:text-stone-100 truncate group-hover:text-teal-700 dark:group-hover:text-teal-400">
+          <span className="font-medium text-sm text-stone-900 dark:text-stone-100 truncate group-hover:text-blue-700 dark:group-hover:text-blue-400">
             {resource.name}
           </span>
           <ExternalLink className="w-3 h-3 text-stone-400 flex-shrink-0" />
@@ -3307,15 +3307,15 @@ function FeaturedResourceCard({ resource }: { resource: ExternalResource }) {
       href={resource.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block p-4 bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-teal-400 dark:hover:border-teal-500 hover:shadow-lg transition-all"
+      className="group block p-4 bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-lg transition-all"
     >
       <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-teal-100 to-sky-100 dark:from-teal-900/50 dark:to-sky-900/50 flex items-center justify-center">
-          <IconComponent className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-sky-100 dark:from-blue-900/50 dark:to-sky-900/50 flex items-center justify-center">
+          <IconComponent className="w-6 h-6 text-blue-600 dark:text-blue-400" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 group-hover:text-teal-700 dark:group-hover:text-teal-400">
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100 group-hover:text-blue-700 dark:group-hover:text-blue-400">
               {resource.name}
             </h3>
             <ExternalLink className="w-4 h-4 text-stone-400" />
@@ -3456,7 +3456,7 @@ export default function ExternalResources() {
           placeholder="Sök bland resurser..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+          className="w-full pl-12 pr-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
         {searchQuery && (
           <button
@@ -3473,7 +3473,7 @@ export default function ExternalResources() {
       {/* Search results info */}
       {isSearching && (
         <div className="text-sm text-stone-600 dark:text-stone-400">
-          Hittade <span className="font-semibold text-teal-600">{filteredResources.length}</span> resurser för "{searchQuery}"
+          Hittade <span className="font-semibold text-blue-600">{filteredResources.length}</span> resurser för "{searchQuery}"
         </div>
       )}
 
@@ -3505,7 +3505,7 @@ export default function ExternalResources() {
               onClick={() => setActiveTab(null)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeTab === null
-                  ? 'bg-teal-600 text-white'
+                  ? 'bg-blue-600 text-white'
                   : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
               }`}
             >
@@ -3517,7 +3517,7 @@ export default function ExternalResources() {
                 onClick={() => setActiveTab(key)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeTab === key
-                    ? 'bg-teal-600 text-white'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                 }`}
               >
@@ -3531,7 +3531,7 @@ export default function ExternalResources() {
           <div className="flex items-center gap-4 text-sm">
             <button
               onClick={expandAll}
-              className="text-teal-600 hover:text-teal-700 dark:text-teal-400"
+              className="text-blue-600 hover:text-blue-700 dark:text-blue-400"
             >
               Visa alla
             </button>

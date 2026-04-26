@@ -259,8 +259,8 @@ export function CoverLetterMyLetters() {
         aria-live="polite"
         aria-busy="true"
       >
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" aria-hidden="true" />
-        <span className="ml-3 text-slate-600">Laddar brev...</span>
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600 dark:text-teal-400" aria-hidden="true" />
+        <span className="ml-3 text-stone-600 dark:text-stone-400">Laddar brev...</span>
       </div>
     )
   }
@@ -269,7 +269,7 @@ export function CoverLetterMyLetters() {
   if (error) {
     return (
       <div className="text-center py-12" role="alert" aria-live="assertive">
-        <p className="text-rose-600 mb-4">{error}</p>
+        <p className="text-rose-600 dark:text-rose-400 mb-4">{error}</p>
         <Button onClick={loadLetters} variant="outline">
           Försök igen
         </Button>
@@ -302,17 +302,17 @@ export function CoverLetterMyLetters() {
       <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 sm:justify-between sm:items-center">
         <div className="relative w-full sm:flex-1 sm:max-w-md">
           <label htmlFor="letter-search" className="sr-only">Sök bland dina brev</label>
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" aria-hidden="true" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
           <input
             id="letter-search"
             type="search"
             placeholder="Sök bland dina brev..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 sm:py-2 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-base sm:text-sm"
+            className="w-full pl-10 pr-4 py-2.5 sm:py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-base sm:text-sm"
           />
         </div>
-        <div className="text-sm text-slate-700">
+        <div className="text-sm text-stone-600 dark:text-stone-400">
           {filteredLetters.length} {filteredLetters.length === 1 ? 'brev' : 'brev'}
         </div>
       </div>
@@ -322,7 +322,7 @@ export function CoverLetterMyLetters() {
         {filteredLetters.map((letter) => (
           <Card
             key={letter.id}
-            className="p-4 sm:p-5 hover:shadow-md transition-shadow group"
+            className="p-4 sm:p-5 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700/50 hover:shadow-md transition-shadow group"
           >
             {/* Mobile: Stack vertically, Desktop: Side by side */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
@@ -330,17 +330,17 @@ export function CoverLetterMyLetters() {
               <div className="flex items-start gap-3 sm:contents">
                 {/* Ikon */}
                 <div className={cn(
-                  'w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0',
+                  'w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center shrink-0',
                   letter.status === 'sent'
-                    ? 'bg-emerald-100 text-emerald-600'
-                    : 'bg-indigo-100 text-indigo-600'
+                    ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
+                    : 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
                 )}>
                   <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>
 
                 {/* Title & status on mobile */}
                 <div className="flex-1 min-w-0 sm:hidden">
-                  <h3 className="font-semibold text-slate-800 text-sm line-clamp-2">
+                  <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-sm line-clamp-2">
                     {letter.title}
                   </h3>
                   <div className="mt-1">
@@ -354,10 +354,10 @@ export function CoverLetterMyLetters() {
                 {/* Desktop title row */}
                 <div className="hidden sm:flex items-start justify-between gap-4">
                   <div>
-                    <h3 className="font-semibold text-slate-800 truncate">
+                    <h3 className="font-semibold text-stone-800 dark:text-stone-100 truncate">
                       {letter.title}
                     </h3>
-                    <div className="flex items-center gap-3 mt-1 text-sm text-slate-700">
+                    <div className="flex items-center gap-3 mt-1 text-sm text-stone-600 dark:text-stone-400">
                       <span className="flex items-center gap-1">
                         <Building2 size={14} />
                         {letter.company}
@@ -372,7 +372,7 @@ export function CoverLetterMyLetters() {
                 </div>
 
                 {/* Mobile company & word count */}
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-700 sm:hidden">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-stone-600 dark:text-stone-400 sm:hidden">
                   <span className="flex items-center gap-1">
                     <Building2 size={12} />
                     {letter.company}
@@ -382,7 +382,7 @@ export function CoverLetterMyLetters() {
                 </div>
 
                 {/* Metadata */}
-                <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 sm:mt-3 text-xs text-slate-600">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 sm:mt-3 text-xs text-stone-500 dark:text-stone-500">
                   <span className="flex items-center gap-1">
                     <Calendar size={12} />
                     {formatDate(letter.createdAt)}
@@ -396,7 +396,7 @@ export function CoverLetterMyLetters() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex flex-wrap items-center gap-2 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-100">
+                <div className="flex flex-wrap items-center gap-2 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-stone-100 dark:border-stone-800">
                   <Button
                     variant="outline"
                     size="sm"
@@ -430,35 +430,35 @@ export function CoverLetterMyLetters() {
                         id={`letter-menu-${letter.id}`}
                         role="menu"
                         aria-label={`Alternativ för ${letter.title}`}
-                        className="absolute right-0 sm:left-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 min-w-[160px] z-10"
+                        className="absolute right-0 sm:left-0 top-full mt-1 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 min-w-[160px] z-10"
                       >
                         <button
                           role="menuitem"
                           onClick={() => handleDuplicate(letter)}
                           disabled={actionLoading === letter.id}
-                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 focus:bg-slate-50 focus:outline-none flex items-center gap-2 disabled:opacity-50"
+                          className="w-full px-3 py-2.5 text-left text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 focus:bg-stone-50 dark:focus:bg-stone-700 focus:outline-none flex items-center gap-2 disabled:opacity-50"
                         >
                           {actionLoading === letter.id ? (
-                            <Loader2 size={14} className="text-slate-600 animate-spin" aria-hidden="true" />
+                            <Loader2 size={14} className="text-stone-500 animate-spin" aria-hidden="true" />
                           ) : (
-                            <Copy size={14} className="text-slate-600" aria-hidden="true" />
+                            <Copy size={14} className="text-stone-500" aria-hidden="true" />
                           )}
                           Duplicera
                         </button>
                         <button
                           role="menuitem"
                           onClick={() => handleDownload(letter)}
-                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 focus:bg-slate-50 focus:outline-none flex items-center gap-2"
+                          className="w-full px-3 py-2.5 text-left text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 focus:bg-stone-50 dark:focus:bg-stone-700 focus:outline-none flex items-center gap-2"
                         >
-                          <Download size={14} className="text-slate-600" aria-hidden="true" />
+                          <Download size={14} className="text-stone-500" aria-hidden="true" />
                           Ladda ner PDF
                         </button>
-                        <hr className="my-1 border-slate-100" aria-hidden="true" />
+                        <hr className="my-1 border-stone-100 dark:border-stone-700" aria-hidden="true" />
                         <button
                           role="menuitem"
                           onClick={() => handleDelete(letter.id)}
                           disabled={actionLoading === letter.id}
-                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 focus:bg-slate-50 focus:outline-none flex items-center gap-2 text-rose-600 disabled:opacity-50"
+                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-stone-50 dark:hover:bg-stone-700 focus:bg-stone-50 dark:focus:bg-stone-700 focus:outline-none flex items-center gap-2 text-rose-600 dark:text-rose-400 disabled:opacity-50"
                         >
                           {actionLoading === letter.id ? (
                             <Loader2 size={14} className="animate-spin" aria-hidden="true" />

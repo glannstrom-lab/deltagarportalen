@@ -13,7 +13,7 @@ import { useInterestProfile } from '@/hooks/useInterestProfile'
 import {
   User, Compass, FileText, Search, Mail,
   ChevronRight, ChevronDown, Bookmark, FileUser,
-  Flame, ArrowRight, Heart, Smile, Meh, Frown, Sparkles
+  Flame, ArrowRight, Sparkles
 } from '@/components/ui/icons'
 
 import { DashboardRiasecChart } from '@/components/dashboard/DashboardRiasecChart'
@@ -183,49 +183,7 @@ export default function DashboardPage() {
           <div className="grid lg:grid-cols-5 gap-4 sm:gap-5">
             {/* Sidebar column - shows first on mobile */}
             <div className="lg:col-span-2 lg:order-2 space-y-4 sm:space-y-5">
-              {/* Wellness - Quick mood buttons */}
-              <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4 sm:p-5">
-                <div className="flex items-center gap-3 mb-3 sm:mb-4">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 bg-pink-50 dark:bg-pink-900/20 rounded-lg flex items-center justify-center">
-                    <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-pink-500" />
-                  </div>
-                  <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-100">{t('dashboard.howAreYou')}</h3>
-                </div>
-
-                {/* Quick mood buttons */}
-                <div className="flex gap-2 mb-2 sm:mb-3">
-                  <Link
-                    to="/wellness?mood=good"
-                    className="flex-1 flex flex-col items-center gap-0.5 sm:gap-1 p-2 sm:p-3 rounded-lg bg-emerald-50 dark:bg-emerald-900/20 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 transition-colors"
-                  >
-                    <Smile className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-500" />
-                    <span className="text-[10px] sm:text-xs text-emerald-700 dark:text-emerald-400">{t('dashboard.mood.good')}</span>
-                  </Link>
-                  <Link
-                    to="/wellness?mood=okay"
-                    className="flex-1 flex flex-col items-center gap-0.5 sm:gap-1 p-2 sm:p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors"
-                  >
-                    <Meh className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500" />
-                    <span className="text-[10px] sm:text-xs text-amber-700 dark:text-amber-400">{t('dashboard.mood.okay')}</span>
-                  </Link>
-                  <Link
-                    to="/wellness?mood=low"
-                    className="flex-1 flex flex-col items-center gap-0.5 sm:gap-1 p-2 sm:p-3 rounded-lg bg-rose-50 dark:bg-rose-900/20 hover:bg-rose-100 dark:hover:bg-rose-900/30 transition-colors"
-                  >
-                    <Frown className="w-5 h-5 sm:w-6 sm:h-6 text-rose-400" />
-                    <span className="text-[10px] sm:text-xs text-rose-600 dark:text-rose-400">{t('dashboard.mood.low')}</span>
-                  </Link>
-                </div>
-
-                <Link
-                  to="/wellness"
-                  className="block text-center text-xs sm:text-sm text-pink-600 dark:text-pink-400 hover:text-pink-700 font-medium"
-                >
-                  {t('dashboard.moreInWellness')} →
-                </Link>
-              </div>
-
-              {/* Interest Profile */}
+{/* Interest Profile */}
               {interestProfile?.hasResult && interestProfile.riasecScores ? (
                 <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4 sm:p-5">
                   <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-100 mb-3 sm:mb-4">
