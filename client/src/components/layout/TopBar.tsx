@@ -19,7 +19,6 @@ import { useAuthStore } from '@/stores/authStore'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
-import CrisisSupport from '@/components/CrisisSupport'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { LanguageSwitcher } from './LanguageSwitcher'
@@ -97,11 +96,6 @@ export function TopBar() {
 
         {/* Actions */}
         <div className="flex items-center gap-1">
-          {/* Crisis Support */}
-          <div className="hidden lg:block mr-2">
-            <CrisisSupport variant="inline" />
-          </div>
-
           {/* Language Switcher */}
           <LanguageSwitcher />
 

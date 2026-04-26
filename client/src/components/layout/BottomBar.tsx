@@ -7,8 +7,9 @@
 import { useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ChevronDown, HelpCircle, MessageCircle } from '@/components/ui/icons'
+import { ChevronDown, HelpCircle, MessageCircle, Heart } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import CrisisSupport from '@/components/CrisisSupport'
 
 interface FAQItem {
   question: string
@@ -173,21 +174,27 @@ export function BottomBar() {
 
   return (
     <div className="sticky bottom-0 z-40 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800">
-      {/* Toggle button - compact */}
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 text-[13px] sm:text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
-      >
-        <HelpCircle className="w-4 h-4" />
-        <span className="hidden sm:inline">{faq.title}</span>
-        <span className="sm:hidden">Hjälp & FAQ</span>
-        <ChevronDown
-          className={cn(
-            'w-4 h-4 transition-transform',
-            isExpanded && 'rotate-180'
-          )}
-        />
-      </button>
+      {/* Bottom bar with FAQ toggle and Crisis Support */}
+      <div className="flex items-center justify-between px-4 py-2">
+        {/* FAQ Toggle */}
+        <button
+          onClick={() => setIsExpanded(!isExpanded)}
+          className="flex items-center gap-2 py-1.5 px-3 rounded-full text-[13px] text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+        >
+          <HelpCircle className="w-4 h-4" />
+          <span className="hidden sm:inline">{faq.title}</span>
+          <span className="sm:hidden">Hjälp</span>
+          <ChevronDown
+            className={cn(
+              'w-3.5 h-3.5 transition-transform',
+              isExpanded && 'rotate-180'
+            )}
+          />
+        </button>
+
+        {/* Crisis Support */}
+        <CrisisSupport variant="inline" />
+      </div>
 
       {/* FAQ content */}
       {isExpanded && (
