@@ -109,7 +109,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { path: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
       { path: '/international', labelKey: 'nav.international', icon: Globe, isNew: true },
-      { path: '/resources', labelKey: 'nav.resources', icon: Bookmark },
+      { path: '/resources', labelKey: 'nav.myDocuments', icon: Bookmark },
     ],
   },
 ]
