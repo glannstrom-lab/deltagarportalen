@@ -118,15 +118,15 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
   const progress = (completedSteps.length / totalSteps) * 100
 
   return (
-    <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-4 mb-6">
+    <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4 mb-6">
       {/* Progress header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-semibold text-teal-800 dark:text-teal-300">
+          <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
             Steg {currentStep} av {totalSteps}
           </span>
-          <span className="text-xs text-stone-500 dark:text-stone-400">•</span>
-          <span className="text-xs text-stone-600 dark:text-stone-400">
+          <span className="text-xs text-stone-400 dark:text-stone-500">•</span>
+          <span className="text-xs text-stone-500 dark:text-stone-400">
             ~{remainingMinutes} min kvar
           </span>
         </div>
@@ -136,9 +136,9 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
       </div>
 
       {/* Visual progress bar */}
-      <div className="h-2 bg-teal-100 dark:bg-teal-900/40 rounded-full overflow-hidden mb-4">
+      <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden mb-4">
         <div
-          className="h-full bg-gradient-to-r from-teal-500 to-sky-500 transition-all duration-500 rounded-full"
+          className="h-full bg-teal-500 transition-all duration-500 rounded-full"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -197,10 +197,10 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
       </div>
 
       {/* Current step description - more prominent on mobile */}
-      <div className="mt-3 pt-3 border-t border-teal-100 dark:border-teal-800/30">
+      <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-700/50">
         <div className="sm:text-center">
           <p className="text-sm sm:text-sm text-stone-600 dark:text-stone-400">
-            <span className="font-semibold text-teal-700 dark:text-teal-300 sm:font-medium sm:text-stone-800 dark:sm:text-stone-200">
+            <span className="font-semibold text-stone-800 dark:text-stone-200">
               Steg {currentStep}: {STEPS[currentStep - 1]?.title}
             </span>
             <span className="hidden sm:inline"> – </span>
@@ -216,7 +216,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
 
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn("bg-white dark:bg-stone-800/50 rounded-2xl shadow-sm border border-teal-100 dark:border-teal-800/30 p-4 sm:p-6", className)}>
+    <div className={cn("bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4 sm:p-6", className)}>
       {children}
     </div>
   )
@@ -502,16 +502,16 @@ export default function CVBuilder() {
               key={tpl.id}
               onClick={() => setData({ ...data, template: tpl.id })}
               className={cn(
-                "group relative overflow-hidden rounded-2xl border-2 text-left transition-all",
+                "group relative overflow-hidden rounded-xl border-2 text-left transition-all",
                 selected
-                  ? "border-sky-500 ring-2 ring-sky-500 ring-offset-2 dark:ring-offset-stone-900 shadow-xl"
-                  : "border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-600 hover:shadow-lg"
+                  ? "border-teal-500 ring-2 ring-teal-500 ring-offset-2 dark:ring-offset-stone-900 shadow-lg"
+                  : "border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md"
               )}
             >
               {/* Preview thumbnail */}
               <div className={cn("h-36 w-full relative", tpl.preview)}>
                 {selected && (
-                  <div className="absolute top-3 right-3 bg-sky-500 text-white rounded-full p-1.5 shadow-lg">
+                  <div className="absolute top-3 right-3 bg-teal-500 text-white rounded-full p-1.5 shadow-lg">
                     <Check className="w-5 h-5" />
                   </div>
                 )}
@@ -571,7 +571,7 @@ export default function CVBuilder() {
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <h4 className="font-bold text-lg text-stone-800 dark:text-stone-200">{tpl.name}</h4>
-                  {selected && <span className="text-xs bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
+                  {selected && <span className="text-xs bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
                 </div>
                 <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">{tpl.desc}</p>
 
@@ -593,16 +593,16 @@ export default function CVBuilder() {
       </div>
 
       {data.template && (
-        <div className="p-5 bg-sky-50 dark:bg-sky-900/20 rounded-2xl border border-sky-100 dark:border-sky-800/50">
+        <div className="p-5 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-100 dark:border-teal-800/50">
           <div className="flex items-start gap-3">
-            <div className="bg-sky-500 text-white rounded-full p-1 mt-0.5">
+            <div className="bg-teal-500 text-white rounded-full p-1 mt-0.5">
               <Check className="w-4 h-4" />
             </div>
             <div>
-              <p className="font-medium text-sky-900 dark:text-sky-100">
+              <p className="font-medium text-teal-900 dark:text-teal-100">
                 {TEMPLATES.find(tpl => tpl.id === data.template)?.name} {t('cvBuilder.templates.isSelected')}
               </p>
-              <p className="text-sm text-sky-700 dark:text-sky-300 mt-1">
+              <p className="text-sm text-teal-700 dark:text-teal-300 mt-1">
                 {t('cvBuilder.templates.selectedInfo')}
               </p>
             </div>
@@ -877,7 +877,7 @@ export default function CVBuilder() {
     <div className="max-w-7xl mx-auto">
       {/* Action buttons bar */}
       <div className="flex items-center justify-end gap-2 flex-wrap mb-4">
-        <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-sky-600 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/20 border border-sky-200 dark:border-sky-700 rounded-lg transition-colors">
+        <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors">
           <Sparkles className="w-4 h-4" />
           <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
         </button>
@@ -947,7 +947,7 @@ export default function CVBuilder() {
         {/* Right: Preview + Tools (desktop) */}
         <div className="hidden lg:block space-y-6">
           {/* Preview - Clean A4 look */}
-          <div className="bg-stone-100 dark:bg-stone-800 rounded-2xl p-6">
+          <div className="bg-stone-100 dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700/50">
             <div className="bg-white dark:bg-stone-900 shadow-lg rounded-lg overflow-hidden max-h-[700px] overflow-y-auto">
               <CVPreview data={data} />
             </div>
@@ -957,14 +957,14 @@ export default function CVBuilder() {
           <ContextualKnowledgeWidget context="cv-building" variant="full" />
 
           {/* Help - Show onboarding again */}
-          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-5">
+          <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-5">
             <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-2">{t('cvBuilder.help.title')}</h3>
-            <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
+            <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
               {t('cvBuilder.help.description')}
             </p>
             <button
               onClick={() => setShowOnboarding(true)}
-              className="w-full px-4 py-2 text-sm font-medium text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30 rounded-lg hover:bg-sky-100 dark:hover:bg-sky-900/50 transition-colors"
+              className="w-full px-4 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
             >
               {t('cvBuilder.help.showGuide')}
             </button>
@@ -981,14 +981,14 @@ export default function CVBuilder() {
 
           {/* AI Tools */}
           {step === 3 && (
-            <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-2xl shadow-sm border border-teal-200 dark:border-teal-800/50 p-5">
+            <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-5">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
-                  <Lightbulb className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/50 rounded-lg flex items-center justify-center">
+                  <Lightbulb className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                 </div>
-                <h3 className="font-semibold text-teal-900 dark:text-teal-100">{t('cvBuilder.help.aiWriting')}</h3>
+                <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.help.aiWriting')}</h3>
               </div>
-              <p className="text-sm text-teal-700 dark:text-teal-300 mb-3">
+              <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
                 {t('cvBuilder.help.aiWritingDesc')}
               </p>
               <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
@@ -996,7 +996,7 @@ export default function CVBuilder() {
           )}
 
           {/* Versions */}
-          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-5">
+          <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-5">
             <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-3">{t('cvBuilder.versions.title')}</h3>
             {showSaveVersion ? (
               <div className="space-y-2 mb-3">
@@ -1066,7 +1066,7 @@ export default function CVBuilder() {
         </button>
         <button
           onClick={() => setShowPreview(true)}
-          className="flex items-center justify-center w-12 h-12 bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400 rounded-xl"
+          className="flex items-center justify-center w-12 h-12 bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 rounded-xl"
         >
           <Eye className="w-5 h-5" />
         </button>
