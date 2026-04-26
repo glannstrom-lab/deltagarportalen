@@ -26,7 +26,8 @@ export interface TagInputProps {
   label?: string
   hint?: string
   error?: string
-  colorScheme?: 'brand' | 'amber' | 'sky'
+  /** @deprecated All tags now use brand colors per DESIGN.md */
+  colorScheme?: 'brand'
   disabled?: boolean
   className?: string
 }
@@ -64,30 +65,14 @@ export function TagInput({
 
   const error = externalError || internalError
 
-  const colorClasses = {
-    brand: {
-      tag: 'bg-brand-50 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300',
-      tagHover: 'hover:bg-brand-100 dark:hover:bg-brand-900/60',
-      button: 'bg-brand-900 hover:bg-brand-900/90 focus:ring-brand-900',
-      focus: 'focus:ring-brand-900 focus:border-brand-900',
-      suggestion: 'hover:bg-brand-50 dark:hover:bg-brand-900/40'
-    },
-    amber: {
-      tag: 'bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
-      tagHover: 'hover:bg-amber-100 dark:hover:bg-amber-800',
-      button: 'bg-amber-500 hover:bg-amber-600 focus:ring-amber-400',
-      focus: 'focus:ring-amber-400 focus:border-amber-400',
-      suggestion: 'hover:bg-amber-50 dark:hover:bg-amber-900/40'
-    },
-    sky: {
-      tag: 'bg-sky-50 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300',
-      tagHover: 'hover:bg-sky-100 dark:hover:bg-sky-800',
-      button: 'bg-sky-500 hover:bg-sky-600 focus:ring-sky-400',
-      focus: 'focus:ring-sky-400 focus:border-sky-400',
-      suggestion: 'hover:bg-sky-50 dark:hover:bg-sky-900/40'
-    }
+  // All tags use brand colors per DESIGN.md
+  const colors = {
+    tag: 'bg-brand-100 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300',
+    tagHover: 'hover:bg-brand-200 dark:hover:bg-brand-900/60',
+    button: 'bg-brand-900 hover:bg-brand-900/90 focus:ring-brand-900',
+    focus: 'focus:ring-brand-900 focus:border-brand-900',
+    suggestion: 'hover:bg-brand-50 dark:hover:bg-brand-900/40'
   }
-  const colors = colorClasses[colorScheme]
 
   // Helper to get suggestion label
   const getSuggestionLabel = useCallback((s: string | SuggestionItem): string => {

@@ -49,7 +49,7 @@ export function SupportSection() {
       className="grid gap-4 md:grid-cols-2"
     >
       {/* Energy & capacity */}
-      <SectionCard title={t('profile.support.energy')} icon={<Zap className="w-4 h-4" />} colorScheme="amber">
+      <SectionCard title={t('profile.support.energy')} icon={<Zap className="w-4 h-4" />}>
         <div className="space-y-4">
           <ProgressSlider
             label={t('profile.support.sustainableHours')}
@@ -61,7 +61,7 @@ export function SupportSection() {
             max={10}
             step={1}
             unit={t('profile.support.hours')}
-            colorScheme="amber"
+    
           />
           <ProgressSlider
             label={t('profile.support.sustainableDays')}
@@ -73,7 +73,7 @@ export function SupportSection() {
             max={7}
             step={1}
             unit={t('profile.support.days')}
-            colorScheme="amber"
+    
           />
           <ChipSelect
             label={t('profile.support.bestTimeOfDay')}
@@ -87,7 +87,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Functional level (positive framing) */}
-      <SectionCard title={t('profile.support.myCapacity')} icon={<Activity className="w-4 h-4" />} colorScheme="amber">
+      <SectionCard title={t('profile.support.myCapacity')} icon={<Activity className="w-4 h-4" />}>
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.support.physicalCapacity')}
@@ -117,7 +117,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Adaptation needs (positive framing) */}
-      <SectionCard title={t('profile.support.howIWorkBest')} icon={<Accessibility className="w-4 h-4" />} colorScheme="brand">
+      <SectionCard title={t('profile.support.howIWorkBest')} icon={<Accessibility className="w-4 h-4" />}>
         <div className="space-y-4">
           <p className="text-xs text-stone-500 dark:text-stone-400 mb-2">
             {t('profile.support.chooseWorkConditions')}
@@ -141,7 +141,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Rehabilitation */}
-      <SectionCard title={t('profile.support.rehabilitation')} icon={<TrendingUp className="w-4 h-4" />} colorScheme="brand">
+      <SectionCard title={t('profile.support.rehabilitation')} icon={<TrendingUp className="w-4 h-4" />}>
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.support.rehabilitationPhase')}
@@ -166,7 +166,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Short-term goal */}
-      <SectionCard title={t('profile.support.shortTermGoal')} icon={<Target className="w-4 h-4" />} colorScheme="brand">
+      <SectionCard title={t('profile.support.shortTermGoal')} icon={<Target className="w-4 h-4" />}>
         <div className="space-y-4">
           <CompactTextarea
             label={t('profile.support.goal')}
@@ -191,13 +191,13 @@ export function SupportSection() {
             onChange={(v) => updateSupportGoals({
               shortTerm: { ...preferences.support_goals?.shortTerm, progress: v }
             })}
-            colorScheme="brand"
+    
           />
         </div>
       </SectionCard>
 
       {/* Long-term goal */}
-      <SectionCard title={t('profile.support.longTermGoal')} icon={<TrendingUp className="w-4 h-4" />} colorScheme="sky">
+      <SectionCard title={t('profile.support.longTermGoal')} icon={<TrendingUp className="w-4 h-4" />}>
         <div className="space-y-4">
           <CompactTextarea
             label={t('profile.support.goal')}
@@ -222,13 +222,13 @@ export function SupportSection() {
             onChange={(v) => updateSupportGoals({
               longTerm: { ...preferences.support_goals?.longTerm, progress: v }
             })}
-            colorScheme="sky"
+    
           />
         </div>
       </SectionCard>
 
       {/* Internship/Work training */}
-      <SectionCard title={t('profile.support.internship')} icon={<Users className="w-4 h-4" />} colorScheme="amber">
+      <SectionCard title={t('profile.support.internship')} icon={<Users className="w-4 h-4" />}>
         <div className="space-y-3">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -287,7 +287,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Next steps */}
-      <SectionCard title={t('profile.support.nextSteps')} icon={<Calendar className="w-4 h-4" />} colorScheme="brand">
+      <SectionCard title={t('profile.support.nextSteps')} icon={<Calendar className="w-4 h-4" />}>
         <div className="space-y-2">
           {(preferences.consultant_data?.nextSteps || []).map((step, i) => (
             <div key={i} className="flex items-center gap-2 p-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
@@ -346,7 +346,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Notes */}
-      <SectionCard title={t('profile.support.notesTitle')} icon={<FileText className="w-4 h-4" />} colorScheme="sky" className="md:col-span-2">
+      <SectionCard title={t('profile.support.notesTitle')} icon={<FileText className="w-4 h-4" />} className="md:col-span-2">
         <CompactTextarea
           label=""
           value={preferences.support_goals?.notes || ''}
@@ -357,12 +357,12 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Career Timeline */}
-      <SectionCard title={t('profile.support.careerTimeline')} icon={<Calendar className="w-4 h-4" />} colorScheme="brand">
+      <SectionCard title={t('profile.support.careerTimeline')} icon={<Calendar className="w-4 h-4" />}>
         <CareerTimeline />
       </SectionCard>
 
       {/* Profile History */}
-      <SectionCard title={t('profile.support.changeHistory')} icon={<Activity className="w-4 h-4" />} colorScheme="sky">
+      <SectionCard title={t('profile.support.changeHistory')} icon={<Activity className="w-4 h-4" />}>
         <ProfileHistory />
       </SectionCard>
     </div>

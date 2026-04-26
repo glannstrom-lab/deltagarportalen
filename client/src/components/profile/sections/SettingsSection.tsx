@@ -26,7 +26,7 @@ export function SettingsSection() {
       <SectionCard
         title={t('profile.settingsSection.shareProfile')}
         icon={<Share2 className="w-4 h-4" />}
-        colorScheme="brand"
+
         className="md:col-span-2"
       >
         <ProfileSharing />
@@ -54,7 +54,7 @@ export function SettingsSection() {
       <SectionCard
         title={t('profile.settingsSection.notifications')}
         icon={<Bell className="w-4 h-4" />}
-        colorScheme="brand"
+
       >
         <NotificationSettingsSection />
       </SectionCard>
@@ -63,7 +63,7 @@ export function SettingsSection() {
       <SectionCard
         title={t('profile.settingsSection.visibility')}
         icon={<Eye className="w-4 h-4" />}
-        colorScheme="sky"
+
       >
         <VisibilitySettingsSection />
       </SectionCard>

@@ -61,7 +61,7 @@ export function JobSearchSection() {
       className="grid gap-4 md:grid-cols-2"
     >
       {/* Status & availability */}
-      <SectionCard title={t('profile.jobSearch.statusAvailability')} icon={<Clock className="w-4 h-4" />} colorScheme="sky">
+      <SectionCard title={t('profile.jobSearch.statusAvailability')} icon={<Clock className="w-4 h-4" />}>
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.jobSearch.currentStatus')}
@@ -86,7 +86,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* CV & Activity */}
-      <SectionCard title={t('profile.jobSearch.cvActivity')} icon={<FileText className="w-4 h-4" />} colorScheme="sky">
+      <SectionCard title={t('profile.jobSearch.cvActivity')} icon={<FileText className="w-4 h-4" />}>
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.jobSearch.cvStatus')}
@@ -142,7 +142,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Labor market status */}
-      <SectionCard title={t('profile.jobSearch.laborMarketStatus')} icon={<Building2 className="w-4 h-4" />} colorScheme="brand">
+      <SectionCard title={t('profile.jobSearch.laborMarketStatus')} icon={<Building2 className="w-4 h-4" />}>
         <div className="space-y-3">
           <label className="flex items-center gap-2 cursor-pointer">
             <input
@@ -187,7 +187,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Mobility */}
-      <SectionCard title={t('profile.jobSearch.mobility')} icon={<Car className="w-4 h-4" />} colorScheme="brand">
+      <SectionCard title={t('profile.jobSearch.mobility')} icon={<Car className="w-4 h-4" />}>
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.jobSearch.driversLicense')}
@@ -238,7 +238,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Support needs (positive language) */}
-      <SectionCard title={t('profile.jobSearch.supportNeeds')} icon={<AlertCircle className="w-4 h-4" />} colorScheme="amber">
+      <SectionCard title={t('profile.jobSearch.supportNeeds')} icon={<AlertCircle className="w-4 h-4" />}>
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.jobSearch.supportAreas')}
@@ -261,7 +261,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Salary & benefits */}
-      <SectionCard title={t('profile.jobSearch.salaryBenefits')} icon={<Wallet className="w-4 h-4" />} colorScheme="sky">
+      <SectionCard title={t('profile.jobSearch.salaryBenefits')} icon={<Wallet className="w-4 h-4" />}>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <CompactInput
@@ -290,7 +290,7 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Work preferences */}
-      <SectionCard title={t('profile.jobSearch.workPreferences')} icon={<Building2 className="w-4 h-4" />} colorScheme="sky" className="md:col-span-2">
+      <SectionCard title={t('profile.jobSearch.workPreferences')} icon={<Building2 className="w-4 h-4" />} className="md:col-span-2">
         <div className="grid gap-4 md:grid-cols-3">
           <ChipSelect
             label={t('profile.jobSearch.sector')}
