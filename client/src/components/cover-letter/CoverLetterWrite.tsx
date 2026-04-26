@@ -364,10 +364,10 @@ export function CoverLetterWrite() {
                 aria-current={isActive ? 'step' : undefined}
                 aria-label={`${step.title}${isCompleted ? ' (slutfört)' : isActive ? ' (aktuellt)' : ''}`}
                 className={cn(
-                  'w-2.5 h-2.5 rounded-full transition-colors',
+                  'h-2.5 rounded-full transition-all',
                   isActive && 'bg-teal-600 w-8',
-                  isCompleted && 'bg-emerald-500',
-                  !isActive && !isCompleted && 'bg-slate-200'
+                  isCompleted && 'bg-emerald-500 w-2.5',
+                  !isActive && !isCompleted && 'bg-stone-200 dark:bg-stone-700 w-2.5'
                 )}
               />
             )
@@ -487,7 +487,7 @@ export function CoverLetterWrite() {
       )}
 
       {/* Step content */}
-      <Card className="p-6">
+      <Card className="p-5 sm:p-6 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700/50">
         {currentStep === 1 && (
           <Step1SelectJob
             savedJobs={savedJobs}
@@ -608,20 +608,26 @@ function Step1SelectJob({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-2">
-          Välj jobb för brevet
-        </h2>
-        <p className="text-stone-600 dark:text-stone-400">
-          Välj ett av dina sparade jobb eller fyll i information manuellt.
-        </p>
+      {/* Header med ikon */}
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
+          <Building2 className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100">
+            Välj jobb för brevet
+          </h2>
+          <p className="text-stone-600 dark:text-stone-400 mt-1">
+            Välj ett av dina sparade jobb eller fyll i information manuellt.
+          </p>
+        </div>
       </div>
 
       {/* Sparade jobb */}
       {savedJobs.length > 0 && (
         <div className="space-y-3">
           <h3 className="font-medium text-stone-700 dark:text-stone-300 flex items-center gap-2">
-            <Heart className="w-4 h-4 text-rose-500" />
+            <Heart className="w-4 h-4 text-rose-500 dark:text-rose-400" />
             Dina sparade jobb ({savedJobs.length})
           </h3>
           <div className="grid gap-3 max-h-64 overflow-y-auto">
@@ -686,18 +692,26 @@ function Step1SelectJob({
       )}
 
       {loadingJobs && (
-        <div className="text-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-stone-600 dark:text-stone-400" />
-          <p className="text-sm text-stone-700 dark:text-stone-300 mt-2">Laddar sparade jobb...</p>
+        <div className="text-center py-8 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50">
+          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-3">
+            <Loader2 className="w-6 h-6 animate-spin text-teal-600 dark:text-teal-400" />
+          </div>
+          <p className="text-sm text-stone-600 dark:text-stone-400">Laddar sparade jobb...</p>
         </div>
       )}
 
       {!loadingJobs && savedJobs.length === 0 && (
-        <div className="text-center py-6 bg-stone-50 dark:bg-stone-800 rounded-xl">
-          <Heart className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
-          <p className="text-stone-600 dark:text-stone-400">Du har inga sparade jobb än.</p>
-          <p className="text-sm text-stone-500 dark:text-stone-500 mt-1">
+        <div className="text-center py-8 px-6 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50">
+          <div className="w-16 h-16 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Heart className="w-8 h-8 text-stone-400 dark:text-stone-500" />
+          </div>
+          <p className="font-medium text-stone-700 dark:text-stone-300">Du har inga sparade jobb än</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400 mt-2 max-w-sm mx-auto">
             Spara jobb från jobbsökningen för att enkelt skriva brev till dem.
+          </p>
+          <p className="text-xs text-teal-600 dark:text-teal-400 mt-3 flex items-center justify-center gap-1">
+            <Lightbulb className="w-3 h-3" />
+            Behöver du prata med någon?
           </p>
         </div>
       )}
@@ -822,13 +836,19 @@ function Step2Template({
 }) {
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-2">
-          Välj en mall som passar
-        </h2>
-        <p className="text-stone-600 dark:text-stone-400">
-          Mallen hjälper dig att strukturera brevet på ett sätt som passar din situation.
-        </p>
+      {/* Header med ikon */}
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
+          <FileText className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100">
+            Välj en mall som passar
+          </h2>
+          <p className="text-stone-600 dark:text-stone-400 mt-1">
+            Mallen hjälper dig att strukturera brevet på ett sätt som passar din situation.
+          </p>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4" role="listbox" aria-label="Välj brevmall">
@@ -892,13 +912,19 @@ function Step3Customize({
 }) {
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-2">
-          Anpassa ditt brev
-        </h2>
-        <p className="text-stone-600 dark:text-stone-400">
-          Välj tonläge och lägg till extra information för att göra brevet personligt.
-        </p>
+      {/* Header med ikon */}
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
+          <Target className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100">
+            Anpassa ditt brev
+          </h2>
+          <p className="text-stone-600 dark:text-stone-400 mt-1">
+            Välj tonläge och lägg till extra information för att göra brevet personligt.
+          </p>
+        </div>
       </div>
 
       {/* CV-info */}
@@ -1007,13 +1033,19 @@ function Step4Review({
 
   return (
     <div className="space-y-4">
-      <div>
-        <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100 mb-2">
-          Granska och redigera
-        </h2>
-        <p className="text-stone-600 dark:text-stone-400">
-          Här är AI:s förslag baserat på ditt CV och jobbinformation. Gör det personligt!
-        </p>
+      {/* Header med ikon */}
+      <div className="flex items-start gap-4">
+        <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
+          <Edit3 className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold text-stone-800 dark:text-stone-100">
+            Granska och redigera
+          </h2>
+          <p className="text-stone-600 dark:text-stone-400 mt-1">
+            Här är AI:s förslag baserat på ditt CV och jobbinformation. Gör det personligt!
+          </p>
+        </div>
       </div>
 
       {showTips && (
@@ -1039,19 +1071,21 @@ function Step4Review({
       )}
 
       {/* Editor */}
-      <div className="border border-stone-200 dark:border-stone-700 rounded-xl overflow-hidden">
-        <div className="bg-stone-50 dark:bg-stone-800 px-4 py-2 border-b border-stone-200 dark:border-stone-700 flex items-center justify-between">
-          <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Ditt personliga brev</span>
-          <div className="flex items-center gap-2 text-sm text-stone-500 dark:text-stone-400">
-            <span>{editedLetter.length} tecken</span>
-            <span>•</span>
-            <span>{editedLetter.split(/\s+/).filter(w => w.length > 0).length} ord</span>
+      <div className="border border-stone-200 dark:border-stone-700/50 rounded-xl overflow-hidden shadow-sm">
+        <div className="bg-stone-50 dark:bg-stone-800/80 px-4 py-3 border-b border-stone-200 dark:border-stone-700/50 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+            <span className="text-sm font-medium text-stone-700 dark:text-stone-300">Ditt personliga brev</span>
+          </div>
+          <div className="flex items-center gap-3 text-xs text-stone-500 dark:text-stone-400">
+            <span className="px-2 py-1 bg-stone-100 dark:bg-stone-700 rounded">{editedLetter.length} tecken</span>
+            <span className="px-2 py-1 bg-stone-100 dark:bg-stone-700 rounded">{editedLetter.split(/\s+/).filter(w => w.length > 0).length} ord</span>
           </div>
         </div>
         <textarea
           value={editedLetter}
           onChange={(e) => setEditedLetter(e.target.value)}
-          className="w-full px-4 py-4 min-h-[300px] outline-none resize-none bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-200 leading-relaxed"
+          className="w-full px-4 py-4 min-h-[300px] outline-none resize-none bg-white dark:bg-stone-900 text-stone-700 dark:text-stone-200 leading-relaxed focus:ring-2 focus:ring-teal-500/20"
           placeholder="Ditt personliga brev visas här..."
         />
       </div>
@@ -1084,12 +1118,12 @@ function Step5Done({
 }) {
   return (
     <div className="text-center py-8">
-      <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/40 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-emerald-50 dark:ring-emerald-900/20">
         <Check className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
       </div>
 
       <h2 className="text-2xl font-semibold text-stone-800 dark:text-stone-100 mb-3">
-        Bra jobbat! 🎉
+        Bra jobbat!
       </h2>
 
       <p className="text-stone-600 dark:text-stone-400 max-w-md mx-auto mb-6">
@@ -1098,8 +1132,8 @@ function Step5Done({
       </p>
 
       {/* Preview */}
-      <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-4 text-left mb-6 max-h-48 overflow-y-auto">
-        <p className="text-sm text-stone-600 dark:text-stone-400 font-mono whitespace-pre-wrap">
+      <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl p-4 text-left mb-6 max-h-48 overflow-y-auto border border-stone-200 dark:border-stone-700/50">
+        <p className="text-sm text-stone-600 dark:text-stone-400 font-mono whitespace-pre-wrap leading-relaxed">
           {editedLetter.slice(0, 300)}...
         </p>
       </div>
@@ -1115,10 +1149,10 @@ function Step5Done({
         </Button>
       </div>
 
-      <p className="text-sm text-stone-600 dark:text-stone-400 mt-6">
-        💡 Tips: Spara brevet även om du inte skickar det direkt.
-        Du kan återanvända det för liknande jobb!
-      </p>
+      <div className="mt-6 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg inline-flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300">
+        <Lightbulb className="w-4 h-4" />
+        <span>Spara brevet även om du inte skickar det direkt – återanvänd det för liknande jobb!</span>
+      </div>
     </div>
   )
 }
