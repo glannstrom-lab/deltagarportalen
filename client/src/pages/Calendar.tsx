@@ -2,8 +2,6 @@ import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Plus, Loader2, CalendarDays, AlertCircle, RefreshCw } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
 import { WeekView } from '@/components/calendar/WeekView'
 import { DayView } from '@/components/calendar/DayView'
@@ -188,9 +186,9 @@ export default function Calendar() {
     }
 
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-blue-100 dark:border-stone-700 overflow-hidden shadow-sm">
         {/* Header */}
-        <div className="grid grid-cols-7 border-b border-teal-100 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
+        <div className="grid grid-cols-7 border-b border-blue-100 dark:border-stone-700 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-teal-600 dark:to-teal-700">
           {days.map((day) => (
             <div key={day} className="py-3 text-center text-sm font-medium text-white">
               {day}
@@ -213,11 +211,11 @@ export default function Calendar() {
               <button
                 key={day}
                 onClick={() => handleDateClick(new Date(dateStr))}
-                className="h-28 border-b border-r border-stone-100 dark:border-stone-700 p-2 text-left transition-colors relative overflow-hidden hover:bg-teal-50 dark:hover:bg-stone-700/50"
+                className="h-28 border-b border-r border-stone-100 dark:border-stone-700 p-2 text-left transition-colors relative overflow-hidden hover:bg-blue-50 dark:hover:bg-blue-900/30"
               >
                 <span className={`
                   inline-flex items-center justify-center w-7 h-7 text-sm rounded-full
-                  ${isToday ? 'bg-teal-600 dark:bg-teal-500 text-white font-semibold' : 'text-stone-700 dark:text-stone-200'}
+                  ${isToday ? 'bg-blue-600 dark:bg-blue-500 text-white font-semibold' : 'text-stone-700 dark:text-stone-200'}
                 `}>
                   {day}
                 </span>
@@ -256,8 +254,8 @@ export default function Calendar() {
     )
 
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-teal-100 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
+      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-blue-100 dark:border-stone-700 overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-blue-100 dark:border-stone-700 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-teal-600 dark:to-teal-700">
           <h3 className="font-semibold text-white">{t('calendar.upcomingEvents')}</h3>
         </div>
         <div className="divide-y divide-stone-100 dark:divide-stone-700">
@@ -270,7 +268,7 @@ export default function Calendar() {
               <button
                 key={event.id}
                 onClick={() => handleEventClick(event)}
-                className={`w-full p-4 text-left hover:bg-teal-50 dark:hover:bg-stone-700/50 transition-colors flex items-start gap-4 ${
+                className={`w-full p-4 text-left hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex items-start gap-4 ${
                   isPast ? 'opacity-50' : ''
                 }`}
               >
@@ -304,7 +302,7 @@ export default function Calendar() {
               </p>
               <button
                 onClick={handleCreateEvent}
-                className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
+                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
               >
                 {t('calendar.newEvent')}
               </button>
@@ -320,10 +318,11 @@ export default function Calendar() {
       <PageLayout
         title={t('calendar.title')}
         showTabs={false}
+        domain="info"
         actions={
           <button
             onClick={handleCreateEvent}
-            className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium text-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm"
           >
             <Plus className="w-4 h-4" />
             <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
@@ -365,7 +364,7 @@ export default function Calendar() {
 
           {loading && (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
+              <Loader2 className="w-8 h-8 text-blue-600 dark:text-blue-400 animate-spin" />
               <span className="ml-3 text-stone-600 dark:text-stone-300">{t('common.loading')}</span>
             </div>
           )}
@@ -400,7 +399,6 @@ export default function Calendar() {
           )}
         </div>
 
-        <HelpButton content={helpContent.calendar} />
       </PageLayout>
 
       {/* Event Modal - outside PageLayout for proper z-index */}
@@ -422,7 +420,7 @@ export default function Calendar() {
       {isSaving && (
         <div className="fixed inset-0 bg-black/20 z-[60] flex items-center justify-center">
           <div className="bg-white dark:bg-stone-800 rounded-lg p-4 flex items-center gap-3 shadow-lg">
-            <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
+            <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
             <span className="text-stone-700 dark:text-stone-300">{t('common.loading')}</span>
           </div>
         </div>

@@ -113,7 +113,7 @@ export default function KnowledgeBase() {
           <p className="text-gray-600 dark:text-gray-300">{t('knowledgeBase.couldNotLoad')}</p>
           <button
             onClick={() => window.location.reload()}
-            className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline mt-2"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline mt-2"
           >
             {t('knowledgeBase.tryAgain')}
           </button>
@@ -179,6 +179,7 @@ export default function KnowledgeBase() {
       description={t('knowledgeBase.intro')}
       tabs={tabs}
       tabVariant="glass"
+      domain="info"
     >
       {/* Tab content */}
       <div className="min-h-[300px] sm:min-h-[400px]">

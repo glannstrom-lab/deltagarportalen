@@ -561,7 +561,7 @@ export default function Resources() {
           aria-live="polite"
           aria-busy="true"
         >
-          <Loader2 className="animate-spin text-teal-600" size={48} aria-hidden="true" />
+          <Loader2 className="animate-spin text-blue-600" size={48} aria-hidden="true" />
           <span className="sr-only">{t('common.loading')}</span>
         </div>
       </PageLayout>
@@ -573,11 +573,12 @@ export default function Resources() {
       title={t('resources.title')}
       description={t('resources.description')}
       showTabs={false}
+      domain="info"
     >
       {/* Stats Overview */}
-      <div className="bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-700 dark:from-teal-600 dark:via-teal-700 dark:to-cyan-800 rounded-2xl p-6 mb-6 text-white shadow-xl shadow-teal-500/20 dark:shadow-teal-900/30">
+      <div className="bg-gradient-to-br from-blue-500 via-blue-600 to-sky-700 dark:from-blue-600 dark:via-blue-700 dark:to-sky-800 rounded-2xl p-6 mb-6 text-white shadow-xl shadow-blue-500/20 dark:shadow-blue-900/30">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <p className="text-teal-100 text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
+          <p className="text-blue-100 text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
           <Link
             to="/cv"
             className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-colors backdrop-blur-sm border border-white/20"
@@ -594,7 +595,7 @@ export default function Resources() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{savedJobs.length}</p>
-                <p className="text-xs text-teal-200">{t('resources.stats.savedJobs')}</p>
+                <p className="text-xs text-blue-200">{t('resources.stats.savedJobs')}</p>
               </div>
             </div>
           </Link>
@@ -605,18 +606,18 @@ export default function Resources() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{cvVersions.length + coverLetters.length}</p>
-                <p className="text-xs text-teal-200">{t('resources.stats.documents')}</p>
+                <p className="text-xs text-blue-200">{t('resources.stats.documents')}</p>
               </div>
             </div>
           </div>
           <Link to="/knowledge-base" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-4 transition-colors border border-white/10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-teal-400/20 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-teal-200" />
+              <div className="w-10 h-10 bg-blue-400/20 rounded-lg flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-blue-200" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{bookmarkedArticles.length}</p>
-                <p className="text-xs text-teal-200">{t('resources.stats.bookmarks')}</p>
+                <p className="text-xs text-blue-200">{t('resources.stats.bookmarks')}</p>
               </div>
             </div>
           </Link>
@@ -627,7 +628,7 @@ export default function Resources() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{uploadedFiles.length}</p>
-                <p className="text-xs text-teal-200">{t('resources.stats.files')}</p>
+                <p className="text-xs text-blue-200">{t('resources.stats.files')}</p>
               </div>
             </div>
           </div>
@@ -645,14 +646,14 @@ export default function Resources() {
                 onClick={() => setSearchParams({ tab: tab.id })}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   activeTab === tab.id
-                    ? 'bg-teal-600 dark:bg-teal-700 text-white shadow-sm'
+                    ? 'bg-blue-600 dark:bg-blue-700 text-white shadow-sm'
                     : 'text-gray-600 dark:text-gray-300 hover:bg-stone-100 dark:hover:bg-stone-700'
                 }`}
               >
                 {tab.label}
                 {tab.count > 0 && (
                   <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                    activeTab === tab.id ? 'bg-teal-500 dark:bg-teal-600 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
+                    activeTab === tab.id ? 'bg-blue-500 dark:bg-blue-600 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
                   }`}>
                     {tab.count}
                   </span>
@@ -670,19 +671,19 @@ export default function Resources() {
                 placeholder={t('resources.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-sm border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none w-full md:w-48"
+                className="pl-8 pr-3 py-1.5 text-sm border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none w-full md:w-48"
               />
             </div>
             <div className="flex bg-stone-100 dark:bg-stone-700 rounded-lg p-0.5">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-stone-600 shadow-sm text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'}`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-stone-600 shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}
               >
                 <Grid3X3 size={16} />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-stone-600 shadow-sm text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'}`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-stone-600 shadow-sm text-blue-600 dark:text-blue-400' : 'text-gray-500 dark:text-gray-400'}`}
               >
                 <List size={16} />
               </button>
@@ -729,7 +730,7 @@ export default function Resources() {
                         </div>
                         <button
                           onClick={() => setPreviewModal({type: 'cv', data: versionData as CVData})}
-                          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                           title="Förhandsgranska"
                         >
                           <Eye size={16} />
@@ -878,7 +879,7 @@ export default function Resources() {
               </h3>
               <Link
                 to="/cover-letter"
-                className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium flex items-center gap-1"
+                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center gap-1"
               >
                 {t('resources.createNew')}
                 <Plus size={14} />
@@ -893,12 +894,12 @@ export default function Resources() {
                   type={letter.ai_generated ? t('resources.aiGenerated') : t('resources.manual')}
                   date={new Date(letter.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                   icon={FileText}
-                  color="bg-gradient-to-br from-sky-500 to-teal-500"
+                  color="bg-gradient-to-br from-sky-500 to-blue-500"
                   actions={
                     <>
                       <button
                         onClick={() => setPreviewModal({type: 'letter', data: letter})}
-                        className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 dark:text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded transition-colors"
+                        className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
                       >
                         <Eye size={14} />
                         {t('resources.read')}
@@ -906,7 +907,7 @@ export default function Resources() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => handleDownloadLetter(letter, 'pdf')}
-                          className="flex items-center gap-1 px-2 py-1 text-xs bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
                         >
                           <FileDown size={14} />
                           PDF
@@ -937,7 +938,7 @@ export default function Resources() {
               </h3>
               <Link
                 to="/applications"
-                className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium flex items-center gap-1"
+                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center gap-1"
               >
                 {t('resources.jobTracker')}
                 <ChevronRight size={14} />
@@ -1012,7 +1013,7 @@ export default function Resources() {
             {activeTab === 'all' && filteredJobs.length > 5 && (
               <button
                 onClick={() => setSearchParams({ tab: 'jobs' })}
-                className="w-full mt-2 py-2 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
+                className="w-full mt-2 py-2 text-sm text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
               >
                 Visa alla {filteredJobs.length} jobb →
               </button>
@@ -1025,12 +1026,12 @@ export default function Resources() {
           <section>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
-                <BookOpen className="text-teal-600 dark:text-teal-400" size={18} />
+                <BookOpen className="text-blue-600 dark:text-blue-400" size={18} />
                 {t('resources.bookmarkedArticles')} ({bookmarkedArticles.length})
               </h3>
               <Link
                 to="/knowledge-base"
-                className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium flex items-center gap-1"
+                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium flex items-center gap-1"
               >
                 {t('resources.explore')}
                 <ChevronRight size={14} />
@@ -1043,13 +1044,13 @@ export default function Resources() {
                   to={`/knowledge-base/article/${article.id}`}
                   className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 p-3 hover:shadow-md transition-all group flex items-center gap-3"
                 >
-                  <div className="w-9 h-9 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-sky-500 rounded-lg flex items-center justify-center flex-shrink-0">
                     <BookOpen className="w-4 h-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-slate-800 dark:text-slate-100 text-sm truncate group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{article.title}</h4>
+                    <h4 className="font-medium text-slate-800 dark:text-slate-100 text-sm truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{article.title}</h4>
                     <div className="flex items-center gap-2 mt-0.5">
-                      <span className="px-1.5 py-0.5 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-xs rounded">
+                      <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded">
                         {article.category}
                       </span>
                       {article.readingTime && (
@@ -1123,7 +1124,7 @@ export default function Resources() {
             <div className="flex flex-wrap justify-center gap-2">
               <Link
                 to="/cv"
-                className="px-4 py-2 text-sm bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 text-white rounded-lg font-medium hover:from-teal-600 hover:to-teal-700 transition-all"
+                className="px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all"
               >
                 {t('resources.createCV')}
               </Link>
@@ -1245,12 +1246,12 @@ export default function Resources() {
                     {cv.languages && cv.languages.length > 0 && (
                       <div>
                         <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
-                          <Languages size={16} className="text-teal-500 dark:text-teal-400" />
+                          <Languages size={16} className="text-blue-500 dark:text-blue-400" />
                           Språk
                         </h3>
                         <div className="flex flex-wrap gap-2">
                           {cv.languages.map((lang, i) => (
-                            <span key={i} className="px-2 py-1 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 text-xs rounded">
+                            <span key={i} className="px-2 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded">
                               {lang.language} ({lang.level})
                             </span>
                           ))}
@@ -1285,7 +1286,7 @@ export default function Resources() {
                   <div className="pt-3 mt-4 border-t border-slate-100 dark:border-stone-700 flex gap-2">
                     <button
                       onClick={() => handleDownloadLetter(previewModal.data as CoverLetter, 'pdf')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
                     >
                       <FileDown size={14} />
                       Ladda ner PDF
