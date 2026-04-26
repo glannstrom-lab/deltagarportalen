@@ -103,21 +103,21 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Next Step Banner - THE ONLY colored element */}
-          {nextStep && progressPercent < 100 && (
+          {/* Next Step Banner - THE ONLY colored element - always show if not 100% */}
+          {nextStep && (
             <Link
               to={nextStep.path}
               className="block bg-brand-600 rounded-xl p-5 sm:p-6 text-white hover:bg-brand-700 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-600 focus-visible:ring-offset-2"
             >
-              <p className="text-sm text-white/80 uppercase tracking-wider font-medium mb-1">
+              <p className="text-xs text-white/70 uppercase tracking-wider font-medium mb-1">
                 Ditt nästa steg
               </p>
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold">{t(nextStep.titleKey)}</h2>
-                  <p className="text-white/80">{t(nextStep.descriptionKey)}</p>
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <h2 className="text-lg sm:text-xl font-bold">{t(nextStep.titleKey)}</h2>
+                  <p className="text-sm text-white/70 truncate">{t(nextStep.descriptionKey)}</p>
                 </div>
-                <div className="flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors rounded-lg px-4 py-2 font-medium">
+                <div className="flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors rounded-lg px-4 py-2 text-sm font-medium shrink-0">
                   Starta <ArrowRight className="w-4 h-4" />
                 </div>
               </div>
