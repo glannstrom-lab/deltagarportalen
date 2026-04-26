@@ -1,8 +1,6 @@
 /**
- * Quick Actions Component
+ * Quick Actions Component - Clean Modern Design
  * Context-aware quick action buttons for each agent
- * Includes links to relevant pages when available
- * Now with personalized prompts based on user data
  */
 
 import { useCallback } from 'react'
@@ -12,7 +10,7 @@ import { cn } from '@/lib/utils'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { getAgentById } from './AgentSelector'
 import { agentColorClasses, type QuickAction } from './types'
-import { Zap, ExternalLink } from '@/components/ui/icons'
+import { Zap, ExternalLink, ChevronRight } from '@/components/ui/icons'
 import { useAITeamContext, type AITeamUserContext } from '@/hooks/useAITeamContext'
 
 interface QuickActionsProps {
@@ -29,7 +27,6 @@ function enrichPromptWithContext(action: QuickAction, context: AITeamUserContext
 
   // Add name for personalization
   if (context.firstName) {
-    // Replace generic prompts with personalized ones
     prompt = prompt.replace(/^(Ge mig|Hjälp mig)/i, `$1, ${context.firstName},`)
   }
 
@@ -100,48 +97,51 @@ export function QuickActions({ onActionClick, className }: QuickActionsProps) {
   return (
     <div className={cn('space-y-3', className)}>
       <div className="flex items-center gap-2">
-        <Zap className={cn('w-4 h-4', colors.text)} aria-hidden="true" />
-        <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
+        <div className={cn(
+          'w-6 h-6 rounded-lg flex items-center justify-center',
+          colors.bgLight
+        )}>
+          <Zap className={cn('w-3.5 h-3.5', colors.text)} aria-hidden="true" />
+        </div>
+        <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
           {t('aiTeam.quickActions.title')}
         </span>
       </div>
-      <div className="space-y-2">
+
+      <div className="space-y-1.5">
         {agent.quickActions.map((action) => (
-          <div key={action.id} className="flex items-center gap-2">
+          <div key={action.id} className="flex items-center gap-1.5">
             <button
               onClick={() => handleActionClick(action)}
               disabled={isLoading}
               aria-label={t(action.labelKey)}
               className={cn(
-                'flex-1 px-3 py-2 rounded-lg text-left',
-                'text-xs sm:text-sm font-medium',
-                'transition-all duration-200',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-                colors.ring.replace('ring-', 'focus-visible:ring-'),
+                'flex-1 flex items-center justify-between px-3 py-2 rounded-lg text-left',
+                'text-xs font-medium',
+                'transition-all duration-150',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
-                colors.bgLight,
-                colors.text,
-                colors.border,
-                'border',
-                'hover:shadow-md',
-                'active:scale-[0.98]'
+                'bg-stone-50 dark:bg-stone-800',
+                'hover:bg-stone-100 dark:hover:bg-stone-700',
+                'text-stone-700 dark:text-stone-300',
+                'group'
               )}
             >
-              {t(action.labelKey)}
+              <span>{t(action.labelKey)}</span>
+              <ChevronRight className="w-3.5 h-3.5 text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300 group-hover:translate-x-0.5 transition-all" />
             </button>
             {action.linkTo && (
               <Link
                 to={action.linkTo}
                 className={cn(
-                  'p-2 rounded-lg',
-                  'text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200',
-                  'bg-stone-100 dark:bg-stone-800',
-                  'hover:bg-stone-200 dark:hover:bg-stone-700',
+                  'p-2 rounded-lg flex-shrink-0',
+                  'text-stone-400 hover:text-stone-600 dark:hover:text-stone-300',
+                  'hover:bg-stone-100 dark:hover:bg-stone-700',
                   'transition-colors'
                 )}
                 title={action.linkLabelKey ? t(action.linkLabelKey) : t('common.view')}
               >
-                <ExternalLink className="w-4 h-4" />
+                <ExternalLink className="w-3.5 h-3.5" />
               </Link>
             )}
           </div>

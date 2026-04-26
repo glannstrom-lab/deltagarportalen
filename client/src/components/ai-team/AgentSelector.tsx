@@ -1,5 +1,5 @@
 /**
- * Agent Selector Component
+ * Agent Selector Component - Clean Modern Design
  * Displays the 5 AI agents as selectable cards
  */
 
@@ -114,7 +114,6 @@ export function AgentSelector({ className }: AgentSelectorProps) {
     }
 
     setAgent(agents[newIndex].id)
-    // Focus the new button
     const buttons = document.querySelectorAll('[role="radio"]')
     ;(buttons[newIndex] as HTMLElement)?.focus()
   }
@@ -123,11 +122,12 @@ export function AgentSelector({ className }: AgentSelectorProps) {
     <div
       role="radiogroup"
       aria-label={t('aiTeam.selectAgent', 'Välj AI-agent')}
-      className={cn('grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3', className)}
+      className={cn('grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-3', className)}
     >
       {agents.map((agent, index) => {
         const isSelected = selectedAgent === agent.id
         const colors = agentColorClasses[agent.color]
+        const Icon = agent.icon
 
         return (
           <button
@@ -137,23 +137,20 @@ export function AgentSelector({ className }: AgentSelectorProps) {
             className={cn(
               'relative flex flex-col items-center p-3 sm:p-4 rounded-xl',
               'transition-all duration-200',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
-              colors.ring.replace('ring-', 'focus-visible:ring-'),
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-teal-500',
               isSelected
                 ? cn(
                     'bg-white dark:bg-stone-800',
                     'border-2',
                     colors.border,
-                    'shadow-lg',
-                    'ring-2 ring-offset-2',
-                    colors.ring
+                    'shadow-sm'
                   )
                 : cn(
                     'bg-stone-50 dark:bg-stone-800/50',
                     'border border-stone-200 dark:border-stone-700',
                     'hover:bg-white dark:hover:bg-stone-800',
                     'hover:border-stone-300 dark:hover:border-stone-600',
-                    'hover:shadow-md'
+                    'hover:shadow-sm'
                   )
             )}
             role="radio"
@@ -161,10 +158,21 @@ export function AgentSelector({ className }: AgentSelectorProps) {
             tabIndex={isSelected ? 0 : -1}
             aria-label={`${t(agent.nameKey)}: ${t(agent.descriptionKey)}`}
           >
-            <AgentAvatar agentId={agent.id} color={agent.color} size="lg" />
+            {/* Avatar */}
+            <div className={cn(
+              'w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-2',
+              isSelected ? colors.bgLight : 'bg-stone-100 dark:bg-stone-700'
+            )}>
+              <Icon className={cn(
+                'w-5 h-5 sm:w-6 sm:h-6',
+                isSelected ? colors.text : 'text-stone-500 dark:text-stone-400'
+              )} />
+            </div>
+
+            {/* Name */}
             <span
               className={cn(
-                'mt-2 text-xs sm:text-sm font-medium text-center',
+                'text-xs sm:text-sm font-medium text-center',
                 isSelected
                   ? 'text-stone-900 dark:text-stone-100'
                   : 'text-stone-600 dark:text-stone-400'
@@ -172,21 +180,25 @@ export function AgentSelector({ className }: AgentSelectorProps) {
             >
               {t(agent.nameKey)}
             </span>
+
+            {/* Description - hidden on mobile */}
             <span
               className={cn(
-                'mt-1 text-[10px] sm:text-xs text-center line-clamp-2 leading-tight',
+                'hidden sm:block mt-1 text-[10px] text-center line-clamp-2 leading-tight',
                 isSelected
-                  ? 'text-stone-600 dark:text-stone-400'
+                  ? 'text-stone-500 dark:text-stone-400'
                   : 'text-stone-400 dark:text-stone-500'
               )}
             >
               {t(agent.descriptionKey)}
             </span>
+
+            {/* Selected indicator */}
             {isSelected && (
               <div
                 className={cn(
-                  'absolute -bottom-1 left-1/2 -translate-x-1/2',
-                  'w-2 h-2 rounded-full',
+                  'absolute -bottom-0.5 left-1/2 -translate-x-1/2',
+                  'w-6 h-1 rounded-full',
                   colors.bg
                 )}
                 aria-hidden="true"

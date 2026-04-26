@@ -1,13 +1,11 @@
 /**
- * AI Team Page
- * Main page for the "Mitt AI Team" feature
- * Users can chat with 5 specialized AI agents with customizable personalities
+ * AI Team Page - Clean Modern Design
+ * Simplified layout matching profile page style
  */
 
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import { Card } from '@/components/ui/Card'
 import { AgentSelector, getAgentById } from '@/components/ai-team/AgentSelector'
 import { PersonalityDropdown } from '@/components/ai-team/PersonalityDropdown'
 import { QuickActions } from '@/components/ai-team/QuickActions'
@@ -16,7 +14,7 @@ import { OnboardingModal } from '@/components/ai-team/OnboardingModal'
 import { ResponseModeSelector } from '@/components/ai-team/ResponseModeSelector'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { agentColorClasses } from '@/components/ai-team/types'
-import { Users, Sparkles, Lightbulb } from '@/components/ui/icons'
+import { Users, Lightbulb, Settings2, Zap, MessageSquare } from '@/components/ui/icons'
 import { useSuggestedAgent } from '@/hooks/useSuggestedAgent'
 
 export default function AITeam() {
@@ -27,7 +25,7 @@ export default function AITeam() {
   const chatRef = useRef<AgentChatHandle>(null)
   const suggestedAgent = useSuggestedAgent()
 
-  // Handle quick action click - send message to chat via ref
+  // Handle quick action click
   const handleQuickAction = useCallback((prompt: string) => {
     chatRef.current?.sendMessage(prompt)
   }, [])
@@ -40,7 +38,7 @@ export default function AITeam() {
   }, [suggestedAgent, setAgent])
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-stone-50 via-white to-stone-50/50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800 pb-20">
+    <div className="pb-8 max-w-6xl mx-auto">
       {/* Skip link for accessibility */}
       <a
         href="#ai-chat"
@@ -52,118 +50,133 @@ export default function AITeam() {
       {/* Onboarding for new users */}
       <OnboardingModal />
 
-      {/* Hero Section */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50 dark:from-teal-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border-b border-teal-100 dark:border-teal-800/50">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-teal-200/30 to-cyan-200/30 dark:from-teal-700/20 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-48 h-48 bg-gradient-to-tr from-sky-200/30 to-teal-200/30 dark:from-sky-700/20 dark:to-teal-700/20 rounded-full translate-y-1/2 -translate-x-1/2" />
-
-        <div className="relative max-w-6xl mx-auto px-4 py-8 sm:py-12">
-          <div className="text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-400 to-cyan-500 dark:from-teal-500 dark:to-cyan-600 shadow-lg shadow-teal-200 dark:shadow-teal-900/50">
-              <Users className="w-8 h-8 text-white" aria-hidden="true" />
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-stone-100">
+      {/* Page Header */}
+      <header className="mb-6">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
+            <Users className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+          </div>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">
               {t('aiTeam.title')}
             </h1>
-            <p className="text-lg text-slate-600 dark:text-stone-400 max-w-2xl mx-auto">
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               {t('aiTeam.description')}
             </p>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-6 sm:py-8 space-y-6">
-        {/* Suggested Agent Banner */}
-        {suggestedAgent && suggestedAgent.agentId !== selectedAgent && (
-          <button
-            onClick={handleSuggestedAgentClick}
-            className={cn(
-              'w-full flex items-center gap-3 p-4 rounded-xl',
-              'bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20',
-              'border border-amber-200 dark:border-amber-800',
-              'hover:from-amber-100 hover:to-orange-100 dark:hover:from-amber-900/30 dark:hover:to-orange-900/30',
-              'transition-all duration-200',
-              'text-left group'
-            )}
-          >
-            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center">
-              <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
-                {t('aiTeam.suggestion.title', 'Rekommenderad för dig')}
-              </p>
-              <p className="text-sm text-amber-700 dark:text-amber-300 truncate">
-                {t(suggestedAgent.reasonKey, suggestedAgent.reason)} — {t(`aiTeam.agents.${suggestedAgent.agentId}.name`)}
-              </p>
-            </div>
-            <div className="flex-shrink-0 text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
-              →
-            </div>
-          </button>
-        )}
-
-        {/* Agent Selector */}
-        <Card className="p-4 sm:p-6">
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
-            <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
-              {t('aiTeam.selectAgent')}
-            </h2>
+      {/* Suggested Agent Banner */}
+      {suggestedAgent && suggestedAgent.agentId !== selectedAgent && (
+        <button
+          onClick={handleSuggestedAgentClick}
+          className="w-full flex items-center gap-3 p-3 mb-4 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors text-left group"
+        >
+          <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/50 flex items-center justify-center flex-shrink-0">
+            <Lightbulb className="w-4 h-4 text-amber-600 dark:text-amber-400" />
           </div>
-          <AgentSelector />
-        </Card>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+              {t('aiTeam.suggestion.title', 'Rekommenderad för dig')}
+            </p>
+            <p className="text-xs text-amber-700 dark:text-amber-300 truncate">
+              {t(suggestedAgent.reasonKey, suggestedAgent.reason)} — {t(`aiTeam.agents.${suggestedAgent.agentId}.name`)}
+            </p>
+          </div>
+          <span className="text-amber-600 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
+            →
+          </span>
+        </button>
+      )}
 
-        {/* Chat Area with Sidebar */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Chat Area - shown first on mobile */}
-          <Card
-            id="ai-chat"
-            className="order-first lg:order-last lg:col-span-3 p-0 overflow-hidden h-[450px] sm:h-[500px] lg:h-[600px]"
-            tabIndex={-1}
-          >
-            <AgentChat ref={chatRef} />
-          </Card>
+      {/* Agent Selector */}
+      <section className="mb-6">
+        <div className="flex items-center gap-2 mb-3">
+          <Users className="w-4 h-4 text-stone-500 dark:text-stone-400" />
+          <h2 className="text-sm font-semibold text-stone-700 dark:text-stone-300">
+            {t('aiTeam.selectAgent')}
+          </h2>
+        </div>
+        <AgentSelector />
+      </section>
 
-          {/* Sidebar - Personality & Quick Actions */}
-          <div className="order-last lg:order-first lg:col-span-1 space-y-4">
-            <Card className="p-4">
-              <PersonalityDropdown />
-            </Card>
-            <Card className="p-4">
-              <ResponseModeSelector />
-            </Card>
-            <Card className="p-4">
-              <QuickActions onActionClick={handleQuickAction} />
-            </Card>
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* Sidebar */}
+        <div className="lg:col-span-1 space-y-4 order-last lg:order-first">
+          {/* Personality */}
+          <section className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
+                <Settings2 className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400" />
+              </div>
+              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300">
+                Personlighet
+              </h3>
+            </div>
+            <PersonalityDropdown />
+          </section>
 
-            {/* Tips Card */}
-            <Card className={cn(
-              'p-4',
-              colors.bgLight,
-              colors.border,
-              'border'
-            )}>
-              <h3 className={cn('font-semibold mb-2', colors.text)}>
+          {/* Response Mode */}
+          <section className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
+                <MessageSquare className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400" />
+              </div>
+              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300">
+                Svarsläge
+              </h3>
+            </div>
+            <ResponseModeSelector />
+          </section>
+
+          {/* Quick Actions */}
+          <section className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
+            <QuickActions onActionClick={handleQuickAction} />
+          </section>
+
+          {/* Tips Card */}
+          <section className={cn(
+            'rounded-xl border p-4',
+            colors.bgLight,
+            'border-stone-200 dark:border-stone-700/50'
+          )}>
+            <div className="flex items-center gap-2 mb-3">
+              <div className={cn(
+                'w-6 h-6 rounded-lg flex items-center justify-center',
+                colors.bg.replace('bg-', 'bg-').replace('-500', '-100').replace('-400', '-900/50')
+              )}>
+                <Lightbulb className={cn('w-3.5 h-3.5', colors.text)} />
+              </div>
+              <h3 className={cn('text-sm font-semibold', colors.text)}>
                 {t('aiTeam.tips.title')}
               </h3>
-              <ul className="space-y-2 text-sm text-stone-600 dark:text-stone-400">
-                <li className="flex items-start gap-2">
-                  <span className={colors.text}>•</span>
-                  {t('aiTeam.tips.tip1')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className={colors.text}>•</span>
-                  {t('aiTeam.tips.tip2')}
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className={colors.text}>•</span>
-                  {t('aiTeam.tips.tip3')}
-                </li>
-              </ul>
-            </Card>
-          </div>
+            </div>
+            <ul className="space-y-2 text-xs text-stone-600 dark:text-stone-400">
+              <li className="flex items-start gap-2">
+                <span className={cn('w-1 h-1 rounded-full mt-1.5 flex-shrink-0', colors.bg)} />
+                {t('aiTeam.tips.tip1')}
+              </li>
+              <li className="flex items-start gap-2">
+                <span className={cn('w-1 h-1 rounded-full mt-1.5 flex-shrink-0', colors.bg)} />
+                {t('aiTeam.tips.tip2')}
+              </li>
+              <li className="flex items-start gap-2">
+                <span className={cn('w-1 h-1 rounded-full mt-1.5 flex-shrink-0', colors.bg)} />
+                {t('aiTeam.tips.tip3')}
+              </li>
+            </ul>
+          </section>
+        </div>
+
+        {/* Chat Area */}
+        <div
+          id="ai-chat"
+          className="lg:col-span-3 bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden h-[450px] sm:h-[500px] lg:h-[600px] order-first lg:order-last"
+          tabIndex={-1}
+        >
+          <AgentChat ref={chatRef} />
         </div>
       </div>
     </div>
