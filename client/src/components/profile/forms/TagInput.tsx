@@ -1,5 +1,5 @@
 /**
- * TagInput - Accessible tag input with autocomplete
+ * TagInput - Accessible tag input with autocomplete and improved UX
  */
 
 import { useState, useRef, useId, useCallback, useEffect, KeyboardEvent } from 'react'
@@ -66,21 +66,21 @@ export function TagInput({
 
   const colorClasses = {
     teal: {
-      tag: 'bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300',
+      tag: 'bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800',
       tagHover: 'hover:bg-teal-100 dark:hover:bg-teal-800',
       button: 'bg-teal-500 hover:bg-teal-600 focus:ring-teal-400',
       focus: 'focus:ring-teal-400 focus:border-teal-400',
       suggestion: 'hover:bg-teal-50 dark:hover:bg-teal-900/40'
     },
     amber: {
-      tag: 'bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
+      tag: 'bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800',
       tagHover: 'hover:bg-amber-100 dark:hover:bg-amber-800',
       button: 'bg-amber-500 hover:bg-amber-600 focus:ring-amber-400',
       focus: 'focus:ring-amber-400 focus:border-amber-400',
       suggestion: 'hover:bg-amber-50 dark:hover:bg-amber-900/40'
     },
     sky: {
-      tag: 'bg-sky-50 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300',
+      tag: 'bg-sky-50 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800',
       tagHover: 'hover:bg-sky-100 dark:hover:bg-sky-800',
       button: 'bg-sky-500 hover:bg-sky-600 focus:ring-sky-400',
       focus: 'focus:ring-sky-400 focus:border-sky-400',
@@ -208,18 +208,18 @@ export function TagInput({
         </label>
       )}
 
-      {/* Tags */}
+      {/* Tags - improved styling */}
       <div
         role="list"
         aria-label={t('common.tagsCount', { label: label || t('common.tags'), count: tags.length, max: maxTags })}
-        className="flex flex-wrap gap-1 mb-2 min-h-[1.5rem]"
+        className="flex flex-wrap gap-1.5 mb-3 min-h-[1.75rem]"
       >
         {tags.map((tag, i) => (
           <span
             key={`${tag}-${i}`}
             role="listitem"
             className={cn(
-              'inline-flex items-center gap-0.5 pl-2 pr-1 py-0.5 rounded text-xs font-medium leading-tight',
+              'inline-flex items-center gap-1 pl-2.5 pr-1.5 py-1 rounded-full text-xs font-medium border',
               colors.tag
             )}
           >
@@ -230,22 +230,27 @@ export function TagInput({
               disabled={disabled}
               aria-label={t('common.removeTag', { tag })}
               className={cn(
-                'w-4 h-4 flex items-center justify-center rounded ml-0.5 transition-colors',
+                'w-4 h-4 flex items-center justify-center rounded-full transition-colors',
                 'focus:outline-none focus:ring-1 focus:ring-current',
                 colors.tagHover,
                 disabled && 'opacity-50 cursor-not-allowed'
               )}
             >
-              <X className="w-2.5 h-2.5" aria-hidden="true" />
+              <X className="w-3 h-3" aria-hidden="true" />
             </button>
           </span>
         ))}
+        {tags.length === 0 && (
+          <span className="text-xs text-stone-400 dark:text-stone-500 italic py-1">
+            Inga tillagda ännu
+          </span>
+        )}
       </div>
 
       {/* Input */}
       {canAddMore && !disabled && (
         <div className="relative">
-          <div className="flex gap-1">
+          <div className="flex gap-2">
             <input
               ref={inputRef}
               id={inputId}
@@ -268,9 +273,9 @@ export function TagInput({
                 `${inputId}-instructions`
               )}
               className={cn(
-                'flex-1 px-2 py-1.5 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded text-xs text-stone-900 dark:text-stone-100',
+                'flex-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm text-stone-900 dark:text-stone-100',
                 'placeholder:text-stone-400 dark:placeholder:text-stone-500',
-                'focus:outline-none focus:ring-1',
+                'focus:outline-none focus:ring-2 focus:ring-offset-0',
                 colors.focus
               )}
             />
@@ -280,13 +285,14 @@ export function TagInput({
               disabled={!input.trim() || disabled}
               aria-label={t('common.add')}
               className={cn(
-                'px-2 py-1 text-white rounded text-xs transition-colors',
+                'flex items-center gap-1.5 px-3 py-2 text-white rounded-lg text-sm font-medium transition-colors',
                 'focus:outline-none focus:ring-2 focus:ring-offset-1',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
                 colors.button
               )}
             >
-              <Plus className="w-3 h-3" aria-hidden="true" />
+              <Plus className="w-4 h-4" aria-hidden="true" />
+              <span className="hidden sm:inline">Lägg till</span>
             </button>
           </div>
 
@@ -300,7 +306,7 @@ export function TagInput({
               id={listboxId}
               role="listbox"
               aria-label={t('common.suggestions')}
-              className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded shadow-lg z-10 py-0.5 max-h-40 overflow-y-auto"
+              className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg shadow-lg z-10 py-1 max-h-48 overflow-y-auto"
             >
               {filteredSuggestions.map(({ label }, index) => (
                 <li
@@ -310,7 +316,7 @@ export function TagInput({
                   aria-selected={index === activeIndex}
                   onClick={() => handleSuggestionClick(label)}
                   className={cn(
-                    'w-full px-2 py-1.5 text-left text-xs text-stone-700 dark:text-stone-300 cursor-pointer',
+                    'w-full px-3 py-2 text-left text-sm text-stone-700 dark:text-stone-300 cursor-pointer',
                     colors.suggestion,
                     index === activeIndex && 'bg-teal-50 dark:bg-teal-900/40'
                   )}
@@ -324,7 +330,7 @@ export function TagInput({
       )}
 
       {/* Footer */}
-      <div className="flex justify-between items-center mt-1 min-h-[1rem]">
+      <div className="flex justify-between items-center mt-2 min-h-[1.25rem]">
         <div className="flex-1">
           {error && (
             <p id={errorId} role="alert" className="text-xs text-red-500 dark:text-red-400">
@@ -337,8 +343,13 @@ export function TagInput({
             </p>
           )}
         </div>
-        <span className="text-xs text-stone-400 dark:text-stone-500">
-          {tags.length}/{maxTags}
+        <span className={cn(
+          'text-xs font-medium px-2 py-0.5 rounded-full',
+          tags.length >= maxTags
+            ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
+            : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400'
+        )}>
+          {tags.length} av {maxTags}
         </span>
       </div>
     </div>

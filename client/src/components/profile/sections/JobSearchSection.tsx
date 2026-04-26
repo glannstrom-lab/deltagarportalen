@@ -1,11 +1,12 @@
 /**
  * JobSearchSection - Job search preferences, mobility, status
- * Combines: Jobbsökning tab content
+ * Clean design with improved visual hierarchy
  */
 
 import { useTranslation } from 'react-i18next'
 import {
-  Clock, FileText, Building2, Car, AlertCircle, Wallet
+  Clock, FileText, Building2, Car, AlertCircle, Wallet,
+  Briefcase, MapPin
 } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { SectionCard, CompactInput, CompactSelect, CompactTextarea, ChipSelect } from '../forms'
@@ -58,7 +59,7 @@ export function JobSearchSection() {
       role="tabpanel"
       id="tabpanel-jobbsok"
       aria-labelledby="tab-jobbsok"
-      className="grid gap-4 md:grid-cols-2"
+      className="grid gap-4 lg:grid-cols-2"
     >
       {/* Status & availability */}
       <SectionCard title={t('profile.jobSearch.statusAvailability')} icon={<Clock className="w-4 h-4" />} colorScheme="sky">
@@ -144,7 +145,7 @@ export function JobSearchSection() {
       {/* Labor market status */}
       <SectionCard title={t('profile.jobSearch.laborMarketStatus')} icon={<Building2 className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-3">
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 cursor-pointer transition-colors">
             <input
               type="checkbox"
               checked={preferences.labor_market_status?.registeredAtAF || false}
@@ -155,7 +156,7 @@ export function JobSearchSection() {
               {t('profile.jobSearch.registeredAF')}
             </span>
           </label>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 cursor-pointer transition-colors">
             <input
               type="checkbox"
               checked={preferences.labor_market_status?.participatingInProgram || false}
@@ -172,7 +173,7 @@ export function JobSearchSection() {
               onChange={(v) => updateLaborMarketStatus({ programName: v })}
             />
           )}
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 cursor-pointer transition-colors">
             <input
               type="checkbox"
               checked={preferences.labor_market_status?.hasActivitySupport || false}
@@ -217,22 +218,28 @@ export function JobSearchSection() {
             </label>
           </div>
           <div>
-            <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-1">
+            <label className="block text-xs font-medium text-stone-600 dark:text-stone-400 mb-2">
               {t('profile.jobSearch.maxCommute', { minutes: preferences.mobility?.maxCommuteMinutes || 45 })}
             </label>
-            <input
-              type="range"
-              min={15}
-              max={120}
-              step={15}
-              value={preferences.mobility?.maxCommuteMinutes || 45}
-              onChange={(e) => updateMobility({ maxCommuteMinutes: parseInt(e.target.value) })}
-              aria-label={t('profile.jobSearch.maxCommuteAria')}
-              aria-valuemin={15}
-              aria-valuemax={120}
-              aria-valuenow={preferences.mobility?.maxCommuteMinutes || 45}
-              className="w-full h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-teal-500"
-            />
+            <div className="relative">
+              <input
+                type="range"
+                min={15}
+                max={120}
+                step={15}
+                value={preferences.mobility?.maxCommuteMinutes || 45}
+                onChange={(e) => updateMobility({ maxCommuteMinutes: parseInt(e.target.value) })}
+                aria-label={t('profile.jobSearch.maxCommuteAria')}
+                aria-valuemin={15}
+                aria-valuemax={120}
+                aria-valuenow={preferences.mobility?.maxCommuteMinutes || 45}
+                className="w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-teal-500"
+              />
+              <div className="flex justify-between text-xs text-stone-400 mt-1">
+                <span>15 min</span>
+                <span>120 min</span>
+              </div>
+            </div>
           </div>
         </div>
       </SectionCard>
@@ -290,8 +297,8 @@ export function JobSearchSection() {
       </SectionCard>
 
       {/* Work preferences */}
-      <SectionCard title={t('profile.jobSearch.workPreferences')} icon={<Building2 className="w-4 h-4" />} colorScheme="sky" className="md:col-span-2">
-        <div className="grid gap-4 md:grid-cols-3">
+      <SectionCard title={t('profile.jobSearch.workPreferences')} icon={<Briefcase className="w-4 h-4" />} colorScheme="sky" className="lg:col-span-2">
+        <div className="grid gap-4 lg:grid-cols-3">
           <ChipSelect
             label={t('profile.jobSearch.sector')}
             options={[...SECTORS]}

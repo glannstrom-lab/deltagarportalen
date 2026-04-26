@@ -1,12 +1,12 @@
 /**
- * ProfileHeader - Clean minimal design
- * Simple header with avatar, name, and progress
+ * ProfileHeader - Enhanced clean design
+ * Avatar, name, progress with actionable next step, quick actions
  */
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Cloud, CloudOff, Loader2, Download, Upload, ChevronDown, Camera
+  Cloud, CloudOff, Loader2, Download, Upload, ChevronRight
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useProfileStore } from '@/stores/profileStore'
@@ -22,12 +22,12 @@ export function ProfileHeader() {
     cloudSyncing,
     cloudSynced,
     updateProfileImage,
-    loadProfile
+    loadProfile,
+    setActiveTab
   } = useProfileStore()
 
   const [importing, setImporting] = useState(false)
   const [exporting, setExporting] = useState(false)
-  const [showActions, setShowActions] = useState(false)
 
   const handleImportFromCV = async () => {
     setImporting(true)
@@ -49,7 +49,6 @@ export function ProfileHeader() {
       notifications.error(TOAST_MESSAGES.IMPORT_ERROR)
     } finally {
       setImporting(false)
-      setShowActions(false)
     }
   }
 
@@ -76,7 +75,13 @@ export function ProfileHeader() {
       notifications.error(t('profile.header.exportError'))
     } finally {
       setExporting(false)
-      setShowActions(false)
+    }
+  }
+
+  // Navigate to next step
+  const handleNextStep = () => {
+    if (completion.nextStep?.tab) {
+      setActiveTab(completion.nextStep.tab)
     }
   }
 
@@ -84,7 +89,7 @@ export function ProfileHeader() {
     <header className="mb-6">
       {/* Main header content */}
       <div className="flex items-start gap-4 sm:gap-5">
-        {/* Avatar */}
+        {/* Avatar with camera overlay */}
         <ProfileImageUpload
           currentImage={profile?.profile_image_url}
           onImageChange={updateProfileImage}
@@ -93,7 +98,8 @@ export function ProfileHeader() {
 
         {/* Info */}
         <div className="flex-1 min-w-0 pt-1">
-          <div className="flex items-start justify-between gap-3">
+          {/* Name row */}
+          <div className="flex items-start justify-between gap-3 mb-3">
             <div className="min-w-0">
               <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100 truncate">
                 {profile?.first_name || t('profile.header.welcome')} {profile?.last_name}
@@ -101,73 +107,45 @@ export function ProfileHeader() {
               <p className="text-sm text-stone-500 dark:text-stone-400 truncate">{profile?.email}</p>
             </div>
 
-            {/* Sync status & actions */}
-            <div className="flex items-center gap-2 shrink-0">
-              {/* Sync indicator */}
-              <div className="hidden sm:flex items-center gap-1.5 text-xs">
-                {cloudSyncing ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin text-stone-400" />
-                ) : cloudSynced ? (
+            {/* Sync status */}
+            <div className="hidden sm:flex items-center gap-1.5 text-xs text-stone-400 dark:text-stone-500">
+              {cloudSyncing ? (
+                <>
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  <span>Sparar...</span>
+                </>
+              ) : cloudSynced ? (
+                <>
                   <Cloud className="w-3.5 h-3.5 text-emerald-500" />
-                ) : (
+                  <span className="text-emerald-600 dark:text-emerald-400">Sparad</span>
+                </>
+              ) : (
+                <>
                   <CloudOff className="w-3.5 h-3.5 text-amber-500" />
-                )}
-              </div>
-
-              {/* Actions dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowActions(!showActions)}
-                  className="flex items-center gap-1 px-3 py-1.5 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
-                >
-                  <span className="hidden sm:inline">Åtgärder</span>
-                  <ChevronDown className={cn('w-4 h-4 transition-transform', showActions && 'rotate-180')} />
-                </button>
-
-                {showActions && (
-                  <>
-                    <div className="fixed inset-0 z-10" onClick={() => setShowActions(false)} />
-                    <div className="absolute right-0 top-full mt-1 w-48 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 shadow-lg z-20 py-1">
-                      <button
-                        onClick={handleImportFromCV}
-                        disabled={importing}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 disabled:opacity-50"
-                      >
-                        <Upload className="w-4 h-4" />
-                        {importing ? 'Importerar...' : 'Importera från CV'}
-                      </button>
-                      <button
-                        onClick={handleExportPDF}
-                        disabled={exporting}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 disabled:opacity-50"
-                      >
-                        <Download className="w-4 h-4" />
-                        {exporting ? 'Exporterar...' : 'Ladda ner PDF'}
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
+                  <span className="text-amber-600 dark:text-amber-400">Ej sparad</span>
+                </>
+              )}
             </div>
           </div>
 
-          {/* Progress bar */}
-          <div className="mt-4">
-            <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-medium text-stone-600 dark:text-stone-400">
+          {/* Progress section */}
+          <div className="bg-stone-50 dark:bg-stone-800/50 rounded-xl p-3 sm:p-4">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                 Profilstatus
               </span>
               <span className={cn(
-                'text-xs font-semibold',
+                'text-sm font-bold',
                 completion.percent >= 75 ? 'text-emerald-600 dark:text-emerald-400' :
                 completion.percent >= 50 ? 'text-amber-600 dark:text-amber-400' :
-                'text-stone-600 dark:text-stone-400'
+                'text-teal-600 dark:text-teal-400'
               )}>
                 {completion.percent}%
               </span>
             </div>
 
-            <div className="h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
+            {/* Progress bar */}
+            <div className="h-2.5 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden mb-3">
               <div
                 className={cn(
                   'h-full rounded-full transition-all duration-500',
@@ -176,15 +154,61 @@ export function ProfileHeader() {
                   'bg-teal-500'
                 )}
                 style={{ width: `${completion.percent}%` }}
+                role="progressbar"
+                aria-valuenow={completion.percent}
+                aria-valuemin={0}
+                aria-valuemax={100}
               />
             </div>
 
-            {/* Next step hint */}
+            {/* Next step button */}
             {completion.nextStep && completion.percent < 100 && (
-              <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
-                Nästa: <span className="text-teal-600 dark:text-teal-400 font-medium">{completion.nextStep.label}</span>
-              </p>
+              <button
+                onClick={handleNextStep}
+                className="w-full flex items-center justify-between p-2 -mx-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700/50 transition-colors group"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
+                    <span className="w-2 h-2 rounded-full bg-teal-500" />
+                  </span>
+                  <span className="text-sm text-stone-600 dark:text-stone-400">
+                    Nästa steg: <span className="text-teal-600 dark:text-teal-400 font-medium">{completion.nextStep.label}</span>
+                  </span>
+                </div>
+                <ChevronRight className="w-4 h-4 text-stone-400 group-hover:text-teal-500 group-hover:translate-x-0.5 transition-all" />
+              </button>
             )}
+
+            {completion.percent === 100 && (
+              <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400">
+                <span className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
+                  <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </span>
+                <span className="font-medium">Profilen är komplett!</span>
+              </div>
+            )}
+          </div>
+
+          {/* Quick actions row */}
+          <div className="flex items-center gap-2 mt-3">
+            <button
+              onClick={handleImportFromCV}
+              disabled={importing}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 rounded-lg transition-colors disabled:opacity-50"
+            >
+              <Upload className="w-3.5 h-3.5" />
+              {importing ? 'Importerar...' : 'Importera CV'}
+            </button>
+            <button
+              onClick={handleExportPDF}
+              disabled={exporting}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-stone-600 dark:text-stone-400 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 rounded-lg transition-colors disabled:opacity-50"
+            >
+              <Download className="w-3.5 h-3.5" />
+              {exporting ? 'Exporterar...' : 'Ladda ner PDF'}
+            </button>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 /**
- * CompactInput - Accessible input component with validation
+ * CompactInput - Accessible input component with validation and icon support
  */
 
 import { useState, useId, forwardRef } from 'react'
@@ -15,6 +15,7 @@ export interface CompactInputProps extends Omit<React.InputHTMLAttributes<HTMLIn
   showCharCount?: boolean
   validate?: (value: string) => ValidationResult
   onChange?: (value: string) => void
+  icon?: React.ReactNode
 }
 
 export const CompactInput = forwardRef<HTMLInputElement, CompactInputProps>(({
@@ -29,6 +30,7 @@ export const CompactInput = forwardRef<HTMLInputElement, CompactInputProps>(({
   id: providedId,
   disabled,
   value,
+  icon,
   ...props
 }, ref) => {
   const generatedId = useId()
@@ -72,29 +74,37 @@ export const CompactInput = forwardRef<HTMLInputElement, CompactInputProps>(({
         {props.required && <span className="text-red-500 ml-0.5" aria-hidden="true">*</span>}
       </label>
 
-      <input
-        ref={ref}
-        id={inputId}
-        value={value}
-        onChange={handleChange}
-        disabled={disabled}
-        aria-invalid={error ? 'true' : undefined}
-        aria-describedby={cn(
-          error && errorId,
-          hint && !error && hintId
-        ) || undefined}
-        className={cn(
-          'w-full px-3 py-2 bg-white dark:bg-stone-800 border rounded-lg text-sm text-stone-900 dark:text-stone-100',
-          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500',
-          'placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-all',
-          error
-            ? 'border-red-300 dark:border-red-700 focus:ring-red-500/20 focus:border-red-400'
-            : 'border-stone-200 dark:border-stone-600',
-          disabled && 'bg-stone-50 dark:bg-stone-900 text-stone-500 dark:text-stone-400 cursor-not-allowed',
-          className
+      <div className="relative">
+        {icon && (
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 dark:text-stone-500 pointer-events-none">
+            {icon}
+          </div>
         )}
-        {...props}
-      />
+        <input
+          ref={ref}
+          id={inputId}
+          value={value}
+          onChange={handleChange}
+          disabled={disabled}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={cn(
+            error && errorId,
+            hint && !error && hintId
+          ) || undefined}
+          className={cn(
+            'w-full py-2 bg-white dark:bg-stone-800 border rounded-lg text-sm text-stone-900 dark:text-stone-100',
+            'focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500',
+            'placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-all',
+            icon ? 'pl-9 pr-3' : 'px-3',
+            error
+              ? 'border-red-300 dark:border-red-700 focus:ring-red-500/20 focus:border-red-400'
+              : 'border-stone-200 dark:border-stone-600',
+            disabled && 'bg-stone-50 dark:bg-stone-900 text-stone-500 dark:text-stone-400 cursor-not-allowed',
+            className
+          )}
+          {...props}
+        />
+      </div>
 
       <div className="flex justify-between items-start mt-1 min-h-[1.25rem]">
         <div className="flex-1">

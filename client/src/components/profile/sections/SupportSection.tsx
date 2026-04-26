@@ -1,13 +1,12 @@
 /**
  * SupportSection - Energy, adaptation needs, goals, timeline
- * Combines: Stöd + Mål + Tidslinje tabs with positive language
+ * Clean design with positive language and improved visual hierarchy
  */
 
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Zap, Activity, Accessibility, TrendingUp, Target,
-  Calendar, Users, FileText, X, ClipboardList, Brain
+  Calendar, Users, FileText, X, Plus
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useProfileStore } from '@/stores/profileStore'
@@ -29,10 +28,6 @@ export function SupportSection() {
     updatePreferences({ therapist_data: { ...preferences.therapist_data, ...updates } })
   }
 
-  const updatePhysicalRequirements = (updates: typeof preferences.physical_requirements) => {
-    updatePreferences({ physical_requirements: { ...preferences.physical_requirements, ...updates } })
-  }
-
   const updateSupportGoals = (updates: typeof preferences.support_goals) => {
     updatePreferences({ support_goals: { ...preferences.support_goals, ...updates } })
   }
@@ -46,7 +41,7 @@ export function SupportSection() {
       role="tabpanel"
       id="tabpanel-stod"
       aria-labelledby="tab-stod"
-      className="grid gap-4 md:grid-cols-2"
+      className="grid gap-4 lg:grid-cols-2"
     >
       {/* Energy & capacity */}
       <SectionCard title={t('profile.support.energy')} icon={<Zap className="w-4 h-4" />} colorScheme="amber">
@@ -119,7 +114,7 @@ export function SupportSection() {
       {/* Adaptation needs (positive framing) */}
       <SectionCard title={t('profile.support.howIWorkBest')} icon={<Accessibility className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-4">
-          <p className="text-xs text-stone-500 dark:text-stone-400 mb-2">
+          <p className="text-xs text-stone-500 dark:text-stone-400 -mt-1 mb-2">
             {t('profile.support.chooseWorkConditions')}
           </p>
           <ChipSelect
@@ -230,7 +225,7 @@ export function SupportSection() {
       {/* Internship/Work training */}
       <SectionCard title={t('profile.support.internship')} icon={<Users className="w-4 h-4" />} colorScheme="amber">
         <div className="space-y-3">
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-3 p-2 -mx-2 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-800 cursor-pointer transition-colors">
             <input
               type="checkbox"
               checked={preferences.consultant_data?.internship?.active || false}
@@ -289,8 +284,13 @@ export function SupportSection() {
       {/* Next steps */}
       <SectionCard title={t('profile.support.nextSteps')} icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
         <div className="space-y-2">
+          {(preferences.consultant_data?.nextSteps || []).length === 0 && (
+            <p className="text-xs text-stone-400 dark:text-stone-500 italic py-2">
+              Inga aktiviteter tillagda ännu
+            </p>
+          )}
           {(preferences.consultant_data?.nextSteps || []).map((step, i) => (
-            <div key={i} className="flex items-center gap-2 p-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
+            <div key={i} className="flex items-center gap-3 p-2 bg-stone-50 dark:bg-stone-800 rounded-lg group">
               <input
                 type="checkbox"
                 id={`step-${i}`}
@@ -311,16 +311,16 @@ export function SupportSection() {
               >
                 {step.activity}
               </label>
-              <span className="text-xs text-stone-500 dark:text-stone-400">{step.date}</span>
+              <span className="text-xs text-stone-400 dark:text-stone-500">{step.date}</span>
               <button
                 onClick={() => {
                   const steps = (preferences.consultant_data?.nextSteps || []).filter((_, idx) => idx !== i)
                   updateConsultantData({ nextSteps: steps })
                 }}
-                className="p-1 hover:bg-stone-200 dark:hover:bg-stone-600 rounded"
+                className="p-1 opacity-0 group-hover:opacity-100 hover:bg-stone-200 dark:hover:bg-stone-600 rounded transition-opacity"
                 aria-label={t('common.removeTag', { tag: step.activity })}
               >
-                <X className="w-3 h-3 text-stone-400 dark:text-stone-500" aria-hidden="true" />
+                <X className="w-3.5 h-3.5 text-stone-400 dark:text-stone-500" aria-hidden="true" />
               </button>
             </div>
           ))}
@@ -328,7 +328,7 @@ export function SupportSection() {
             <input
               type="text"
               placeholder={t('profile.support.newActivity')}
-              className="flex-1 px-3 py-1.5 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500"
+              className="flex-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                   const steps = [...(preferences.consultant_data?.nextSteps || []), {
@@ -341,12 +341,29 @@ export function SupportSection() {
                 }
               }}
             />
+            <button
+              onClick={(e) => {
+                const input = e.currentTarget.previousElementSibling as HTMLInputElement
+                if (input?.value.trim()) {
+                  const steps = [...(preferences.consultant_data?.nextSteps || []), {
+                    activity: input.value.trim(),
+                    date: new Date().toISOString().split('T')[0],
+                    completed: false
+                  }]
+                  updateConsultantData({ nextSteps: steps })
+                  input.value = ''
+                }
+              }}
+              className="px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium transition-colors"
+            >
+              <Plus className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </SectionCard>
 
       {/* Notes */}
-      <SectionCard title={t('profile.support.notesTitle')} icon={<FileText className="w-4 h-4" />} colorScheme="sky" className="md:col-span-2">
+      <SectionCard title={t('profile.support.notesTitle')} icon={<FileText className="w-4 h-4" />} colorScheme="sky" className="lg:col-span-2">
         <CompactTextarea
           label=""
           value={preferences.support_goals?.notes || ''}

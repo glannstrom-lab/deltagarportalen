@@ -1,11 +1,15 @@
 /**
- * OverviewSection - Basic info, desired jobs, interests, RIASEC
- * Combines the old "Grundinfo" tab content
+ * OverviewSection - Enhanced design with icons and better UX
+ * Contact info, desired jobs, interests, RIASEC profile
  */
 
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { User, Briefcase, Heart, Compass, Sparkles, ChevronRight } from '@/components/ui/icons'
+import {
+  User, Briefcase, Heart, Compass, Sparkles, ChevronRight,
+  Phone, MapPin, Mail, RefreshCw
+} from '@/components/ui/icons'
+import { cn } from '@/lib/utils'
 import { useProfileStore } from '@/stores/profileStore'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import { SectionCard, CompactInput, TagInput } from '../forms'
@@ -59,11 +63,12 @@ export function OverviewSection() {
       role="tabpanel"
       id="tabpanel-overview"
       aria-labelledby="tab-overview"
-      className="grid gap-4 md:grid-cols-2"
+      className="grid gap-4 lg:grid-cols-2"
     >
-      {/* Contact info */}
+      {/* Contact info - with icons */}
       <SectionCard title={t('profile.overview.contactInfo')} icon={<User className="w-4 h-4" />} colorScheme="teal">
-        <div className="grid gap-3">
+        <div className="space-y-3">
+          {/* Name row */}
           <div className="grid grid-cols-2 gap-3">
             <CompactInput
               label={t('profile.overview.firstName')}
@@ -78,28 +83,37 @@ export function OverviewSection() {
               placeholder={t('profile.overview.lastName')}
             />
           </div>
+
+          {/* Phone with icon */}
           <CompactInput
             label={t('profile.overview.phone')}
             type="tel"
             value={profile?.phone || ''}
             onChange={(v) => handleChange('phone', v)}
             placeholder="070-123 45 67"
+            icon={<Phone className="w-4 h-4" />}
           />
+
+          {/* Location with icon */}
           <CompactInput
             label={t('profile.overview.location')}
             value={profile?.location || ''}
             onChange={(v) => handleChange('location', v)}
             placeholder={t('profile.overview.locationPlaceholder')}
+            icon={<MapPin className="w-4 h-4" />}
           />
+
+          {/* Email with icon (disabled) */}
           <CompactInput
             label={t('profile.overview.email')}
             value={profile?.email || ''}
             disabled
+            icon={<Mail className="w-4 h-4" />}
           />
         </div>
       </SectionCard>
 
-      {/* Desired jobs */}
+      {/* Desired jobs - improved */}
       <SectionCard title={t('profile.overview.desiredJobs')} icon={<Briefcase className="w-4 h-4" />} colorScheme="sky">
         <TagInput
           tags={preferences.desired_jobs || []}
@@ -113,7 +127,7 @@ export function OverviewSection() {
         />
       </SectionCard>
 
-      {/* Interests */}
+      {/* Interests - improved */}
       <SectionCard title={t('profile.overview.interests')} icon={<Heart className="w-4 h-4" />} colorScheme="amber">
         <TagInput
           tags={preferences.interests || []}
@@ -127,55 +141,79 @@ export function OverviewSection() {
         />
       </SectionCard>
 
-      {/* RIASEC profile */}
+      {/* RIASEC profile - enhanced */}
       {!interestLoading && interestProfile.hasResult && (
         <SectionCard title={t('profile.overview.interestProfile')} icon={<Compass className="w-4 h-4" />} colorScheme="teal">
-          <div className="space-y-2">
+          <div className="space-y-3">
+            {/* Explanation */}
+            <p className="text-xs text-stone-500 dark:text-stone-400 mb-3">
+              Dina tre starkaste intresseprofiler baserat på intresseguiden:
+            </p>
+
             {interestProfile.dominantTypes.slice(0, 3).map((type, i) => {
               const rt = RIASEC_TYPES[type.code]
               const typeName = t(`interestGuide.riasec.${type.code}`, { defaultValue: rt.nameSv })
+              const colors = [
+                'bg-amber-500 dark:bg-amber-400',
+                'bg-stone-400 dark:bg-stone-500',
+                'bg-amber-700 dark:bg-amber-600'
+              ]
               return (
-                <div key={type.code} className="flex items-center gap-2">
-                  <span className="text-lg" aria-hidden="true">{['🥇', '🥈', '🥉'][i]}</span>
-                  <span className="text-sm font-medium flex-1 text-stone-800 dark:text-stone-200">
-                    {typeName}
-                  </span>
-                  <div
-                    className="w-20 h-1.5 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden"
-                    role="progressbar"
-                    aria-valuenow={type.score}
-                    aria-valuemin={0}
-                    aria-valuemax={100}
-                    aria-label={`${typeName}: ${type.score}%`}
-                  >
-                    <div
-                      className="h-full bg-amber-500 dark:bg-amber-400 rounded-full"
-                      style={{ width: `${type.score}%` }}
-                    />
+                <div key={type.code} className="group">
+                  <div className="flex items-center gap-3">
+                    <span className={cn(
+                      'w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold',
+                      i === 0 ? 'bg-amber-500' : i === 1 ? 'bg-stone-400' : 'bg-amber-700'
+                    )}>
+                      {i + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-sm font-medium text-stone-800 dark:text-stone-200 truncate">
+                          {typeName}
+                        </span>
+                        <span className="text-xs font-semibold text-stone-600 dark:text-stone-400 ml-2">
+                          {type.score}%
+                        </span>
+                      </div>
+                      <div
+                        className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden"
+                        role="progressbar"
+                        aria-valuenow={type.score}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-label={`${typeName}: ${type.score}%`}
+                      >
+                        <div
+                          className={cn('h-full rounded-full transition-all', colors[i])}
+                          style={{ width: `${type.score}%` }}
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-xs text-stone-600 dark:text-stone-400 w-8">
-                    {type.score}%
-                  </span>
                 </div>
               )
             })}
+
+            {/* Redo guide button */}
+            <Link
+              to="/interest-guide"
+              className="mt-4 flex items-center justify-center gap-2 w-full py-2 px-3 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-lg text-sm font-medium hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
+            >
+              <RefreshCw className="w-4 h-4" />
+              {t('profile.overview.redoGuide')}
+            </Link>
           </div>
-          <Link
-            to="/interest-guide"
-            className="inline-flex items-center gap-1 mt-3 text-xs text-teal-600 dark:text-teal-400 hover:underline"
-          >
-            {t('profile.overview.redoGuide')} <ChevronRight className="w-3 h-3" aria-hidden="true" />
-          </Link>
         </SectionCard>
       )}
 
-      {/* Interest guide CTA */}
+      {/* Interest guide CTA - when no result */}
       {!interestLoading && !interestProfile.hasResult && (
         <Link
           to="/interest-guide"
-          className="md:col-span-2 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-5 border border-amber-200 dark:border-amber-800/50 flex items-center gap-4 hover:shadow-lg transition-shadow group"
+          className="lg:col-span-2 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-5 border border-amber-200 dark:border-amber-800/50 flex items-center gap-4 hover:shadow-lg transition-shadow group"
         >
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
           <div className="flex-1">
