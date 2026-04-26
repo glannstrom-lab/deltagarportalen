@@ -221,7 +221,7 @@ function SearchTab() {
           className="w-full flex items-center justify-between p-4 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center">
               <Filter className="w-5 h-5 text-white" />
             </div>
             <div className="text-left">
@@ -255,7 +255,7 @@ function SearchTab() {
                   setShowSuggestions(true);
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                className="w-full pl-10 pr-12 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                className="w-full pl-10 pr-12 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-600 dark:focus:ring-brand-500 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 role="combobox"
                 aria-expanded={showSuggestions && suggestions.length > 0}
                 aria-controls="job-search-suggestions"
@@ -295,7 +295,7 @@ function SearchTab() {
                         setFilters({ ...filters, query: suggestion });
                         setShowSuggestions(false);
                       }}
-                      className="w-full text-left px-4 py-3 hover:bg-teal-50 dark:hover:bg-teal-900/20 first:rounded-t-xl last:rounded-b-xl border-b border-stone-100 dark:border-stone-700 last:border-0 text-slate-900 dark:text-stone-100"
+                      className="w-full text-left px-4 py-3 hover:bg-brand-50 dark:hover:bg-brand-900/20 first:rounded-t-xl last:rounded-b-xl border-b border-stone-100 dark:border-stone-700 last:border-0 text-slate-900 dark:text-stone-100"
                     >
                       <Search size={16} className="inline mr-2 text-slate-600 dark:text-stone-400" aria-hidden="true" />
                       {suggestion}
@@ -318,7 +318,7 @@ function SearchTab() {
                     id="filter-municipality"
                     value={filters.municipality}
                     onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-600 dark:focus:ring-brand-500 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                   >
                     <option value="">{t('jobSearch.allMunicipalities')}</option>
                     {SWEDISH_MUNICIPALITIES.map((m) => (
@@ -332,7 +332,7 @@ function SearchTab() {
                     id="filter-region"
                     value={filters.region}
                     onChange={(e) => setFilters({ ...filters, region: e.target.value })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-600 dark:focus:ring-brand-500 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                   >
                     <option value="">{t('jobSearch.allRegions')}</option>
                     {REGIONS.map((r) => (
@@ -356,7 +356,7 @@ function SearchTab() {
                     id="filter-employment-type"
                     value={filters.employmentType}
                     onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-600 dark:focus:ring-brand-500 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                   >
                     <option value="">{t('jobSearch.allTypes')}</option>
                     <option value="Heltid">{t('jobSearch.fullTime')}</option>
@@ -369,7 +369,7 @@ function SearchTab() {
                     id="filter-published"
                     value={filters.publishedWithin}
                     onChange={(e) => setFilters({ ...filters, publishedWithin: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-600 dark:focus:ring-brand-500 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                   >
                     <option value="all">{t('jobSearch.publishedAnytime')}</option>
                     <option value="today">{t('jobSearch.today')}</option>
@@ -385,48 +385,48 @@ function SearchTab() {
               <div className="flex items-center justify-between pt-3 border-t border-stone-100 dark:border-stone-700">
                 <div className="flex flex-wrap gap-2">
                   {filters.municipality && (
-                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded-lg text-sm min-h-[44px]">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-lg text-sm min-h-[44px]">
                       📍 {filters.municipality}
                       <button
                         onClick={() => setFilters({ ...filters, municipality: '' })}
                         aria-label={t('jobSearch.removeFilter', { filter: filters.municipality }) || `Ta bort filter: ${filters.municipality}`}
-                        className="ml-1 p-1 hover:text-teal-900 dark:hover:text-teal-200 hover:bg-teal-200 dark:hover:bg-teal-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        className="ml-1 p-1 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200 dark:hover:bg-stone-600 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   )}
                   {filters.region && (
-                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded-lg text-sm min-h-[44px]">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-lg text-sm min-h-[44px]">
                       🗺️ {REGIONS.find(r => r.code === filters.region)?.name}
                       <button
                         onClick={() => setFilters({ ...filters, region: '' })}
                         aria-label={t('jobSearch.removeFilter', { filter: REGIONS.find(r => r.code === filters.region)?.name }) || `Ta bort filter: ${REGIONS.find(r => r.code === filters.region)?.name}`}
-                        className="ml-1 p-1 hover:text-teal-900 dark:hover:text-teal-200 hover:bg-teal-200 dark:hover:bg-teal-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        className="ml-1 p-1 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200 dark:hover:bg-stone-600 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   )}
                   {filters.employmentType && (
-                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 rounded-lg text-sm min-h-[44px]">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-lg text-sm min-h-[44px]">
                       💼 {filters.employmentType}
                       <button
                         onClick={() => setFilters({ ...filters, employmentType: '' })}
                         aria-label={t('jobSearch.removeFilter', { filter: filters.employmentType }) || `Ta bort filter: ${filters.employmentType}`}
-                        className="ml-1 p-1 hover:text-sky-900 dark:hover:text-sky-200 hover:bg-sky-200 dark:hover:bg-sky-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        className="ml-1 p-1 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200 dark:hover:bg-stone-600 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   )}
                   {filters.publishedWithin !== 'all' && (
-                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg text-sm min-h-[44px]">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-lg text-sm min-h-[44px]">
                       📅 {filters.publishedWithin === 'today' ? t('jobSearch.today') : filters.publishedWithin === 'week' ? t('jobSearch.lastWeek') : t('jobSearch.lastMonth')}
                       <button
                         onClick={() => setFilters({ ...filters, publishedWithin: 'all' })}
                         aria-label={t('jobSearch.removeFilter', { filter: t('jobSearch.' + filters.publishedWithin) }) || `Ta bort datumfilter`}
-                        className="ml-1 p-1 hover:text-emerald-900 dark:hover:text-emerald-200 hover:bg-emerald-200 dark:hover:bg-emerald-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        className="ml-1 p-1 hover:text-stone-900 dark:hover:text-stone-100 hover:bg-stone-200 dark:hover:bg-stone-600 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
                       </button>
@@ -475,7 +475,7 @@ function SearchTab() {
                   }
                 }}
                 aria-label={`${job.headline} - ${job.employer?.name || t('common.employerNotSpecified')}`}
-                className="bg-orange-50 dark:bg-orange-900/20 rounded-xl sm:rounded-2xl shadow-sm border border-orange-200 dark:border-orange-800 p-4 sm:p-5 hover:shadow-md hover:border-teal-300 dark:hover:border-teal-600 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 dark:focus:ring-offset-stone-900"
+                className="bg-white dark:bg-stone-800 rounded-xl sm:rounded-2xl border border-stone-200 dark:border-stone-700 p-4 sm:p-5 hover:border-brand-600 dark:hover:border-brand-500 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-brand-600 focus:ring-offset-2 dark:focus:ring-offset-stone-900"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1 min-w-0">
@@ -530,7 +530,7 @@ function SearchTab() {
                       <Link
                         to={`/cover-letter?jobId=${job.id}&company=${encodeURIComponent(job.employer?.name || '')}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(job.description?.text?.substring(0, 500) || '')}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/50 transition-colors"
                       >
                         <FileText size={16} />
                         {t('jobSearch.writeLetter')}
@@ -541,7 +541,7 @@ function SearchTab() {
                           e.stopPropagation()
                           setApplicationModalJob(job)
                         }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-teal-500 dark:bg-teal-600 text-white hover:bg-teal-600 dark:hover:bg-teal-500 transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-brand-600 dark:bg-brand-600 text-white hover:bg-brand-700 dark:hover:bg-brand-500 transition-colors"
                       >
                         <Send size={16} />
                         {t('jobSearch.apply')}
@@ -626,7 +626,7 @@ function SearchTab() {
                     </span>
                   )}
                   {selectedJob.employment_type?.label && (
-                    <span className="px-3 py-1 bg-teal-100 dark:bg-teal-900/30 rounded-full text-sm text-teal-700 dark:text-teal-400">
+                    <span className="px-3 py-1 bg-brand-50 dark:bg-brand-900/30 rounded-full text-sm text-brand-700 dark:text-brand-400">
                       💼 {selectedJob.employment_type.label}
                     </span>
                   )}
@@ -646,8 +646,8 @@ function SearchTab() {
                     className={cn(
                       "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-colors",
                       showInterviewPrep
-                        ? "bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 border border-teal-200 dark:border-teal-800"
-                        : "bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/40"
+                        ? "bg-brand-100 dark:bg-brand-900/30 text-brand-700 dark:text-brand-400 border border-brand-200 dark:border-brand-800"
+                        : "bg-brand-50 dark:bg-brand-900/20 text-brand-600 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/40"
                     )}
                   >
                     <MessageSquare size={16} />
@@ -658,8 +658,8 @@ function SearchTab() {
                     className={cn(
                       "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-colors",
                       showCommutePlanner
-                        ? "bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800"
-                        : "bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/40"
+                        ? "bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-300 border border-stone-300 dark:border-stone-600"
+                        : "bg-stone-100 dark:bg-stone-700/50 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700"
                     )}
                   >
                     <Train size={16} />
@@ -710,7 +710,7 @@ function SearchTab() {
                     <Link
                       to={`/cover-letter?jobId=${selectedJob.id}&company=${encodeURIComponent(selectedJob.employer?.name || '')}&title=${encodeURIComponent(selectedJob.headline)}&desc=${encodeURIComponent(selectedJob.description?.text?.substring(0, 1000) || '')}`}
                       onClick={() => setSelectedJob(null)}
-                      className="flex items-center justify-center gap-2 py-3 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/50 rounded-xl font-medium transition-colors border border-teal-200 dark:border-teal-800 min-h-[48px]"
+                      className="flex items-center justify-center gap-2 py-3 bg-brand-50 dark:bg-brand-900/30 text-brand-600 dark:text-brand-400 hover:bg-brand-100 dark:hover:bg-brand-900/50 rounded-xl font-medium transition-colors border border-brand-200 dark:border-brand-800 min-h-[48px]"
                     >
                       <FileText size={18} />
                       <span className="text-sm sm:text-base">{t('jobSearch.writePersonalLetter')}</span>
@@ -722,7 +722,7 @@ function SearchTab() {
                       setApplicationModalJob(selectedJob)
                       setSelectedJob(null)
                     }}
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-teal-500 dark:bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-600 dark:hover:bg-teal-500 transition-colors min-h-[48px]"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-brand-600 text-white rounded-xl font-medium hover:bg-brand-700 dark:hover:bg-brand-500 transition-colors min-h-[48px]"
                   >
                     <Send size={18} />
                     <span className="text-sm sm:text-base">{t('jobSearch.createApplication')}</span>
@@ -796,7 +796,7 @@ function SavedJobsTab() {
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600 dark:border-teal-400" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-600 dark:border-brand-400" />
       </div>
     );
   }
@@ -828,7 +828,7 @@ function SavedJobsTab() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+            className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-600 dark:focus:ring-brand-500 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
           >
             <option value="date">Senast sparade</option>
             <option value="company">Företag A-Ö</option>
@@ -841,7 +841,7 @@ function SavedJobsTab() {
         {filteredJobs.map((job) => {
           const jobData = job.jobData;
           return (
-            <Card key={job.id} className="p-5 hover:shadow-md transition-shadow bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800">
+            <Card key={job.id} className="p-5 hover:shadow-md transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
               <div className="flex items-start gap-4">
                 {/* Company logo placeholder */}
                 <div className="w-12 h-12 bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-700 dark:to-stone-600 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -874,7 +874,7 @@ function SavedJobsTab() {
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => handleMarkAsApplied(job.id)}
-                    className="p-2 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition-colors text-slate-600 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400"
+                    className="p-2 hover:bg-brand-50 dark:hover:bg-brand-900/30 rounded-lg transition-colors text-slate-600 dark:text-stone-400 hover:text-brand-600 dark:hover:text-brand-400"
                     title="Markera som ansökt"
                   >
                     <CheckCircle className="w-5 h-5" />
@@ -895,12 +895,12 @@ function SavedJobsTab() {
 
               {/* Footer with link */}
               {jobData?.webpage_url && (
-                <div className="mt-4 pt-3 border-t border-orange-100 dark:border-orange-800/50 flex justify-end">
+                <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-700 flex justify-end">
                   <a
                     href={jobData.webpage_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
+                    className="flex items-center gap-1 text-sm text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 font-medium"
                   >
                     <ExternalLink className="w-4 h-4" />
                     Visa annons
