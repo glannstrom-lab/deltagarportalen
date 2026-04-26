@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Plus, Loader2, CalendarDays, AlertCircle, RefreshCw } from '@/components/ui/icons'
-import { PageLayout } from '@/components/layout/index'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
 import { WeekView } from '@/components/calendar/WeekView'
 import { DayView } from '@/components/calendar/DayView'
@@ -186,11 +185,11 @@ export default function Calendar() {
     }
 
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-blue-100 dark:border-stone-700 overflow-hidden shadow-sm">
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-7 border-b border-blue-100 dark:border-stone-700 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-teal-600 dark:to-teal-700">
+        <div className="grid grid-cols-7 border-b border-stone-200 dark:border-stone-700/50 bg-stone-50 dark:bg-stone-800">
           {days.map((day) => (
-            <div key={day} className="py-3 text-center text-sm font-medium text-white">
+            <div key={day} className="py-3 text-center text-sm font-medium text-stone-600 dark:text-stone-400">
               {day}
             </div>
           ))}
@@ -199,7 +198,7 @@ export default function Calendar() {
         {/* Grid */}
         <div className="grid grid-cols-7">
           {Array.from({ length: startingDay }).map((_, index) => (
-            <div key={`empty-${index}`} className="h-28 border-b border-r border-stone-100 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-900/30" />
+            <div key={`empty-${index}`} className="h-28 border-b border-r border-stone-100 dark:border-stone-700/50 bg-stone-50/50 dark:bg-stone-900/30" />
           ))}
           {Array.from({ length: daysInMonth }).map((_, index) => {
             const day = index + 1
@@ -211,11 +210,11 @@ export default function Calendar() {
               <button
                 key={day}
                 onClick={() => handleDateClick(new Date(dateStr))}
-                className="h-28 border-b border-r border-stone-100 dark:border-stone-700 p-2 text-left transition-colors relative overflow-hidden hover:bg-blue-50 dark:hover:bg-blue-900/30"
+                className="h-28 border-b border-r border-stone-100 dark:border-stone-700/50 p-2 text-left transition-colors relative overflow-hidden hover:bg-stone-50 dark:hover:bg-stone-700/50"
               >
                 <span className={`
                   inline-flex items-center justify-center w-7 h-7 text-sm rounded-full
-                  ${isToday ? 'bg-blue-600 dark:bg-blue-500 text-white font-semibold' : 'text-stone-700 dark:text-stone-200'}
+                  ${isToday ? 'bg-teal-600 dark:bg-teal-500 text-white font-semibold' : 'text-stone-700 dark:text-stone-200'}
                 `}>
                   {day}
                 </span>
@@ -254,11 +253,11 @@ export default function Calendar() {
     )
 
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-blue-100 dark:border-stone-700 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-blue-100 dark:border-stone-700 bg-gradient-to-r from-blue-500 to-blue-600 dark:from-teal-600 dark:to-teal-700">
-          <h3 className="font-semibold text-white">{t('calendar.upcomingEvents')}</h3>
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
+        <div className="p-4 border-b border-stone-200 dark:border-stone-700/50 bg-stone-50 dark:bg-stone-800">
+          <h3 className="font-semibold text-stone-700 dark:text-stone-300">{t('calendar.upcomingEvents')}</h3>
         </div>
-        <div className="divide-y divide-stone-100 dark:divide-stone-700">
+        <div className="divide-y divide-stone-100 dark:divide-stone-700/50">
           {sortedEvents.map((event) => {
             const config = eventTypeConfig[event.type]
             const date = new Date(event.date)
@@ -268,7 +267,7 @@ export default function Calendar() {
               <button
                 key={event.id}
                 onClick={() => handleEventClick(event)}
-                className={`w-full p-4 text-left hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors flex items-start gap-4 ${
+                className={`w-full p-4 text-left hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors flex items-start gap-4 ${
                   isPast ? 'opacity-50' : ''
                 }`}
               >
@@ -302,7 +301,7 @@ export default function Calendar() {
               </p>
               <button
                 onClick={handleCreateEvent}
-                className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
               >
                 {t('calendar.newEvent')}
               </button>
@@ -315,20 +314,33 @@ export default function Calendar() {
 
   return (
     <>
-      <PageLayout
-        title={t('calendar.title')}
-        showTabs={false}
-        domain="info"
-        actions={
-          <button
-            onClick={handleCreateEvent}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium text-sm"
-          >
-            <Plus className="w-4 h-4" />
-            <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
-          </button>
-        }
-      >
+      <div className="pb-8 max-w-6xl mx-auto">
+        {/* Page Header */}
+        <header className="mb-6">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
+                <CalendarDays className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              </div>
+              <div>
+                <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">
+                  {t('calendar.title')}
+                </h1>
+                <p className="text-sm text-stone-500 dark:text-stone-400">
+                  {t('calendar.subtitle', 'Planera dina aktiviteter och möten')}
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={handleCreateEvent}
+              className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium text-sm"
+            >
+              <Plus className="w-4 h-4" />
+              <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
+            </button>
+          </div>
+        </header>
+
         <div className="space-y-4">
           {/* Status message - aria-live for screen readers */}
           <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
@@ -364,7 +376,7 @@ export default function Calendar() {
 
           {loading && (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-blue-600 dark:text-blue-400 animate-spin" />
+              <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
               <span className="ml-3 text-stone-600 dark:text-stone-300">{t('common.loading')}</span>
             </div>
           )}
@@ -398,8 +410,7 @@ export default function Calendar() {
             </>
           )}
         </div>
-
-      </PageLayout>
+      </div>
 
       {/* Event Modal - outside PageLayout for proper z-index */}
       <EventModal
@@ -419,8 +430,8 @@ export default function Calendar() {
       {/* Saving overlay */}
       {isSaving && (
         <div className="fixed inset-0 bg-black/20 z-[60] flex items-center justify-center">
-          <div className="bg-white dark:bg-stone-800 rounded-lg p-4 flex items-center gap-3 shadow-lg">
-            <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+          <div className="bg-white dark:bg-stone-800 rounded-xl p-4 flex items-center gap-3 shadow-lg border border-stone-200 dark:border-stone-700">
+            <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
             <span className="text-stone-700 dark:text-stone-300">{t('common.loading')}</span>
           </div>
         </div>

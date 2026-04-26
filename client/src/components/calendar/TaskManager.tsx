@@ -59,15 +59,15 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
   }
 
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+    <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         aria-expanded={isExpanded}
         aria-controls={contentId}
-        className="w-full p-4 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-inset"
+        className="w-full p-4 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
       >
         <div className="flex items-center gap-3">
-          <CheckSquare className="w-5 h-5 text-purple-600 dark:text-purple-400" aria-hidden="true" />
+          <CheckSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
           <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('calendar.tasks.toDo')}</h3>
           <span className="text-sm text-stone-700 dark:text-stone-300" role="status" aria-live="polite">
             ({completedCount}/{tasks.length})
@@ -77,7 +77,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
           {/* Progress bar */}
           <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
             <div
-              className="h-full bg-purple-500 rounded-full transition-all"
+              className="h-full bg-teal-500 rounded-full transition-all"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -86,7 +86,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
       </button>
 
       {isExpanded && (
-        <div id={contentId} className="p-4 pt-0 border-t border-stone-100 dark:border-stone-700">
+        <div id={contentId} className="p-4 pt-0 border-t border-stone-100 dark:border-stone-700/50">
           {/* Add new task */}
           <div className="flex gap-2 mt-4">
             <input
@@ -95,13 +95,13 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
               onChange={(e) => setNewTaskTitle(e.target.value)}
               onKeyPress={(e) => e.key === 'Enter' && addTask()}
               placeholder={t('calendar.tasks.addPlaceholder')}
-              className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
             <button
               onClick={addTask}
               disabled={!newTaskTitle.trim()}
               aria-label={t('calendar.tasks.addTask')}
-              className="px-3 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-1"
+              className="px-3 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1"
             >
               <Plus size={18} aria-hidden="true" />
             </button>
@@ -118,14 +118,14 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
               >
                 <button
                   onClick={() => toggleTask(task.id)}
-                  className="flex-shrink-0 focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-1 rounded"
+                  className="flex-shrink-0 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1 rounded"
                   aria-pressed={task.status === 'done'}
                   aria-label={task.status === 'done' ? `${task.title} - ${t('common.done')}` : `${task.title} - ${t('common.pending')}`}
                 >
                   {task.status === 'done' ? (
-                    <CheckSquare className="w-5 h-5 text-purple-600 dark:text-purple-400" aria-hidden="true" />
+                    <CheckSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
                   ) : (
-                    <Square className="w-5 h-5 text-stone-600 dark:text-stone-400 hover:text-purple-600 dark:hover:text-purple-400 transition-colors" aria-hidden="true" />
+                    <Square className="w-5 h-5 text-stone-600 dark:text-stone-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors" aria-hidden="true" />
                   )}
                 </button>
 
@@ -143,7 +143,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
                     onClick={() => moveTask(index, 'up')}
                     disabled={index === 0}
                     aria-label={t('calendar.tasks.moveUp')}
-                    className="p-1 hover:bg-stone-200 dark:hover:bg-stone-700 rounded disabled:opacity-30 focus-visible:ring-2 focus-visible:ring-purple-500"
+                    className="p-1 hover:bg-stone-200 dark:hover:bg-stone-700 rounded disabled:opacity-30 focus-visible:ring-2 focus-visible:ring-teal-500"
                   >
                     <ChevronUp size={14} className="text-stone-600 dark:text-stone-400" aria-hidden="true" />
                   </button>
@@ -151,7 +151,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
                     onClick={() => moveTask(index, 'down')}
                     disabled={index === tasks.length - 1}
                     aria-label={t('calendar.tasks.moveDown')}
-                    className="p-1 hover:bg-stone-200 dark:hover:bg-stone-700 rounded disabled:opacity-30 focus-visible:ring-2 focus-visible:ring-purple-500"
+                    className="p-1 hover:bg-stone-200 dark:hover:bg-stone-700 rounded disabled:opacity-30 focus-visible:ring-2 focus-visible:ring-teal-500"
                   >
                     <ChevronDown size={14} className="text-stone-600 dark:text-stone-400" aria-hidden="true" />
                   </button>

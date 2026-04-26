@@ -35,9 +35,9 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
   }
 
   return (
-    <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
+    <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
       {/* Day header */}
-      <div className={`p-4 border-b border-stone-200 dark:border-stone-700 ${isToday ? 'bg-teal-50 dark:bg-teal-900/20' : 'bg-stone-50 dark:bg-stone-800'}`}>
+      <div className={`p-4 border-b border-stone-200 dark:border-stone-700/50 ${isToday ? 'bg-teal-50 dark:bg-teal-900/20' : 'bg-stone-50 dark:bg-stone-800'}`}>
         <h2 className={`text-xl font-semibold ${isToday ? 'text-teal-900 dark:text-teal-100' : 'text-stone-900 dark:text-stone-100'}`}>
           {date.toLocaleDateString(i18n.language === 'sv' ? 'sv-SE' : 'en-US', {
             weekday: 'long',
@@ -54,9 +54,9 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
         {hours.map((hour) => {
           const hourEvents = getEventsForHour(hour)
           return (
-            <div key={hour} className="flex border-b border-stone-100 dark:border-stone-700 min-h-[100px]">
+            <div key={hour} className="flex border-b border-stone-100 dark:border-stone-700/50 min-h-[100px]">
               {/* Time label */}
-              <div className="w-20 p-3 border-r border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 text-sm text-stone-700 dark:text-stone-300 font-medium text-right sticky left-0">
+              <div className="w-20 p-3 border-r border-stone-100 dark:border-stone-700/50 bg-stone-50 dark:bg-stone-800 text-sm text-stone-700 dark:text-stone-300 font-medium text-right sticky left-0">
                 {String(hour).padStart(2, '0')}:00
               </div>
               

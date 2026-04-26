@@ -69,7 +69,7 @@ export function CalendarHeader({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-stone-800 rounded-xl border border-teal-100 dark:border-stone-700 p-4">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
       <div className="flex items-center gap-3 flex-wrap">
         {/* Navigation */}
         <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-700 rounded-lg p-1" role="group" aria-label={t('calendar.navigation.previous')}>

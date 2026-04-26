@@ -46,9 +46,9 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
 
   if (isEditing) {
     return (
-      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800 p-4">
+      <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
         <h3 className="font-semibold text-stone-900 dark:text-stone-100 mb-4 flex items-center gap-2">
-          <Navigation className="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+          <Navigation className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
           {t('calendar.travel.title')}
         </h3>
 
@@ -62,7 +62,7 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
               value={travel?.destination || ''}
               onChange={(e) => onTravelChange({ ...travel, destination: e.target.value })}
               placeholder={t('calendar.travel.destinationPlaceholder')}
-              className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
 
@@ -76,7 +76,7 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
                 value={travel?.duration || ''}
                 onChange={(e) => onTravelChange({ ...travel, duration: parseInt(e.target.value) || 0 })}
                 placeholder="30"
-                className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
             </div>
             <div>
@@ -88,7 +88,7 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
                 value={travel?.cost || ''}
                 onChange={(e) => onTravelChange({ ...travel, cost: parseInt(e.target.value) || 0 })}
                 placeholder="0"
-                className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full px-3 py-2 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
             </div>
           </div>
@@ -105,8 +105,8 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
                   aria-pressed={travel?.transportMode === mode}
                   className={`p-2 rounded-lg border text-center transition-colors ${
                     travel?.transportMode === mode
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700 hover:border-blue-300 dark:hover:border-blue-600'
+                      ? 'bg-teal-600 text-white border-teal-600'
+                      : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600'
                   }`}
                 >
                   <Icon size={20} className="mx-auto mb-1" aria-hidden="true" />
@@ -118,7 +118,7 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
 
           <button
             onClick={() => setIsEditing(false)}
-            className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+            className="w-full py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
           >
             {t('calendar.travel.savePlan')}
           </button>
@@ -130,11 +130,11 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
   const Icon = travel?.transportMode ? transportIcons[travel.transportMode] : Navigation
 
   return (
-    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl border border-blue-100 dark:border-blue-800 p-4">
+    <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-lg">
-            <Icon className="w-5 h-5 text-blue-600 dark:text-blue-400" aria-hidden="true" />
+          <div className="p-2 bg-teal-100 dark:bg-teal-900/40 rounded-lg">
+            <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
           </div>
           <div>
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
@@ -155,7 +155,7 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
               )}
             </div>
 
-            <div className="mt-3 p-2 bg-white dark:bg-stone-800 rounded-lg border border-blue-100 dark:border-blue-800">
+            <div className="mt-3 p-2 bg-stone-50 dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700/50">
               <p className="text-sm text-stone-600 dark:text-stone-400">
                 <span className="font-medium">{t('calendar.travel.departureTime')}:</span> {calculateArrivalTime()}
               </p>
@@ -181,7 +181,7 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
           </button>
           <button
             onClick={() => setIsEditing(true)}
-            className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
+            className="text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300"
           >
             {t('calendar.travel.edit')}
           </button>

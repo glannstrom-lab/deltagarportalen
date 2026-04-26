@@ -18,13 +18,13 @@ interface EventModalProps {
 }
 
 const eventTypeConfigs = [
-  { value: 'interview', labelKey: 'calendar.eventTypes.interview', color: 'bg-amber-100 text-amber-700' },
-  { value: 'meeting', labelKey: 'calendar.eventTypes.meeting', color: 'bg-blue-100 text-blue-700' },
-  { value: 'deadline', labelKey: 'calendar.eventTypes.deadline', color: 'bg-red-100 text-red-700' },
-  { value: 'reminder', labelKey: 'calendar.eventTypes.reminder', color: 'bg-stone-100 text-stone-700' },
-  { value: 'task', labelKey: 'calendar.eventTypes.task', color: 'bg-purple-100 text-purple-700' },
-  { value: 'followup', labelKey: 'calendar.eventTypes.followup', color: 'bg-green-100 text-green-700' },
-  { value: 'preparation', labelKey: 'calendar.eventTypes.preparation', color: 'bg-teal-100 text-teal-700' },
+  { value: 'interview', labelKey: 'calendar.eventTypes.interview', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300' },
+  { value: 'meeting', labelKey: 'calendar.eventTypes.meeting', color: 'bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300' },
+  { value: 'deadline', labelKey: 'calendar.eventTypes.deadline', color: 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-300' },
+  { value: 'reminder', labelKey: 'calendar.eventTypes.reminder', color: 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300' },
+  { value: 'task', labelKey: 'calendar.eventTypes.task', color: 'bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300' },
+  { value: 'followup', labelKey: 'calendar.eventTypes.followup', color: 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' },
+  { value: 'preparation', labelKey: 'calendar.eventTypes.preparation', color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300' },
 ]
 
 export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJobTitle, isSaving = false }: EventModalProps) {
@@ -117,9 +117,9 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
       aria-labelledby={titleId}
       onClick={(e) => e.target === e.currentTarget && onClose()}
     >
-      <div className="bg-white dark:bg-stone-900 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+      <div className="bg-white dark:bg-stone-900 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col border border-stone-200 dark:border-stone-700/50">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
+        <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700/50">
           <h2 id={titleId} className="text-xl font-semibold text-stone-900 dark:text-stone-100">
             {event ? t('calendar.modal.editEvent') : t('calendar.modal.newEvent')}
           </h2>
@@ -133,7 +133,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-stone-200 dark:border-stone-700">
+        <div className="flex border-b border-stone-200 dark:border-stone-700/50 bg-stone-50 dark:bg-stone-800/50">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -311,8 +311,8 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
 
               {/* Linked job */}
               {linkedJobTitle && (
-                <div className="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
-                  <p className="text-sm text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                <div className="p-3 bg-teal-50 dark:bg-teal-900/30 rounded-lg border border-teal-100 dark:border-teal-800">
+                  <p className="text-sm text-teal-700 dark:text-teal-300 flex items-center gap-2">
                     <Link2 size={14} />
                     {t('calendar.modal.linkedTo')}: <strong>{linkedJobTitle}</strong>
                   </p>
@@ -347,7 +347,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-4 border-t border-stone-200 dark:border-stone-700">
+        <div className="flex items-center justify-between p-4 border-t border-stone-200 dark:border-stone-700/50 bg-stone-50 dark:bg-stone-800/50">
           {event ? (
             <button
               onClick={() => onDelete(event.id)}
