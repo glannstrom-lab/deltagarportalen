@@ -172,7 +172,7 @@ export function BottomBar() {
   }
 
   return (
-    <div className="bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800">
+    <div className="sticky bottom-0 z-40 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800">
       {/* Toggle button - compact */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
