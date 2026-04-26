@@ -14,7 +14,7 @@ import { OnboardingModal } from '@/components/ai-team/OnboardingModal'
 import { ResponseModeSelector } from '@/components/ai-team/ResponseModeSelector'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { agentColorClasses } from '@/components/ai-team/types'
-import { Users, Lightbulb, Settings2, Zap, MessageSquare } from '@/components/ui/icons'
+import { Users, Lightbulb } from '@/components/ui/icons'
 import { useSuggestedAgent } from '@/hooks/useSuggestedAgent'
 
 export default function AITeam() {
@@ -93,7 +93,9 @@ export default function AITeam() {
       {/* Agent Selector */}
       <section className="mb-6">
         <div className="flex items-center gap-2 mb-3">
-          <Users className="w-4 h-4 text-stone-500 dark:text-stone-400" />
+          <div className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
+            <Users className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400" />
+          </div>
           <h2 className="text-sm font-semibold text-stone-700 dark:text-stone-300">
             {t('aiTeam.selectAgent')}
           </h2>
@@ -107,27 +109,11 @@ export default function AITeam() {
         <div className="lg:col-span-1 space-y-4 order-last lg:order-first">
           {/* Personality */}
           <section className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
-                <Settings2 className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400" />
-              </div>
-              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300">
-                Personlighet
-              </h3>
-            </div>
             <PersonalityDropdown />
           </section>
 
           {/* Response Mode */}
           <section className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
-                <MessageSquare className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400" />
-              </div>
-              <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300">
-                Svarsläge
-              </h3>
-            </div>
             <ResponseModeSelector />
           </section>
 
@@ -145,7 +131,7 @@ export default function AITeam() {
             <div className="flex items-center gap-2 mb-3">
               <div className={cn(
                 'w-6 h-6 rounded-lg flex items-center justify-center',
-                colors.bg.replace('bg-', 'bg-').replace('-500', '-100').replace('-400', '-900/50')
+                'bg-white/50 dark:bg-stone-900/30'
               )}>
                 <Lightbulb className={cn('w-3.5 h-3.5', colors.text)} />
               </div>

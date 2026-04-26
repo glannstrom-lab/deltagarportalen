@@ -1,5 +1,5 @@
 /**
- * Personality Dropdown Component
+ * Personality Dropdown Component - Clean Design
  * Allows users to select the AI agent's personality
  */
 
@@ -7,7 +7,7 @@ import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { useAITeamStore } from '@/stores/aiTeamStore'
-import { ChevronDown, Check } from '@/components/ui/icons'
+import { ChevronDown, Check, Smile } from '@/components/ui/icons'
 import type { Personality, PersonalityId } from './types'
 
 // Personality definitions with system prompts
@@ -108,46 +108,55 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
   }, [])
 
   return (
-    <div className={cn('relative', className)} ref={dropdownRef}>
-      <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-        {t('aiTeam.personality')}
-      </label>
+    <div className={cn('space-y-3', className)} ref={dropdownRef}>
+      {/* Header */}
+      <div className="flex items-center gap-2">
+        <div className="w-6 h-6 rounded-lg bg-stone-100 dark:bg-stone-800 flex items-center justify-center">
+          <Smile className="w-3.5 h-3.5 text-stone-500 dark:text-stone-400" />
+        </div>
+        <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
+          {t('aiTeam.personality')}
+        </span>
+      </div>
+
+      {/* Dropdown Button */}
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
           'w-full flex items-center justify-between',
-          'px-4 py-3 rounded-xl',
-          'bg-white dark:bg-stone-800',
+          'px-3 py-2.5 rounded-lg',
+          'bg-stone-50 dark:bg-stone-800',
           'border border-stone-200 dark:border-stone-700',
-          'hover:border-stone-300 dark:hover:border-stone-600',
+          'hover:bg-stone-100 dark:hover:bg-stone-700',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500',
           'transition-colors'
         )}
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <div className="flex flex-col items-start">
+        <div className="flex flex-col items-start text-left">
           <span className="text-sm font-medium text-stone-900 dark:text-stone-100">
             {t(currentPersonality.nameKey)}
           </span>
-          <span className="text-xs text-stone-500 dark:text-stone-400">
+          <span className="text-xs text-stone-500 dark:text-stone-400 line-clamp-1">
             {t(currentPersonality.descriptionKey)}
           </span>
         </div>
         <ChevronDown
           className={cn(
-            'w-5 h-5 text-stone-400 transition-transform',
+            'w-4 h-4 text-stone-400 transition-transform flex-shrink-0 ml-2',
             isOpen && 'rotate-180'
           )}
           aria-hidden="true"
         />
       </button>
 
+      {/* Dropdown Menu */}
       {isOpen && (
         <div
           className={cn(
-            'absolute z-50 w-full mt-2',
+            'absolute z-50 left-4 right-4 lg:left-0 lg:right-0 mt-1',
             'bg-white dark:bg-stone-800',
             'border border-stone-200 dark:border-stone-700',
             'rounded-xl shadow-lg',
@@ -158,7 +167,7 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
         >
           {/* Serious personalities */}
           <div className="p-2">
-            <div className="px-3 py-1.5 text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+            <div className="px-2 py-1.5 text-xs font-semibold text-stone-400 dark:text-stone-500 uppercase tracking-wider">
               {t('aiTeam.personalityCategories.serious')}
             </div>
             {seriousPersonalities.map((personality) => (
@@ -174,11 +183,11 @@ export function PersonalityDropdown({ className }: PersonalityDropdownProps) {
             ))}
           </div>
 
-          <div className="border-t border-stone-200 dark:border-stone-700" />
+          <div className="border-t border-stone-100 dark:border-stone-700" />
 
           {/* Fun personalities */}
           <div className="p-2">
-            <div className="px-3 py-1.5 text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider">
+            <div className="px-2 py-1.5 text-xs font-semibold text-stone-400 dark:text-stone-500 uppercase tracking-wider">
               {t('aiTeam.personalityCategories.fun')}
             </div>
             {funPersonalities.map((personality) => (
@@ -214,23 +223,23 @@ function PersonalityOption({ personality, isSelected, onSelect }: PersonalityOpt
       onClick={onSelect}
       className={cn(
         'w-full flex items-center justify-between',
-        'px-3 py-2 rounded-lg',
+        'px-2 py-2 rounded-lg',
         'transition-colors',
         isSelected
           ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
-          : 'hover:bg-stone-100 dark:hover:bg-stone-700'
+          : 'hover:bg-stone-50 dark:hover:bg-stone-700'
       )}
       role="option"
       aria-selected={isSelected}
     >
-      <div className="flex flex-col items-start">
+      <div className="flex flex-col items-start text-left">
         <span className="text-sm font-medium">{t(personality.nameKey)}</span>
         <span className="text-xs text-stone-500 dark:text-stone-400">
           {t(personality.descriptionKey)}
         </span>
       </div>
       {isSelected && (
-        <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0" aria-hidden="true" />
+        <Check className="w-4 h-4 text-teal-600 dark:text-teal-400 flex-shrink-0 ml-2" aria-hidden="true" />
       )}
     </button>
   )
