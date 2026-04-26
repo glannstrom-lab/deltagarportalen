@@ -93,8 +93,8 @@ export default function Layout() {
         {/* Tillbaka-knapp på mobil (alla sidor utom dashboard) */}
         {showBackButton && <MobileBackButton />}
 
-        {/* FAQ BottomBar */}
-        {showBars && !isMobile && <BottomBar />}
+        {/* FAQ BottomBar - always visible like TopBar */}
+        {showBars && <BottomBar />}
 
         {/* Övriga komponenter */}
         <BreakReminder workDuration={15} />

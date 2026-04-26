@@ -172,14 +172,15 @@ export function BottomBar() {
   }
 
   return (
-    <div className="bg-white dark:bg-stone-800 border-t-2 border-stone-200 dark:border-stone-700 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
-      {/* Toggle button */}
+    <div className="bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800">
+      {/* Toggle button - compact */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-center gap-2 py-4 text-sm font-medium text-stone-600 dark:text-stone-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
+        className="w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 text-[13px] sm:text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
       >
         <HelpCircle className="w-4 h-4" />
-        <span>{faq.title}</span>
+        <span className="hidden sm:inline">{faq.title}</span>
+        <span className="sm:hidden">Hjälp & FAQ</span>
         <ChevronDown
           className={cn(
             'w-4 h-4 transition-transform',
@@ -190,8 +191,8 @@ export function BottomBar() {
 
       {/* FAQ content */}
       {isExpanded && (
-        <div className="px-4 pb-4 max-w-2xl mx-auto">
-          <div className="bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 px-4">
+        <div className="px-3 sm:px-4 pb-3 sm:pb-4 max-w-2xl mx-auto">
+          <div className="bg-stone-50 dark:bg-stone-800 rounded-lg px-3 sm:px-4">
             {faq.items.map((item, index) => (
               <FAQItemComponent
                 key={index}
@@ -203,13 +204,14 @@ export function BottomBar() {
           </div>
 
           {/* Contact support link */}
-          <div className="mt-4 text-center">
+          <div className="mt-3 text-center">
             <Link
               to="/help"
-              className="inline-flex items-center gap-2 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300"
+              className="inline-flex items-center gap-1.5 text-[13px] text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300"
             >
-              <MessageCircle className="w-4 h-4" />
-              Behöver du mer hjälp? Besök vår hjälpsida
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Behöver du mer hjälp? Besök vår hjälpsida</span>
+              <span className="sm:hidden">Mer hjälp</span>
             </Link>
           </div>
         </div>
