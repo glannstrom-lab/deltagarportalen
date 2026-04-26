@@ -1,7 +1,6 @@
 /**
- * Profile Page - Slim Orchestrator
- * Reduced from 1624 lines to ~200 lines
- * Uses Zustand store and lazy-loaded components
+ * Profile Page - Clean Modern Design
+ * Simplified layout matching new dashboard style
  */
 
 import { Suspense, lazy, useEffect, Component, type ReactNode } from 'react'
@@ -9,8 +8,6 @@ import { useTranslation } from 'react-i18next'
 import i18n from '@/i18n/config'
 import { Loader2 } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 import { Toaster } from 'react-hot-toast'
 import type { TabId } from '@/components/profile/constants'
 
@@ -60,7 +57,7 @@ class ProfileErrorBoundary extends Component<{ children: ReactNode }, ErrorBound
   render() {
     if (this.state.hasError) {
       return (
-        <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-2xl border border-red-200 dark:border-red-800">
+        <div className="p-6 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800">
           <p className="text-red-700 dark:text-red-300 font-medium">
             {i18n.t('profile.errorLoadingSection')}
           </p>
@@ -99,7 +96,6 @@ function SectionLoader() {
 function TabContent({ activeTab }: { activeTab: TabId }) {
   const { i18n } = useTranslation()
 
-  // Key based on language forces re-render when language changes
   return (
     <ProfileErrorBoundary>
       <Suspense key={i18n.language} fallback={<SectionLoader />}>
@@ -118,7 +114,7 @@ function TabContent({ activeTab }: { activeTab: TabId }) {
 function InitialLoader() {
   const { t } = useTranslation()
   return (
-    <div className="flex items-center justify-center py-12">
+    <div className="flex items-center justify-center py-16">
       <div className="text-center">
         <Loader2 className="w-8 h-8 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-3" />
         <p className="text-stone-600 dark:text-stone-400">{t('profile.loading')}</p>
@@ -143,9 +139,8 @@ export default function Profile() {
     return <InitialLoader />
   }
 
-  // Key forces full re-render when language changes
   return (
-    <div key={i18n.language} className="pb-8 max-w-5xl mx-auto">
+    <div key={i18n.language} className="pb-8 max-w-4xl mx-auto">
       {/* Toast notifications */}
       <Toaster
         position="top-right"
@@ -156,40 +151,31 @@ export default function Profile() {
             color: 'var(--toast-color, #1c1917)',
             borderRadius: '12px',
             padding: '12px 16px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
             border: '1px solid var(--toast-border, #e7e5e4)'
           },
           success: {
-            iconTheme: {
-              primary: '#14b8a6',
-              secondary: '#fff'
-            }
+            iconTheme: { primary: '#14b8a6', secondary: '#fff' }
           },
           error: {
-            iconTheme: {
-              primary: '#ef4444',
-              secondary: '#fff'
-            }
+            iconTheme: { primary: '#ef4444', secondary: '#fff' }
           }
         }}
       />
 
-      {/* Onboarding modal for new users (renders conditionally inside) */}
+      {/* Onboarding modal for new users */}
       <OnboardingModal />
 
-      {/* Profile header with avatar, progress, actions */}
+      {/* Profile header with avatar and progress */}
       <ProfileHeader />
 
       {/* Tab navigation */}
       <ProfileTabs />
 
-      {/* Tab content (lazy loaded) */}
-      <div className="mt-4">
+      {/* Tab content */}
+      <div className="mt-5">
         <TabContent activeTab={activeTab} />
       </div>
-
-      {/* Contextual help */}
-      <HelpButton content={helpContent.profile} />
     </div>
   )
 }

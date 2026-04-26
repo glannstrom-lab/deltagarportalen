@@ -1,5 +1,5 @@
 /**
- * ProfileTabs - Accessible tab navigation with reduced tabs (9 → 5)
+ * ProfileTabs - Clean minimal tab navigation
  */
 
 import { useCallback, KeyboardEvent, useRef } from 'react'
@@ -12,12 +12,12 @@ import { useProfileStore } from '@/stores/profileStore'
 import { TABS, type TabId } from './constants'
 
 // Tab icons mapping
-const TAB_ICONS: Record<TabId, React.ReactNode> = {
-  overview: <User className="w-4 h-4" />,
-  jobbsok: <Briefcase className="w-4 h-4" />,
-  kompetens: <Star className="w-4 h-4" />,
-  stod: <Heart className="w-4 h-4" />,
-  installningar: <Settings className="w-4 h-4" />
+const TAB_ICONS: Record<TabId, React.ElementType> = {
+  overview: User,
+  jobbsok: Briefcase,
+  kompetens: Star,
+  stod: Heart,
+  installningar: Settings
 }
 
 export function ProfileTabs() {
@@ -26,11 +26,9 @@ export function ProfileTabs() {
   const tabRefs = useRef<Map<TabId, HTMLButtonElement>>(new Map())
 
   // Get incomplete status for each tab
-  const getTabStatus = useCallback((tabId: TabId): 'incomplete' | 'complete' | 'none' => {
-    // Simple logic - can be enhanced
+  const getTabStatus = useCallback((tabId: TabId): boolean => {
     const { nextStep } = completion
-    if (nextStep?.tab === tabId) return 'incomplete'
-    return 'none'
+    return nextStep?.tab === tabId
   }, [completion])
 
   // Handle keyboard navigation
@@ -66,62 +64,17 @@ export function ProfileTabs() {
   }, [setActiveTab])
 
   return (
-    <div className="mb-6">
-      {/* Mobile: Horizontal scroll */}
-      <div className="md:hidden overflow-x-auto scrollbar-hide">
-        <nav
-          role="tablist"
-          aria-label={t('profile.tabs.ariaLabel')}
-          className="flex gap-1 p-1 min-w-max bg-stone-100 dark:bg-stone-800 rounded-xl"
-        >
-          {TABS.map((tab, index) => {
-            const isActive = activeTab === tab.id
-            const status = getTabStatus(tab.id)
-
-            return (
-              <button
-                key={tab.id}
-                ref={(el) => {
-                  if (el) tabRefs.current.set(tab.id, el)
-                }}
-                role="tab"
-                id={`tab-${tab.id}`}
-                aria-selected={isActive}
-                aria-controls={`tabpanel-${tab.id}`}
-                tabIndex={isActive ? 0 : -1}
-                onClick={() => setActiveTab(tab.id)}
-                onKeyDown={(e) => handleKeyDown(e, index)}
-                className={cn(
-                  'flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2',
-                  isActive
-                    ? 'bg-white dark:bg-stone-700 text-teal-700 dark:text-teal-300 shadow-sm'
-                    : 'text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200'
-                )}
-              >
-                <span aria-hidden="true">{TAB_ICONS[tab.id]}</span>
-                <span>{t(tab.shortLabelKey)}</span>
-                {status === 'incomplete' && (
-                  <span
-                    className="w-1.5 h-1.5 bg-amber-400 rounded-full"
-                    aria-label={t('profile.tabs.incompleteFields')}
-                  />
-                )}
-              </button>
-            )
-          })}
-        </nav>
-      </div>
-
-      {/* Desktop: Full tabs */}
+    <div className="border-b border-stone-200 dark:border-stone-800">
+      {/* Scrollable container */}
       <nav
         role="tablist"
         aria-label={t('profile.tabs.ariaLabel')}
-        className="hidden md:flex items-center justify-center gap-1 p-1.5 bg-stone-100 dark:bg-stone-800 rounded-xl"
+        className="flex overflow-x-auto scrollbar-hide -mb-px"
       >
         {TABS.map((tab, index) => {
           const isActive = activeTab === tab.id
-          const status = getTabStatus(tab.id)
+          const hasIncomplete = getTabStatus(tab.id)
+          const Icon = TAB_ICONS[tab.id]
 
           return (
             <button
@@ -137,20 +90,25 @@ export function ProfileTabs() {
               onClick={() => setActiveTab(tab.id)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               className={cn(
-                'flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2',
+                'relative flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors',
+                'focus:outline-none focus-visible:bg-stone-50 dark:focus-visible:bg-stone-800',
                 isActive
-                  ? 'bg-white dark:bg-stone-700 text-teal-700 dark:text-teal-300 shadow-sm'
-                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-white/50 dark:hover:bg-stone-700/50'
+                  ? 'text-teal-600 dark:text-teal-400'
+                  : 'text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300'
               )}
             >
-              <span aria-hidden="true">{TAB_ICONS[tab.id]}</span>
-              <span>{t(tab.labelKey)}</span>
-              {status === 'incomplete' && (
-                <span
-                  className="w-2 h-2 bg-amber-400 rounded-full animate-pulse"
-                  aria-label={t('profile.tabs.incompleteFields')}
-                />
+              <Icon className="w-4 h-4" />
+              <span className="hidden sm:inline">{t(tab.labelKey)}</span>
+              <span className="sm:hidden">{t(tab.shortLabelKey)}</span>
+
+              {/* Incomplete indicator */}
+              {hasIncomplete && (
+                <span className="w-1.5 h-1.5 bg-amber-400 rounded-full" />
+              )}
+
+              {/* Active indicator line */}
+              {isActive && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-500" />
               )}
             </button>
           )
