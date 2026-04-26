@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { getWeekDates, type CalendarEvent, eventTypeConfig } from '@/services/calendarData'
+import { getWeekDates, type CalendarEvent, eventTypeConfig, formatTime } from '@/services/calendarData'
 import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell } from '@/components/ui/icons'
 
 interface WeekViewProps {
@@ -101,7 +101,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
                         <div className="flex items-center gap-1.5">
                           <Icon size={12} className={config.color} />
                           <span className={`text-xs font-medium ${config.color} truncate`}>
-                            {event.time}
+                            {formatTime(event.time)}
                           </span>
                         </div>
                         <p className="text-xs text-stone-700 dark:text-stone-300 mt-0.5 truncate font-medium">

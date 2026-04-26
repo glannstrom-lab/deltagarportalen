@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { type CalendarEvent, eventTypeConfig, formatDuration } from '@/services/calendarData'
+import { type CalendarEvent, eventTypeConfig, formatDuration, formatTime } from '@/services/calendarData'
 import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell, MapPin, Video, Phone } from '@/components/ui/icons'
 
 interface DayViewProps {
@@ -87,7 +87,7 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
                             </span>
                           </div>
                           <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">
-                            {event.time} - {event.endTime || `${duration}`}
+                            {formatTime(event.time)} - {event.endTime ? formatTime(event.endTime) : duration}
                           </p>
                           {event.location && (
                             <p className="text-sm text-stone-700 dark:text-stone-300 mt-1 flex items-center gap-1">

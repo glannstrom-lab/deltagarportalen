@@ -202,6 +202,19 @@ export function formatDuration(minutes: number): string {
   return `${hours} tim ${mins} min`
 }
 
+/**
+ * Format time to HH:MM (removes seconds if present)
+ */
+export function formatTime(time: string): string {
+  if (!time) return ''
+  // Handle HH:MM:SS format - return only HH:MM
+  const parts = time.split(':')
+  if (parts.length >= 2) {
+    return `${parts[0]}:${parts[1]}`
+  }
+  return time
+}
+
 export function getWeekNumber(date: Date): number {
   const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
   const dayNum = d.getUTCDay() || 7

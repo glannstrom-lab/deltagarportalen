@@ -7,7 +7,7 @@ import { DayView } from '@/components/calendar/DayView'
 import { EventModal } from '@/components/calendar/EventModal'
 import { calendarApi } from '@/services/cloudStorage'
 import type { CalendarEvent, CalendarView } from '@/services/calendarData'
-import { eventTypeConfig } from '@/services/calendarData'
+import { eventTypeConfig, formatTime } from '@/services/calendarData'
 
 export default function Calendar() {
   const { t, i18n } = useTranslation()
@@ -227,7 +227,7 @@ export default function Calendar() {
                           key={event.id}
                           className={`text-xs px-1.5 py-0.5 rounded truncate ${config.bgColor} ${config.color}`}
                         >
-                          {event.time} {event.title}
+                          {formatTime(event.time)} {event.title}
                         </div>
                       )
                     })}
@@ -284,7 +284,7 @@ export default function Calendar() {
                   <p className="text-sm text-stone-600 dark:text-stone-300 mt-1">
                     {date.toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', { weekday: 'short', day: 'numeric', month: 'short' })}
                     {' · '}
-                    {event.time}
+                    {formatTime(event.time)}
                   </p>
                   {event.location && (
                     <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 truncate">{event.location}</p>
