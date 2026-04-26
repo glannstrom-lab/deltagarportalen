@@ -350,23 +350,6 @@ export function CoverLetterWrite() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Hero header */}
-      <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-5 border border-teal-200 dark:border-teal-800/50">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-white dark:bg-stone-800 rounded-lg flex items-center justify-center shadow-sm">
-            <Sparkles className="w-6 h-6 text-teal-600 dark:text-teal-400" />
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
-              Skapa ditt personliga brev med AI
-            </h2>
-            <p className="text-stone-600 dark:text-stone-400 mt-1">
-              Följ stegen nedan för att skapa ett professionellt och personligt brev baserat på ditt CV.
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Step indicator */}
       <nav aria-label="Brevskrivningssteg" className="bg-white dark:bg-stone-900 rounded-xl p-4 border border-stone-200 dark:border-stone-700/50">
         {/* Mobile: Compact step indicator */}
