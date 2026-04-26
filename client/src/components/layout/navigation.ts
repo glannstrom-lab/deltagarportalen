@@ -29,6 +29,7 @@ import {
   Building2,
   UserCheck,
   Bot,
+  ExternalLink,
 } from '@/components/ui/icons'
 
 // ============================================
@@ -109,6 +110,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { path: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
       { path: '/international', labelKey: 'nav.international', icon: Globe, isNew: true },
+      { path: '/externa-resurser', labelKey: 'nav.externalResources', icon: ExternalLink },
       { path: '/resources', labelKey: 'nav.myDocuments', icon: Bookmark },
     ],
   },

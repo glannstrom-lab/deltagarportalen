@@ -71,6 +71,7 @@ const GoogleCalendarCallback = lazy(() => import('./pages/GoogleCalendarCallback
 const MyConsultant = lazy(() => import('./pages/MyConsultant'))
 const AITeam = lazy(() => import('./pages/AITeam'))
 const Network = lazy(() => import('./pages/Network'))
+const ExternalResources = lazy(() => import('./pages/ExternalResources'))
 
 /**
  * Lazy route wrapper with error boundary
@@ -258,6 +259,7 @@ function App() {
           <Route path="ai-team" element={<LazyRoute><RouteErrorBoundary><AITeam /></RouteErrorBoundary></LazyRoute>} />
           <Route path="exercises" element={<LazyRoute><RouteErrorBoundary><Exercises /></RouteErrorBoundary></LazyRoute>} />
           <Route path="international/*" element={<LazyRoute><RouteErrorBoundary><International /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="externa-resurser" element={<LazyRoute><RouteErrorBoundary><ExternalResources /></RouteErrorBoundary></LazyRoute>} />
           <Route path="consultant/*" element={
             <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
               <LazyRoute><RouteErrorBoundary><Consultant /></RouteErrorBoundary></LazyRoute>
