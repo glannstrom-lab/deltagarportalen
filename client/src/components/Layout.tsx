@@ -121,7 +121,7 @@ function MobileTopBar() {
   return (
     <>
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 px-4 py-3 safe-top">
+      <header className="sticky top-0 z-30 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 px-3 py-2 safe-top">
         <div className="flex items-center justify-between">
           {/* Vänster: Logo */}
           <Link to="/" className="flex items-center gap-2">
@@ -129,29 +129,29 @@ function MobileTopBar() {
               src="/logo-jobin-new.png"
               alt="Jobin"
               loading="eager"
-              className="h-8 w-auto object-contain"
+              className="h-6 w-auto object-contain"
             />
-            <span className="text-base font-semibold text-teal-600 dark:text-teal-400">jobin.se</span>
+            <span className="text-sm font-semibold text-teal-600 dark:text-teal-400">jobin.se</span>
           </Link>
 
           {/* Höger: Notifikationer + Profil + Meny */}
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-0.5">
             <NotificationBell variant="compact" />
             <button
               onClick={() => setIsProfileOpen(true)}
-              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 dark:hover:bg-stone-700 transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
               aria-label={t('nav.profile')}
             >
-              <div className="w-7 h-7 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
-                <User className="w-3.5 h-3.5 text-white" />
+              <div className="w-6 h-6 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center">
+                <User className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
               </div>
             </button>
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 dark:hover:bg-stone-700 transition-colors"
+              className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
               aria-label={t('sidebar.menu')}
             >
-              <Menu className="w-5 h-5 text-slate-700 dark:text-stone-300" />
+              <Menu className="w-5 h-5 text-stone-600 dark:text-stone-300" />
             </button>
           </div>
         </div>
@@ -184,59 +184,61 @@ function MobileTopBar() {
         className={cn(
           'fixed top-0 left-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
-          'w-[280px] max-w-[80vw]',
+          'w-[260px] max-w-[80vw]',
           isProfileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Profil header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700 safe-top">
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('nav.profile')}</h2>
+        <div className="flex items-center justify-between p-3 border-b border-stone-200 dark:border-stone-700/50 safe-top">
+          <h2 className="text-base font-semibold text-stone-800 dark:text-stone-100">{t('nav.profile')}</h2>
           <button
             onClick={() => setIsProfileOpen(false)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
             aria-label={t('common.close')}
           >
-            <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
+            <X className="w-4 h-4 text-stone-500 dark:text-stone-400" />
           </button>
         </div>
 
         {/* Profil-info */}
-        <div className="p-4">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
-              <User className="w-7 h-7 text-white" />
+        <div className="p-3">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
+              <User className="w-6 h-6 text-teal-600 dark:text-teal-400" />
             </div>
-            <div>
-              <p className="font-semibold text-slate-800 dark:text-stone-100">{user?.email || t('roles.user')}</p>
-              <p className="text-sm text-slate-700 dark:text-stone-400">{t('roles.participant')}</p>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-stone-800 dark:text-stone-100 truncate">{user?.email || t('roles.user')}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">{t('roles.participant')}</p>
             </div>
           </div>
 
-          <nav className="space-y-1">
+          <nav className="space-y-0.5">
             <Link
               to="/profile"
               onClick={() => setIsProfileOpen(false)}
-              className="flex items-center px-4 py-3 rounded-xl text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-sm"
             >
+              <User className="w-4 h-4 text-stone-400" />
               {t('topbar.profile')}
             </Link>
             <Link
               to="/settings"
               onClick={() => setIsProfileOpen(false)}
-              className="flex items-center px-4 py-3 rounded-xl text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
+              className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors text-sm"
             >
+              <Settings className="w-4 h-4 text-stone-400" />
               {t('nav.settings')}
             </Link>
           </nav>
         </div>
 
-        {/* Logga ut - synkad med Sidebar */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-stone-700 safe-bottom">
+        {/* Logga ut */}
+        <div className="absolute bottom-0 left-0 right-0 p-3 border-t border-stone-200 dark:border-stone-700/50 safe-bottom">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-red-600 rounded-xl font-medium hover:bg-red-100 transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-3 py-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg text-sm font-medium hover:bg-red-100 dark:hover:bg-red-900/30 transition-colors"
           >
-            <LogOut className="w-5 h-5" />
+            <LogOut className="w-4 h-4" />
             {t('nav.logout')}
           </button>
         </div>
@@ -273,7 +275,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       className={cn(
         'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
         'transform transition-transform duration-300 ease-out',
-        'w-[300px] max-w-[85vw] flex flex-col',
+        'w-[280px] max-w-[85vw] flex flex-col',
         isOpen ? 'translate-x-0' : 'translate-x-full'
       )}
       role="dialog"
@@ -281,34 +283,34 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       aria-label={t('sidebar.menu')}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-stone-700 safe-top shrink-0">
-        <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('sidebar.menu')}</h2>
+      <div className="flex items-center justify-between p-3 border-b border-stone-200 dark:border-stone-700/50 safe-top shrink-0">
+        <h2 className="text-base font-semibold text-stone-800 dark:text-stone-100">{t('sidebar.menu')}</h2>
         <button
           onClick={onClose}
-          className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
+          className="w-8 h-8 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
           aria-label={t('common.close')}
         >
-          <X className="w-5 h-5 text-slate-600 dark:text-stone-400" />
+          <X className="w-4 h-4 text-stone-500 dark:text-stone-400" />
         </button>
       </div>
 
       {/* Scrollable Navigation */}
-      <nav className="flex-1 overflow-y-auto p-3">
+      <nav className="flex-1 overflow-y-auto p-2">
         {navGroups.map((group) => {
           const isGroupExpanded = expandedGroups.includes(group.id)
 
           return (
-            <div key={group.id} className="mb-2">
+            <div key={group.id} className="mb-1">
               {/* Group Header - Expandable */}
               <button
                 onClick={() => toggleGroup(group.id)}
-                className="w-full flex items-center justify-between px-3 py-2.5 text-xs font-semibold text-teal-700 dark:text-teal-400 uppercase tracking-wider hover:bg-teal-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
+                className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider hover:bg-stone-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
                 aria-expanded={isGroupExpanded}
               >
                 <span>{t(group.labelKey)}</span>
                 <ChevronDown
                   className={cn(
-                    'w-4 h-4 transition-transform',
+                    'w-3.5 h-3.5 transition-transform',
                     !isGroupExpanded && '-rotate-90'
                   )}
                 />
@@ -316,7 +318,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
 
               {/* Group Items */}
               {isGroupExpanded && (
-                <div className="mt-1 space-y-0.5">
+                <div className="mt-0.5 space-y-0.5">
                   {group.items.map((item) => {
                     const Icon = item.icon
                     const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
@@ -328,16 +330,16 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         to={item.path}
                         onClick={onClose}
                         className={cn(
-                          'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                          'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
                           isActive
-                            ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
-                            : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700 active:bg-slate-200'
+                            ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 font-medium'
+                            : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
                         )}
                       >
-                        <Icon className="w-5 h-5 flex-shrink-0" />
+                        <Icon className="w-4 h-4 flex-shrink-0" />
                         <span className="flex-1">{t(item.labelKey)}</span>
                         {showBadge && (
-                          <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-400 text-amber-900 rounded-full">
+                          <span className="px-1.5 py-0.5 text-[9px] font-bold bg-amber-400 text-amber-900 rounded-full">
                             {t('common.new')}
                           </span>
                         )}
@@ -352,8 +354,8 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
 
         {/* Consultant Section */}
         {isConsultant && (
-          <div className="mt-3 pt-3 border-t border-slate-200 dark:border-stone-700">
-            <p className="px-3 py-2 text-xs font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wider">
+          <div className="mt-2 pt-2 border-t border-stone-200 dark:border-stone-700/50">
+            <p className="px-3 py-1.5 text-[10px] font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wider">
               {t('sidebar.consultantSection')}
             </p>
             <div className="space-y-0.5">
@@ -366,13 +368,13 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                     to={item.path}
                     onClick={onClose}
                     className={cn(
-                      'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                      'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
                       isActive
-                        ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 font-medium'
-                        : 'text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-stone-700'
+                        ? 'bg-violet-50 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 font-medium'
+                        : 'text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-stone-800'
                     )}
                   >
-                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <Icon className="w-4 h-4 flex-shrink-0" />
                     <span>{t(item.labelKey)}</span>
                   </Link>
                 )
@@ -383,8 +385,8 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
 
         {/* Admin Section */}
         {isAdmin && (
-          <div className="mt-3 pt-3 border-t border-slate-200 dark:border-stone-700">
-            <p className="px-3 py-2 text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+          <div className="mt-2 pt-2 border-t border-stone-200 dark:border-stone-700/50">
+            <p className="px-3 py-1.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wider">
               {t('sidebar.adminSection')}
             </p>
             <div className="space-y-0.5">
@@ -397,13 +399,13 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                     to={item.path}
                     onClick={onClose}
                     className={cn(
-                      'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                      'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
                       isActive
-                        ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 font-medium'
-                        : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-stone-700'
+                        ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 font-medium'
+                        : 'text-amber-600 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-stone-800'
                     )}
                   >
-                    <Icon className="w-5 h-5 flex-shrink-0" />
+                    <Icon className="w-4 h-4 flex-shrink-0" />
                     <span>{t(item.labelKey)}</span>
                   </Link>
                 )
@@ -414,31 +416,31 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
       </nav>
 
       {/* Footer - Settings, Help, Logout */}
-      <div className="shrink-0 p-3 border-t border-slate-200 dark:border-stone-700 safe-bottom space-y-0.5">
+      <div className="shrink-0 p-2 border-t border-stone-200 dark:border-stone-700/50 safe-bottom space-y-0.5">
         <Link
           to="/settings"
           onClick={onClose}
           className={cn(
-            'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+            'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
             location.pathname === '/settings'
-              ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
-              : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
+              ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 font-medium'
+              : 'text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
           )}
         >
-          <Settings className="w-5 h-5" />
+          <Settings className="w-4 h-4" />
           <span>{t('nav.settings')}</span>
         </Link>
         <Link
           to="/help"
           onClick={onClose}
           className={cn(
-            'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+            'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
             location.pathname === '/help'
-              ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 font-medium'
-              : 'text-slate-700 dark:text-stone-300 hover:bg-slate-100 dark:hover:bg-stone-700'
+              ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 font-medium'
+              : 'text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
           )}
         >
-          <HelpCircle className="w-5 h-5" />
+          <HelpCircle className="w-4 h-4" />
           <span>{t('nav.help', 'Hjälp')}</span>
         </Link>
         <button
@@ -446,9 +448,9 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
             onClose()
             signOut()
           }}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+          className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
         >
-          <LogOut className="w-5 h-5" />
+          <LogOut className="w-4 h-4" />
           <span>{t('nav.logout')}</span>
         </button>
       </div>
