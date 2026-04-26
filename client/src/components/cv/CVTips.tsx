@@ -192,7 +192,7 @@ export function CVTips() {
           return (
             <div
               key={section.id}
-              className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden"
+              className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden"
             >
               <button
                 onClick={() => setExpandedSection(isExpanded ? null : section.id)}
@@ -263,7 +263,7 @@ export function CVTips() {
       </div>
 
       {/* Common Mistakes */}
-      <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl p-6 border border-amber-100 dark:border-amber-800">
+      <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
             <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -282,7 +282,7 @@ export function CVTips() {
       </div>
 
       {/* CTA */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-200 dark:border-teal-800/50">
         <div>
           <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.tips.cta.title')}</h3>
           <p className="text-stone-600 dark:text-stone-400 text-sm">{t('cv.tips.cta.description')}</p>

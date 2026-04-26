@@ -259,11 +259,11 @@ export function MyCVs() {
   return (
     <div className="space-y-6">
       {/* Header med stats */}
-      <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-6">
+      <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-teal-800 dark:text-teal-300 mb-1">{t('cv.myCvs.title')}</h2>
-            <p className="text-teal-600 dark:text-teal-400">
+            <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100 mb-1">{t('cv.myCvs.title')}</h2>
+            <p className="text-stone-600 dark:text-stone-400">
               {t('cv.myCvs.savedCount', { count: cvs.length })}
             </p>
           </div>
@@ -278,22 +278,22 @@ export function MyCVs() {
 
         {/* Quick stats */}
         {cvs.length > 0 && (
-          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-teal-200 dark:border-teal-800/50">
+          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-stone-200 dark:border-stone-700/50">
             <div className="text-center">
-              <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">{cvs.length}</div>
-              <div className="text-xs text-teal-600 dark:text-teal-400">{t('cv.myCvs.stats.totalSaved')}</div>
+              <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">{cvs.length}</div>
+              <div className="text-xs text-stone-600 dark:text-stone-400">{t('cv.myCvs.stats.totalSaved')}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">
+              <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">
                 {cvs.filter(c => (c.atsScore || 0) >= 70).length}
               </div>
-              <div className="text-xs text-teal-600 dark:text-teal-400">{t('cv.myCvs.stats.atsApproved')}</div>
+              <div className="text-xs text-stone-600 dark:text-stone-400">{t('cv.myCvs.stats.atsApproved')}</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">
+              <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">
                 {formatDate(cvs[0]?.created_at || new Date().toISOString())}
               </div>
-              <div className="text-xs text-teal-600 dark:text-teal-400">{t('cv.myCvs.stats.lastSaved')}</div>
+              <div className="text-xs text-stone-600 dark:text-stone-400">{t('cv.myCvs.stats.lastSaved')}</div>
             </div>
           </div>
         )}
@@ -328,7 +328,7 @@ export function MyCVs() {
 
       {/* CV List */}
       {filteredCVs.length === 0 ? (
-        <div className="text-center py-16 bg-stone-50 dark:bg-stone-800 rounded-2xl border border-dashed border-stone-300 dark:border-stone-600">
+        <div className="text-center py-16 bg-stone-50 dark:bg-stone-800 rounded-xl border border-dashed border-stone-300 dark:border-stone-600">
           <div className="w-20 h-20 bg-stone-100 dark:bg-stone-700 rounded-full flex items-center justify-center mx-auto mb-4">
             <Folder className="w-10 h-10 text-stone-600 dark:text-stone-400" />
           </div>
@@ -354,8 +354,8 @@ export function MyCVs() {
             <div
               key={cv.id}
               className={cn(
-                'bg-white dark:bg-stone-900 rounded-2xl border-2 p-5 transition-all hover:shadow-lg',
-                cv.isDefault ? 'border-teal-300 dark:border-teal-700 bg-teal-50/30 dark:bg-teal-900/20' : 'border-stone-200 dark:border-stone-700'
+                'bg-white dark:bg-stone-900 rounded-xl border-2 p-5 transition-all hover:shadow-lg',
+                cv.isDefault ? 'border-teal-300 dark:border-teal-700 bg-teal-50/30 dark:bg-teal-900/20' : 'border-stone-200 dark:border-stone-700/50'
               )}
             >
               <div className="flex flex-col lg:flex-row lg:items-start gap-4">
@@ -516,7 +516,7 @@ export function MyCVs() {
       )}
 
       {/* Tips */}
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800">
+      <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-6 border border-amber-200 dark:border-amber-800/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -535,7 +535,7 @@ export function MyCVs() {
       {/* Preview Modal */}
       {previewCV && (
         <div className="fixed inset-0 z-50 bg-stone-900/50 flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+          <div className="bg-white dark:bg-stone-900 rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b dark:border-stone-700">
               <div>

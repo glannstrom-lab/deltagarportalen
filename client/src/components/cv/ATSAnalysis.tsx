@@ -296,14 +296,14 @@ export function ATSAnalysis() {
     <div className="space-y-6">
       {/* ATS Analyzer Widget - Hämtar och analyserar användarens CV */}
       {loadingCV ? (
-        <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 p-6">
+        <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 p-6">
           <div className="flex items-center justify-center gap-3 py-8">
             <Loader2 className="w-6 h-6 animate-spin text-teal-600 dark:text-teal-400" />
             <span className="text-stone-600 dark:text-stone-400">{t('cv.ats.loadingCV')}</span>
           </div>
         </div>
       ) : cvData ? (
-        <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-5">
+        <div className="bg-white dark:bg-stone-900 rounded-xl shadow-sm border border-stone-200 dark:border-stone-700/50 p-5">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
               <Target className="w-4 h-4 text-white" />
@@ -316,7 +316,7 @@ export function ATSAnalysis() {
           <ATSAnalyzer cvData={cvData} />
         </div>
       ) : (
-        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-200 dark:border-amber-800 p-6">
+        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 dark:border-amber-800/50 p-6">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
               <FileText className="w-6 h-6 text-amber-600 dark:text-amber-400" />
@@ -338,7 +338,7 @@ export function ATSAnalysis() {
       )}
 
       {/* Score Card */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 p-6">
+      <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 p-6">
         <div className="flex flex-col md:flex-row md:items-center gap-6">
           {/* Score Circle */}
           <div className="flex items-center justify-center">
@@ -415,7 +415,7 @@ export function ATSAnalysis() {
           const categoryChecks = checks.filter(c => c.category === category)
 
           return (
-            <div key={category} className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+            <div key={category} className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
               <div className="px-6 py-4 bg-stone-50 dark:bg-stone-800 border-b border-stone-100 dark:border-stone-700">
                 <h4 className="font-semibold text-stone-800 dark:text-stone-100">{label}</h4>
               </div>
@@ -487,7 +487,7 @@ export function ATSAnalysis() {
       </div>
 
       {/* Info Box */}
-      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-2xl p-6 border border-blue-100 dark:border-blue-800">
+      <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl p-6 border border-blue-200 dark:border-blue-800/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/50 rounded-xl flex items-center justify-center flex-shrink-0">
             <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -505,7 +505,7 @@ export function ATSAnalysis() {
       </div>
 
       {/* CTA */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-200 dark:border-teal-800/50">
         <div>
           <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.ats.cta.title')}</h3>
           <p className="text-stone-600 dark:text-stone-400 text-sm">{t('cv.ats.cta.description')}</p>
