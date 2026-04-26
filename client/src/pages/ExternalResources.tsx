@@ -3278,14 +3278,14 @@ function CompactResourceCard({ resource }: { resource: ExternalResource }) {
       href={resource.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-center gap-3 p-3 bg-white dark:bg-stone-800/50 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-md transition-all"
+      className="group flex items-center gap-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-stone-200 dark:border-stone-700/50 hover:border-teal-400 dark:hover:border-teal-600 hover:shadow-md transition-all"
     >
-      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/30 dark:to-sky-900/30 flex items-center justify-center">
-        <IconComponent className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+      <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center">
+        <IconComponent className="w-5 h-5 text-teal-600 dark:text-teal-400" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
-          <span className="font-medium text-sm text-stone-900 dark:text-stone-100 truncate group-hover:text-blue-700 dark:group-hover:text-blue-400">
+          <span className="font-medium text-sm text-stone-900 dark:text-stone-100 truncate group-hover:text-teal-700 dark:group-hover:text-teal-400">
             {resource.name}
           </span>
           <ExternalLink className="w-3 h-3 text-stone-400 flex-shrink-0" />
@@ -3307,15 +3307,15 @@ function FeaturedResourceCard({ resource }: { resource: ExternalResource }) {
       href={resource.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group block p-4 bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-blue-400 dark:hover:border-blue-500 hover:shadow-lg transition-all"
+      className="group block p-4 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 hover:border-teal-400 dark:hover:border-teal-600 hover:shadow-lg transition-all"
     >
       <div className="flex items-start gap-3">
-        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-blue-100 to-sky-100 dark:from-blue-900/50 dark:to-sky-900/50 flex items-center justify-center">
-          <IconComponent className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+        <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center">
+          <IconComponent className="w-6 h-6 text-teal-600 dark:text-teal-400" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 group-hover:text-blue-700 dark:group-hover:text-blue-400">
+            <h3 className="font-semibold text-stone-900 dark:text-stone-100 group-hover:text-teal-700 dark:group-hover:text-teal-400">
               {resource.name}
             </h3>
             <ExternalLink className="w-4 h-4 text-stone-400" />
@@ -3344,14 +3344,14 @@ function CollapsibleCategory({
   const { title, description } = categoryLabels[category]
 
   return (
-    <div className="border border-stone-200 dark:border-stone-700 rounded-xl overflow-hidden">
+    <div className="border border-stone-200 dark:border-stone-700/50 rounded-xl overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between p-4 bg-white dark:bg-stone-800/50 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors text-left"
+        className="w-full flex items-center justify-between p-4 bg-white dark:bg-stone-900 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors text-left"
       >
         <div className="flex items-center gap-3">
           <span className="font-semibold text-stone-900 dark:text-stone-100">{title}</span>
-          <span className="text-xs px-2 py-0.5 rounded-full bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300">
+          <span className="text-xs px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300">
             {resources.length}
           </span>
         </div>
@@ -3365,7 +3365,7 @@ function CollapsibleCategory({
         </svg>
       </button>
       {isExpanded && (
-        <div className="p-4 pt-0 bg-white dark:bg-stone-800/50">
+        <div className="p-4 pt-0 bg-white dark:bg-stone-900">
           <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">{description}</p>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {resources.map(resource => (
@@ -3446,7 +3446,7 @@ export default function ExternalResources() {
       description={`${externalResources.length} användbara länkar för jobbsökande`}
       icon={ExternalLink}
       domain="info"
-      className="space-y-6 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen"
+      className="space-y-6"
     >
       {/* Search bar */}
       <div className="relative">
@@ -3456,12 +3456,12 @@ export default function ExternalResources() {
           placeholder="Sök bland resurser..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full pl-12 pr-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="w-full pl-12 pr-4 py-3 rounded-xl border border-stone-200 dark:border-stone-700/50 bg-white dark:bg-stone-900 text-stone-900 dark:text-stone-100 placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+            className="absolute right-4 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600 dark:hover:text-stone-300"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -3473,7 +3473,7 @@ export default function ExternalResources() {
       {/* Search results info */}
       {isSearching && (
         <div className="text-sm text-stone-600 dark:text-stone-400">
-          Hittade <span className="font-semibold text-blue-600">{filteredResources.length}</span> resurser för "{searchQuery}"
+          Hittade <span className="font-semibold text-teal-600 dark:text-teal-400">{filteredResources.length}</span> resurser för "{searchQuery}"
         </div>
       )}
 
@@ -3487,9 +3487,11 @@ export default function ExternalResources() {
       ) : (
         <>
           {/* Featured resources */}
-          <section>
+          <section className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-5 border border-teal-200 dark:border-teal-800/50">
             <div className="flex items-center gap-2 mb-4">
-              <Sparkles className="w-5 h-5 text-amber-500" />
+              <div className="w-10 h-10 bg-white dark:bg-stone-800 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              </div>
               <h2 className="font-semibold text-stone-900 dark:text-stone-100">Populära resurser</h2>
             </div>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -3505,7 +3507,7 @@ export default function ExternalResources() {
               onClick={() => setActiveTab(null)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 activeTab === null
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-teal-600 text-white'
                   : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
               }`}
             >
@@ -3517,7 +3519,7 @@ export default function ExternalResources() {
                 onClick={() => setActiveTab(key)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                   activeTab === key
-                    ? 'bg-blue-600 text-white'
+                    ? 'bg-teal-600 text-white'
                     : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                 }`}
               >
@@ -3531,13 +3533,13 @@ export default function ExternalResources() {
           <div className="flex items-center gap-4 text-sm">
             <button
               onClick={expandAll}
-              className="text-blue-600 hover:text-blue-700 dark:text-blue-400"
+              className="text-teal-600 hover:text-teal-700 dark:text-teal-400 dark:hover:text-teal-300"
             >
               Visa alla
             </button>
             <button
               onClick={collapseAll}
-              className="text-stone-500 hover:text-stone-600 dark:text-stone-400"
+              className="text-stone-500 hover:text-stone-600 dark:text-stone-400 dark:hover:text-stone-300"
             >
               Dölj alla
             </button>
@@ -3561,8 +3563,8 @@ export default function ExternalResources() {
       )}
 
       {/* Disclaimer */}
-      <div className="text-center py-6 text-sm text-stone-500 dark:text-stone-400">
-        <p>
+      <div className="text-center py-6 px-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50">
+        <p className="text-sm text-stone-500 dark:text-stone-400">
           Dessa länkar går till externa webbplatser. Vi ansvarar inte för innehållet på dessa sidor.
         </p>
       </div>
