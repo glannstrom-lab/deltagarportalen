@@ -131,8 +131,8 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
           <div key={group.id} className={cn(groupIndex > 0 && 'mt-4')}>
             {/* Group Label - Only show expanded */}
             {!isCollapsed && (
-              <div className="px-2 mb-1">
-                <span className="text-[11px] font-medium text-stone-400 dark:text-stone-500 uppercase tracking-wider">
+              <div className="px-2 mb-1.5">
+                <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
                   {t(group.labelKey)}
                 </span>
               </div>
@@ -168,7 +168,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
           <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800">
             {!isCollapsed && (
               <div className="px-2 mb-1">
-                <span className="text-[11px] font-medium text-violet-500 dark:text-violet-400 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wide">
                   {t('sidebar.consultantSection')}
                 </span>
               </div>
@@ -196,7 +196,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
           <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800">
             {!isCollapsed && (
               <div className="px-2 mb-1">
-                <span className="text-[11px] font-medium text-amber-500 dark:text-amber-400 uppercase tracking-wider">
+                <span className="text-xs font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-wide">
                   {t('sidebar.adminSection')}
                 </span>
               </div>
