@@ -349,9 +349,26 @@ export function CoverLetterWrite() {
   ]
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Hero header */}
+      <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-5 border border-teal-200 dark:border-teal-800/50">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-white dark:bg-stone-800 rounded-lg flex items-center justify-center shadow-sm">
+            <Sparkles className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
+              Skapa ditt personliga brev med AI
+            </h2>
+            <p className="text-stone-600 dark:text-stone-400 mt-1">
+              Följ stegen nedan för att skapa ett professionellt och personligt brev baserat på ditt CV.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Step indicator */}
-      <nav aria-label="Brevskrivningssteg" className="mb-6 sm:mb-8">
+      <nav aria-label="Brevskrivningssteg" className="bg-white dark:bg-stone-900 rounded-xl p-4 border border-stone-200 dark:border-stone-700/50">
         {/* Mobile: Compact step indicator */}
         <div className="flex sm:hidden items-center justify-center gap-2 mb-3" role="list">
           {steps.map((step) => {
@@ -439,7 +456,7 @@ export function CoverLetterWrite() {
 
       {/* CV Status Banner */}
       {cvData && (
-        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
+        <div className="p-3 sm:p-4 bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800/50 rounded-xl">
           <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 dark:bg-emerald-900/40 rounded-lg flex items-center justify-center shrink-0">
@@ -462,7 +479,7 @@ export function CoverLetterWrite() {
       )}
 
       {!cvData && !loadingCV && (
-        <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl">
+        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800/50 rounded-xl">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center">
               <User className="w-5 h-5 text-amber-600 dark:text-amber-400" />
