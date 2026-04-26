@@ -3,7 +3,7 @@
  * Arbetsförmedlingen Play, SACO, TCO, etc.
  */
 import { PageLayout } from '@/components/layout/index'
-import { ExternalLink, Play, BookOpen, FileText, Users, Building2, GraduationCap, Globe, Briefcase, Scale, Heart, Headphones, Search, Laptop, Rocket, Wrench, Coffee, MessageCircle, Lightbulb, Award, Accessibility, Handshake, MapPin, Clock, Palette, Code, Stethoscope, HardHat, Truck, ShoppingBag, Hotel, Utensils, Baby, UserPlus, Calendar, Languages, Leaf, Shield, Home, Wifi, RefreshCw, Brain, Sparkles, Target, Landmark, Plane, Anchor, Camera, Microscope, Gavel, Newspaper, FlaskConical, Database, PenTool, Gamepad2, Music, Film, Scissors, Trees, Tractor, Fish, Dog, Zap, Video, Podcast, BookMarked, Presentation, Timer, HeartHandshake, Megaphone, Store, Factory, Cpu, CircleDollarSign, Lock, KeyRound, Banknote } from '@/components/ui/icons'
+import { ExternalLink, Play, BookOpen, FileText, Users, Building2, GraduationCap, Globe, Briefcase, Scale, Heart, Headphones, Search, Laptop, Rocket, Wrench, Coffee, MessageCircle, Lightbulb, Award, Accessibility, Handshake, MapPin, Clock, Palette, Code, Stethoscope, Baby, UserPlus, Calendar, Languages, Leaf, Shield, Home, RefreshCw, Brain, Sparkles, Target, Landmark, Camera, Gavel, Newspaper, Database, PenTool, Zap, Video, BookMarked, Megaphone, Lock, Coins, Hammer, Train, ShoppingCart, Network } from '@/components/ui/icons'
 
 interface ExternalResource {
   id: string
@@ -599,7 +599,7 @@ const externalResources: ExternalResource[] = [
     name: 'Byggjobb.se',
     description: 'Lediga jobb inom bygg och anläggning.',
     url: 'https://www.byggjobb.se/',
-    icon: HardHat,
+    icon: Hammer,
     category: 'niche',
     tags: ['Bygg', 'Anläggning']
   },
@@ -608,7 +608,7 @@ const externalResources: ExternalResource[] = [
     name: 'Transportjobb.se',
     description: 'Jobb inom transport, logistik och lager.',
     url: 'https://www.transportjobb.se/',
-    icon: Truck,
+    icon: Train,
     category: 'niche',
     tags: ['Transport', 'Logistik', 'Lager']
   },
@@ -617,7 +617,7 @@ const externalResources: ExternalResource[] = [
     name: 'Retailjobb.se',
     description: 'Lediga jobb inom detaljhandel och butiksarbete.',
     url: 'https://www.retailjobb.se/',
-    icon: ShoppingBag,
+    icon: ShoppingCart,
     category: 'niche',
     tags: ['Handel', 'Butik']
   },
@@ -626,7 +626,7 @@ const externalResources: ExternalResource[] = [
     name: 'Hotelljobb.se',
     description: 'Jobb inom hotell, restaurang och besöksnäring.',
     url: 'https://www.hotelljobb.se/',
-    icon: Hotel,
+    icon: Building2,
     category: 'niche',
     tags: ['Hotell', 'Restaurang']
   },
@@ -635,7 +635,7 @@ const externalResources: ExternalResource[] = [
     name: 'Restaurangjobb.se',
     description: 'Lediga jobb för kockar, servitörer och restaurangpersonal.',
     url: 'https://www.restaurangjobb.se/',
-    icon: Utensils,
+    icon: Coffee,
     category: 'niche',
     tags: ['Kock', 'Restaurang']
   },
@@ -1390,7 +1390,7 @@ const externalResources: ExternalResource[] = [
     name: 'RemoteOK',
     description: 'Ledande plattform för remote-jobb globalt.',
     url: 'https://remoteok.com/',
-    icon: Wifi,
+    icon: Globe,
     category: 'remote',
     tags: ['Remote', 'Distans', 'Globalt']
   },
@@ -1399,7 +1399,7 @@ const externalResources: ExternalResource[] = [
     name: 'We Work Remotely',
     description: 'Största community för remote-jobb inom tech.',
     url: 'https://weworkremotely.com/',
-    icon: Wifi,
+    icon: Globe,
     category: 'remote',
     tags: ['Remote', 'Tech']
   },
@@ -1792,7 +1792,7 @@ const externalResources: ExternalResource[] = [
     name: 'Trafikverket - Lediga jobb',
     description: 'Jobb inom infrastruktur, vägar och järnväg.',
     url: 'https://www.trafikverket.se/om-oss/jobba-hos-oss/',
-    icon: Truck,
+    icon: Train,
     category: 'public-sector',
     tags: ['Infrastruktur', 'Transport']
   },
@@ -1846,7 +1846,7 @@ const externalResources: ExternalResource[] = [
     name: 'SJ - Karriär',
     description: 'Jobb som tågvärd, lokförare och andra roller på SJ.',
     url: 'https://www.sj.se/om-sj/jobba-pa-sj',
-    icon: Truck,
+    icon: Train,
     category: 'public-sector',
     tags: ['Tåg', 'Transport']
   },
@@ -1971,7 +1971,7 @@ const externalResources: ExternalResource[] = [
     name: 'ArtStation',
     description: 'Portfolio-plattform för spelgrafiker och 3D-artister.',
     url: 'https://www.artstation.com/',
-    icon: Gamepad2,
+    icon: Play,
     category: 'portfolio',
     tags: ['Spel', '3D', 'Grafik']
   },
@@ -1980,7 +1980,7 @@ const externalResources: ExternalResource[] = [
     name: 'Vimeo',
     description: 'Visa upp videoproduktioner och filmportfolio.',
     url: 'https://vimeo.com/',
-    icon: Film,
+    icon: Video,
     category: 'portfolio',
     tags: ['Video', 'Film']
   },
@@ -1989,7 +1989,7 @@ const externalResources: ExternalResource[] = [
     name: 'SoundCloud',
     description: 'Portfolio för musiker och ljudproducenter.',
     url: 'https://soundcloud.com/',
-    icon: Music,
+    icon: Headphones,
     category: 'portfolio',
     tags: ['Musik', 'Ljud']
   },
@@ -2029,7 +2029,7 @@ const externalResources: ExternalResource[] = [
     name: 'Teatercentrum - Lediga jobb',
     description: 'Jobb inom teater och scenkonst.',
     url: 'https://www.teatercentrum.se/lediga-jobb/',
-    icon: Film,
+    icon: Video,
     category: 'creative',
     tags: ['Teater', 'Scenkonst']
   },
@@ -2038,7 +2038,7 @@ const externalResources: ExternalResource[] = [
     name: 'Filmjobb.se',
     description: 'Jobb inom film- och TV-produktion.',
     url: 'https://www.filmjobb.se/',
-    icon: Film,
+    icon: Video,
     category: 'creative',
     tags: ['Film', 'TV']
   },
@@ -2047,7 +2047,7 @@ const externalResources: ExternalResource[] = [
     name: 'Musikerjobb',
     description: 'Lediga jobb för musiker och musikbranschen.',
     url: 'https://www.musikerjobb.se/',
-    icon: Music,
+    icon: Headphones,
     category: 'creative',
     tags: ['Musik', 'Artist']
   },
@@ -2083,7 +2083,7 @@ const externalResources: ExternalResource[] = [
     name: 'Modejobb.se',
     description: 'Jobb inom mode, textil och klädindustrin.',
     url: 'https://www.modejobb.se/',
-    icon: Scissors,
+    icon: Palette,
     category: 'creative',
     tags: ['Mode', 'Textil']
   },
@@ -2096,7 +2096,7 @@ const externalResources: ExternalResource[] = [
     name: 'Akademiska jobb',
     description: 'Lediga tjänster på universitet och högskolor.',
     url: 'https://www.academicpositions.se/',
-    icon: Microscope,
+    icon: Search,
     category: 'science',
     tags: ['Akademi', 'Forskning']
   },
@@ -2105,7 +2105,7 @@ const externalResources: ExternalResource[] = [
     name: 'EURAXESS',
     description: 'Europeiska forskartjänster och mobilitetsprogram.',
     url: 'https://euraxess.ec.europa.eu/',
-    icon: Microscope,
+    icon: Search,
     category: 'science',
     tags: ['Forskning', 'EU']
   },
@@ -2114,7 +2114,7 @@ const externalResources: ExternalResource[] = [
     name: 'Vetenskapsrådet - Karriär',
     description: 'Jobb och stipendier inom forskning.',
     url: 'https://www.vr.se/om-oss/jobba-hos-oss.html',
-    icon: FlaskConical,
+    icon: Lightbulb,
     category: 'science',
     tags: ['Forskning', 'Stipendier']
   },
@@ -2123,7 +2123,7 @@ const externalResources: ExternalResource[] = [
     name: 'Nature Careers',
     description: 'Globala jobb inom naturvetenskap och forskning.',
     url: 'https://www.nature.com/naturecareers',
-    icon: Microscope,
+    icon: Search,
     category: 'science',
     tags: ['Vetenskap', 'Globalt']
   },
@@ -2132,7 +2132,7 @@ const externalResources: ExternalResource[] = [
     name: 'Science Careers',
     description: 'Karriärresurser och jobb inom vetenskap.',
     url: 'https://jobs.sciencecareers.org/',
-    icon: FlaskConical,
+    icon: Lightbulb,
     category: 'science',
     tags: ['Vetenskap', 'Karriär']
   },
@@ -2150,7 +2150,7 @@ const externalResources: ExternalResource[] = [
     name: 'RISE - Karriär',
     description: 'Jobb på Sveriges forskningsinstitut.',
     url: 'https://www.ri.se/sv/om-rise/jobba-hos-oss',
-    icon: FlaskConical,
+    icon: Lightbulb,
     category: 'science',
     tags: ['Innovation', 'Forskning']
   },
@@ -2203,7 +2203,7 @@ const externalResources: ExternalResource[] = [
     name: 'Skogsjobb.se',
     description: 'Jobb inom skogsbruk och skogsindustri.',
     url: 'https://www.skogsjobb.se/',
-    icon: Trees,
+    icon: Leaf,
     category: 'niche',
     tags: ['Skog', 'Skogsbruk']
   },
@@ -2212,7 +2212,7 @@ const externalResources: ExternalResource[] = [
     name: 'Lantbruksjobb',
     description: 'Jobb inom jordbruk och lantbruk.',
     url: 'https://www.lantbruksjobb.se/',
-    icon: Tractor,
+    icon: Wrench,
     category: 'niche',
     tags: ['Lantbruk', 'Jordbruk']
   },
@@ -2221,7 +2221,7 @@ const externalResources: ExternalResource[] = [
     name: 'Sjöfartsjobb',
     description: 'Jobb inom sjöfart och maritim industri.',
     url: 'https://www.sjofartsjobb.se/',
-    icon: Anchor,
+    icon: Globe,
     category: 'niche',
     tags: ['Sjöfart', 'Marin']
   },
@@ -2230,7 +2230,7 @@ const externalResources: ExternalResource[] = [
     name: 'Flygplatsjobb',
     description: 'Jobb på flygplatser och inom flygindustrin.',
     url: 'https://www.flygplatsjobb.se/',
-    icon: Plane,
+    icon: Globe,
     category: 'niche',
     tags: ['Flyg', 'Flygplats']
   },
@@ -2239,7 +2239,7 @@ const externalResources: ExternalResource[] = [
     name: 'Fiskerijobb',
     description: 'Jobb inom fiske och vattenbruk.',
     url: 'https://www.fiskerijobb.se/',
-    icon: Fish,
+    icon: Globe,
     category: 'niche',
     tags: ['Fiske', 'Vattenbruk']
   },
@@ -2248,7 +2248,7 @@ const externalResources: ExternalResource[] = [
     name: 'Djurjobb.se',
     description: 'Jobb för veterinärer, djurskötare och djurvänner.',
     url: 'https://www.djurjobb.se/',
-    icon: Dog,
+    icon: Heart,
     category: 'niche',
     tags: ['Djur', 'Veterinär']
   },
@@ -2400,7 +2400,7 @@ const externalResources: ExternalResource[] = [
     name: 'ReliefWeb Jobs',
     description: 'Jobb inom humanitärt arbete världen över.',
     url: 'https://reliefweb.int/jobs',
-    icon: HeartHandshake,
+    icon: Handshake,
     category: 'nonprofit',
     tags: ['Humanitärt', 'Bistånd']
   },
@@ -2579,7 +2579,7 @@ const externalResources: ExternalResource[] = [
     name: 'Exponent',
     description: 'Intervjuförberedelse för produktchefer och designers.',
     url: 'https://www.tryexponent.com/',
-    icon: Presentation,
+    icon: FileText,
     category: 'interview',
     tags: ['Product Manager', 'Design']
   },
@@ -2592,7 +2592,7 @@ const externalResources: ExternalResource[] = [
     name: 'Lönestatistik.se',
     description: 'Jämför löner för olika yrken i Sverige.',
     url: 'https://www.lonestatistik.se/',
-    icon: CircleDollarSign,
+    icon: Coins,
     category: 'salary',
     tags: ['Löner', 'Statistik']
   },
@@ -2601,7 +2601,7 @@ const externalResources: ExternalResource[] = [
     name: 'Alla löner',
     description: 'Detaljerad lönestatistik per yrke och region.',
     url: 'https://www.allaloner.se/',
-    icon: Banknote,
+    icon: Coins,
     category: 'salary',
     tags: ['Löner', 'Yrken']
   },
@@ -2610,7 +2610,7 @@ const externalResources: ExternalResource[] = [
     name: 'Lönekalkyl',
     description: 'Räkna ut din nettolön efter skatt.',
     url: 'https://www.ekonomifakta.se/Fakta/Skatter/Rakna-pa-dina-skatter/Lonekalkyl/',
-    icon: Banknote,
+    icon: Coins,
     category: 'salary',
     tags: ['Lön', 'Skatt']
   },
@@ -2619,7 +2619,7 @@ const externalResources: ExternalResource[] = [
     name: 'Levels.fyi',
     description: 'Lönedata för tech-jobb globalt, inklusive svenska företag.',
     url: 'https://www.levels.fyi/',
-    icon: CircleDollarSign,
+    icon: Coins,
     category: 'salary',
     tags: ['Tech', 'Löner']
   },
@@ -2637,7 +2637,7 @@ const externalResources: ExternalResource[] = [
     name: 'PayScale',
     description: 'Global lönedata och löneförhandlingstips.',
     url: 'https://www.payscale.com/',
-    icon: CircleDollarSign,
+    icon: Coins,
     category: 'salary',
     tags: ['Löner', 'Globalt']
   },
@@ -2646,7 +2646,7 @@ const externalResources: ExternalResource[] = [
     name: 'Salary.com',
     description: 'Löneverktyg och karriärresurser.',
     url: 'https://www.salary.com/',
-    icon: Banknote,
+    icon: Coins,
     category: 'salary',
     tags: ['Löner', 'Karriär']
   },
@@ -2789,7 +2789,7 @@ const externalResources: ExternalResource[] = [
     name: 'Things',
     description: 'IoT-fokuserat innovationscenter i Stockholm.',
     url: 'https://thingstockholm.com/',
-    icon: Cpu,
+    icon: Laptop,
     category: 'coworking',
     tags: ['IoT', 'Tech']
   },
@@ -2802,7 +2802,7 @@ const externalResources: ExternalResource[] = [
     name: 'Framgångspodden',
     description: 'Intervjuer med framgångsrika entreprenörer och ledare.',
     url: 'https://www.intuitcreative.se/framgangspodden/',
-    icon: Podcast,
+    icon: Headphones,
     category: 'podcasts',
     tags: ['Entreprenör', 'Framgång']
   },
@@ -2811,7 +2811,7 @@ const externalResources: ExternalResource[] = [
     name: 'Chefspodden',
     description: 'Podcast om ledarskap från tidningen Chef.',
     url: 'https://chef.se/chefspodden/',
-    icon: Podcast,
+    icon: Headphones,
     category: 'podcasts',
     tags: ['Ledarskap', 'Chef']
   },
@@ -2820,7 +2820,7 @@ const externalResources: ExternalResource[] = [
     name: 'Företagarpodden',
     description: 'Tips och inspiration för småföretagare.',
     url: 'https://www.foretagarna.se/foretagarpodden/',
-    icon: Podcast,
+    icon: Headphones,
     category: 'podcasts',
     tags: ['Företagare', 'Tips']
   },
@@ -2829,7 +2829,7 @@ const externalResources: ExternalResource[] = [
     name: 'Digiday Podcast',
     description: 'Digitala trender och karriär inom marknadsföring.',
     url: 'https://digiday.com/podcast/',
-    icon: Podcast,
+    icon: Headphones,
     category: 'podcasts',
     tags: ['Digital', 'Marknadsföring']
   },
@@ -2847,7 +2847,7 @@ const externalResources: ExternalResource[] = [
     name: 'How I Built This',
     description: 'NPR:s populära podcast om entreprenörer och deras företag.',
     url: 'https://www.npr.org/series/490248027/how-i-built-this',
-    icon: Podcast,
+    icon: Headphones,
     category: 'podcasts',
     tags: ['Entreprenör', 'Inspiration']
   },
@@ -2856,7 +2856,7 @@ const externalResources: ExternalResource[] = [
     name: 'Arbetslivspodden',
     description: 'Prevent och Suntarbetsliv om arbetsmiljö och karriär.',
     url: 'https://www.prevent.se/podcast/',
-    icon: Podcast,
+    icon: Headphones,
     category: 'podcasts',
     tags: ['Arbetsmiljö', 'Hälsa']
   },
@@ -2896,7 +2896,7 @@ const externalResources: ExternalResource[] = [
     name: 'Vinnova',
     description: 'Finansiering för innovation och startup.',
     url: 'https://www.vinnova.se/',
-    icon: Banknote,
+    icon: Coins,
     category: 'startup',
     tags: ['Finansiering', 'Innovation']
   },
@@ -2954,7 +2954,7 @@ const externalResources: ExternalResource[] = [
     name: 'minPension',
     description: 'Se hela din pension samlad på ett ställe.',
     url: 'https://www.minpension.se/',
-    icon: Banknote,
+    icon: Coins,
     category: 'support',
     tags: ['Pension', 'Överblick']
   },
@@ -3021,7 +3021,7 @@ const externalResources: ExternalResource[] = [
     name: 'Lagerjobb.se',
     description: 'Jobb inom lager och logistik.',
     url: 'https://www.lagerjobb.se/',
-    icon: Store,
+    icon: ShoppingCart,
     category: 'niche',
     tags: ['Lager', 'Logistik']
   },
@@ -3030,7 +3030,7 @@ const externalResources: ExternalResource[] = [
     name: 'Industrijobb.se',
     description: 'Lediga jobb inom svensk industri.',
     url: 'https://www.industrijobb.se/',
-    icon: Factory,
+    icon: Building2,
     category: 'niche',
     tags: ['Industri', 'Produktion']
   },
@@ -3039,7 +3039,7 @@ const externalResources: ExternalResource[] = [
     name: 'Ekonomijobb.se',
     description: 'Jobb för ekonomer, revisorer och controllers.',
     url: 'https://www.ekonomijobb.se/',
-    icon: Banknote,
+    icon: Coins,
     category: 'niche',
     tags: ['Ekonomi', 'Revision']
   },
@@ -3084,7 +3084,7 @@ const externalResources: ExternalResource[] = [
     name: 'Inköpsjobb.se',
     description: 'Lediga tjänster inom inköp och supply chain.',
     url: 'https://www.inkopsjobb.se/',
-    icon: ShoppingBag,
+    icon: ShoppingCart,
     category: 'niche',
     tags: ['Inköp', 'Supply chain']
   },
