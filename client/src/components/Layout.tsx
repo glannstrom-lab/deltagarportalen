@@ -6,6 +6,7 @@ import {
 } from '@/components/ui/icons'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
+import { BottomBar } from './layout/BottomBar'
 import { MobileBackButton } from './MobileBackButton'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
@@ -32,7 +33,7 @@ export default function Layout() {
       <SkipLinks />
       <div
         className={cn(
-          'min-h-screen flex flex-col bg-gradient-to-b from-stone-50 via-white to-stone-50/50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800',
+          'min-h-screen flex flex-col bg-stone-50 dark:bg-stone-900',
           isMobile ? 'pb-safe' : ''
         )}
       >
@@ -73,6 +74,9 @@ export default function Layout() {
         {/* Tillbaka-knapp på mobil (alla sidor utom dashboard) */}
         {showBackButton && <MobileBackButton />}
 
+        {/* FAQ BottomBar */}
+        {showBars && !isMobile && <BottomBar />}
+
         {/* Övriga komponenter */}
         <BreakReminder workDuration={15} />
         <ToastContainer />
@@ -98,7 +102,7 @@ function MobileTopBar() {
   return (
     <>
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-gradient-to-r from-teal-50 via-white to-stone-50 dark:from-teal-900/30 dark:via-stone-900 dark:to-stone-800 border-b border-teal-100 dark:border-stone-700 px-4 py-3 safe-top">
+      <header className="sticky top-0 z-30 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-800 px-4 py-3 safe-top">
         <div className="flex items-center justify-between">
           {/* Vänster: Logo */}
           <Link to="/" className="flex items-center gap-2">
@@ -108,7 +112,7 @@ function MobileTopBar() {
               loading="eager"
               className="h-8 w-auto object-contain"
             />
-            <span className="text-base font-semibold text-teal-700 dark:text-teal-300">jobin.se</span>
+            <span className="text-base font-semibold text-teal-600 dark:text-teal-400">jobin.se</span>
           </Link>
 
           {/* Höger: Notifikationer + Profil + Meny */}

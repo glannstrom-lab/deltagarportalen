@@ -1,7 +1,7 @@
 /**
- * Modern Sidebar Component
- * Features: Glassmorphism, smooth animations, improved grouping, hover effects
- * Accessibility: Full keyboard navigation, ARIA labels, focus indicators
+ * Sidebar Component - Clean Pastel Design
+ * White background, subtle borders, soft pastel hover states
+ * No gradients, minimal visual clutter
  */
 
 import { useState, useEffect } from 'react'
@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { navGroups, adminNavItems, consultantNavItems, markFeatureVisited, shouldShowBadge, type NavItem } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { ChevronDown, LogOut, Settings, Sparkles } from '@/components/ui/icons'
+import { ChevronDown, LogOut, Settings } from '@/components/ui/icons'
 
 interface SidebarProps {
   onClose?: () => void
@@ -67,69 +67,43 @@ export function Sidebar({ onClose }: SidebarProps) {
           onClose?.()
         }}
         className={cn(
-          'relative flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group',
-          'focus:outline-none focus-visible:ring-2 focus-visible:ring-inset',
-          // Default variant - teal theme
+          'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
+          'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset',
+          // Default variant
           variant === 'default' && [
             isActive
-              ? 'bg-gradient-to-r from-teal-100 to-teal-50 dark:from-teal-900/50 dark:to-teal-900/30 text-teal-800 dark:text-teal-200 font-semibold shadow-sm'
-              : 'text-stone-600 dark:text-stone-400 hover:bg-teal-50/80 dark:hover:bg-stone-800/80 hover:text-teal-700 dark:hover:text-teal-300',
-            'focus-visible:ring-teal-500'
+              ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-400 font-medium'
+              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800 hover:text-stone-800 dark:hover:text-stone-200'
           ],
-          // Admin variant - amber theme
+          // Admin variant
           variant === 'admin' && [
             isActive
-              ? 'bg-gradient-to-r from-amber-100 to-amber-50 dark:from-amber-900/40 dark:to-amber-900/20 text-amber-800 dark:text-amber-200 font-semibold'
-              : 'text-amber-700/70 dark:text-amber-400/70 hover:bg-amber-50 dark:hover:bg-stone-800/80 hover:text-amber-800 dark:hover:text-amber-300',
-            'focus-visible:ring-amber-500'
+              ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 font-medium'
+              : 'text-stone-600 dark:text-stone-400 hover:bg-amber-50 dark:hover:bg-stone-800 hover:text-amber-700 dark:hover:text-amber-400'
           ],
-          // Consultant variant - violet theme
+          // Consultant variant
           variant === 'consultant' && [
             isActive
-              ? 'bg-gradient-to-r from-violet-100 to-violet-50 dark:from-violet-900/40 dark:to-violet-900/20 text-violet-800 dark:text-violet-200 font-semibold'
-              : 'text-violet-700/70 dark:text-violet-400/70 hover:bg-violet-50 dark:hover:bg-stone-800/80 hover:text-violet-800 dark:hover:text-violet-300',
-            'focus-visible:ring-violet-500'
+              ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400 font-medium'
+              : 'text-stone-600 dark:text-stone-400 hover:bg-violet-50 dark:hover:bg-stone-800 hover:text-violet-700 dark:hover:text-violet-400'
           ],
           // Danger variant
-          variant === 'danger' && [
-            'text-rose-600/70 dark:text-rose-400/70 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-700 dark:hover:text-rose-400',
-            'focus-visible:ring-rose-500'
-          ]
+          variant === 'danger' && 'text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20'
         )}
       >
-        {/* Active indicator bar */}
+        {/* Active indicator */}
         {isActive && variant === 'default' && (
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-gradient-to-b from-teal-500 to-teal-600 rounded-r-full" />
+          <div className="absolute left-0 w-1 h-6 bg-teal-500 rounded-r-full" />
         )}
 
-        {/* Icon with hover effect */}
-        <div className={cn(
-          'w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200 shrink-0',
-          isActive && variant === 'default' && 'bg-teal-200/50 dark:bg-teal-800/50',
-          isActive && variant === 'admin' && 'bg-amber-200/50 dark:bg-amber-800/50',
-          isActive && variant === 'consultant' && 'bg-violet-200/50 dark:bg-violet-800/50',
-          !isActive && 'group-hover:bg-stone-100 dark:group-hover:bg-stone-700/50'
-        )}>
-          <Icon className={cn(
-            'w-[18px] h-[18px] transition-transform duration-200',
-            'group-hover:scale-110'
-          )} />
-        </div>
-
-        {/* Label */}
+        <Icon className="w-[18px] h-[18px] shrink-0" />
         <span className="text-sm truncate flex-1">{label}</span>
 
         {/* New badge */}
         {showBadge && (
-          <span className="flex items-center gap-1 px-2 py-0.5 text-[10px] font-bold bg-gradient-to-r from-teal-500 to-sky-500 text-white rounded-full shadow-sm animate-pulse-soft">
-            <Sparkles className="w-3 h-3" />
-            {t('common.new')}
+          <span className="px-1.5 py-0.5 text-[10px] font-medium bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-400 rounded">
+            Ny
           </span>
-        )}
-
-        {/* Hover arrow indicator */}
-        {!isActive && (
-          <ChevronDown className="w-4 h-4 -rotate-90 opacity-0 group-hover:opacity-50 transition-opacity shrink-0" />
         )}
       </Link>
     )
@@ -138,16 +112,9 @@ export function Sidebar({ onClose }: SidebarProps) {
   const user = profile
 
   return (
-    <aside
-      className={cn(
-        'h-full flex flex-col transition-all duration-300 w-64',
-        'bg-gradient-to-b from-stone-50 via-white to-stone-50',
-        'dark:from-stone-900 dark:via-stone-900 dark:to-stone-950',
-        'border-r border-stone-200/60 dark:border-stone-800'
-      )}
-    >
-      {/* Navigation with Groups */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1.5">
+    <aside className="h-full flex flex-col w-64 bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800">
+      {/* Navigation */}
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {navGroups.map((group) => {
           const isGroupExpanded = expandedGroups.includes(group.id)
 
@@ -157,33 +124,24 @@ export function Sidebar({ onClose }: SidebarProps) {
               <button
                 onClick={() => toggleGroup(group.id)}
                 className={cn(
-                  'w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold uppercase tracking-wider rounded-lg transition-all duration-200',
-                  'text-stone-500 dark:text-stone-500',
-                  'hover:text-teal-700 dark:hover:text-teal-400 hover:bg-teal-50/50 dark:hover:bg-stone-800/50',
+                  'w-full flex items-center justify-between px-3 py-2 text-xs font-medium uppercase tracking-wider rounded-lg transition-colors',
+                  'text-stone-400 dark:text-stone-500',
+                  'hover:text-stone-600 dark:hover:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800',
                   'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset'
                 )}
                 aria-expanded={isGroupExpanded}
               >
                 <span>{t(group.labelKey)}</span>
-                <div className={cn(
-                  'w-5 h-5 rounded-md flex items-center justify-center transition-all duration-200',
-                  isGroupExpanded ? 'bg-teal-100 dark:bg-teal-900/30' : 'bg-stone-100 dark:bg-stone-800'
-                )}>
-                  <ChevronDown
-                    className={cn(
-                      'w-3.5 h-3.5 transition-transform duration-200',
-                      isGroupExpanded ? 'text-teal-600 dark:text-teal-400' : 'text-stone-400 dark:text-stone-500',
-                      !isGroupExpanded && '-rotate-90'
-                    )}
-                  />
-                </div>
+                <ChevronDown
+                  className={cn(
+                    'w-4 h-4 transition-transform',
+                    !isGroupExpanded && '-rotate-90'
+                  )}
+                />
               </button>
 
-              {/* Group Items with animation */}
-              <div className={cn(
-                'overflow-hidden transition-all duration-300',
-                isGroupExpanded ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
-              )}>
+              {/* Group Items */}
+              {isGroupExpanded && (
                 <div className="space-y-0.5 pl-1">
                   {group.items.map((item) => {
                     const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
@@ -199,16 +157,15 @@ export function Sidebar({ onClose }: SidebarProps) {
                     )
                   })}
                 </div>
-              </div>
+              )}
             </div>
           )
         })}
 
         {/* Consultant Section */}
         {isConsultant && !isUser && (
-          <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700/50">
-            <p className="flex items-center gap-2 text-[11px] font-semibold text-violet-600/70 dark:text-violet-400/70 uppercase tracking-wider mb-2 px-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-500" />
+          <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
+            <p className="px-3 py-2 text-xs font-medium text-violet-600 dark:text-violet-400 uppercase tracking-wider">
               {t('sidebar.consultantSection')}
             </p>
             <div className="space-y-0.5 pl-1">
@@ -231,9 +188,8 @@ export function Sidebar({ onClose }: SidebarProps) {
 
         {/* Admin Section */}
         {isAdmin && (
-          <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700/50">
-            <p className="flex items-center gap-2 text-[11px] font-semibold text-amber-600/70 dark:text-amber-400/70 uppercase tracking-wider mb-2 px-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
+            <p className="px-3 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wider">
               {t('sidebar.adminSection')}
             </p>
             <div className="space-y-0.5 pl-1">
@@ -255,12 +211,12 @@ export function Sidebar({ onClose }: SidebarProps) {
         )}
       </nav>
 
-      {/* User Profile & Logout */}
-      <div className="p-3 border-t border-stone-200 dark:border-stone-700/50 bg-gradient-to-b from-transparent via-stone-50/50 to-stone-100/50 dark:from-transparent dark:via-stone-800/30 dark:to-stone-800/50">
-        {/* Active role badge */}
-        <div className="mb-3 px-3 py-2.5 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-xl border border-teal-100 dark:border-teal-800/30">
-          <p className="text-[10px] text-teal-600 dark:text-teal-400 uppercase tracking-wider font-semibold">{t('roles.activeRole')}</p>
-          <p className="text-sm font-bold text-teal-800 dark:text-teal-200">
+      {/* User Profile & Actions */}
+      <div className="p-3 border-t border-stone-200 dark:border-stone-700">
+        {/* Active role */}
+        <div className="mb-3 px-3 py-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
+          <p className="text-[10px] text-stone-500 dark:text-stone-400 uppercase tracking-wider">Aktiv roll</p>
+          <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
             {activeRole === 'SUPERADMIN' ? t('roles.superadmin') :
              activeRole === 'ADMIN' ? t('roles.admin') :
              activeRole === 'CONSULTANT' ? t('roles.consultant') : t('roles.participant')}
@@ -268,32 +224,28 @@ export function Sidebar({ onClose }: SidebarProps) {
         </div>
 
         {/* User info */}
-        <div className="flex items-center gap-3 mb-3 px-2 py-2 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800/50 transition-colors">
-          <div className="relative">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 dark:from-teal-500 dark:to-teal-700 flex items-center justify-center shrink-0 overflow-hidden shadow-lg shadow-teal-200/50 dark:shadow-none">
-              {user?.avatar_url ? (
-                <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
-              ) : (
-                <span className="text-white text-sm font-bold">
-                  {user?.first_name?.[0] || user?.email?.[0] || '?'}
-                </span>
-              )}
-            </div>
-            {/* Online indicator */}
-            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-emerald-500 border-2 border-white dark:border-stone-900 rounded-full" />
+        <div className="flex items-center gap-3 mb-3 px-2 py-2">
+          <div className="w-9 h-9 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center overflow-hidden">
+            {user?.avatar_url ? (
+              <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <span className="text-teal-700 dark:text-teal-400 text-sm font-medium">
+                {user?.first_name?.[0] || user?.email?.[0] || '?'}
+              </span>
+            )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-stone-800 dark:text-stone-100 text-sm font-semibold truncate">
+            <p className="text-sm font-medium text-stone-800 dark:text-stone-200 truncate">
               {user?.first_name || user?.email}
             </p>
-            <p className="text-stone-500 dark:text-stone-400 text-xs truncate">
+            <p className="text-xs text-stone-500 dark:text-stone-400 truncate">
               {user?.email}
             </p>
           </div>
         </div>
 
-        {/* Action buttons */}
-        <div className="space-y-1">
+        {/* Actions */}
+        <div className="space-y-0.5">
           <NavLinkComponent
             to="/settings"
             icon={Settings}
@@ -303,17 +255,10 @@ export function Sidebar({ onClose }: SidebarProps) {
 
           <button
             onClick={() => signOut()}
-            className={cn(
-              'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
-              'text-rose-600/70 dark:text-rose-400/70',
-              'hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-700 dark:hover:text-rose-400',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-inset'
-            )}
+            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors"
             aria-label={t('nav.logout')}
           >
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center bg-rose-50 dark:bg-rose-900/20">
-              <LogOut className="w-[18px] h-[18px]" />
-            </div>
+            <LogOut className="w-[18px] h-[18px]" />
             <span className="text-sm">{t('nav.logout')}</span>
           </button>
         </div>
