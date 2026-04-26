@@ -115,7 +115,35 @@
   },
   "calendar": {
     "title": "Calendar",
+    "subtitle": "Plan your activities and meetings",
     "description": "Your events and meetings",
+    "navigation": {
+      "today": "Today",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "views": {
+      "month": "Month",
+      "week": "Week",
+      "day": "Day",
+      "agenda": "Agenda"
+    },
+    "months": {
+      "january": "January",
+      "february": "February",
+      "march": "March",
+      "april": "April",
+      "may": "May",
+      "june": "June",
+      "july": "July",
+      "august": "August",
+      "september": "September",
+      "october": "October",
+      "november": "November",
+      "december": "December"
+    },
+    "weekNumber": "Week {{week}}, {{year}}",
+    "today": "Today",
     "days": {
       "mon": "Mon",
       "tue": "Tue",
@@ -171,6 +199,7 @@
     "salary": "Salary & Negotiation",
     "personalBrand": "Personal Brand",
     "international": "International Guide",
+    "externalResources": "External Resources",
     "myConsultant": "My Consultant",
     "calendar": "Calendar",
     "linkedinOptimizer": "LinkedIn Optimizer",

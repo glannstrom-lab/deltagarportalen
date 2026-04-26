@@ -115,7 +115,35 @@
   },
   "calendar": {
     "title": "Kalender",
+    "subtitle": "Planera dina aktiviteter och möten",
     "description": "Dina händelser och möten",
+    "navigation": {
+      "today": "Idag",
+      "previous": "Föregående",
+      "next": "Nästa"
+    },
+    "views": {
+      "month": "Månad",
+      "week": "Vecka",
+      "day": "Dag",
+      "agenda": "Agenda"
+    },
+    "months": {
+      "january": "Januari",
+      "february": "Februari",
+      "march": "Mars",
+      "april": "April",
+      "may": "Maj",
+      "june": "Juni",
+      "july": "Juli",
+      "august": "Augusti",
+      "september": "September",
+      "october": "Oktober",
+      "november": "November",
+      "december": "December"
+    },
+    "weekNumber": "Vecka {{week}}, {{year}}",
+    "today": "Idag",
     "days": {
       "mon": "Mån",
       "tue": "Tis",
@@ -156,6 +184,7 @@
     "salary": "Lön & Förhandling",
     "personalBrand": "Personligt Varumärke",
     "international": "Internationell Guide",
+    "externalResources": "Externa resurser",
     "interestGuide": "Intresseguide",
     "exercises": "Övningar",
     "diary": "Dagbok",
