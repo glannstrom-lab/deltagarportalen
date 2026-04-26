@@ -366,6 +366,28 @@
         "streak": "{{days}} dagars streak"
       }
     },
+    "readyForJob": "Redo för jobb",
+    "nextStep": "Nästa steg",
+    "next": "Nästa",
+    "toDo": "Att göra",
+    "remaining": "kvar",
+    "completedSteps": "{{count}} avklarade steg",
+    "allStepsComplete": "Alla steg avklarade!",
+    "readyToApply": "Du är redo att söka jobb. Lycka till!",
+    "searchJobs": "Sök jobb",
+    "savedJobs": "Sparade jobb",
+    "viewAll": "Visa alla",
+    "howAreYou": "Hur mår du?",
+    "moreInWellness": "Mer i Välmående",
+    "yourInterestProfile": "Din intresseprofil",
+    "findYourInterests": "Hitta dina intressen",
+    "discoverCareers": "Upptäck vilka yrken som passar din personlighet",
+    "startGuide": "Starta guiden",
+    "mood": {
+      "good": "Bra",
+      "okay": "Okej",
+      "low": "Lågt"
+    },
     "welcomeMessages": {
       "start": "Välkommen! Låt oss komma igång med ditt jobbsökande.",
       "goodStart": "Bra start! Fortsätt bygga din profil.",

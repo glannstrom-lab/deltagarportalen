@@ -366,6 +366,28 @@
         "streak": "{{days}} day streak"
       }
     },
+    "readyForJob": "Ready for work",
+    "nextStep": "Next step",
+    "next": "Next",
+    "toDo": "To do",
+    "remaining": "left",
+    "completedSteps": "{{count}} completed steps",
+    "allStepsComplete": "All steps complete!",
+    "readyToApply": "You're ready to apply for jobs. Good luck!",
+    "searchJobs": "Search jobs",
+    "savedJobs": "Saved jobs",
+    "viewAll": "View all",
+    "howAreYou": "How are you?",
+    "moreInWellness": "More in Wellness",
+    "yourInterestProfile": "Your interest profile",
+    "findYourInterests": "Find your interests",
+    "discoverCareers": "Discover careers that match your personality",
+    "startGuide": "Start the guide",
+    "mood": {
+      "good": "Good",
+      "okay": "Okay",
+      "low": "Low"
+    },
     "welcomeMessages": {
       "start": "Welcome! Let's get started with your job search.",
       "goodStart": "Good start! Keep building your profile.",
