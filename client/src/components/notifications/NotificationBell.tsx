@@ -278,10 +278,10 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'relative flex items-center justify-center transition-all duration-200 focus:outline-none',
-          variant === 'compact'
-            ? 'w-10 h-10 rounded-xl bg-emerald-100/80 hover:bg-emerald-200/90 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/50 shadow-sm hover:shadow-md'
-            : 'w-9 h-9 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800'
+          'relative flex items-center justify-center transition-colors focus:outline-none',
+          'w-9 h-9 rounded-full',
+          'hover:bg-stone-100 dark:hover:bg-stone-800',
+          isOpen && 'bg-stone-100 dark:bg-stone-800'
         )}
         aria-label={`Notifikationer${unreadCount > 0 ? ` (${unreadCount} olästa)` : ''}`}
         aria-expanded={isOpen}
@@ -290,13 +290,7 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
       >
         <Bell
           size={20}
-          className={cn(
-            variant === 'compact'
-              ? 'text-emerald-600 dark:text-emerald-400'
-              : isOpen
-                ? 'text-teal-600 dark:text-teal-400'
-                : 'text-stone-500 dark:text-stone-600'
-          )}
+          className="text-stone-500 dark:text-stone-400"
           aria-hidden="true"
         />
       </button>

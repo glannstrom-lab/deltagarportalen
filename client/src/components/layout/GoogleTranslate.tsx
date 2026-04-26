@@ -187,14 +187,12 @@ export function GoogleTranslate() {
         onClick={() => setIsOpen(!isOpen)}
         disabled={isLoading}
         className={cn(
-          'w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200',
-          'shadow-sm hover:shadow-md focus:outline-none',
+          'w-9 h-9 flex items-center justify-center rounded-full transition-colors',
+          'hover:bg-stone-100 dark:hover:bg-stone-800',
+          'focus:outline-none',
           isLoading && 'opacity-50 cursor-wait',
-          activeLanguage
-            ? 'bg-emerald-200 dark:bg-emerald-800/60 ring-2 ring-emerald-400/50'
-            : isOpen
-              ? 'bg-emerald-100 dark:bg-emerald-900/40 ring-2 ring-emerald-400/50'
-              : 'bg-emerald-100/80 hover:bg-emerald-200/90 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/50'
+          isOpen && 'bg-stone-100 dark:bg-stone-800',
+          activeLanguage && 'text-teal-600 dark:text-teal-400'
         )}
         aria-label={t('language.translate', 'Översätt sidan')}
         aria-expanded={isOpen}
@@ -204,13 +202,9 @@ export function GoogleTranslate() {
         }
       >
         {isLoading ? (
-          <div className="w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-4 h-4 border-2 border-stone-400 border-t-transparent rounded-full animate-spin" />
         ) : (
-          <Globe size={20} className={cn(
-            activeLanguage
-              ? 'text-emerald-700 dark:text-emerald-300'
-              : 'text-emerald-600 dark:text-emerald-400'
-          )} />
+          <Globe size={20} className={activeLanguage ? 'text-teal-600 dark:text-teal-400' : 'text-stone-500 dark:text-stone-400'} />
         )}
       </button>
 
