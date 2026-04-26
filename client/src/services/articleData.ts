@@ -23084,21 +23084,19 @@ Hjälp dem minnas:
 
 ## Mall för referenslista
 
-```
-REFERENSER
+**REFERENSER**
 
-Anna Andersson
+**Anna Andersson**
 Tidigare chef på Företag AB
 Telefon: 070-XXX XX XX
 E-post: anna.andersson@foretag.se
 Relation: Min chef 2020-2023
 
-Erik Eriksson
+**Erik Eriksson**
 Projektledare på Projekt X
 Telefon: 073-XXX XX XX
 E-post: erik.eriksson@projekt.se
 Relation: Ledde projekt jag deltog i 2022
-```
 
 ## Vad frågar arbetsgivaren?
 
