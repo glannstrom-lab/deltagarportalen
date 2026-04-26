@@ -150,7 +150,7 @@ export function CareerTimeline({ className }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
+        <Loader2 className="w-6 h-6 text-brand-900 animate-spin" />
       </div>
     )
   }
@@ -205,7 +205,7 @@ export function CareerTimeline({ className }: Props) {
                       <h4 className="font-medium text-stone-800 dark:text-stone-200">
                         {item.title}
                       </h4>
-                      <p className="text-sm text-teal-600 dark:text-teal-400">
+                      <p className="text-sm text-brand-900 dark:text-brand-400">
                         {item.subtitle}
                       </p>
                     </div>
@@ -247,7 +247,7 @@ export function CareerTimeline({ className }: Props) {
           </p>
           <Link
             to="/cv-builder"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-brand-900 hover:bg-brand-900/90 text-white rounded-lg text-sm font-medium transition-colors"
           >
             <Plus className="w-4 h-4" />
             {t('profile.careerTimeline.goToCVBuilder')}
@@ -258,7 +258,7 @@ export function CareerTimeline({ className }: Props) {
       {items.length > 0 && (
         <Link
           to="/cv-builder"
-          className="flex items-center justify-center gap-2 p-3 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-xl transition-colors"
+          className="flex items-center justify-center gap-2 p-3 text-sm text-brand-900 dark:text-brand-400 hover:bg-brand-50 dark:hover:bg-brand-900/20 rounded-xl transition-colors"
         >
           {t('profile.careerTimeline.editInCVBuilder')}
           <ChevronRight className="w-4 h-4" />

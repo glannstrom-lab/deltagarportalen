@@ -14,7 +14,7 @@ export interface ProgressSliderProps {
   step?: number
   unit?: string
   showValue?: boolean
-  colorScheme?: 'teal' | 'amber' | 'sky'
+  colorScheme?: 'brand' | 'amber' | 'sky'
   disabled?: boolean
   hint?: string
   className?: string
@@ -29,7 +29,7 @@ export function ProgressSlider({
   step = 5,
   unit = '%',
   showValue = true,
-  colorScheme = 'teal',
+  colorScheme = 'brand',
   disabled = false,
   hint,
   className
@@ -38,13 +38,13 @@ export function ProgressSlider({
   const hintId = `${sliderId}-hint`
 
   const colorClasses = {
-    teal: 'accent-teal-500',
+    brand: 'accent-brand-900',
     amber: 'accent-amber-500',
     sky: 'accent-sky-500'
   }
 
   const valueColorClasses = {
-    teal: 'text-teal-600 dark:text-teal-400',
+    brand: 'text-brand-900 dark:text-brand-400',
     amber: 'text-amber-600 dark:text-amber-400',
     sky: 'text-sky-600 dark:text-sky-400'
   }
@@ -91,7 +91,7 @@ export function ProgressSlider({
         aria-describedby={hint ? hintId : undefined}
         className={cn(
           'w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer',
-          'focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:ring-offset-2',
+          'focus:outline-none focus:ring-2 focus:ring-brand-900/30 focus:ring-offset-2',
           colorClasses[colorScheme],
           disabled && 'opacity-50 cursor-not-allowed'
         )}

@@ -147,24 +147,24 @@ export function CompletionGuide({
   return (
     <div className={cn('space-y-4', className)}>
       {/* Progress overview */}
-      <div className="p-4 bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-xl border border-teal-200 dark:border-teal-800/50">
+      <div className="p-4 bg-gradient-to-br from-brand-50 to-brand-100 dark:from-brand-900/20 dark:to-brand-900/10 rounded-xl border border-brand-300 dark:border-brand-900/50">
         <div className="flex items-center justify-between mb-3">
-          <span className="font-semibold text-teal-800 dark:text-teal-300">
+          <span className="font-semibold text-brand-900 dark:text-brand-300">
             {t('profile.completionGuide.title')}
           </span>
-          <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">
+          <span className="text-2xl font-bold text-brand-900 dark:text-brand-400">
             {completionPercent}%
           </span>
         </div>
 
-        <div className="h-2 bg-teal-200 dark:bg-teal-900 rounded-full overflow-hidden">
+        <div className="h-2 bg-brand-100 dark:bg-brand-900/40 rounded-full overflow-hidden">
           <div
-            className="h-full bg-teal-500 dark:bg-teal-400 rounded-full transition-all duration-500"
+            className="h-full bg-brand-900 dark:bg-brand-400 rounded-full transition-all duration-500"
             style={{ width: `${completionPercent}%` }}
           />
         </div>
 
-        <p className="text-xs text-teal-600 dark:text-teal-400 mt-2">
+        <p className="text-xs text-brand-900 dark:text-brand-400 mt-2">
           {t('profile.completionGuide.stepsComplete', { completed: completedCount, total: totalCount })}
         </p>
       </div>
@@ -228,7 +228,7 @@ export function CompletionGuide({
             {!item.completed && item.link && (
               <Link
                 to={item.link}
-                className="p-2 text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/40 rounded-lg transition-colors"
+                className="p-2 text-brand-900 hover:bg-brand-50 dark:hover:bg-brand-900/40 rounded-lg transition-colors"
               >
                 <ChevronRight className="w-4 h-4" />
               </Link>

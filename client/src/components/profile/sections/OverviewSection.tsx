@@ -62,7 +62,7 @@ export function OverviewSection() {
       className="grid gap-4 md:grid-cols-2"
     >
       {/* Contact info */}
-      <SectionCard title={t('profile.overview.contactInfo')} icon={<User className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.overview.contactInfo')} icon={<User className="w-4 h-4" />} colorScheme="brand">
         <div className="grid gap-3">
           <div className="grid grid-cols-2 gap-3">
             <CompactInput
@@ -129,7 +129,7 @@ export function OverviewSection() {
 
       {/* RIASEC profile */}
       {!interestLoading && interestProfile.hasResult && (
-        <SectionCard title={t('profile.overview.interestProfile')} icon={<Compass className="w-4 h-4" />} colorScheme="teal">
+        <SectionCard title={t('profile.overview.interestProfile')} icon={<Compass className="w-4 h-4" />} colorScheme="brand">
           <div className="space-y-2">
             {interestProfile.dominantTypes.slice(0, 3).map((type, i) => {
               const rt = RIASEC_TYPES[type.code]
@@ -162,7 +162,7 @@ export function OverviewSection() {
           </div>
           <Link
             to="/interest-guide"
-            className="inline-flex items-center gap-1 mt-3 text-xs text-teal-600 dark:text-teal-400 hover:underline"
+            className="inline-flex items-center gap-1 mt-3 text-xs text-brand-900 dark:text-brand-400 hover:underline"
           >
             {t('profile.overview.redoGuide')} <ChevronRight className="w-3 h-3" aria-hidden="true" />
           </Link>

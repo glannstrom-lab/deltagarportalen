@@ -121,7 +121,7 @@ export function ProfileHeader() {
   const alerts = getAlerts()
 
   return (
-    <header className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-4 overflow-hidden">
+    <header className="bg-brand-zone dark:bg-brand-900/10 rounded-2xl mb-4 overflow-hidden">
       {/* Profile Info */}
       <div className="p-4 sm:p-6 flex flex-col sm:flex-row items-center gap-4">
         <ProfileImageUpload
@@ -137,7 +137,7 @@ export function ProfileHeader() {
           <p className="text-stone-500 dark:text-stone-400 text-sm truncate">{profile?.email}</p>
 
           {/* Positive message */}
-          <p className="text-xs text-teal-600 dark:text-teal-400 mt-1 font-medium">
+          <p className="text-xs text-brand-900 dark:text-brand-400 mt-1 font-medium">
             {getPositiveMessage()}
           </p>
         </div>
@@ -147,7 +147,7 @@ export function ProfileHeader() {
           <button
             onClick={handleImportFromCV}
             disabled={importing}
-            className="flex items-center gap-1.5 text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 disabled:opacity-50 transition-colors"
+            className="flex items-center gap-1.5 text-xs text-brand-900 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 disabled:opacity-50 transition-colors"
             aria-busy={importing}
           >
             <Upload className="w-3.5 h-3.5" aria-hidden="true" />
@@ -159,7 +159,7 @@ export function ProfileHeader() {
           <button
             onClick={handleExportPDF}
             disabled={exporting}
-            className="flex items-center gap-1.5 text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 disabled:opacity-50 transition-colors"
+            className="flex items-center gap-1.5 text-xs text-brand-900 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 disabled:opacity-50 transition-colors"
             aria-busy={exporting}
           >
             <Download className="w-3.5 h-3.5" aria-hidden="true" />
@@ -177,8 +177,8 @@ export function ProfileHeader() {
               </>
             ) : cloudSynced ? (
               <>
-                <Cloud className="w-3.5 h-3.5 text-emerald-500" aria-hidden="true" />
-                <span className="text-xs text-emerald-600 dark:text-emerald-400">{t('profile.header.saved')}</span>
+                <Cloud className="w-3.5 h-3.5 text-brand-900" aria-hidden="true" />
+                <span className="text-xs text-brand-900 dark:text-brand-400">{t('profile.header.saved')}</span>
               </>
             ) : (
               <>
@@ -198,8 +198,8 @@ export function ProfileHeader() {
           </span>
           <span className={cn(
             'text-xs font-bold',
-            completion.percent >= 75 ? 'text-emerald-600 dark:text-emerald-400' :
-            completion.percent >= 50 ? 'text-amber-600 dark:text-amber-400' :
+            completion.percent >= 75 ? 'text-brand-900 dark:text-brand-400' :
+            completion.percent >= 50 ? 'text-brand-700 dark:text-brand-400' :
             'text-stone-600 dark:text-stone-400'
           )}>
             {t('profile.header.stepsCompleted', { filled: completion.filled, total: completion.total })}
@@ -207,7 +207,7 @@ export function ProfileHeader() {
         </div>
 
         <div
-          className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden"
+          className="h-2 bg-brand-100 dark:bg-stone-700 rounded-full overflow-hidden"
           role="progressbar"
           aria-valuenow={completion.percent}
           aria-valuemin={0}
@@ -215,12 +215,7 @@ export function ProfileHeader() {
           aria-label={t('profile.header.progressLabel', { percent: completion.percent })}
         >
           <div
-            className={cn(
-              'h-full transition-all duration-500 rounded-full',
-              completion.percent >= 75 ? 'bg-gradient-to-r from-emerald-400 to-emerald-500' :
-              completion.percent >= 50 ? 'bg-gradient-to-r from-amber-400 to-amber-500' :
-              'bg-gradient-to-r from-teal-400 to-teal-500'
-            )}
+            className="h-full transition-all duration-500 rounded-full bg-brand-900"
             style={{ width: `${completion.percent}%` }}
           />
         </div>
@@ -228,7 +223,7 @@ export function ProfileHeader() {
         {/* Next step suggestion */}
         {completion.nextStep && (
           <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
-            {t('profile.header.nextStep')}: <span className="text-teal-600 dark:text-teal-400 font-medium">{completion.nextStep.label}</span>
+            {t('profile.header.nextStep')}: <span className="text-brand-900 dark:text-brand-400 font-medium">{completion.nextStep.label}</span>
           </p>
         )}
       </div>
@@ -257,7 +252,7 @@ export function ProfileHeader() {
       )}
 
       {/* Consultant overview (collapsible) */}
-      <div className="border-t border-teal-100 dark:border-teal-800/50">
+      <div className="border-t border-brand-100 dark:border-stone-800">
         <button
           onClick={() => setShowConsultantView(!showConsultantView)}
           className="w-full px-4 sm:px-6 py-3 flex items-center justify-between text-left hover:bg-white/50 dark:hover:bg-stone-800/30 transition-colors"
@@ -265,7 +260,7 @@ export function ProfileHeader() {
           aria-controls="consultant-overview"
         >
           <span className="flex items-center gap-2 text-sm font-medium text-stone-700 dark:text-stone-300">
-            <Users className="w-4 h-4 text-purple-500" aria-hidden="true" />
+            <Users className="w-4 h-4 text-brand-900" aria-hidden="true" />
             {t('profile.header.consultantOverview')}
           </span>
           {showConsultantView ? (
@@ -282,7 +277,7 @@ export function ProfileHeader() {
           >
             <div className="bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-2 mb-1">
-                <FileText className="w-4 h-4 text-sky-500" aria-hidden="true" />
+                <FileText className="w-4 h-4 text-brand-900" aria-hidden="true" />
                 <span className="text-xs text-stone-500 dark:text-stone-400">{t('profile.header.cvStatus')}</span>
               </div>
               <p className="text-sm font-bold text-stone-800 dark:text-stone-100">
@@ -294,7 +289,7 @@ export function ProfileHeader() {
 
             <div className="bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-2 mb-1">
-                <Activity className="w-4 h-4 text-amber-500" aria-hidden="true" />
+                <Activity className="w-4 h-4 text-brand-900" aria-hidden="true" />
                 <span className="text-xs text-stone-500 dark:text-stone-400">{t('profile.header.applications')}</span>
               </div>
               <p className="text-sm font-bold text-stone-800 dark:text-stone-100">
@@ -304,7 +299,7 @@ export function ProfileHeader() {
 
             <div className="bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-2 mb-1">
-                <Users className="w-4 h-4 text-teal-500" aria-hidden="true" />
+                <Users className="w-4 h-4 text-brand-900" aria-hidden="true" />
                 <span className="text-xs text-stone-500 dark:text-stone-400">{t('profile.header.interviews')}</span>
               </div>
               <p className="text-sm font-bold text-stone-800 dark:text-stone-100">
@@ -314,7 +309,7 @@ export function ProfileHeader() {
 
             <div className="bg-white dark:bg-stone-800 rounded-xl p-3 border border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-2 mb-1">
-                <AlertCircle className="w-4 h-4 text-purple-500" aria-hidden="true" />
+                <AlertCircle className="w-4 h-4 text-brand-900" aria-hidden="true" />
                 <span className="text-xs text-stone-500 dark:text-stone-400">{t('profile.header.supportNeeds')}</span>
               </div>
               <p className="text-sm font-bold text-stone-800 dark:text-stone-100">

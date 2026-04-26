@@ -93,9 +93,9 @@ export function ProfileTabs() {
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg whitespace-nowrap transition-all',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2',
                   isActive
-                    ? 'bg-white dark:bg-stone-700 text-teal-700 dark:text-teal-300 shadow-sm'
+                    ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 shadow-sm'
                     : 'text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200'
                 )}
               >
@@ -138,10 +138,10 @@ export function ProfileTabs() {
               onKeyDown={(e) => handleKeyDown(e, index)}
               className={cn(
                 'flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-all',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2',
                 isActive
-                  ? 'bg-white dark:bg-stone-700 text-teal-700 dark:text-teal-300 shadow-sm'
-                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-white/50 dark:hover:bg-stone-700/50'
+                  ? 'bg-brand-100 dark:bg-brand-900/30 text-brand-900 dark:text-brand-300 shadow-sm'
+                  : 'text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 hover:bg-brand-50 dark:hover:bg-stone-700/50'
               )}
             >
               <span aria-hidden="true">{TAB_ICONS[tab.id]}</span>

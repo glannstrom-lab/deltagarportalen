@@ -8,7 +8,7 @@ export interface SectionCardProps {
   title: string
   icon?: React.ReactNode
   children: React.ReactNode
-  colorScheme?: 'teal' | 'sky' | 'amber'
+  colorScheme?: 'brand' | 'sky' | 'amber' | 'neutral'
   collapsible?: boolean
   defaultExpanded?: boolean
   className?: string
@@ -18,14 +18,14 @@ export function SectionCard({
   title,
   icon,
   children,
-  colorScheme = 'teal',
+  colorScheme = 'brand',
   className
 }: SectionCardProps) {
   const colorConfig = {
-    teal: {
-      border: 'border-teal-200 dark:border-teal-800/50',
-      iconColor: 'text-teal-600 dark:text-teal-400',
-      titleColor: 'text-teal-800 dark:text-teal-300'
+    brand: {
+      border: 'border-brand-300 dark:border-brand-900/50',
+      iconColor: 'text-brand-900 dark:text-brand-400',
+      titleColor: 'text-brand-900 dark:text-brand-300'
     },
     sky: {
       border: 'border-sky-200 dark:border-sky-800/50',
@@ -36,6 +36,11 @@ export function SectionCard({
       border: 'border-amber-200 dark:border-amber-800/50',
       iconColor: 'text-amber-600 dark:text-amber-400',
       titleColor: 'text-amber-800 dark:text-amber-300'
+    },
+    neutral: {
+      border: 'border-stone-200 dark:border-stone-700',
+      iconColor: 'text-stone-500 dark:text-stone-400',
+      titleColor: 'text-stone-800 dark:text-stone-200'
     }
   }
 

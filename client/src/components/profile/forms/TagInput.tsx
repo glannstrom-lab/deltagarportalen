@@ -26,7 +26,7 @@ export interface TagInputProps {
   label?: string
   hint?: string
   error?: string
-  colorScheme?: 'teal' | 'amber' | 'sky'
+  colorScheme?: 'brand' | 'amber' | 'sky'
   disabled?: boolean
   className?: string
 }
@@ -42,7 +42,7 @@ export function TagInput({
   label,
   hint,
   error: externalError,
-  colorScheme = 'teal',
+  colorScheme = 'brand',
   disabled = false,
   className
 }: TagInputProps) {
@@ -65,12 +65,12 @@ export function TagInput({
   const error = externalError || internalError
 
   const colorClasses = {
-    teal: {
-      tag: 'bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300',
-      tagHover: 'hover:bg-teal-100 dark:hover:bg-teal-800',
-      button: 'bg-teal-500 hover:bg-teal-600 focus:ring-teal-400',
-      focus: 'focus:ring-teal-400 focus:border-teal-400',
-      suggestion: 'hover:bg-teal-50 dark:hover:bg-teal-900/40'
+    brand: {
+      tag: 'bg-brand-50 dark:bg-brand-900/40 text-brand-900 dark:text-brand-300',
+      tagHover: 'hover:bg-brand-100 dark:hover:bg-brand-900/60',
+      button: 'bg-brand-900 hover:bg-brand-900/90 focus:ring-brand-900',
+      focus: 'focus:ring-brand-900 focus:border-brand-900',
+      suggestion: 'hover:bg-brand-50 dark:hover:bg-brand-900/40'
     },
     amber: {
       tag: 'bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300',
@@ -312,7 +312,7 @@ export function TagInput({
                   className={cn(
                     'w-full px-2 py-1.5 text-left text-xs text-stone-700 dark:text-stone-300 cursor-pointer',
                     colors.suggestion,
-                    index === activeIndex && 'bg-teal-50 dark:bg-teal-900/40'
+                    index === activeIndex && 'bg-brand-50 dark:bg-brand-900/40'
                   )}
                 >
                   {label}

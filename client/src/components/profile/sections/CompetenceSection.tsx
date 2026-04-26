@@ -39,7 +39,7 @@ export function CompetenceSection() {
       <SectionCard
         title={t('profile.competenceSection.profileSummary')}
         icon={<Sparkles className="w-4 h-4" />}
-        colorScheme="teal"
+        colorScheme="brand"
         className="md:col-span-2"
       >
         <AISummary />

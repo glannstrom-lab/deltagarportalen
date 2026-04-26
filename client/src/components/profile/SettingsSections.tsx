@@ -78,7 +78,7 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
+        <Loader2 className="w-6 h-6 text-brand-900 animate-spin" />
       </div>
     )
   }
@@ -90,7 +90,7 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
       {/* Email notifications */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <Mail className="w-4 h-4 text-teal-500" />
+          <Mail className="w-4 h-4 text-brand-900" />
           <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.emailNotifications')}</h4>
         </div>
         <div className="space-y-2">
@@ -101,7 +101,7 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
             { key: 'email_tips_and_resources', labelKey: 'profile.settings.notifications.tipsAndResources', descKey: 'profile.settings.notifications.tipsAndResourcesDesc' },
             { key: 'email_consultant_messages', labelKey: 'profile.settings.notifications.consultantMessages', descKey: 'profile.settings.notifications.consultantMessagesDesc' },
           ].map(item => (
-            <label key={item.key} className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
+            <label key={item.key} className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-brand-300 dark:hover:border-brand-900/50 transition-colors">
               <div>
                 <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t(item.labelKey)}</p>
                 <p className="text-xs text-stone-500 dark:text-stone-400">{t(item.descKey)}</p>
@@ -110,7 +110,7 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
                 type="checkbox"
                 checked={settings[item.key as keyof NotificationSettings] as boolean}
                 onChange={(e) => handleChange(item.key as keyof NotificationSettings, e.target.checked)}
-                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
+                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900"
               />
             </label>
           ))}
@@ -120,11 +120,11 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
       {/* Push notifications */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <Phone className="w-4 h-4 text-teal-500" />
+          <Phone className="w-4 h-4 text-brand-900" />
           <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.pushNotifications')}</h4>
         </div>
         <div className="space-y-2">
-          <label className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
+          <label className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-brand-300 dark:hover:border-brand-900/50 transition-colors">
             <div>
               <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.enablePush')}</p>
               <p className="text-xs text-stone-500 dark:text-stone-400">{t('profile.settings.enablePushDesc')}</p>
@@ -133,7 +133,7 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
               type="checkbox"
               checked={settings.push_enabled}
               onChange={(e) => handleChange('push_enabled', e.target.checked)}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900"
             />
           </label>
           {settings.push_enabled && (
@@ -149,7 +149,7 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
                     type="checkbox"
                     checked={settings[item.key as keyof NotificationSettings] as boolean}
                     onChange={(e) => handleChange(item.key as keyof NotificationSettings, e.target.checked)}
-                    className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
+                    className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900"
                   />
                 </label>
               ))}
@@ -161,13 +161,13 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
       {/* Frequency */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <Bell className="w-4 h-4 text-teal-500" />
+          <Bell className="w-4 h-4 text-brand-900" />
           <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.frequency')}</h4>
         </div>
         <select
           value={settings.digest_frequency}
           onChange={(e) => handleChange('digest_frequency', e.target.value)}
-          className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
+          className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-brand-900/20 focus:border-brand-300"
         >
           <option value="realtime">{t('profile.settings.frequencyOptions.realtime')}</option>
           <option value="daily">{t('profile.settings.frequencyOptions.daily')}</option>
@@ -177,7 +177,7 @@ export function NotificationSettingsSection({ className }: NotificationSettingsP
       </div>
 
       {saving && (
-        <div className="flex items-center gap-2 text-xs text-teal-600 dark:text-teal-400">
+        <div className="flex items-center gap-2 text-xs text-brand-900 dark:text-brand-400">
           <Loader2 className="w-3 h-3 animate-spin" />
           {t('common.saving')}
         </div>
@@ -253,7 +253,7 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
+        <Loader2 className="w-6 h-6 text-brand-900 animate-spin" />
       </div>
     )
   }
@@ -265,7 +265,7 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
       {/* Profile visibility level */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <Globe className="w-4 h-4 text-teal-500" />
+          <Globe className="w-4 h-4 text-brand-900" />
           <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.whoCanSeeProfile')}</h4>
         </div>
         <div className="space-y-2">
@@ -279,8 +279,8 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
               className={cn(
                 'flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-colors',
                 settings.profile_visible_to === item.value
-                  ? 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-700'
-                  : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700'
+                  ? 'bg-brand-50 dark:bg-brand-900/30 border-brand-300 dark:border-brand-900/50'
+                  : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-brand-300 dark:hover:border-brand-900/50'
               )}
             >
               <input
@@ -289,7 +289,7 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
                 value={item.value}
                 checked={settings.profile_visible_to === item.value}
                 onChange={(e) => handleChange('profile_visible_to', e.target.value)}
-                className="w-4 h-4 border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
+                className="w-4 h-4 border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900"
               />
               <div className="w-8 h-8 rounded-lg bg-stone-100 dark:bg-stone-700 flex items-center justify-center">
                 <item.icon className="w-4 h-4 text-stone-600 dark:text-stone-400" />
@@ -306,7 +306,7 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
       {/* Section visibility */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <Eye className="w-4 h-4 text-teal-500" />
+          <Eye className="w-4 h-4 text-brand-900" />
           <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.showHideSections')}</h4>
         </div>
         <div className="grid grid-cols-2 gap-2">
@@ -324,12 +324,12 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
             { key: 'show_interests', labelKey: 'profile.settings.sections.interests' },
             { key: 'show_goals', labelKey: 'profile.settings.sections.goals' },
           ].map(item => (
-            <label key={item.key} className="flex items-center gap-2 p-2 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
+            <label key={item.key} className="flex items-center gap-2 p-2 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-brand-300 dark:hover:border-brand-900/50 transition-colors">
               <input
                 type="checkbox"
                 checked={settings[item.key as keyof VisibilitySettings] as boolean}
                 onChange={(e) => handleChange(item.key as keyof VisibilitySettings, e.target.checked)}
-                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
+                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900"
               />
               <span className="text-sm text-stone-700 dark:text-stone-300">{t(item.labelKey)}</span>
             </label>
@@ -340,11 +340,11 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
       {/* Job search visibility */}
       <div>
         <div className="flex items-center gap-2 mb-3">
-          <Building2 className="w-4 h-4 text-teal-500" />
+          <Building2 className="w-4 h-4 text-brand-900" />
           <h4 className="font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.jobSearch')}</h4>
         </div>
         <div className="space-y-2">
-          <label className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
+          <label className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-brand-300 dark:hover:border-brand-900/50 transition-colors">
             <div>
               <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.visibleToEmployers')}</p>
               <p className="text-xs text-stone-500 dark:text-stone-400">{t('profile.settings.visibleToEmployersDesc')}</p>
@@ -353,10 +353,10 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
               type="checkbox"
               checked={settings.visible_to_employers}
               onChange={(e) => handleChange('visible_to_employers', e.target.checked)}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900"
             />
           </label>
-          <label className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-teal-300 dark:hover:border-teal-700 transition-colors">
+          <label className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 cursor-pointer hover:border-brand-300 dark:hover:border-brand-900/50 transition-colors">
             <div>
               <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('profile.settings.searchableProfile')}</p>
               <p className="text-xs text-stone-500 dark:text-stone-400">{t('profile.settings.searchableProfileDesc')}</p>
@@ -365,14 +365,14 @@ export function VisibilitySettingsSection({ className }: VisibilitySettingsProps
               type="checkbox"
               checked={settings.searchable_profile}
               onChange={(e) => handleChange('searchable_profile', e.target.checked)}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-500 focus:ring-teal-500"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 focus:ring-brand-900"
             />
           </label>
         </div>
       </div>
 
       {saving && (
-        <div className="flex items-center gap-2 text-xs text-teal-600 dark:text-teal-400">
+        <div className="flex items-center gap-2 text-xs text-brand-900 dark:text-brand-400">
           <Loader2 className="w-3 h-3 animate-spin" />
           {t('common.saving')}
         </div>

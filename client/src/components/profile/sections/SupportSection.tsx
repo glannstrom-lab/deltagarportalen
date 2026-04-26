@@ -117,7 +117,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Adaptation needs (positive framing) */}
-      <SectionCard title={t('profile.support.howIWorkBest')} icon={<Accessibility className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.howIWorkBest')} icon={<Accessibility className="w-4 h-4" />} colorScheme="brand">
         <div className="space-y-4">
           <p className="text-xs text-stone-500 dark:text-stone-400 mb-2">
             {t('profile.support.chooseWorkConditions')}
@@ -141,7 +141,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Rehabilitation */}
-      <SectionCard title={t('profile.support.rehabilitation')} icon={<TrendingUp className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.rehabilitation')} icon={<TrendingUp className="w-4 h-4" />} colorScheme="brand">
         <div className="space-y-4">
           <ChipSelect
             label={t('profile.support.rehabilitationPhase')}
@@ -166,7 +166,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Short-term goal */}
-      <SectionCard title={t('profile.support.shortTermGoal')} icon={<Target className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.shortTermGoal')} icon={<Target className="w-4 h-4" />} colorScheme="brand">
         <div className="space-y-4">
           <CompactTextarea
             label={t('profile.support.goal')}
@@ -191,7 +191,7 @@ export function SupportSection() {
             onChange={(v) => updateSupportGoals({
               shortTerm: { ...preferences.support_goals?.shortTerm, progress: v }
             })}
-            colorScheme="teal"
+            colorScheme="brand"
           />
         </div>
       </SectionCard>
@@ -237,7 +237,7 @@ export function SupportSection() {
               onChange={(e) => updateConsultantData({
                 internship: { ...preferences.consultant_data?.internship, active: e.target.checked }
               })}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 dark:bg-stone-700"
             />
             <span className="text-sm text-stone-700 dark:text-stone-300">
               {t('profile.support.ongoingInternship')}
@@ -287,7 +287,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Next steps */}
-      <SectionCard title={t('profile.support.nextSteps')} icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.nextSteps')} icon={<Calendar className="w-4 h-4" />} colorScheme="brand">
         <div className="space-y-2">
           {(preferences.consultant_data?.nextSteps || []).map((step, i) => (
             <div key={i} className="flex items-center gap-2 p-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
@@ -300,7 +300,7 @@ export function SupportSection() {
                   steps[i] = { ...steps[i], completed: e.target.checked }
                   updateConsultantData({ nextSteps: steps })
                 }}
-                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
+                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-brand-900 dark:bg-stone-700"
               />
               <label
                 htmlFor={`step-${i}`}
@@ -357,7 +357,7 @@ export function SupportSection() {
       </SectionCard>
 
       {/* Career Timeline */}
-      <SectionCard title={t('profile.support.careerTimeline')} icon={<Calendar className="w-4 h-4" />} colorScheme="teal">
+      <SectionCard title={t('profile.support.careerTimeline')} icon={<Calendar className="w-4 h-4" />} colorScheme="brand">
         <CareerTimeline />
       </SectionCard>
 
