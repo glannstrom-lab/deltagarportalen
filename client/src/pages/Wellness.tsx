@@ -6,8 +6,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { wellnessTabDefs } from '../data/wellnessTabs'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 
 // Tab components
 import HealthTab from './wellness/HealthTab'
@@ -33,6 +31,7 @@ export default function WellnessPage() {
         customTabs={wellnessTabs}
         tabVariant="glass"
         showTabs={true}
+        domain="wellbeing"
         className="space-y-6"
       >
         <Routes>
@@ -45,7 +44,6 @@ export default function WellnessPage() {
           <Route path="*" element={<Navigate to="/wellness" replace />} />
         </Routes>
       </PageLayout>
-      <HelpButton content={helpContent.wellness} />
     </>
   )
 }

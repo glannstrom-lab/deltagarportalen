@@ -11,8 +11,6 @@ import {
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { Button } from '@/components/ui'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 
 // Import application components
 import { ApplicationsPipeline } from '@/components/applications/ApplicationsPipeline'
@@ -88,6 +86,7 @@ export default function Applications() {
         subtitle={t('applications.subtitle', 'Följ dina jobbansökningar genom hela processen')}
         tabs={applicationTabs}
         tabVariant="glass"
+        domain="activity"
         actions={
           <Button onClick={() => setShowAddModal(true)} className="hidden sm:flex">
             <Plus className="w-4 h-4 mr-1" />
@@ -131,7 +130,6 @@ export default function Applications() {
         />
       )}
 
-      <HelpButton content={helpContent.applications || helpContent.jobSearch} />
     </>
   )
 }
