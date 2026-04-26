@@ -172,11 +172,11 @@ export function BottomBar() {
   }
 
   return (
-    <div className="bg-stone-50 dark:bg-stone-900 border-t border-stone-200 dark:border-stone-800">
+    <div className="bg-white dark:bg-stone-800 border-t-2 border-stone-200 dark:border-stone-700 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
       {/* Toggle button */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-center gap-2 py-3 text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
+        className="w-full flex items-center justify-center gap-2 py-4 text-sm font-medium text-stone-600 dark:text-stone-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-inset"
       >
         <HelpCircle className="w-4 h-4" />
         <span>{faq.title}</span>

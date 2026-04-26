@@ -1,5 +1,5 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Menu, X, User, Settings, LogOut, ChevronDown, HelpCircle
@@ -18,9 +18,25 @@ import { NotificationBell } from './notifications/NotificationBell'
 import { OptimizedImage } from './ui/OptimizedImage'
 import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge } from './layout/navigation'
 
+const SIDEBAR_COLLAPSED_KEY = 'sidebar-collapsed'
+
 export default function Layout() {
   const { isMobile } = useMobileOptimizer()
   const location = useLocation()
+
+  // Sidebar collapsed state with localStorage persistence
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    const stored = localStorage.getItem(SIDEBAR_COLLAPSED_KEY)
+    return stored === 'true'
+  })
+
+  const toggleSidebarCollapse = () => {
+    setSidebarCollapsed(prev => {
+      const newValue = !prev
+      localStorage.setItem(SIDEBAR_COLLAPSED_KEY, String(newValue))
+      return newValue
+    })
+  }
 
   // Visa TopBar och BottomBar på alla sidor förutom login/register
   const showBars = !['/login', '/register'].includes(location.pathname)
@@ -46,8 +62,11 @@ export default function Layout() {
         {/* Main area with sidebar and content */}
         <div className="flex-1 flex">
           {/* Desktop Sidebar */}
-          <div className="hidden lg:block">
-            <Sidebar />
+          <div className="hidden lg:block relative">
+            <Sidebar
+              isCollapsed={sidebarCollapsed}
+              onToggleCollapse={toggleSidebarCollapse}
+            />
           </div>
 
           {/* Huvudinnehåll */}

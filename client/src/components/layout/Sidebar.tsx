@@ -1,7 +1,7 @@
 /**
  * Sidebar Component - Clean Pastel Design
  * White background, subtle borders, soft pastel hover states
- * No gradients, minimal visual clutter
+ * Collapsible with icon-only mode
  */
 
 import { useState, useEffect } from 'react'
@@ -10,13 +10,15 @@ import { useTranslation } from 'react-i18next'
 import { navGroups, adminNavItems, consultantNavItems, markFeatureVisited, shouldShowBadge, type NavItem } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { ChevronDown, LogOut, Settings } from '@/components/ui/icons'
+import { ChevronDown, ChevronLeft, ChevronRight, LogOut, Settings } from '@/components/ui/icons'
 
 interface SidebarProps {
   onClose?: () => void
+  isCollapsed?: boolean
+  onToggleCollapse?: () => void
 }
 
-export function Sidebar({ onClose }: SidebarProps) {
+export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: SidebarProps) {
   const location = useLocation()
   const { t } = useTranslation()
   const { profile, signOut } = useAuthStore()
@@ -66,8 +68,10 @@ export function Sidebar({ onClose }: SidebarProps) {
           onClick?.()
           onClose?.()
         }}
+        title={isCollapsed ? label : undefined}
         className={cn(
-          'flex items-center gap-3 px-3 py-2 rounded-lg transition-colors',
+          'flex items-center gap-3 rounded-lg transition-colors relative',
+          isCollapsed ? 'px-2 py-2 justify-center' : 'px-3 py-2',
           'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset',
           // Default variant
           variant === 'default' && [
@@ -96,14 +100,18 @@ export function Sidebar({ onClose }: SidebarProps) {
           <div className="absolute left-0 w-1 h-6 bg-teal-500 rounded-r-full" />
         )}
 
-        <Icon className="w-[18px] h-[18px] shrink-0" />
-        <span className="text-sm truncate flex-1">{label}</span>
+        <Icon className={cn('shrink-0', isCollapsed ? 'w-5 h-5' : 'w-[18px] h-[18px]')} />
+        {!isCollapsed && <span className="text-sm truncate flex-1">{label}</span>}
 
         {/* New badge */}
-        {showBadge && (
+        {showBadge && !isCollapsed && (
           <span className="px-1.5 py-0.5 text-[10px] font-medium bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-400 rounded">
             Ny
           </span>
+        )}
+        {/* Collapsed badge dot */}
+        {showBadge && isCollapsed && (
+          <span className="absolute top-1 right-1 w-2 h-2 bg-teal-500 rounded-full" />
         )}
       </Link>
     )
@@ -112,37 +120,60 @@ export function Sidebar({ onClose }: SidebarProps) {
   const user = profile
 
   return (
-    <aside className="h-full flex flex-col w-64 bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800">
+    <aside className={cn(
+      'h-full flex flex-col bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800 transition-all duration-300',
+      isCollapsed ? 'w-16' : 'w-64'
+    )}>
+      {/* Collapse Toggle Button */}
+      {onToggleCollapse && (
+        <button
+          onClick={onToggleCollapse}
+          className="absolute -right-3 top-20 z-10 w-6 h-6 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-full shadow-sm flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
+          aria-label={isCollapsed ? t('sidebar.expand', 'Expandera meny') : t('sidebar.collapse', 'Minimera meny')}
+        >
+          {isCollapsed ? (
+            <ChevronRight className="w-4 h-4 text-stone-500" />
+          ) : (
+            <ChevronLeft className="w-4 h-4 text-stone-500" />
+          )}
+        </button>
+      )}
+
       {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
+      <nav className={cn(
+        'flex-1 overflow-y-auto py-4 space-y-1',
+        isCollapsed ? 'px-2' : 'px-3'
+      )}>
         {navGroups.map((group) => {
           const isGroupExpanded = expandedGroups.includes(group.id)
 
           return (
             <div key={group.id} className="space-y-1">
-              {/* Group Header */}
-              <button
-                onClick={() => toggleGroup(group.id)}
-                className={cn(
-                  'w-full flex items-center justify-between px-3 py-2 text-xs font-medium uppercase tracking-wider rounded-lg transition-colors',
-                  'text-stone-400 dark:text-stone-500',
-                  'hover:text-stone-600 dark:hover:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset'
-                )}
-                aria-expanded={isGroupExpanded}
-              >
-                <span>{t(group.labelKey)}</span>
-                <ChevronDown
+              {/* Group Header - Hidden when collapsed */}
+              {!isCollapsed && (
+                <button
+                  onClick={() => toggleGroup(group.id)}
                   className={cn(
-                    'w-4 h-4 transition-transform',
-                    !isGroupExpanded && '-rotate-90'
+                    'w-full flex items-center justify-between px-3 py-2 text-xs font-medium uppercase tracking-wider rounded-lg transition-colors',
+                    'text-stone-400 dark:text-stone-500',
+                    'hover:text-stone-600 dark:hover:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800',
+                    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset'
                   )}
-                />
-              </button>
+                  aria-expanded={isGroupExpanded}
+                >
+                  <span>{t(group.labelKey)}</span>
+                  <ChevronDown
+                    className={cn(
+                      'w-4 h-4 transition-transform',
+                      !isGroupExpanded && '-rotate-90'
+                    )}
+                  />
+                </button>
+              )}
 
-              {/* Group Items */}
-              {isGroupExpanded && (
-                <div className="space-y-0.5 pl-1">
+              {/* Group Items - Always show when collapsed */}
+              {(isGroupExpanded || isCollapsed) && (
+                <div className={cn('space-y-0.5', !isCollapsed && 'pl-1')}>
                   {group.items.map((item) => {
                     const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
                     return (
@@ -165,10 +196,12 @@ export function Sidebar({ onClose }: SidebarProps) {
         {/* Consultant Section */}
         {isConsultant && !isUser && (
           <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
-            <p className="px-3 py-2 text-xs font-medium text-violet-600 dark:text-violet-400 uppercase tracking-wider">
-              {t('sidebar.consultantSection')}
-            </p>
-            <div className="space-y-0.5 pl-1">
+            {!isCollapsed && (
+              <p className="px-3 py-2 text-xs font-medium text-violet-600 dark:text-violet-400 uppercase tracking-wider">
+                {t('sidebar.consultantSection')}
+              </p>
+            )}
+            <div className={cn('space-y-0.5', !isCollapsed && 'pl-1')}>
               {consultantNavItems.map((item) => {
                 const isActive = location.pathname.startsWith(item.path)
                 return (
@@ -189,10 +222,12 @@ export function Sidebar({ onClose }: SidebarProps) {
         {/* Admin Section */}
         {isAdmin && (
           <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
-            <p className="px-3 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wider">
-              {t('sidebar.adminSection')}
-            </p>
-            <div className="space-y-0.5 pl-1">
+            {!isCollapsed && (
+              <p className="px-3 py-2 text-xs font-medium text-amber-600 dark:text-amber-400 uppercase tracking-wider">
+                {t('sidebar.adminSection')}
+              </p>
+            )}
+            <div className={cn('space-y-0.5', !isCollapsed && 'pl-1')}>
               {adminNavItems.map((item) => {
                 const isActive = location.pathname.startsWith(item.path)
                 return (
@@ -212,36 +247,52 @@ export function Sidebar({ onClose }: SidebarProps) {
       </nav>
 
       {/* User Profile & Actions */}
-      <div className="p-3 border-t border-stone-200 dark:border-stone-700">
-        {/* Active role */}
-        <div className="mb-3 px-3 py-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
-          <p className="text-[10px] text-stone-500 dark:text-stone-400 uppercase tracking-wider">Aktiv roll</p>
-          <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
-            {activeRole === 'SUPERADMIN' ? t('roles.superadmin') :
-             activeRole === 'ADMIN' ? t('roles.admin') :
-             activeRole === 'CONSULTANT' ? t('roles.consultant') : t('roles.participant')}
-          </p>
-        </div>
+      <div className={cn(
+        'border-t border-stone-200 dark:border-stone-700',
+        isCollapsed ? 'p-2' : 'p-3'
+      )}>
+        {/* Active role - Hidden when collapsed */}
+        {!isCollapsed && (
+          <div className="mb-3 px-3 py-2 bg-stone-50 dark:bg-stone-800 rounded-lg">
+            <p className="text-[10px] text-stone-500 dark:text-stone-400 uppercase tracking-wider">Aktiv roll</p>
+            <p className="text-sm font-medium text-stone-700 dark:text-stone-300">
+              {activeRole === 'SUPERADMIN' ? t('roles.superadmin') :
+               activeRole === 'ADMIN' ? t('roles.admin') :
+               activeRole === 'CONSULTANT' ? t('roles.consultant') : t('roles.participant')}
+            </p>
+          </div>
+        )}
 
         {/* User info */}
-        <div className="flex items-center gap-3 mb-3 px-2 py-2">
-          <div className="w-9 h-9 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center overflow-hidden">
+        <div className={cn(
+          'flex items-center mb-3',
+          isCollapsed ? 'justify-center py-2' : 'gap-3 px-2 py-2'
+        )}>
+          <div className={cn(
+            'rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center overflow-hidden',
+            isCollapsed ? 'w-8 h-8' : 'w-9 h-9'
+          )} title={isCollapsed ? user?.first_name || user?.email : undefined}>
             {user?.avatar_url ? (
               <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
             ) : (
-              <span className="text-teal-700 dark:text-teal-400 text-sm font-medium">
+              <span className={cn(
+                'text-teal-700 dark:text-teal-400 font-medium',
+                isCollapsed ? 'text-xs' : 'text-sm'
+              )}>
                 {user?.first_name?.[0] || user?.email?.[0] || '?'}
               </span>
             )}
           </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-stone-800 dark:text-stone-200 truncate">
-              {user?.first_name || user?.email}
-            </p>
-            <p className="text-xs text-stone-500 dark:text-stone-400 truncate">
-              {user?.email}
-            </p>
-          </div>
+          {!isCollapsed && (
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-stone-800 dark:text-stone-200 truncate">
+                {user?.first_name || user?.email}
+              </p>
+              <p className="text-xs text-stone-500 dark:text-stone-400 truncate">
+                {user?.email}
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Actions */}
@@ -255,11 +306,15 @@ export function Sidebar({ onClose }: SidebarProps) {
 
           <button
             onClick={() => signOut()}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors"
+            title={isCollapsed ? t('nav.logout') : undefined}
+            className={cn(
+              'w-full flex items-center rounded-lg text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-colors',
+              isCollapsed ? 'px-2 py-2 justify-center' : 'gap-3 px-3 py-2'
+            )}
             aria-label={t('nav.logout')}
           >
-            <LogOut className="w-[18px] h-[18px]" />
-            <span className="text-sm">{t('nav.logout')}</span>
+            <LogOut className={cn(isCollapsed ? 'w-5 h-5' : 'w-[18px] h-[18px]')} />
+            {!isCollapsed && <span className="text-sm">{t('nav.logout')}</span>}
           </button>
         </div>
       </div>
