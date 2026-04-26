@@ -58,7 +58,19 @@
   --color-accent-blue: #3b82f6;
   --color-accent-green: #10b981;
   --color-accent-pink: #ec4899;
-  
+
+  /* BRAND - Huvudaccentfärg (#0F6E56 turkos) */
+  --color-brand-50: #f0fdf9;
+  --color-brand-100: #ccfbef;
+  --color-brand-200: #9af5df;
+  --color-brand-300: #5fe9ca;
+  --color-brand-400: #2dd4b1;
+  --color-brand-500: #14b89a;
+  --color-brand-600: #0F6E56;
+  --color-brand-700: #0d5c48;
+  --color-brand-800: #0f4a3b;
+  --color-brand-900: #103d32;
+
   --color-page: #fafaf9;
   --color-page-dark: #f5f5f4;
   
