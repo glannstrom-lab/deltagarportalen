@@ -1,16 +1,18 @@
 /**
  * JobAdaptPanel - "Anpassa för jobb" feature
- * Låter användaren klistra in en jobbannons och få förslag på anpassningar
+ * Låter användaren klistra in en jobbannons eller välja från sparade jobb
  */
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Target, Check, X, Plus, Sparkles, Loader2,
-  ChevronDown, ChevronUp, Briefcase, AlertCircle
+  ChevronDown, ChevronUp, Briefcase, AlertCircle,
+  Bookmark, ClipboardPaste
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import type { CVData } from '@/services/supabaseApi'
+import { useSavedJobs } from '@/hooks/useSavedJobs'
 
 interface JobAdaptPanelProps {
   cvData: CVData
@@ -70,6 +72,8 @@ function extractJobInfo(text: string): { title: string; company: string } {
   return { title, company }
 }
 
+type InputMode = 'paste' | 'saved'
+
 export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, defaultExpanded = true }: JobAdaptPanelProps) {
   const { t } = useTranslation()
   const [jobDescription, setJobDescription] = useState('')
@@ -77,6 +81,11 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
   const [analysis, setAnalysis] = useState<AnalysisResult | null>(null)
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
   const [addedKeywords, setAddedKeywords] = useState<string[]>([])
+  const [inputMode, setInputMode] = useState<InputMode>('paste')
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null)
+
+  // Hämta sparade jobb
+  const { savedJobs, isLoaded: savedJobsLoaded } = useSavedJobs()
 
   // Skapa CV-text för matchning
   const cvText = [
@@ -150,6 +159,7 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
     setAnalysis(null)
     setJobDescription('')
     setAddedKeywords([])
+    setSelectedJobId(null)
   }
 
   const getScoreColor = (score: number) => {
@@ -202,30 +212,142 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
         <div id="job-adapt-content" className="p-4 pt-0 space-y-4">
           {!analysis ? (
             <>
-              {/* Input */}
-              <div>
-                <label htmlFor="job-description" className="block text-sm font-medium text-sky-800 dark:text-sky-200 mb-2">
-                  {t('cv.jobAdapt.pasteJob', 'Klistra in jobbannonsen')}
-                </label>
-                <textarea
-                  id="job-description"
-                  value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
-                  placeholder={t('cv.jobAdapt.placeholder', 'Klistra in hela jobbannonsen här så analyserar vi vilka nyckelord som saknas i ditt CV...')}
-                  className="w-full h-32 p-3 border border-sky-200 dark:border-sky-700 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-sky-500 dark:focus:ring-sky-400 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500"
-                  aria-describedby="job-description-help"
-                />
-                <p id="job-description-help" className="mt-1 text-xs text-sky-600 dark:text-sky-400">
-                  {t('cv.jobAdapt.help', 'Vi analyserar nyckelord och föreslår förbättringar')}
-                </p>
+              {/* Input mode toggle */}
+              <div className="flex gap-2 mb-4">
+                <button
+                  onClick={() => setInputMode('paste')}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all",
+                    inputMode === 'paste'
+                      ? "bg-sky-500 text-white"
+                      : "bg-white dark:bg-stone-800 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-700 hover:bg-sky-50 dark:hover:bg-sky-900/30"
+                  )}
+                >
+                  <ClipboardPaste className="w-4 h-4" />
+                  {t('cv.jobAdapt.pasteTab', 'Klistra in')}
+                </button>
+                <button
+                  onClick={() => setInputMode('saved')}
+                  className={cn(
+                    "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-all",
+                    inputMode === 'saved'
+                      ? "bg-sky-500 text-white"
+                      : "bg-white dark:bg-stone-800 text-sky-700 dark:text-sky-300 border border-sky-200 dark:border-sky-700 hover:bg-sky-50 dark:hover:bg-sky-900/30"
+                  )}
+                >
+                  <Bookmark className="w-4 h-4" />
+                  {t('cv.jobAdapt.savedTab', 'Sparade jobb')}
+                  {savedJobs.length > 0 && (
+                    <span className="ml-1 px-1.5 py-0.5 text-xs bg-sky-600 rounded-full">
+                      {savedJobs.length}
+                    </span>
+                  )}
+                </button>
               </div>
+
+              {/* Paste mode */}
+              {inputMode === 'paste' && (
+                <div>
+                  <label htmlFor="job-description" className="block text-sm font-medium text-sky-800 dark:text-sky-200 mb-2">
+                    {t('cv.jobAdapt.pasteJob', 'Klistra in jobbannonsen')}
+                  </label>
+                  <textarea
+                    id="job-description"
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                    placeholder={t('cv.jobAdapt.placeholder', 'Klistra in hela jobbannonsen här så analyserar vi vilka nyckelord som saknas i ditt CV...')}
+                    className="w-full h-32 p-3 border border-sky-200 dark:border-sky-700 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-sky-500 dark:focus:ring-sky-400 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500"
+                    aria-describedby="job-description-help"
+                  />
+                  <p id="job-description-help" className="mt-1 text-xs text-sky-600 dark:text-sky-400">
+                    {t('cv.jobAdapt.help', 'Vi analyserar nyckelord och föreslår förbättringar')}
+                  </p>
+                </div>
+              )}
+
+              {/* Saved jobs mode */}
+              {inputMode === 'saved' && (
+                <div>
+                  <label className="block text-sm font-medium text-sky-800 dark:text-sky-200 mb-2">
+                    {t('cv.jobAdapt.selectSavedJob', 'Välj ett sparat jobb')}
+                  </label>
+                  {!savedJobsLoaded ? (
+                    <div className="flex items-center justify-center py-8">
+                      <Loader2 className="w-5 h-5 animate-spin text-sky-500" />
+                    </div>
+                  ) : savedJobs.length === 0 ? (
+                    <div className="text-center py-6 bg-white dark:bg-stone-800 rounded-xl border border-sky-200 dark:border-sky-700">
+                      <Bookmark className="w-8 h-8 text-sky-300 dark:text-sky-600 mx-auto mb-2" />
+                      <p className="text-sm text-sky-700 dark:text-sky-300">
+                        {t('cv.jobAdapt.noSavedJobs', 'Du har inga sparade jobb ännu')}
+                      </p>
+                      <p className="text-xs text-sky-600 dark:text-sky-400 mt-1">
+                        {t('cv.jobAdapt.saveJobsHint', 'Spara jobb från jobbsökningen för att använda dem här')}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2 max-h-48 overflow-y-auto">
+                      {savedJobs.map((savedJob) => {
+                        const isSelected = selectedJobId === savedJob.id
+                        return (
+                          <button
+                            key={savedJob.id}
+                            onClick={() => {
+                              setSelectedJobId(savedJob.id)
+                              // Sätt jobbeskrivningen från det sparade jobbet
+                              const description = savedJob.jobData.description?.text || savedJob.jobData.headline || ''
+                              setJobDescription(description)
+                            }}
+                            className={cn(
+                              "w-full text-left p-3 rounded-xl transition-all flex items-start gap-3",
+                              isSelected
+                                ? "bg-sky-500 text-white"
+                                : "bg-white dark:bg-stone-800 border border-sky-200 dark:border-sky-700 hover:border-sky-400 dark:hover:border-sky-500"
+                            )}
+                          >
+                            <div className={cn(
+                              "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0",
+                              isSelected ? "bg-sky-400" : "bg-sky-100 dark:bg-sky-900/30"
+                            )}>
+                              <Briefcase className={cn(
+                                "w-4 h-4",
+                                isSelected ? "text-white" : "text-sky-600 dark:text-sky-400"
+                              )} />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className={cn(
+                                "font-medium text-sm truncate",
+                                isSelected ? "text-white" : "text-stone-800 dark:text-stone-200"
+                              )}>
+                                {savedJob.jobData.headline}
+                              </p>
+                              <p className={cn(
+                                "text-xs truncate",
+                                isSelected ? "text-sky-100" : "text-stone-500 dark:text-stone-400"
+                              )}>
+                                {savedJob.jobData.employer?.name}
+                                {savedJob.jobData.workplace_address?.municipality && (
+                                  <> • {savedJob.jobData.workplace_address.municipality}</>
+                                )}
+                              </p>
+                            </div>
+                            {isSelected && (
+                              <Check className="w-5 h-5 text-white flex-shrink-0" />
+                            )}
+                          </button>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Analyze button */}
               <button
                 onClick={analyzeJobAd}
                 disabled={!jobDescription.trim() || isAnalyzing}
                 className={cn(
-                  "w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2",
+                  "w-full py-3 rounded-xl font-medium transition-all flex items-center justify-center gap-2 mt-4",
                   "bg-gradient-to-r from-sky-500 to-teal-500 text-white",
                   "hover:from-sky-600 hover:to-teal-600",
                   "disabled:opacity-50 disabled:cursor-not-allowed",
