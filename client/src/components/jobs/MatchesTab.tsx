@@ -320,6 +320,184 @@ function extractRequiredExperience(text: string): number | null {
 }
 
 // ============================================
+// PROFESSIONAL LICENSE/CERTIFICATION REQUIREMENTS
+// ============================================
+
+/**
+ * Professional licenses that are legally required for certain jobs
+ * Jobs requiring these should be filtered out if user doesn't have them
+ */
+const REQUIRED_LICENSES: Record<string, {
+  keywords: string[]
+  titlePatterns: string[]
+  description: string
+}> = {
+  'sjuksköterska': {
+    keywords: ['legitimerad sjuksköterska', 'leg. sjuksköterska', 'leg sjuksköterska', 'ssk-legitimation', 'sjuksköterskelegitimation'],
+    titlePatterns: ['sjuksköterska', 'ssk'],
+    description: 'Sjuksköterskelegitimation'
+  },
+  'läkare': {
+    keywords: ['legitimerad läkare', 'leg. läkare', 'läkarlegitimation', 'medicine doktor'],
+    titlePatterns: ['läkare', 'doktor', 'medicine'],
+    description: 'Läkarlegitimation'
+  },
+  'lärare': {
+    keywords: ['lärarlegitimation', 'legitimerad lärare', 'leg. lärare', 'behörig lärare'],
+    titlePatterns: ['lärare', 'pedagog'],
+    description: 'Lärarlegitimation'
+  },
+  'förskollärare': {
+    keywords: ['legitimerad förskollärare', 'förskollärarlegitimation', 'behörig förskollärare'],
+    titlePatterns: ['förskollärare'],
+    description: 'Förskollärarlegitimation'
+  },
+  'psykolog': {
+    keywords: ['legitimerad psykolog', 'leg. psykolog', 'psykologlegitimation'],
+    titlePatterns: ['psykolog'],
+    description: 'Psykologlegitimation'
+  },
+  'fysioterapeut': {
+    keywords: ['legitimerad fysioterapeut', 'leg. fysioterapeut', 'fysioterapeutlegitimation', 'legitimerad sjukgymnast'],
+    titlePatterns: ['fysioterapeut', 'sjukgymnast'],
+    description: 'Fysioterapeutlegitimation'
+  },
+  'arbetsterapeut': {
+    keywords: ['legitimerad arbetsterapeut', 'leg. arbetsterapeut', 'arbetsterapeutlegitimation'],
+    titlePatterns: ['arbetsterapeut'],
+    description: 'Arbetsterapeutlegitimation'
+  },
+  'tandläkare': {
+    keywords: ['legitimerad tandläkare', 'leg. tandläkare', 'tandläkarlegitimation'],
+    titlePatterns: ['tandläkare'],
+    description: 'Tandläkarlegitimation'
+  },
+  'tandhygienist': {
+    keywords: ['legitimerad tandhygienist', 'leg. tandhygienist'],
+    titlePatterns: ['tandhygienist'],
+    description: 'Tandhygienistlegitimation'
+  },
+  'apotekare': {
+    keywords: ['legitimerad apotekare', 'leg. apotekare', 'apotekarlegitimation'],
+    titlePatterns: ['apotekare'],
+    description: 'Apotekarlegitimation'
+  },
+  'receptarie': {
+    keywords: ['legitimerad receptarie', 'leg. receptarie'],
+    titlePatterns: ['receptarie'],
+    description: 'Receptarielegitimation'
+  },
+  'barnmorska': {
+    keywords: ['legitimerad barnmorska', 'leg. barnmorska', 'barnmorskelegitimation'],
+    titlePatterns: ['barnmorska'],
+    description: 'Barnmorskelegitimation'
+  },
+  'dietist': {
+    keywords: ['legitimerad dietist', 'leg. dietist'],
+    titlePatterns: ['dietist'],
+    description: 'Dietistlegitimation'
+  },
+  'logoped': {
+    keywords: ['legitimerad logoped', 'leg. logoped'],
+    titlePatterns: ['logoped'],
+    description: 'Logopedlegitimation'
+  },
+  'optiker': {
+    keywords: ['legitimerad optiker', 'leg. optiker'],
+    titlePatterns: ['optiker'],
+    description: 'Optikerlegitimation'
+  },
+  'kiropraktor': {
+    keywords: ['legitimerad kiropraktor', 'leg. kiropraktor'],
+    titlePatterns: ['kiropraktor'],
+    description: 'Kiropraktorlegitimation'
+  },
+  'naprapat': {
+    keywords: ['legitimerad naprapat', 'leg. naprapat'],
+    titlePatterns: ['naprapat'],
+    description: 'Naprapatlegitimation'
+  },
+  'audionom': {
+    keywords: ['legitimerad audionom', 'leg. audionom'],
+    titlePatterns: ['audionom'],
+    description: 'Audionomlegitimation'
+  },
+  'biomedicinsk_analytiker': {
+    keywords: ['legitimerad biomedicinsk analytiker', 'bma-legitimation'],
+    titlePatterns: ['biomedicinsk analytiker', 'bma'],
+    description: 'BMA-legitimation'
+  },
+  'röntgensjuksköterska': {
+    keywords: ['legitimerad röntgensjuksköterska', 'leg. röntgensjuksköterska'],
+    titlePatterns: ['röntgensjuksköterska'],
+    description: 'Röntgensjuksköterskelegitimation'
+  },
+  'socionom': {
+    keywords: ['socionomexamen', 'socionom'],
+    titlePatterns: ['socionom', 'socialsekreterare', 'biståndshandläggare'],
+    description: 'Socionomexamen'
+  },
+  'jurist': {
+    keywords: ['juristexamen', 'jur. kand', 'advokat'],
+    titlePatterns: ['jurist', 'advokat'],
+    description: 'Juristexamen'
+  },
+  'revisor': {
+    keywords: ['auktoriserad revisor', 'godkänd revisor', 'revisorsexamen'],
+    titlePatterns: ['revisor'],
+    description: 'Revisorsauktorisation'
+  },
+  'elektriker': {
+    keywords: ['behörig elektriker', 'elinstallatör', 'elbehörighet'],
+    titlePatterns: ['elektriker', 'elinstallatör'],
+    description: 'Elbehörighet'
+  },
+  'veterinär': {
+    keywords: ['legitimerad veterinär', 'leg. veterinär'],
+    titlePatterns: ['veterinär'],
+    description: 'Veterinärlegitimation'
+  }
+}
+
+/**
+ * Check if a job requires a professional license that the user doesn't have
+ * Returns null if no license required, or the required license info if blocked
+ */
+function checkRequiredLicense(
+  jobTitle: string,
+  jobText: string,
+  userEducation: string[],
+  userWorkTitles: string[]
+): { blocked: boolean; requiredLicense: string | null } {
+  const titleLower = jobTitle.toLowerCase()
+  const textLower = jobText.toLowerCase()
+  const userBackground = [...userEducation, ...userWorkTitles].map(s => s.toLowerCase()).join(' ')
+
+  for (const [licenseKey, license] of Object.entries(REQUIRED_LICENSES)) {
+    // Check if job title matches a licensed profession
+    const titleMatch = license.titlePatterns.some(pattern => {
+      const patternLower = pattern.toLowerCase()
+      return titleLower.includes(patternLower)
+    })
+
+    // Check if job explicitly requires the license
+    const keywordMatch = license.keywords.some(keyword => textLower.includes(keyword.toLowerCase()))
+
+    if (titleMatch || keywordMatch) {
+      // Job requires this license - check if user has it
+      const userHasLicense = license.titlePatterns.some(pattern => userBackground.includes(pattern.toLowerCase())) ||
+                            license.keywords.some(keyword => userBackground.includes(keyword.toLowerCase()))
+
+      if (!userHasLicense) {
+        return { blocked: true, requiredLicense: license.description }
+      }
+    }
+  }
+
+  return { blocked: false, requiredLicense: null }
+}
+
+// ============================================
 // PROFILE PREFERENCE MATCHING
 // ============================================
 
@@ -994,7 +1172,19 @@ export function MatchesTab() {
     }
 
     // Match each job using comprehensive scoring
-    return jobs.map(job => {
+    // First filter out jobs requiring professional licenses user doesn't have
+    const filteredJobs = jobs.filter(job => {
+      const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
+      const licenseCheck = checkRequiredLicense(
+        job.headline || '',
+        jobText,
+        data.education,
+        data.workTitles
+      )
+      return !licenseCheck.blocked
+    })
+
+    return filteredJobs.map(job => {
       const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase()
       const jobTitle = (job.headline || '').toLowerCase()
       const jobOccupation = (job.occupation?.label || '').toLowerCase()
@@ -1124,7 +1314,9 @@ export function MatchesTab() {
   const searchInterestJobs = useCallback(async (
     data: SourceData['interest'],
     locations: string[],
-    preferences: SourceData['preferences']
+    preferences: SourceData['preferences'],
+    userEducation: string[],
+    userWorkTitles: string[]
   ): Promise<MatchedJob[]> => {
     if (!data.available || data.occupations.length === 0) return []
 
@@ -1162,6 +1354,18 @@ export function MatchesTab() {
               locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
             )
           }
+
+          // Filter out jobs requiring professional licenses user doesn't have
+          jobs = jobs.filter(job => {
+            const jobFullText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
+            const licenseCheck = checkRequiredLicense(
+              job.headline || '',
+              jobFullText,
+              userEducation,
+              userWorkTitles
+            )
+            return !licenseCheck.blocked
+          })
 
           jobs.forEach(job => {
             if (seenJobIds.has(job.id)) return
@@ -1239,7 +1443,9 @@ export function MatchesTab() {
   const searchCareerJobs = useCallback(async (
     data: SourceData['career'],
     locations: string[],
-    preferences: SourceData['preferences']
+    preferences: SourceData['preferences'],
+    userEducation: string[],
+    userWorkTitles: string[]
   ): Promise<MatchedJob[]> => {
     // Career matching uses both preferredRoles AND desiredJobs
     const searchRoles = data.preferredRoles.length > 0
@@ -1267,6 +1473,18 @@ export function MatchesTab() {
             locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
           )
         }
+
+        // Filter out jobs requiring professional licenses user doesn't have
+        jobs = jobs.filter(job => {
+          const jobFullText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
+          const licenseCheck = checkRequiredLicense(
+            job.headline || '',
+            jobFullText,
+            userEducation,
+            userWorkTitles
+          )
+          return !licenseCheck.blocked
+        })
 
         jobs.forEach(job => {
           if (seenJobIds.has(job.id)) return
@@ -1361,10 +1579,14 @@ export function MatchesTab() {
       }
 
       // Load jobs for each available source in parallel (pass preferences to each)
+      // Also pass CV education/workTitles for license filtering in all sources
+      const userEducation = data.cv.education || []
+      const userWorkTitles = data.cv.workTitles || []
+
       const [cvResults, interestResults, careerResults] = await Promise.all([
         data.cv.available ? searchCvJobs(data.cv, municipalities, data.preferences) : Promise.resolve([]),
-        data.interest.available ? searchInterestJobs(data.interest, municipalities, data.preferences) : Promise.resolve([]),
-        data.career.available ? searchCareerJobs(data.career, municipalities, data.preferences) : Promise.resolve([])
+        data.interest.available ? searchInterestJobs(data.interest, municipalities, data.preferences, userEducation, userWorkTitles) : Promise.resolve([]),
+        data.career.available ? searchCareerJobs(data.career, municipalities, data.preferences, userEducation, userWorkTitles) : Promise.resolve([])
       ])
 
       setCvJobs(cvResults)
