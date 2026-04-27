@@ -1,15 +1,17 @@
 /**
  * FocusCoverLetter - Förenklat personligt brev för fokusläget
- * Guidad steg-för-steg process för att skapa personligt brev
+ * Guidad steg-för-steg process för att skapa och spara personligt brev
  */
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAuthStore } from '@/stores/authStore'
+import { coverLetterApi } from '@/services/supabaseApi'
+import { coverLetterTemplates, type CoverLetterTemplate } from '@/data/coverLetterTemplates'
 import {
-  Mail, Briefcase, Heart, Sparkles, FileText,
-  ArrowRight, Check, Loader2, SkipForward, Copy
+  Mail, Briefcase, Heart, Sparkles, FileText, Save,
+  ArrowRight, Check, Loader2, SkipForward, Copy, CheckCircle2
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
@@ -21,6 +23,7 @@ interface FocusCoverLetterProps {
 
 const LETTER_STEPS = [
   { id: 'job', icon: Briefcase, titleKey: 'focusGuide.letter.jobStep', titleDefault: 'Vilket jobb söker du?' },
+  { id: 'template', icon: FileText, titleKey: 'focusGuide.letter.templateStep', titleDefault: 'Välj en mall' },
   { id: 'motivation', icon: Heart, titleKey: 'focusGuide.letter.motivationStep', titleDefault: 'Varför vill du ha jobbet?' },
   { id: 'generate', icon: Sparkles, titleKey: 'focusGuide.letter.generateStep', titleDefault: 'Ditt personliga brev' },
 ] as const
@@ -34,47 +37,112 @@ const MOTIVATION_SUGGESTIONS = [
   'Jag tycker om att ta ansvar'
 ]
 
+// Simplified template options for focus mode
+const SIMPLE_TEMPLATES = [
+  { id: 'standard', name: 'Standard', description: 'Professionell och balanserad', icon: FileText },
+  { id: 'short', name: 'Kort & Koncis', description: 'Max 150 ord - rak på sak', icon: FileText },
+  { id: 'formal', name: 'Formell', description: 'Traditionell ton', icon: FileText },
+]
+
 export function FocusCoverLetter({ onComplete, onSkip, onBack }: FocusCoverLetterProps) {
   const { t } = useTranslation()
   const { profile } = useAuthStore()
+  const queryClient = useQueryClient()
   const [currentStep, setCurrentStep] = useState(0)
 
   // Form state
   const [jobTitle, setJobTitle] = useState('')
   const [companyName, setCompanyName] = useState('')
+  const [selectedTemplateId, setSelectedTemplateId] = useState('standard')
   const [motivations, setMotivations] = useState<string[]>([])
   const [customMotivation, setCustomMotivation] = useState('')
   const [generatedLetter, setGeneratedLetter] = useState('')
+  const [letterTitle, setLetterTitle] = useState('')
   const [isCopied, setIsCopied] = useState(false)
+  const [isSaved, setIsSaved] = useState(false)
 
   const step = LETTER_STEPS[currentStep]
   const StepIcon = step.icon
   const isLastStep = currentStep === LETTER_STEPS.length - 1
   const progress = ((currentStep + 1) / LETTER_STEPS.length) * 100
 
-  // Generate letter mutation
-  const generateMutation = useMutation({
-    mutationFn: async () => {
-      // Simple template-based generation
-      const name = profile?.first_name || 'Jag'
-      const motivationText = motivations.length > 0
-        ? motivations.join('. ') + '.'
-        : 'Jag är motiverad och engagerad.'
+  // Get full template data
+  const selectedTemplate = coverLetterTemplates.find(t => t.id === selectedTemplateId)
 
-      const letter = `Hej!
+  // Generate letter based on template
+  const generateLetter = (template: CoverLetterTemplate | undefined) => {
+    const name = profile?.first_name || 'Jag'
+    const lastName = profile?.last_name || ''
+    const motivationText = motivations.length > 0
+      ? motivations.join('. ') + '.'
+      : 'Jag är motiverad och engagerad.'
+
+    if (template?.id === 'short') {
+      return `Hej,
+
+Jag söker tjänsten som ${jobTitle}${companyName ? ` hos ${companyName}` : ''}.
+
+${motivationText}
+
+Jag finns tillgänglig för intervju och kan börja omgående.
+
+Med vänliga hälsningar,
+${name} ${lastName}`.trim()
+    }
+
+    if (template?.id === 'formal') {
+      return `Till ansvarig rekryterare,
+
+Jag vill härmed ansöka om tjänsten som ${jobTitle}${companyName ? ` vid ${companyName}` : ''}.
+
+${motivationText}
+
+Med min bakgrund och erfarenhet anser jag mig vara en lämplig kandidat för denna befattning. Jag är en noggrann och pålitlig person som alltid strävar efter att leverera högkvalitativt arbete.
+
+Jag ser med intresse fram emot möjligheten att få diskutera min ansökan vid en intervju.
+
+Högaktningsfullt,
+${name} ${lastName}`.trim()
+    }
+
+    // Standard template
+    return `Hej!
 
 Jag skriver för att söka tjänsten som ${jobTitle}${companyName ? ` hos ${companyName}` : ''}.
 
 ${motivationText}
 
-Med min bakgrund och erfarenhet tror jag att jag skulle passa bra för denna roll. Jag är en pålitlig person som alltid gör mitt bästa.
+Med min bakgrund och erfarenhet tror jag att jag skulle passa bra för denna roll. Jag är en pålitlig person som alltid gör mitt bästa och trivs med att arbeta både självständigt och i team.
 
-Jag ser fram emot att höra från er!
+Jag ser fram emot att höra från er och berättar gärna mer vid en intervju!
 
 Vänliga hälsningar,
-${name} ${profile?.last_name || ''}`
+${name} ${lastName}`.trim()
+  }
 
-      return letter
+  // Generate letter mutation
+  const generateMutation = useMutation({
+    mutationFn: async () => {
+      return generateLetter(selectedTemplate)
+    }
+  })
+
+  // Save letter mutation
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      const title = letterTitle.trim() || `${jobTitle}${companyName ? ` - ${companyName}` : ''}`
+
+      await coverLetterApi.create({
+        title,
+        content: generatedLetter,
+        company: companyName || null,
+        job_title: jobTitle,
+        ai_generated: false
+      })
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['coverLetters'] })
+      setIsSaved(true)
     }
   })
 
@@ -103,12 +171,21 @@ ${name} ${profile?.last_name || ''}`
     }
   }
 
+  const handleSave = async () => {
+    try {
+      await saveMutation.mutateAsync()
+    } catch (error) {
+      console.error('Failed to save letter:', error)
+    }
+  }
+
   const handleNext = async () => {
     if (step.id === 'motivation') {
       // Generate letter when moving to generate step
       try {
         const letter = await generateMutation.mutateAsync()
         setGeneratedLetter(letter)
+        setLetterTitle(`${jobTitle}${companyName ? ` - ${companyName}` : ''}`)
         setCurrentStep(prev => prev + 1)
       } catch (error) {
         console.error('Failed to generate letter:', error)
@@ -163,7 +240,7 @@ ${name} ${profile?.last_name || ''}`
         </div>
 
         {/* Step indicators */}
-        <div className="flex justify-center gap-3 mt-4">
+        <div className="flex justify-center gap-2 mt-4">
           {LETTER_STEPS.map((s, i) => {
             const Icon = s.icon
             const isActive = i === currentStep
@@ -173,13 +250,13 @@ ${name} ${profile?.last_name || ''}`
               <div
                 key={s.id}
                 className={cn(
-                  'w-10 h-10 rounded-full flex items-center justify-center transition-all',
+                  'w-9 h-9 rounded-full flex items-center justify-center transition-all',
                   isActive && 'bg-teal-500 text-white ring-4 ring-teal-500/20',
                   isDone && 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400',
                   !isActive && !isDone && 'bg-stone-100 dark:bg-stone-800 text-stone-400'
                 )}
               >
-                {isDone ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
+                {isDone ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
               </div>
             )
           })}
@@ -237,6 +314,53 @@ ${name} ${profile?.last_name || ''}`
                 className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
               />
             </div>
+          </div>
+        )}
+
+        {/* Template step */}
+        {step.id === 'template' && (
+          <div className="space-y-3">
+            <p className="text-stone-600 dark:text-stone-400 mb-4">
+              {t('focusGuide.letter.selectTemplate', 'Välj en stil för ditt brev:')}
+            </p>
+
+            {SIMPLE_TEMPLATES.map((template) => {
+              const isSelected = selectedTemplateId === template.id
+              const Icon = template.icon
+
+              return (
+                <button
+                  key={template.id}
+                  onClick={() => setSelectedTemplateId(template.id)}
+                  className={cn(
+                    'w-full p-4 rounded-xl border-2 text-left transition-all',
+                    isSelected
+                      ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
+                      : 'border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700'
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={cn(
+                      'w-10 h-10 rounded-lg flex items-center justify-center',
+                      isSelected ? 'bg-teal-500 text-white' : 'bg-stone-100 dark:bg-stone-800 text-stone-500'
+                    )}>
+                      {isSelected ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
+                    </div>
+                    <div>
+                      <h4 className={cn(
+                        'font-medium',
+                        isSelected ? 'text-teal-700 dark:text-teal-300' : 'text-stone-800 dark:text-stone-100'
+                      )}>
+                        {template.name}
+                      </h4>
+                      <p className="text-sm text-stone-500 dark:text-stone-400">
+                        {template.description}
+                      </p>
+                    </div>
+                  </div>
+                </button>
+              )
+            })}
           </div>
         )}
 
@@ -313,12 +437,31 @@ ${name} ${profile?.last_name || ''}`
               </div>
             ) : generatedLetter ? (
               <>
+                {/* Title input */}
+                <div>
+                  <label
+                    htmlFor="letter-title"
+                    className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2"
+                  >
+                    {t('focusGuide.letter.letterTitle', 'Namn på brevet')}
+                  </label>
+                  <input
+                    id="letter-title"
+                    type="text"
+                    value={letterTitle}
+                    onChange={(e) => setLetterTitle(e.target.value)}
+                    placeholder={t('focusGuide.letter.letterTitlePlaceholder', 't.ex. Ansökan Säljare - IKEA')}
+                    className="w-full px-4 py-2 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                  />
+                </div>
+
+                {/* Letter content */}
                 <div className="relative">
                   <textarea
                     value={generatedLetter}
                     onChange={(e) => setGeneratedLetter(e.target.value)}
-                    rows={12}
-                    className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none"
+                    rows={10}
+                    className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none text-sm"
                   />
                   <button
                     onClick={handleCopy}
@@ -332,6 +475,37 @@ ${name} ${profile?.last_name || ''}`
                     )}
                   </button>
                 </div>
+
+                {/* Save button */}
+                {isSaved ? (
+                  <div className="flex items-center justify-center gap-2 py-3 px-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl">
+                    <CheckCircle2 className="w-5 h-5" />
+                    <span className="font-medium">{t('focusGuide.letter.saved', 'Brevet är sparat!')}</span>
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleSave}
+                    disabled={saveMutation.isPending || !generatedLetter.trim()}
+                    className={cn(
+                      'flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-medium transition-all',
+                      'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300',
+                      'hover:bg-stone-200 dark:hover:bg-stone-700',
+                      'disabled:opacity-50 disabled:cursor-not-allowed'
+                    )}
+                  >
+                    {saveMutation.isPending ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        {t('common.saving', 'Sparar...')}
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4" />
+                        {t('focusGuide.letter.saveButton', 'Spara brevet')}
+                      </>
+                    )}
+                  </button>
+                )}
 
                 <p className="text-sm text-stone-500 dark:text-stone-400 text-center">
                   {t('focusGuide.letter.editHint', 'Du kan redigera texten ovan. Klicka på kopieringsknappen för att kopiera.')}
