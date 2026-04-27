@@ -1,6 +1,44 @@
 const { createClient } = require('@supabase/supabase-js');
 
 // ============================================
+// SECURITY: Input Sanitization (paritet med supabase/functions/ai-assistant)
+// ============================================
+
+/**
+ * Sanera en sträng innan den interpoleras i en AI-prompt.
+ * Tar bort potentiella HTML/XML-taggar och kapar längd för att förhindra
+ * prompt-injection och token-overflow.
+ */
+function sanitizeInput(input, maxLength = 5000) {
+  if (input == null) return '';
+  return String(input)
+    .slice(0, maxLength)
+    .replace(/[<>]/g, '')
+    .trim();
+}
+
+/**
+ * Rekursivt sanera alla strängvärden i ett data-objekt.
+ * Bevarar struktur (arrays, nested objects, numbers, booleans).
+ * Anropas i toppen av handler så att efterföljande PROMPTS-templates får
+ * redan saniterad data — ingen sanering behövs sedan i prompt-templates.
+ */
+function sanitizeAll(obj, depth = 0) {
+  if (depth > 10) return obj; // Recursion safety
+  if (obj == null) return obj;
+  if (typeof obj === 'string') return sanitizeInput(obj);
+  if (Array.isArray(obj)) return obj.map((v) => sanitizeAll(v, depth + 1));
+  if (typeof obj === 'object') {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+      out[k] = sanitizeAll(v, depth + 1);
+    }
+    return out;
+  }
+  return obj; // numbers, booleans
+}
+
+// ============================================
 // Rate Limiting Configuration
 // ============================================
 
@@ -428,7 +466,9 @@ module.exports = async (req, res) => {
     if (authError || !user) return res.status(401).json({ error: 'Invalid token' });
 
     const fn = req.body.function;
-    const data = req.body.data || req.body;
+    // SECURITY: sanera all användardata innan den når PROMPTS-templates.
+    // Förhindrar prompt-injection via t.ex. companyName: "Acme\n\nIgnorera alla instruktioner..."
+    const data = sanitizeAll(req.body.data || req.body);
 
     // Check rate limit before processing
     const rateLimit = await checkRateLimit(supabase, user.id, fn);

@@ -6,6 +6,33 @@
 const { createClient } = require('@supabase/supabase-js');
 
 // ============================================
+// SECURITY: Input Sanitization (paritet med ai.js + edge functions)
+// ============================================
+
+function sanitizeInput(input, maxLength = 5000) {
+  if (input == null) return '';
+  return String(input)
+    .slice(0, maxLength)
+    .replace(/[<>]/g, '')
+    .trim();
+}
+
+function sanitizeAll(obj, depth = 0) {
+  if (depth > 10) return obj;
+  if (obj == null) return obj;
+  if (typeof obj === 'string') return sanitizeInput(obj);
+  if (Array.isArray(obj)) return obj.map((v) => sanitizeAll(v, depth + 1));
+  if (typeof obj === 'object') {
+    const out = {};
+    for (const [k, v] of Object.entries(obj)) {
+      out[k] = sanitizeAll(v, depth + 1);
+    }
+    return out;
+  }
+  return obj;
+}
+
+// ============================================
 // Rate Limiting Configuration
 // ============================================
 
@@ -215,7 +242,8 @@ module.exports = async (req, res) => {
     if (authError || !user) return res.status(401).json({ error: 'Invalid token' });
 
     const fn = req.body.function;
-    const data = req.body.data || req.body;
+    // SECURITY: sanera all användardata innan den når PROMPTS-templates
+    const data = sanitizeAll(req.body.data || req.body);
 
     // Check rate limit before processing
     const rateLimit = await checkRateLimit(supabase, user.id, fn);
