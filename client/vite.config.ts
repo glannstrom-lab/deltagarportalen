@@ -162,10 +162,11 @@ export default defineConfig(({ mode }) => ({
     minify: 'terser',
     terserOptions: {
       compress: {
-        // TEMPORARILY ENABLED for debugging white screen issue
+        // Strip debug-loggar i produktion (586 console.* i src/, ~50KB).
+        // Behåll console.error och console.warn för fältdiagnostik.
         drop_console: false,
         drop_debugger: true,
-        // pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
+        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
       },
       format: {
         comments: false,
