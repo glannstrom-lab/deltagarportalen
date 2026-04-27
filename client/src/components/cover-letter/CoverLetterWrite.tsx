@@ -41,9 +41,9 @@ import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { showToast } from '@/components/Toast'
 import { callAI } from '@/services/aiApi'
-import { coverLetterApi } from '@/services/supabaseApi'
+import { coverLetterApi, userApi } from '@/services/supabaseApi'
 import { useAutoSave } from '@/hooks/useAutoSave'
-import type { CVData } from '@/services/supabaseApi'
+import type { CVData, ProfilePreferences } from '@/services/supabaseApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 
 // Sparat jobb interface - matchar databasens struktur med job_data JSON
@@ -71,6 +71,7 @@ interface SavedJob {
 // AI API-anrop för personligt brev - uses authenticated client
 async function generateCoverLetterWithAI(data: {
   cvData: CVData | null
+  profileData: ProfilePreferences | null
   jobData: {
     company: string
     jobTitle: string
@@ -79,13 +80,81 @@ async function generateCoverLetterWithAI(data: {
   tone: 'professional' | 'enthusiastic' | 'formal'
   extraMotivation?: string
 }) {
+  // Bygg upp extra kontext från profildata
+  const profileContext: string[] = []
+
+  if (data.profileData) {
+    // Tillgänglighet
+    if (data.profileData.availability) {
+      const av = data.profileData.availability
+      if (av.availableFrom === 'immediately' || av.status === 'unemployed') {
+        profileContext.push('Kan börja omgående')
+      } else if (av.availableFrom) {
+        profileContext.push(`Kan börja: ${av.availableFrom}`)
+      }
+      if (av.noticePeriod && av.noticePeriod !== 'none') {
+        const periods: Record<string, string> = {
+          '1_month': '1 månads uppsägningstid',
+          '2_months': '2 månaders uppsägningstid',
+          '3_months': '3 månaders uppsägningstid'
+        }
+        profileContext.push(periods[av.noticePeriod] || '')
+      }
+      if (av.remoteWork === 'yes') {
+        profileContext.push('Öppen för distansarbete')
+      } else if (av.remoteWork === 'hybrid') {
+        profileContext.push('Öppen för hybridarbete')
+      }
+    }
+
+    // Mobilitet
+    if (data.profileData.mobility) {
+      const mob = data.profileData.mobility
+      if (mob.driversLicense && mob.driversLicense.length > 0) {
+        profileContext.push(`Körkort: ${mob.driversLicense.join(', ')}`)
+      }
+      if (mob.hasCar) {
+        profileContext.push('Har tillgång till bil')
+      }
+      if (mob.willingToRelocate) {
+        profileContext.push('Villig att flytta för rätt jobb')
+      }
+      if (mob.willingToTravel) {
+        profileContext.push('Möjlighet att resa i tjänsten')
+      }
+    }
+
+    // Arbetspreferenser - värderingar
+    if (data.profileData.work_preferences?.importantValues && data.profileData.work_preferences.importantValues.length > 0) {
+      const values = data.profileData.work_preferences.importantValues
+      const valueLabels: Record<string, string> = {
+        'hållbarhet': 'hållbarhet',
+        'innovation': 'innovation',
+        'work_life_balance': 'balans mellan arbete och fritid',
+        'teamwork': 'samarbete',
+        'personal_development': 'personlig utveckling'
+      }
+      const readableValues = values.map(v => valueLabels[v] || v).slice(0, 3)
+      profileContext.push(`Värdesätter: ${readableValues.join(', ')}`)
+    }
+  }
+
+  // Kombinera extra motivation med profilkontext
+  let fullContext = data.extraMotivation || ''
+  if (profileContext.length > 0) {
+    const profileInfo = profileContext.filter(p => p).join('. ')
+    fullContext = fullContext
+      ? `${fullContext}\n\nYtterligare information om kandidaten: ${profileInfo}`
+      : `Information om kandidaten: ${profileInfo}`
+  }
+
   return callAI('personligt-brev', {
     cvData: data.cvData,
     companyName: data.jobData.company,
     jobTitle: data.jobData.jobTitle,
     jobDescription: data.jobData.jobAd,
     tone: data.tone,
-    extraContext: data.extraMotivation
+    extraContext: fullContext || undefined
   });
 }
 
@@ -107,8 +176,10 @@ export function CoverLetterWrite() {
 
   // Data states
   const [cvData, setCvData] = useState<CVData | null>(null)
+  const [profileData, setProfileData] = useState<ProfilePreferences | null>(null)
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([])
   const [loadingCV, setLoadingCV] = useState(true)
+  const [loadingProfile, setLoadingProfile] = useState(true)
   const [loadingJobs, setLoadingJobs] = useState(true)
 
   // Form data
@@ -168,6 +239,27 @@ export function CoverLetterWrite() {
     }
     
     fetchCVData()
+  }, [user])
+
+  // Hämta profildata (tillgänglighet, mobilitet, preferenser)
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (!user) {
+        setLoadingProfile(false)
+        return
+      }
+
+      try {
+        const prefs = await userApi.getPreferences()
+        setProfileData(prefs)
+      } catch (err) {
+        console.error('Fel vid hämtning av profildata:', err)
+      } finally {
+        setLoadingProfile(false)
+      }
+    }
+
+    fetchProfileData()
   }, [user])
 
   // Hämta sparade jobb från Supabase
@@ -267,6 +359,7 @@ export function CoverLetterWrite() {
     try {
       const result = await generateCoverLetterWithAI({
         cvData,
+        profileData,
         jobData: {
           company: formData.company,
           jobTitle: formData.jobTitle,
@@ -456,6 +549,35 @@ export function CoverLetterWrite() {
             </div>
             <div className="text-xs sm:text-sm text-emerald-600 dark:text-emerald-400 sm:shrink-0 ml-11 sm:ml-0">
               AI använder detta
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Profile Data Banner */}
+      {profileData && (profileData.availability || profileData.mobility || profileData.work_preferences) && (
+        <div className="p-3 sm:p-4 bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800/50 rounded-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-sky-100 dark:bg-sky-900/40 rounded-lg flex items-center justify-center shrink-0">
+                <Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600 dark:text-sky-400" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-medium text-sky-800 dark:text-sky-200 text-sm sm:text-base">
+                  Profildata hämtad
+                </h4>
+                <p className="text-xs sm:text-sm text-sky-700 dark:text-sky-300">
+                  {[
+                    profileData.availability?.status === 'unemployed' && 'Kan börja omgående',
+                    profileData.mobility?.driversLicense?.length && `Körkort ${profileData.mobility.driversLicense.join(', ')}`,
+                    profileData.mobility?.hasCar && 'Har bil',
+                    profileData.work_preferences?.importantValues?.length && `${profileData.work_preferences.importantValues.length} värderingar`
+                  ].filter(Boolean).join(' • ') || 'Tillgänglighet & preferenser'}
+                </p>
+              </div>
+            </div>
+            <div className="text-xs sm:text-sm text-sky-600 dark:text-sky-400 sm:shrink-0 ml-11 sm:ml-0">
+              Gör brevet personligare
             </div>
           </div>
         </div>

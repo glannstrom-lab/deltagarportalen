@@ -3,11 +3,11 @@
  * Guidad steg-för-steg process för att skapa och spara personligt brev
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/stores/authStore'
-import { coverLetterApi } from '@/services/supabaseApi'
+import { coverLetterApi, userApi, type ProfilePreferences } from '@/services/supabaseApi'
 import { coverLetterTemplates, type CoverLetterTemplate } from '@/data/coverLetterTemplates'
 import {
   Mail, Briefcase, Heart, Sparkles, FileText, Save, Download,
@@ -50,6 +50,13 @@ export function FocusCoverLetter({ onComplete, onSkip, onBack }: FocusCoverLette
   const queryClient = useQueryClient()
   const [currentStep, setCurrentStep] = useState(0)
 
+  // Fetch profile preferences for enriched letter content
+  const { data: profilePrefs } = useQuery({
+    queryKey: ['profile-preferences'],
+    queryFn: () => userApi.getPreferences(),
+    staleTime: 1000 * 60 * 5 // 5 minutes
+  })
+
   // Form state
   const [jobTitle, setJobTitle] = useState('')
   const [companyName, setCompanyName] = useState('')
@@ -70,13 +77,49 @@ export function FocusCoverLetter({ onComplete, onSkip, onBack }: FocusCoverLette
   // Get full template data
   const selectedTemplate = coverLetterTemplates.find(t => t.id === selectedTemplateId)
 
-  // Generate letter based on template
+  // Generate letter based on template and profile data
   const generateLetter = (template: CoverLetterTemplate | undefined) => {
     const name = profile?.first_name || 'Jag'
     const lastName = profile?.last_name || ''
     const motivationText = motivations.length > 0
       ? motivations.join('. ') + '.'
       : 'Jag är motiverad och engagerad.'
+
+    // Build extra context from profile preferences
+    const extraDetails: string[] = []
+
+    if (profilePrefs) {
+      // Availability
+      if (profilePrefs.availability) {
+        const av = profilePrefs.availability
+        if (av.availableFrom === 'immediately' || av.status === 'unemployed') {
+          extraDetails.push('Jag kan börja omgående')
+        }
+        if (av.remoteWork === 'yes') {
+          extraDetails.push('är flexibel gällande distansarbete')
+        } else if (av.remoteWork === 'hybrid') {
+          extraDetails.push('är öppen för hybridlösningar')
+        }
+      }
+
+      // Mobility
+      if (profilePrefs.mobility) {
+        const mob = profilePrefs.mobility
+        if (mob.driversLicense && mob.driversLicense.includes('B')) {
+          extraDetails.push('har B-körkort')
+        }
+        if (mob.hasCar) {
+          extraDetails.push('har tillgång till bil')
+        }
+        if (mob.willingToTravel) {
+          extraDetails.push('kan resa i tjänsten')
+        }
+      }
+    }
+
+    const extraText = extraDetails.length > 0
+      ? extraDetails.join(', ') + '.'
+      : ''
 
     if (template?.id === 'short') {
       return `Hej,
@@ -85,7 +128,7 @@ Jag söker tjänsten som ${jobTitle}${companyName ? ` hos ${companyName}` : ''}.
 
 ${motivationText}
 
-Jag finns tillgänglig för intervju och kan börja omgående.
+${extraText ? extraText + '\n\n' : ''}Jag finns tillgänglig för intervju.
 
 Med vänliga hälsningar,
 ${name} ${lastName}`.trim()
@@ -98,7 +141,7 @@ Jag vill härmed ansöka om tjänsten som ${jobTitle}${companyName ? ` vid ${com
 
 ${motivationText}
 
-Med min bakgrund och erfarenhet anser jag mig vara en lämplig kandidat för denna befattning. Jag är en noggrann och pålitlig person som alltid strävar efter att leverera högkvalitativt arbete.
+Med min bakgrund och erfarenhet anser jag mig vara en lämplig kandidat för denna befattning. Jag är en noggrann och pålitlig person som alltid strävar efter att leverera högkvalitativt arbete.${extraText ? ' ' + extraText.charAt(0).toUpperCase() + extraText.slice(1) : ''}
 
 Jag ser med intresse fram emot möjligheten att få diskutera min ansökan vid en intervju.
 
@@ -113,7 +156,7 @@ Jag skriver för att söka tjänsten som ${jobTitle}${companyName ? ` hos ${comp
 
 ${motivationText}
 
-Med min bakgrund och erfarenhet tror jag att jag skulle passa bra för denna roll. Jag är en pålitlig person som alltid gör mitt bästa och trivs med att arbeta både självständigt och i team.
+Med min bakgrund och erfarenhet tror jag att jag skulle passa bra för denna roll. Jag är en pålitlig person som alltid gör mitt bästa och trivs med att arbeta både självständigt och i team.${extraText ? ' ' + extraText.charAt(0).toUpperCase() + extraText.slice(1) : ''}
 
 Jag ser fram emot att höra från er och berättar gärna mer vid en intervju!
 
