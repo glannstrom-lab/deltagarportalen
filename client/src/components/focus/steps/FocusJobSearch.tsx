@@ -6,8 +6,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { jobsApi } from '@/services/jobsApi'
-import { userApi } from '@/services/supabaseApi'
+import { jobsApi, userApi } from '@/services/supabaseApi'
 import {
   Search, MapPin, Briefcase, Heart, ExternalLink,
   ArrowRight, Check, Loader2, SkipForward, Star
