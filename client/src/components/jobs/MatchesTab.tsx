@@ -11,11 +11,11 @@ import {
   Sparkles, Target, CheckCircle, AlertCircle, FileText,
   Briefcase, MapPin, Heart, ExternalLink, ChevronDown,
   Loader2, RefreshCw, TrendingUp, Award, Compass,
-  Settings2, X
+  Settings2, X, Car, Clock, Building2
 } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { searchJobs, type PlatsbankenJob, SWEDISH_MUNICIPALITIES } from '@/services/arbetsformedlingenApi'
-import { cvApi } from '@/services/supabaseApi'
+import { cvApi, userApi, type ProfilePreferences } from '@/services/supabaseApi'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { calculateUserProfile, calculateJobMatches } from '@/services/interestGuideData'
 import { unifiedProfileApi } from '@/services/unifiedProfileApi'
@@ -41,6 +41,7 @@ interface SourceData {
     available: boolean
     skills: string[]
     workTitles: string[]
+    education: string[]
   }
   interest: {
     available: boolean
@@ -49,8 +50,179 @@ interface SourceData {
   career: {
     available: boolean
     preferredRoles: string[]
+    desiredJobs: string[]  // From focus mode / profile
     keywords: string[]
   }
+  // Profile preferences for filtering and boosting
+  preferences: {
+    employmentTypes: string[]  // 'fulltime', 'parttime', etc.
+    remoteWork: 'yes' | 'no' | 'hybrid' | null
+    driversLicense: string[]  // ['B', 'C', etc.]
+    hasCar: boolean
+    maxCommuteMinutes: number | null
+    industries: string[]
+  }
+}
+
+// ============================================
+// PROFILE PREFERENCE MATCHING
+// ============================================
+
+/**
+ * Check if job matches employment type preference
+ */
+function matchesEmploymentType(job: PlatsbankenJob, preferredTypes: string[]): { matches: boolean; boost: number } {
+  if (preferredTypes.length === 0) return { matches: true, boost: 0 }
+
+  const jobType = job.employment_type?.label?.toLowerCase() || ''
+
+  // Map Swedish job types to our preference keys
+  const typeMapping: Record<string, string[]> = {
+    'fulltime': ['heltid', 'tillsvidare', 'fast anställning'],
+    'parttime': ['deltid', 'halvtid'],
+    'temporary': ['vikariat', 'tidsbegränsad', 'visstid', 'säsong'],
+    'freelance': ['frilans', 'konsult', 'uppdrag'],
+    'internship': ['praktik', 'trainee', 'lärling']
+  }
+
+  for (const pref of preferredTypes) {
+    const keywords = typeMapping[pref] || []
+    if (keywords.some(kw => jobType.includes(kw))) {
+      return { matches: true, boost: 10 }  // +10% for matching preference
+    }
+  }
+
+  // If user wants specific types but job doesn't match, slight penalty
+  return { matches: true, boost: -5 }
+}
+
+/**
+ * Check if job matches remote work preference
+ */
+function matchesRemoteWork(job: PlatsbankenJob, preference: 'yes' | 'no' | 'hybrid' | null): { matches: boolean; boost: number } {
+  if (!preference) return { matches: true, boost: 0 }
+
+  const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
+  const remoteOption = job.remote_work?.option?.toLowerCase() || ''
+
+  const isRemote = remoteOption.includes('remote') ||
+    jobText.includes('distans') ||
+    jobText.includes('remote') ||
+    jobText.includes('hemarbete') ||
+    jobText.includes('jobba hemifrån')
+
+  const isHybrid = remoteOption.includes('hybrid') ||
+    jobText.includes('hybrid') ||
+    jobText.includes('delvis distans') ||
+    jobText.includes('flexibel arbetsplats')
+
+  if (preference === 'yes') {
+    if (isRemote) return { matches: true, boost: 15 }
+    if (isHybrid) return { matches: true, boost: 5 }
+    return { matches: true, boost: -5 }
+  }
+
+  if (preference === 'hybrid') {
+    if (isHybrid) return { matches: true, boost: 15 }
+    if (isRemote) return { matches: true, boost: 5 }
+    return { matches: true, boost: 0 }
+  }
+
+  // preference === 'no' - prefers on-site
+  if (!isRemote && !isHybrid) return { matches: true, boost: 5 }
+  return { matches: true, boost: 0 }
+}
+
+/**
+ * Check if user has required driver's license
+ */
+function matchesDriversLicense(job: PlatsbankenJob, userLicenses: string[]): { matches: boolean; boost: number; detail: string | null } {
+  const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
+
+  // Check for driver's license requirements
+  const requiresLicense = jobText.includes('körkort') ||
+    jobText.includes('b-körkort') ||
+    jobText.includes('c-körkort') ||
+    jobText.includes('ce-körkort') ||
+    jobText.includes('truckkort')
+
+  if (!requiresLicense) {
+    return { matches: true, boost: 0, detail: null }
+  }
+
+  // Job requires license - check if user has it
+  if (userLicenses.length === 0) {
+    // User hasn't specified licenses, slight penalty for jobs requiring them
+    return { matches: true, boost: -10, detail: 'Körkort krävs' }
+  }
+
+  // Check specific license types
+  const hasB = userLicenses.some(l => l.toUpperCase() === 'B')
+  const hasC = userLicenses.some(l => l.toUpperCase() === 'C')
+  const hasCE = userLicenses.some(l => l.toUpperCase() === 'CE')
+
+  if (jobText.includes('ce-körkort') || jobText.includes('ce körkort')) {
+    if (hasCE) return { matches: true, boost: 15, detail: 'Du har CE-körkort ✓' }
+    return { matches: true, boost: -15, detail: 'CE-körkort krävs' }
+  }
+
+  if (jobText.includes('c-körkort') || jobText.includes('c körkort')) {
+    if (hasC || hasCE) return { matches: true, boost: 15, detail: 'Du har C-körkort ✓' }
+    return { matches: true, boost: -15, detail: 'C-körkort krävs' }
+  }
+
+  if (jobText.includes('b-körkort') || jobText.includes('b körkort') ||
+      (jobText.includes('körkort') && !jobText.includes('c-') && !jobText.includes('ce-'))) {
+    if (hasB || hasC || hasCE) return { matches: true, boost: 10, detail: 'Du har B-körkort ✓' }
+    return { matches: true, boost: -10, detail: 'B-körkort krävs' }
+  }
+
+  return { matches: true, boost: 0, detail: null }
+}
+
+/**
+ * Apply all profile-based boosts/penalties to a match score
+ */
+function applyProfileBoosts(
+  job: PlatsbankenJob,
+  baseScore: number,
+  preferences: SourceData['preferences'],
+  matchDetails: string[]
+): { score: number; details: string[] } {
+  let score = baseScore
+  const details = [...matchDetails]
+
+  // Employment type
+  const empMatch = matchesEmploymentType(job, preferences.employmentTypes)
+  score += empMatch.boost
+
+  // Remote work
+  const remoteMatch = matchesRemoteWork(job, preferences.remoteWork)
+  score += remoteMatch.boost
+  if (remoteMatch.boost > 0 && preferences.remoteWork === 'yes') {
+    details.push('Distansarbete ✓')
+  }
+
+  // Driver's license
+  const licenseMatch = matchesDriversLicense(job, preferences.driversLicense)
+  score += licenseMatch.boost
+  if (licenseMatch.detail && licenseMatch.boost > 0) {
+    details.push(licenseMatch.detail)
+  }
+
+  // Car requirement
+  if (preferences.hasCar) {
+    const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
+    if (jobText.includes('egen bil') || jobText.includes('tillgång till bil')) {
+      score += 10
+      details.push('Har bil ✓')
+    }
+  }
+
+  // Cap score between 0 and 100
+  score = Math.max(0, Math.min(100, score))
+
+  return { score, details }
 }
 
 // ============================================
@@ -446,10 +618,17 @@ export function MatchesTab() {
   const [interestJobs, setInterestJobs] = useState<MatchedJob[]>([])
   const [careerJobs, setCareerJobs] = useState<MatchedJob[]>([])
 
-  // Load source data (CV, Interest, Career)
+  // Load source data (CV, Interest, Career, Profile Preferences)
   const loadSourceData = useCallback(async (): Promise<SourceData> => {
-    // Load CV
-    const cv = await cvApi.getCV()
+    // Load all data sources in parallel for speed
+    const [cv, interestProgress, unifiedProfile, profilePrefs] = await Promise.all([
+      cvApi.getCV(),
+      interestGuideApi.getProgress(),
+      unifiedProfileApi.getProfile(),
+      userApi.getPreferences().catch(() => null)
+    ])
+
+    // === CV DATA ===
     const skills = cv?.skills?.map((s: string | { name: string }) =>
       typeof s === 'string' ? s : s.name
     ).filter(Boolean) || []
@@ -459,11 +638,12 @@ export function MatchesTab() {
     ).filter(Boolean) || []
     const allSkills = [...new Set([...skills, ...certificates, ...languages])]
     const workTitles = cv?.work_experience?.map((e: { title?: string }) => e.title).filter(Boolean) || []
+    const education = cv?.education?.map((e: { degree?: string; field?: string }) =>
+      `${e.degree || ''} ${e.field || ''}`.trim()
+    ).filter(Boolean) || []
 
-    // Load Interest Guide
-    const interestProgress = await interestGuideApi.getProgress()
+    // === INTEREST GUIDE DATA ===
     let occupations: Array<{ name: string; matchPercentage: number }> = []
-
     if (interestProgress?.is_completed && interestProgress.answers) {
       try {
         const profile = calculateUserProfile(interestProgress.answers)
@@ -479,8 +659,7 @@ export function MatchesTab() {
       }
     }
 
-    // Load Career Goals
-    const unifiedProfile = await unifiedProfileApi.getProfile()
+    // === CAREER GOALS DATA ===
     const preferredRoles = unifiedProfile?.career?.preferredRoles || []
     const careerGoals = unifiedProfile?.career?.careerGoals
     const careerKeywords: string[] = []
@@ -491,29 +670,58 @@ export function MatchesTab() {
       careerKeywords.push(...careerGoals.longTerm.split(/\s+/).filter((w: string) => w.length > 4))
     }
 
+    // Get desired_jobs from profile preferences (set in focus mode)
+    const desiredJobs = profilePrefs?.desired_jobs || []
+
+    // === PROFILE PREFERENCES (for filtering/boosting) ===
+    const preferences: SourceData['preferences'] = {
+      employmentTypes: profilePrefs?.availability?.employmentTypes || [],
+      remoteWork: profilePrefs?.availability?.remoteWork || null,
+      driversLicense: profilePrefs?.mobility?.driversLicense || [],
+      hasCar: profilePrefs?.mobility?.hasCar || false,
+      maxCommuteMinutes: profilePrefs?.mobility?.maxCommuteMinutes || null,
+      industries: profilePrefs?.work_preferences?.industries || []
+    }
+
+    // Combine preferred roles with desired jobs (dedup)
+    const allCareerRoles = [...new Set([...preferredRoles, ...desiredJobs])]
+
     return {
       cv: {
-        available: allSkills.length > 0 || workTitles.length > 0,
+        available: allSkills.length > 0 || workTitles.length > 0 || education.length > 0,
         skills: allSkills,
-        workTitles
+        workTitles,
+        education
       },
       interest: {
         available: occupations.length > 0,
         occupations
       },
       career: {
-        available: preferredRoles.length > 0,
-        preferredRoles,
+        available: allCareerRoles.length > 0 || desiredJobs.length > 0,
+        preferredRoles: allCareerRoles,
+        desiredJobs,
         keywords: [...new Set(careerKeywords)].slice(0, 10)
-      }
+      },
+      preferences
     }
   }, [])
 
-  // Search and match jobs for CV
-  const searchCvJobs = useCallback(async (data: SourceData['cv'], locations: string[]): Promise<MatchedJob[]> => {
+  // Search and match jobs for CV (based on skills, experience, education)
+  const searchCvJobs = useCallback(async (
+    data: SourceData['cv'],
+    locations: string[],
+    preferences: SourceData['preferences']
+  ): Promise<MatchedJob[]> => {
     if (!data.available) return []
 
-    const searchTerms = [...data.skills.slice(0, 3), ...data.workTitles.slice(0, 2)]
+    // Build search query from skills, work titles, and education
+    const searchTerms = [
+      ...data.skills.slice(0, 3),
+      ...data.workTitles.slice(0, 2),
+      ...data.education.slice(0, 1)
+    ].filter(Boolean)
+
     if (searchTerms.length === 0) return []
 
     const result = await searchJobs({
@@ -534,48 +742,78 @@ export function MatchesTab() {
     return jobs.map(job => {
       const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase()
       const matchDetails: string[] = []
-      let matchCount = 0
+      let skillMatches = 0
+      let titleMatches = 0
+      let educationMatches = 0
 
-      // Check skills
+      // Check skills (highest weight)
       data.skills.forEach(skill => {
         const skillLower = skill.toLowerCase()
         if (jobText.includes(skillLower) || (skillLower.includes('körkort') && jobText.includes('körkort'))) {
           matchDetails.push(skill)
-          matchCount++
+          skillMatches++
         }
       })
 
-      // Check work titles
+      // Check work titles (high weight - indicates relevant experience)
       data.workTitles.forEach(title => {
-        if (jobText.includes(title.toLowerCase())) {
-          matchDetails.push(title)
-          matchCount++
+        const titleLower = title.toLowerCase()
+        if (jobText.includes(titleLower) || job.headline?.toLowerCase().includes(titleLower)) {
+          matchDetails.push(`Erfarenhet: ${title}`)
+          titleMatches++
         }
       })
 
-      const totalItems = data.skills.length + data.workTitles.length
-      const score = totalItems > 0
-        ? Math.min(100, Math.round((matchCount / Math.min(totalItems, 5)) * 100))
-        : 0
+      // Check education (medium weight)
+      data.education.forEach(edu => {
+        const words = edu.toLowerCase().split(/\s+/).filter(w => w.length > 3)
+        const eduMatches = words.filter(word => jobText.includes(word))
+        if (eduMatches.length >= 2) {
+          matchDetails.push(`Utbildning: ${edu}`)
+          educationMatches++
+        }
+      })
+
+      // Calculate base score with weighted components
+      // Skills: 50%, Experience: 35%, Education: 15%
+      const maxSkills = Math.min(data.skills.length, 5)
+      const maxTitles = Math.min(data.workTitles.length, 3)
+      const maxEdu = Math.min(data.education.length, 2)
+
+      let baseScore = 0
+      if (maxSkills > 0) baseScore += (skillMatches / maxSkills) * 50
+      if (maxTitles > 0) baseScore += (titleMatches / maxTitles) * 35
+      if (maxEdu > 0) baseScore += (educationMatches / maxEdu) * 15
+
+      // Minimum score if any match found
+      if (matchDetails.length > 0 && baseScore < 30) {
+        baseScore = 30
+      }
+
+      // Apply profile preference boosts
+      const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails)
 
       return {
         job,
-        score: Math.max(score, matchDetails.length > 0 ? 30 : 0),
+        score: Math.round(score),
         source: 'cv' as MatchSource,
-        matchDetails
+        matchDetails: details
       }
     })
     .filter(m => m.score > 0)
     .sort((a, b) => b.score - a.score)
   }, [])
 
-  // Search and match jobs for Interest
-  const searchInterestJobs = useCallback(async (data: SourceData['interest'], locations: string[]): Promise<MatchedJob[]> => {
+  // Search and match jobs for Interest (based on RIASEC/interest guide occupations)
+  const searchInterestJobs = useCallback(async (
+    data: SourceData['interest'],
+    locations: string[],
+    preferences: SourceData['preferences']
+  ): Promise<MatchedJob[]> => {
     if (!data.available || data.occupations.length === 0) return []
 
     // Helper to extract clean search terms from occupation name
     const getSearchTerms = (name: string): string[] => {
-      // Split on / and extract parts, remove parentheses content
       return name
         .split('/')
         .map(part => part.replace(/\(.*?\)/g, '').trim())
@@ -585,15 +823,12 @@ export function MatchesTab() {
     const topOccupations = data.occupations.slice(0, 8)
     const allJobs: MatchedJob[] = []
     const seenJobIds = new Set<string>()
-
-    // Collect all unique search terms
     const searchTermsUsed = new Set<string>()
 
     for (const occ of topOccupations) {
       const searchTerms = getSearchTerms(occ.name)
 
       for (const searchTerm of searchTerms) {
-        // Skip if we already searched this term
         if (searchTermsUsed.has(searchTerm.toLowerCase())) continue
         searchTermsUsed.add(searchTerm.toLowerCase())
 
@@ -621,42 +856,46 @@ export function MatchesTab() {
             const jobText = `${jobTitle} ${jobOccupation}`
             const searchTermLower = searchTerm.toLowerCase()
 
-            // Calculate match quality
+            // Calculate base match quality based on how well job matches the occupation
             let matchQuality = 0
             const matchDetails: string[] = []
 
-            // Direct match in title
+            // Direct match in title (best)
             if (jobTitle.includes(searchTermLower)) {
               matchQuality = 100
-              matchDetails.push(searchTerm)
+              matchDetails.push(`Intresse: ${occ.name}`)
             }
             // Direct match in occupation label
             else if (jobOccupation.includes(searchTermLower)) {
               matchQuality = 90
-              matchDetails.push(searchTerm)
+              matchDetails.push(`Intresse: ${occ.name}`)
             }
-            // Word match
+            // Partial word match
             else {
               const searchWords = searchTermLower.split(/\s+/).filter(w => w.length > 3)
               const matchedWords = searchWords.filter(w => jobText.includes(w))
               if (matchedWords.length > 0) {
                 matchQuality = 70 + (matchedWords.length / searchWords.length) * 20
-                matchDetails.push(searchTerm)
+                matchDetails.push(`Relaterat: ${occ.name}`)
               } else {
-                // Still related since search returned it
                 matchQuality = 50
-                matchDetails.push(searchTerm + ' (relaterat)')
+                matchDetails.push(`Relaterat yrke`)
               }
             }
 
-            // Final score combines match quality with occupation recommendation percentage
-            const score = Math.round((matchQuality / 100) * occ.matchPercentage)
+            // Combine match quality with user's interest percentage
+            // If user has 85% match to "Programmerare" and job matches "Programmerare" 100%,
+            // base score = (100/100) * 85 = 85
+            const baseScore = Math.round((matchQuality / 100) * occ.matchPercentage)
+
+            // Apply profile preference boosts
+            const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails)
 
             allJobs.push({
               job,
               score: Math.max(score, 30),
               source: 'interest' as MatchSource,
-              matchDetails
+              matchDetails: details
             })
           })
         } catch (e) {
@@ -665,7 +904,7 @@ export function MatchesTab() {
       }
     }
 
-    // Deduplicate and keep best score for each job
+    // Deduplicate - keep best score for each job
     const jobMap = new Map<string, MatchedJob>()
     allJobs.forEach(match => {
       const existing = jobMap.get(match.job.id)
@@ -680,20 +919,29 @@ export function MatchesTab() {
       .slice(0, 50)
   }, [])
 
-  // Search and match jobs for Career
-  const searchCareerJobs = useCallback(async (data: SourceData['career'], locations: string[]): Promise<MatchedJob[]> => {
-    if (!data.available || data.preferredRoles.length === 0) return []
+  // Search and match jobs for Career (based on desired jobs and career goals)
+  const searchCareerJobs = useCallback(async (
+    data: SourceData['career'],
+    locations: string[],
+    preferences: SourceData['preferences']
+  ): Promise<MatchedJob[]> => {
+    // Career matching uses both preferredRoles AND desiredJobs
+    const searchRoles = data.preferredRoles.length > 0
+      ? data.preferredRoles
+      : data.desiredJobs
+
+    if (searchRoles.length === 0) return []
 
     const allJobs: MatchedJob[] = []
     const seenJobIds = new Set<string>()
 
-    // Search for each preferred role
-    for (const role of data.preferredRoles.slice(0, 5)) {
+    // Search for each career role/desired job
+    for (const role of searchRoles.slice(0, 8)) {
       try {
         const result = await searchJobs({
           query: role,
           municipality: locations.length === 1 ? locations[0] : undefined,
-          limit: 20,
+          limit: 25,
           publishedWithin: 'month'
         })
 
@@ -708,30 +956,53 @@ export function MatchesTab() {
           if (seenJobIds.has(job.id)) return
           seenJobIds.add(job.id)
 
-          const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
+          const jobTitle = (job.headline || '').toLowerCase()
+          const jobOccupation = (job.occupation?.label || '').toLowerCase()
+          const jobText = `${jobTitle} ${job.description?.text || ''} ${jobOccupation}`.toLowerCase()
+          const roleLower = role.toLowerCase()
           const matchDetails: string[] = []
-          let score = 0
+          let baseScore = 0
 
-          // Check preferred roles
-          if (jobText.includes(role.toLowerCase())) {
-            matchDetails.push(role)
-            score += 40
+          // Check if this is from desiredJobs (higher weight - user explicitly wants this)
+          const isDesiredJob = data.desiredJobs.some(dj => dj.toLowerCase() === roleLower)
+
+          // Direct title match (best)
+          if (jobTitle.includes(roleLower)) {
+            baseScore = isDesiredJob ? 90 : 75
+            matchDetails.push(isDesiredJob ? `Önskat yrke: ${role}` : `Karriärmål: ${role}`)
+          }
+          // Occupation label match
+          else if (jobOccupation.includes(roleLower)) {
+            baseScore = isDesiredJob ? 80 : 65
+            matchDetails.push(isDesiredJob ? `Önskat yrke: ${role}` : `Karriärmål: ${role}`)
+          }
+          // Description match
+          else if (jobText.includes(roleLower)) {
+            baseScore = isDesiredJob ? 60 : 50
+            matchDetails.push(`Relaterat: ${role}`)
           }
 
-          // Check keywords
+          // Check career keywords for additional boost
+          let keywordBoost = 0
           data.keywords.forEach(keyword => {
-            if (jobText.includes(keyword.toLowerCase())) {
-              matchDetails.push(keyword)
-              score += 10
+            if (keyword.length > 4 && jobText.includes(keyword.toLowerCase())) {
+              keywordBoost += 5
+              if (matchDetails.length < 4) {
+                matchDetails.push(keyword)
+              }
             }
           })
+          baseScore += Math.min(keywordBoost, 20) // Cap keyword boost at 20
 
-          if (matchDetails.length > 0) {
+          if (baseScore >= 30) {
+            // Apply profile preference boosts
+            const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails)
+
             allJobs.push({
               job,
-              score: Math.min(100, score),
+              score: Math.min(100, Math.round(score)),
               source: 'career' as MatchSource,
-              matchDetails
+              matchDetails: details
             })
           }
         })
@@ -740,7 +1011,16 @@ export function MatchesTab() {
       }
     }
 
-    return allJobs
+    // Deduplicate - keep best score
+    const jobMap = new Map<string, MatchedJob>()
+    allJobs.forEach(match => {
+      const existing = jobMap.get(match.job.id)
+      if (!existing || match.score > existing.score) {
+        jobMap.set(match.job.id, match)
+      }
+    })
+
+    return Array.from(jobMap.values())
       .filter(m => m.score >= 30)
       .sort((a, b) => b.score - a.score)
       .slice(0, 50)
@@ -764,11 +1044,11 @@ export function MatchesTab() {
         setActiveSource('career')
       }
 
-      // Load jobs for each available source in parallel
+      // Load jobs for each available source in parallel (pass preferences to each)
       const [cvResults, interestResults, careerResults] = await Promise.all([
-        data.cv.available ? searchCvJobs(data.cv, municipalities) : Promise.resolve([]),
-        data.interest.available ? searchInterestJobs(data.interest, municipalities) : Promise.resolve([]),
-        data.career.available ? searchCareerJobs(data.career, municipalities) : Promise.resolve([])
+        data.cv.available ? searchCvJobs(data.cv, municipalities, data.preferences) : Promise.resolve([]),
+        data.interest.available ? searchInterestJobs(data.interest, municipalities, data.preferences) : Promise.resolve([]),
+        data.career.available ? searchCareerJobs(data.career, municipalities, data.preferences) : Promise.resolve([])
       ])
 
       setCvJobs(cvResults)
@@ -958,6 +1238,55 @@ export function MatchesTab() {
           <p className="text-2xl font-bold text-slate-700 dark:text-stone-200">{stats.total}</p>
         </div>
       </div>
+
+      {/* Profile preferences info */}
+      {sourceData?.preferences && (
+        sourceData.preferences.employmentTypes.length > 0 ||
+        sourceData.preferences.remoteWork ||
+        sourceData.preferences.driversLicense.length > 0
+      ) && (
+        <div className="bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800/50 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 bg-sky-100 dark:bg-sky-900/40 rounded-lg flex items-center justify-center shrink-0">
+              <Settings2 className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="font-medium text-sky-800 dark:text-sky-200 text-sm mb-1">
+                {t('jobs.matches.preferencesUsed', 'Dina preferenser påverkar matchningen')}
+              </h4>
+              <div className="flex flex-wrap gap-2 text-xs">
+                {sourceData.preferences.employmentTypes.length > 0 && (
+                  <span className="px-2 py-1 bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded-full">
+                    {sourceData.preferences.employmentTypes.map(t =>
+                      t === 'fulltime' ? 'Heltid' : t === 'parttime' ? 'Deltid' : t
+                    ).join(', ')}
+                  </span>
+                )}
+                {sourceData.preferences.remoteWork && (
+                  <span className="px-2 py-1 bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded-full">
+                    {sourceData.preferences.remoteWork === 'yes' ? 'Distansarbete' :
+                     sourceData.preferences.remoteWork === 'hybrid' ? 'Hybrid' : 'På plats'}
+                  </span>
+                )}
+                {sourceData.preferences.driversLicense.length > 0 && (
+                  <span className="px-2 py-1 bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded-full flex items-center gap-1">
+                    <Car className="w-3 h-3" />
+                    Körkort {sourceData.preferences.driversLicense.join(', ')}
+                  </span>
+                )}
+                {sourceData.preferences.hasCar && (
+                  <span className="px-2 py-1 bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 rounded-full">
+                    Har bil
+                  </span>
+                )}
+              </div>
+            </div>
+            <Link to="/profile" className="text-xs text-sky-600 dark:text-sky-400 hover:underline shrink-0">
+              Ändra
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Refresh button */}
       <div className="flex justify-end">

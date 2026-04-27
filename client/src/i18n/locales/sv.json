@@ -1757,7 +1757,8 @@
         "goodMatch": "Bra match",
         "possible": "Möjliga",
         "total": "Totalt"
-      }
+      },
+      "preferencesUsed": "Dina preferenser påverkar matchningen"
     },
     "applications": {
       "status": {

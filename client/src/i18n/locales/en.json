@@ -1757,7 +1757,8 @@
         "goodMatch": "Good match",
         "possible": "Possible",
         "total": "Total"
-      }
+      },
+      "preferencesUsed": "Your preferences affect matching"
     },
     "applications": {
       "status": {
