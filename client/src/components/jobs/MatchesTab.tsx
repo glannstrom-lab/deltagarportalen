@@ -1111,6 +1111,11 @@ export function MatchesTab() {
     ])
 
     // === CV DATA ===
+    // Debug: Log the full CV object to see all available fields
+    console.log('=== CV MATCHING DEBUG ===')
+    console.log('Raw CV object:', cv)
+    console.log('CV keys:', cv ? Object.keys(cv) : 'CV is null/undefined')
+
     const skills = cv?.skills?.map((s: string | { name: string }) =>
       typeof s === 'string' ? s : s.name
     ).filter(Boolean) || []
@@ -1119,21 +1124,26 @@ export function MatchesTab() {
       typeof l === 'string' ? l : (l.name || l.language)
     ).filter(Boolean) || []
     const allSkills = [...new Set([...skills, ...certificates, ...languages])]
+
     // Extract work titles - check both camelCase and snake_case (API returns camelCase)
+    console.log('cv.workExperience:', cv?.workExperience)
+    console.log('cv.work_experience:', cv?.work_experience)
+
     const workExperiences = cv?.workExperience || cv?.work_experience || []
     const workTitles = workExperiences.map((e: { title?: string; position?: string; role?: string; job_title?: string }) =>
       e.title || e.position || e.role || e.job_title
     ).filter(Boolean) || []
 
-    // Debug: log the raw work experience to see what fields exist
-    if (workExperiences.length > 0) {
-      console.log('CV workExperience raw data:', workExperiences)
-    } else {
-      console.log('CV has no work experience entries')
-    }
+    console.log('Extracted workExperiences:', workExperiences)
+    console.log('Extracted workTitles:', workTitles)
+
     const education = cv?.education?.map((e: { degree?: string; field?: string }) =>
       `${e.degree || ''} ${e.field || ''}`.trim()
     ).filter(Boolean) || []
+
+    console.log('Extracted education:', education)
+    console.log('Extracted skills:', allSkills)
+    console.log('=== END CV DEBUG ===')
 
     // === INTEREST GUIDE DATA ===
     let occupations: Array<{ name: string; matchPercentage: number }> = []
