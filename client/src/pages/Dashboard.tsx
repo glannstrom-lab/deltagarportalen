@@ -39,11 +39,6 @@ export default function DashboardPage() {
   const [showCompletedSteps, setShowCompletedSteps] = useState(false)
   const { isFocusMode, toggleFocusMode } = useFocusMode()
 
-  // In focus mode, show simplified dashboard
-  if (isFocusMode) {
-    return <FocusDashboard onExitFocusMode={toggleFocusMode} />
-  }
-
   // Calculate onboarding progress
   const onboardingProgress = useMemo(() => {
     if (!dashboardData) return { completed: 0, total: ONBOARDING_STEPS.length, progress: {} as Record<string, boolean> }
@@ -68,6 +63,11 @@ export default function DashboardPage() {
 
   // Find next incomplete step
   const nextStep = remainingSteps[0] || null
+
+  // In focus mode, show simplified dashboard (after all hooks)
+  if (isFocusMode) {
+    return <FocusDashboard onExitFocusMode={toggleFocusMode} />
+  }
 
   if (dashboardLoading || interestLoading) {
     return <DashboardSkeleton />
