@@ -1510,6 +1510,23 @@
       "applications": "Your applications",
       "templates": "Ready templates",
       "statistics": "Your statistics"
+    },
+    "write": {
+      "copyText": "Copy text",
+      "downloadPDF": "Download PDF",
+      "downloading": "Downloading...",
+      "saveButton": "Save letter",
+      "done": {
+        "title": "Great job!",
+        "message": "You have created a cover letter that showcases your value. Remember: It's okay to go back and adjust if you want.",
+        "tip": "Save the letter even if you don't send it right away – reuse it for similar jobs!"
+      },
+      "errors": {
+        "emptyLetter": "The letter cannot be empty",
+        "saveFailed": "Could not save the letter. Please try again."
+      },
+      "untitledLetter": "Untitled letter",
+      "saved": "Letter saved!"
     }
   },
   "jobSearch": {

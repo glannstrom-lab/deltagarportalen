@@ -1510,6 +1510,23 @@
       "applications": "Dina ansökningar",
       "templates": "Färdiga mallar",
       "statistics": "Din statistik"
+    },
+    "write": {
+      "copyText": "Kopiera text",
+      "downloadPDF": "Ladda ner PDF",
+      "downloading": "Laddar ner...",
+      "saveButton": "Spara brev",
+      "done": {
+        "title": "Bra jobbat!",
+        "message": "Du har skapat ett personligt brev som visar ditt värde. Kom ihåg: Det är okej att gå tillbaka och justera om du vill.",
+        "tip": "Spara brevet även om du inte skickar det direkt – återanvänd det för liknande jobb!"
+      },
+      "errors": {
+        "emptyLetter": "Brevet kan inte vara tomt",
+        "saveFailed": "Kunde inte spara brevet. Försök igen."
+      },
+      "untitledLetter": "Namnlöst brev",
+      "saved": "Brev sparat!"
     }
   },
   "jobSearch": {

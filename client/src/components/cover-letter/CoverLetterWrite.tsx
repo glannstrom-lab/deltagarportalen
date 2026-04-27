@@ -521,8 +521,9 @@ export function CoverLetterWrite() {
           />
         )}
         {currentStep === 5 && (
-          <Step5Done 
+          <Step5Done
             editedLetter={editedLetter}
+            formData={formData}
             onSave={handleSave}
           />
         )}
@@ -1111,11 +1112,92 @@ function Step4Review({
 // Steg 5: Klart!
 function Step5Done({
   editedLetter,
+  formData,
   onSave
 }: {
   editedLetter: string
+  formData: FormData
   onSave: () => void
 }) {
+  const { t } = useTranslation()
+  const [isDownloading, setIsDownloading] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
+
+  const handleCopy = async () => {
+    await navigator.clipboard.writeText(editedLetter)
+    setIsCopied(true)
+    setTimeout(() => setIsCopied(false), 2000)
+  }
+
+  const handleDownloadPDF = async () => {
+    try {
+      setIsDownloading(true)
+      const { jsPDF } = await import('jspdf')
+      const doc = new jsPDF()
+
+      // Get today's date formatted
+      const today = new Date()
+      const dateStr = today.toLocaleDateString('sv-SE')
+
+      // File name
+      const safeCompany = (formData.company || 'foretag').replace(/[^a-zA-Z0-9åäöÅÄÖ]/g, '-')
+      const safeTitle = (formData.jobTitle || 'jobb').replace(/[^a-zA-Z0-9åäöÅÄÖ]/g, '-')
+      const fileName = `Personligt-brev-${safeCompany}-${safeTitle}.pdf`
+
+      // Header - Date on the right
+      doc.setFontSize(10)
+      doc.setFont('helvetica', 'normal')
+      doc.text(dateStr, 190, 20, { align: 'right' })
+
+      // Company/recipient info
+      let yPos = 35
+      if (formData.company) {
+        doc.setFontSize(11)
+        doc.setFont('helvetica', 'bold')
+        doc.text(formData.company, 20, yPos)
+        yPos += 8
+      }
+
+      // Subject line
+      yPos += 5
+      doc.setFontSize(12)
+      doc.setFont('helvetica', 'bold')
+      const subject = formData.jobTitle
+        ? `Ansökan: ${formData.jobTitle}`
+        : 'Personligt brev'
+      doc.text(subject, 20, yPos)
+      yPos += 15
+
+      // Letter body
+      doc.setFontSize(11)
+      doc.setFont('helvetica', 'normal')
+
+      // Split text into lines that fit within margins
+      const pageWidth = 170 // 210 - 20*2 margins
+      const lines = doc.splitTextToSize(editedLetter, pageWidth)
+
+      // Add lines with page breaks if needed
+      const lineHeight = 6
+      const pageHeight = 280 // Effective page height
+      const marginTop = yPos
+
+      for (let i = 0; i < lines.length; i++) {
+        if (yPos > pageHeight) {
+          doc.addPage()
+          yPos = 20
+        }
+        doc.text(lines[i], 20, yPos)
+        yPos += lineHeight
+      }
+
+      doc.save(fileName)
+    } catch (err) {
+      console.error('Failed to download PDF:', err)
+    } finally {
+      setIsDownloading(false)
+    }
+  }
+
   return (
     <div className="text-center py-8">
       <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-6 ring-4 ring-emerald-50 dark:ring-emerald-900/20">
@@ -1123,12 +1205,11 @@ function Step5Done({
       </div>
 
       <h2 className="text-2xl font-semibold text-stone-800 dark:text-stone-100 mb-3">
-        Bra jobbat!
+        {t('coverLetter.write.done.title', 'Bra jobbat!')}
       </h2>
 
       <p className="text-stone-600 dark:text-stone-400 max-w-md mx-auto mb-6">
-        Du har skapat ett personligt brev som visar ditt värde.
-        Kom ihåg: Det är okej att gå tillbaka och justera om du vill.
+        {t('coverLetter.write.done.message', 'Du har skapat ett personligt brev som visar ditt värde. Kom ihåg: Det är okej att gå tillbaka och justera om du vill.')}
       </p>
 
       {/* Preview */}
@@ -1138,20 +1219,31 @@ function Step5Done({
         </p>
       </div>
 
-      <div className="flex gap-3 justify-center">
-        <Button variant="outline" className="gap-2" onClick={() => navigator.clipboard.writeText(editedLetter)}>
-          <Copy size={16} />
-          Kopiera text
+      <div className="flex flex-wrap gap-3 justify-center">
+        <Button variant="outline" className="gap-2" onClick={handleCopy}>
+          {isCopied ? <Check size={16} /> : <Copy size={16} />}
+          {isCopied ? t('common.copied', 'Kopierat!') : t('coverLetter.write.copyText', 'Kopiera text')}
+        </Button>
+        <Button
+          variant="outline"
+          className="gap-2"
+          onClick={handleDownloadPDF}
+          disabled={isDownloading}
+        >
+          {isDownloading ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+          {isDownloading
+            ? t('coverLetter.write.downloading', 'Laddar ner...')
+            : t('coverLetter.write.downloadPDF', 'Ladda ner PDF')}
         </Button>
         <Button onClick={onSave} className="gap-2 bg-emerald-600 hover:bg-emerald-700">
           <Save size={16} />
-          Spara brev
+          {t('coverLetter.write.saveButton', 'Spara brev')}
         </Button>
       </div>
 
       <div className="mt-6 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg inline-flex items-center gap-2 text-sm text-teal-700 dark:text-teal-300">
         <Lightbulb className="w-4 h-4" />
-        <span>Spara brevet även om du inte skickar det direkt – återanvänd det för liknande jobb!</span>
+        <span>{t('coverLetter.write.done.tip', 'Spara brevet även om du inte skickar det direkt – återanvänd det för liknande jobb!')}</span>
       </div>
     </div>
   )
