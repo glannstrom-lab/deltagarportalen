@@ -1119,14 +1119,17 @@ export function MatchesTab() {
       typeof l === 'string' ? l : (l.name || l.language)
     ).filter(Boolean) || []
     const allSkills = [...new Set([...skills, ...certificates, ...languages])]
-    // Extract work titles - check multiple possible field names
-    const workTitles = cv?.work_experience?.map((e: { title?: string; position?: string; role?: string; job_title?: string }) =>
+    // Extract work titles - check both camelCase and snake_case (API returns camelCase)
+    const workExperiences = cv?.workExperience || cv?.work_experience || []
+    const workTitles = workExperiences.map((e: { title?: string; position?: string; role?: string; job_title?: string }) =>
       e.title || e.position || e.role || e.job_title
     ).filter(Boolean) || []
 
     // Debug: log the raw work experience to see what fields exist
-    if (cv?.work_experience?.length > 0) {
-      console.log('CV work_experience raw data:', cv.work_experience)
+    if (workExperiences.length > 0) {
+      console.log('CV workExperience raw data:', workExperiences)
+    } else {
+      console.log('CV has no work experience entries')
     }
     const education = cv?.education?.map((e: { degree?: string; field?: string }) =>
       `${e.degree || ''} ${e.field || ''}`.trim()
