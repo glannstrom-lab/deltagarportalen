@@ -628,14 +628,14 @@ export default function Education() {
             </>
           ) : (
             <EmptyState
-              icon={<GraduationCap className="w-12 h-12" />}
+              icon={GraduationCap}
               title={t('education.noResults.title')}
               description={t('education.noResults.description')}
-              action={
-                <Button variant="outline" onClick={clearFilters}>
-                  {t('education.noResults.action')}
-                </Button>
-              }
+              action={{
+                label: t('education.noResults.action'),
+                onClick: clearFilters,
+                variant: 'outline'
+              }}
             />
           )}
         </div>
