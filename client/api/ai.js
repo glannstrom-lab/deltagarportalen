@@ -8,6 +8,7 @@ const { createClient } = require('@supabase/supabase-js');
 const RATE_LIMITS = {
   'personligt-brev': { limit: 10, windowMinutes: 15 },
   'cv-optimering': { limit: 15, windowMinutes: 15 },
+  'cv-writing': { limit: 20, windowMinutes: 15 },
   'generera-cv-text': { limit: 20, windowMinutes: 15 },
   'intervju-forberedelser': { limit: 10, windowMinutes: 15 },
   'intervju-simulator': { limit: 20, windowMinutes: 15 },
@@ -279,6 +280,44 @@ INTRESSEN: ${data?.interests?.join(', ') || 'Ej angivna'}
 Skriv en sammanfattning på 3-5 meningar som passar i en jobbsökarprofil:`,
       maxTokens: 500,
       responseKey: 'summary'
+    };
+  },
+  'cv-writing': (data) => {
+    const content = data?.content || '';
+    const type = data?.type || 'summary'; // summary, experience, skills
+    const feature = data?.feature || 'improve'; // improve, quantify, translate, generate
+
+    const featurePrompts = {
+      improve: {
+        summary: `Förbättra denna CV-sammanfattning. Gör den mer professionell, engagerande och resultatfokuserad. Använd aktiva verb och undvik vaga fraser. Behåll längden ungefär samma.`,
+        experience: `Förbättra denna arbetserfarenhetsbeskrivning. Gör den mer resultatfokuserad med aktiva verb. Lyft fram prestationer och ansvar tydligt.`,
+        skills: `Förbättra denna kompetensbeskrivning. Gör den mer specifik och professionell.`
+      },
+      quantify: {
+        summary: `Lägg till kvantifierbara resultat och mätbara prestationer i denna sammanfattning. Föreslå rimliga siffror baserat på kontexten (t.ex. "ledde ett team på X personer", "ökade försäljningen med X%").`,
+        experience: `Lägg till kvantifierbara resultat i denna arbetsbeskrivning. Föreslå rimliga siffror och mätvärden (budget, teamstorlek, procentuella förbättringar, tidsbesparingar).`,
+        skills: `Lägg till konkreta exempel och nivåer för dessa kompetenser.`
+      },
+      translate: {
+        summary: `Översätt denna CV-sammanfattning till engelska. Behåll den professionella tonen och anpassa till internationella CV-standarder.`,
+        experience: `Översätt denna arbetserfarenhet till engelska. Använd professionell terminologi och internationella standarder.`,
+        skills: `Översätt dessa kompetenser till engelska med professionell terminologi.`
+      },
+      generate: {
+        summary: `Baserat på innehållet, generera en ny professionell CV-sammanfattning på 3-4 meningar. Den ska vara engagerande, resultatfokuserad och lyfta fram personens styrkor.`,
+        experience: `Generera en förbättrad version av denna arbetsbeskrivning. Fokusera på resultat, ansvar och prestationer.`,
+        skills: `Generera en mer detaljerad beskrivning av dessa kompetenser med konkreta exempel.`
+      }
+    };
+
+    const systemPrompt = 'Du är en expert på CV-skrivning. Ge konkreta, professionella förslag på svenska (om inte översättning efterfrågas). Svara endast med den förbättrade texten, ingen inledning eller förklaring.';
+    const userPrompt = `${featurePrompts[feature]?.[type] || featurePrompts.improve.summary}\n\nText att bearbeta:\n${content}`;
+
+    return {
+      system: systemPrompt,
+      user: userPrompt,
+      maxTokens: 800,
+      responseKey: 'result'
     };
   },
   'chatbot': (data) => {
