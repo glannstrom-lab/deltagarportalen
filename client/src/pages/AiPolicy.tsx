@@ -30,7 +30,7 @@ export default function AiPolicy() {
   const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
     <section className="scroll-mt-8">
       <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-3">
-        <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+        <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
         {title}
       </h2>
       {children}
@@ -42,7 +42,7 @@ export default function AiPolicy() {
       {Icon ? (
         <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${positive ? 'text-green-500 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`} />
       ) : (
-        <span className="w-1.5 h-1.5 bg-teal-500 dark:bg-teal-400 rounded-full mt-2 flex-shrink-0" />
+        <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
       )}
       <span>
         {title && <strong className="text-gray-800 dark:text-gray-100">{title}</strong>} {desc}
@@ -57,14 +57,14 @@ export default function AiPolicy() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 rounded-xl flex items-center justify-center text-white font-bold text-xl">
+              <div className="w-10 h-10 bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-text)] rounded-xl flex items-center justify-center text-white font-bold text-xl">
                 J
               </div>
-              <span className="text-xl font-bold text-teal-600 dark:text-teal-400">Jobin</span>
+              <span className="text-xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">Jobin</span>
             </Link>
             <Link
               to="/"
-              className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors"
+              className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-medium transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
               {t('aiPolicy.backToHome')}
@@ -76,8 +76,8 @@ export default function AiPolicy() {
       {/* Content */}
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="text-center mb-12">
-          <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Bot className="w-8 h-8 text-teal-600 dark:text-teal-400" />
+          <div className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <Bot className="w-8 h-8 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-4">{t('aiPolicy.title')}</h1>
           <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">{t('aiPolicy.subtitle')}</p>
@@ -92,21 +92,21 @@ export default function AiPolicy() {
           {/* AI Models */}
           <Section icon={Brain} title={t('aiPolicy.models.title')}>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed mb-4">{t('aiPolicy.models.intro')}</p>
-            <div className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-xl p-6 border border-teal-100 dark:border-teal-800">
-              <h3 className="font-bold text-teal-900 dark:text-teal-100 text-lg mb-3">{t('aiPolicy.models.openai')}</h3>
-              <p className="text-teal-800 dark:text-teal-200 mb-4">{t('aiPolicy.models.openaiDesc')}</p>
+            <div className="bg-gradient-to-br from-[var(--c-bg)] to-cyan-50 dark:from-[var(--c-bg)]/20 dark:to-cyan-900/20 rounded-xl p-6 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+              <h3 className="font-bold text-[var(--c-text)] dark:text-[var(--c-text)] text-lg mb-3">{t('aiPolicy.models.openai')}</h3>
+              <p className="text-[var(--c-text)] dark:text-[var(--c-text)] mb-4">{t('aiPolicy.models.openaiDesc')}</p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <span className="font-medium text-teal-700 dark:text-teal-300">{t('aiPolicy.models.provider')}</span>
-                  <p className="text-teal-600 dark:text-teal-400">OpenAI, Inc.</p>
+                  <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('aiPolicy.models.provider')}</span>
+                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">OpenAI, Inc.</p>
                 </div>
                 <div>
-                  <span className="font-medium text-teal-700 dark:text-teal-300">{t('aiPolicy.models.purpose')}</span>
-                  <p className="text-teal-600 dark:text-teal-400">CV & Cover Letter</p>
+                  <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('aiPolicy.models.purpose')}</span>
+                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">CV & Cover Letter</p>
                 </div>
                 <div>
-                  <span className="font-medium text-teal-700 dark:text-teal-300">{t('aiPolicy.models.location')}</span>
-                  <p className="text-teal-600 dark:text-teal-400">USA (EU-US DPF)</p>
+                  <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('aiPolicy.models.location')}</span>
+                  <p className="text-[var(--c-text)] dark:text-[var(--c-text)]">USA (EU-US DPF)</p>
                 </div>
               </div>
             </div>
@@ -203,7 +203,7 @@ export default function AiPolicy() {
           <Section icon={Mail} title={t('aiPolicy.contact.title')}>
             <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
               {t('aiPolicy.contact.text')}{' '}
-              <a href="mailto:privacy@jobin.se" className="text-teal-600 dark:text-teal-400 hover:underline">
+              <a href="mailto:privacy@jobin.se" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline">
                 privacy@jobin.se
               </a>
             </p>

@@ -130,7 +130,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
             ~{remainingMinutes} min kvar
           </span>
         </div>
-        <span className="text-sm font-medium text-teal-600 dark:text-teal-400">
+        <span className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
           {Math.round(progress)}% klart
         </span>
       </div>
@@ -138,7 +138,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
       {/* Visual progress bar */}
       <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden mb-4">
         <div
-          className="h-full bg-teal-500 transition-all duration-500 rounded-full"
+          className="h-full bg-[var(--c-solid)] transition-all duration-500 rounded-full"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -157,7 +157,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 onClick={() => onStepClick(stepNum)}
                 className={cn(
                   "flex flex-col items-center gap-1 group min-w-[44px] min-h-[44px] py-1",
-                  "focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 rounded-lg"
+                  "focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 rounded-lg"
                 )}
                 aria-label={`Gå till steg ${stepNum}: ${step.title}`}
                 aria-current={isActive ? 'step' : undefined}
@@ -165,7 +165,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 <div className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all",
                   isActive
-                    ? "bg-teal-600 dark:bg-teal-500 text-white shadow-lg ring-4 ring-teal-100 dark:ring-teal-900/50"
+                    ? "bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white shadow-lg ring-4 ring-[var(--c-accent)]/40 dark:ring-[var(--c-bg)]/50"
                     : isCompleted
                       ? "bg-emerald-500 text-white"
                       : "bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 group-hover:bg-stone-200 dark:group-hover:bg-stone-600"
@@ -174,7 +174,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 </div>
                 <span className={cn(
                   "text-xs font-medium hidden sm:block",
-                  isActive ? "text-teal-600 dark:text-teal-400" : isCompleted ? "text-emerald-600 dark:text-emerald-400" : "text-stone-600 dark:text-stone-400"
+                  isActive ? "text-[var(--c-text)] dark:text-[var(--c-text)]" : isCompleted ? "text-emerald-600 dark:text-emerald-400" : "text-stone-600 dark:text-stone-400"
                 )}>
                   {step.title}
                 </span>
@@ -237,7 +237,7 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-4 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500 text-base bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500"
+        className="w-full px-4 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 dark:focus:ring-[var(--c-solid)]/30 focus:border-[var(--c-solid)]/60 dark:focus:border-[var(--c-solid)] text-base bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500"
       />
     </div>
   )
@@ -504,14 +504,14 @@ export default function CVBuilder() {
               className={cn(
                 "group relative overflow-hidden rounded-xl border-2 text-left transition-all",
                 selected
-                  ? "border-teal-500 ring-2 ring-teal-500 ring-offset-2 dark:ring-offset-stone-900 shadow-lg"
-                  : "border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md"
+                  ? "border-[var(--c-solid)] ring-2 ring-[var(--c-solid)] ring-offset-2 dark:ring-offset-stone-900 shadow-lg"
+                  : "border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md"
               )}
             >
               {/* Preview thumbnail */}
               <div className={cn("h-36 w-full relative", tpl.preview)}>
                 {selected && (
-                  <div className="absolute top-3 right-3 bg-teal-500 text-white rounded-full p-1.5 shadow-lg">
+                  <div className="absolute top-3 right-3 bg-[var(--c-solid)] text-white rounded-full p-1.5 shadow-lg">
                     <Check className="w-5 h-5" />
                   </div>
                 )}
@@ -571,7 +571,7 @@ export default function CVBuilder() {
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <h4 className="font-bold text-lg text-stone-800 dark:text-stone-200">{tpl.name}</h4>
-                  {selected && <span className="text-xs bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
+                  {selected && <span className="text-xs bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)] px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
                 </div>
                 <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">{tpl.desc}</p>
 
@@ -593,16 +593,16 @@ export default function CVBuilder() {
       </div>
 
       {data.template && (
-        <div className="p-5 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-100 dark:border-teal-800/50">
+        <div className="p-5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
           <div className="flex items-start gap-3">
-            <div className="bg-teal-500 text-white rounded-full p-1 mt-0.5">
+            <div className="bg-[var(--c-solid)] text-white rounded-full p-1 mt-0.5">
               <Check className="w-4 h-4" />
             </div>
             <div>
-              <p className="font-medium text-teal-900 dark:text-teal-100">
+              <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
                 {TEMPLATES.find(tpl => tpl.id === data.template)?.name} {t('cvBuilder.templates.isSelected')}
               </p>
-              <p className="text-sm text-teal-700 dark:text-teal-300 mt-1">
+              <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">
                 {t('cvBuilder.templates.selectedInfo')}
               </p>
             </div>
@@ -741,7 +741,7 @@ export default function CVBuilder() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.languages')}</h3>
-          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'good' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'good' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-solid)]/10 rounded-lg hover:bg-[var(--c-solid)]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.languages.length > 0 && (
           <div className="space-y-2">
@@ -783,7 +783,7 @@ export default function CVBuilder() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.certificates')}</h3>
-          <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-solid)]/10 rounded-lg hover:bg-[var(--c-solid)]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.certificates.length > 0 && (
           <div className="space-y-2">
@@ -800,7 +800,7 @@ export default function CVBuilder() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.sections.links')}</h3>
-          <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-600/10 rounded-lg hover:bg-teal-600/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-solid)]/10 rounded-lg hover:bg-[var(--c-solid)]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.links.length > 0 && (
           <div className="space-y-2">
@@ -835,7 +835,7 @@ export default function CVBuilder() {
     return (
       <div className="max-w-7xl mx-auto flex items-center justify-center py-12">
         <div className="flex items-center gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
+          <Loader2 className="w-6 h-6 animate-spin text-[var(--c-text)]" />
           <span className="text-stone-600 dark:text-stone-400">{t('cvBuilder.loading', 'Laddar...')}</span>
         </div>
       </div>
@@ -864,7 +864,7 @@ export default function CVBuilder() {
         <div className="text-center">
           <button
             onClick={() => setShowQuickMode(false)}
-            className="px-6 py-3 text-teal-600 dark:text-teal-400 font-medium hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-xl transition-colors"
+            className="px-6 py-3 text-[var(--c-text)] dark:text-[var(--c-text)] font-medium hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 rounded-xl transition-colors"
           >
             {t('cv.welcome.fullBuilder', 'Eller använd den fullständiga CV-byggaren')}
           </button>
@@ -885,7 +885,7 @@ export default function CVBuilder() {
         <button
           onClick={save}
           disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 text-sm font-medium"
+          className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-solid)]/90 disabled:opacity-50 text-sm font-medium"
           title={t('cvBuilder.actions.saveManually')}
         >
           <Save className="w-4 h-4" />
@@ -934,7 +934,7 @@ export default function CVBuilder() {
               <ChevronLeft className="w-5 h-5" />
               {t('cvBuilder.actions.previous')}
             </button>
-            <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-teal-600 text-white rounded-xl hover:bg-teal-700 disabled:opacity-50 font-medium">
+            <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-solid)]/90 disabled:opacity-50 font-medium">
               {t('cvBuilder.actions.next')}
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -964,7 +964,7 @@ export default function CVBuilder() {
             </p>
             <button
               onClick={() => setShowOnboarding(true)}
-              className="w-full px-4 py-2 text-sm font-medium text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
+              className="w-full px-4 py-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-lg hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
             >
               {t('cvBuilder.help.showGuide')}
             </button>
@@ -983,8 +983,8 @@ export default function CVBuilder() {
           {step === 3 && (
             <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-5">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/50 rounded-lg flex items-center justify-center">
-                  <Lightbulb className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                <div className="w-8 h-8 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 rounded-lg flex items-center justify-center">
+                  <Lightbulb className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" />
                 </div>
                 <h3 className="font-semibold text-stone-800 dark:text-stone-200">{t('cvBuilder.help.aiWriting')}</h3>
               </div>
@@ -1008,14 +1008,14 @@ export default function CVBuilder() {
                   className="w-full px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
                 />
                 <div className="flex gap-2">
-                  <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-teal-600 text-white text-sm rounded-lg">{t('cvBuilder.versions.save')}</button>
+                  <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-[var(--c-solid)] text-white text-sm rounded-lg">{t('cvBuilder.versions.save')}</button>
                   <button onClick={() => setShowSaveVersion(false)} className="flex-1 px-3 py-2 border border-stone-300 dark:border-stone-600 text-sm rounded-lg text-stone-700 dark:text-stone-300">{t('cvBuilder.versions.cancel')}</button>
                 </div>
               </div>
             ) : (
               <button
                 onClick={() => setShowSaveVersion(true)}
-                className="w-full mb-3 px-4 py-2 border border-teal-600 dark:border-teal-500 text-teal-600 dark:text-teal-400 rounded-lg text-sm hover:bg-teal-600/5 dark:hover:bg-teal-600/10"
+                className="w-full mb-3 px-4 py-2 border border-[var(--c-solid)] dark:border-[var(--c-solid)] text-[var(--c-text)] dark:text-[var(--c-text)] rounded-lg text-sm hover:bg-[var(--c-solid)]/5 dark:hover:bg-[var(--c-solid)]/10"
               >
                 {t('cvBuilder.versions.saveCurrentVersion')}
               </button>
@@ -1032,7 +1032,7 @@ export default function CVBuilder() {
                     </div>
                     <button
                       onClick={() => restoreVersion(v.id)}
-                      className="text-xs text-teal-600 dark:text-teal-400 hover:bg-teal-600/10 px-2 py-1 rounded"
+                      className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-solid)]/10 px-2 py-1 rounded"
                     >
                       {t('cvBuilder.actions.restore')}
                     </button>
@@ -1066,14 +1066,14 @@ export default function CVBuilder() {
         </button>
         <button
           onClick={() => setShowPreview(true)}
-          className="flex items-center justify-center w-12 h-12 bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 rounded-xl"
+          className="flex items-center justify-center w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-xl"
         >
           <Eye className="w-5 h-5" />
         </button>
         <button
           onClick={() => setStep(Math.min(STEPS.length, step + 1))}
           disabled={step === STEPS.length}
-          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 disabled:opacity-50 font-medium"
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-solid)]/90 disabled:opacity-50 font-medium"
         >
           {t('cvBuilder.actions.next')}
           <ChevronRight className="w-5 h-5" />

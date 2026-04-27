@@ -219,7 +219,7 @@ function SearchTab() {
           className="w-full flex items-center justify-between p-4 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-text)] rounded-xl flex items-center justify-center">
               <Filter className="w-5 h-5 text-white" />
             </div>
             <div className="text-left">
@@ -253,7 +253,7 @@ function SearchTab() {
                   setShowSuggestions(true);
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                className="w-full pl-10 pr-12 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                className="w-full pl-10 pr-12 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 role="combobox"
                 aria-expanded={showSuggestions && suggestions.length > 0}
                 aria-controls="job-search-suggestions"
@@ -293,7 +293,7 @@ function SearchTab() {
                         setFilters({ ...filters, query: suggestion });
                         setShowSuggestions(false);
                       }}
-                      className="w-full text-left px-4 py-3 hover:bg-blue-50 dark:hover:bg-blue-900/20 first:rounded-t-xl last:rounded-b-xl border-b border-stone-100 dark:border-stone-700 last:border-0 text-slate-900 dark:text-stone-100"
+                      className="w-full text-left px-4 py-3 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 first:rounded-t-xl last:rounded-b-xl border-b border-stone-100 dark:border-stone-700 last:border-0 text-slate-900 dark:text-stone-100"
                     >
                       <Search size={16} className="inline mr-2 text-slate-600 dark:text-stone-400" aria-hidden="true" />
                       {suggestion}
@@ -316,7 +316,7 @@ function SearchTab() {
                     id="filter-municipality"
                     value={filters.municipality}
                     onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                   >
                     <option value="">{t('jobSearch.allMunicipalities')}</option>
                     {SWEDISH_MUNICIPALITIES.map((m) => (
@@ -330,7 +330,7 @@ function SearchTab() {
                     id="filter-region"
                     value={filters.region}
                     onChange={(e) => setFilters({ ...filters, region: e.target.value })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                   >
                     <option value="">{t('jobSearch.allRegions')}</option>
                     {REGIONS.map((r) => (
@@ -354,7 +354,7 @@ function SearchTab() {
                     id="filter-employment-type"
                     value={filters.employmentType}
                     onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                   >
                     <option value="">{t('jobSearch.allTypes')}</option>
                     <option value="Heltid">{t('jobSearch.fullTime')}</option>
@@ -367,7 +367,7 @@ function SearchTab() {
                     id="filter-published"
                     value={filters.publishedWithin}
                     onChange={(e) => setFilters({ ...filters, publishedWithin: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                   >
                     <option value="all">{t('jobSearch.publishedAnytime')}</option>
                     <option value="today">{t('jobSearch.today')}</option>
@@ -383,24 +383,24 @@ function SearchTab() {
               <div className="flex items-center justify-between pt-3 border-t border-stone-100 dark:border-stone-700">
                 <div className="flex flex-wrap gap-2">
                   {filters.municipality && (
-                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg text-sm min-h-[44px]">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-lg text-sm min-h-[44px]">
                       📍 {filters.municipality}
                       <button
                         onClick={() => setFilters({ ...filters, municipality: '' })}
                         aria-label={t('jobSearch.removeFilter', { filter: filters.municipality }) || `Ta bort filter: ${filters.municipality}`}
-                        className="ml-1 p-1 hover:text-blue-900 dark:hover:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        className="ml-1 p-1 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-text)] rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   )}
                   {filters.region && (
-                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg text-sm min-h-[44px]">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-lg text-sm min-h-[44px]">
                       🗺️ {REGIONS.find(r => r.code === filters.region)?.name}
                       <button
                         onClick={() => setFilters({ ...filters, region: '' })}
                         aria-label={t('jobSearch.removeFilter', { filter: REGIONS.find(r => r.code === filters.region)?.name }) || `Ta bort filter: ${REGIONS.find(r => r.code === filters.region)?.name}`}
-                        className="ml-1 p-1 hover:text-blue-900 dark:hover:text-blue-200 hover:bg-blue-200 dark:hover:bg-blue-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        className="ml-1 p-1 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-text)] rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
                       </button>
@@ -473,7 +473,7 @@ function SearchTab() {
                   }
                 }}
                 aria-label={`${job.headline} - ${job.employer?.name || t('common.employerNotSpecified')}`}
-                className="bg-orange-50 dark:bg-orange-900/20 rounded-xl sm:rounded-2xl shadow-sm border border-orange-200 dark:border-orange-800 p-4 sm:p-5 hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-stone-900"
+                className="bg-orange-50 dark:bg-orange-900/20 rounded-xl sm:rounded-2xl shadow-sm border border-orange-200 dark:border-orange-800 p-4 sm:p-5 hover:shadow-md hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 dark:focus:ring-offset-stone-900"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1 min-w-0">
@@ -528,7 +528,7 @@ function SearchTab() {
                       <Link
                         to={`/cover-letter?jobId=${job.id}&company=${encodeURIComponent(job.employer?.name || '')}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(job.description?.text?.substring(0, 500) || '')}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
                       >
                         <FileText size={16} />
                         {t('jobSearch.writeLetter')}
@@ -539,7 +539,7 @@ function SearchTab() {
                           e.stopPropagation()
                           setApplicationModalJob(job)
                         }}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]/90 dark:hover:bg-[var(--c-solid)] transition-colors"
                       >
                         <Send size={16} />
                         {t('jobSearch.apply')}
@@ -624,7 +624,7 @@ function SearchTab() {
                     </span>
                   )}
                   {selectedJob.employment_type?.label && (
-                    <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 rounded-full text-sm text-blue-700 dark:text-blue-400">
+                    <span className="px-3 py-1 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-full text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">
                       💼 {selectedJob.employment_type.label}
                     </span>
                   )}
@@ -644,8 +644,8 @@ function SearchTab() {
                     className={cn(
                       "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-colors",
                       showInterviewPrep
-                        ? "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800"
-                        : "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/40"
+                        ? "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
+                        : "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/40"
                     )}
                   >
                     <MessageSquare size={16} />
@@ -708,7 +708,7 @@ function SearchTab() {
                     <Link
                       to={`/cover-letter?jobId=${selectedJob.id}&company=${encodeURIComponent(selectedJob.employer?.name || '')}&title=${encodeURIComponent(selectedJob.headline)}&desc=${encodeURIComponent(selectedJob.description?.text?.substring(0, 1000) || '')}`}
                       onClick={() => setSelectedJob(null)}
-                      className="flex items-center justify-center gap-2 py-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-900/50 rounded-xl font-medium transition-colors border border-blue-200 dark:border-blue-800 min-h-[48px]"
+                      className="flex items-center justify-center gap-2 py-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 rounded-xl font-medium transition-colors border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 min-h-[48px]"
                     >
                       <FileText size={18} />
                       <span className="text-sm sm:text-base">{t('jobSearch.writePersonalLetter')}</span>
@@ -720,7 +720,7 @@ function SearchTab() {
                       setApplicationModalJob(selectedJob)
                       setSelectedJob(null)
                     }}
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-blue-500 dark:bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors min-h-[48px]"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-solid)]/90 dark:hover:bg-[var(--c-solid)] transition-colors min-h-[48px]"
                   >
                     <Send size={18} />
                     <span className="text-sm sm:text-base">{t('jobSearch.createApplication')}</span>
@@ -794,7 +794,7 @@ function SavedJobsTab() {
   if (!isLoaded) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 dark:border-blue-400" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--c-solid)] dark:border-[var(--c-solid)]" />
       </div>
     );
   }
@@ -826,7 +826,7 @@ function SavedJobsTab() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+            className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
           >
             <option value="date">Senast sparade</option>
             <option value="company">Företag A-Ö</option>
@@ -898,7 +898,7 @@ function SavedJobsTab() {
                     href={jobData.webpage_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                    className="flex items-center gap-1 text-sm text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-medium"
                   >
                     <ExternalLink className="w-4 h-4" />
                     Visa annons

@@ -46,9 +46,15 @@ export interface NavItem {
   isNew?: boolean // Track if feature is new (for smart badge system)
 }
 
+export type NavDomain = 'action' | 'reflection' | 'outbound'
+
 export interface NavGroup {
   id: string
   labelKey: string
+  /** Semantisk domän — driver färgaccent i sidebaren (DESIGN.md 2026-04-28) */
+  domain: NavDomain
+  /** Fallback-label om i18n-nyckeln saknas */
+  fallbackLabel: string
   items: NavItem[]
 }
 
@@ -56,64 +62,61 @@ export interface NavGroup {
 // This is tracked via localStorage in the component
 export const NEWEST_FEATURE = '/ai-team' // Change this when launching new features
 
-// Grouped navigation for reduced cognitive load
+/**
+ * Domängrupperad navigation — 3 semantiska domäner enligt DESIGN.md.
+ * Mobilnavigation använder den platta `navItems`-listan nedan, så denna
+ * omorganisation påverkar bara desktop-sidebaren.
+ */
 export const navGroups: NavGroup[] = [
   {
-    id: 'overview',
-    labelKey: 'nav.groups.overview',
+    id: 'action',
+    labelKey: 'nav.groups.action',
+    domain: 'action',
+    fallbackLabel: 'Översikt',
     items: [
       { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
       { path: '/profile', labelKey: 'nav.profile', icon: Users },
       { path: '/my-consultant', labelKey: 'nav.myConsultant', icon: UserCheck },
       { path: '/ai-team', labelKey: 'nav.aiTeam', icon: Bot, isNew: true },
-      { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
-      // { path: '/journey', labelKey: 'nav.journey', icon: Map, isNew: true }, // Disabled
+      { path: '/nätverk', labelKey: 'nav.network', icon: Users },
+      { path: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
+      { path: '/resources', labelKey: 'nav.myDocuments', icon: Bookmark },
     ],
   },
   {
-    id: 'job-search',
-    labelKey: 'nav.groups.jobSearch',
+    id: 'reflection',
+    labelKey: 'nav.groups.reflection',
+    domain: 'reflection',
+    fallbackLabel: 'Reflektion',
     items: [
       { path: '/cv', labelKey: 'nav.cv', icon: FileUser },
       { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
-      { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
-      { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList },
-      { path: '/spontanansökan', labelKey: 'nav.spontaneous', icon: Building2, isNew: true },
-      { path: '/nätverk', labelKey: 'nav.network', icon: Users },
-    ],
-  },
-  {
-    id: 'development',
-    labelKey: 'nav.groups.development',
-    items: [
-      { path: '/career', labelKey: 'nav.career', icon: Target },
-      { path: '/education', labelKey: 'nav.education', icon: GraduationCap },
-      { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
-      { path: '/personal-brand', labelKey: 'nav.personalBrand', icon: Star },
-      { path: '/linkedin-optimizer', labelKey: 'nav.linkedinOptimizer', icon: Linkedin },
-      { path: '/skills-gap-analysis', labelKey: 'nav.skillsGap', icon: TrendingUp },
-      { path: '/interview-simulator', labelKey: 'nav.interviewSimulator', icon: Mic },
-      { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
-    ],
-  },
-  {
-    id: 'wellbeing',
-    labelKey: 'nav.groups.wellbeing',
-    items: [
-      { path: '/diary', labelKey: 'nav.diary', icon: NotebookPen },
       { path: '/wellness', labelKey: 'nav.wellness', icon: Smile },
+      { path: '/diary', labelKey: 'nav.diary', icon: NotebookPen },
+      { path: '/career', labelKey: 'nav.career', icon: Target },
+      { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
+      { path: '/skills-gap-analysis', labelKey: 'nav.skillsGap', icon: TrendingUp },
+      { path: '/personal-brand', labelKey: 'nav.personalBrand', icon: Star },
+      { path: '/education', labelKey: 'nav.education', icon: GraduationCap },
+      { path: '/interview-simulator', labelKey: 'nav.interviewSimulator', icon: Mic },
+      { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
       { path: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
     ],
   },
   {
-    id: 'resources',
-    labelKey: 'nav.groups.resources',
+    id: 'outbound',
+    labelKey: 'nav.groups.outbound',
+    domain: 'outbound',
+    fallbackLabel: 'Utåtriktat',
     items: [
-      { path: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
-      { path: '/print-resources', labelKey: 'nav.printResources', icon: Printer, isNew: true },
+      { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
+      { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList },
+      { path: '/spontanansökan', labelKey: 'nav.spontaneous', icon: Building2, isNew: true },
+      { path: '/linkedin-optimizer', labelKey: 'nav.linkedinOptimizer', icon: Linkedin },
+      { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
       { path: '/international', labelKey: 'nav.international', icon: Globe },
+      { path: '/print-resources', labelKey: 'nav.printResources', icon: Printer, isNew: true },
       { path: '/externa-resurser', labelKey: 'nav.externalResources', icon: ExternalLink },
-      { path: '/resources', labelKey: 'nav.myDocuments', icon: Bookmark },
     ],
   },
 ]

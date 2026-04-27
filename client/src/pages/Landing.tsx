@@ -35,7 +35,7 @@ function FAQItem({ question, answer, isOpen, onClick }: {
         aria-expanded={isOpen}
       >
         <span className="font-semibold text-slate-800 dark:text-slate-100 pr-4 text-base sm:text-lg leading-snug">{question}</span>
-        <ChevronDown className={`w-5 h-5 sm:w-6 sm:h-6 text-slate-400 dark:text-slate-500 transition-transform duration-300 flex-shrink-0 mt-0.5 sm:mt-0 ${isOpen ? 'rotate-180 text-teal-600 dark:text-teal-400' : ''}`} />
+        <ChevronDown className={`w-5 h-5 sm:w-6 sm:h-6 text-slate-400 dark:text-slate-500 transition-transform duration-300 flex-shrink-0 mt-0.5 sm:mt-0 ${isOpen ? 'rotate-180 text-[var(--c-text)] dark:text-[var(--c-solid)]' : ''}`} />
       </button>
       <div
         className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 pb-6' : 'max-h-0'}`}
@@ -58,8 +58,8 @@ function FeatureCard({
 }) {
   return (
     <div className="group p-6 rounded-2xl bg-white dark:bg-stone-800 sm:bg-transparent sm:dark:bg-transparent border border-slate-100 dark:border-stone-700 sm:border-0 shadow-sm sm:shadow-none transition-all hover:shadow-md sm:hover:shadow-none">
-      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-teal-50 dark:bg-teal-900/40 rounded-2xl flex items-center justify-center mb-4 sm:mb-5 group-hover:bg-teal-100 dark:group-hover:bg-teal-900/60 transition-colors shadow-sm">
-        <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-teal-600 dark:text-teal-400" />
+      <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-2xl flex items-center justify-center mb-4 sm:mb-5 group-hover:bg-[var(--c-accent)]/40 dark:group-hover:bg-[var(--c-bg)]/60 transition-colors shadow-sm">
+        <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
       </div>
       <h3 className="text-lg sm:text-xl font-bold text-slate-800 dark:text-slate-100 mb-2 sm:mb-3">{title}</h3>
       <p className="text-slate-600 dark:text-slate-300 leading-relaxed text-base">{description}</p>
@@ -138,28 +138,28 @@ export default function Landing() {
             <div className="hidden md:flex items-center gap-8 h-full">
               <button
                 onClick={() => scrollToSection('funktioner')}
-                className="h-full inline-flex items-center text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors"
+                className="h-full inline-flex items-center text-slate-700 dark:text-slate-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors"
               >
                 {t('landing.nav.features')}
               </button>
               <button
                 onClick={() => scrollToSection('hur-det-funkar')}
-                className="h-full inline-flex items-center text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors"
+                className="h-full inline-flex items-center text-slate-700 dark:text-slate-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors"
               >
                 {t('landing.nav.howItWorks')}
               </button>
               <button
                 onClick={() => scrollToSection('priser')}
-                className="h-full inline-flex items-center text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors"
+                className="h-full inline-flex items-center text-slate-700 dark:text-slate-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors"
               >
                 {t('landing.nav.pricing')}
               </button>
-              <Link to="/login" className="h-full inline-flex items-center text-slate-700 dark:text-slate-300 hover:text-teal-600 dark:hover:text-teal-400 font-medium transition-colors">
+              <Link to="/login" className="h-full inline-flex items-center text-slate-700 dark:text-slate-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors">
                 {t('landing.nav.login')}
               </Link>
               <Link
                 to="/register"
-                className="inline-flex items-center bg-teal-600 hover:bg-teal-700 dark:bg-teal-500 dark:hover:bg-teal-600 text-white px-6 py-2.5 rounded-full font-medium transition-colors"
+                className="inline-flex items-center bg-[var(--c-solid)] hover:bg-[var(--c-text)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)] text-white px-6 py-2.5 rounded-full font-medium transition-colors"
               >
                 {t('landing.nav.getStarted')}
               </Link>
@@ -187,25 +187,25 @@ export default function Landing() {
             <div className="space-y-1 pt-4 pb-6 border-t border-slate-100 dark:border-stone-700">
               <button
                 onClick={() => scrollToSection('funktioner')}
-                className="block w-full text-left text-slate-700 dark:text-slate-300 active:text-teal-600 dark:active:text-teal-400 hover:bg-slate-50 dark:hover:bg-stone-800 active:bg-teal-50 dark:active:bg-teal-900/40 py-3.5 px-4 rounded-xl font-medium transition-all"
+                className="block w-full text-left text-slate-700 dark:text-slate-300 active:text-[var(--c-text)] dark:active:text-[var(--c-solid)] hover:bg-slate-50 dark:hover:bg-stone-800 active:bg-[var(--c-bg)] dark:active:bg-[var(--c-bg)]/40 py-3.5 px-4 rounded-xl font-medium transition-all"
               >
                 {t('landing.nav.features')}
               </button>
               <button
                 onClick={() => scrollToSection('hur-det-funkar')}
-                className="block w-full text-left text-slate-700 dark:text-slate-300 active:text-teal-600 dark:active:text-teal-400 hover:bg-slate-50 dark:hover:bg-stone-800 active:bg-teal-50 dark:active:bg-teal-900/40 py-3.5 px-4 rounded-xl font-medium transition-all"
+                className="block w-full text-left text-slate-700 dark:text-slate-300 active:text-[var(--c-text)] dark:active:text-[var(--c-solid)] hover:bg-slate-50 dark:hover:bg-stone-800 active:bg-[var(--c-bg)] dark:active:bg-[var(--c-bg)]/40 py-3.5 px-4 rounded-xl font-medium transition-all"
               >
                 {t('landing.nav.howItWorks')}
               </button>
               <button
                 onClick={() => scrollToSection('priser')}
-                className="block w-full text-left text-slate-700 dark:text-slate-300 active:text-teal-600 dark:active:text-teal-400 hover:bg-slate-50 dark:hover:bg-stone-800 active:bg-teal-50 dark:active:bg-teal-900/40 py-3.5 px-4 rounded-xl font-medium transition-all"
+                className="block w-full text-left text-slate-700 dark:text-slate-300 active:text-[var(--c-text)] dark:active:text-[var(--c-solid)] hover:bg-slate-50 dark:hover:bg-stone-800 active:bg-[var(--c-bg)] dark:active:bg-[var(--c-bg)]/40 py-3.5 px-4 rounded-xl font-medium transition-all"
               >
                 {t('landing.nav.pricing')}
               </button>
               <Link
                 to="/login"
-                className="block text-slate-700 dark:text-slate-300 active:text-teal-600 dark:active:text-teal-400 hover:bg-slate-50 dark:hover:bg-stone-800 active:bg-teal-50 dark:active:bg-teal-900/40 py-3.5 px-4 rounded-xl font-medium transition-all"
+                className="block text-slate-700 dark:text-slate-300 active:text-[var(--c-text)] dark:active:text-[var(--c-solid)] hover:bg-slate-50 dark:hover:bg-stone-800 active:bg-[var(--c-bg)] dark:active:bg-[var(--c-bg)]/40 py-3.5 px-4 rounded-xl font-medium transition-all"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 {t('landing.nav.login')}
@@ -213,7 +213,7 @@ export default function Landing() {
               <div className="pt-2">
                 <Link
                   to="/register"
-                  className="block bg-teal-600 dark:bg-teal-500 text-white px-5 py-4 rounded-full font-semibold text-center active:bg-teal-700 dark:active:bg-teal-600 transition-colors shadow-md"
+                  className="block bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white px-5 py-4 rounded-full font-semibold text-center active:bg-[var(--c-text)] dark:active:bg-[var(--c-solid)] transition-colors shadow-md"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   {t('landing.nav.getStartedFree')}
@@ -229,7 +229,7 @@ export default function Landing() {
         {/* Hero Image - Background for desktop only */}
         <div className="absolute inset-0">
           {/* Subtle gradient background on mobile, image on desktop */}
-          <div className="block sm:hidden absolute inset-0 bg-gradient-to-br from-teal-50 via-white to-slate-50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800" />
+          <div className="block sm:hidden absolute inset-0 bg-gradient-to-br from-[var(--c-bg)] via-white to-slate-50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800" />
           <OptimizedImage
             src="/hero-landing.webp"
             alt=""
@@ -243,13 +243,13 @@ export default function Landing() {
         {/* Content */}
         <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-20 pt-32 sm:py-32">
           <div className="max-w-xl text-center sm:text-left mx-auto sm:mx-0">
-            <p className="text-teal-600 dark:text-teal-400 font-semibold mb-4 tracking-wide text-sm sm:text-base uppercase">
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-4 tracking-wide text-sm sm:text-base uppercase">
               {t('landing.hero.badge')}
             </p>
 
             <h1 className="text-4xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 dark:text-white mb-5 sm:mb-6 leading-[1.15] sm:leading-tight">
               {t('landing.hero.titleStart')}{' '}
-              <span className="text-teal-600 dark:text-teal-400">{t('landing.hero.titleHighlight')}</span>
+              <span className="text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('landing.hero.titleHighlight')}</span>
               {' '}{t('landing.hero.titleEnd')}
             </h1>
 
@@ -260,7 +260,7 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-10 sm:mb-10">
               <Link
                 to="/register"
-                className="group bg-teal-600 hover:bg-teal-700 active:bg-teal-800 dark:bg-teal-500 dark:hover:bg-teal-600 dark:active:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 transition-all shadow-lg shadow-teal-600/20 dark:shadow-teal-500/20 hover:shadow-xl hover:shadow-teal-600/30 dark:hover:shadow-teal-500/30"
+                className="group bg-[var(--c-solid)] hover:bg-[var(--c-text)] active:bg-[var(--c-text)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)] dark:active:bg-[var(--c-text)] text-white px-8 py-4 rounded-full font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 transition-all shadow-lg dark:hover:shadow-xl "
               >
                 {t('landing.hero.cta')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -275,15 +275,15 @@ export default function Landing() {
 
             <div className="flex flex-row justify-center sm:justify-start gap-5 sm:gap-6 text-sm sm:text-sm text-slate-600 dark:text-slate-300">
               <span className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
+                <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0" />
                 <span className="whitespace-nowrap">{t('landing.hero.free')}</span>
               </span>
               <span className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
+                <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0" />
                 <span className="whitespace-nowrap">{t('landing.hero.secure')}</span>
               </span>
               <span className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0" />
+                <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0" />
                 <span className="whitespace-nowrap">{t('landing.hero.quickStart')}</span>
               </span>
             </div>
@@ -321,7 +321,7 @@ export default function Landing() {
       <section id="funktioner" className="py-16 sm:py-24 scroll-mt-20 dark:bg-stone-900">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="text-teal-600 dark:text-teal-400 font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.features.sectionLabel')}</p>
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.features.sectionLabel')}</p>
             <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-4 leading-tight">
               {t('landing.features.title')}
             </h2>
@@ -369,7 +369,7 @@ export default function Landing() {
       <section id="hur-det-funkar" className="py-16 sm:py-24 bg-slate-50 dark:bg-stone-800/50 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="text-teal-600 dark:text-teal-400 font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.steps.sectionLabel')}</p>
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.steps.sectionLabel')}</p>
             <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-4 leading-tight">
               {t('landing.steps.title')}
             </h2>
@@ -382,7 +382,7 @@ export default function Landing() {
             {[1, 2, 3].map((step) => (
               <div key={step} className="relative">
                 <div className="bg-white dark:bg-stone-800 rounded-2xl p-6 sm:p-8 h-full shadow-sm dark:shadow-stone-950/30">
-                  <div className="w-12 h-12 bg-teal-600 dark:bg-teal-500 text-white rounded-full flex items-center justify-center text-xl font-bold mb-5 sm:mb-6 shadow-md shadow-teal-600/20 dark:shadow-teal-500/20">
+                  <div className="w-12 h-12 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white rounded-full flex items-center justify-center text-xl font-bold mb-5 sm:mb-6 shadow-md ">
                     {step}
                   </div>
                   <h3 className="text-lg sm:text-xl font-semibold text-slate-800 dark:text-slate-100 mb-3 sm:mb-3">
@@ -407,7 +407,7 @@ export default function Landing() {
       <section id="priser" className="py-16 sm:py-24 scroll-mt-20 dark:bg-stone-900">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
-            <p className="text-teal-600 dark:text-teal-400 font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.pricing.sectionLabel')}</p>
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.pricing.sectionLabel')}</p>
             <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-4 leading-tight">
               {t('landing.pricing.title')}
             </h2>
@@ -418,9 +418,9 @@ export default function Landing() {
 
           <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-5 sm:gap-8 max-w-5xl mx-auto">
             {/* Organization */}
-            <div className="bg-white dark:bg-stone-800 rounded-2xl p-7 sm:p-8 border-2 border-teal-200 dark:border-teal-700 relative sm:col-span-2 md:col-span-1 shadow-lg shadow-teal-100 dark:shadow-stone-950/50">
+            <div className="bg-white dark:bg-stone-800 rounded-2xl p-7 sm:p-8 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 relative sm:col-span-2 md:col-span-1 shadow-lg dark:shadow-stone-950/50">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                <span className="bg-teal-600 dark:bg-teal-500 text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md">
+                <span className="bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white text-xs font-semibold px-4 py-1.5 rounded-full shadow-md">
                   {t('landing.pricing.mostPopular')}
                 </span>
               </div>
@@ -437,14 +437,14 @@ export default function Landing() {
               <ul className="space-y-3 mb-8">
                 {(t('landing.pricing.organization.features', { returnObjects: true }) as string[]).map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300">
-                    <Check className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
                     <span>{feature}</span>
                   </li>
                 ))}
               </ul>
               <a
                 href="mailto:sales@jobin.se"
-                className="block w-full bg-teal-600 dark:bg-teal-500 text-white text-center py-3.5 rounded-full font-semibold hover:bg-teal-700 dark:hover:bg-teal-600 active:bg-teal-800 transition-colors shadow-md"
+                className="block w-full bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white text-center py-3.5 rounded-full font-semibold hover:bg-[var(--c-text)] dark:hover:bg-[var(--c-solid)] active:bg-[var(--c-text)] transition-colors shadow-md"
               >
                 {t('landing.pricing.cta')}
               </a>
@@ -465,7 +465,7 @@ export default function Landing() {
               <ul className="space-y-3 mb-8">
                 {(t('landing.pricing.consultant.features', { returnObjects: true }) as string[]).map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300">
-                    <Check className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -487,12 +487,12 @@ export default function Landing() {
                 {t('landing.pricing.participant.description')}
               </p>
               <div className="mb-6">
-                <span className="text-3xl sm:text-4xl font-bold text-teal-600 dark:text-teal-400">{t('landing.pricing.participant.priceLabel')}</span>
+                <span className="text-3xl sm:text-4xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('landing.pricing.participant.priceLabel')}</span>
               </div>
               <ul className="space-y-3 mb-8">
                 {(t('landing.pricing.participant.features', { returnObjects: true }) as string[]).map((feature, idx) => (
                   <li key={idx} className="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300">
-                    <Check className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                    <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
                     <span>{feature}</span>
                   </li>
                 ))}
@@ -512,7 +512,7 @@ export default function Landing() {
       <section id="faq" className="py-16 sm:py-24 bg-slate-50 dark:bg-stone-800/50">
         <div className="max-w-3xl mx-auto px-5 sm:px-6">
           <div className="text-center mb-10 sm:mb-16">
-            <p className="text-teal-600 dark:text-teal-400 font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.faq.sectionLabel')}</p>
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">{t('landing.faq.sectionLabel')}</p>
             <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4 sm:mb-4 leading-tight">
               {t('landing.faq.title')}
             </h2>
@@ -544,7 +544,7 @@ export default function Landing() {
           </p>
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 dark:bg-teal-500 dark:hover:bg-teal-600 dark:active:bg-teal-700 text-white px-8 py-4 rounded-full font-semibold text-lg sm:text-lg transition-all shadow-lg shadow-teal-600/20 dark:shadow-teal-500/20 hover:shadow-xl hover:shadow-teal-600/30 dark:hover:shadow-teal-500/30"
+            className="inline-flex items-center gap-2 bg-[var(--c-solid)] hover:bg-[var(--c-text)] active:bg-[var(--c-text)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)] dark:active:bg-[var(--c-text)] text-white px-8 py-4 rounded-full font-semibold text-lg sm:text-lg transition-all shadow-lg dark:hover:shadow-xl "
           >
             {t('landing.cta.button')}
             <ArrowRight className="w-5 h-5" />

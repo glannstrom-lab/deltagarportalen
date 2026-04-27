@@ -195,8 +195,8 @@ export default function Settings() {
             ) : (
               <>
                 <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/30 dark:to-teal-800/20 rounded-full flex items-center justify-center">
-                    <User size={32} className="text-teal-600 dark:text-teal-400" />
+                  <div className="w-20 h-20 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-full flex items-center justify-center">
+                    <User size={32} className="text-[var(--c-text)] dark:text-[var(--c-text)]" />
                   </div>
                   <div className="text-center sm:text-left">
                     <Button variant="secondary" size="sm">
@@ -248,7 +248,7 @@ export default function Settings() {
                     className={cn(
                       "w-full px-4 py-3 border border-stone-200 dark:border-stone-700 rounded-lg",
                       "bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100",
-                      "focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 dark:focus:ring-teal-400/20 dark:focus:border-teal-400",
+                      "focus:ring-2 focus:ring-[var(--c-solid)]/20 focus:border-[var(--c-solid)] dark:focus:ring-[var(--c-solid)]/20 dark:focus:border-[var(--c-solid)]/60",
                       "resize-none text-base transition-theme"
                     )}
                   />
@@ -282,7 +282,7 @@ export default function Settings() {
 
             <div className="space-y-4">
               {/* Focus Mode - NPF-anpassat */}
-              <Card variant="flat" padding="sm" className="border-2 border-teal-200 dark:border-teal-800/50 bg-teal-50/50 dark:bg-teal-900/10">
+              <Card variant="flat" padding="sm" className="border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20">
                 <Toggle
                   label={t('settings.accessibility.focusMode', 'Fokusläge (NPF-anpassat)')}
                   description={t('settings.accessibility.focusModeDesc', 'Visar ett steg i taget och minskar visuellt brus. Perfekt för ADHD, autism eller om du vill ha en enklare upplevelse.')}
@@ -406,7 +406,7 @@ export default function Settings() {
                         </p>
                       )}
                     </div>
-                    <Link to="/terms" target="_blank" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 flex-shrink-0">
+                    <Link to="/terms" target="_blank" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] flex-shrink-0">
                       <ExternalLink size={18} />
                     </Link>
                   </div>
@@ -442,7 +442,7 @@ export default function Settings() {
                         </p>
                       )}
                     </div>
-                    <Link to="/privacy" target="_blank" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 flex-shrink-0">
+                    <Link to="/privacy" target="_blank" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] flex-shrink-0">
                       <ExternalLink size={18} />
                     </Link>
                   </div>
@@ -464,7 +464,7 @@ export default function Settings() {
                         <h4 className="font-medium text-stone-900 dark:text-stone-100">
                           {t('settings.privacy.consent.ai')}
                         </h4>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]">
                           {t('settings.privacy.consent.optional')}
                         </span>
                       </div>
@@ -512,7 +512,7 @@ export default function Settings() {
                         <h4 className="font-medium text-stone-900 dark:text-stone-100">
                           {t('settings.privacy.consent.marketing')}
                         </h4>
-                        <span className="text-xs px-2 py-0.5 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]">
                           {t('settings.privacy.consent.optional')}
                         </span>
                       </div>
@@ -559,7 +559,7 @@ export default function Settings() {
                 <Card variant="flat">
                   <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">{t('settings.privacy.shareActivity')}</h3>
                   <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.shareActivityDesc')}</p>
-                  <button className="text-teal-600 dark:text-teal-400 font-medium text-sm hover:text-teal-700 dark:hover:text-teal-300">
+                  <button className="text-[var(--c-text)] dark:text-[var(--c-text)] font-medium text-sm hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]">
                     {t('settings.privacy.learnMore')}
                   </button>
                 </Card>
@@ -667,8 +667,8 @@ export default function Settings() {
               const Icon = section?.icon || User
               return (
                 <>
-                  <div className="p-2 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
-                    <Icon size={20} className="text-teal-600 dark:text-teal-400" />
+                  <div className="p-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-lg">
+                    <Icon size={20} className="text-[var(--c-text)] dark:text-[var(--c-text)]" />
                   </div>
                   <span className="font-medium text-stone-900 dark:text-stone-100">{section?.title}</span>
                 </>
@@ -696,14 +696,14 @@ export default function Settings() {
                   className={cn(
                     "w-full flex items-center gap-3 p-4 text-left transition-colors",
                     activeSection === section.id
-                      ? 'bg-teal-50 dark:bg-teal-900/20 text-teal-900 dark:text-teal-100'
+                      ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)]'
                       : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
                   )}
                 >
                   <div className={cn(
                     "p-2 rounded-lg",
                     activeSection === section.id
-                      ? 'bg-teal-500 dark:bg-teal-600 text-white'
+                      ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400'
                   )}>
                     <Icon size={18} />
@@ -732,19 +732,19 @@ export default function Settings() {
                 className={cn(
                   "w-full flex items-center gap-3 p-4 rounded-xl transition-all text-left relative",
                   isActive
-                    ? 'bg-teal-50 dark:bg-teal-900/20'
+                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30'
                     : 'bg-white dark:bg-stone-800 hover:bg-stone-50 dark:hover:bg-stone-700/50'
                 )}
               >
                 {/* Active indicator */}
                 {isActive && (
-                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-teal-500 dark:bg-teal-400 rounded-r-full" />
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-r-full" />
                 )}
 
                 <div className={cn(
                   "p-2 rounded-lg",
                   isActive
-                    ? 'bg-teal-500 dark:bg-teal-600 text-white'
+                    ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white'
                     : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400'
                 )}>
                   <Icon size={20} />
@@ -753,7 +753,7 @@ export default function Settings() {
                   <h3 className={cn(
                     "font-semibold",
                     isActive
-                      ? 'text-teal-900 dark:text-teal-100'
+                      ? 'text-[var(--c-text)] dark:text-[var(--c-text)]'
                       : 'text-stone-900 dark:text-stone-100'
                   )}>
                     {section.title}
@@ -762,7 +762,7 @@ export default function Settings() {
                 </div>
                 <ChevronRight size={18} className={cn(
                   "flex-shrink-0 transition-colors",
-                  isActive ? 'text-teal-500 dark:text-teal-400' : 'text-stone-400 dark:text-stone-500'
+                  isActive ? 'text-[var(--c-solid)] dark:text-[var(--c-text)]' : 'text-stone-400 dark:text-stone-500'
                 )} />
               </button>
             )
@@ -824,15 +824,15 @@ function AppearanceSettings() {
               className={cn(
                 "relative p-4 rounded-xl border-2 text-left transition-all",
                 theme === themeOption.id
-                  ? 'border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20'
-                  : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:border-teal-300 dark:hover:border-teal-600'
+                  ? 'border-[var(--c-solid)] dark:border-[var(--c-solid)]/60 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30'
+                  : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]'
               )}
             >
               <div className="text-2xl mb-2">{themeOption.icon}</div>
               <div className={cn(
                 "font-medium",
                 theme === themeOption.id
-                  ? 'text-teal-900 dark:text-teal-100'
+                  ? 'text-[var(--c-text)] dark:text-[var(--c-text)]'
                   : 'text-stone-900 dark:text-stone-100'
               )}>
                 {themeOption.label}
@@ -841,7 +841,7 @@ function AppearanceSettings() {
                 {themeOption.description}
               </div>
               {theme === themeOption.id && (
-                <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-teal-500 dark:bg-teal-400 flex items-center justify-center">
+                <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[var(--c-solid)] dark:bg-[var(--c-solid)] flex items-center justify-center">
                   <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>
@@ -866,7 +866,7 @@ function AppearanceSettings() {
           "border-stone-200 dark:border-stone-700"
         )}>
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-10 h-10 rounded-lg bg-teal-500 dark:bg-teal-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-[var(--c-solid)] dark:bg-[var(--c-solid)] flex items-center justify-center">
               <span className="text-white text-lg">🎨</span>
             </div>
             <div>

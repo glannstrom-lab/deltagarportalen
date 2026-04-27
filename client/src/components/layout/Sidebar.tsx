@@ -45,7 +45,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
     label: string
     item?: NavItem
     isActive?: boolean
-    variant?: 'default' | 'admin' | 'consultant'
+    variant?: 'default' | 'admin'
   }) => {
     const showBadge = item && shouldShowBadge(item)
 
@@ -55,25 +55,19 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
         onClick={onClose}
         title={isCollapsed ? label : undefined}
         className={cn(
-          'group flex items-center gap-2.5 rounded-md transition-colors relative',
+          'group flex items-center gap-2.5 rounded-md transition-colors relative border-l-2 border-transparent',
           isCollapsed ? 'p-2 justify-center' : 'px-2 py-1.5',
-          // Default variant
+          // Default variant — använder --c-* från group-wrapper (data-domain)
           variant === 'default' && [
             isActive
-              ? 'bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-stone-100'
-              : 'text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-800/50 hover:text-stone-900 dark:hover:text-stone-200'
+              ? 'bg-[var(--c-bg)] text-[var(--c-text)] border-l-[var(--c-solid)] font-semibold'
+              : 'text-stone-600 dark:text-stone-400 hover:bg-[var(--c-bg)]/40 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]'
           ],
-          // Admin variant
+          // Admin variant — semantisk status-färg, inte domän
           variant === 'admin' && [
             isActive
-              ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400'
+              ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-l-amber-500'
               : 'text-stone-600 dark:text-stone-400 hover:bg-amber-50/50 dark:hover:bg-stone-800/50 hover:text-amber-700 dark:hover:text-amber-400'
-          ],
-          // Consultant variant
-          variant === 'consultant' && [
-            isActive
-              ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-700 dark:text-violet-400'
-              : 'text-stone-600 dark:text-stone-400 hover:bg-violet-50/50 dark:hover:bg-stone-800/50 hover:text-violet-700 dark:hover:text-violet-400'
           ]
         )}
       >
@@ -87,14 +81,14 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
           <span className="text-[13px] truncate flex-1">{label}</span>
         )}
 
-        {/* Badge */}
+        {/* Badge — använder aktiva domänens färg */}
         {showBadge && !isCollapsed && (
-          <span className="px-1.5 py-0.5 text-[10px] font-medium bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 rounded">
+          <span className="px-1.5 py-0.5 text-[10px] font-medium bg-[var(--c-bg)] text-[var(--c-text)] rounded">
             Ny
           </span>
         )}
         {showBadge && isCollapsed && (
-          <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 bg-teal-500 rounded-full" />
+          <span className="absolute top-0.5 right-0.5 w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]" />
         )}
       </Link>
     )
@@ -128,12 +122,20 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
         isCollapsed ? 'px-1.5' : 'px-2'
       )}>
         {navGroups.map((group, groupIndex) => (
-          <div key={group.id} className={cn(groupIndex > 0 && 'mt-4')}>
-            {/* Group Label - Only show expanded */}
+          <div
+            key={group.id}
+            data-domain={group.domain}
+            className={cn(groupIndex > 0 && 'mt-4')}
+          >
+            {/* Group Label med färgpunkt — Only show expanded */}
             {!isCollapsed && (
-              <div className="px-2 mb-1.5">
+              <div className="px-2 mb-1.5 flex items-center gap-1.5">
+                <span
+                  className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]"
+                  aria-hidden="true"
+                />
                 <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
-                  {t(group.labelKey)}
+                  {t(group.labelKey, group.fallbackLabel)}
                 </span>
               </div>
             )}
@@ -163,12 +165,19 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
           </div>
         ))}
 
-        {/* Consultant Section */}
+        {/* Consultant Section — använder Reflection-domän (lila) */}
         {isConsultant && !isUser && (
-          <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800">
+          <div
+            data-domain="reflection"
+            className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800"
+          >
             {!isCollapsed && (
-              <div className="px-2 mb-1">
-                <span className="text-xs font-semibold text-violet-600 dark:text-violet-400 uppercase tracking-wide">
+              <div className="px-2 mb-1 flex items-center gap-1.5">
+                <span
+                  className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]"
+                  aria-hidden="true"
+                />
+                <span className="text-xs font-semibold text-[var(--c-text)] uppercase tracking-wide">
                   {t('sidebar.consultantSection')}
                 </span>
               </div>
@@ -183,7 +192,6 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
                     icon={item.icon}
                     label={t(item.labelKey)}
                     isActive={isActive}
-                    variant="consultant"
                   />
                 )
               })}
