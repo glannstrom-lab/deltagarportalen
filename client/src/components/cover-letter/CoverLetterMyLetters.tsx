@@ -35,6 +35,7 @@ interface Letter {
   company: string
   jobTitle: string
   content: string
+  template: string
   createdAt: string
   updatedAt: string
   wordCount: number
@@ -53,6 +54,7 @@ function transformLetter(apiLetter: CoverLetter): Letter {
     company: apiLetter.company || '',
     jobTitle: apiLetter.job_title || '',
     content: content,
+    template: apiLetter.template || 'professional',
     createdAt: apiLetter.created_at,
     updatedAt: apiLetter.updated_at,
     wordCount,
@@ -62,7 +64,7 @@ function transformLetter(apiLetter: CoverLetter): Letter {
 
 export function CoverLetterMyLetters() {
   const navigate = useNavigate()
-  const { profile } = useProfileStore()
+  const { profile, loadProfile } = useProfileStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [letters, setLetters] = useState<Letter[]>([])
   const [loading, setLoading] = useState(true)
@@ -71,6 +73,13 @@ export function CoverLetterMyLetters() {
   const [actionLoading, setActionLoading] = useState<string | null>(null)
   const dropdownRef = useRef<HTMLDivElement>(null)
   const menuButtonRefs = useRef<Map<string, HTMLButtonElement>>(new Map())
+
+  // Load profile data if not already loaded
+  useEffect(() => {
+    if (!profile) {
+      loadProfile()
+    }
+  }, [profile, loadProfile])
 
   // Close dropdown on Escape key or click outside
   useEffect(() => {
@@ -182,12 +191,13 @@ export function CoverLetterMyLetters() {
       setShowActions(null)
       setActionLoading(letter.id)
 
-      // Generate professional PDF with user's profile data
+      // Generate professional PDF with user's profile data and template
       const pdfBlob = await generateCoverLetterPDF({
         content: letter.content,
         company: letter.company,
         jobTitle: letter.jobTitle,
         createdAt: letter.createdAt,
+        template: letter.template,
         // User info from profile
         firstName: profile?.first_name,
         lastName: profile?.last_name,

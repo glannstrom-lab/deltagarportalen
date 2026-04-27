@@ -1565,6 +1565,7 @@ export interface CoverLetterForPDF {
   company?: string
   jobTitle?: string
   createdAt?: string
+  template?: string
   // User info for signature
   firstName?: string
   lastName?: string
@@ -1573,35 +1574,65 @@ export interface CoverLetterForPDF {
   location?: string
 }
 
-/**
- * Convert markdown-style bold (**text**) to segments for PDF rendering
- */
-function parseMarkdownToParts(text: string): Array<{ text: string; bold: boolean }> {
-  const parts: Array<{ text: string; bold: boolean }> = []
-  const regex = /\*\*(.*?)\*\*/g
-  let lastIndex = 0
-  let match
-
-  while ((match = regex.exec(text)) !== null) {
-    // Text before the bold part
-    if (match.index > lastIndex) {
-      parts.push({ text: text.slice(lastIndex, match.index), bold: false })
-    }
-    // The bold part (without the **)
-    parts.push({ text: match[1], bold: true })
-    lastIndex = match.index + match[0].length
+// Template configurations for cover letter PDFs
+const COVER_LETTER_PDF_TEMPLATES: Record<string, {
+  colors: {
+    header: [number, number, number]
+    text: [number, number, number]
+    muted: [number, number, number]
+    accent: [number, number, number]
   }
-
-  // Remaining text after last match
-  if (lastIndex < text.length) {
-    parts.push({ text: text.slice(lastIndex), bold: false })
+  fonts: {
+    heading: 'helvetica' | 'times'
+    body: 'helvetica' | 'times'
   }
-
-  return parts
+  layout: 'classic' | 'modern' | 'minimal'
+}> = {
+  professional: {
+    colors: {
+      header: [15, 23, 42],      // slate-900
+      text: [30, 41, 59],        // slate-800
+      muted: [100, 116, 139],    // slate-500
+      accent: [20, 184, 166]     // teal-500
+    },
+    fonts: { heading: 'helvetica', body: 'helvetica' },
+    layout: 'classic'
+  },
+  modern: {
+    colors: {
+      header: [59, 130, 246],    // blue-500
+      text: [30, 41, 59],        // slate-800
+      muted: [100, 116, 139],    // slate-500
+      accent: [59, 130, 246]     // blue-500
+    },
+    fonts: { heading: 'helvetica', body: 'helvetica' },
+    layout: 'modern'
+  },
+  minimal: {
+    colors: {
+      header: [23, 23, 23],      // neutral-900
+      text: [23, 23, 23],        // neutral-900
+      muted: [115, 115, 115],    // neutral-500
+      accent: [23, 23, 23]       // neutral-900
+    },
+    fonts: { heading: 'helvetica', body: 'helvetica' },
+    layout: 'minimal'
+  },
+  executive: {
+    colors: {
+      header: [15, 23, 42],      // slate-900
+      text: [15, 23, 42],        // slate-900
+      muted: [71, 85, 105],      // slate-600
+      accent: [212, 175, 55]     // gold
+    },
+    fonts: { heading: 'times', body: 'helvetica' },
+    layout: 'classic'
+  }
 }
 
 /**
  * Generera professionell PDF för personligt brev
+ * Simplified version without broken markdown parsing
  */
 export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise<Blob> {
   const jsPDFClass = await loadPDFLibraries()
@@ -1611,23 +1642,30 @@ export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise
     orientation: 'portrait',
   })
 
+  // Get template config (default to professional)
+  const template = COVER_LETTER_PDF_TEMPLATES[letter.template || 'professional'] || COVER_LETTER_PDF_TEMPLATES.professional
+  const { colors, fonts, layout } = template
+
   const margin = 25
   const pageWidth = 210
   const contentWidth = pageWidth - (margin * 2)
   let y = margin
 
-  // Colors
-  const textColor: [number, number, number] = [30, 41, 59] // slate-800
-  const mutedColor: [number, number, number] = [100, 116, 139] // slate-500
-  const accentColor: [number, number, number] = [20, 184, 166] // teal-500
-
   // ==================== HEADER ====================
 
-  // User's name as header
   const fullName = [letter.firstName, letter.lastName].filter(Boolean).join(' ') || 'Ditt Namn'
-  doc.setFontSize(20)
-  doc.setTextColor(...textColor)
-  doc.setFont('helvetica', 'bold')
+
+  if (layout === 'modern') {
+    // Modern layout: accent bar at top
+    doc.setFillColor(...colors.accent)
+    doc.rect(0, 0, pageWidth, 3, 'F')
+    y = margin + 5
+  }
+
+  // User's name as header
+  doc.setFontSize(layout === 'minimal' ? 18 : 22)
+  doc.setTextColor(...colors.header)
+  doc.setFont(fonts.heading, 'bold')
   doc.text(sanitizeText(fullName), margin, y)
   y += 8
 
@@ -1635,17 +1673,20 @@ export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise
   const contactParts = [letter.email, letter.phone, letter.location].filter(Boolean)
   if (contactParts.length > 0) {
     doc.setFontSize(10)
-    doc.setTextColor(...mutedColor)
-    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(...colors.muted)
+    doc.setFont(fonts.body, 'normal')
     doc.text(sanitizeText(contactParts.join('  •  ')), margin, y)
     y += 6
   }
 
-  // Accent line under header
-  y += 3
-  doc.setDrawColor(...accentColor)
-  doc.setLineWidth(0.8)
-  doc.line(margin, y, margin + 50, y)
+  // Accent line under header (skip for minimal)
+  if (layout !== 'minimal') {
+    y += 3
+    doc.setDrawColor(...colors.accent)
+    doc.setLineWidth(layout === 'modern' ? 1.5 : 0.8)
+    const lineLength = layout === 'modern' ? 60 : 50
+    doc.line(margin, y, margin + lineLength, y)
+  }
   y += 15
 
   // ==================== DATE & RECIPIENT ====================
@@ -1664,8 +1705,8 @@ export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise
       })
 
   doc.setFontSize(10)
-  doc.setTextColor(...mutedColor)
-  doc.setFont('helvetica', 'normal')
+  doc.setTextColor(...colors.muted)
+  doc.setFont(fonts.body, 'normal')
   const dateWidth = doc.getTextWidth(dateStr)
   doc.text(dateStr, pageWidth - margin - dateWidth, y)
   y += 12
@@ -1673,17 +1714,18 @@ export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise
   // Company/recipient info (if available)
   if (letter.company || letter.jobTitle) {
     doc.setFontSize(11)
-    doc.setTextColor(...textColor)
-    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(...colors.text)
+    doc.setFont(fonts.body, 'normal')
 
     if (letter.company) {
+      doc.setFont(fonts.body, 'bold')
       doc.text(sanitizeText(letter.company), margin, y)
       y += 6
     }
 
     if (letter.jobTitle) {
-      doc.setFont('helvetica', 'italic')
-      doc.setTextColor(...mutedColor)
+      doc.setFont(fonts.body, 'italic')
+      doc.setTextColor(...colors.muted)
       doc.text(sanitizeText(`Angående: ${letter.jobTitle}`), margin, y)
       y += 6
     }
@@ -1693,11 +1735,20 @@ export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise
 
   // ==================== LETTER BODY ====================
 
-  // Process content: split into paragraphs
-  const content = letter.content || ''
+  // Simple, reliable text rendering without markdown parsing
+  const content = (letter.content || '')
+    // Remove markdown bold markers
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    // Normalize whitespace
+    .replace(/\r\n/g, '\n')
+    .trim()
+
+  // Split into paragraphs
   const paragraphs = content.split(/\n\n+/).filter(p => p.trim())
 
   doc.setFontSize(11)
+  doc.setFont(fonts.body, 'normal')
+  doc.setTextColor(...colors.text)
   const lineHeight = 5.5
 
   for (const paragraph of paragraphs) {
@@ -1707,74 +1758,21 @@ export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise
       y = margin
     }
 
-    // Clean up the paragraph (remove single newlines, trim)
-    const cleanParagraph = paragraph.replace(/\n/g, ' ').trim()
+    // Clean up paragraph (remove single newlines, trim)
+    const cleanParagraph = paragraph.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim()
 
-    // Parse markdown bold
-    const parts = parseMarkdownToParts(cleanParagraph)
+    // Split text to fit width
+    const lines = doc.splitTextToSize(sanitizeText(cleanParagraph), contentWidth)
 
-    // We need to render this with mixed bold/normal text
-    // First, create the full plain text to measure line wrapping
-    const plainText = parts.map(p => p.text).join('')
-    const wrappedLines = doc.splitTextToSize(sanitizeText(plainText), contentWidth)
-
-    // Simple approach: render each wrapped line with proper styling
-    // For each line, we need to track which parts are bold
-    let charIndex = 0
-
-    for (const line of wrappedLines) {
+    for (const line of lines) {
       if (y > 275) {
         doc.addPage()
         y = margin
+        doc.setFont(fonts.body, 'normal')
+        doc.setTextColor(...colors.text)
+        doc.setFontSize(11)
       }
-
-      // Find which parts of the original text this line corresponds to
-      // For simplicity, we'll re-parse the line to handle bold markers
-      // But since markers are stripped, we need a different approach
-
-      // Actually, let's render the line with mixed formatting
-      let xPos = margin
-      const lineChars = line.length
-      let lineCharIndex = 0
-
-      // Match characters from plainText to parts
-      let partIndex = 0
-      let partCharIndex = 0
-
-      // Reset to find where this line starts in the original
-      let originalCharPos = charIndex
-
-      while (lineCharIndex < lineChars && partIndex < parts.length) {
-        const part = parts[partIndex]
-        const partTextLength = part.text.length
-        const remainingInPart = partTextLength - partCharIndex
-        const remainingInLine = lineChars - lineCharIndex
-        const charsToTake = Math.min(remainingInPart, remainingInLine)
-
-        // Set font style
-        doc.setTextColor(...textColor)
-        if (part.bold) {
-          doc.setFont('helvetica', 'bold')
-        } else {
-          doc.setFont('helvetica', 'normal')
-        }
-
-        // Get the text segment
-        const segment = part.text.substring(partCharIndex, partCharIndex + charsToTake)
-        doc.text(sanitizeText(segment), xPos, y)
-        xPos += doc.getTextWidth(sanitizeText(segment))
-
-        lineCharIndex += charsToTake
-        partCharIndex += charsToTake
-
-        // Move to next part if we've exhausted this one
-        if (partCharIndex >= partTextLength) {
-          partIndex++
-          partCharIndex = 0
-        }
-      }
-
-      charIndex += lineChars
+      doc.text(line, margin, y)
       y += lineHeight
     }
 
@@ -1791,20 +1789,20 @@ export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise
   }
 
   doc.setFontSize(11)
-  doc.setTextColor(...textColor)
-  doc.setFont('helvetica', 'normal')
+  doc.setTextColor(...colors.text)
+  doc.setFont(fonts.body, 'normal')
   doc.text('Med vänliga hälsningar,', margin, y)
   y += 12
 
-  doc.setFont('helvetica', 'bold')
+  doc.setFont(fonts.heading, 'bold')
   doc.text(sanitizeText(fullName), margin, y)
   y += 6
 
   // Contact under signature
   if (letter.phone || letter.email) {
-    doc.setFont('helvetica', 'normal')
+    doc.setFont(fonts.body, 'normal')
     doc.setFontSize(10)
-    doc.setTextColor(...mutedColor)
+    doc.setTextColor(...colors.muted)
 
     if (letter.phone) {
       doc.text(sanitizeText(letter.phone), margin, y)
