@@ -10,7 +10,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { coverLetterApi } from '@/services/supabaseApi'
 import { coverLetterTemplates, type CoverLetterTemplate } from '@/data/coverLetterTemplates'
 import {
-  Mail, Briefcase, Heart, Sparkles, FileText, Save,
+  Mail, Briefcase, Heart, Sparkles, FileText, Save, Download,
   ArrowRight, Check, Loader2, SkipForward, Copy, CheckCircle2
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -60,6 +60,7 @@ export function FocusCoverLetter({ onComplete, onSkip, onBack }: FocusCoverLette
   const [letterTitle, setLetterTitle] = useState('')
   const [isCopied, setIsCopied] = useState(false)
   const [isSaved, setIsSaved] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   const step = LETTER_STEPS[currentStep]
   const StepIcon = step.icon
@@ -176,6 +177,70 @@ ${name} ${lastName}`.trim()
       await saveMutation.mutateAsync()
     } catch (error) {
       console.error('Failed to save letter:', error)
+    }
+  }
+
+  const handleDownloadPDF = async () => {
+    try {
+      setIsDownloading(true)
+
+      // Dynamic import jsPDF to reduce initial bundle size
+      const { jsPDF } = await import('jspdf')
+      const doc = new jsPDF()
+
+      const name = profile?.first_name || ''
+      const lastName = profile?.last_name || ''
+      const fullName = `${name} ${lastName}`.trim()
+      const title = letterTitle || `${jobTitle}${companyName ? ` - ${companyName}` : ''}`
+
+      // Header with name and contact info
+      doc.setFontSize(14)
+      doc.setFont('helvetica', 'bold')
+      doc.text(fullName || 'Personligt brev', 20, 20)
+
+      // Contact info
+      doc.setFontSize(10)
+      doc.setFont('helvetica', 'normal')
+      doc.setTextColor(100)
+      let yPos = 28
+      if (profile?.email) {
+        doc.text(profile.email, 20, yPos)
+        yPos += 6
+      }
+      if (profile?.phone) {
+        doc.text(profile.phone, 20, yPos)
+        yPos += 6
+      }
+
+      // Date
+      const today = new Date().toLocaleDateString('sv-SE', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      })
+      doc.text(today, 20, yPos + 4)
+      yPos += 14
+
+      // Horizontal line
+      doc.setDrawColor(200)
+      doc.line(20, yPos, 190, yPos)
+      yPos += 10
+
+      // Letter content
+      doc.setTextColor(0)
+      doc.setFontSize(11)
+      const splitText = doc.splitTextToSize(generatedLetter, 170)
+      doc.text(splitText, 20, yPos)
+
+      // Save with sanitized filename
+      const fileName = `Personligt_brev_${companyName || jobTitle || 'ansökan'}.pdf`
+        .replace(/[^a-zA-Z0-9åäöÅÄÖ_-]/g, '_')
+        .replace(/_+/g, '_')
+      doc.save(fileName)
+    } catch (err) {
+      console.error('Failed to download PDF:', err)
+    } finally {
+      setIsDownloading(false)
     }
   }
 
@@ -476,36 +541,62 @@ ${name} ${lastName}`.trim()
                   </button>
                 </div>
 
-                {/* Save button */}
-                {isSaved ? (
-                  <div className="flex items-center justify-center gap-2 py-3 px-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl">
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span className="font-medium">{t('focusGuide.letter.saved', 'Brevet är sparat!')}</span>
-                  </div>
-                ) : (
+                {/* Action buttons */}
+                <div className="flex flex-col sm:flex-row gap-2">
+                  {/* Download PDF button */}
                   <button
-                    onClick={handleSave}
-                    disabled={saveMutation.isPending || !generatedLetter.trim()}
+                    onClick={handleDownloadPDF}
+                    disabled={isDownloading || !generatedLetter.trim()}
                     className={cn(
-                      'flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-medium transition-all',
-                      'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300',
-                      'hover:bg-stone-200 dark:hover:bg-stone-700',
+                      'flex items-center justify-center gap-2 flex-1 py-3 px-4 rounded-xl font-medium transition-all',
+                      'bg-teal-500 text-white hover:bg-teal-600',
                       'disabled:opacity-50 disabled:cursor-not-allowed'
                     )}
                   >
-                    {saveMutation.isPending ? (
+                    {isDownloading ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        {t('common.saving', 'Sparar...')}
+                        {t('focusGuide.letter.downloading', 'Laddar ner...')}
                       </>
                     ) : (
                       <>
-                        <Save className="w-4 h-4" />
-                        {t('focusGuide.letter.saveButton', 'Spara brevet')}
+                        <Download className="w-4 h-4" />
+                        {t('focusGuide.letter.downloadPDF', 'Ladda ner PDF')}
                       </>
                     )}
                   </button>
-                )}
+
+                  {/* Save button */}
+                  {isSaved ? (
+                    <div className="flex items-center justify-center gap-2 flex-1 py-3 px-4 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl">
+                      <CheckCircle2 className="w-5 h-5" />
+                      <span className="font-medium">{t('focusGuide.letter.saved', 'Sparat!')}</span>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleSave}
+                      disabled={saveMutation.isPending || !generatedLetter.trim()}
+                      className={cn(
+                        'flex items-center justify-center gap-2 flex-1 py-3 px-4 rounded-xl font-medium transition-all',
+                        'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300',
+                        'hover:bg-stone-200 dark:hover:bg-stone-700',
+                        'disabled:opacity-50 disabled:cursor-not-allowed'
+                      )}
+                    >
+                      {saveMutation.isPending ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                          {t('common.saving', 'Sparar...')}
+                        </>
+                      ) : (
+                        <>
+                          <Save className="w-4 h-4" />
+                          {t('focusGuide.letter.saveButton', 'Spara')}
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
 
                 <p className="text-sm text-stone-500 dark:text-stone-400 text-center">
                   {t('focusGuide.letter.editHint', 'Du kan redigera texten ovan. Klicka på kopieringsknappen för att kopiera.')}

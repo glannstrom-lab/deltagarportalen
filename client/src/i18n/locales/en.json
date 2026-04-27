@@ -7701,8 +7701,10 @@
       "letterTitlePlaceholder": "e.g. Sales Application - IKEA",
       "generating": "Creating letter...",
       "generate": "Create letter",
-      "saveButton": "Save letter",
-      "saved": "Letter saved!",
+      "downloadPDF": "Download PDF",
+      "downloading": "Downloading...",
+      "saveButton": "Save",
+      "saved": "Saved!",
       "editHint": "You can edit the text above. Click the copy button to copy.",
       "generateError": "Something went wrong. Please try again.",
       "done": "Done!"

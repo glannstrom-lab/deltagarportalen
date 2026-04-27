@@ -7701,8 +7701,10 @@
       "letterTitlePlaceholder": "t.ex. Ansökan Säljare - IKEA",
       "generating": "Skapar brev...",
       "generate": "Skapa brev",
-      "saveButton": "Spara brevet",
-      "saved": "Brevet är sparat!",
+      "downloadPDF": "Ladda ner PDF",
+      "downloading": "Laddar ner...",
+      "saveButton": "Spara",
+      "saved": "Sparat!",
       "editHint": "Du kan redigera texten ovan. Klicka på kopieringsknappen för att kopiera.",
       "generateError": "Något gick fel. Försök igen.",
       "done": "Klar!"
