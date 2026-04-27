@@ -286,16 +286,44 @@ Skriv en sammanfattning på 3-5 meningar som passar i en jobbsökarprofil:`,
     const content = data?.content || '';
     const type = data?.type || 'summary'; // summary, experience, skills
     const feature = data?.feature || 'improve'; // improve, quantify, translate, generate
+    const cvData = data?.cvData || {};
+
+    // Build context from CV data
+    let cvContext = '';
+    if (cvData.title) cvContext += `Yrkestitel: ${cvData.title}\n`;
+    if (cvData.firstName || cvData.lastName) cvContext += `Namn: ${cvData.firstName || ''} ${cvData.lastName || ''}\n`;
+
+    if (cvData.workExperience?.length) {
+      const totalYears = cvData.workExperience.length > 0 ? cvData.workExperience.length * 2 : 0; // Rough estimate
+      cvContext += `Arbetslivserfarenhet (${cvData.workExperience.length} tjänster):\n`;
+      cvData.workExperience.slice(0, 3).forEach(exp => {
+        cvContext += `- ${exp.title || 'Titel ej angiven'} på ${exp.company || 'Företag ej angivet'}`;
+        if (exp.description) cvContext += `: ${exp.description.substring(0, 150)}`;
+        cvContext += '\n';
+      });
+    }
+
+    if (cvData.education?.length) {
+      cvContext += `Utbildning:\n`;
+      cvData.education.slice(0, 2).forEach(edu => {
+        cvContext += `- ${edu.degree || ''} ${edu.field ? 'inom ' + edu.field : ''} från ${edu.school || ''}\n`;
+      });
+    }
+
+    if (cvData.skills?.length) {
+      const topSkills = cvData.skills.slice(0, 8).map(s => s.name).join(', ');
+      cvContext += `Kompetenser: ${topSkills}\n`;
+    }
 
     const featurePrompts = {
       improve: {
-        summary: `Förbättra denna CV-sammanfattning. Gör den mer professionell, engagerande och resultatfokuserad. Använd aktiva verb och undvik vaga fraser. Behåll längden ungefär samma.`,
+        summary: `Förbättra denna CV-sammanfattning. Gör den mer professionell, engagerande och resultatfokuserad. Använd aktiva verb och undvik vaga fraser. Behåll längden ungefär samma. Använd personens faktiska bakgrund från CV-datan.`,
         experience: `Förbättra denna arbetserfarenhetsbeskrivning. Gör den mer resultatfokuserad med aktiva verb. Lyft fram prestationer och ansvar tydligt.`,
         skills: `Förbättra denna kompetensbeskrivning. Gör den mer specifik och professionell.`
       },
       quantify: {
-        summary: `Lägg till kvantifierbara resultat och mätbara prestationer i denna sammanfattning. Föreslå rimliga siffror baserat på kontexten (t.ex. "ledde ett team på X personer", "ökade försäljningen med X%").`,
-        experience: `Lägg till kvantifierbara resultat i denna arbetsbeskrivning. Föreslå rimliga siffror och mätvärden (budget, teamstorlek, procentuella förbättringar, tidsbesparingar).`,
+        summary: `Lägg till kvantifierbara resultat och mätbara prestationer i denna sammanfattning. Föreslå rimliga siffror baserat på personens bakgrund (t.ex. antal års erfarenhet, teamstorlek, procentuella förbättringar).`,
+        experience: `Lägg till kvantifierbara resultat i denna arbetsbeskrivning. Föreslå rimliga siffror och mätvärden baserat på rollens karaktär.`,
         skills: `Lägg till konkreta exempel och nivåer för dessa kompetenser.`
       },
       translate: {
@@ -304,14 +332,29 @@ Skriv en sammanfattning på 3-5 meningar som passar i en jobbsökarprofil:`,
         skills: `Översätt dessa kompetenser till engelska med professionell terminologi.`
       },
       generate: {
-        summary: `Baserat på innehållet, generera en ny professionell CV-sammanfattning på 3-4 meningar. Den ska vara engagerande, resultatfokuserad och lyfta fram personens styrkor.`,
+        summary: `Skriv en professionell CV-sammanfattning på 3-4 meningar baserat på personens CV-data nedan. Sammanfattningen ska:
+- Börja med yrkestitel och erfarenhetsnivå
+- Lyfta fram konkreta styrkor och kompetenser
+- Nämna relevanta prestationer eller ansvarsområden
+- Avsluta med karriärmål eller vad personen söker
+
+VIKTIGT: Använd INTE platshållare som [X år] eller [område]. Skriv konkret text baserat på den faktiska datan. Om viss information saknas, fokusera på det som finns.`,
         experience: `Generera en förbättrad version av denna arbetsbeskrivning. Fokusera på resultat, ansvar och prestationer.`,
         skills: `Generera en mer detaljerad beskrivning av dessa kompetenser med konkreta exempel.`
       }
     };
 
-    const systemPrompt = 'Du är en expert på CV-skrivning. Ge konkreta, professionella förslag på svenska (om inte översättning efterfrågas). Svara endast med den förbättrade texten, ingen inledning eller förklaring.';
-    const userPrompt = `${featurePrompts[feature]?.[type] || featurePrompts.improve.summary}\n\nText att bearbeta:\n${content}`;
+    const systemPrompt = 'Du är en expert på CV-skrivning. Ge konkreta, professionella förslag på svenska (om inte översättning efterfrågas). Svara ENDAST med den färdiga texten, ingen inledning, förklaring eller platshållare som [X]. Skriv fullständiga meningar med konkret information.';
+
+    let userPrompt = featurePrompts[feature]?.[type] || featurePrompts.improve.summary;
+
+    if (cvContext) {
+      userPrompt += `\n\nPersonens CV-data:\n${cvContext}`;
+    }
+
+    if (content) {
+      userPrompt += `\n\nBefintlig text att ${feature === 'generate' ? 'utgå från' : 'bearbeta'}:\n${content}`;
+    }
 
     return {
       system: systemPrompt,

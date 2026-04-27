@@ -8,10 +8,20 @@ import { useTranslation } from 'react-i18next'
 import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield } from '@/components/ui/icons'
 import { callAI } from '@/services/aiApi'
 
+interface CVDataForAI {
+  title?: string
+  firstName?: string
+  lastName?: string
+  workExperience?: Array<{ title?: string; company?: string; description?: string }>
+  education?: Array<{ degree?: string; school?: string; field?: string }>
+  skills?: Array<{ name: string; level?: number }>
+}
+
 interface AIWritingAssistantProps {
   content: string
   onChange: (newText: string) => void
   type: 'summary' | 'experience' | 'skills'
+  cvData?: CVDataForAI
 }
 
 type FeatureType = 'improve' | 'quantify' | 'translate' | 'generate'
@@ -23,7 +33,7 @@ const featureIcons: Record<FeatureType, { icon: typeof Zap; color: string }> = {
   generate: { icon: Sparkles, color: 'text-teal-500' }
 }
 
-export function AIWritingAssistant({ content, onChange, type }: AIWritingAssistantProps) {
+export function AIWritingAssistant({ content, onChange, type, cvData }: AIWritingAssistantProps) {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -71,9 +81,20 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
 
   // SÄKER implementation - anropa autentiserat API
   const callSecureAI = async (feature: FeatureType) => {
-    if (!content?.trim()) {
+    // For 'generate' we can work with cvData even without content
+    // For other features we need existing content to improve
+    if (!content?.trim() && feature !== 'generate') {
       setError(t('cv.aiWriting.errors.writeFirst'))
       return
+    }
+
+    // For generate, check that we have some CV data to work with
+    if (feature === 'generate' && !content?.trim()) {
+      const hasData = cvData?.title || cvData?.workExperience?.length || cvData?.skills?.length
+      if (!hasData) {
+        setError(t('cv.aiWriting.errors.fillCVFirst', 'Fyll i lite information om dig först (titel, erfarenhet eller kompetenser)'))
+        return
+      }
     }
 
     setLoading(true)
@@ -84,7 +105,8 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
       const data = await callAI<{ result: string }>('cv-writing', {
         content,
         type,
-        feature
+        feature,
+        cvData
       })
 
       if (!data.success) {

@@ -683,7 +683,7 @@ export default function CVBuilder() {
           helpText={t('cvBuilder.summary.helpText')}
         />
         <div className="mt-4">
-          <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
+          <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" cvData={data} />
         </div>
       </Card>
 
@@ -991,7 +991,7 @@ export default function CVBuilder() {
               <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
                 {t('cvBuilder.help.aiWritingDesc')}
               </p>
-              <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
+              <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" cvData={data} />
             </div>
           )}
 
