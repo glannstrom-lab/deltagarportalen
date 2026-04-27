@@ -3367,7 +3367,7 @@ function CollapsibleCategory({
       {isExpanded && (
         <div className="p-4 pt-0 bg-white dark:bg-stone-900">
           <p className="text-sm text-stone-500 dark:text-stone-400 mb-4">{description}</p>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {resources.map(resource => (
               <CompactResourceCard key={resource.id} resource={resource} />
             ))}
@@ -3479,7 +3479,7 @@ export default function ExternalResources() {
 
       {/* Show search results directly if searching */}
       {isSearching ? (
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {filteredResources.map(resource => (
             <CompactResourceCard key={resource.id} resource={resource} />
           ))}
@@ -3546,7 +3546,7 @@ export default function ExternalResources() {
           </div>
 
           {/* Category accordions */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             {activeCategories
               .filter(category => resourcesByCategory[category]?.length > 0)
               .map(category => (

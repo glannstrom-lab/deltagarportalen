@@ -24,7 +24,8 @@ import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
 import { coverLetterApi, type CoverLetter } from '@/services/supabaseApi'
-// NOTE: jsPDF is dynamically imported in handleDownload to reduce bundle size
+import { useProfileStore } from '@/stores/profileStore'
+import { generateCoverLetterPDF, downloadPDF } from '@/services/pdfExportService'
 
 type LetterStatus = 'draft' | 'sent' | 'template'
 
@@ -61,6 +62,7 @@ function transformLetter(apiLetter: CoverLetter): Letter {
 
 export function CoverLetterMyLetters() {
   const navigate = useNavigate()
+  const { profile } = useProfileStore()
   const [searchQuery, setSearchQuery] = useState('')
   const [letters, setLetters] = useState<Letter[]>([])
   const [loading, setLoading] = useState(true)
@@ -178,44 +180,35 @@ export function CoverLetterMyLetters() {
   const handleDownload = async (letter: Letter) => {
     try {
       setShowActions(null)
+      setActionLoading(letter.id)
 
-      // Dynamic import jsPDF to reduce initial bundle size
-      const { jsPDF } = await import('jspdf')
-      const doc = new jsPDF()
+      // Generate professional PDF with user's profile data
+      const pdfBlob = await generateCoverLetterPDF({
+        content: letter.content,
+        company: letter.company,
+        jobTitle: letter.jobTitle,
+        createdAt: letter.createdAt,
+        // User info from profile
+        firstName: profile?.first_name,
+        lastName: profile?.last_name,
+        email: profile?.email,
+        phone: profile?.phone,
+        location: profile?.location,
+      })
 
-      // Title
-      doc.setFontSize(16)
-      doc.setFont('helvetica', 'bold')
-      doc.text(letter.title, 20, 20)
-
-      // Company and job title
-      doc.setFontSize(12)
-      doc.setFont('helvetica', 'normal')
-      if (letter.company) {
-        doc.text(`Företag: ${letter.company}`, 20, 30)
-      }
-      if (letter.jobTitle) {
-        doc.text(`Position: ${letter.jobTitle}`, 20, 38)
-      }
-
-      // Date
-      doc.setFontSize(10)
-      doc.setTextColor(100)
-      doc.text(`Skapad: ${formatDate(letter.createdAt)}`, 20, 48)
-      doc.setTextColor(0)
-
-      // Content
-      doc.setFontSize(11)
-      const splitText = doc.splitTextToSize(letter.content, 170)
-      doc.text(splitText, 20, 60)
-
-      // Save
-      const fileName = `${letter.company || 'Personligt_brev'}_${letter.jobTitle || 'ansökan'}.pdf`
+      // Create filename
+      const fileName = `Personligt_brev_${letter.company || 'ansökan'}_${letter.jobTitle || ''}`
         .replace(/[^a-zA-Z0-9åäöÅÄÖ_-]/g, '_')
-      doc.save(fileName)
+        .replace(/_+/g, '_')
+        .replace(/_$/, '')
+        + '.pdf'
+
+      downloadPDF(pdfBlob, fileName)
     } catch (err) {
       console.error('Failed to download letter:', err)
       setError('Kunde inte ladda ner brevet som PDF')
+    } finally {
+      setActionLoading(null)
     }
   }
 
@@ -405,6 +398,21 @@ export function CoverLetterMyLetters() {
                   >
                     <Edit3 size={14} />
                     <span className="sm:inline">Redigera</span>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleDownload(letter)}
+                    disabled={actionLoading === letter.id}
+                    className="gap-1.5 flex-1 sm:flex-none justify-center"
+                  >
+                    {actionLoading === letter.id ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      <Download size={14} />
+                    )}
+                    <span className="sm:inline">PDF</span>
                   </Button>
 
                   <div className="relative" ref={showActions === letter.id ? dropdownRef : undefined}>
