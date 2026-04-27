@@ -1282,40 +1282,40 @@ export function MatchesTab() {
           const jobText = `${jobHeadline} ${job.description?.text || ''}`.toLowerCase()
           const searchTermLower = searchTerm.toLowerCase()
           const matchDetails: string[] = []
-          let totalScore = 0
 
-          // ========== TITLE/OCCUPATION MATCHING (0-50 points) ==========
-          let titleScore = 0
+          // ========== BASE SCORE (20 points) ==========
+          // Job was returned by API for this search term, so it's relevant
+          let totalScore = 20
+          matchDetails.push(`Sökning: ${searchTerm}`)
 
-          // First check work titles if user has any
+          // ========== TITLE/OCCUPATION MATCHING (bonus 0-30 points) ==========
+          let titleBonus = 0
+
+          // Check work titles for matches
           for (const userTitle of data.workTitles) {
             const titleResult = matchJobTitle(userTitle, jobHeadline, jobOccupation)
             if (titleResult.match === 'exact') {
-              titleScore = Math.max(titleScore, 50)
+              titleBonus = Math.max(titleBonus, 30)
               matchDetails.push(`Erfarenhet: ${userTitle}`)
             } else if (titleResult.match === 'similar') {
-              titleScore = Math.max(titleScore, 40)
+              titleBonus = Math.max(titleBonus, 20)
               matchDetails.push(`Liknande: ${userTitle}`)
             } else if (titleResult.match === 'partial') {
-              titleScore = Math.max(titleScore, 25)
+              titleBonus = Math.max(titleBonus, 10)
               matchDetails.push(`Relaterat: ${userTitle}`)
             }
           }
 
-          // Check if search term (skill/education) appears in job
+          // Extra bonus if search term appears directly in headline/occupation
           if (jobHeadline.includes(searchTermLower)) {
-            titleScore = Math.max(titleScore, 40)
-            if (matchDetails.length === 0) matchDetails.push(`Söker: ${searchTerm}`)
+            titleBonus = Math.max(titleBonus, 25)
           } else if (jobOccupation.includes(searchTermLower)) {
-            titleScore = Math.max(titleScore, 35)
-            if (matchDetails.length === 0) matchDetails.push(`Yrke: ${searchTerm}`)
+            titleBonus = Math.max(titleBonus, 20)
           } else if (jobText.includes(searchTermLower)) {
-            // Search term found in description - good relevance
-            titleScore = Math.max(titleScore, 25)
-            if (matchDetails.length === 0) matchDetails.push(`Relevant: ${searchTerm}`)
+            titleBonus = Math.max(titleBonus, 10)
           }
 
-          totalScore += titleScore
+          totalScore += titleBonus
 
           // ========== SPECIFIC SKILL MATCHING (0-30 points) ==========
           let skillMatches = 0
@@ -1340,11 +1340,7 @@ export function MatchesTab() {
           }
           if (hasEducationMatch) totalScore += 15
 
-          // ========== MINIMUM THRESHOLD ==========
-          // Lower threshold - jobs are already relevant from API search
-          if (totalScore < 15) {
-            continue // Skip jobs with almost no match
-          }
+          // All jobs start with 20 base points since API already filtered for relevance
 
           // Apply profile preference boosts
           const { score, details } = applyProfileBoosts(job, totalScore, preferences, matchDetails)
