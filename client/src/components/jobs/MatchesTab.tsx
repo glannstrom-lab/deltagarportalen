@@ -1119,7 +1119,15 @@ export function MatchesTab() {
       typeof l === 'string' ? l : (l.name || l.language)
     ).filter(Boolean) || []
     const allSkills = [...new Set([...skills, ...certificates, ...languages])]
-    const workTitles = cv?.work_experience?.map((e: { title?: string }) => e.title).filter(Boolean) || []
+    // Extract work titles - check multiple possible field names
+    const workTitles = cv?.work_experience?.map((e: { title?: string; position?: string; role?: string; job_title?: string }) =>
+      e.title || e.position || e.role || e.job_title
+    ).filter(Boolean) || []
+
+    // Debug: log the raw work experience to see what fields exist
+    if (cv?.work_experience?.length > 0) {
+      console.log('CV work_experience raw data:', cv.work_experience)
+    }
     const education = cv?.education?.map((e: { degree?: string; field?: string }) =>
       `${e.degree || ''} ${e.field || ''}`.trim()
     ).filter(Boolean) || []
@@ -1265,6 +1273,8 @@ export function MatchesTab() {
 
           // ========== TITLE/OCCUPATION MATCHING (0-50 points) ==========
           let titleScore = 0
+
+          // First check work titles if user has any
           for (const userTitle of data.workTitles) {
             const titleResult = matchJobTitle(userTitle, jobHeadline, jobOccupation)
             if (titleResult.match === 'exact') {
@@ -1279,18 +1289,17 @@ export function MatchesTab() {
             }
           }
 
-          // If no direct title match, check if search term appears in job
-          if (titleScore === 0) {
-            if (jobHeadline.includes(searchTermLower)) {
-              titleScore = 35
-              matchDetails.push('Matchande rubrik')
-            } else if (jobOccupation.includes(searchTermLower)) {
-              titleScore = 30
-              matchDetails.push('Matchande yrkeskategori')
-            } else if (jobText.includes(searchTermLower)) {
-              // Search term found in description - baseline relevance
-              titleScore = 20
-            }
+          // Check if search term (skill/education) appears in job
+          if (jobHeadline.includes(searchTermLower)) {
+            titleScore = Math.max(titleScore, 40)
+            if (matchDetails.length === 0) matchDetails.push(`Söker: ${searchTerm}`)
+          } else if (jobOccupation.includes(searchTermLower)) {
+            titleScore = Math.max(titleScore, 35)
+            if (matchDetails.length === 0) matchDetails.push(`Yrke: ${searchTerm}`)
+          } else if (jobText.includes(searchTermLower)) {
+            // Search term found in description - good relevance
+            titleScore = Math.max(titleScore, 25)
+            if (matchDetails.length === 0) matchDetails.push(`Relevant: ${searchTerm}`)
           }
 
           totalScore += titleScore
@@ -1319,9 +1328,9 @@ export function MatchesTab() {
           if (hasEducationMatch) totalScore += 15
 
           // ========== MINIMUM THRESHOLD ==========
-          // Must have SOME real match (not just generic search hit)
-          if (totalScore < 20) {
-            continue // Skip jobs with no meaningful match
+          // Lower threshold - jobs are already relevant from API search
+          if (totalScore < 15) {
+            continue // Skip jobs with almost no match
           }
 
           // Apply profile preference boosts
