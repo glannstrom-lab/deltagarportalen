@@ -1,0 +1,134 @@
+/**
+ * Designsystem-tokens för Deltagarportalen
+ * Spec: docs/DESIGN.md (C-Pastell, 3 domäner)
+ *
+ * Aktiveras automatiskt per sida via <div data-domain="action|reflection|outbound">
+ * Sätts av PageLayout som läser routens domän från lib/domains.ts.
+ */
+
+:root {
+  /* === ACTION (Turkos) — Dashboard, AI, Settings, Help, Resources === */
+  --action-bg:     #F0F9F5;  /* mjuk bakgrund (ljusare än 50) */
+  --action-accent: #C8EBD9;  /* border / accent-element */
+  --action-solid:  #148860;  /* 700-nyans, för CTA-fyllning */
+  --action-text:   #0F6E56;  /* 900-nyans, alltid för text på ljus bg */
+
+  /* === REFLEKTION (Lila) — CV, Cover Letter, Wellness, Diary, Career === */
+  --reflect-bg:     #F4F0FA;
+  --reflect-accent: #D4C5EB;
+  --reflect-solid:  #7B5FB0;
+  --reflect-text:   #5B3F8F;
+
+  /* === UTÅTRIKTAT (Persika) — JobSearch, Applications, LinkedIn, Salary === */
+  --outbound-bg:     #FFF5EB;
+  --outbound-accent: #F8D5B5;
+  --outbound-solid:  #DE8738;
+  --outbound-text:   #B05A1A;
+
+  /* === Neutrala === */
+  --canvas:    #FBFAF6;  /* Sidobakgrund — något varmare än ren vit */
+  --surface:   #FFFFFF;  /* Kort/paneler */
+  --stone-50:  #F5F4F0;
+  --stone-150: #EAE8E2;  /* Mjuk border (ersätter stone-200) */
+  --stone-500: #9A9892;
+  --stone-700: #6A6864;
+  --stone-900: #2C2C2A;
+
+  /* === Aktiv domän (defaultar till Action) ===
+     Skrivs över av [data-domain="..."] nedan. Sidkomponenter använder dessa. */
+  --c-bg:     var(--action-bg);
+  --c-accent: var(--action-accent);
+  --c-solid:  var(--action-solid);
+  --c-text:   var(--action-text);
+
+  /* === Subtil elevation (endast på hover) === */
+  --shadow-soft:  0 1px 2px rgb(0 0 0 / 0.03);
+  --shadow-hover: 0 2px 6px rgb(0 0 0 / 0.05);
+
+  /* === Motion === */
+  --motion-fast:     150ms;
+  --motion-standard: 300ms;
+  --motion-slow:     600ms;
+
+  /* === Status (semantiska, oberoende av domän) === */
+  --status-warning:    #D97706;
+  --status-warning-bg: #FEF3C7;
+  --status-error:      #DC2626;
+  --status-error-bg:   #FEE2E2;
+}
+
+/* === Per-domän aktivering ===
+   Gamla domännamn (info/activity/wellbeing/coaching) bevaras som alias så att
+   existerande sidor som använder dem fortsätter fungera utan kodändringar.
+   Mappning enligt DESIGN.md (2026-04-28). */
+[data-domain="action"] {
+  --c-bg:     var(--action-bg);
+  --c-accent: var(--action-accent);
+  --c-solid:  var(--action-solid);
+  --c-text:   var(--action-text);
+}
+
+[data-domain="reflection"],
+[data-domain="wellbeing"],   /* alias: gamla 5-domän-systemet */
+[data-domain="coaching"] {
+  --c-bg:     var(--reflect-bg);
+  --c-accent: var(--reflect-accent);
+  --c-solid:  var(--reflect-solid);
+  --c-text:   var(--reflect-text);
+}
+
+[data-domain="outbound"],
+[data-domain="info"],         /* alias: gamla 5-domän-systemet */
+[data-domain="activity"] {
+  --c-bg:     var(--outbound-bg);
+  --c-accent: var(--outbound-accent);
+  --c-solid:  var(--outbound-solid);
+  --c-text:   var(--outbound-text);
+}
+
+/* === Reduced motion === */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast:     0.01ms;
+    --motion-standard: 0.01ms;
+    --motion-slow:     0.01ms;
+  }
+}
+
+/* === High contrast: kraftigare nyanser === */
+@media (prefers-contrast: high) {
+  :root {
+    --action-text:   #084030;
+    --reflect-text:  #3B2A5F;
+    --outbound-text: #7A3D11;
+    --stone-700:     #2C2C2A;
+    --stone-500:     #5C5C58;
+  }
+}
+
+/* === Dark mode === */
+.dark {
+  /* Domänfärgerna inverteras: bg blir mörk, text blir ljus */
+  --action-bg:     #0F2820;
+  --action-accent: #1F5C45;
+  --action-solid:  #3BC79D;  /* ljusare för synlighet på mörk bg */
+  --action-text:   #9FE1CB;
+
+  --reflect-bg:     #1F1633;
+  --reflect-accent: #4A3678;
+  --reflect-solid:  #BFA9E0;
+  --reflect-text:   #D4C5EB;
+
+  --outbound-bg:     #2A1A0A;
+  --outbound-accent: #6B3D1A;
+  --outbound-solid:  #F4B988;
+  --outbound-text:   #F8D5B5;
+
+  --canvas:    #15140F;
+  --surface:   #1F1E1A;
+  --stone-50:  #28261F;
+  --stone-150: #3A3830;
+  --stone-500: #8A8880;
+  --stone-700: #B5B3AB;
+  --stone-900: #FAFAF6;
+}

@@ -1,24 +1,40 @@
 @import "tailwindcss";
+
+/**
+ * CSS-arkitektur (uppdaterad 2026-04-28):
+ *
+ *   tokens.css         — design-tokens, CSS-variabler för 3 domäner (källa: DESIGN.md)
+ *   dashboard-grid.css — grid-system för dashboard-widgets
+ *   accessibility.css  — focus-ring, skip-link, screen-reader utilities
+ *   animations.css     — keyframes och animation-classes (importeras vid behov)
+ *   mobile.css         — mobil-specifika overrides (importeras vid behov)
+ *
+ * Borttagna 2026-04-28: pastel-theme.css (oanvänd, 745 rader dödkod)
+ *
+ * Tokens definieras INTE i denna fil. Alla --c-* och domänfärger kommer från tokens.css.
+ * @theme blocket nedan exporterar tokens till Tailwind 4 så bg-primary-* etc fungerar.
+ */
+@import "./styles/tokens.css";
 @import "./styles/dashboard-grid.css";
 @import "./styles/accessibility.css";
-@import "./styles/pastel-theme.css";
 
 /* Tailwind v4: Enable class-based dark mode */
 @variant dark (&:where(.dark, .dark *));
 
 @theme {
-  /* NYA: "Calm & Capable" färger */
-  /* Primärfärg - Violet */
-  --color-primary-50: #f5f3ff;
-  --color-primary-100: #ede9fe;
-  --color-primary-200: #ddd6fe;
-  --color-primary-300: #c4b5fd;
-  --color-primary-400: #a78bfa;
-  --color-primary-500: #8b5cf6;
-  --color-primary-600: #7c3aed;
-  --color-primary-700: #6d28d9;
-  --color-primary-800: #5b21b6;
-  --color-primary-900: #4c1d95;
+  /* === C-PASTELL primärfärg = Action (Turkos) ===
+     Tidigare violet, ersatt 2026-04-28 enligt nya DESIGN.md.
+     Domän-specifika färger sätts via [data-domain] i tokens.css. */
+  --color-primary-50:  #F0F9F5;  /* action-bg pastell */
+  --color-primary-100: #E1F5EE;
+  --color-primary-200: #C8EBD9;  /* action-accent */
+  --color-primary-300: #9FE1CB;
+  --color-primary-400: #6DD4B4;
+  --color-primary-500: #1A9E76;
+  --color-primary-600: #148860;  /* action-solid pastell, default CTA */
+  --color-primary-700: #0F7249;
+  --color-primary-800: #0F6E56;
+  --color-primary-900: #0F6E56;  /* action-text */
   
   /* Neutral - Warm Stone */
   --color-neutral-50: #fafaf9;
@@ -49,10 +65,10 @@
   --color-info-light: #dbeafe;
   --color-info-dark: #1d4ed8;
   
-  /* BAKÅTKOMPATIBEL: Tidigare färger */
-  --color-primary: #7c3aed;
-  --color-primary-dark: #6d28d9;
-  --color-primary-light: #8b5cf6;
+  /* Bakåtkompatibel: aliaserade till action-pastell */
+  --color-primary:       #148860;
+  --color-primary-dark:  #0F7249;
+  --color-primary-light: #1A9E76;
   
   --color-accent-orange: #f97316;
   --color-accent-blue: #3b82f6;
@@ -101,18 +117,18 @@
     --text-inverse: #fafaf9;
     
     /* Kanter */
-    --border-primary: #e7e5e4;
+    --border-primary: #EAE8E2;       /* stone-150, mjukare */
     --border-secondary: #d6d3d1;
-    --border-focus: #7c3aed;
+    --border-focus: var(--c-solid);  /* följer aktiv domän */
     --border-hover: #a8a29e;
-    
-    /* Primärfärg (Violet) */
-    --color-primary-50: #f5f3ff;
-    --color-primary-100: #ede9fe;
-    --color-primary-200: #ddd6fe;
-    --color-primary-500: #8b5cf6;
-    --color-primary-600: #7c3aed;
-    --color-primary-700: #6d28d9;
+
+    /* Primärfärg (Action / turkos pastell) */
+    --color-primary-50:  #F0F9F5;
+    --color-primary-100: #E1F5EE;
+    --color-primary-200: #C8EBD9;
+    --color-primary-500: #1A9E76;
+    --color-primary-600: #148860;
+    --color-primary-700: #0F7249;
     
     /* Neutrala */
     --color-neutral-50: #fafaf9;
@@ -142,9 +158,9 @@
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
-    --gradient-hero: linear-gradient(135deg, #f5f3ff 0%, #fafaf9 100%);
+    /* Gradients — minimerade enligt ny DESIGN.md (inga statiska gradienter på CTA) */
+    --gradient-primary: linear-gradient(135deg, #148860 0%, #0F7249 100%);
+    --gradient-hero:    linear-gradient(135deg, #F0F9F5 0%, #FBFAF6 100%);
   }
 
   /* DARK MODE */
@@ -172,18 +188,18 @@
     --text-inverse: #1c1917;
     
     /* Kanter - DARK */
-    --border-primary: #292524;
+    --border-primary: #3A3830;       /* stone-150 dark */
     --border-secondary: #44403c;
-    --border-focus: #8b5cf6;
+    --border-focus: var(--c-solid);  /* följer aktiv domän */
     --border-hover: #57534e;
-    
-    /* Primärfärg (Violet) - DARK (ljusare för synlighet) */
-    --color-primary-50: #2e1065;
-    --color-primary-100: #4c1d95;
-    --color-primary-200: #5b21b6;
-    --color-primary-500: #a78bfa;
-    --color-primary-600: #8b5cf6;
-    --color-primary-700: #7c3aed;
+
+    /* Primärfärg (Action turkos) - DARK (ljusare för synlighet på mörk bg) */
+    --color-primary-50:  #0F2820;
+    --color-primary-100: #1F5C45;
+    --color-primary-200: #1F5C45;
+    --color-primary-500: #6DD4B4;
+    --color-primary-600: #3BC79D;
+    --color-primary-700: #1A9E76;
     
     /* Neutrala - DARK */
     --color-neutral-50: #1c1917;
@@ -214,8 +230,8 @@
     --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
     
     /* Gradients - DARK */
-    --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-    --gradient-hero: linear-gradient(135deg, #2e1065 0%, #0c0a09 100%);
+    --gradient-primary: linear-gradient(135deg, #3BC79D 0%, #1A9E76 100%);
+    --gradient-hero:    linear-gradient(135deg, #0F2820 0%, #15140F 100%);
   }
 
   body {
@@ -228,14 +244,14 @@
   /* High contrast mode */
   @media (prefers-contrast: high) {
     :root {
-      --color-primary-600: #5b21b6;
+      --color-primary-600: #084030;  /* mörkare turkos för high contrast */
       --color-neutral-600: #1c1917;
       --color-success: #047857;
       --border-primary: #1c1917;
     }
-    
+
     .dark {
-      --color-primary-600: #a78bfa;
+      --color-primary-600: #9FE1CB;  /* ljusare turkos för high contrast på mörk */
       --color-neutral-600: #fafaf9;
       --border-primary: #fafaf9;
     }
@@ -328,20 +344,18 @@
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   }
   
-  /* Primary action button */
+  /* Primary action button — använder aktiv domäns solid-färg */
   .btn-primary-action {
-    background: var(--gradient-primary);
+    background: var(--c-solid);
     color: white;
     font-weight: 500;
     padding: 0.625rem 1.25rem;
     border-radius: 0.875rem;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.35);
+    transition: all var(--motion-fast) ease;
   }
-  
+
   .btn-primary-action:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(124, 58, 237, 0.45);
+    filter: brightness(1.08);
   }
   
   .btn-primary-action:active {
@@ -1044,20 +1058,20 @@
     outline: none;
     border-color: var(--color-primary-500);
     box-shadow:
-      0 0 0 3px rgba(139, 92, 246, 0.15),
+      0 0 0 3px var(--c-bg),
       0 1px 2px 0 rgba(0, 0, 0, 0.05);
     transform: translateY(-1px);
   }
 
-  /* Standard gradients */
+  /* Standard gradients — använder aktiv domäns färger */
   .gradient-brand {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    background: linear-gradient(135deg, var(--c-solid) 0%, var(--c-text) 100%);
   }
   .gradient-hero {
-    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #6d28d9 100%);
+    background: linear-gradient(135deg, var(--c-bg) 0%, var(--canvas) 100%);
   }
   .gradient-success {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background: linear-gradient(135deg, #1A9E76 0%, #148860 100%);
   }
 
   /* Subtle gradient border for featured items */
@@ -1070,7 +1084,7 @@
     inset: 0;
     padding: 2px;
     border-radius: inherit;
-    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    background: linear-gradient(135deg, var(--c-solid), var(--c-text));
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask-composite: exclude;
     -webkit-mask-composite: xor;

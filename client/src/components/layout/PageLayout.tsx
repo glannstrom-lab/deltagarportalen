@@ -8,11 +8,16 @@ import { useLocation } from 'react-router-dom'
 import { PageTabs, PageHeader, type Tab } from './PageTabs'
 import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
+import { getDomainForPath, type LegacyColorDomain } from '@/lib/domains'
 
 type TabVariant = 'minimal' | 'pills' | 'floating' | 'underline' | 'glass'
 
-/** Semantic color domains - each maps to a specific activity type */
-export type ColorDomain = 'action' | 'info' | 'activity' | 'wellbeing' | 'coaching'
+/**
+ * Semantic color domains.
+ * Nya systemet (DESIGN.md 2026-04-28): 'action' | 'reflection' | 'outbound'.
+ * Bakåtkompatibla alias: 'info' | 'activity' | 'wellbeing' | 'coaching'.
+ */
+export type ColorDomain = LegacyColorDomain
 
 interface PageLayoutProps {
   children: React.ReactNode
@@ -55,13 +60,17 @@ export function PageLayout({
   // Don't show tabs if there's only one tab
   const shouldShowTabs = tabs.length > 1 && showTabs
 
+  // Auto-resolve domain from route if not explicitly provided.
+  // tokens.css mappar [data-domain] → CSS-variabler som driver --c-* per sida.
+  const resolvedDomain = domain ?? getDomainForPath(location.pathname)
+
   return (
     <div className={cn(
       'min-h-screen bg-stone-50 dark:bg-stone-900',
       'space-y-4 sm:space-y-5 md:space-y-6',
       'page-transition',
       className
-    )} data-domain={domain}>
+    )} data-domain={resolvedDomain}>
       {/* Page Header with Tabs */}
       {showHeader && (title || shouldShowTabs) && (
         <PageHeader
