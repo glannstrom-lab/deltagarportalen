@@ -65,6 +65,261 @@ interface SourceData {
 }
 
 // ============================================
+// SKILL & JOB TITLE SYNONYMS
+// ============================================
+
+const SKILL_SYNONYMS: Record<string, string[]> = {
+  // Programming languages
+  'javascript': ['js', 'ecmascript', 'node', 'nodejs', 'node.js'],
+  'typescript': ['ts'],
+  'python': ['py', 'django', 'flask', 'pandas'],
+  'java': ['jvm', 'spring', 'spring boot', 'jakarta'],
+  'c#': ['csharp', 'c-sharp', '.net', 'dotnet', 'asp.net'],
+  'c++': ['cpp', 'c plus plus'],
+  'php': ['laravel', 'symfony', 'wordpress'],
+  'ruby': ['rails', 'ruby on rails'],
+  'go': ['golang'],
+  'rust': ['rustlang'],
+  'swift': ['ios', 'xcode'],
+  'kotlin': ['android'],
+
+  // Frontend
+  'react': ['react.js', 'reactjs', 'react native', 'redux'],
+  'vue': ['vue.js', 'vuejs', 'nuxt'],
+  'angular': ['angularjs', 'angular.js'],
+  'html': ['html5', 'markup'],
+  'css': ['css3', 'sass', 'scss', 'less', 'tailwind', 'bootstrap'],
+  'frontend': ['front-end', 'front end', 'ui', 'användargränssnitt'],
+  'backend': ['back-end', 'back end', 'server-side', 'serversidan'],
+  'fullstack': ['full-stack', 'full stack'],
+
+  // Databases
+  'sql': ['mysql', 'postgresql', 'postgres', 'mssql', 'oracle', 'mariadb', 'sqlite'],
+  'nosql': ['mongodb', 'redis', 'elasticsearch', 'cassandra', 'dynamodb'],
+  'databas': ['database', 'db', 'datalagring'],
+
+  // DevOps & Cloud
+  'devops': ['ci/cd', 'continuous integration', 'deployment'],
+  'docker': ['container', 'kubernetes', 'k8s'],
+  'aws': ['amazon web services', 'ec2', 's3', 'lambda'],
+  'azure': ['microsoft azure', 'azure devops'],
+  'gcp': ['google cloud', 'google cloud platform'],
+  'linux': ['unix', 'ubuntu', 'debian', 'centos'],
+
+  // Office & General IT
+  'excel': ['spreadsheet', 'kalkylark', 'kalkylblad', 'vba'],
+  'word': ['ordbehandling', 'dokument'],
+  'powerpoint': ['presentation', 'presentationer'],
+  'office': ['microsoft office', 'ms office', 'office 365', 'm365'],
+  'it': ['informationsteknik', 'data', 'system', 'teknik'],
+  'support': ['helpdesk', 'servicedesk', 'kundsupport', 'teknisk support'],
+
+  // Project & Management
+  'projektledning': ['projektledare', 'project management', 'pm', 'projektkoordinator'],
+  'scrum': ['agile', 'agil', 'sprint', 'kanban', 'scrum master'],
+  'ledarskap': ['chef', 'ledare', 'teamlead', 'team lead', 'teamledare', 'manager'],
+  'strategi': ['strategisk', 'affärsutveckling', 'business development'],
+
+  // Communication & Sales
+  'kommunikation': ['kommunikativ', 'kundkontakt', 'kundbemötande', 'pr'],
+  'försäljning': ['säljare', 'sales', 'sälj', 'account manager', 'kundansvarig'],
+  'marknadsföring': ['marketing', 'digital marknadsföring', 'content', 'seo', 'sem'],
+  'kundservice': ['kundtjänst', 'customer service', 'kundsupport'],
+
+  // Finance & Admin
+  'ekonomi': ['redovisning', 'bokföring', 'accounting', 'finans', 'finance'],
+  'administration': ['admin', 'administratör', 'kontorsarbete', 'reception'],
+  'hr': ['personal', 'rekrytering', 'human resources', 'personalansvarig'],
+  'juridik': ['jurist', 'legal', 'avtal', 'kontrakt'],
+
+  // Healthcare & Social
+  'vård': ['omsorg', 'sjukvård', 'hälsa', 'healthcare', 'omvårdnad'],
+  'undersköterska': ['usk', 'vårdbiträde', 'äldreomsorg'],
+  'sjuksköterska': ['ssk', 'nurse', 'nursing'],
+  'läkare': ['doctor', 'physician', 'medicine'],
+  'psykologi': ['psykolog', 'terapi', 'terapeut', 'counseling'],
+  'socialt arbete': ['socionom', 'social worker', 'biståndshandläggare'],
+
+  // Education
+  'pedagogik': ['undervisning', 'lärare', 'utbildning', 'education', 'teacher'],
+  'förskola': ['förskollärare', 'barnskötare', 'dagis'],
+  'grundskola': ['mellanstadie', 'lågstadie', 'högstadie'],
+
+  // Construction & Industry
+  'bygg': ['byggnad', 'construction', 'byggnadsarbete', 'snickare'],
+  'el': ['elektriker', 'elektricitet', 'elinstallation'],
+  'vvs': ['rörmokare', 'plumber', 'ventilation'],
+  'industri': ['produktion', 'tillverkning', 'manufacturing', 'fabrik'],
+  'lager': ['logistik', 'warehouse', 'lagerpersonal', 'godshantering'],
+  'transport': ['chaufför', 'driver', 'lastbil', 'truck', 'leverans'],
+
+  // Licenses & Certificates
+  'körkort': ['b-körkort', 'c-körkort', 'ce-körkort', 'driving license', 'förare'],
+  'truckkort': ['truck', 'forklift', 'gaffeltruck'],
+  'certifikat': ['certificate', 'behörighet', 'licens'],
+
+  // Languages
+  'engelska': ['english', 'eng'],
+  'svenska': ['swedish', 'swe'],
+  'tyska': ['german', 'deutsch'],
+  'franska': ['french', 'français'],
+  'spanska': ['spanish', 'español'],
+}
+
+const JOB_TITLE_SYNONYMS: Record<string, string[]> = {
+  'systemutvecklare': ['developer', 'utvecklare', 'programmerare', 'software engineer', 'mjukvaruutvecklare'],
+  'webbutvecklare': ['web developer', 'frontendutvecklare', 'backendutvecklare', 'fullstackutvecklare'],
+  'projektledare': ['project manager', 'pm', 'projektkoordinator', 'project lead'],
+  'produktägare': ['product owner', 'po', 'produktchef', 'product manager'],
+  'säljare': ['sales', 'försäljare', 'account manager', 'säljansvarig', 'key account'],
+  'ekonom': ['accountant', 'redovisningsekonom', 'controller', 'finansanalytiker'],
+  'administratör': ['admin', 'kontorsassistent', 'sekreterare', 'koordinator'],
+  'receptionist': ['reception', 'front desk', 'kundmottagare'],
+  'chef': ['manager', 'ledare', 'ansvarig', 'head of', 'director'],
+  'konsult': ['consultant', 'rådgivare', 'specialist', 'expert'],
+  'tekniker': ['technician', 'servicetekniker', 'drifttekniker'],
+  'ingenjör': ['engineer', 'civilingenjör', 'högskoleingenjör'],
+  'lärare': ['teacher', 'pedagog', 'utbildare', 'instructor'],
+  'sjuksköterska': ['nurse', 'ssk', 'vårdpersonal'],
+  'undersköterska': ['usk', 'vårdbiträde', 'omsorgspersonal'],
+  'kock': ['chef', 'cook', 'köksbiträde', 'köksansvarig'],
+  'städare': ['cleaner', 'lokalvårdare', 'städpersonal'],
+  'chaufför': ['driver', 'förare', 'lastbilschaufför', 'budbilsförare'],
+}
+
+const SENIORITY_LEVELS = {
+  junior: ['junior', 'entry', 'trainee', 'praktikant', 'nybörjar', 'graduate'],
+  mid: ['mid', 'mellan', 'erfaren', 'experienced'],
+  senior: ['senior', 'sr', 'lead', 'principal', 'expert', 'specialist'],
+  manager: ['manager', 'chef', 'head', 'director', 'ansvarig', 'ledare']
+}
+
+const INDUSTRIES: Record<string, string[]> = {
+  'tech': ['it', 'software', 'tech', 'digital', 'data', 'ai', 'startup'],
+  'finance': ['bank', 'finans', 'försäkring', 'insurance', 'ekonomi', 'revision'],
+  'healthcare': ['vård', 'hälsa', 'sjukvård', 'medicin', 'apotek', 'omsorg'],
+  'retail': ['butik', 'retail', 'handel', 'e-handel', 'detaljhandel'],
+  'manufacturing': ['industri', 'tillverkning', 'produktion', 'fabrik'],
+  'construction': ['bygg', 'fastighet', 'construction', 'arkitektur'],
+  'education': ['utbildning', 'skola', 'universitet', 'förskola'],
+  'hospitality': ['hotell', 'restaurang', 'turism', 'event', 'catering'],
+  'logistics': ['logistik', 'transport', 'lager', 'spedition', 'frakt'],
+  'consulting': ['konsult', 'rådgivning', 'management', 'strategi'],
+  'government': ['kommun', 'stat', 'myndighet', 'offentlig', 'region'],
+}
+
+/**
+ * Check if a skill matches in job text (with synonyms)
+ */
+function matchSkill(skill: string, jobText: string): boolean {
+  const skillLower = skill.toLowerCase()
+
+  // Direct match
+  if (jobText.includes(skillLower)) return true
+
+  // Check synonyms
+  const synonyms = SKILL_SYNONYMS[skillLower] || []
+  for (const syn of synonyms) {
+    if (jobText.includes(syn)) return true
+  }
+
+  // Reverse lookup - check if skill is a synonym of something in the text
+  for (const [key, syns] of Object.entries(SKILL_SYNONYMS)) {
+    if (syns.includes(skillLower) && jobText.includes(key)) return true
+  }
+
+  // Partial word match for compound words
+  if (skillLower.length > 4) {
+    const words = skillLower.split(/[\s\-\/]+/).filter(w => w.length > 3)
+    for (const word of words) {
+      if (jobText.includes(word)) return true
+    }
+  }
+
+  return false
+}
+
+/**
+ * Check if job title matches user's work title (with synonyms)
+ */
+function matchJobTitle(userTitle: string, jobTitle: string, jobOccupation: string): { match: 'exact' | 'similar' | 'partial' | 'none' } {
+  const titleLower = userTitle.toLowerCase()
+  const jobTitleLower = jobTitle.toLowerCase()
+  const jobOccLower = jobOccupation.toLowerCase()
+  const combined = `${jobTitleLower} ${jobOccLower}`
+
+  // Exact match
+  if (jobTitleLower.includes(titleLower) || jobOccLower.includes(titleLower)) {
+    return { match: 'exact' }
+  }
+
+  // Synonym match
+  const synonyms = JOB_TITLE_SYNONYMS[titleLower] || []
+  for (const syn of synonyms) {
+    if (combined.includes(syn)) return { match: 'similar' }
+  }
+
+  // Reverse synonym lookup
+  for (const [key, syns] of Object.entries(JOB_TITLE_SYNONYMS)) {
+    if (syns.includes(titleLower) && combined.includes(key)) return { match: 'similar' }
+  }
+
+  // Partial word match
+  const titleWords = titleLower.split(/[\s\-\/,]+/).filter(w => w.length > 3)
+  const matchedWords = titleWords.filter(word => combined.includes(word))
+  if (matchedWords.length > 0) {
+    return { match: 'partial' }
+  }
+
+  return { match: 'none' }
+}
+
+/**
+ * Detect seniority level from job text
+ */
+function detectSeniority(text: string): string | null {
+  const textLower = text.toLowerCase()
+  for (const [level, keywords] of Object.entries(SENIORITY_LEVELS)) {
+    if (keywords.some(kw => textLower.includes(kw))) {
+      return level
+    }
+  }
+  return null
+}
+
+/**
+ * Detect industry from job/employer text
+ */
+function detectIndustry(text: string): string[] {
+  const textLower = text.toLowerCase()
+  const matched: string[] = []
+  for (const [industry, keywords] of Object.entries(INDUSTRIES)) {
+    if (keywords.some(kw => textLower.includes(kw))) {
+      matched.push(industry)
+    }
+  }
+  return matched
+}
+
+/**
+ * Extract years of experience required from job text
+ */
+function extractRequiredExperience(text: string): number | null {
+  const patterns = [
+    /(\d+)\+?\s*års?\s*erfarenhet/i,
+    /minst\s*(\d+)\s*års?/i,
+    /(\d+)\+?\s*years?\s*experience/i,
+    /erfarenhet\s*av\s*minst\s*(\d+)/i,
+  ]
+
+  for (const pattern of patterns) {
+    const match = text.match(pattern)
+    if (match) return parseInt(match[1])
+  }
+  return null
+}
+
+// ============================================
 // PROFILE PREFERENCE MATCHING
 // ============================================
 
@@ -738,69 +993,130 @@ export function MatchesTab() {
       )
     }
 
-    // Match each job
+    // Match each job using comprehensive scoring
     return jobs.map(job => {
       const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase()
+      const jobTitle = (job.headline || '').toLowerCase()
+      const jobOccupation = (job.occupation?.label || '').toLowerCase()
+      const employerText = (job.employer?.name || '').toLowerCase()
       const matchDetails: string[] = []
-      let skillMatches = 0
-      let titleMatches = 0
-      let educationMatches = 0
 
-      // Check skills (highest weight)
+      // ========== SKILL MATCHING (max 45 points) ==========
+      let skillScore = 0
+      let skillMatchCount = 0
       data.skills.forEach(skill => {
-        const skillLower = skill.toLowerCase()
-        if (jobText.includes(skillLower) || (skillLower.includes('körkort') && jobText.includes('körkort'))) {
+        if (matchSkill(skill, jobText)) {
           matchDetails.push(skill)
-          skillMatches++
+          skillMatchCount++
+          // First 3 skills: 12 points each, then 5 points each
+          skillScore += skillMatchCount <= 3 ? 12 : 5
         }
       })
+      skillScore = Math.min(skillScore, 45)
 
-      // Check work titles (high weight - indicates relevant experience)
+      // ========== TITLE MATCHING (max 35 points) ==========
+      let titleScore = 0
+      let bestTitleMatch: 'exact' | 'similar' | 'partial' | 'none' = 'none'
       data.workTitles.forEach(title => {
-        const titleLower = title.toLowerCase()
-        if (jobText.includes(titleLower) || job.headline?.toLowerCase().includes(titleLower)) {
+        const result = matchJobTitle(title, jobTitle, jobOccupation)
+        if (result.match === 'exact') {
           matchDetails.push(`Erfarenhet: ${title}`)
-          titleMatches++
+          titleScore += 20
+          bestTitleMatch = 'exact'
+        } else if (result.match === 'similar') {
+          matchDetails.push(`Liknande: ${title}`)
+          titleScore += 12
+          if (bestTitleMatch !== 'exact') bestTitleMatch = 'similar'
+        } else if (result.match === 'partial') {
+          matchDetails.push(`Relaterat: ${title}`)
+          titleScore += 6
+          if (bestTitleMatch === 'none') bestTitleMatch = 'partial'
         }
       })
+      titleScore = Math.min(titleScore, 35)
 
-      // Check education (medium weight)
+      // ========== EDUCATION MATCHING (max 15 points) ==========
+      let educationScore = 0
       data.education.forEach(edu => {
         const words = edu.toLowerCase().split(/\s+/).filter(w => w.length > 3)
         const eduMatches = words.filter(word => jobText.includes(word))
-        if (eduMatches.length >= 2) {
+        if (eduMatches.length >= 1) {
           matchDetails.push(`Utbildning: ${edu}`)
-          educationMatches++
+          // More matching words = higher score
+          educationScore += Math.min(eduMatches.length * 5, 15)
         }
       })
+      educationScore = Math.min(educationScore, 15)
 
-      // Calculate base score with weighted components
-      // Skills: 50%, Experience: 35%, Education: 15%
-      const maxSkills = Math.min(data.skills.length, 5)
-      const maxTitles = Math.min(data.workTitles.length, 3)
-      const maxEdu = Math.min(data.education.length, 2)
+      // ========== SEARCH RELEVANCE BONUS (15 points) ==========
+      // Job was returned by API search using CV terms, so it has baseline relevance
+      const searchRelevanceBonus = 15
 
-      let baseScore = 0
-      if (maxSkills > 0) baseScore += (skillMatches / maxSkills) * 50
-      if (maxTitles > 0) baseScore += (titleMatches / maxTitles) * 35
-      if (maxEdu > 0) baseScore += (educationMatches / maxEdu) * 15
-
-      // Minimum score if any match found
-      if (matchDetails.length > 0 && baseScore < 30) {
-        baseScore = 30
+      // ========== INDUSTRY MATCH BONUS (max 10 points) ==========
+      let industryBonus = 0
+      if (preferences.industries.length > 0) {
+        const jobIndustries = detectIndustry(`${employerText} ${jobText}`)
+        const userIndustries = preferences.industries.map(i => i.toLowerCase())
+        const industryMatch = jobIndustries.some(ji =>
+          userIndustries.some(ui => ui.includes(ji) || ji.includes(ui))
+        )
+        if (industryMatch) {
+          industryBonus = 10
+          matchDetails.push('Önskad bransch ✓')
+        }
       }
 
-      // Apply profile preference boosts
+      // ========== SENIORITY ALIGNMENT (max 5 points) ==========
+      let seniorityBonus = 0
+      const jobSeniority = detectSeniority(jobText)
+      // If job is entry-level or doesn't specify, slight bonus (more accessible)
+      if (jobSeniority === 'junior' || jobSeniority === null) {
+        seniorityBonus = 3
+      } else if (jobSeniority === 'mid') {
+        seniorityBonus = 5
+      }
+      // Senior/manager roles: no bonus (may be stretch)
+
+      // ========== EXPERIENCE REQUIREMENT CHECK ==========
+      const requiredYears = extractRequiredExperience(jobText)
+      let experiencePenalty = 0
+      if (requiredYears !== null && requiredYears > 5) {
+        // High experience requirement - slight penalty unless user has many titles
+        if (data.workTitles.length < 3) {
+          experiencePenalty = -5
+          matchDetails.push(`Kräver ${requiredYears}+ års erfarenhet`)
+        }
+      }
+
+      // ========== CALCULATE TOTAL BASE SCORE ==========
+      let baseScore = searchRelevanceBonus + skillScore + titleScore + educationScore +
+                      industryBonus + seniorityBonus + experiencePenalty
+
+      // Ensure reasonable minimum if any specific matches found
+      if (matchDetails.length > 0 && baseScore < 40) {
+        baseScore = 40
+      }
+
+      // Bonus for multiple match types (skills + experience + education)
+      const matchTypesCount = [skillScore > 0, titleScore > 0, educationScore > 0].filter(Boolean).length
+      if (matchTypesCount >= 2) {
+        baseScore += 5 // Breadth bonus
+      }
+      if (matchTypesCount === 3) {
+        baseScore += 5 // Full profile match bonus
+      }
+
+      // Apply profile preference boosts (remote work, employment type, license, car)
       const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails)
 
       return {
         job,
-        score: Math.round(score),
+        score: Math.round(Math.min(score, 100)), // Ensure max 100
         source: 'cv' as MatchSource,
         matchDetails: details
       }
     })
-    .filter(m => m.score > 0)
+    .filter(m => m.score >= 25)
     .sort((a, b) => b.score - a.score)
   }, [])
 
