@@ -1,155 +1,185 @@
 import { useState, useEffect } from 'react';
-import { Target, TrendingUp, Briefcase, AlertCircle } from '@/components/ui/icons';
+import { Target, TrendingUp, Briefcase, AlertCircle, FileText } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 import { trendsApi } from '@/services/api';
+import { useDashboardData } from '@/hooks/useDashboardData';
 
-interface MatchingData {
-  overallScore: number;
-  matchingJobs: number;
-  newJobsToday: number;
-  topSkills: Array<{
-    name: string;
-    demand: number;
-    trend: 'up' | 'down' | 'stable';
-  }>;
-  missingSkills: string[];
+interface TrendingSkill {
+  name: string;
+  demand: number;
+  trend: 'up' | 'down' | 'stable';
 }
 
 export default function MatchingScoreWidget() {
-  const [data, setData] = useState<MatchingData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data, loading: dashboardLoading } = useDashboardData();
+  const [topSkills, setTopSkills] = useState<TrendingSkill[]>([]);
+  const [skillsLoading, setSkillsLoading] = useState(true);
 
   useEffect(() => {
-    loadMatchingData();
+    let cancelled = false;
+    (async () => {
+      try {
+        const trending = await trendsApi.getTrendingSkills(5);
+        if (!cancelled) {
+          setTopSkills(
+            trending.slice(0, 3).map((s) => ({
+              name: s.skill,
+              demand: s.demand,
+              trend: s.trend as 'up' | 'down' | 'stable',
+            }))
+          );
+        }
+      } catch (error) {
+        console.error('Fel vid hämtning av trending skills:', error);
+      } finally {
+        if (!cancelled) setSkillsLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  const loadMatchingData = async () => {
-    try {
-      setLoading(true);
-      
-      const trendingSkills = await trendsApi.getTrendingSkills(5);
-      
-      const mockData: MatchingData = {
-        overallScore: 68,
-        matchingJobs: 245,
-        newJobsToday: 12,
-        topSkills: trendingSkills.slice(0, 3).map(s => ({
-          name: s.skill,
-          demand: s.demand,
-          trend: s.trend as 'up' | 'down' | 'stable'
-        })),
-        missingSkills: ['Azure', 'Python', 'Agil utveckling']
-      };
-      
-      setData(mockData);
-    } catch (error) {
-      console.error('Fel vid hamtning av matchningsdata:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const loading = dashboardLoading || skillsLoading;
 
   if (loading) {
     return (
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <div className="bg-white dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-center h-32">
-          <div className="animate-spin w-8 h-8 border-2 border-[#4f46e5] border-t-transparent rounded-full" />
+          <div className="animate-spin w-8 h-8 border-2 border-brand-900 border-t-transparent rounded-full" />
         </div>
       </div>
     );
   }
 
-  if (!data) return null;
+  // Empty state: ingen CV ännu
+  if (!data?.cv?.hasCV) {
+    return (
+      <div className="bg-white dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700">
+        <div className="flex items-start gap-3 mb-4">
+          <div className="w-12 h-12 rounded-xl bg-brand-50 dark:bg-brand-900/30 flex items-center justify-center">
+            <Target className="text-brand-900 dark:text-brand-300" size={24} />
+          </div>
+          <div>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">Din matchningsgrad</h3>
+            <p className="text-sm text-stone-600 dark:text-stone-400">
+              Skapa ditt CV för att se hur väl du matchar arbetsmarknaden
+            </p>
+          </div>
+        </div>
+        <Link
+          to="/cv"
+          className="flex items-center justify-center gap-2 py-2.5 bg-brand-900 text-white rounded-lg text-sm font-medium hover:bg-brand-900/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2"
+        >
+          <FileText size={16} />
+          Börja med CV
+        </Link>
+      </div>
+    );
+  }
+
+  const overallScore = data.cv.atsScore || 0;
+  const matchingJobs = data.jobs.savedCount;
+  const missingSections = data.cv.missingSections || [];
 
   const getScoreColor = (score: number) => {
-    if (score >= 80) return 'text-green-600';
-    if (score >= 60) return 'text-blue-600';
-    if (score >= 40) return 'text-amber-600';
-    return 'text-red-600';
+    if (score >= 80) return 'text-brand-900';
+    if (score >= 60) return 'text-blue-700';
+    if (score >= 40) return 'text-amber-700';
+    return 'text-stone-700';
   };
 
   const getScoreBg = (score: number) => {
-    if (score >= 80) return 'bg-green-50';
+    if (score >= 80) return 'bg-brand-50';
     if (score >= 60) return 'bg-blue-50';
     if (score >= 40) return 'bg-amber-50';
-    return 'bg-red-50';
+    return 'bg-stone-100';
+  };
+
+  const sectionLabels: Record<string, string> = {
+    profile: 'Personliga uppgifter',
+    summary: 'Sammanfattning',
+    work_experience: 'Arbetslivserfarenhet',
+    education: 'Utbildning',
+    skills: 'Färdigheter',
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div className="bg-white dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700">
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${getScoreBg(data.overallScore)}`}>
-            <Target className={getScoreColor(data.overallScore)} size={24} />
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${getScoreBg(overallScore)}`}>
+            <Target className={getScoreColor(overallScore)} size={24} />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800">Din matchningsgrad</h3>
-            <p className="text-sm text-slate-700">Hur val ditt CV matchar arbetsmarknaden</p>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">Din matchningsgrad</h3>
+            <p className="text-sm text-stone-600 dark:text-stone-400">CV-styrka enligt ATS-analys</p>
           </div>
         </div>
         <div className="text-right">
-          <span className={`text-3xl font-bold ${getScoreColor(data.overallScore)}`}>
-            {data.overallScore}%
+          <span className={`text-3xl font-bold ${getScoreColor(overallScore)}`}>
+            {overallScore}%
           </span>
         </div>
       </div>
 
-      <div className="w-full bg-slate-100 rounded-full h-3 mb-6">
+      <div className="w-full bg-stone-100 dark:bg-stone-700 rounded-full h-3 mb-6">
         <div
           className={`h-full rounded-full transition-all ${
-            data.overallScore >= 80 ? 'bg-green-500' :
-            data.overallScore >= 60 ? 'bg-blue-500' :
-            data.overallScore >= 40 ? 'bg-amber-500' : 'bg-red-500'
+            overallScore >= 80 ? 'bg-brand-900' :
+            overallScore >= 60 ? 'bg-blue-600' :
+            overallScore >= 40 ? 'bg-amber-600' : 'bg-stone-400'
           }`}
-          style={{ width: `${data.overallScore}%` }}
+          style={{ width: `${overallScore}%` }}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className="bg-slate-50 rounded-xl p-4">
+        <div className="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-1">
-            <Briefcase size={16} className="text-[#4f46e5]" />
-            <span className="text-sm text-slate-600">Matchande jobb</span>
+            <Briefcase size={16} className="text-brand-900" />
+            <span className="text-sm text-stone-600 dark:text-stone-400">Sparade jobb</span>
           </div>
-          <p className="text-2xl font-bold text-slate-800">{data.matchingJobs}</p>
-          {data.newJobsToday > 0 && (
-            <p className="text-xs text-green-600 mt-1">+{data.newJobsToday} nya idag</p>
-          )}
+          <p className="text-2xl font-bold text-stone-800 dark:text-stone-100">{matchingJobs}</p>
         </div>
-        <div className="bg-slate-50 rounded-xl p-4">
+        <div className="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-1">
-            <TrendingUp size={16} className="text-[#4f46e5]" />
-            <span className="text-sm text-slate-600">Toppkompetenser</span>
+            <TrendingUp size={16} className="text-brand-900" />
+            <span className="text-sm text-stone-600 dark:text-stone-400">Eftertraktade kompetenser</span>
           </div>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {data.topSkills.map((skill) => (
-              <span
-                key={skill.name}
-                className="text-xs px-2 py-0.5 bg-white rounded-full text-slate-600"
-              >
-                {skill.name}
-                {skill.trend === 'up' && ' ↑'}
-              </span>
-            ))}
-          </div>
+          {topSkills.length > 0 ? (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {topSkills.map((skill) => (
+                <span
+                  key={skill.name}
+                  className="text-xs px-2 py-0.5 bg-white dark:bg-stone-800 rounded-full text-stone-600 dark:text-stone-400"
+                >
+                  {skill.name}
+                  {skill.trend === 'up' && ' ↑'}
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="text-xs text-stone-500 mt-2">Hämtar marknadsdata…</p>
+          )}
         </div>
       </div>
 
-      {data.missingSkills.length > 0 && (
-        <div className="bg-amber-50 rounded-xl p-4 mb-4">
+      {missingSections.length > 0 && (
+        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg p-4 mb-4">
           <div className="flex items-start gap-3">
-            <AlertCircle className="text-amber-600 shrink-0 mt-0.5" size={18} />
+            <AlertCircle className="text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" size={18} />
             <div>
-              <p className="text-sm font-medium text-amber-900 mb-1">
-                Kompetenser som efterfragas:
+              <p className="text-sm font-medium text-amber-900 dark:text-amber-200 mb-1">
+                Komplettera ditt CV:
               </p>
               <div className="flex flex-wrap gap-2">
-                {data.missingSkills.map((skill) => (
+                {missingSections.map((section) => (
                   <span
-                    key={skill}
-                    className="text-xs px-2 py-1 bg-white text-amber-700 rounded-full"
+                    key={section}
+                    className="text-xs px-2 py-1 bg-white dark:bg-stone-800 text-amber-800 dark:text-amber-300 rounded-full"
                   >
-                    {skill}
+                    {sectionLabels[section] || section}
                   </span>
                 ))}
               </div>
@@ -161,14 +191,14 @@ export default function MatchingScoreWidget() {
       <div className="flex gap-3">
         <Link
           to="/job-search"
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-[#4f46e5] text-white rounded-xl text-sm font-medium hover:bg-[#4338ca] transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-brand-900 text-white rounded-lg text-sm font-medium hover:bg-brand-900/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2"
         >
           <Briefcase size={16} />
           Se matchande jobb
         </Link>
         <Link
           to="/career"
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 border border-slate-200 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors"
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 border border-stone-200 dark:border-stone-600 text-stone-700 dark:text-stone-200 rounded-lg text-sm font-medium hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2"
         >
           <TrendingUp size={16} />
           Utveckla kompetenser
