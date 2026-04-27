@@ -1,17 +1,18 @@
 /**
  * Plan Tab - Career plan with SMART goals and visual timeline (cloud storage)
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Target, MapPin, Flag, Calendar, CheckCircle, Clock,
   Sparkles, ChevronRight, Plus, Award, TrendingUp, AlertCircle,
-  Zap, X, Trash2, Loader2, Heart
+  Zap, X, Trash2, Loader2, Heart, FileText
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { careerPlanApi, milestonesApi, favoriteOccupationsApi, type CareerPlan, type CareerMilestone, type FavoriteOccupation } from '@/services/careerApi'
 import { CalendarSync } from '@/components/calendar/CalendarSync'
+import { useProfileStore } from '@/stores/profileStore'
 
 export default function PlanTab() {
   const { t, i18n } = useTranslation()
@@ -32,9 +33,89 @@ export default function PlanTab() {
     steps: ''
   })
 
+  // Profile and CV data for auto-fill
+  const { profile, cvData, preferences, loadAll: loadProfileData } = useProfileStore()
+
+  // Generate current situation summary from CV and profile
+  const generatedSituation = useMemo(() => {
+    const parts: string[] = []
+    const isEn = i18n.language === 'en'
+
+    // Current/most recent job from CV
+    const workExp = cvData?.workExperience || cvData?.work_experience || []
+    if (workExp.length > 0) {
+      const currentJob = workExp[0]
+      if (currentJob.title && currentJob.company) {
+        const isCurrent = currentJob.current || !currentJob.endDate
+        if (isCurrent) {
+          parts.push(isEn
+            ? `Currently working as ${currentJob.title} at ${currentJob.company}`
+            : `Arbetar just nu som ${currentJob.title} på ${currentJob.company}`)
+        } else {
+          parts.push(isEn
+            ? `Most recently worked as ${currentJob.title} at ${currentJob.company}`
+            : `Senast arbetade som ${currentJob.title} på ${currentJob.company}`)
+        }
+      }
+    } else if (cvData?.title) {
+      parts.push(isEn
+        ? `Professional title: ${cvData.title}`
+        : `Yrkestitel: ${cvData.title}`)
+    }
+
+    // Education from CV
+    const education = cvData?.education || []
+    if (education.length > 0) {
+      const latestEdu = education[0]
+      if (latestEdu.degree && latestEdu.school) {
+        parts.push(isEn
+          ? `Education: ${latestEdu.degree} from ${latestEdu.school}`
+          : `Utbildning: ${latestEdu.degree} från ${latestEdu.school}`)
+      }
+    }
+
+    // Skills from CV
+    const skills = cvData?.skills || []
+    if (skills.length > 0) {
+      const topSkills = skills.slice(0, 5).map((s: string | { name: string }) =>
+        typeof s === 'string' ? s : s.name
+      ).filter(Boolean)
+      if (topSkills.length > 0) {
+        parts.push(isEn
+          ? `Key skills: ${topSkills.join(', ')}`
+          : `Nyckelkompetenser: ${topSkills.join(', ')}`)
+      }
+    }
+
+    // Location
+    const location = cvData?.location || profile?.location
+    if (location) {
+      parts.push(isEn ? `Based in ${location}` : `Bor i ${location}`)
+    }
+
+    // Desired jobs from preferences
+    const desiredJobs = preferences?.desired_jobs || []
+    if (desiredJobs.length > 0) {
+      parts.push(isEn
+        ? `Interested in: ${desiredJobs.join(', ')}`
+        : `Intresserad av: ${desiredJobs.join(', ')}`)
+    }
+
+    return parts.join('. ') + (parts.length > 0 ? '.' : '')
+  }, [cvData, profile, preferences, i18n.language])
+
+  const hasProfileData = generatedSituation.length > 0
+
+  const autoFillCurrentSituation = () => {
+    if (generatedSituation) {
+      setCurrentSituation(generatedSituation)
+    }
+  }
+
   // Load existing plan and favorites from cloud
   useEffect(() => {
     loadData()
+    loadProfileData()
   }, [])
 
   const loadData = async () => {
@@ -220,6 +301,35 @@ export default function PlanTab() {
                 <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                 {t('career.plan.whereAreYou')}
               </label>
+
+              {/* Auto-fill from CV/Profile */}
+              {hasProfileData && !currentSituation && (
+                <div className="mb-3 p-3 bg-sky-50 dark:bg-sky-900/20 rounded-lg border border-sky-200 dark:border-sky-700">
+                  <div className="flex items-start gap-2">
+                    <FileText className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-sky-700 dark:text-sky-300 mb-2">
+                        {i18n.language === 'en'
+                          ? 'We found information from your CV and profile:'
+                          : 'Vi hittade information från ditt CV och din profil:'}
+                      </p>
+                      <p className="text-xs text-sky-600 dark:text-sky-400 mb-3 line-clamp-3">
+                        {generatedSituation}
+                      </p>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={autoFillCurrentSituation}
+                        className="border-sky-300 dark:border-sky-600 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-800/30"
+                      >
+                        <FileText className="w-3 h-3 mr-1" />
+                        {i18n.language === 'en' ? 'Use this information' : 'Använd denna information'}
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
               <textarea
                 value={currentSituation}
                 onChange={(e) => setCurrentSituation(e.target.value)}
