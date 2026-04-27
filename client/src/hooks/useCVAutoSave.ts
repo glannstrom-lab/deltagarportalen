@@ -19,6 +19,13 @@ interface UseCVAutoSaveReturn {
   isOnline: boolean
 }
 
+/**
+ * Debounce-fönster: kompromiss mellan API-spam och dataförlust-risk.
+ * 800ms = ungefär ett tangenttryck-paus, ger ~2.5x snabbare server-sync än
+ * tidigare 2000ms vilket minskar fönstret där lokala ändringar inte nått molnet.
+ */
+const SAVE_DEBOUNCE_MS = 800
+
 export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
   const queryClient = useQueryClient()
   const { markSaving, markSaved, markError, markUnsaved, setPendingCount, lastSavedAt, saveStatus, hasUnsavedChanges, pendingCount } = useCVStore()
@@ -27,6 +34,7 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const pendingQueue = useRef<CVData[]>([])
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pendingData = useRef<CVData | null>(null)  // senaste data som väntar på server-flush
   const isFirstRender = useRef(true)
   const lastSavedData = useRef<CVData | null>(null)
   const lastTrackedTime = useRef<number>(0)
@@ -97,13 +105,36 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
     }
   }, [])
   
-  // Save on beforeunload
+  // Flush pending server-save tidigare vid tab-switch / minimize.
+  // visibilitychange triggas innan beforeunload — och är reliable på iOS Safari
+  // där beforeunload ofta inte hinner köra. Om vi har pending data, skicka
+  // den NU istället för att vänta på debounce-timeouten.
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState !== 'hidden') return
+      if (!pendingData.current) return
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current)
+        debounceTimer.current = null
+      }
+      if (isOnline) {
+        markSaving()
+        saveToServer(pendingData.current)
+        pendingData.current = null
+      }
+    }
+
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [isOnline, markSaving, saveToServer])
+
+  // Sista utvägen: spara till localStorage vid sidstängning så draft kan återställas.
+  // Detta är fallback för fall där visibilitychange inte hann skicka till server.
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current)
       }
-      // Save to localStorage
       try {
         localStorage.setItem('cv-draft', JSON.stringify({
           ...currentData,
@@ -111,7 +142,7 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
         }))
       } catch { }
     }
-    
+
     window.addEventListener('beforeunload', handleBeforeUnload)
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [currentData])
@@ -124,35 +155,36 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       lastSavedData.current = dataToSave
       return
     }
-    
+
     markUnsaved()
-    
+    pendingData.current = dataToSave  // Spara referens så visibilitychange kan flusha
+
     // Clear existing timer
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current)
     }
-    
-    // Save to localStorage immediately
+
+    // Save to localStorage immediately (fallback om server-sync failar)
     try {
       localStorage.setItem('cv-draft', JSON.stringify({
         ...dataToSave,
         _timestamp: Date.now(),
       }))
     } catch { }
-    
-    // Debounced server save
+
+    // Debounced server save (800ms, kortare än tidigare 2000ms)
     debounceTimer.current = setTimeout(() => {
-      
+      pendingData.current = null  // Server tar över — inget att flusha längre
       if (!isOnline) {
         pendingQueue.current.push(dataToSave)
         setPendingCount(pendingQueue.current.length)
         markError()
         return
       }
-      
+
       markSaving()
       saveToServer(dataToSave)
-    }, 2000)
+    }, SAVE_DEBOUNCE_MS)
   }
   
   return {
