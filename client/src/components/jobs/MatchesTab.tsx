@@ -209,6 +209,55 @@ const INDUSTRIES: Record<string, string[]> = {
 }
 
 /**
+ * Generic skills that should NOT be used for job searching
+ * These are basic requirements that almost every job has,
+ * so using them as search terms returns irrelevant results.
+ * They can still contribute minor points in scoring.
+ */
+const GENERIC_SKILLS = new Set([
+  // Languages
+  'svenska', 'swedish', 'engelska', 'english', 'tyska', 'german',
+  'franska', 'french', 'spanska', 'spanish', 'arabiska', 'arabic',
+  'finska', 'finnish', 'norska', 'norwegian', 'danska', 'danish',
+  'polska', 'polish', 'ryska', 'russian', 'kinesiska', 'chinese',
+  'japanska', 'japanese', 'portugisiska', 'portuguese',
+  // Driver's licenses
+  'körkort', 'b-körkort', 'c-körkort', 'ce-körkort', 'am-körkort',
+  'a-körkort', 'a1-körkort', 'a2-körkort', 'driving license',
+  'drivers license', 'förarbevis',
+  // Basic computer skills
+  'dator', 'datorer', 'datorvana', 'computer', 'it-vana',
+  'microsoft office', 'ms office', 'office', 'word', 'excel', 'powerpoint',
+  'outlook', 'teams', 'e-post', 'email', 'internet',
+  // Soft skills (too generic)
+  'kommunikation', 'kommunikativ', 'social', 'samarbete', 'teamwork',
+  'flexibel', 'noggrann', 'ansvarstagande', 'självständig', 'strukturerad',
+  'serviceinriktad', 'stresstålig', 'lösningsorienterad', 'positiv',
+  'driven', 'engagerad', 'motiverad', 'pålitlig', 'punktlig',
+  // Other generic
+  'truckkort', 'truck', 'hjullastare', 'travers',
+])
+
+/**
+ * Check if a skill is generic (should not be used for searching)
+ */
+function isGenericSkill(skill: string): boolean {
+  const skillLower = skill.toLowerCase().trim()
+
+  // Direct match
+  if (GENERIC_SKILLS.has(skillLower)) return true
+
+  // Check if any generic skill is contained in this skill
+  for (const generic of GENERIC_SKILLS) {
+    if (skillLower.includes(generic) || generic.includes(skillLower)) {
+      return true
+    }
+  }
+
+  return false
+}
+
+/**
  * Check if a skill matches in job text (with synonyms)
  */
 function matchSkill(skill: string, jobText: string): boolean {
@@ -1148,14 +1197,23 @@ export function MatchesTab() {
   ): Promise<MatchedJob[]> => {
     if (!data.available) return []
 
-    // Build search query from skills, work titles, and education
+    // Filter out generic skills (languages, driver's license, soft skills)
+    // These match too many jobs and aren't useful for finding relevant positions
+    const specificSkills = data.skills.filter(skill => !isGenericSkill(skill))
+
+    // Build search query prioritizing work titles and specific skills
+    // Work titles are most important - they define what jobs you're qualified for
     const searchTerms = [
-      ...data.skills.slice(0, 3),
-      ...data.workTitles.slice(0, 2),
-      ...data.education.slice(0, 1)
+      ...data.workTitles.slice(0, 3),  // Prioritize work titles
+      ...specificSkills.slice(0, 2),    // Then specific skills
+      ...data.education.slice(0, 1)     // Then education
     ].filter(Boolean)
 
-    if (searchTerms.length === 0) return []
+    // If no specific terms, user needs to add work experience or desired jobs
+    if (searchTerms.length === 0) {
+      console.log('CV matching: No specific skills or work titles found. User should add work experience or desired jobs.')
+      return []
+    }
 
     const result = await searchJobs({
       query: searchTerms.join(' '),
@@ -1192,14 +1250,26 @@ export function MatchesTab() {
       const matchDetails: string[] = []
 
       // ========== SKILL MATCHING (max 45 points) ==========
+      // Generic skills (languages, driver's license) give minimal points
+      // Specific professional skills give full points
       let skillScore = 0
-      let skillMatchCount = 0
+      let specificSkillMatches = 0
+      let genericSkillMatches = 0
+
       data.skills.forEach(skill => {
         if (matchSkill(skill, jobText)) {
-          matchDetails.push(skill)
-          skillMatchCount++
-          // First 3 skills: 12 points each, then 5 points each
-          skillScore += skillMatchCount <= 3 ? 12 : 5
+          if (isGenericSkill(skill)) {
+            // Generic skills: only 2 points each, max 6 total
+            genericSkillMatches++
+            if (genericSkillMatches <= 3) {
+              skillScore += 2
+            }
+          } else {
+            // Specific skills: 12 points for first 3, then 5 each
+            matchDetails.push(skill)
+            specificSkillMatches++
+            skillScore += specificSkillMatches <= 3 ? 12 : 5
+          }
         }
       })
       skillScore = Math.min(skillScore, 45)
@@ -1238,9 +1308,20 @@ export function MatchesTab() {
       })
       educationScore = Math.min(educationScore, 15)
 
-      // ========== SEARCH RELEVANCE BONUS (15 points) ==========
-      // Job was returned by API search using CV terms, so it has baseline relevance
-      const searchRelevanceBonus = 15
+      // ========== QUALIFICATION CHECK ==========
+      // Jobs must have REAL qualification matches, not just generic skills
+      // If no title match AND no specific skill match AND no education match, skip this job
+      const hasRealQualification = titleScore > 0 || specificSkillMatches > 0 || educationScore > 0
+
+      if (!hasRealQualification) {
+        // No real qualifications match - this job shouldn't be shown
+        return {
+          job,
+          score: 0,
+          source: 'cv' as MatchSource,
+          matchDetails: []
+        }
+      }
 
       // ========== INDUSTRY MATCH BONUS (max 10 points) ==========
       let industryBonus = 0
@@ -1279,16 +1360,22 @@ export function MatchesTab() {
       }
 
       // ========== CALCULATE TOTAL BASE SCORE ==========
-      let baseScore = searchRelevanceBonus + skillScore + titleScore + educationScore +
+      // No "search relevance bonus" - jobs must earn their score through actual matches
+      let baseScore = skillScore + titleScore + educationScore +
                       industryBonus + seniorityBonus + experiencePenalty
 
-      // Ensure reasonable minimum if any specific matches found
-      if (matchDetails.length > 0 && baseScore < 40) {
-        baseScore = 40
+      // Minimum score based on match quality
+      // Title match is strongest indicator of relevance
+      if (titleScore >= 20) {
+        baseScore = Math.max(baseScore, 50) // Exact title match = at least 50%
+      } else if (titleScore >= 12) {
+        baseScore = Math.max(baseScore, 40) // Similar title = at least 40%
+      } else if (specificSkillMatches >= 2) {
+        baseScore = Math.max(baseScore, 35) // Multiple specific skills = at least 35%
       }
 
       // Bonus for multiple match types (skills + experience + education)
-      const matchTypesCount = [skillScore > 0, titleScore > 0, educationScore > 0].filter(Boolean).length
+      const matchTypesCount = [specificSkillMatches > 0, titleScore > 0, educationScore > 0].filter(Boolean).length
       if (matchTypesCount >= 2) {
         baseScore += 5 // Breadth bonus
       }
@@ -1306,7 +1393,7 @@ export function MatchesTab() {
         matchDetails: details
       }
     })
-    .filter(m => m.score >= 25)
+    .filter(m => m.score >= 30) // Require meaningful qualification match
     .sort((a, b) => b.score - a.score)
   }, [])
 
