@@ -106,6 +106,13 @@ När något inte fungerar, följ denna ordning:
 
 > **LÄS ALLTID KODEN FÖRST.** Grundläggande syntaxfel upptäcks snabbt genom att faktiskt titta på koden.
 
+### AI-anrop går till TVÅ backends
+Det finns två parallella AI-vägar — välj rätt:
+- **`/api/ai.js`** (Vercel) — 18 funktioner samlade. Streaming, snabb cold start, lägre auth-kostnad. Default för UI-anrop.
+- **`supabase/functions/`** (Deno edge) — 23 funktioner. Service role, längre prompts, integration mot AF/Bolagsverket.
+
+När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissar Claude.
+
 ---
 
 ## Kodstandard
@@ -213,6 +220,25 @@ components/
 **Problem:** Nya sidor fångades av catch-all route.
 **Orsak:** Routes saknades i `App.tsx` trots att imports fanns.
 **Kontroll:** Jämför `navigation.ts` paths med `App.tsx` routes.
+
+### 2026-04-27: Lazy-import utan route = dödkod
+**Problem:** Sidor som `CoverLetterGenerator`, `UnifiedProfile` är `lazy()`-importerade i `App.tsx` men har ingen `<Route>`. De byggs in i bundlen utan att vara nåbara.
+**Kontroll:** Sök efter sidonamnet i `<Route` — saknas det ska importen tas bort.
+**Aktiva entry-points 2026-04-27:** Se `docs/portal-review-2026-04.md` § 1.
+
+---
+
+## Aktuella granskningar och planer
+
+| Dokument | Innehåll |
+|----------|----------|
+| `docs/portal-review-2026-04.md` | Senaste helhetsgranskning – arkitektur, databas, säkerhet, repo-hygien + 12-punkts åtgärdslista. |
+| `docs/ROADMAP.md` | 12-månaders roadmap (stabilisera → EU-projekt → konsolidera). |
+| `docs/claude-code-guide.md` | Hur Claude Code används effektivt i projektet (agenter, skills, hooks, slash commands, fallgropar). |
+| `docs/security-audit.md` | Säkerhetsrevision 2026-04-23 (alla HIGH åtgärdade). |
+| `docs/audit-2026-04.md` | UI-audit mot DESIGN.md. |
+| `docs/DESIGN.md` | Designsystemets sanning (domänfärger, hierarki, komponenter). |
+| `docs/26-001/26-002/26-010` | EU-utlysningsspecifikationer för framtida funktioner. |
 
 ---
 

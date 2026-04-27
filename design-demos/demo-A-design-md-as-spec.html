@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<title>Demo A — DESIGN.md som specen säger</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  /* ============================================
+     DEMO A — DESIGN.md SOM SPECEN SÄGER
+     Turkos primär + 5 domänfärger som faktiskt syns.
+     Inga skuggor — borders + tints. "Headspace, inte Linear."
+     ============================================ */
+  :root {
+    /* Domain colors enligt DESIGN.md */
+    --action-50:#E1F5EE; --action-300:#9FE1CB; --action-900:#0F6E56;
+    --info-50:#DCEBFB;   --info-300:#9EC5ED;   --info-900:#1E5A9C;
+    --activity-50:#FFE8D6;--activity-300:#F4B988;--activity-900:#B05A1A;
+    --wellbeing-50:#FBE2EC;--wellbeing-300:#F0A8C0;--wellbeing-900:#9F1F4D;
+    --coaching-50:#E8E1F4;--coaching-300:#BFA9E0;--coaching-900:#5B3F8F;
+    --canvas:#FAFAF8;
+    --neutral-50:#F1F1EE; --neutral-200:#E0E0DC; --neutral-500:#888780; --neutral-900:#2C2C2A;
+    --border:#E0E0DC;
+    /* Default = action (turkos). Sidor överrider via [data-domain] */
+    --c:var(--action-900); --c-bg:var(--action-50); --c-accent:var(--action-300);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;background:var(--canvas);color:var(--neutral-900);font-size:14px;line-height:1.5}
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+  /* SIDEBAR — vit, border, ingen skugga */
+  .sidebar{background:#fff;border-right:1px solid var(--border);padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto}
+  .logo{padding:0 20px 20px;font-weight:700;font-size:16px;color:var(--neutral-900);border-bottom:1px solid var(--border)}
+  .logo span{color:var(--action-900)}
+  .nav{padding:12px 12px;display:flex;flex-direction:column;gap:2px}
+  .nav a{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:8px;color:var(--neutral-900);text-decoration:none;font-weight:500;font-size:14px;border:1px solid transparent}
+  .nav a:hover{background:var(--neutral-50)}
+  .nav a.active{background:var(--c-bg);color:var(--c);border-color:var(--c-accent)}
+  .nav .ico{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:16px}
+
+  /* TOPBAR */
+  .main{display:flex;flex-direction:column;min-width:0}
+  .topbar{background:#fff;border-bottom:1px solid var(--border);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+  .topbar h1{font-size:15px;font-weight:600;color:var(--neutral-900)}
+  .user{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--neutral-500)}
+  .avatar{width:32px;height:32px;border-radius:50%;background:var(--action-50);color:var(--action-900);display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;border:1px solid var(--action-300)}
+
+  /* CONTENT */
+  .content{padding:28px;max-width:1100px;width:100%}
+  .page{display:none}
+  .page.active{display:block}
+
+  /* PAGE HEADER med domänfärgband */
+  .page-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding:16px 20px;background:var(--c-bg);border:1px solid var(--c-accent);border-radius:12px}
+  .page-header .badge{width:44px;height:44px;border-radius:10px;background:#fff;color:var(--c);display:inline-flex;align-items:center;justify-content:center;font-size:22px;border:1px solid var(--c-accent)}
+  .page-header h2{font-size:20px;font-weight:700;color:var(--neutral-900);margin-bottom:2px}
+  .page-header p{color:var(--neutral-500);font-size:13px}
+
+  /* CARDS */
+  .card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px}
+  .card.tinted{background:var(--c-bg);border-color:var(--c-accent)}
+
+  /* KPI grid */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .kpi{background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px}
+  .kpi.positive{background:var(--c-bg);border-color:var(--c-accent)}
+  .kpi .label{font-size:12px;color:var(--neutral-500);margin-bottom:8px;font-weight:500}
+  .kpi .val{font-size:28px;font-weight:700;color:var(--neutral-900);line-height:1}
+  .kpi .val.accent{color:var(--c)}
+  .kpi .sub{font-size:12px;color:var(--neutral-500);margin-top:6px}
+
+  /* Next step banner — solid, semantic */
+  .next-step{background:var(--action-900);color:#fff;border-radius:12px;padding:18px 20px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .next-step h3{font-size:15px;font-weight:600;margin-bottom:4px}
+  .next-step p{font-size:13px;opacity:.85}
+  .btn{padding:10px 16px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;border:none;transition:all .15s}
+  .btn-primary{background:var(--c);color:#fff}
+  .btn-primary:hover{filter:brightness(1.1)}
+  .btn-on-dark{background:#fff;color:var(--action-900)}
+  .btn-secondary{background:#fff;border:1px solid var(--border);color:var(--neutral-900)}
+  .btn-secondary:hover{background:var(--neutral-50)}
+
+  /* Quick actions */
+  .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .quick{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;cursor:pointer;transition:border-color .15s}
+  .quick:hover{border-color:var(--c-accent);background:var(--c-bg)}
+  .quick .ico{width:36px;height:36px;border-radius:8px;background:var(--c-bg);color:var(--c);display:inline-flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:10px;border:1px solid var(--c-accent)}
+  .quick h4{font-size:14px;font-weight:600;margin-bottom:4px}
+  .quick p{font-size:12px;color:var(--neutral-500)}
+
+  /* Wellness mood scale */
+  .mood-row{display:flex;gap:10px;margin:12px 0 0}
+  .mood{width:48px;height:48px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;border:1px solid var(--border);background:#fff}
+  .mood:hover{background:var(--c-bg);border-color:var(--c-accent)}
+  .mood.selected{background:var(--c-bg);border-color:var(--c);border-width:2px}
+
+  /* Streak */
+  .streak-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:14px}
+  .day{aspect-ratio:1;border-radius:8px;background:var(--neutral-50);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--neutral-500);font-weight:500}
+  .day.logged{background:var(--c-bg);border-color:var(--c-accent);color:var(--c)}
+  .day.today{border-color:var(--c);border-width:2px}
+
+  /* Job search */
+  .search-bar{display:flex;gap:10px;margin-bottom:18px}
+  .search-bar input{flex:1;padding:11px 14px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:#fff}
+  .search-bar input:focus{outline:none;border-color:var(--c)}
+  .filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .pill{padding:6px 12px;border:1px solid var(--border);border-radius:14px;background:#fff;font-size:12px;font-weight:500;cursor:pointer}
+  .pill.active{background:var(--c-bg);border-color:var(--c-accent);color:var(--c)}
+
+  .job{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;margin-bottom:12px}
+  .job h4{font-size:15px;font-weight:600;margin-bottom:4px}
+  .job .meta{display:flex;gap:14px;color:var(--neutral-500);font-size:13px;margin-bottom:10px}
+  .job .meta-row{display:flex;justify-content:space-between;align-items:center}
+  .tags{display:flex;gap:6px;flex-wrap:wrap}
+  .tag{padding:3px 10px;background:var(--neutral-50);border-radius:14px;font-size:11px;color:var(--neutral-900);border:1px solid var(--border)}
+
+  /* Section spacing */
+  .section{margin-bottom:24px}
+  .section h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--neutral-900)}
+
+  /* Tab switcher (för demo) */
+  .demo-switch{position:fixed;bottom:20px;right:20px;background:#fff;border:1px solid var(--border);border-radius:12px;padding:6px;display:flex;gap:4px;z-index:100}
+  .demo-switch button{padding:8px 14px;border:none;background:transparent;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--neutral-500)}
+  .demo-switch button.active{background:var(--action-900);color:#fff}
+
+  .label-info{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:14px;padding:6px 14px;font-size:12px;color:var(--neutral-500);z-index:100;font-weight:500}
+  .label-info b{color:var(--action-900)}
+
+  /* Wellness page = wellbeing domain (rosa) */
+  [data-page="wellness"]{--c:var(--wellbeing-900);--c-bg:var(--wellbeing-50);--c-accent:var(--wellbeing-300)}
+  /* Jobs page = info domain (blå) */
+  [data-page="jobs"]{--c:var(--info-900);--c-bg:var(--info-50);--c-accent:var(--info-300)}
+</style>
+</head>
+<body>
+<div class="label-info">Demo <b>A</b> — DESIGN.md som specen säger (5 domänfärger, inga skuggor)</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">Deltagar<span>portalen</span></div>
+    <nav class="nav">
+      <a href="#" class="active" onclick="show('dashboard',this)"><span class="ico">🏠</span>Dashboard</a>
+      <a href="#" onclick="show('wellness',this)"><span class="ico">💚</span>Välmående</a>
+      <a href="#" onclick="show('jobs',this)"><span class="ico">🔍</span>Jobbsökning</a>
+      <a href="#"><span class="ico">📄</span>CV</a>
+      <a href="#"><span class="ico">✉️</span>Personligt brev</a>
+      <a href="#"><span class="ico">📋</span>Ansökningar</a>
+      <a href="#"><span class="ico">📔</span>Dagbok</a>
+      <a href="#"><span class="ico">🤖</span>AI-Team</a>
+      <a href="#"><span class="ico">⚙️</span>Inställningar</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1 id="topbar-title">Översikt</h1>
+      <div class="user">
+        <span>Anna Andersson</span>
+        <div class="avatar">AA</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <!-- DASHBOARD -->
+      <section class="page active" data-page="dashboard">
+        <div class="page-header">
+          <div class="badge">🏠</div>
+          <div>
+            <h2>Hej Anna, välkommen tillbaka</h2>
+            <p>Du har gjort framsteg den här veckan. Ta det i din takt.</p>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi positive"><div class="label">CV-styrka</div><div class="val accent">75%</div><div class="sub">Komplettera 2 sektioner</div></div>
+          <div class="kpi positive"><div class="label">Sparade jobb</div><div class="val accent">12</div><div class="sub">3 nya denna vecka</div></div>
+          <div class="kpi"><div class="label">Ansökningar</div><div class="val">3</div><div class="sub">Senast: i går</div></div>
+          <div class="kpi positive"><div class="label">Aktivitetsstreak</div><div class="val accent">5 dgr</div><div class="sub">Bra jobbat!</div></div>
+        </div>
+
+        <div class="next-step">
+          <div>
+            <h3>Nästa steg: Lägg till din arbetslivserfarenhet</h3>
+            <p>Ditt CV är nästan färdigt — bara två sektioner kvar.</p>
+          </div>
+          <button class="btn btn-on-dark">Fortsätt →</button>
+        </div>
+
+        <div class="section">
+          <h3>Snabba handlingar</h3>
+          <div class="quick-grid">
+            <div class="quick"><div class="ico">📄</div><h4>Skriv personligt brev</h4><p>AI hjälper dig anpassa till en annons</p></div>
+            <div class="quick"><div class="ico">🎤</div><h4>Öva intervju</h4><p>Träna med AI-feedback</p></div>
+            <div class="quick"><div class="ico">📊</div><h4>Kompetensanalys</h4><p>Se vad arbetsmarknaden efterfrågar</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- WELLNESS -->
+      <section class="page" data-page="wellness">
+        <div class="page-header">
+          <div class="badge">💚</div>
+          <div>
+            <h2>Hur mår du idag?</h2>
+            <p>Det är okej att ta det lugnt. Allt sparas automatiskt.</p>
+          </div>
+        </div>
+
+        <div class="card section">
+          <h3>Välj din känsla just nu</h3>
+          <div class="mood-row">
+            <div class="mood">😔</div>
+            <div class="mood">😐</div>
+            <div class="mood selected">🙂</div>
+            <div class="mood">😊</div>
+            <div class="mood">😄</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi positive"><div class="label">Mående-streak</div><div class="val accent">5 dgr</div><div class="sub">Bra rytm</div></div>
+          <div class="kpi"><div class="label">Energinivå</div><div class="val">Medium</div><div class="sub">Stabilt sedan måndag</div></div>
+          <div class="kpi positive"><div class="label">Vila</div><div class="val accent">7,5h</div><div class="sub">Genomsnitt i veckan</div></div>
+        </div>
+
+        <div class="card section">
+          <h3>Senaste 7 dagarna</h3>
+          <div class="streak-grid">
+            <div class="day logged">Mån</div>
+            <div class="day logged">Tis</div>
+            <div class="day logged">Ons</div>
+            <div class="day logged">Tor</div>
+            <div class="day logged">Fre</div>
+            <div class="day today">Idag</div>
+            <div class="day">Sön</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- JOBS -->
+      <section class="page" data-page="jobs">
+        <div class="page-header">
+          <div class="badge">🔍</div>
+          <div>
+            <h2>Hitta ditt nästa jobb</h2>
+            <p>Sök bland tusentals lediga tjänster i Sverige.</p>
+          </div>
+        </div>
+
+        <div class="search-bar">
+          <input type="text" placeholder="Jobbtitel, ord eller företag…">
+          <button class="btn btn-primary">Sök</button>
+        </div>
+
+        <div class="filters">
+          <div class="pill active">Stockholm</div>
+          <div class="pill">Heltid</div>
+          <div class="pill">Deltid</div>
+          <div class="pill">Distans</div>
+          <div class="pill">Senaste 7 dagarna</div>
+        </div>
+
+        <div class="job">
+          <div class="meta-row"><h4>Kundtjänstmedarbetare</h4><button class="btn btn-secondary">★ Spara</button></div>
+          <div class="meta"><span>Postnord</span><span>Stockholm</span><span>Heltid</span></div>
+          <div class="tags"><span class="tag">Service</span><span class="tag">Kommunikation</span><span class="tag">Svenska</span></div>
+        </div>
+        <div class="job">
+          <div class="meta-row"><h4>Lagerarbetare</h4><button class="btn btn-secondary">★ Spara</button></div>
+          <div class="meta"><span>ICA Logistik</span><span>Solna</span><span>Heltid</span></div>
+          <div class="tags"><span class="tag">Truck</span><span class="tag">Lager</span><span class="tag">Skiftarbete</span></div>
+        </div>
+        <div class="job">
+          <div class="meta-row"><h4>Vårdbiträde</h4><button class="btn btn-secondary">★ Sparat</button></div>
+          <div class="meta"><span>Stockholms stad</span><span>Södermalm</span><span>Deltid</span></div>
+          <div class="tags"><span class="tag">Omsorg</span><span class="tag">Kommunikation</span><span class="tag">Empati</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="demo-switch">
+  <button class="active" onclick="show('dashboard',null,this)">Dashboard</button>
+  <button onclick="show('wellness',null,this)">Wellness</button>
+  <button onclick="show('jobs',null,this)">Jobb</button>
+</div>
+
+<script>
+function show(p, navEl, switchEl){
+  document.querySelectorAll('.page').forEach(s=>s.classList.remove('active'));
+  document.querySelector(`[data-page="${p}"]`).classList.add('active');
+  if(navEl){
+    document.querySelectorAll('.nav a').forEach(a=>a.classList.remove('active'));
+    navEl.classList.add('active');
+  }
+  if(switchEl){
+    document.querySelectorAll('.demo-switch button').forEach(b=>b.classList.remove('active'));
+    switchEl.classList.add('active');
+  }
+  document.getElementById('topbar-title').textContent =
+    p==='dashboard'?'Översikt':p==='wellness'?'Välmående':'Jobbsökning';
+}
+</script>
+</body>
+</html>

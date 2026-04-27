@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<title>Demo B — Calm & Capable Violet (det som koden faktiskt bygger)</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  /* ============================================
+     DEMO B — CALM & CAPABLE VIOLET (som koden bygger)
+     Violet primär. Inga domänfärger — alla sidor likadana.
+     Skuggor + gradienter accepteras. SaaS-modernt utseende.
+     ============================================ */
+  :root {
+    --primary-50:#f5f3ff; --primary-100:#ede9fe; --primary-300:#c4b5fd;
+    --primary-500:#8b5cf6; --primary-600:#7c3aed; --primary-700:#6d28d9; --primary-900:#4c1d95;
+    --bg:#fafaf9;
+    --surface:#fff;
+    --stone-100:#f5f5f4; --stone-200:#e7e5e4; --stone-500:#78716c; --stone-700:#44403c; --stone-900:#1c1917;
+    --shadow-sm:0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow:0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --shadow-md:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg:0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --radius:12px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",sans-serif;background:var(--bg);color:var(--stone-900);font-size:14px;line-height:1.5}
+  .app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+
+  /* SIDEBAR — vit med skugga */
+  .sidebar{background:var(--surface);box-shadow:var(--shadow);padding:20px 0;position:sticky;top:0;height:100vh;overflow-y:auto;z-index:20}
+  .logo{padding:0 20px 20px;font-weight:700;font-size:16px;background:linear-gradient(135deg,var(--primary-600) 0%,var(--primary-900) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .nav{padding:12px 12px;display:flex;flex-direction:column;gap:2px}
+  .nav a{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:10px;color:var(--stone-700);text-decoration:none;font-weight:500;font-size:14px;transition:all .15s}
+  .nav a:hover{background:var(--stone-100);color:var(--stone-900)}
+  .nav a.active{background:linear-gradient(135deg,var(--primary-50) 0%,var(--primary-100) 100%);color:var(--primary-700);font-weight:600;box-shadow:var(--shadow-sm)}
+  .nav .ico{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:16px}
+
+  /* TOPBAR */
+  .main{display:flex;flex-direction:column;min-width:0}
+  .topbar{background:var(--surface);box-shadow:var(--shadow-sm);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10}
+  .topbar h1{font-size:15px;font-weight:600;color:var(--stone-900)}
+  .user{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--stone-500)}
+  .avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--primary-500) 0%,var(--primary-700) 100%);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;box-shadow:var(--shadow-sm)}
+
+  /* CONTENT */
+  .content{padding:28px;max-width:1100px;width:100%}
+  .page{display:none}
+  .page.active{display:block}
+
+  /* PAGE HEADER med gradient */
+  .page-header{display:flex;align-items:center;gap:14px;margin-bottom:24px;padding:20px 24px;background:linear-gradient(135deg,var(--primary-50) 0%,#fff 100%);border-radius:var(--radius);box-shadow:var(--shadow-sm)}
+  .page-header .badge{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--primary-500) 0%,var(--primary-700) 100%);color:#fff;display:inline-flex;align-items:center;justify-content:center;font-size:22px;box-shadow:var(--shadow-md)}
+  .page-header h2{font-size:20px;font-weight:700;color:var(--stone-900);margin-bottom:2px}
+  .page-header p{color:var(--stone-500);font-size:13px}
+
+  /* CARDS */
+  .card{background:var(--surface);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm);transition:box-shadow .15s}
+  .card:hover{box-shadow:var(--shadow)}
+
+  /* KPI grid */
+  .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+  .kpi{background:var(--surface);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);transition:all .15s;cursor:default}
+  .kpi:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+  .kpi .label{font-size:12px;color:var(--stone-500);margin-bottom:8px;font-weight:500}
+  .kpi .val{font-size:28px;font-weight:700;color:var(--stone-900);line-height:1;background:linear-gradient(135deg,var(--primary-700),var(--primary-900));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .kpi .sub{font-size:12px;color:var(--stone-500);margin-top:6px}
+
+  /* Next step banner — gradient */
+  .next-step{background:linear-gradient(135deg,var(--primary-600) 0%,var(--primary-900) 100%);color:#fff;border-radius:var(--radius);padding:20px 24px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;box-shadow:var(--shadow-md)}
+  .next-step h3{font-size:16px;font-weight:600;margin-bottom:4px}
+  .next-step p{font-size:13px;opacity:.9}
+  .btn{padding:10px 18px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;border:none;transition:all .15s;box-shadow:var(--shadow-sm)}
+  .btn-primary{background:linear-gradient(135deg,var(--primary-600) 0%,var(--primary-700) 100%);color:#fff}
+  .btn-primary:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+  .btn-on-dark{background:#fff;color:var(--primary-700)}
+  .btn-secondary{background:var(--surface);color:var(--stone-900);box-shadow:var(--shadow-sm)}
+  .btn-secondary:hover{box-shadow:var(--shadow);background:var(--stone-100)}
+
+  /* Quick actions */
+  .quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .quick{background:var(--surface);border-radius:var(--radius);padding:20px;cursor:pointer;box-shadow:var(--shadow-sm);transition:all .2s}
+  .quick:hover{box-shadow:var(--shadow-lg);transform:translateY(-3px)}
+  .quick .ico{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--primary-100) 0%,var(--primary-300) 100%);color:var(--primary-700);display:inline-flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:12px;box-shadow:var(--shadow-sm)}
+  .quick h4{font-size:14px;font-weight:600;margin-bottom:4px;color:var(--stone-900)}
+  .quick p{font-size:12px;color:var(--stone-500)}
+
+  /* Wellness mood scale */
+  .mood-row{display:flex;gap:10px;margin:12px 0 0}
+  .mood{width:50px;height:50px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;background:var(--surface);box-shadow:var(--shadow-sm);transition:all .15s}
+  .mood:hover{box-shadow:var(--shadow-md);transform:scale(1.05)}
+  .mood.selected{background:linear-gradient(135deg,var(--primary-100) 0%,var(--primary-300) 100%);box-shadow:var(--shadow-md);transform:scale(1.08)}
+
+  /* Streak */
+  .streak-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;margin-top:14px}
+  .day{aspect-ratio:1;border-radius:10px;background:var(--stone-100);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--stone-500);font-weight:500;box-shadow:var(--shadow-sm)}
+  .day.logged{background:linear-gradient(135deg,var(--primary-100) 0%,var(--primary-300) 100%);color:var(--primary-700)}
+  .day.today{background:linear-gradient(135deg,var(--primary-500) 0%,var(--primary-700) 100%);color:#fff;box-shadow:var(--shadow-md)}
+
+  /* Job search */
+  .search-bar{display:flex;gap:10px;margin-bottom:18px}
+  .search-bar input{flex:1;padding:12px 16px;border:none;border-radius:10px;font-size:14px;background:var(--surface);box-shadow:var(--shadow-sm)}
+  .search-bar input:focus{outline:none;box-shadow:0 0 0 3px var(--primary-100),var(--shadow)}
+  .filters{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+  .pill{padding:7px 14px;border:none;border-radius:14px;background:var(--surface);font-size:12px;font-weight:500;cursor:pointer;color:var(--stone-700);box-shadow:var(--shadow-sm)}
+  .pill.active{background:linear-gradient(135deg,var(--primary-100) 0%,var(--primary-300) 100%);color:var(--primary-700)}
+
+  .job{background:var(--surface);border-radius:var(--radius);padding:20px;margin-bottom:12px;box-shadow:var(--shadow-sm);transition:all .15s}
+  .job:hover{box-shadow:var(--shadow-md);transform:translateX(4px)}
+  .job h4{font-size:15px;font-weight:600;margin-bottom:4px;color:var(--stone-900)}
+  .job .meta{display:flex;gap:14px;color:var(--stone-500);font-size:13px;margin-bottom:10px}
+  .job .meta-row{display:flex;justify-content:space-between;align-items:center}
+  .tags{display:flex;gap:6px;flex-wrap:wrap}
+  .tag{padding:4px 12px;background:var(--stone-100);border-radius:14px;font-size:11px;color:var(--stone-700);font-weight:500}
+
+  .section{margin-bottom:24px}
+  .section h3{font-size:14px;font-weight:600;margin-bottom:12px;color:var(--stone-900)}
+
+  .demo-switch{position:fixed;bottom:20px;right:20px;background:var(--surface);border-radius:14px;padding:6px;display:flex;gap:4px;z-index:100;box-shadow:var(--shadow-lg)}
+  .demo-switch button{padding:9px 16px;border:none;background:transparent;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;color:var(--stone-500)}
+  .demo-switch button.active{background:linear-gradient(135deg,var(--primary-600),var(--primary-900));color:#fff;box-shadow:var(--shadow-sm)}
+
+  .label-info{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:var(--surface);border-radius:14px;padding:7px 16px;font-size:12px;color:var(--stone-500);z-index:100;font-weight:500;box-shadow:var(--shadow)}
+  .label-info b{color:var(--primary-700)}
+</style>
+</head>
+<body>
+<div class="label-info">Demo <b>B</b> — Calm & Capable Violet (som koden bygger idag, en färg överallt)</div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="logo">Deltagarportalen</div>
+    <nav class="nav">
+      <a href="#" class="active" onclick="show('dashboard',this)"><span class="ico">🏠</span>Dashboard</a>
+      <a href="#" onclick="show('wellness',this)"><span class="ico">💚</span>Välmående</a>
+      <a href="#" onclick="show('jobs',this)"><span class="ico">🔍</span>Jobbsökning</a>
+      <a href="#"><span class="ico">📄</span>CV</a>
+      <a href="#"><span class="ico">✉️</span>Personligt brev</a>
+      <a href="#"><span class="ico">📋</span>Ansökningar</a>
+      <a href="#"><span class="ico">📔</span>Dagbok</a>
+      <a href="#"><span class="ico">🤖</span>AI-Team</a>
+      <a href="#"><span class="ico">⚙️</span>Inställningar</a>
+    </nav>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <h1 id="topbar-title">Översikt</h1>
+      <div class="user">
+        <span>Anna Andersson</span>
+        <div class="avatar">AA</div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="page active" data-page="dashboard">
+        <div class="page-header">
+          <div class="badge">🏠</div>
+          <div>
+            <h2>Hej Anna, välkommen tillbaka</h2>
+            <p>Du har gjort framsteg den här veckan. Ta det i din takt.</p>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="label">CV-styrka</div><div class="val">75%</div><div class="sub">Komplettera 2 sektioner</div></div>
+          <div class="kpi"><div class="label">Sparade jobb</div><div class="val">12</div><div class="sub">3 nya denna vecka</div></div>
+          <div class="kpi"><div class="label">Ansökningar</div><div class="val">3</div><div class="sub">Senast: i går</div></div>
+          <div class="kpi"><div class="label">Aktivitetsstreak</div><div class="val">5 dgr</div><div class="sub">Bra jobbat!</div></div>
+        </div>
+
+        <div class="next-step">
+          <div>
+            <h3>Nästa steg: Lägg till din arbetslivserfarenhet</h3>
+            <p>Ditt CV är nästan färdigt — bara två sektioner kvar.</p>
+          </div>
+          <button class="btn btn-on-dark">Fortsätt →</button>
+        </div>
+
+        <div class="section">
+          <h3>Snabba handlingar</h3>
+          <div class="quick-grid">
+            <div class="quick"><div class="ico">📄</div><h4>Skriv personligt brev</h4><p>AI hjälper dig anpassa till en annons</p></div>
+            <div class="quick"><div class="ico">🎤</div><h4>Öva intervju</h4><p>Träna med AI-feedback</p></div>
+            <div class="quick"><div class="ico">📊</div><h4>Kompetensanalys</h4><p>Se vad arbetsmarknaden efterfrågar</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="wellness">
+        <div class="page-header">
+          <div class="badge">💚</div>
+          <div>
+            <h2>Hur mår du idag?</h2>
+            <p>Det är okej att ta det lugnt. Allt sparas automatiskt.</p>
+          </div>
+        </div>
+
+        <div class="card section">
+          <h3>Välj din känsla just nu</h3>
+          <div class="mood-row">
+            <div class="mood">😔</div>
+            <div class="mood">😐</div>
+            <div class="mood selected">🙂</div>
+            <div class="mood">😊</div>
+            <div class="mood">😄</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
+          <div class="kpi"><div class="label">Mående-streak</div><div class="val">5 dgr</div><div class="sub">Bra rytm</div></div>
+          <div class="kpi"><div class="label">Energinivå</div><div class="val">Medium</div><div class="sub">Stabilt sedan måndag</div></div>
+          <div class="kpi"><div class="label">Vila</div><div class="val">7,5h</div><div class="sub">Genomsnitt i veckan</div></div>
+        </div>
+
+        <div class="card section">
+          <h3>Senaste 7 dagarna</h3>
+          <div class="streak-grid">
+            <div class="day logged">Mån</div>
+            <div class="day logged">Tis</div>
+            <div class="day logged">Ons</div>
+            <div class="day logged">Tor</div>
+            <div class="day logged">Fre</div>
+            <div class="day today">Idag</div>
+            <div class="day">Sön</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="jobs">
+        <div class="page-header">
+          <div class="badge">🔍</div>
+          <div>
+            <h2>Hitta ditt nästa jobb</h2>
+            <p>Sök bland tusentals lediga tjänster i Sverige.</p>
+          </div>
+        </div>
+
+        <div class="search-bar">
+          <input type="text" placeholder="Jobbtitel, ord eller företag…">
+          <button class="btn btn-primary">Sök</button>
+        </div>
+
+        <div class="filters">
+          <div class="pill active">Stockholm</div>
+          <div class="pill">Heltid</div>
+          <div class="pill">Deltid</div>
+          <div class="pill">Distans</div>
+          <div class="pill">Senaste 7 dagarna</div>
+        </div>
+
+        <div class="job">
+          <div class="meta-row"><h4>Kundtjänstmedarbetare</h4><button class="btn btn-secondary">★ Spara</button></div>
+          <div class="meta"><span>Postnord</span><span>Stockholm</span><span>Heltid</span></div>
+          <div class="tags"><span class="tag">Service</span><span class="tag">Kommunikation</span><span class="tag">Svenska</span></div>
+        </div>
+        <div class="job">
+          <div class="meta-row"><h4>Lagerarbetare</h4><button class="btn btn-secondary">★ Spara</button></div>
+          <div class="meta"><span>ICA Logistik</span><span>Solna</span><span>Heltid</span></div>
+          <div class="tags"><span class="tag">Truck</span><span class="tag">Lager</span><span class="tag">Skiftarbete</span></div>
+        </div>
+        <div class="job">
+          <div class="meta-row"><h4>Vårdbiträde</h4><button class="btn btn-secondary">★ Sparat</button></div>
+          <div class="meta"><span>Stockholms stad</span><span>Södermalm</span><span>Deltid</span></div>
+          <div class="tags"><span class="tag">Omsorg</span><span class="tag">Kommunikation</span><span class="tag">Empati</span></div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div class="demo-switch">
+  <button class="active" onclick="show('dashboard',null,this)">Dashboard</button>
+  <button onclick="show('wellness',null,this)">Wellness</button>
+  <button onclick="show('jobs',null,this)">Jobb</button>
+</div>
+
+<script>
+function show(p, navEl, switchEl){
+  document.querySelectorAll('.page').forEach(s=>s.classList.remove('active'));
+  document.querySelector(`[data-page="${p}"]`).classList.add('active');
+  if(navEl){
+    document.querySelectorAll('.nav a').forEach(a=>a.classList.remove('active'));
+    navEl.classList.add('active');
+  }
+  if(switchEl){
+    document.querySelectorAll('.demo-switch button').forEach(b=>b.classList.remove('active'));
+    switchEl.classList.add('active');
+  }
+  document.getElementById('topbar-title').textContent =
+    p==='dashboard'?'Översikt':p==='wellness'?'Välmående':'Jobbsökning';
+}
+</script>
+</body>
+</html>

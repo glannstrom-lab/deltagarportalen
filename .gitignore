@@ -66,6 +66,9 @@ demo*.html
 *demo*.sql
 SIMPLE_*.sql
 
+# Allow design demos (historical reference for design decisions)
+!design-demos/**
+
 # Deploy packages
 deploy-package/
 deploy-simply/
@@ -74,3 +77,9 @@ complete-deploy/
 # Old project copies
 deltagarportalen-*/
 .vercel
+
+# Personal files (CV-PDFs, jobbansökningar, etc) - lokalt arbetsmaterial
+personal/
+
+# Windows artifacts
+nul

@@ -34,13 +34,11 @@ import StorageTest from './pages/StorageTest'
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const CVPage = lazy(() => import('./pages/CVPage'))
 const CVBuilder = lazy(() => import('./pages/CVBuilder'))
-const CoverLetterGenerator = lazy(() => import('./pages/CoverLetterGenerator'))
 const CoverLetterPage = lazy(() => import('./pages/CoverLetterPage'))
 const InterestGuide = lazy(() => import('./pages/InterestGuide'))
 const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'))
 const Article = lazy(() => import('./pages/Article'))
 const Profile = lazy(() => import('./pages/Profile'))
-const UnifiedProfile = lazy(() => import('./pages/UnifiedProfile'))
 const SharedProfile = lazy(() => import('./pages/SharedProfile'))
 // JobTracker removed - using JobSearch instead
 const JobSearch = lazy(() => import('./pages/JobSearch'))
@@ -59,7 +57,6 @@ const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
 const Salary = lazy(() => import('./pages/Salary'))
 const International = lazy(() => import('./pages/International'))
 const PersonalBrand = lazy(() => import('./pages/PersonalBrand'))
-// const Journey = lazy(() => import('./pages/Journey')) // Disabled
 const LinkedInOptimizer = lazy(() => import('./pages/LinkedInOptimizer'))
 const SkillsGapAnalysis = lazy(() => import('./pages/SkillsGapAnalysis'))
 const InterviewSimulator = lazy(() => import('./pages/InterviewSimulator'))
@@ -252,7 +249,6 @@ function App() {
           <Route path="salary/*" element={<LazyRoute><RouteErrorBoundary><Salary /></RouteErrorBoundary></LazyRoute>} />
           <Route path="education/*" element={<LazyRoute><RouteErrorBoundary><Education /></RouteErrorBoundary></LazyRoute>} />
           <Route path="calendar" element={<LazyRoute><RouteErrorBoundary><Calendar /></RouteErrorBoundary></LazyRoute>} />
-          {/* <Route path="journey" element={<LazyRoute><RouteErrorBoundary><Journey /></RouteErrorBoundary></LazyRoute>} /> */}
           <Route path="spontanansökan/*" element={<LazyRoute><RouteErrorBoundary><Spontaneous /></RouteErrorBoundary></LazyRoute>} />
           <Route path="nätverk" element={<LazyRoute><RouteErrorBoundary><Network /></RouteErrorBoundary></LazyRoute>} />
           <Route path="personal-brand/*" element={<LazyRoute><RouteErrorBoundary><PersonalBrand /></RouteErrorBoundary></LazyRoute>} />
