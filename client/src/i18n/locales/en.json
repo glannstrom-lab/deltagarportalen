@@ -249,7 +249,9 @@
     "guidesAndFAQ": "Guides and FAQ",
     "tagline": "Your job portal",
     "welcome": "Welcome",
-    "accessibility": "Accessibility"
+    "accessibility": "Accessibility",
+    "focusModeOn": "Enable focus mode",
+    "focusModeOff": "Disable focus mode"
   },
   "language": {
     "select": "Select language",
@@ -1361,6 +1363,127 @@
       "title": "Welcome to the CV Builder",
       "subtitle": "Choose how you want to start",
       "fullBuilder": "Or use the full CV builder"
+    }
+  },
+  "focusCV": {
+    "subtitle": "Step by step",
+    "stepOf": "Step {{current}} of {{total}}",
+    "saved": "CV saved!",
+    "saveError": "Could not save CV",
+    "saveAndFinish": "Save CV",
+    "exitFocusMode": "Switch to normal mode",
+    "steps": {
+      "basic": {
+        "title": "Basic info",
+        "desc": "Fill in your name and contact details"
+      },
+      "summary": {
+        "title": "About you",
+        "desc": "Tell us briefly about yourself"
+      },
+      "work": {
+        "title": "Work experience",
+        "desc": "Add your previous jobs"
+      },
+      "education": {
+        "title": "Education",
+        "desc": "Add your education"
+      },
+      "skills": {
+        "title": "Skills",
+        "desc": "Add your skills"
+      },
+      "preview": {
+        "title": "Preview",
+        "desc": "See how your CV looks"
+      }
+    },
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "title": "Job title",
+      "summary": "Short introduction",
+      "jobTitle": "Position/Role",
+      "company": "Employer",
+      "startDate": "Start date",
+      "endDate": "End date",
+      "workDescription": "What did you do?",
+      "degree": "Degree/Education",
+      "school": "School/Institution",
+      "field": "Field (optional)",
+      "addSkill": "Add skill"
+    },
+    "placeholders": {
+      "firstName": "Anna",
+      "lastName": "Smith",
+      "email": "anna@example.com",
+      "phone": "070-123 45 67",
+      "title": "e.g. Project Manager, Sales Rep, Developer",
+      "summary": "Describe yourself in 2-3 sentences. What are you good at? What do you want to work with?",
+      "jobTitle": "e.g. Project Manager",
+      "company": "e.g. Company Inc.",
+      "endDate": "Ongoing?",
+      "workDescription": "Describe your most important tasks and what you achieved.",
+      "degree": "e.g. Bachelor's degree, Vocational training",
+      "school": "e.g. Stockholm University",
+      "field": "e.g. Computer Science",
+      "skill": "e.g. Excel, Project Management, English"
+    },
+    "hints": {
+      "summary": "Tip: Write what you want to work with and what you're good at."
+    },
+    "work": {
+      "editing": "Edit work experience",
+      "empty": "Add your previous jobs here.",
+      "untitled": "(No title)",
+      "add": "Add work experience"
+    },
+    "education": {
+      "editing": "Edit education",
+      "empty": "Add your education here.",
+      "untitled": "(No degree)",
+      "add": "Add education"
+    },
+    "skills": {
+      "empty": "Type a skill and press Enter to add it."
+    },
+    "preview": {
+      "ready": "Your CV is ready!",
+      "description": "Review your CV below. You can always come back and edit later."
+    }
+  },
+  "focusDashboard": {
+    "defaultName": "you",
+    "greeting": "Hi {{name}}!",
+    "allDone": "You're ready to apply for jobs!",
+    "progress": "You've completed {{percent}}% of your job profile",
+    "progressLabel": "Your progress",
+    "nextStep": "Your next step",
+    "tapToStart": "Tap to start",
+    "congratulations": "Well done!",
+    "readyToApply": "You have a complete job profile. Time to start applying!",
+    "searchJobs": "Search jobs",
+    "quickActions": "Quick actions",
+    "exitFocusMode": "Switch to normal mode",
+    "steps": {
+      "profile": "Fill in your profile",
+      "interest": "Take the interest guide",
+      "cv": "Create your CV",
+      "jobSearch": "Save a job",
+      "coverLetter": "Write a cover letter"
+    },
+    "actions": {
+      "cv": "My CV",
+      "cvComplete": "Complete",
+      "cvIncomplete": "Start here",
+      "jobs": "Search jobs",
+      "jobsSaved": "{{count}} saved",
+      "jobsNone": "Find your dream job",
+      "coverLetter": "Cover letter",
+      "coverLetterCount": "{{count}} letters",
+      "coverLetterNone": "Create with AI"
     }
   },
   "coverLetter": {
@@ -3335,6 +3458,8 @@
     "accessibility": {
       "title": "Accessibility",
       "description": "Customize the portal to your needs and preferences",
+      "focusMode": "Focus mode (NPF-adapted)",
+      "focusModeDesc": "Shows one step at a time and reduces visual noise. Perfect for ADHD, autism, or if you prefer a simpler experience.",
       "highContrast": "High contrast",
       "highContrastDesc": "Increases contrast for better readability",
       "largeText": "Larger text",

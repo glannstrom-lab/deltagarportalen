@@ -13,12 +13,15 @@ import { MyCVs } from '@/components/cv/MyCVs'
 import { ATSAnalysis } from '@/components/cv/ATSAnalysis'
 import { CVTips } from '@/components/cv/CVTips'
 import { SaveIndicator } from '@/components/cv/SaveIndicator'
+import { FocusCVBuilder } from '@/components/cv/FocusCVBuilder'
+import { useFocusMode } from '@/components/FocusModeProvider'
 import { FileText } from '@/components/ui/icons'
 
 export default function CVPage() {
   const location = useLocation()
   const navigate = useNavigate()
   const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
 
   // Build tabs with translated labels
   const cvTabs = cvTabDefs.map((tab) => ({
@@ -35,6 +38,30 @@ export default function CVPage() {
     tab.path === currentPath ||
     (tab.path === '/cv' && (currentPath === '/cv' || currentPath === '/cv/'))
   )?.id || 'create'
+
+  // In focus mode, show simplified CV builder on main route
+  if (isFocusMode && isBuilderPage) {
+    return (
+      <div className="pb-8 max-w-7xl mx-auto">
+        <header className="mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            </div>
+            <div>
+              <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">
+                {t('cv.title')}
+              </h1>
+              <p className="text-sm text-stone-500 dark:text-stone-400">
+                {t('focusCV.subtitle', 'Steg-för-steg')}
+              </p>
+            </div>
+          </div>
+        </header>
+        <FocusCVBuilder onExitFocusMode={toggleFocusMode} />
+      </div>
+    )
+  }
 
   return (
     <div className="pb-8 max-w-7xl mx-auto">

@@ -10,6 +10,8 @@ import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { useDashboardDataQuery } from '@/hooks/useDashboardData'
 import { useInterestProfile } from '@/hooks/useInterestProfile'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import FocusDashboard from './FocusDashboard'
 import {
   User, Compass, FileText, Search, Mail,
   ChevronRight, ChevronDown, Bookmark, FileUser,
@@ -35,6 +37,12 @@ export default function DashboardPage() {
   const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError, refetch } = useDashboardDataQuery()
   const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
   const [showCompletedSteps, setShowCompletedSteps] = useState(false)
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  // In focus mode, show simplified dashboard
+  if (isFocusMode) {
+    return <FocusDashboard onExitFocusMode={toggleFocusMode} />
+  }
 
   // Calculate onboarding progress
   const onboardingProgress = useMemo(() => {

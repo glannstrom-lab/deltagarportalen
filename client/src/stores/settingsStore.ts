@@ -16,6 +16,10 @@ interface SettingsState {
   calmMode: boolean
   toggleCalmMode: () => void
 
+  // Fokusläge (NPF-anpassat)
+  focusMode: boolean
+  toggleFocusMode: () => void
+
   // Notifikationer
   emailNotifications: boolean
   pushNotifications: boolean
@@ -54,6 +58,7 @@ interface SettingsState {
 // Server-side settings type
 interface ServerSettings {
   calm_mode: boolean
+  focus_mode: boolean
   email_notifications: boolean
   push_notifications: boolean
   weekly_summary: boolean
@@ -73,6 +78,14 @@ export const useSettingsStore = create<SettingsState>()(
         const newValue = !get().calmMode
         set({ calmMode: newValue })
         get()._saveToServer({ calm_mode: newValue })
+      },
+
+      // Fokusläge (NPF-anpassat) - visar ett steg i taget
+      focusMode: false,
+      toggleFocusMode: () => {
+        const newValue = !get().focusMode
+        set({ focusMode: newValue })
+        get()._saveToServer({ focus_mode: newValue })
       },
 
       // Notifikationer
@@ -168,7 +181,7 @@ export const useSettingsStore = create<SettingsState>()(
 
           const { data, error } = await supabase
             .from('user_preferences')
-            .select('calm_mode, email_notifications, push_notifications, weekly_summary, high_contrast, large_text, language, has_completed_onboarding, updated_at')
+            .select('calm_mode, focus_mode, email_notifications, push_notifications, weekly_summary, high_contrast, large_text, language, has_completed_onboarding, updated_at')
             .eq('user_id', user.id)
             .maybeSingle()
 
@@ -183,6 +196,7 @@ export const useSettingsStore = create<SettingsState>()(
             const updates: Partial<SettingsState> = {}
 
             if (data.calm_mode !== null) updates.calmMode = data.calm_mode
+            if (data.focus_mode !== null) updates.focusMode = data.focus_mode
             if (data.email_notifications !== null) updates.emailNotifications = data.email_notifications
             if (data.push_notifications !== null) updates.pushNotifications = data.push_notifications
             if (data.weekly_summary !== null) updates.weeklySummary = data.weekly_summary
@@ -205,6 +219,7 @@ export const useSettingsStore = create<SettingsState>()(
             const state = get()
             await get()._saveToServer({
               calm_mode: state.calmMode,
+              focus_mode: state.focusMode,
               email_notifications: state.emailNotifications,
               push_notifications: state.pushNotifications,
               weekly_summary: state.weeklySummary,
@@ -226,6 +241,7 @@ export const useSettingsStore = create<SettingsState>()(
         storage: createJSONStorage(() => localStorage),
         partialize: (state) => ({
           calmMode: state.calmMode,
+          focusMode: state.focusMode,
           emailNotifications: state.emailNotifications,
           pushNotifications: state.pushNotifications,
           weeklySummary: state.weeklySummary,

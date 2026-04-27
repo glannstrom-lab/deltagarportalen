@@ -261,6 +261,31 @@
     outline: none;
   }
   
+  /* === FOCUS MODE (NPF-anpassat) === */
+  /* For users with ADHD, autism, etc. - reduces cognitive load */
+  .focus-mode {
+    /* Disable all animations and transitions */
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Hide elements that add visual noise in focus mode */
+  .focus-mode .hide-in-focus {
+    display: none !important;
+  }
+
+  /* Larger touch targets in focus mode */
+  .focus-mode button,
+  .focus-mode a,
+  .focus-mode input,
+  .focus-mode select,
+  .focus-mode textarea {
+    min-height: 48px;
+  }
+
   /* Reduced motion - respektera användarens önskemål */
   @media (prefers-reduced-motion: reduce) {
     *,

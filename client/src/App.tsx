@@ -27,6 +27,7 @@ import Terms from './pages/Terms'
 import AiPolicy from './pages/AiPolicy'
 import CookieConsent from './components/CookieConsent'
 import { EnergySaveMode } from './components/EnergySaveMode'
+import { FocusModeProvider } from './components/FocusModeProvider'
 import StorageTest from './pages/StorageTest'
 
 // Lazy-loaded sidor
@@ -282,6 +283,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <EnergySaveMode />
+      <FocusModeProvider />
       <CookieConsent />
     </>
   )

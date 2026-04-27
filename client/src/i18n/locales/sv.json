@@ -249,7 +249,9 @@
     "guidesAndFAQ": "Guider och vanliga frågor",
     "tagline": "Din jobbportal",
     "welcome": "Välkommen",
-    "accessibility": "Tillgänglighet"
+    "accessibility": "Tillgänglighet",
+    "focusModeOn": "Aktivera fokusläge",
+    "focusModeOff": "Stäng av fokusläge"
   },
   "language": {
     "select": "Välj språk",
@@ -1361,6 +1363,127 @@
       "title": "Välkommen till CV-byggaren",
       "subtitle": "Välj hur du vill börja",
       "fullBuilder": "Eller använd den fullständiga CV-byggaren"
+    }
+  },
+  "focusCV": {
+    "subtitle": "Steg-för-steg",
+    "stepOf": "Steg {{current}} av {{total}}",
+    "saved": "CV sparat!",
+    "saveError": "Kunde inte spara CV",
+    "saveAndFinish": "Spara CV",
+    "exitFocusMode": "Byt till vanligt läge",
+    "steps": {
+      "basic": {
+        "title": "Grundinfo",
+        "desc": "Fyll i ditt namn och kontaktuppgifter"
+      },
+      "summary": {
+        "title": "Presentation",
+        "desc": "Berätta kort om dig själv"
+      },
+      "work": {
+        "title": "Arbetslivserfarenhet",
+        "desc": "Lägg till dina tidigare jobb"
+      },
+      "education": {
+        "title": "Utbildning",
+        "desc": "Lägg till dina utbildningar"
+      },
+      "skills": {
+        "title": "Kompetenser",
+        "desc": "Lägg till dina färdigheter"
+      },
+      "preview": {
+        "title": "Förhandsgranska",
+        "desc": "Se hur ditt CV ser ut"
+      }
+    },
+    "fields": {
+      "firstName": "Förnamn",
+      "lastName": "Efternamn",
+      "email": "E-post",
+      "phone": "Telefon",
+      "title": "Yrkestitel",
+      "summary": "Kort presentation",
+      "jobTitle": "Befattning/Roll",
+      "company": "Arbetsgivare",
+      "startDate": "Startdatum",
+      "endDate": "Slutdatum",
+      "workDescription": "Vad gjorde du?",
+      "degree": "Examen/Utbildning",
+      "school": "Skola/Lärosäte",
+      "field": "Inriktning (valfritt)",
+      "addSkill": "Lägg till kompetens"
+    },
+    "placeholders": {
+      "firstName": "Anna",
+      "lastName": "Andersson",
+      "email": "anna@exempel.se",
+      "phone": "070-123 45 67",
+      "title": "t.ex. Projektledare, Säljare, Utvecklare",
+      "summary": "Beskriv dig själv i 2-3 meningar. Vad är du bra på? Vad vill du jobba med?",
+      "jobTitle": "t.ex. Projektledare",
+      "company": "t.ex. Företaget AB",
+      "endDate": "Pågående?",
+      "workDescription": "Beskriv dina viktigaste arbetsuppgifter och vad du åstadkom.",
+      "degree": "t.ex. Kandidatexamen, Yrkesutbildning",
+      "school": "t.ex. Stockholms universitet",
+      "field": "t.ex. Datavetenskap",
+      "skill": "t.ex. Excel, Projektledning, Engelska"
+    },
+    "hints": {
+      "summary": "Tips: Skriv vad du vill jobba med och vad du är bra på."
+    },
+    "work": {
+      "editing": "Redigera arbetslivserfarenhet",
+      "empty": "Lägg till dina tidigare jobb här.",
+      "untitled": "(Ingen titel)",
+      "add": "Lägg till arbetslivserfarenhet"
+    },
+    "education": {
+      "editing": "Redigera utbildning",
+      "empty": "Lägg till dina utbildningar här.",
+      "untitled": "(Ingen examen)",
+      "add": "Lägg till utbildning"
+    },
+    "skills": {
+      "empty": "Skriv en kompetens och tryck Enter för att lägga till."
+    },
+    "preview": {
+      "ready": "Ditt CV är redo!",
+      "description": "Granska ditt CV nedan. Du kan alltid komma tillbaka och redigera senare."
+    }
+  },
+  "focusDashboard": {
+    "defaultName": "du",
+    "greeting": "Hej {{name}}!",
+    "allDone": "Du är redo att söka jobb!",
+    "progress": "Du har gjort {{percent}}% av din jobbprofil",
+    "progressLabel": "Din framgång",
+    "nextStep": "Ditt nästa steg",
+    "tapToStart": "Tryck för att börja",
+    "congratulations": "Bra jobbat!",
+    "readyToApply": "Du har en komplett jobbprofil. Dags att börja söka!",
+    "searchJobs": "Sök jobb",
+    "quickActions": "Genvägar",
+    "exitFocusMode": "Byt till vanligt läge",
+    "steps": {
+      "profile": "Fyll i din profil",
+      "interest": "Gör intresseguiden",
+      "cv": "Skapa ditt CV",
+      "jobSearch": "Spara ett jobb",
+      "coverLetter": "Skriv ett personligt brev"
+    },
+    "actions": {
+      "cv": "Mitt CV",
+      "cvComplete": "Komplett",
+      "cvIncomplete": "Börja här",
+      "jobs": "Sök jobb",
+      "jobsSaved": "{{count}} sparade",
+      "jobsNone": "Hitta ditt drömjobb",
+      "coverLetter": "Personligt brev",
+      "coverLetterCount": "{{count}} brev",
+      "coverLetterNone": "Skapa med AI"
     }
   },
   "coverLetter": {
@@ -3335,6 +3458,8 @@
     "accessibility": {
       "title": "Tillgänglighet",
       "description": "Anpassa portalen efter dina behov och preferenser",
+      "focusMode": "Fokusläge (NPF-anpassat)",
+      "focusModeDesc": "Visar ett steg i taget och minskar visuellt brus. Perfekt för ADHD, autism eller om du vill ha en enklare upplevelse.",
       "highContrast": "Hög kontrast",
       "highContrastDesc": "Ökar kontrasten för bättre läsbarhet",
       "largeText": "Större text",

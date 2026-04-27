@@ -13,6 +13,7 @@ import {
   HelpCircle,
   ChevronDown,
   Globe,
+  Focus,
 } from '@/components/ui/icons'
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -24,6 +25,7 @@ import { OptimizedImage } from '@/components/ui/OptimizedImage'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { GoogleTranslate } from './GoogleTranslate'
+import { useFocusMode } from '@/components/FocusModeProvider'
 
 interface UserProfile {
   first_name: string
@@ -34,6 +36,7 @@ interface UserProfile {
 export function TopBar() {
   const { t, i18n } = useTranslation()
   const { isDark, toggleDarkMode } = useTheme()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const navigate = useNavigate()
@@ -107,6 +110,20 @@ export function TopBar() {
           <div className="hidden md:block">
             <GoogleTranslate />
           </div>
+
+          {/* Focus Mode Toggle */}
+          <button
+            onClick={toggleFocusMode}
+            className={cn(
+              iconButtonClass,
+              isFocusMode && 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400'
+            )}
+            title={isFocusMode ? t('topbar.focusModeOff', 'Stäng av fokusläge') : t('topbar.focusModeOn', 'Aktivera fokusläge')}
+            aria-label={isFocusMode ? t('topbar.focusModeOff', 'Stäng av fokusläge') : t('topbar.focusModeOn', 'Aktivera fokusläge')}
+            aria-pressed={isFocusMode}
+          >
+            <Focus size={16} className="sm:w-[18px] sm:h-[18px]" />
+          </button>
 
           {/* Dark Mode Toggle */}
           <button

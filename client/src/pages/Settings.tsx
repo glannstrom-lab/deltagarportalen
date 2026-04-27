@@ -69,6 +69,7 @@ export default function Settings() {
 
   const {
     calmMode, toggleCalmMode,
+    focusMode, toggleFocusMode,
     emailNotifications, setEmailNotifications,
     pushNotifications, setPushNotifications,
     weeklySummary, setWeeklySummary,
@@ -280,6 +281,16 @@ export default function Settings() {
             />
 
             <div className="space-y-4">
+              {/* Focus Mode - NPF-anpassat */}
+              <Card variant="flat" padding="sm" className="border-2 border-teal-200 dark:border-teal-800/50 bg-teal-50/50 dark:bg-teal-900/10">
+                <Toggle
+                  label={t('settings.accessibility.focusMode', 'Fokusläge (NPF-anpassat)')}
+                  description={t('settings.accessibility.focusModeDesc', 'Visar ett steg i taget och minskar visuellt brus. Perfekt för ADHD, autism eller om du vill ha en enklare upplevelse.')}
+                  checked={focusMode}
+                  onChange={toggleFocusMode}
+                />
+              </Card>
+
               <Card variant="flat" padding="sm">
                 <Toggle
                   label={t('settings.accessibility.highContrast')}
