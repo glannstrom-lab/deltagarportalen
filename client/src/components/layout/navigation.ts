@@ -30,6 +30,7 @@ import {
   UserCheck,
   Bot,
   ExternalLink,
+  Printer,
 } from '@/components/ui/icons'
 
 // ============================================
@@ -109,7 +110,8 @@ export const navGroups: NavGroup[] = [
     labelKey: 'nav.groups.resources',
     items: [
       { path: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
-      { path: '/international', labelKey: 'nav.international', icon: Globe, isNew: true },
+      { path: '/print-resources', labelKey: 'nav.printResources', icon: Printer, isNew: true },
+      { path: '/international', labelKey: 'nav.international', icon: Globe },
       { path: '/externa-resurser', labelKey: 'nav.externalResources', icon: ExternalLink },
       { path: '/resources', labelKey: 'nav.myDocuments', icon: Bookmark },
     ],
