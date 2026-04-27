@@ -7612,5 +7612,106 @@
       "disclaimerTitle": "About the statistics:",
       "disclaimerText": "Data is based on industry reports, SCB statistics and salary surveys. Figures are estimates and may vary depending on specific role, company size and individual factors. Last updated: Q1 2026."
     }
+  },
+  "focusGuide": {
+    "steps": {
+      "welcome": "Welcome",
+      "profile": "Profile",
+      "cv": "CV",
+      "jobs": "Jobs",
+      "coverLetter": "Cover Letter",
+      "complete": "Done"
+    },
+    "progress": "Your progress",
+    "exitAnytime": "Exit guide",
+    "skipStep": "Skip this step",
+    "stepOf": "Step {{current}} of {{total}}",
+    "welcome": {
+      "title": "Hi and welcome!",
+      "titleWithName": "Hi {{name}}!",
+      "message": "Welcome to focus mode, where we take everything a bit slower, one step at a time.",
+      "explanation": "Here we'll guide you through:",
+      "step1": "Filling in your profile",
+      "step2": "Creating your CV",
+      "step3": "Finding interesting jobs",
+      "step4": "Writing cover letters",
+      "reassurance": "You can take breaks whenever you want. Everything is saved automatically.",
+      "start": "Let's go",
+      "exit": "No thanks, close focus mode"
+    },
+    "profile": {
+      "title": "Your profile",
+      "subtitle": "Let's start with the basics",
+      "nameTitle": "What's your name?",
+      "contactTitle": "How can employers contact you?",
+      "locationTitle": "Where do you live?",
+      "locationHint": "This helps you find jobs near you",
+      "save": "Save and continue"
+    },
+    "cv": {
+      "title": "Create your CV",
+      "subtitle": "We'll take it step by step",
+      "titleStep": "What do you work as?",
+      "experienceStep": "Work experience",
+      "educationStep": "Education",
+      "skillsStep": "Skills",
+      "titleHint": "The role you're looking for or currently work in",
+      "noExperience": "No experience added yet",
+      "job": "Job",
+      "addExperience": "Add experience",
+      "experienceHint": "You can skip if you don't have any experience",
+      "noEducation": "No education added yet",
+      "education": "Education",
+      "addEducation": "Add education",
+      "skillSuggestions": "Common skills:",
+      "save": "Save CV"
+    },
+    "jobs": {
+      "title": "Find jobs",
+      "subtitle": "Let's find jobs that suit you",
+      "interestsStep": "What do you want to work with?",
+      "locationStep": "Where do you want to work?",
+      "browseStep": "Browse jobs",
+      "selectJobs": "Select the jobs that interest you:",
+      "customJob": "Other job...",
+      "locationLabel": "City or municipality",
+      "locationPlaceholder": "E.g. Stockholm, Gothenburg...",
+      "locationHint": "Leave empty to search all of Sweden",
+      "foundJobs": "We found {{count}} jobs that might suit you:",
+      "browseMore": "You can explore more jobs on the jobs page later",
+      "selectFirst": "Select which jobs you're interested in first",
+      "noResults": "No jobs found right now. Try expanding your search.",
+      "continue": "Continue"
+    },
+    "letter": {
+      "title": "Cover letter",
+      "subtitle": "Create a simple cover letter",
+      "jobStep": "Which job are you applying for?",
+      "motivationStep": "Why do you want this job?",
+      "generateStep": "Your cover letter",
+      "jobTitle": "Position/Role",
+      "jobTitlePlaceholder": "e.g. Sales rep, Customer service",
+      "companyName": "Company",
+      "companyPlaceholder": "Company name",
+      "selectMotivations": "Select what applies to you:",
+      "customMotivation": "Write your own motivation...",
+      "generating": "Creating letter...",
+      "generate": "Create letter",
+      "editHint": "You can edit the text above. Click the copy button to copy.",
+      "generateError": "Something went wrong. Please try again.",
+      "done": "Done!"
+    },
+    "complete": {
+      "title": "Amazing job!",
+      "message": "You've completed all steps in focus mode. Now you're ready to continue your job search!",
+      "whatYouDid": "Here's what you did:",
+      "profile": "Filled in your profile",
+      "cv": "Created your CV",
+      "jobs": "Explored jobs",
+      "letter": "Wrote a cover letter",
+      "nextSteps": "You can always come back to focus mode by clicking the focus icon in the menu.",
+      "goToDashboard": "To the dashboard",
+      "restart": "Go through the guide again"
+    }
   }
 }

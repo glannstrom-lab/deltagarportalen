@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 import { useDashboardDataQuery } from '@/hooks/useDashboardData'
 import { useInterestProfile } from '@/hooks/useInterestProfile'
 import { useFocusMode } from '@/components/FocusModeProvider'
-import FocusDashboard from './FocusDashboard'
+import { FocusGuide } from '@/components/focus/FocusGuide'
 import {
   User, Compass, FileText, Search, Mail,
   ChevronRight, ChevronDown, Bookmark, FileUser,
@@ -64,9 +64,9 @@ export default function DashboardPage() {
   // Find next incomplete step
   const nextStep = remainingSteps[0] || null
 
-  // In focus mode, show simplified dashboard (after all hooks)
+  // In focus mode, show the integrated focus guide (after all hooks)
   if (isFocusMode) {
-    return <FocusDashboard onExitFocusMode={toggleFocusMode} />
+    return <FocusGuide />
   }
 
   if (dashboardLoading || interestLoading) {

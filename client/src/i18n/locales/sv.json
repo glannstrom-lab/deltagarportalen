@@ -7612,5 +7612,106 @@
       "disclaimerTitle": "Om statistiken:",
       "disclaimerText": "Data baseras på branschrapporter, SCB-statistik och löneundersökningar. Siffror är uppskattningar och kan variera beroende på specifik roll, företagsstorlek och individuella faktorer. Senast uppdaterad: Q1 2026."
     }
+  },
+  "focusGuide": {
+    "steps": {
+      "welcome": "Välkommen",
+      "profile": "Profil",
+      "cv": "CV",
+      "jobs": "Jobb",
+      "coverLetter": "Personligt brev",
+      "complete": "Klar"
+    },
+    "progress": "Din framgång",
+    "exitAnytime": "Avsluta guiden",
+    "skipStep": "Hoppa över detta steg",
+    "stepOf": "Steg {{current}} av {{total}}",
+    "welcome": {
+      "title": "Hej och välkommen!",
+      "titleWithName": "Hej {{name}}!",
+      "message": "Välkommen till fokusläget, där vi tar allting lite lugnare, ett steg i taget.",
+      "explanation": "Här guidar vi dig genom att:",
+      "step1": "Fylla i din profil",
+      "step2": "Skapa ditt CV",
+      "step3": "Hitta intressanta jobb",
+      "step4": "Skriva personliga brev",
+      "reassurance": "Du kan ta pauser när du vill. Allt sparas automatiskt.",
+      "start": "Sätt igång",
+      "exit": "Nej tack, stäng fokusläget"
+    },
+    "profile": {
+      "title": "Din profil",
+      "subtitle": "Låt oss börja med grunderna",
+      "nameTitle": "Vad heter du?",
+      "contactTitle": "Hur kan arbetsgivare kontakta dig?",
+      "locationTitle": "Var bor du?",
+      "locationHint": "Detta hjälper dig hitta jobb nära dig",
+      "save": "Spara och fortsätt"
+    },
+    "cv": {
+      "title": "Skapa ditt CV",
+      "subtitle": "Vi tar det steg för steg",
+      "titleStep": "Vad jobbar du som?",
+      "experienceStep": "Arbetslivserfarenhet",
+      "educationStep": "Utbildning",
+      "skillsStep": "Kompetenser",
+      "titleHint": "Den roll du söker eller arbetar som",
+      "noExperience": "Ingen erfarenhet tillagd ännu",
+      "job": "Jobb",
+      "addExperience": "Lägg till erfarenhet",
+      "experienceHint": "Du kan hoppa över om du inte har någon erfarenhet",
+      "noEducation": "Ingen utbildning tillagd ännu",
+      "education": "Utbildning",
+      "addEducation": "Lägg till utbildning",
+      "skillSuggestions": "Vanliga kompetenser:",
+      "save": "Spara CV"
+    },
+    "jobs": {
+      "title": "Hitta jobb",
+      "subtitle": "Låt oss hitta jobb som passar dig",
+      "interestsStep": "Vad vill du jobba med?",
+      "locationStep": "Var vill du jobba?",
+      "browseStep": "Utforska jobb",
+      "selectJobs": "Välj de yrken som intresserar dig:",
+      "customJob": "Annat yrke...",
+      "locationLabel": "Ort eller kommun",
+      "locationPlaceholder": "T.ex. Stockholm, Göteborg...",
+      "locationHint": "Lämna tomt för att söka i hela Sverige",
+      "foundJobs": "Vi hittade {{count}} jobb som kan passa dig:",
+      "browseMore": "Du kan utforska fler jobb på jobbsidan senare",
+      "selectFirst": "Välj vilka jobb du är intresserad av först",
+      "noResults": "Inga jobb hittades just nu. Försök utöka din sökning.",
+      "continue": "Fortsätt"
+    },
+    "letter": {
+      "title": "Personligt brev",
+      "subtitle": "Skapa ett enkelt personligt brev",
+      "jobStep": "Vilket jobb söker du?",
+      "motivationStep": "Varför vill du ha jobbet?",
+      "generateStep": "Ditt personliga brev",
+      "jobTitle": "Tjänst/Roll",
+      "jobTitlePlaceholder": "t.ex. Säljare, Kundtjänstmedarbetare",
+      "companyName": "Företag",
+      "companyPlaceholder": "Företagsnamn",
+      "selectMotivations": "Välj det som passar dig:",
+      "customMotivation": "Skriv egen motivation...",
+      "generating": "Skapar brev...",
+      "generate": "Skapa brev",
+      "editHint": "Du kan redigera texten ovan. Klicka på kopieringsknappen för att kopiera.",
+      "generateError": "Något gick fel. Försök igen.",
+      "done": "Klar!"
+    },
+    "complete": {
+      "title": "Fantastiskt jobbat!",
+      "message": "Du har gått igenom alla steg i fokusläget. Nu är du redo att fortsätta din jobbsökning!",
+      "whatYouDid": "Det här har du gjort:",
+      "profile": "Fyllt i din profil",
+      "cv": "Skapat ditt CV",
+      "jobs": "Utforskat jobb",
+      "letter": "Skrivit personligt brev",
+      "nextSteps": "Du kan alltid komma tillbaka till fokusläget genom att klicka på fokusikonen i menyn.",
+      "goToDashboard": "Till startsidan",
+      "restart": "Gå igenom guiden igen"
+    }
   }
 }
