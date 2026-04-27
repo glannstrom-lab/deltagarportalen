@@ -1190,6 +1190,8 @@ export function MatchesTab() {
   }, [])
 
   // Search and match jobs for CV (based on skills, experience, education)
+  // NEW APPROACH: Search by each work title separately, only show jobs where
+  // the job's occupation/category actually matches the user's experience
   const searchCvJobs = useCallback(async (
     data: SourceData['cv'],
     locations: string[],
@@ -1197,204 +1199,152 @@ export function MatchesTab() {
   ): Promise<MatchedJob[]> => {
     if (!data.available) return []
 
-    // Filter out generic skills (languages, driver's license, soft skills)
-    // These match too many jobs and aren't useful for finding relevant positions
+    // Filter out generic skills
     const specificSkills = data.skills.filter(skill => !isGenericSkill(skill))
 
-    // Build search query prioritizing work titles and specific skills
-    // Work titles are most important - they define what jobs you're qualified for
-    const searchTerms = [
-      ...data.workTitles.slice(0, 3),  // Prioritize work titles
-      ...specificSkills.slice(0, 2),    // Then specific skills
-      ...data.education.slice(0, 1)     // Then education
-    ].filter(Boolean)
+    console.log('CV Matching - User data:', {
+      workTitles: data.workTitles,
+      specificSkills,
+      education: data.education
+    })
 
-    // If no specific terms, user needs to add work experience or desired jobs
+    // If user has no work titles, fall back to education or skills
+    const searchTerms = data.workTitles.length > 0
+      ? data.workTitles
+      : [...specificSkills.slice(0, 3), ...data.education.slice(0, 2)].filter(Boolean)
+
     if (searchTerms.length === 0) {
-      console.log('CV matching: No specific skills or work titles found. User should add work experience or desired jobs.')
+      console.log('CV matching: No work titles, skills, or education found')
       return []
     }
 
-    const result = await searchJobs({
-      query: searchTerms.join(' '),
-      municipality: locations.length === 1 ? locations[0] : undefined,
-      limit: 50,
-      publishedWithin: 'month'
-    })
+    const allJobs: MatchedJob[] = []
+    const seenJobIds = new Set<string>()
 
-    let jobs = result.hits
-    if (locations.length > 1) {
-      jobs = jobs.filter(job =>
-        locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
-      )
+    // Search for each work title/skill separately to get targeted results
+    for (const searchTerm of searchTerms.slice(0, 5)) {
+      try {
+        console.log('Searching for:', searchTerm)
+
+        const result = await searchJobs({
+          query: searchTerm,
+          municipality: locations.length === 1 ? locations[0] : undefined,
+          limit: 30,
+          publishedWithin: 'month'
+        })
+
+        let jobs = result.hits
+
+        // Filter by location if multiple selected
+        if (locations.length > 1) {
+          jobs = jobs.filter(job =>
+            locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
+          )
+        }
+
+        // Filter out jobs requiring licenses user doesn't have
+        jobs = jobs.filter(job => {
+          const jobFullText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
+          const licenseCheck = checkRequiredLicense(job.headline || '', jobFullText, data.education, data.workTitles)
+          return !licenseCheck.blocked
+        })
+
+        console.log(`Found ${jobs.length} jobs for "${searchTerm}"`)
+
+        for (const job of jobs) {
+          if (seenJobIds.has(job.id)) continue
+          seenJobIds.add(job.id)
+
+          const jobOccupation = (job.occupation?.label || '').toLowerCase()
+          const jobHeadline = (job.headline || '').toLowerCase()
+          const jobText = `${jobHeadline} ${job.description?.text || ''}`.toLowerCase()
+          const searchTermLower = searchTerm.toLowerCase()
+          const matchDetails: string[] = []
+
+          // ========== PRIMARY CHECK: Does job occupation match user's background? ==========
+          // This is the KEY change - we check if the JOB'S CATEGORY matches, not just if words appear
+
+          let occupationMatch = false
+          let occupationScore = 0
+
+          // Check if job occupation matches any of user's work titles
+          for (const userTitle of data.workTitles) {
+            const titleResult = matchJobTitle(userTitle, jobHeadline, jobOccupation)
+            if (titleResult.match === 'exact') {
+              occupationMatch = true
+              occupationScore = 50
+              matchDetails.push(`Erfarenhet: ${userTitle}`)
+              break
+            } else if (titleResult.match === 'similar') {
+              occupationMatch = true
+              occupationScore = Math.max(occupationScore, 40)
+              matchDetails.push(`Liknande: ${userTitle}`)
+            } else if (titleResult.match === 'partial') {
+              occupationMatch = true
+              occupationScore = Math.max(occupationScore, 25)
+              matchDetails.push(`Relaterat: ${userTitle}`)
+            }
+          }
+
+          // If no occupation match from work titles, check if search term matches occupation
+          if (!occupationMatch) {
+            if (jobOccupation.includes(searchTermLower) || jobHeadline.includes(searchTermLower)) {
+              // The job's category matches what we searched for
+              occupationMatch = true
+              occupationScore = 35
+              matchDetails.push(`Matchande yrke`)
+            }
+          }
+
+          // STRICT: Skip jobs where the occupation doesn't match at all
+          if (!occupationMatch) {
+            console.log(`Skipping job "${job.headline}" - occupation "${jobOccupation}" doesn't match user's background`)
+            continue
+          }
+
+          // ========== SKILL BONUS (max 30 points) ==========
+          let skillScore = 0
+          for (const skill of specificSkills) {
+            if (matchSkill(skill, jobText)) {
+              matchDetails.push(skill)
+              skillScore += 10
+              if (skillScore >= 30) break
+            }
+          }
+
+          // ========== EDUCATION BONUS (max 15 points) ==========
+          let educationScore = 0
+          for (const edu of data.education) {
+            const words = edu.toLowerCase().split(/\s+/).filter(w => w.length > 3)
+            if (words.some(word => jobText.includes(word))) {
+              matchDetails.push(`Utbildning`)
+              educationScore = 15
+              break
+            }
+          }
+
+          // ========== CALCULATE SCORE ==========
+          let baseScore = occupationScore + skillScore + educationScore
+
+          // Apply profile preference boosts
+          const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails)
+
+          allJobs.push({
+            job,
+            score: Math.round(Math.min(score, 100)),
+            source: 'cv' as MatchSource,
+            matchDetails: details
+          })
+        }
+      } catch (e) {
+        console.error('Error searching for term:', searchTerm, e)
+      }
     }
 
-    // Match each job using comprehensive scoring
-    // First filter out jobs requiring professional licenses user doesn't have
-    const filteredJobs = jobs.filter(job => {
-      const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
-      const licenseCheck = checkRequiredLicense(
-        job.headline || '',
-        jobText,
-        data.education,
-        data.workTitles
-      )
-      return !licenseCheck.blocked
-    })
-
-    return filteredJobs.map(job => {
-      const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase()
-      const jobTitle = (job.headline || '').toLowerCase()
-      const jobOccupation = (job.occupation?.label || '').toLowerCase()
-      const employerText = (job.employer?.name || '').toLowerCase()
-      const matchDetails: string[] = []
-
-      // ========== SKILL MATCHING (max 45 points) ==========
-      // Generic skills (languages, driver's license) give minimal points
-      // Specific professional skills give full points
-      let skillScore = 0
-      let specificSkillMatches = 0
-      let genericSkillMatches = 0
-
-      data.skills.forEach(skill => {
-        if (matchSkill(skill, jobText)) {
-          if (isGenericSkill(skill)) {
-            // Generic skills: only 2 points each, max 6 total
-            genericSkillMatches++
-            if (genericSkillMatches <= 3) {
-              skillScore += 2
-            }
-          } else {
-            // Specific skills: 12 points for first 3, then 5 each
-            matchDetails.push(skill)
-            specificSkillMatches++
-            skillScore += specificSkillMatches <= 3 ? 12 : 5
-          }
-        }
-      })
-      skillScore = Math.min(skillScore, 45)
-
-      // ========== TITLE MATCHING (max 35 points) ==========
-      let titleScore = 0
-      let bestTitleMatch: 'exact' | 'similar' | 'partial' | 'none' = 'none'
-      data.workTitles.forEach(title => {
-        const result = matchJobTitle(title, jobTitle, jobOccupation)
-        if (result.match === 'exact') {
-          matchDetails.push(`Erfarenhet: ${title}`)
-          titleScore += 20
-          bestTitleMatch = 'exact'
-        } else if (result.match === 'similar') {
-          matchDetails.push(`Liknande: ${title}`)
-          titleScore += 12
-          if (bestTitleMatch !== 'exact') bestTitleMatch = 'similar'
-        } else if (result.match === 'partial') {
-          matchDetails.push(`Relaterat: ${title}`)
-          titleScore += 6
-          if (bestTitleMatch === 'none') bestTitleMatch = 'partial'
-        }
-      })
-      titleScore = Math.min(titleScore, 35)
-
-      // ========== EDUCATION MATCHING (max 15 points) ==========
-      let educationScore = 0
-      data.education.forEach(edu => {
-        const words = edu.toLowerCase().split(/\s+/).filter(w => w.length > 3)
-        const eduMatches = words.filter(word => jobText.includes(word))
-        if (eduMatches.length >= 1) {
-          matchDetails.push(`Utbildning: ${edu}`)
-          // More matching words = higher score
-          educationScore += Math.min(eduMatches.length * 5, 15)
-        }
-      })
-      educationScore = Math.min(educationScore, 15)
-
-      // ========== QUALIFICATION CHECK ==========
-      // Jobs must have REAL qualification matches, not just generic skills
-      // If no title match AND no specific skill match AND no education match, skip this job
-      const hasRealQualification = titleScore > 0 || specificSkillMatches > 0 || educationScore > 0
-
-      if (!hasRealQualification) {
-        // No real qualifications match - this job shouldn't be shown
-        return {
-          job,
-          score: 0,
-          source: 'cv' as MatchSource,
-          matchDetails: []
-        }
-      }
-
-      // ========== INDUSTRY MATCH BONUS (max 10 points) ==========
-      let industryBonus = 0
-      if (preferences.industries.length > 0) {
-        const jobIndustries = detectIndustry(`${employerText} ${jobText}`)
-        const userIndustries = preferences.industries.map(i => i.toLowerCase())
-        const industryMatch = jobIndustries.some(ji =>
-          userIndustries.some(ui => ui.includes(ji) || ji.includes(ui))
-        )
-        if (industryMatch) {
-          industryBonus = 10
-          matchDetails.push('Önskad bransch ✓')
-        }
-      }
-
-      // ========== SENIORITY ALIGNMENT (max 5 points) ==========
-      let seniorityBonus = 0
-      const jobSeniority = detectSeniority(jobText)
-      // If job is entry-level or doesn't specify, slight bonus (more accessible)
-      if (jobSeniority === 'junior' || jobSeniority === null) {
-        seniorityBonus = 3
-      } else if (jobSeniority === 'mid') {
-        seniorityBonus = 5
-      }
-      // Senior/manager roles: no bonus (may be stretch)
-
-      // ========== EXPERIENCE REQUIREMENT CHECK ==========
-      const requiredYears = extractRequiredExperience(jobText)
-      let experiencePenalty = 0
-      if (requiredYears !== null && requiredYears > 5) {
-        // High experience requirement - slight penalty unless user has many titles
-        if (data.workTitles.length < 3) {
-          experiencePenalty = -5
-          matchDetails.push(`Kräver ${requiredYears}+ års erfarenhet`)
-        }
-      }
-
-      // ========== CALCULATE TOTAL BASE SCORE ==========
-      // No "search relevance bonus" - jobs must earn their score through actual matches
-      let baseScore = skillScore + titleScore + educationScore +
-                      industryBonus + seniorityBonus + experiencePenalty
-
-      // Minimum score based on match quality
-      // Title match is strongest indicator of relevance
-      if (titleScore >= 20) {
-        baseScore = Math.max(baseScore, 50) // Exact title match = at least 50%
-      } else if (titleScore >= 12) {
-        baseScore = Math.max(baseScore, 40) // Similar title = at least 40%
-      } else if (specificSkillMatches >= 2) {
-        baseScore = Math.max(baseScore, 35) // Multiple specific skills = at least 35%
-      }
-
-      // Bonus for multiple match types (skills + experience + education)
-      const matchTypesCount = [specificSkillMatches > 0, titleScore > 0, educationScore > 0].filter(Boolean).length
-      if (matchTypesCount >= 2) {
-        baseScore += 5 // Breadth bonus
-      }
-      if (matchTypesCount === 3) {
-        baseScore += 5 // Full profile match bonus
-      }
-
-      // Apply profile preference boosts (remote work, employment type, license, car)
-      const { score, details } = applyProfileBoosts(job, baseScore, preferences, matchDetails)
-
-      return {
-        job,
-        score: Math.round(Math.min(score, 100)), // Ensure max 100
-        source: 'cv' as MatchSource,
-        matchDetails: details
-      }
-    })
-    .filter(m => m.score >= 30) // Require meaningful qualification match
-    .sort((a, b) => b.score - a.score)
+    // Sort by score and return
+    return allJobs
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 50)
   }, [])
 
   // Search and match jobs for Interest (based on RIASEC/interest guide occupations)
