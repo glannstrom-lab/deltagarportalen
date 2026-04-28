@@ -84,40 +84,40 @@ Explicit utelämnat. Dokumenterat för att förhindra scope creep.
 
 ## Traceability
 
-Vilka faser täcker vilka requirements. Uppdateras under roadmap-skapande.
+Vilka faser täcker vilka requirements.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NAV-01 | TBD | Pending |
-| NAV-02 | TBD | Pending |
-| NAV-03 | TBD | Pending |
-| NAV-04 | TBD | Pending |
-| NAV-05 | TBD | Pending |
-| WIDG-01 | TBD | Pending |
-| WIDG-02 | TBD | Pending |
-| WIDG-03 | TBD | Pending |
-| HUB-01 | TBD | Pending |
-| HUB-02 | TBD | Pending |
-| HUB-03 | TBD | Pending |
-| HUB-04 | TBD | Pending |
-| HUB-05 | TBD | Pending |
-| HUB-06 | TBD | Pending |
-| DATA-01 | TBD | Pending |
-| DATA-02 | TBD | Pending |
-| A11Y-01 | TBD | Pending |
-| A11Y-02 | TBD | Pending |
-| A11Y-03 | TBD | Pending |
-| A11Y-04 | TBD | Pending |
-| A11Y-05 | TBD | Pending |
-| CUST-01 | TBD | Pending |
-| CUST-02 | TBD | Pending |
-| CUST-03 | TBD | Pending |
+| NAV-01 | Phase 1 | Pending |
+| NAV-02 | Phase 1 | Pending |
+| NAV-03 | Phase 1 | Pending |
+| NAV-04 | Phase 1 | Pending |
+| NAV-05 | Phase 1 | Pending |
+| WIDG-01 | Phase 2 | Pending |
+| WIDG-02 | Phase 2 | Pending |
+| WIDG-03 | Phase 2 | Pending |
+| HUB-01 | Phase 3 | Pending |
+| HUB-02 | Phase 3 | Pending |
+| HUB-03 | Phase 3 | Pending |
+| HUB-04 | Phase 3 | Pending |
+| HUB-05 | Phase 5 | Pending |
+| HUB-06 | Phase 5 | Pending |
+| DATA-01 | Phase 3 | Pending |
+| DATA-02 | Phase 3 | Pending |
+| A11Y-01 | Phase 3 | Pending |
+| A11Y-02 | Phase 3 | Pending |
+| A11Y-03 | Phase 3 | Pending |
+| A11Y-04 | Phase 3 | Pending |
+| A11Y-05 | Phase 3 | Pending |
+| CUST-01 | Phase 4 | Pending |
+| CUST-02 | Phase 4 | Pending |
+| CUST-03 | Phase 4 | Pending |
 
 **Coverage:**
 - v1.0 requirements: 24 total
-- Mapped to phases: 0 (fylls av roadmapper)
-- Unmapped: 24 ⚠️
+- Mapped to phases: 24 ✓
+- Unmapped: 0
 
 ---
 *Requirements definierade: 2026-04-28*
-*Last updated: 2026-04-28 efter initial definition*
+*Last updated: 2026-04-28 — traceability mapped by roadmapper*

@@ -5,15 +5,55 @@
 See: `.planning/PROJECT.md` (updated 2026-04-28)
 
 **Core value:** Hjälp utsatta arbetssökande att komma framåt med empati, tillgänglighet och AI-stöd som sänker tröskeln.
-**Current focus:** GSD-baseline initierad, milstolpe v1.0 om att definieras.
+**Current focus:** Phase 1 — Hub Navigation Shell
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: GSD-baseline skapad, milstolpe v1.0 ska definieras
-Last activity: 2026-04-28 — GSD initierat (PROJECT.md, MILESTONES.md, STATE.md)
+Phase: 1 of 5 (Hub Navigation Shell)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-04-28 — Roadmap created for v1.0 Hub-Navigation (5 phases, 24 requirements mapped)
+
+Progress: [░░░░░░░░░░] 0%
+
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 0
+- Average duration: —
+- Total execution time: 0 hours
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| - | - | - | - |
+
+**Recent Trend:** No data yet
 
 ## Accumulated Context
 
-(Tom — fylls på allteftersom faser körs och beslut loggas.)
+### Decisions
+
+- [v1.0 pre-planning]: Drag/resize via react-grid-layout deferred to v1.1 — WIDG scope in v1.0 is static grid + S/M/L toggle + hide/show only
+- [v1.0 pre-planning]: Rollout via `VITE_HUB_NAV_ENABLED` environment flag — no per-user DB flag (prevents two-navigation-reality problem for consultant coachning)
+- [v1.0 pre-planning]: Empathy review by `arbetskonsulent` + `langtidsarbetssokande` agents is a formal Phase 3 ship gate (A11Y-05), not optional
+- [v1.0 pre-planning]: Interview session scores (DATA-01) and Personal Brand audit scores (DATA-02) go to Supabase in Phase 3
+- [v1.0 pre-planning]: No recharts dependency — hand-rolled SVG polylines for sparklines (~160 KB saved)
+- [v1.0 pre-planning]: react-grid-layout introduced in v1.1 only — Phases 1-4 use plain CSS grid
+
+### Pending Todos
+
+None yet.
+
+### Blockers/Concerns
+
+- [Phase 1]: Rollout communication plan for consultants should be prepared before Phase 1 ships (one-pager; consultants see nav change on flag-flip date)
+- [Phase 3]: Hub-summary query performance needs `EXPLAIN ANALYZE` before data loader is designed — see PITFALLS.md Pitfall 3/18
+- [Phase 4]: Per-breakpoint persistence schema decision must be made before the Supabase migration is written — cannot change post-deploy without destructive migration
+
+## Session Continuity
+
+Last session: 2026-04-28
+Stopped at: ROADMAP.md created and REQUIREMENTS.md traceability updated — ready to run `/gsd:plan-phase 1`
+Resume file: None
