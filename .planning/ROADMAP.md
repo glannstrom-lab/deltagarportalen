@@ -23,7 +23,12 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
   2. User on mobile sees a 5-tab bottom nav at hub level, with the correct tab highlighted when navigating into any deep-link page within that hub
   3. All 27 existing deep-link routes render their correct page without redirection or 404 after the nav refactor
   4. Setting `VITE_HUB_NAV_ENABLED=false` restores the old navigation; both modes are independently functional
-**Plans**: TBD
+**Plans**: 5 plans
+- [ ] 01-01-navigation-refactor-PLAN.md — NavHub model, navHubs, pageToHub, isHubNavEnabled, sv.json hub labels
+- [ ] 01-02-hub-pages-and-routes-PLAN.md — 5 empty hub page components + App.tsx routes + conditional index redirect
+- [ ] 01-03-sidebar-refactor-PLAN.md — Sidebar conditionally renders hub mode (5 hubs + active sub-items) or legacy mode
+- [ ] 01-04-mobile-bottom-nav-PLAN.md — HubBottomNav 5-tab mobile bar + Layout.tsx integration
+- [ ] 01-05-deep-link-smoke-test-PLAN.md — automated regression coverage for all 28 deep-links + flag-flip atomic switch
 
 ### Phase 2: Static Widget Grid
 **Goal**: Hub pages display a structured grid of widget cards with correct visual design, per-widget isolation from errors, and size-toggle interaction — all validated before any real data is introduced
@@ -73,7 +78,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Hub Navigation Shell | 0/TBD | Not started | - |
+| 1. Hub Navigation Shell | 0/5 | Planned | - |
 | 2. Static Widget Grid | 0/TBD | Not started | - |
 | 3. Data Wiring + WCAG | 0/TBD | Not started | - |
 | 4. Layout Persistence + Hide/Show | 0/TBD | Not started | - |
