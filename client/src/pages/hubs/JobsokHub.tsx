@@ -1,13 +1,36 @@
-import { PageLayout } from '@/components/layout/PageLayout'
+import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { PageLayout } from '@/components/layout/PageLayout'
+import { HubGrid } from '@/components/widgets/HubGrid'
+import { WIDGET_REGISTRY, type WidgetId } from '@/components/widgets/registry'
+import { getJobbSections } from '@/components/widgets/defaultLayouts'
+import type { WidgetSize } from '@/components/widgets/types'
 
 /**
- * Söka jobb hub — placeholder.
- * Phase 1 ships only the navigation shell. Widgets land in Phase 2 (WIDG-01..03).
- * Domain: activity (drives --c-* tokens via PageLayout's data-domain attribute).
+ * Söka jobb hub — Phase 2 widget grid.
+ * Mock data only; real data wiring lands in Phase 3 (HUB-01).
+ * 8 widgets in 3 sections: Skapa & öva | Sök & ansök | Marknad.
  */
 export default function JobsokHub() {
   const { t } = useTranslation()
+  const sections = useMemo(() => getJobbSections(), [])
+
+  // Initialize sizes from defaults
+  const [sizes, setSizes] = useState<Record<string, WidgetSize>>(() => {
+    const initial: Record<string, WidgetSize> = {}
+    sections.forEach(section => {
+      section.items.forEach(item => {
+        initial[item.id] = item.size
+      })
+    })
+    return initial
+  })
+  const [announcement, setAnnouncement] = useState('')
+
+  const handleSizeChange = useCallback((widgetId: string, newSize: WidgetSize) => {
+    setSizes(prev => ({ ...prev, [widgetId]: newSize }))
+    setAnnouncement(`Widgeten är nu ${newSize}-storlek.`)
+  }, [])
 
   return (
     <PageLayout
@@ -16,11 +39,32 @@ export default function JobsokHub() {
       domain="activity"
       showTabs={false}
     >
-      <div className="rounded-2xl border-2 border-dashed border-stone-200 dark:border-stone-700 p-8 text-center">
-        <p className="text-sm text-stone-600 dark:text-stone-400">
-          {t('hubs.placeholder', 'Här kommer widgets för Söka jobb. Den här sidan byggs ut i nästa fas.')}
-        </p>
+      {/* Live region for screen readers — single source per UI-SPEC accessibility contract */}
+      <div role="status" aria-live="polite" className="sr-only">
+        {announcement}
       </div>
+
+      {sections.map(section => (
+        <HubGrid.Section key={section.title} title={section.title}>
+          {section.items.map(item => {
+            const entry = WIDGET_REGISTRY[item.id as WidgetId]
+            if (!entry) return null
+            const Component = entry.component
+            const currentSize = sizes[item.id] ?? entry.defaultSize
+            return (
+              <HubGrid.Slot key={item.id} size={currentSize}>
+                <Component
+                  id={item.id}
+                  size={currentSize}
+                  onSizeChange={(newSize) => handleSizeChange(item.id, newSize)}
+                  allowedSizes={entry.allowedSizes}
+                  editMode={false}
+                />
+              </HubGrid.Slot>
+            )
+          })}
+        </HubGrid.Section>
+      ))}
     </PageLayout>
   )
 }
