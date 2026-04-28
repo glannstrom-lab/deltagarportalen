@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-layout-persistence-hide-show/04-01-migration-and-layout-hook-PLAN.md
-last_updated: "2026-04-28T22:43:00Z"
-last_activity: 2026-04-28 — Plan 04-01 migration + layout hook completed
+stopped_at: Completed 04-layout-persistence-hide-show/04-02-widget-hide-button-and-layout-context-PLAN.md
+last_updated: "2026-04-28T22:48:08.229Z"
+last_activity: 2026-04-28 — Plan 04-02 Widget hide-button + JobsokLayoutContext completed
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 20
-  completed_plans: 16
-  percent: 80
+  total_plans: 19
+  completed_plans: 17
+  percent: 89
 ---
 
 # State — Deltagarportalen
@@ -21,16 +21,16 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-04-28)
 
 **Core value:** Hjälp utsatta arbetssökande att komma framåt med empati, tillgänglighet och AI-stöd som sänker tröskeln.
-**Current focus:** Phase 1 — Hub Navigation Shell
+**Current focus:** Phase 4 — Layout Persistence + Hide/Show
 
 ## Current Position
 
 Phase: 4 of 5 (Layout Persistence + Hide/Show)
-Plan: 1 of 5 in current phase (completed)
+Plan: 2 of 5 in current phase (completed)
 Status: In progress
-Last activity: 2026-04-28 — Plan 04-01 migration + layout hook completed
+Last activity: 2026-04-28 — Plan 04-02 Widget hide-button + JobsokLayoutContext completed
 
-Progress: [████████░░] 80%
+Progress: [█████████░] 89%
 
 ## Performance Metrics
 
@@ -65,6 +65,7 @@ Progress: [████████░░] 80%
 | Phase 03-data-wiring-wcag P04 | 12 | 3 tasks | 4 files |
 | Phase 03-data-wiring-wcag P05 | 4 | 5 tasks | 3 files |
 | Phase 04-layout-persistence-hide-show P01 | 15 | 3 tasks | 9 files |
+| Phase 04-layout-persistence-hide-show P02 | 5 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -116,6 +117,9 @@ Progress: [████████░░] 80%
 - [Phase 04-01]: saveDebounced does immediate optimistic cache write + 1000ms debounce for DB write (dual-write pattern for instant UI feedback)
 - [Phase 04-01]: Migration trigger uses conditional pg_trigger existence check instead of DROP TRIGGER IF EXISTS (inviolable no-DROP rule)
 - [Phase 04-01]: useBreakpoint tests require vi.resetModules() in separate test file to re-read window.matchMedia in useState initializer
+- [Phase 04-02]: onClick wraps onHide in arrow function to prevent React MouseEvent leaking into caller — onHide() called with zero args
+- [Phase 04-02]: JobsokLayoutValue includes updateSize to cover resize events (Plan 04 needs it for hub-level state consolidation)
+- [Phase 04-02]: HubGrid.Slot visibility is a prop gate (not context-driven) for maximum composability — Plan 04 conditionally passes visible={item.visible}
 
 ### Pending Todos
 
@@ -129,6 +133,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T22:43:00Z
-Stopped at: Completed 04-layout-persistence-hide-show/04-01-migration-and-layout-hook-PLAN.md
+Last session: 2026-04-28T22:48:08.226Z
+Stopped at: Completed 04-layout-persistence-hide-show/04-02-widget-hide-button-and-layout-context-PLAN.md
 Resume file: None
