@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-layout-persistence-hide-show/04-02-widget-hide-button-and-layout-context-PLAN.md
-last_updated: "2026-04-28T22:48:08.229Z"
+stopped_at: Completed 04-layout-persistence-hide-show/04-03-hidden-widgets-panel-and-reset-PLAN.md
+last_updated: "2026-04-28T22:52:20.883Z"
 last_activity: 2026-04-28 — Plan 04-02 Widget hide-button + JobsokLayoutContext completed
 progress:
   total_phases: 5
   completed_phases: 3
   total_plans: 19
-  completed_plans: 17
+  completed_plans: 18
   percent: 89
 ---
 
@@ -66,6 +66,7 @@ Progress: [█████████░] 89%
 | Phase 03-data-wiring-wcag P05 | 4 | 5 tasks | 3 files |
 | Phase 04-layout-persistence-hide-show P01 | 15 | 3 tasks | 9 files |
 | Phase 04-layout-persistence-hide-show P02 | 5 | 2 tasks | 7 files |
+| Phase 04-layout-persistence-hide-show P03 | 2 | 1 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -120,6 +121,9 @@ Progress: [█████████░] 89%
 - [Phase 04-02]: onClick wraps onHide in arrow function to prevent React MouseEvent leaking into caller — onHide() called with zero args
 - [Phase 04-02]: JobsokLayoutValue includes updateSize to cover resize events (Plan 04 needs it for hub-level state consolidation)
 - [Phase 04-02]: HubGrid.Slot visibility is a prop gate (not context-driven) for maximum composability — Plan 04 conditionally passes visible={item.visible}
+- [Phase 04-03]: Panel isOpen controlled by caller (JobsokHub useState), not context — maximum composability
+- [Phase 04-03]: WIDGET_LABELS uses Record<WidgetId, string> (exhaustive, not Partial) — TypeScript enforces all 8 keys present
+- [Phase 04-03]: Reset button always rendered even with no hidden widgets — user may reset sizes without hiding any widget
 
 ### Pending Todos
 
@@ -133,6 +137,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T22:48:08.226Z
-Stopped at: Completed 04-layout-persistence-hide-show/04-02-widget-hide-button-and-layout-context-PLAN.md
+Last session: 2026-04-28T22:52:20.880Z
+Stopped at: Completed 04-layout-persistence-hide-show/04-03-hidden-widgets-panel-and-reset-PLAN.md
 Resume file: None

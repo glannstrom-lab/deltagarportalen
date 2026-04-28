@@ -46,7 +46,7 @@ Hubbarna ersätter den platta 27-sidors-navigationen med 5 domän-orienterade hu
 ### Anpassning (CUST)
 
 - [x] **CUST-01**: Användaren kan dölja och återvisa enskilda widgets per hub
-- [ ] **CUST-02**: Användaren kan återställa default-layout per hub
+- [x] **CUST-02**: Användaren kan återställa default-layout per hub
 - [x] **CUST-03**: Användarens layout (storlekar, dolda widgets) sparas per hub i Supabase och återställs vid återbesök
 
 ## v1.1 Requirements
@@ -110,7 +110,7 @@ Vilka faser täcker vilka requirements.
 | A11Y-04 | Phase 3 | Complete |
 | A11Y-05 | Phase 3 | Complete |
 | CUST-01 | Phase 4 | Complete |
-| CUST-02 | Phase 4 | Pending |
+| CUST-02 | Phase 4 | Complete |
 | CUST-03 | Phase 4 | Complete |
 
 **Coverage:**
