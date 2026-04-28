@@ -8,14 +8,14 @@ import { useWidgetSize } from '@/hooks/useWidgetSize'
 import { useJobsokWidgetData } from './JobsokDataContext'
 import type { WidgetProps } from './types'
 
-export default function SpontaneousWidget({ id, size, onSizeChange, allowedSizes, editMode }: WidgetProps) {
+export default function SpontaneousWidget({ id, size, onSizeChange, allowedSizes, editMode, onHide }: WidgetProps) {
   const { compact } = useWidgetSize(size)
   const spontaneousCount = useJobsokWidgetData('spontaneousCount')
 
   // Loading: context not yet resolved
   if (spontaneousCount === undefined) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Building2} title="Spontanansökan" />
       </Widget>
     )
@@ -24,7 +24,7 @@ export default function SpontaneousWidget({ id, size, onSizeChange, allowedSizes
   // Empty state: no companies in pipeline yet
   if (spontaneousCount === 0) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Building2} title="Spontanansökan" />
         <Widget.Body>
           <div className="flex-1 flex flex-col justify-center">
@@ -46,7 +46,7 @@ export default function SpontaneousWidget({ id, size, onSizeChange, allowedSizes
   }
 
   return (
-    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
       <Widget.Header icon={Building2} title="Spontanansökan" />
       <Widget.Body>
         <div className="flex-1 flex flex-col justify-center">

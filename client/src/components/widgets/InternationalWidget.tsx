@@ -11,7 +11,7 @@ import { useWidgetSize } from '@/hooks/useWidgetSize'
 import { useJobsokWidgetData } from './JobsokDataContext'
 import type { WidgetProps } from './types'
 
-export default function InternationalWidget({ id, size, onSizeChange, allowedSizes, editMode }: WidgetProps) {
+export default function InternationalWidget({ id, size, onSizeChange, allowedSizes, editMode, onHide }: WidgetProps) {
   const { compact } = useWidgetSize(size)
   // international slice — loader omits it since international_targets table is absent (Plan 01).
   // undefined = loading, null/absent = no data
@@ -20,7 +20,7 @@ export default function InternationalWidget({ id, size, onSizeChange, allowedSiz
   // Filled state (future Phase 5 — if countries exist)
   if (intl && intl.countries.length > 0) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Globe} title="Internationellt" />
         <Widget.Body>
           <div className="flex-1 flex flex-col justify-center">
@@ -46,7 +46,7 @@ export default function InternationalWidget({ id, size, onSizeChange, allowedSiz
 
   // Empty state (Phase 3 default — table absent, or no countries saved)
   return (
-    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
       <Widget.Header icon={Globe} title="Internationellt" />
       <Widget.Body>
         <div className="flex-1 flex flex-col justify-center">

@@ -12,7 +12,7 @@ import { useWidgetSize } from '@/hooks/useWidgetSize'
 import { useJobsokWidgetData } from './JobsokDataContext'
 import type { WidgetProps } from './types'
 
-export default function ApplicationsWidget({ id, size, onSizeChange, allowedSizes, editMode }: WidgetProps) {
+export default function ApplicationsWidget({ id, size, onSizeChange, allowedSizes, editMode, onHide }: WidgetProps) {
   const { compact, minimal } = useWidgetSize(size)
   const stats = useJobsokWidgetData('applicationStats')
   const [showClosed, setShowClosed] = useState(false)
@@ -20,7 +20,7 @@ export default function ApplicationsWidget({ id, size, onSizeChange, allowedSize
   // Loading: context not yet resolved
   if (stats === undefined) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Briefcase} title="Mina ansökningar" />
       </Widget>
     )
@@ -29,7 +29,7 @@ export default function ApplicationsWidget({ id, size, onSizeChange, allowedSize
   // Empty state: no applications yet
   if (stats.total === 0) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Briefcase} title="Mina ansökningar" />
         <Widget.Body>
           <div className="flex-1 flex flex-col justify-center">
@@ -75,7 +75,7 @@ export default function ApplicationsWidget({ id, size, onSizeChange, allowedSize
   const pendingAlert = pendingCount > 0 ? `${pendingCount} ansökan väntar på ditt svar` : null
 
   return (
-    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
       <Widget.Header icon={Briefcase} title="Mina ansökningar" />
       <Widget.Body>
         <div className="flex-1 flex flex-col">

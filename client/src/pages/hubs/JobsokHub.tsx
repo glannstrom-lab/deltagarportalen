@@ -33,33 +33,41 @@ export default function JobsokHub() {
   const [panelOpen, setPanelOpen] = useState(false)
   const [announcement, setAnnouncement] = useState('')
 
+  // Effective layout: falls back to defaults when query hasn't resolved yet (loading).
+  // This ensures mutations (updateSize / hideWidget) work correctly before the
+  // first DB response arrives — they operate on the default layout rather than [].
+  const effectiveLayout = useMemo(
+    () => (layout.length > 0 ? layout : getDefaultLayout('jobb', breakpoint)),
+    [layout, breakpoint]
+  )
+
   // Build a Map<id, WidgetLayoutItem> for quick lookups in render
   const layoutById = useMemo(() => {
     const m = new Map<string, WidgetLayoutItem>()
-    for (const item of layout) m.set(item.id, item)
+    for (const item of effectiveLayout) m.set(item.id, item)
     return m
-  }, [layout])
+  }, [effectiveLayout])
 
   // Mutators — produce a new layout array and call saveDebounced
   const hideWidget = useCallback((id: string) => {
-    const next = layout.map(w => w.id === id ? { ...w, visible: false } : w)
+    const next = effectiveLayout.map(w => w.id === id ? { ...w, visible: false } : w)
     saveDebounced(next)
     const label = WIDGET_LABELS[id as WidgetId] ?? id
     setAnnouncement(`Widget ${label} dold`)
-  }, [layout, saveDebounced])
+  }, [effectiveLayout, saveDebounced])
 
   const showWidget = useCallback((id: string) => {
-    const next = layout.map(w => w.id === id ? { ...w, visible: true } : w)
+    const next = effectiveLayout.map(w => w.id === id ? { ...w, visible: true } : w)
     saveDebounced(next)
     const label = WIDGET_LABELS[id as WidgetId] ?? id
     setAnnouncement(`Widget ${label} återvisad`)
-  }, [layout, saveDebounced])
+  }, [effectiveLayout, saveDebounced])
 
   const updateSize = useCallback((id: string, size: WidgetSize) => {
-    const next = layout.map(w => w.id === id ? { ...w, size } : w)
+    const next = effectiveLayout.map(w => w.id === id ? { ...w, size } : w)
     saveDebounced(next)
     setAnnouncement(`Widgeten är nu ${size}-storlek.`)
-  }, [layout, saveDebounced])
+  }, [effectiveLayout, saveDebounced])
 
   const resetLayout = useCallback(() => {
     const fresh = getDefaultLayout('jobb', breakpoint)
@@ -69,7 +77,7 @@ export default function JobsokHub() {
   }, [breakpoint, save])
 
   const layoutValue: JobsokLayoutValue = useMemo(() => ({
-    layout,
+    layout: effectiveLayout,
     editMode,
     setEditMode,
     hideWidget,
@@ -77,44 +85,38 @@ export default function JobsokHub() {
     updateSize,
     resetLayout,
     isLoading,
-  }), [layout, editMode, hideWidget, showWidget, updateSize, resetLayout, isLoading])
+  }), [effectiveLayout, editMode, hideWidget, showWidget, updateSize, resetLayout, isLoading])
 
   // PHASE 3 carry-over: hub-summary loader unchanged
   const { data: summary } = useJobsokHubSummary()
 
-  // "Anpassa vy" button — actions slot (PageLayout already supports this)
+  // "Anpassa vy" button — placed in PageLayout actions slot.
+  // NOTE: HiddenWidgetsPanel MUST render inside <JobsokLayoutProvider> (it calls useJobsokLayout).
+  // Only the trigger button lives in 'actions'; the panel renders in hub content below.
   const customizeButton = (
-    <div className="relative">
-      <button
-        type="button"
-        onClick={() => {
-          setEditMode(prev => !prev)
-          setPanelOpen(prev => !prev)
-        }}
-        aria-pressed={editMode}
-        aria-expanded={panelOpen}
-        aria-controls="hidden-widgets-panel"
-        className={[
-          'inline-flex items-center gap-2 px-3 py-1.5',
-          'text-[13px] font-bold rounded-[8px] border',
-          editMode
-            ? 'bg-[var(--c-bg)] text-[var(--c-text)] border-[var(--c-solid)]'
-            : 'bg-transparent text-[var(--header-text)] border-[var(--header-border)]',
-          'hover:bg-[var(--c-bg)] hover:text-[var(--c-text)]',
-          'focus:outline-none focus:shadow-[0_0_0_3px_var(--header-bg),0_0_0_4px_var(--c-solid)]',
-          'cursor-pointer',
-        ].join(' ')}
-      >
-        <SlidersHorizontal size={14} aria-hidden="true" />
-        Anpassa vy
-      </button>
-      <div id="hidden-widgets-panel">
-        <HiddenWidgetsPanel
-          isOpen={panelOpen}
-          onClose={() => setPanelOpen(false)}
-        />
-      </div>
-    </div>
+    <button
+      type="button"
+      onClick={() => {
+        setEditMode(prev => !prev)
+        setPanelOpen(prev => !prev)
+      }}
+      aria-pressed={editMode}
+      aria-expanded={panelOpen}
+      aria-controls="hidden-widgets-panel"
+      className={[
+        'inline-flex items-center gap-2 px-3 py-1.5',
+        'text-[13px] font-bold rounded-[8px] border',
+        editMode
+          ? 'bg-[var(--c-bg)] text-[var(--c-text)] border-[var(--c-solid)]'
+          : 'bg-transparent text-[var(--header-text)] border-[var(--header-border)]',
+        'hover:bg-[var(--c-bg)] hover:text-[var(--c-text)]',
+        'focus:outline-none focus:shadow-[0_0_0_3px_var(--header-bg),0_0_0_4px_var(--c-solid)]',
+        'cursor-pointer',
+      ].join(' ')}
+    >
+      <SlidersHorizontal size={14} aria-hidden="true" />
+      Anpassa vy
+    </button>
   )
 
   return (
@@ -131,6 +133,15 @@ export default function JobsokHub() {
           {/* Pitfall F: must NOT be conditionally rendered or remounted on data load */}
           <div role="status" aria-live="polite" className="sr-only">
             {announcement}
+          </div>
+
+          {/* Hidden widgets panel — rendered inside provider (needs useJobsokLayout).
+              Positioned absolutely relative to the hub content area. */}
+          <div className="relative" id="hidden-widgets-panel">
+            <HiddenWidgetsPanel
+              isOpen={panelOpen}
+              onClose={() => setPanelOpen(false)}
+            />
           </div>
 
           {sections.map(section => (

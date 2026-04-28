@@ -6,14 +6,14 @@ import { useWidgetSize } from '@/hooks/useWidgetSize'
 import { useJobsokWidgetData } from './JobsokDataContext'
 import type { WidgetProps } from './types'
 
-export default function InterviewWidget({ id, size, onSizeChange, allowedSizes, editMode }: WidgetProps) {
+export default function InterviewWidget({ id, size, onSizeChange, allowedSizes, editMode, onHide }: WidgetProps) {
   const { compact, minimal } = useWidgetSize(size)
   const sessions = useJobsokWidgetData('interviewSessions')
 
   // Loading: context not yet resolved
   if (sessions === undefined) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Mic} title="Intervjuträning" />
       </Widget>
     )
@@ -22,7 +22,7 @@ export default function InterviewWidget({ id, size, onSizeChange, allowedSizes, 
   // Empty state: no sessions yet
   if (sessions.length === 0) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Mic} title="Intervjuträning" />
         <Widget.Body>
           <div className="flex-1 flex flex-col justify-center">
@@ -52,7 +52,7 @@ export default function InterviewWidget({ id, size, onSizeChange, allowedSizes, 
     .filter((n): n is number => n !== null)
 
   return (
-    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
       <Widget.Header icon={Mic} title="Intervjuträning" />
       <Widget.Body>
         <div className="flex-1 flex flex-col justify-center">

@@ -5,14 +5,14 @@ import { useWidgetSize } from '@/hooks/useWidgetSize'
 import { useJobsokSummary } from './JobsokDataContext'
 import type { WidgetProps } from './types'
 
-export default function JobSearchWidget({ id, size, onSizeChange, allowedSizes, editMode }: WidgetProps) {
+export default function JobSearchWidget({ id, size, onSizeChange, allowedSizes, editMode, onHide }: WidgetProps) {
   const { compact } = useWidgetSize(size)
   const summary = useJobsokSummary()
 
   // Loading: context not yet resolved
   if (summary === undefined) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Search} title="Sök jobb" />
       </Widget>
     )
@@ -24,7 +24,7 @@ export default function JobSearchWidget({ id, size, onSizeChange, allowedSizes, 
   // Empty state: no saved searches / applications
   if (newToday === 0) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Search} title="Sök jobb" />
         <Widget.Body>
           <div className="flex-1 flex flex-col justify-center">
@@ -45,7 +45,7 @@ export default function JobSearchWidget({ id, size, onSizeChange, allowedSizes, 
   }
 
   return (
-    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
       <Widget.Header icon={Search} title="Sök jobb" />
       <Widget.Body>
         <div className="flex-1 flex flex-col">

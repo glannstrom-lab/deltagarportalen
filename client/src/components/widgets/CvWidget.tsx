@@ -13,7 +13,7 @@ function milestoneLabel(p: number): string {
   return 'Kom igång med ditt CV'
 }
 
-export default function CvWidget({ id, size, onSizeChange, allowedSizes, editMode }: WidgetProps) {
+export default function CvWidget({ id, size, onSizeChange, allowedSizes, editMode, onHide }: WidgetProps) {
   const { compact, minimal } = useWidgetSize(size)
   const ringSize = compact ? 48 : minimal ? 64 : 88
   const cv = useJobsokWidgetData('cv')
@@ -21,7 +21,7 @@ export default function CvWidget({ id, size, onSizeChange, allowedSizes, editMod
   // Loading: context not yet resolved
   if (cv === undefined) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={FileUser} title="CV" />
       </Widget>
     )
@@ -30,7 +30,7 @@ export default function CvWidget({ id, size, onSizeChange, allowedSizes, editMod
   // Empty state: no CV created yet
   if (cv === null) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={FileUser} title="CV" />
         <Widget.Body>
           <div className="flex-1 flex flex-col justify-center">
@@ -53,7 +53,7 @@ export default function CvWidget({ id, size, onSizeChange, allowedSizes, editMod
   const percent = cv.completion_pct ?? 0
 
   return (
-    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
       <Widget.Header icon={FileUser} title="CV" />
       <Widget.Body>
         <div className={`flex ${compact ? 'flex-col items-center justify-center gap-2' : 'flex-row items-center gap-4'} flex-1`}>

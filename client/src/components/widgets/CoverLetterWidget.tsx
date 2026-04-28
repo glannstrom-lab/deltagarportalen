@@ -5,14 +5,14 @@ import { useWidgetSize } from '@/hooks/useWidgetSize'
 import { useJobsokWidgetData } from './JobsokDataContext'
 import type { WidgetProps } from './types'
 
-export default function CoverLetterWidget({ id, size, onSizeChange, allowedSizes, editMode }: WidgetProps) {
+export default function CoverLetterWidget({ id, size, onSizeChange, allowedSizes, editMode, onHide }: WidgetProps) {
   const { compact, minimal } = useWidgetSize(size)
   const coverLetters = useJobsokWidgetData('coverLetters')
 
   // Loading: context not yet resolved
   if (coverLetters === undefined) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={FileText} title="Personligt brev" />
       </Widget>
     )
@@ -21,7 +21,7 @@ export default function CoverLetterWidget({ id, size, onSizeChange, allowedSizes
   // Empty state: no cover letters yet
   if (coverLetters.length === 0) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={FileText} title="Personligt brev" />
         <Widget.Body>
           <div className="flex-1 flex flex-col justify-center">
@@ -45,7 +45,7 @@ export default function CoverLetterWidget({ id, size, onSizeChange, allowedSizes
   const lastTitle = coverLetters[0].title ?? 'utkast'
 
   return (
-    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
       <Widget.Header icon={FileText} title="Personligt brev" />
       <Widget.Body>
         <div className="flex-1 flex flex-col justify-center">

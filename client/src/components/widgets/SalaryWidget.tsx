@@ -12,7 +12,7 @@ import { useWidgetSize } from '@/hooks/useWidgetSize'
 import { useJobsokWidgetData } from './JobsokDataContext'
 import type { WidgetProps } from './types'
 
-export default function SalaryWidget({ id, size, onSizeChange, allowedSizes, editMode }: WidgetProps) {
+export default function SalaryWidget({ id, size, onSizeChange, allowedSizes, editMode, onHide }: WidgetProps) {
   const { compact } = useWidgetSize(size)
   // salary slice — loader omits it since salary_data table is absent (Plan 01).
   // undefined = loading, null/absent = no data (empty-state)
@@ -21,7 +21,7 @@ export default function SalaryWidget({ id, size, onSizeChange, allowedSizes, edi
   // Empty state: no salary data available (covers both loading and absent-table cases)
   if (!salary) {
     return (
-      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+      <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
         <Widget.Header icon={Banknote} title="Lön & marknad" />
         <Widget.Body>
           <div className="flex-1 flex flex-col justify-center">
@@ -44,7 +44,7 @@ export default function SalaryWidget({ id, size, onSizeChange, allowedSizes, edi
 
   // Filled state (future Phase 5 — salary_data table provisioned)
   return (
-    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode}>
+    <Widget id={id} size={size} onSizeChange={onSizeChange} allowedSizes={allowedSizes} editMode={editMode} onHide={onHide}>
       <Widget.Header icon={Banknote} title="Lön & marknad" />
       <Widget.Body>
         <div className="flex-1 flex flex-col justify-center">
