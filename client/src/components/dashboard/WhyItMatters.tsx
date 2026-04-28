@@ -124,7 +124,7 @@ export function WhyItMattersExpandable({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="mt-3 p-4 bg-gradient-to-br from-[var(--c-bg)] to-sky-50 rounded-xl border border-[var(--c-accent)]/40">
+            <div className="mt-3 p-4 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]/40">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm flex-shrink-0">
                   <Lightbulb size={16} className="text-[var(--c-solid)]" />

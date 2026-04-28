@@ -21,38 +21,38 @@ interface NextStepCardProps {
   data?: DashboardWidgetData | null
 }
 
-// Enhanced color system
+// Enhanced color system — flat pasteller, ingen gradient
 const colorSchemes = {
   violet: {
-    gradient: 'from-[var(--c-solid)] to-sky-600',
+    solid: 'bg-[var(--c-solid)]',
     bg: 'bg-[var(--c-bg)]',
     bgLight: 'bg-[var(--c-accent)]/40',
     text: 'text-[var(--c-text)]',
     ring: 'focus:ring-[var(--c-solid)]'
   },
   teal: {
-    gradient: 'from-[var(--c-solid)] to-emerald-600',
+    solid: 'bg-emerald-600',
     bg: 'bg-emerald-50',
     bgLight: 'bg-emerald-100',
     text: 'text-emerald-700',
     ring: 'focus:ring-emerald-500'
   },
   blue: {
-    gradient: 'from-blue-500 to-sky-600',
+    solid: 'bg-sky-600',
     bg: 'bg-blue-50',
     bgLight: 'bg-blue-100',
     text: 'text-blue-700',
     ring: 'focus:ring-blue-500'
   },
   rose: {
-    gradient: 'from-rose-500 to-pink-600',
+    solid: 'bg-rose-500',
     bg: 'bg-rose-50',
     bgLight: 'bg-rose-100',
     text: 'text-rose-700',
     ring: 'focus:ring-rose-500'
   },
   amber: {
-    gradient: 'from-amber-500 to-orange-600',
+    solid: 'bg-amber-500',
     bg: 'bg-amber-50',
     bgLight: 'bg-amber-100',
     text: 'text-amber-700',
@@ -170,9 +170,8 @@ export function NextStepCard({ data }: NextStepCardProps) {
         >
           <div className="flex items-center gap-4">
             <div className={cn(
-              "w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-lg",
-              "bg-gradient-to-br",
-              step.color.gradient
+              "w-12 h-12 rounded-xl flex items-center justify-center text-white shadow-sm",
+              step.color.solid
             )}>
               {step.icon}
             </div>
@@ -220,9 +219,9 @@ export function NextStepCard({ data }: NextStepCardProps) {
         )}
       >
         <div className={cn(
-          "relative overflow-hidden rounded-2xl bg-gradient-to-br p-6 transition-all duration-300",
-          step.color.gradient,
-          "hover:shadow-2xl",
+          "relative overflow-hidden rounded-2xl p-6 transition-all duration-300",
+          step.color.solid,
+          "hover:shadow-lg",
           isHovered ? "-translate-y-1" : "translate-y-0"
         )}>
           {/* Animated background decorations */}

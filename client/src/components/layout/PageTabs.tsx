@@ -336,17 +336,20 @@ export function PageHeader({ title, description, tabs, tabVariant = 'minimal', a
 
   return (
     <div className={cn(
-      'bg-gradient-to-r from-[var(--c-bg)] via-white to-sky-50 dark:from-[var(--c-bg)]/30 dark:via-stone-800 dark:to-sky-900/20',
-      'rounded-2xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50',
+      // Uniform neutral hero — samma på alla sidor, oavsett domän.
+      // Pasteller får visas i innehållet nedan istället.
+      'bg-[var(--header-bg)] rounded-2xl border border-[var(--header-border)]',
+      // Tunn vänsterkant i domänfärg ger subtil identifiering utan att skrika
+      'border-l-4 border-l-[var(--c-solid)]',
       className
     )}>
       {/* Header content */}
       <div className="px-5 py-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)] tracking-tight truncate">{title}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-[var(--header-text)] tracking-tight truncate">{title}</h1>
             {description && (
-              <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">{description}</p>
+              <p className="text-sm text-[var(--header-muted)] mt-1">{description}</p>
             )}
           </div>
           {actions && (
@@ -360,7 +363,7 @@ export function PageHeader({ title, description, tabs, tabVariant = 'minimal', a
       {/* Tabs integrated in header */}
       {hasTabs && (
         <div className="px-4 pb-3 pt-0">
-          <div className="bg-white/60 dark:bg-stone-800/40 rounded-xl px-2 py-1.5 border border-[var(--c-accent)]/40/50 dark:border-stone-700/50">
+          <div className="bg-white/70 dark:bg-stone-900/40 rounded-xl px-2 py-1.5 border border-[var(--header-border)]">
             <PageTabs tabs={tabs} variant={tabVariant} />
           </div>
         </div>

@@ -362,7 +362,7 @@ interface DailyTipCardProps {
 
 function DailyTipCard({ tip }: DailyTipCardProps) {
   return (
-    <div className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 p-4">
+    <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 p-4">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-lg flex items-center justify-center flex-shrink-0">
           <Lightbulb className="text-[var(--c-text)] dark:text-[var(--c-solid)]" size={20} />

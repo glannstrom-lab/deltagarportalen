@@ -295,7 +295,7 @@ function LevelProgress({ level, title, currentPoints, nextLevelPoints, t }: {
     : 100
 
   return (
-    <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-600 rounded-2xl p-6 text-white">
+    <div className="bg-[var(--c-solid)] rounded-2xl p-6 text-white">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
@@ -452,7 +452,7 @@ function BadgeCard({ achievement, earnedAt }: { achievement: Achievement; earned
   const Icon = getIcon(achievement.icon)
 
   return (
-    <div className="flex items-center gap-3 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-200 dark:border-amber-700 rounded-xl px-4 py-3">
+    <div className="flex items-center gap-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-700 rounded-xl px-4 py-3">
       <div className="w-10 h-10 bg-amber-100 dark:bg-amber-900/40 rounded-lg flex items-center justify-center">
         <Icon size={20} className="text-amber-600 dark:text-amber-400" />
       </div>

@@ -147,7 +147,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
   // Compact version for sidebar or small spaces
   if (compact) {
     return (
-      <div className="bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 p-4">
+      <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Trophy size={18} className="text-[var(--c-text)] dark:text-[var(--c-text)]" />
@@ -199,13 +199,13 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-br from-sky-50 to-[var(--c-bg)] dark:from-sky-900/30 dark:to-[var(--c-bg)]/40 rounded-2xl border border-sky-200 dark:border-sky-800 p-6 text-center"
+        className="bg-sky-50 dark:bg-sky-900/30 rounded-2xl border border-sky-200 dark:border-sky-800 p-6 text-center"
       >
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-400 to-[var(--c-solid)] flex items-center justify-center mx-auto mb-4"
+          className="w-16 h-16 rounded-full bg-sky-500 flex items-center justify-center mx-auto mb-4"
         >
           <Sparkles size={32} className="text-white" />
         </motion.div>
@@ -243,13 +243,13 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/30 dark:to-[var(--c-bg)]/40 rounded-2xl border border-emerald-200 dark:border-emerald-800 p-8 text-center"
+        className="bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl border border-emerald-200 dark:border-emerald-800 p-8 text-center"
       >
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-[var(--c-solid)] flex items-center justify-center mx-auto mb-4"
+          className="w-20 h-20 rounded-full bg-emerald-500 flex items-center justify-center mx-auto mb-4"
         >
           <Trophy size={40} className="text-white" />
         </motion.div>
@@ -285,7 +285,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
       className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 shadow-sm overflow-hidden"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-500 p-6 text-white">
+      <div className="bg-[var(--c-solid)] p-6 text-white">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -375,7 +375,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
                   to={item.link}
                   className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-accent)]/60 hover:shadow-md transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--c-accent)]/40 to-sky-100 dark:from-[var(--c-bg)]/50 dark:to-sky-900/50 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-text)] group-hover:from-[var(--c-accent)]/60 group-hover:to-sky-200 dark:group-hover:from-[var(--c-bg)]/70 dark:group-hover:to-sky-900/70 transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-[var(--c-accent)]/50 dark:bg-[var(--c-bg)]/50 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-text)] group-hover:bg-[var(--c-accent)]/70 dark:group-hover:bg-[var(--c-bg)]/70 transition-colors">
                     {item.icon}
                   </div>
                   <div className="flex-1 min-w-0">

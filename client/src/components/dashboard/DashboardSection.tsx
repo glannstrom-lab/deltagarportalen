@@ -20,7 +20,7 @@ interface DashboardSectionProps {
 
 const colorConfig = {
   teal: {
-    headerBg: 'bg-gradient-to-r from-[var(--c-bg)] via-[var(--c-bg)]/80 to-emerald-50/50 dark:from-[var(--c-bg)]/40 dark:via-[var(--c-bg)]/30 dark:to-emerald-900/10',
+    headerBg: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40',
     headerText: 'text-[var(--c-text)] dark:text-[var(--c-text)]',
     headerIcon: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
     border: 'border-[var(--c-accent)]/60/60 dark:border-[var(--c-accent)]/50/40',
@@ -28,7 +28,7 @@ const colorConfig = {
     ring: 'focus-visible:ring-[var(--c-solid)]',
   },
   sky: {
-    headerBg: 'bg-gradient-to-r from-sky-50 via-sky-50/80 to-blue-50/50 dark:from-sky-900/30 dark:via-sky-900/20 dark:to-blue-900/10',
+    headerBg: 'bg-sky-50 dark:bg-sky-900/30',
     headerText: 'text-sky-800 dark:text-sky-200',
     headerIcon: 'text-sky-600 dark:text-sky-400',
     border: 'border-sky-200/60 dark:border-sky-800/40',
@@ -36,7 +36,7 @@ const colorConfig = {
     ring: 'focus-visible:ring-sky-500',
   },
   amber: {
-    headerBg: 'bg-gradient-to-r from-amber-50 via-amber-50/80 to-orange-50/50 dark:from-amber-900/30 dark:via-amber-900/20 dark:to-orange-900/10',
+    headerBg: 'bg-amber-50 dark:bg-amber-900/30',
     headerText: 'text-amber-800 dark:text-amber-200',
     headerIcon: 'text-amber-600 dark:text-amber-400',
     border: 'border-amber-200/60 dark:border-amber-800/40',
@@ -44,7 +44,7 @@ const colorConfig = {
     ring: 'focus-visible:ring-amber-500',
   },
   violet: {
-    headerBg: 'bg-gradient-to-r from-violet-50 via-violet-50/80 to-purple-50/50 dark:from-violet-900/30 dark:via-violet-900/20 dark:to-purple-900/10',
+    headerBg: 'bg-violet-50 dark:bg-violet-900/30',
     headerText: 'text-violet-800 dark:text-violet-200',
     headerIcon: 'text-violet-600 dark:text-violet-400',
     border: 'border-violet-200/60 dark:border-violet-800/40',
@@ -52,7 +52,7 @@ const colorConfig = {
     ring: 'focus-visible:ring-violet-500',
   },
   emerald: {
-    headerBg: 'bg-gradient-to-r from-emerald-50 via-emerald-50/80 to-green-50/50 dark:from-emerald-900/30 dark:via-emerald-900/20 dark:to-green-900/10',
+    headerBg: 'bg-emerald-50 dark:bg-emerald-900/30',
     headerText: 'text-emerald-800 dark:text-emerald-200',
     headerIcon: 'text-emerald-600 dark:text-emerald-400',
     border: 'border-emerald-200/60 dark:border-emerald-800/40',
@@ -134,7 +134,7 @@ export function DashboardSection({
           isExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
         )}
       >
-        <div className="p-4 sm:p-5 bg-gradient-to-b from-white to-stone-50/50 dark:from-stone-900/50 dark:to-stone-900/30">
+        <div className="p-4 sm:p-5 bg-white dark:bg-stone-900/50">
           {children}
         </div>
       </div>

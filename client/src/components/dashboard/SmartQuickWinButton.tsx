@@ -247,9 +247,9 @@ export function SmartQuickWinButton() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
-          "bg-gradient-to-r from-[var(--c-solid)] to-sky-600 text-white font-medium",
-          "hover:shadow-xl hover:transition-shadow"
+          "fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-md",
+          "bg-[var(--c-solid)] text-white font-medium",
+          "hover:shadow-lg hover:transition-shadow"
         )}
       >
         <Sparkles size={18} />

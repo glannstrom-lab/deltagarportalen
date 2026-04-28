@@ -188,7 +188,7 @@ export default function QuestsTab() {
     <div className="space-y-8">
       {/* Header Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 dark:from-yellow-900/30 dark:to-amber-900/30 rounded-2xl border border-yellow-200 dark:border-yellow-700">
+        <div className="p-4 bg-yellow-50 dark:bg-yellow-900/30 rounded-2xl border border-yellow-200 dark:border-yellow-700">
           <div className="w-10 h-10 bg-white dark:bg-stone-800 rounded-xl flex items-center justify-center shadow-sm mb-3">
             <Zap size={20} className="text-yellow-600 dark:text-yellow-400" />
           </div>
@@ -196,7 +196,7 @@ export default function QuestsTab() {
           <p className="text-sm text-yellow-600 dark:text-yellow-400">{t('quests.pointsToday')}</p>
         </div>
 
-        <div className="p-4 bg-gradient-to-br from-orange-50 to-red-50 dark:from-orange-900/30 dark:to-red-900/30 rounded-2xl border border-orange-200 dark:border-orange-700">
+        <div className="p-4 bg-orange-50 dark:bg-orange-900/30 rounded-2xl border border-orange-200 dark:border-orange-700">
           <div className="w-10 h-10 bg-white dark:bg-stone-800 rounded-xl flex items-center justify-center shadow-sm mb-3">
             <Flame size={20} className="text-orange-600 dark:text-orange-400" />
           </div>
@@ -204,7 +204,7 @@ export default function QuestsTab() {
           <p className="text-sm text-orange-600 dark:text-orange-400">{t('quests.daysInRow')}</p>
         </div>
 
-        <div className="p-4 bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/30 dark:to-[var(--c-bg)]/40 rounded-2xl border border-emerald-200 dark:border-emerald-700">
+        <div className="p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl border border-emerald-200 dark:border-emerald-700">
           <div className="w-10 h-10 bg-white dark:bg-stone-800 rounded-xl flex items-center justify-center shadow-sm mb-3">
             <Trophy size={20} className="text-emerald-600 dark:text-emerald-400" />
           </div>
@@ -221,7 +221,7 @@ export default function QuestsTab() {
         </div>
         <div className="w-full bg-stone-100 dark:bg-stone-700 rounded-full h-3 overflow-hidden">
           <div
-            className="bg-gradient-to-r from-yellow-400 to-amber-500 h-3 rounded-full transition-all duration-500"
+            className="bg-yellow-500 h-3 rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -327,7 +327,7 @@ export default function QuestsTab() {
 
       {/* All completed celebration */}
       {completedCount === quests.length && quests.length > 0 && (
-        <div className="p-6 bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/30 dark:to-[var(--c-bg)]/40 rounded-2xl border border-emerald-200 dark:border-emerald-700 text-center">
+        <div className="p-6 bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl border border-emerald-200 dark:border-emerald-700 text-center">
           <div className="w-16 h-16 bg-white dark:bg-stone-800 rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-4">
             <Trophy size={32} className="text-emerald-500" />
           </div>

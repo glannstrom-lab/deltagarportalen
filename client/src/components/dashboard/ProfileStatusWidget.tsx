@@ -130,7 +130,7 @@ export function ProfileStatusWidget() {
   return (
     <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 border-b border-stone-200 dark:border-stone-700">
+      <div className="px-4 py-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-b border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 rounded-lg flex items-center justify-center">
@@ -213,7 +213,7 @@ export function ProfileStatusCompact() {
       to="/profile"
       className="flex items-center gap-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-accent)]/60 transition-colors"
     >
-      <div className="w-10 h-10 bg-gradient-to-br from-[var(--c-solid)] to-sky-600 rounded-xl flex items-center justify-center">
+      <div className="w-10 h-10 bg-[var(--c-solid)] rounded-xl flex items-center justify-center">
         <User className="w-5 h-5 text-white" />
       </div>
       <div className="flex-1 min-w-0">

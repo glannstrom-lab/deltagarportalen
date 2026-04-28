@@ -1,61 +1,75 @@
 /**
  * Domänmappning för Deltagarportalen
- * Spec: docs/DESIGN.md (C-Pastell, 3 domäner)
+ * Spec: docs/DESIGN.md (5-pastell, uniform neutral header)
  *
- * Varje route hör till en av tre semantiska domäner som styr sidans accentfärg.
- * Används av PageLayout som sätter <div data-domain="..."> automatiskt.
+ * Varje route hör till en av FEM semantiska domäner som styr sidans
+ * accent-pastell (men aldrig hjältesektionen — den är alltid neutral grå).
  *
- * Aktiveras via tokens.css som modifierar --c-bg, --c-solid, --c-accent, --c-text.
+ * Aktiveras via tokens.css som modifierar --c-bg, --c-solid, --c-accent, --c-text
+ * när PageLayout sätter <div data-domain="...">.
  */
 
-export type ColorDomain = 'action' | 'reflection' | 'outbound'
+export type ColorDomain =
+  | 'action'      // turkos/mint — overview, system, AI
+  | 'info'        // sky/blå — informativt material, hjälp, resurser
+  | 'activity'    // persika — utåtriktade jobbåtgärder
+  | 'wellbeing'   // lavendel — hälsa, reflektion, dagbok
+  | 'coaching'    // rosa — utveckling, CV, brev, intervju, karriär
 
 /**
- * Bakåtkompatibel typ — accepterar både nya 3-domänsnamn och gamla 5-domänsnamn.
- * tokens.css aliaserar de gamla till de nya (wellbeing→reflection, info→outbound, etc.)
+ * Bakåtkompatibel typ — accepterar de gamla 3-domän-namnen ('reflection', 'outbound')
+ * från den korta C-pastell-perioden, samt de nya 5-domän-namnen.
+ * tokens.css aliaserar 3-namnen till 5-namnen så ingen kodfix krävs.
  */
-export type LegacyColorDomain = ColorDomain | 'info' | 'activity' | 'wellbeing' | 'coaching'
+export type LegacyColorDomain = ColorDomain | 'reflection' | 'outbound'
 
 /**
  * Route-prefix → domän
  * Längre prefix matchas före kortare (mer specifika först).
  */
 const ROUTE_DOMAIN_MAP: Array<[string, ColorDomain]> = [
-  // === REFLEKTION (lila) — skapande, självkännedom, hälsa ===
-  ['/cv',                    'reflection'],
-  ['/cover-letter',          'reflection'],
-  ['/wellness',              'reflection'],
-  ['/diary',                 'reflection'],
-  ['/career',                'reflection'],
-  ['/interest-guide',        'reflection'],
-  ['/skills-gap-analysis',   'reflection'],
-  ['/personal-brand',        'reflection'],
-  ['/education',             'reflection'],
-  ['/interview-simulator',   'reflection'],
-  ['/calendar',              'reflection'],
-  ['/exercises',             'reflection'],
+  // === COACHING (Rosa) — utveckling, CV, ansökansmaterial, karriärhandledning ===
+  ['/cv',                    'coaching'],
+  ['/cover-letter',          'coaching'],
+  ['/career',                'coaching'],
+  ['/interest-guide',        'coaching'],
+  ['/skills-gap-analysis',   'coaching'],
+  ['/personal-brand',        'coaching'],
+  ['/education',             'coaching'],
+  ['/interview-simulator',   'coaching'],
+  ['/exercises',             'coaching'],
 
-  // === UTÅTRIKTAT (persika) — handling utåt mot arbetsmarknaden ===
-  ['/job-search',            'outbound'],
-  ['/applications',          'outbound'],
-  ['/spontanansökan',        'outbound'],
-  ['/linkedin-optimizer',    'outbound'],
-  ['/international',         'outbound'],
-  ['/salary',                'outbound'],
-  ['/externa-resurser',      'outbound'],
-  ['/print-resources',       'outbound'],
+  // === WELLBEING (Lavendel) — hälsa, reflektion, planering ===
+  ['/wellness',              'wellbeing'],
+  ['/diary',                 'wellbeing'],
+  ['/calendar',              'wellbeing'],
 
-  // === ACTION (turkos) — overview, system, support ===
-  // Default — täcker /, /ai-team, /settings, /help, /resources,
-  // /knowledge-base, /nätverk, /profile, /my-consultant, /consultant, /admin
+  // === ACTIVITY (Persika) — jobbsökning, utåtriktade åtgärder ===
+  ['/job-search',            'activity'],
+  ['/applications',          'activity'],
+  ['/spontanansökan',        'activity'],
+  ['/linkedin-optimizer',    'activity'],
+  ['/international',         'activity'],
+  ['/salary',                'activity'],
+
+  // === INFO (Sky) — informativt material och hjälp ===
+  ['/help',                  'info'],
+  ['/resources',             'info'],
+  ['/externa-resurser',      'info'],
+  ['/print-resources',       'info'],
+  ['/knowledge-base',        'info'],
+  ['/network',               'info'],
+  ['/nätverk',               'info'],
+
+  // === ACTION (Mint/Turkos) — Default ===
+  // /, /ai-team, /settings, /profile, /my-consultant, /consultant, /admin
 ]
 
 /**
  * Returnerar rätt domän för en given route-pathname.
- * Default = 'action' (turkos) om ingen match.
+ * Default = 'action' (mint/turkos) om ingen match.
  */
 export function getDomainForPath(pathname: string): ColorDomain {
-  // Normalisera: lowercase + trim trailing slash
   const path = pathname.toLowerCase().replace(/\/$/, '') || '/'
 
   for (const [prefix, domain] of ROUTE_DOMAIN_MAP) {
@@ -70,7 +84,9 @@ export function getDomainForPath(pathname: string): ColorDomain {
  * Mänsklig etikett per domän — för domain-tag, breadcrumbs etc.
  */
 export const DOMAIN_LABELS: Record<ColorDomain, string> = {
-  action:     'Action',
-  reflection: 'Reflektion',
-  outbound:   'Utåtriktat',
+  action:    'Översikt',
+  info:      'Information',
+  activity:  'Jobbsökning',
+  wellbeing: 'Välmående',
+  coaching:  'Utveckling',
 }

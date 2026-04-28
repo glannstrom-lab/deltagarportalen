@@ -1,38 +1,65 @@
 /**
  * Designsystem-tokens för Deltagarportalen
- * Spec: docs/DESIGN.md (C-Pastell, 3 domäner)
+ * Spec: docs/DESIGN.md (5-pastell, uniform neutral header)
  *
- * Aktiveras automatiskt per sida via <div data-domain="action|reflection|outbound">
+ * Aktiveras automatiskt per sida via <div data-domain="action|info|activity|wellbeing|coaching">
  * Sätts av PageLayout som läser routens domän från lib/domains.ts.
+ *
+ * Princip: HEADER/HERO är alltid neutral grå (--header-bg / --header-text).
+ *          PASTELLERNA används i innehållet (cards, KPIs, tabs, ikoner) för att
+ *          liva upp utan att skrika.
  */
 
 :root {
-  /* === ACTION (Turkos) — Dashboard, AI, Settings, Help, Resources === */
-  --action-bg:     #F0F9F5;  /* mjuk bakgrund (ljusare än 50) */
-  --action-accent: #C8EBD9;  /* border / accent-element */
-  --action-solid:  #148860;  /* 700-nyans, för CTA-fyllning */
-  --action-text:   #0F6E56;  /* 900-nyans, alltid för text på ljus bg */
+  /* === ACTION (Mint/Turkos) — Dashboard, AI, Settings, Help (system) === */
+  --action-bg:     #ECF7F1;  /* mjuk mint-bakgrund */
+  --action-accent: #C5E5D4;  /* border / accent */
+  --action-solid:  #1F8A66;  /* CTA-fyllning */
+  --action-text:   #155F47;  /* text på ljus bg */
 
-  /* === REFLEKTION (Lila) — CV, Cover Letter, Wellness, Diary, Career === */
-  --reflect-bg:     #F4F0FA;
-  --reflect-accent: #D4C5EB;
-  --reflect-solid:  #7B5FB0;
-  --reflect-text:   #5B3F8F;
+  /* === INFO (Sky/Blå) — Help, Resources, KnowledgeBase, Nätverk === */
+  --info-bg:     #ECF4FA;
+  --info-accent: #C8DEEF;
+  --info-solid:  #2F7DB5;
+  --info-text:   #1F5985;
 
-  /* === UTÅTRIKTAT (Persika) — JobSearch, Applications, LinkedIn, Salary === */
-  --outbound-bg:     #FFF5EB;
-  --outbound-accent: #F8D5B5;
-  --outbound-solid:  #DE8738;
-  --outbound-text:   #B05A1A;
+  /* === ACTIVITY (Persika) — JobSearch, Applications, LinkedIn, Salary === */
+  --activity-bg:     #FCF1E6;
+  --activity-accent: #F5D3B5;
+  --activity-solid:  #C97A2E;
+  --activity-text:   #8B5418;
+
+  /* === WELLBEING (Lavendel/Lila) — Wellness, Diary, Calendar === */
+  --wellbeing-bg:     #F2EDF8;
+  --wellbeing-accent: #D4C5EB;
+  --wellbeing-solid:  #7058A8;
+  --wellbeing-text:   #4F3D7C;
+
+  /* === COACHING (Rosa/Coral) — CV, Cover Letter, Career, Interview, Skills === */
+  --coaching-bg:     #FBEEEF;
+  --coaching-accent: #F2C8CD;
+  --coaching-solid:  #B85363;
+  --coaching-text:   #843845;
 
   /* === Neutrala === */
-  --canvas:    #FBFAF6;  /* Sidobakgrund — något varmare än ren vit */
+  --canvas:    #FBFAF6;  /* Sidobakgrund */
   --surface:   #FFFFFF;  /* Kort/paneler */
   --stone-50:  #F5F4F0;
-  --stone-150: #EAE8E2;  /* Mjuk border (ersätter stone-200) */
+  --stone-100: #ECEAE3;
+  --stone-150: #EAE8E2;
+  --stone-200: #DDD9D0;
   --stone-500: #9A9892;
   --stone-700: #6A6864;
   --stone-900: #2C2C2A;
+
+  /* === UNIFORM HEADER/HERO — gemensam för alla sidor, oavsett domän ===
+     Detta säkerställer att hjältesektionen alltid känns lugn och konsekvent.
+     Pastellerna lever i innehållet, inte i toppen. */
+  --header-bg:        #F5F4F0;  /* mjuk varm grå */
+  --header-bg-strong: #ECEAE3;
+  --header-border:    #DDD9D0;
+  --header-text:      #2C2C2A;
+  --header-muted:     #6A6864;
 
   /* === Aktiv domän (defaultar till Action) ===
      Skrivs över av [data-domain="..."] nedan. Sidkomponenter använder dessa. */
@@ -57,10 +84,11 @@
   --status-error-bg:   #FEE2E2;
 }
 
-/* === Per-domän aktivering ===
-   Gamla domännamn (info/activity/wellbeing/coaching) bevaras som alias så att
-   existerande sidor som använder dem fortsätter fungera utan kodändringar.
-   Mappning enligt DESIGN.md (2026-04-28). */
+/* === Per-domän aktivering — 5 distinkta pasteller ===
+   Bakåtkompatibilitet: 'reflection' aliasar till 'wellbeing' och 'outbound' aliasar
+   till 'activity', så alla sidor som migrerades till 3-domän-systemet fortsätter
+   fungera utan kodändringar. */
+
 [data-domain="action"] {
   --c-bg:     var(--action-bg);
   --c-accent: var(--action-accent);
@@ -68,22 +96,34 @@
   --c-text:   var(--action-text);
 }
 
-[data-domain="reflection"],
-[data-domain="wellbeing"],   /* alias: gamla 5-domän-systemet */
-[data-domain="coaching"] {
-  --c-bg:     var(--reflect-bg);
-  --c-accent: var(--reflect-accent);
-  --c-solid:  var(--reflect-solid);
-  --c-text:   var(--reflect-text);
+[data-domain="info"] {
+  --c-bg:     var(--info-bg);
+  --c-accent: var(--info-accent);
+  --c-solid:  var(--info-solid);
+  --c-text:   var(--info-text);
 }
 
-[data-domain="outbound"],
-[data-domain="info"],         /* alias: gamla 5-domän-systemet */
-[data-domain="activity"] {
-  --c-bg:     var(--outbound-bg);
-  --c-accent: var(--outbound-accent);
-  --c-solid:  var(--outbound-solid);
-  --c-text:   var(--outbound-text);
+[data-domain="activity"],
+[data-domain="outbound"] {     /* alias: 3-domän → 5-domän */
+  --c-bg:     var(--activity-bg);
+  --c-accent: var(--activity-accent);
+  --c-solid:  var(--activity-solid);
+  --c-text:   var(--activity-text);
+}
+
+[data-domain="wellbeing"],
+[data-domain="reflection"] {   /* alias: 3-domän → 5-domän */
+  --c-bg:     var(--wellbeing-bg);
+  --c-accent: var(--wellbeing-accent);
+  --c-solid:  var(--wellbeing-solid);
+  --c-text:   var(--wellbeing-text);
+}
+
+[data-domain="coaching"] {
+  --c-bg:     var(--coaching-bg);
+  --c-accent: var(--coaching-accent);
+  --c-solid:  var(--coaching-solid);
+  --c-text:   var(--coaching-text);
 }
 
 /* === Reduced motion === */
@@ -98,37 +138,57 @@
 /* === High contrast: kraftigare nyanser === */
 @media (prefers-contrast: high) {
   :root {
-    --action-text:   #084030;
-    --reflect-text:  #3B2A5F;
-    --outbound-text: #7A3D11;
-    --stone-700:     #2C2C2A;
-    --stone-500:     #5C5C58;
+    --action-text:    #08402E;
+    --info-text:      #143E5E;
+    --activity-text:  #5C3A10;
+    --wellbeing-text: #382B5A;
+    --coaching-text:  #5E2734;
+    --header-text:    #1A1A18;
+    --stone-700:      #2C2C2A;
+    --stone-500:      #5C5C58;
   }
 }
 
 /* === Dark mode === */
 .dark {
-  /* Domänfärgerna inverteras: bg blir mörk, text blir ljus */
-  --action-bg:     #0F2820;
+  --action-bg:     #122A22;
   --action-accent: #1F5C45;
-  --action-solid:  #3BC79D;  /* ljusare för synlighet på mörk bg */
-  --action-text:   #9FE1CB;
+  --action-solid:  #3BC79D;
+  --action-text:   #A8E2CC;
 
-  --reflect-bg:     #1F1633;
-  --reflect-accent: #4A3678;
-  --reflect-solid:  #BFA9E0;
-  --reflect-text:   #D4C5EB;
+  --info-bg:        #112536;
+  --info-accent:    #2A4F70;
+  --info-solid:     #6EB1E0;
+  --info-text:      #B5D8F0;
 
-  --outbound-bg:     #2A1A0A;
-  --outbound-accent: #6B3D1A;
-  --outbound-solid:  #F4B988;
-  --outbound-text:   #F8D5B5;
+  --activity-bg:     #2A1A0A;
+  --activity-accent: #6B3D1A;
+  --activity-solid:  #F4B988;
+  --activity-text:   #F8D5B5;
+
+  --wellbeing-bg:     #1F1633;
+  --wellbeing-accent: #4A3678;
+  --wellbeing-solid:  #BFA9E0;
+  --wellbeing-text:   #D4C5EB;
+
+  --coaching-bg:     #2C141A;
+  --coaching-accent: #6B2D38;
+  --coaching-solid:  #E8A4AE;
+  --coaching-text:   #F2C8CD;
 
   --canvas:    #15140F;
   --surface:   #1F1E1A;
   --stone-50:  #28261F;
+  --stone-100: #2F2D26;
   --stone-150: #3A3830;
+  --stone-200: #46443C;
   --stone-500: #8A8880;
   --stone-700: #B5B3AB;
   --stone-900: #FAFAF6;
+
+  --header-bg:        #1F1E1A;
+  --header-bg-strong: #28261F;
+  --header-border:    #3A3830;
+  --header-text:      #FAFAF6;
+  --header-muted:     #B5B3AB;
 }

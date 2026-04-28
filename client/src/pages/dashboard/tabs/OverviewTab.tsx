@@ -217,7 +217,7 @@ function ExpandableCategory({
 
   const colors = {
     teal: {
-      header: 'from-[var(--c-bg)] to-[var(--c-accent)]/40/50 dark:from-[var(--c-bg)]/40 dark:to-[var(--c-bg)]/30',
+      header: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40',
       headerText: 'text-[var(--c-text)] dark:text-[var(--c-accent)]',
       headerIcon: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
       border: 'border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50',
@@ -229,7 +229,7 @@ function ExpandableCategory({
       completeIcon: 'text-emerald-600 dark:text-emerald-400'
     },
     sky: {
-      header: 'from-sky-50 to-sky-100/50 dark:from-sky-900/30 dark:to-sky-800/20',
+      header: 'bg-sky-50 dark:bg-sky-900/30',
       headerText: 'text-sky-800 dark:text-sky-300',
       headerIcon: 'text-sky-600 dark:text-sky-400',
       border: 'border-sky-200 dark:border-sky-800/50',
@@ -241,7 +241,7 @@ function ExpandableCategory({
       completeIcon: 'text-emerald-600 dark:text-emerald-400'
     },
     amber: {
-      header: 'from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20',
+      header: 'bg-amber-50 dark:bg-amber-900/30',
       headerText: 'text-amber-800 dark:text-amber-300',
       headerIcon: 'text-amber-600 dark:text-amber-400',
       border: 'border-amber-200 dark:border-amber-800/50',
@@ -271,7 +271,7 @@ function ExpandableCategory({
         aria-expanded={isExpanded}
         aria-controls={`${categoryId}-content`}
         className={cn(
-          'w-full flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r transition-colors',
+          'w-full flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 transition-colors',
           c.header
         )}
       >
@@ -304,7 +304,7 @@ function ExpandableCategory({
           id={`${categoryId}-content`}
           role="region"
           aria-label={title}
-          className="p-3 sm:p-4 bg-gradient-to-b from-white to-stone-50/50 dark:from-stone-900 dark:to-stone-950/50"
+          className="p-3 sm:p-4 bg-white dark:bg-stone-900"
         >
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {items.map((item) => {
@@ -495,7 +495,7 @@ export default function OverviewTab() {
       {/* Progress Dashboard */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3" role="region" aria-label="Din framgång">
         {/* Onboarding Progress */}
-        <div className="bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-accent)]/40/50 dark:from-[var(--c-bg)]/40 dark:to-[var(--c-bg)]/30 rounded-xl p-3 sm:p-4 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50">
+        <div className="bg-[var(--c-bg)] rounded-xl p-3 sm:p-4 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
           <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center shrink-0">
               <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
@@ -520,7 +520,7 @@ export default function OverviewTab() {
         {/* Career Plan Progress */}
         <Link
           to="/career?tab=plan"
-          className="bg-gradient-to-br from-sky-50 to-sky-100/50 dark:from-sky-900/30 dark:to-sky-800/20 rounded-xl p-3 sm:p-4 border border-sky-200 dark:border-sky-800/50 hover:shadow-md transition-shadow"
+          className="bg-sky-50 dark:bg-sky-900/30 rounded-xl p-3 sm:p-4 border border-sky-200 dark:border-sky-800/50 hover:bg-sky-100/70 dark:hover:bg-sky-900/40 transition-colors"
         >
           <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center shrink-0">
@@ -539,7 +539,7 @@ export default function OverviewTab() {
         {/* Skills Match */}
         <Link
           to="/career?tab=skills"
-          className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/30 dark:to-emerald-800/20 rounded-xl p-3 sm:p-4 border border-emerald-200 dark:border-emerald-800/50 hover:shadow-md transition-shadow"
+          className="bg-emerald-50 dark:bg-emerald-900/30 rounded-xl p-3 sm:p-4 border border-emerald-200 dark:border-emerald-800/50 hover:bg-emerald-100/70 dark:hover:bg-emerald-900/40 transition-colors"
         >
           <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center shrink-0">
@@ -558,7 +558,7 @@ export default function OverviewTab() {
         {/* Network */}
         <Link
           to="/career?tab=network"
-          className="bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20 rounded-xl p-3 sm:p-4 border border-amber-200 dark:border-amber-800/50 hover:shadow-md transition-shadow"
+          className="bg-amber-50 dark:bg-amber-900/30 rounded-xl p-3 sm:p-4 border border-amber-200 dark:border-amber-800/50 hover:bg-amber-100/70 dark:hover:bg-amber-900/40 transition-colors"
         >
           <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0">

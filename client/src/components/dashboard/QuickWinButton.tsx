@@ -140,9 +140,9 @@ export function QuickWinButton() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
-          "bg-gradient-to-r from-[var(--c-solid)] to-sky-600 text-white font-medium",
-          "hover:shadow-xl hover:transition-shadow"
+          "fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-md",
+          "bg-[var(--c-solid)] text-white font-medium",
+          "hover:shadow-lg hover:transition-shadow"
         )}
       >
         <Sparkles size={18} />
@@ -170,7 +170,7 @@ export function QuickWinButton() {
               <div className="p-6 border-b border-stone-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--c-accent)]/40 to-sky-100 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-xl bg-[var(--c-accent)]/50 flex items-center justify-center">
                       <Sparkles className="w-5 h-5 text-[var(--c-text)]" />
                     </div>
                     <div>
@@ -285,7 +285,7 @@ export function QuickWinBadge() {
         onClick={() => setIsOpen(true)}
         className={cn(
           "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium",
-          "bg-gradient-to-r from-[var(--c-accent)]/40 to-sky-100 text-[var(--c-text)]",
+          "bg-[var(--c-accent)]/50 text-[var(--c-text)]",
           "border border-[var(--c-accent)]/60 hover:shadow-sm transition-all"
         )}
       >
