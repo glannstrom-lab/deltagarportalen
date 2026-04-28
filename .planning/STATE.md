@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-03-sidebar-refactor-PLAN.md — ready for 01-05
-last_updated: "2026-04-28T20:08:00.000Z"
-last_activity: 2026-04-28 — Plan 01-03 sidebar refactor completed (fills gap; 01, 02, 03, 04 all done)
+stopped_at: Completed 01-05-deep-link-smoke-test-PLAN.md — Phase 1 complete
+last_updated: "2026-04-28T18:16:40.687Z"
+last_activity: 2026-04-28 — Plan 01-03 sidebar refactor completed
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
-  completed_plans: 4
+  completed_plans: 5
   percent: 80
 ---
 
@@ -53,6 +53,7 @@ Progress: [████████░░] 80%
 | Phase 01-hub-navigation-shell P02 | ~8 min | 2 tasks | 6 files |
 | Phase 01-hub-navigation-shell P04 | ~5 min | 2 tasks | 3 files |
 | Phase 01-hub-navigation-shell P03 | ~8 min | 1 task | 2 files |
+| Phase 01-hub-navigation-shell P05 | 4 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Progress: [████████░░] 80%
 - [Phase 01-02]: isHubNavEnabled() evaluated inline in JSX — flag is build-time env constant, no runtime state needed
 - [Phase 01-04]: data-domain placed on <li> wrapper (not <Link>) so CSS variable cascade resolves via the active-state parent
 - [Phase 01-04]: pb-20 added to main content only when showHubBottomNav — on desktop and flag-off no layout change
+- [Phase 01-05]: ThemeContext mocked (not wrapped) in smoke test — avoids ThemeProvider boilerplate for 61 cases, theme irrelevant to routing behavior
+- [Phase 01-05]: data-testid='route-error-fallback' added to RouteErrorBoundary — enables programmatic error boundary detection in integration tests
 
 ### Pending Todos
 
@@ -83,6 +86,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T20:08:00.000Z
-Stopped at: Completed 01-03-sidebar-refactor-PLAN.md — ready for 01-05
+Last session: 2026-04-28T18:16:40.683Z
+Stopped at: Completed 01-05-deep-link-smoke-test-PLAN.md — Phase 1 complete
 Resume file: None
