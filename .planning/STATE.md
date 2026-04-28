@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-data-wiring-wcag/03-05-empathy-review-ship-gate-PLAN.md
-last_updated: "2026-04-28T21:44:56.305Z"
-last_activity: 2026-04-28 — Plan 03-04 WCAG hardening completed
+stopped_at: Completed 04-layout-persistence-hide-show/04-01-migration-and-layout-hook-PLAN.md
+last_updated: "2026-04-28T22:43:00Z"
+last_activity: 2026-04-28 — Plan 04-01 migration + layout hook completed
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 15
-  completed_plans: 15
-  percent: 93
+  total_plans: 20
+  completed_plans: 16
+  percent: 80
 ---
 
 # State — Deltagarportalen
@@ -25,12 +25,12 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 
 ## Current Position
 
-Phase: 3 of 5 (Data Wiring + WCAG)
-Plan: 4 of 5 in current phase
+Phase: 4 of 5 (Layout Persistence + Hide/Show)
+Plan: 1 of 5 in current phase (completed)
 Status: In progress
-Last activity: 2026-04-28 — Plan 03-04 WCAG hardening completed
+Last activity: 2026-04-28 — Plan 04-01 migration + layout hook completed
 
-Progress: [█████████▒] 93%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
@@ -64,6 +64,7 @@ Progress: [█████████▒] 93%
 | Phase 03-data-wiring-wcag P03 | 9 | 3 tasks | 20 files |
 | Phase 03-data-wiring-wcag P04 | 12 | 3 tasks | 4 files |
 | Phase 03-data-wiring-wcag P05 | 4 | 5 tasks | 3 files |
+| Phase 04-layout-persistence-hide-show P01 | 15 | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -111,6 +112,10 @@ Progress: [█████████▒] 93%
 - [Phase 03-05]: Task 1 screenshot capture deferred in auto-mode — text artifact 03-PRE-IMPL-COPY-REVIEW.md used as primary agent input; screenshots spec documented in README.md
 - [Phase 03-05]: ship-as-is auto-selected for Task 4: 0 BLOCKs from both empathy agents; 4 FLAGs (copy refinements) deferred to Phase 4/v1.1 backlog
 - [Phase 03-05]: A11Y-05 gate CLOSED: nyquist_compliant: true in 03-VALIDATION.md — Phase 3 all 6 acceptance criteria met
+- [Phase 04-01]: useWidgetLayout uses staleTime: Infinity — layout only changes on explicit user action, not on window focus or interval
+- [Phase 04-01]: saveDebounced does immediate optimistic cache write + 1000ms debounce for DB write (dual-write pattern for instant UI feedback)
+- [Phase 04-01]: Migration trigger uses conditional pg_trigger existence check instead of DROP TRIGGER IF EXISTS (inviolable no-DROP rule)
+- [Phase 04-01]: useBreakpoint tests require vi.resetModules() in separate test file to re-read window.matchMedia in useState initializer
 
 ### Pending Todos
 
@@ -124,6 +129,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T21:44:56.303Z
-Stopped at: Completed 03-data-wiring-wcag/03-05-empathy-review-ship-gate-PLAN.md
+Last session: 2026-04-28T22:43:00Z
+Stopped at: Completed 04-layout-persistence-hide-show/04-01-migration-and-layout-hook-PLAN.md
 Resume file: None
