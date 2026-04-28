@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 3 context gathered
-last_updated: "2026-04-28T20:23:12.138Z"
+stopped_at: Completed 03-data-wiring-wcag/03-01-db-perf-migrations-traceability-PLAN.md
+last_updated: "2026-04-28T21:06:44.295Z"
 last_activity: 2026-04-28 — Plan 01-03 sidebar refactor completed
 progress:
   total_phases: 5
   completed_phases: 2
-  total_plans: 10
-  completed_plans: 10
+  total_plans: 15
+  completed_plans: 11
   percent: 80
 ---
 
@@ -59,6 +59,7 @@ Progress: [████████░░] 80%
 | Phase 02-static-widget-grid P03 | 2 | 3 tasks | 6 files |
 | Phase 02-static-widget-grid P04 | 6 | 3 tasks | 6 files |
 | Phase 02-static-widget-grid P05 | 8 | 3 tasks | 3 files |
+| Phase 03-data-wiring-wcag P01 | 4 | 4 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,9 @@ Progress: [████████░░] 80%
 - [Phase Phase 02-04]: Error isolation test validates healthy state (no fallback) rather than injecting failure via dynamic vi.doMock — ESM re-import is environmentally unreliable; WidgetErrorBoundary tested in 02-01
 - [Phase Phase 02-05]: Chunk-file existence is the definitive proof of lazy() code-splitting — if widget was statically imported, Vite would not emit a separate chunk file
 - [Phase Phase 02-05]: Comment-line lazy() count exclusion needed in lazy-isolation test: registry.ts JSDoc comment on line 12 contains lazy() literal, filter lines starting with // or * before counting
+- [Phase 03-01]: interview_sessions uses completed_at TIMESTAMPTZ (nullable) not a boolean completed column — Plan 02 hub-loader must filter on completed_at IS NOT NULL
+- [Phase 03-01]: salary_data and international_targets tables absent from live DB — SalaryWidget and InternationalWidget stay in empty-state mode in Phase 3, wire deferred to Phase 5
+- [Phase 03-01]: Hub-summary Promise.all approach confirmed viable: cumulative 4.211ms PASS, no RPC migration needed for v1.0
 
 ### Pending Todos
 
@@ -103,6 +107,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T20:23:12.136Z
-Stopped at: Phase 3 context gathered
-Resume file: .planning/phases/03-data-wiring-wcag/03-CONTEXT.md
+Last session: 2026-04-28T21:06:44.293Z
+Stopped at: Completed 03-data-wiring-wcag/03-01-db-perf-migrations-traceability-PLAN.md
+Resume file: None

@@ -23,17 +23,17 @@ Hubbarna ersätter den platta 27-sidors-navigationen med 5 domän-orienterade hu
 
 ### Hub-innehåll (HUB)
 
-- [ ] **HUB-01**: Söka Jobb visar widgets för Sök jobb, Mina ansökningar, Spontanansökan, CV, Personligt brev, Intervjuträning, Lön, Internationellt — alla med riktig data
-- [ ] **HUB-02**: Karriär visar widgets för Karriärmål, Intresseguide, Kompetensgap, Personligt varumärke, Utbildning, LinkedIn — alla med riktig data
-- [ ] **HUB-03**: Resurser visar widgets för Mina dokument, Kunskapsbank, Externa resurser, Utskriftsmaterial, AI-team, Övningar — alla med riktig data
-- [ ] **HUB-04**: Min Vardag visar widgets för Hälsa, Dagbok, Kalender, Nätverk, Min konsulent — alla med riktig data
+- [x] **HUB-01**: Söka Jobb visar widgets för Sök jobb, Mina ansökningar, Spontanansökan, CV, Personligt brev, Intervjuträning, Lön, Internationellt — alla med riktig data
+- [x] **HUB-02**: Karriär visar widgets för Karriärmål, Intresseguide, Kompetensgap, Personligt varumärke, Utbildning, LinkedIn — alla med riktig data
+- [x] **HUB-03**: Resurser visar widgets för Mina dokument, Kunskapsbank, Externa resurser, Utskriftsmaterial, AI-team, Övningar — alla med riktig data
+- [x] **HUB-04**: Min Vardag visar widgets för Hälsa, Dagbok, Kalender, Nätverk, Min konsulent — alla med riktig data
 - [ ] **HUB-05**: Översikt visar onboarding/next-step XL-widget + max 6 sammanfattande widgets från övriga hubbar
 - [ ] **HUB-06**: Alla widget-empty-states har handlingsstöttande kopia (ej bara nollor)
 
 ### Backend-persistens (DATA)
 
-- [ ] **DATA-01**: Interview-sessionsscore persisteras i Supabase och syns över tid i widget
-- [ ] **DATA-02**: Personal Brand-audit-score persisteras i Supabase och syns i widget
+- [x] **DATA-01**: Interview-sessionsscore persisteras i Supabase och syns över tid i widget
+- [x] **DATA-02**: Personal Brand-audit-score persisteras i Supabase och syns i widget
 
 ### Tillgänglighet & empati (A11Y)
 
@@ -96,14 +96,14 @@ Vilka faser täcker vilka requirements.
 | WIDG-01 | Phase 2 | Complete |
 | WIDG-02 | Phase 2 | Complete |
 | WIDG-03 | Phase 2 | Complete |
-| HUB-01 | Phase 3 | Pending |
-| HUB-02 | Phase 5 | Pending |
-| HUB-03 | Phase 5 | Pending |
-| HUB-04 | Phase 5 | Pending |
+| HUB-01 | Phase 3 | Complete |
+| HUB-02 | Phase 5 | Complete |
+| HUB-03 | Phase 5 | Complete |
+| HUB-04 | Phase 5 | Complete |
 | HUB-05 | Phase 5 | Pending |
 | HUB-06 | Phase 5 | Pending |
-| DATA-01 | Phase 3 | Pending |
-| DATA-02 | Phase 3 | Pending |
+| DATA-01 | Phase 3 | Complete |
+| DATA-02 | Phase 3 | Complete |
 | A11Y-01 | Phase 3 | Pending |
 | A11Y-02 | Phase 3 | Pending |
 | A11Y-03 | Phase 3 | Pending |
