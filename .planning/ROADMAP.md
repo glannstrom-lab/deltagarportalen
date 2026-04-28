@@ -73,7 +73,11 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
   1. User can hide any widget on a hub and the widget disappears; hidden widgets can be re-added from a panel; state survives page reload
   2. User can reset a hub's layout to the default with one action; after resetting, the hub shows the default widget set and sizes
   3. User's widget visibility and sizes per hub are stored in Supabase and restored correctly when the user logs in on a different browser or device
-**Plans**: TBD
+**Plans**: 4 plans
+- [ ] 04-01-migration-and-layout-hook-PLAN.md — user_widget_layouts migration + useWidgetLayout hook + mergeLayouts utility + useBreakpoint
+- [ ] 04-02-widget-hide-button-and-layout-context-PLAN.md — Widget.Header hide-button + JobsokLayoutContext peer-provider + HubGrid visibility filter
+- [ ] 04-03-hidden-widgets-panel-and-reset-PLAN.md — HiddenWidgetsPanel dropdown + Reset with ConfirmDialog
+- [ ] 04-04-jobsokhub-wiring-and-integration-tests-PLAN.md — JobsokHub wiring (Anpassa vy + providers) + integration tests
 
 ### Phase 5: Full Hub Coverage + Översikt
 **Goal**: Every hub has its full widget set with real data and empathy-safe empty states, and Översikt shows an actionable onboarding widget plus cross-hub summary cards
@@ -92,7 +96,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 | 1. Hub Navigation Shell | 5/5 | Complete    | 2026-04-28 |
 | 2. Static Widget Grid | 5/5 | Complete   | 2026-04-28 |
 | 3. Data Wiring + WCAG | 5/5 | Complete   | 2026-04-28 |
-| 4. Layout Persistence + Hide/Show | 0/TBD | Not started | - |
+| 4. Layout Persistence + Hide/Show | 0/4 | Not started | - |
 | 5. Full Hub Coverage + Översikt | 0/TBD | Not started | - |
 
 ---
