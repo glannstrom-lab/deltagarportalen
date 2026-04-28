@@ -66,6 +66,16 @@ export function useAIStream(options: UseAIStreamOptions = {}): UseAIStreamReturn
   const [error, setError] = useState<Error | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  // Store callbacks in refs to avoid re-creating startStream on every render
+  const onTokenRef = useRef(options.onToken);
+  const onCompleteRef = useRef(options.onComplete);
+  const onErrorRef = useRef(options.onError);
+
+  // Keep refs updated with latest callbacks
+  onTokenRef.current = options.onToken;
+  onCompleteRef.current = options.onComplete;
+  onErrorRef.current = options.onError;
+
   const startStream = useCallback(
     async (functionName: AIStreamFunction, data: Record<string, unknown>) => {
       // Reset state
@@ -81,27 +91,27 @@ export function useAIStream(options: UseAIStreamOptions = {}): UseAIStreamReturn
           onToken: (token) => {
             setStreamedText((prev) => {
               const newText = prev + token;
-              options.onToken?.(token, newText);
+              onTokenRef.current?.(token, newText);
               return newText;
             });
           },
           onComplete: (fullText) => {
             setIsStreaming(false);
-            options.onComplete?.(fullText);
+            onCompleteRef.current?.(fullText);
           },
           onError: (err) => {
             setError(err);
             setIsStreaming(false);
-            options.onError?.(err);
+            onErrorRef.current?.(err);
           },
         });
       } catch (err) {
         setError(err as Error);
         setIsStreaming(false);
-        options.onError?.(err as Error);
+        onErrorRef.current?.(err as Error);
       }
     },
-    [options]
+    [] // No dependencies - callbacks are accessed via refs
   );
 
   const cancelStream = useCallback(() => {

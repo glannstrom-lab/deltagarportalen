@@ -75,7 +75,11 @@ serve(async (req) => {
       jobDescription,
       companyName,
       jobTitle,
-      tone = 'friendly'
+      tone = 'friendly',
+      // New: explicit sender info for signing the letter
+      senderName,
+      senderEmail,
+      senderPhone
     } = body
 
     if (!jobDescription || !companyName || !jobTitle) {
@@ -95,9 +99,19 @@ serve(async (req) => {
                    : tone === 'enthusiastic' ? 'entusiastiskt och energiskt'
                    : 'vänligt men professionellt'
 
-    const cvInfo = cvData.firstName
-      ? `Kandidat: ${sanitizeInput(cvData.firstName, 50)} ${sanitizeInput(cvData.lastName, 50)}${cvData.summary ? `. ${sanitizeInput(cvData.summary, 500)}` : ''}`
+    // Get name from explicit senderName or cvData
+    const candidateName = sanitizeInput(senderName, 100) ||
+      (cvData.firstName ? `${sanitizeInput(cvData.firstName, 50)} ${sanitizeInput(cvData.lastName, 50)}` : '')
+
+    const candidateEmail = sanitizeInput(senderEmail, 100) || sanitizeInput(cvData.email, 100) || ''
+    const candidatePhone = sanitizeInput(senderPhone, 50) || sanitizeInput(cvData.phone, 50) || ''
+
+    const cvInfo = candidateName
+      ? `Kandidat: ${candidateName}${cvData.summary ? `. ${sanitizeInput(cvData.summary, 500)}` : ''}`
       : 'Kandidat med relevant erfarenhet'
+
+    // Build contact info string for signature
+    const contactInfo = [candidateEmail, candidatePhone].filter(Boolean).join(' | ')
 
     // 5. Get model from env or use default
     const model = Deno.env.get('AI_MODEL') || 'anthropic/claude-3.5-sonnet'
@@ -123,7 +137,12 @@ serve(async (req) => {
           messages: [
             {
               role: 'system',
-              content: `Du är en erfaren svensk karriärcoach som hjälper arbetssökande att skriva personliga brev. Skriv på svenska med ${toneText} tonläge. Brevet ska vara max 300 ord, personligt och professionellt.`
+              content: `Du är en erfaren svensk karriärcoach som hjälper arbetssökande att skriva personliga brev. Skriv på svenska med ${toneText} tonläge. Brevet ska vara max 300 ord, personligt och professionellt.
+
+VIKTIGT:
+- Använd ALDRIG platshållare som [Förnamn Efternamn], [Telefonnummer], [Mailadress] eller liknande.
+- Avsluta brevet med den faktiska underskriften som anges nedan.
+- Om inget namn anges, skriv bara "Med vänliga hälsningar" utan namn.`
             },
             {
               role: 'user',
@@ -133,6 +152,10 @@ ${cvInfo}
 
 Jobbeskrivning:
 ${sanitizedJobDescription}
+
+${candidateName ? `UNDERSKRIFT: Avsluta brevet med:
+Med vänliga hälsningar,
+${candidateName}${contactInfo ? `\n${contactInfo}` : ''}` : 'Avsluta brevet med "Med vänliga hälsningar" utan namn.'}
 
 Skriv ett personligt brev som visar varför kandidaten passar för rollen.`
             }
