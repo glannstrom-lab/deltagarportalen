@@ -57,7 +57,13 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
   4. No widget in any hub displays a raw percentage as a primary KPI; milestone-framing replaces completion rings; closed/rejected applications are hidden by default
   5. All widget copy, empty-states, and framing have been reviewed and signed off by the `arbetskonsulent` and `langtidsarbetssokande` agents before this phase ships
   6. Interview session scores and Personal Brand audit scores persist in Supabase and are visible across sessions in their respective widgets
-**Plans**: TBD
+**Plans**: 5 plans
+- [ ] 03-01-db-perf-migrations-traceability-PLAN.md — DB performance audit (Pitfalls 3+18) + DATA-01/02 migrations + REQUIREMENTS.md HUB-02..04 remap
+- [ ] 03-02-hub-summary-loader-PLAN.md — useJobsokHubSummary hook + JobsokDataContext + Wave 0 widget test stubs
+- [ ] 03-03-widget-data-wiring-PLAN.md — Wire 8 widgets to JobsokDataContext (HUB-01) + Interview score (DATA-01) + Personal Brand audit history (DATA-02) + ApplicationsWidget closed-toggle (A11Y-04)
+- [ ] 03-04-wcag-hardening-PLAN.md — A11Y-01/02/03 regression tests + 03-PRE-IMPL-COPY-REVIEW.md artifact
+- [ ] 03-05-empathy-review-ship-gate-PLAN.md — 24 screenshots + arbetskonsulent + langtidsarbetssokande agent review + nyquist_compliant flip (A11Y-05)
+
 
 ### Phase 4: Layout Persistence + Hide/Show
 **Goal**: Users can hide individual widgets per hub, restore hidden widgets, reset to default layout, and have these preferences survive across sessions and devices — without drag/resize
@@ -85,7 +91,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 |-------|----------------|--------|-----------|
 | 1. Hub Navigation Shell | 5/5 | Complete    | 2026-04-28 |
 | 2. Static Widget Grid | 5/5 | Complete   | 2026-04-28 |
-| 3. Data Wiring + WCAG | 0/TBD | Not started | - |
+| 3. Data Wiring + WCAG | 0/5 | Not started | - |
 | 4. Layout Persistence + Hide/Show | 0/TBD | Not started | - |
 | 5. Full Hub Coverage + Översikt | 0/TBD | Not started | - |
 
