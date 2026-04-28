@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import JobsokHub from '../JobsokHub'
@@ -130,6 +131,50 @@ describe('JobsokHub integration', () => {
   it('renders the amber alert chip on ApplicationsWidget', async () => {
     renderHub()
     expect(await screen.findByText('1 ansökan väntar på ditt svar')).toBeInTheDocument()
+  })
+
+  it('A11Y-01: keyboard user can Tab to size toggle and Enter to change size', async () => {
+    const user = userEvent.setup()
+    renderHub()
+    // Wait for all widgets to mount (lazy-loaded)
+    await waitFor(
+      () => expect(screen.getAllByRole('group', { name: 'Välj widgetstorlek' }).length).toBeGreaterThanOrEqual(8),
+      { timeout: 5000 }
+    )
+    // Find the first widget's toggle group
+    const toggleGroups = screen.getAllByRole('group', { name: 'Välj widgetstorlek' })
+    expect(toggleGroups.length).toBeGreaterThan(0)
+    const firstGroup = toggleGroups[0]
+    const buttons = Array.from(firstGroup.querySelectorAll('button'))
+    expect(buttons.length).toBeGreaterThanOrEqual(3)
+    // Focus the first button and confirm keyboard focus works
+    buttons[0].focus()
+    expect(document.activeElement).toBe(buttons[0])
+    // Press Enter — triggers the click handler, size changes, live region updates
+    await user.keyboard('{Enter}')
+    // Live-region announcement should contain 'storlek'
+    const liveRegion = document.querySelector('[role="status"][aria-live="polite"]')
+    expect(liveRegion?.textContent).toMatch(/storlek/i)
+  })
+
+  it('A11Y-01: live-region announces a single message after size change (Pitfall 17)', async () => {
+    const user = userEvent.setup()
+    renderHub()
+    // Wait for all widgets to mount
+    await waitFor(
+      () => expect(screen.getAllByRole('group', { name: 'Välj widgetstorlek' }).length).toBeGreaterThanOrEqual(8),
+      { timeout: 5000 }
+    )
+    const toggleGroups = screen.getAllByRole('group', { name: 'Välj widgetstorlek' })
+    const firstGroup = toggleGroups[0]
+    const buttons = Array.from(firstGroup.querySelectorAll('button'))
+    // Find the M button (aria-label contains "M")
+    const mButton = buttons.find(b => b.getAttribute('aria-label')?.includes('M'))
+    expect(mButton).toBeTruthy()
+    await user.click(mButton!)
+    const liveRegion = document.querySelector('[role="status"][aria-live="polite"]')
+    // Single, specific announcement — "Widgeten är nu M-storlek."
+    expect(liveRegion?.textContent).toMatch(/Widgeten är nu M-storlek/)
   })
 })
 
