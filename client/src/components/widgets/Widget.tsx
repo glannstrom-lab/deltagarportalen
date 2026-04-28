@@ -1,5 +1,6 @@
 import { createContext, useContext, type ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
+import { X as XIcon } from 'lucide-react'
 import type { WidgetProps, WidgetSize } from './types'
 
 // ============================================================
@@ -12,6 +13,8 @@ interface WidgetContextValue {
   onSizeChange?: (newSize: WidgetSize) => void
   allowedSizes: WidgetSize[]
   editMode: boolean
+  /** Phase 4: when provided AND editMode=true, renders the hide-button (×) in Header */
+  onHide?: () => void
 }
 
 const WidgetContext = createContext<WidgetContextValue | null>(null)
@@ -36,11 +39,12 @@ function WidgetRoot({
   onSizeChange,
   allowedSizes = ['S', 'M', 'L'],
   editMode = false,
+  onHide,
   className,
   children,
 }: WidgetRootProps) {
   return (
-    <WidgetContext.Provider value={{ size, onSizeChange, allowedSizes, editMode }}>
+    <WidgetContext.Provider value={{ size, onSizeChange, allowedSizes, editMode, onHide }}>
       <div
         className={[
           'bg-[var(--surface)] border border-[var(--stone-150)] rounded-[12px]',
@@ -69,7 +73,8 @@ interface WidgetHeaderProps {
 }
 
 function WidgetHeader({ icon: Icon, title }: WidgetHeaderProps) {
-  const { size, onSizeChange, allowedSizes, editMode } = useWidgetContext()
+  const { size, onSizeChange, allowedSizes, editMode, onHide } = useWidgetContext()
+  const showHide = editMode && !!onHide
 
   const toggleGroupClass = [
     'flex gap-[1px] bg-[var(--stone-150)] rounded-[6px] p-[1px]',
@@ -93,33 +98,54 @@ function WidgetHeader({ icon: Icon, title }: WidgetHeaderProps) {
         </h3>
       </div>
 
-      {/* Right side: size toggle group */}
-      <div
-        role="group"
-        aria-label="Välj widgetstorlek"
-        className={toggleGroupClass}
-      >
-        {allowedSizes.map((s) => {
-          const isActive = s === size
-          return (
-            <button
-              key={s}
-              type="button"
-              onClick={() => onSizeChange?.(s)}
-              aria-pressed={isActive}
-              aria-label={`Sätt storlek till ${s}`}
-              className={[
-                'w-[18px] h-[18px] text-[9px] font-bold rounded-[5px]',
-                'cursor-pointer border-0',
-                isActive
-                  ? 'bg-white text-[var(--c-text)]'
-                  : 'bg-transparent text-[var(--stone-700)]',
-              ].join(' ')}
-            >
-              {s}
-            </button>
-          )
-        })}
+      {/* Right side: size toggle group + optional hide button */}
+      <div className="flex items-center gap-[6px]">
+        <div
+          role="group"
+          aria-label="Välj widgetstorlek"
+          className={toggleGroupClass}
+        >
+          {allowedSizes.map((s) => {
+            const isActive = s === size
+            return (
+              <button
+                key={s}
+                type="button"
+                onClick={() => onSizeChange?.(s)}
+                aria-pressed={isActive}
+                aria-label={`Sätt storlek till ${s}`}
+                className={[
+                  'w-[18px] h-[18px] text-[9px] font-bold rounded-[5px]',
+                  'cursor-pointer border-0',
+                  isActive
+                    ? 'bg-white text-[var(--c-text)]'
+                    : 'bg-transparent text-[var(--stone-700)]',
+                ].join(' ')}
+              >
+                {s}
+              </button>
+            )
+          })}
+        </div>
+
+        {/* Phase 4: hide button — only when editMode && onHide */}
+        {showHide && (
+          <button
+            type="button"
+            onClick={() => onHide?.()}
+            aria-label={`Dölj widget ${title}`}
+            className={[
+              'w-[18px] h-[18px] flex items-center justify-center',
+              'rounded-[5px] text-[var(--stone-500)]',
+              'hover:bg-[var(--stone-150)] hover:text-[var(--stone-800)]',
+              'focus:outline-none',
+              'focus:shadow-[0_0_0_3px_var(--c-bg),0_0_0_4px_var(--c-solid)]',
+              'border-0 bg-transparent cursor-pointer',
+            ].join(' ')}
+          >
+            <XIcon size={12} aria-hidden="true" />
+          </button>
+        )}
       </div>
     </div>
   )

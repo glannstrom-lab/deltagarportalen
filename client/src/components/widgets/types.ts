@@ -16,6 +16,8 @@ export interface WidgetProps {
   /** Whether customization controls are visible permanently. Phase 2 = false default */
   editMode?: boolean
   className?: string
+  /** Phase 4: when provided AND editMode=true, renders the hide-button (×) in Header */
+  onHide?: () => void
 }
 
 export interface WidgetLayoutItem {
