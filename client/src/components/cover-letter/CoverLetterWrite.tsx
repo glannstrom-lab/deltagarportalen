@@ -8,7 +8,7 @@
  * - Professionell PDF-export
  */
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -44,7 +44,7 @@ import { useProfileStore } from '@/stores/profileStore'
 import { showToast } from '@/components/Toast'
 import { callAI } from '@/services/aiApi'
 import { coverLetterApi, userApi } from '@/services/supabaseApi'
-import { generateCoverLetterPDFFromElement, downloadPDF } from '@/services/pdfExportService'
+import { generateCoverLetterPDFViaReactPdf, downloadPDF } from '@/services/pdfExportService'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import type { CVData, ProfilePreferences } from '@/services/supabaseApi'
 
@@ -443,18 +443,14 @@ export function CoverLetterWrite() {
     }
   }
 
-  // Ref till hidden full-storlek preview som html2canvas använder för PDF-generering.
-  // Synlig preview ovan ändrar storlek beroende på skärm — denna är alltid 794px (A4).
-  const pdfPreviewRef = useRef<HTMLDivElement>(null)
-
   const handleDownloadPDF = async () => {
-    if (!pdfPreviewRef.current) {
-      showToast.error('Förhandsgranskning är inte redo. Vänta ett ögonblick och försök igen.')
-      return
-    }
     try {
-      const pdfBlob = await generateCoverLetterPDFFromElement(pdfPreviewRef.current, {
-        multiPage: true,
+      const pdfBlob = await generateCoverLetterPDFViaReactPdf({
+        content: editedLetter || '',
+        company: formData.company,
+        jobTitle: formData.jobTitle,
+        templateId: formData.selectedTemplate,
+        sender: senderInfo,
       })
 
       const fileName = `Personligt_brev_${formData.company || 'ansökan'}_${formData.jobTitle || ''}`
@@ -699,28 +695,6 @@ export function CoverLetterWrite() {
         )}
       </div>
 
-      {/* Hidden A4-storlek preview för PDF-generering.
-          html2canvas behöver elementet i DOM:en med exakt rätt storlek (794px = A4 @ 96dpi).
-          aria-hidden + position:fixed off-screen gör den osynlig för användare och skärmläsare. */}
-      <div
-        ref={pdfPreviewRef}
-        aria-hidden="true"
-        style={{
-          position: 'fixed',
-          left: '-99999px',
-          top: 0,
-          width: '794px',
-          pointerEvents: 'none',
-        }}
-      >
-        <CoverLetterPreview
-          content={editedLetter || ''}
-          company={formData.company}
-          jobTitle={formData.jobTitle}
-          templateId={formData.selectedTemplate}
-          sender={senderInfo}
-        />
-      </div>
     </div>
   )
 }

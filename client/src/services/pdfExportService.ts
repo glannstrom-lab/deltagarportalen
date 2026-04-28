@@ -1913,4 +1913,30 @@ export async function generateCoverLetterPDFFromElement(
   return pdf.output('blob')
 }
 
+/**
+ * Vector-PDF för personligt brev via @react-pdf/renderer.
+ * Söbar text, korrekt svensk typografi, ingen oklch/canvas-problematik.
+ * Ersätter generateCoverLetterPDFFromElement (html2canvas-baserad).
+ */
+export async function generateCoverLetterPDFViaReactPdf(data: {
+  content: string
+  company?: string
+  jobTitle?: string
+  date?: string
+  templateId?: string
+  sender: {
+    name: string
+    email?: string
+    phone?: string
+    location?: string
+  }
+}): Promise<Blob> {
+  const [React, { pdf }, { CoverLetterPDF }] = await Promise.all([
+    import('react'),
+    import('@react-pdf/renderer'),
+    import('@/components/cover-letter/CoverLetterPDF'),
+  ])
+  return await pdf(React.createElement(CoverLetterPDF, { data })).toBlob()
+}
+
 export default generateCVPDF
