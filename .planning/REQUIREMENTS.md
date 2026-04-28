@@ -97,9 +97,9 @@ Vilka faser täcker vilka requirements.
 | WIDG-02 | Phase 2 | Complete |
 | WIDG-03 | Phase 2 | Complete |
 | HUB-01 | Phase 3 | Pending |
-| HUB-02 | Phase 3 | Pending |
-| HUB-03 | Phase 3 | Pending |
-| HUB-04 | Phase 3 | Pending |
+| HUB-02 | Phase 5 | Pending |
+| HUB-03 | Phase 5 | Pending |
+| HUB-04 | Phase 5 | Pending |
 | HUB-05 | Phase 5 | Pending |
 | HUB-06 | Phase 5 | Pending |
 | DATA-01 | Phase 3 | Pending |
@@ -120,4 +120,4 @@ Vilka faser täcker vilka requirements.
 
 ---
 *Requirements definierade: 2026-04-28*
-*Last updated: 2026-04-28 — traceability mapped by roadmapper*
+*Last updated: 2026-04-28 — HUB-02..04 remapped to Phase 5 (Phase 3 scope sharpened to JobsokHub only)*
