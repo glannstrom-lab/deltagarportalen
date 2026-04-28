@@ -1,6 +1,7 @@
 import { useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
+import { isHubNavEnabled } from './components/layout/navigation'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { RouteErrorBoundary, RouteLoadingFallback } from './components/RouteErrorBoundary'
 import { swLogger } from './lib/logger'
@@ -71,6 +72,13 @@ const AITeam = lazy(() => import('./pages/AITeam'))
 const Network = lazy(() => import('./pages/Network'))
 const ExternalResources = lazy(() => import('./pages/ExternalResources'))
 const PrintableResources = lazy(() => import('./pages/PrintableResources'))
+
+// Hub pages (Phase 1 — navigation shell)
+const HubOverview = lazy(() => import('./pages/hubs/HubOverview'))
+const JobsokHub = lazy(() => import('./pages/hubs/JobsokHub'))
+const KarriarHub = lazy(() => import('./pages/hubs/KarriarHub'))
+const ResurserHub = lazy(() => import('./pages/hubs/ResurserHub'))
+const MinVardagHub = lazy(() => import('./pages/hubs/MinVardagHub'))
 
 /**
  * Lazy route wrapper with error boundary
@@ -224,11 +232,15 @@ function App() {
         <Route path="/" element={<RootRoute />}>
           {/* Nested routes for authenticated users */}
           <Route index element={
-            <LazyRoute>
-              <RouteErrorBoundary>
-                <Dashboard />
-              </RouteErrorBoundary>
-            </LazyRoute>
+            isHubNavEnabled() ? (
+              <Navigate to="/oversikt" replace />
+            ) : (
+              <LazyRoute>
+                <RouteErrorBoundary>
+                  <Dashboard />
+                </RouteErrorBoundary>
+              </LazyRoute>
+            )
           } />
           <Route path="cv/*" element={<LazyRoute><RouteErrorBoundary><CVPage /></RouteErrorBoundary></LazyRoute>} />
           <Route path="cover-letter/*" element={<LazyRoute><RouteErrorBoundary><CoverLetterPage /></RouteErrorBoundary></LazyRoute>} />
@@ -259,6 +271,13 @@ function App() {
           <Route path="exercises" element={<LazyRoute><RouteErrorBoundary><Exercises /></RouteErrorBoundary></LazyRoute>} />
           <Route path="international/*" element={<LazyRoute><RouteErrorBoundary><International /></RouteErrorBoundary></LazyRoute>} />
           <Route path="externa-resurser" element={<LazyRoute><RouteErrorBoundary><ExternalResources /></RouteErrorBoundary></LazyRoute>} />
+          {/* Hub routes (Phase 1 — navigation shell) */}
+          <Route path="oversikt" element={<LazyRoute><RouteErrorBoundary><HubOverview /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="jobb" element={<LazyRoute><RouteErrorBoundary><JobsokHub /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="karriar" element={<LazyRoute><RouteErrorBoundary><KarriarHub /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="resurser" element={<LazyRoute><RouteErrorBoundary><ResurserHub /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="min-vardag" element={<LazyRoute><RouteErrorBoundary><MinVardagHub /></RouteErrorBoundary></LazyRoute>} />
+
           <Route path="consultant/*" element={
             <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
               <LazyRoute><RouteErrorBoundary><Consultant /></RouteErrorBoundary></LazyRoute>
