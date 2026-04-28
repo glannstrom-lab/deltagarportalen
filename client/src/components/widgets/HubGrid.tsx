@@ -62,6 +62,8 @@ interface SlotProps {
   children: ReactNode
   /** Suspense fallback for lazy widgets. Default: a spec skeleton card */
   fallback?: ReactNode
+  /** Phase 4: when false, slot renders nothing (widget is hidden by user). Default: true */
+  visible?: boolean
 }
 
 const SIZE_CLASSES: Record<WidgetSize, string> = {
@@ -72,7 +74,9 @@ const SIZE_CLASSES: Record<WidgetSize, string> = {
 }
 
 /** Wraps a single widget: applies grid span + per-widget ErrorBoundary + Suspense */
-function Slot({ size, children, fallback }: SlotProps) {
+function Slot({ size, children, fallback, visible = true }: SlotProps) {
+  if (!visible) return null
+
   const skeleton = (
     <div className="bg-[var(--surface)] border border-[var(--stone-150)] rounded-[12px] p-[14px_16px] animate-pulse">
       <div className="h-4 bg-stone-200 rounded w-3/4 mb-3" />

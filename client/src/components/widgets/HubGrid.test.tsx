@@ -61,4 +61,38 @@ describe('HubGrid', () => {
     expect(screen.getByText('Survivor')).toBeInTheDocument()
     expect(screen.getByText('Kunde inte ladda')).toBeInTheDocument()
   })
+
+  // ============================================================
+  // Phase 4: Slot visibility tests (I/J/K)
+  // ============================================================
+
+  it('I: Slot accepts visible prop and renders nothing when visible=false', () => {
+    const { container } = render(
+      <HubGrid>
+        <HubGrid.Slot size="M" visible={false}><div>hidden</div></HubGrid.Slot>
+      </HubGrid>
+    )
+    expect(screen.queryByText('hidden')).not.toBeInTheDocument()
+    // Slot returns null — no grid-cell div produced
+    const gridRoot = container.firstElementChild! // HubGrid root div
+    expect(gridRoot.children.length).toBe(0)
+  })
+
+  it('J: Slot renders children when visible=true', () => {
+    render(
+      <HubGrid>
+        <HubGrid.Slot size="M" visible={true}><div>shown</div></HubGrid.Slot>
+      </HubGrid>
+    )
+    expect(screen.getByText('shown')).toBeInTheDocument()
+  })
+
+  it('K: Slot renders children when visible omitted (defaults to true)', () => {
+    render(
+      <HubGrid>
+        <HubGrid.Slot size="M"><div>shown-default</div></HubGrid.Slot>
+      </HubGrid>
+    )
+    expect(screen.getByText('shown-default')).toBeInTheDocument()
+  })
 })
