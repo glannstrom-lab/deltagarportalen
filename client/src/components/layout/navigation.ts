@@ -1,3 +1,4 @@
+import type { LegacyColorDomain } from '@/lib/domains'
 import {
   LayoutDashboard,
   FileText,
@@ -171,4 +172,194 @@ export function shouldShowBadge(item: NavItem): boolean {
 
   const visited = getVisitedFeatures()
   return !visited.includes(item.path)
+}
+
+// ============================================
+// HUB NAVIGATION (v1.0 milestone — Phase 1)
+// 5 domain-oriented hubs replacing the flat 27-item nav
+// Coexists with navGroups via VITE_HUB_NAV_ENABLED
+// ============================================
+
+export type HubId = 'oversikt' | 'jobb' | 'karriar' | 'resurser' | 'min-vardag'
+
+export interface NavHub {
+  id: HubId
+  path: string
+  labelKey: string
+  fallbackLabel: string
+  /** Design domain — drives --c-* tokens in sidebar, bottom nav, and on hub page */
+  domain: LegacyColorDomain
+  icon: React.ComponentType<{ className?: string }>
+  /** Pages reachable via this hub. Used by pageToHub map and active-hub detection.
+   *  NEVER add a path here that also appears in another hub. */
+  memberPaths: string[]
+  /** Deep-link sub-items shown beneath the hub when expanded in sidebar */
+  items: NavItem[]
+}
+
+export const navHubs: NavHub[] = [
+  {
+    id: 'oversikt',
+    path: '/oversikt',
+    labelKey: 'nav.hubs.oversikt',
+    fallbackLabel: 'Översikt',
+    domain: 'action',
+    icon: LayoutDashboard,
+    // Översikt is a meta-hub — it owns no leaf pages, only the hub page itself.
+    // '/' is included so legacy bookmarks resolve cleanly until the redirect runs.
+    memberPaths: ['/'],
+    items: [],
+  },
+  {
+    id: 'jobb',
+    path: '/jobb',
+    labelKey: 'nav.hubs.jobb',
+    fallbackLabel: 'Söka jobb',
+    domain: 'activity',
+    icon: Briefcase,
+    memberPaths: [
+      '/job-search',
+      '/applications',
+      '/spontanansökan',
+      '/cv',
+      '/cover-letter',
+      '/interview-simulator',
+      '/salary',
+      '/international',
+      '/linkedin-optimizer',
+    ],
+    items: [
+      { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
+      { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList },
+      { path: '/spontanansökan', labelKey: 'nav.spontaneous', icon: Building2 },
+      { path: '/cv', labelKey: 'nav.cv', icon: FileUser },
+      { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
+      { path: '/interview-simulator', labelKey: 'nav.interviewSimulator', icon: Mic },
+      { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
+      { path: '/international', labelKey: 'nav.international', icon: Globe },
+      { path: '/linkedin-optimizer', labelKey: 'nav.linkedinOptimizer', icon: Linkedin },
+    ],
+  },
+  {
+    id: 'karriar',
+    path: '/karriar',
+    labelKey: 'nav.hubs.karriar',
+    fallbackLabel: 'Karriär',
+    domain: 'coaching',
+    icon: Target,
+    memberPaths: [
+      '/career',
+      '/interest-guide',
+      '/skills-gap-analysis',
+      '/personal-brand',
+      '/education',
+    ],
+    items: [
+      { path: '/career', labelKey: 'nav.career', icon: Target },
+      { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
+      { path: '/skills-gap-analysis', labelKey: 'nav.skillsGap', icon: TrendingUp },
+      { path: '/personal-brand', labelKey: 'nav.personalBrand', icon: Star },
+      { path: '/education', labelKey: 'nav.education', icon: GraduationCap },
+    ],
+  },
+  {
+    id: 'resurser',
+    path: '/resurser',
+    labelKey: 'nav.hubs.resurser',
+    fallbackLabel: 'Resurser',
+    domain: 'info',
+    icon: BookOpen,
+    memberPaths: [
+      '/knowledge-base',
+      '/resources',
+      '/print-resources',
+      '/externa-resurser',
+      '/ai-team',
+      '/help',
+      '/nätverk',
+    ],
+    items: [
+      { path: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
+      { path: '/resources', labelKey: 'nav.myDocuments', icon: Bookmark },
+      { path: '/print-resources', labelKey: 'nav.printResources', icon: Printer },
+      { path: '/externa-resurser', labelKey: 'nav.externalResources', icon: ExternalLink },
+      { path: '/ai-team', labelKey: 'nav.aiTeam', icon: Bot, isNew: true },
+      { path: '/nätverk', labelKey: 'nav.network', icon: Users },
+    ],
+  },
+  {
+    id: 'min-vardag',
+    path: '/min-vardag',
+    labelKey: 'nav.hubs.min-vardag',
+    fallbackLabel: 'Min vardag',
+    domain: 'wellbeing',
+    icon: Heart,
+    memberPaths: [
+      '/wellness',
+      '/diary',
+      '/calendar',
+      '/exercises',
+      '/my-consultant',
+      '/profile',
+    ],
+    items: [
+      { path: '/wellness', labelKey: 'nav.wellness', icon: Smile },
+      { path: '/diary', labelKey: 'nav.diary', icon: NotebookPen },
+      { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
+      { path: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
+      { path: '/my-consultant', labelKey: 'nav.myConsultant', icon: UserCheck },
+      { path: '/profile', labelKey: 'nav.profile', icon: Users },
+    ],
+  },
+]
+
+/**
+ * Lookup map: deep-link path -> owning hub id.
+ * Built at module load by iterating navHubs[].memberPaths.
+ * NEVER use URL prefix matching for active-hub detection (PITFALLS.md Pitfall 2).
+ */
+export const pageToHub: Record<string, HubId> = (() => {
+  const map: Record<string, HubId> = {}
+  for (const hub of navHubs) {
+    for (const path of hub.memberPaths) {
+      map[path] = hub.id
+    }
+    // Also map the hub's own path (e.g. '/jobb' -> 'jobb')
+    map[hub.path] = hub.id
+  }
+  return map
+})()
+
+/**
+ * Resolve which hub owns a given pathname.
+ * Strategy: explicit map lookup, with fallback for sub-paths under a member path
+ * (e.g. '/cv/builder' resolves to 'jobb' because '/cv' is a member of 'jobb').
+ * Returns undefined for unknown paths (e.g. '/login', '/admin', '/settings').
+ */
+export function getActiveHub(pathname: string): NavHub | undefined {
+  // Exact match first
+  const directHubId = pageToHub[pathname]
+  if (directHubId) {
+    return navHubs.find(h => h.id === directHubId)
+  }
+  // Sub-path match: find a member path that the pathname starts with + '/'
+  for (const hub of navHubs) {
+    for (const memberPath of hub.memberPaths) {
+      if (pathname === memberPath || pathname.startsWith(memberPath + '/')) {
+        return hub
+      }
+    }
+  }
+  return undefined
+}
+
+/**
+ * Read VITE_HUB_NAV_ENABLED once at module load.
+ * Default: false (old navigation stays active until env var is explicitly set to 'true').
+ * Per STATE.md decision: rollout via env flag only, no per-user DB flag (PITFALLS.md Pitfall 16).
+ */
+const HUB_NAV_FLAG = import.meta.env.VITE_HUB_NAV_ENABLED === 'true'
+
+export function isHubNavEnabled(): boolean {
+  return HUB_NAV_FLAG
 }
