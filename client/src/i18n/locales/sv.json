@@ -208,6 +208,13 @@
     "interviewSimulator": "Intervjuträning",
     "aiTeam": "Mitt AI Team",
     "help": "Hjälp",
+    "hubs": {
+      "oversikt": "Översikt",
+      "jobb": "Söka jobb",
+      "karriar": "Karriär",
+      "resurser": "Resurser",
+      "min-vardag": "Min vardag"
+    },
     "groups": {
       "overview": "Översikt",
       "jobSearch": "Jobbsökning",
