@@ -31,9 +31,21 @@ Hjälp utsatta arbetssökande att komma framåt — med empati, tillgänglighet 
 
 ### Active
 
-<!-- Definieras när första milstolpen sätts upp nedan. -->
+<!-- Current scope. Building toward these. -->
 
-(Se "Current Milestone" nedan.)
+Se "Current Milestone" nedan för full lista (24 requirements i v1.0).
+
+## Current Milestone: v1.0 Hub-Navigation
+
+**Goal:** Ersätt platta 27-sidors-navigationen med 5 domän-orienterade hubbar + smart widget-system. Drag/resize deferrad till v1.1.
+
+**Target features:**
+- 5 hubbar: Översikt, Söka Jobb, Karriär, Resurser, Min Vardag
+- Widget compound-component med S/M/L/XL-storlekar och error-isolation
+- Riktig data via shared React Query cache med deep-link-sidor
+- Backend-persistens för Interview-sessioner + Personal Brand-score
+- Hide/show + reset + cross-device layout-persistens (ingen drag)
+- Full WCAG 2.1 AA + empati-granskning av specialist-agenter
 
 ### Out of Scope
 
@@ -74,4 +86,4 @@ Hjälp utsatta arbetssökande att komma framåt — med empati, tillgänglighet 
 | GSD-init i pågående projekt (2026-04-28) | Formalisera milstolpestruktur efter aktiv utveckling | — Pending |
 
 ---
-*Last updated: 2026-04-28 efter GSD-init*
+*Last updated: 2026-04-28 efter milestone v1.0 definition*
