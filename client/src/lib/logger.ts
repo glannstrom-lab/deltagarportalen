@@ -44,24 +44,38 @@ const errorQueue: StructuredError[] = []
 const MAX_ERROR_QUEUE = 50
 
 /**
- * Skicka error till extern tjänst (placeholder för Sentry/LogRocket)
- * Aktivera genom att sätta VITE_ERROR_REPORTING=true
+ * Skicka error till Sentry (om initierat).
+ * Sentry initieras endast i prod efter cookie-consent — captureError
+ * returnerar tidigt om så inte är fallet, så detta är säkert att
+ * anropa alltid.
+ *
+ * Lokal kö behålls som debug-hjälp och fallback om Sentry är avstängt.
+ * Lazy-import undviker att Sentry-modulen drar in sig själv vid SSR/test.
  */
 function reportToService(error: StructuredError): void {
-  // Lägg till i kö
+  // Lägg till i lokal kö (debug + fallback)
   errorQueue.push(error)
   if (errorQueue.length > MAX_ERROR_QUEUE) {
     errorQueue.shift()
   }
 
-  // TODO: Implementera Sentry-integration när det behövs
-  // if (typeof window !== 'undefined' && window.Sentry) {
-  //   window.Sentry.captureMessage(error.message, {
-  //     level: error.level,
-  //     tags: { prefix: error.prefix },
-  //     extra: error.context,
-  //   })
-  // }
+  // Skicka warn/error till Sentry. Info/debug är för chatty för extern service.
+  if (error.level !== 'warn' && error.level !== 'error') return
+  if (typeof window === 'undefined') return  // SSR/test guard
+
+  // Dynamisk import — sentry.ts kan i sin tur ha sido-effekter vid load
+  import('./sentry')
+    .then(({ captureError }) => {
+      const tagged = error.prefix ? `[${error.prefix}] ${error.message}` : error.message
+      captureError(tagged, {
+        level: error.level,
+        prefix: error.prefix,
+        ...error.context,
+      })
+    })
+    .catch(() => {
+      // Sentry-modulen kunde inte laddas — vi har redan loggat lokalt
+    })
 }
 
 /**

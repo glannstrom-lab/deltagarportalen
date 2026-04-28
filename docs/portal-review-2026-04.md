@@ -97,12 +97,27 @@ supabase/migrations/
 
 **Rekommendation:** Kör `npx supabase db query --linked "SELECT * FROM information_schema.tables WHERE table_schema = 'public'"` och jämför mot migrationsfilerna. Skriv en konsolidationsmigration om verkligheten avviker.
 
-### RLS-luckor (13 tabeller)
+### RLS-status (verifierat live 2026-04-28)
 
-Tabeller utan tydlig RLS-policy enligt skanning:
-`articles_backup, content_calendar, diary_entries, diary_streaks, elevator_pitches, gratitude_entries, interview_sessions, job_alerts, job_applications, mood_logs, notifications, personal_brand_audit, portfolio_items, user_preferences, visibility_progress, weekly_goals, writing_prompts`
+**Resultat:** Alla persondata-tabeller har RLS aktiverat i prod.
+Den tidigare skanningen var fel — den läste migrationsfilerna utan att
+verifiera mot live-DB.
 
-`diary_entries`, `mood_logs`, `gratitude_entries` är **känsliga personuppgifter** (GDPR Art. 9 om hälsodata). Saknad RLS = risk för datablivelse vid framtida service-role-API-fel. Verifiera mot `pg_policies` direkt.
+Verifierat via `npx supabase db query --linked` mot `pg_policies` och `pg_tables`:
+
+```
+articles_backup, content_calendar, diary_entries, elevator_pitches,
+gratitude_entries, interview_sessions, job_alerts, job_applications,
+mood_logs, notifications, personal_brand_audit, portfolio_items
+→ Alla har rls_enabled = true
+```
+
+**Enda tabell utan policies:** `rate_limits` (RLS på, 0 policies). Detta är
+**medvetet** — den är service-only och nås bara via `check_rate_limit`
+RPC (SECURITY DEFINER bypassar RLS). Inga klient-direkta CRUD-anrop
+ska gå mot rate_limits.
+
+**Status:** Inga kritiska RLS-luckor.
 
 ### Storage
 

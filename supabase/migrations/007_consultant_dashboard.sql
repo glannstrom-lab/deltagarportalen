@@ -78,6 +78,9 @@ CREATE INDEX IF NOT EXISTS idx_consultant_participants_participant
 -- 3. NY TABELL: INBJUDNINGAR
 -- ============================================
 
+-- ⚠️  HISTORICAL: Schema ersatt av 010_invitations_table.sql (rikare,
+--     inkl. email-tracking + used_at/used_by). Live-DB använder 010:s schema.
+--     Verifierat 2026-04-28. Se supabase/migrations/MIGRATION_NOTES.md.
 CREATE TABLE IF NOT EXISTS invitations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     email TEXT NOT NULL,
