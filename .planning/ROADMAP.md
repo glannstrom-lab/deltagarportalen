@@ -6,7 +6,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 
 ## Phases
 
-- [x] **Phase 1: Hub Navigation Shell** - Nav refactor, 5 empty hub routes, mobile bottom nav, deep-link smoke test (completed 2026-04-28)
+- [x] **Phase 1: Hub Navigation Shell** - Nav refactor, 5 empty hub routes, mobile bottom nav, deep-link smoke test (completed 2026-04-28)
 - [ ] **Phase 2: Static Widget Grid** - Widget compound component, HubGrid, 8-10 representative widgets with mock data, S/M/L toggle, error boundaries
 - [ ] **Phase 3: Data Wiring + WCAG** - React Query data hooks, hub-level loader, empathy-reviewed copy, prefers-reduced-motion, keyboard, Interview + Personal Brand Supabase migration
 - [ ] **Phase 4: Layout Persistence + Hide/Show** - user_widget_layouts table + RLS, useWidgetLayout hook, hide/show widget, reset layout (no drag/resize)
@@ -39,7 +39,12 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
   2. User can click S, M, or L toggle buttons (keyboard-accessible) on any widget to resize it; the grid reflows correctly
   3. A widget with a simulated data error shows a graceful per-widget fallback card; all surrounding widgets remain fully functional
   4. No widget component appears in the main JS bundle; vite-bundle-visualizer confirms all widgets are code-split
-**Plans**: TBD
+**Plans**: 5 plans
+- [ ] 02-01-widget-foundation-PLAN.md — Widget compound component, useWidgetSize hook, WidgetErrorBoundary, HubGrid, registry skeleton
+- [ ] 02-02-widgets-cluster-a-PLAN.md — CV (focal L), Cover Letter, Interview (sparkline), Job Search widgets + ProgressRing/Sparkline primitives
+- [ ] 02-03-widgets-cluster-b-PLAN.md — Applications (stacked bar + amber alert), Spontaneous, Salary (range bar), International (empty state) widgets + StackedBar/RangeBar primitives
+- [ ] 02-04-hub-wiring-PLAN.md — JobsokHub sectioned layout (3 sections, 8 widgets) + 4 placeholder hubs + integration tests
+- [ ] 02-05-bundle-verification-PLAN.md — verify-widget-chunks.cjs script + lazy-isolation regression test + final Phase 2 gate
 
 ### Phase 3: Data Wiring + WCAG
 **Goal**: Widgets display real data from Supabase using shared React Query cache keys, all WCAG 2.1 AA requirements are met, empathy-reviewed copy ships, and Interview + Personal Brand scores are cloud-persisted
@@ -79,7 +84,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Hub Navigation Shell | 5/5 | Complete    | 2026-04-28 |
-| 2. Static Widget Grid | 0/TBD | Not started | - |
+| 2. Static Widget Grid | 0/5 | Not started | - |
 | 3. Data Wiring + WCAG | 0/TBD | Not started | - |
 | 4. Layout Persistence + Hide/Show | 0/TBD | Not started | - |
 | 5. Full Hub Coverage + Översikt | 0/TBD | Not started | - |
