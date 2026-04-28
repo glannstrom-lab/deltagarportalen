@@ -37,9 +37,9 @@ Hubbarna ersätter den platta 27-sidors-navigationen med 5 domän-orienterade hu
 
 ### Tillgänglighet & empati (A11Y)
 
-- [ ] **A11Y-01**: Användaren kan navigera och styra alla hub-funktioner via tangentbord
-- [ ] **A11Y-02**: Alla widget- och hub-animationer respekterar `prefers-reduced-motion`
-- [ ] **A11Y-03**: Inga råa procent-KPI:er som läses som otillräcklighet; milstolpe-framing ersätter "75% klart"
+- [x] **A11Y-01**: Användaren kan navigera och styra alla hub-funktioner via tangentbord
+- [x] **A11Y-02**: Alla widget- och hub-animationer respekterar `prefers-reduced-motion`
+- [x] **A11Y-03**: Inga råa procent-KPI:er som läses som otillräcklighet; milstolpe-framing ersätter "75% klart"
 - [x] **A11Y-04**: Avslutade/avslagna ansökningar är dolda som default i Mina ansökningar-widget
 - [ ] **A11Y-05**: All widget-kopia, framing och empty-states är granskade av `arbetskonsulent` + `langtidsarbetssokande` agenter innan Phase 3 ships
 
@@ -104,9 +104,9 @@ Vilka faser täcker vilka requirements.
 | HUB-06 | Phase 5 | Pending |
 | DATA-01 | Phase 3 | Complete |
 | DATA-02 | Phase 3 | Complete |
-| A11Y-01 | Phase 3 | Pending |
-| A11Y-02 | Phase 3 | Pending |
-| A11Y-03 | Phase 3 | Pending |
+| A11Y-01 | Phase 3 | Complete |
+| A11Y-02 | Phase 3 | Complete |
+| A11Y-03 | Phase 3 | Complete |
 | A11Y-04 | Phase 3 | Complete |
 | A11Y-05 | Phase 3 | Pending |
 | CUST-01 | Phase 4 | Pending |

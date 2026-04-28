@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-data-wiring-wcag/03-03-widget-data-wiring-PLAN.md
-last_updated: "2026-04-28T21:29:00.000Z"
-last_activity: 2026-04-28 — Plan 03-03 widget data wiring completed
+stopped_at: Completed 03-data-wiring-wcag/03-04-wcag-hardening-PLAN.md
+last_updated: "2026-04-28T23:40:00.000Z"
+last_activity: 2026-04-28 — Plan 03-04 WCAG hardening completed
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 15
-  completed_plans: 13
-  percent: 87
+  completed_plans: 14
+  percent: 93
 ---
 
 # State — Deltagarportalen
@@ -26,11 +26,11 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 ## Current Position
 
 Phase: 3 of 5 (Data Wiring + WCAG)
-Plan: 3 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-04-28 — Plan 03-03 widget data wiring completed
+Last activity: 2026-04-28 — Plan 03-04 WCAG hardening completed
 
-Progress: [████████▓░] 87%
+Progress: [█████████▒] 93%
 
 ## Performance Metrics
 
@@ -62,6 +62,7 @@ Progress: [████████▓░] 87%
 | Phase 03-data-wiring-wcag P01 | 4 | 4 tasks | 4 files |
 | Phase 03-data-wiring-wcag P02 | 5 | 3 tasks | 13 files |
 | Phase 03-data-wiring-wcag P03 | 9 | 3 tasks | 20 files |
+| Phase 03-data-wiring-wcag P04 | 12 | 3 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,9 @@ Progress: [████████▓░] 87%
 - [Phase 03-03]: SalaryWidget renders empty state unconditionally in Phase 3 — salary slice always undefined/null (table absent, Plan 01 verified)
 - [Phase 03-03]: saveInterviewSessionWithScore added (DATA-01); existing saveInterviewSession unchanged — call-sites switch explicitly when score computed
 - [Phase 03-03]: personalBrandAuditsApi targets PLURAL personal_brand_audits only (Pitfall C); BrandAuditTab inner try/catch isolates append from upsert
+- [Phase 03-04]: Static source-file guard (readFileSync in test) chosen for reduced-motion compliance — cheaper and deterministic vs rendering under mocked matchMedia
+- [Phase 03-04]: Anti-shaming test scopes to primary-KPI typography (text-[32px]/text-[22px] + font-bold) — ProgressRing SVG decorative label excluded by design
+- [Phase 03-04]: PRE-IMPL-COPY-REVIEW.md captures actual widget code copy (not UI-SPEC mock) and flags 4 open questions for Plan 05 agent review
 
 ### Pending Todos
 
@@ -116,6 +120,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T21:29:00.000Z
-Stopped at: Completed 03-data-wiring-wcag/03-03-widget-data-wiring-PLAN.md
+Last session: 2026-04-28T23:40:00.000Z
+Stopped at: Completed 03-data-wiring-wcag/03-04-wcag-hardening-PLAN.md
 Resume file: None
