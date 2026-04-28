@@ -250,7 +250,7 @@ export function MyCVs() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-96">
-        <Loader2 className="w-12 h-12 animate-spin text-teal-600 mb-4" />
+        <Loader2 className="w-12 h-12 animate-spin text-[var(--c-text)] mb-4" />
         <p className="text-stone-600">{t('cv.myCvs.loading')}</p>
       </div>
     )
@@ -269,7 +269,7 @@ export function MyCVs() {
           </div>
           <Link
             to="/cv"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 dark:bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-700 dark:hover:bg-teal-600 transition-colors shadow-lg"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] dark:hover:bg-[var(--c-solid)] transition-colors shadow-lg"
           >
             <Plus className="w-5 h-5" />
             {t('cv.myCvs.createNew')}
@@ -309,7 +309,7 @@ export function MyCVs() {
             placeholder={t('cv.myCvs.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-900 dark:text-stone-100"
+            className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white dark:bg-stone-900 dark:text-stone-100"
           />
         </div>
 
@@ -317,7 +317,7 @@ export function MyCVs() {
         <select
           value={selectedTemplate}
           onChange={(e) => setSelectedTemplate(e.target.value)}
-          className="px-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-900 dark:text-stone-100"
+          className="px-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white dark:bg-stone-900 dark:text-stone-100"
           aria-label={t('cv.myCvs.filterByTemplate')}
         >
           {templateFilters.map(tpl => (
@@ -342,7 +342,7 @@ export function MyCVs() {
           </p>
           <Link
             to="/cv"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] transition-colors"
           >
             <Plus className="w-5 h-5" />
             {t('cv.myCvs.createFirstCV')}
@@ -355,7 +355,7 @@ export function MyCVs() {
               key={cv.id}
               className={cn(
                 'bg-white dark:bg-stone-900 rounded-xl border-2 p-5 transition-all hover:shadow-lg',
-                cv.isDefault ? 'border-teal-300 dark:border-teal-700 bg-teal-50/30 dark:bg-teal-900/20' : 'border-stone-200 dark:border-stone-700/50'
+                cv.isDefault ? 'border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)]/30 dark:bg-[var(--c-bg)]/20' : 'border-stone-200 dark:border-stone-700/50'
               )}
             >
               <div className="flex flex-col lg:flex-row lg:items-start gap-4">
@@ -363,7 +363,7 @@ export function MyCVs() {
                 <div className="flex items-start gap-4 flex-1">
                   <div className={cn(
                     'w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0',
-                    cv.isDefault ? 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
+                    cv.isDefault ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-solid)]' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
                   )}>
                     <FileText className="w-7 h-7" />
                   </div>
@@ -372,7 +372,7 @@ export function MyCVs() {
                     <div className="flex items-center gap-2 flex-wrap">
                       <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-lg">{cv.name}</h3>
                       {cv.isDefault && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded-full">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[var(--c-accent)]/40 text-[var(--c-text)] text-xs font-medium rounded-full">
                           <Star className="w-3 h-3 fill-current" />
                           {t('cv.myCvs.default')}
                         </span>
@@ -432,7 +432,7 @@ export function MyCVs() {
                   {/* Preview */}
                   <button
                     onClick={() => setPreviewCV(cv)}
-                    className="p-2 text-stone-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                    className="p-2 text-stone-600 hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg transition-colors"
                     title={t('common.preview')}
                   >
                     <Eye className="w-5 h-5" />
@@ -441,7 +441,7 @@ export function MyCVs() {
                   {/* Edit */}
                   <button
                     onClick={() => handleEdit(cv)}
-                    className="p-2 text-stone-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                    className="p-2 text-stone-600 hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg transition-colors"
                     title={t('common.edit')}
                   >
                     <Edit2 className="w-5 h-5" />

@@ -60,14 +60,14 @@ const TEMPLATES = [
     id: 'sidebar', 
     name: 'Sidokolumn', 
     desc: 'Modern layout med sidopanel för kontakt och skills',
-    preview: 'bg-gradient-to-br from-slate-700 to-slate-900',
+    preview: 'bg-gradient-to-br from-stone-700 to-stone-900',
     features: ['Sidokolumn', 'Rundat foto', 'Skills i sidopanel']
   },
   { 
     id: 'centered', 
     name: 'Centrerad', 
     desc: 'Hero-design med stort foto och gradient',
-    preview: 'bg-gradient-to-br from-teal-500 to-sky-500',
+    preview: 'bg-gradient-to-br from-[var(--c-solid)] to-sky-500',
     features: ['Gradient header', 'Centrerat foto', 'Timeline']
   },
   { 
@@ -88,7 +88,7 @@ const TEMPLATES = [
     id: 'executive', 
     name: 'Executive', 
     desc: 'Elegant med serif-typsnitt för ledare',
-    preview: 'bg-gradient-to-br from-slate-900 to-slate-800',
+    preview: 'bg-gradient-to-br from-stone-900 to-stone-800',
     features: ['Serif rubriker', 'Guld-accenter', 'Klassisk']
   },
   { 
@@ -529,7 +529,7 @@ export default function CVBuilder() {
                   )}
                   {tpl.id === 'centered' && (
                     <div className="flex flex-col items-center w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-sky-400 mb-2" />
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--c-solid)]/80 to-sky-400 mb-2" />
                       <div className="h-3 bg-stone-200 rounded w-1/2" />
                     </div>
                   )}

@@ -22,9 +22,9 @@ interface KpiCardProps {
 const colorConfig = {
   // Turkos - CTA, brand, primära handlingar
   action: {
-    iconBg: 'bg-teal-50',
-    iconColor: 'text-teal-900',
-    dotColor: 'bg-teal-300',
+    iconBg: 'bg-[var(--c-bg)]',
+    iconColor: 'text-[var(--c-text)]',
+    dotColor: 'bg-[var(--c-accent)]',
   },
   // Blå - sparade jobb, information, referens
   info: {
@@ -106,7 +106,7 @@ export function KpiCard({
       <Link
         to={to}
         aria-label={`${label}: ${displayValue}${subtext ? `, ${subtext}` : ''}`}
-        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 rounded-xl block"
+        className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 rounded-xl block"
       >
         {content}
       </Link>

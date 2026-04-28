@@ -60,7 +60,7 @@ export const ActivityWidget = memo(function ActivityWidget({
       {/* Uppmuntrande meddelande */}
       <div className="mt-3 flex items-start gap-2">
         <Target size={16} className="text-rose-500 mt-0.5 flex-shrink-0" />
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-stone-600">
           {getEncouragementMessage()}
         </p>
       </div>

@@ -223,15 +223,15 @@ function SearchTab() {
               <Filter className="w-5 h-5 text-white" />
             </div>
             <div className="text-left">
-              <h3 className="font-semibold text-slate-900 dark:text-stone-100">{t('jobSearch.searchAndFilter')}</h3>
-              <p className="text-sm text-slate-700 dark:text-stone-400">
+              <h3 className="font-semibold text-stone-900 dark:text-stone-100">{t('jobSearch.searchAndFilter')}</h3>
+              <p className="text-sm text-stone-700 dark:text-stone-400">
                 {filters.query || activeFilterCount > 0
                   ? `${filters.query ? `"${filters.query}"` : ''} ${activeFilterCount > 0 ? `• ${t('jobSearch.filtersActive', { count: activeFilterCount })}` : ''}`
                   : t('jobSearch.clickToSearch')}
               </p>
             </div>
           </div>
-          <ChevronDown className={`w-5 h-5 text-slate-600 dark:text-stone-400 transition-transform duration-200 ${isSearchExpanded ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-5 h-5 text-stone-600 dark:text-stone-400 transition-transform duration-200 ${isSearchExpanded ? 'rotate-180' : ''}`} />
         </button>
 
         {/* Expandable Content */}
@@ -242,7 +242,7 @@ function SearchTab() {
               <label htmlFor="job-search-input" className="sr-only">
                 {t('jobSearch.whatDoYouWantToWork')}
               </label>
-              <Search className="absolute left-3 top-1/2 mt-2 -translate-y-1/2 text-slate-600 dark:text-stone-400" size={20} aria-hidden="true" />
+              <Search className="absolute left-3 top-1/2 mt-2 -translate-y-1/2 text-stone-600 dark:text-stone-400" size={20} aria-hidden="true" />
               <input
                 id="job-search-input"
                 type="text"
@@ -253,7 +253,7 @@ function SearchTab() {
                   setShowSuggestions(true);
                 }}
                 onFocus={() => setShowSuggestions(true)}
-                className="w-full pl-10 pr-12 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                className="w-full pl-10 pr-12 py-3 border border-stone-200 dark:border-stone-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 role="combobox"
                 aria-expanded={showSuggestions && suggestions.length > 0}
                 aria-controls="job-search-suggestions"
@@ -293,9 +293,9 @@ function SearchTab() {
                         setFilters({ ...filters, query: suggestion });
                         setShowSuggestions(false);
                       }}
-                      className="w-full text-left px-4 py-3 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 first:rounded-t-xl last:rounded-b-xl border-b border-stone-100 dark:border-stone-700 last:border-0 text-slate-900 dark:text-stone-100"
+                      className="w-full text-left px-4 py-3 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 first:rounded-t-xl last:rounded-b-xl border-b border-stone-100 dark:border-stone-700 last:border-0 text-stone-900 dark:text-stone-100"
                     >
-                      <Search size={16} className="inline mr-2 text-slate-600 dark:text-stone-400" aria-hidden="true" />
+                      <Search size={16} className="inline mr-2 text-stone-600 dark:text-stone-400" aria-hidden="true" />
                       {suggestion}
                     </button>
                   ))}
@@ -305,7 +305,7 @@ function SearchTab() {
 
             {/* Location Filters */}
             <fieldset>
-              <legend className="text-xs font-semibold text-slate-700 dark:text-stone-300 uppercase tracking-wide mb-2 flex items-center gap-1">
+              <legend className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-2 flex items-center gap-1">
                 <MapPin className="w-3 h-3" aria-hidden="true" />
                 {t('jobSearch.location')}
               </legend>
@@ -316,7 +316,7 @@ function SearchTab() {
                     id="filter-municipality"
                     value={filters.municipality}
                     onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                   >
                     <option value="">{t('jobSearch.allMunicipalities')}</option>
                     {SWEDISH_MUNICIPALITIES.map((m) => (
@@ -330,7 +330,7 @@ function SearchTab() {
                     id="filter-region"
                     value={filters.region}
                     onChange={(e) => setFilters({ ...filters, region: e.target.value })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                   >
                     <option value="">{t('jobSearch.allRegions')}</option>
                     {REGIONS.map((r) => (
@@ -343,7 +343,7 @@ function SearchTab() {
 
             {/* Job Type Filters */}
             <fieldset>
-              <legend className="text-xs font-semibold text-slate-700 dark:text-stone-300 uppercase tracking-wide mb-2 flex items-center gap-1">
+              <legend className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide mb-2 flex items-center gap-1">
                 <Briefcase className="w-3 h-3" aria-hidden="true" />
                 {t('jobSearch.jobType')}
               </legend>
@@ -354,7 +354,7 @@ function SearchTab() {
                     id="filter-employment-type"
                     value={filters.employmentType}
                     onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                   >
                     <option value="">{t('jobSearch.allTypes')}</option>
                     <option value="Heltid">{t('jobSearch.fullTime')}</option>
@@ -367,7 +367,7 @@ function SearchTab() {
                     id="filter-published"
                     value={filters.publishedWithin}
                     onChange={(e) => setFilters({ ...filters, publishedWithin: e.target.value as any })}
-                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                    className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                   >
                     <option value="all">{t('jobSearch.publishedAnytime')}</option>
                     <option value="today">{t('jobSearch.today')}</option>
@@ -456,7 +456,7 @@ function SearchTab() {
         ) : paginatedJobs.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
             {/* Results count - announced to screen readers */}
-            <p className="text-sm text-slate-700 dark:text-stone-400" role="status" aria-live="polite" aria-atomic="true">
+            <p className="text-sm text-stone-700 dark:text-stone-400" role="status" aria-live="polite" aria-atomic="true">
               {t('jobSearch.showingXofY', { shown: paginatedJobs.length, total: totalJobs })}
             </p>
 
@@ -477,13 +477,13 @@ function SearchTab() {
               >
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-stone-100 mb-1 line-clamp-2">{job.headline}</h3>
-                    <p className="text-slate-600 dark:text-stone-400 text-sm font-medium flex items-center gap-2">
-                      <Building2 size={16} className="text-slate-600 dark:text-stone-400 flex-shrink-0" />
+                    <h3 className="text-base sm:text-lg font-semibold text-stone-900 dark:text-stone-100 mb-1 line-clamp-2">{job.headline}</h3>
+                    <p className="text-stone-600 dark:text-stone-400 text-sm font-medium flex items-center gap-2">
+                      <Building2 size={16} className="text-stone-600 dark:text-stone-400 flex-shrink-0" />
                       <span className="truncate">{job.employer?.name || t('common.employerNotSpecified')}</span>
                     </p>
 
-                    <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm text-slate-700 dark:text-stone-400">
+                    <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm text-stone-700 dark:text-stone-400">
                       <span className="flex items-center gap-1">
                         <MapPin size={14} />
                         <span className="truncate max-w-[150px] sm:max-w-none">
@@ -491,16 +491,16 @@ function SearchTab() {
                         </span>
                       </span>
                       {job.employment_type?.label && (
-                        <span className="px-2 py-0.5 bg-stone-100 dark:bg-stone-700 rounded text-slate-600 dark:text-stone-300">
+                        <span className="px-2 py-0.5 bg-stone-100 dark:bg-stone-700 rounded text-stone-600 dark:text-stone-300">
                           {job.employment_type.label}
                         </span>
                       )}
-                      <span className="text-slate-600 dark:text-stone-400">
+                      <span className="text-stone-600 dark:text-stone-400">
                         {new Date(job.publication_date).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                       </span>
                     </div>
 
-                    <p className="text-slate-600 dark:text-stone-400 mt-3 line-clamp-2 text-sm hidden sm:block">
+                    <p className="text-stone-600 dark:text-stone-400 mt-3 line-clamp-2 text-sm hidden sm:block">
                       {job.description?.text?.substring(0, 200)}...
                     </p>
 
@@ -518,7 +518,7 @@ function SearchTab() {
                           "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
                           isSaved(job.id)
                             ? "bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50"
-                            : "bg-stone-100 dark:bg-stone-700 text-slate-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600"
+                            : "bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600"
                         )}
                       >
                         <Heart size={16} className={isSaved(job.id) ? "fill-current" : ""} />
@@ -557,18 +557,18 @@ function SearchTab() {
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
                   aria-label={t('jobSearch.previousPage') || 'Föregående sida'}
-                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-slate-600 dark:text-stone-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 >
                   <ChevronLeft size={20} aria-hidden="true" />
                 </button>
-                <span className="px-4 py-2 text-sm text-slate-600 dark:text-stone-400" aria-current="page">
+                <span className="px-4 py-2 text-sm text-stone-600 dark:text-stone-400" aria-current="page">
                   {t('jobSearch.pageXofY', { current: currentPage, total: totalPages })}
                 </span>
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
                   aria-label={t('jobSearch.nextPage') || 'Nästa sida'}
-                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-slate-600 dark:text-stone-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 >
                   <ChevronRight size={20} aria-hidden="true" />
                 </button>
@@ -601,25 +601,25 @@ function SearchTab() {
             className="bg-white dark:bg-stone-800 rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
           >
             <div className="sticky top-0 bg-white dark:bg-stone-800 border-b border-stone-100 dark:border-stone-700 p-3 sm:p-4 flex items-center justify-between">
-              <h2 id="job-modal-title" className="text-base sm:text-lg font-semibold text-slate-900 dark:text-stone-100 pr-8 line-clamp-1">{selectedJob.headline}</h2>
+              <h2 id="job-modal-title" className="text-base sm:text-lg font-semibold text-stone-900 dark:text-stone-100 pr-8 line-clamp-1">{selectedJob.headline}</h2>
               <button
                 onClick={() => setSelectedJob(null)}
                 aria-label={t('common.close')}
                 className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
-                <X size={24} className="text-slate-700 dark:text-stone-300" aria-hidden="true" />
+                <X size={24} className="text-stone-700 dark:text-stone-300" aria-hidden="true" />
               </button>
             </div>
             <div className="p-4 sm:p-6">
               <div className="space-y-4">
-                <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400">
-                  <Building2 size={20} className="text-slate-600 dark:text-stone-400" />
+                <div className="flex items-center gap-2 text-stone-600 dark:text-stone-400">
+                  <Building2 size={20} className="text-stone-600 dark:text-stone-400" />
                   <span className="font-medium">{selectedJob.employer?.name}</span>
                 </div>
 
                 <div className="flex flex-wrap gap-2">
                   {selectedJob.workplace_address?.municipality && (
-                    <span className="px-3 py-1 bg-stone-100 dark:bg-stone-700 rounded-full text-sm text-slate-600 dark:text-stone-300">
+                    <span className="px-3 py-1 bg-stone-100 dark:bg-stone-700 rounded-full text-sm text-stone-600 dark:text-stone-300">
                       📍 {selectedJob.workplace_address.municipality}
                     </span>
                   )}
@@ -632,7 +632,7 @@ function SearchTab() {
 
                 <div className="prose prose-slate dark:prose-invert max-w-none">
                   <div
-                    className="text-slate-700 dark:text-stone-300 leading-relaxed"
+                    className="text-stone-700 dark:text-stone-300 leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: sanitizeHTMLWithLineBreaks(selectedJob.description?.text) }}
                   />
                 </div>
@@ -698,7 +698,7 @@ function SearchTab() {
                         "flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-colors min-h-[48px]",
                         isSaved(selectedJob.id)
                           ? "bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200 dark:border-rose-800"
-                          : "bg-stone-100 dark:bg-stone-700 text-slate-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600"
+                          : "bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600"
                       )}
                     >
                       <Heart size={18} className={isSaved(selectedJob.id) ? "fill-current" : ""} />
@@ -731,7 +731,7 @@ function SearchTab() {
                       href={selectedJob.application_details.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 bg-stone-100 dark:bg-stone-700 text-slate-700 dark:text-stone-300 rounded-xl font-medium hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors min-h-[48px]"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 rounded-xl font-medium hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors min-h-[48px]"
                     >
                       <ExternalLink size={18} />
                       <span className="text-sm sm:text-base">{t('jobSearch.applyDirectlyAtAF')}</span>
@@ -803,10 +803,10 @@ function SavedJobsTab() {
     return (
       <Card className="p-12 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="w-16 h-16 bg-stone-100 dark:bg-stone-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Bookmark className="w-8 h-8 text-slate-600 dark:text-stone-400" />
+          <Bookmark className="w-8 h-8 text-stone-600 dark:text-stone-400" />
         </div>
-        <h3 className="text-xl font-semibold text-slate-700 dark:text-stone-200 mb-2">{t('jobSearch.noSavedJobsTitle')}</h3>
-        <p className="text-slate-700 dark:text-stone-400 mb-4">{t('jobSearch.noSavedJobsDesc')}</p>
+        <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-200 mb-2">{t('jobSearch.noSavedJobsTitle')}</h3>
+        <p className="text-stone-700 dark:text-stone-400 mb-4">{t('jobSearch.noSavedJobsDesc')}</p>
         <Link to="/job-search">
           <Button>{t('jobSearch.title')}</Button>
         </Link>
@@ -819,14 +819,14 @@ function SavedJobsTab() {
       {/* Header with stats and filters */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-stone-100">Sparade jobb</h2>
-          <p className="text-sm text-slate-700 dark:text-stone-400">{onlySaved.length} jobb sparade</p>
+          <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">Sparade jobb</h2>
+          <p className="text-sm text-stone-700 dark:text-stone-400">{onlySaved.length} jobb sparade</p>
         </div>
         <div className="flex items-center gap-2">
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+            className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
           >
             <option value="date">Senast sparade</option>
             <option value="company">Företag A-Ö</option>
@@ -843,26 +843,26 @@ function SavedJobsTab() {
               <div className="flex items-start gap-4">
                 {/* Company logo placeholder */}
                 <div className="w-12 h-12 bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-700 dark:to-stone-600 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Building2 className="w-6 h-6 text-slate-600 dark:text-stone-400" />
+                  <Building2 className="w-6 h-6 text-stone-600 dark:text-stone-400" />
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-semibold text-slate-900 dark:text-stone-100 line-clamp-1">
+                  <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-1">
                     {jobData?.headline || 'Okänd tjänst'}
                   </h3>
-                  <p className="text-sm text-slate-600 dark:text-stone-400 flex items-center gap-1 mt-0.5">
+                  <p className="text-sm text-stone-600 dark:text-stone-400 flex items-center gap-1 mt-0.5">
                     <Briefcase className="w-3.5 h-3.5" />
                     {jobData?.employer?.name || 'Okänt företag'}
                   </p>
                   {jobData?.workplace_address?.municipality && (
-                    <p className="text-sm text-slate-700 dark:text-stone-400 flex items-center gap-1 mt-0.5">
+                    <p className="text-sm text-stone-700 dark:text-stone-400 flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3.5 h-3.5" />
                       {jobData.workplace_address.municipality}
                     </p>
                   )}
 
                   {/* Saved date */}
-                  <p className="text-xs text-slate-600 dark:text-stone-500 mt-2 flex items-center gap-1">
+                  <p className="text-xs text-stone-600 dark:text-stone-500 mt-2 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     Sparad {new Date(job.savedAt).toLocaleDateString('sv-SE')}
                   </p>
@@ -872,7 +872,7 @@ function SavedJobsTab() {
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => handleMarkAsApplied(job.id)}
-                    className="p-2 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition-colors text-slate-600 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400"
+                    className="p-2 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg transition-colors text-stone-600 dark:text-stone-400 hover:text-emerald-600 dark:hover:text-emerald-400"
                     title="Markera som ansökt"
                   >
                     <CheckCircle className="w-5 h-5" />
@@ -883,7 +883,7 @@ function SavedJobsTab() {
                         removeJob(job.id);
                       }
                     }}
-                    className="p-2 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors text-slate-600 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400"
+                    className="p-2 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors text-stone-600 dark:text-stone-400 hover:text-red-600 dark:hover:text-red-400"
                     title="Ta bort"
                   >
                     <Trash2 className="w-5 h-5" />

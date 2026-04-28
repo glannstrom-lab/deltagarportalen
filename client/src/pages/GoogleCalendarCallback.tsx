@@ -97,7 +97,7 @@ export default function GoogleCalendarCallback() {
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               Din kalender är nu synkroniserad. Dina Google-händelser kommer visas i din kalender.
             </p>
-            <div className="animate-pulse text-teal-600 dark:text-teal-400 text-sm">
+            <div className="animate-pulse text-[var(--c-text)] dark:text-[var(--c-solid)] text-sm">
               Omdirigerar till kalendern...
             </div>
           </>

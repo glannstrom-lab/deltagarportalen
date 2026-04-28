@@ -147,13 +147,13 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
   // Compact version for sidebar or small spaces
   if (compact) {
     return (
-      <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-xl border border-teal-100 dark:border-teal-800 p-4">
+      <div className="bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Trophy size={18} className="text-teal-600 dark:text-teal-400" />
-            <span className="font-semibold text-slate-800 dark:text-stone-100">{t('dashboard.checklist.getStarted')}</span>
+            <Trophy size={18} className="text-[var(--c-text)] dark:text-[var(--c-text)]" />
+            <span className="font-semibold text-stone-800 dark:text-stone-100">{t('dashboard.checklist.getStarted')}</span>
           </div>
-          <span className="text-xs text-teal-600 dark:text-teal-400 font-medium">
+          <span className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] font-medium">
             {completedCount}/{items.length}
           </span>
         </div>
@@ -165,15 +165,15 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               to={item.isLocked ? '#' : item.link}
               className={cn(
                 "flex items-center gap-2 text-sm",
-                item.isLocked ? 'text-slate-600 dark:text-stone-500 cursor-not-allowed' : 'text-slate-700 dark:text-stone-300 hover:text-teal-600 dark:hover:text-teal-400'
+                item.isLocked ? 'text-stone-600 dark:text-stone-500 cursor-not-allowed' : 'text-stone-700 dark:text-stone-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]'
               )}
             >
               {item.isCompleted ? (
                 <CheckCircle2 size={16} className="text-emerald-500 dark:text-emerald-400" />
               ) : item.isLocked ? (
-                <Lock size={16} className="text-slate-300 dark:text-stone-600" />
+                <Lock size={16} className="text-stone-300 dark:text-stone-600" />
               ) : (
-                <Circle size={16} className="text-teal-400 dark:text-teal-500" />
+                <Circle size={16} className="text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
               )}
               <span className={item.isCompleted ? 'line-through opacity-50' : ''}>
                 {item.title}
@@ -183,7 +183,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
           {items.length > 2 && (
             <button
               onClick={handleReopen}
-              className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
+              className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] font-medium"
             >
               {t('dashboard.checklist.seeAllSteps', { count: items.length })}
             </button>
@@ -199,13 +199,13 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/30 dark:to-teal-900/30 rounded-2xl border border-sky-200 dark:border-sky-800 p-6 text-center"
+        className="bg-gradient-to-br from-sky-50 to-[var(--c-bg)] dark:from-sky-900/30 dark:to-[var(--c-bg)]/40 rounded-2xl border border-sky-200 dark:border-sky-800 p-6 text-center"
       >
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-400 to-teal-500 flex items-center justify-center mx-auto mb-4"
+          className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-400 to-[var(--c-solid)] flex items-center justify-center mx-auto mb-4"
         >
           <Sparkles size={32} className="text-white" />
         </motion.div>
@@ -228,7 +228,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
             {t('dashboard.checklist.showMoreSteps')}
           </Button>
           <Link to="/cv">
-            <Button size="sm" className="bg-teal-600 hover:bg-teal-700">
+            <Button size="sm" className="bg-[var(--c-solid)] hover:bg-[var(--c-text)]">
               {t('dashboard.checklist.createCVNow')}
             </Button>
           </Link>
@@ -243,13 +243,13 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl border border-emerald-200 dark:border-emerald-800 p-8 text-center"
+        className="bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/30 dark:to-[var(--c-bg)]/40 rounded-2xl border border-emerald-200 dark:border-emerald-800 p-8 text-center"
       >
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mx-auto mb-4"
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-[var(--c-solid)] flex items-center justify-center mx-auto mb-4"
         >
           <Trophy size={40} className="text-white" />
         </motion.div>
@@ -282,10 +282,10 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="bg-white dark:bg-stone-900 rounded-2xl border border-slate-200 dark:border-stone-700 shadow-sm overflow-hidden"
+      className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 shadow-sm overflow-hidden"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-teal-500 to-sky-500 p-6 text-white">
+      <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-500 p-6 text-white">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -337,18 +337,18 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               transition={{ delay: index * 0.1 }}
             >
               {item.isLocked ? (
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-stone-800 border border-slate-200 dark:border-stone-700 opacity-60">
-                  <div className="w-12 h-12 rounded-xl bg-slate-200 dark:bg-stone-700 flex items-center justify-center">
-                    <Lock size={20} className="text-slate-600 dark:text-stone-400" />
+                <div className="flex items-center gap-4 p-4 rounded-xl bg-stone-50 dark:bg-stone-800 border border-stone-200 dark:border-stone-700 opacity-60">
+                  <div className="w-12 h-12 rounded-xl bg-stone-200 dark:bg-stone-700 flex items-center justify-center">
+                    <Lock size={20} className="text-stone-600 dark:text-stone-400" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-slate-700 dark:text-stone-300">{item.title}</h3>
-                      <span className="text-xs bg-slate-200 dark:bg-stone-700 text-slate-700 dark:text-stone-400 px-2 py-0.5 rounded-full">
+                      <h3 className="font-semibold text-stone-700 dark:text-stone-300">{item.title}</h3>
+                      <span className="text-xs bg-stone-200 dark:bg-stone-700 text-stone-700 dark:text-stone-400 px-2 py-0.5 rounded-full">
                         {t('dashboard.checklist.locked')}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-600 dark:text-stone-400">
+                    <p className="text-sm text-stone-600 dark:text-stone-400">
                       {t('dashboard.checklist.completePreviousFirst')}
                     </p>
                   </div>
@@ -373,25 +373,25 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               ) : (
                 <Link
                   to={item.link}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-slate-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700 hover:shadow-md transition-all group"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-accent)]/60 hover:shadow-md transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-100 to-sky-100 dark:from-teal-900/50 dark:to-sky-900/50 flex items-center justify-center text-teal-600 dark:text-teal-400 group-hover:from-teal-200 group-hover:to-sky-200 dark:group-hover:from-teal-900/70 dark:group-hover:to-sky-900/70 transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--c-accent)]/40 to-sky-100 dark:from-[var(--c-bg)]/50 dark:to-sky-900/50 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-text)] group-hover:from-[var(--c-accent)]/60 group-hover:to-sky-200 dark:group-hover:from-[var(--c-bg)]/70 dark:group-hover:to-sky-900/70 transition-colors">
                     {item.icon}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <h3 className="font-semibold text-slate-800 dark:text-stone-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition-colors">
+                      <h3 className="font-semibold text-stone-800 dark:text-stone-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-text)] transition-colors">
                         {item.title}
                       </h3>
-                      <span className="text-xs text-slate-600 dark:text-stone-400">
+                      <span className="text-xs text-stone-600 dark:text-stone-400">
                         ~{item.estimatedTime}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-700 dark:text-stone-300">
+                    <p className="text-sm text-stone-700 dark:text-stone-300">
                       {item.description}
                     </p>
                   </div>
-                  <ChevronRight size={20} className="text-slate-300 dark:text-stone-600 group-hover:text-teal-500 dark:group-hover:text-teal-400 transition-colors" />
+                  <ChevronRight size={20} className="text-stone-300 dark:text-stone-600 group-hover:text-[var(--c-solid)] dark:group-hover:text-[var(--c-text)] transition-colors" />
                 </Link>
               )}
             </motion.div>
@@ -425,7 +425,7 @@ export function ReopenChecklistButton({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       className={cn(
         "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium",
-        "bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-400 hover:bg-teal-200 dark:hover:bg-teal-900/70 transition-colors"
+        "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-bg)]/70 transition-colors"
       )}
     >
       <Trophy size={16} />

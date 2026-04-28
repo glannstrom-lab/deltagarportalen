@@ -202,7 +202,7 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-solid)]" />
       </div>
     )
   }
@@ -211,8 +211,8 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
     <div className="max-w-lg mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-          <FileText className="w-8 h-8 text-teal-500" />
+        <div className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-full flex items-center justify-center mx-auto mb-4">
+          <FileText className="w-8 h-8 text-[var(--c-solid)]" />
         </div>
         <h2 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100 mb-2">
           {t('focusGuide.cv.title', 'Skapa ditt CV')}
@@ -231,13 +231,13 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
               total: CV_STEPS.length
             })}
           </span>
-          <span className="font-medium text-teal-600 dark:text-teal-400">
+          <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
             {Math.round(progress)}%
           </span>
         </div>
         <div className="h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
           <div
-            className="h-full bg-teal-500 rounded-full transition-all duration-500"
+            className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -254,8 +254,8 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
                 key={s.id}
                 className={cn(
                   'w-9 h-9 rounded-full flex items-center justify-center transition-all',
-                  isActive && 'bg-teal-500 text-white ring-4 ring-teal-500/20',
-                  isDone && 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400',
+                  isActive && 'bg-[var(--c-solid)] text-white ring-4 ring-[var(--c-solid)]/20',
+                  isDone && 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)]',
                   !isActive && !isDone && 'bg-stone-100 dark:bg-stone-800 text-stone-400'
                 )}
               >
@@ -269,8 +269,8 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
       {/* Current step form */}
       <div className="bg-white dark:bg-stone-800/50 rounded-2xl p-6 mb-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
-            <StepIcon className="w-6 h-6 text-teal-500" />
+          <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center">
+            <StepIcon className="w-6 h-6 text-[var(--c-solid)]" />
           </div>
           <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
             {t(step.titleKey, step.titleDefault)}
@@ -292,7 +292,7 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder={t('cv.titlePlaceholder', 't.ex. Projektledare, Säljare, Utvecklare')}
-              className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+              className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
               autoFocus
             />
             <p className="text-sm text-stone-500 dark:text-stone-400 mt-2">
@@ -330,14 +330,14 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
                     value={exp.position}
                     onChange={(e) => updateExperience(exp.id, 'position', e.target.value)}
                     placeholder={t('cv.position', 'Befattning')}
-                    className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                    className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   />
                   <input
                     type="text"
                     value={exp.company}
                     onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
                     placeholder={t('cv.company', 'Företag')}
-                    className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                    className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   />
                   <div className="flex gap-2">
                     <input
@@ -345,7 +345,7 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
                       value={exp.startDate}
                       onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
                       placeholder={t('cv.startDate', 'Startdatum')}
-                      className="flex-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                      className="flex-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                     />
                     <input
                       type="text"
@@ -353,7 +353,7 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
                       onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
                       placeholder={exp.current ? t('cv.current', 'Pågående') : t('cv.endDate', 'Slutdatum')}
                       disabled={exp.current}
-                      className="flex-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50 disabled:opacity-50"
+                      className="flex-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50 disabled:opacity-50"
                     />
                   </div>
                   <label className="flex items-center gap-2 text-sm text-stone-600 dark:text-stone-400">
@@ -361,7 +361,7 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
                       type="checkbox"
                       checked={exp.current}
                       onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)}
-                      className="rounded border-stone-300 text-teal-500 focus:ring-teal-500"
+                      className="rounded border-stone-300 text-[var(--c-solid)] focus:ring-[var(--c-solid)]"
                     />
                     {t('cv.currentPosition', 'Jag jobbar här just nu')}
                   </label>
@@ -371,7 +371,7 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
 
             <button
               onClick={addExperience}
-              className="flex items-center gap-2 w-full py-3 px-4 border-2 border-dashed border-stone-200 dark:border-stone-700 rounded-xl text-stone-500 dark:text-stone-400 hover:border-teal-500 hover:text-teal-500 transition-colors"
+              className="flex items-center gap-2 w-full py-3 px-4 border-2 border-dashed border-stone-200 dark:border-stone-700 rounded-xl text-stone-500 dark:text-stone-400 hover:border-[var(--c-solid)] hover:text-[var(--c-solid)] transition-colors"
             >
               <Plus className="w-5 h-5" />
               {t('focusGuide.cv.addExperience', 'Lägg till erfarenhet')}
@@ -412,14 +412,14 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
                     value={edu.school}
                     onChange={(e) => updateEducation(edu.id, 'school', e.target.value)}
                     placeholder={t('cv.school', 'Skola/Universitet')}
-                    className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                    className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   />
                   <input
                     type="text"
                     value={edu.field}
                     onChange={(e) => updateEducation(edu.id, 'field', e.target.value)}
                     placeholder={t('cv.field', 'Inriktning/Program')}
-                    className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                    className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   />
                 </div>
               ))
@@ -427,7 +427,7 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
 
             <button
               onClick={addEducation}
-              className="flex items-center gap-2 w-full py-3 px-4 border-2 border-dashed border-stone-200 dark:border-stone-700 rounded-xl text-stone-500 dark:text-stone-400 hover:border-teal-500 hover:text-teal-500 transition-colors"
+              className="flex items-center gap-2 w-full py-3 px-4 border-2 border-dashed border-stone-200 dark:border-stone-700 rounded-xl text-stone-500 dark:text-stone-400 hover:border-[var(--c-solid)] hover:text-[var(--c-solid)] transition-colors"
             >
               <Plus className="w-5 h-5" />
               {t('focusGuide.cv.addEducation', 'Lägg till utbildning')}
@@ -444,12 +444,12 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
                 {skills.map((skill) => (
                   <span
                     key={skill}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 rounded-full text-sm"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-full text-sm"
                   >
                     {skill}
                     <button
                       onClick={() => removeSkill(skill)}
-                      className="ml-1 text-teal-500 hover:text-teal-700"
+                      className="ml-1 text-[var(--c-solid)] hover:text-[var(--c-text)]"
                     >
                       <Trash2 className="w-3 h-3" />
                     </button>
@@ -471,12 +471,12 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
                   }
                 }}
                 placeholder={t('cv.skillPlaceholder', 'Skriv en kompetens...')}
-                className="flex-1 px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                className="flex-1 px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
               />
               <button
                 onClick={addSkill}
                 disabled={!newSkill.trim()}
-                className="px-4 py-3 bg-teal-500 text-white rounded-xl hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-3 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-solid)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <Plus className="w-5 h-5" />
               </button>
@@ -497,7 +497,7 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
                           setSkills(prev => [...prev, suggestion])
                         }
                       }}
-                      className="px-3 py-1.5 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 rounded-full text-sm hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-teal-900/50 dark:hover:text-teal-300 transition-colors"
+                      className="px-3 py-1.5 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 rounded-full text-sm hover:bg-[var(--c-accent)]/40 hover:text-[var(--c-text)] dark:hover:bg-[var(--c-bg)]/50 dark:hover:text-[var(--c-text)] transition-colors"
                     >
                       + {suggestion}
                     </button>
@@ -516,8 +516,8 @@ export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
           disabled={saveMutation.isPending}
           className={cn(
             'flex items-center justify-center gap-2 w-full py-4 rounded-xl font-semibold text-lg transition-all',
-            'bg-teal-500 text-white hover:bg-teal-600',
-            'focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30',
+            'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
+            'focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--c-solid)]/30',
             'disabled:opacity-50 disabled:cursor-not-allowed'
           )}
         >

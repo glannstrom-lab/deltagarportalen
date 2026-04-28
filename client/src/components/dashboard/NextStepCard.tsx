@@ -24,14 +24,14 @@ interface NextStepCardProps {
 // Enhanced color system
 const colorSchemes = {
   violet: {
-    gradient: 'from-teal-500 to-sky-600',
-    bg: 'bg-teal-50',
-    bgLight: 'bg-teal-100',
-    text: 'text-teal-700',
-    ring: 'focus:ring-teal-500'
+    gradient: 'from-[var(--c-solid)] to-sky-600',
+    bg: 'bg-[var(--c-bg)]',
+    bgLight: 'bg-[var(--c-accent)]/40',
+    text: 'text-[var(--c-text)]',
+    ring: 'focus:ring-[var(--c-solid)]'
   },
   teal: {
-    gradient: 'from-teal-500 to-emerald-600',
+    gradient: 'from-[var(--c-solid)] to-emerald-600',
     bg: 'bg-emerald-50',
     bgLight: 'bg-emerald-100',
     text: 'text-emerald-700',
@@ -161,7 +161,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
       <div className={cn(
         "rounded-2xl border-2 transition-all duration-300",
         step.color.bgLight,
-        "border-transparent hover:border-slate-200",
+        "border-transparent hover:border-stone-200",
         "hover:shadow-lg"
       )}>
         <button
@@ -179,16 +179,16 @@ export function NextStepCard({ data }: NextStepCardProps) {
             <div className="text-left">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles size={14} className="text-amber-500" />
-                <span className="text-xs font-bold text-slate-700 dark:text-stone-300 uppercase tracking-wider">
+                <span className="text-xs font-bold text-stone-700 dark:text-stone-300 uppercase tracking-wider">
                   {t('nextStepWidget.recommendedNextStep')}
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900 dark:text-stone-100">{step.title}</h3>
+              <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100">{step.title}</h3>
             </div>
           </div>
           
           <div className="flex items-center gap-4">
-            <span className="hidden sm:flex items-center gap-1.5 text-sm text-slate-700 dark:text-stone-300 font-medium">
+            <span className="hidden sm:flex items-center gap-1.5 text-sm text-stone-700 dark:text-stone-300 font-medium">
               <Clock size={14} />
               {step.time}
             </span>
@@ -197,7 +197,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
               "bg-white dark:bg-stone-800 group-hover:shadow-md transition-all duration-200",
               "group-hover:scale-105"
             )}>
-              <ChevronDown size={18} className="text-slate-600 dark:text-stone-400" />
+              <ChevronDown size={18} className="text-stone-600 dark:text-stone-400" />
             </div>
           </div>
         </button>
@@ -292,7 +292,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
                     {step.time}
                   </span>
                   <span className={cn(
-                    "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-slate-900 font-bold shadow-lg transition-all duration-200",
+                    "inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-stone-900 font-bold shadow-lg transition-all duration-200",
                     "group-hover:bg-white/95 group-hover:shadow-xl",
                     "group-hover:gap-3"
                   )}>

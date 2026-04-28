@@ -109,9 +109,9 @@ export function JourneyCelebration({
           {/* Close button */}
           <button
             onClick={onDismiss}
-            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors z-10"
+            className="absolute top-4 right-4 w-8 h-8 rounded-full bg-stone-100 flex items-center justify-center hover:bg-stone-200 transition-colors z-10"
           >
-            <X className="w-5 h-5 text-slate-700" />
+            <X className="w-5 h-5 text-stone-700" />
           </button>
 
           {/* Header */}
@@ -168,7 +168,7 @@ export function JourneyCelebration({
             {/* Achievements list */}
             {hasAchievements && (
               <div className="space-y-3 mb-6">
-                <h4 className="text-sm font-medium text-slate-700 uppercase tracking-wide">Badges</h4>
+                <h4 className="text-sm font-medium text-stone-700 uppercase tracking-wide">Badges</h4>
                 {unlockedAchievements.map((achievement, index) => (
                   <motion.div
                     key={achievement.id}
@@ -181,8 +181,8 @@ export function JourneyCelebration({
                       <Trophy className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-medium text-slate-900">{achievement.name}</h4>
-                      <p className="text-sm text-slate-700">{achievement.description}</p>
+                      <h4 className="font-medium text-stone-900">{achievement.name}</h4>
+                      <p className="text-sm text-stone-700">{achievement.description}</p>
                     </div>
                     <div className="flex items-center gap-1 text-amber-600">
                       <Star className="w-4 h-4" fill="currentColor" />
@@ -197,7 +197,7 @@ export function JourneyCelebration({
             {hasMilestones && (
               <div className="space-y-3 mb-6">
                 {hasAchievements && (
-                  <h4 className="text-sm font-medium text-slate-700 uppercase tracking-wide">Milstolpar</h4>
+                  <h4 className="text-sm font-medium text-stone-700 uppercase tracking-wide">Milstolpar</h4>
                 )}
                 {milestoneDetails.map((milestone, index) => (
                   <motion.div
@@ -205,14 +205,14 @@ export function JourneyCelebration({
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.6 + (hasAchievements ? unlockedAchievements.length : 0) * 0.1 + index * 0.1 }}
-                    className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl"
+                    className="flex items-center gap-3 p-3 bg-stone-50 rounded-xl"
                   >
                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
                       <Award className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-medium text-slate-900">{milestone!.name}</h4>
-                      <p className="text-sm text-slate-700">{milestone!.phaseName}</p>
+                      <h4 className="font-medium text-stone-900">{milestone!.name}</h4>
+                      <p className="text-sm text-stone-700">{milestone!.phaseName}</p>
                     </div>
                     <div className="flex items-center gap-1 text-amber-600">
                       <Star className="w-4 h-4" fill="currentColor" />

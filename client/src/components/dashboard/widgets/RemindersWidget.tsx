@@ -191,15 +191,15 @@ export const RemindersWidget = memo(function RemindersWidget({
             </>
           ) : reminders.length > 0 ? (
             <>
-              <Bell size={14} className="text-slate-600" />
-              <span className="text-sm text-slate-600">
+              <Bell size={14} className="text-stone-600" />
+              <span className="text-sm text-stone-600">
                 {t('remindersWidget.remindersCount', { count: reminders.length })}
               </span>
             </>
           ) : (
             <>
               <CheckCircle2 size={14} className="text-emerald-500" />
-              <span className="text-sm text-slate-700">{t('remindersWidget.allDone')}</span>
+              <span className="text-sm text-stone-700">{t('remindersWidget.allDone')}</span>
             </>
           )}
         </div>
@@ -222,8 +222,8 @@ export const RemindersWidget = memo(function RemindersWidget({
             <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-3">
               <CheckCircle2 size={24} className="text-emerald-600" />
             </div>
-            <p className="text-slate-600 font-medium">{t('remindersWidget.allUpToDate')}</p>
-            <p className="text-sm text-slate-600 mt-1">
+            <p className="text-stone-600 font-medium">{t('remindersWidget.allUpToDate')}</p>
+            <p className="text-sm text-stone-600 mt-1">
               {t('remindersWidget.noReminders')}
             </p>
           </div>
@@ -242,7 +242,7 @@ export const RemindersWidget = memo(function RemindersWidget({
                     "block p-3 rounded-xl border transition-all group relative",
                     reminder.priority === 'high'
                       ? 'bg-amber-50 border-amber-200 hover:bg-amber-100'
-                      : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
+                      : 'bg-stone-50 border-stone-200 hover:bg-stone-100'
                   )}
                 >
                   {/* Dismiss button */}
@@ -250,19 +250,19 @@ export const RemindersWidget = memo(function RemindersWidget({
                     onClick={(e) => handleDismiss(e, reminder.id)}
                     className="absolute top-2 right-2 w-6 h-6 rounded-full hover:bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <X size={14} className="text-slate-600" />
+                    <X size={14} className="text-stone-600" />
                   </button>
 
                   <div className="flex items-start gap-3">
                     <div className={cn(
                       "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-                      reminder.priority === 'high' ? 'bg-amber-100 text-amber-600' : 'bg-white text-slate-700'
+                      reminder.priority === 'high' ? 'bg-amber-100 text-amber-600' : 'bg-white text-stone-700'
                     )}>
                       {reminder.icon}
                     </div>
                     <div className="flex-1 min-w-0 pr-6">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <h4 className="font-semibold text-slate-800">
+                        <h4 className="font-semibold text-stone-800">
                           {t(reminder.titleKey, reminder.interpolation)}
                         </h4>
                         {reminder.priority === 'high' && (
@@ -271,31 +271,31 @@ export const RemindersWidget = memo(function RemindersWidget({
                           </span>
                         )}
                       </div>
-                      <p className="text-sm text-slate-600 mb-2">
+                      <p className="text-sm text-stone-600 mb-2">
                         {t(reminder.messageKey, reminder.interpolation)}
                       </p>
 
                       {/* Progress bar if applicable */}
                       {reminder.progress !== undefined && (
                         <div className="mb-3">
-                          <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                          <div className="w-full h-1.5 bg-stone-200 rounded-full overflow-hidden">
                             <motion.div
                               initial={{ width: 0 }}
                               animate={{ width: `${reminder.progress}%` }}
                               transition={{ duration: 0.5 }}
                               className={cn(
                                 "h-full rounded-full",
-                                reminder.priority === 'high' ? 'bg-amber-500' : 'bg-teal-500'
+                                reminder.priority === 'high' ? 'bg-amber-500' : 'bg-[var(--c-solid)]'
                               )}
                             />
                           </div>
-                          <p className="text-xs text-slate-600 mt-1">
+                          <p className="text-xs text-stone-600 mt-1">
                             {t('remindersWidget.percentComplete', { percent: Math.round(reminder.progress) })}
                           </p>
                         </div>
                       )}
 
-                      <div className="flex items-center gap-2 text-sm font-medium text-teal-600">
+                      <div className="flex items-center gap-2 text-sm font-medium text-[var(--c-text)]">
                         <span>{t(reminder.actionKey)}</span>
                         <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                       </div>
@@ -306,7 +306,7 @@ export const RemindersWidget = memo(function RemindersWidget({
             ))}
 
             {reminders.length > (size === 'large' ? 5 : 3) && (
-              <p className="text-center text-sm text-slate-600 pt-2">
+              <p className="text-center text-sm text-stone-600 pt-2">
                 {t('remindersWidget.moreReminders', { count: reminders.length - (size === 'large' ? 5 : 3) })}
               </p>
             )}

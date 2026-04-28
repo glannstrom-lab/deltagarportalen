@@ -131,9 +131,9 @@ export function CareerRecommendationsPanel({
   return (
     <Card className={cn('overflow-hidden', className)}>
       {/* Header */}
-      <div className="p-6 bg-gradient-to-r from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 border-b border-teal-100 dark:border-teal-800">
+      <div className="p-6 bg-gradient-to-r from-[var(--c-bg)] to-emerald-50 dark:from-[var(--c-bg)]/30 dark:to-emerald-900/20 border-b border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-2xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-gradient-to-br from-[var(--c-solid)] to-emerald-500 rounded-2xl flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -165,8 +165,8 @@ export function CareerRecommendationsPanel({
               className="w-full p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
             >
               <div className="flex items-center gap-4">
-                <div className="flex items-center justify-center w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg">
-                  <span className="text-lg font-bold text-teal-600 dark:text-teal-400">
+                <div className="flex items-center justify-center w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg">
+                  <span className="text-lg font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
                     {index + 1}
                   </span>
                 </div>
@@ -176,7 +176,7 @@ export function CareerRecommendationsPanel({
                   </h3>
                   <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                     <span className="flex items-center gap-1">
-                      <Target className="w-4 h-4 text-teal-500" />
+                      <Target className="w-4 h-4 text-[var(--c-solid)]" />
                       {rec.matchPercentage}% match
                     </span>
                     {rec.salaryData && (
@@ -251,7 +251,7 @@ export function CareerRecommendationsPanel({
                   {rec.educations.length > 0 && (
                     <div>
                       <div className="flex items-center gap-2 mb-3">
-                        <GraduationCap className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                        <GraduationCap className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
                         <h4 className="font-semibold text-gray-900 dark:text-gray-100">
                           Utbildningsvägar
                         </h4>
@@ -284,7 +284,7 @@ export function CareerRecommendationsPanel({
                                 href={edu.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1.5 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/30 rounded-lg"
+                                className="p-1.5 text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/40 rounded-lg"
                               >
                                 <ExternalLink className="w-4 h-4" />
                               </a>
@@ -300,7 +300,7 @@ export function CareerRecommendationsPanel({
                     <Button
                       size="sm"
                       onClick={() => handleAnalyzeSkills(rec.occupation)}
-                      className="gap-2 bg-teal-500 hover:bg-teal-600"
+                      className="gap-2 bg-[var(--c-solid)] hover:bg-[var(--c-solid)]"
                     >
                       <Target className="w-4 h-4" />
                       Analysera kompetensgap

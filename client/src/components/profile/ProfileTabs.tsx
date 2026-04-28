@@ -93,7 +93,7 @@ export function ProfileTabs() {
                 'relative flex items-center gap-2 px-4 py-3 text-sm font-medium whitespace-nowrap transition-colors',
                 'focus:outline-none focus-visible:bg-stone-50 dark:focus-visible:bg-stone-800',
                 isActive
-                  ? 'text-teal-600 dark:text-teal-400'
+                  ? 'text-[var(--c-text)] dark:text-[var(--c-solid)]'
                   : 'text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300'
               )}
             >
@@ -108,7 +108,7 @@ export function ProfileTabs() {
 
               {/* Active indicator line */}
               {isActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-teal-500" />
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--c-solid)]" />
               )}
             </button>
           )

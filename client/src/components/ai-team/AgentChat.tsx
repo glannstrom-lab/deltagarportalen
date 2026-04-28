@@ -711,7 +711,7 @@ function EmptyState({ agent, onQuickAction }: EmptyStateProps) {
                   'hover:bg-white dark:hover:bg-stone-800',
                   'text-stone-700 dark:text-stone-300',
                   'transition-colors',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500'
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]'
                 )}
               >
                 {t(action.labelKey)}

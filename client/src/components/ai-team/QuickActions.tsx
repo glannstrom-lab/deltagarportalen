@@ -119,7 +119,7 @@ export function QuickActions({ onActionClick, className }: QuickActionsProps) {
                 'flex-1 flex items-center justify-between px-3 py-2 rounded-lg text-left',
                 'text-xs font-medium',
                 'transition-all duration-150',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-teal-500',
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-[var(--c-solid)]',
                 'disabled:opacity-50 disabled:cursor-not-allowed',
                 'bg-stone-50 dark:bg-stone-800',
                 'hover:bg-stone-100 dark:hover:bg-stone-700',

@@ -66,7 +66,7 @@ export function QuickActionBanner({
       borderColor: 'border-green-200'
     },
     job_saved: {
-      icon: <Briefcase size={20} className="text-teal-600" />,
+      icon: <Briefcase size={20} className="text-[var(--c-text)]" />,
       title: `Jobbet "${data?.title?.substring(0, 30) || ''}..." sparat!`,
       message: 'Vill du skriva ett personligt brev medan du har jobbet i minnet?',
       primaryAction: {
@@ -81,11 +81,11 @@ export function QuickActionBanner({
         label: 'Se sparade jobb',
         to: '/job-search'
       },
-      bgColor: 'bg-teal-50',
-      borderColor: 'border-teal-200'
+      bgColor: 'bg-[var(--c-bg)]',
+      borderColor: 'border-[var(--c-accent)]/60'
     },
     letter_saved: {
-      icon: <FileText size={20} className="text-teal-600" />,
+      icon: <FileText size={20} className="text-[var(--c-text)]" />,
       title: 'Personligt brev sparat!',
       message: 'Bra jobbat! När du hittar fler intressanta jobb kan du använda detta som mall.',
       primaryAction: {
@@ -96,8 +96,8 @@ export function QuickActionBanner({
         label: 'Se alla brev',
         to: '/cover-letter'
       },
-      bgColor: 'bg-teal-50',
-      borderColor: 'border-teal-200'
+      bgColor: 'bg-[var(--c-bg)]',
+      borderColor: 'border-[var(--c-accent)]/60'
     },
     profile_complete: {
       icon: <Sparkles size={20} className="text-amber-600" />,
@@ -143,10 +143,10 @@ export function QuickActionBanner({
         </div>
         
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-slate-900">
+          <h4 className="font-semibold text-stone-900">
             {config.title}
           </h4>
-          <p className="text-sm text-slate-600 mt-0.5">
+          <p className="text-sm text-stone-600 mt-0.5">
             {config.message}
           </p>
           
@@ -154,7 +154,7 @@ export function QuickActionBanner({
             {config.primaryAction.to ? (
               <Link
                 to={config.primaryAction.to}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 transition-colors"
               >
                 {config.primaryAction.label}
                 <ArrowRight size={14} />
@@ -162,7 +162,7 @@ export function QuickActionBanner({
             ) : (
               <button
                 onClick={config.primaryAction.onClick}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 text-white text-sm font-medium rounded-lg hover:bg-slate-800 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-stone-900 text-white text-sm font-medium rounded-lg hover:bg-stone-800 transition-colors"
               >
                 {config.primaryAction.label}
                 <ArrowRight size={14} />
@@ -172,7 +172,7 @@ export function QuickActionBanner({
             {config.secondaryAction?.to && (
               <Link
                 to={config.secondaryAction.to}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-slate-600 text-sm font-medium hover:text-slate-900 transition-colors"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-stone-600 text-sm font-medium hover:text-stone-900 transition-colors"
               >
                 {config.secondaryAction.label}
               </Link>
@@ -183,7 +183,7 @@ export function QuickActionBanner({
         {onDismiss && (
           <button
             onClick={handleDismiss}
-            className="flex-shrink-0 p-1.5 text-slate-600 hover:text-slate-600 hover:bg-white/50 rounded-lg transition-colors"
+            className="flex-shrink-0 p-1.5 text-stone-600 hover:text-stone-600 hover:bg-white/50 rounded-lg transition-colors"
           >
             <X size={16} />
           </button>
@@ -215,7 +215,7 @@ export function JobTrackerActions({
     <div className="flex items-center gap-1">
       <button
         onClick={() => navigate(`/cover-letter?jobId=${jobId}&company=${encodeURIComponent(employer)}&title=${encodeURIComponent(jobTitle)}`)}
-        className="p-1.5 text-slate-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+        className="p-1.5 text-stone-700 hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg transition-colors"
         title="Skriv personligt brev"
       >
         <FileText size={16} />
@@ -223,7 +223,7 @@ export function JobTrackerActions({
       
       <button
         onClick={() => navigate(`/cv?optimizeFor=${jobId}`)}
-        className="p-1.5 text-slate-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+        className="p-1.5 text-stone-700 hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg transition-colors"
         title="Optimera CV för detta jobb"
       >
         <Sparkles size={16} />
@@ -232,7 +232,7 @@ export function JobTrackerActions({
       {status !== 'APPLIED' && (
         <button
           onClick={() => onStatusChange?.('APPLIED')}
-          className="p-1.5 text-slate-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+          className="p-1.5 text-stone-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
           title="Markera som ansökt"
         >
           <CheckCircle2 size={16} />
@@ -255,7 +255,7 @@ export function FloatingBackButton({
   return (
     <Link
       to={to}
-      className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-teal-500 text-white rounded-full shadow-lg hover:bg-teal-600 hover:shadow-xl transition-all hover:-translate-y-0.5"
+      className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-[var(--c-solid)] text-white rounded-full shadow-lg hover:bg-[var(--c-solid)] hover:shadow-xl transition-all hover:-translate-y-0.5"
     >
       <ArrowRight size={18} />
       <span className="font-medium text-sm">{label}</span>

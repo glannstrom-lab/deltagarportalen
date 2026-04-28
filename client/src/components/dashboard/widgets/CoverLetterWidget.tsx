@@ -65,7 +65,7 @@ const pipelineSteps = [
     key: 'offer',
     labelKey: 'coverLetterWidget.pipeline.offer',
     color: 'emerald',
-    gradient: 'from-emerald-500 to-teal-500',
+    gradient: 'from-emerald-500 to-[var(--c-solid)]',
     bg: 'bg-emerald-50',
     text: 'text-emerald-700',
     border: 'border-emerald-200',
@@ -88,13 +88,13 @@ const useRelativeDate = () => {
     if (diffMins < 5) return { text: t('coverLetterWidget.time.justNow'), color: 'text-emerald-600' }
     if (diffMins < 60) return { text: t('coverLetterWidget.time.minAgo', { count: diffMins }), color: 'text-emerald-600' }
     if (diffHours < 2) return { text: t('coverLetterWidget.time.hourAgo'), color: 'text-emerald-600' }
-    if (diffHours < 24) return { text: t('coverLetterWidget.time.hoursAgo', { count: diffHours }), color: 'text-slate-700 dark:text-stone-300' }
+    if (diffHours < 24) return { text: t('coverLetterWidget.time.hoursAgo', { count: diffHours }), color: 'text-stone-700 dark:text-stone-300' }
     if (diffDays === 0) return { text: t('coverLetterWidget.time.today'), color: 'text-blue-600' }
-    if (diffDays === 1) return { text: t('coverLetterWidget.time.yesterday'), color: 'text-slate-600 dark:text-stone-400' }
-    if (diffDays < 7) return { text: t('coverLetterWidget.time.daysAgo', { count: diffDays }), color: 'text-slate-700 dark:text-stone-300' }
-    if (diffDays < 30) return { text: t('coverLetterWidget.time.weeksAgo', { count: Math.floor(diffDays / 7) }), color: 'text-slate-600 dark:text-stone-400' }
+    if (diffDays === 1) return { text: t('coverLetterWidget.time.yesterday'), color: 'text-stone-600 dark:text-stone-400' }
+    if (diffDays < 7) return { text: t('coverLetterWidget.time.daysAgo', { count: diffDays }), color: 'text-stone-700 dark:text-stone-300' }
+    if (diffDays < 30) return { text: t('coverLetterWidget.time.weeksAgo', { count: Math.floor(diffDays / 7) }), color: 'text-stone-600 dark:text-stone-400' }
     const locale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
-    return { text: date.toLocaleDateString(locale, { month: 'short', day: 'numeric' }), color: 'text-slate-600 dark:text-stone-400' }
+    return { text: date.toLocaleDateString(locale, { month: 'short', day: 'numeric' }), color: 'text-stone-600 dark:text-stone-400' }
   }
 }
 
@@ -124,8 +124,8 @@ function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, 
       <div className="flex items-center gap-2">
         <Mail size={14} className="text-rose-500" />
         <div className="flex items-center gap-1">
-          <span className="text-lg font-bold text-slate-800 dark:text-stone-100">{count}</span>
-          <span className="text-xs text-slate-700 dark:text-stone-300">
+          <span className="text-lg font-bold text-stone-800 dark:text-stone-100">{count}</span>
+          <span className="text-xs text-stone-700 dark:text-stone-300">
             {t('coverLetterWidget.lettersCount', { count })}
           </span>
         </div>
@@ -173,8 +173,8 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
               <FileText size={22} className="text-rose-500" />
             </div>
             <div>
-              <p className="text-xl font-bold text-slate-800 dark:text-stone-100">{count}</p>
-              <p className="text-xs text-slate-700 dark:text-stone-300">{t('coverLetterWidget.savedLetters', { count })}</p>
+              <p className="text-xl font-bold text-stone-800 dark:text-stone-100">{count}</p>
+              <p className="text-xs text-stone-700 dark:text-stone-300">{t('coverLetterWidget.savedLetters', { count })}</p>
             </div>
           </div>
 
@@ -183,16 +183,16 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
               <Briefcase size={22} className="text-orange-500" />
             </div>
             <div>
-              <p className="text-xl font-bold text-slate-800 dark:text-stone-100">{applicationsCount}</p>
-              <p className="text-xs text-slate-700 dark:text-stone-300">{t('coverLetterWidget.applications', { count: applicationsCount })}</p>
+              <p className="text-xl font-bold text-stone-800 dark:text-stone-100">{applicationsCount}</p>
+              <p className="text-xs text-stone-700 dark:text-stone-300">{t('coverLetterWidget.applications', { count: applicationsCount })}</p>
             </div>
           </div>
         </div>
 
         {/* Pipeline Status */}
         {applicationsStatus && applicationsCount > 0 && (
-          <div className="p-3 bg-slate-50 dark:bg-stone-800 rounded-xl border border-slate-100 dark:border-stone-700">
-            <p className="text-xs font-semibold text-slate-700 dark:text-stone-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+          <div className="p-3 bg-stone-50 dark:bg-stone-800 rounded-xl border border-stone-100 dark:border-stone-700">
+            <p className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
               <TrendingUp size={12} />
               {t('coverLetterWidget.applicationPipeline')}
             </p>
@@ -209,7 +209,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
                     <Icon size={14} className={step.text} />
                     <div>
                       <p className={`text-sm font-bold ${step.text}`}>{value}</p>
-                      <p className="text-xs text-slate-700 dark:text-stone-300">{t(step.labelKey)}</p>
+                      <p className="text-xs text-stone-700 dark:text-stone-300">{t(step.labelKey)}</p>
                     </div>
                   </div>
                 )
@@ -221,7 +221,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
         {/* Recent Letters */}
         {recentLetters.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-slate-700 dark:text-stone-300 uppercase tracking-wider flex items-center gap-1.5">
+            <p className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wider flex items-center gap-1.5">
               <Clock size={12} />
               {t('coverLetterWidget.recentLetters')}
             </p>
@@ -231,16 +231,16 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
                 return (
                   <div
                     key={letter.id}
-                    className="group flex items-center gap-3 p-2.5 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-rose-300 hover:shadow-sm transition-all cursor-pointer"
+                    className="group flex items-center gap-3 p-2.5 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-rose-300 hover:shadow-sm transition-all cursor-pointer"
                   >
                     <div className="w-9 h-9 bg-rose-50 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-rose-100 transition-colors">
                       <FileText size={16} className="text-rose-500" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-slate-700 dark:text-stone-300 truncate group-hover:text-rose-700 transition-colors">
+                      <p className="text-sm font-medium text-stone-700 dark:text-stone-300 truncate group-hover:text-rose-700 transition-colors">
                         {letter.title}
                       </p>
-                      <p className="text-xs text-slate-700 dark:text-stone-300 truncate">{letter.company}</p>
+                      <p className="text-xs text-stone-700 dark:text-stone-300 truncate">{letter.company}</p>
                     </div>
                     <span className={`text-xs font-medium ${dateInfo.color}`}>{dateInfo.text}</span>
                   </div>
@@ -347,8 +347,8 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
 
         {/* Visual Pipeline */}
         {applicationsCount > 0 && applicationsStatus && (
-          <div className="p-5 bg-slate-50 dark:bg-stone-800 rounded-2xl border border-slate-100 dark:border-stone-700">
-            <p className="text-sm font-semibold text-slate-700 dark:text-stone-300 mb-4 flex items-center gap-2">
+          <div className="p-5 bg-stone-50 dark:bg-stone-800 rounded-2xl border border-stone-100 dark:border-stone-700">
+            <p className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-4 flex items-center gap-2">
               <TrendingUp size={16} className="text-rose-500" />
               {t('coverLetterWidget.yourApplicationJourney')}
             </p>
@@ -356,7 +356,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
             {/* Pipeline Steps */}
             <div className="relative">
               {/* Connecting line */}
-              <div className="absolute top-8 left-12 right-12 h-1 bg-slate-200 rounded-full">
+              <div className="absolute top-8 left-12 right-12 h-1 bg-stone-200 rounded-full">
                 <div
                   className="h-full bg-gradient-to-r from-blue-500 via-amber-500 to-emerald-500 rounded-full transition-all duration-500"
                   style={{
@@ -379,22 +379,22 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                         transition-all duration-300
                         ${isActive
                           ? `bg-gradient-to-br ${step.gradient} text-white shadow-lg shadow-${step.color}-200`
-                          : 'bg-white dark:bg-stone-900 border-2 border-slate-200 dark:border-stone-700 text-slate-600 dark:text-stone-400'
+                          : 'bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400'
                         }
                       `}>
                         <Icon size={28} />
                         {/* Badge count */}
                         <div className={`
                           absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center text-sm font-bold shadow-md
-                          ${isActive ? 'bg-white dark:bg-stone-900 text-slate-800 dark:text-stone-100' : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400'}
+                          ${isActive ? 'bg-white dark:bg-stone-900 text-stone-800 dark:text-stone-100' : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'}
                         `}>
                           {value}
                         </div>
                       </div>
-                      <p className={`text-sm font-semibold ${isActive ? step.text : 'text-slate-600 dark:text-stone-400'}`}>
+                      <p className={`text-sm font-semibold ${isActive ? step.text : 'text-stone-600 dark:text-stone-400'}`}>
                         {t(step.labelKey)}
                       </p>
-                      <p className="text-xs text-slate-600 dark:text-stone-400 mt-0.5">
+                      <p className="text-xs text-stone-600 dark:text-stone-400 mt-0.5">
                         {t(`coverLetterWidget.pipelineSubtext.${index === 0 ? 'sent' : index === 1 ? 'inProgress' : 'goal'}`)}
                       </p>
                     </div>
@@ -407,25 +407,25 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
 
         {/* Quick Actions */}
         <div className="grid grid-cols-3 gap-3">
-          <button className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-slate-200 dark:border-stone-700 hover:border-rose-300 hover:bg-rose-50 transition-all">
+          <button className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 hover:border-rose-300 hover:bg-rose-50 transition-all">
             <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center group-hover:bg-rose-200 transition-colors">
               <Plus size={24} className="text-rose-600" />
             </div>
-            <span className="text-sm font-medium text-slate-700 dark:text-stone-300 group-hover:text-rose-700">{t('coverLetterWidget.newLetter')}</span>
+            <span className="text-sm font-medium text-stone-700 dark:text-stone-300 group-hover:text-rose-700">{t('coverLetterWidget.newLetter')}</span>
           </button>
 
-          <button className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-slate-200 dark:border-stone-700 hover:border-orange-300 hover:bg-orange-50 transition-all">
+          <button className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 hover:border-orange-300 hover:bg-orange-50 transition-all">
             <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center group-hover:bg-orange-200 transition-colors">
               <Send size={24} className="text-orange-600" />
             </div>
-            <span className="text-sm font-medium text-slate-700 dark:text-stone-300 group-hover:text-orange-700">{t('coverLetterWidget.registerApplication')}</span>
+            <span className="text-sm font-medium text-stone-700 dark:text-stone-300 group-hover:text-orange-700">{t('coverLetterWidget.registerApplication')}</span>
           </button>
 
-          <button className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-slate-200 dark:border-stone-700 hover:border-amber-300 hover:bg-amber-50 transition-all">
+          <button className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 hover:border-amber-300 hover:bg-amber-50 transition-all">
             <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors">
               <Target size={24} className="text-amber-600" />
             </div>
-            <span className="text-sm font-medium text-slate-700 dark:text-stone-300 group-hover:text-amber-700">{t('coverLetterWidget.updateStatus')}</span>
+            <span className="text-sm font-medium text-stone-700 dark:text-stone-300 group-hover:text-amber-700">{t('coverLetterWidget.updateStatus')}</span>
           </button>
         </div>
 
@@ -433,11 +433,11 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
         {recentLetters.length > 0 ? (
           <div>
             <div className="flex items-center justify-between mb-3">
-              <p className="text-sm font-semibold text-slate-700 dark:text-stone-300 flex items-center gap-2">
+              <p className="text-sm font-semibold text-stone-700 dark:text-stone-300 flex items-center gap-2">
                 <FileText size={16} className="text-rose-500" />
                 {t('coverLetterWidget.yourRecentLetters')}
               </p>
-              <span className="text-xs text-slate-600 dark:text-stone-400">{t('coverLetterWidget.totalCount', { count })}</span>
+              <span className="text-xs text-stone-600 dark:text-stone-400">{t('coverLetterWidget.totalCount', { count })}</span>
             </div>
             
             <div className="grid grid-cols-2 gap-3">
@@ -449,7 +449,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                 return (
                   <div 
                     key={letter.id}
-                    className="group relative p-3 bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-rose-300 hover:shadow-md transition-all cursor-pointer"
+                    className="group relative p-3 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-rose-300 hover:shadow-md transition-all cursor-pointer"
                     onMouseEnter={() => setHoveredLetter(letter.id)}
                     onMouseLeave={() => setHoveredLetter(null)}
                   >
@@ -458,10 +458,10 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                         <FileText size={18} className="text-rose-500" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-slate-700 dark:text-stone-300 truncate group-hover:text-rose-700 transition-colors">
+                        <p className="text-sm font-semibold text-stone-700 dark:text-stone-300 truncate group-hover:text-rose-700 transition-colors">
                           {letter.title}
                         </p>
-                        <p className="text-xs text-slate-700 dark:text-stone-300 truncate">{letter.company}</p>
+                        <p className="text-xs text-stone-700 dark:text-stone-300 truncate">{letter.company}</p>
                         <p className={`text-xs font-medium mt-1 ${dateInfo.color}`}>
                           {dateInfo.text}
                         </p>
@@ -476,19 +476,19 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                     `}>
                       <button 
                         onClick={(e) => handleCopy(e, letter.id)}
-                        className="p-1.5 rounded-lg bg-slate-100 dark:bg-stone-800 hover:bg-rose-100 text-slate-700 dark:text-stone-300 hover:text-rose-600 transition-colors"
+                        className="p-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-rose-100 text-stone-700 dark:text-stone-300 hover:text-rose-600 transition-colors"
                         title={t('coverLetterWidget.actions.copy')}
                       >
                         {isCopied ? <CheckCircle2 size={14} className="text-emerald-500" /> : <Copy size={14} />}
                       </button>
                       <button 
-                        className="p-1.5 rounded-lg bg-slate-100 dark:bg-stone-800 hover:bg-blue-100 text-slate-700 dark:text-stone-300 hover:text-blue-600 transition-colors"
+                        className="p-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-blue-100 text-stone-700 dark:text-stone-300 hover:text-blue-600 transition-colors"
                         title={t('coverLetterWidget.actions.edit')}
                       >
                         <Edit3 size={14} />
                       </button>
                       <button 
-                        className="p-1.5 rounded-lg bg-slate-100 dark:bg-stone-800 hover:bg-orange-100 text-slate-700 dark:text-stone-300 hover:text-orange-600 transition-colors"
+                        className="p-1.5 rounded-lg bg-stone-100 dark:bg-stone-800 hover:bg-orange-100 text-stone-700 dark:text-stone-300 hover:text-orange-600 transition-colors"
                         title={t('coverLetterWidget.actions.send')}
                       >
                         <Send size={14} />
@@ -498,7 +498,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                     {/* Arrow indicator */}
                     <ChevronRight 
                       size={16} 
-                      className="absolute bottom-2 right-2 text-slate-300 group-hover:text-rose-400 transition-colors" 
+                      className="absolute bottom-2 right-2 text-stone-300 group-hover:text-rose-400 transition-colors" 
                     />
                   </div>
                 )

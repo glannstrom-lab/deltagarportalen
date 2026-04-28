@@ -19,7 +19,7 @@ interface EducationFilter {
 }
 
 const EDUCATION_TYPES = [
-  { value: 'all', label: 'Alla typer', color: 'bg-slate-100 text-slate-700' },
+  { value: 'all', label: 'Alla typer', color: 'bg-stone-100 text-stone-700' },
   { value: 'yrkeshogskola', label: 'Yrkeshögskola', color: 'bg-blue-100 text-blue-700' },
   { value: 'universitet', label: 'Universitet', color: 'bg-purple-100 text-purple-700' },
   { value: 'komvux', label: 'Komvux', color: 'bg-green-100 text-green-700' },
@@ -162,7 +162,7 @@ export default function EducationOverview() {
 
   const getTypeColor = (type: string) => {
     const found = EDUCATION_TYPES.find(t => t.value === type);
-    return found?.color || 'bg-slate-100 text-slate-700';
+    return found?.color || 'bg-stone-100 text-stone-700';
   };
 
   const getDurationLabel = (dur: string) => {
@@ -181,20 +181,20 @@ export default function EducationOverview() {
           onClick={() => setShowMobileFilters(false)}
         />
         <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[85vh] overflow-hidden flex flex-col">
-          <div className="flex items-center justify-between p-4 border-b border-slate-100">
-            <h2 className="text-lg font-semibold text-slate-900">Filtrera utbildningar</h2>
+          <div className="flex items-center justify-between p-4 border-b border-stone-100">
+            <h2 className="text-lg font-semibold text-stone-900">Filtrera utbildningar</h2>
             <button 
               onClick={() => setShowMobileFilters(false)}
-              className="p-2 hover:bg-slate-100 rounded-full"
+              className="p-2 hover:bg-stone-100 rounded-full"
             >
-              <X size={24} className="text-slate-700" />
+              <X size={24} className="text-stone-700" />
             </button>
           </div>
           
           <div className="flex-1 overflow-y-auto p-4 space-y-6">
             {/* Typ */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-3">
+              <label className="block text-sm font-medium text-stone-700 mb-3">
                 <Building2 size={16} className="inline mr-1" />
                 Utbildningstyp
               </label>
@@ -207,7 +207,7 @@ export default function EducationOverview() {
                       "px-3 py-3 rounded-xl text-sm font-medium transition-colors text-left",
                       filter.type === type.value
                         ? type.color.replace('bg-', 'ring-2 ring-').replace('100', '500') + ' ' + type.color
-                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        : "bg-stone-100 text-stone-700 hover:bg-stone-200"
                     )}
                   >
                     {type.label}
@@ -218,7 +218,7 @@ export default function EducationOverview() {
 
             {/* Längd */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-3">
+              <label className="block text-sm font-medium text-stone-700 mb-3">
                 <Clock size={16} className="inline mr-1" />
                 Längd
               </label>
@@ -231,7 +231,7 @@ export default function EducationOverview() {
                       "px-3 py-3 rounded-xl text-sm font-medium transition-colors",
                       filter.duration === dur.value
                         ? "bg-blue-500 text-white"
-                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                        : "bg-stone-100 text-stone-700 hover:bg-stone-200"
                     )}
                   >
                     <div>{dur.label}</div>
@@ -242,7 +242,7 @@ export default function EducationOverview() {
             </div>
           </div>
           
-          <div className="p-4 border-t border-slate-100 space-y-3 bg-white">
+          <div className="p-4 border-t border-stone-100 space-y-3 bg-white">
             {(filter.type !== 'all' || filter.duration !== 'all') && (
               <button
                 onClick={() => setFilter({ type: 'all', duration: 'all' })}
@@ -287,8 +287,8 @@ export default function EducationOverview() {
 
       {/* Sparade utbildningar */}
       {savedEducations.length > 0 && (
-        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
-          <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-stone-200">
+          <h3 className="text-sm font-medium text-stone-700 mb-3 flex items-center gap-2">
             <Bookmark className="text-blue-500" size={16} />
             Dina sparade utbildningar ({savedEducations.length})
           </h3>
@@ -307,7 +307,7 @@ export default function EducationOverview() {
                   {edu.title}
                 </a>
                 <span className={`text-xs px-2 py-0.5 rounded-full ${
-                  edu.status === 'interested' ? 'bg-slate-200 text-slate-600' :
+                  edu.status === 'interested' ? 'bg-stone-200 text-stone-600' :
                   edu.status === 'applied' ? 'bg-yellow-100 text-yellow-700' :
                   edu.status === 'enrolled' ? 'bg-green-100 text-green-700' :
                   'bg-blue-100 text-blue-700'
@@ -323,11 +323,11 @@ export default function EducationOverview() {
       )}
 
       {/* Sök och filter */}
-      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+      <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-stone-200 space-y-4">
         {/* Sök */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 mb-2">
               Sök utbildning för yrke
             </label>
             <Autocomplete
@@ -349,7 +349,7 @@ export default function EducationOverview() {
             <button
               onClick={searchEducation}
               disabled={!occupation || loading}
-              className="w-full sm:w-auto px-6 py-2.5 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 min-h-[48px]"
+              className="w-full sm:w-auto px-6 py-2.5 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 disabled:bg-stone-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 min-h-[48px]"
             >
               {loading ? (
                 <>
@@ -368,8 +368,8 @@ export default function EducationOverview() {
 
         {/* Filter - Desktop */}
         {courses.length > 0 && (
-          <div className="hidden lg:flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-2 text-sm text-slate-700">
+          <div className="hidden lg:flex flex-wrap items-center gap-3 pt-4 border-t border-stone-100">
+            <div className="flex items-center gap-2 text-sm text-stone-700">
               <Filter size={16} />
               Filtrera:
             </div>
@@ -377,7 +377,7 @@ export default function EducationOverview() {
             <select
               value={filter.type}
               onChange={(e) => setFilter(f => ({ ...f, type: e.target.value as any }))}
-              className="text-sm px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="text-sm px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
             >
               {EDUCATION_TYPES.map(t => (
                 <option key={t.value} value={t.value}>{t.label}</option>
@@ -387,7 +387,7 @@ export default function EducationOverview() {
             <select
               value={filter.duration}
               onChange={(e) => setFilter(f => ({ ...f, duration: e.target.value as any }))}
-              className="text-sm px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+              className="text-sm px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
             >
               {DURATION_OPTIONS.map(d => (
                 <option key={d.value} value={d.value}>{d.label} ({d.description})</option>
@@ -407,14 +407,14 @@ export default function EducationOverview() {
 
         {/* Filter - Mobile knapp */}
         {courses.length > 0 && (
-          <div className="lg:hidden pt-4 border-t border-slate-100">
+          <div className="lg:hidden pt-4 border-t border-stone-100">
             <button
               onClick={() => setShowMobileFilters(true)}
               className={cn(
                 "w-full flex items-center justify-between px-4 py-3 rounded-xl font-medium transition-colors",
                 filter.type !== 'all' || filter.duration !== 'all'
                   ? "bg-blue-500 text-white"
-                  : "bg-slate-100 text-slate-700"
+                  : "bg-stone-100 text-stone-700"
               )}
             >
               <span className="flex items-center gap-2">
@@ -439,7 +439,7 @@ export default function EducationOverview() {
         <div className="space-y-4">
           {/* Resultat-header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-            <h3 className="font-semibold text-slate-800">
+            <h3 className="font-semibold text-stone-800">
               Hittade {filteredCourses.length} utbildningar
             </h3>
             {filteredCourses.length !== courses.length && (
@@ -457,7 +457,7 @@ export default function EducationOverview() {
             {filteredCourses.map((course, idx) => (
               <div
                 key={course.code || idx}
-                className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all"
+                className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-5 shadow-sm border border-stone-200 hover:border-blue-300 hover:shadow-md transition-all"
               >
                 <div className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                   {/* Innehåll */}
@@ -468,7 +468,7 @@ export default function EducationOverview() {
                         <BookOpen size={20} className="text-blue-600" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-slate-800 text-base sm:text-lg line-clamp-2">
+                        <h4 className="font-semibold text-stone-800 text-base sm:text-lg line-clamp-2">
                           {course.title}
                         </h4>
                         {course.type && (
@@ -483,12 +483,12 @@ export default function EducationOverview() {
                     </div>
                     
                     {/* Beskrivning */}
-                    <p className="text-slate-600 text-sm mb-3 line-clamp-2 sm:line-clamp-3">
+                    <p className="text-stone-600 text-sm mb-3 line-clamp-2 sm:line-clamp-3">
                       {course.description || 'Ingen beskrivning tillgänglig.'}
                     </p>
                     
                     {/* Meta-info */}
-                    <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-slate-700">
+                    <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-stone-700">
                       {course.duration_months && (
                         <span className="flex items-center gap-1">
                           <Clock size={14} />
@@ -505,7 +505,7 @@ export default function EducationOverview() {
                   </div>
                   
                   {/* Knappar */}
-                  <div className="flex flex-row lg:flex-col gap-2 sm:gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-slate-100">
+                  <div className="flex flex-row lg:flex-col gap-2 sm:gap-3 pt-3 lg:pt-0 border-t lg:border-t-0 border-stone-100">
                     {course.url && (
                       <a
                         href={course.url}
@@ -523,7 +523,7 @@ export default function EducationOverview() {
                       className={`flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 rounded-lg text-sm font-medium transition-colors min-h-[44px] ${
                         isEducationSaved(course.code || course.title)
                           ? 'bg-green-50 text-green-600 border border-green-200 cursor-default'
-                          : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                          : 'bg-white border border-stone-200 text-stone-600 hover:bg-stone-50'
                       }`}
                     >
                       {isEducationSaved(course.code || course.title) ? (
@@ -548,12 +548,12 @@ export default function EducationOverview() {
 
       {/* Inga resultat med filter */}
       {!loading && courses.length > 0 && filteredCourses.length === 0 && (
-        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 text-center">
-          <Filter size={40} className="text-slate-300 mx-auto mb-3" />
-          <h3 className="text-base sm:text-lg font-medium text-slate-800 mb-2">
+        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-stone-200 text-center">
+          <Filter size={40} className="text-stone-300 mx-auto mb-3" />
+          <h3 className="text-base sm:text-lg font-medium text-stone-800 mb-2">
             Inga utbildningar matchar filtren
           </h3>
-          <p className="text-slate-700 text-sm mb-4">
+          <p className="text-stone-700 text-sm mb-4">
             Prova att ändra eller rensa filtren för att se fler resultat.
           </p>
           <button
@@ -567,12 +567,12 @@ export default function EducationOverview() {
 
       {/* Inga utbildningar hittades */}
       {!loading && courses.length === 0 && occupation && (
-        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 text-center">
-          <BookOpen size={40} className="text-slate-300 mx-auto mb-3" />
-          <h3 className="text-base sm:text-lg font-medium text-slate-800 mb-2">
+        <div className="bg-white rounded-2xl p-6 sm:p-8 shadow-sm border border-stone-200 text-center">
+          <BookOpen size={40} className="text-stone-300 mx-auto mb-3" />
+          <h3 className="text-base sm:text-lg font-medium text-stone-800 mb-2">
             Inga utbildningar hittades
           </h3>
-          <p className="text-slate-700 text-sm">
+          <p className="text-stone-700 text-sm">
             Kunde inte hitta utbildningar för detta yrke. Prova med ett annat sökord.
           </p>
         </div>
@@ -580,12 +580,12 @@ export default function EducationOverview() {
 
       {/* Tomt tillstånd - välkomst */}
       {!loading && !occupation && (
-        <div className="bg-white rounded-2xl p-6 sm:p-12 shadow-sm border border-slate-200 text-center">
-          <GraduationCap size={48} className="text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg sm:text-xl font-medium text-slate-800 mb-2">
+        <div className="bg-white rounded-2xl p-6 sm:p-12 shadow-sm border border-stone-200 text-center">
+          <GraduationCap size={48} className="text-stone-300 mx-auto mb-4" />
+          <h3 className="text-lg sm:text-xl font-medium text-stone-800 mb-2">
             Hitta din utbildning
           </h3>
-          <p className="text-slate-700 max-w-md mx-auto mb-6 text-sm sm:text-base">
+          <p className="text-stone-700 max-w-md mx-auto mb-6 text-sm sm:text-base">
             Sök efter utbildningar för ditt drömyrke. Vi söker bland Yrkeshögskolan, 
             universitet, Komvux och andra utbildningsanordnare.
           </p>

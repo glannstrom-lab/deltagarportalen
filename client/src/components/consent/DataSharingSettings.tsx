@@ -140,7 +140,7 @@ export function DataSharingSettings() {
     return (
       <div className="flex items-center justify-center py-8">
         <Loader2 className="w-5 h-5 animate-spin text-indigo-500" />
-        <span className="ml-2 text-sm text-slate-600">{t('common.loading') || 'Laddar...'}</span>
+        <span className="ml-2 text-sm text-stone-600">{t('common.loading') || 'Laddar...'}</span>
       </div>
     )
   }
@@ -149,10 +149,10 @@ export function DataSharingSettings() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
+        <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-2">
           {t('datasharing.title') || 'Datadelning'}
         </h2>
-        <p className="text-sm text-slate-600 dark:text-slate-600">
+        <p className="text-sm text-stone-600 dark:text-stone-600">
           {t('datasharing.description') || 'Styr vad din konsulent kan se'}
         </p>
       </div>
@@ -184,15 +184,15 @@ export function DataSharingSettings() {
       {/* Sharing Options */}
       <div className="space-y-4">
         {/* Health Data Sharing */}
-        <div className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
+        <div className="p-4 border border-stone-200 dark:border-stone-700 rounded-xl hover:border-stone-300 dark:hover:border-stone-600 transition-colors">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-medium text-slate-900 dark:text-slate-100">
+                <h3 className="font-medium text-stone-900 dark:text-stone-100">
                   {t('datasharing.health.title') || 'Dela hälsodata'}
                 </h3>
               </div>
-              <p className="text-sm text-slate-600 dark:text-slate-600 mb-3">
+              <p className="text-sm text-stone-600 dark:text-stone-600 mb-3">
                 {t('datasharing.health.description') || 'Tillåt din konsulent att se din ICF-data (kognitiv, motor, sensorisk, etc.)'}
               </p>
               {preferences.share_health_data_with_consultant && (
@@ -208,7 +208,7 @@ export function DataSharingSettings() {
                 "w-12 h-7 rounded-full flex items-center px-1 transition-colors flex-shrink-0",
                 preferences.share_health_data_with_consultant
                   ? 'bg-green-500 justify-end'
-                  : 'bg-slate-300 dark:bg-slate-600 justify-start'
+                  : 'bg-stone-300 dark:bg-stone-600 justify-start'
               )}
               title={preferences.share_health_data_with_consultant ? 'Aktiverad' : 'Inaktiverad'}
             >
@@ -218,15 +218,15 @@ export function DataSharingSettings() {
         </div>
 
         {/* Wellness Data Sharing */}
-        <div className="p-4 border border-slate-200 dark:border-slate-700 rounded-xl hover:border-slate-300 dark:hover:border-slate-600 transition-colors">
+        <div className="p-4 border border-stone-200 dark:border-stone-700 rounded-xl hover:border-stone-300 dark:hover:border-stone-600 transition-colors">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-medium text-slate-900 dark:text-slate-100">
+                <h3 className="font-medium text-stone-900 dark:text-stone-100">
                   {t('datasharing.wellness.title') || 'Dela väl mål data'}
                 </h3>
               </div>
-              <p className="text-sm text-slate-600 dark:text-slate-600 mb-3">
+              <p className="text-sm text-stone-600 dark:text-stone-600 mb-3">
                 {t('datasharing.wellness.description') || 'Tillåt din konsulent att se din dagbok, humör och väl mål information'}
               </p>
               {preferences.share_wellness_data_with_consultant && (
@@ -242,7 +242,7 @@ export function DataSharingSettings() {
                 "w-12 h-7 rounded-full flex items-center px-1 transition-colors flex-shrink-0",
                 preferences.share_wellness_data_with_consultant
                   ? 'bg-green-500 justify-end'
-                  : 'bg-slate-300 dark:bg-slate-600 justify-start'
+                  : 'bg-stone-300 dark:bg-stone-600 justify-start'
               )}
               title={preferences.share_wellness_data_with_consultant ? 'Aktiverad' : 'Inaktiverad'}
             >
@@ -253,14 +253,14 @@ export function DataSharingSettings() {
       </div>
 
       {/* Privacy Notice */}
-      <div className="p-4 bg-slate-50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2">
+      <div className="p-4 bg-stone-50 dark:bg-stone-900/20 border border-stone-200 dark:border-stone-700 rounded-xl space-y-2">
         <div className="flex gap-2 items-start">
-          <Lock className="w-5 h-5 text-slate-600 dark:text-slate-600 flex-shrink-0 mt-0.5" />
+          <Lock className="w-5 h-5 text-stone-600 dark:text-stone-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">
+            <h4 className="font-medium text-stone-900 dark:text-stone-100 text-sm mb-1">
               {t('datasharing.privacy') || 'Dina data är säkra'}
             </h4>
-            <p className="text-xs text-slate-600 dark:text-slate-600">
+            <p className="text-xs text-stone-600 dark:text-stone-600">
               {t('datasharing.privacyDesc') || 'All datadelning är helt valfri och kan dras tillbaka när som helst. Din data krypteras och överförs säkert.'}
             </p>
           </div>
@@ -308,7 +308,7 @@ export function DataSharingSettings() {
       </div>
 
       {/* Privacy Policy Link */}
-      <p className="text-xs text-slate-600 dark:text-slate-600">
+      <p className="text-xs text-stone-600 dark:text-stone-600">
         {t('datasharing.privacyPolicy') || 'Läs vår'} {' '}
         <Link to="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">
           {t('datasharing.privacyPolicyLink') || 'integritetspolicy'}

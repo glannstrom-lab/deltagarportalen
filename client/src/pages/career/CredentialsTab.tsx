@@ -128,7 +128,7 @@ export default function CredentialsTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)]" />
         <span className="ml-3 text-gray-600 dark:text-gray-400">{t('common.loading')}</span>
       </div>
     )
@@ -137,10 +137,10 @@ export default function CredentialsTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-teal-50 to-violet-50 dark:from-teal-900/20 dark:to-violet-900/20 border-teal-100 dark:border-teal-800">
+      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-violet-50 dark:from-[var(--c-bg)]/30 dark:to-violet-900/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
-            <GraduationCap className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+          <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-xl flex items-center justify-center shrink-0">
+            <GraduationCap className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('career.credentials.title')}</h2>
@@ -155,7 +155,7 @@ export default function CredentialsTab() {
       {credentials.length > 0 && (
         <div className="grid grid-cols-3 gap-4">
           <Card className="text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-            <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{stats.completed}</div>
+            <div className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{stats.completed}</div>
             <p className="text-sm text-gray-600 dark:text-gray-400">{t('career.credentials.status.completed')}</p>
           </Card>
           <Card className="text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
@@ -171,7 +171,7 @@ export default function CredentialsTab() {
 
       {/* Add form */}
       {isAdding ? (
-        <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
+        <Card className="border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-white dark:bg-stone-800">
           <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.credentials.addCredential')}</h3>
           <div className="space-y-4">
             <div>
@@ -180,7 +180,7 @@ export default function CredentialsTab() {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                 placeholder={t('career.credentials.form.namePlaceholder')}
               />
             </div>
@@ -191,7 +191,7 @@ export default function CredentialsTab() {
                   type="text"
                   value={formData.issuer}
                   onChange={(e) => setFormData(prev => ({ ...prev, issuer: e.target.value }))}
-                  className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
+                  className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                   placeholder={t('career.credentials.form.issuerPlaceholder')}
                 />
               </div>
@@ -200,7 +200,7 @@ export default function CredentialsTab() {
                 <select
                   value={formData.type}
                   onChange={(e) => setFormData(prev => ({ ...prev, type: e.target.value as CredentialType }))}
-                  className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100"
+                  className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100"
                 >
                   <option value="certification">{t('career.credentials.types.certification')}</option>
                   <option value="degree">{t('career.credentials.types.degree')}</option>
@@ -215,11 +215,11 @@ export default function CredentialsTab() {
                 type="date"
                 value={formData.targetDate}
                 onChange={(e) => setFormData(prev => ({ ...prev, targetDate: e.target.value }))}
-                className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 text-gray-800 dark:text-gray-100"
+                className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100"
               />
             </div>
             <div className="flex gap-2">
-              <Button onClick={handleAdd} disabled={!formData.name.trim() || isSaving} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
+              <Button onClick={handleAdd} disabled={!formData.name.trim() || isSaving} className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)]/90 dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-text)]">
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin mr-1" /> : null}
                 {t('common.add')}
               </Button>
@@ -230,7 +230,7 @@ export default function CredentialsTab() {
           </div>
         </Card>
       ) : (
-        <Button onClick={() => setIsAdding(true)} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
+        <Button onClick={() => setIsAdding(true)} className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)]/90 dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-text)]">
           <Plus className="w-4 h-4 mr-1" />
           {t('career.credentials.addCredential')}
         </Button>
@@ -248,7 +248,7 @@ export default function CredentialsTab() {
                   key={cred.id}
                   className={cn(
                     "p-4 rounded-xl border transition-all",
-                    cred.status === 'completed' && "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800",
+                    cred.status === 'completed' && "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50",
                     cred.status === 'in-progress' && "bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800",
                     cred.status === 'planned' && "bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600"
                   )}
@@ -257,12 +257,12 @@ export default function CredentialsTab() {
                     <div className="flex items-start gap-3">
                       <div className={cn(
                         "w-10 h-10 rounded-lg flex items-center justify-center",
-                        cred.status === 'completed' && "bg-emerald-100 dark:bg-emerald-900/30",
+                        cred.status === 'completed' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40",
                         cred.status === 'in-progress' && "bg-amber-100 dark:bg-amber-900/30",
                         cred.status === 'planned' && "bg-stone-100 dark:bg-stone-600"
                       )}>
                         {cred.status === 'completed' ? (
-                          <Award className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                          <Award className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
                         ) : cred.status === 'in-progress' ? (
                           <BookOpen className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                         ) : (
@@ -277,7 +277,7 @@ export default function CredentialsTab() {
                             "px-2 py-0.5 rounded-full text-xs font-medium",
                             typeColor === 'violet' && "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300",
                             typeColor === 'blue' && "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
-                            typeColor === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300",
+                            typeColor === 'emerald' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]",
                             typeColor === 'amber' && "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
                           )}>
                             {getTypeLabel(cred.type)}
@@ -289,7 +289,7 @@ export default function CredentialsTab() {
                             </span>
                           )}
                           {cred.completed_date && (
-                            <span className="text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                            <span className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] flex items-center gap-1">
                               <CheckCircle className="w-3 h-3" />
                               {t('career.credentials.completedDateLabel')}: {cred.completed_date}
                             </span>
@@ -335,8 +335,8 @@ export default function CredentialsTab() {
                       className={cn(
                         "px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
                         cred.status === 'completed'
-                          ? "bg-emerald-600 text-white"
-                          : "bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-200 dark:hover:bg-emerald-900/50"
+                          ? "bg-[var(--c-solid)] text-white"
+                          : "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-bg)]/50"
                       )}
                     >
                       {t('career.credentials.status.completed')}
@@ -358,10 +358,10 @@ export default function CredentialsTab() {
               key={cred.name}
               onClick={() => handleAddPopular(cred)}
               disabled={isSaving}
-              className="flex items-center gap-3 p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all text-left group disabled:opacity-50"
+              className="flex items-center gap-3 p-3 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 transition-all text-left group disabled:opacity-50"
             >
-              <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center group-hover:bg-teal-200 dark:group-hover:bg-teal-900/50">
-                <Plus className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+              <div className="w-8 h-8 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-lg flex items-center justify-center group-hover:bg-[var(--c-accent)]/60 dark:group-hover:bg-[var(--c-bg)]/50">
+                <Plus className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" />
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-gray-800 dark:text-gray-100 text-sm truncate">{cred.name}</p>

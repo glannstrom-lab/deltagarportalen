@@ -190,7 +190,7 @@ export default function RelocationTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)]" />
         <span className="ml-3 text-gray-600 dark:text-gray-400">
           {isEn ? 'Loading...' : 'Laddar...'}
         </span>
@@ -213,7 +213,7 @@ export default function RelocationTab() {
             {isEn ? 'Unsaved changes' : 'Osparade ändringar'}
           </span>
         ) : lastSaved ? (
-          <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+          <span className="flex items-center gap-1 text-[var(--c-text)] dark:text-[var(--c-text)]">
             <Cloud className="w-4 h-4" />
             {isEn ? 'Saved' : 'Sparat'}
           </span>
@@ -221,10 +221,10 @@ export default function RelocationTab() {
       </div>
 
       {/* Header with profile location */}
-      <Card className="p-6 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border-teal-200 dark:border-teal-700">
+      <Card className="p-6 bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
-            <Home className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+          <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-xl flex items-center justify-center shrink-0">
+            <Home className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           </div>
           <div className="flex-1">
             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">
@@ -236,7 +236,7 @@ export default function RelocationTab() {
                 : 'Jämför regioner, beräkna din budget och följ din flyttprocess.'}
             </p>
             {profileLocation && (
-              <p className="text-sm text-teal-700 dark:text-teal-300 mt-2 flex items-center gap-1">
+              <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-2 flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
                 {isEn ? 'Current location from profile:' : 'Nuvarande plats från profil:'} <strong>{profileLocation}</strong>
               </p>
@@ -261,7 +261,7 @@ export default function RelocationTab() {
               <div className={cn(
                 "px-3 py-1 rounded-full text-sm font-medium",
                 bestAffordability.isAffordable
-                  ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300"
+                  ? "bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]"
                   : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300"
               )}>
                 {isEn ? 'Best option:' : 'Bäst alternativ:'} {bestAffordability.region?.name} ({bestAffordability.rentPercentage}% {isEn ? 'of income' : 'av inkomst'})
@@ -274,7 +274,7 @@ export default function RelocationTab() {
       {/* Budget Calculator */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Calculator className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+          <Calculator className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           {isEn ? 'Budget Calculator' : 'Budgetkalkylator'}
         </h3>
 
@@ -287,7 +287,7 @@ export default function RelocationTab() {
               type="number"
               value={salary}
               onChange={(e) => { setSalary(e.target.value); setHasUnsavedChanges(true); }}
-              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 text-gray-800 dark:text-gray-100"
+              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100"
               placeholder="35000"
             />
           </div>
@@ -298,7 +298,7 @@ export default function RelocationTab() {
             <select
               value={currentRegion}
               onChange={(e) => { setCurrentRegion(e.target.value); setHasUnsavedChanges(true); }}
-              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 text-gray-800 dark:text-gray-100"
+              className="w-full px-3 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100"
             >
               <option value="">{isEn ? 'Select...' : 'Välj...'}</option>
               {REGION_DATA.map((r) => (
@@ -316,10 +316,10 @@ export default function RelocationTab() {
       {/* Region Comparison */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+          <MapPin className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           {isEn ? 'Compare Regions' : 'Jämför regioner'}
           {targetRegions.length > 0 && (
-            <span className="ml-2 px-2 py-0.5 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-full text-xs">
+            <span className="ml-2 px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-full text-xs">
               {targetRegions.length} {isEn ? 'selected' : 'valda'}
             </span>
           )}
@@ -350,14 +350,14 @@ export default function RelocationTab() {
                     onClick={() => toggleTargetRegion(region.id)}
                     className={cn(
                       "border-b border-stone-100 dark:border-stone-700 cursor-pointer transition-all",
-                      isTarget && "bg-teal-50 dark:bg-teal-900/20",
+                      isTarget && "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30",
                       isCurrent && "bg-blue-50 dark:bg-blue-900/20",
                       !isTarget && !isCurrent && "hover:bg-stone-50 dark:hover:bg-stone-700"
                     )}
                   >
                     <td className="py-3 px-2">
                       {isTarget ? (
-                        <Heart className="w-5 h-5 text-teal-600 fill-current" />
+                        <Heart className="w-5 h-5 text-[var(--c-text)] fill-current" />
                       ) : (
                         <Heart className="w-5 h-5 text-stone-300 dark:text-stone-600" />
                       )}
@@ -380,7 +380,7 @@ export default function RelocationTab() {
                     <td className="py-3 px-2">
                       <span className={cn(
                         "text-xs px-2 py-0.5 rounded-full",
-                        region.jobMarket.includes('stark') || region.jobMarket.includes('Mycket') ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300" :
+                        region.jobMarket.includes('stark') || region.jobMarket.includes('Mycket') ? "bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]" :
                         region.jobMarket.includes('Växande') ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
                         "bg-stone-100 text-stone-600 dark:bg-stone-700 dark:text-stone-300"
                       )}>
@@ -391,7 +391,7 @@ export default function RelocationTab() {
                       <td className="py-3 px-2">
                         <span className={cn(
                           "font-semibold",
-                          affordability.isAffordable ? "text-green-600 dark:text-green-400" : "text-amber-600 dark:text-amber-400"
+                          affordability.isAffordable ? "text-[var(--c-text)] dark:text-[var(--c-text)]" : "text-amber-600 dark:text-amber-400"
                         )}>
                           {affordability.rentPercentage}%
                         </span>
@@ -412,7 +412,7 @@ export default function RelocationTab() {
       {/* Housing Links */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Home className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+          <Home className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           {isEn ? 'Find Housing' : 'Hitta bostad'}
         </h3>
 
@@ -423,13 +423,13 @@ export default function RelocationTab() {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md transition-all group bg-white dark:bg-stone-700"
+              className="p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md transition-all group bg-white dark:bg-stone-700"
             >
               <div className="flex items-center justify-between">
-                <h4 className="font-medium text-gray-800 dark:text-gray-100 group-hover:text-teal-600 dark:group-hover:text-teal-400">
+                <h4 className="font-medium text-gray-800 dark:text-gray-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-text)]">
                   {link.name}
                 </h4>
-                <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-teal-600 dark:group-hover:text-teal-400" />
+                <ExternalLink className="w-4 h-4 text-gray-400 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-text)]" />
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{link.desc}</p>
             </a>
@@ -441,10 +441,10 @@ export default function RelocationTab() {
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <CheckCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
             {isEn ? 'Moving Checklist' : 'Flyttchecklista'}
           </h3>
-          <span className="text-sm font-medium text-teal-600 dark:text-teal-400">
+          <span className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
             {checkedItems.length}/{MOVING_CHECKLIST.length} ({checklistProgress}%)
           </span>
         </div>
@@ -452,7 +452,7 @@ export default function RelocationTab() {
         {/* Progress bar */}
         <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden mb-4">
           <div
-            className="h-full bg-gradient-to-r from-teal-500 to-teal-600 transition-all duration-300"
+            className="h-full bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] transition-all duration-300"
             style={{ width: `${checklistProgress}%` }}
           />
         </div>
@@ -465,19 +465,19 @@ export default function RelocationTab() {
               className={cn(
                 "w-full flex items-center gap-3 p-3 rounded-lg border transition-all text-left",
                 checkedItems.includes(item.id)
-                  ? "bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700"
+                  ? "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
                   : "bg-stone-50 dark:bg-stone-700 border-stone-100 dark:border-stone-600 hover:border-stone-200 dark:hover:border-stone-500"
               )}
             >
               {checkedItems.includes(item.id) ? (
-                <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0" />
+                <CheckCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] shrink-0" />
               ) : (
                 <div className="w-5 h-5 rounded-full border-2 border-stone-300 dark:border-stone-500 shrink-0" />
               )}
               <div className="flex-1">
                 <span className={cn(
                   "text-sm",
-                  checkedItems.includes(item.id) ? "text-teal-800 dark:text-teal-200 line-through" : "text-gray-700 dark:text-gray-300"
+                  checkedItems.includes(item.id) ? "text-[var(--c-text)] dark:text-[var(--c-text)] line-through" : "text-gray-700 dark:text-gray-300"
                 )}>
                   {item.label}
                 </span>

@@ -3,7 +3,7 @@ import { Search } from '@/components/ui/icons'
 export function SearchBar() {
   return (
     <div className="relative max-w-md">
-      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-600" size={20} />
+      <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-600" size={20} />
       <input
         type="text"
         placeholder="Sök..."

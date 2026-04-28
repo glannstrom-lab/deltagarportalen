@@ -629,7 +629,7 @@ export function ParticipantDetailPage() {
                 GENERAL: 'border-stone-200 dark:border-stone-700',
                 PROGRESS: 'border-emerald-200 dark:border-emerald-800',
                 CONCERN: 'border-amber-200 dark:border-amber-800',
-                GOAL: 'border-teal-200 dark:border-teal-800',
+                GOAL: 'border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50',
               }
               return (
                 <Card key={entry.id} className={cn('p-4 border-l-4', categoryColors[entry.category])}>

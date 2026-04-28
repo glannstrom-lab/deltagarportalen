@@ -45,8 +45,8 @@ export default function MarketStats() {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="w-8 h-8 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-4" />
-        <p className="text-slate-600">Laddar marknadsstatistik...</p>
+        <div className="w-8 h-8 border-4 border-[var(--c-accent)]/60 border-t-[var(--c-solid)] rounded-full animate-spin mx-auto mb-4" />
+        <p className="text-stone-600">Laddar marknadsstatistik...</p>
       </div>
     )
   }
@@ -55,27 +55,27 @@ export default function MarketStats() {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center">
-        <h2 className="text-2xl font-bold text-slate-900">Arbetsmarknadsstatistik</h2>
-        <p className="text-slate-700 mt-1">Aktuella trender och efterfrågan</p>
+        <h2 className="text-2xl font-bold text-stone-900">Arbetsmarknadsstatistik</h2>
+        <p className="text-stone-700 mt-1">Aktuella trender och efterfrågan</p>
       </div>
 
       {/* General Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {generalStats.map((stat, idx) => (
-          <div key={idx} className="bg-white p-6 rounded-xl border border-slate-200">
+          <div key={idx} className="bg-white p-6 rounded-xl border border-stone-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-700">{stat.label}</p>
-                <p className="text-2xl font-bold text-slate-900 mt-1">
+                <p className="text-sm text-stone-700">{stat.label}</p>
+                <p className="text-2xl font-bold text-stone-900 mt-1">
                   {stat.value.toLocaleString('sv-SE')}
                 </p>
               </div>
-              <div className="p-3 bg-teal-100 rounded-xl">
-                <BarChart3 className="w-6 h-6 text-teal-600" />
+              <div className="p-3 bg-[var(--c-accent)]/40 rounded-xl">
+                <BarChart3 className="w-6 h-6 text-[var(--c-text)]" />
               </div>
             </div>
             {stat.change && (
-              <p className={`text-sm mt-2 ${stat.trend === 'up' ? 'text-green-600' : 'text-slate-600'}`}>
+              <p className={`text-sm mt-2 ${stat.trend === 'up' ? 'text-green-600' : 'text-stone-600'}`}>
                 {stat.trend === 'up' ? '+' : ''}{stat.change}% sedan förra månaden
               </p>
             )}
@@ -93,33 +93,33 @@ export default function MarketStats() {
           {trending.map((job, idx) => (
             <div key={idx} className="bg-white p-4 rounded-lg border border-amber-100">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-medium text-slate-900">{job.occupation}</h4>
+                <h4 className="font-medium text-stone-900">{job.occupation}</h4>
                 <span className="text-green-600 font-bold text-sm">+{job.growth}%</span>
               </div>
-              <p className="text-sm text-slate-600">{job.description}</p>
+              <p className="text-sm text-stone-600">{job.description}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* Top Competences */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="p-6 border-b border-slate-200">
+      <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+        <div className="p-6 border-b border-stone-200">
           <div className="flex items-center gap-2">
-            <Star className="w-5 h-5 text-teal-600" />
-            <h3 className="font-semibold text-slate-900">Mest efterfrågade kompetenser</h3>
+            <Star className="w-5 h-5 text-[var(--c-text)]" />
+            <h3 className="font-semibold text-stone-900">Mest efterfrågade kompetenser</h3>
           </div>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-stone-100">
           {topCompetences.map((comp, idx) => (
-            <div key={idx} className="p-4 flex items-center justify-between hover:bg-slate-50">
+            <div key={idx} className="p-4 flex items-center justify-between hover:bg-stone-50">
               <div className="flex items-center gap-4">
-                <span className="w-8 h-8 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center font-bold text-sm">
+                <span className="w-8 h-8 bg-stone-100 text-stone-600 rounded-full flex items-center justify-center font-bold text-sm">
                   {idx + 1}
                 </span>
                 <div>
-                  <p className="font-medium text-slate-900 capitalize">{comp.competence}</p>
-                  <p className="text-sm text-slate-700">{comp.count.toLocaleString('sv-SE')} annonser</p>
+                  <p className="font-medium text-stone-900 capitalize">{comp.competence}</p>
+                  <p className="text-sm text-stone-700">{comp.count.toLocaleString('sv-SE')} annonser</p>
                 </div>
               </div>
               <span className="text-2xl" title={comp.trend === 'up' ? 'Ökande efterfrågan' : 'Stabil efterfrågan'}>
@@ -131,31 +131,31 @@ export default function MarketStats() {
       </div>
 
       {/* Regional Stats */}
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="p-6 border-b border-slate-200">
+      <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
+        <div className="p-6 border-b border-stone-200">
           <div className="flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-teal-600" />
-            <h3 className="font-semibold text-slate-900">Jobb per region</h3>
+            <MapPin className="w-5 h-5 text-[var(--c-text)]" />
+            <h3 className="font-semibold text-stone-900">Jobb per region</h3>
           </div>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-stone-100">
           {regionalStats.map((region, idx) => (
-            <div key={idx} className="p-4 hover:bg-slate-50">
+            <div key={idx} className="p-4 hover:bg-stone-50">
               <div className="flex items-center justify-between mb-2">
-                <h4 className="font-medium text-slate-900">{region.region}</h4>
+                <h4 className="font-medium text-stone-900">{region.region}</h4>
                 <span className={`text-sm font-medium ${region.growth > 0 ? 'text-green-600' : 'text-red-600'}`}>
                   {region.growth > 0 ? '+' : ''}{region.growth}%
                 </span>
               </div>
-              <div className="flex items-center justify-between text-sm text-slate-600">
+              <div className="flex items-center justify-between text-sm text-stone-600">
                 <span>{region.totalJobs.toLocaleString('sv-SE')} lediga jobb</span>
-                <span className="text-slate-600">
+                <span className="text-stone-600">
                   Toppar: {region.topOccupations.slice(0, 2).join(', ')}
                 </span>
               </div>
-              <div className="mt-2 w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="mt-2 w-full h-2 bg-stone-100 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-teal-500"
+                  className="h-full bg-[var(--c-solid)]"
                   style={{ width: `${Math.min((region.totalJobs / 20000) * 100, 100)}%` }}
                 />
               </div>
@@ -165,30 +165,30 @@ export default function MarketStats() {
       </div>
 
       {/* Salary Info */}
-      <div className="bg-white p-6 rounded-xl border border-slate-200">
+      <div className="bg-white p-6 rounded-xl border border-stone-200">
         <div className="flex items-center gap-2 mb-4">
-          <DollarSign className="w-5 h-5 text-teal-600" />
-          <h3 className="font-semibold text-slate-900">Löneinformation</h3>
+          <DollarSign className="w-5 h-5 text-[var(--c-text)]" />
+          <h3 className="font-semibold text-stone-900">Löneinformation</h3>
         </div>
-        <p className="text-slate-600 text-sm">
+        <p className="text-stone-600 text-sm">
           Lönestatistik kommer från SCB och Arbetsförmedlingen. Observera att löner varierar 
           beroende på erfarenhet, utbildning och arbetsplats.
         </p>
         <div className="mt-4 flex flex-wrap gap-2">
-          <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm">
+          <span className="px-3 py-1 bg-[var(--c-bg)] text-[var(--c-text)] rounded-full text-sm">
             Utvecklare: ~45 000 kr/mån
           </span>
-          <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm">
+          <span className="px-3 py-1 bg-[var(--c-bg)] text-[var(--c-text)] rounded-full text-sm">
             Sjuksköterska: ~38 000 kr/mån
           </span>
-          <span className="px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-sm">
+          <span className="px-3 py-1 bg-[var(--c-bg)] text-[var(--c-text)] rounded-full text-sm">
             Lärare: ~35 000 kr/mån
           </span>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="text-center text-sm text-slate-700">
+      <div className="text-center text-sm text-stone-700">
         <p>Data från Arbetsförmedlingen och SCB • Uppdateras dagligen</p>
       </div>
     </div>

@@ -117,8 +117,8 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
     <div className="max-w-md mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-          <User className="w-8 h-8 text-teal-500" />
+        <div className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-full flex items-center justify-center mx-auto mb-4">
+          <User className="w-8 h-8 text-[var(--c-solid)]" />
         </div>
         <h2 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100 mb-2">
           {t('focusGuide.profile.title', 'Din profil')}
@@ -137,13 +137,13 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
               total: PROFILE_STEPS.length
             })}
           </span>
-          <span className="font-medium text-teal-600 dark:text-teal-400">
+          <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">
             {Math.round(progress)}%
           </span>
         </div>
         <div className="h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
           <div
-            className="h-full bg-teal-500 rounded-full transition-all duration-500"
+            className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -160,8 +160,8 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
                 key={s.id}
                 className={cn(
                   'w-10 h-10 rounded-full flex items-center justify-center transition-all',
-                  isActive && 'bg-teal-500 text-white ring-4 ring-teal-500/20',
-                  isDone && 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400',
+                  isActive && 'bg-[var(--c-solid)] text-white ring-4 ring-[var(--c-solid)]/20',
+                  isDone && 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-solid)]',
                   !isActive && !isDone && 'bg-stone-100 dark:bg-stone-800 text-stone-400'
                 )}
               >
@@ -175,8 +175,8 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
       {/* Current step form */}
       <div className="bg-white dark:bg-stone-800/50 rounded-2xl p-6 mb-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
-            <StepIcon className="w-6 h-6 text-teal-500" />
+          <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center">
+            <StepIcon className="w-6 h-6 text-[var(--c-solid)]" />
           </div>
           <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
             {t(step.titleKey, step.titleDefault)}
@@ -200,7 +200,7 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
                   onChange={(e) => handleInputChange('first_name', e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={t('profile.firstNamePlaceholder', 'Anna')}
-                  className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                  className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   autoFocus
                 />
               </div>
@@ -218,7 +218,7 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
                   onChange={(e) => handleInputChange('last_name', e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={t('profile.lastNamePlaceholder', 'Andersson')}
-                  className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                  className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                 />
               </div>
             </>
@@ -242,7 +242,7 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={t('profile.emailPlaceholder', 'din.email@exempel.se')}
-                    className="w-full pl-12 pr-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                    className="w-full pl-12 pr-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                     autoFocus
                   />
                 </div>
@@ -264,7 +264,7 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder={t('profile.phonePlaceholder', '070-123 45 67')}
-                    className="w-full pl-12 pr-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                    className="w-full pl-12 pr-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   />
                 </div>
               </div>
@@ -288,7 +288,7 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
                   onChange={(e) => handleInputChange('location', e.target.value)}
                   onKeyDown={handleKeyDown}
                   placeholder={t('profile.locationPlaceholder', 'Stockholm')}
-                  className="w-full pl-12 pr-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                  className="w-full pl-12 pr-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   autoFocus
                 />
               </div>
@@ -307,8 +307,8 @@ export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) 
           disabled={isSaving}
           className={cn(
             'flex items-center justify-center gap-2 w-full py-4 rounded-xl font-semibold text-lg transition-all',
-            'bg-teal-500 text-white hover:bg-teal-600',
-            'focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30',
+            'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
+            'focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--c-solid)]/30',
             'disabled:opacity-50 disabled:cursor-not-allowed'
           )}
         >

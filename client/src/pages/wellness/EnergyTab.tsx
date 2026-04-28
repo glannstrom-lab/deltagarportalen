@@ -64,7 +64,7 @@ export default function EnergyTab() {
   }, [])
 
   const getEnergyLevel = (value: number) => {
-    if (value >= 7) return { label: t('wellness.energy.high'), color: 'text-emerald-600 dark:text-emerald-400', bg: 'bg-emerald-100 dark:bg-emerald-900/30', icon: BatteryFull }
+    if (value >= 7) return { label: t('wellness.energy.high'), color: 'text-[var(--c-text)] dark:text-[var(--c-text)]', bg: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40', icon: BatteryFull }
     if (value >= 5) return { label: t('wellness.energy.medium'), color: 'text-yellow-600 dark:text-yellow-400', bg: 'bg-yellow-100 dark:bg-yellow-900/30', icon: BatteryMedium }
     if (value >= 3) return { label: t('wellness.energy.low'), color: 'text-orange-600 dark:text-orange-400', bg: 'bg-orange-100 dark:bg-orange-900/30', icon: BatteryLow }
     return { label: t('wellness.energy.veryLow'), color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30', icon: Battery }
@@ -120,18 +120,18 @@ export default function EnergyTab() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl border border-emerald-100 dark:border-emerald-800"
+        className="p-4 bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50"
       >
         <div className="flex items-start gap-3">
-          <Lightbulb className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-emerald-900 dark:text-emerald-100 italic">{getRandomQuote()}</p>
+          <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] italic">{getRandomQuote()}</p>
         </div>
       </motion.div>
 
       {/* Today's Energy Logger */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Zap className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+          <Zap className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-text)]" />
           {t('wellness.energy.howIsYourEnergy')}
         </h3>
 
@@ -150,8 +150,8 @@ export default function EnergyTab() {
               className={cn(
                 'flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all',
                 selectedTime === key
-                  ? 'border-emerald-500 dark:border-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300'
-                  : 'border-stone-200 dark:border-stone-600 hover:border-emerald-300 dark:hover:border-emerald-700 text-gray-700 dark:text-gray-300'
+                  ? 'border-[var(--c-solid)] dark:border-[var(--c-solid)]/60 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)]'
+                  : 'border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] text-gray-700 dark:text-gray-300'
               )}
             >
               <Icon className="w-4 h-4" />
@@ -178,7 +178,7 @@ export default function EnergyTab() {
                   className={cn(
                     'w-8 h-8 rounded-lg font-semibold text-xs transition-all',
                     isSelected
-                      ? 'bg-emerald-600 dark:bg-emerald-500 text-white scale-110 shadow-lg'
+                      ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white scale-110 shadow-lg'
                       : 'bg-stone-100 dark:bg-stone-600 text-gray-600 dark:text-gray-200 hover:bg-stone-200 dark:hover:bg-stone-500'
                   )}
                 >
@@ -197,7 +197,7 @@ export default function EnergyTab() {
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
           placeholder={t('wellness.energy.notesPlaceholder')}
-          className="w-full p-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 resize-none mb-4 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+          className="w-full p-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)]/60 focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] resize-none mb-4 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
           rows={2}
         />
 
@@ -209,7 +209,7 @@ export default function EnergyTab() {
       {/* Activity Suggestions */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <CheckCircle2 className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           {t('wellness.energy.suggestions')}
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
@@ -225,7 +225,7 @@ export default function EnergyTab() {
                 className="flex items-center gap-4 p-4 rounded-xl bg-stone-50 dark:bg-stone-700 border border-transparent"
               >
                 <div className="w-12 h-12 rounded-xl bg-white dark:bg-stone-600 flex items-center justify-center shadow-sm">
-                  <Icon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                  <Icon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
                 </div>
                 <div>
                   <h4 className="font-semibold text-gray-800 dark:text-gray-100">{suggestion.title}</h4>
@@ -238,9 +238,9 @@ export default function EnergyTab() {
       </Card>
 
       {/* Weekly Summary Stats */}
-      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
+      <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <Calendar className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           Veckovyn
         </h3>
         <div className="grid grid-cols-4 gap-3">
@@ -270,7 +270,7 @@ export default function EnergyTab() {
       {/* Energy Graph */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           {t('wellness.energy.weekHistory')}
         </h3>
 
@@ -285,9 +285,9 @@ export default function EnergyTab() {
                   </span>
                   <div className="flex-1 ml-3 flex gap-2 items-center">
                     {[
-                      { time: 'M', value: log.morning, color: 'bg-emerald-400 dark:bg-emerald-500' },
-                      { time: 'A', value: log.afternoon, color: 'bg-emerald-500 dark:bg-emerald-600' },
-                      { time: 'K', value: log.evening, color: 'bg-teal-500 dark:bg-teal-600' },
+                      { time: 'M', value: log.morning, color: 'bg-[var(--c-solid)]/80 dark:bg-[var(--c-solid)]' },
+                      { time: 'A', value: log.afternoon, color: 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)]' },
+                      { time: 'K', value: log.evening, color: 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)]' },
                     ].map(({ time, value, color }) => (
                       <div key={time} className="flex-1 flex flex-col items-center gap-1">
                         <div className="w-full bg-stone-200 dark:bg-stone-600 rounded-lg h-6 relative overflow-hidden">
@@ -310,8 +310,8 @@ export default function EnergyTab() {
           </div>
         </div>
 
-        <div className="mt-4 p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800">
-          <p className="text-sm text-emerald-800 dark:text-emerald-300">
+        <div className="mt-4 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+          <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">
             <strong>Insikt:</strong> Din genomsnittliga energi är högst på morgonen ({weeklyStats.avgMorning}/10).
             Planera viktiga uppgifter då för bäst resultat!
           </p>

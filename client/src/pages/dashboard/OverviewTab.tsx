@@ -321,9 +321,9 @@ export default function OverviewTab() {
 
       {/* Empty state */}
       {visibleWidgets.length === 0 && (
-        <div className="text-center py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-          <p className="text-slate-700 mb-1">{t('dashboard.overview.noWidgets')}</p>
-          <p className="text-sm text-slate-600">
+        <div className="text-center py-10 bg-stone-50 rounded-xl border border-dashed border-stone-200">
+          <p className="text-stone-700 mb-1">{t('dashboard.overview.noWidgets')}</p>
+          <p className="text-sm text-stone-600">
             {t('dashboard.overview.noWidgetsHint')}
           </p>
         </div>

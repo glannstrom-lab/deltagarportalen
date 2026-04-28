@@ -110,7 +110,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
     if (!topReminder) return null
 
     return (
-      <div className={cn('bg-white rounded-xl border border-slate-200 p-4', className)}>
+      <div className={cn('bg-white rounded-xl border border-stone-200 p-4', className)}>
         <div className="flex items-center gap-3">
           <div className={cn(
             'w-10 h-10 rounded-xl flex items-center justify-center',
@@ -119,12 +119,12 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
           )}>
             {topReminder.priority === 'high' ? 
               <AlertCircle className="w-5 h-5 text-rose-600" /> :
-              <Bell className="w-5 h-5 text-slate-600" />
+              <Bell className="w-5 h-5 text-stone-600" />
             }
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium text-slate-800 text-sm truncate">{topReminder.title}</p>
-            <p className="text-xs text-slate-700">
+            <p className="font-medium text-stone-800 text-sm truncate">{topReminder.title}</p>
+            <p className="text-xs text-stone-700">
               {topReminder.dueDate < new Date(Date.now() + 24 * 60 * 60 * 1000) 
                 ? 'Idag' 
                 : 'Imorgon'}
@@ -133,7 +133,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
           {topReminder.action && (
             <button
               onClick={() => handleAction(topReminder)}
-              className="p-2 text-teal-600 hover:bg-teal-50 rounded-lg"
+              className="p-2 text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
@@ -144,17 +144,17 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
   }
 
   return (
-    <div className={cn('bg-white rounded-2xl border border-slate-200 overflow-hidden', className)}>
+    <div className={cn('bg-white rounded-2xl border border-stone-200 overflow-hidden', className)}>
       {/* Header */}
-      <div className="p-5 border-b border-slate-100">
+      <div className="p-5 border-b border-stone-100">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
-              <Bell className="w-5 h-5 text-teal-600" />
+            <div className="w-10 h-10 bg-[var(--c-accent)]/40 rounded-xl flex items-center justify-center">
+              <Bell className="w-5 h-5 text-[var(--c-text)]" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800">Smart påminnelser</h3>
-              <p className="text-sm text-slate-700">
+              <h3 className="font-semibold text-stone-800">Smart påminnelser</h3>
+              <p className="text-sm text-stone-700">
                 {criticalCount > 0 ? (
                   <span className="text-rose-600 font-medium">{criticalCount} brådskande</span>
                 ) : (
@@ -165,7 +165,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
           </div>
           <button
             onClick={() => setShowSettings(!showSettings)}
-            className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
           >
             <Settings className="w-5 h-5" />
           </button>
@@ -174,38 +174,38 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
 
       {/* Settings */}
       {showSettings && (
-        <div className="p-4 bg-slate-50 border-b border-slate-100 animate-in fade-in">
-          <h4 className="font-medium text-slate-700 mb-3">Inställningar</h4>
+        <div className="p-4 bg-stone-50 border-b border-stone-100 animate-in fade-in">
+          <h4 className="font-medium text-stone-700 mb-3">Inställningar</h4>
           
           <div className="space-y-3">
             <label className="flex items-center justify-between">
-              <span className="text-sm text-slate-600">Push-notiser</span>
+              <span className="text-sm text-stone-600">Push-notiser</span>
               <input
                 type="checkbox"
                 checked={preferences.pushNotifications}
                 onChange={(e) => updatePreferences({ pushNotifications: e.target.checked })}
-                className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                className="w-5 h-5 rounded border-stone-300 text-[var(--c-text)] focus:ring-[var(--c-solid)]"
               />
             </label>
             
             <label className="flex items-center justify-between">
-              <span className="text-sm text-slate-600">Tysta timmar (22-08)</span>
+              <span className="text-sm text-stone-600">Tysta timmar (22-08)</span>
               <input
                 type="checkbox"
                 checked={preferences.quietHours.enabled}
                 onChange={(e) => updatePreferences({ 
                   quietHours: { ...preferences.quietHours, enabled: e.target.checked }
                 })}
-                className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                className="w-5 h-5 rounded border-stone-300 text-[var(--c-text)] focus:ring-[var(--c-solid)]"
               />
             </label>
 
             <div>
-              <span className="text-sm text-slate-600 block mb-2">Frekvens</span>
+              <span className="text-sm text-stone-600 block mb-2">Frekvens</span>
               <select
                 value={preferences.frequency}
                 onChange={(e) => updatePreferences({ frequency: e.target.value as ReminderPreferences['frequency'] })}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm"
               >
                 <option value="smart">Smart (AI-driven)</option>
                 <option value="daily">Dagligen</option>
@@ -223,18 +223,18 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
             <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3">
               <CheckCircle2 className="w-8 h-8 text-emerald-600" />
             </div>
-            <p className="text-slate-600 font-medium">Allt är uppdaterat!</p>
-            <p className="text-sm text-slate-600 mt-1">
+            <p className="text-stone-600 font-medium">Allt är uppdaterat!</p>
+            <p className="text-sm text-stone-600 mt-1">
               Inga brådskande påminnelser just nu
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-stone-100">
             {visibleReminders.map((reminder) => (
               <div
                 key={reminder.id}
                 className={cn(
-                  'p-4 transition-colors hover:bg-slate-50',
+                  'p-4 transition-colors hover:bg-stone-50',
                   reminder.priority === 'high' && 'bg-rose-50/50'
                 )}
               >
@@ -246,13 +246,13 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                     reminder.type === 'followUp' && 'bg-amber-100',
                     reminder.type === 'deadline' && 'bg-rose-100',
                     reminder.type === 'milestone' && 'bg-emerald-100',
-                    reminder.type === 'insight' && 'bg-teal-100'
+                    reminder.type === 'insight' && 'bg-[var(--c-accent)]/40'
                   )}>
                     {reminder.type === 'application' && <Briefcase className="w-5 h-5 text-blue-600" />}
                     {reminder.type === 'followUp' && <TrendingUp className="w-5 h-5 text-amber-600" />}
                     {reminder.type === 'deadline' && <Clock className="w-5 h-5 text-rose-600" />}
                     {reminder.type === 'milestone' && <Zap className="w-5 h-5 text-emerald-600" />}
-                    {reminder.type === 'insight' && <Bell className="w-5 h-5 text-teal-600" />}
+                    {reminder.type === 'insight' && <Bell className="w-5 h-5 text-[var(--c-text)]" />}
                   </div>
 
                   <div className="flex-1 min-w-0">
@@ -261,25 +261,25 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                         'text-xs font-medium px-2 py-0.5 rounded-full',
                         reminder.priority === 'high' && 'bg-rose-100 text-rose-700',
                         reminder.priority === 'medium' && 'bg-amber-100 text-amber-700',
-                        reminder.priority === 'low' && 'bg-slate-100 text-slate-600'
+                        reminder.priority === 'low' && 'bg-stone-100 text-stone-600'
                       )}>
                         {reminder.priority === 'high' ? 'Brådskande' :
                          reminder.priority === 'medium' ? 'Viktigt' : 'Tips'}
                       </span>
-                      <span className="text-xs text-slate-600">
+                      <span className="text-xs text-stone-600">
                         {formatDueDate(reminder.dueDate)}
                       </span>
                     </div>
 
-                    <h4 className="font-medium text-slate-800">{reminder.title}</h4>
-                    <p className="text-sm text-slate-600 mt-0.5">{reminder.description}</p>
+                    <h4 className="font-medium text-stone-800">{reminder.title}</h4>
+                    <p className="text-sm text-stone-600 mt-0.5">{reminder.description}</p>
 
                     {/* Actions */}
                     <div className="flex items-center gap-2 mt-3">
                       {reminder.action && (
                         <button
                           onClick={() => handleAction(reminder)}
-                          className="px-3 py-1.5 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors"
+                          className="px-3 py-1.5 bg-[var(--c-solid)] text-white text-sm font-medium rounded-lg hover:bg-[var(--c-text)] transition-colors"
                         >
                           {reminder.action.label}
                         </button>
@@ -292,7 +292,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                       </button>
                       <button
                         onClick={() => handleDismiss(reminder.id)}
-                        className="px-3 py-1.5 text-slate-600 text-sm hover:text-slate-600 ml-auto"
+                        className="px-3 py-1.5 text-stone-600 text-sm hover:text-stone-600 ml-auto"
                       >
                         <X className="w-4 h-4" />
                       </button>

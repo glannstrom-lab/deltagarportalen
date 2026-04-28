@@ -48,11 +48,11 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
   if (loading) {
     return (
       <div className={cn(
-        "bg-white rounded-2xl shadow-sm border border-slate-200 p-6",
+        "bg-white rounded-2xl shadow-sm border border-stone-200 p-6",
         className
       )}>
         <div className="flex items-center justify-center py-8">
-          <Loader2 size={24} className="animate-spin text-teal-500" />
+          <Loader2 size={24} className="animate-spin text-[var(--c-solid)]" />
         </div>
       </div>
     )
@@ -61,14 +61,14 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
   if (error || !nextStep) {
     return (
       <div className={cn(
-        "bg-white rounded-2xl shadow-sm border border-slate-200 p-6",
+        "bg-white rounded-2xl shadow-sm border border-stone-200 p-6",
         className
       )}>
         <div className="text-center py-6">
-          <p className="text-slate-700">{error || 'Inget steg tillgängligt'}</p>
+          <p className="text-stone-700">{error || 'Inget steg tillgängligt'}</p>
           <button
             onClick={fetchNextStep}
-            className="mt-3 flex items-center gap-2 mx-auto text-teal-600 hover:text-teal-700"
+            className="mt-3 flex items-center gap-2 mx-auto text-[var(--c-text)] hover:text-[var(--c-text)]"
           >
             <RefreshCw size={16} />
             Försök igen
@@ -81,40 +81,40 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
   const getIcon = () => {
     switch (nextStep.type) {
       case 'CREATE_CV':
-        return <FileText size={24} className="text-teal-600" />
+        return <FileText size={24} className="text-[var(--c-text)]" />
       case 'SEARCH_JOBS':
         return <Search size={24} className="text-blue-600" />
       case 'CREATE_APPLICATION':
-        return <Send size={24} className="text-teal-600" />
+        return <Send size={24} className="text-[var(--c-text)]" />
       case 'CONTINUE_SEARCH':
         return <TrendingUp size={24} className="text-green-600" />
       case 'COMPLETE_PROFILE':
         return <Sparkles size={24} className="text-amber-600" />
       default:
-        return <ArrowRight size={24} className="text-teal-600" />
+        return <ArrowRight size={24} className="text-[var(--c-text)]" />
     }
   }
 
   const getBackgroundColor = () => {
     switch (nextStep.type) {
       case 'CREATE_CV':
-        return 'from-teal-500 to-sky-600'
+        return 'from-[var(--c-solid)] to-sky-600'
       case 'SEARCH_JOBS':
         return 'from-blue-500 to-cyan-600'
       case 'CREATE_APPLICATION':
-        return 'from-teal-500 to-emerald-600'
+        return 'from-[var(--c-solid)] to-emerald-600'
       case 'CONTINUE_SEARCH':
         return 'from-green-500 to-emerald-600'
       case 'COMPLETE_PROFILE':
         return 'from-amber-500 to-orange-600'
       default:
-        return 'from-teal-500 to-sky-600'
+        return 'from-[var(--c-solid)] to-sky-600'
     }
   }
 
   return (
     <div className={cn(
-      "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden",
+      "bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden",
       className
     )}>
       {/* Header med gradient */}
@@ -146,7 +146,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
           to={nextStep.action.link}
           className={cn(
             "flex items-center justify-center gap-2 w-full py-3 px-4 rounded-xl font-medium transition-all",
-            "bg-slate-900 text-white hover:bg-slate-800"
+            "bg-stone-900 text-white hover:bg-stone-800"
           )}
         >
           {nextStep.action.label}
@@ -157,7 +157,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
         {nextStep.secondaryAction && (
           <Link
             to={nextStep.secondaryAction.link}
-            className="flex items-center justify-center gap-2 w-full mt-3 py-2.5 px-4 rounded-xl font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+            className="flex items-center justify-center gap-2 w-full mt-3 py-2.5 px-4 rounded-xl font-medium text-stone-600 hover:bg-stone-100 transition-colors"
           >
             {nextStep.secondaryAction.label}
           </Link>
@@ -165,25 +165,25 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
 
         {/* Stats summary (if applicable) */}
         {progress && progress.applicationsCount > 0 && (
-          <div className="mt-6 pt-4 border-t border-slate-100">
+          <div className="mt-6 pt-4 border-t border-stone-100">
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-2xl font-bold text-stone-900">
                   {progress.applicationsCount}
                 </p>
-                <p className="text-xs text-slate-700">Ansökningar</p>
+                <p className="text-xs text-stone-700">Ansökningar</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-2xl font-bold text-stone-900">
                   {progress.savedJobsCount}
                 </p>
-                <p className="text-xs text-slate-700">Sparade jobb</p>
+                <p className="text-xs text-stone-700">Sparade jobb</p>
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-2xl font-bold text-stone-900">
                   {progress.coverLettersCount}
                 </p>
-                <p className="text-xs text-slate-700">Personliga brev</p>
+                <p className="text-xs text-stone-700">Personliga brev</p>
               </div>
             </div>
           </div>
@@ -191,7 +191,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
 
         {/* Quick actions row */}
         <div className="mt-4 flex items-center justify-center gap-2">
-          <span className="text-sm text-slate-700">Eller:</span>
+          <span className="text-sm text-stone-700">Eller:</span>
           <div className="flex items-center gap-1">
             <QuickLink to="/cv" icon={<FileText size={14} />}>
               CV
@@ -222,7 +222,7 @@ function QuickLink({
   return (
     <Link
       to={to}
-      className="flex items-center gap-1 px-2.5 py-1 text-sm text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+      className="flex items-center gap-1 px-2.5 py-1 text-sm text-stone-600 hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg transition-colors"
     >
       {icon}
       {children}

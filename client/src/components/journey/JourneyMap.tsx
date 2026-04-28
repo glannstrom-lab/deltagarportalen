@@ -31,13 +31,13 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
 
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold text-slate-900 mb-6">Din Jobbresa</h3>
+      <h3 className="text-lg font-semibold text-stone-900 mb-6">Din Jobbresa</h3>
 
       {/* Desktop: Horizontal Path */}
       <div className="hidden md:block">
         <div className="relative">
           {/* Connection Line */}
-          <div className="absolute top-8 left-8 right-8 h-1 bg-slate-200 rounded-full" />
+          <div className="absolute top-8 left-8 right-8 h-1 bg-stone-200 rounded-full" />
           <div
             className="absolute top-8 left-8 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
             style={{
@@ -73,8 +73,8 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
                         : isCurrent
                           ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-200 scale-110'
                           : isLocked
-                            ? 'bg-slate-100 text-slate-600 cursor-not-allowed'
-                            : 'bg-white border-2 border-slate-200 text-slate-600 hover:border-indigo-300 hover:shadow-md'
+                            ? 'bg-stone-100 text-stone-600 cursor-not-allowed'
+                            : 'bg-white border-2 border-stone-200 text-stone-600 hover:border-indigo-300 hover:shadow-md'
                       }
                     `}
                   >
@@ -105,11 +105,11 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
 
                   {/* Phase Label */}
                   <div className="mt-3 text-center">
-                    <div className={`text-sm font-medium ${isCurrent ? 'text-indigo-600' : 'text-slate-700'}`}>
+                    <div className={`text-sm font-medium ${isCurrent ? 'text-indigo-600' : 'text-stone-700'}`}>
                       {phase.name}
                     </div>
                     {progress && (
-                      <div className="text-xs text-slate-700">
+                      <div className="text-xs text-stone-700">
                         {progress.milestonesCompleted}/{progress.totalMilestones}
                       </div>
                     )}
@@ -117,10 +117,10 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
 
                   {/* Hover Tooltip */}
                   {hoveredPhase === phase.id && !isLocked && (
-                    <div className="absolute top-20 mt-8 bg-slate-900 text-white text-xs rounded-lg px-3 py-2 max-w-[200px] z-10 shadow-xl">
+                    <div className="absolute top-20 mt-8 bg-stone-900 text-white text-xs rounded-lg px-3 py-2 max-w-[200px] z-10 shadow-xl">
                       <div className="font-medium mb-1">{phase.name}</div>
-                      <div className="text-slate-300">{phase.description}</div>
-                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-900" />
+                      <div className="text-stone-300">{phase.description}</div>
+                      <div className="absolute -top-2 left-1/2 -translate-x-1/2 border-4 border-transparent border-b-stone-900" />
                     </div>
                   )}
                 </div>
@@ -151,8 +151,8 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
                   : isCurrent
                     ? 'bg-indigo-50 border-2 border-indigo-300'
                     : isLocked
-                      ? 'bg-slate-50 opacity-60'
-                      : 'bg-white border-2 border-slate-100 hover:border-indigo-200'
+                      ? 'bg-stone-50 opacity-60'
+                      : 'bg-white border-2 border-stone-100 hover:border-indigo-200'
                 }
               `}
             >
@@ -162,17 +162,17 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
                   ? 'bg-emerald-500 text-white'
                   : isCurrent
                     ? 'bg-indigo-500 text-white'
-                    : 'bg-slate-100 text-slate-700'
+                    : 'bg-stone-100 text-stone-700'
                 }
               `}>
                 {isCompleted ? <Check className="w-6 h-6" /> : <Icon className="w-6 h-6" />}
               </div>
 
               <div className="flex-1 text-left">
-                <div className="font-medium text-slate-900">{phase.name}</div>
-                <div className="text-sm text-slate-700">{phase.description}</div>
+                <div className="font-medium text-stone-900">{phase.name}</div>
+                <div className="text-sm text-stone-700">{phase.description}</div>
                 {progress && (
-                  <div className="mt-2 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                  <div className="mt-2 h-1.5 bg-stone-200 rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full ${isCompleted ? 'bg-emerald-500' : 'bg-indigo-500'}`}
                       style={{ width: `${progress.progress}%` }}
@@ -181,8 +181,8 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
                 )}
               </div>
 
-              {!isLocked && <ChevronRight className="w-5 h-5 text-slate-600" />}
-              {isLocked && <Lock className="w-5 h-5 text-slate-300" />}
+              {!isLocked && <ChevronRight className="w-5 h-5 text-stone-600" />}
+              {isLocked && <Lock className="w-5 h-5 text-stone-300" />}
             </button>
           )
         })}

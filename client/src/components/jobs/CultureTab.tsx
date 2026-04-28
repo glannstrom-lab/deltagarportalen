@@ -92,8 +92,8 @@ export function CultureTab() {
             <Heart className="w-6 h-6 text-rose-600" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Kulturpreferenser</h2>
-            <p className="text-slate-600 mt-1">
+            <h2 className="text-xl font-bold text-stone-900">Kulturpreferenser</h2>
+            <p className="text-stone-600 mt-1">
               Välj vad som är viktigt för dig i en arbetsplats.
               Detta hjälper dig hitta företag som passar din stil.
             </p>
@@ -103,10 +103,10 @@ export function CultureTab() {
 
       {/* Selection count */}
       {selectedValues.length > 0 && (
-        <div className="flex items-center justify-between p-4 bg-teal-50 rounded-xl border border-teal-100">
+        <div className="flex items-center justify-between p-4 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]/40">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-teal-600" />
-            <span className="font-medium text-teal-900">
+            <Sparkles className="w-5 h-5 text-[var(--c-text)]" />
+            <span className="font-medium text-[var(--c-text)]">
               {selectedValues.length} värderingar valda
             </span>
           </div>
@@ -122,20 +122,20 @@ export function CultureTab() {
 
       {/* Analysis */}
       {showResults && selectedValues.length > 0 && (
-        <Card className="border-teal-200">
-          <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-teal-600" />
+        <Card className="border-[var(--c-accent)]/60">
+          <h3 className="font-semibold text-stone-900 mb-3 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-[var(--c-text)]" />
             Din profil
           </h3>
-          <p className="text-slate-600 mb-4">
+          <p className="text-stone-600 mb-4">
             Baserat på dina val prioriterar du främst: <strong>{getTopPriorities().join(' och ')}</strong>
           </p>
 
-          <div className="p-4 bg-teal-50 rounded-xl">
-            <p className="text-sm text-teal-800">
+          <div className="p-4 bg-[var(--c-bg)] rounded-xl">
+            <p className="text-sm text-[var(--c-text)]">
               <strong>Tips vid jobbsökning:</strong>
             </p>
-            <ul className="text-sm text-teal-700 mt-2 space-y-1">
+            <ul className="text-sm text-[var(--c-text)] mt-2 space-y-1">
               <li>• Fråga om dessa aspekter på intervjun</li>
               <li>• Kolla företagets recensioner på Glassdoor</li>
               <li>• Leta efter ledtrådar i jobbannonsen</li>
@@ -148,7 +148,7 @@ export function CultureTab() {
       {/* Values by category */}
       {Object.entries(CATEGORIES).map(([categoryKey, category]) => (
         <Card key={categoryKey}>
-          <h3 className="font-semibold text-slate-900 mb-4">{category.label}</h3>
+          <h3 className="font-semibold text-stone-900 mb-4">{category.label}</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {CULTURE_VALUES.filter(v => v.category === categoryKey).map((value) => {
@@ -160,25 +160,25 @@ export function CultureTab() {
                   className={cn(
                     "flex items-start gap-3 p-4 rounded-xl border transition-all text-left",
                     isSelected
-                      ? "bg-teal-50 border-teal-300 ring-2 ring-teal-200"
-                      : "bg-slate-50 border-slate-100 hover:border-slate-200"
+                      ? "bg-[var(--c-bg)] border-[var(--c-accent)] ring-2 ring-[var(--c-accent)]/60"
+                      : "bg-stone-50 border-stone-100 hover:border-stone-200"
                   )}
                 >
                   {isSelected ? (
-                    <CheckCircle className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-[var(--c-text)] shrink-0 mt-0.5" />
                   ) : (
-                    <Circle className="w-5 h-5 text-slate-300 shrink-0 mt-0.5" />
+                    <Circle className="w-5 h-5 text-stone-300 shrink-0 mt-0.5" />
                   )}
                   <div>
                     <p className={cn(
                       "font-medium",
-                      isSelected ? "text-teal-900" : "text-slate-800"
+                      isSelected ? "text-[var(--c-text)]" : "text-stone-800"
                     )}>
                       {value.label}
                     </p>
                     <p className={cn(
                       "text-sm",
-                      isSelected ? "text-teal-600" : "text-slate-700"
+                      isSelected ? "text-[var(--c-text)]" : "text-stone-700"
                     )}>
                       {value.description}
                     </p>

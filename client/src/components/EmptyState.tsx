@@ -55,8 +55,8 @@ export default function EmptyState({
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center animate-fade-in-up">
       {/* Icon */}
       <div className="relative mb-6">
-        <div className="w-24 h-24 bg-gradient-to-br from-teal-100 to-teal-50 dark:from-teal-900/40 dark:to-teal-900/20 rounded-full flex items-center justify-center">
-          <IconComponent className="w-12 h-12 text-teal-600 dark:text-teal-400" />
+        <div className="w-24 h-24 bg-gradient-to-br from-[var(--c-accent)]/40 to-[var(--c-bg)] dark:from-[var(--c-bg)]/40 dark:to-[var(--c-bg)]/30 rounded-full flex items-center justify-center">
+          <IconComponent className="w-12 h-12 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
         </div>
         <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center">
           <Plus className="w-5 h-5 text-amber-600 dark:text-amber-400" />
@@ -64,13 +64,13 @@ export default function EmptyState({
       </div>
 
       {/* Title */}
-      <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
+      <h3 className="text-xl font-semibold text-stone-900 dark:text-stone-100 mb-2">
         {title}
       </h3>
 
       {/* Description */}
       {description && (
-        <p className="text-slate-700 dark:text-slate-600 max-w-md mb-6">
+        <p className="text-stone-700 dark:text-stone-600 max-w-md mb-6">
           {description}
         </p>
       )}
@@ -87,7 +87,7 @@ export default function EmptyState({
         {action && (
           <button
             onClick={action.onClick}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-all hover:shadow-lg hover:shadow-teal-500/25 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] transition-all hover:shadow-lg hover:active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2"
           >
             {action.icon}
             {action.label}
@@ -97,7 +97,7 @@ export default function EmptyState({
         {secondaryAction && (
           <button
             onClick={secondaryAction.onClick}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-xl font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
           >
             {secondaryAction.label}
           </button>

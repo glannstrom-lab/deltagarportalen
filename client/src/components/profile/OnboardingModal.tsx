@@ -135,7 +135,7 @@ export function OnboardingModal() {
         )}
       >
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-teal-500 to-sky-500 px-6 py-8 text-white">
+        <div className="relative bg-gradient-to-r from-[var(--c-solid)] to-sky-500 px-6 py-8 text-white">
           <button
             onClick={handleClose}
             className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"
@@ -161,7 +161,7 @@ export function OnboardingModal() {
             {t(currentStep.descriptionKey)}
           </p>
 
-          <p className="text-sm text-teal-600 dark:text-teal-400 text-center font-medium">
+          <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] text-center font-medium">
             {t(currentStep.encouragementKey)}
           </p>
 
@@ -197,7 +197,7 @@ export function OnboardingModal() {
               className={cn(
                 'w-2 h-2 rounded-full transition-all',
                 index === onboardingStep
-                  ? 'w-6 bg-teal-500'
+                  ? 'w-6 bg-[var(--c-solid)]'
                   : 'bg-stone-300 dark:bg-stone-600 hover:bg-stone-400'
               )}
               aria-label={t('profile.onboarding.stepOf', { step: index + 1, total: ONBOARDING_STEPS.length })}
@@ -231,7 +231,7 @@ export function OnboardingModal() {
 
           <button
             onClick={handleNext}
-            className="flex items-center gap-1 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white text-sm font-medium rounded-lg transition-colors"
+            className="flex items-center gap-1 px-4 py-2 bg-[var(--c-solid)] hover:bg-[var(--c-solid)] text-white text-sm font-medium rounded-lg transition-colors"
           >
             {isLastStep ? t('profile.onboarding.getStarted') : t('profile.onboarding.next')}
             {!isLastStep && <ChevronRight className="w-4 h-4" />}

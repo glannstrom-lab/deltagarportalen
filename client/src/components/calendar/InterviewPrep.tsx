@@ -47,7 +47,7 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
         onClick={() => setExpanded(!expanded)}
         aria-expanded={expanded}
         aria-controls={contentId}
-        className="w-full p-4 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
+        className="w-full p-4 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-inset"
       >
         <div className="flex items-center gap-3">
           <div className="p-2 bg-violet-100 dark:bg-violet-900/40 rounded-lg">
@@ -74,7 +74,7 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
                 </p>
                 <button
                   onClick={generateAIQuestions}
-                  className="mt-3 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors inline-flex items-center gap-2"
+                  className="mt-3 px-4 py-2 bg-[var(--c-solid)] text-white text-sm font-medium rounded-lg hover:bg-[var(--c-text)] transition-colors inline-flex items-center gap-2"
                 >
                   <Brain size={16} />
                   {t('calendar.interviewPrep.generateQuestions')}
@@ -86,7 +86,7 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
           {/* Dress code */}
           <div className="bg-white dark:bg-stone-800 rounded-lg p-4 border border-stone-200 dark:border-stone-700/50">
             <div className="flex items-start gap-3">
-              <Shirt className="w-5 h-5 text-teal-500 dark:text-teal-400 mt-0.5" />
+              <Shirt className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)] mt-0.5" />
               <div>
                 <h4 className="font-medium text-stone-900 dark:text-stone-100">{t('calendar.interviewPrep.dressRecommendation')}</h4>
                 <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">{getDressCode()}</p>
@@ -132,7 +132,7 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
               href={`https://www.google.com/search?q=${encodeURIComponent(event.with.split(',')[0])}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 p-3 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700/50 rounded-lg text-teal-600 dark:text-teal-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors text-sm font-medium"
+              className="flex items-center justify-center gap-2 p-3 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700/50 rounded-lg text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors text-sm font-medium"
             >
               <ExternalLink size={16} />
               {t('calendar.interviewPrep.searchCompany')}

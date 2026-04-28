@@ -108,8 +108,8 @@ function MemoryCardGame({ onComplete }: { onComplete: () => void }) {
             onClick={() => toggleCard(idx)}
             className={cn(
               'aspect-square rounded-lg font-bold text-lg transition-all',
-              card.matched ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' :
-              card.flipped ? 'bg-emerald-500 dark:bg-emerald-600 text-white' : 'bg-stone-200 dark:bg-stone-600 hover:bg-stone-300 dark:hover:bg-stone-500 text-gray-800 dark:text-gray-100'
+              card.matched ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]' :
+              card.flipped ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white' : 'bg-stone-200 dark:bg-stone-600 hover:bg-stone-300 dark:hover:bg-stone-500 text-gray-800 dark:text-gray-100'
             )}
           >
             {card.flipped || card.matched ? card.number : '?'}
@@ -170,7 +170,7 @@ function NumberSequenceGame({ onComplete }: { onComplete: () => void }) {
     <div>
       <div className="text-center mb-4">
         <p className="text-sm text-gray-600 dark:text-gray-300">Omgång {round}</p>
-        <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mb-4">Sekvens: {sequence.join(' → ')}</p>
+        <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)] mb-4">Sekvens: {sequence.join(' → ')}</p>
       </div>
       <div className="grid grid-cols-3 gap-2 mb-4">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
@@ -182,7 +182,7 @@ function NumberSequenceGame({ onComplete }: { onComplete: () => void }) {
             disabled={isPlaying}
             className={cn(
               'aspect-square rounded-lg font-bold text-lg transition-all disabled:opacity-50',
-              playerSequence.includes(num) ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' : 'bg-stone-200 dark:bg-stone-600 hover:bg-stone-300 dark:hover:bg-stone-500 text-gray-800 dark:text-gray-100'
+              playerSequence.includes(num) ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]' : 'bg-stone-200 dark:bg-stone-600 hover:bg-stone-300 dark:hover:bg-stone-500 text-gray-800 dark:text-gray-100'
             )}
           >
             {num}
@@ -254,7 +254,7 @@ export default function CognitiveTab() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-600 dark:to-teal-600 rounded-xl p-6 text-white shadow-lg"
+        className="bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-solid)] rounded-xl p-6 text-white shadow-lg"
       >
         <div className="flex items-center justify-between">
           <div>
@@ -278,9 +278,9 @@ export default function CognitiveTab() {
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('wellness.cognitive.title')}</h3>
             <p className="text-gray-600 dark:text-gray-300">{t('wellness.cognitive.description')}</p>
           </div>
-          <div className="flex items-center gap-2 px-4 py-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-full">
-            <Star className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-            <span className="font-bold text-emerald-600 dark:text-emerald-400">{completedExercises.length} {completedExercises.length === 1 ? 'färdig' : 'färdiga'}</span>
+          <div className="flex items-center gap-2 px-4 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-full">
+            <Star className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
+            <span className="font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completedExercises.length} {completedExercises.length === 1 ? 'färdig' : 'färdiga'}</span>
           </div>
         </div>
 
@@ -294,9 +294,9 @@ export default function CognitiveTab() {
                 key={key}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-center p-4 bg-stone-50 dark:bg-stone-700 rounded-xl border border-stone-100 dark:border-stone-600 hover:border-emerald-200 dark:hover:border-emerald-700 transition-all"
+                className="text-center p-4 bg-stone-50 dark:bg-stone-700 rounded-xl border border-stone-100 dark:border-stone-600 hover:border-[var(--c-accent)]/60 dark:hover:border-[var(--c-solid)] transition-all"
               >
-                <Icon className="w-6 h-6 text-emerald-600 dark:text-emerald-400 mx-auto mb-2" />
+                <Icon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
                 <p className="text-sm font-medium text-gray-600 dark:text-gray-300">{config.label}</p>
                 <p className="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-1">{progress.completed}/{progress.total}</p>
                 <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full mt-3 overflow-hidden">
@@ -304,7 +304,7 @@ export default function CognitiveTab() {
                     initial={{ width: 0 }}
                     animate={{ width: `${progress.percentage}%` }}
                     transition={{ duration: 0.5 }}
-                    className="h-full bg-emerald-500 dark:bg-emerald-400"
+                    className="h-full bg-[var(--c-solid)] dark:bg-[var(--c-solid)]/80"
                   />
                 </div>
               </motion.div>
@@ -315,7 +315,7 @@ export default function CognitiveTab() {
 
       {/* Active Exercise with Interactive Games */}
       {activeExercise && (
-        <Card className="p-6 border-2 border-emerald-500 dark:border-emerald-400 bg-white dark:bg-stone-800">
+        <Card className="p-6 border-2 border-[var(--c-solid)] dark:border-[var(--c-solid)]/60 bg-white dark:bg-stone-800">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
               {exercises.find(e => e.id === activeExercise)?.title}
@@ -338,7 +338,7 @@ export default function CognitiveTab() {
               <NumberSequenceGame onComplete={() => completeExercise(activeExercise)} />
             ) : (
               <div className="text-center">
-                <Clock className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto mb-4" />
+                <Clock className="w-12 h-12 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-4" />
                 <p className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">{exercises.find(e => e.id === activeExercise)?.title}</p>
                 <p className="text-gray-600 dark:text-gray-300 mb-6">{exercises.find(e => e.id === activeExercise)?.description}</p>
                 <div className="flex gap-2 justify-center">
@@ -378,27 +378,27 @@ export default function CognitiveTab() {
                 className={cn(
                   'flex items-center gap-4 p-4 rounded-xl border-2 transition-all',
                   isCompleted
-                    ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800'
-                    : 'bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-emerald-300 dark:hover:border-emerald-700'
+                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50'
+                    : 'bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]'
                 )}
               >
                 <div className={cn(
                   'w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0',
-                  isCompleted ? 'bg-emerald-100 dark:bg-emerald-900/30' : 'bg-emerald-100 dark:bg-emerald-900/30'
+                  isCompleted ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40' : 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40'
                 )}>
                   {isCompleted ? (
                     <motion.div animate={{ scale: [1, 1.2, 1] }}>
-                      <CheckCircle2 className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                      <CheckCircle2 className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
                     </motion.div>
                   ) : (
-                    <CategoryIcon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
+                    <CategoryIcon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
                   )}
                 </div>
 
                 <div className="flex-1">
                   <h4 className={cn(
                     'font-semibold',
-                    isCompleted ? 'text-emerald-700 dark:text-emerald-400 line-through' : 'text-gray-800 dark:text-gray-100'
+                    isCompleted ? 'text-[var(--c-text)] dark:text-[var(--c-text)] line-through' : 'text-gray-800 dark:text-gray-100'
                   )}>
                     {exercise.title}
                   </h4>
@@ -412,7 +412,7 @@ export default function CognitiveTab() {
                       {exercise.duration} {t('wellness.cognitive.min')}
                     </span>
                     {hasGame && (
-                      <span className="text-xs px-2 py-1 rounded-full bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400">
+                      <span className="text-xs px-2 py-1 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]">
                         Spel
                       </span>
                     )}
@@ -435,12 +435,12 @@ export default function CognitiveTab() {
       </Card>
 
       {/* Tips */}
-      <Card className="p-6 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800">
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
-          <AlertCircle className="w-6 h-6 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-1" />
+          <AlertCircle className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0 mt-1" />
           <div>
-            <h4 className="font-semibold text-emerald-800 dark:text-emerald-200 mb-2">{t('wellness.cognitive.tips.title')}</h4>
-            <ul className="space-y-2 text-sm text-emerald-700 dark:text-emerald-300">
+            <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-text)] mb-2">{t('wellness.cognitive.tips.title')}</h4>
+            <ul className="space-y-2 text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">
               <li>• {t('wellness.cognitive.tips.tip1')}</li>
               <li>• {t('wellness.cognitive.tips.tip2')}</li>
               <li>• {t('wellness.cognitive.tips.tip3')}</li>

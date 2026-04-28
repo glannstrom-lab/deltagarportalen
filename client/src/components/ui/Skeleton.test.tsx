@@ -29,7 +29,7 @@ describe('Skeleton', () => {
   it('renders list skeleton with correct number of items', () => {
     render(<ListSkeleton items={3} />)
     // Should render 3 list items
-    const items = document.querySelectorAll('.border-slate-200')
+    const items = document.querySelectorAll('.border-stone-200')
     expect(items.length).toBe(3)
   })
 

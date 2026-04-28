@@ -39,7 +39,7 @@ const categoryColors: { [key: string]: string } = {
   // New categories from the 38 list
   'Arbetslivskunskap': 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
   'Arbetssökande': 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400',
-  'Rehabilitering': 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400',
+  'Rehabilitering': 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)]',
 }
 
 // Difficulty badge colors
@@ -344,7 +344,7 @@ export default function Exercises() {
         {/* Status indicators */}
         <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Cloud sync indicator */}
-          <div className="flex items-center gap-2 text-sm bg-white/60 dark:bg-stone-800/60 rounded-full px-3 py-1.5 border border-teal-200 dark:border-teal-800">
+          <div className="flex items-center gap-2 text-sm bg-white/60 dark:bg-stone-800/60 rounded-full px-3 py-1.5 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
             <Cloud className={`w-4 h-4 ${saving ? 'text-amber-500 dark:text-amber-400 animate-pulse' : 'text-emerald-500 dark:text-emerald-400'}`} />
             <span className={saving ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}>
               {saving ? t('exercises.saving') : t('exercises.cloudSynced')}
@@ -388,11 +388,11 @@ export default function Exercises() {
             </p>
             <p className="text-sm text-amber-600 dark:text-amber-400">{t('exercises.stats.active')}</p>
           </Card>
-          <Card className="p-4 text-center bg-teal-50 dark:bg-teal-900/20 border-teal-100 dark:border-teal-800">
-            <p className="text-2xl font-bold text-teal-700 dark:text-teal-400">
+          <Card className="p-4 text-center bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+            <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
               {exercises.length - Object.keys(answers).length}
             </p>
-            <p className="text-sm text-teal-600 dark:text-teal-400">{t('exercises.stats.notStarted')}</p>
+            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)]">{t('exercises.stats.notStarted')}</p>
           </Card>
         </div>
 
@@ -755,7 +755,7 @@ export default function Exercises() {
       </Card>
 
       {/* AI Coach Card */}
-      <Card className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200 dark:border-emerald-800">
+      <Card className="p-4 bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/20 dark:to-[var(--c-bg)]/30 border-emerald-200 dark:border-emerald-800">
         <div className="flex items-start gap-3">
           <Lightbulb className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5" />
           <div className="flex-1">
@@ -793,12 +793,12 @@ export default function Exercises() {
 
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
-        <Card className="p-4 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 border-teal-200 dark:border-teal-800">
+        <Card className="p-4 bg-gradient-to-br from-[var(--c-bg)] to-emerald-50 dark:from-[var(--c-bg)]/30 dark:to-emerald-900/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
           <div className="flex items-start gap-3">
-            <BookOpen className="w-5 h-5 text-teal-600 dark:text-teal-400 mt-0.5" />
+            <BookOpen className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] mt-0.5" />
             <div className="flex-1">
-              <h3 className="font-medium text-teal-900 dark:text-teal-100">Relaterade artiklar</h3>
-              <p className="text-sm text-teal-700 dark:text-teal-300 mt-1 mb-3">
+              <h3 className="font-medium text-[var(--c-text)] dark:text-white">Relaterade artiklar</h3>
+              <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-accent)] mt-1 mb-3">
                 Läs mer om {selectedExercise.category.toLowerCase()} i kunskapsbanken.
               </p>
               <div className="space-y-2">
@@ -806,7 +806,7 @@ export default function Exercises() {
                   <Link
                     key={article.id}
                     to={`/knowledge-base/article/${article.id}`}
-                    className="block p-3 bg-white dark:bg-stone-700 rounded-lg hover:shadow-sm transition-shadow border border-teal-100 dark:border-teal-800"
+                    className="block p-3 bg-white dark:bg-stone-700 rounded-lg hover:shadow-sm transition-shadow border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50"
                   >
                     <h4 className="font-medium text-gray-800 dark:text-gray-100 text-sm">{article.title}</h4>
                     <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">{article.summary}</p>
@@ -815,7 +815,7 @@ export default function Exercises() {
               </div>
               <Link
                 to="/knowledge-base"
-                className="inline-flex items-center gap-1 text-sm text-teal-700 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 mt-3 font-medium"
+                className="inline-flex items-center gap-1 text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] mt-3 font-medium"
               >
                 Se alla artiklar
                 <ArrowRight className="w-4 h-4" />

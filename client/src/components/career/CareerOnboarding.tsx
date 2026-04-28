@@ -316,7 +316,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
   if (loadingInterests || isLoadingProfile) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-4">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-500 mb-4" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-solid)] mb-4" />
         <p className="text-stone-600 dark:text-stone-400">
           {t('career.onboarding.loadingProfile')}
         </p>
@@ -339,7 +339,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
           className="w-full max-w-2xl"
         >
           <Card className="p-8 text-center">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-teal-500 to-sky-500 flex items-center justify-center">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--c-solid)] to-sky-500 flex items-center justify-center">
               <User className="w-10 h-10 text-white" />
             </div>
 
@@ -356,8 +356,8 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
             {/* What we know */}
             <div className="text-left space-y-4 mb-8">
               {hasEmploymentStatus && (
-                <div className="flex items-start gap-3 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl">
-                  <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400 mt-0.5 flex-shrink-0" />
+                <div className="flex items-start gap-3 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl">
+                  <CheckCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="font-medium text-stone-900 dark:text-stone-100">
                       {t('career.onboarding.hasEmploymentStatus')}
@@ -456,7 +456,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
               key={i}
               className={cn(
                 'flex-1 h-2 rounded-full mx-1 transition-colors',
-                i <= step ? 'bg-teal-500' : 'bg-stone-200 dark:bg-stone-700'
+                i <= step ? 'bg-[var(--c-solid)]' : 'bg-stone-200 dark:bg-stone-700'
               )}
             />
           ))}
@@ -479,7 +479,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
           {/* Situation Step */}
           {currentStepType === 'situation' && (
             <Card className="p-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-teal-500 to-sky-500 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[var(--c-solid)] to-sky-500 flex items-center justify-center">
                 <Compass className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
@@ -500,14 +500,14 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
                     className={cn(
                       'p-3 rounded-xl border-2 transition-all text-left',
                       preferences.currentSituation === situation.id
-                        ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
+                        ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30'
                         : 'border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
                     )}
                   >
                     <situation.icon className={cn(
                       'w-5 h-5 mb-1.5',
                       preferences.currentSituation === situation.id
-                        ? 'text-teal-600 dark:text-teal-400'
+                        ? 'text-[var(--c-text)] dark:text-[var(--c-solid)]'
                         : 'text-stone-500 dark:text-stone-400'
                     )} />
                     <p className="font-medium text-sm text-stone-900 dark:text-stone-100">

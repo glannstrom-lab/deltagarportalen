@@ -59,7 +59,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-      <div className="bg-gradient-to-r from-teal-600 to-sky-600 p-6 text-white">
+      <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-600 p-6 text-white">
         <div className="flex items-center gap-3 mb-2">
           <Sparkles size={28} />
           <h3 className="text-xl font-bold">CV-optimerare</h3>
@@ -72,7 +72,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
       <div className="p-6">
         {/* Input */}
         <div className="mb-6">
-          <label className="block text-sm font-medium text-slate-700 mb-2">
+          <label className="block text-sm font-medium text-stone-700 mb-2">
             Vilket jobb siktar du på?
           </label>
           <div className="flex gap-2">
@@ -81,13 +81,13 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
               value={targetJob}
               onChange={(e) => setTargetJob(e.target.value)}
               placeholder="t.ex. Systemutvecklare, Sjuksköterska..."
-              className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="flex-1 px-4 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               onKeyPress={(e) => e.key === 'Enter' && optimize()}
             />
             <button
               onClick={optimize}
               disabled={loading || !targetJob.trim()}
-              className="px-6 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              className="px-6 py-2 bg-[var(--c-solid)] text-white rounded-lg font-medium hover:bg-[var(--c-text)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
               {loading ? (
                 <>
@@ -114,14 +114,14 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
         {optimization && (
           <div className="space-y-6">
             {/* Summary */}
-            <div className="bg-gradient-to-r from-teal-50 to-sky-50 rounded-xl p-4">
-              <h4 className="font-semibold text-teal-900 mb-2 flex items-center gap-2">
+            <div className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 rounded-xl p-4">
+              <h4 className="font-semibold text-[var(--c-text)] mb-2 flex items-center gap-2">
                 <Lightbulb size={18} className="text-amber-500" />
                 Sammanfattning
               </h4>
               <ul className="space-y-2">
                 {optimization.suggestions.map((suggestion, i) => (
-                  <li key={i} className="flex items-start gap-2 text-teal-800 text-sm">
+                  <li key={i} className="flex items-start gap-2 text-[var(--c-text)] text-sm">
                     <CheckCircle2 size={16} className="mt-0.5 flex-shrink-0" />
                     {suggestion}
                   </li>
@@ -132,11 +132,11 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
             {/* Keywords to add */}
             {optimization.keywords_to_add.length > 0 && (
               <div>
-                <h4 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
-                  <Target size={18} className="text-teal-600" />
+                <h4 className="font-semibold text-stone-800 mb-3 flex items-center gap-2">
+                  <Target size={18} className="text-[var(--c-text)]" />
                   Nyckelord att lägga till
                 </h4>
-                <p className="text-sm text-slate-600 mb-3">
+                <p className="text-sm text-stone-600 mb-3">
                   Dessa ord nämns ofta i jobbannonser för {targetJob}. 
                   Klicka för att kopiera och klistra in i ditt CV.
                 </p>
@@ -145,7 +145,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
                     <button
                       key={i}
                       onClick={() => copyKeyword(keyword)}
-                      className="group flex items-center gap-1.5 px-3 py-1.5 bg-teal-100 text-teal-800 rounded-lg text-sm hover:bg-teal-200 transition-colors"
+                      className="group flex items-center gap-1.5 px-3 py-1.5 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-lg text-sm hover:bg-[var(--c-accent)]/60 transition-colors"
                     >
                       {keyword}
                       {copiedKeyword === keyword ? (
@@ -162,11 +162,11 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
             {/* Skills to highlight */}
             {optimization.skills_to_highlight.length > 0 && (
               <div>
-                <h4 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+                <h4 className="font-semibold text-stone-800 mb-3 flex items-center gap-2">
                   <Sparkles size={18} className="text-amber-500" />
                   Kompetenser att lyfta fram
                 </h4>
-                <p className="text-sm text-slate-600 mb-3">
+                <p className="text-sm text-stone-600 mb-3">
                   Om du har dessa kompetenser, se till att de syns tydligt i ditt CV:
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -186,7 +186,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
             <div className="pt-4 border-t flex flex-wrap gap-3">
               <a
                 href="/cv"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg font-medium hover:bg-[var(--c-text)]"
               >
                 Öppna CV-generatorn
                 <ArrowRight size={16} />
@@ -196,7 +196,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
                   setOptimization(null)
                   setTargetJob('')
                 }}
-                className="px-4 py-2 text-slate-600 hover:text-slate-800"
+                className="px-4 py-2 text-stone-600 hover:text-stone-800"
               >
                 Ny optimering
               </button>
@@ -205,7 +205,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
         )}
 
         {!optimization && !loading && (
-          <div className="text-center py-8 text-slate-700">
+          <div className="text-center py-8 text-stone-700">
             <Target size={48} className="mx-auto mb-4 opacity-30" />
             <p>Ange ett yrke ovan för att få personliga optimeringsförslag</p>
           </div>

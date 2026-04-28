@@ -43,7 +43,7 @@ export function SupportiveLanguage({
   }, [type, emotionalState, progressPercent])
 
   const styles = {
-    encouragement: 'bg-teal-50 border-teal-200 text-teal-800',
+    encouragement: 'bg-[var(--c-bg)] border-[var(--c-accent)]/60 text-[var(--c-text)]',
     break: 'bg-amber-50 border-amber-200 text-amber-800',
     progress: 'bg-blue-50 border-blue-200 text-blue-800',
     welcome: 'bg-purple-50 border-purple-200 text-purple-800'
@@ -79,7 +79,7 @@ export function EnergyMessage({
   
   const styles = {
     high: 'bg-green-50 border-green-200 text-green-800',
-    medium: 'bg-teal-50 border-teal-200 text-teal-800',
+    medium: 'bg-[var(--c-bg)] border-[var(--c-accent)]/60 text-[var(--c-text)]',
     low: 'bg-amber-50 border-amber-200 text-amber-800',
     veryLow: 'bg-orange-50 border-orange-200 text-orange-800',
     exhausted: 'bg-rose-50 border-rose-200 text-rose-800'
@@ -113,7 +113,7 @@ export function GreetingMessage({
   const message = messages[Math.floor(Math.random() * messages.length)]
   
   return (
-    <h1 className="text-2xl font-bold text-slate-800">
+    <h1 className="text-2xl font-bold text-stone-800">
       {message.replace('{name}', userName ? `, ${userName}` : '')}
     </h1>
   )

@@ -107,7 +107,7 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-solid)]" />
       </div>
     )
   }
@@ -120,7 +120,7 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
           <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100">
             {t(currentStepData.titleKey, currentStepData.id)}
           </h2>
-          <span className="text-sm font-medium text-teal-600 dark:text-teal-400">
+          <span className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
             {t('focusCV.stepOf', 'Steg {{current}} av {{total}}', {
               current: currentStep + 1,
               total: FOCUS_STEPS.length
@@ -131,7 +131,7 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
         {/* Large Progress Bar */}
         <div className="h-3 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden mb-3">
           <div
-            className="h-full bg-teal-500 rounded-full"
+            className="h-full bg-[var(--c-solid)] rounded-full"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -149,8 +149,8 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
                 onClick={() => setCurrentStep(i)}
                 className={cn(
                   'w-10 h-10 rounded-full flex items-center justify-center transition-all',
-                  isComplete && 'bg-teal-500 text-white',
-                  isCurrent && 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400 ring-2 ring-teal-500',
+                  isComplete && 'bg-[var(--c-solid)] text-white',
+                  isCurrent && 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)] ring-2 ring-[var(--c-solid)]',
                   !isComplete && !isCurrent && 'bg-stone-100 dark:bg-stone-800 text-stone-400'
                 )}
                 aria-label={t(step.titleKey)}
@@ -211,7 +211,7 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
             disabled={saveMutation.isPending}
             className={cn(
               'flex items-center gap-2 px-8 py-3 rounded-xl font-semibold transition-colors',
-              'bg-teal-500 text-white hover:bg-teal-600',
+              'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
               'disabled:opacity-50 disabled:cursor-not-allowed'
             )}
           >
@@ -227,7 +227,7 @@ export function FocusCVBuilder({ onExitFocusMode }: FocusCVBuilderProps) {
             onClick={goNext}
             className={cn(
               'flex items-center gap-2 px-8 py-3 rounded-xl font-semibold transition-colors',
-              'bg-teal-500 text-white hover:bg-teal-600'
+              'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]'
             )}
           >
             {t('common.next', 'Nästa')}
@@ -318,7 +318,7 @@ function SummaryStep({ cvData, setCvData }: StepProps) {
           className={cn(
             'w-full px-4 py-4 text-lg rounded-xl border-2 transition-colors',
             'bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700',
-            'focus:border-teal-500 focus:ring-0 focus:outline-none',
+            'focus:border-[var(--c-solid)] focus:ring-0 focus:outline-none',
             'placeholder:text-stone-400'
           )}
         />
@@ -429,7 +429,7 @@ function WorkStep({ cvData, setCvData }: StepProps) {
             className={cn(
               'w-full px-4 py-4 text-lg rounded-xl border-2 transition-colors',
               'bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700',
-              'focus:border-teal-500 focus:ring-0 focus:outline-none',
+              'focus:border-[var(--c-solid)] focus:ring-0 focus:outline-none',
               'placeholder:text-stone-400'
             )}
           />
@@ -438,7 +438,7 @@ function WorkStep({ cvData, setCvData }: StepProps) {
         <div className="flex gap-3">
           <button
             onClick={() => setEditingIndex(null)}
-            className="flex-1 py-3 rounded-xl font-medium bg-teal-500 text-white hover:bg-teal-600"
+            className="flex-1 py-3 rounded-xl font-medium bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]"
           >
             {t('common.done', 'Klar')}
           </button>
@@ -464,7 +464,7 @@ function WorkStep({ cvData, setCvData }: StepProps) {
           <button
             key={exp.id}
             onClick={() => setEditingIndex(i)}
-            className="w-full text-left p-4 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 hover:border-teal-500 transition-colors"
+            className="w-full text-left p-4 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 hover:border-[var(--c-solid)] transition-colors"
           >
             <p className="font-medium text-stone-800 dark:text-stone-100">{exp.title || t('focusCV.work.untitled', '(Ingen titel)')}</p>
             <p className="text-sm text-stone-500">{exp.company}</p>
@@ -477,7 +477,7 @@ function WorkStep({ cvData, setCvData }: StepProps) {
         className={cn(
           'w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed',
           'border-stone-300 dark:border-stone-600 text-stone-600 dark:text-stone-400',
-          'hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 transition-colors'
+          'hover:border-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] transition-colors'
         )}
       >
         <Plus className="w-5 h-5" />
@@ -583,7 +583,7 @@ function EducationStep({ cvData, setCvData }: StepProps) {
         <div className="flex gap-3">
           <button
             onClick={() => setEditingIndex(null)}
-            className="flex-1 py-3 rounded-xl font-medium bg-teal-500 text-white hover:bg-teal-600"
+            className="flex-1 py-3 rounded-xl font-medium bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]"
           >
             {t('common.done', 'Klar')}
           </button>
@@ -609,7 +609,7 @@ function EducationStep({ cvData, setCvData }: StepProps) {
           <button
             key={edu.id}
             onClick={() => setEditingIndex(i)}
-            className="w-full text-left p-4 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 hover:border-teal-500 transition-colors"
+            className="w-full text-left p-4 rounded-xl border border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 hover:border-[var(--c-solid)] transition-colors"
           >
             <p className="font-medium text-stone-800 dark:text-stone-100">{edu.degree || t('focusCV.education.untitled', '(Ingen examen)')}</p>
             <p className="text-sm text-stone-500">{edu.school}</p>
@@ -622,7 +622,7 @@ function EducationStep({ cvData, setCvData }: StepProps) {
         className={cn(
           'w-full flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-dashed',
           'border-stone-300 dark:border-stone-600 text-stone-600 dark:text-stone-400',
-          'hover:border-teal-500 hover:text-teal-600 dark:hover:text-teal-400 transition-colors'
+          'hover:border-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] transition-colors'
         )}
       >
         <Plus className="w-5 h-5" />
@@ -683,7 +683,7 @@ function SkillsStep({ cvData, setCvData }: StepProps) {
             className={cn(
               'flex-1 px-4 py-4 text-lg rounded-xl border-2 transition-colors',
               'bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700',
-              'focus:border-teal-500 focus:ring-0 focus:outline-none',
+              'focus:border-[var(--c-solid)] focus:ring-0 focus:outline-none',
               'placeholder:text-stone-400'
             )}
           />
@@ -692,7 +692,7 @@ function SkillsStep({ cvData, setCvData }: StepProps) {
             disabled={!newSkill.trim()}
             className={cn(
               'px-6 py-4 rounded-xl font-medium transition-colors',
-              'bg-teal-500 text-white hover:bg-teal-600',
+              'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
               'disabled:opacity-50 disabled:cursor-not-allowed'
             )}
           >
@@ -706,12 +706,12 @@ function SkillsStep({ cvData, setCvData }: StepProps) {
           {skills.map(skill => (
             <span
               key={skill.id}
-              className="inline-flex items-center gap-1 px-4 py-2 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-full"
+              className="inline-flex items-center gap-1 px-4 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-full"
             >
               {skill.name}
               <button
                 onClick={() => removeSkill(skill.id)}
-                className="ml-1 text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-200"
+                className="ml-1 text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -760,7 +760,7 @@ function PreviewStep({ cvData, onSave, isSaving }: PreviewStepProps) {
         disabled={isSaving}
         className={cn(
           'w-full flex items-center justify-center gap-2 py-4 rounded-xl font-semibold transition-colors',
-          'bg-teal-500 text-white hover:bg-teal-600',
+          'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
           'disabled:opacity-50 disabled:cursor-not-allowed'
         )}
       >
@@ -803,7 +803,7 @@ function FocusInput({ label, value, onChange, placeholder, type = 'text', autoFo
         className={cn(
           'w-full px-4 py-4 text-lg rounded-xl border-2 transition-colors',
           'bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700',
-          'focus:border-teal-500 focus:ring-0 focus:outline-none',
+          'focus:border-[var(--c-solid)] focus:ring-0 focus:outline-none',
           'placeholder:text-stone-400'
         )}
       />

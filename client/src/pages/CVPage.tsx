@@ -45,8 +45,8 @@ export default function CVPage() {
       <div className="pb-8 max-w-7xl mx-auto">
         <header className="mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <div className="w-10 h-10 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">
@@ -69,8 +69,8 @@ export default function CVPage() {
       <header className="mb-6">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <div className="w-10 h-10 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             </div>
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">
@@ -97,7 +97,7 @@ export default function CVPage() {
                 onClick={() => navigate(tab.path)}
                 className={cn(
                   'flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg transition-colors whitespace-nowrap',
-                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-1',
                   isActive
                     ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-sm'
                     : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200 hover:bg-white/50 dark:hover:bg-stone-700/50'

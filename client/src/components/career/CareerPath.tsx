@@ -53,17 +53,17 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
   if (loading) {
     return (
       <div className="bg-white rounded-2xl p-8 text-center">
-        <Loader2 size={48} className="mx-auto text-teal-600 animate-spin mb-4" />
-        <h3 className="text-lg font-semibold text-slate-800">Bygger din karriärväg...</h3>
-        <p className="text-slate-700">Vi söker utbildningar och jobb</p>
+        <Loader2 size={48} className="mx-auto text-[var(--c-text)] animate-spin mb-4" />
+        <h3 className="text-lg font-semibold text-stone-800">Bygger din karriärväg...</h3>
+        <p className="text-stone-700">Vi söker utbildningar och jobb</p>
       </div>
     )
   }
 
   if (error || !careerPath) {
     return (
-      <div className="bg-slate-50 rounded-2xl p-8 text-center">
-        <p className="text-slate-600">Karriärvägen kunde inte laddas</p>
+      <div className="bg-stone-50 rounded-2xl p-8 text-center">
+        <p className="text-stone-600">Karriärvägen kunde inte laddas</p>
       </div>
     )
   }
@@ -76,7 +76,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
       color: 'bg-purple-100 text-purple-700',
       content: (
         <div className="space-y-4">
-          <p className="text-slate-700">
+          <p className="text-stone-700">
             Baserat på din intresseguide är <strong>{careerPath.occupation}</strong> ett yrke som passar din profil.
           </p>
           {riasecProfile && (
@@ -114,7 +114,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
       color: 'bg-amber-100 text-amber-700',
       content: (
         <div className="space-y-4">
-          <p className="text-slate-700">
+          <p className="text-stone-700">
             För att arbeta som <strong>{careerPath.occupation}</strong> behöver du utveckla dessa kompetenser:
           </p>
           <div className="flex flex-wrap gap-2">
@@ -136,19 +136,19 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
         <div className="space-y-4">
           {careerPath.education_options.length > 0 ? (
             <>
-              <p className="text-slate-700">
+              <p className="text-stone-700">
                 Här är utbildningar som leder till yrket:
               </p>
               <div className="space-y-3">
                 {careerPath.education_options.slice(0, 3).map((edu, i) => (
-                  <div key={i} className="bg-white border border-slate-200 rounded-lg p-4">
+                  <div key={i} className="bg-white border border-stone-200 rounded-lg p-4">
                     <div className="flex items-start justify-between mb-2">
-                      <h5 className="font-semibold text-slate-800">{edu.title}</h5>
+                      <h5 className="font-semibold text-stone-800">{edu.title}</h5>
                       <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
                         {edu.education_type}
                       </span>
                     </div>
-                    <div className="flex items-center gap-4 text-sm text-slate-600">
+                    <div className="flex items-center gap-4 text-sm text-stone-600">
                       <span className="flex items-center gap-1">
                         <Clock size={14} />
                         {edu.duration_months} månader
@@ -180,7 +180,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
       color: 'bg-green-100 text-green-700',
       content: (
         <div className="space-y-4">
-          <p className="text-slate-700">
+          <p className="text-stone-700">
             Just nu finns det <strong>{careerPath.entry_level_jobs.length}</strong> lediga jobb som matchar din profil:
           </p>
           
@@ -189,11 +189,11 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
               <Link
                 key={i}
                 to={`/jobs?search=${encodeURIComponent(job.headline)}`}
-                className="block bg-white border border-slate-200 rounded-lg p-4 hover:border-green-400 hover:shadow-md transition-all"
+                className="block bg-white border border-stone-200 rounded-lg p-4 hover:border-green-400 hover:shadow-md transition-all"
               >
-                <h5 className="font-semibold text-slate-800 mb-1">{job.headline}</h5>
+                <h5 className="font-semibold text-stone-800 mb-1">{job.headline}</h5>
                 {job.employer?.name && (
-                  <p className="text-sm text-slate-700 mb-2">{job.employer.name}</p>
+                  <p className="text-sm text-stone-700 mb-2">{job.employer.name}</p>
                 )}
               </Link>
             ))}
@@ -213,7 +213,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-      <div className="bg-gradient-to-r from-teal-600 to-blue-600 p-6 text-white">
+      <div className="bg-gradient-to-r from-[var(--c-solid)] to-blue-600 p-6 text-white">
         <h3 className="text-xl font-bold flex items-center gap-2">
           <MapPin size={24} />
           Din karriärväg
@@ -228,30 +228,30 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
           {steps.map((step, index) => (
             <div key={step.id} className="relative">
               {index < steps.length - 1 && (
-                <div className="absolute left-6 top-14 w-0.5 h-8 bg-slate-200" />
+                <div className="absolute left-6 top-14 w-0.5 h-8 bg-stone-200" />
               )}
 
               <button
                 onClick={() => setExpandedStep(expandedStep === step.id ? null : step.id)}
-                className="w-full flex items-center gap-4 p-4 rounded-xl transition-colors hover:bg-slate-50"
+                className="w-full flex items-center gap-4 p-4 rounded-xl transition-colors hover:bg-stone-50"
               >
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${step.color}`}>
                   <step.icon size={24} />
                 </div>
                 <div className="flex-1 text-left">
-                  <span className="text-xs font-medium text-slate-700 uppercase">Steg {index + 1}</span>
-                  <h4 className="font-semibold text-slate-800">{step.title}</h4>
+                  <span className="text-xs font-medium text-stone-700 uppercase">Steg {index + 1}</span>
+                  <h4 className="font-semibold text-stone-800">{step.title}</h4>
                 </div>
                 <ArrowRight
                   size={20}
-                  className={`text-slate-600 transition-transform ${
+                  className={`text-stone-600 transition-transform ${
                     expandedStep === step.id ? 'rotate-90' : ''
                   }`}
                 />
               </button>
 
               {expandedStep === step.id && (
-                <div className="ml-16 mt-2 mb-4 p-4 bg-slate-50 rounded-xl">
+                <div className="ml-16 mt-2 mb-4 p-4 bg-stone-50 rounded-xl">
                   {step.content}
                 </div>
               )}
@@ -261,20 +261,20 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
 
         {careerPath.salary_range && (
           <div className="mt-6 pt-6 border-t">
-            <h4 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-              <TrendingUp size={18} className="text-teal-600" />
+            <h4 className="font-semibold text-stone-800 mb-4 flex items-center gap-2">
+              <TrendingUp size={18} className="text-[var(--c-text)]" />
               Marknadsinformation
             </h4>
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-50 rounded-lg p-4">
-                <Coins size={16} className="text-slate-600 mb-1" />
-                <p className="text-2xl font-bold text-slate-800">
+              <div className="bg-stone-50 rounded-lg p-4">
+                <Coins size={16} className="text-stone-600 mb-1" />
+                <p className="text-2xl font-bold text-stone-800">
                   {careerPath.salary_range.median.toLocaleString('sv-SE')} kr
                 </p>
-                <p className="text-xs text-slate-700">Uppskattad medianlön</p>
+                <p className="text-xs text-stone-700">Uppskattad medianlön</p>
               </div>
-              <div className="bg-slate-50 rounded-lg p-4">
-                <TrendingUp size={16} className="text-slate-600 mb-1" />
+              <div className="bg-stone-50 rounded-lg p-4">
+                <TrendingUp size={16} className="text-stone-600 mb-1" />
                 <p className={`text-lg font-bold ${
                   careerPath.demand_trend === 'increasing' ? 'text-green-600' :
                   careerPath.demand_trend === 'decreasing' ? 'text-red-600' :
@@ -284,7 +284,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
                    careerPath.demand_trend === 'stable' ? 'Stabil efterfrågan' :
                    'Sjunkande efterfrågan'}
                 </p>
-                <p className="text-xs text-slate-700">Marknadstrend</p>
+                <p className="text-xs text-stone-700">Marknadstrend</p>
               </div>
             </div>
           </div>

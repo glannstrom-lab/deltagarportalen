@@ -51,7 +51,7 @@ const features = {
   generate: {
     label: 'Generera',
     icon: Sparkles,
-    color: 'text-teal-500',
+    color: 'text-[var(--c-solid)]',
     description: 'Skapa ny text baserat på din input'
   }
 }
@@ -172,7 +172,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
     <div className="mt-2">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-medium"
+        className="flex items-center gap-2 text-sm text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
       >
         <Shield size={16} />
         <Sparkles size={16} />
@@ -185,7 +185,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
           {!hasConsent ? (
             <AiConsentGate compact featureName="AI-skrivhjälp" />
           ) : (
-          <div className="p-4 bg-teal-50 rounded-xl border border-teal-200">
+          <div className="p-4 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]/60">
           {/* Säkerhetsbadge */}
           <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
             <Shield className="w-4 h-4 text-emerald-600" />
@@ -211,7 +211,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
                   key={key}
                   onClick={() => callSecureAI(key)}
                   disabled={loading}
-                  className="flex flex-col items-center gap-1 px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm text-slate-700 hover:bg-slate-50 hover:border-teal-300 transition-colors disabled:opacity-50"
+                  className="flex flex-col items-center gap-1 px-3 py-2 bg-white border border-stone-200 rounded-lg text-sm text-stone-700 hover:bg-stone-50 hover:border-[var(--c-accent)] transition-colors disabled:opacity-50"
                   title={feat.description}
                 >
                   <Icon size={18} className={feat.color} />
@@ -243,7 +243,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
               </div>
               <button
                 onClick={applyPowerWords}
-                className="mt-2 flex items-center gap-1 px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700"
+                className="mt-2 flex items-center gap-1 px-3 py-1.5 bg-[var(--c-solid)] text-white text-sm rounded-lg hover:bg-[var(--c-text)]"
               >
                 <Wand2 size={14} />
                 Ersätt automatiskt
@@ -253,19 +253,19 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
 
           {/* Suggestion */}
           {loading && (
-            <div className="p-4 bg-white rounded-lg border border-slate-200 text-center">
-              <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-teal-600" />
-              <p className="text-sm text-slate-600">AI arbetar...</p>
-              <p className="text-xs text-slate-600 mt-1">Detta kan ta några sekunder</p>
+            <div className="p-4 bg-white rounded-lg border border-stone-200 text-center">
+              <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-[var(--c-text)]" />
+              <p className="text-sm text-stone-600">AI arbetar...</p>
+              <p className="text-xs text-stone-600 mt-1">Detta kan ta några sekunder</p>
             </div>
           )}
 
           {!loading && suggestion && (
-            <div className="bg-white p-4 rounded-lg border border-slate-200">
-              <p className="text-xs font-medium text-slate-700 mb-2 uppercase tracking-wide">
+            <div className="bg-white p-4 rounded-lg border border-stone-200">
+              <p className="text-xs font-medium text-stone-700 mb-2 uppercase tracking-wide">
                 {activeFeature && features[activeFeature]?.label}
               </p>
-              <p className="text-sm text-slate-700 whitespace-pre-wrap">{suggestion}</p>
+              <p className="text-sm text-stone-700 whitespace-pre-wrap">{suggestion}</p>
               <div className="flex gap-2 mt-3">
                 <button
                   onClick={() => {
@@ -273,7 +273,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
                     setSuggestion('')
                     setActiveFeature(null)
                   }}
-                  className="flex items-center gap-1 px-3 py-1.5 bg-teal-600 text-white text-sm rounded-lg hover:bg-teal-700"
+                  className="flex items-center gap-1 px-3 py-1.5 bg-[var(--c-solid)] text-white text-sm rounded-lg hover:bg-[var(--c-text)]"
                 >
                   <Check size={14} />
                   Använd
@@ -283,7 +283,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
                     setSuggestion('')
                     setActiveFeature(null)
                   }}
-                  className="flex items-center gap-1 px-3 py-1.5 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50"
+                  className="flex items-center gap-1 px-3 py-1.5 border border-stone-300 text-stone-700 text-sm rounded-lg hover:bg-stone-50"
                 >
                   Avbryt
                 </button>
@@ -292,7 +292,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
           )}
 
           {!loading && !suggestion && (
-            <div className="text-center py-4 text-slate-700 text-sm">
+            <div className="text-center py-4 text-stone-700 text-sm">
               Välj en funktion ovan för att få hjälp av AI
             </div>
           )}

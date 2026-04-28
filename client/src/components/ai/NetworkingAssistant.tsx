@@ -115,10 +115,10 @@ export function NetworkingAssistant({
               <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h4 className="font-medium text-slate-800 dark:text-slate-200">
+              <h4 className="font-medium text-stone-800 dark:text-stone-200">
                 AI Nätverksassistent
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-600">
+              <p className="text-sm text-stone-600 dark:text-stone-600">
                 Generera personliga nätverksmeddelanden
               </p>
             </div>
@@ -134,7 +134,7 @@ export function NetworkingAssistant({
                   'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium transition-colors',
                   platform === p
                     ? 'bg-blue-600 text-white'
-                    : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                    : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
                 )}
               >
                 {platformIcons[p]}
@@ -208,7 +208,7 @@ export function NetworkingAssistant({
             {/* Main Message */}
             <div className="relative">
               <div className="absolute top-2 right-2 flex items-center gap-1">
-                <span className="text-xs text-slate-600">
+                <span className="text-xs text-stone-600">
                   {result.suggestedMessage.length} tecken
                 </span>
                 <button
@@ -217,7 +217,7 @@ export function NetworkingAssistant({
                     'p-2 rounded-lg transition-colors',
                     copied
                       ? 'bg-green-100 text-green-600'
-                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                      : 'bg-stone-100 hover:bg-stone-200 text-stone-600'
                   )}
                 >
                   {copied ? (
@@ -230,11 +230,11 @@ export function NetworkingAssistant({
               <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 border border-blue-200 dark:border-blue-800">
                 <div className="flex items-center gap-2 mb-3">
                   {platformIcons[platform]}
-                  <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                     {platform}-meddelande
                   </span>
                 </div>
-                <p className="text-sm text-slate-800 dark:text-slate-200 whitespace-pre-wrap pr-16">
+                <p className="text-sm text-stone-800 dark:text-stone-200 whitespace-pre-wrap pr-16">
                   {result.suggestedMessage}
                 </p>
               </div>
@@ -251,9 +251,9 @@ export function NetworkingAssistant({
                   {result.alternativeOpenings.map((opening, i) => (
                     <div
                       key={i}
-                      className="flex items-start justify-between gap-2 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50"
+                      className="flex items-start justify-between gap-2 p-3 rounded-lg bg-stone-50 dark:bg-stone-800/50"
                     >
-                      <p className="text-sm text-slate-700 dark:text-slate-300">
+                      <p className="text-sm text-stone-700 dark:text-stone-300">
                         {opening}
                       </p>
                       <CopyButton text={opening} />
@@ -273,10 +273,10 @@ export function NetworkingAssistant({
                 <ol className="space-y-2">
                   {result.followUpStrategy.map((step, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center text-xs font-medium text-teal-600 dark:text-teal-400">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center text-xs font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">
                         {i + 1}
                       </span>
-                      <span className="text-sm text-slate-700 dark:text-slate-300 pt-0.5">
+                      <span className="text-sm text-stone-700 dark:text-stone-300 pt-0.5">
                         {step}
                       </span>
                     </li>
@@ -296,17 +296,17 @@ export function NetworkingAssistant({
                   {result.relevantGroups.map((group, i) => (
                     <div
                       key={i}
-                      className="p-3 rounded-lg border border-slate-200 dark:border-slate-700"
+                      className="p-3 rounded-lg border border-stone-200 dark:border-stone-700"
                     >
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
+                        <span className="font-medium text-sm text-stone-800 dark:text-stone-200">
                           {group.name}
                         </span>
-                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-xs text-slate-600 dark:text-slate-600">
+                        <span className="px-2 py-0.5 bg-stone-100 dark:bg-stone-800 rounded-full text-xs text-stone-600 dark:text-stone-600">
                           {group.platform}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 dark:text-slate-600">
+                      <p className="text-xs text-stone-600 dark:text-stone-600">
                         {group.relevance}
                       </p>
                     </div>

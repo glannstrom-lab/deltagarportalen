@@ -84,7 +84,7 @@ export default function DashboardPage() {
     <div key={i18n.language}>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-teal-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-[var(--c-solid)] focus:text-white focus:px-4 focus:py-2 focus:rounded-lg"
       >
         {t('dashboard.skipToContent')}
       </a>
@@ -103,8 +103,8 @@ export default function DashboardPage() {
                 </h1>
               </div>
               {/* Progress badge - mobile only */}
-              <div className="flex sm:hidden items-center gap-1.5 bg-teal-50 dark:bg-teal-900/30 px-2.5 py-1 rounded-full">
-                <span className="text-xs font-bold text-teal-600 dark:text-teal-400">{progressPercent}%</span>
+              <div className="flex sm:hidden items-center gap-1.5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 px-2.5 py-1 rounded-full">
+                <span className="text-xs font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{progressPercent}%</span>
                 {progressPercent === 100 && <Sparkles className="w-3.5 h-3.5 text-amber-500" />}
               </div>
             </div>
@@ -114,11 +114,11 @@ export default function DashboardPage() {
               <div className="flex-1 min-w-[120px]">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-medium text-stone-600 dark:text-stone-400">{t('dashboard.readyForJob')}</span>
-                  <span className="text-xs font-bold text-teal-600 dark:text-teal-400">{progressPercent}%</span>
+                  <span className="text-xs font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{progressPercent}%</span>
                 </div>
                 <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-teal-500 rounded-full transition-all duration-500"
+                    className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
                     style={{ width: `${progressPercent}%` }}
                   />
                 </div>
@@ -133,14 +133,14 @@ export default function DashboardPage() {
           {nextStep && progressPercent < 100 && (
             <Link
               to={nextStep.path}
-              className="flex items-center justify-between gap-3 sm:gap-4 bg-teal-500 rounded-xl px-4 sm:px-5 py-3 sm:py-4 text-white hover:bg-teal-600 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+              className="flex items-center justify-between gap-3 sm:gap-4 bg-[var(--c-solid)] rounded-xl px-4 sm:px-5 py-3 sm:py-4 text-white hover:bg-[var(--c-solid)] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2"
             >
               <div className="flex items-center gap-3 sm:gap-4 min-w-0">
                 <div className="w-9 h-9 sm:w-10 sm:h-10 bg-white/20 rounded-lg flex items-center justify-center shrink-0">
                   <nextStep.icon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-[10px] sm:text-xs text-teal-100 font-medium">{t('dashboard.nextStep')}</p>
+                  <p className="text-[10px] sm:text-xs text-white font-medium">{t('dashboard.nextStep')}</p>
                   <h2 className="text-sm sm:text-base font-semibold truncate">{t(nextStep.titleKey)}</h2>
                 </div>
               </div>
@@ -282,8 +282,8 @@ export default function DashboardPage() {
                         <div className="px-2 sm:px-3 pb-2 sm:pb-3 space-y-1">
                           {completedSteps.map(step => (
                             <div key={step.id} className="flex items-center gap-2 sm:gap-3 p-1.5 sm:p-2 text-xs sm:text-sm text-stone-400 dark:text-stone-500">
-                              <div className="w-5 h-5 sm:w-6 sm:h-6 bg-teal-100 dark:bg-teal-900/30 rounded flex items-center justify-center">
-                                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-teal-600 dark:text-teal-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                              <div className="w-5 h-5 sm:w-6 sm:h-6 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded flex items-center justify-center">
+                                <svg className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-[var(--c-text)] dark:text-[var(--c-text)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                                 </svg>
                               </div>
@@ -299,8 +299,8 @@ export default function DashboardPage() {
 
               {/* All done celebration */}
               {remainingSteps.length === 0 && (
-                <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-200 dark:border-teal-800/50 p-4 sm:p-6 text-center">
-                  <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-teal-500 mx-auto mb-2 sm:mb-3" />
+                <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 p-4 sm:p-6 text-center">
+                  <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-[var(--c-solid)] mx-auto mb-2 sm:mb-3" />
                   <h2 className="text-base sm:text-lg font-bold text-stone-800 dark:text-stone-100 mb-1">
                     {t('dashboard.allStepsComplete')}
                   </h2>
@@ -309,7 +309,7 @@ export default function DashboardPage() {
                   </p>
                   <Link
                     to="/job-search"
-                    className="inline-flex items-center gap-2 bg-teal-500 text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium hover:bg-teal-600 transition-colors"
+                    className="inline-flex items-center gap-2 bg-[var(--c-solid)] text-white px-4 sm:px-5 py-2 sm:py-2.5 rounded-lg text-sm sm:text-base font-medium hover:bg-[var(--c-solid)] transition-colors"
                   >
                     {t('dashboard.searchJobs')} <ArrowRight className="w-4 h-4" />
                   </Link>
@@ -321,7 +321,7 @@ export default function DashboardPage() {
                 <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 p-4 sm:p-5">
                   <div className="flex items-center justify-between mb-2 sm:mb-3">
                     <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-100">{t('dashboard.savedJobs')}</h3>
-                    <Link to="/job-search" className="text-xs sm:text-sm text-teal-600 dark:text-teal-400 hover:underline">
+                    <Link to="/job-search" className="text-xs sm:text-sm text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline">
                       {t('dashboard.viewAll')}
                     </Link>
                   </div>
@@ -365,7 +365,7 @@ function StatCard({
     purple: 'bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400',
     blue: 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400',
     peach: 'bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400',
-    teal: 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400',
+    teal: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)]',
   }
 
   return (
@@ -379,7 +379,7 @@ function StatCard({
       {status === 'empty' ? (
         <>
           <p className="text-base sm:text-lg font-bold text-stone-300 dark:text-stone-600">—</p>
-          <p className="text-[10px] sm:text-xs text-teal-600 dark:text-teal-400 font-medium group-hover:underline">{emptyText}</p>
+          <p className="text-[10px] sm:text-xs text-[var(--c-text)] dark:text-[var(--c-text)] font-medium group-hover:underline">{emptyText}</p>
         </>
       ) : (
         <>
@@ -413,13 +413,13 @@ function OnboardingStepCompact({
       className={cn(
         'flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-lg transition-colors group',
         isCurrent
-          ? 'bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800/50'
+          ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50'
           : 'hover:bg-stone-50 dark:hover:bg-stone-800'
       )}
     >
       <div className={cn(
         'w-8 h-8 sm:w-9 sm:h-9 rounded-lg flex items-center justify-center shrink-0',
-        isCurrent ? 'bg-teal-500 text-white' : 'bg-stone-100 dark:bg-stone-800 text-stone-400 group-hover:bg-stone-200'
+        isCurrent ? 'bg-[var(--c-solid)] text-white' : 'bg-stone-100 dark:bg-stone-800 text-stone-400 group-hover:bg-stone-200'
       )}>
         <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
       </div>
@@ -433,7 +433,7 @@ function OnboardingStepCompact({
         <p className="text-[10px] sm:text-xs text-stone-400 dark:text-stone-500 truncate">{description}</p>
       </div>
       {isCurrent && (
-        <span className="text-[10px] sm:text-xs text-white font-medium px-1.5 sm:px-2 py-0.5 bg-teal-500 rounded-full shrink-0">
+        <span className="text-[10px] sm:text-xs text-white font-medium px-1.5 sm:px-2 py-0.5 bg-[var(--c-solid)] rounded-full shrink-0">
           {t('dashboard.next')}
         </span>
       )}

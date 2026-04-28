@@ -52,17 +52,17 @@ export function CVExport({ cvData }: CVExportProps) {
 
   if (!cvData) {
     return (
-      <div className="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-stone-700">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
             <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('cv.export.title')}</h3>
-            <p className="text-sm text-slate-700 dark:text-stone-300">{t('cv.export.subtitle')}</p>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.export.title')}</h3>
+            <p className="text-sm text-stone-700 dark:text-stone-300">{t('cv.export.subtitle')}</p>
           </div>
         </div>
-        <p className="text-sm text-slate-700 dark:text-stone-300">{t('cv.export.createFirst')}</p>
+        <p className="text-sm text-stone-700 dark:text-stone-300">{t('cv.export.createFirst')}</p>
       </div>
     )
   }
@@ -751,14 +751,14 @@ export function CVExport({ cvData }: CVExportProps) {
       </div>
 
       {/* UI */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-sm border border-slate-200 dark:border-stone-700">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
           <div className="p-2 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
             <FileText className="w-5 h-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('cv.export.title')}</h3>
-            <p className="text-sm text-slate-700 dark:text-stone-300">{t('cv.export.subtitle')}</p>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.export.title')}</h3>
+            <p className="text-sm text-stone-700 dark:text-stone-300">{t('cv.export.subtitle')}</p>
           </div>
         </div>
 
@@ -791,7 +791,7 @@ export function CVExport({ cvData }: CVExportProps) {
                     }
                   }}
                   disabled={loading || !!error || isExportingVectorPDF}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:bg-slate-200 disabled:cursor-not-allowed transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:bg-stone-200 disabled:cursor-not-allowed transition-colors"
                 >
                   {exportSuccess === 'vector' ? (
                     <><Check className="w-5 h-5" /> {t('cv.export.pdfSaved')}</>
@@ -813,7 +813,7 @@ export function CVExport({ cvData }: CVExportProps) {
             onMouseEnter={preloadPDFLibraries}
             onFocus={preloadPDFLibraries}
             disabled={isExportingPDF || isExportingWord}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-indigo-200 text-indigo-600 rounded-xl font-medium hover:bg-indigo-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-indigo-200 text-indigo-600 rounded-xl font-medium hover:bg-indigo-50 disabled:bg-stone-100 disabled:border-stone-300 disabled:text-stone-600 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'pdf' ? (
               <><Check className="w-5 h-5" /> {t('cv.export.pdfSaved')}</>
@@ -828,7 +828,7 @@ export function CVExport({ cvData }: CVExportProps) {
           <button
             onClick={handleExportWord}
             disabled={isExportingPDF || isExportingWord}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-blue-200 text-blue-600 rounded-xl font-medium hover:bg-blue-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-blue-200 text-blue-600 rounded-xl font-medium hover:bg-blue-50 disabled:bg-stone-100 disabled:border-stone-300 disabled:text-stone-600 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'word' ? (
               <><Check className="w-5 h-5" /> {t('cv.export.wordSaved')}</>
@@ -840,18 +840,18 @@ export function CVExport({ cvData }: CVExportProps) {
           </button>
         </div>
 
-        <p className="text-xs text-slate-600 dark:text-stone-400 mt-4 text-center">
+        <p className="text-xs text-stone-600 dark:text-stone-400 mt-4 text-center">
           {t('cv.export.filename')}: {cvData.firstName?.toLowerCase() || 'ditt'}-{cvData.lastName?.toLowerCase() || 'namn'}-cv.pdf / .doc
         </p>
 
-        <div className="mt-4 p-3 bg-slate-50 dark:bg-stone-800 rounded-lg space-y-2">
-          <p className="text-xs text-slate-700 dark:text-stone-300">
+        <div className="mt-4 p-3 bg-stone-50 dark:bg-stone-800 rounded-lg space-y-2">
+          <p className="text-xs text-stone-700 dark:text-stone-300">
             <strong>{t('cv.export.info.recommended')}:</strong> {t('cv.export.info.recommendedDesc')}
           </p>
-          <p className="text-xs text-slate-700 dark:text-stone-300">
+          <p className="text-xs text-stone-700 dark:text-stone-300">
             <strong>{t('cv.export.info.exact')}:</strong> {t('cv.export.info.exactDesc')}
           </p>
-          <p className="text-xs text-slate-700 dark:text-stone-300">
+          <p className="text-xs text-stone-700 dark:text-stone-300">
             <strong>Word:</strong> {t('cv.export.info.wordDesc')}
           </p>
         </div>

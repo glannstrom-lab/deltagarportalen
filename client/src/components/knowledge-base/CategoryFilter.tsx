@@ -40,18 +40,18 @@ export default function CategoryFilter({
     <div className="space-y-4">
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600" size={18} />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           placeholder="Sök artiklar..."
-          className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full pl-10 pr-4 py-2.5 bg-white border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
         />
         {searchQuery && (
           <button
             onClick={() => onSearchChange('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-stone-600 hover:text-stone-600"
           >
             <X size={16} />
           </button>
@@ -60,7 +60,7 @@ export default function CategoryFilter({
 
       {/* Categories */}
       <div className="space-y-1">
-        <label className="text-xs font-medium text-slate-700 uppercase tracking-wider">
+        <label className="text-xs font-medium text-stone-700 uppercase tracking-wider">
           Kategorier
         </label>
         
@@ -68,7 +68,7 @@ export default function CategoryFilter({
           onClick={() => onCategoryChange('', '')}
           className={`
             w-full text-left px-3 py-2 rounded-lg text-sm transition-colors
-            ${!selectedCategory ? 'bg-teal-50 text-teal-700 font-medium' : 'text-slate-700 hover:bg-slate-50'}
+            ${!selectedCategory ? 'bg-[var(--c-bg)] text-[var(--c-text)] font-medium' : 'text-stone-700 hover:bg-stone-50'}
           `}
         >
           Alla kategorier
@@ -84,8 +84,8 @@ export default function CategoryFilter({
               className={`
                 w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors
                 ${selectedCategory === category.id 
-                  ? 'bg-teal-50 text-teal-700 font-medium' 
-                  : 'text-slate-700 hover:bg-slate-50'
+                  ? 'bg-[var(--c-bg)] text-[var(--c-text)] font-medium' 
+                  : 'text-stone-700 hover:bg-stone-50'
                 }
               `}
             >
@@ -109,8 +109,8 @@ export default function CategoryFilter({
                     className={`
                       w-full text-left px-3 py-1.5 rounded-lg text-sm transition-colors
                       ${selectedSubcategory === sub.id 
-                        ? 'bg-teal-100/50 text-teal-700' 
-                        : 'text-slate-600 hover:bg-slate-50'
+                        ? 'bg-[var(--c-accent)]/40/50 text-[var(--c-text)]' 
+                        : 'text-stone-600 hover:bg-stone-50'
                       }
                     `}
                   >
@@ -127,7 +127,7 @@ export default function CategoryFilter({
       {hasActiveFilters && (
         <button
           onClick={clearFilters}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-slate-100 text-slate-600 rounded-lg text-sm hover:bg-slate-200 transition-colors"
+          className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-stone-100 text-stone-600 rounded-lg text-sm hover:bg-stone-200 transition-colors"
         >
           <X size={16} />
           Rensa filter

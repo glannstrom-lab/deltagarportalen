@@ -108,9 +108,9 @@ export function CVSaveTest() {
   }
 
   return (
-    <div className="p-5 bg-white rounded-2xl border-2 border-slate-200 shadow-sm">
-      <h3 className="text-lg font-bold text-slate-800 mb-2">CV-spar test</h3>
-      <p className="text-sm text-slate-700 mb-4">
+    <div className="p-5 bg-white rounded-2xl border-2 border-stone-200 shadow-sm">
+      <h3 className="text-lg font-bold text-stone-800 mb-2">CV-spar test</h3>
+      <p className="text-sm text-stone-700 mb-4">
         Klicka för att testa om arbetslivserfarenhet sparas korrekt.
       </p>
 
@@ -120,7 +120,7 @@ export function CVSaveTest() {
         className={`
           w-full py-3 px-4 rounded-xl font-medium transition-all
           ${status === 'testing' 
-            ? 'bg-slate-100 text-slate-600 cursor-wait' 
+            ? 'bg-stone-100 text-stone-600 cursor-wait' 
             : status === 'ok'
               ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
               : status === 'error'
@@ -141,7 +141,7 @@ export function CVSaveTest() {
       </button>
 
       {details.length > 0 && (
-        <div className="mt-4 p-3 bg-slate-50 rounded-lg text-xs font-mono space-y-1 max-h-60 overflow-y-auto">
+        <div className="mt-4 p-3 bg-stone-50 rounded-lg text-xs font-mono space-y-1 max-h-60 overflow-y-auto">
           {details.map((log, i) => (
             <div 
               key={i} 
@@ -149,7 +149,7 @@ export function CVSaveTest() {
                 log.includes('❌') ? 'text-rose-600' :
                 log.includes('✅') ? 'text-emerald-600' :
                 log.includes('💡') ? 'text-blue-600 font-medium' :
-                'text-slate-600'
+                'text-stone-600'
               }
             >
               {log}

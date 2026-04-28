@@ -42,7 +42,7 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="p-1.5 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+        className="p-1.5 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
         title="Ändra storlek"
         aria-label="Ändra widget-storlek"
       >
@@ -52,15 +52,15 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
   }
 
   return (
-    <div className="absolute top-2 right-2 z-10 bg-white rounded-lg shadow-lg border border-slate-200 p-2 min-w-[140px]">
-      <div className="flex items-center justify-between mb-2 pb-1 border-b border-slate-100">
-        <span className="text-xs font-medium text-slate-600">Storlek</span>
+    <div className="absolute top-2 right-2 z-10 bg-white rounded-lg shadow-lg border border-stone-200 p-2 min-w-[140px]">
+      <div className="flex items-center justify-between mb-2 pb-1 border-b border-stone-100">
+        <span className="text-xs font-medium text-stone-600">Storlek</span>
         <button
           onClick={() => {
             setIsOpen(false)
             onClose?.()
           }}
-          className="p-0.5 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+          className="p-0.5 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded transition-colors"
         >
           <X size={12} />
         </button>
@@ -79,7 +79,7 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
                 'w-full flex items-center gap-2 px-2 py-1.5 text-xs rounded transition-colors',
                 currentSize === option.value
                   ? 'bg-indigo-50 text-indigo-700 font-medium'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  : 'text-stone-600 hover:bg-stone-50'
               )}
             >
               <Icon size={14} />

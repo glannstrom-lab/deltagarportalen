@@ -59,12 +59,12 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
             key={i}
             onClick={() => onDateClick(date)}
             className={`p-3 text-center border-r border-stone-100 dark:border-stone-700/50 last:border-r-0 transition-colors ${
-              isToday(date) ? 'bg-teal-50 dark:bg-teal-900/20' : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
+              isToday(date) ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20' : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
             }`}
           >
             <p className="text-xs font-medium text-stone-700 dark:text-stone-300 uppercase">{days[i]}</p>
             <p className={`text-lg font-semibold mt-1 ${
-              isToday(date) ? 'text-teal-700 dark:text-teal-400' : 'text-stone-900 dark:text-stone-100'
+              isToday(date) ? 'text-[var(--c-text)] dark:text-[var(--c-solid)]' : 'text-stone-900 dark:text-stone-100'
             }`}>
               {date.getDate()}
             </p>
@@ -87,7 +87,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
               return (
                 <div
                   key={dayIndex}
-                  className="p-1 border-r border-stone-100 dark:border-stone-700/50 last:border-r-0 relative hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
+                  className="p-1 border-r border-stone-100 dark:border-stone-700/50 last:border-r-0 relative hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-inset"
                 >
                   {dayEvents.map((event) => {
                     const config = eventTypeConfig[event.type]

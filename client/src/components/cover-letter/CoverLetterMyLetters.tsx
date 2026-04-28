@@ -262,7 +262,7 @@ export function CoverLetterMyLetters() {
         aria-live="polite"
         aria-busy="true"
       >
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600 dark:text-teal-400" aria-hidden="true" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
         <span className="ml-3 text-stone-600 dark:text-stone-400">Laddar brev...</span>
       </div>
     )
@@ -312,7 +312,7 @@ export function CoverLetterMyLetters() {
             placeholder="Sök bland dina brev..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 sm:py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all text-base sm:text-sm"
+            className="w-full pl-10 pr-4 py-2.5 sm:py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none transition-all text-base sm:text-sm"
           />
         </div>
         <div className="text-sm text-stone-600 dark:text-stone-400">
@@ -336,7 +336,7 @@ export function CoverLetterMyLetters() {
                   'w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center shrink-0',
                   letter.status === 'sent'
                     ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400'
-                    : 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
+                    : 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)]'
                 )}>
                   <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
                 </div>

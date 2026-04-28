@@ -172,8 +172,8 @@ export function CVTips() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {quickTipDefs.map((tip, i) => (
           <div key={i} className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5 hover:shadow-md transition-shadow">
-            <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/50 rounded-lg flex items-center justify-center mb-3">
-              <tip.icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 rounded-lg flex items-center justify-center mb-3">
+              <tip.icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
             </div>
             <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-1">{t(tip.titleKey)}</h3>
             <p className="text-sm text-stone-600 dark:text-stone-400">{t(tip.contentKey)}</p>
@@ -201,8 +201,8 @@ export function CVTips() {
                 className="w-full px-6 py-5 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/50 rounded-xl flex items-center justify-center">
-                    <Icon className="w-6 h-6 text-teal-600 dark:text-teal-400" aria-hidden="true" />
+                  <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 rounded-xl flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" aria-hidden="true" />
                   </div>
                   <div className="text-left">
                     <h3 className="font-semibold text-stone-800 dark:text-stone-100">{sectionTitle}</h3>
@@ -282,14 +282,14 @@ export function CVTips() {
       </div>
 
       {/* CTA */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-200 dark:border-teal-800/50">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50">
         <div>
           <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.tips.cta.title')}</h3>
           <p className="text-stone-600 dark:text-stone-400 text-sm">{t('cv.tips.cta.description')}</p>
         </div>
         <a
           href="/cv"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] transition-colors"
         >
           <FileText className="w-5 h-5" />
           {t('cv.tips.cta.button')}
@@ -300,20 +300,20 @@ export function CVTips() {
       <div className="grid sm:grid-cols-2 gap-4">
         <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
           <div className="flex items-center gap-3 mb-3">
-            <Video className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <Video className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
             <h4 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.tips.resources.video.title')}</h4>
           </div>
           <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
             {t('cv.tips.resources.video.description')}
           </p>
-          <button className="text-teal-600 dark:text-teal-400 text-sm font-medium hover:underline">
+          <button className="text-[var(--c-text)] dark:text-[var(--c-text)] text-sm font-medium hover:underline">
             {t('cv.tips.resources.video.comingSoon')}
           </button>
         </div>
 
         <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
           <div className="flex items-center gap-3 mb-3">
-            <Target className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <Target className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
             <h4 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.tips.resources.ats.title')}</h4>
           </div>
           <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
@@ -321,7 +321,7 @@ export function CVTips() {
           </p>
           <a
             href="/cv/ats"
-            className="text-teal-600 dark:text-teal-400 text-sm font-medium hover:underline"
+            className="text-[var(--c-text)] dark:text-[var(--c-text)] text-sm font-medium hover:underline"
           >
             {t('cv.tips.resources.ats.link')}
           </a>

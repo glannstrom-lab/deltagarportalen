@@ -49,11 +49,11 @@ export function CoverLetterTemplateSelector({
             onClick={() => onSelect(template.id)}
             className={cn(
               'relative p-4 rounded-xl border-2 text-left transition-all',
-              'focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2',
+              'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2',
               'hover:shadow-md',
               isSelected
-                ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
-                : 'border-stone-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700 bg-white dark:bg-stone-800/50'
+                ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
+                : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60 dark:hover:border-[var(--c-accent)]/60 bg-white dark:bg-stone-800/50'
             )}
           >
             {/* Template preview mini */}
@@ -78,7 +78,7 @@ export function CoverLetterTemplateSelector({
                     {template.name}
                   </h3>
                   {isSelected && (
-                    <div className="w-5 h-5 bg-teal-500 rounded-full flex items-center justify-center shrink-0">
+                    <div className="w-5 h-5 bg-[var(--c-solid)] rounded-full flex items-center justify-center shrink-0">
                       <Check size={12} className="text-white" />
                     </div>
                   )}
@@ -139,9 +139,9 @@ export function CoverLetterTemplateSelectorCompact({
             onClick={() => onSelect(template.id)}
             className={cn(
               'px-3 py-2 rounded-lg border transition-all',
-              'focus:outline-none focus:ring-2 focus:ring-teal-500',
+              'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]',
               isSelected
-                ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20 text-teal-700 dark:text-teal-300'
+                ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 text-[var(--c-text)] dark:text-[var(--c-accent)]'
                 : 'border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600 text-stone-700 dark:text-stone-300'
             )}
           >

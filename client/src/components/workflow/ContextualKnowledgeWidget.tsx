@@ -330,7 +330,7 @@ export function ContextualKnowledgeWidget({
           <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
             <Icon size={18} className="text-amber-600" />
           </div>
-          <h3 className="font-semibold text-slate-900">{getContextTitle(currentContext)}</h3>
+          <h3 className="font-semibold text-stone-900">{getContextTitle(currentContext)}</h3>
         </div>
         
         <div className="space-y-2">
@@ -343,13 +343,13 @@ export function ContextualKnowledgeWidget({
               <div className="flex items-start gap-3">
                 <article.icon size={16} className="text-amber-500 mt-0.5 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-medium text-slate-900 text-sm line-clamp-1 group-hover:text-amber-700">
+                  <h4 className="font-medium text-stone-900 text-sm line-clamp-1 group-hover:text-amber-700">
                     {article.title}
                   </h4>
-                  <p className="text-xs text-slate-700 mt-0.5 line-clamp-1">
+                  <p className="text-xs text-stone-700 mt-0.5 line-clamp-1">
                     {article.excerpt}
                   </p>
-                  <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-600">
+                  <div className="flex items-center gap-2 mt-1.5 text-xs text-stone-600">
                     <span>{article.readTime} min läsning</span>
                     <span>•</span>
                     <span className={cn(
@@ -362,7 +362,7 @@ export function ContextualKnowledgeWidget({
                     </span>
                   </div>
                 </div>
-                <ChevronRight size={16} className="text-slate-300 group-hover:text-amber-400 flex-shrink-0" />
+                <ChevronRight size={16} className="text-stone-300 group-hover:text-amber-400 flex-shrink-0" />
               </div>
             </Link>
           ))}
@@ -382,7 +382,7 @@ export function ContextualKnowledgeWidget({
   // Full variant
   return (
     <div className={cn(
-      "bg-white rounded-xl shadow-sm border border-slate-200 p-6",
+      "bg-white rounded-xl shadow-sm border border-stone-200 p-6",
       className
     )}>
       <div className="flex items-center gap-3 mb-4">
@@ -390,8 +390,8 @@ export function ContextualKnowledgeWidget({
           <Icon size={20} className="text-amber-600" />
         </div>
         <div>
-          <h3 className="font-semibold text-slate-900">{getContextTitle(currentContext)}</h3>
-          <p className="text-sm text-slate-700">Artiklar valda för där du är nu</p>
+          <h3 className="font-semibold text-stone-900">{getContextTitle(currentContext)}</h3>
+          <p className="text-sm text-stone-700">Artiklar valda för där du är nu</p>
         </div>
       </div>
 
@@ -400,19 +400,19 @@ export function ContextualKnowledgeWidget({
           <Link
             key={article.id}
             to={`/knowledge-base/article/${article.id}`}
-            className="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors group"
+            className="flex items-start gap-4 p-4 rounded-xl hover:bg-stone-50 transition-colors group"
           >
-            <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-amber-100 transition-colors">
-              <article.icon size={20} className="text-slate-600 group-hover:text-amber-600" />
+            <div className="w-12 h-12 bg-stone-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-amber-100 transition-colors">
+              <article.icon size={20} className="text-stone-600 group-hover:text-amber-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-slate-900 group-hover:text-teal-600 transition-colors">
+              <h4 className="font-medium text-stone-900 group-hover:text-[var(--c-text)] transition-colors">
                 {article.title}
               </h4>
-              <p className="text-sm text-slate-700 mt-1 line-clamp-2">
+              <p className="text-sm text-stone-700 mt-1 line-clamp-2">
                 {article.excerpt}
               </p>
-              <div className="flex items-center gap-3 mt-2 text-xs text-slate-600">
+              <div className="flex items-center gap-3 mt-2 text-xs text-stone-600">
                 <span>{article.readTime} min läsning</span>
                 <span className={cn(
                   article.difficulty === 'beginner' ? "text-green-600" :
@@ -424,7 +424,7 @@ export function ContextualKnowledgeWidget({
                 </span>
               </div>
             </div>
-            <ChevronRight size={20} className="text-slate-300 group-hover:text-teal-400 flex-shrink-0 mt-1" />
+            <ChevronRight size={20} className="text-stone-300 group-hover:text-[var(--c-solid)] flex-shrink-0 mt-1" />
           </Link>
         ))}
       </div>
@@ -477,9 +477,9 @@ export function SmartContextWidget({ jobStatus, className }: SmartContextWidgetP
 
   return (
     <div className={cn("space-y-3", className)}>
-      <div className="bg-teal-50 rounded-xl p-4 border border-teal-100">
-        <h4 className="font-semibold text-teal-900">{message.title}</h4>
-        <p className="text-sm text-teal-700">{message.subtitle}</p>
+      <div className="bg-[var(--c-bg)] rounded-xl p-4 border border-[var(--c-accent)]/40">
+        <h4 className="font-semibold text-[var(--c-text)]">{message.title}</h4>
+        <p className="text-sm text-[var(--c-text)]">{message.subtitle}</p>
       </div>
       <ContextualKnowledgeWidget 
         context={getContextFromStatus()} 

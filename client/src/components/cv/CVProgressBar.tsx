@@ -26,19 +26,19 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
   const tips = getOverallTips(percentage)
   
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6">
+    <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-4 mb-6">
       {/* Main progress */}
       <div className="flex items-center gap-4 mb-4">
         <div className="flex-1">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm font-medium text-slate-700">
+            <span className="text-sm font-medium text-stone-700">
               Ditt CV är {percentage}% klart
             </span>
             <span className={`text-sm font-bold ${getScoreColor(percentage)}`}>
               {total}/100
             </span>
           </div>
-          <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-3 bg-stone-100 rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full transition-all duration-500 ${getScoreBgColor(percentage)}`}
               style={{ width: `${percentage}%` }}
@@ -48,7 +48,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
       </div>
       
       {/* Tips */}
-      <p className="text-sm text-slate-700 mb-4">
+      <p className="text-sm text-stone-700 mb-4">
         💡 {tips}
       </p>
       
@@ -68,7 +68,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
                   ? 'bg-indigo-100 text-indigo-700 font-medium' 
                   : isCompleted 
                     ? 'bg-green-50 text-green-700' 
-                    : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
+                    : 'bg-stone-50 text-stone-700 hover:bg-stone-100'
                 }
               `}
             >
@@ -85,7 +85,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
       </div>
       
       {/* Section breakdown */}
-      <div className="mt-4 pt-4 border-t border-slate-100">
+      <div className="mt-4 pt-4 border-t border-stone-100">
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
           {sections.map((section) => (
             <div 
@@ -95,7 +95,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
                   ? 'bg-green-50 text-green-700' 
                   : section.score > 0 
                     ? 'bg-amber-50 text-amber-700'
-                    : 'bg-slate-50 text-slate-700'
+                    : 'bg-stone-50 text-stone-700'
               }`}
             >
               <div className="text-xs font-medium">{section.name}</div>

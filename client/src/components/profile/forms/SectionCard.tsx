@@ -25,8 +25,8 @@ export function SectionCard({
 }: SectionCardProps) {
   const colorConfig = {
     teal: {
-      iconBg: 'bg-teal-100 dark:bg-teal-900/50',
-      iconColor: 'text-teal-600 dark:text-teal-400',
+      iconBg: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50',
+      iconColor: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
       titleColor: 'text-stone-800 dark:text-stone-200'
     },
     sky: {

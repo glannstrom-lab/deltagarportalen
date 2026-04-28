@@ -42,7 +42,7 @@ export default function AITeam() {
       {/* Skip link for accessibility */}
       <a
         href="#ai-chat"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-teal-600 focus:text-white focus:rounded-lg focus:shadow-lg"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--c-solid)] focus:text-white focus:rounded-lg focus:shadow-lg"
       >
         {t('aiTeam.skipToChat', 'Hoppa till chatten')}
       </a>
@@ -53,8 +53,8 @@ export default function AITeam() {
       {/* Page Header */}
       <header className="mb-6">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
-            <Users className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+          <div className="w-10 h-10 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
+            <Users className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
           </div>
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">

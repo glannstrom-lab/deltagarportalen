@@ -124,11 +124,11 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
   const progressPercent = Math.round((completedCount / steps.length) * 100)
 
   return (
-    <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
+    <div className="bg-white rounded-2xl shadow-card border border-stone-100 p-6">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="font-semibold text-slate-800 text-lg">Din väg till jobbet</h3>
-          <p className="text-sm text-slate-700 mt-1">
+          <h3 className="font-semibold text-stone-800 text-lg">Din väg till jobbet</h3>
+          <p className="text-sm text-stone-700 mt-1">
             {progressPercent === 100 
               ? '🎉 Du är redo för intervjuer!'
               : `Du har kommit ${progressPercent}% på vägen`
@@ -136,17 +136,17 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
           </p>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-bold text-teal-600">
+          <div className="text-2xl font-bold text-[var(--c-text)]">
             {completedCount}/{steps.length}
           </div>
-          <div className="text-xs text-slate-600">steg klara</div>
+          <div className="text-xs text-stone-600">steg klara</div>
         </div>
       </div>
 
       {/* Progress bar */}
-      <div className="h-2 bg-slate-100 rounded-full mb-6 overflow-hidden">
+      <div className="h-2 bg-stone-100 rounded-full mb-6 overflow-hidden">
         <div 
-          className="h-full bg-gradient-to-r from-teal-500 to-teal-600 rounded-full transition-all duration-1000 ease-out"
+          className="h-full bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] rounded-full transition-all duration-1000 ease-out"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
@@ -163,19 +163,19 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
                 isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
               } ${
                 step.completed 
-                  ? 'bg-teal-50 border border-teal-100' 
+                  ? 'bg-[var(--c-bg)] border border-[var(--c-accent)]/40' 
                   : step.locked
-                    ? 'bg-slate-50 opacity-60'
-                    : 'bg-white border border-slate-200 hover:border-teal-300 hover:shadow-sm'
+                    ? 'bg-stone-50 opacity-60'
+                    : 'bg-white border border-stone-200 hover:border-[var(--c-accent)] hover:shadow-sm'
               }`}
             >
               {/* Icon/Status */}
               <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center ${
                 step.completed
-                  ? 'bg-teal-500 text-white'
+                  ? 'bg-[var(--c-solid)] text-white'
                   : step.locked
-                    ? 'bg-slate-200 text-slate-600'
-                    : 'bg-teal-100 text-teal-600'
+                    ? 'bg-stone-200 text-stone-600'
+                    : 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
               }`}>
                 {step.completed ? (
                   <CheckCircle2 className="w-5 h-5" />
@@ -190,18 +190,18 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h4 className={`font-medium ${
-                    step.completed ? 'text-teal-900' : 'text-slate-800'
+                    step.completed ? 'text-[var(--c-text)]' : 'text-stone-800'
                   }`}>
                     {step.title}
                   </h4>
                   {step.completed && (
-                    <span className="text-xs bg-teal-200 text-teal-800 px-2 py-0.5 rounded-full">
+                    <span className="text-xs bg-[var(--c-accent)]/60 text-[var(--c-text)] px-2 py-0.5 rounded-full">
                       Klar
                     </span>
                   )}
                 </div>
                 <p className={`text-sm ${
-                  step.locked ? 'text-slate-600' : 'text-slate-700'
+                  step.locked ? 'text-stone-600' : 'text-stone-700'
                 }`}>
                   {step.locked ? 'Låst - slutför föregående steg' : step.description}
                 </p>
@@ -210,8 +210,8 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
               {/* Action */}
               {step.locked ? (
                 <span
-                  className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg text-slate-600 cursor-not-allowed ${
-                    step.completed ? 'bg-teal-100 text-teal-700' : 'bg-slate-100'
+                  className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg text-stone-600 cursor-not-allowed ${
+                    step.completed ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)]' : 'bg-stone-100'
                   }`}
                 >
                   {step.action}
@@ -221,8 +221,8 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
                   to={step.href}
                   className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${
                     step.completed
-                      ? 'text-teal-700 bg-teal-100 hover:bg-teal-200'
-                      : 'text-teal-600 bg-teal-50 hover:bg-teal-100'
+                      ? 'text-[var(--c-text)] bg-[var(--c-accent)]/40 hover:bg-[var(--c-accent)]/60'
+                      : 'text-[var(--c-text)] bg-[var(--c-bg)] hover:bg-[var(--c-accent)]/40'
                   }`}
                 >
                   {step.action}
@@ -234,8 +234,8 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       </div>
 
       {/* Motivational message */}
-      <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-teal-50 rounded-xl border border-amber-100">
-        <p className="text-sm text-slate-700">
+      <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-[var(--c-bg)] rounded-xl border border-amber-100">
+        <p className="text-sm text-stone-700">
           {progressPercent === 0 ? (
             'Varje resa börjar med ett första steg. Du kan göra det! 💪'
           ) : progressPercent < 30 ? (

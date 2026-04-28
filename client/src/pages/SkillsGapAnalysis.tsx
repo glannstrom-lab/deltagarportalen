@@ -719,8 +719,8 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-purple-100 to-sky-100 dark:from-purple-900/30 dark:to-sky-900/30 mb-2">
           <Target className="w-7 h-7 text-purple-600 dark:text-purple-400" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-stone-100">{t('skillsGapAnalysis.title')}</h1>
-        <p className="text-slate-600 dark:text-stone-400 max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">{t('skillsGapAnalysis.title')}</h1>
+        <p className="text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
           {t('skillsGapAnalysis.description')}
         </p>
       </div>
@@ -761,10 +761,10 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
               <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
             <div>
-              <h2 className="font-semibold text-slate-800 dark:text-stone-100">
+              <h2 className="font-semibold text-stone-800 dark:text-stone-100">
                 {t('skillsGapAnalysis.yourCurrentProfile')}
               </h2>
-              <p className="text-sm text-slate-500 dark:text-stone-400">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 {t('skillsGapAnalysis.fetchedFromCVAndProfile')}
               </p>
             </div>
@@ -789,7 +789,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
 
         {hasProfileData ? (
           <div className="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4 max-h-48 overflow-y-auto">
-            <pre className="text-sm text-slate-700 dark:text-stone-300 whitespace-pre-wrap font-sans">
+            <pre className="text-sm text-stone-700 dark:text-stone-300 whitespace-pre-wrap font-sans">
               {profileSummary}
             </pre>
           </div>
@@ -819,8 +819,8 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
             <Search className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="font-semibold text-slate-800 dark:text-stone-100">{t('skillsGapAnalysis.dreamJob.title')}</h2>
-            <p className="text-sm text-slate-500 dark:text-stone-400">
+            <h2 className="font-semibold text-stone-800 dark:text-stone-100">{t('skillsGapAnalysis.dreamJob.title')}</h2>
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               {t('skillsGapAnalysis.dreamJobDescription')}
             </p>
           </div>
@@ -852,9 +852,9 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           onChange={(e) => setDreamJob(e.target.value)}
           placeholder={t('skillsGapAnalysis.dreamJob.placeholder')}
           rows={6}
-          className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+          className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-purple-500 dark:focus:border-purple-400 focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
         />
-        <p className="text-xs text-slate-500 dark:text-stone-400 mt-2">
+        <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
           {t('skillsGapAnalysis.dreamJob.tip')}
         </p>
       </Card>

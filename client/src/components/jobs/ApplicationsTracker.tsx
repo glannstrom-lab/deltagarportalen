@@ -15,7 +15,7 @@ const statusConfig = {
   interview: { label: 'Intervju', icon: MessageSquare, color: 'text-purple-600 bg-purple-50' },
   offer: { label: 'Erbjudande', icon: CheckCircle, color: 'text-green-600 bg-green-50' },
   rejected: { label: 'Avslag', icon: XCircle, color: 'text-red-600 bg-red-50' },
-  withdrawn: { label: 'Återtagen', icon: Clock, color: 'text-slate-600 bg-slate-50' },
+  withdrawn: { label: 'Återtagen', icon: Clock, color: 'text-stone-600 bg-stone-50' },
 }
 
 const statusOrder: JobApplication['status'][] = ['saved', 'applied', 'interview', 'offer', 'rejected', 'withdrawn']
@@ -34,11 +34,11 @@ export function ApplicationsTracker({ applications, onUpdateStatus, onDelete, on
   const responseCount = applications.filter(a => ['interview', 'offer', 'rejected'].includes(a.status)).length
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="font-semibold text-slate-800">Mina ansökningar</h3>
-          <p className="text-sm text-slate-700">
+          <h3 className="font-semibold text-stone-800">Mina ansökningar</h3>
+          <p className="text-sm text-stone-700">
             {totalCount} sparade • {appliedCount} ansökta • {responseCount} svar
           </p>
         </div>
@@ -49,7 +49,7 @@ export function ApplicationsTracker({ applications, onUpdateStatus, onDelete, on
             <div className="font-bold text-2xl text-[#4f46e5]">
               {Math.round((responseCount / Math.max(appliedCount, 1)) * 100)}%
             </div>
-            <div className="text-slate-700">svarsfrekvens</div>
+            <div className="text-stone-700">svarsfrekvens</div>
           </div>
         </div>
       </div>
@@ -69,31 +69,31 @@ export function ApplicationsTracker({ applications, onUpdateStatus, onDelete, on
                 <div className={`p-1.5 rounded-lg ${config.color}`}>
                   <Icon size={14} />
                 </div>
-                <span className="font-medium text-slate-700">{config.label}</span>
-                <span className="text-sm text-slate-600">({apps.length})</span>
+                <span className="font-medium text-stone-700">{config.label}</span>
+                <span className="text-sm text-stone-600">({apps.length})</span>
               </div>
 
               <div className="space-y-2 pl-8">
                 {apps.map((app) => (
                   <div
                     key={app.id}
-                    className="bg-slate-50 rounded-xl p-3 cursor-pointer hover:bg-slate-100 transition-colors"
+                    className="bg-stone-50 rounded-xl p-3 cursor-pointer hover:bg-stone-100 transition-colors"
                     onClick={() => setExpandedApp(expandedApp === app.id ? null : app.id)}
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="font-medium text-slate-800">{app.job?.title}</p>
-                        <p className="text-sm text-slate-700">{app.job?.company}</p>
+                        <p className="font-medium text-stone-800">{app.job?.title}</p>
+                        <p className="text-sm text-stone-700">{app.job?.company}</p>
                       </div>
                       <div className="flex items-center gap-2">
                         {app.appliedDate && (
-                          <span className="text-xs text-slate-600">
+                          <span className="text-xs text-stone-600">
                             Ansökte {new Date(app.appliedDate).toLocaleDateString('sv-SE')}
                           </span>
                         )}
                         <ChevronDown
                           size={16}
-                          className={`text-slate-600 transition-transform ${
+                          className={`text-stone-600 transition-transform ${
                             expandedApp === app.id ? 'rotate-180' : ''
                           }`}
                         />
@@ -102,10 +102,10 @@ export function ApplicationsTracker({ applications, onUpdateStatus, onDelete, on
 
                     {/* Expanded details */}
                     {expandedApp === app.id && (
-                      <div className="mt-3 pt-3 border-t border-slate-200">
+                      <div className="mt-3 pt-3 border-t border-stone-200">
                         {/* Status change */}
                         <div className="mb-3">
-                          <p className="text-xs text-slate-700 mb-2">Ändra status:</p>
+                          <p className="text-xs text-stone-700 mb-2">Ändra status:</p>
                           <div className="flex flex-wrap gap-2">
                             {statusOrder.map((s) => {
                               const sConfig = statusConfig[s]
@@ -120,7 +120,7 @@ export function ApplicationsTracker({ applications, onUpdateStatus, onDelete, on
                                   className={`flex items-center gap-1 px-2 py-1 rounded-lg text-xs transition-colors ${
                                     app.status === s
                                       ? sConfig.color
-                                      : 'bg-white text-slate-600 hover:bg-slate-100'
+                                      : 'bg-white text-stone-600 hover:bg-stone-100'
                                   }`}
                                 >
                                   <SIcon size={12} />
@@ -133,11 +133,11 @@ export function ApplicationsTracker({ applications, onUpdateStatus, onDelete, on
 
                         {/* Notes */}
                         <div className="mb-3">
-                          <p className="text-xs text-slate-700 mb-1">Anteckningar:</p>
+                          <p className="text-xs text-stone-700 mb-1">Anteckningar:</p>
                           {app.notes ? (
-                            <p className="text-sm text-slate-600 bg-white p-2 rounded-lg">{app.notes}</p>
+                            <p className="text-sm text-stone-600 bg-white p-2 rounded-lg">{app.notes}</p>
                           ) : (
-                            <p className="text-sm text-slate-600 italic">Inga anteckningar</p>
+                            <p className="text-sm text-stone-600 italic">Inga anteckningar</p>
                           )}
                           <div className="flex gap-2 mt-2">
                             <input
@@ -146,7 +146,7 @@ export function ApplicationsTracker({ applications, onUpdateStatus, onDelete, on
                               value={noteInput}
                               onChange={(e) => setNoteInput(e.target.value)}
                               onClick={(e) => e.stopPropagation()}
-                              className="flex-1 text-sm px-3 py-1.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+                              className="flex-1 text-sm px-3 py-1.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
                             />
                             <button
                               onClick={(e) => {
@@ -186,7 +186,7 @@ export function ApplicationsTracker({ applications, onUpdateStatus, onDelete, on
         })}
 
         {applications.length === 0 && (
-          <div className="text-center py-8 text-slate-600">
+          <div className="text-center py-8 text-stone-600">
             <Briefcase size={48} className="mx-auto mb-2 opacity-50" />
             <p>Inga sparade jobb ännu</p>
             <p className="text-sm">Börja söka och spara jobb du är intresserad av!</p>

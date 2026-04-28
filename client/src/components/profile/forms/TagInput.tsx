@@ -66,11 +66,11 @@ export function TagInput({
 
   const colorClasses = {
     teal: {
-      tag: 'bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 border-teal-200 dark:border-teal-800',
-      tagHover: 'hover:bg-teal-100 dark:hover:bg-teal-800',
-      button: 'bg-teal-500 hover:bg-teal-600 focus:ring-teal-400',
-      focus: 'focus:ring-teal-400 focus:border-teal-400',
-      suggestion: 'hover:bg-teal-50 dark:hover:bg-teal-900/40'
+      tag: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-accent)] border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50',
+      tagHover: 'hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-solid)]',
+      button: 'bg-[var(--c-solid)] hover:bg-[var(--c-solid)] focus:ring-[var(--c-solid)]',
+      focus: 'focus:ring-[var(--c-solid)] focus:border-[var(--c-solid)]',
+      suggestion: 'hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/40'
     },
     amber: {
       tag: 'bg-amber-50 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800',
@@ -318,7 +318,7 @@ export function TagInput({
                   className={cn(
                     'w-full px-3 py-2 text-left text-sm text-stone-700 dark:text-stone-300 cursor-pointer',
                     colors.suggestion,
-                    index === activeIndex && 'bg-teal-50 dark:bg-teal-900/40'
+                    index === activeIndex && 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40'
                   )}
                 >
                   {label}

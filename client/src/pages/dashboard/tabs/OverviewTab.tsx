@@ -217,14 +217,14 @@ function ExpandableCategory({
 
   const colors = {
     teal: {
-      header: 'from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20',
-      headerText: 'text-teal-800 dark:text-teal-300',
-      headerIcon: 'text-teal-600 dark:text-teal-400',
-      border: 'border-teal-200 dark:border-teal-800/50',
-      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-teal-50 dark:hover:bg-teal-900/20',
-      itemBorder: 'border-teal-100 dark:border-teal-800/30',
-      iconBg: 'bg-teal-100 dark:bg-teal-900/40',
-      iconColor: 'text-teal-600 dark:text-teal-400',
+      header: 'from-[var(--c-bg)] to-[var(--c-accent)]/40/50 dark:from-[var(--c-bg)]/40 dark:to-[var(--c-bg)]/30',
+      headerText: 'text-[var(--c-text)] dark:text-[var(--c-accent)]',
+      headerIcon: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
+      border: 'border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50',
+      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30',
+      itemBorder: 'border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/30',
+      iconBg: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40',
+      iconColor: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
       completeBg: 'bg-emerald-100 dark:bg-emerald-900/40',
       completeIcon: 'text-emerald-600 dark:text-emerald-400'
     },
@@ -479,7 +479,7 @@ export default function OverviewTab() {
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-teal-600 animate-spin mx-auto mb-3" aria-hidden="true" />
+          <Loader2 className="w-8 h-8 text-[var(--c-text)] animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-stone-600 dark:text-stone-400">Laddar...</p>
         </div>
       </div>
@@ -495,19 +495,19 @@ export default function OverviewTab() {
       {/* Progress Dashboard */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3" role="region" aria-label="Din framgång">
         {/* Onboarding Progress */}
-        <div className="bg-gradient-to-br from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20 rounded-xl p-3 sm:p-4 border border-teal-200 dark:border-teal-800/50">
+        <div className="bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-accent)]/40/50 dark:from-[var(--c-bg)]/40 dark:to-[var(--c-bg)]/30 rounded-xl p-3 sm:p-4 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50">
           <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center shrink-0">
-              <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center shrink-0">
+              <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
             </div>
-            <span className="text-xs sm:text-sm font-medium text-teal-800 dark:text-teal-300 truncate">Kom igång</span>
+            <span className="text-xs sm:text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-accent)] truncate">Kom igång</span>
           </div>
-          <div className="text-xl sm:text-2xl font-bold text-teal-900 dark:text-teal-100" aria-live="polite">
+          <div className="text-xl sm:text-2xl font-bold text-[var(--c-text)] dark:text-white" aria-live="polite">
             {onboardingComplete}/{onboardingTotal}
           </div>
-          <div className="h-1 sm:h-1.5 bg-teal-200 dark:bg-teal-900/50 rounded-full mt-1.5 sm:mt-2 overflow-hidden">
+          <div className="h-1 sm:h-1.5 bg-[var(--c-accent)]/60 dark:bg-[var(--c-bg)]/50 rounded-full mt-1.5 sm:mt-2 overflow-hidden">
             <div
-              className="h-full bg-teal-500 dark:bg-teal-400 rounded-full transition-all"
+              className="h-full bg-[var(--c-solid)] dark:bg-[var(--c-solid)]/80 rounded-full transition-all"
               style={{ width: `${(onboardingComplete / onboardingTotal) * 100}%` }}
               role="progressbar"
               aria-valuenow={(onboardingComplete / onboardingTotal) * 100}

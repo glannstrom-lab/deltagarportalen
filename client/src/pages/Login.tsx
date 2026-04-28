@@ -74,7 +74,7 @@ export default function Login() {
         aria-live="polite"
         aria-busy="true"
       >
-        <Loader2 className="animate-spin text-teal-500 dark:text-teal-400" size={48} aria-hidden="true" />
+        <Loader2 className="animate-spin text-[var(--c-solid)] dark:text-[var(--c-text)]" size={48} aria-hidden="true" />
         <span className="sr-only">Laddar...</span>
       </div>
     )
@@ -129,7 +129,7 @@ export default function Login() {
                   onBlur={handleBlur}
                   aria-invalid={touched.email && !!errors.email}
                   aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.email && errors.email
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
                       : 'border-stone-300 dark:border-stone-600'
@@ -161,7 +161,7 @@ export default function Login() {
                   onBlur={handleBlur}
                   aria-invalid={touched.password && !!errors.password}
                   aria-describedby={touched.password && errors.password ? 'password-error' : undefined}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.password && errors.password
                       ? 'border-red-300 dark:border-red-700 focus:border-red-500'
                       : 'border-stone-300 dark:border-stone-600'
@@ -190,7 +190,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
+              className="w-full bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)] text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
             >
               {isSubmitting ? (
                 <>
@@ -227,7 +227,7 @@ export default function Login() {
               setIsGoogleLoading(false)
             }}
             disabled={isGoogleLoading}
-            className="w-full bg-white dark:bg-stone-700 hover:bg-stone-50 dark:hover:bg-stone-600 border border-stone-300 dark:border-stone-600 text-gray-700 dark:text-gray-200 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
+            className="w-full bg-white dark:bg-stone-700 hover:bg-stone-50 dark:hover:bg-stone-600 border border-stone-300 dark:border-stone-600 text-gray-700 dark:text-gray-200 py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-3 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
           >
             {isGoogleLoading ? (
               <Loader2 className="animate-spin" size={20} />
@@ -241,7 +241,7 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-gray-600 dark:text-gray-300">
               {t('auth.noAccount')}{' '}
-              <Link to="/register" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-semibold">
+              <Link to="/register" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-semibold">
                 {t('auth.createAccountLink')}
               </Link>
             </p>
@@ -250,7 +250,7 @@ export default function Login() {
 
         {/* Back Link */}
         <div className="mt-6 text-center">
-          <Link to="/" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 text-sm">
+          <Link to="/" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] text-sm">
             ← {t('auth.backToJobin')}
           </Link>
         </div>

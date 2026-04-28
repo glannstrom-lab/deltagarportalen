@@ -35,11 +35,11 @@ export function OnboardingStep({
       aria-label={`Steg ${step}: ${title}. ${description}. Status: ${statusLabel}`}
       className={cn(
         'flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group',
-        'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2',
         // Complete state
-        isComplete && 'bg-teal-50/50 dark:bg-teal-900/10',
+        isComplete && 'bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/10',
         // Current state - subtle highlight
-        isCurrent && !isComplete && 'bg-stone-50 dark:bg-stone-800/50 border border-teal-200 dark:border-teal-800',
+        isCurrent && !isComplete && 'bg-stone-50 dark:bg-stone-800/50 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50',
         // Default state
         !isComplete && !isCurrent && 'hover:bg-stone-50 dark:hover:bg-stone-800/50'
       )}
@@ -47,12 +47,12 @@ export function OnboardingStep({
       {/* Step indicator */}
       <div className={cn(
         'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
-        isComplete && 'bg-teal-100 dark:bg-teal-900/30',
-        isCurrent && !isComplete && 'bg-teal-500',
+        isComplete && 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30',
+        isCurrent && !isComplete && 'bg-[var(--c-solid)]',
         !isComplete && !isCurrent && 'bg-stone-100 dark:bg-stone-800 group-hover:bg-stone-200 dark:group-hover:bg-stone-700'
       )}>
         {isComplete ? (
-          <Check className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
+          <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
         ) : (
           <Icon className={cn(
             'w-5 h-5',
@@ -65,7 +65,7 @@ export function OnboardingStep({
       <div className="flex-1 min-w-0">
         <p className={cn(
           'text-sm font-medium',
-          isComplete && 'text-teal-700 dark:text-teal-400 line-through',
+          isComplete && 'text-[var(--c-text)] dark:text-[var(--c-solid)] line-through',
           isCurrent && !isComplete && 'text-stone-800 dark:text-stone-100',
           !isComplete && !isCurrent && 'text-stone-600 dark:text-stone-400 group-hover:text-stone-800 dark:group-hover:text-stone-200'
         )}>
@@ -73,7 +73,7 @@ export function OnboardingStep({
         </p>
         <p className={cn(
           'text-xs mt-0.5',
-          isComplete ? 'text-teal-600/70 dark:text-teal-500/70' : 'text-stone-400 dark:text-stone-500'
+          isComplete ? 'text-[var(--c-text)]/70 dark:text-[var(--c-solid)]/70' : 'text-stone-400 dark:text-stone-500'
         )}>
           {description}
         </p>
@@ -81,11 +81,11 @@ export function OnboardingStep({
 
       {/* Status badge or arrow */}
       {isComplete ? (
-        <span className="text-xs text-teal-600 dark:text-teal-400 font-medium px-2 py-0.5 bg-teal-100 dark:bg-teal-900/30 rounded-full">
+        <span className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-full">
           Klart
         </span>
       ) : isCurrent ? (
-        <span className="text-xs text-white font-medium px-2 py-0.5 bg-teal-500 rounded-full">
+        <span className="text-xs text-white font-medium px-2 py-0.5 bg-[var(--c-solid)] rounded-full">
           Nästa
         </span>
       ) : (

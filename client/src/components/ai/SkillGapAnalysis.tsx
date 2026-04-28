@@ -55,22 +55,22 @@ export function SkillGapAnalysis({
     switch (impact) {
       case 'high': return 'text-emerald-600 bg-emerald-50 border-emerald-200'
       case 'medium': return 'text-amber-600 bg-amber-50 border-amber-200'
-      case 'low': return 'text-slate-600 bg-slate-50 border-slate-200'
-      default: return 'text-slate-600 bg-slate-50'
+      case 'low': return 'text-stone-600 bg-stone-50 border-stone-200'
+      default: return 'text-stone-600 bg-stone-50'
     }
   }
 
   return (
-    <div className={cn('bg-white rounded-2xl border border-slate-200 overflow-hidden', className)}>
+    <div className={cn('bg-white rounded-2xl border border-stone-200 overflow-hidden', className)}>
       {/* Header */}
-      <div className="p-6 border-b border-slate-100 bg-gradient-to-r from-indigo-50 to-purple-50">
+      <div className="p-6 border-b border-stone-100 bg-gradient-to-r from-indigo-50 to-purple-50">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center">
             <Target className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 text-lg">Kompetensanalys</h3>
-            <p className="text-sm text-slate-700">För {jobTitle}</p>
+            <h3 className="font-bold text-stone-800 text-lg">Kompetensanalys</h3>
+            <p className="text-sm text-stone-700">För {jobTitle}</p>
           </div>
         </div>
 
@@ -90,14 +90,14 @@ export function SkillGapAnalysis({
             </span>
           </div>
           <div className="flex-1">
-            <p className="font-medium text-slate-800">
+            <p className="font-medium text-stone-800">
               {matchPercentage >= 80 ? 'Utmärkt matchning!' :
                matchPercentage >= 60 ? 'God matchning' : 'Grundläggande matchning'}
             </p>
-            <p className="text-sm text-slate-700">
+            <p className="text-sm text-stone-700">
               Du har {analysis.matching.length} av {targetJobSkills.length} efterfrågade kompetenser
             </p>
-            <div className="mt-2 h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div className="mt-2 h-2 bg-stone-100 rounded-full overflow-hidden">
               <div 
                 className={cn(
                   'h-full rounded-full transition-all',
@@ -115,7 +115,7 @@ export function SkillGapAnalysis({
         {/* Matching skills */}
         {analysis.matching.length > 0 && (
           <div className="mb-6">
-            <h4 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+            <h4 className="font-semibold text-stone-800 mb-3 flex items-center gap-2">
               <Award className="w-5 h-5 text-emerald-500" />
               Dina matchande kompetenser ({analysis.matching.length})
             </h4>
@@ -135,7 +135,7 @@ export function SkillGapAnalysis({
         {/* Skill gaps */}
         {analysis.gaps.length > 0 && (
           <div>
-            <h4 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+            <h4 className="font-semibold text-stone-800 mb-3 flex items-center gap-2">
               <Lightbulb className="w-5 h-5 text-amber-500" />
               Kompetenser att utveckla ({analysis.gaps.length})
             </h4>
@@ -148,7 +148,7 @@ export function SkillGapAnalysis({
                     'border rounded-xl p-4 transition-all cursor-pointer',
                     selectedSkill === prediction.skill 
                       ? 'border-indigo-300 bg-indigo-50' 
-                      : 'border-slate-200 hover:border-indigo-200'
+                      : 'border-stone-200 hover:border-indigo-200'
                   )}
                   onClick={() => setSelectedSkill(
                     selectedSkill === prediction.skill ? null : prediction.skill
@@ -156,7 +156,7 @@ export function SkillGapAnalysis({
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <span className="font-medium text-slate-800">{prediction.skill}</span>
+                      <span className="font-medium text-stone-800">{prediction.skill}</span>
                       <span className={cn(
                         'text-xs font-medium px-2 py-0.5 rounded-full',
                         getImpactColor(predictions.find(p => p.skill === prediction.skill)?.impact || 'medium')
@@ -165,7 +165,7 @@ export function SkillGapAnalysis({
                       </span>
                     </div>
                     <ChevronRight className={cn(
-                      'w-5 h-5 text-slate-600 transition-transform',
+                      'w-5 h-5 text-stone-600 transition-transform',
                       selectedSkill === prediction.skill && 'rotate-90'
                     )} />
                   </div>
@@ -174,14 +174,14 @@ export function SkillGapAnalysis({
                     <div className="mt-4 pt-4 border-t border-indigo-100 animate-in fade-in">
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div className="bg-white rounded-lg p-3">
-                          <p className="text-xs text-slate-700 mb-1">Uppskattad tid</p>
-                          <p className="font-medium text-slate-800 flex items-center gap-1">
+                          <p className="text-xs text-stone-700 mb-1">Uppskattad tid</p>
+                          <p className="font-medium text-stone-800 flex items-center gap-1">
                             <Clock className="w-4 h-4" />
                             {prediction.estimatedTime}
                           </p>
                         </div>
                         <div className="bg-white rounded-lg p-3">
-                          <p className="text-xs text-slate-700 mb-1">Jobb som låses upp</p>
+                          <p className="text-xs text-stone-700 mb-1">Jobb som låses upp</p>
                           <p className="font-medium text-emerald-600 flex items-center gap-1">
                             <TrendingUp className="w-4 h-4" />
                             +{prediction.newJobsUnlocked}
@@ -190,10 +190,10 @@ export function SkillGapAnalysis({
                       </div>
 
                       <div className="mb-4">
-                        <p className="text-sm font-medium text-slate-700 mb-2">Lär dig:</p>
+                        <p className="text-sm font-medium text-stone-700 mb-2">Lär dig:</p>
                         <ul className="space-y-1.5">
                           {['Online-kurs på Coursera/Udemy', 'Praktiska övningar', 'LinkedIn Learning'].map((resource, i) => (
-                            <li key={i} className="flex items-center gap-2 text-sm text-slate-600">
+                            <li key={i} className="flex items-center gap-2 text-sm text-stone-600">
                               <BookOpen className="w-4 h-4 text-indigo-400" />
                               {resource}
                             </li>
@@ -223,12 +223,12 @@ export function SkillGapAnalysis({
         )}
 
         {/* Tips */}
-        <div className="mt-6 p-4 bg-slate-50 rounded-xl">
+        <div className="mt-6 p-4 bg-stone-50 rounded-xl">
           <div className="flex items-start gap-3">
             <BarChart3 className="w-5 h-5 text-indigo-500 shrink-0 mt-0.5" />
             <div>
-              <p className="font-medium text-slate-800 mb-1">Strategi för att öka matchningen</p>
-              <p className="text-sm text-slate-600">
+              <p className="font-medium text-stone-800 mb-1">Strategi för att öka matchningen</p>
+              <p className="text-sm text-stone-600">
                 Om du lär dig de 2-3 viktigaste kompetenserna från listan ovan, 
                 kan du öka din matchning till över 80% och få tillgång till 
                 betydligt fler jobbmöjligheter.

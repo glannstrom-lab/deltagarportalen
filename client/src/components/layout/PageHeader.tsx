@@ -24,11 +24,11 @@ export function PageHeader({
   return (
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
+        <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 tracking-tight">
           {title}
         </h1>
         {subtitle && (
-          <p className="text-base text-slate-700 mt-1">
+          <p className="text-base text-stone-700 mt-1">
             {subtitle}
           </p>
         )}
@@ -42,9 +42,9 @@ export function PageHeader({
             to="/career"
             className={cn(
               "inline-flex items-center justify-center gap-2 px-5 py-2.5",
-              "bg-teal-100 text-teal-700 rounded-xl",
+              "bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-xl",
               "text-sm font-semibold",
-              "hover:bg-teal-200 hover:shadow-lg hover:-translate-y-0.5",
+              "hover:bg-[var(--c-accent)]/60 hover:shadow-lg hover:-translate-y-0.5",
               "transition-all duration-200"
             )}
           >

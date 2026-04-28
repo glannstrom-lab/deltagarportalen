@@ -81,7 +81,7 @@ export function QuickWinButton() {
       energyLevel: 'medium',
       icon: <FileText size={18} />,
       link: '/cv',
-      color: 'bg-teal-100 text-teal-700 border-teal-200 hover:bg-teal-200',
+      color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-[var(--c-accent)]/60 hover:bg-[var(--c-accent)]/60',
       condition: (d) => d?.cv?.progress < 100
     },
     {
@@ -141,8 +141,8 @@ export function QuickWinButton() {
         whileTap={{ scale: 0.95 }}
         className={cn(
           "fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
-          "bg-gradient-to-r from-teal-500 to-sky-600 text-white font-medium",
-          "hover:shadow-xl hover:shadow-teal-500/25 transition-shadow"
+          "bg-gradient-to-r from-[var(--c-solid)] to-sky-600 text-white font-medium",
+          "hover:shadow-xl hover:transition-shadow"
         )}
       >
         <Sparkles size={18} />
@@ -167,24 +167,24 @@ export function QuickWinButton() {
               className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
             >
               {/* Header */}
-              <div className="p-6 border-b border-slate-100">
+              <div className="p-6 border-b border-stone-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-100 to-sky-100 flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-teal-600" />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--c-accent)]/40 to-sky-100 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-[var(--c-text)]" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-800">Gör något litet</h3>
-                      <p className="text-sm text-slate-700">
+                      <h3 className="font-bold text-stone-800">Gör något litet</h3>
+                      <p className="text-sm text-stone-700">
                         5-minuters uppgifter för att komma igång
                       </p>
                     </div>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors"
+                    className="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center transition-colors"
                   >
-                    <X size={18} className="text-slate-600" />
+                    <X size={18} className="text-stone-600" />
                   </button>
                 </div>
               </div>
@@ -196,8 +196,8 @@ export function QuickWinButton() {
                     <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-4">
                       <CheckCircle2 size={32} className="text-emerald-600" />
                     </div>
-                    <h4 className="font-semibold text-slate-800 mb-2">Bra jobbat!</h4>
-                    <p className="text-slate-700 text-sm">
+                    <h4 className="font-semibold text-stone-800 mb-2">Bra jobbat!</h4>
+                    <p className="text-stone-700 text-sm">
                       Du har inga små uppgifter just nu. Ta en välförtjänt paus!
                     </p>
                   </div>
@@ -258,10 +258,10 @@ export function QuickWinButton() {
                 )}
 
                 {/* Footer */}
-                <div className="mt-6 pt-4 border-t border-slate-100">
+                <div className="mt-6 pt-4 border-t border-stone-100">
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="w-full py-2 text-sm text-slate-700 hover:text-slate-700 transition-colors"
+                    className="w-full py-2 text-sm text-stone-700 hover:text-stone-700 transition-colors"
                   >
                     Kanske senare
                   </button>
@@ -285,8 +285,8 @@ export function QuickWinBadge() {
         onClick={() => setIsOpen(true)}
         className={cn(
           "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium",
-          "bg-gradient-to-r from-teal-100 to-sky-100 text-teal-700",
-          "border border-teal-200 hover:shadow-sm transition-all"
+          "bg-gradient-to-r from-[var(--c-accent)]/40 to-sky-100 text-[var(--c-text)]",
+          "border border-[var(--c-accent)]/60 hover:shadow-sm transition-all"
         )}
       >
         <Sparkles size={12} />

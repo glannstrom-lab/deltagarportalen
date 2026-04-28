@@ -138,8 +138,8 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
   return (
     <div className="space-y-6">
       {/* Add new skill */}
-      <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
-        <h4 className="font-medium text-slate-800 mb-3">Lägg till kompetens</h4>
+      <div className="bg-stone-50 p-4 rounded-xl border border-stone-200">
+        <h4 className="font-medium text-stone-800 mb-3">Lägg till kompetens</h4>
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="flex-1">
             <input
@@ -148,13 +148,13 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
               onChange={(e) => setNewSkillName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addSkill()}
               placeholder="t.ex. Projektledning"
-              className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
             />
           </div>
           <select
             value={newSkillCategory}
             onChange={(e) => setNewSkillCategory(e.target.value as SkillCategory)}
-            className="px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+            className="px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
           >
             {categories.map(cat => (
               <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -188,7 +188,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                   <button
                     key={suggestion}
                     onClick={() => addSkill(suggestion, newSkillCategory)}
-                    className="px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm text-slate-700 hover:border-purple-400 hover:text-purple-700 transition-colors"
+                    className="px-3 py-1.5 bg-white border border-stone-200 rounded-full text-sm text-stone-700 hover:border-purple-400 hover:text-purple-700 transition-colors"
                   >
                     + {suggestion}
                   </button>
@@ -205,10 +205,10 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
 
         return (
           <div key={category.value} className="space-y-3">
-            <h4 className="font-medium text-slate-800 flex items-center gap-2">
+            <h4 className="font-medium text-stone-800 flex items-center gap-2">
               <category.icon className="w-4 h-4 text-purple-500" />
               {category.label}
-              <span className="text-sm font-normal text-slate-600">({categorySkills.length})</span>
+              <span className="text-sm font-normal text-stone-600">({categorySkills.length})</span>
             </h4>
             
             <div className="space-y-2" role="list">
@@ -221,7 +221,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                   onDragEnd={handleDragEnd}
                   role="listitem"
                   className={`
-                    flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg
+                    flex items-center gap-3 p-3 bg-white border border-stone-200 rounded-lg
                     hover:border-purple-300 transition-colors
                     ${draggedId === skill.id ? 'opacity-50' : ''}
                   `}
@@ -231,7 +231,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                     <button
                       onClick={() => moveSkillUp(skill.id)}
                       disabled={skillIndex === 0}
-                      className="p-0.5 text-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
                       aria-label={`Flytta ${skill.name} uppåt`}
                     >
                       <ChevronUp className="w-3 h-3" />
@@ -239,14 +239,14 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                     <button
                       onClick={() => moveSkillDown(skill.id)}
                       disabled={skillIndex === categorySkills.length - 1}
-                      className="p-0.5 text-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                      className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
                       aria-label={`Flytta ${skill.name} nedåt`}
                     >
                       <ChevronDown className="w-3 h-3" />
                     </button>
                   </div>
 
-                  <span className="flex-1 font-medium text-slate-700">{skill.name}</span>
+                  <span className="flex-1 font-medium text-stone-700">{skill.name}</span>
 
                   {/* Star rating with ARIA */}
                   <div
@@ -272,7 +272,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                           className={`w-4 h-4 transition-colors ${
                             star <= skill.level
                               ? 'text-amber-400 fill-amber-400'
-                              : 'text-slate-200 hover:text-amber-200'
+                              : 'text-stone-200 hover:text-amber-200'
                           }`}
                         />
                       </button>
@@ -281,7 +281,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
 
                   <button
                     onClick={() => removeSkill(skill.id)}
-                    className="p-1.5 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                    className="p-1.5 text-stone-600 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
                     aria-label={`Ta bort ${skill.name}`}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -294,10 +294,10 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
       })}
 
       {skills.length === 0 && (
-        <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl">
-          <Wrench className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-700 mb-1">Inga kompetenser tillagda ännu</p>
-          <p className="text-sm text-slate-600">Lägg till dina kompetenser ovan</p>
+        <div className="text-center py-12 border-2 border-dashed border-stone-200 rounded-xl">
+          <Wrench className="w-12 h-12 text-stone-300 mx-auto mb-3" />
+          <p className="text-stone-700 mb-1">Inga kompetenser tillagda ännu</p>
+          <p className="text-sm text-stone-600">Lägg till dina kompetenser ovan</p>
         </div>
       )}
     </div>

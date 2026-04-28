@@ -48,14 +48,14 @@ export default function EducationPathFinder() {
   };
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
       <div className="flex items-center gap-3 mb-6">
         <div className="w-12 h-12 bg-[#4f46e5]/10 rounded-xl flex items-center justify-center">
           <GraduationCap className="text-[#4f46e5]" size={24} />
         </div>
         <div>
-          <h2 className="text-xl font-bold text-slate-800">Hitta din utbildningsvag</h2>
-          <p className="text-slate-600">Se vilka utbildningar som leder till ditt dromjobb</p>
+          <h2 className="text-xl font-bold text-stone-800">Hitta din utbildningsvag</h2>
+          <p className="text-stone-600">Se vilka utbildningar som leder till ditt dromjobb</p>
         </div>
       </div>
 
@@ -74,37 +74,37 @@ export default function EducationPathFinder() {
       {loading && (
         <div className="text-center py-8">
           <div className="animate-spin w-8 h-8 border-2 border-[#4f46e5] border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-slate-600">Hamtar utbildningsinformation...</p>
+          <p className="text-stone-600">Hamtar utbildningsinformation...</p>
         </div>
       )}
 
       {!loading && selectedOccupation && educations.length > 0 && (
         <div className="space-y-4">
-          <h3 className="font-semibold text-slate-800">
+          <h3 className="font-semibold text-stone-800">
             Utbildningar for {selectedOccupation.label}:
           </h3>
           
           {educations.map((education, index) => (
             <div
               key={index}
-              className="p-4 bg-slate-50 rounded-xl border border-slate-100 hover:border-[#4f46e5]/30 transition-colors"
+              className="p-4 bg-stone-50 rounded-xl border border-stone-100 hover:border-[#4f46e5]/30 transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h4 className="font-semibold text-slate-800">{education.title}</h4>
-                  <p className="text-sm text-slate-600 mt-1">{education.description}</p>
+                  <h4 className="font-semibold text-stone-800">{education.title}</h4>
+                  <p className="text-sm text-stone-600 mt-1">{education.description}</p>
                   
                   <div className="flex flex-wrap gap-3 mt-3">
-                    <span className="inline-flex items-center gap-1 text-xs text-slate-700 bg-white px-2 py-1 rounded-lg">
+                    <span className="inline-flex items-center gap-1 text-xs text-stone-700 bg-white px-2 py-1 rounded-lg">
                       <Building2 size={12} />
                       {education.type}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-xs text-slate-700 bg-white px-2 py-1 rounded-lg">
+                    <span className="inline-flex items-center gap-1 text-xs text-stone-700 bg-white px-2 py-1 rounded-lg">
                       <Clock size={12} />
                       {education.duration}
                     </span>
                     {education.provider && (
-                      <span className="inline-flex items-center gap-1 text-xs text-slate-700 bg-white px-2 py-1 rounded-lg">
+                      <span className="inline-flex items-center gap-1 text-xs text-stone-700 bg-white px-2 py-1 rounded-lg">
                         <BookOpen size={12} />
                         {education.provider}
                       </span>
@@ -119,14 +119,14 @@ export default function EducationPathFinder() {
             </div>
           ))}
           
-          <p className="text-xs text-slate-700 mt-4">
+          <p className="text-xs text-stone-700 mt-4">
             Information fran Arbetsformedlingens JobEd Connect
           </p>
         </div>
       )}
 
       {!loading && selectedOccupation && educations.length === 0 && (
-        <div className="text-center py-8 text-slate-700">
+        <div className="text-center py-8 text-stone-700">
           <BookOpen size={48} className="mx-auto mb-3 opacity-50" />
           <p>Inga specifika utbildningar hittades for detta yrke.</p>
           <p className="text-sm mt-1">Prova att soka pa ett liknande yrke.</p>
@@ -134,7 +134,7 @@ export default function EducationPathFinder() {
       )}
 
       {!selectedOccupation && (
-        <div className="text-center py-8 text-slate-600">
+        <div className="text-center py-8 text-stone-600">
           <Search size={48} className="mx-auto mb-3 opacity-50" />
           <p>Borja skriva for att hitta utbildningar</p>
         </div>

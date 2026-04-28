@@ -278,14 +278,14 @@ export function EnergyLevelSelector({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mb-4"
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-[var(--c-solid)] flex items-center justify-center mb-4"
         >
           <Sparkles className="w-10 h-10 text-white" />
         </motion.div>
-        <h3 className="text-xl font-bold text-slate-800 mb-2">
+        <h3 className="text-xl font-bold text-stone-800 mb-2">
           Tack! {getEnergyEmoji(selectedLevel!)}
         </h3>
-        <p className="text-slate-600">
+        <p className="text-stone-600">
           {getEnergyDescription(selectedLevel!)}
         </p>
       </motion.div>
@@ -295,10 +295,10 @@ export function EnergyLevelSelector({
   return (
     <div className={cn("p-6", className)}>
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">
+        <h2 className="text-2xl font-bold text-stone-800 mb-2">
           Hur är din energi idag?
         </h2>
-        <p className="text-slate-700">
+        <p className="text-stone-700">
           Vi anpassar din översikt efter hur du mår
         </p>
       </div>
@@ -314,12 +314,12 @@ export function EnergyLevelSelector({
               "w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4",
               selectedLevel === option.level
                 ? option.color + ' border-current ring-2 ring-offset-2 ring-current'
-                : 'bg-white border-slate-200 hover:border-slate-300'
+                : 'bg-white border-stone-200 hover:border-stone-300'
             )}
           >
             <div className={cn(
               "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
-              selectedLevel === option.level ? 'bg-white/50' : 'bg-slate-100'
+              selectedLevel === option.level ? 'bg-white/50' : 'bg-stone-100'
             )}>
               {option.emoji}
             </div>
@@ -327,7 +327,7 @@ export function EnergyLevelSelector({
               <div className="flex items-center gap-2">
                 <span className={cn(
                   "font-semibold",
-                  selectedLevel === option.level ? '' : 'text-slate-700'
+                  selectedLevel === option.level ? '' : 'text-stone-700'
                 )}>
                   {option.label}
                 </span>
@@ -343,14 +343,14 @@ export function EnergyLevelSelector({
               </div>
               <p className={cn(
                 "text-sm",
-                selectedLevel === option.level ? '' : 'text-slate-700'
+                selectedLevel === option.level ? '' : 'text-stone-700'
               )}>
                 {option.description}
               </p>
             </div>
             <div className={cn(
               "transition-colors",
-              selectedLevel === option.level ? '' : 'text-slate-600'
+              selectedLevel === option.level ? '' : 'text-stone-600'
             )}>
               {option.icon}
             </div>
@@ -374,7 +374,7 @@ export function EnergyLevelSelector({
           className={cn(
             "flex-1 transition-all",
             selectedLevel
-              ? 'bg-gradient-to-r from-teal-500 to-sky-600 hover:from-teal-600 hover:to-sky-700'
+              ? 'bg-gradient-to-r from-[var(--c-solid)] to-sky-600 hover:from-[var(--c-solid)] hover:to-sky-700'
               : ''
           )}
         >
@@ -382,7 +382,7 @@ export function EnergyLevelSelector({
         </Button>
       </div>
 
-      <p className="text-center text-xs text-slate-600 mt-4">
+      <p className="text-center text-xs text-stone-600 mt-4">
         Du kan alltid ändra detta senare i inställningarna
       </p>
     </div>

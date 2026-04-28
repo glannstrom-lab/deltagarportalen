@@ -89,7 +89,7 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
           duration: phase === 'breathe-in' ? 4 : phase === 'hold' ? 4 : phase === 'breathe-out' ? 6 : 2,
           ease: 'easeInOut'
         }}
-        className="w-40 h-40 mx-auto mb-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 flex items-center justify-center shadow-lg"
+        className="w-40 h-40 mx-auto mb-8 rounded-full bg-gradient-to-br from-[var(--c-solid)]/80 to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-solid)] flex items-center justify-center shadow-lg"
       >
         <Wind className="w-16 h-16 text-white" />
       </motion.div>
@@ -136,7 +136,7 @@ function GroundingGuide({ technique, onClose }: { technique: any; onClose: () =>
             className={cn(
               'p-4 rounded-xl border-2 transition-all cursor-pointer',
               idx <= currentStep
-                ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700'
+                ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-solid)]'
                 : 'bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600'
             )}
             onClick={() => setCurrentStep(idx)}
@@ -144,7 +144,7 @@ function GroundingGuide({ technique, onClose }: { technique: any; onClose: () =>
             <div className="flex items-start gap-3">
               <div className={cn(
                 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0',
-                idx <= currentStep ? 'bg-emerald-500 dark:bg-emerald-600 text-white' : 'bg-stone-300 dark:bg-stone-600 text-gray-700 dark:text-gray-300'
+                idx <= currentStep ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white' : 'bg-stone-300 dark:bg-stone-600 text-gray-700 dark:text-gray-300'
               )}>
                 {idx + 1}
               </div>
@@ -251,9 +251,9 @@ export default function CrisisTab() {
       </div>
 
       {/* Breathing Exercise */}
-      <Card className="p-6 border-2 border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20">
+      <Card className="p-6 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Wind className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <Wind className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           {t('wellness.crisis.breathingExercise')}
         </h3>
 
@@ -275,7 +275,7 @@ export default function CrisisTab() {
       {/* Grounding Techniques - Interactive Guide */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Eye className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <Eye className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           {t('wellness.crisis.groundingTechniques')}
         </h3>
 
@@ -293,10 +293,10 @@ export default function CrisisTab() {
                   key={index}
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedGroundingTechnique(index)}
-                  className="w-full flex items-start gap-4 p-4 rounded-xl bg-stone-50 dark:bg-stone-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border border-transparent hover:border-emerald-200 dark:hover:border-emerald-700 transition-all text-left"
+                  className="w-full flex items-start gap-4 p-4 rounded-xl bg-stone-50 dark:bg-stone-700 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 border border-transparent hover:border-[var(--c-accent)]/60 dark:hover:border-[var(--c-solid)] transition-all text-left"
                 >
                   <div className="w-10 h-10 rounded-lg bg-white dark:bg-stone-600 flex items-center justify-center shadow-sm flex-shrink-0">
-                    <Icon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                    <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-800 dark:text-gray-100">{technique.title}</h4>
@@ -313,7 +313,7 @@ export default function CrisisTab() {
       {/* Emergency Contacts - Full Details */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Phone className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <Phone className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           {t('wellness.crisis.emergencyContacts')}
         </h3>
         <div className="space-y-3">
@@ -322,7 +322,7 @@ export default function CrisisTab() {
               key={index}
               whileHover={{ x: 4 }}
               href={`tel:${contact.number.replace(/\s/g, '')}`}
-              className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-700 border-2 border-stone-200 dark:border-stone-600 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md transition-all"
+              className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-700 border-2 border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md transition-all"
             >
               <div className={cn(
                 'w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0',
@@ -332,7 +332,7 @@ export default function CrisisTab() {
               </div>
               <div className="flex-1 min-w-0">
                 <h4 className="font-semibold text-gray-800 dark:text-gray-100">{contact.name}</h4>
-                <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{contact.number}</p>
+                <p className="text-lg font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{contact.number}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-300">{contact.description}</p>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{contact.available}</p>
               </div>
@@ -343,16 +343,16 @@ export default function CrisisTab() {
       </Card>
 
       {/* Chat Support */}
-      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-2 border-emerald-200 dark:border-emerald-800">
+      <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <MessageCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           Chatt-stöd
         </h3>
         <p className="text-gray-600 dark:text-gray-300 mb-6">
           Behöver du prata med någon? Våra tränade volontärer finns här dygnet runt för att lyssna.
           Du kan chatta helt anonymt.
         </p>
-        <Button onClick={() => setShowChat(true)} className="w-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600" size="lg">
+        <Button onClick={() => setShowChat(true)} className="w-full bg-[var(--c-solid)] hover:bg-[var(--c-text)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]" size="lg">
           <MessageCircle className="w-5 h-5 mr-2" />
           Starta chatt nu
         </Button>
@@ -380,15 +380,15 @@ export default function CrisisTab() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="text-center p-6 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl border-2 border-emerald-200 dark:border-emerald-800"
+        className="text-center p-6 bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 rounded-xl border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
       >
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <Heart className="w-8 h-8 text-emerald-500 dark:text-emerald-400 mx-auto mb-3" />
+          <Heart className="w-8 h-8 text-[var(--c-solid)] dark:text-[var(--c-text)] mx-auto mb-3" />
         </motion.div>
-        <p className="text-emerald-900 dark:text-emerald-100 font-medium">
+        <p className="text-[var(--c-text)] dark:text-[var(--c-text)] font-medium">
           Kom ihåg: Det är helt okej att inte må bra. Du är inte ensam i det här. Hjälpen finns här när du behöver den.
         </p>
       </motion.div>

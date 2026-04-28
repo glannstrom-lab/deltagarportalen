@@ -228,7 +228,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-2xl p-5 border border-green-100">
+        <div className="bg-gradient-to-br from-green-50 to-[var(--c-bg)] rounded-2xl p-5 border border-green-100">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
               <Heart className="w-5 h-5 text-white" />
@@ -336,7 +336,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                               type.key === 'A' ? 'bg-purple-500' :
                               type.key === 'S' ? 'bg-green-500' :
                               type.key === 'E' ? 'bg-amber-500' :
-                              'bg-teal-500'
+                              'bg-[var(--c-solid)]'
                             }`}>{type.key}</span>
                             <span className="font-semibold text-gray-900">{type.name}</span>
                           </div>
@@ -445,7 +445,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           <section className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-[var(--c-solid)] rounded-2xl flex items-center justify-center flex-shrink-0">
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -502,7 +502,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </div>
 
               {/* Viktigt meddelande */}
-              <div className="bg-gradient-to-r from-green-50 to-teal-50 rounded-2xl p-6 border border-green-100">
+              <div className="bg-gradient-to-r from-green-50 to-[var(--c-bg)] rounded-2xl p-6 border border-green-100">
                 <div className="flex items-start gap-3">
                   <Info className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                   <div>

@@ -138,7 +138,7 @@ export function SkillsSection({ className }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
+        <Loader2 className="w-6 h-6 text-[var(--c-solid)] animate-spin" />
       </div>
     )
   }
@@ -153,7 +153,7 @@ export function SkillsSection({ className }: Props) {
         <button
           onClick={handleImportFromCV}
           disabled={importing}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-teal-700 dark:text-teal-300 bg-teal-50 dark:bg-teal-900/40 rounded-lg hover:bg-teal-100 dark:hover:bg-teal-900/60 transition-colors disabled:opacity-50"
+          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-[var(--c-text)] dark:text-[var(--c-accent)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-lg hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/60 transition-colors disabled:opacity-50"
         >
           {importing ? (
             <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -229,7 +229,7 @@ export function SkillsSection({ className }: Props) {
       {/* Add new skill */}
       <div className="p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-2 mb-3">
-          <Sparkles className="w-4 h-4 text-teal-500" />
+          <Sparkles className="w-4 h-4 text-[var(--c-solid)]" />
           <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('profile.skills.addSkill')}</span>
         </div>
 
@@ -249,7 +249,7 @@ export function SkillsSection({ className }: Props) {
               onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
               placeholder={t('profile.skills.skillPlaceholder')}
-              className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
+              className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 focus:border-[var(--c-solid)]"
               role="combobox"
               aria-expanded={showSuggestions && filteredSuggestions.length > 0}
               aria-controls={suggestionsId}
@@ -270,7 +270,7 @@ export function SkillsSection({ className }: Props) {
                         setNewSkill(prev => ({ ...prev, name: s.label }))
                         setShowSuggestions(false)
                       }}
-                      className="w-full px-3 py-1.5 text-left text-sm hover:bg-teal-50 dark:hover:bg-teal-900/40 text-stone-700 dark:text-stone-300"
+                      className="w-full px-3 py-1.5 text-left text-sm hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/40 text-stone-700 dark:text-stone-300"
                     >
                       {s.label}
                     </button>
@@ -287,7 +287,7 @@ export function SkillsSection({ className }: Props) {
               id="skill-category"
               value={newSkill.category}
               onChange={(e) => setNewSkill(prev => ({ ...prev, category: e.target.value as ProfileSkill['category'] }))}
-              className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
+              className="w-full px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 focus:border-[var(--c-solid)]"
             >
               {SKILL_CATEGORIES.map(cat => (
                 <option key={cat.value} value={cat.value}>{t(cat.labelKey)}</option>
@@ -327,7 +327,7 @@ export function SkillsSection({ className }: Props) {
             <button
               onClick={handleAdd}
               disabled={!newSkill.name.trim() || adding}
-              className="flex items-center gap-1 px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-1 px-3 py-2 bg-[var(--c-solid)] hover:bg-[var(--c-solid)] text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               aria-label={t('profile.skills.addSkill')}
             >
               {adding ? (

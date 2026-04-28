@@ -61,14 +61,14 @@ export function PhraseBank({ onSelectPhrase }: PhraseBankProps) {
   }
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 bg-[#4f46e5]/10 rounded-lg">
           <BookOpen size={24} style={{ color: '#4f46e5' }} />
         </div>
         <div>
-          <h3 className="font-semibold text-slate-800">Färdiga formuleringar</h3>
-          <p className="text-sm text-slate-700">Klicka för att kopiera</p>
+          <h3 className="font-semibold text-stone-800">Färdiga formuleringar</h3>
+          <p className="text-sm text-stone-700">Klicka för att kopiera</p>
         </div>
       </div>
 
@@ -81,7 +81,7 @@ export function PhraseBank({ onSelectPhrase }: PhraseBankProps) {
             className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
               selectedCategory === index
                 ? 'bg-[#4f46e5] text-white'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             }`}
           >
             {category.name}
@@ -95,13 +95,13 @@ export function PhraseBank({ onSelectPhrase }: PhraseBankProps) {
           <button
             key={index}
             onClick={() => handleCopy(phrase, index)}
-            className="w-full text-left p-3 bg-slate-50 rounded-lg hover:bg-[#eef2ff] transition-colors group flex items-center justify-between"
+            className="w-full text-left p-3 bg-stone-50 rounded-lg hover:bg-[#eef2ff] transition-colors group flex items-center justify-between"
           >
-            <span className="text-sm text-slate-700 pr-2">{phrase}</span>
+            <span className="text-sm text-stone-700 pr-2">{phrase}</span>
             {copiedIndex === index ? (
               <Check size={16} className="text-green-500 flex-shrink-0" />
             ) : (
-              <Copy size={16} className="text-slate-600 group-hover:text-[#4f46e5] flex-shrink-0" />
+              <Copy size={16} className="text-stone-600 group-hover:text-[#4f46e5] flex-shrink-0" />
             )}
           </button>
         ))}

@@ -88,7 +88,7 @@ function TemplateCard({
   const categoryLabels = {
     cv: { label: t('consultant.resources.cv'), color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
     job_search: { label: t('consultant.resources.jobSearch'), color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' },
-    interview: { label: t('consultant.resources.interview'), color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300' },
+    interview: { label: t('consultant.resources.interview'), color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-accent)]' },
     networking: { label: t('consultant.resources.networking'), color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' },
     skills: { label: t('consultant.resources.skills'), color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' },
   }

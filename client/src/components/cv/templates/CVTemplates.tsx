@@ -51,8 +51,8 @@ const templates: CVTemplate[] = [
     name: 'Scandinavian Minimal',
     description: 'Luftig nordisk design med fokus på läsbarhet',
     category: 'Simple',
-    color: 'from-slate-100 to-slate-200',
-    preview: 'bg-gradient-to-br from-slate-100 to-slate-200',
+    color: 'from-stone-100 to-stone-200',
+    preview: 'bg-gradient-to-br from-stone-100 to-stone-200',
     features: ['Mycket whitespace', 'Clean typografi', 'Diskret färgpalett', 'Fokus på innehåll'],
     downloads: 892
   },
@@ -104,8 +104,8 @@ const templates: CVTemplate[] = [
     name: 'Corporate Clean',
     description: ' Professionell design för företagsvärlden',
     category: 'Professional',
-    color: 'from-slate-700 to-slate-900',
-    preview: 'bg-gradient-to-br from-slate-700 to-slate-900',
+    color: 'from-stone-700 to-stone-900',
+    preview: 'bg-gradient-to-br from-stone-700 to-stone-900',
     features: ['Stram design', 'Professionell färgskala', 'Tydlig hierarki', 'Företagsanpassad'],
     downloads: 3102,
     isPopular: true
@@ -1195,12 +1195,12 @@ CV skapat med mallen "${template.name}" från Jobin
     // Extract colors from tailwind class
     const colors: Record<string, string> = {
       'from-teal-500 via-sky-500 to-cyan-500': '#14b8a6, #0ea5e9, #06b6d4',
-      'from-slate-100 to-slate-200': '#f1f5f9, #e2e8f0',
+      'from-stone-100 to-stone-200': '#f1f5f9, #e2e8f0',
       'from-sky-600 to-teal-700': '#0284c7, #0f766e',
       'from-amber-100 to-amber-200': '#fef3c7, #fde68a',
       'from-cyan-500 to-blue-600': '#06b6d4, #2563eb',
       'from-rose-400 via-teal-500 to-sky-500': '#fb7185, #14b8a6, #0ea5e9',
-      'from-slate-700 to-slate-900': '#334155, #0f172a',
+      'from-stone-700 to-stone-900': '#334155, #0f172a',
       'from-emerald-400 via-teal-500 to-cyan-600': '#34d399, #14b8a6, #0891b2',
       'from-orange-400 via-red-400 to-pink-500': '#fb923c, #f87171, #ec4899',
       'from-teal-500 to-sky-500': '#14b8a6, #0ea5e9',
@@ -1214,8 +1214,8 @@ CV skapat med mallen "${template.name}" från Jobin
     <div className="space-y-6">
       {/* Header */}
       <div className="text-center max-w-2xl mx-auto">
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">CV-mallar</h2>
-        <p className="text-slate-600">
+        <h2 className="text-2xl font-bold text-stone-800 mb-2">CV-mallar</h2>
+        <p className="text-stone-600">
           Välj bland våra kreativa och professionella mallar. Alla är gratis att ladda ner i Word-format.
         </p>
       </div>
@@ -1230,7 +1230,7 @@ CV skapat med mallen "${template.name}" från Jobin
               'px-4 py-2 rounded-full text-sm font-medium transition-all',
               selectedCategory === cat.id
                 ? 'bg-teal-600 text-white'
-                : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
             )}
           >
             {cat.label}
@@ -1243,7 +1243,7 @@ CV skapat med mallen "${template.name}" från Jobin
         {filteredTemplates.map(template => (
           <div 
             key={template.id}
-            className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300"
+            className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:shadow-xl transition-all duration-300"
           >
             {/* Preview - Enhanced Realistic CV Mockup */}
             <div className={cn(
@@ -1286,21 +1286,21 @@ CV skapat med mallen "${template.name}" från Jobin
                       </div>
                     </div>
                     <div className="flex-1 p-3 bg-white">
-                      <div className="h-2.5 bg-slate-800 rounded w-3/4 mb-1" />
+                      <div className="h-2.5 bg-stone-800 rounded w-3/4 mb-1" />
                       <div className="h-1.5 bg-teal-400 rounded w-1/2 mb-3" />
-                      <div className="h-px bg-slate-200 mb-3" />
+                      <div className="h-px bg-stone-200 mb-3" />
                       <div className="space-y-0.5 mb-3">
-                        <div className="h-1 bg-slate-100 rounded w-full" />
-                        <div className="h-1 bg-slate-100 rounded w-5/6" />
+                        <div className="h-1 bg-stone-100 rounded w-full" />
+                        <div className="h-1 bg-stone-100 rounded w-5/6" />
                       </div>
                       <div className="border-l-2 border-teal-300 pl-2 space-y-2">
                         <div>
-                          <div className="h-1.5 bg-slate-700 rounded w-2/3 mb-0.5" />
+                          <div className="h-1.5 bg-stone-700 rounded w-2/3 mb-0.5" />
                           <div className="h-1 bg-teal-200 rounded w-1/2 mb-0.5" />
-                          <div className="h-0.5 bg-slate-100 rounded w-full" />
+                          <div className="h-0.5 bg-stone-100 rounded w-full" />
                         </div>
                         <div>
-                          <div className="h-1.5 bg-slate-700 rounded w-1/2 mb-0.5" />
+                          <div className="h-1.5 bg-stone-700 rounded w-1/2 mb-0.5" />
                           <div className="h-1 bg-teal-200 rounded w-2/5" />
                         </div>
                       </div>
@@ -1310,28 +1310,28 @@ CV skapat med mallen "${template.name}" från Jobin
                   // Minimal Layout - Enhanced
                   <div className="h-full p-5 bg-white">
                     <div className="text-center mb-4">
-                      <div className="h-3 bg-slate-800 rounded w-2/5 mx-auto mb-1.5" />
-                      <div className="h-1.5 bg-slate-400 rounded w-1/4 mx-auto mb-3" />
-                      <div className="flex justify-center gap-4 text-slate-300">
-                        <div className="h-1 bg-slate-200 rounded w-16" />
-                        <div className="h-1 bg-slate-200 rounded w-12" />
-                        <div className="h-1 bg-slate-200 rounded w-14" />
+                      <div className="h-3 bg-stone-800 rounded w-2/5 mx-auto mb-1.5" />
+                      <div className="h-1.5 bg-stone-400 rounded w-1/4 mx-auto mb-3" />
+                      <div className="flex justify-center gap-4 text-stone-300">
+                        <div className="h-1 bg-stone-200 rounded w-16" />
+                        <div className="h-1 bg-stone-200 rounded w-12" />
+                        <div className="h-1 bg-stone-200 rounded w-14" />
                       </div>
                     </div>
-                    <div className="h-px bg-slate-200 mb-4" />
+                    <div className="h-px bg-stone-200 mb-4" />
                     <div className="space-y-4">
                       <div>
-                        <div className="h-1 bg-slate-300 rounded w-1/5 mb-2 uppercase" />
-                        <div className="h-1 bg-slate-100 rounded w-full mb-0.5" />
-                        <div className="h-1 bg-slate-100 rounded w-5/6" />
+                        <div className="h-1 bg-stone-300 rounded w-1/5 mb-2 uppercase" />
+                        <div className="h-1 bg-stone-100 rounded w-full mb-0.5" />
+                        <div className="h-1 bg-stone-100 rounded w-5/6" />
                       </div>
                       <div className="flex gap-6">
                         <div className="w-20 text-right">
-                          <div className="h-1 bg-slate-200 rounded w-full" />
+                          <div className="h-1 bg-stone-200 rounded w-full" />
                         </div>
                         <div className="flex-1">
-                          <div className="h-1.5 bg-slate-600 rounded w-1/2 mb-0.5" />
-                          <div className="h-1 bg-slate-300 rounded w-1/3" />
+                          <div className="h-1.5 bg-stone-600 rounded w-1/2 mb-0.5" />
+                          <div className="h-1 bg-stone-300 rounded w-1/3" />
                         </div>
                       </div>
                     </div>
@@ -1339,7 +1339,7 @@ CV skapat med mallen "${template.name}" från Jobin
                 ) : template.id.includes('elegant') || template.id.includes('corporate') ? (
                   // Executive/Corporate Layout - Enhanced
                   <div className="h-full">
-                    <div className="p-4 bg-slate-900">
+                    <div className="p-4 bg-stone-900">
                       <div className="h-3 bg-white/90 rounded w-2/5 mb-1.5" />
                       <div className="h-1.5 bg-amber-400 rounded w-1/4 mb-2" />
                       <div className="flex gap-3">
@@ -1351,12 +1351,12 @@ CV skapat med mallen "${template.name}" från Jobin
                     <div className="h-1 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400" />
                     <div className="p-4 bg-amber-50/50 space-y-3">
                       <div>
-                        <div className="h-1 bg-slate-400 rounded w-1/4 mb-2 uppercase" />
-                        <div className="h-1 bg-slate-200 rounded w-full mb-0.5" />
-                        <div className="h-1 bg-slate-200 rounded w-4/5" />
+                        <div className="h-1 bg-stone-400 rounded w-1/4 mb-2 uppercase" />
+                        <div className="h-1 bg-stone-200 rounded w-full mb-0.5" />
+                        <div className="h-1 bg-stone-200 rounded w-4/5" />
                       </div>
                       <div>
-                        <div className="h-1 bg-slate-400 rounded w-1/5 mb-2" />
+                        <div className="h-1 bg-stone-400 rounded w-1/5 mb-2" />
                         <div className="flex gap-2">
                           <div className="h-2.5 px-2 bg-amber-100 rounded border border-amber-300" style={{width: '40px'}} />
                           <div className="h-2.5 px-2 bg-amber-100 rounded border border-amber-300" style={{width: '50px'}} />
@@ -1373,7 +1373,7 @@ CV skapat med mallen "${template.name}" från Jobin
                     </div>
                     <div className="pt-8 px-4 pb-4 bg-gradient-to-b from-teal-50 to-white">
                       <div className="text-center mb-3">
-                        <div className="h-2.5 bg-slate-700 rounded w-2/5 mx-auto mb-1" />
+                        <div className="h-2.5 bg-stone-700 rounded w-2/5 mx-auto mb-1" />
                         <div className="h-1.5 bg-pink-400 rounded w-1/4 mx-auto" />
                       </div>
                       <div className="flex justify-center gap-1.5 mb-3">
@@ -1383,11 +1383,11 @@ CV skapat med mallen "${template.name}" från Jobin
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div className="p-2 bg-white rounded-lg shadow-sm border border-teal-100">
-                          <div className="h-1.5 bg-slate-600 rounded w-3/4 mb-1" />
+                          <div className="h-1.5 bg-stone-600 rounded w-3/4 mb-1" />
                           <div className="h-1 bg-pink-200 rounded w-1/2" />
                         </div>
                         <div className="p-2 bg-white rounded-lg shadow-sm border border-teal-100">
-                          <div className="h-1.5 bg-slate-600 rounded w-2/3 mb-1" />
+                          <div className="h-1.5 bg-stone-600 rounded w-2/3 mb-1" />
                           <div className="h-1 bg-sky-200 rounded w-3/5" />
                         </div>
                       </div>
@@ -1408,28 +1408,28 @@ CV skapat med mallen "${template.name}" från Jobin
                         </div>
                       </div>
                     </div>
-                    <div className="bg-slate-900 px-3 py-2 flex gap-1.5">
+                    <div className="bg-stone-900 px-3 py-2 flex gap-1.5">
                       <div className="h-2 w-10 bg-cyan-500 rounded-full" />
                       <div className="h-2 w-8 bg-blue-500 rounded-full" />
                       <div className="h-2 w-12 bg-sky-500 rounded-full" />
                       <div className="h-2 w-9 bg-teal-500 rounded-full" />
                     </div>
                     <div className="p-3 bg-white space-y-3">
-                      <div className="bg-slate-50 p-2 rounded-lg">
-                        <div className="h-1.5 bg-slate-600 rounded w-1/2 mb-1" />
-                        <div className="h-1 bg-slate-200 rounded w-full" />
+                      <div className="bg-stone-50 p-2 rounded-lg">
+                        <div className="h-1.5 bg-stone-600 rounded w-1/2 mb-1" />
+                        <div className="h-1 bg-stone-200 rounded w-full" />
                       </div>
                       <div>
-                        <div className="h-1 bg-slate-300 rounded w-1/4 mb-2" />
+                        <div className="h-1 bg-stone-300 rounded w-1/4 mb-2" />
                         <div className="flex items-center gap-2 mb-1">
-                          <div className="w-16 h-1 bg-slate-200 rounded" />
-                          <div className="flex-1 h-2 bg-slate-100 rounded overflow-hidden">
+                          <div className="w-16 h-1 bg-stone-200 rounded" />
+                          <div className="flex-1 h-2 bg-stone-100 rounded overflow-hidden">
                             <div className="h-full w-4/5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded" />
                           </div>
                         </div>
                         <div className="flex items-center gap-2">
-                          <div className="w-16 h-1 bg-slate-200 rounded" />
-                          <div className="flex-1 h-2 bg-slate-100 rounded overflow-hidden">
+                          <div className="w-16 h-1 bg-stone-200 rounded" />
+                          <div className="flex-1 h-2 bg-stone-100 rounded overflow-hidden">
                             <div className="h-full w-3/5 bg-gradient-to-r from-cyan-400 to-blue-500 rounded" />
                           </div>
                         </div>
@@ -1450,14 +1450,14 @@ CV skapat med mallen "${template.name}" från Jobin
                     </div>
                     <div className="h-1 bg-gradient-to-r from-teal-500 via-sky-500 to-teal-500" />
                     <div className="p-3 space-y-3">
-                      <div className="bg-slate-50 p-2.5 rounded-lg border-l-3 border-teal-400">
-                        <div className="h-1 bg-slate-200 rounded w-full mb-0.5" />
-                        <div className="h-1 bg-slate-200 rounded w-4/5" />
+                      <div className="bg-stone-50 p-2.5 rounded-lg border-l-3 border-teal-400">
+                        <div className="h-1 bg-stone-200 rounded w-full mb-0.5" />
+                        <div className="h-1 bg-stone-200 rounded w-4/5" />
                       </div>
-                      <div className="pl-3 border-l-2 border-slate-200">
-                        <div className="h-1.5 bg-slate-600 rounded w-1/2 mb-0.5" />
+                      <div className="pl-3 border-l-2 border-stone-200">
+                        <div className="h-1.5 bg-stone-600 rounded w-1/2 mb-0.5" />
                         <div className="h-1 bg-sky-300 rounded w-1/3 mb-0.5" />
-                        <div className="h-0.5 bg-slate-100 rounded w-full" />
+                        <div className="h-0.5 bg-stone-100 rounded w-full" />
                       </div>
                       <div className="flex gap-1.5">
                         <div className="h-2.5 w-12 bg-sky-100 rounded-full" />
@@ -1487,7 +1487,7 @@ CV skapat med mallen "${template.name}" från Jobin
 
               {/* Category Badge */}
               <div className="absolute bottom-2 right-2">
-                <span className="px-3 py-1.5 bg-white/95 text-slate-700 text-xs font-semibold rounded-full shadow-lg backdrop-blur-sm border border-white/50">
+                <span className="px-3 py-1.5 bg-white/95 text-stone-700 text-xs font-semibold rounded-full shadow-lg backdrop-blur-sm border border-white/50">
                   {template.category}
                 </span>
               </div>
@@ -1495,25 +1495,25 @@ CV skapat med mallen "${template.name}" från Jobin
 
             {/* Info */}
             <div className="p-5">
-              <h3 className="font-semibold text-slate-800 text-lg mb-1">{template.name}</h3>
-              <p className="text-slate-700 text-sm mb-4">{template.description}</p>
+              <h3 className="font-semibold text-stone-800 text-lg mb-1">{template.name}</h3>
+              <p className="text-stone-700 text-sm mb-4">{template.description}</p>
 
               {/* Features */}
               <div className="flex flex-wrap gap-2 mb-4">
                 {template.features.slice(0, 2).map((feature, i) => (
-                  <span key={i} className="text-xs text-slate-600 bg-slate-100 px-2 py-1 rounded">
+                  <span key={i} className="text-xs text-stone-600 bg-stone-100 px-2 py-1 rounded">
                     {feature}
                   </span>
                 ))}
                 {template.features.length > 2 && (
-                  <span className="text-xs text-slate-600 px-2 py-1">
+                  <span className="text-xs text-stone-600 px-2 py-1">
                     +{template.features.length - 2}
                   </span>
                 )}
               </div>
 
               {/* Stats */}
-              <div className="flex items-center justify-between text-sm text-slate-700 mb-4">
+              <div className="flex items-center justify-between text-sm text-stone-700 mb-4">
                 <span className="flex items-center gap-1">
                   <Download className="w-4 h-4" />
                   {template.downloads.toLocaleString('sv-SE')}
@@ -1525,7 +1525,7 @@ CV skapat med mallen "${template.name}" från Jobin
               <div className="flex gap-2">
                 <button
                   onClick={() => setPreviewTemplate(template)}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-stone-100 text-stone-700 rounded-xl font-medium hover:bg-stone-200 transition-colors"
                 >
                   <Eye className="w-4 h-4" />
                   Förhandsgranska
@@ -1588,7 +1588,7 @@ CV skapat med mallen "${template.name}" från Jobin
 
             {/* Preview Content */}
             <div className="p-6 overflow-y-auto max-h-[60vh]">
-              <div className="bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl p-8">
+              <div className="bg-gradient-to-br from-stone-100 to-stone-200 rounded-xl p-8">
                 {/* Realistic CV Preview - Layout depends on template type */}
                 <div className="bg-white rounded-xl shadow-2xl max-w-xl mx-auto overflow-hidden transform hover:scale-[1.01] transition-transform">
 
@@ -1622,23 +1622,23 @@ CV skapat med mallen "${template.name}" från Jobin
                       </div>
 
                       <div className="flex-1 p-5">
-                        <h2 className="text-2xl font-bold text-slate-800 mb-1">Anna Andersson</h2>
+                        <h2 className="text-2xl font-bold text-stone-800 mb-1">Anna Andersson</h2>
                         <p className="text-teal-600 font-medium mb-4">Projektledare</p>
                         <div className="border-t-2 border-teal-200 pt-4 space-y-4">
                           <div>
-                            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <h4 className="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center gap-2">
                               <span className="text-teal-500">✨</span> Profil
                             </h4>
-                            <p className="text-xs text-slate-600 leading-relaxed">
+                            <p className="text-xs text-stone-600 leading-relaxed">
                               Erfaren projektledare med 8+ års erfarenhet av att leda tvärfunktionella team.
                             </p>
                           </div>
                           <div>
-                            <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-2">
+                            <h4 className="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center gap-2">
                               <span className="text-teal-500">💼</span> Erfarenhet
                             </h4>
                             <div className="border-l-2 border-teal-200 pl-3">
-                              <p className="font-semibold text-sm text-slate-800">Senior Projektledare</p>
+                              <p className="font-semibold text-sm text-stone-800">Senior Projektledare</p>
                               <p className="text-xs text-teal-600">Tech AB • 2020 - Nu</p>
                             </div>
                           </div>
@@ -1648,10 +1648,10 @@ CV skapat med mallen "${template.name}" från Jobin
                   ) : (previewTemplate.id.includes('minimal') || previewTemplate.id.includes('mono') || previewTemplate.id.includes('Scandinavian')) ? (
                     /* Minimal Layout Preview */
                     <div className="p-8 min-h-[400px]">
-                      <div className="text-center mb-6 pb-6 border-b border-slate-200">
-                        <h2 className="text-2xl font-light tracking-widest text-slate-800 uppercase mb-2">Anna Andersson</h2>
-                        <p className="text-sm text-slate-700 tracking-wide">Projektledare</p>
-                        <div className="flex justify-center gap-6 mt-4 text-xs text-slate-600">
+                      <div className="text-center mb-6 pb-6 border-b border-stone-200">
+                        <h2 className="text-2xl font-light tracking-widest text-stone-800 uppercase mb-2">Anna Andersson</h2>
+                        <p className="text-sm text-stone-700 tracking-wide">Projektledare</p>
+                        <div className="flex justify-center gap-6 mt-4 text-xs text-stone-600">
                           <span>anna@exempel.se</span>
                           <span>•</span>
                           <span>070-123 45 67</span>
@@ -1662,17 +1662,17 @@ CV skapat med mallen "${template.name}" från Jobin
 
                       <div className="space-y-6">
                         <div>
-                          <p className="text-[10px] uppercase tracking-[3px] text-slate-600 mb-3">Profil</p>
-                          <p className="text-sm text-slate-600 leading-relaxed">
+                          <p className="text-[10px] uppercase tracking-[3px] text-stone-600 mb-3">Profil</p>
+                          <p className="text-sm text-stone-600 leading-relaxed">
                             Erfaren projektledare med 8+ års erfarenhet av att leda tvärfunktionella team och leverera komplexa projekt.
                           </p>
                         </div>
 
                         <div className="flex gap-8">
-                          <div className="w-24 text-right text-xs text-slate-600">2020 — Nu</div>
+                          <div className="w-24 text-right text-xs text-stone-600">2020 — Nu</div>
                           <div className="flex-1">
-                            <p className="font-semibold text-slate-800">Senior Projektledare</p>
-                            <p className="text-sm text-slate-700">Tech AB, Stockholm</p>
+                            <p className="font-semibold text-stone-800">Senior Projektledare</p>
+                            <p className="text-sm text-stone-700">Tech AB, Stockholm</p>
                           </div>
                         </div>
                       </div>
@@ -1680,10 +1680,10 @@ CV skapat med mallen "${template.name}" från Jobin
                   ) : (previewTemplate.id.includes('elegant') || previewTemplate.id.includes('corporate')) ? (
                     /* Executive Layout Preview */
                     <div className="min-h-[400px]">
-                      <div className="bg-slate-900 text-white p-6">
+                      <div className="bg-stone-900 text-white p-6">
                         <h2 className="text-2xl font-serif tracking-wide mb-1">ANNA ANDERSSON</h2>
                         <p className="text-amber-400 italic">Projektledare</p>
-                        <div className="flex gap-6 mt-3 text-xs text-slate-600">
+                        <div className="flex gap-6 mt-3 text-xs text-stone-600">
                           <span>anna@exempel.se</span>
                           <span>070-123 45 67</span>
                           <span>Stockholm</span>
@@ -1693,16 +1693,16 @@ CV skapat med mallen "${template.name}" från Jobin
 
                       <div className="p-6 bg-amber-50/30 space-y-5">
                         <div>
-                          <h4 className="text-xs uppercase tracking-[2px] text-slate-700 mb-3 pb-2 border-b-2 border-amber-400 flex items-center gap-2">
+                          <h4 className="text-xs uppercase tracking-[2px] text-stone-700 mb-3 pb-2 border-b-2 border-amber-400 flex items-center gap-2">
                             <span className="text-amber-500">✦</span> Professionell Profil
                           </h4>
-                          <p className="text-sm text-slate-600 italic leading-relaxed">
+                          <p className="text-sm text-stone-600 italic leading-relaxed">
                             Erfaren projektledare med dokumenterad förmåga att leda komplexa projekt och leverera affärsresultat.
                           </p>
                         </div>
 
                         <div>
-                          <h4 className="text-xs uppercase tracking-[2px] text-slate-700 mb-3 pb-2 border-b-2 border-amber-400 flex items-center gap-2">
+                          <h4 className="text-xs uppercase tracking-[2px] text-stone-700 mb-3 pb-2 border-b-2 border-amber-400 flex items-center gap-2">
                             <span className="text-amber-500">✦</span> Kärnkompetenser
                           </h4>
                           <div className="flex flex-wrap gap-2">
@@ -1728,34 +1728,34 @@ CV skapat med mallen "${template.name}" från Jobin
                           </div>
                         </div>
                       </div>
-                      <div className="bg-slate-900 px-5 py-2.5 flex gap-2">
+                      <div className="bg-stone-900 px-5 py-2.5 flex gap-2">
                         <span className="px-3 py-1 bg-cyan-500 text-white text-xs rounded-full font-medium">React</span>
                         <span className="px-3 py-1 bg-blue-500 text-white text-xs rounded-full font-medium">TypeScript</span>
                         <span className="px-3 py-1 bg-sky-500 text-white text-xs rounded-full font-medium">Node.js</span>
                       </div>
 
                       <div className="p-5 space-y-4">
-                        <div className="bg-slate-50 p-4 rounded-lg border-l-4 border-cyan-500">
-                          <p className="text-sm text-slate-600">
+                        <div className="bg-stone-50 p-4 rounded-lg border-l-4 border-cyan-500">
+                          <p className="text-sm text-stone-600">
                             Passionerad utvecklare med fokus på moderna webbteknologier och skalbar arkitektur.
                           </p>
                         </div>
 
                         <div>
-                          <h4 className="text-xs font-bold text-slate-700 uppercase mb-3 flex items-center gap-2">
+                          <h4 className="text-xs font-bold text-stone-700 uppercase mb-3 flex items-center gap-2">
                             <span className="w-8 h-8 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center text-white text-sm">⚡</span>
                             Kompetens
                           </h4>
                           <div className="space-y-2">
                             <div className="flex items-center gap-3">
-                              <span className="w-20 text-xs text-slate-600">React</span>
-                              <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                              <span className="w-20 text-xs text-stone-600">React</span>
+                              <div className="flex-1 h-2 bg-stone-100 rounded-full overflow-hidden">
                                 <div className="h-full w-[90%] bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" />
                               </div>
                             </div>
                             <div className="flex items-center gap-3">
-                              <span className="w-20 text-xs text-slate-600">Node.js</span>
-                              <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                              <span className="w-20 text-xs text-stone-600">Node.js</span>
+                              <div className="flex-1 h-2 bg-stone-100 rounded-full overflow-hidden">
                                 <div className="h-full w-[85%] bg-gradient-to-r from-cyan-400 to-blue-500 rounded-full" />
                               </div>
                             </div>
@@ -1771,7 +1771,7 @@ CV skapat med mallen "${template.name}" från Jobin
                       </div>
                       <div className="pt-12 px-6 pb-6 bg-gradient-to-b from-teal-50 to-white">
                         <div className="text-center mb-4">
-                          <h2 className="text-xl font-bold text-slate-800">Anna Andersson</h2>
+                          <h2 className="text-xl font-bold text-stone-800">Anna Andersson</h2>
                           <p className="text-pink-600">Kreativ Designer</p>
                         </div>
 
@@ -1782,18 +1782,18 @@ CV skapat med mallen "${template.name}" från Jobin
                         </div>
 
                         <div className="bg-white rounded-xl p-4 shadow-lg border border-teal-100 mb-4">
-                          <p className="text-sm text-slate-600 text-center italic">
+                          <p className="text-sm text-stone-600 text-center italic">
                             "Jag skapar digitala upplevelser som engagerar och inspirerar."
                           </p>
                         </div>
 
                         <div className="grid grid-cols-2 gap-3">
                           <div className="bg-white rounded-lg p-3 shadow-sm border border-teal-100">
-                            <p className="font-semibold text-sm text-slate-800">Senior Designer</p>
+                            <p className="font-semibold text-sm text-stone-800">Senior Designer</p>
                             <p className="text-xs text-pink-600">Studio AB</p>
                           </div>
                           <div className="bg-white rounded-lg p-3 shadow-sm border border-teal-100">
-                            <p className="font-semibold text-sm text-slate-800">UX Designer</p>
+                            <p className="font-semibold text-sm text-stone-800">UX Designer</p>
                             <p className="text-xs text-sky-600">Agency XYZ</p>
                           </div>
                         </div>
@@ -1815,25 +1815,25 @@ CV skapat med mallen "${template.name}" från Jobin
 
                       <div className="p-6 space-y-5">
                         <div>
-                          <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 flex items-center gap-2 pb-2 border-b-2 border-teal-400">
+                          <h4 className="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2 flex items-center gap-2 pb-2 border-b-2 border-teal-400">
                             <span className="text-teal-500">✨</span> Profil
                           </h4>
-                          <div className="bg-slate-50 p-4 rounded-lg border-l-4 border-teal-400">
-                            <p className="text-sm text-slate-600 leading-relaxed">
+                          <div className="bg-stone-50 p-4 rounded-lg border-l-4 border-teal-400">
+                            <p className="text-sm text-stone-600 leading-relaxed">
                               Erfaren projektledare med 8+ års erfarenhet av att leda tvärfunktionella team och leverera komplexa projekt i tid och budget.
                             </p>
                           </div>
                         </div>
 
                         <div>
-                          <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 flex items-center gap-2 pb-2 border-b-2 border-teal-400">
+                          <h4 className="text-xs font-bold text-stone-700 uppercase tracking-wider mb-3 flex items-center gap-2 pb-2 border-b-2 border-teal-400">
                             <span className="text-teal-500">⭐</span> Kompetenser
                           </h4>
                           <div className="flex flex-wrap gap-2">
                             <span className={cn('text-xs px-4 py-1.5 rounded-full text-white font-medium bg-gradient-to-r', previewTemplate.preview)}>Agil</span>
                             <span className={cn('text-xs px-4 py-1.5 rounded-full text-white font-medium bg-gradient-to-r', previewTemplate.preview)}>Scrum</span>
                             <span className={cn('text-xs px-4 py-1.5 rounded-full text-white font-medium bg-gradient-to-r', previewTemplate.preview)}>Ledarskap</span>
-                            <span className="text-xs px-4 py-1.5 rounded-full bg-slate-100 text-slate-600 font-medium">JIRA</span>
+                            <span className="text-xs px-4 py-1.5 rounded-full bg-stone-100 text-stone-600 font-medium">JIRA</span>
                           </div>
                         </div>
                       </div>
@@ -1844,10 +1844,10 @@ CV skapat med mallen "${template.name}" från Jobin
 
               {/* Features List */}
               <div className="mt-6">
-                <h4 className="font-semibold text-slate-800 mb-3">Funktioner i denna mall</h4>
+                <h4 className="font-semibold text-stone-800 mb-3">Funktioner i denna mall</h4>
                 <div className="grid sm:grid-cols-2 gap-3">
                   {previewTemplate.features.map((feature, i) => (
-                    <div key={i} className="flex items-center gap-3 text-slate-600 bg-slate-50 px-4 py-2.5 rounded-lg">
+                    <div key={i} className="flex items-center gap-3 text-stone-600 bg-stone-50 px-4 py-2.5 rounded-lg">
                       <Check className="w-5 h-5 text-green-500 flex-shrink-0" />
                       <span>{feature}</span>
                     </div>
@@ -1857,10 +1857,10 @@ CV skapat med mallen "${template.name}" från Jobin
             </div>
 
             {/* Modal Footer */}
-            <div className="px-6 py-4 border-t border-slate-200 flex justify-end gap-3">
+            <div className="px-6 py-4 border-t border-stone-200 flex justify-end gap-3">
               <button
                 onClick={() => setPreviewTemplate(null)}
-                className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                className="px-4 py-2 text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
               >
                 Stäng
               </button>

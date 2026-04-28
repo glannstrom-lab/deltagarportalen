@@ -242,7 +242,7 @@ export function MeetingSchedulerDialog({
                   className={cn(
                     'w-full pl-10 pr-4 py-3 rounded-xl',
                     'bg-stone-100 dark:bg-stone-800',
-                    'border-2 border-transparent focus:border-teal-500',
+                    'border-2 border-transparent focus:border-[var(--c-solid)]',
                     'text-stone-900 dark:text-stone-100'
                   )}
                 />
@@ -257,12 +257,12 @@ export function MeetingSchedulerDialog({
                     }}
                     className={cn(
                       'w-full flex items-center gap-3 p-4 rounded-xl transition-colors',
-                      'hover:bg-teal-50 dark:hover:bg-teal-900/20',
+                      'hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30',
                       selectedParticipant?.participant_id === p.participant_id &&
-                        'bg-teal-50 dark:bg-teal-900/20 ring-2 ring-teal-500'
+                        'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 ring-2 ring-[var(--c-solid)]'
                     )}
                   >
-                    <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center text-teal-600 dark:text-teal-400 font-medium">
+                    <div className="w-10 h-10 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-text)] font-medium">
                       {p.first_name?.[0]}{p.last_name?.[0]}
                     </div>
                     <div className="text-left">
@@ -289,15 +289,15 @@ export function MeetingSchedulerDialog({
             <div className="space-y-6">
               {/* Selected participant */}
               {selectedParticipant && (
-                <div className="flex items-center gap-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-xl">
-                  <User className="w-5 h-5 text-teal-600" />
+                <div className="flex items-center gap-3 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl">
+                  <User className="w-5 h-5 text-[var(--c-text)]" />
                   <span className="font-medium text-stone-900 dark:text-stone-100">
                     {selectedParticipant.first_name} {selectedParticipant.last_name}
                   </span>
                   {!preselectedParticipant && (
                     <button
                       onClick={() => setStep('participant')}
-                      className="ml-auto text-sm text-teal-600 hover:underline"
+                      className="ml-auto text-sm text-[var(--c-text)] hover:underline"
                     >
                       Ändra
                     </button>
@@ -342,8 +342,8 @@ export function MeetingSchedulerDialog({
                         !date && 'invisible',
                         date && isPast(date) && 'text-stone-300 dark:text-stone-600 cursor-not-allowed',
                         date && !isPast(date) && 'hover:bg-stone-100 dark:hover:bg-stone-800',
-                        date && isToday(date) && 'ring-2 ring-teal-500',
-                        date && isSelected(date) && 'bg-teal-600 text-white hover:bg-teal-700'
+                        date && isToday(date) && 'ring-2 ring-[var(--c-solid)]',
+                        date && isSelected(date) && 'bg-[var(--c-solid)] text-white hover:bg-[var(--c-text)]'
                       )}
                     >
                       {date?.getDate()}
@@ -365,7 +365,7 @@ export function MeetingSchedulerDialog({
                       className={cn(
                         'py-2 px-3 rounded-lg text-sm font-medium transition-colors',
                         selectedTime === time
-                          ? 'bg-teal-600 text-white'
+                          ? 'bg-[var(--c-solid)] text-white'
                           : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
                       )}
                     >
@@ -388,7 +388,7 @@ export function MeetingSchedulerDialog({
                       className={cn(
                         'py-2 px-4 rounded-lg text-sm font-medium transition-colors',
                         duration === d.value
-                          ? 'bg-teal-600 text-white'
+                          ? 'bg-[var(--c-solid)] text-white'
                           : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
                       )}
                     >
@@ -443,7 +443,7 @@ export function MeetingSchedulerDialog({
                       className={cn(
                         'flex flex-col items-center gap-2 p-4 rounded-xl transition-colors',
                         meetingType === type
-                          ? 'bg-teal-600 text-white'
+                          ? 'bg-[var(--c-solid)] text-white'
                           : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
                       )}
                     >
@@ -470,7 +470,7 @@ export function MeetingSchedulerDialog({
                       className={cn(
                         'w-full pl-10 pr-4 py-3 rounded-xl',
                         'bg-stone-100 dark:bg-stone-800',
-                        'border-2 border-transparent focus:border-teal-500',
+                        'border-2 border-transparent focus:border-[var(--c-solid)]',
                         'text-stone-900 dark:text-stone-100'
                       )}
                     />
@@ -494,7 +494,7 @@ export function MeetingSchedulerDialog({
                       className={cn(
                         'w-full pl-10 pr-4 py-3 rounded-xl',
                         'bg-stone-100 dark:bg-stone-800',
-                        'border-2 border-transparent focus:border-teal-500',
+                        'border-2 border-transparent focus:border-[var(--c-solid)]',
                         'text-stone-900 dark:text-stone-100'
                       )}
                     />
@@ -515,7 +515,7 @@ export function MeetingSchedulerDialog({
                   className={cn(
                     'w-full px-4 py-3 rounded-xl resize-none',
                     'bg-stone-100 dark:bg-stone-800',
-                    'border-2 border-transparent focus:border-teal-500',
+                    'border-2 border-transparent focus:border-[var(--c-solid)]',
                     'text-stone-900 dark:text-stone-100'
                   )}
                 />

@@ -350,7 +350,7 @@ function ProgressRing({
         />
       </svg>
       <div className="absolute inset-0 flex items-center justify-center">
-        <span className="text-lg font-bold text-slate-700">{Math.round(progress)}%</span>
+        <span className="text-lg font-bold text-stone-700">{Math.round(progress)}%</span>
       </div>
     </div>
   )
@@ -368,15 +368,15 @@ function StepBadge({ count, total = 3 }: { count: number; total?: number }) {
             key={i}
             className={`w-6 h-6 rounded-full flex items-center justify-center text-xs border-2 border-white transition-all duration-300 ${
               i < count 
-                ? 'bg-teal-500 text-white' 
-                : 'bg-slate-200 text-slate-600'
+                ? 'bg-[var(--c-solid)] text-white' 
+                : 'bg-stone-200 text-stone-600'
             }`}
           >
             {i < count ? <Check className="w-3 h-3" /> : i + 1}
           </div>
         ))}
       </div>
-      <span className="text-sm font-medium text-slate-600">
+      <span className="text-sm font-medium text-stone-600">
         {count} av {total} steg idag
       </span>
     </div>
@@ -397,8 +397,8 @@ function EnergyIndicator({ level }: { level: EnergyLevel }) {
     <div className="flex items-center gap-2 text-sm">
       <span className="text-lg">{config.emoji}</span>
       <div>
-        <span className="font-medium text-slate-700">{config.label}</span>
-        <span className="text-slate-700 ml-1">· {config.desc}</span>
+        <span className="font-medium text-stone-700">{config.label}</span>
+        <span className="text-stone-700 ml-1">· {config.desc}</span>
       </div>
     </div>
   )
@@ -422,7 +422,7 @@ function TaskCard({
 }) {
   const categoryColors = {
     cv: 'bg-blue-50 border-blue-200 text-blue-700',
-    application: 'bg-teal-50 border-teal-200 text-teal-700',
+    application: 'bg-[var(--c-bg)] border-[var(--c-accent)]/60 text-[var(--c-text)]',
     wellbeing: 'bg-rose-50 border-rose-200 text-rose-700',
     learning: 'bg-amber-50 border-amber-200 text-amber-700'
   }
@@ -478,14 +478,14 @@ function TaskCard({
           <div className="flex gap-2 flex-wrap">
             <button
               onClick={onComplete}
-              className="flex-1 min-w-[120px] bg-white hover:bg-slate-50 text-slate-700 font-medium py-2 px-4 rounded-lg border-2 border-current transition-colors flex items-center justify-center gap-2"
+              className="flex-1 min-w-[120px] bg-white hover:bg-stone-50 text-stone-700 font-medium py-2 px-4 rounded-lg border-2 border-current transition-colors flex items-center justify-center gap-2"
             >
               <Check className="w-4 h-4" />
               Jag har gjort det!
             </button>
             <button
               onClick={onStart}
-              className="flex-1 min-w-[120px] bg-slate-800 hover:bg-slate-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+              className="flex-1 min-w-[120px] bg-stone-800 hover:bg-stone-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
             >
               Starta
             </button>
@@ -495,7 +495,7 @@ function TaskCard({
           <div className="flex gap-2 mt-3 pt-3 border-t border-current border-opacity-20">
             <button
               onClick={onSkip}
-              className="text-xs text-slate-700 hover:text-slate-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-white/50 transition-colors"
+              className="text-xs text-stone-700 hover:text-stone-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-white/50 transition-colors"
             >
               <RotateCcw className="w-3 h-3" />
               Föreslå annat
@@ -505,7 +505,7 @@ function TaskCard({
               className={`text-xs flex items-center gap-1 px-2 py-1 rounded transition-colors ${
                 isSaved 
                   ? 'text-amber-600 bg-amber-50' 
-                  : 'text-slate-700 hover:text-slate-700 hover:bg-white/50'
+                  : 'text-stone-700 hover:text-stone-700 hover:bg-white/50'
               }`}
             >
               <Bookmark className={`w-3 h-3 ${isSaved ? 'fill-current' : ''}`} />
@@ -767,15 +767,15 @@ export function DailyStep({
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
+    <div className="bg-white rounded-2xl shadow-card border border-stone-100 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+          <h3 className="font-semibold text-stone-800 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-amber-500" />
             Dagens lilla steg
           </h3>
-          <p className="text-sm text-slate-700 mt-1">
+          <p className="text-sm text-stone-700 mt-1">
             Ett litet steg i taget tar dig framåt
           </p>
         </div>
@@ -789,20 +789,20 @@ export function DailyStep({
 
       {/* Motivationsbooster - visas vid första besöket */}
       {showMotivationBooster && currentBooster && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-emerald-50 border border-teal-200 rounded-xl animate-in fade-in slide-in-from-top-2">
+        <div className="mb-6 p-4 bg-gradient-to-r from-[var(--c-bg)] to-emerald-50 border border-[var(--c-accent)]/60 rounded-xl animate-in fade-in slide-in-from-top-2">
           <div className="flex items-start gap-3">
             <span className="text-2xl">{currentBooster.icon}</span>
             <div className="flex-1">
-              <p className="text-sm font-medium text-teal-800">
+              <p className="text-sm font-medium text-[var(--c-text)]">
                 {currentBooster.message}
               </p>
-              <p className="text-xs text-teal-600 mt-1">
+              <p className="text-xs text-[var(--c-text)] mt-1">
                 {todayTip}
               </p>
             </div>
             <button 
               onClick={() => setShowMotivationBooster(false)}
-              className="text-teal-400 hover:text-teal-600"
+              className="text-[var(--c-solid)] hover:text-[var(--c-text)]"
             >
               <X className="w-4 h-4" />
             </button>
@@ -828,18 +828,18 @@ export function DailyStep({
       )}
 
       {/* Dagens progress - Tydliga delmål */}
-      <div className="mb-6 p-4 bg-slate-50 rounded-xl">
+      <div className="mb-6 p-4 bg-stone-50 rounded-xl">
         <div className="flex items-center justify-between mb-3">
           <StepBadge count={todayCompletedCount} total={dailyGoal} />
-          <span className="text-xs text-slate-700">
+          <span className="text-xs text-stone-700">
             Mål: {dailyGoal} steg
           </span>
         </div>
         
         {/* Progress bar för dagen */}
-        <div className="relative h-3 bg-slate-200 rounded-full overflow-hidden">
+        <div className="relative h-3 bg-stone-200 rounded-full overflow-hidden">
           <div 
-            className="absolute h-full bg-gradient-to-r from-teal-400 via-emerald-400 to-teal-500 rounded-full transition-all duration-700 ease-out"
+            className="absolute h-full bg-gradient-to-r from-[var(--c-solid)]/80 via-emerald-400 to-[var(--c-solid)] rounded-full transition-all duration-700 ease-out"
             style={{ width: `${dailyProgress}%` }}
           />
           
@@ -848,7 +848,7 @@ export function DailyStep({
             {[1, 2].map(milestone => (
               <div 
                 key={milestone}
-                className={`w-px h-full ${todayCompletedCount >= milestone ? 'bg-white/50' : 'bg-slate-300'}`}
+                className={`w-px h-full ${todayCompletedCount >= milestone ? 'bg-white/50' : 'bg-stone-300'}`}
                 style={{ marginLeft: `${(milestone / dailyGoal) * 100}%` }}
               />
             ))}
@@ -856,7 +856,7 @@ export function DailyStep({
         </div>
         
         {/* Motiverande meddelande */}
-        <p className="text-xs text-slate-700 mt-2 text-center">
+        <p className="text-xs text-stone-700 mt-2 text-center">
           {todayCompletedCount === 0 
             ? 'Börja med ett enkelt steg - du klarar det! 🌟'
             : todayCompletedCount === 1
@@ -870,11 +870,11 @@ export function DailyStep({
       {/* Veckans resa - Progress */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-3">
-          <h4 className="text-sm font-medium text-slate-700 flex items-center gap-2">
+          <h4 className="text-sm font-medium text-stone-700 flex items-center gap-2">
             <Trophy className="w-4 h-4 text-amber-500" />
             Veckans resa
           </h4>
-          <span className="text-xs text-slate-700">
+          <span className="text-xs text-stone-700">
             {completedTasks.length} av 7 steg
           </span>
         </div>
@@ -888,17 +888,17 @@ export function DailyStep({
                   w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium
                   transition-all duration-300
                   ${day.status === 'completed' 
-                    ? 'bg-teal-500 text-white shadow-md scale-110' 
+                    ? 'bg-[var(--c-solid)] text-white shadow-md scale-110' 
                     : day.status === 'missed'
-                    ? 'bg-slate-100 text-slate-600'
+                    ? 'bg-stone-100 text-stone-600'
                     : day.status === 'rest'
                     ? 'bg-indigo-100 text-indigo-600'
-                    : 'bg-slate-50 text-slate-700 border border-slate-200'}
+                    : 'bg-stone-50 text-stone-700 border border-stone-200'}
                 `}
               >
                 {dayStatusIcons[day.status] || day.day.charAt(0)}
               </div>
-              <span className="text-xs text-slate-600 mt-1">{day.day}</span>
+              <span className="text-xs text-stone-600 mt-1">{day.day}</span>
             </div>
           ))}
         </div>
@@ -914,9 +914,9 @@ export function DailyStep({
         )}
 
         {/* Progress bar */}
-        <div className="relative h-2 bg-slate-100 rounded-full overflow-hidden">
+        <div className="relative h-2 bg-stone-100 rounded-full overflow-hidden">
           <div 
-            className="absolute h-full bg-gradient-to-r from-teal-400 to-teal-500 rounded-full transition-all duration-1000 ease-out"
+            className="absolute h-full bg-gradient-to-r from-[var(--c-solid)]/80 to-[var(--c-solid)] rounded-full transition-all duration-1000 ease-out"
             style={{ width: `${weekProgress}%` }}
           />
         </div>
@@ -924,17 +924,17 @@ export function DailyStep({
 
       {/* Progress Ring för veckan - visas vid framsteg */}
       {completedTasks.length >= 3 && (
-        <div className="flex items-center gap-4 mb-6 p-4 bg-slate-50 rounded-xl">
+        <div className="flex items-center gap-4 mb-6 p-4 bg-stone-50 rounded-xl">
           <ProgressRing progress={weekProgress} size={70} strokeWidth={5} />
           <div>
-            <p className="font-medium text-slate-700">
+            <p className="font-medium text-stone-700">
               {weekProgress >= 100 
                 ? 'Fantastiskt! Veckan är klar! 🎉' 
                 : weekProgress >= 50 
                 ? 'Halvvägs! Bra jobbat! 💪'
                 : 'Bra början! Fortsätt så! 🌟'}
             </p>
-            <p className="text-sm text-slate-700">
+            <p className="text-sm text-stone-700">
               {Math.round(weekProgress)}% av veckans steg
             </p>
           </div>
@@ -943,7 +943,7 @@ export function DailyStep({
 
       {/* Energinivå-väljare med EnergyFilter-integration */}
       <div className="mb-6">
-        <p className="text-sm font-medium text-slate-700 mb-3">
+        <p className="text-sm font-medium text-stone-700 mb-3">
           Hur är din energi idag?
         </p>
         <div className="flex gap-2">
@@ -955,7 +955,7 @@ export function DailyStep({
                 flex-1 py-2 px-3 rounded-lg border-2 text-sm font-medium transition-all
                 ${energyLevel === level 
                   ? energyLabels[level].color + ' border-current shadow-sm' 
-                  : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'}
+                  : 'bg-white border-stone-200 text-stone-600 hover:border-stone-300'}
               `}
             >
               <span className="mr-1">{energyLabels[level].emoji}</span>
@@ -965,11 +965,11 @@ export function DailyStep({
         </div>
         
         {/* Energy Indicator */}
-        <div className="mt-3 p-3 bg-slate-50 rounded-lg">
+        <div className="mt-3 p-3 bg-stone-50 rounded-lg">
           <EnergyIndicator level={energyLevel} />
         </div>
         
-        <p className="text-xs text-slate-700 mt-2">
+        <p className="text-xs text-stone-700 mt-2">
           Vi anpassar uppgifterna efter hur du mår idag
         </p>
       </div>
@@ -981,23 +981,23 @@ export function DailyStep({
           <div className="text-5xl mb-3">
             {todayCompletedCount === dailyGoal ? '🏆' : todayCompletedCount === 2 ? '⭐' : '🎉'}
           </div>
-          <p className="text-lg font-semibold text-teal-700">
+          <p className="text-lg font-semibold text-[var(--c-text)]">
             {todayCompletedCount === dailyGoal 
               ? 'Du klarade dagens mål! Fantastiskt!' 
               : todayCompletedCount === 2 
               ? 'Så nära! Ett steg till!' 
               : 'Bra jobbat! Du tog ett steg idag!'}
           </p>
-          <p className="text-sm text-slate-700 mt-2">
+          <p className="text-sm text-stone-700 mt-2">
             {todayCompletedCount === dailyGoal 
               ? 'Ta en stund och känn dig stolt över dig själv.' 
               : 'Varje litet steg räknas'}
           </p>
           
           {/* Total steps counter */}
-          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-teal-50 rounded-full">
-            <Star className="w-4 h-4 text-teal-500 fill-current" />
-            <span className="text-sm text-teal-700">
+          <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-[var(--c-bg)] rounded-full">
+            <Star className="w-4 h-4 text-[var(--c-solid)] fill-current" />
+            <span className="text-sm text-[var(--c-text)]">
               Du har tagit <strong>{totalSteps + todayCompletedCount}</strong> steg totalt!
             </span>
           </div>
@@ -1010,7 +1010,7 @@ export function DailyStep({
           <p className="text-lg font-semibold text-indigo-700">
             Så klokt av dig att lyssna på kroppen!
           </p>
-          <p className="text-sm text-slate-700 mt-2">
+          <p className="text-sm text-stone-700 mt-2">
             Vila är också ett steg framåt. Kom tillbaka när du är redo. 💙
           </p>
         </div>
@@ -1029,11 +1029,11 @@ export function DailyStep({
               isSaved={savedTaskIds.has(selectedTask.id)}
             />
           ) : (
-            <div className="text-center py-8 text-slate-700">
+            <div className="text-center py-8 text-stone-700">
               <p>Inga uppgifter tillgängliga just nu</p>
               <button
                 onClick={() => setDismissedTasks([])}
-                className="mt-2 text-sm text-teal-600 hover:underline"
+                className="mt-2 text-sm text-[var(--c-text)] hover:underline"
               >
                 Visa alla uppgifter igen
               </button>
@@ -1054,10 +1054,10 @@ export function DailyStep({
           )}
 
           {/* Alternative actions - Flexibilitet utan skuld */}
-          <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-2 justify-between">
+          <div className="mt-6 pt-4 border-t border-stone-100 flex flex-wrap gap-2 justify-between">
             <button
               onClick={handleNewTask}
-              className="flex items-center gap-1 text-sm text-slate-700 hover:text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors"
+              className="flex items-center gap-1 text-sm text-stone-700 hover:text-stone-700 px-3 py-1.5 rounded-lg hover:bg-stone-50 transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               Föreslå annan uppgift
@@ -1078,14 +1078,14 @@ export function DailyStep({
 
       {/* Summering */}
       {completedTasks.length > 0 && (
-        <div className="mt-6 pt-4 border-t border-slate-100">
+        <div className="mt-6 pt-4 border-t border-stone-100">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-slate-700">
-              Du har gjort <span className="font-semibold text-teal-600">{completedTasks.length}</span> steg denna vecka.
+            <p className="text-sm text-stone-700">
+              Du har gjort <span className="font-semibold text-[var(--c-text)]">{completedTasks.length}</span> steg denna vecka.
             </p>
             <span className="text-lg">🌟</span>
           </div>
-          <p className="text-xs text-slate-600 mt-1">
+          <p className="text-xs text-stone-600 mt-1">
             {completedTasks.length >= 7 
               ? 'En hel vecka av små steg - imponerande!' 
               : completedTasks.length >= 3 
@@ -1096,11 +1096,11 @@ export function DailyStep({
       )}
 
       {/* Long-term goal reminder */}
-      <div className="mt-4 p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg">
+      <div className="mt-4 p-3 bg-gradient-to-r from-stone-50 to-stone-100 rounded-lg">
         <div className="flex items-start gap-2">
-          <ThumbsUp className="w-4 h-4 text-slate-600 mt-0.5" />
+          <ThumbsUp className="w-4 h-4 text-stone-600 mt-0.5" />
           <div>
-            <p className="text-xs text-slate-700">
+            <p className="text-xs text-stone-700">
               Kom ihåg: Du arbetar mot ett bättre mående och en starkare framtid. 
               Varje litet steg tar dig närmare dit du vill vara.
             </p>

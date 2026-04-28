@@ -38,7 +38,7 @@ interface AddApplicationModalProps {
 const PRIORITY_OPTIONS: { value: ApplicationPriority; label: string; color: string }[] = [
   { value: 'high', label: 'Hög', color: 'text-red-600' },
   { value: 'medium', label: 'Medium', color: 'text-amber-600' },
-  { value: 'low', label: 'Låg', color: 'text-slate-600' },
+  { value: 'low', label: 'Låg', color: 'text-stone-600' },
 ]
 
 const SOURCE_OPTIONS: { value: ApplicationSource; label: string }[] = [
@@ -163,15 +163,15 @@ export function AddApplicationModal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
       <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-slate-900">
+        <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-stone-900">
             {editApplication ? 'Redigera ansökan' : 'Lägg till ansökan'}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+            className="p-2 hover:bg-stone-100 rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-slate-700" />
+            <X className="w-5 h-5 text-stone-700" />
           </button>
         </div>
 
@@ -186,17 +186,17 @@ export function AddApplicationModal({
 
           {/* Company Name */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-stone-700 mb-1">
               Företag <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <input
                 type="text"
                 value={formData.companyName}
                 onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
                 placeholder="T.ex. Spotify"
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
                 required
               />
             </div>
@@ -204,17 +204,17 @@ export function AddApplicationModal({
 
           {/* Job Title */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-stone-700 mb-1">
               Tjänst <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <input
                 type="text"
                 value={formData.jobTitle}
                 onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
                 placeholder="T.ex. Frontend Developer"
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
                 required
               />
             </div>
@@ -222,30 +222,30 @@ export function AddApplicationModal({
 
           {/* Location */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Plats</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Plats</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <input
                 type="text"
                 value={formData.location}
                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                 placeholder="T.ex. Stockholm"
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
           </div>
 
           {/* Job URL */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Länk till annons</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Länk till annons</label>
             <div className="relative">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <input
                 type="url"
                 value={formData.jobUrl}
                 onChange={(e) => setFormData({ ...formData, jobUrl: e.target.value })}
                 placeholder="https://..."
-                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               />
             </div>
           </div>
@@ -253,11 +253,11 @@ export function AddApplicationModal({
           {/* Source & Application Date */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Källa</label>
+              <label className="block text-sm font-medium text-stone-700 mb-1">Källa</label>
               <select
                 value={formData.source}
                 onChange={(e) => setFormData({ ...formData, source: e.target.value as ApplicationSource })}
-                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                className="w-full px-3 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
               >
                 {SOURCE_OPTIONS.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -265,14 +265,14 @@ export function AddApplicationModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Ansökningsdatum</label>
+              <label className="block text-sm font-medium text-stone-700 mb-1">Ansökningsdatum</label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
                 <input
                   type="date"
                   value={formData.applicationDate}
                   onChange={(e) => setFormData({ ...formData, applicationDate: e.target.value })}
-                  className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
                 />
               </div>
             </div>
@@ -281,11 +281,11 @@ export function AddApplicationModal({
           {/* Status & Priority */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Status</label>
+              <label className="block text-sm font-medium text-stone-700 mb-1">Status</label>
               <select
                 value={formData.status}
                 onChange={(e) => setFormData({ ...formData, status: e.target.value as ApplicationStatus })}
-                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                className="w-full px-3 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
               >
                 {Object.keys(APPLICATION_STATUS_CONFIG).map(status => (
                   <option key={status} value={status}>
@@ -295,11 +295,11 @@ export function AddApplicationModal({
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Prioritet</label>
+              <label className="block text-sm font-medium text-stone-700 mb-1">Prioritet</label>
               <select
                 value={formData.priority}
                 onChange={(e) => setFormData({ ...formData, priority: e.target.value as ApplicationPriority })}
-                className="w-full px-3 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                className="w-full px-3 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
               >
                 {PRIORITY_OPTIONS.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -310,19 +310,19 @@ export function AddApplicationModal({
 
           {/* Notes */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Anteckningar</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Anteckningar</label>
             <textarea
               value={formData.notes}
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder="Anteckningar om ansökan..."
               rows={3}
-              className="w-full px-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+              className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
             />
           </div>
         </form>
 
         {/* Footer */}
-        <div className="border-t border-slate-100 p-4 flex gap-3">
+        <div className="border-t border-stone-100 p-4 flex gap-3">
           <Button
             type="button"
             variant="outline"

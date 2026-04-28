@@ -144,8 +144,8 @@ export default function LinkedInOptimizer() {
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-sky-100 to-sky-200 dark:from-sky-900/30 dark:to-sky-800/30 mb-2">
           <Linkedin className="w-7 h-7 text-sky-700 dark:text-sky-400" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.title')}</h1>
-        <p className="text-slate-600 dark:text-stone-400 max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.title')}</h1>
+        <p className="text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
           {t('linkedInOptimizer.description')}
         </p>
       </div>
@@ -158,12 +158,12 @@ export default function LinkedInOptimizer() {
             onClick={() => { setAktivTab(tab.id as any); setResultat(''); }}
             className={`p-3 rounded-xl border-2 text-left transition-all text-sm ${
               aktivTab === tab.id
-                ? 'border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20'
-                : 'border-stone-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700 bg-white dark:bg-stone-800'
+                ? 'border-[var(--c-solid)] dark:border-[var(--c-solid)]/60 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
+                : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60 dark:hover:border-[var(--c-accent)]/60 bg-white dark:bg-stone-800'
             }`}
           >
-            <tab.icon className={`w-5 h-5 mb-1 ${aktivTab === tab.id ? 'text-teal-600 dark:text-teal-400' : 'text-slate-600 dark:text-stone-400'}`} />
-            <div className="font-medium text-slate-800 dark:text-stone-200 text-xs">{tab.label}</div>
+            <tab.icon className={`w-5 h-5 mb-1 ${aktivTab === tab.id ? 'text-[var(--c-text)] dark:text-[var(--c-solid)]' : 'text-stone-600 dark:text-stone-400'}`} />
+            <div className="font-medium text-stone-800 dark:text-stone-200 text-xs">{tab.label}</div>
           </button>
         ))}
       </div>
@@ -174,21 +174,21 @@ export default function LinkedInOptimizer() {
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             {aktivTab === 'headline' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.headline.title')}</h2>
-                <p className="text-sm text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.headline.description')}</p>
+                <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.headline.title')}</h2>
+                <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.headline.description')}</p>
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.headline.jobTitlePlaceholder')}
                   value={formData.headline.yrke}
                   onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, yrke: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.headline.specializationPlaceholder')}
                   value={formData.headline.erfarenhet}
                   onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, erfarenhet: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
                 <div className="bg-sky-50 dark:bg-sky-900/20 p-4 rounded-lg border border-sky-200 dark:border-sky-800">
                   <p className="text-sm text-sky-800 dark:text-sky-300"><strong>{t('linkedInOptimizer.headline.tipLabel')}:</strong> {t('linkedInOptimizer.headline.tipText')}</p>
@@ -198,47 +198,47 @@ export default function LinkedInOptimizer() {
 
             {aktivTab === 'about' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.about.title')}</h2>
-                <p className="text-sm text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.about.description')}</p>
+                <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.about.title')}</h2>
+                <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.about.description')}</p>
                 <textarea
                   placeholder={t('linkedInOptimizer.about.backgroundPlaceholder')}
                   value={formData.about.bakgrund}
                   onChange={(e) => setFormData({ ...formData, about: { ...formData.about, bakgrund: e.target.value } })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
                 <textarea
                   placeholder={t('linkedInOptimizer.about.strengthsPlaceholder')}
                   value={formData.about.styrkor}
                   onChange={(e) => setFormData({ ...formData, about: { ...formData.about, styrkor: e.target.value } })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.about.goalsPlaceholder')}
                   value={formData.about.mal}
                   onChange={(e) => setFormData({ ...formData, about: { ...formData.about, mal: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
               </div>
             )}
 
             {aktivTab === 'post' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.post.title')}</h2>
-                <p className="text-sm text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.post.description')}</p>
+                <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.post.title')}</h2>
+                <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.post.description')}</p>
                 <textarea
                   placeholder={t('linkedInOptimizer.post.topicPlaceholder')}
                   value={formData.post.amne}
                   onChange={(e) => setFormData({ ...formData, post: { ...formData.post, amne: e.target.value } })}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
                 <select
                   value={formData.post.ton}
                   onChange={(e) => setFormData({ ...formData, post: { ...formData.post, ton: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 >
                   <option value="professionell">{t('linkedInOptimizer.post.tones.professional')}</option>
                   <option value="personlig">{t('linkedInOptimizer.post.tones.personal')}</option>
@@ -250,28 +250,28 @@ export default function LinkedInOptimizer() {
 
             {aktivTab === 'connection' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.connection.title')}</h2>
-                <p className="text-sm text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.connection.description')}</p>
+                <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.connection.title')}</h2>
+                <p className="text-sm text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.connection.description')}</p>
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.connection.namePlaceholder')}
                   value={formData.connection.namn}
                   onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, namn: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.connection.rolePlaceholder')}
                   value={formData.connection.roll}
                   onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, roll: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
                 <textarea
                   placeholder={t('linkedInOptimizer.connection.purposePlaceholder')}
                   value={formData.connection.syfte}
                   onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, syfte: e.target.value } })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none resize-y bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
               </div>
             )}
@@ -279,7 +279,7 @@ export default function LinkedInOptimizer() {
             <Button
               onClick={generera}
               disabled={isLoading}
-              className="w-full mt-6 bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
+              className="w-full mt-6 bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]"
             >
               {isLoading ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -294,21 +294,21 @@ export default function LinkedInOptimizer() {
 
           {/* Resultat */}
           {resultat && (
-            <Card className="p-6 bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-sky-200 dark:border-sky-800">
+            <Card className="p-6 bg-gradient-to-br from-sky-50 to-[var(--c-bg)] dark:from-sky-900/20 dark:to-[var(--c-bg)]/30 border-sky-200 dark:border-sky-800">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.result.title')}</h3>
+                <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.result.title')}</h3>
                 <button
                   onClick={kopiera}
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/40 rounded-lg transition-colors"
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   {copied ? t('linkedInOptimizer.result.copied') : t('linkedInOptimizer.result.copy')}
                 </button>
               </div>
               <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-sky-100 dark:border-sky-800">
-                <p className="text-slate-700 dark:text-stone-300 whitespace-pre-wrap">{resultat}</p>
+                <p className="text-stone-700 dark:text-stone-300 whitespace-pre-wrap">{resultat}</p>
               </div>
-              <p className="text-xs text-slate-600 dark:text-stone-400 mt-3">
+              <p className="text-xs text-stone-600 dark:text-stone-400 mt-3">
                 {t('linkedInOptimizer.result.tip')}
               </p>
             </Card>
@@ -318,25 +318,25 @@ export default function LinkedInOptimizer() {
         /* Audit View */
         <div className="space-y-6">
           {/* Completeness Overview */}
-          <Card className="p-6 bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-sky-200 dark:border-sky-800">
+          <Card className="p-6 bg-gradient-to-br from-sky-50 to-[var(--c-bg)] dark:from-sky-900/20 dark:to-[var(--c-bg)]/30 border-sky-200 dark:border-sky-800">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-                <Shield className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+              <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100 flex items-center gap-2">
+                <Shield className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
                 {t('linkedInOptimizer.audit.profileHealth')}
               </h2>
               <div className="text-right">
-                <p className="text-4xl font-bold text-teal-600 dark:text-teal-400">{auditGrade}</p>
-                <p className="text-xs text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.audit.grade')}</p>
+                <p className="text-4xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{auditGrade}</p>
+                <p className="text-xs text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.audit.grade')}</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-slate-700 dark:text-stone-300">{t('linkedInOptimizer.audit.profileCompleted')}</span>
-                <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{profileCompleteness}%</span>
+                <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('linkedInOptimizer.audit.profileCompleted')}</span>
+                <span className="text-sm font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">{profileCompleteness}%</span>
               </div>
               <Progress value={profileCompleteness} className="h-4" />
-              <p className="text-xs text-slate-600 dark:text-stone-400 mt-2">{t('linkedInOptimizer.audit.recommendation')}</p>
+              <p className="text-xs text-stone-600 dark:text-stone-400 mt-2">{t('linkedInOptimizer.audit.recommendation')}</p>
             </div>
           </Card>
 
@@ -346,11 +346,11 @@ export default function LinkedInOptimizer() {
               <Card key={section.name} className="overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
                 <button
                   onClick={() => setExpandedSection(expandedSection === section.name ? null : section.name)}
-                  className="w-full p-6 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-stone-700 transition text-left"
+                  className="w-full p-6 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-700 transition text-left"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
-                      <h3 className="font-semibold text-slate-800 dark:text-stone-100">{section.name}</h3>
+                      <h3 className="font-semibold text-stone-800 dark:text-stone-100">{section.name}</h3>
                       <span className={`text-xs font-bold px-2 py-1 rounded-full ${
                         section.score >= 80 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' :
                         section.score >= 70 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
@@ -361,17 +361,17 @@ export default function LinkedInOptimizer() {
                     </div>
                   </div>
                   {expandedSection === section.name ? (
-                    <ChevronUp className="w-5 h-5 text-slate-600 dark:text-stone-400" />
+                    <ChevronUp className="w-5 h-5 text-stone-600 dark:text-stone-400" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-slate-600 dark:text-stone-400" />
+                    <ChevronDown className="w-5 h-5 text-stone-600 dark:text-stone-400" />
                   )}
                 </button>
 
                 {expandedSection === section.name && (
-                  <div className="border-t border-slate-200 dark:border-stone-700 p-6 bg-slate-50 dark:bg-stone-900/50 space-y-4">
+                  <div className="border-t border-stone-200 dark:border-stone-700 p-6 bg-stone-50 dark:bg-stone-900/50 space-y-4">
                     {/* Checklist */}
                     <div>
-                      <h4 className="font-medium text-slate-800 dark:text-stone-100 mb-2 flex items-center gap-2">
+                      <h4 className="font-medium text-stone-800 dark:text-stone-100 mb-2 flex items-center gap-2">
                         <ListCheckIcon className="w-4 h-4" />
                         {t('linkedInOptimizer.audit.checklists')}
                       </h4>
@@ -386,9 +386,9 @@ export default function LinkedInOptimizer() {
                                 updated[auditSections.indexOf(section)].checklist[idx].completed = !item.completed
                                 setAuditSections(updated)
                               }}
-                              className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 cursor-pointer"
+                              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] cursor-pointer"
                             />
-                            <span className={item.completed ? 'line-through text-slate-500 dark:text-stone-500' : 'text-slate-700 dark:text-stone-300'}>{item.item}</span>
+                            <span className={item.completed ? 'line-through text-stone-500 dark:text-stone-500' : 'text-stone-700 dark:text-stone-300'}>{item.item}</span>
                           </label>
                         ))}
                       </div>
@@ -396,15 +396,15 @@ export default function LinkedInOptimizer() {
 
                     {/* Before/After Examples */}
                     <div>
-                      <h4 className="font-medium text-slate-800 dark:text-stone-100 mb-2">{t('linkedInOptimizer.audit.beforeAfterExamples')}</h4>
+                      <h4 className="font-medium text-stone-800 dark:text-stone-100 mb-2">{t('linkedInOptimizer.audit.beforeAfterExamples')}</h4>
                       <div className="grid md:grid-cols-2 gap-3">
                         <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded border border-red-200 dark:border-red-800">
                           <p className="text-xs text-red-700 dark:text-red-400 font-medium mb-1">{t('linkedInOptimizer.audit.before')}</p>
-                          <p className="text-sm text-slate-700 dark:text-stone-300">{section.examples.before}</p>
+                          <p className="text-sm text-stone-700 dark:text-stone-300">{section.examples.before}</p>
                         </div>
                         <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded border border-emerald-200 dark:border-emerald-800">
                           <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium mb-1">{t('linkedInOptimizer.audit.after')}</p>
-                          <p className="text-sm text-slate-700 dark:text-stone-300">{section.examples.after}</p>
+                          <p className="text-sm text-stone-700 dark:text-stone-300">{section.examples.after}</p>
                         </div>
                       </div>
                     </div>
@@ -413,7 +413,7 @@ export default function LinkedInOptimizer() {
                     <div>
                       <button
                         onClick={() => setShowKeywords(!showKeywords)}
-                        className="flex items-center gap-2 text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300"
+                        className="flex items-center gap-2 text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)]"
                       >
                         {showKeywords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                         {showKeywords ? t('linkedInOptimizer.audit.hideKeywords') : t('linkedInOptimizer.audit.showKeywords')}
@@ -421,7 +421,7 @@ export default function LinkedInOptimizer() {
                       {showKeywords && (
                         <div className="flex flex-wrap gap-2 mt-2">
                           {section.keywords.map((kw, idx) => (
-                            <span key={idx} className="text-xs bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 px-2 py-1 rounded-full">
+                            <span key={idx} className="text-xs bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)] px-2 py-1 rounded-full">
                               {kw}
                             </span>
                           ))}
@@ -436,22 +436,22 @@ export default function LinkedInOptimizer() {
 
           {/* Action Items */}
           <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
-            <h3 className="font-bold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
+            <h3 className="font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               {t('linkedInOptimizer.audit.priorityActions')}
             </h3>
             <ol className="space-y-2">
-              <li className="text-sm text-slate-700 dark:text-stone-300">
+              <li className="text-sm text-stone-700 dark:text-stone-300">
                 <strong className="text-amber-700 dark:text-amber-400">{t('linkedInOptimizer.audit.high')}:</strong> {t('linkedInOptimizer.audit.action1')}
               </li>
-              <li className="text-sm text-slate-700 dark:text-stone-300">
+              <li className="text-sm text-stone-700 dark:text-stone-300">
                 <strong className="text-amber-700 dark:text-amber-400">{t('linkedInOptimizer.audit.high')}:</strong> {t('linkedInOptimizer.audit.action2')}
               </li>
-              <li className="text-sm text-slate-700 dark:text-stone-300">
-                <strong className="text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.audit.medium')}:</strong> {t('linkedInOptimizer.audit.action3')}
+              <li className="text-sm text-stone-700 dark:text-stone-300">
+                <strong className="text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.audit.medium')}:</strong> {t('linkedInOptimizer.audit.action3')}
               </li>
-              <li className="text-sm text-slate-700 dark:text-stone-300">
-                <strong className="text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.audit.medium')}:</strong> {t('linkedInOptimizer.audit.action4')}
+              <li className="text-sm text-stone-700 dark:text-stone-300">
+                <strong className="text-stone-600 dark:text-stone-400">{t('linkedInOptimizer.audit.medium')}:</strong> {t('linkedInOptimizer.audit.action4')}
               </li>
             </ol>
           </Card>

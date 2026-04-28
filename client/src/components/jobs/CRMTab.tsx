@@ -161,14 +161,14 @@ export function CRMTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-teal-50 to-sky-50 border-teal-100">
+      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 border-[var(--c-accent)]/40">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
-            <ClipboardList className="w-6 h-6 text-teal-600" />
+          <div className="w-12 h-12 bg-[var(--c-accent)]/40 rounded-xl flex items-center justify-center shrink-0">
+            <ClipboardList className="w-6 h-6 text-[var(--c-text)]" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">Ansöknings-CRM</h2>
-            <p className="text-slate-600 mt-1">
+            <h2 className="text-xl font-bold text-stone-900">Ansöknings-CRM</h2>
+            <p className="text-stone-600 mt-1">
               Håll koll på alla dina jobbansökningar, status och uppföljningar.
             </p>
           </div>
@@ -207,95 +207,95 @@ export function CRMTab() {
       {applications.length > 0 && (
         <div className="grid grid-cols-4 gap-4">
           <Card className="text-center py-3">
-            <div className="text-2xl font-bold text-slate-800">{stats.total}</div>
-            <p className="text-xs text-slate-700">Totalt</p>
+            <div className="text-2xl font-bold text-stone-800">{stats.total}</div>
+            <p className="text-xs text-stone-700">Totalt</p>
           </Card>
           <Card className="text-center py-3">
             <div className="text-2xl font-bold text-blue-600">{stats.active}</div>
-            <p className="text-xs text-slate-700">Aktiva</p>
+            <p className="text-xs text-stone-700">Aktiva</p>
           </Card>
           <Card className="text-center py-3">
-            <div className="text-2xl font-bold text-teal-600">{stats.interviews}</div>
-            <p className="text-xs text-slate-700">Intervjuer</p>
+            <div className="text-2xl font-bold text-[var(--c-text)]">{stats.interviews}</div>
+            <p className="text-xs text-stone-700">Intervjuer</p>
           </Card>
           <Card className="text-center py-3">
             <div className="text-2xl font-bold text-emerald-600">{stats.offers}</div>
-            <p className="text-xs text-slate-700">Erbjudanden</p>
+            <p className="text-xs text-stone-700">Erbjudanden</p>
           </Card>
         </div>
       )}
 
       {/* Add/Edit form */}
       {isAdding && (
-        <Card className="border-teal-200">
-          <h3 className="font-semibold text-slate-900 mb-4">
+        <Card className="border-[var(--c-accent)]/60">
+          <h3 className="font-semibold text-stone-900 mb-4">
             {editingId ? 'Redigera ansökan' : 'Ny jobbansökan'}
           </h3>
 
           <div className="space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Företag *</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Företag *</label>
                 <input
                   type="text"
                   value={formData.company}
                   onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="T.ex. Spotify"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Position *</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Position *</label>
                 <input
                   type="text"
                   value={formData.position}
                   onChange={(e) => setFormData(prev => ({ ...prev, position: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="T.ex. Frontend Developer"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Länk till annons</label>
+              <label className="block text-sm font-medium text-stone-700 mb-1">Länk till annons</label>
               <input
                 type="url"
                 value={formData.url}
                 onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
+                className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)]"
                 placeholder="https://..."
               />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Kontaktperson</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Kontaktperson</label>
                 <input
                   type="text"
                   value={formData.contactName}
                   onChange={(e) => setFormData(prev => ({ ...prev, contactName: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="Rekryterarens namn"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">E-post</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">E-post</label>
                 <input
                   type="email"
                   value={formData.contactEmail}
                   onChange={(e) => setFormData(prev => ({ ...prev, contactEmail: e.target.value }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="recruiter@company.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Anteckningar</label>
+              <label className="block text-sm font-medium text-stone-700 mb-1">Anteckningar</label>
               <textarea
                 value={formData.notes}
                 onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 min-h-[80px]"
+                className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] min-h-[80px]"
                 placeholder="Eventuella anteckningar..."
               />
             </div>
@@ -319,7 +319,7 @@ export function CRMTab() {
             onClick={() => setFilter(null)}
             className={cn(
               "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-              !filter ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              !filter ? "bg-[var(--c-solid)] text-white" : "bg-stone-100 text-stone-600 hover:bg-stone-200"
             )}
           >
             Alla
@@ -330,7 +330,7 @@ export function CRMTab() {
               onClick={() => setFilter(key)}
               className={cn(
                 "px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-                filter === key ? "bg-teal-600 text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                filter === key ? "bg-[var(--c-solid)] text-white" : "bg-stone-100 text-stone-600 hover:bg-stone-200"
               )}
             >
               {config.label}
@@ -354,9 +354,9 @@ export function CRMTab() {
                 <div className="flex items-start gap-4">
                   <div className={cn(
                     "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
-                    status.color === 'slate' && "bg-slate-100 text-slate-600",
+                    status.color === 'slate' && "bg-stone-100 text-stone-600",
                     status.color === 'blue' && "bg-blue-100 text-blue-600",
-                    status.color === 'teal' && "bg-teal-100 text-teal-600",
+                    status.color === 'teal' && "bg-[var(--c-accent)]/40 text-[var(--c-text)]",
                     status.color === 'emerald' && "bg-emerald-100 text-emerald-600",
                     status.color === 'rose' && "bg-rose-100 text-rose-600"
                   )}>
@@ -366,8 +366,8 @@ export function CRMTab() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="font-medium text-slate-900">{app.position}</h4>
-                        <p className="text-sm text-slate-700 flex items-center gap-1">
+                        <h4 className="font-medium text-stone-900">{app.position}</h4>
+                        <p className="text-sm text-stone-700 flex items-center gap-1">
                           <Building2 className="w-3 h-3" />
                           {app.company}
                         </p>
@@ -375,9 +375,9 @@ export function CRMTab() {
                       <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                         <button
                           onClick={() => startEdit(app)}
-                          className="p-1.5 hover:bg-slate-100 rounded"
+                          className="p-1.5 hover:bg-stone-100 rounded"
                         >
-                          <Edit2 className="w-4 h-4 text-slate-600" />
+                          <Edit2 className="w-4 h-4 text-stone-600" />
                         </button>
                         <button
                           onClick={() => deleteApplication(app.id)}
@@ -388,7 +388,7 @@ export function CRMTab() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 mt-2 text-xs text-slate-600">
+                    <div className="flex items-center gap-3 mt-2 text-xs text-stone-600">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         Ansökt: {app.appliedDate}
@@ -414,11 +414,11 @@ export function CRMTab() {
                     </div>
 
                     {app.notes && (
-                      <p className="text-sm text-slate-700 mt-2 line-clamp-1">{app.notes}</p>
+                      <p className="text-sm text-stone-700 mt-2 line-clamp-1">{app.notes}</p>
                     )}
 
                     {/* Status buttons */}
-                    <div className="flex gap-2 mt-3 pt-3 border-t border-slate-100">
+                    <div className="flex gap-2 mt-3 pt-3 border-t border-stone-100">
                       {Object.entries(STATUS_CONFIG).map(([key, config]) => (
                         <button
                           key={key}
@@ -426,8 +426,8 @@ export function CRMTab() {
                           className={cn(
                             "px-2 py-1 rounded text-xs font-medium transition-all",
                             app.status === key
-                              ? "bg-teal-600 text-white"
-                              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                              ? "bg-[var(--c-solid)] text-white"
+                              : "bg-stone-100 text-stone-600 hover:bg-stone-200"
                           )}
                         >
                           {config.label}
@@ -442,9 +442,9 @@ export function CRMTab() {
         </div>
       ) : !isAdding && (
         <Card className="text-center py-12">
-          <ClipboardList className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="font-semibold text-slate-700 mb-2">Inga ansökningar än</h3>
-          <p className="text-sm text-slate-700 mb-4">
+          <ClipboardList className="w-12 h-12 text-stone-300 mx-auto mb-4" />
+          <h3 className="font-semibold text-stone-700 mb-2">Inga ansökningar än</h3>
+          <p className="text-sm text-stone-700 mb-4">
             Börja spåra dina jobbansökningar för att hålla koll på status och uppföljningar.
           </p>
           <Button onClick={() => setIsAdding(true)}>

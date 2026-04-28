@@ -150,7 +150,7 @@ export function JobSearchSection() {
               type="checkbox"
               checked={preferences.labor_market_status?.registeredAtAF || false}
               onChange={(e) => updateLaborMarketStatus({ registeredAtAF: e.target.checked })}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:bg-stone-700"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:bg-stone-700"
             />
             <span className="text-sm text-stone-700 dark:text-stone-300">
               {t('profile.jobSearch.registeredAF')}
@@ -161,7 +161,7 @@ export function JobSearchSection() {
               type="checkbox"
               checked={preferences.labor_market_status?.participatingInProgram || false}
               onChange={(e) => updateLaborMarketStatus({ participatingInProgram: e.target.checked })}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:bg-stone-700"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:bg-stone-700"
             />
             <span className="text-sm text-stone-700 dark:text-stone-300">{t('profile.jobSearch.participatingInProgram')}</span>
           </label>
@@ -178,7 +178,7 @@ export function JobSearchSection() {
               type="checkbox"
               checked={preferences.labor_market_status?.hasActivitySupport || false}
               onChange={(e) => updateLaborMarketStatus({ hasActivitySupport: e.target.checked })}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:bg-stone-700"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)] dark:bg-stone-700"
             />
             <span className="text-sm text-stone-700 dark:text-stone-300">
               {t('profile.jobSearch.hasActivitySupport')}
@@ -203,7 +203,7 @@ export function JobSearchSection() {
                 type="checkbox"
                 checked={preferences.mobility?.hasCar || false}
                 onChange={(e) => updateMobility({ hasCar: e.target.checked })}
-                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
+                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] dark:bg-stone-700"
               />
               <span className="text-sm text-stone-700 dark:text-stone-300">{t('profile.jobSearch.hasCar')}</span>
             </label>
@@ -212,7 +212,7 @@ export function JobSearchSection() {
                 type="checkbox"
                 checked={preferences.mobility?.willingToRelocate || false}
                 onChange={(e) => updateMobility({ willingToRelocate: e.target.checked })}
-                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
+                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] dark:bg-stone-700"
               />
               <span className="text-sm text-stone-700 dark:text-stone-300">{t('profile.jobSearch.canRelocate')}</span>
             </label>
@@ -233,7 +233,7 @@ export function JobSearchSection() {
                 aria-valuemin={15}
                 aria-valuemax={120}
                 aria-valuenow={preferences.mobility?.maxCommuteMinutes || 45}
-                className="w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-teal-500"
+                className="w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-[var(--c-solid)]"
               />
               <div className="flex justify-between text-xs text-stone-400 mt-1">
                 <span>15 min</span>

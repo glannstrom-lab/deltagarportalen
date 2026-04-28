@@ -179,7 +179,7 @@ export function ContextualHelp({ context, data, onApplySuggestion }: ContextualH
               onClick={() => dismissTip(tip.id)}
               className="absolute top-2 right-2 p-1 rounded-full hover:bg-black/5 transition-colors"
             >
-              <X className="w-4 h-4 text-slate-600" />
+              <X className="w-4 h-4 text-stone-600" />
             </button>
           )}
           
@@ -188,10 +188,10 @@ export function ContextualHelp({ context, data, onApplySuggestion }: ContextualH
               {getIcon(tip.type)}
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-slate-800 text-sm mb-1">
+              <h4 className="font-medium text-stone-800 text-sm mb-1">
                 {tip.title}
               </h4>
-              <p className="text-sm text-slate-600 leading-relaxed">
+              <p className="text-sm text-stone-600 leading-relaxed">
                 {tip.message}
               </p>
               
@@ -254,9 +254,9 @@ export function InlineHelp({ children, tip }: InlineHelpProps) {
     >
       {children}
       {show && (
-        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-xs rounded-lg whitespace-nowrap animate-in fade-in duration-200">
+        <div className="absolute z-50 bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-stone-800 text-white text-xs rounded-lg whitespace-nowrap animate-in fade-in duration-200">
           {tip}
-          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
+          <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-stone-800" />
         </div>
       )}
     </div>

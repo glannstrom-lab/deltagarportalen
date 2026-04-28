@@ -124,10 +124,10 @@ Jag ser fram emot att få höra från er.`
       onClick={onClick}
       className={cn(
         'relative w-full aspect-[210/297] rounded-lg border-2 overflow-hidden transition-all',
-        'hover:ring-2 hover:ring-teal-500/30',
-        'focus:outline-none focus:ring-2 focus:ring-teal-500',
+        'hover:ring-2 hover:ring-[var(--c-solid)]/30',
+        'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]',
         selected
-          ? 'border-teal-500 ring-2 ring-teal-500/30'
+          ? 'border-[var(--c-solid)] ring-2 ring-[var(--c-solid)]/30'
           : 'border-stone-200 dark:border-stone-700'
       )}
       aria-pressed={selected}
@@ -150,7 +150,7 @@ Jag ser fram emot att få höra från er.`
 
       {/* Selection indicator */}
       {selected && (
-        <div className="absolute top-2 right-2 w-6 h-6 bg-teal-500 rounded-full flex items-center justify-center">
+        <div className="absolute top-2 right-2 w-6 h-6 bg-[var(--c-solid)] rounded-full flex items-center justify-center">
           <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>

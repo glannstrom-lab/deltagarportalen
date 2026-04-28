@@ -36,8 +36,8 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
         <div className="bg-white rounded-2xl p-8 text-center">
-          <div className="w-16 h-16 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">Analyserar din matchning...</p>
+          <div className="w-16 h-16 border-4 border-[var(--c-accent)]/60 border-t-[var(--c-solid)] rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-stone-600">Analyserar din matchning...</p>
         </div>
       </div>
     )
@@ -47,14 +47,14 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
 
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-600'
-    if (score >= 60) return 'text-teal-600'
+    if (score >= 60) return 'text-[var(--c-text)]'
     if (score >= 40) return 'text-amber-600'
     return 'text-red-600'
   }
 
   const getScoreBg = (score: number) => {
     if (score >= 80) return 'bg-green-100'
-    if (score >= 60) return 'bg-teal-100'
+    if (score >= 60) return 'bg-[var(--c-accent)]/40'
     if (score >= 40) return 'bg-amber-100'
     return 'bg-red-100'
   }
@@ -63,20 +63,20 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="p-6 border-b border-slate-200">
+        <div className="p-6 border-b border-stone-200">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className={`p-3 rounded-xl ${getScoreBg(analysis.score)}`}>
                 <Target className={`w-6 h-6 ${getScoreColor(analysis.score)}`} />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-slate-900">CV-matchning</h2>
-                <p className="text-slate-700">{job.headline}</p>
+                <h2 className="text-xl font-bold text-stone-900">CV-matchning</h2>
+                <p className="text-stone-700">{job.headline}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-600"
+              className="p-2 hover:bg-stone-100 rounded-lg text-stone-600 hover:text-stone-600"
             >
               ✕
             </button>
@@ -86,12 +86,12 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Score */}
-          <div className="text-center p-6 bg-slate-50 rounded-xl">
+          <div className="text-center p-6 bg-stone-50 rounded-xl">
             <div className={`text-5xl font-bold ${getScoreColor(analysis.score)} mb-2`}>
               {analysis.score}%
             </div>
-            <p className="text-slate-600">Matchningspoäng</p>
-            <div className="mt-4 w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+            <p className="text-stone-600">Matchningspoäng</p>
+            <div className="mt-4 w-full h-3 bg-stone-200 rounded-full overflow-hidden">
               <div 
                 className={`h-full transition-all duration-1000 ${getScoreBg(analysis.score).replace('bg-', 'bg-').replace('100', '500')}`}
                 style={{ width: `${analysis.score}%` }}
@@ -100,12 +100,12 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
           </div>
 
           {/* Assessment */}
-          <div className="p-4 bg-teal-50 rounded-xl border border-teal-100">
+          <div className="p-4 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]/40">
             <div className="flex items-start gap-3">
-              <Award className="w-5 h-5 text-teal-600 mt-0.5" />
+              <Award className="w-5 h-5 text-[var(--c-text)] mt-0.5" />
               <div>
-                <h3 className="font-semibold text-teal-900">Bedömning</h3>
-                <p className="text-teal-700 mt-1">{analysis.overallAssessment}</p>
+                <h3 className="font-semibold text-[var(--c-text)]">Bedömning</h3>
+                <p className="text-[var(--c-text)] mt-1">{analysis.overallAssessment}</p>
               </div>
             </div>
           </div>
@@ -113,7 +113,7 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
           {/* Matched Skills */}
           {analysis.matchedSkills.length > 0 && (
             <div>
-              <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <h3 className="font-semibold text-stone-900 mb-3 flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-green-500" />
                 Matchande kompetenser ({analysis.matchedSkills.length})
               </h3>
@@ -133,7 +133,7 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
           {/* Missing Skills */}
           {analysis.missingSkills.length > 0 && (
             <div>
-              <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
+              <h3 className="font-semibold text-stone-900 mb-3 flex items-center gap-2">
                 <XCircle className="w-5 h-5 text-red-500" />
                 Kompetenser att utveckla ({analysis.missingSkills.length})
               </h3>
@@ -147,7 +147,7 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
                   </span>
                 ))}
                 {analysis.missingSkills.length > 8 && (
-                  <span className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-sm">
+                  <span className="px-3 py-1 bg-stone-100 text-stone-600 rounded-full text-sm">
                     +{analysis.missingSkills.length - 8} till
                   </span>
                 )}
@@ -157,17 +157,17 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
 
           {/* Recommendations */}
           <div>
-            <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-teal-500" />
+            <h3 className="font-semibold text-stone-900 mb-3 flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-[var(--c-solid)]" />
               Rekommendationer
             </h3>
             <ul className="space-y-2">
               {analysis.recommendations.map((rec, idx) => (
                 <li 
                   key={idx}
-                  className="flex items-start gap-2 text-slate-700"
+                  className="flex items-start gap-2 text-stone-700"
                 >
-                  <span className="text-teal-500 mt-1">•</span>
+                  <span className="text-[var(--c-solid)] mt-1">•</span>
                   {rec}
                 </li>
               ))}
@@ -191,8 +191,8 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-slate-200 bg-slate-50">
-          <p className="text-xs text-slate-700 text-center">
+        <div className="p-6 border-t border-stone-200 bg-stone-50">
+          <p className="text-xs text-stone-700 text-center">
             Matchningen är baserad på ditt sparade CV. Uppdatera ditt CV för bättre träffsäkerhet.
           </p>
         </div>

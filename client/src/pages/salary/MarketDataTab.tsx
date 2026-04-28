@@ -117,10 +117,10 @@ export default function MarketDataTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 border-teal-200 dark:border-teal-700">
+      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-accent)]/40 dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
-            <BarChart3 className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+          <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center shrink-0">
+            <BarChart3 className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">{t('salary.marketData.title')}</h2>
@@ -139,7 +139,7 @@ export default function MarketDataTab() {
             className={cn(
               "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
               selectedView === 'industry'
-                ? "bg-teal-600 dark:bg-teal-500 text-white"
+                ? "bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white"
                 : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
             )}
           >
@@ -151,7 +151,7 @@ export default function MarketDataTab() {
             className={cn(
               "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
               selectedView === 'region'
-                ? "bg-teal-600 dark:bg-teal-500 text-white"
+                ? "bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white"
                 : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
             )}
           >
@@ -168,7 +168,7 @@ export default function MarketDataTab() {
             placeholder={selectedView === 'industry' ? t('salary.marketData.searchIndustry') : t('salary.marketData.searchRegion')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 text-gray-800 dark:text-gray-100"
+            className="w-full pl-10 pr-4 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] text-gray-800 dark:text-gray-100"
           />
         </div>
       </div>
@@ -178,7 +178,7 @@ export default function MarketDataTab() {
         <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <Building2 className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
               {t('salary.marketData.medianByIndustry')}
             </h3>
             <span className="text-xs text-gray-700 dark:text-gray-300">{filteredAndSortedIndustries.length} {t('salary.marketData.results')}</span>
@@ -191,7 +191,7 @@ export default function MarketDataTab() {
               className={cn(
                 'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
                 sortKey === 'median'
-                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+                  ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
                   : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
@@ -202,7 +202,7 @@ export default function MarketDataTab() {
               className={cn(
                 'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
                 sortKey === 'change'
-                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+                  ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
                   : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
@@ -213,7 +213,7 @@ export default function MarketDataTab() {
               className={cn(
                 'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
                 sortKey === 'name'
-                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+                  ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
                   : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
@@ -236,7 +236,7 @@ export default function MarketDataTab() {
                     >
                       <button
                         onClick={() => toggleExpandRow(industry.name)}
-                        className="w-full text-left hover:bg-teal-50/30 dark:hover:bg-teal-900/10 p-3 rounded-xl transition-colors"
+                        className="w-full text-left hover:bg-[var(--c-bg)]/30 dark:hover:bg-[var(--c-bg)]/20 p-3 rounded-xl transition-colors"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2 flex-1">
@@ -251,7 +251,7 @@ export default function MarketDataTab() {
                           <div className="flex items-center gap-3">
                             <span className={cn(
                               "text-xs flex items-center gap-0.5 font-medium",
-                              industry.change >= 3 ? "text-teal-600 dark:text-teal-400" : "text-gray-700 dark:text-gray-400"
+                              industry.change >= 3 ? "text-[var(--c-text)] dark:text-[var(--c-solid)]" : "text-gray-700 dark:text-gray-400"
                             )}>
                               {industry.change >= 3 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3 opacity-30" />}
                               {industry.change}{t('salary.marketData.perYear')}
@@ -263,7 +263,7 @@ export default function MarketDataTab() {
                         </div>
                         <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 rounded-full transition-all group-hover:from-teal-600 group-hover:to-teal-700"
+                            className="h-full bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)]/80 dark:to-[var(--c-solid)] rounded-full transition-all group-hover:from-[var(--c-solid)] group-hover:to-[var(--c-text)]"
                             style={{ width: `${(industry.median / maxMedian) * 100}%` }}
                           />
                         </div>
@@ -278,7 +278,7 @@ export default function MarketDataTab() {
                             exit={{ opacity: 0, height: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="px-3 pb-3 pt-1 bg-teal-50/30 dark:bg-teal-900/10 rounded-b-xl border-t border-teal-100/50 dark:border-teal-800/50">
+                            <div className="px-3 pb-3 pt-1 bg-[var(--c-bg)]/30 dark:bg-[var(--c-bg)]/10 rounded-b-xl border-t border-[var(--c-accent)]/40/50 dark:border-[var(--c-accent)]/50/50">
                               <div className="grid grid-cols-2 gap-4">
                                 <div className="text-sm">
                                   <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">{t('salary.marketData.employeesInSweden')}</p>
@@ -288,13 +288,13 @@ export default function MarketDataTab() {
                                   <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">{t('salary.marketData.annualGrowth')}</p>
                                   <p className={cn(
                                     'font-semibold',
-                                    industry.change >= 3 ? 'text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
+                                    industry.change >= 3 ? 'text-[var(--c-text)] dark:text-[var(--c-solid)]' : 'text-gray-700 dark:text-gray-300'
                                   )}>
                                     +{industry.change}%
                                   </p>
                                 </div>
                               </div>
-                              <div className="mt-3 p-2 bg-white dark:bg-stone-700 rounded-lg border border-teal-100 dark:border-teal-800">
+                              <div className="mt-3 p-2 bg-white dark:bg-stone-700 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
                                 <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('salary.marketData.salaryRange')}</p>
                                 <div className="flex justify-between text-xs text-gray-700 dark:text-gray-300">
                                   <span>{t('salary.marketData.min')}: ~{Math.round(industry.median * 0.8).toLocaleString('sv-SE')} kr</span>
@@ -324,7 +324,7 @@ export default function MarketDataTab() {
         <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <MapPin className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
               {t('salary.marketData.salaryByRegion')}
             </h3>
             <span className="text-xs text-gray-700 dark:text-gray-300">{filteredRegions.length} {t('salary.marketData.results')}</span>
@@ -341,7 +341,7 @@ export default function MarketDataTab() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="border border-stone-200 dark:border-stone-600 rounded-xl overflow-hidden hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
+                    className="border border-stone-200 dark:border-stone-600 rounded-xl overflow-hidden hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] transition-colors"
                   >
                     <button
                       onClick={() => toggleExpandRow(region.region)}
@@ -357,7 +357,7 @@ export default function MarketDataTab() {
                         <span className={cn(
                           "px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap",
                           premiumNum > 0
-                            ? "bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300"
+                            ? "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]"
                             : premiumNum < 0
                             ? "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300"
                             : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400"
@@ -402,7 +402,7 @@ export default function MarketDataTab() {
                                   <div
                                     className={cn(
                                       'h-full transition-all',
-                                      premiumNum > 0 ? 'bg-teal-500 dark:bg-teal-400' : 'bg-rose-500 dark:bg-rose-400'
+                                      premiumNum > 0 ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)]/80' : 'bg-rose-500 dark:bg-rose-400'
                                     )}
                                     style={{ width: `${50 + (premiumNum * 2)}%` }}
                                   />

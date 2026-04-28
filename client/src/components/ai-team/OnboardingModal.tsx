@@ -51,7 +51,7 @@ export function OnboardingModal({ onComplete }: OnboardingModalProps) {
       content: (
         <div className="flex justify-center py-8">
           <div className="relative">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center shadow-xl">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--c-solid)]/80 to-cyan-500 flex items-center justify-center shadow-xl">
               <Sparkles className="w-12 h-12 text-white" />
             </div>
             <div className="absolute -top-2 -right-2 w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center text-white font-bold text-sm animate-bounce">
@@ -92,7 +92,7 @@ export function OnboardingModal({ onComplete }: OnboardingModalProps) {
                 'w-12 h-12 rounded-xl flex items-center justify-center text-2xl',
                 'bg-stone-100 dark:bg-stone-800',
                 'shadow-sm hover:shadow-md transition-shadow',
-                i === 0 && 'ring-2 ring-teal-500'
+                i === 0 && 'ring-2 ring-[var(--c-solid)]'
               )}
             >
               {emoji}
@@ -106,9 +106,9 @@ export function OnboardingModal({ onComplete }: OnboardingModalProps) {
       description: t('aiTeam.onboarding.quickstart.description'),
       content: (
         <div className="space-y-3 py-4">
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-teal-50 dark:bg-teal-900/30 border border-teal-200 dark:border-teal-800">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
             <span className="text-2xl">1️⃣</span>
-            <span className="text-sm text-teal-700 dark:text-teal-300">
+            <span className="text-sm text-[var(--c-text)] dark:text-[var(--c-accent)]">
               {t('aiTeam.onboarding.quickstart.step1')}
             </span>
           </div>
@@ -160,7 +160,7 @@ export function OnboardingModal({ onComplete }: OnboardingModalProps) {
               key={i}
               className={cn(
                 'w-2 h-2 rounded-full transition-colors',
-                i === step ? 'bg-teal-500' : 'bg-stone-200 dark:bg-stone-700'
+                i === step ? 'bg-[var(--c-solid)]' : 'bg-stone-200 dark:bg-stone-700'
               )}
             />
           ))}

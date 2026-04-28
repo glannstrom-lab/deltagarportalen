@@ -198,7 +198,7 @@ export function OverviewSection() {
             {/* Redo guide button */}
             <Link
               to="/interest-guide"
-              className="mt-4 flex items-center justify-center gap-2 w-full py-2 px-3 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-lg text-sm font-medium hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
+              className="mt-4 flex items-center justify-center gap-2 w-full py-2 px-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)] rounded-lg text-sm font-medium hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
             >
               <RefreshCw className="w-4 h-4" />
               {t('profile.overview.redoGuide')}

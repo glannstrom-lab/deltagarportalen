@@ -74,16 +74,16 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+        <div className="p-6 border-b border-stone-200 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-stone-900">
               {step === 'success' ? 'Ansökan skickad!' : 'Snabbansökan'}
             </h2>
-            <p className="text-slate-700">{job.headline} på {job.employer.name}</p>
+            <p className="text-stone-700">{job.headline} på {job.employer.name}</p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-lg"
+            className="p-2 hover:bg-stone-100 rounded-lg"
           >
             <X className="w-5 h-5" />
           </button>
@@ -114,7 +114,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                 </button>
                 <button
                   onClick={() => setStep('template')}
-                  className="flex-1 py-3 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200"
+                  className="flex-1 py-3 bg-stone-100 text-stone-700 rounded-lg font-medium hover:bg-stone-200"
                 >
                   Nej, fortsätt direkt
                 </button>
@@ -124,7 +124,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
 
           {step === 'template' && (
             <div className="space-y-4">
-              <p className="text-slate-600">Välj en mall för ditt personliga brev:</p>
+              <p className="text-stone-600">Välj en mall för ditt personliga brev:</p>
               
               <div className="space-y-3">
                 {templates.map((template) => (
@@ -133,17 +133,17 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                     onClick={() => handleSelectTemplate(template)}
                     className={`w-full p-4 text-left border-2 rounded-xl transition-all ${
                       selectedTemplate?.id === template.id
-                        ? 'border-teal-500 bg-teal-50'
-                        : 'border-slate-200 hover:border-slate-300'
+                        ? 'border-[var(--c-solid)] bg-[var(--c-bg)]'
+                        : 'border-stone-200 hover:border-stone-300'
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="font-medium text-slate-900">{template.name}</h4>
-                        <p className="text-sm text-slate-700 mt-1">{template.subject}</p>
+                        <h4 className="font-medium text-stone-900">{template.name}</h4>
+                        <p className="text-sm text-stone-700 mt-1">{template.subject}</p>
                       </div>
                       {template.isDefault && (
-                        <span className="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
+                        <span className="px-2 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] text-xs rounded-full">
                           Standard
                         </span>
                       )}
@@ -157,28 +157,28 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
           {step === 'edit' && (
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
+                <label className="block text-sm font-medium text-stone-700 mb-1">
                   Ämne
                 </label>
                 <input
                   type="text"
                   value={subject}
                   onChange={(e) => setSubject(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-4 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)]"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
+                <label className="block text-sm font-medium text-stone-700 mb-1">
                   Personligt brev
                 </label>
                 <textarea
                   value={coverLetter}
                   onChange={(e) => setCoverLetter(e.target.value)}
                   rows={12}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 font-mono text-sm"
+                  className="w-full px-4 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)] font-mono text-sm"
                 />
-                <p className="text-xs text-slate-700 mt-1">
+                <p className="text-xs text-stone-700 mt-1">
                   Redigera mallen så den passar dig och jobbet. Se till att alla [PLACEHOLDERS] ersätts.
                 </p>
               </div>
@@ -186,13 +186,13 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
               <div className="flex gap-3">
                 <button
                   onClick={() => setStep('template')}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg"
+                  className="px-4 py-2 text-stone-600 hover:bg-stone-100 rounded-lg"
                 >
                   ← Välj annan mall
                 </button>
                 <button
                   onClick={() => setStep('confirm')}
-                  className="flex-1 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700"
+                  className="flex-1 py-2 bg-[var(--c-solid)] text-white rounded-lg font-medium hover:bg-[var(--c-text)]"
                 >
                   Granska & skicka
                 </button>
@@ -202,14 +202,14 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
 
           {step === 'confirm' && (
             <div className="space-y-4">
-              <div className="p-4 bg-slate-50 rounded-xl">
-                <h3 className="font-semibold text-slate-900 mb-4">Sammanfattning</h3>
+              <div className="p-4 bg-stone-50 rounded-xl">
+                <h3 className="font-semibold text-stone-900 mb-4">Sammanfattning</h3>
                 
                 <div className="space-y-2 text-sm">
-                  <p><span className="text-slate-700">Till:</span> {job.employer.name}</p>
-                  <p><span className="text-slate-700">Ämne:</span> {subject}</p>
-                  <p><span className="text-slate-700">Från:</span> {userData.name} ({userData.email})</p>
-                  <p><span className="text-slate-700">Bifogat:</span> CV (från din profil)</p>
+                  <p><span className="text-stone-700">Till:</span> {job.employer.name}</p>
+                  <p><span className="text-stone-700">Ämne:</span> {subject}</p>
+                  <p><span className="text-stone-700">Från:</span> {userData.name} ({userData.email})</p>
+                  <p><span className="text-stone-700">Bifogat:</span> CV (från din profil)</p>
                 </div>
               </div>
 
@@ -229,7 +229,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
               <div className="flex gap-3">
                 <button
                   onClick={() => setStep('edit')}
-                  className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg flex items-center gap-2"
+                  className="px-4 py-2 text-stone-600 hover:bg-stone-100 rounded-lg flex items-center gap-2"
                 >
                   <Edit3 className="w-4 h-4" />
                   Redigera
@@ -238,7 +238,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                 {job.application_details?.email ? (
                   <button
                     onClick={prepareEmail}
-                    className="flex-1 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 flex items-center justify-center gap-2"
+                    className="flex-1 py-3 bg-[var(--c-solid)] text-white rounded-lg font-medium hover:bg-[var(--c-text)] flex items-center justify-center gap-2"
                   >
                     <Send className="w-5 h-5" />
                     Öppna e-postprogram
@@ -247,7 +247,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                   <button
                     onClick={handleSend}
                     disabled={saving}
-                    className="flex-1 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="flex-1 py-3 bg-[var(--c-solid)] text-white rounded-lg font-medium hover:bg-[var(--c-text)] flex items-center justify-center gap-2 disabled:opacity-50"
                   >
                     {saving ? (
                       <>
@@ -271,15 +271,15 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
               <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="w-8 h-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+              <h3 className="text-xl font-semibold text-stone-900 mb-2">
                 Ansökan skickad!
               </h3>
-              <p className="text-slate-600 mb-6">
+              <p className="text-stone-600 mb-6">
                 Vi har sparat din ansökan och skickar en påminnelse om 7 dagar.
               </p>
               <button
                 onClick={onClose}
-                className="px-6 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700"
+                className="px-6 py-3 bg-[var(--c-solid)] text-white rounded-lg font-medium hover:bg-[var(--c-text)]"
               >
                 Stäng
               </button>

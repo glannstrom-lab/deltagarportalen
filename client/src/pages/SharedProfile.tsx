@@ -58,7 +58,7 @@ export default function SharedProfile() {
     return (
       <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" />
+          <Loader2 className="w-8 h-8 text-[var(--c-solid)] animate-spin mx-auto mb-3" />
           <p className="text-stone-600 dark:text-stone-400">{t('profile.loading')}</p>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default function SharedProfile() {
           </p>
           <Link
             to="/"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] hover:bg-[var(--c-solid)] text-white rounded-lg font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             {t('sharedProfile.backToHome')}
@@ -93,7 +93,7 @@ export default function SharedProfile() {
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden mb-6">
-          <div className="bg-gradient-to-r from-teal-500 to-sky-500 h-24" />
+          <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-500 h-24" />
           <div className="px-6 pb-6 -mt-12">
             <div className="flex items-end gap-4">
               <div className="w-24 h-24 rounded-2xl bg-white dark:bg-stone-700 border-4 border-white dark:border-stone-700 shadow-lg overflow-hidden flex items-center justify-center">
@@ -125,19 +125,19 @@ export default function SharedProfile() {
             <div className="grid gap-3 sm:grid-cols-3">
               {profile.email && (
                 <div className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-teal-500" />
+                  <Mail className="w-5 h-5 text-[var(--c-solid)]" />
                   <span className="text-sm text-stone-600 dark:text-stone-400">{profile.email as string}</span>
                 </div>
               )}
               {profile.phone && (
                 <div className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-teal-500" />
+                  <Phone className="w-5 h-5 text-[var(--c-solid)]" />
                   <span className="text-sm text-stone-600 dark:text-stone-400">{profile.phone as string}</span>
                 </div>
               )}
               {profile.location && (
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-teal-500" />
+                  <MapPin className="w-5 h-5 text-[var(--c-solid)]" />
                   <span className="text-sm text-stone-600 dark:text-stone-400">{profile.location as string}</span>
                 </div>
               )}
@@ -208,7 +208,7 @@ export default function SharedProfile() {
               }>).map((job, i) => (
                 <div key={i} className="border-l-2 border-blue-200 dark:border-blue-800 pl-4">
                   <h3 className="font-medium text-stone-800 dark:text-stone-200">{job.title}</h3>
-                  <p className="text-sm text-teal-600 dark:text-teal-400">{job.company}</p>
+                  <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">{job.company}</p>
                   <p className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1 mt-1">
                     <Calendar className="w-3 h-3" />
                     {formatDate(job.startDate)} - {job.current ? t('common.today') : job.endDate ? formatDate(job.endDate) : ''}
@@ -238,7 +238,7 @@ export default function SharedProfile() {
               }>).map((edu, i) => (
                 <div key={i} className="border-l-2 border-purple-200 dark:border-purple-800 pl-4">
                   <h3 className="font-medium text-stone-800 dark:text-stone-200">{edu.degree}</h3>
-                  <p className="text-sm text-teal-600 dark:text-teal-400">{edu.school}</p>
+                  <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">{edu.school}</p>
                   <p className="text-xs text-stone-500 dark:text-stone-400 flex items-center gap-1 mt-1">
                     <Calendar className="w-3 h-3" />
                     {formatDate(edu.startDate)} - {edu.endDate ? formatDate(edu.endDate) : ''}

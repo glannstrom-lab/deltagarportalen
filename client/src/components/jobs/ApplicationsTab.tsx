@@ -27,7 +27,7 @@ const getColumns = (t: (key: string) => string): StatusColumn[] => [
   { status: 'applied', title: t('jobs.applications.status.applied'), color: 'text-blue-600', bgColor: 'bg-blue-50 border-blue-200', icon: Send },
   { status: 'interview', title: t('jobs.applications.status.interview'), color: 'text-amber-600', bgColor: 'bg-amber-50 border-amber-200', icon: Calendar },
   { status: 'offer', title: t('jobs.applications.status.offer'), color: 'text-green-600', bgColor: 'bg-green-50 border-green-200', icon: CheckCircle },
-  { status: 'rejected', title: t('jobs.applications.status.rejected'), color: 'text-slate-700', bgColor: 'bg-slate-50 border-slate-200', icon: XCircle }
+  { status: 'rejected', title: t('jobs.applications.status.rejected'), color: 'text-stone-700', bgColor: 'bg-stone-50 border-stone-200', icon: XCircle }
 ]
 
 function ApplicationCard({
@@ -56,14 +56,14 @@ function ApplicationCard({
   const hasNotes = job.notes && job.notes.trim().length > 0
 
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-4 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-4 shadow-sm hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex-1 min-w-0">
-          <h4 className="font-semibold text-slate-900 dark:text-stone-100 text-sm line-clamp-2">
+          <h4 className="font-semibold text-stone-900 dark:text-stone-100 text-sm line-clamp-2">
             {jobData?.headline || labels.unknownPosition}
           </h4>
-          <p className="text-xs text-slate-700 dark:text-stone-300 mt-0.5 flex items-center gap-1">
+          <p className="text-xs text-stone-700 dark:text-stone-300 mt-0.5 flex items-center gap-1">
             <Briefcase className="w-3 h-3" />
             {jobData?.employer?.name || labels.unknownCompany}
           </p>
@@ -73,16 +73,16 @@ function ApplicationCard({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
-            className="p-1.5 hover:bg-slate-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
+            className="p-1.5 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
           >
-            <MoreVertical className="w-4 h-4 text-slate-600 dark:text-stone-400" />
+            <MoreVertical className="w-4 h-4 text-stone-600 dark:text-stone-400" />
           </button>
 
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-              <div className="absolute right-0 top-8 z-20 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-slate-200 dark:border-stone-700 py-1 min-w-[160px]">
-                <div className="px-2 py-1 text-xs font-medium text-slate-600 dark:text-stone-400 uppercase">{labels.changeStatus}</div>
+              <div className="absolute right-0 top-8 z-20 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 min-w-[160px]">
+                <div className="px-2 py-1 text-xs font-medium text-stone-600 dark:text-stone-400 uppercase">{labels.changeStatus}</div>
                 {columns.map(col => (
                   <button
                     key={col.status}
@@ -91,15 +91,15 @@ function ApplicationCard({
                       setShowMenu(false)
                     }}
                     className={cn(
-                      "w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-stone-800",
-                      job.status === col.status && "bg-slate-50 dark:bg-stone-800 font-medium"
+                      "w-full px-3 py-2 text-left text-sm flex items-center gap-2 hover:bg-stone-50 dark:hover:bg-stone-800",
+                      job.status === col.status && "bg-stone-50 dark:bg-stone-800 font-medium"
                     )}
                   >
                     <col.icon className={cn("w-4 h-4", col.color)} />
                     {col.title}
                   </button>
                 ))}
-                <div className="border-t border-slate-100 dark:border-stone-700 my-1" />
+                <div className="border-t border-stone-100 dark:border-stone-700 my-1" />
                 <button
                   onClick={() => {
                     onDelete(job.id)
@@ -118,7 +118,7 @@ function ApplicationCard({
 
       {/* Location */}
       {jobData?.workplace_address?.municipality && (
-        <p className="text-xs text-slate-600 dark:text-stone-400 mb-3">
+        <p className="text-xs text-stone-600 dark:text-stone-400 mb-3">
           📍 {jobData.workplace_address.municipality}
         </p>
       )}
@@ -130,17 +130,17 @@ function ApplicationCard({
           className="w-full text-left mb-2"
         >
           <div className={cn(
-            "flex items-start gap-2 p-2 rounded-lg bg-slate-50 dark:bg-stone-800 text-xs",
+            "flex items-start gap-2 p-2 rounded-lg bg-stone-50 dark:bg-stone-800 text-xs",
             showNotes ? "" : "line-clamp-2"
           )}>
-            <MessageSquare className="w-3 h-3 text-slate-600 dark:text-stone-400 flex-shrink-0 mt-0.5" />
-            <span className="text-slate-600 dark:text-stone-400">{job.notes}</span>
+            <MessageSquare className="w-3 h-3 text-stone-600 dark:text-stone-400 flex-shrink-0 mt-0.5" />
+            <span className="text-stone-600 dark:text-stone-400">{job.notes}</span>
           </div>
         </button>
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-slate-600 dark:text-stone-400 pt-2 border-t border-slate-100 dark:border-stone-700">
+      <div className="flex items-center justify-between text-xs text-stone-600 dark:text-stone-400 pt-2 border-t border-stone-100 dark:border-stone-700">
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
           {new Date(job.savedAt).toLocaleDateString('sv-SE')}
@@ -186,9 +186,9 @@ function StatsHeader({ jobs, labels }: {
 
   return (
     <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mb-4 sm:mb-6">
-      <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-2 sm:p-4 text-center">
-        <div className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-stone-100">{stats.total}</div>
-        <div className="text-[10px] sm:text-xs text-slate-700 dark:text-stone-300">{labels.total}</div>
+      <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-2 sm:p-4 text-center">
+        <div className="text-lg sm:text-2xl font-bold text-stone-900 dark:text-stone-100">{stats.total}</div>
+        <div className="text-[10px] sm:text-xs text-stone-700 dark:text-stone-300">{labels.total}</div>
       </div>
       <div className="bg-blue-50 rounded-xl border border-blue-200 p-2 sm:p-4 text-center">
         <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats.applied}</div>
@@ -262,13 +262,13 @@ export function ApplicationsTab() {
   if (applications.length === 0) {
     return (
       <Card className="p-12 text-center">
-        <div className="w-16 h-16 bg-slate-100 dark:bg-stone-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Send className="w-8 h-8 text-slate-600 dark:text-stone-400" />
+        <div className="w-16 h-16 bg-stone-100 dark:bg-stone-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Send className="w-8 h-8 text-stone-600 dark:text-stone-400" />
         </div>
-        <h3 className="text-xl font-semibold text-slate-700 dark:text-stone-300 mb-2">
+        <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-300 mb-2">
           {t('jobs.applications.empty.title')}
         </h3>
-        <p className="text-slate-700 dark:text-stone-300 mb-6 max-w-md mx-auto">
+        <p className="text-stone-700 dark:text-stone-300 mb-6 max-w-md mx-auto">
           {t('jobs.applications.empty.description')}
         </p>
         <Link to="/job-search">
@@ -303,7 +303,7 @@ export function ApplicationsTab() {
                   column.status === 'applied' && 'bg-blue-100',
                   column.status === 'interview' && 'bg-amber-100',
                   column.status === 'offer' && 'bg-green-100',
-                  column.status === 'rejected' && 'bg-slate-200'
+                  column.status === 'rejected' && 'bg-stone-200'
                 )}>
                   {columnJobs.length}
                 </span>
@@ -312,7 +312,7 @@ export function ApplicationsTab() {
               {/* Cards */}
               <div className="space-y-3">
                 {columnJobs.length === 0 ? (
-                  <div className="text-center py-8 text-sm text-slate-600 dark:text-stone-400">
+                  <div className="text-center py-8 text-sm text-stone-600 dark:text-stone-400">
                     {t('jobs.applications.noJobsHere')}
                   </div>
                 ) : (

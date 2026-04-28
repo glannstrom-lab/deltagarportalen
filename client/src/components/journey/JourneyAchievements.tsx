@@ -37,9 +37,9 @@ const iconMap: Record<string, typeof Trophy> = {
 
 const rarityColors: Record<string, { bg: string; border: string; text: string; glow: string }> = {
   common: {
-    bg: 'bg-slate-100',
-    border: 'border-slate-200',
-    text: 'text-slate-600',
+    bg: 'bg-stone-100',
+    border: 'border-stone-200',
+    text: 'text-stone-600',
     glow: ''
   },
   uncommon: {
@@ -104,9 +104,9 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Trophy className="w-4 h-4 text-amber-500" />
-            <span className="text-sm font-medium text-slate-900">Badges</span>
+            <span className="text-sm font-medium text-stone-900">Badges</span>
           </div>
-          <span className="text-xs text-slate-700">{unlockedCount}/{totalCount}</span>
+          <span className="text-xs text-stone-700">{unlockedCount}/{totalCount}</span>
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -129,7 +129,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
           })}
 
           {unlockedAchievements.length === 0 && (
-            <p className="text-xs text-slate-600">Inga badges ännu</p>
+            <p className="text-xs text-stone-600">Inga badges ännu</p>
           )}
         </div>
       </Card>
@@ -145,8 +145,8 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
             <Trophy className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-900">Achievements</h3>
-            <p className="text-sm text-slate-700">
+            <h3 className="text-lg font-semibold text-stone-900">Achievements</h3>
+            <p className="text-sm text-stone-700">
               {unlockedCount} av {totalCount} upplåsta
             </p>
           </div>
@@ -181,7 +181,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
             </defs>
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-sm font-bold text-slate-900">
+            <span className="text-sm font-bold text-stone-900">
               {Math.round((unlockedCount / totalCount) * 100)}%
             </span>
           </div>
@@ -196,7 +196,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
             px-3 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap
             ${!selectedCategory
               ? 'bg-indigo-100 text-indigo-700'
-              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             }
           `}
         >
@@ -210,7 +210,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
               px-3 py-1.5 rounded-full text-sm font-medium transition-colors whitespace-nowrap capitalize
               ${selectedCategory === category
                 ? 'bg-indigo-100 text-indigo-700'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
               }
             `}
           >
@@ -234,22 +234,22 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
                 relative p-3 rounded-xl border-2 transition-all flex flex-col items-center
                 ${isUnlocked
                   ? `${colors.bg} ${colors.border} ${colors.glow} hover:scale-105`
-                  : 'bg-slate-50 border-slate-100 opacity-50'
+                  : 'bg-stone-50 border-stone-100 opacity-50'
                 }
               `}
             >
               <div className={`
                 w-12 h-12 rounded-full flex items-center justify-center mb-2
-                ${isUnlocked ? colors.bg : 'bg-slate-100'}
+                ${isUnlocked ? colors.bg : 'bg-stone-100'}
               `}>
                 {isUnlocked ? (
                   <Icon className={`w-6 h-6 ${colors.text}`} />
                 ) : (
-                  <Lock className="w-5 h-5 text-slate-600" />
+                  <Lock className="w-5 h-5 text-stone-600" />
                 )}
               </div>
               <span className={`text-xs font-medium text-center line-clamp-2 ${
-                isUnlocked ? 'text-slate-700' : 'text-slate-600'
+                isUnlocked ? 'text-stone-700' : 'text-stone-600'
               }`}>
                 {achievement.name}
               </span>
@@ -284,8 +284,8 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
                   : selectedAchievement.rarity === 'rare'
                     ? 'bg-gradient-to-br from-blue-500 to-cyan-500'
                     : selectedAchievement.rarity === 'uncommon'
-                      ? 'bg-gradient-to-br from-emerald-500 to-teal-500'
-                      : 'bg-gradient-to-br from-slate-500 to-slate-600'
+                      ? 'bg-gradient-to-br from-emerald-500 to-[var(--c-solid)]'
+                      : 'bg-gradient-to-br from-stone-500 to-stone-600'
               }
             `}>
               <div className={`
@@ -309,26 +309,26 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
             </div>
 
             <div className="p-6">
-              <p className="text-slate-600 text-center mb-4">
+              <p className="text-stone-600 text-center mb-4">
                 {selectedAchievement.description}
               </p>
 
               <div className="flex items-center justify-center gap-2 text-sm">
                 <Zap className="w-4 h-4 text-amber-500" />
-                <span className="text-slate-700">
+                <span className="text-stone-700">
                   +{selectedAchievement.xp_reward} XP
                 </span>
               </div>
 
               {selectedAchievement.is_unlocked && selectedAchievement.unlocked_at && (
-                <p className="text-center text-xs text-slate-600 mt-4">
+                <p className="text-center text-xs text-stone-600 mt-4">
                   Upplåst {new Date(selectedAchievement.unlocked_at).toLocaleDateString('sv-SE')}
                 </p>
               )}
 
               <button
                 onClick={() => setSelectedAchievement(null)}
-                className="w-full mt-6 py-2 px-4 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-700 font-medium transition-colors"
+                className="w-full mt-6 py-2 px-4 bg-stone-100 hover:bg-stone-200 rounded-lg text-stone-700 font-medium transition-colors"
               >
                 Stäng
               </button>

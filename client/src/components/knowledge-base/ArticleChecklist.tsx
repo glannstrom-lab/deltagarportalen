@@ -74,22 +74,22 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
 
   if (isLoading) {
     return (
-      <div className="bg-slate-50 rounded-xl p-5 my-6 flex items-center justify-center">
-        <Loader2 className="w-5 h-5 text-slate-600 animate-spin" />
-        <span className="ml-2 text-sm text-slate-700">Laddar checklista...</span>
+      <div className="bg-stone-50 rounded-xl p-5 my-6 flex items-center justify-center">
+        <Loader2 className="w-5 h-5 text-stone-600 animate-spin" />
+        <span className="ml-2 text-sm text-stone-700">Laddar checklista...</span>
       </div>
     )
   }
 
   return (
-    <div className="bg-slate-50 rounded-xl p-5 my-6">
+    <div className="bg-stone-50 rounded-xl p-5 my-6">
       <div className="flex items-center justify-between mb-4">
-        <h4 className="font-semibold text-slate-800">Din checklista</h4>
+        <h4 className="font-semibold text-stone-800">Din checklista</h4>
         <div className="flex items-center gap-2">
           {isSaving && (
-            <Loader2 className="w-4 h-4 text-slate-600 animate-spin" />
+            <Loader2 className="w-4 h-4 text-stone-600 animate-spin" />
           )}
-          <span className="text-sm text-slate-600">{progress}%</span>
+          <span className="text-sm text-stone-600">{progress}%</span>
         </div>
       </div>
       
@@ -99,9 +99,9 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
         </div>
       )}
       
-      <div className="w-full bg-slate-200 rounded-full h-2 mb-4">
+      <div className="w-full bg-stone-200 rounded-full h-2 mb-4">
         <div 
-          className="bg-teal-600 h-2 rounded-full transition-all"
+          className="bg-[var(--c-solid)] h-2 rounded-full transition-all"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -121,13 +121,13 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
               <div className={`
                 flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center mt-0.5
                 ${isChecked 
-                  ? 'bg-teal-600 border-teal-600' 
-                  : 'border-slate-300 hover:border-teal-400'
+                  ? 'bg-[var(--c-solid)] border-[var(--c-solid)]' 
+                  : 'border-stone-300 hover:border-[var(--c-solid)]/60'
                 }
               `}>
                 {isChecked && <Check size={14} className="text-white" />}
               </div>
-              <span className={`text-sm ${isChecked ? 'text-slate-700 line-through' : 'text-slate-700'}`}>
+              <span className={`text-sm ${isChecked ? 'text-stone-700 line-through' : 'text-stone-700'}`}>
                 {item.text}
               </span>
             </li>

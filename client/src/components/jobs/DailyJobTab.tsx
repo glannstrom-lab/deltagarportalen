@@ -585,7 +585,7 @@ export function DailyJobTab() {
                   )}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(
                     job.description?.text?.substring(0, 500) || ''
                   )}`}
-                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-medium bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/50 transition-colors"
+                  className="flex items-center justify-center gap-2 py-3 rounded-xl font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
                 >
                   <FileText className="w-5 h-5" />
                   {lang === 'en' ? 'Write letter' : 'Skriv brev'}
@@ -598,7 +598,7 @@ export function DailyJobTab() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setHasActioned(true)}
-                  className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-xl font-medium hover:from-teal-600 hover:to-emerald-600 transition-colors shadow-lg shadow-teal-200 dark:shadow-teal-900/30"
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-[var(--c-solid)] to-emerald-500 text-white rounded-xl font-medium hover:from-[var(--c-solid)] hover:to-emerald-600 transition-colors shadow-lg "
                 >
                   <Send className="w-5 h-5" />
                   {lang === 'en' ? 'Apply Now' : 'Ansök nu'}

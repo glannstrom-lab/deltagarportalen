@@ -74,7 +74,7 @@ export function MessageBubble({
           className={cn(
             'px-4 py-3 rounded-2xl',
             isUser
-              ? 'bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-md shadow-teal-500/20'
+              ? 'bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)] text-white shadow-md'
               : cn(
                   'bg-gradient-to-br from-stone-50 via-stone-100 to-stone-50',
                   'dark:from-stone-800 dark:via-stone-800/90 dark:to-stone-800',
@@ -110,12 +110,12 @@ export function MessageBubble({
                 'hover:text-stone-900 dark:hover:text-stone-200',
                 'shadow-sm hover:shadow',
                 'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1',
-                isSpeaking && 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-700'
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-1',
+                isSpeaking && 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50'
               )}
               aria-label={isSpeaking ? t('aiTeam.voice.stopSpeaking') : t('aiTeam.voice.speak')}
             >
-              <Volume2 className={cn('w-3 h-3', isSpeaking && 'text-teal-500 animate-pulse')} aria-hidden="true" />
+              <Volume2 className={cn('w-3 h-3', isSpeaking && 'text-[var(--c-solid)] animate-pulse')} aria-hidden="true" />
             </button>
             {/* Create task button */}
             <button
@@ -128,7 +128,7 @@ export function MessageBubble({
                 'hover:text-stone-900 dark:hover:text-stone-200',
                 'shadow-sm hover:shadow',
                 'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-1'
               )}
               aria-label={taskCreated ? t('aiTeam.calendar.taskCreated') : t('aiTeam.calendar.createTask')}
             >
@@ -149,7 +149,7 @@ export function MessageBubble({
                 'hover:text-stone-900 dark:hover:text-stone-200',
                 'shadow-sm hover:shadow',
                 'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-1'
               )}
               aria-label={diarySaved ? t('aiTeam.savedToDiary') : t('aiTeam.saveToDiary')}
             >
@@ -170,7 +170,7 @@ export function MessageBubble({
                 'hover:text-stone-900 dark:hover:text-stone-200',
                 'shadow-sm hover:shadow',
                 'flex items-center gap-1',
-                'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-1'
+                'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-1'
               )}
               aria-label={copied ? t('aiTeam.messageCopied') : t('aiTeam.copyMessage')}
             >

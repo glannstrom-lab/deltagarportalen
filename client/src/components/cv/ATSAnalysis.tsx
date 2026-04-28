@@ -298,7 +298,7 @@ export function ATSAnalysis() {
       {loadingCV ? (
         <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700/50 p-6">
           <div className="flex items-center justify-center gap-3 py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-teal-600 dark:text-teal-400" />
+            <Loader2 className="w-6 h-6 animate-spin text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             <span className="text-stone-600 dark:text-stone-400">{t('cv.ats.loadingCV')}</span>
           </div>
         </div>
@@ -374,7 +374,7 @@ export function ATSAnalysis() {
               <button
                 onClick={runAnalysis}
                 disabled={isAnalyzing}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] transition-colors disabled:opacity-50"
               >
                 <RefreshCw className={cn('w-4 h-4', isAnalyzing && 'animate-spin')} />
                 {isAnalyzing ? t('cv.ats.analyzing') : t('cv.ats.runAnalysis')}
@@ -420,7 +420,7 @@ export function ATSAnalysis() {
                 <h4 className="font-semibold text-stone-800 dark:text-stone-100">{label}</h4>
               </div>
 
-              <div className="divide-y divide-slate-100 dark:divide-stone-700">
+              <div className="divide-y divide-stone-100 dark:divide-stone-700">
                 {categoryChecks.map(check => (
                   <div key={check.id} className="p-6">
                     <div className="flex items-start gap-4">
@@ -457,17 +457,17 @@ export function ATSAnalysis() {
                         <div className="mt-3">
                           <button
                             onClick={() => setShowDetails(showDetails === check.id ? null : check.id)}
-                            className="text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium flex items-center gap-1"
+                            className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] font-medium flex items-center gap-1"
                           >
                             {showDetails === check.id ? t('cv.ats.hideTips') : t('cv.ats.showTips')}
                             <ArrowRight className={cn('w-4 h-4 transition-transform', showDetails === check.id && 'rotate-90')} />
                           </button>
 
                           {showDetails === check.id && (
-                            <div className="mt-3 p-4 bg-teal-50 dark:bg-teal-900/30 rounded-xl">
+                            <div className="mt-3 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl">
                               <ul className="space-y-2">
                                 {check.tips.map((tip, i) => (
-                                  <li key={i} className="flex items-start gap-2 text-sm text-teal-800 dark:text-teal-300">
+                                  <li key={i} className="flex items-start gap-2 text-sm text-[var(--c-text)] dark:text-[var(--c-accent)]">
                                     <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0" />
                                     {tip}
                                   </li>
@@ -505,14 +505,14 @@ export function ATSAnalysis() {
       </div>
 
       {/* CTA */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-teal-50 dark:bg-teal-900/20 rounded-xl border border-teal-200 dark:border-teal-800/50">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50">
         <div>
           <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.ats.cta.title')}</h3>
           <p className="text-stone-600 dark:text-stone-400 text-sm">{t('cv.ats.cta.description')}</p>
         </div>
         <a
           href="/cv"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] transition-colors"
         >
           <Award className="w-5 h-5" />
           {t('cv.ats.cta.button')}

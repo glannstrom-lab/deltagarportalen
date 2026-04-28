@@ -203,7 +203,7 @@ export default function PrintableResources() {
               className={cn(
                 "flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-all",
                 resourceType === 'articles'
-                  ? "bg-teal-500 text-white"
+                  ? "bg-[var(--c-solid)] text-white"
                   : "bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600"
               )}
             >
@@ -243,13 +243,13 @@ export default function PrintableResources() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('printable.search', 'Sök...')}
-                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               />
             </div>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="px-4 py-2.5 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="px-4 py-2.5 border border-stone-200 dark:border-stone-600 rounded-xl bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             >
               <option value="all">{t('printable.allCategories', 'Alla kategorier')}</option>
               {categories.map(cat => (
@@ -267,7 +267,7 @@ export default function PrintableResources() {
             </span>
             <button
               onClick={selectAll}
-              className="text-sm text-teal-600 dark:text-teal-400 hover:underline"
+              className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline"
             >
               Välj alla
             </button>
@@ -298,7 +298,7 @@ export default function PrintableResources() {
               disabled={selectedIds.size === 0 || isGenerating}
               className={cn(
                 "flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all",
-                "bg-teal-600 text-white hover:bg-teal-700",
+                "bg-[var(--c-solid)] text-white hover:bg-[var(--c-text)]",
                 "disabled:opacity-50 disabled:cursor-not-allowed"
               )}
             >
@@ -320,7 +320,7 @@ export default function PrintableResources() {
         {/* Listan med resurser */}
         {articlesLoading ? (
           <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-6 h-6 animate-spin text-teal-500" />
+            <Loader2 className="w-6 h-6 animate-spin text-[var(--c-solid)]" />
           </div>
         ) : (
           <div className="space-y-4">
@@ -361,7 +361,7 @@ export default function PrintableResources() {
                           className={cn(
                             "w-full flex items-start gap-4 p-4 text-left transition-colors",
                             isSelected
-                              ? "bg-teal-50 dark:bg-teal-900/20"
+                              ? "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30"
                               : "hover:bg-stone-50 dark:hover:bg-stone-700/50"
                           )}
                         >
@@ -369,7 +369,7 @@ export default function PrintableResources() {
                           <div className={cn(
                             "w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 mt-0.5",
                             isSelected
-                              ? "bg-teal-500 border-teal-500"
+                              ? "bg-[var(--c-solid)] border-[var(--c-solid)]"
                               : "border-stone-300 dark:border-stone-600"
                           )}>
                             {isSelected && <Check className="w-3 h-3 text-white" />}
@@ -380,7 +380,7 @@ export default function PrintableResources() {
                             <h3 className={cn(
                               "font-medium truncate",
                               isSelected
-                                ? "text-teal-700 dark:text-teal-300"
+                                ? "text-[var(--c-text)] dark:text-[var(--c-text)]"
                                 : "text-stone-800 dark:text-stone-200"
                             )}>
                               {item.title}

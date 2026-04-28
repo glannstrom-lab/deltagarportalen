@@ -175,16 +175,16 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
             <div className="flex-1 min-w-0">
               <div className={cn(
                 'font-medium text-sm',
-                completedTasks.has(task.label) ? 'text-emerald-800 line-through' : 'text-slate-800'
+                completedTasks.has(task.label) ? 'text-emerald-800 line-through' : 'text-stone-800'
               )}>
                 {task.label}
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-700">
+              <div className="flex items-center gap-2 text-xs text-stone-700">
                 <Clock className="w-3 h-3" />
                 {task.duration}
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-600" />
+            <ChevronRight className="w-4 h-4 text-stone-600" />
           </button>
         ))}
       </div>
@@ -193,14 +193,14 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
 
   if (variant === 'card') {
     return (
-      <div className={cn('bg-white rounded-2xl shadow-sm border border-slate-200 p-5', className)}>
+      <div className={cn('bg-white rounded-2xl shadow-sm border border-stone-200 p-5', className)}>
         <div className="flex items-center gap-3 mb-4">
           <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center', colorClasses.bg)}>
             <Zap className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800">Gör något litet</h3>
-            <p className="text-sm text-slate-700">Anpassat efter din energi idag</p>
+            <h3 className="font-semibold text-stone-800">Gör något litet</h3>
+            <p className="text-sm text-stone-700">Anpassat efter din energi idag</p>
           </div>
         </div>
 
@@ -220,22 +220,22 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className={cn('font-medium text-sm', colorClasses.text)}>{task.label}</p>
-                  <p className="text-xs text-slate-600 mt-1">{task.description}</p>
+                  <p className="text-xs text-stone-600 mt-1">{task.description}</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <span className="inline-flex items-center gap-1 text-xs text-slate-700">
+                    <span className="inline-flex items-center gap-1 text-xs text-stone-700">
                       <Clock className="w-3 h-3" />
                       {task.duration}
                     </span>
                     <button
                       onClick={() => setShowWhy(showWhy === task.label ? null : task.label)}
-                      className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-slate-600"
+                      className="inline-flex items-center gap-1 text-xs text-stone-600 hover:text-stone-600"
                     >
                       <Info className="w-3 h-3" />
                       Varför?
                     </button>
                   </div>
                   {showWhy === task.label && (
-                    <p className="mt-2 text-xs text-slate-700 bg-white/70 p-2 rounded-lg animate-in fade-in">
+                    <p className="mt-2 text-xs text-stone-700 bg-white/70 p-2 rounded-lg animate-in fade-in">
                       {task.whyHelpful}
                     </p>
                   )}
@@ -254,7 +254,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                 </button>
                 <button
                   onClick={() => handleSnooze(task)}
-                  className="py-2 px-4 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50"
+                  className="py-2 px-4 rounded-lg border border-stone-200 text-stone-600 text-sm font-medium hover:bg-stone-50"
                 >
                   Inte nu
                 </button>
@@ -332,7 +332,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
 
             {/* Task List */}
             <div className="p-4 overflow-y-auto max-h-[60vh]">
-              <p className="text-xs font-medium text-slate-600 uppercase tracking-wider mb-3 px-2">
+              <p className="text-xs font-medium text-stone-600 uppercase tracking-wider mb-3 px-2">
                 Föreslagna uppgifter
               </p>
               
@@ -344,7 +344,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                       'group p-4 rounded-xl border-2 transition-all',
                       completedTasks.has(task.label)
                         ? 'bg-emerald-50 border-emerald-200'
-                        : 'bg-white border-slate-200 hover:border-indigo-200 hover:shadow-sm'
+                        : 'bg-white border-stone-200 hover:border-indigo-200 hover:shadow-sm'
                     )}
                   >
                     <div className="flex items-start gap-3">
@@ -352,14 +352,14 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                         'w-10 h-10 rounded-full flex items-center justify-center shrink-0 transition-colors',
                         completedTasks.has(task.label)
                           ? 'bg-emerald-500'
-                          : `bg-slate-100 group-hover:${colorClasses.bg}`
+                          : `bg-stone-100 group-hover:${colorClasses.bg}`
                       )}>
                         {completedTasks.has(task.label) ? (
                           <Check className="w-5 h-5 text-white" />
                         ) : (
                           <span className={cn(
                             'text-sm font-bold',
-                            completedTasks.has(task.label) ? 'text-white' : 'text-slate-700 group-hover:text-white'
+                            completedTasks.has(task.label) ? 'text-white' : 'text-stone-700 group-hover:text-white'
                           )}>
                             {index + 1}
                           </span>
@@ -369,14 +369,14 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                       <div className="flex-1 min-w-0">
                         <h3 className={cn(
                           'font-semibold',
-                          completedTasks.has(task.label) ? 'text-emerald-800 line-through' : 'text-slate-800'
+                          completedTasks.has(task.label) ? 'text-emerald-800 line-through' : 'text-stone-800'
                         )}>
                           {task.label}
                         </h3>
-                        <p className="text-sm text-slate-700 mt-0.5">{task.description}</p>
+                        <p className="text-sm text-stone-700 mt-0.5">{task.description}</p>
                         
                         <div className="flex items-center gap-3 mt-2">
-                          <span className="inline-flex items-center gap-1 text-xs text-slate-600">
+                          <span className="inline-flex items-center gap-1 text-xs text-stone-600">
                             <Clock className="w-3 h-3" />
                             {task.duration}
                           </span>
@@ -390,7 +390,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                         </div>
                         
                         {showWhy === task.label && (
-                          <div className="mt-3 p-3 bg-indigo-50 rounded-lg text-sm text-slate-600 animate-in fade-in">
+                          <div className="mt-3 p-3 bg-indigo-50 rounded-lg text-sm text-stone-600 animate-in fade-in">
                             <div className="flex items-start gap-2">
                               <Sparkles className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                               {task.whyHelpful}
@@ -414,7 +414,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                         </button>
                         <button
                           onClick={() => handleSnooze(task)}
-                          className="py-2.5 px-4 rounded-lg border border-slate-200 text-slate-600 text-sm font-medium hover:bg-slate-50 flex items-center gap-1.5"
+                          className="py-2.5 px-4 rounded-lg border border-stone-200 text-stone-600 text-sm font-medium hover:bg-stone-50 flex items-center gap-1.5"
                         >
                           <Calendar className="w-4 h-4" />
                           Inte nu
@@ -427,11 +427,11 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
 
               {availableTasks.length === 0 && (
                 <div className="text-center py-8">
-                  <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Calendar className="w-8 h-8 text-slate-600" />
+                  <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <Calendar className="w-8 h-8 text-stone-600" />
                   </div>
-                  <p className="text-slate-600 font-medium">Du har snoozat alla uppgifter</p>
-                  <p className="text-sm text-slate-700 mt-1">
+                  <p className="text-stone-600 font-medium">Du har snoozat alla uppgifter</p>
+                  <p className="text-sm text-stone-700 mt-1">
                     De visas igen imorgon, eller så kan du ändra din energinivå
                   </p>
                 </div>
@@ -439,8 +439,8 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
             </div>
 
             {/* Footer */}
-            <div className="p-4 border-t border-slate-100 bg-slate-50">
-              <p className="text-xs text-slate-700 text-center">
+            <div className="p-4 border-t border-stone-100 bg-stone-50">
+              <p className="text-xs text-stone-700 text-center">
                 💡 Dessa förslag är baserade på din valda energinivå. 
                 Du kan ändra den i inställningarna.
               </p>

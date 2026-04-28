@@ -48,10 +48,10 @@ export function RiasecPersonalizationBanner({ className, compact = false }: Rias
           </div>
           <div className="flex-1">
             <div className="flex items-center gap-2">
-              <h4 className="font-semibold text-slate-800">Personaliserat innehåll</h4>
+              <h4 className="font-semibold text-stone-800">Personaliserat innehåll</h4>
               <Sparkles className="w-4 h-4 text-amber-500" />
             </div>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-stone-600">
               Baserat på din intresseprofil: <span className="font-medium text-amber-700">{riasecType?.nameSv}</span>
             </p>
           </div>
@@ -65,24 +65,24 @@ export function RiasecPersonalizationBanner({ className, compact = false }: Rias
     <Link
       to="/interest-guide"
       className={cn(
-        "block bg-gradient-to-r from-teal-50 to-sky-50 rounded-xl border border-teal-200 p-4 hover:border-teal-300 transition-colors",
+        "block bg-gradient-to-r from-[var(--c-bg)] to-sky-50 rounded-xl border border-[var(--c-accent)]/60 p-4 hover:border-[var(--c-accent)] transition-colors",
         className
       )}
     >
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Compass className="w-5 h-5 text-teal-600" />
+        <div className="w-10 h-10 bg-[var(--c-accent)]/40 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Compass className="w-5 h-5 text-[var(--c-text)]" />
         </div>
         <div className="flex-1">
-          <h4 className="font-semibold text-slate-800 flex items-center gap-2">
+          <h4 className="font-semibold text-stone-800 flex items-center gap-2">
             Få personaliserade rekommendationer
-            <Sparkles className="w-4 h-4 text-teal-500" />
+            <Sparkles className="w-4 h-4 text-[var(--c-solid)]" />
           </h4>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-stone-600">
             Gör intresseguiden för att få innehåll anpassat efter dina intressen
           </p>
         </div>
-        <ChevronRight className="w-5 h-5 text-teal-400" />
+        <ChevronRight className="w-5 h-5 text-[var(--c-solid)]" />
       </div>
     </Link>
   )

@@ -77,7 +77,7 @@ export function VoiceInput({ onTranscript, placeholder, className = '' }: VoiceI
         className={`p-2 rounded-full transition-all ${
           isRecording 
             ? 'bg-red-100 text-red-600 animate-pulse' 
-            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+            : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
         }`}
         aria-label={isRecording ? 'Stoppa inspelning' : 'Starta röstinmatning'}
         title={isRecording ? 'Klicka för att stoppa' : 'Klicka för att prata'}
@@ -86,7 +86,7 @@ export function VoiceInput({ onTranscript, placeholder, className = '' }: VoiceI
       </button>
 
       {isRecording && (
-        <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-3 py-1.5 rounded-full whitespace-nowrap">
+        <div className="absolute top-full mt-2 left-1/2 -translate-x-1/2 bg-stone-800 text-white text-xs px-3 py-1.5 rounded-full whitespace-nowrap">
           Lyssnar...
         </div>
       )}
@@ -105,16 +105,16 @@ export function VoiceInput({ onTranscript, placeholder, className = '' }: VoiceI
               <div className="p-2 bg-amber-100 rounded-full">
                 <Mic className="w-5 h-5 text-amber-600" />
               </div>
-              <h3 className="font-semibold text-slate-800">Sekretess vid röstinmatning</h3>
+              <h3 className="font-semibold text-stone-800">Sekretess vid röstinmatning</h3>
             </div>
             
-            <p className="text-sm text-slate-600 mb-4">
+            <p className="text-sm text-stone-600 mb-4">
               När du använder röstinmatning skickas ljudet till din webbläsares 
               röstigenkänningstjänst (t.ex. Google eller Apple). 
               Ingen röstdata sparas på våra servrar.
             </p>
 
-            <ul className="text-sm text-slate-600 mb-6 space-y-2">
+            <ul className="text-sm text-stone-600 mb-6 space-y-2">
               <li className="flex items-start gap-2">
                 <span className="text-green-500">✓</span>
                 <span>Rösten omvandlas direkt till text i din enhet</span>
@@ -128,13 +128,13 @@ export function VoiceInput({ onTranscript, placeholder, className = '' }: VoiceI
             <div className="flex gap-3">
               <button
                 onClick={() => setShowPrivacyNotice(false)}
-                className="flex-1 px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                className="flex-1 px-4 py-2 text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
               >
                 Avbryt
               </button>
               <button
                 onClick={handlePrivacyAccept}
-                className="flex-1 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
+                className="flex-1 px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] transition-colors"
               >
                 Jag förstår
               </button>

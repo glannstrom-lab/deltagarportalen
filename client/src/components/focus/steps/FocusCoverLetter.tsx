@@ -316,8 +316,8 @@ ${name} ${lastName}`.trim()
     <div className="max-w-lg mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Mail className="w-8 h-8 text-teal-500" />
+        <div className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Mail className="w-8 h-8 text-[var(--c-solid)]" />
         </div>
         <h2 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100 mb-2">
           {t('focusGuide.letter.title', 'Personligt brev')}
@@ -336,13 +336,13 @@ ${name} ${lastName}`.trim()
               total: LETTER_STEPS.length
             })}
           </span>
-          <span className="font-medium text-teal-600 dark:text-teal-400">
+          <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
             {Math.round(progress)}%
           </span>
         </div>
         <div className="h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
           <div
-            className="h-full bg-teal-500 rounded-full transition-all duration-500"
+            className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -359,8 +359,8 @@ ${name} ${lastName}`.trim()
                 key={s.id}
                 className={cn(
                   'w-9 h-9 rounded-full flex items-center justify-center transition-all',
-                  isActive && 'bg-teal-500 text-white ring-4 ring-teal-500/20',
-                  isDone && 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400',
+                  isActive && 'bg-[var(--c-solid)] text-white ring-4 ring-[var(--c-solid)]/20',
+                  isDone && 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)]',
                   !isActive && !isDone && 'bg-stone-100 dark:bg-stone-800 text-stone-400'
                 )}
               >
@@ -374,8 +374,8 @@ ${name} ${lastName}`.trim()
       {/* Current step form */}
       <div className="bg-white dark:bg-stone-800/50 rounded-2xl p-6 mb-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
-            <StepIcon className="w-6 h-6 text-teal-500" />
+          <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center">
+            <StepIcon className="w-6 h-6 text-[var(--c-solid)]" />
           </div>
           <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
             {t(step.titleKey, step.titleDefault)}
@@ -399,7 +399,7 @@ ${name} ${lastName}`.trim()
                 onChange={(e) => setJobTitle(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={t('focusGuide.letter.jobTitlePlaceholder', 't.ex. Säljare, Kundtjänstmedarbetare')}
-                className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                 autoFocus
               />
             </div>
@@ -419,7 +419,7 @@ ${name} ${lastName}`.trim()
                 onChange={(e) => setCompanyName(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder={t('focusGuide.letter.companyPlaceholder', 'Företagsnamn')}
-                className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
               />
             </div>
           </div>
@@ -443,21 +443,21 @@ ${name} ${lastName}`.trim()
                   className={cn(
                     'w-full p-4 rounded-xl border-2 text-left transition-all',
                     isSelected
-                      ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
-                      : 'border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700'
+                      ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
+                      : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-accent)]/60'
                   )}
                 >
                   <div className="flex items-start gap-3">
                     <div className={cn(
                       'w-10 h-10 rounded-lg flex items-center justify-center',
-                      isSelected ? 'bg-teal-500 text-white' : 'bg-stone-100 dark:bg-stone-800 text-stone-500'
+                      isSelected ? 'bg-[var(--c-solid)] text-white' : 'bg-stone-100 dark:bg-stone-800 text-stone-500'
                     )}>
                       {isSelected ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
                     </div>
                     <div>
                       <h4 className={cn(
                         'font-medium',
-                        isSelected ? 'text-teal-700 dark:text-teal-300' : 'text-stone-800 dark:text-stone-100'
+                        isSelected ? 'text-[var(--c-text)] dark:text-[var(--c-text)]' : 'text-stone-800 dark:text-stone-100'
                       )}>
                         {template.name}
                       </h4>
@@ -486,7 +486,7 @@ ${name} ${lastName}`.trim()
                   <button
                     key={motivation}
                     onClick={() => toggleMotivation(motivation)}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-teal-500 text-white rounded-full text-sm"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-[var(--c-solid)] text-white rounded-full text-sm"
                   >
                     {motivation}
                     <span className="ml-1">×</span>
@@ -502,7 +502,7 @@ ${name} ${lastName}`.trim()
                   <button
                     key={suggestion}
                     onClick={() => toggleMotivation(suggestion)}
-                    className="px-3 py-1.5 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 rounded-full text-sm hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-teal-900/50 dark:hover:text-teal-300 transition-colors text-left"
+                    className="px-3 py-1.5 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 rounded-full text-sm hover:bg-[var(--c-accent)]/40 hover:text-[var(--c-text)] dark:hover:bg-[var(--c-bg)]/50 dark:hover:text-[var(--c-text)] transition-colors text-left"
                   >
                     {suggestion}
                   </button>
@@ -523,12 +523,12 @@ ${name} ${lastName}`.trim()
                   }
                 }}
                 placeholder={t('focusGuide.letter.customMotivation', 'Skriv egen motivation...')}
-                className="flex-1 px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                className="flex-1 px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
               />
               <button
                 onClick={addCustomMotivation}
                 disabled={!customMotivation.trim()}
-                className="px-4 py-3 bg-teal-500 text-white rounded-xl hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-3 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-solid)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 +
               </button>
@@ -541,7 +541,7 @@ ${name} ${lastName}`.trim()
           <div className="space-y-4">
             {generateMutation.isPending ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
+                <Loader2 className="w-8 h-8 animate-spin text-[var(--c-solid)]" />
               </div>
             ) : generatedLetter ? (
               <>
@@ -559,7 +559,7 @@ ${name} ${lastName}`.trim()
                     value={letterTitle}
                     onChange={(e) => setLetterTitle(e.target.value)}
                     placeholder={t('focusGuide.letter.letterTitlePlaceholder', 't.ex. Ansökan Säljare - IKEA')}
-                    className="w-full px-4 py-2 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                    className="w-full px-4 py-2 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   />
                 </div>
 
@@ -569,7 +569,7 @@ ${name} ${lastName}`.trim()
                     value={generatedLetter}
                     onChange={(e) => setGeneratedLetter(e.target.value)}
                     rows={10}
-                    className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-teal-500/50 resize-none text-sm"
+                    className="w-full px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50 resize-none text-sm"
                   />
                   <button
                     onClick={handleCopy}
@@ -577,7 +577,7 @@ ${name} ${lastName}`.trim()
                     title={t('common.copy', 'Kopiera')}
                   >
                     {isCopied ? (
-                      <Check className="w-4 h-4 text-teal-500" />
+                      <Check className="w-4 h-4 text-[var(--c-solid)]" />
                     ) : (
                       <Copy className="w-4 h-4 text-stone-500" />
                     )}
@@ -592,7 +592,7 @@ ${name} ${lastName}`.trim()
                     disabled={isDownloading || !generatedLetter.trim()}
                     className={cn(
                       'flex items-center justify-center gap-2 flex-1 py-3 px-4 rounded-xl font-medium transition-all',
-                      'bg-teal-500 text-white hover:bg-teal-600',
+                      'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
                       'disabled:opacity-50 disabled:cursor-not-allowed'
                     )}
                   >
@@ -664,8 +664,8 @@ ${name} ${lastName}`.trim()
           disabled={generateMutation.isPending || (step.id === 'job' && !jobTitle.trim())}
           className={cn(
             'flex items-center justify-center gap-2 w-full py-4 rounded-xl font-semibold text-lg transition-all',
-            'bg-teal-500 text-white hover:bg-teal-600',
-            'focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30',
+            'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
+            'focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--c-solid)]/30',
             'disabled:opacity-50 disabled:cursor-not-allowed'
           )}
         >

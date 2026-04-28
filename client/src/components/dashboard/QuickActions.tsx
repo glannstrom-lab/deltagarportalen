@@ -28,11 +28,11 @@ const colorClasses: Record<string, {
     shadow: 'hover:shadow-emerald-100'
   },
   teal: {
-    bg: 'bg-teal-50',
-    hover: 'hover:bg-teal-100',
-    text: 'text-teal-700',
-    border: 'border-teal-200',
-    shadow: 'hover:shadow-teal-100'
+    bg: 'bg-[var(--c-bg)]',
+    hover: 'hover:bg-[var(--c-accent)]/40',
+    text: 'text-[var(--c-text)]',
+    border: 'border-[var(--c-accent)]/60',
+    shadow: ''
   },
   blue: {
     bg: 'bg-blue-50',
@@ -99,8 +99,8 @@ export function QuickActions() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Clock size={18} className="text-slate-700 dark:text-stone-300" />
-        <h3 className="text-sm font-semibold text-slate-700 dark:text-stone-300">
+        <Clock size={18} className="text-stone-700 dark:text-stone-300" />
+        <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300">
           {t('dashboard.quickActions.title')}
         </h3>
       </div>
@@ -127,7 +127,7 @@ export function QuickActions() {
                 colors.border,
                 "hover:-translate-y-1 hover:shadow-lg",
                 colors.shadow,
-                isSelected && "ring-2 ring-offset-2 ring-slate-400"
+                isSelected && "ring-2 ring-offset-2 ring-stone-400"
               )}
               style={{
                 animationDelay: `${index * 100}ms`
@@ -145,7 +145,7 @@ export function QuickActions() {
 
               {/* Description - only show on hover or selected */}
               <p className={cn(
-                "text-xs text-slate-600 dark:text-stone-400 transition-all duration-300",
+                "text-xs text-stone-600 dark:text-stone-400 transition-all duration-300",
                 isHovered || isSelected ? "opacity-100 max-h-10" : "opacity-70 max-h-6 overflow-hidden"
               )}>
                 {t(action.descriptionKey)}
@@ -154,8 +154,8 @@ export function QuickActions() {
               {/* Arrow indicator */}
               <div className={cn(
                 "absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center",
-                "bg-white/50 dark:bg-stone-800/50 text-slate-600 dark:text-stone-400 transition-all duration-300",
-                "group-hover:bg-white dark:group-hover:bg-stone-800 group-hover:text-slate-600 dark:group-hover:text-stone-300",
+                "bg-white/50 dark:bg-stone-800/50 text-stone-600 dark:text-stone-400 transition-all duration-300",
+                "group-hover:bg-white dark:group-hover:bg-stone-800 group-hover:text-stone-600 dark:group-hover:text-stone-300",
                 isSelected && "rotate-90"
               )}>
                 <ArrowRight size={14} />
@@ -168,10 +168,10 @@ export function QuickActions() {
       {/* Expanded suggestions */}
       {selectedDuration && (
         <div
-          className="animate-fade-in-up bg-white dark:bg-stone-900 rounded-2xl border-2 border-slate-200 dark:border-stone-700 p-4"
+          className="animate-fade-in-up bg-white dark:bg-stone-900 rounded-2xl border-2 border-stone-200 dark:border-stone-700 p-4"
           style={{ animationDelay: '0ms' }}
         >
-          <p className="text-sm font-medium text-slate-700 dark:text-stone-300 mb-3">
+          <p className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-3">
             {t('dashboard.quickActions.suggestionsFor', { minutes: selectedDuration })}
           </p>
           <div className="grid grid-cols-2 gap-2">
@@ -183,11 +183,11 @@ export function QuickActions() {
                   onClick={() => handleSuggestionClick(suggestion.link)}
                   className={cn(
                     "text-left px-4 py-3 rounded-xl text-sm",
-                    "bg-slate-50 dark:bg-stone-800 hover:bg-teal-50 dark:hover:bg-teal-900/30 hover:text-teal-700 dark:hover:text-teal-400",
-                    "border border-slate-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700",
+                    "bg-stone-50 dark:bg-stone-800 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/40 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)]",
+                    "border border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60 dark:hover:border-[var(--c-accent)]/60",
                     "transition-all duration-200",
                     "hover:-translate-y-0.5 hover:shadow-md",
-                    "text-slate-800 dark:text-stone-200"
+                    "text-stone-800 dark:text-stone-200"
                   )}
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >

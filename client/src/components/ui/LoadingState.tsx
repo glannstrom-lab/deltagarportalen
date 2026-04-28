@@ -72,10 +72,10 @@ export function LoadingState({
     >
       <Spinner size={size === 'sm' ? 'md' : size === 'md' ? 'lg' : 'xl'} />
       {title && (
-        <h3 className="mt-4 text-lg font-semibold text-slate-800">{title}</h3>
+        <h3 className="mt-4 text-lg font-semibold text-stone-800">{title}</h3>
       )}
       <p className={cn(
-        'text-slate-700',
+        'text-stone-700',
         title ? 'mt-1' : 'mt-4'
       )}>
         {displayMessage}
@@ -107,7 +107,7 @@ export function Skeleton({
   return (
     <div
       className={cn(
-        'animate-pulse bg-slate-200',
+        'animate-pulse bg-stone-200',
         circle ? 'rounded-full' : 'rounded-lg',
         className
       )}
@@ -149,7 +149,7 @@ export function SkeletonCard({
         ))}
       </div>
       {showFooter && (
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-stone-100">
           <Skeleton width={80} height={20} />
           <Skeleton width={100} height={36} className="rounded-lg" />
         </div>
@@ -204,7 +204,7 @@ export function SkeletonList({ count = 5, className }: SkeletonListProps) {
   return (
     <div className={cn('space-y-3', className)}>
       {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-slate-200 animate-pulse">
+        <div key={i} className="flex items-center gap-4 p-4 bg-white rounded-xl border border-stone-200 animate-pulse">
           <Skeleton circle width={48} height={48} />
           <div className="flex-1 space-y-2">
             <Skeleton width="50%" height={18} />
@@ -257,8 +257,8 @@ export function ErrorState({
           <RefreshCw className="w-8 h-8 text-red-600" />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-slate-800 mb-2">{displayTitle}</h3>
-      <p className="text-slate-700 mb-6 max-w-sm">{displayMessage}</p>
+      <h3 className="text-lg font-semibold text-stone-800 mb-2">{displayTitle}</h3>
+      <p className="text-stone-700 mb-6 max-w-sm">{displayMessage}</p>
       {onRetry && (
         <Button
           variant="secondary"
@@ -314,7 +314,7 @@ export function InlineLoading({
 
   return (
     <span
-      className="inline-flex items-center gap-2 text-slate-700"
+      className="inline-flex items-center gap-2 text-stone-700"
       role="status"
       aria-live="polite"
     >
@@ -339,17 +339,17 @@ export function ContentPlaceholder({
   return (
     <div className={cn('space-y-3 animate-pulse', className)}>
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 bg-slate-200 rounded-full" />
+        <div className="w-12 h-12 bg-stone-200 rounded-full" />
         <div className="flex-1 space-y-2">
-          <div className="h-4 bg-slate-200 rounded w-1/3" />
-          <div className="h-3 bg-slate-200 rounded w-1/4" />
+          <div className="h-4 bg-stone-200 rounded w-1/3" />
+          <div className="h-3 bg-stone-200 rounded w-1/4" />
         </div>
       </div>
       <div className="space-y-2 pt-4">
         {Array.from({ length: lines }).map((_, i) => (
           <div 
             key={i} 
-            className="h-3 bg-slate-200 rounded"
+            className="h-3 bg-stone-200 rounded"
             style={{ width: i === lines - 1 ? '60%' : '100%' }}
           />
         ))}

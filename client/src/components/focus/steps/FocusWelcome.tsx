@@ -18,8 +18,8 @@ export function FocusWelcome({ firstName, onStart, onExit }: FocusWelcomeProps) 
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       {/* Warm icon */}
-      <div className="w-20 h-20 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mb-8">
-        <Heart className="w-10 h-10 text-teal-500" />
+      <div className="w-20 h-20 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-full flex items-center justify-center mb-8">
+        <Heart className="w-10 h-10 text-[var(--c-solid)]" />
       </div>
 
       {/* Greeting */}
@@ -59,8 +59,8 @@ export function FocusWelcome({ firstName, onStart, onExit }: FocusWelcomeProps) 
           onClick={onStart}
           className={cn(
             'flex items-center justify-center gap-2 w-full py-4 rounded-xl font-semibold text-lg transition-all',
-            'bg-teal-500 text-white hover:bg-teal-600',
-            'focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30'
+            'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
+            'focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--c-solid)]/30'
           )}
         >
           {t('focusGuide.welcome.start', 'Sätt igång')}

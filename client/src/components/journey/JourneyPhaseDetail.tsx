@@ -89,7 +89,7 @@ export function JourneyPhaseDetail({
 
         {/* Milestones List */}
         <div className="p-6 overflow-y-auto max-h-[50vh]">
-          <h3 className="text-sm font-medium text-slate-700 uppercase tracking-wide mb-4">
+          <h3 className="text-sm font-medium text-stone-700 uppercase tracking-wide mb-4">
             Milstolpar i denna fas
           </h3>
 
@@ -105,7 +105,7 @@ export function JourneyPhaseDetail({
                     p-4 rounded-xl border-2 transition-all
                     ${isCompleted
                       ? 'bg-emerald-50 border-emerald-200'
-                      : 'bg-white border-slate-100 hover:border-indigo-200'
+                      : 'bg-white border-stone-100 hover:border-indigo-200'
                     }
                   `}
                 >
@@ -115,7 +115,7 @@ export function JourneyPhaseDetail({
                       w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
                       ${isCompleted
                         ? 'bg-emerald-500 text-white'
-                        : 'bg-slate-100 text-slate-600'
+                        : 'bg-stone-100 text-stone-600'
                       }
                     `}>
                       {isCompleted ? (
@@ -128,7 +128,7 @@ export function JourneyPhaseDetail({
                     {/* Content */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <h4 className={`font-medium ${isCompleted ? 'text-emerald-800' : 'text-slate-900'}`}>
+                        <h4 className={`font-medium ${isCompleted ? 'text-emerald-800' : 'text-stone-900'}`}>
                           {milestone.name}
                         </h4>
                         <span className={`
@@ -141,7 +141,7 @@ export function JourneyPhaseDetail({
                           +{milestone.xpReward} XP
                         </span>
                       </div>
-                      <p className={`text-sm ${isCompleted ? 'text-emerald-600' : 'text-slate-700'}`}>
+                      <p className={`text-sm ${isCompleted ? 'text-emerald-600' : 'text-stone-700'}`}>
                         {milestone.description}
                       </p>
                     </div>
@@ -172,8 +172,8 @@ export function JourneyPhaseDetail({
         </div>
 
         {/* Footer */}
-        <div className="p-6 border-t border-slate-100 bg-slate-50">
-          <p className="text-sm text-slate-600 italic text-center">
+        <div className="p-6 border-t border-stone-100 bg-stone-50">
+          <p className="text-sm text-stone-600 italic text-center">
             "{phase.coachingMessage}"
           </p>
         </div>

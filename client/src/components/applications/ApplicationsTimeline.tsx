@@ -27,18 +27,18 @@ const EVENT_CONFIG: Record<HistoryEventType, {
   bgColor: string
   label: string
 }> = {
-  created: { icon: Sparkles, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Skapad' },
+  created: { icon: Sparkles, color: 'text-[var(--c-text)]', bgColor: 'bg-[var(--c-accent)]/40', label: 'Skapad' },
   status_change: { icon: Send, color: 'text-blue-600', bgColor: 'bg-blue-100', label: 'Status ändrad' },
-  note_added: { icon: MessageSquare, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Anteckning tillagd' },
-  note_updated: { icon: MessageSquare, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Anteckning uppdaterad' },
+  note_added: { icon: MessageSquare, color: 'text-[var(--c-text)]', bgColor: 'bg-[var(--c-accent)]/40', label: 'Anteckning tillagd' },
+  note_updated: { icon: MessageSquare, color: 'text-[var(--c-text)]', bgColor: 'bg-[var(--c-accent)]/40', label: 'Anteckning uppdaterad' },
   document_attached: { icon: FileText, color: 'text-sky-600', bgColor: 'bg-sky-100', label: 'Dokument bifogat' },
   reminder_set: { icon: Bell, color: 'text-amber-600', bgColor: 'bg-amber-100', label: 'Påminnelse satt' },
   reminder_completed: { icon: CheckCircle, color: 'text-green-600', bgColor: 'bg-green-100', label: 'Påminnelse klar' },
   contact_added: { icon: User, color: 'text-cyan-600', bgColor: 'bg-cyan-100', label: 'Kontakt tillagd' },
   contact_updated: { icon: User, color: 'text-cyan-600', bgColor: 'bg-cyan-100', label: 'Kontakt uppdaterad' },
-  interview_scheduled: { icon: Users, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Intervju bokad' },
+  interview_scheduled: { icon: Users, color: 'text-[var(--c-text)]', bgColor: 'bg-[var(--c-accent)]/40', label: 'Intervju bokad' },
   offer_received: { icon: Trophy, color: 'text-amber-600', bgColor: 'bg-amber-100', label: 'Erbjudande mottaget' },
-  archived: { icon: Archive, color: 'text-slate-600', bgColor: 'bg-slate-100', label: 'Arkiverad' }
+  archived: { icon: Archive, color: 'text-stone-600', bgColor: 'bg-stone-100', label: 'Arkiverad' }
 }
 
 function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEntry; applicationName?: string }) {
@@ -51,8 +51,8 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
     const newLabel = entry.newValue ? getStatusLabel(entry.newValue.toLowerCase() as any) : null
     return (
       <span>
-        {oldLabel && <span className="text-slate-700">{oldLabel}</span>}
-        {oldLabel && newLabel && <span className="text-slate-600"> → </span>}
+        {oldLabel && <span className="text-stone-700">{oldLabel}</span>}
+        {oldLabel && newLabel && <span className="text-stone-600"> → </span>}
         {newLabel && <span className="font-medium">{newLabel}</span>}
       </span>
     )
@@ -65,16 +65,16 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
         <div className={cn("w-8 h-8 rounded-full flex items-center justify-center", config.bgColor)}>
           <Icon className={cn("w-4 h-4", config.color)} />
         </div>
-        <div className="w-0.5 flex-1 bg-slate-200 group-last:hidden" />
+        <div className="w-0.5 flex-1 bg-stone-200 group-last:hidden" />
       </div>
 
       {/* Content */}
       <div className="flex-1 pb-6">
         <div className="flex items-center justify-between">
-          <p className="font-medium text-slate-900 text-sm">
+          <p className="font-medium text-stone-900 text-sm">
             {config.label}
           </p>
-          <span className="text-xs text-slate-600">
+          <span className="text-xs text-stone-600">
             {new Date(entry.createdAt).toLocaleDateString('sv-SE', {
               day: 'numeric',
               month: 'short',
@@ -85,15 +85,15 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
         </div>
 
         {applicationName && (
-          <p className="text-xs text-slate-700 mt-0.5">{applicationName}</p>
+          <p className="text-xs text-stone-700 mt-0.5">{applicationName}</p>
         )}
 
         {entry.eventType === 'status_change' && (
-          <p className="text-sm text-slate-600 mt-1">{formatStatusChange()}</p>
+          <p className="text-sm text-stone-600 mt-1">{formatStatusChange()}</p>
         )}
 
         {entry.note && (
-          <p className="text-sm text-slate-600 mt-1 italic">"{entry.note}"</p>
+          <p className="text-sm text-stone-600 mt-1 italic">"{entry.note}"</p>
         )}
       </div>
     </div>
@@ -147,9 +147,9 @@ export function ApplicationsTimeline() {
     <div className="space-y-6">
       {Object.keys(groupedHistory).length === 0 ? (
         <Card className="p-8 text-center">
-          <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="font-semibold text-slate-700 mb-2">Ingen aktivitet än</h3>
-          <p className="text-slate-700">
+          <Clock className="w-12 h-12 text-stone-300 mx-auto mb-4" />
+          <h3 className="font-semibold text-stone-700 mb-2">Ingen aktivitet än</h3>
+          <p className="text-stone-700">
             Din aktivitetshistorik visas här när du börjar spåra ansökningar.
           </p>
         </Card>
@@ -157,7 +157,7 @@ export function ApplicationsTimeline() {
         <div className="space-y-8">
           {Object.entries(groupedHistory).map(([date, entries]) => (
             <div key={date}>
-              <h3 className="text-sm font-medium text-slate-700 mb-4 capitalize">{date}</h3>
+              <h3 className="text-sm font-medium text-stone-700 mb-4 capitalize">{date}</h3>
               <Card className="p-4">
                 {entries.map((entry) => (
                   <TimelineEntry

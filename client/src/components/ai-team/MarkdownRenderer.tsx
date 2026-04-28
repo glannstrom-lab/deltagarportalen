@@ -188,7 +188,7 @@ function Heading({ level, content }: { level: number; content: string }) {
   if (level === 2) {
     return (
       <div className={cn(baseClasses, 'mt-1')}>
-        <Star className="w-3.5 h-3.5 text-teal-500 flex-shrink-0" />
+        <Star className="w-3.5 h-3.5 text-[var(--c-solid)] flex-shrink-0" />
         <h4 className="text-sm font-semibold text-stone-800 dark:text-stone-100">
           <InlineMarkdown text={content} />
         </h4>
@@ -241,7 +241,7 @@ function UnorderedList({ items }: { items: string[] }) {
             'border border-stone-200/50 dark:border-stone-700/50'
           )}
         >
-          <CheckCircle className="w-4 h-4 text-teal-500 mt-0.5 flex-shrink-0" />
+          <CheckCircle className="w-4 h-4 text-[var(--c-solid)] mt-0.5 flex-shrink-0" />
           <span className="flex-1 text-stone-700 dark:text-stone-200">
             <InlineMarkdown text={item} />
           </span>
@@ -274,7 +274,7 @@ function OrderedList({ items }: { items: string[] }) {
               {/* Number badge */}
               <div className={cn(
                 'flex-shrink-0 w-6 h-6 rounded-lg',
-                'bg-gradient-to-br from-teal-500 to-teal-600',
+                'bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)]',
                 'flex items-center justify-center',
                 'text-white text-xs font-bold',
                 'shadow-sm'
@@ -393,8 +393,8 @@ function InlineMarkdown({ text }: { text: string }) {
           key={`code-${keyIndex++}`}
           className={cn(
             'px-1.5 py-0.5 rounded-md',
-            'bg-teal-100/80 dark:bg-teal-900/40',
-            'text-teal-700 dark:text-teal-300',
+            'bg-[var(--c-accent)]/40/80 dark:bg-[var(--c-bg)]/40',
+            'text-[var(--c-text)] dark:text-[var(--c-accent)]',
             'text-[13px] font-mono font-medium'
           )}
         >
@@ -419,10 +419,10 @@ function InlineMarkdown({ text }: { text: string }) {
           rel="noopener noreferrer"
           className={cn(
             'inline-flex items-center gap-0.5',
-            'text-teal-600 dark:text-teal-400',
-            'hover:text-teal-700 dark:hover:text-teal-300',
-            'underline decoration-teal-300 dark:decoration-teal-600',
-            'underline-offset-2 hover:decoration-teal-500',
+            'text-[var(--c-text)] dark:text-[var(--c-solid)]',
+            'hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)]',
+            'underline decoration-[var(--c-accent)] dark:decoration-[var(--c-solid)]',
+            'underline-offset-2 hover:decoration-[var(--c-solid)]',
             'transition-colors'
           )}
         >
@@ -459,8 +459,8 @@ function processInlineCode(text: string, startKey: number): (string | JSX.Elemen
           key={`code-${keyIndex++}`}
           className={cn(
             'px-1.5 py-0.5 rounded-md',
-            'bg-teal-100/80 dark:bg-teal-900/40',
-            'text-teal-700 dark:text-teal-300',
+            'bg-[var(--c-accent)]/40/80 dark:bg-[var(--c-bg)]/40',
+            'text-[var(--c-text)] dark:text-[var(--c-accent)]',
             'text-[13px] font-mono font-medium'
           )}
         >

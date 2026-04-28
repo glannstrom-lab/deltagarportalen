@@ -480,10 +480,10 @@ Varmt tack igen!`
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
       active: 'bg-green-100 text-green-700',
-      dormant: 'bg-slate-100 text-slate-600',
+      dormant: 'bg-stone-100 text-stone-600',
       reconnect: 'bg-amber-100 text-amber-700'
     }
-    return colors[status] || 'bg-slate-100 text-slate-600'
+    return colors[status] || 'bg-stone-100 text-stone-600'
   }
 
   const handleCopy = (text: string, id?: string) => {
@@ -513,29 +513,29 @@ Varmt tack igen!`
       </div>
 
       {/* AI Strategy Generator */}
-      <div className="bg-gradient-to-br from-teal-50 to-sky-50 rounded-2xl p-6 border border-teal-200">
+      <div className="bg-gradient-to-br from-[var(--c-bg)] to-sky-50 rounded-2xl p-6 border border-[var(--c-accent)]/60">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-teal-500 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-[var(--c-solid)] rounded-xl flex items-center justify-center">
             <Wand2 size={20} className="text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-slate-900">AI Nätverksstrategi</h3>
-            <p className="text-sm text-slate-600">Få en personlig nätverksplan med AI</p>
+            <h3 className="text-lg font-semibold text-stone-900">AI Nätverksstrategi</h3>
+            <p className="text-sm text-stone-600">Få en personlig nätverksplan med AI</p>
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <div className="relative">
-            <label className="block text-sm font-medium text-slate-700 mb-1">Ditt yrke/mål *</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Ditt yrke/mål *</label>
             <input
               type="text"
               value={occupation}
               onChange={(e) => handleOccupationInput(e.target.value)}
               placeholder="T.ex. Systemutvecklare"
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             />
             {showOccupationSuggestions && (
-              <div className="absolute z-10 w-full bg-white border border-slate-200 rounded-lg shadow-lg mt-1">
+              <div className="absolute z-10 w-full bg-white border border-stone-200 rounded-lg shadow-lg mt-1">
                 {occupationSuggestions.map((occ) => (
                   <button
                     key={occ}
@@ -543,7 +543,7 @@ Varmt tack igen!`
                       setOccupation(occ)
                       setShowOccupationSuggestions(false)
                     }}
-                    className="w-full text-left px-4 py-2 hover:bg-teal-50 text-sm"
+                    className="w-full text-left px-4 py-2 hover:bg-[var(--c-bg)] text-sm"
                   >
                     {occ}
                   </button>
@@ -553,11 +553,11 @@ Varmt tack igen!`
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Erfarenhetsnivå</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Erfarenhetsnivå</label>
             <select
               value={experienceLevel}
               onChange={(e) => setExperienceLevel(e.target.value as any)}
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             >
               <option value="entry">Junior (0-2 år)</option>
               <option value="mid">Medel (3-7 år)</option>
@@ -566,7 +566,7 @@ Varmt tack igen!`
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">Mål med nätverkande</label>
+            <label className="block text-sm font-medium text-stone-700 mb-1">Mål med nätverkande</label>
             <div className="flex flex-wrap gap-2">
               {[
                 { id: 'job', label: 'Hitta jobb' },
@@ -584,8 +584,8 @@ Varmt tack igen!`
                   }}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     networkingGoals.includes(goal.id)
-                      ? 'bg-teal-500 text-white'
-                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                      ? 'bg-[var(--c-solid)] text-white'
+                      : 'bg-white text-stone-600 border border-stone-200 hover:bg-stone-50'
                   }`}
                 >
                   {goal.label}
@@ -598,7 +598,7 @@ Varmt tack igen!`
         <button
           onClick={generateNetworkingStrategy}
           disabled={generatingStrategy || !occupation}
-          className="w-full md:w-auto px-6 py-2.5 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+          className="w-full md:w-auto px-6 py-2.5 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-solid)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
         >
           {generatingStrategy ? (
             <>
@@ -618,13 +618,13 @@ Varmt tack igen!`
           <div className="mt-6 space-y-6">
             {/* Strategies */}
             <div>
-              <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                <Target size={18} className="text-teal-500" />
+              <h4 className="font-medium text-stone-900 mb-3 flex items-center gap-2">
+                <Target size={18} className="text-[var(--c-solid)]" />
                 Strategier för dig
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {aiStrategy.strategies.map((strategy, idx) => (
-                  <div key={idx} className="bg-white rounded-xl p-4 border border-slate-200">
+                  <div key={idx} className="bg-white rounded-xl p-4 border border-stone-200">
                     <div className="flex items-center gap-2 mb-2">
                       <span className={`text-xs px-2 py-0.5 rounded-full ${
                         strategy.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
@@ -635,12 +635,12 @@ Varmt tack igen!`
                          strategy.difficulty === 'medium' ? 'Medel' : 'Avancerad'}
                       </span>
                     </div>
-                    <h5 className="font-medium text-slate-800 mb-1">{strategy.title}</h5>
-                    <p className="text-sm text-slate-600 mb-3">{strategy.description}</p>
+                    <h5 className="font-medium text-stone-800 mb-1">{strategy.title}</h5>
+                    <p className="text-sm text-stone-600 mb-3">{strategy.description}</p>
                     <ul className="space-y-1">
                       {strategy.actions.map((action, i) => (
-                        <li key={i} className="text-sm text-slate-700 flex items-start gap-2">
-                          <Check size={14} className="text-teal-500 mt-0.5 flex-shrink-0" />
+                        <li key={i} className="text-sm text-stone-700 flex items-start gap-2">
+                          <Check size={14} className="text-[var(--c-solid)] mt-0.5 flex-shrink-0" />
                           {action}
                         </li>
                       ))}
@@ -652,18 +652,18 @@ Varmt tack igen!`
 
             {/* Target Contacts */}
             <div>
-              <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                <Users size={18} className="text-teal-500" />
+              <h4 className="font-medium text-stone-900 mb-3 flex items-center gap-2">
+                <Users size={18} className="text-[var(--c-solid)]" />
                 Vilka du bör kontakta
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {aiStrategy.targetContacts.map((contact, idx) => (
-                  <div key={idx} className="bg-white rounded-xl p-4 border border-slate-200">
-                    <h5 className="font-medium text-slate-800 mb-1">{contact.type}</h5>
-                    <p className="text-sm text-slate-600 mb-2">{contact.description}</p>
+                  <div key={idx} className="bg-white rounded-xl p-4 border border-stone-200">
+                    <h5 className="font-medium text-stone-800 mb-1">{contact.type}</h5>
+                    <p className="text-sm text-stone-600 mb-2">{contact.description}</p>
                     <div className="flex flex-wrap gap-1">
                       {contact.whereToFind.map((place, i) => (
-                        <span key={i} className="text-xs px-2 py-1 bg-teal-100 text-teal-700 rounded-full">
+                        <span key={i} className="text-xs px-2 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-full">
                           {place}
                         </span>
                       ))}
@@ -674,18 +674,18 @@ Varmt tack igen!`
             </div>
 
             {/* Conversation Starters */}
-            <div className="bg-white rounded-xl p-4 border border-slate-200">
-              <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
-                <MessageCircle size={18} className="text-teal-500" />
+            <div className="bg-white rounded-xl p-4 border border-stone-200">
+              <h4 className="font-medium text-stone-900 mb-3 flex items-center gap-2">
+                <MessageCircle size={18} className="text-[var(--c-solid)]" />
                 Konversationsöppnare
               </h4>
               <div className="space-y-2">
                 {aiStrategy.conversationStarters.map((starter, idx) => (
-                  <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-                    <span className="text-sm text-slate-700">"{starter}"</span>
+                  <div key={idx} className="flex items-center justify-between p-2 bg-stone-50 rounded-lg">
+                    <span className="text-sm text-stone-700">"{starter}"</span>
                     <button
                       onClick={() => handleCopy(starter)}
-                      className="p-1.5 text-slate-600 hover:text-teal-500"
+                      className="p-1.5 text-stone-600 hover:text-[var(--c-solid)]"
                     >
                       <Copy size={14} />
                     </button>
@@ -699,12 +699,12 @@ Varmt tack igen!`
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-white rounded-xl p-5 border border-slate-200">
+        <div className="bg-white rounded-xl p-5 border border-stone-200">
           <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
             <Linkedin className="text-blue-600" size={20} />
           </div>
-          <h3 className="font-semibold text-slate-800 mb-1">Optimera LinkedIn</h3>
-          <p className="text-sm text-slate-600">
+          <h3 className="font-semibold text-stone-800 mb-1">Optimera LinkedIn</h3>
+          <p className="text-sm text-stone-600">
             Se till att din profil är uppdaterad och professionell.
           </p>
           <a 
@@ -715,45 +715,45 @@ Varmt tack igen!`
           </a>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200">
+        <div className="bg-white rounded-xl p-5 border border-stone-200">
           <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-3">
             <Coffee className="text-emerald-600" size={20} />
           </div>
-          <h3 className="font-semibold text-slate-800 mb-1">Informationsmöte</h3>
-          <p className="text-sm text-slate-600">
+          <h3 className="font-semibold text-stone-800 mb-1">Informationsmöte</h3>
+          <p className="text-sm text-stone-600">
             Be om 15 minuter för att lära dig mer om ett företag eller roll.
           </p>
-          <span className="inline-block text-xs text-slate-700 mt-3 bg-slate-100 px-2 py-1 rounded">
+          <span className="inline-block text-xs text-stone-700 mt-3 bg-stone-100 px-2 py-1 rounded">
             Mallar nedan
           </span>
         </div>
 
-        <div className="bg-white rounded-xl p-5 border border-slate-200">
-          <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-3">
-            <MessageCircle className="text-teal-600" size={20} />
+        <div className="bg-white rounded-xl p-5 border border-stone-200">
+          <div className="w-10 h-10 bg-[var(--c-accent)]/40 rounded-lg flex items-center justify-center mb-3">
+            <MessageCircle className="text-[var(--c-text)]" size={20} />
           </div>
-          <h3 className="font-semibold text-slate-800 mb-1">Följ upp</h3>
-          <p className="text-sm text-slate-600">
+          <h3 className="font-semibold text-stone-800 mb-1">Följ upp</h3>
+          <p className="text-sm text-stone-600">
             Skicka alltid ett tack efter möten. Det gör skillnad!
           </p>
-          <span className="inline-block text-xs text-slate-700 mt-3 bg-slate-100 px-2 py-1 rounded">
+          <span className="inline-block text-xs text-stone-700 mt-3 bg-stone-100 px-2 py-1 rounded">
             Mallar nedan
           </span>
         </div>
       </div>
 
       {/* Kontakter */}
-      <div className="bg-white rounded-2xl p-6 border border-slate-200">
+      <div className="bg-white rounded-2xl p-6 border border-stone-200">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-            <Users size={20} className="text-teal-500" />
+          <h3 className="text-lg font-semibold text-stone-900 flex items-center gap-2">
+            <Users size={20} className="text-[var(--c-solid)]" />
             Dina kontakter ({contacts.length})
           </h3>
           <div className="flex gap-2">
             {contacts.length > 0 && (
               <button
                 onClick={() => setShowMessageGenerator(true)}
-                className="flex items-center gap-2 px-4 py-2 bg-teal-100 text-teal-700 rounded-xl font-medium hover:bg-teal-200 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-xl font-medium hover:bg-[var(--c-accent)]/60 transition-colors"
               >
                 <Wand2 size={18} />
                 AI-meddelande
@@ -761,7 +761,7 @@ Varmt tack igen!`
             )}
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-solid)] transition-colors"
             >
               <Plus size={18} />
               Lägg till kontakt
@@ -771,10 +771,10 @@ Varmt tack igen!`
 
         {/* AI Message Generator Modal */}
         {showMessageGenerator && (
-          <div className="mb-6 p-4 bg-teal-50 rounded-xl border border-teal-200">
+          <div className="mb-6 p-4 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]/60">
             <div className="flex items-center justify-between mb-4">
-              <h4 className="font-medium text-slate-900 flex items-center gap-2">
-                <Wand2 size={18} className="text-teal-500" />
+              <h4 className="font-medium text-stone-900 flex items-center gap-2">
+                <Wand2 size={18} className="text-[var(--c-solid)]" />
                 Skapa personligt meddelande med AI
               </h4>
               <button
@@ -783,7 +783,7 @@ Varmt tack igen!`
                   setGeneratedMessage('')
                   setSelectedContactForMessage(null)
                 }}
-                className="p-1.5 text-slate-600 hover:text-slate-600"
+                className="p-1.5 text-stone-600 hover:text-stone-600"
               >
                 <X size={18} />
               </button>
@@ -791,14 +791,14 @@ Varmt tack igen!`
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Välj kontakt</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Välj kontakt</label>
                 <select
                   value={selectedContactForMessage?.id || ''}
                   onChange={(e) => {
                     const contact = contacts.find(c => c.id === e.target.value)
                     setSelectedContactForMessage(contact || null)
                   }}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                 >
                   <option value="">Välj kontakt...</option>
                   {contacts.map(contact => (
@@ -810,11 +810,11 @@ Varmt tack igen!`
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Typ av meddelande</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Typ av meddelande</label>
                 <select
                   value={messageType}
                   onChange={(e) => setMessageType(e.target.value as any)}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                 >
                   <option value="initial">Första kontakten</option>
                   <option value="followup">Uppföljning</option>
@@ -824,20 +824,20 @@ Varmt tack igen!`
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Syfte med kontakten</label>
+              <label className="block text-sm font-medium text-stone-700 mb-1">Syfte med kontakten</label>
               <input
                 type="text"
                 value={messagePurpose}
                 onChange={(e) => setMessagePurpose(e.target.value)}
                 placeholder="T.ex. Be om råd om karriärbyte, be om referens, etc."
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
               />
             </div>
 
             <button
               onClick={generateCustomMessage}
               disabled={generatingMessage || !selectedContactForMessage || !messagePurpose}
-              className="w-full md:w-auto px-6 py-2 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mb-4"
+              className="w-full md:w-auto px-6 py-2 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-solid)] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mb-4"
             >
               {generatingMessage ? (
                 <>
@@ -853,18 +853,18 @@ Varmt tack igen!`
             </button>
 
             {generatedMessage && (
-              <div className="bg-white rounded-xl p-4 border border-slate-200">
+              <div className="bg-white rounded-xl p-4 border border-stone-200">
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-medium text-slate-700">Ditt AI-genererade meddelande:</span>
+                  <span className="text-sm font-medium text-stone-700">Ditt AI-genererade meddelande:</span>
                   <button
                     onClick={() => handleCopy(generatedMessage)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 bg-teal-100 text-teal-700 rounded-lg text-sm font-medium hover:bg-teal-200"
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-lg text-sm font-medium hover:bg-[var(--c-accent)]/60"
                   >
                     <Copy size={14} />
                     Kopiera
                   </button>
                 </div>
-                <pre className="text-sm text-slate-700 whitespace-pre-wrap font-sans leading-relaxed">
+                <pre className="text-sm text-stone-700 whitespace-pre-wrap font-sans leading-relaxed">
                   {generatedMessage}
                 </pre>
               </div>
@@ -879,8 +879,8 @@ Varmt tack igen!`
               onClick={() => setFilterStatus('all')}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 filterStatus === 'all'
-                  ? 'bg-teal-500 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-[var(--c-solid)] text-white'
+                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
               }`}
             >
               Alla
@@ -890,7 +890,7 @@ Varmt tack igen!`
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 filterStatus === 'active'
                   ? 'bg-green-500 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
               }`}
             >
               Aktiva
@@ -900,7 +900,7 @@ Varmt tack igen!`
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 filterStatus === 'reconnect'
                   ? 'bg-amber-500 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
               }`}
             >
               Återkontakt
@@ -909,8 +909,8 @@ Varmt tack igen!`
               onClick={() => setFilterStatus('dormant')}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 filterStatus === 'dormant'
-                  ? 'bg-slate-500 text-white'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-stone-500 text-white'
+                  : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
               }`}
             >
               Vilande
@@ -920,45 +920,45 @@ Varmt tack igen!`
 
         {/* Lägg till formulär */}
         {showAddForm && (
-          <form onSubmit={addContact} className="mb-6 p-4 bg-slate-50 rounded-xl">
+          <form onSubmit={addContact} className="mb-6 p-4 bg-stone-50 rounded-xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Namn *</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Namn *</label>
                 <input
                   type="text"
                   value={newContact.name}
                   onChange={(e) => setNewContact({...newContact, name: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="T.ex. Anna Andersson"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Företag</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Företag</label>
                 <input
                   type="text"
                   value={newContact.company}
                   onChange={(e) => setNewContact({...newContact, company: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="T.ex. Spotify"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Roll</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Roll</label>
                 <input
                   type="text"
                   value={newContact.role}
                   onChange={(e) => setNewContact({...newContact, role: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="T.ex. HR-chef"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Relation</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Relation</label>
                 <select
                   value={newContact.relationship}
                   onChange={(e) => setNewContact({...newContact, relationship: e.target.value as any})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                 >
                   <option value="colleague">Kollega</option>
                   <option value="friend">Vän</option>
@@ -968,22 +968,22 @@ Varmt tack igen!`
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">E-post</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">E-post</label>
                 <input
                   type="email"
                   value={newContact.email}
                   onChange={(e) => setNewContact({...newContact, email: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="anna@exempel.se"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">LinkedIn</label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">LinkedIn</label>
                 <input
                   type="url"
                   value={newContact.linkedin_url}
                   onChange={(e) => setNewContact({...newContact, linkedin_url: e.target.value})}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="https://linkedin.com/in/..."
                 />
               </div>
@@ -991,12 +991,12 @@ Varmt tack igen!`
             
             {/* Tags */}
             <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Taggar</label>
+              <label className="block text-sm font-medium text-stone-700 mb-1">Taggar</label>
               <div className="flex flex-wrap gap-2 mb-2">
                 {newContact.tags?.map(tag => (
-                  <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">
+                  <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-full text-sm">
                     {tag}
-                    <button type="button" onClick={() => removeTag(tag)} className="hover:text-teal-900">
+                    <button type="button" onClick={() => removeTag(tag)} className="hover:text-[var(--c-text)]">
                       <X size={14} />
                     </button>
                   </span>
@@ -1008,13 +1008,13 @@ Varmt tack igen!`
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-                  className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="flex-1 px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                   placeholder="Lägg till tagg (t.ex. 'IT', 'Rekrytering')"
                 />
                 <button
                   type="button"
                   onClick={addTag}
-                  className="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors"
+                  className="px-4 py-2 bg-stone-200 text-stone-700 rounded-lg hover:bg-stone-300 transition-colors"
                 >
                   Lägg till
                 </button>
@@ -1022,11 +1022,11 @@ Varmt tack igen!`
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Anteckningar</label>
+              <label className="block text-sm font-medium text-stone-700 mb-1">Anteckningar</label>
               <textarea
                 value={newContact.notes}
                 onChange={(e) => setNewContact({...newContact, notes: e.target.value})}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                 rows={3}
                 placeholder="T.ex. 'Träffades på konferens i maj, skickade CV'"
               />
@@ -1035,14 +1035,14 @@ Varmt tack igen!`
             <div className="flex gap-3">
               <button
                 type="submit"
-                className="flex-1 py-2.5 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors"
+                className="flex-1 py-2.5 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-solid)] transition-colors"
               >
                 Spara kontakt
               </button>
               <button
                 type="button"
                 onClick={() => setShowAddForm(false)}
-                className="px-6 py-2.5 bg-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-300 transition-colors"
+                className="px-6 py-2.5 bg-stone-200 text-stone-700 rounded-xl font-medium hover:bg-stone-300 transition-colors"
               >
                 Avbryt
               </button>
@@ -1052,10 +1052,10 @@ Varmt tack igen!`
 
         {/* Kontaktlista */}
         {loading ? (
-          <div className="text-center py-8 text-slate-700">Laddar kontakter...</div>
+          <div className="text-center py-8 text-stone-700">Laddar kontakter...</div>
         ) : filteredContacts.length === 0 ? (
-          <div className="text-center py-8 text-slate-700">
-            <Users size={48} className="mx-auto mb-4 text-slate-300" />
+          <div className="text-center py-8 text-stone-700">
+            <Users size={48} className="mx-auto mb-4 text-stone-300" />
             <p>Inga kontakter ännu.</p>
             <p className="text-sm">Lägg till dina första nätverkskontakter ovan!</p>
           </div>
@@ -1064,32 +1064,32 @@ Varmt tack igen!`
             {filteredContacts.map((contact) => (
               <div
                 key={contact.id}
-                className="flex items-start justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors"
+                className="flex items-start justify-between p-4 bg-stone-50 rounded-xl hover:bg-stone-100 transition-colors"
               >
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="font-medium text-slate-800">{contact.name}</span>
+                    <span className="font-medium text-stone-800">{contact.name}</span>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(contact.status)}`}>
                       {contact.status === 'active' ? 'Aktiv' : 
                        contact.status === 'reconnect' ? 'Återkontakt' : 'Vilande'}
                     </span>
                   </div>
                   {(contact.company || contact.role) && (
-                    <p className="text-sm text-slate-600 mb-1">
+                    <p className="text-sm text-stone-600 mb-1">
                       {contact.role} {contact.company && `på ${contact.company}`}
                     </p>
                   )}
                   {contact.tags && contact.tags.length > 0 && (
                     <div className="flex flex-wrap gap-1 mb-2">
                       {contact.tags.map(tag => (
-                        <span key={tag} className="text-xs px-2 py-0.5 bg-white text-slate-600 rounded-full">
+                        <span key={tag} className="text-xs px-2 py-0.5 bg-white text-stone-600 rounded-full">
                           {tag}
                         </span>
                       ))}
                     </div>
                   )}
                   {contact.last_contact_date && (
-                    <p className="text-xs text-slate-700">
+                    <p className="text-xs text-stone-700">
                       Senast kontakt: {new Date(contact.last_contact_date).toLocaleDateString('sv-SE')}
                     </p>
                   )}
@@ -1100,7 +1100,7 @@ Varmt tack igen!`
                       setSelectedContactForMessage(contact)
                       setShowMessageGenerator(true)
                     }}
-                    className="p-2 text-teal-600 hover:bg-teal-50 rounded-lg"
+                    className="p-2 text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg"
                     title="Skapa AI-meddelande"
                   >
                     <Wand2 size={18} />
@@ -1118,7 +1118,7 @@ Varmt tack igen!`
                   {contact.email && (
                     <a
                       href={`mailto:${contact.email}`}
-                      className="p-2 text-slate-600 hover:bg-slate-200 rounded-lg"
+                      className="p-2 text-stone-600 hover:bg-stone-200 rounded-lg"
                     >
                       <Mail size={18} />
                     </a>
@@ -1145,7 +1145,7 @@ Varmt tack igen!`
 
       {/* Tips Section */}
       <div>
-        <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-stone-900 mb-4 flex items-center gap-2">
           <Lightbulb size={20} className="text-amber-500" />
           Grundprinciper för nätverkande
         </h3>
@@ -1153,15 +1153,15 @@ Varmt tack igen!`
           {networkingTips.map((tip) => (
             <div 
               key={tip.title}
-              className="bg-white rounded-xl p-5 border border-slate-200 hover:border-amber-300 transition-colors"
+              className="bg-white rounded-xl p-5 border border-stone-200 hover:border-amber-300 transition-colors"
             >
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
                   <tip.icon size={20} className="text-amber-600" />
                 </div>
                 <div>
-                  <h4 className="font-medium text-slate-800 mb-1">{tip.title}</h4>
-                  <p className="text-sm text-slate-600">{tip.description}</p>
+                  <h4 className="font-medium text-stone-800 mb-1">{tip.title}</h4>
+                  <p className="text-sm text-stone-600">{tip.description}</p>
                 </div>
               </div>
             </div>
@@ -1171,11 +1171,11 @@ Varmt tack igen!`
 
       {/* Templates Section */}
       <div>
-        <h3 className="text-lg font-semibold text-slate-900 mb-4 flex items-center gap-2">
+        <h3 className="text-lg font-semibold text-stone-900 mb-4 flex items-center gap-2">
           <Mail size={20} className="text-blue-500" />
           Färdiga mallar för nätverkande
         </h3>
-        <p className="text-sm text-slate-600 mb-4">
+        <p className="text-sm text-stone-600 mb-4">
           Klicka på en mall för att se hela texten. Kopiera och anpassa efter din situation.
         </p>
 
@@ -1183,30 +1183,30 @@ Varmt tack igen!`
           {networkTemplates.map((template) => (
             <div 
               key={template.id}
-              className="bg-white rounded-xl border border-slate-200 overflow-hidden"
+              className="bg-white rounded-xl border border-stone-200 overflow-hidden"
             >
               <button
                 onClick={() => setExpandedTemplate(
                   expandedTemplate === template.id ? null : template.id
                 )}
-                className="w-full p-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full p-5 flex items-center justify-between hover:bg-stone-50 transition-colors"
               >
                 <div className="text-left">
-                  <h4 className="font-medium text-slate-800">{template.title}</h4>
-                  <p className="text-sm text-slate-700">{template.description}</p>
+                  <h4 className="font-medium text-stone-800">{template.title}</h4>
+                  <p className="text-sm text-stone-700">{template.description}</p>
                 </div>
                 {expandedTemplate === template.id ? (
-                  <ChevronUp size={20} className="text-slate-600" />
+                  <ChevronUp size={20} className="text-stone-600" />
                 ) : (
-                  <ChevronDown size={20} className="text-slate-600" />
+                  <ChevronDown size={20} className="text-stone-600" />
                 )}
               </button>
 
               {expandedTemplate === template.id && (
                 <div className="px-5 pb-5">
-                  <div className="bg-slate-50 rounded-xl p-4 mb-4">
+                  <div className="bg-stone-50 rounded-xl p-4 mb-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-medium text-slate-700 uppercase tracking-wide">
+                      <span className="text-xs font-medium text-stone-700 uppercase tracking-wide">
                         Mall
                       </span>
                       <button
@@ -1215,7 +1215,7 @@ Varmt tack igen!`
                           'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                           copiedId === template.id
                             ? 'bg-green-100 text-green-700'
-                            : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                            : 'bg-white text-stone-600 hover:bg-stone-100 border border-stone-200'
                         )}
                       >
                         {copiedId === template.id ? (
@@ -1231,13 +1231,13 @@ Varmt tack igen!`
                         )}
                       </button>
                     </div>
-                    <pre className="text-sm text-slate-700 whitespace-pre-wrap font-sans leading-relaxed">
+                    <pre className="text-sm text-stone-700 whitespace-pre-wrap font-sans leading-relaxed">
                       {template.template}
                     </pre>
                   </div>
 
                   <div>
-                    <h5 className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                    <h5 className="text-sm font-medium text-stone-700 mb-2 flex items-center gap-2">
                       <Sparkles size={14} className="text-amber-500" />
                       Tips för denna mall
                     </h5>
@@ -1245,9 +1245,9 @@ Varmt tack igen!`
                       {template.tips.map((tip, index) => (
                         <li 
                           key={index}
-                          className="text-sm text-slate-600 flex items-start gap-2"
+                          className="text-sm text-stone-600 flex items-start gap-2"
                         >
-                          <span className="text-teal-500 mt-0.5">•</span>
+                          <span className="text-[var(--c-solid)] mt-0.5">•</span>
                           {tip}
                         </li>
                       ))}
@@ -1261,17 +1261,17 @@ Varmt tack igen!`
       </div>
 
       {/* CTA */}
-      <div className="bg-gradient-to-r from-teal-500 to-emerald-500 rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-[var(--c-solid)] to-emerald-500 rounded-2xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold mb-1">Redo att nätverka?</h3>
-            <p className="text-teal-100 text-sm">
+            <p className="text-white text-sm">
               Börja med någon du redan känner - det är lättare än du tror!
             </p>
           </div>
           <a
             href="#/exercises"
-            className="px-5 py-2.5 bg-white text-teal-600 rounded-xl font-medium hover:bg-teal-50 transition-colors flex items-center gap-2"
+            className="px-5 py-2.5 bg-white text-[var(--c-text)] rounded-xl font-medium hover:bg-[var(--c-bg)] transition-colors flex items-center gap-2"
           >
             <Sparkles size={18} />
             Öva på pitch

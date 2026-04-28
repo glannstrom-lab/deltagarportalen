@@ -59,14 +59,14 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
   }
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-2 bg-[#4f46e5]/10 rounded-lg">
           <Target size={24} style={{ color: '#4f46e5' }} />
         </div>
         <div>
-          <h3 className="font-semibold text-slate-800">Jobbmatchning</h3>
-          <p className="text-sm text-slate-700">Jämför ditt CV med en jobbannons</p>
+          <h3 className="font-semibold text-stone-800">Jobbmatchning</h3>
+          <p className="text-sm text-stone-700">Jämför ditt CV med en jobbannons</p>
         </div>
       </div>
 
@@ -76,7 +76,7 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
             value={jobDescription}
             onChange={(e) => setJobDescription(e.target.value)}
             placeholder="Klistra in jobbannonsen här..."
-            className="w-full h-32 p-3 border border-slate-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+            className="w-full h-32 p-3 border border-stone-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
           />
           <button
             onClick={analyzeJob}
@@ -117,7 +117,7 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
           {/* Keywords found */}
           {analysis.foundKeywords.length > 0 && (
             <div>
-              <p className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-1">
+              <p className="text-sm font-medium text-stone-700 mb-2 flex items-center gap-1">
                 <CheckCircle size={16} className="text-green-500" />
                 Nyckelord du har ({analysis.foundKeywords.length})
               </p>
@@ -137,7 +137,7 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
           {/* Missing keywords */}
           {analysis.missingKeywords.length > 0 && (
             <div>
-              <p className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-1">
+              <p className="text-sm font-medium text-stone-700 mb-2 flex items-center gap-1">
                 <XCircle size={16} className="text-red-500" />
                 Saknade nyckelord ({analysis.missingKeywords.length})
               </p>
@@ -162,7 +162,7 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
               Tips
             </p>
             {analysis.suggestions.map((suggestion, index) => (
-              <p key={index} className="text-sm text-slate-700">{suggestion}</p>
+              <p key={index} className="text-sm text-stone-700">{suggestion}</p>
             ))}
           </div>
 
@@ -171,7 +171,7 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
               setAnalysis(null)
               setJobDescription('')
             }}
-            className="w-full py-2 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50"
+            className="w-full py-2 border border-stone-300 text-stone-700 rounded-xl hover:bg-stone-50"
           >
             Analysera ny annons
           </button>

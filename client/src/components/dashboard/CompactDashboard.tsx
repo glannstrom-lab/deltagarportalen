@@ -38,20 +38,20 @@ interface StatCardProps {
 
 const StatCard = memo(function StatCard({ label, value, icon, color }: StatCardProps) {
   const colorClasses: Record<string, string> = {
-    teal: 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400',
+    teal: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)]',
     amber: 'bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
     blue: 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400',
     emerald: 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400',
   }
 
   return (
-    <div className="flex items-center gap-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-slate-200 dark:border-stone-700">
+    <div className="flex items-center gap-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-stone-200 dark:border-stone-700">
       <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', colorClasses[color])}>
         {icon}
       </div>
       <div>
-        <p className="text-lg font-semibold text-slate-800 dark:text-stone-100 leading-tight">{value}</p>
-        <p className="text-xs text-slate-700 dark:text-stone-300">{label}</p>
+        <p className="text-lg font-semibold text-stone-800 dark:text-stone-100 leading-tight">{value}</p>
+        <p className="text-xs text-stone-700 dark:text-stone-300">{label}</p>
       </div>
     </div>
   )
@@ -82,7 +82,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
   trend,
 }: CompactWidgetRowProps) {
   const bgColors: Record<string, string> = {
-    teal: 'bg-teal-50 dark:bg-teal-900/30 border-teal-100 dark:border-teal-800',
+    teal: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50',
     rose: 'bg-rose-50 dark:bg-rose-900/30 border-rose-100 dark:border-rose-800',
     blue: 'bg-blue-50 dark:bg-blue-900/30 border-blue-100 dark:border-blue-800',
     sky: 'bg-sky-50 dark:bg-sky-900/30 border-sky-100 dark:border-sky-800',
@@ -91,7 +91,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
   }
 
   const iconColors: Record<string, string> = {
-    teal: 'text-teal-600 dark:text-teal-400',
+    teal: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
     rose: 'text-rose-600 dark:text-rose-400',
     blue: 'text-blue-600 dark:text-blue-400',
     sky: 'text-sky-600 dark:text-sky-400',
@@ -104,7 +104,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
       to={to}
       className={cn(
         'flex items-center gap-4 p-4 rounded-xl border transition-all hover:shadow-md group',
-        bgColors[color] || 'bg-slate-50 border-slate-200'
+        bgColors[color] || 'bg-stone-50 border-stone-200'
       )}
     >
       <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center bg-white dark:bg-stone-800 shadow-sm', iconColors[color])}>
@@ -113,7 +113,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
       
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
-          <h3 className="font-semibold text-slate-800 dark:text-stone-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+          <h3 className="font-semibold text-stone-800 dark:text-stone-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-solid)] transition-colors">
             {title}
           </h3>
           {badge && (
@@ -122,19 +122,19 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
             </span>
           )}
         </div>
-        <p className="text-sm text-slate-700 dark:text-stone-300">{subtitle}</p>
+        <p className="text-sm text-stone-700 dark:text-stone-300">{subtitle}</p>
       </div>
 
       {progress !== undefined && (
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <span className="text-2xl font-bold text-slate-800 dark:text-stone-100">{progress}%</span>
+            <span className="text-2xl font-bold text-stone-800 dark:text-stone-100">{progress}%</span>
             {trend && <p className="text-xs text-emerald-600 dark:text-emerald-400">{trend}</p>}
           </div>
         </div>
       )}
 
-      <ChevronRight size={20} className="text-slate-300 dark:text-stone-600 group-hover:text-slate-700 dark:group-hover:text-stone-300 transition-colors" />
+      <ChevronRight size={20} className="text-stone-300 dark:text-stone-600 group-hover:text-stone-700 dark:group-hover:text-stone-300 transition-colors" />
     </Link>
   )
 })
@@ -197,15 +197,15 @@ export function CompactDashboard() {
   if (loading || prefsLoading) {
     return (
       <div className="space-y-4">
-        <div className="h-14 bg-slate-200 dark:bg-stone-700 rounded-xl animate-pulse" />
+        <div className="h-14 bg-stone-200 dark:bg-stone-700 rounded-xl animate-pulse" />
         <div className="grid grid-cols-4 gap-3">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-16 bg-slate-200 dark:bg-stone-700 rounded-lg animate-pulse" />
+            <div key={i} className="h-16 bg-stone-200 dark:bg-stone-700 rounded-lg animate-pulse" />
           ))}
         </div>
         <div className="space-y-2">
           {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-20 bg-slate-200 dark:bg-stone-700 rounded-xl animate-pulse" />
+            <div key={i} className="h-20 bg-stone-200 dark:bg-stone-700 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -300,10 +300,10 @@ export function CompactDashboard() {
       {/* Header with welcome */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-800 dark:text-stone-100">
+          <h1 className="text-xl font-semibold text-stone-800 dark:text-stone-100">
             {t('dashboard.greeting', { name: user?.firstName || t('dashboard.greetingDefault') })}
           </h1>
-          <p className="text-sm text-slate-700 dark:text-stone-300">{t('dashboard.compact.todaysOverview')}</p>
+          <p className="text-sm text-stone-700 dark:text-stone-300">{t('dashboard.compact.todaysOverview')}</p>
         </div>
       </div>
 
@@ -356,9 +356,9 @@ export function CompactDashboard() {
 
       {/* Empty state */}
       {visibleWidgetItems.length === 0 && (
-        <div className="text-center py-10 bg-slate-50 dark:bg-stone-800 rounded-xl border border-dashed border-slate-200 dark:border-stone-700">
-          <p className="text-slate-700 dark:text-stone-300 mb-1">{t('dashboard.compact.noModules')}</p>
-          <p className="text-sm text-slate-600 dark:text-stone-400">
+        <div className="text-center py-10 bg-stone-50 dark:bg-stone-800 rounded-xl border border-dashed border-stone-200 dark:border-stone-700">
+          <p className="text-stone-700 dark:text-stone-300 mb-1">{t('dashboard.compact.noModules')}</p>
+          <p className="text-sm text-stone-600 dark:text-stone-400">
             {t('dashboard.compact.selectModules')}
           </p>
         </div>

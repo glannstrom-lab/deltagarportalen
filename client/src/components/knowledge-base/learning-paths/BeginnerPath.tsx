@@ -112,16 +112,16 @@ export function BeginnerPath() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-100">
+      <Card className="bg-gradient-to-r from-emerald-50 to-[var(--c-bg)] border-emerald-100">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
             <Trophy className="w-6 h-6 text-emerald-600" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-stone-900">
               Jobbsökare – Nybörjare
             </h2>
-            <p className="text-slate-600 mt-1">
+            <p className="text-stone-600 mt-1">
               En strukturerad väg från ingenting till din första ansökan. 
               Ta det i din egen takt – det är okej att pausa!
             </p>
@@ -129,11 +129,11 @@ export function BeginnerPath() {
             {/* Progress */}
             <div className="mt-4">
               <div className="flex items-center justify-between text-sm mb-2">
-                <span className="text-slate-600">Din progress</span>
+                <span className="text-stone-600">Din progress</span>
                 <span className="font-medium text-emerald-600">{Math.round(progress)}%</span>
               </div>
               <Progress value={progress} className="h-2" />
-              <p className="text-sm text-slate-700 mt-2">
+              <p className="text-sm text-stone-700 mt-2">
                 {completedCount} av {steps.length} steg avklarade
               </p>
             </div>
@@ -164,13 +164,13 @@ export function BeginnerPath() {
                   {step.isCompleted ? (
                     <CheckCircle2 className="w-6 h-6 text-emerald-500" />
                   ) : step.isLocked ? (
-                    <Lock className="w-6 h-6 text-slate-600" />
+                    <Lock className="w-6 h-6 text-stone-600" />
                   ) : (
                     <div className={cn(
                       "w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-medium",
                       isCurrent
                         ? "border-emerald-500 text-emerald-600 bg-emerald-50"
-                        : "border-slate-300 text-slate-700"
+                        : "border-stone-300 text-stone-700"
                     )}>
                       {index + 1}
                     </div>
@@ -183,15 +183,15 @@ export function BeginnerPath() {
                     <div>
                       <h3 className={cn(
                         "font-semibold",
-                        step.isCompleted && "text-slate-700 line-through"
+                        step.isCompleted && "text-stone-700 line-through"
                       )}>
                         {step.title}
                       </h3>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <p className="text-sm text-stone-600 mt-1">
                         {step.description}
                       </p>
-                      <div className="flex items-center gap-3 mt-2 text-xs text-slate-700">
-                        <span className="capitalize px-2 py-0.5 bg-slate-100 rounded">
+                      <div className="flex items-center gap-3 mt-2 text-xs text-stone-700">
+                        <span className="capitalize px-2 py-0.5 bg-stone-100 rounded">
                           {step.type === 'article' && '📖 Artikel'}
                           {step.type === 'video' && '🎥 Video'}
                           {step.type === 'exercise' && '✏️ Övning'}
@@ -220,7 +220,7 @@ export function BeginnerPath() {
                 {!step.isLocked && (
                   <ChevronRight className={cn(
                     "w-5 h-5 shrink-0",
-                    isCurrent ? "text-emerald-500" : "text-slate-300"
+                    isCurrent ? "text-emerald-500" : "text-stone-300"
                   )} />
                 )}
               </div>
@@ -233,8 +233,8 @@ export function BeginnerPath() {
       {completedCount === steps.length && (
         <Card className="bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-100 text-center py-8">
           <Trophy className="w-16 h-16 text-amber-500 mx-auto mb-4" />
-          <h3 className="text-xl font-bold text-slate-900">Grattis! 🎉</h3>
-          <p className="text-slate-600 mt-2 max-w-md mx-auto">
+          <h3 className="text-xl font-bold text-stone-900">Grattis! 🎉</h3>
+          <p className="text-stone-600 mt-2 max-w-md mx-auto">
             Du har gått igenom hela nybörjarvänden! Du är nu redo att söka jobb på egen hand.
             Kom ihåg att vi finns här om du behöver stöd.
           </p>

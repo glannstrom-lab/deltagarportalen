@@ -25,14 +25,14 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
     return (
       <Link
         to="/knowledge-base"
-        className="group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md transition-all duration-200"
+        className="group flex items-center gap-3 bg-white dark:bg-stone-900 p-3 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md transition-all duration-200"
       >
         <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
           <BookOpen size={16} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-stone-100">{t('knowledgeWidget.knowledge')}</p>
-          <p className="text-xs text-slate-700 dark:text-stone-400">{t('knowledgeWidget.readCount', { count: readCount })}</p>
+          <p className="text-sm font-semibold text-stone-800 dark:text-stone-100">{t('knowledgeWidget.knowledge')}</p>
+          <p className="text-xs text-stone-700 dark:text-stone-400">{t('knowledgeWidget.readCount', { count: readCount })}</p>
         </div>
         {savedCount > 0 && (
           <span className="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded text-xs font-medium">
@@ -48,7 +48,7 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
     return (
       <Link
         to="/knowledge-base"
-        className="group block bg-white dark:bg-stone-900 p-4 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+        className="group block bg-white dark:bg-stone-900 p-4 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -56,16 +56,16 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
               <BookOpen size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-stone-100 text-sm">{t('knowledgeWidget.knowledgeBase')}</h3>
-              <p className="text-xs text-slate-700 dark:text-stone-400">{t('knowledgeWidget.tipsAndGuides')}</p>
+              <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-sm">{t('knowledgeWidget.knowledgeBase')}</h3>
+              <p className="text-xs text-stone-700 dark:text-stone-400">{t('knowledgeWidget.tipsAndGuides')}</p>
             </div>
           </div>
-          <ChevronRight size={16} className="text-slate-300 dark:text-stone-400 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors" />
+          <ChevronRight size={16} className="text-stone-300 dark:text-stone-400 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors" />
         </div>
 
         <div className="flex items-center gap-3">
-          <span className="text-2xl font-bold text-slate-800 dark:text-stone-100">{readCount}</span>
-          <span className="text-sm text-slate-700 dark:text-stone-400">{t('knowledgeWidget.articlesRead')}</span>
+          <span className="text-2xl font-bold text-stone-800 dark:text-stone-100">{readCount}</span>
+          <span className="text-sm text-stone-700 dark:text-stone-400">{t('knowledgeWidget.articlesRead')}</span>
           {savedCount > 0 && (
             <span className="ml-auto flex items-center gap-1 px-2 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-full text-xs font-medium">
               <Bookmark size={10} className="fill-current" />
@@ -81,7 +81,7 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
   return (
     <Link
       to="/knowledge-base"
-      className="group block bg-white dark:bg-stone-900 p-5 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg transition-all duration-200"
+      className="group block bg-white dark:bg-stone-900 p-5 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -89,13 +89,13 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
             <BookOpen size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-stone-100">{t('knowledgeWidget.knowledgeBase')}</h3>
-            <p className="text-sm text-slate-700 dark:text-stone-400">
+            <h3 className="font-bold text-stone-800 dark:text-stone-100">{t('knowledgeWidget.knowledgeBase')}</h3>
+            <p className="text-sm text-stone-700 dark:text-stone-400">
               {hasStarted ? t('knowledgeWidget.articlesReadCount', { count: readCount }) : t('knowledgeWidget.exploreArticles')}
             </p>
           </div>
         </div>
-        <ChevronRight size={18} className="text-slate-300 dark:text-stone-400 group-hover:text-amber-500 dark:group-hover:text-amber-400 mt-1 transition-colors" />
+        <ChevronRight size={18} className="text-stone-300 dark:text-stone-400 group-hover:text-amber-500 dark:group-hover:text-amber-400 mt-1 transition-colors" />
       </div>
 
       {/* Info Card */}
@@ -112,10 +112,10 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
       ) : (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600 dark:text-stone-400">{t('knowledgeWidget.readArticles')}</span>
+            <span className="text-sm text-stone-600 dark:text-stone-400">{t('knowledgeWidget.readArticles')}</span>
             <span className="text-lg font-bold text-amber-600 dark:text-amber-400">{readCount}</span>
           </div>
-          <div className="h-3 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
+          <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-500"
               style={{ width: `${Math.min(100, (readCount / totalArticles) * 100)}%` }}
@@ -129,16 +129,16 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
         <div className="p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <BookOpen size={16} className="text-amber-500 dark:text-amber-400" />
-            <span className="text-lg font-bold text-slate-800 dark:text-stone-100">{readCount}</span>
+            <span className="text-lg font-bold text-stone-800 dark:text-stone-100">{readCount}</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-stone-400">{t('knowledgeWidget.read')}</p>
+          <p className="text-xs text-stone-700 dark:text-stone-400">{t('knowledgeWidget.read')}</p>
         </div>
         <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <Bookmark size={16} className="text-orange-500 dark:text-orange-400 fill-current" />
-            <span className="text-lg font-bold text-slate-800 dark:text-stone-100">{savedCount}</span>
+            <span className="text-lg font-bold text-stone-800 dark:text-stone-100">{savedCount}</span>
           </div>
-          <p className="text-xs text-slate-700 dark:text-stone-400">{t('knowledgeWidget.saved')}</p>
+          <p className="text-xs text-stone-700 dark:text-stone-400">{t('knowledgeWidget.saved')}</p>
         </div>
       </div>
 

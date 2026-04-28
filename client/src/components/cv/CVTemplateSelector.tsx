@@ -157,7 +157,7 @@ export function CVTemplateSelector({
     <div className="space-y-6">
       {/* Template Selection */}
       <div>
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">Välj CV-mall</h3>
+        <h3 className="text-lg font-semibold text-stone-800 mb-4">Välj CV-mall</h3>
         <div className="grid grid-cols-2 gap-4">
           {templates.map((template) => (
             <button
@@ -166,7 +166,7 @@ export function CVTemplateSelector({
               className={`p-4 rounded-2xl border-2 text-left transition-all ${
                 selectedTemplate === template.id
                   ? 'border-[#4f46e5] bg-[#eef2ff]'
-                  : 'border-slate-200 hover:border-slate-300'
+                  : 'border-stone-200 hover:border-stone-300'
               }`}
             >
               <div className="flex items-start justify-between mb-3">
@@ -185,9 +185,9 @@ export function CVTemplateSelector({
                   <Check size={20} className="text-[#4f46e5]" />
                 )}
               </div>
-              <h4 className="font-semibold text-slate-800">{template.name}</h4>
-              <p className="text-xs text-slate-700 mt-1 capitalize">{template.category}</p>
-              <p className="text-sm text-slate-700 mt-1">{template.description}</p>
+              <h4 className="font-semibold text-stone-800">{template.name}</h4>
+              <p className="text-xs text-stone-700 mt-1 capitalize">{template.category}</p>
+              <p className="text-sm text-stone-700 mt-1">{template.description}</p>
             </button>
           ))}
         </div>
@@ -196,7 +196,7 @@ export function CVTemplateSelector({
       {/* Color Scheme Selection */}
       {showAdvanced && onSelectColorScheme && (
         <div>
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Färgschema</h3>
+          <h3 className="text-lg font-semibold text-stone-800 mb-4">Färgschema</h3>
           <div className="grid grid-cols-5 gap-3">
             {colorSchemes.map((scheme) => (
               <button
@@ -205,14 +205,14 @@ export function CVTemplateSelector({
                 className={`p-3 rounded-xl border-2 transition-all ${
                   selectedColorScheme === scheme.id
                     ? 'border-[#4f46e5]'
-                    : 'border-slate-200 hover:border-slate-300'
+                    : 'border-stone-200 hover:border-stone-300'
                 }`}
               >
                 <div 
                   className="w-full h-8 rounded-lg mb-2"
                   style={{ backgroundColor: scheme.primary }}
                 />
-                <p className="text-xs text-center text-slate-600">{scheme.name}</p>
+                <p className="text-xs text-center text-stone-600">{scheme.name}</p>
               </button>
             ))}
           </div>
@@ -222,7 +222,7 @@ export function CVTemplateSelector({
       {/* Font Selection */}
       {showAdvanced && onSelectFont && (
         <div>
-          <h3 className="text-lg font-semibold text-slate-800 mb-4">Typsnitt</h3>
+          <h3 className="text-lg font-semibold text-stone-800 mb-4">Typsnitt</h3>
           <div className="grid grid-cols-3 gap-3">
             {fontOptions.map((font) => (
               <button
@@ -231,16 +231,16 @@ export function CVTemplateSelector({
                 className={`p-3 rounded-xl border-2 text-left transition-all ${
                   selectedFont === font.id
                     ? 'border-[#4f46e5] bg-[#eef2ff]'
-                    : 'border-slate-200 hover:border-slate-300'
+                    : 'border-stone-200 hover:border-stone-300'
                 }`}
               >
                 <p 
-                  className="font-medium text-slate-800"
+                  className="font-medium text-stone-800"
                   style={{ fontFamily: font.family }}
                 >
                   {font.name}
                 </p>
-                <p className="text-xs text-slate-700 capitalize">{font.category}</p>
+                <p className="text-xs text-stone-700 capitalize">{font.category}</p>
               </button>
             ))}
           </div>

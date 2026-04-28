@@ -129,7 +129,7 @@ const goalTemplates: GoalTemplate[] = [
 const categoryInfo = {
   cv: { label: 'CV', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
   job_search: { label: 'Jobbsökning', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' },
-  interview: { label: 'Intervju', color: 'bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300' },
+  interview: { label: 'Intervju', color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]' },
   networking: { label: 'Nätverk', color: 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300' },
   skills: { label: 'Kompetens', color: 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300' },
 }
@@ -349,7 +349,7 @@ export function GoalCreationDialog({
                   className={cn(
                     'w-full pl-10 pr-4 py-3 rounded-xl',
                     'bg-stone-100 dark:bg-stone-800',
-                    'border-2 border-transparent focus:border-teal-500',
+                    'border-2 border-transparent focus:border-[var(--c-solid)]',
                     'text-stone-900 dark:text-stone-100'
                   )}
                 />
@@ -364,10 +364,10 @@ export function GoalCreationDialog({
                     }}
                     className={cn(
                       'w-full flex items-center gap-3 p-4 rounded-xl transition-colors',
-                      'hover:bg-teal-50 dark:hover:bg-teal-900/20'
+                      'hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30'
                     )}
                   >
-                    <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center text-teal-600 dark:text-teal-400 font-medium">
+                    <div className="w-10 h-10 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center text-[var(--c-text)] dark:text-[var(--c-text)] font-medium">
                       {p.first_name?.[0]}{p.last_name?.[0]}
                     </div>
                     <div className="text-left flex-1">
@@ -393,15 +393,15 @@ export function GoalCreationDialog({
             <div className="space-y-6">
               {/* Selected participant */}
               {selectedParticipant && (
-                <div className="flex items-center gap-3 p-3 bg-teal-50 dark:bg-teal-900/20 rounded-xl">
-                  <User className="w-5 h-5 text-teal-600" />
+                <div className="flex items-center gap-3 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl">
+                  <User className="w-5 h-5 text-[var(--c-text)]" />
                   <span className="font-medium text-stone-900 dark:text-stone-100">
                     {selectedParticipant.first_name} {selectedParticipant.last_name}
                   </span>
                   {!preselectedParticipant && (
                     <button
                       onClick={() => setStep('participant')}
-                      className="ml-auto text-sm text-teal-600 hover:underline"
+                      className="ml-auto text-sm text-[var(--c-text)] hover:underline"
                     >
                       Ändra
                     </button>
@@ -410,10 +410,10 @@ export function GoalCreationDialog({
               )}
 
               {/* AI Suggestions */}
-              <div className="p-4 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-xl">
+              <div className="p-4 bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-xl">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-teal-600" />
+                    <Sparkles className="w-5 h-5 text-[var(--c-text)]" />
                     <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                       AI-förslag
                     </h3>
@@ -449,7 +449,7 @@ export function GoalCreationDialog({
                           }))
                           setStep('customize')
                         }}
-                        className="w-full text-left p-3 bg-white dark:bg-stone-800 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors"
+                        className="w-full text-left p-3 bg-white dark:bg-stone-800 rounded-lg hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 transition-colors"
                       >
                         <div className="flex items-center gap-2">
                           <Lightbulb className="w-4 h-4 text-amber-500" />
@@ -481,7 +481,7 @@ export function GoalCreationDialog({
                           setSelectedTemplate(template)
                           setStep('customize')
                         }}
-                        className="text-left p-4 rounded-xl border-2 border-stone-200 dark:border-stone-700 hover:border-teal-500 transition-colors"
+                        className="text-left p-4 rounded-xl border-2 border-stone-200 dark:border-stone-700 hover:border-[var(--c-solid)] transition-colors"
                       >
                         <div className="flex items-start gap-3">
                           <div className="p-2 bg-stone-100 dark:bg-stone-800 rounded-lg">
@@ -513,7 +513,7 @@ export function GoalCreationDialog({
                   setSelectedTemplate(null)
                   setStep('customize')
                 }}
-                className="w-full p-4 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-teal-500 transition-colors text-center"
+                className="w-full p-4 rounded-xl border-2 border-dashed border-stone-300 dark:border-stone-600 hover:border-[var(--c-solid)] transition-colors text-center"
               >
                 <Target className="w-6 h-6 text-stone-600 mx-auto mb-2" />
                 <p className="font-medium text-stone-700 dark:text-stone-300">
@@ -542,7 +542,7 @@ export function GoalCreationDialog({
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
                     'bg-stone-100 dark:bg-stone-800',
-                    'border-2 border-transparent focus:border-teal-500',
+                    'border-2 border-transparent focus:border-[var(--c-solid)]',
                     'text-stone-900 dark:text-stone-100'
                   )}
                 />
@@ -551,7 +551,7 @@ export function GoalCreationDialog({
               {/* SMART Fields */}
               <div className="space-y-4 p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl">
                 <h4 className="font-medium text-stone-900 dark:text-stone-100 flex items-center gap-2">
-                  <Target className="w-4 h-4 text-teal-600" />
+                  <Target className="w-4 h-4 text-[var(--c-text)]" />
                   SMART-definition
                 </h4>
 
@@ -567,7 +567,7 @@ export function GoalCreationDialog({
                     className={cn(
                       'w-full px-4 py-2 rounded-lg resize-none text-sm',
                       'bg-white dark:bg-stone-800',
-                      'border border-stone-200 dark:border-stone-700 focus:border-teal-500',
+                      'border border-stone-200 dark:border-stone-700 focus:border-[var(--c-solid)]',
                       'text-stone-900 dark:text-stone-100'
                     )}
                   />
@@ -585,7 +585,7 @@ export function GoalCreationDialog({
                     className={cn(
                       'w-full px-4 py-2 rounded-lg resize-none text-sm',
                       'bg-white dark:bg-stone-800',
-                      'border border-stone-200 dark:border-stone-700 focus:border-teal-500',
+                      'border border-stone-200 dark:border-stone-700 focus:border-[var(--c-solid)]',
                       'text-stone-900 dark:text-stone-100'
                     )}
                   />
@@ -603,7 +603,7 @@ export function GoalCreationDialog({
                     className={cn(
                       'w-full px-4 py-2 rounded-lg resize-none text-sm',
                       'bg-white dark:bg-stone-800',
-                      'border border-stone-200 dark:border-stone-700 focus:border-teal-500',
+                      'border border-stone-200 dark:border-stone-700 focus:border-[var(--c-solid)]',
                       'text-stone-900 dark:text-stone-100'
                     )}
                   />
@@ -621,7 +621,7 @@ export function GoalCreationDialog({
                     className={cn(
                       'w-full px-4 py-2 rounded-lg resize-none text-sm',
                       'bg-white dark:bg-stone-800',
-                      'border border-stone-200 dark:border-stone-700 focus:border-teal-500',
+                      'border border-stone-200 dark:border-stone-700 focus:border-[var(--c-solid)]',
                       'text-stone-900 dark:text-stone-100'
                     )}
                   />
@@ -639,7 +639,7 @@ export function GoalCreationDialog({
                     className={cn(
                       'w-full px-4 py-2 rounded-lg resize-none text-sm',
                       'bg-white dark:bg-stone-800',
-                      'border border-stone-200 dark:border-stone-700 focus:border-teal-500',
+                      'border border-stone-200 dark:border-stone-700 focus:border-[var(--c-solid)]',
                       'text-stone-900 dark:text-stone-100'
                     )}
                   />
@@ -660,7 +660,7 @@ export function GoalCreationDialog({
                         className={cn(
                           'flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors',
                           customGoal.priority === p.value
-                            ? 'bg-teal-600 text-white'
+                            ? 'bg-[var(--c-solid)] text-white'
                             : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
                         )}
                       >
@@ -684,7 +684,7 @@ export function GoalCreationDialog({
                       className={cn(
                         'w-full pl-10 pr-4 py-2.5 rounded-xl',
                         'bg-stone-100 dark:bg-stone-800',
-                        'border-2 border-transparent focus:border-teal-500',
+                        'border-2 border-transparent focus:border-[var(--c-solid)]',
                         'text-stone-900 dark:text-stone-100'
                       )}
                     />

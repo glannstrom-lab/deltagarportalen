@@ -159,10 +159,10 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
   return (
     <div className="space-y-4">
       {experiences.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
-          <Briefcase className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-700 mb-1">Inga jobb tillagda ännu</p>
-          <p className="text-sm text-slate-600 mb-4">Lägg till din första arbetslivserfarenhet</p>
+        <div className="text-center py-12 border-2 border-dashed border-stone-200 rounded-xl bg-stone-50">
+          <Briefcase className="w-12 h-12 text-stone-300 mx-auto mb-3" />
+          <p className="text-stone-700 mb-1">Inga jobb tillagda ännu</p>
+          <p className="text-sm text-stone-600 mb-4">Lägg till din första arbetslivserfarenhet</p>
           <button
             onClick={addExperience}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
@@ -189,14 +189,14 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                   role="listitem"
                   className={`
                     bg-white border rounded-xl overflow-hidden transition-all
-                    ${isExpanded ? 'border-purple-300 shadow-md' : 'border-slate-200 hover:border-slate-300'}
+                    ${isExpanded ? 'border-purple-300 shadow-md' : 'border-stone-200 hover:border-stone-300'}
                     ${draggedId === exp.id ? 'opacity-50' : ''}
                   `}
                 >
                   {/* Header - Always visible */}
                   <div
                     onClick={() => setExpandedId(isExpanded ? null : exp.id)}
-                    className="flex items-center gap-3 p-4 cursor-pointer hover:bg-slate-50 transition-colors"
+                    className="flex items-center gap-3 p-4 cursor-pointer hover:bg-stone-50 transition-colors"
                     role="button"
                     aria-expanded={isExpanded}
                     tabIndex={0}
@@ -212,7 +212,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                       <button
                         onClick={() => moveExperienceUp(exp.id)}
                         disabled={index === 0}
-                        className="p-0.5 text-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label={`Flytta ${exp.title || 'erfarenhet'} uppåt`}
                       >
                         <ArrowUp className="w-3 h-3" />
@@ -220,7 +220,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                       <button
                         onClick={() => moveExperienceDown(exp.id)}
                         disabled={index === experiences.length - 1}
-                        className="p-0.5 text-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
                         aria-label={`Flytta ${exp.title || 'erfarenhet'} nedåt`}
                       >
                         <ArrowDown className="w-3 h-3" />
@@ -241,36 +241,36 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                     
                     {/* Title and company */}
                     <div className="flex-1 min-w-0">
-                      <h4 className="font-medium text-slate-800 truncate">
+                      <h4 className="font-medium text-stone-800 truncate">
                         {exp.title || 'Ny position'}
                       </h4>
-                      <p className="text-sm text-slate-700 truncate">
+                      <p className="text-sm text-stone-700 truncate">
                         {exp.company || 'Företagsnamn'} 
-                        {duration && <span className="text-slate-600"> · {duration}</span>}
+                        {duration && <span className="text-stone-600"> · {duration}</span>}
                       </p>
                     </div>
                     
                     {/* Expand/collapse */}
-                    <button className="p-1 hover:bg-slate-200 rounded">
+                    <button className="p-1 hover:bg-stone-200 rounded">
                       {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-slate-600" />
+                        <ChevronUp className="w-5 h-5 text-stone-600" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-slate-600" />
+                        <ChevronDown className="w-5 h-5 text-stone-600" />
                       )}
                     </button>
                   </div>
                   
                   {/* Expanded content */}
                   {isExpanded && (
-                    <div className="px-4 pb-4 border-t border-slate-100">
+                    <div className="px-4 pb-4 border-t border-stone-100">
                       <div className="pt-4 space-y-4">
                         {/* Job Title */}
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-1">
+                          <label className="block text-sm font-medium text-stone-700 mb-1">
                             Jobbtitel *
                           </label>
                           <div className="relative">
-                            <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+                            <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                             <input
                               type="text"
                               value={exp.title}
@@ -289,7 +289,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                               className={`
                                 w-full pl-10 pr-4 py-2.5 border rounded-lg
                                 focus:outline-none focus:ring-2 focus:ring-purple-500
-                                ${errors[exp.id]?.title ? 'border-red-300 bg-red-50' : 'border-slate-200'}
+                                ${errors[exp.id]?.title ? 'border-red-300 bg-red-50' : 'border-stone-200'}
                               `}
                             />
                           </div>
@@ -302,11 +302,11 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
 
                         {/* Company */}
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-1">
+                          <label className="block text-sm font-medium text-stone-700 mb-1">
                             Företag *
                           </label>
                           <div className="relative">
-                            <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+                            <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                             <input
                               type="text"
                               value={exp.company}
@@ -325,7 +325,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                               className={`
                                 w-full pl-10 pr-4 py-2.5 border rounded-lg
                                 focus:outline-none focus:ring-2 focus:ring-purple-500
-                                ${errors[exp.id]?.company ? 'border-red-300 bg-red-50' : 'border-slate-200'}
+                                ${errors[exp.id]?.company ? 'border-red-300 bg-red-50' : 'border-stone-200'}
                               `}
                             />
                           </div>
@@ -338,17 +338,17 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
 
                         {/* Location */}
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-1">
+                          <label className="block text-sm font-medium text-stone-700 mb-1">
                             Plats
                           </label>
                           <div className="relative">
-                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                             <input
                               type="text"
                               value={exp.location}
                               onChange={(e) => updateExperience(exp.id, 'location', e.target.value)}
                               placeholder="t.ex. Stockholm"
-                              className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
                             />
                           </div>
                         </div>
@@ -356,11 +356,11 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                         {/* Dates */}
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-stone-700 mb-1">
                               Startdatum *
                             </label>
                             <div className="relative">
-                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                               <input
                                 type="month"
                                 value={exp.startDate}
@@ -377,7 +377,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 className={`
                                   w-full pl-10 pr-4 py-2.5 border rounded-lg
                                   focus:outline-none focus:ring-2 focus:ring-purple-500
-                                  ${errors[exp.id]?.startDate ? 'border-red-300 bg-red-50' : 'border-slate-200'}
+                                  ${errors[exp.id]?.startDate ? 'border-red-300 bg-red-50' : 'border-stone-200'}
                                 `}
                               />
                             </div>
@@ -389,11 +389,11 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                           </div>
 
                           <div>
-                            <label className="block text-sm font-medium text-slate-700 mb-1">
+                            <label className="block text-sm font-medium text-stone-700 mb-1">
                               Slutdatum
                             </label>
                             <div className="relative">
-                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                               <input
                                 type="month"
                                 value={exp.endDate}
@@ -401,7 +401,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 disabled={exp.current}
                                 min={exp.startDate || undefined}
                                 max={new Date().toISOString().slice(0, 7)}
-                                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-600"
+                                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-stone-100 disabled:text-stone-600"
                               />
                             </div>
                           </div>
@@ -413,14 +413,14 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                             type="checkbox"
                             checked={exp.current}
                             onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)}
-                            className="w-4 h-4 text-purple-600 border-slate-300 rounded focus:ring-purple-500"
+                            className="w-4 h-4 text-purple-600 border-stone-300 rounded focus:ring-purple-500"
                           />
-                          <span className="text-sm text-slate-700">Jag jobbar här fortfarande</span>
+                          <span className="text-sm text-stone-700">Jag jobbar här fortfarande</span>
                         </label>
 
                         {/* Description */}
                         <div>
-                          <label className="block text-sm font-medium text-slate-700 mb-1">
+                          <label className="block text-sm font-medium text-stone-700 mb-1">
                             Beskrivning
                           </label>
                           <RichTextEditor
@@ -434,7 +434,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                         </div>
 
                         {/* Actions */}
-                        <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                        <div className="flex items-center justify-between pt-2 border-t border-stone-100">
                           <button
                             onClick={() => removeExperience(exp.id)}
                             className="flex items-center gap-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 px-3 py-1.5 rounded-lg transition-colors"
@@ -465,7 +465,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
           {/* Add button */}
           <button
             onClick={addExperience}
-            className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 hover:border-purple-400 hover:text-purple-600 hover:bg-purple-50 transition-all font-medium flex items-center justify-center gap-2"
+            className="w-full py-3 border-2 border-dashed border-stone-300 rounded-xl text-stone-600 hover:border-purple-400 hover:text-purple-600 hover:bg-purple-50 transition-all font-medium flex items-center justify-center gap-2"
           >
             <Sparkles className="w-4 h-4" />
             + Lägg till ytterligare ett jobb

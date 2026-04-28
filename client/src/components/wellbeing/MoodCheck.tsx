@@ -15,7 +15,7 @@ interface MoodCheckProps {
 
 const moodOptions = [
   { value: 5, emoji: '😊', label: 'Bra', color: 'text-green-500', bg: 'bg-green-50', border: 'border-green-200' },
-  { value: 4, emoji: '🙂', label: 'Ganska bra', color: 'text-teal-500', bg: 'bg-teal-50', border: 'border-teal-200' },
+  { value: 4, emoji: '🙂', label: 'Ganska bra', color: 'text-[var(--c-solid)]', bg: 'bg-[var(--c-bg)]', border: 'border-[var(--c-accent)]/60' },
   { value: 3, emoji: '😐', label: 'Okej', color: 'text-amber-500', bg: 'bg-amber-50', border: 'border-amber-200' },
   { value: 2, emoji: '😔', label: 'Tungt', color: 'text-orange-500', bg: 'bg-orange-50', border: 'border-orange-200' },
   { value: 1, emoji: '😢', label: 'Mycket tungt', color: 'text-rose-500', bg: 'bg-rose-50', border: 'border-rose-200' },
@@ -129,9 +129,9 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6 flex items-center justify-center">
-        <Loader2 className="w-5 h-5 text-slate-600 animate-spin" />
-        <span className="ml-2 text-sm text-slate-700">Laddar...</span>
+      <div className="bg-white rounded-2xl shadow-card border border-stone-100 p-6 flex items-center justify-center">
+        <Loader2 className="w-5 h-5 text-stone-600 animate-spin" />
+        <span className="ml-2 text-sm text-stone-700">Laddar...</span>
       </div>
     )
   }
@@ -140,27 +140,27 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
     const moodOption = moodOptions.find(m => m.value === selectedMood)
     
     return (
-      <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
+      <div className="bg-white rounded-2xl shadow-card border border-stone-100 p-6">
         <div className="text-center">
           <div className="text-4xl mb-2">{moodOption?.emoji}</div>
-          <p className="text-lg font-medium text-slate-800">
+          <p className="text-lg font-medium text-stone-800">
             Idag mår du: <span className={moodOption?.color}>{moodOption?.label}</span>
           </p>
-          <p className="text-sm text-slate-700 mt-1">
+          <p className="text-sm text-stone-700 mt-1">
             Tack för att du delar med dig. Din hälsa är viktig.
           </p>
           
           {showTrend && moodHistory.length > 1 && (
-            <div className="mt-4 pt-4 border-t border-slate-100">
+            <div className="mt-4 pt-4 border-t border-stone-100">
               <div className="flex items-center justify-center gap-4 text-sm">
-                <div className="flex items-center gap-1 text-slate-600">
+                <div className="flex items-center gap-1 text-stone-600">
                   <TrendingUp className="w-4 h-4" />
                   Snitt: {getAverageMood()}/5
                 </div>
                 <div className={`px-2 py-1 rounded-full text-xs font-medium ${
                   getMoodTrend() === 'improving' ? 'bg-green-100 text-green-700' :
                   getMoodTrend() === 'declining' ? 'bg-rose-100 text-rose-700' :
-                  'bg-slate-100 text-slate-700'
+                  'bg-stone-100 text-stone-700'
                 }`}>
                   {getMoodTrend() === 'improving' ? '↗️ På väg uppåt' :
                    getMoodTrend() === 'declining' ? '↘️ Tuff period' :
@@ -175,13 +175,13 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
   }
 
   return (
-    <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
+    <div className="bg-white rounded-2xl shadow-card border border-stone-100 p-6">
       <div className="flex items-center gap-2 mb-4">
         <Heart className="w-5 h-5 text-rose-500" />
-        <h3 className="font-semibold text-slate-800">Hur mår du idag?</h3>
+        <h3 className="font-semibold text-stone-800">Hur mår du idag?</h3>
       </div>
       
-      <p className="text-sm text-slate-700 mb-4">
+      <p className="text-sm text-stone-700 mb-4">
         Din hälsa är viktigare än något jobb. Det är okej att må dåligt ibland.
       </p>
 
@@ -199,8 +199,8 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
             disabled={isSaving}
             className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${
               selectedMood === option.value
-                ? `${option.bg} ${option.border} ring-2 ring-offset-2 ring-teal-500`
-                : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'
+                ? `${option.bg} ${option.border} ring-2 ring-offset-2 ring-[var(--c-solid)]`
+                : 'border-stone-100 hover:border-stone-200 hover:bg-stone-50'
             } ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
             aria-label={`Mood: ${option.label}`}
             aria-pressed={selectedMood === option.value}
@@ -251,19 +251,19 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Vill du skriva något om hur du mår? (frivilligt)"
-            className="w-full p-3 border border-slate-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+            className="w-full p-3 border border-stone-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:border-transparent"
             rows={3}
             maxLength={200}
             disabled={isSaving}
           />
-          <div className="text-xs text-slate-600 text-right mt-1">
+          <div className="text-xs text-stone-600 text-right mt-1">
             {note.length}/200
           </div>
           
           <button
             onClick={handleSubmit}
             disabled={isSaving}
-            className="w-full mt-3 bg-teal-600 text-white py-3 rounded-xl font-medium hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="w-full mt-3 bg-[var(--c-solid)] text-white py-3 rounded-xl font-medium hover:bg-[var(--c-text)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
             {isSaving ? 'Sparar...' : 'Spara'}

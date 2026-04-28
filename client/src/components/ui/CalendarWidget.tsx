@@ -75,21 +75,21 @@ export function CalendarWidget({ activeDays = [] }: CalendarWidgetProps) {
     
     if (isActive) {
       // Aktiv dag (men inte idag)
-      return `${baseClasses} text-slate-700 hover:bg-slate-100 cursor-pointer font-medium`
+      return `${baseClasses} text-stone-700 hover:bg-stone-100 cursor-pointer font-medium`
     }
     
     // Vanlig dag
-    return `${baseClasses} text-slate-700 hover:bg-slate-100 cursor-pointer`
+    return `${baseClasses} text-stone-700 hover:bg-stone-100 cursor-pointer`
   }
   
   return (
     <div className="card">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-slate-800">{monthName} {currentYear}</h3>
+        <h3 className="font-semibold text-stone-800">{monthName} {currentYear}</h3>
       </div>
       <div className="grid grid-cols-7 gap-1 text-center">
         {days.map(day => (
-          <div key={day} className="text-xs text-slate-600 py-1">{day}</div>
+          <div key={day} className="text-xs text-stone-600 py-1">{day}</div>
         ))}
         {dates.flat().map((date, i) => (
           <div

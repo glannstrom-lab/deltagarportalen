@@ -69,7 +69,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-teal-100 dark:bg-teal-900 text-teal-700 dark:text-teal-300' : 'bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-400'
+                isActive ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)] text-[var(--c-text)] dark:text-[var(--c-text)]' : 'bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-400'
               )}>
                 {tab.badge}
               </span>
@@ -94,7 +94,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
               isActive
-                ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/25'
+                ? 'bg-[var(--c-solid)] text-white shadow-lg '
                 : 'bg-white dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700 border border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
             )}
           >
@@ -103,7 +103,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-white/20 text-white' : 'bg-teal-100 text-teal-700'
+                isActive ? 'bg-white/20 text-white' : 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
               )}>
                 {tab.badge}
               </span>
@@ -137,7 +137,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-white/20 text-white' : 'bg-teal-100 text-teal-700'
+                isActive ? 'bg-white/20 text-white' : 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
               )}>
                 {tab.badge}
               </span>
@@ -161,20 +161,20 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             to={tab.path}
             className={cn(
               'group relative flex items-center gap-2 px-1 py-3 text-sm font-medium transition-colors',
-              isActive ? 'text-teal-600 dark:text-teal-400' : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'
+              isActive ? 'text-[var(--c-text)] dark:text-[var(--c-text)]' : 'text-stone-700 dark:text-stone-300 hover:text-stone-900 dark:hover:text-stone-100'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-teal-500 dark:text-teal-400' : 'text-stone-600 dark:text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300')} />}
+            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-[var(--c-solid)] dark:text-[var(--c-text)]' : 'text-stone-600 dark:text-stone-400 group-hover:text-stone-600 dark:group-hover:text-stone-300')} />}
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
-              <span className="px-1.5 py-0.5 text-xs rounded-full font-bold bg-teal-100 text-teal-700">
+              <span className="px-1.5 py-0.5 text-xs rounded-full font-bold bg-[var(--c-accent)]/40 text-[var(--c-text)]">
                 {tab.badge}
               </span>
             )}
             {/* Underline indicator */}
             <span className={cn(
               'absolute bottom-0 left-0 right-0 h-0.5 rounded-full transition-all duration-200',
-              isActive ? 'bg-teal-500 dark:bg-teal-400' : 'bg-transparent group-hover:bg-stone-200 dark:group-hover:bg-stone-600'
+              isActive ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)]' : 'bg-transparent group-hover:bg-stone-200 dark:group-hover:bg-stone-600'
             )} />
           </Link>
         )
@@ -205,11 +205,11 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
               'text-sm font-medium transition-all duration-200 ease-out whitespace-nowrap',
               isCompact ? 'px-2.5 py-1.5 min-h-[36px]' : 'px-4 py-2 min-h-[44px]',
               isActive
-                ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 shadow-sm'
-                : 'text-stone-600 dark:text-stone-400 hover:bg-teal-50 dark:hover:bg-stone-700'
+                ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-[var(--c-bg)] dark:hover:bg-stone-700'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-teal-600 dark:text-teal-400' : '')} />}
+            {Icon && <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-[var(--c-text)] dark:text-[var(--c-text)]' : '')} />}
             {/* Hide label on compact mode for inactive tabs on smaller screens */}
             <span className={cn(isCompact && !isActive && 'hidden lg:inline')}>
               {tab.label}
@@ -217,7 +217,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200' : 'bg-teal-100 text-teal-700'
+                isActive ? 'bg-[var(--c-accent)]/60 dark:bg-[var(--c-solid)]/80 text-[var(--c-text)] dark:text-[var(--c-text)]' : 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
               )}>
                 {tab.badge}
               </span>
@@ -255,7 +255,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
         )}
       >
         <div className="flex items-center gap-3">
-          {activeTab?.icon && <activeTab.icon className="w-5 h-5 text-teal-600" />}
+          {activeTab?.icon && <activeTab.icon className="w-5 h-5 text-[var(--c-text)]" />}
           <span className="font-semibold">{activeTab?.label || t('layout.pageTabs.selectPage')}</span>
         </div>
         <ChevronDown className={cn(
@@ -279,7 +279,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
                   'flex items-center justify-between px-4 py-3.5 transition-colors',
                   'min-h-[52px]', // Touch-friendly minimum height
                   isActive
-                    ? 'bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300'
+                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]'
                     : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800',
                   index !== tabs.length - 1 && 'border-b border-stone-100 dark:border-stone-700'
                 )}
@@ -288,15 +288,15 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
                   {Icon && (
                     <div className={cn(
                       'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
-                      isActive ? 'bg-teal-100 dark:bg-teal-900' : 'bg-stone-100 dark:bg-stone-800'
+                      isActive ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]' : 'bg-stone-100 dark:bg-stone-800'
                     )}>
-                      <Icon className={cn('w-4 h-4', isActive ? 'text-teal-600 dark:text-teal-400' : 'text-stone-700 dark:text-stone-300')} />
+                      <Icon className={cn('w-4 h-4', isActive ? 'text-[var(--c-text)] dark:text-[var(--c-text)]' : 'text-stone-700 dark:text-stone-300')} />
                     </div>
                   )}
                   <span className="font-medium">{tab.label}</span>
                 </div>
                 {tab.badge !== undefined && tab.badge > 0 && (
-                  <span className="px-2 py-0.5 text-xs rounded-full font-bold bg-teal-100 text-teal-700">
+                  <span className="px-2 py-0.5 text-xs rounded-full font-bold bg-[var(--c-accent)]/40 text-[var(--c-text)]">
                     {tab.badge}
                   </span>
                 )}
@@ -336,17 +336,17 @@ export function PageHeader({ title, description, tabs, tabVariant = 'minimal', a
 
   return (
     <div className={cn(
-      'bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20',
-      'rounded-2xl border border-teal-200 dark:border-teal-800/50',
+      'bg-gradient-to-r from-[var(--c-bg)] via-white to-sky-50 dark:from-[var(--c-bg)]/30 dark:via-stone-800 dark:to-sky-900/20',
+      'rounded-2xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50',
       className
     )}>
       {/* Header content */}
       <div className="px-5 py-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold text-teal-800 dark:text-teal-300 tracking-tight truncate">{title}</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)] tracking-tight truncate">{title}</h1>
             {description && (
-              <p className="text-sm text-teal-600 dark:text-teal-400 mt-1">{description}</p>
+              <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">{description}</p>
             )}
           </div>
           {actions && (
@@ -360,7 +360,7 @@ export function PageHeader({ title, description, tabs, tabVariant = 'minimal', a
       {/* Tabs integrated in header */}
       {hasTabs && (
         <div className="px-4 pb-3 pt-0">
-          <div className="bg-white/60 dark:bg-stone-800/40 rounded-xl px-2 py-1.5 border border-teal-100/50 dark:border-stone-700/50">
+          <div className="bg-white/60 dark:bg-stone-800/40 rounded-xl px-2 py-1.5 border border-[var(--c-accent)]/40/50 dark:border-stone-700/50">
             <PageTabs tabs={tabs} variant={tabVariant} />
           </div>
         </div>

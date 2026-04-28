@@ -136,22 +136,22 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Analys & Insikter</h1>
-          <p className="text-slate-600">Avancerade analyser av din jobbsökarresa</p>
+          <h1 className="text-2xl font-bold text-stone-900">Analys & Insikter</h1>
+          <p className="text-stone-600">Avancerade analyser av din jobbsökarresa</p>
         </div>
         
         <div className="flex items-center gap-3">
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value as any)}
-            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
           >
             <option value="week">Senaste veckan</option>
             <option value="month">Senaste månaden</option>
             <option value="quarter">Senaste kvartalet</option>
           </select>
           
-          <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-lg transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors">
             <Download className="w-4 h-4" />
             Exportera
           </button>
@@ -159,7 +159,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-slate-200">
+      <div className="flex gap-2 border-b border-stone-200">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -167,8 +167,8 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
             className={cn(
               'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors',
               activeTab === tab.id
-                ? 'border-teal-600 text-teal-600'
-                : 'border-transparent text-slate-700 hover:text-slate-700'
+                ? 'border-[var(--c-solid)] text-[var(--c-text)]'
+                : 'border-transparent text-stone-700 hover:text-stone-700'
             )}
           >
             <tab.icon className="w-4 h-4" />
@@ -188,9 +188,9 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
               { label: 'Aktivitetstimmar', value: '42h', change: '+8%', positive: true, icon: Clock },
               { label: 'Svarsfrekvens', value: '35%', change: '+5%', positive: true, icon: TrendingUp },
             ].map((stat) => (
-              <div key={stat.label} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+              <div key={stat.label} className="bg-white p-4 rounded-xl border border-stone-200 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <stat.icon className="w-5 h-5 text-slate-600" />
+                  <stat.icon className="w-5 h-5 text-stone-600" />
                   <span className={cn(
                     'text-xs font-medium',
                     stat.positive ? 'text-emerald-600' : 'text-rose-600'
@@ -198,16 +198,16 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                     {stat.change}
                   </span>
                 </div>
-                <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
-                <p className="text-sm text-slate-700">{stat.label}</p>
+                <p className="text-2xl font-bold text-stone-900">{stat.value}</p>
+                <p className="text-sm text-stone-700">{stat.label}</p>
               </div>
             ))}
           </div>
 
           {/* Activity Chart */}
           <div className="grid lg:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Aktivitet över tid</h3>
+            <div className="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-stone-900 mb-4">Aktivitet över tid</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <AreaChart data={activityData}>
                   <defs>
@@ -232,8 +232,8 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
               </ResponsiveContainer>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Tidsfördelning</h3>
+            <div className="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-stone-900 mb-4">Tidsfördelning</h3>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
@@ -256,7 +256,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                 {timeDistribution.map((item) => (
                   <div key={item.name} className="flex items-center gap-1 text-xs">
                     <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
-                    <span className="text-slate-600">{item.name}</span>
+                    <span className="text-stone-600">{item.name}</span>
                   </div>
                 ))}
               </div>
@@ -264,33 +264,33 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
           </div>
 
           {/* AI Insights */}
-          <div className="bg-gradient-to-br from-teal-50 to-sky-50 p-6 rounded-xl border border-teal-100">
+          <div className="bg-gradient-to-br from-[var(--c-bg)] to-sky-50 p-6 rounded-xl border border-[var(--c-accent)]/40">
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-teal-600" />
-              <h3 className="text-lg font-semibold text-slate-900">AI-genererade insikter</h3>
+              <Zap className="w-5 h-5 text-[var(--c-text)]" />
+              <h3 className="text-lg font-semibold text-stone-900">AI-genererade insikter</h3>
             </div>
             
             <div className="grid md:grid-cols-3 gap-4">
               {insights.map((insight) => (
-                <div key={insight.id} className="bg-white p-4 rounded-lg border border-teal-100">
+                <div key={insight.id} className="bg-white p-4 rounded-lg border border-[var(--c-accent)]/40">
                   <div className="flex items-start gap-3">
                     <div className={cn(
                       'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
                       insight.type === 'positive' && 'bg-emerald-100',
                       insight.type === 'warning' && 'bg-amber-100',
-                      insight.type === 'insight' && 'bg-teal-100'
+                      insight.type === 'insight' && 'bg-[var(--c-accent)]/40'
                     )}>
                       <insight.icon className={cn(
                         'w-5 h-5',
                         insight.type === 'positive' && 'text-emerald-600',
                         insight.type === 'warning' && 'text-amber-600',
-                        insight.type === 'insight' && 'text-teal-600'
+                        insight.type === 'insight' && 'text-[var(--c-text)]'
                       )} />
                     </div>
                     <div>
-                      <h4 className="font-medium text-slate-900 text-sm">{insight.title}</h4>
-                      <p className="text-xs text-slate-600 mt-1">{insight.description}</p>
-                      <p className="text-xs font-medium text-teal-600 mt-2">{insight.action}</p>
+                      <h4 className="font-medium text-stone-900 text-sm">{insight.title}</h4>
+                      <p className="text-xs text-stone-600 mt-1">{insight.description}</p>
+                      <p className="text-xs font-medium text-[var(--c-text)] mt-2">{insight.action}</p>
                     </div>
                   </div>
                 </div>
@@ -304,8 +304,8 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
       {activeTab === 'skills' && (
         <div className="space-y-6">
           <div className="grid lg:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Kompetensutveckling</h3>
+            <div className="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-stone-900 mb-4">Kompetensutveckling</h3>
               <ResponsiveContainer width="100%" height={300}>
                 <RadarChart data={skillsData}>
                   <PolarGrid />
@@ -318,9 +318,9 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
               </ResponsiveContainer>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Energi vs Resultat</h3>
-              <p className="text-sm text-slate-600 mb-4">
+            <div className="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-stone-900 mb-4">Energi vs Resultat</h3>
+              <p className="text-sm text-stone-600 mb-4">
                 Analys visar att du har bäst resultat vid högre energinivåer
               </p>
               <ResponsiveContainer width="100%" height={250}>
@@ -337,23 +337,23 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
           </div>
 
           {/* Skill Gaps */}
-          <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-            <h3 className="text-lg font-semibold text-slate-900 mb-4">Rekommenderade kompetenser att utveckla</h3>
+          <div className="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+            <h3 className="text-lg font-semibold text-stone-900 mb-4">Rekommenderade kompetenser att utveckla</h3>
             <div className="space-y-3">
               {skillsData
                 .filter(s => s.target - s.current > 15)
                 .sort((a, b) => (b.target - b.current) - (a.target - a.current))
                 .map((skill) => (
                   <div key={skill.skill} className="flex items-center gap-4">
-                    <span className="w-32 text-sm font-medium text-slate-700">{skill.skill}</span>
-                    <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <span className="w-32 text-sm font-medium text-stone-700">{skill.skill}</span>
+                    <div className="flex-1 h-2 bg-stone-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-teal-500 rounded-full"
+                        className="h-full bg-[var(--c-solid)] rounded-full"
                         style={{ width: `${skill.current}%` }}
                       />
                     </div>
-                    <span className="text-sm text-slate-700 w-16">{skill.current}%</span>
-                    <span className="text-xs text-slate-600">Mål: {skill.target}%</span>
+                    <span className="text-sm text-stone-700 w-16">{skill.current}%</span>
+                    <span className="text-xs text-stone-600">Mål: {skill.target}%</span>
                   </div>
                 ))}
             </div>
@@ -365,7 +365,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
       {activeTab === 'predictions' && (
         <div className="space-y-6">
           {/* Main Prediction */}
-          <div className="bg-gradient-to-br from-teal-600 to-sky-700 p-8 rounded-2xl text-white">
+          <div className="bg-gradient-to-br from-[var(--c-solid)] to-sky-700 p-8 rounded-2xl text-white">
             <div className="flex items-center gap-3 mb-6">
               <Brain className="w-8 h-8" />
               <h3 className="text-2xl font-bold">AI Jobbprediktion</h3>
@@ -397,8 +397,8 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
 
           {/* Factors */}
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Påverkande faktorer</h3>
+            <div className="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-stone-900 mb-4">Påverkande faktorer</h3>
               <div className="space-y-4">
                 {predictions.factors.map((factor) => (
                   <div key={factor.factor} className="flex items-center gap-3">
@@ -406,27 +406,27 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                       'w-8 h-8 rounded-full flex items-center justify-center',
                       factor.impact === 'positive' && 'bg-emerald-100',
                       factor.impact === 'negative' && 'bg-rose-100',
-                      factor.impact === 'neutral' && 'bg-slate-100'
+                      factor.impact === 'neutral' && 'bg-stone-100'
                     )}>
                       {factor.impact === 'positive' && <TrendingUp className="w-4 h-4 text-emerald-600" />}
                       {factor.impact === 'negative' && <TrendingUp className="w-4 h-4 text-rose-600 rotate-180" />}
-                      {factor.impact === 'neutral' && <div className="w-2 h-2 bg-slate-400 rounded-full" />}
+                      {factor.impact === 'neutral' && <div className="w-2 h-2 bg-stone-400 rounded-full" />}
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-slate-900">{factor.factor}</p>
+                      <p className="font-medium text-stone-900">{factor.factor}</p>
                       <div className="flex items-center gap-2 mt-1">
-                        <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="flex-1 h-1.5 bg-stone-100 rounded-full overflow-hidden">
                           <div
                             className={cn(
                               'h-full rounded-full',
                               factor.impact === 'positive' && 'bg-emerald-500',
                               factor.impact === 'negative' && 'bg-rose-500',
-                              factor.impact === 'neutral' && 'bg-slate-400'
+                              factor.impact === 'neutral' && 'bg-stone-400'
                             )}
                             style={{ width: `${factor.strength * 100}%` }}
                           />
                         </div>
-                        <span className="text-xs text-slate-700">{Math.round(factor.strength * 100)}%</span>
+                        <span className="text-xs text-stone-700">{Math.round(factor.strength * 100)}%</span>
                       </div>
                     </div>
                   </div>
@@ -434,8 +434,8 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-              <h3 className="text-lg font-semibold text-slate-900 mb-4">Rekommendationer för att snabba upp processen</h3>
+            <div className="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+              <h3 className="text-lg font-semibold text-stone-900 mb-4">Rekommendationer för att snabba upp processen</h3>
               <div className="space-y-3">
                 {[
                   { priority: 'high', text: 'Öka antalet ansökningar till 5 per vecka (+15% sannolikhet)' },
@@ -448,11 +448,11 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                       'px-2 py-0.5 text-xs font-medium rounded',
                       rec.priority === 'high' && 'bg-rose-100 text-rose-700',
                       rec.priority === 'medium' && 'bg-amber-100 text-amber-700',
-                      rec.priority === 'low' && 'bg-slate-100 text-slate-700'
+                      rec.priority === 'low' && 'bg-stone-100 text-stone-700'
                     )}>
                       {rec.priority === 'high' ? 'Hög' : rec.priority === 'medium' ? 'Medel' : 'Låg'}
                     </span>
-                    <p className="text-sm text-slate-700">{rec.text}</p>
+                    <p className="text-sm text-stone-700">{rec.text}</p>
                   </div>
                 ))}
               </div>

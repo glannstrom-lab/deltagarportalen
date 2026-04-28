@@ -238,8 +238,8 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
 
         {/* Error state */}
         {hasError && supportsModernFormat === 'original' && (
-          <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
-            <span className="text-slate-600 text-sm">Kunde inte ladda bilden</span>
+          <div className="absolute inset-0 flex items-center justify-center bg-stone-100">
+            <span className="text-stone-600 text-sm">Kunde inte ladda bilden</span>
           </div>
         )}
       </div>
@@ -341,7 +341,7 @@ export const Avatar = ({
     return (
       <div
         className={cn(
-          'rounded-full bg-gradient-to-br from-teal-500 to-sky-600 flex items-center justify-center text-white font-medium',
+          'rounded-full bg-gradient-to-br from-[var(--c-solid)] to-sky-600 flex items-center justify-center text-white font-medium',
           sizeClasses[size],
           className
         )}

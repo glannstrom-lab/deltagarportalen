@@ -50,11 +50,11 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
         <button
           onClick={handleShare}
           disabled={loading}
-          className="flex items-center gap-2 px-3 py-2 text-sm border border-slate-300 text-slate-700 bg-white rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50 font-medium"
+          className="flex items-center gap-2 px-3 py-2 text-sm border border-stone-300 text-stone-700 bg-white rounded-lg hover:bg-stone-50 transition-colors disabled:opacity-50 font-medium"
         >
           {loading ? (
             <>
-              <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+              <div className="w-4 h-4 border-2 border-stone-400 border-t-transparent rounded-full animate-spin" />
               <span className="hidden sm:inline">Skapar...</span>
             </>
           ) : (
@@ -88,19 +88,19 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-800">Dela ditt CV</h3>
+              <h3 className="text-lg font-semibold text-stone-800">Dela ditt CV</h3>
               <button
                 onClick={() => setShowModal(false)}
-                className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-1 hover:bg-stone-100 rounded-lg transition-colors"
               >
-                <X size={20} className="text-slate-700" />
+                <X size={20} className="text-stone-700" />
               </button>
             </div>
 
             <div className="space-y-4">
               {/* Share URL */}
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   Delningslänk
                 </label>
                 <div className="flex gap-2">
@@ -108,7 +108,7 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
                     type="text"
                     value={shareData.shareUrl}
                     readOnly
-                    className="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm text-slate-600"
+                    className="flex-1 px-3 py-2 bg-stone-50 border border-stone-200 rounded-lg text-sm text-stone-600"
                   />
                   <button
                     onClick={copyToClipboard}
@@ -118,17 +118,17 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
                     {copied ? <Check size={18} /> : <Copy size={18} />}
                   </button>
                 </div>
-                <p className="text-xs text-slate-700 mt-1">
+                <p className="text-xs text-stone-700 mt-1">
                   Länken är giltig till {new Date(shareData.expiresAt).toLocaleDateString('sv-SE')}
                 </p>
               </div>
 
               {/* QR Code */}
               <div className="text-center">
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   QR-kod
                 </label>
-                <div className="inline-block p-4 bg-white border-2 border-slate-200 rounded-xl">
+                <div className="inline-block p-4 bg-white border-2 border-stone-200 rounded-xl">
                   {shareData.qrCode ? (
                     <img
                       src={shareData.qrCode}
@@ -136,8 +136,8 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
                       className="w-48 h-48"
                     />
                   ) : (
-                    <div className="w-48 h-48 flex items-center justify-center bg-slate-100">
-                      <QrCode size={64} className="text-slate-600" />
+                    <div className="w-48 h-48 flex items-center justify-center bg-stone-100">
+                      <QrCode size={64} className="text-stone-600" />
                     </div>
                   )}
                 </div>
@@ -151,8 +151,8 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
               </div>
 
               {/* Info */}
-              <div className="p-3 bg-slate-50 rounded-lg">
-                <p className="text-xs text-slate-700">
+              <div className="p-3 bg-stone-50 rounded-lg">
+                <p className="text-xs text-stone-700">
                   <strong>Tips:</strong> QR-koden är perfekt att skriva ut på visitkort 
                   eller visa på nätverksträffar. Mottagaren kan enkelt scanna och se ditt CV.
                 </p>

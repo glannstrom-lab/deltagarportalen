@@ -85,8 +85,8 @@ export default function LearningTab() {
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
-          <p className="text-slate-700 dark:text-stone-300">{t('dashboard.learning.loading')}</p>
+          <Loader2 className="w-8 h-8 text-[var(--c-solid)] animate-spin mx-auto mb-3" aria-hidden="true" />
+          <p className="text-stone-700 dark:text-stone-300">{t('dashboard.learning.loading')}</p>
         </div>
       </div>
     )
@@ -98,10 +98,10 @@ export default function LearningTab() {
         <div className="w-16 h-16 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
           <BookOpen className="w-8 h-8 text-red-500" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-800 dark:text-stone-100 mb-2">
+        <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-2">
           {t('dashboard.learning.errorTitle')}
         </h3>
-        <p className="text-slate-700 dark:text-stone-300 mb-4">{error}</p>
+        <p className="text-stone-700 dark:text-stone-300 mb-4">{error}</p>
         <Button onClick={refresh} variant="outline">
           <RefreshCw className="w-4 h-4 mr-2" />
           {t('common.tryAgain')}
@@ -153,11 +153,11 @@ export default function LearningTab() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-            <BookOpen className="text-teal-500" size={28} />
+          <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100 flex items-center gap-2">
+            <BookOpen className="text-[var(--c-solid)]" size={28} />
             {t('dashboard.learning.title')}
           </h2>
-          <p className="text-slate-700 dark:text-stone-300">{t('dashboard.learning.subtitle')}</p>
+          <p className="text-stone-700 dark:text-stone-300">{t('dashboard.learning.subtitle')}</p>
         </div>
         <Button onClick={refresh} variant="secondary" size="sm">
           <RefreshCw className="w-4 h-4" />
@@ -203,10 +203,10 @@ export default function LearningTab() {
       {/* Recommended articles */}
       <Section
         title={hasInterestProfile ? t('dashboard.learning.personalizedForYou') : t('dashboard.learning.recommendedForYou')}
-        icon={hasInterestProfile ? <Compass className="text-amber-500" /> : <Star className="text-teal-500" />}
+        icon={hasInterestProfile ? <Compass className="text-amber-500" /> : <Star className="text-[var(--c-solid)]" />}
       >
         {hasInterestProfile && (
-          <p className="text-sm text-slate-700 dark:text-stone-300 -mt-2 mb-4 flex items-center gap-1">
+          <p className="text-sm text-stone-700 dark:text-stone-300 -mt-2 mb-4 flex items-center gap-1">
             <Sparkles size={14} className="text-amber-500" />
             {t('dashboard.learning.basedOnProfile')}
           </p>
@@ -299,7 +299,7 @@ function ProgressSummary({ progress, t }: ProgressSummaryProps) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <StatCard
-        icon={<FileText className="text-teal-500" />}
+        icon={<FileText className="text-[var(--c-solid)]" />}
         value={progress.articlesRead}
         label={t('dashboard.learning.stats.articlesRead')}
         color="violet"
@@ -335,7 +335,7 @@ interface StatCardProps {
 
 function StatCard({ icon, value, label, color }: StatCardProps) {
   const bgColors = {
-    violet: 'bg-teal-50 dark:bg-teal-900/40',
+    violet: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40',
     emerald: 'bg-emerald-50 dark:bg-emerald-900/40',
     amber: 'bg-amber-50 dark:bg-amber-900/40',
     orange: 'bg-orange-50 dark:bg-orange-900/40'
@@ -345,9 +345,9 @@ function StatCard({ icon, value, label, color }: StatCardProps) {
     <div className={cn("rounded-xl p-4", bgColors[color])}>
       <div className="flex items-center gap-2 mb-1">
         {icon}
-        <span className="text-2xl font-bold text-slate-800 dark:text-stone-100">{value}</span>
+        <span className="text-2xl font-bold text-stone-800 dark:text-stone-100">{value}</span>
       </div>
-      <p className="text-xs text-slate-700 dark:text-stone-300">{label}</p>
+      <p className="text-xs text-stone-700 dark:text-stone-300">{label}</p>
     </div>
   )
 }
@@ -362,14 +362,14 @@ interface DailyTipCardProps {
 
 function DailyTipCard({ tip }: DailyTipCardProps) {
   return (
-    <div className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 rounded-xl border border-teal-100 dark:border-teal-700 p-4">
+    <div className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 p-4">
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/40 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Lightbulb className="text-teal-600 dark:text-teal-400" size={20} />
+        <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Lightbulb className="text-[var(--c-text)] dark:text-[var(--c-solid)]" size={20} />
         </div>
         <div>
-          <h4 className="font-semibold text-slate-800 dark:text-stone-100">{tip.title}</h4>
-          <p className="text-sm text-slate-600 dark:text-stone-400 mt-1">{tip.content}</p>
+          <h4 className="font-semibold text-stone-800 dark:text-stone-100">{tip.title}</h4>
+          <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">{tip.content}</p>
         </div>
       </div>
     </div>
@@ -389,7 +389,7 @@ interface SectionProps {
 function Section({ title, icon, children }: SectionProps) {
   return (
     <div>
-      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
+      <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         {icon}
         {title}
       </h3>
@@ -434,26 +434,26 @@ function ArticleCard({ article, onClick, showProgress, showRelevance, t }: Artic
           ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20"
           : hasHighRelevance
             ? "border-amber-200 dark:border-amber-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md"
-            : "border-slate-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md"
+            : "border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md"
       )}
     >
       <div className="flex items-start gap-3">
         <div className={cn(
           "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
-          article.isCompleted ? "bg-emerald-100 dark:bg-emerald-900/40" : hasHighRelevance ? "bg-amber-100 dark:bg-amber-900/40" : "bg-teal-100 dark:bg-teal-900/40"
+          article.isCompleted ? "bg-emerald-100 dark:bg-emerald-900/40" : hasHighRelevance ? "bg-amber-100 dark:bg-amber-900/40" : "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40"
         )}>
           {article.isCompleted ? (
             <CheckCircle2 className="text-emerald-600 dark:text-emerald-400" size={20} />
           ) : hasHighRelevance ? (
             <Compass className="text-amber-600 dark:text-amber-400" size={20} />
           ) : (
-            <FileText className="text-teal-600 dark:text-teal-400" size={20} />
+            <FileText className="text-[var(--c-text)] dark:text-[var(--c-solid)]" size={20} />
           )}
         </div>
         <div className="flex-1 min-w-0">
           <h4 className={cn(
             "font-semibold line-clamp-2",
-            article.isCompleted ? "text-slate-700 dark:text-stone-300" : "text-slate-800 dark:text-stone-100"
+            article.isCompleted ? "text-stone-700 dark:text-stone-300" : "text-stone-800 dark:text-stone-100"
           )}>
             {article.title}
           </h4>
@@ -464,7 +464,7 @@ function ArticleCard({ article, onClick, showProgress, showRelevance, t }: Artic
             )}>
               {difficultyLabels[article.difficulty]}
             </span>
-            <span className="text-xs text-slate-700 dark:text-stone-300 flex items-center gap-1">
+            <span className="text-xs text-stone-700 dark:text-stone-300 flex items-center gap-1">
               <Clock size={12} />
               {article.readingTime} min
             </span>
@@ -477,13 +477,13 @@ function ArticleCard({ article, onClick, showProgress, showRelevance, t }: Artic
           </div>
           {showProgress && article.progress > 0 && !article.isCompleted && (
             <div className="mt-2">
-              <div className="h-1.5 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
+              <div className="h-1.5 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-teal-500 rounded-full"
+                  className="h-full bg-[var(--c-solid)] rounded-full"
                   style={{ width: `${article.progress}%` }}
                 />
               </div>
-              <span className="text-xs text-slate-700 dark:text-stone-300 mt-1">{t('dashboard.learning.percentRead', { percent: article.progress })}</span>
+              <span className="text-xs text-stone-700 dark:text-stone-300 mt-1">{t('dashboard.learning.percentRead', { percent: article.progress })}</span>
             </div>
           )}
         </div>
@@ -527,7 +527,7 @@ function ExerciseCard({ exercise, onClick, showRelevance, t }: ExerciseCardProps
           ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/30 dark:bg-emerald-900/20"
           : hasHighRelevance
             ? "border-amber-200 dark:border-amber-700 hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md"
-            : "border-slate-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md"
+            : "border-stone-200 dark:border-stone-700 hover:border-emerald-300 dark:hover:border-emerald-600 hover:shadow-md"
       )}
     >
       <div className="flex items-start gap-3">
@@ -546,7 +546,7 @@ function ExerciseCard({ exercise, onClick, showRelevance, t }: ExerciseCardProps
         <div className="flex-1 min-w-0">
           <h4 className={cn(
             "font-semibold line-clamp-2",
-            exercise.isCompleted ? "text-slate-700 dark:text-stone-300" : "text-slate-800 dark:text-stone-100"
+            exercise.isCompleted ? "text-stone-700 dark:text-stone-300" : "text-stone-800 dark:text-stone-100"
           )}>
             {exercise.title}
           </h4>
@@ -557,7 +557,7 @@ function ExerciseCard({ exercise, onClick, showRelevance, t }: ExerciseCardProps
             )}>
               {exercise.difficulty}
             </span>
-            <span className="text-xs text-slate-700 dark:text-stone-300 flex items-center gap-1">
+            <span className="text-xs text-stone-700 dark:text-stone-300 flex items-center gap-1">
               <Clock size={12} />
               {exercise.duration}
             </span>
@@ -598,15 +598,15 @@ function CategoryCard({ category, onClick, t }: CategoryCardProps) {
   return (
     <div
       onClick={onClick}
-      className="bg-white dark:bg-stone-900 p-4 rounded-xl border border-slate-200 dark:border-stone-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all cursor-pointer"
+      className="bg-white dark:bg-stone-900 p-4 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-md transition-all cursor-pointer"
     >
       <div className="flex items-center justify-between mb-2">
-        <h4 className="font-semibold text-slate-800 dark:text-stone-100">{category.name}</h4>
-        <ChevronRight className="text-slate-600 dark:text-stone-400" size={20} />
+        <h4 className="font-semibold text-stone-800 dark:text-stone-100">{category.name}</h4>
+        <ChevronRight className="text-stone-600 dark:text-stone-400" size={20} />
       </div>
-      <p className="text-sm text-slate-700 dark:text-stone-300 line-clamp-2 mb-3">{category.description}</p>
+      <p className="text-sm text-stone-700 dark:text-stone-300 line-clamp-2 mb-3">{category.description}</p>
       <div className="flex items-center justify-between text-xs">
-        <span className="text-slate-700 dark:text-stone-300">
+        <span className="text-stone-700 dark:text-stone-300">
           {t('dashboard.learning.articlesProgress', { completed: category.completedCount, total: category.articleCount })}
         </span>
         {progress > 0 && (
@@ -614,7 +614,7 @@ function CategoryCard({ category, onClick, t }: CategoryCardProps) {
         )}
       </div>
       {progress > 0 && (
-        <div className="h-1.5 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden mt-2">
+        <div className="h-1.5 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden mt-2">
           <div
             className="h-full bg-emerald-500 rounded-full"
             style={{ width: `${progress}%` }}
@@ -642,7 +642,7 @@ function CategoryView({ category, articles, isLoading, onBack, onSelectArticle, 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-[var(--c-solid)] animate-spin" />
       </div>
     )
   }
@@ -651,15 +651,15 @@ function CategoryView({ category, articles, isLoading, onBack, onSelectArticle, 
     <div className="space-y-6">
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-slate-600 dark:text-stone-400 hover:text-slate-800 dark:hover:text-stone-200 transition-colors"
+        className="flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
       >
         <ArrowLeft size={20} />
         {t('common.back')}
       </button>
 
       <div>
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-stone-100">{category.name}</h2>
-        <p className="text-slate-700 dark:text-stone-300 mt-1">{category.description}</p>
+        <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100">{category.name}</h2>
+        <p className="text-stone-700 dark:text-stone-300 mt-1">{category.description}</p>
       </div>
 
       <div className="space-y-3">
@@ -711,25 +711,25 @@ function ArticleView({ article, onBack, onComplete, t }: ArticleViewProps) {
     <div className="space-y-6">
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-slate-600 dark:text-stone-400 hover:text-slate-800 dark:hover:text-stone-200 transition-colors"
+        className="flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
       >
         <ArrowLeft size={20} />
         {t('common.back')}
       </button>
 
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-slate-200 dark:border-stone-700 overflow-hidden">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden">
         {/* Header */}
-        <div className="p-6 border-b border-slate-100 dark:border-stone-700">
+        <div className="p-6 border-b border-stone-100 dark:border-stone-700">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs px-2 py-1 bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-400 rounded-full">
+            <span className="text-xs px-2 py-1 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)] rounded-full">
               {article.category}
             </span>
-            <span className="text-xs text-slate-700 dark:text-stone-300 flex items-center gap-1">
+            <span className="text-xs text-stone-700 dark:text-stone-300 flex items-center gap-1">
               <Clock size={12} /> {article.readingTime} min
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-stone-100">{article.title}</h1>
-          <p className="text-slate-600 dark:text-stone-400 mt-2">{article.summary}</p>
+          <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">{article.title}</h1>
+          <p className="text-stone-600 dark:text-stone-400 mt-2">{article.summary}</p>
         </div>
 
         {/* Content */}
@@ -737,18 +737,18 @@ function ArticleView({ article, onBack, onComplete, t }: ArticleViewProps) {
           <div className="prose prose-slate dark:prose-invert max-w-none">
             {article.content.split('\n\n').map((paragraph, i) => {
               if (paragraph.startsWith('## ')) {
-                return <h2 key={i} className="text-lg font-bold mt-6 mb-3 text-slate-800 dark:text-stone-100">{paragraph.replace('## ', '')}</h2>
+                return <h2 key={i} className="text-lg font-bold mt-6 mb-3 text-stone-800 dark:text-stone-100">{paragraph.replace('## ', '')}</h2>
               }
               if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
-                return <p key={i} className="font-semibold text-slate-800 dark:text-stone-200">{paragraph.replace(/\*\*/g, '')}</p>
+                return <p key={i} className="font-semibold text-stone-800 dark:text-stone-200">{paragraph.replace(/\*\*/g, '')}</p>
               }
-              return <p key={i} className="mb-4 text-slate-700 dark:text-stone-300">{paragraph}</p>
+              return <p key={i} className="mb-4 text-stone-700 dark:text-stone-300">{paragraph}</p>
             })}
           </div>
         </div>
 
         {/* Complete button */}
-        <div className="p-6 border-t border-slate-100 dark:border-stone-700">
+        <div className="p-6 border-t border-stone-100 dark:border-stone-700">
           <Button
             onClick={handleComplete}
             className="w-full"
@@ -786,34 +786,34 @@ function ExerciseView({ exercise, onBack, t }: ExerciseViewProps) {
     <div className="space-y-6">
       <button
         onClick={onBack}
-        className="flex items-center gap-2 text-slate-600 dark:text-stone-400 hover:text-slate-800 dark:hover:text-stone-200 transition-colors"
+        className="flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200 transition-colors"
       >
         <ArrowLeft size={20} />
         {t('common.back')}
       </button>
 
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-slate-200 dark:border-stone-700 p-6">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 p-6">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-xs px-2 py-1 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 rounded-full">
               {exercise.category}
             </span>
-            <span className="text-xs text-slate-700 dark:text-stone-300 flex items-center gap-1">
+            <span className="text-xs text-stone-700 dark:text-stone-300 flex items-center gap-1">
               <Clock size={12} /> {exercise.duration}
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-slate-800 dark:text-stone-100">{exercise.title}</h1>
-          <p className="text-slate-600 dark:text-stone-400 mt-2">{exercise.description}</p>
+          <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">{exercise.title}</h1>
+          <p className="text-stone-600 dark:text-stone-400 mt-2">{exercise.description}</p>
         </div>
 
         {/* Progress */}
         <div className="mb-6">
           <div className="flex items-center justify-between text-sm mb-2">
-            <span className="text-slate-600 dark:text-stone-400">{t('dashboard.learning.stepOf', { current: currentStep + 1, total: exercise.steps.length })}</span>
-            <span className="text-slate-700 dark:text-stone-300">{Math.round(((currentStep + 1) / exercise.steps.length) * 100)}%</span>
+            <span className="text-stone-600 dark:text-stone-400">{t('dashboard.learning.stepOf', { current: currentStep + 1, total: exercise.steps.length })}</span>
+            <span className="text-stone-700 dark:text-stone-300">{Math.round(((currentStep + 1) / exercise.steps.length) * 100)}%</span>
           </div>
-          <div className="h-2 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
+          <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
             <div
               className="h-full bg-emerald-500 rounded-full transition-all"
               style={{ width: `${((currentStep + 1) / exercise.steps.length) * 100}%` }}
@@ -830,21 +830,21 @@ function ExerciseView({ exercise, onBack, t }: ExerciseViewProps) {
             exit={{ opacity: 0, x: -20 }}
           >
             <div className="mb-6">
-              <h3 className="text-lg font-semibold text-slate-800 dark:text-stone-100 mb-2">
+              <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-2">
                 {exercise.steps[currentStep].title}
               </h3>
-              <p className="text-slate-600 dark:text-stone-400">{exercise.steps[currentStep].description}</p>
+              <p className="text-stone-600 dark:text-stone-400">{exercise.steps[currentStep].description}</p>
             </div>
 
             <div className="space-y-4">
               {exercise.steps[currentStep].questions.map(question => (
                 <div key={question.id}>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-2">
+                  <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
                     {question.text}
                   </label>
                   <textarea
                     placeholder={question.placeholder}
-                    className="w-full h-24 p-3 border border-slate-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-slate-800 dark:text-stone-100 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder:text-slate-400 dark:placeholder:text-stone-500"
+                    className="w-full h-24 p-3 border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder:text-stone-400 dark:placeholder:text-stone-500"
                   />
                 </div>
               ))}
@@ -853,7 +853,7 @@ function ExerciseView({ exercise, onBack, t }: ExerciseViewProps) {
         </AnimatePresence>
 
         {/* Navigation */}
-        <div className="flex justify-between mt-6 pt-6 border-t border-slate-100 dark:border-stone-700">
+        <div className="flex justify-between mt-6 pt-6 border-t border-stone-100 dark:border-stone-700">
           <Button
             variant="secondary"
             onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}

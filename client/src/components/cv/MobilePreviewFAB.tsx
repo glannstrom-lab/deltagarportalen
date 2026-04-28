@@ -28,17 +28,17 @@ export function MobilePreviewFAB({ data }: MobilePreviewFABProps) {
       
       {/* Mobile Preview Modal */}
       {isOpen && (
-        <div className="lg:hidden fixed inset-0 z-50 bg-slate-900/50">
-          <div className="absolute inset-x-0 bottom-0 top-0 bg-slate-100 flex flex-col animate-in slide-in-from-bottom duration-300">
+        <div className="lg:hidden fixed inset-0 z-50 bg-stone-900/50">
+          <div className="absolute inset-x-0 bottom-0 top-0 bg-stone-100 flex flex-col animate-in slide-in-from-bottom duration-300">
             {/* Header */}
             <div className="flex items-center justify-between p-4 bg-white border-b shadow-sm">
-              <h2 className="font-semibold text-slate-800">Förhandsvisning</h2>
+              <h2 className="font-semibold text-stone-800">Förhandsvisning</h2>
               <button 
                 onClick={() => setIsOpen(false)}
-                className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+                className="p-2 hover:bg-stone-100 rounded-full transition-colors"
                 aria-label="Stäng"
               >
-                <X className="w-6 h-6 text-slate-600" />
+                <X className="w-6 h-6 text-stone-600" />
               </button>
             </div>
             
@@ -50,7 +50,7 @@ export function MobilePreviewFAB({ data }: MobilePreviewFABProps) {
             </div>
             
             {/* Footer hint */}
-            <div className="p-4 bg-white border-t text-center text-sm text-slate-700">
+            <div className="p-4 bg-white border-t text-center text-sm text-stone-700">
               Svep nedåt eller tryck X för att stänga
             </div>
           </div>

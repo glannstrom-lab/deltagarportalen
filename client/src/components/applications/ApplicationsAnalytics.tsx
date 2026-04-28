@@ -29,7 +29,7 @@ interface StatCardProps {
   bgColor?: string
 }
 
-function StatCard({ title, value, subtitle, icon: Icon, trend, color = 'text-slate-600', bgColor = 'bg-slate-100' }: StatCardProps) {
+function StatCard({ title, value, subtitle, icon: Icon, trend, color = 'text-stone-600', bgColor = 'bg-stone-100' }: StatCardProps) {
   return (
     <Card className="p-4">
       <div className="flex items-start justify-between">
@@ -47,9 +47,9 @@ function StatCard({ title, value, subtitle, icon: Icon, trend, color = 'text-sla
         )}
       </div>
       <div className="mt-3">
-        <p className="text-2xl font-bold text-slate-900">{value}</p>
-        <p className="text-sm font-medium text-slate-700">{title}</p>
-        {subtitle && <p className="text-xs text-slate-700 mt-1">{subtitle}</p>}
+        <p className="text-2xl font-bold text-stone-900">{value}</p>
+        <p className="text-sm font-medium text-stone-700">{title}</p>
+        {subtitle && <p className="text-xs text-stone-700 mt-1">{subtitle}</p>}
       </div>
     </Card>
   )
@@ -80,8 +80,8 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
-        <PieChart className="w-5 h-5 text-teal-600" />
-        <h3 className="font-semibold text-slate-900">Statusfördelning</h3>
+        <PieChart className="w-5 h-5 text-[var(--c-text)]" />
+        <h3 className="font-semibold text-stone-900">Statusfördelning</h3>
       </div>
 
       {/* Visual bar */}
@@ -106,8 +106,8 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
           return (
             <div key={status} className="flex items-center gap-2 text-sm">
               <span className={cn("w-3 h-3 rounded-full", config.bgColor)} />
-              <span className="text-slate-600">{getStatusLabel(status)}</span>
-              <span className="text-slate-600 ml-auto">{count}</span>
+              <span className="text-stone-600">{getStatusLabel(status)}</span>
+              <span className="text-stone-600 ml-auto">{count}</span>
             </div>
           )
         })}
@@ -145,7 +145,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
         <BarChart3 className="w-5 h-5 text-sky-600" />
-        <h3 className="font-semibold text-slate-900">Ansökningstratt</h3>
+        <h3 className="font-semibold text-stone-900">Ansökningstratt</h3>
       </div>
 
       <div className="space-y-3">
@@ -154,20 +154,20 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
           const Icon = stage.icon
           return (
             <div key={stage.label} className="flex items-center gap-3">
-              <div className="w-24 flex items-center gap-2 text-sm text-slate-600">
-                <Icon className="w-4 h-4 text-slate-600" />
+              <div className="w-24 flex items-center gap-2 text-sm text-stone-600">
+                <Icon className="w-4 h-4 text-stone-600" />
                 {stage.label}
               </div>
-              <div className="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
+              <div className="flex-1 h-6 bg-stone-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full flex items-center justify-end px-2"
+                  className="h-full bg-gradient-to-r from-[var(--c-solid)] to-sky-500 rounded-full flex items-center justify-end px-2"
                   style={{ width: `${width}%` }}
                 >
                   <span className="text-xs font-medium text-white">{stage.count}</span>
                 </div>
               </div>
               {index < stages.length - 1 && (
-                <ArrowRight className="w-4 h-4 text-slate-300 flex-shrink-0" />
+                <ArrowRight className="w-4 h-4 text-stone-300 flex-shrink-0" />
               )}
             </div>
           )
@@ -189,8 +189,8 @@ function RecentActivity({ applications }: { applications: any[] }) {
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
-        <Clock className="w-5 h-5 text-teal-600" />
-        <h3 className="font-semibold text-slate-900">Senaste aktivitet</h3>
+        <Clock className="w-5 h-5 text-[var(--c-text)]" />
+        <h3 className="font-semibold text-stone-900">Senaste aktivitet</h3>
       </div>
 
       <div className="space-y-3">
@@ -200,11 +200,11 @@ function RecentActivity({ applications }: { applications: any[] }) {
           const jobTitle = app.jobTitle || (app.jobData as any)?.headline || 'Okänd tjänst'
 
           return (
-            <div key={app.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-slate-50">
+            <div key={app.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50">
               <div className={cn("w-2 h-2 rounded-full flex-shrink-0", config.bgColor)} />
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-slate-900 truncate">{jobTitle}</p>
-                <p className="text-xs text-slate-700">{companyName}</p>
+                <p className="text-sm font-medium text-stone-900 truncate">{jobTitle}</p>
+                <p className="text-xs text-stone-700">{companyName}</p>
               </div>
               <span className={cn("text-xs px-2 py-0.5 rounded-full", config.bgColor, config.color)}>
                 {getStatusLabel(app.status)}
@@ -278,8 +278,8 @@ export function ApplicationsAnalytics() {
           value={stats.total}
           subtitle={`${metrics.recentCount} senaste 30 dagarna`}
           icon={Briefcase}
-          color="text-teal-600"
-          bgColor="bg-teal-100"
+          color="text-[var(--c-text)]"
+          bgColor="bg-[var(--c-accent)]/40"
         />
         <StatCard
           title="Aktiva"
@@ -294,8 +294,8 @@ export function ApplicationsAnalytics() {
           value={`${metrics.interviewRate}%`}
           subtitle="Av inskickade ansökningar"
           icon={Users}
-          color="text-teal-600"
-          bgColor="bg-teal-100"
+          color="text-[var(--c-text)]"
+          bgColor="bg-[var(--c-accent)]/40"
         />
         <StatCard
           title="Behöver uppföljning"
@@ -318,15 +318,15 @@ export function ApplicationsAnalytics() {
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5 text-amber-600" />
-            <h3 className="font-semibold text-slate-900">Framgångsmått</h3>
+            <h3 className="font-semibold text-stone-900">Framgångsmått</h3>
           </div>
           <div className="space-y-4">
             <div>
               <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-slate-600">Svarsfrekvens</span>
-                <span className="font-medium text-slate-900">{metrics.responseRate}%</span>
+                <span className="text-stone-600">Svarsfrekvens</span>
+                <span className="font-medium text-stone-900">{metrics.responseRate}%</span>
               </div>
-              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-amber-500 rounded-full"
                   style={{ width: `${metrics.responseRate}%` }}
@@ -335,20 +335,20 @@ export function ApplicationsAnalytics() {
             </div>
             <div>
               <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-slate-600">Intervjufrekvens</span>
-                <span className="font-medium text-slate-900">{metrics.interviewRate}%</span>
+                <span className="text-stone-600">Intervjufrekvens</span>
+                <span className="font-medium text-stone-900">{metrics.interviewRate}%</span>
               </div>
-              <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-teal-500 rounded-full"
+                  className="h-full bg-[var(--c-solid)] rounded-full"
                   style={{ width: `${metrics.interviewRate}%` }}
                 />
               </div>
             </div>
             <div>
               <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-slate-600">Genomsnitt i pipeline</span>
-                <span className="font-medium text-slate-900">{metrics.avgDaysInPipeline} dagar</span>
+                <span className="text-stone-600">Genomsnitt i pipeline</span>
+                <span className="font-medium text-stone-900">{metrics.avgDaysInPipeline} dagar</span>
               </div>
             </div>
           </div>
@@ -362,11 +362,11 @@ export function ApplicationsAnalytics() {
       {/* Empty state */}
       {stats.total === 0 && (
         <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <BarChart3 className="w-8 h-8 text-slate-600" />
+          <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <BarChart3 className="w-8 h-8 text-stone-600" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-700 mb-2">Ingen data än</h3>
-          <p className="text-slate-700 max-w-md mx-auto">
+          <h3 className="text-xl font-semibold text-stone-700 mb-2">Ingen data än</h3>
+          <p className="text-stone-700 max-w-md mx-auto">
             Börja spåra dina jobbansökningar för att se statistik och insikter om din ansökningsprocess.
           </p>
         </Card>

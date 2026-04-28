@@ -40,24 +40,24 @@ export function AILoadingIndicator({
     <div className="flex flex-col items-center justify-center py-8 px-4">
       <div className="flex items-center gap-1.5 mb-3">
         <motion.div
-          className="w-2.5 h-2.5 rounded-full bg-teal-500"
+          className="w-2.5 h-2.5 rounded-full bg-[var(--c-solid)]"
           animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0 }}
         />
         <motion.div
-          className="w-2.5 h-2.5 rounded-full bg-teal-500"
+          className="w-2.5 h-2.5 rounded-full bg-[var(--c-solid)]"
           animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.2 }}
         />
         <motion.div
-          className="w-2.5 h-2.5 rounded-full bg-teal-500"
+          className="w-2.5 h-2.5 rounded-full bg-[var(--c-solid)]"
           animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
         />
       </div>
-      <p className="text-sm font-medium text-teal-700 dark:text-teal-300">{displayText}</p>
+      <p className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-accent)]">{displayText}</p>
       {subtext && (
-        <p className="text-xs text-slate-700 dark:text-stone-400 mt-1">{subtext}</p>
+        <p className="text-xs text-stone-700 dark:text-stone-400 mt-1">{subtext}</p>
       )}
     </div>
   )
@@ -88,33 +88,33 @@ export function CollapsibleSection({
   const sectionId = `collapsible-${title.toLowerCase().replace(/\s+/g, '-').replace(/[åäö]/g, 'a')}`
 
   return (
-    <div className="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
+    <div className="border border-stone-200 dark:border-stone-700 rounded-lg overflow-hidden">
       <button
         onClick={() => setIsOpen(!isOpen)}
         aria-expanded={isOpen}
         aria-controls={`${sectionId}-content`}
         className={cn(
           'w-full flex items-center justify-between p-3 sm:p-4',
-          'bg-slate-50 dark:bg-slate-800/50',
-          'hover:bg-slate-100 dark:hover:bg-slate-800',
+          'bg-stone-50 dark:bg-stone-800/50',
+          'hover:bg-stone-100 dark:hover:bg-stone-800',
           'transition-colors text-left'
         )}
       >
         <div className="flex items-center gap-2">
-          {icon && <span className="text-teal-500" aria-hidden="true">{icon}</span>}
-          <span className="font-medium text-slate-800 dark:text-slate-200 text-sm sm:text-base">
+          {icon && <span className="text-[var(--c-solid)]" aria-hidden="true">{icon}</span>}
+          <span className="font-medium text-stone-800 dark:text-stone-200 text-sm sm:text-base">
             {title}
           </span>
           {badge !== undefined && (
-            <span className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 text-xs rounded-full">
+            <span className="px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)] text-xs rounded-full">
               {badge}
             </span>
           )}
         </div>
         {isOpen ? (
-          <ChevronUp className="w-4 h-4 text-slate-700 dark:text-stone-300" aria-hidden="true" />
+          <ChevronUp className="w-4 h-4 text-stone-700 dark:text-stone-300" aria-hidden="true" />
         ) : (
-          <ChevronDown className="w-4 h-4 text-slate-700 dark:text-stone-300" aria-hidden="true" />
+          <ChevronDown className="w-4 h-4 text-stone-700 dark:text-stone-300" aria-hidden="true" />
         )}
       </button>
       <AnimatePresence>
@@ -128,7 +128,7 @@ export function CollapsibleSection({
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <div className="p-3 sm:p-4 border-t border-slate-200 dark:border-slate-700">
+            <div className="p-3 sm:p-4 border-t border-stone-200 dark:border-stone-700">
               {children}
             </div>
           </motion.div>
@@ -166,8 +166,8 @@ export function CopyButton({ text, className }: CopyButtonProps) {
       onClick={handleCopy}
       className={cn(
         'p-1.5 rounded-lg transition-colors',
-        'hover:bg-slate-100 dark:hover:bg-slate-800',
-        'text-slate-700 hover:text-slate-700 dark:hover:text-slate-300',
+        'hover:bg-stone-100 dark:hover:bg-stone-800',
+        'text-stone-700 hover:text-stone-700 dark:hover:text-stone-300',
         className
       )}
       title={copied ? t('ai.common.copied') : t('ai.common.copy')}
@@ -195,8 +195,8 @@ export function SourceCitations({ sources }: SourceCitationsProps) {
   if (!sources || sources.length === 0) return null
 
   return (
-    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-      <p className="text-xs font-medium text-slate-700 dark:text-stone-400 mb-2">
+    <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
+      <p className="text-xs font-medium text-stone-700 dark:text-stone-400 mb-2">
         {t('ai.common.sources')}:
       </p>
       <div className="flex flex-wrap gap-2">
@@ -208,9 +208,9 @@ export function SourceCitations({ sources }: SourceCitationsProps) {
             rel="noopener noreferrer"
             className={cn(
               'inline-flex items-center gap-1 px-2 py-1',
-              'bg-slate-100 dark:bg-stone-800 rounded-md',
-              'text-xs text-slate-600 dark:text-stone-400',
-              'hover:bg-slate-200 dark:hover:bg-stone-700 transition-colors'
+              'bg-stone-100 dark:bg-stone-800 rounded-md',
+              'text-xs text-stone-600 dark:text-stone-400',
+              'hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors'
             )}
           >
             <ExternalLink className="w-3 h-3" />
@@ -266,10 +266,10 @@ export function AIResultCard({
               <AlertCircle className="w-5 h-5 text-red-600 dark:text-red-400" />
             </div>
             <div className="flex-1">
-              <h3 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
+              <h3 className="font-medium text-stone-800 dark:text-stone-200 mb-1">
                 {t('common.error')}
               </h3>
-              <p className="text-sm text-slate-600 dark:text-stone-400 mb-4">
+              <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
                 {error}
               </p>
               {onRetry && (
@@ -294,7 +294,7 @@ export function AIResultCard({
       {/* Gradient Header */}
       <div
         className={cn(
-          'bg-gradient-to-r from-teal-600 to-sky-600',
+          'bg-gradient-to-r from-[var(--c-solid)] to-sky-600',
           'px-4 sm:px-6',
           variant === 'compact' ? 'py-3' : 'py-4'
         )}
@@ -307,7 +307,7 @@ export function AIResultCard({
             <div>
               <h3 className="font-semibold text-white text-sm sm:text-base">{title}</h3>
               {subtitle && (
-                <p className="text-teal-100 text-xs sm:text-sm">{subtitle}</p>
+                <p className="text-white text-xs sm:text-sm">{subtitle}</p>
               )}
             </div>
           </div>
@@ -346,9 +346,9 @@ export function AIListItem({ children, icon, className }: AIListItemProps) {
   return (
     <li className={cn('flex items-start gap-2', className)}>
       {icon || (
-        <span className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-2 flex-shrink-0" />
+        <span className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]/80 mt-2 flex-shrink-0" />
       )}
-      <span className="text-sm text-slate-700 dark:text-slate-300">{children}</span>
+      <span className="text-sm text-stone-700 dark:text-stone-300">{children}</span>
     </li>
   )
 }
@@ -393,13 +393,13 @@ export function AIStatBlock({
   return (
     <div
       className={cn(
-        'p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50',
+        'p-3 rounded-lg bg-stone-50 dark:bg-stone-800/50',
         className
       )}
     >
-      <p className="text-xs text-slate-700 dark:text-stone-400 mb-1">{label}</p>
+      <p className="text-xs text-stone-700 dark:text-stone-400 mb-1">{label}</p>
       <div className="flex items-baseline gap-2">
-        <span className="text-lg font-bold text-slate-800 dark:text-slate-200">
+        <span className="text-lg font-bold text-stone-800 dark:text-stone-200">
           {value}
         </span>
         {trend && (
@@ -408,7 +408,7 @@ export function AIStatBlock({
               'text-xs font-medium',
               trend === 'up' && 'text-green-600',
               trend === 'down' && 'text-red-600',
-              trend === 'neutral' && 'text-slate-700 dark:text-stone-300'
+              trend === 'neutral' && 'text-stone-700 dark:text-stone-300'
             )}
           >
             {trend === 'up' ? '↑' : trend === 'down' ? '↓' : '→'}
@@ -416,7 +416,7 @@ export function AIStatBlock({
         )}
       </div>
       {subValue && (
-        <p className="text-xs text-slate-700 dark:text-stone-400 mt-0.5">
+        <p className="text-xs text-stone-700 dark:text-stone-400 mt-0.5">
           {subValue}
         </p>
       )}

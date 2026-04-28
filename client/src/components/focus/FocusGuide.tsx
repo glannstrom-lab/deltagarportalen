@@ -102,7 +102,7 @@ export function FocusGuide() {
               <p className="text-sm text-stone-500 dark:text-stone-400">
                 {t('focusGuide.progress', 'Din framgång')}
               </p>
-              <p className="text-sm font-medium text-teal-600 dark:text-teal-400">
+              <p className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">
                 {progressPercent}%
               </p>
             </div>
@@ -110,7 +110,7 @@ export function FocusGuide() {
             {/* Progress bar */}
             <div className="h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden mb-4">
               <div
-                className="h-full bg-teal-500 rounded-full transition-all duration-500"
+                className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -128,8 +128,8 @@ export function FocusGuide() {
                     onClick={() => goToStep(step.id)}
                     className={cn(
                       'w-10 h-10 rounded-full flex items-center justify-center transition-all',
-                      isActive && 'bg-teal-500 text-white ring-4 ring-teal-500/20',
-                      isComplete && !isActive && 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400',
+                      isActive && 'bg-[var(--c-solid)] text-white ring-4 ring-[var(--c-solid)]/20',
+                      isComplete && !isActive && 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-solid)]',
                       !isActive && !isComplete && 'bg-stone-100 dark:bg-stone-800 text-stone-400'
                     )}
                     aria-label={t(step.titleKey)}

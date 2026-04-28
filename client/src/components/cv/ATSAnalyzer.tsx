@@ -461,8 +461,8 @@ export function ATSAnalyzer({
   return (
     <div className="bg-white dark:bg-stone-800 rounded-2xl p-6 shadow-sm border border-stone-200 dark:border-stone-700">
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-teal-500/10 dark:bg-teal-400/10 rounded-lg">
-          <FileSearch size={24} className="text-teal-600 dark:text-teal-400" />
+        <div className="p-2 bg-[var(--c-solid)]/10 dark:bg-[var(--c-solid)]/80/10 rounded-lg">
+          <FileSearch size={24} className="text-[var(--c-text)] dark:text-[var(--c-text)]" />
         </div>
         <div>
           <h3 className="font-semibold text-stone-800 dark:text-stone-200">
@@ -495,7 +495,7 @@ export function ATSAnalyzer({
 
       {/* M3: Nästa steg - FLYTTAT HÖGRE UPP */}
       {nextSteps.length > 0 && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 rounded-xl border border-sky-100 dark:border-sky-800/50">
+        <div className="mb-6 p-4 bg-gradient-to-r from-sky-50 to-[var(--c-bg)] dark:from-sky-900/20 dark:to-[var(--c-bg)]/30 rounded-xl border border-sky-100 dark:border-sky-800/50">
           <div className="flex items-center gap-2 mb-3">
             <Lightbulb size={18} className="text-sky-600 dark:text-sky-400" />
             <h4 className="font-medium text-sky-900 dark:text-sky-200">
@@ -505,12 +505,12 @@ export function ATSAnalyzer({
           <ul className="space-y-2">
             {nextSteps.slice(0, 3).map((step, index) => (
               <li key={index} className="flex items-start gap-2 text-sm">
-                <span className="text-teal-500 dark:text-teal-400 mt-0.5 flex-shrink-0">→</span>
+                <span className="text-[var(--c-solid)] dark:text-[var(--c-text)] mt-0.5 flex-shrink-0">→</span>
                 <span className="text-stone-700 dark:text-stone-300 flex-1">{step.text}</span>
                 {/* M1: "Fixa nu"-knapp */}
                 <Link
                   to={`/cv?step=${step.step}`}
-                  className="text-xs px-2 py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors flex-shrink-0"
+                  className="text-xs px-2 py-1 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] transition-colors flex-shrink-0"
                 >
                   {t('cv.ats.analyzer.fixNow', 'Fixa nu')}
                 </Link>
@@ -526,11 +526,11 @@ export function ATSAnalyzer({
       )}
 
       {/* Rekryterarens ögonblicks-test */}
-      <div className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-xl border border-teal-100 dark:border-teal-800/50">
+      <div className="mb-6 p-4 bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Eye size={18} className="text-teal-600 dark:text-teal-400" />
-            <h4 className="font-medium text-teal-900 dark:text-teal-200">
+            <Eye size={18} className="text-[var(--c-text)] dark:text-[var(--c-text)]" />
+            <h4 className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
               {t('cv.ats.analyzer.recruiterTest.title', 'Rekryterarens ögonblicks-test')}
             </h4>
           </div>
@@ -539,12 +539,12 @@ export function ATSAnalyzer({
             onClick={() => setShowRecruiterView(!showRecruiterView)}
             aria-expanded={showRecruiterView}
             aria-controls="recruiter-view-details"
-            className="text-xs text-teal-600 dark:text-teal-400 hover:underline focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 rounded"
+            className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 rounded"
           >
             {showRecruiterView ? t('common.hide', 'Dölj') : t('common.showDetails', 'Visa detaljer')}
           </button>
         </div>
-        <p className="text-xs text-teal-700 dark:text-teal-300 mb-3">
+        <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-accent)] mb-3">
           {t('cv.ats.analyzer.recruiterTest.description', 'En rekryterare skannar ditt CV på 6 sekunder. Så här ser det ut:')}
         </p>
         <div className="grid grid-cols-2 gap-2 text-sm" role="list" aria-label={t('cv.ats.analyzer.recruiterTest.listLabel', 'Checklista för snabbskanning')}>
@@ -580,16 +580,16 @@ export function ATSAnalyzer({
           </div>
         </div>
         {recruiterSnapshot.latestRole && (
-          <p className="text-xs text-teal-600 dark:text-teal-400 mt-2">
+          <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-2">
             {t('cv.ats.analyzer.recruiterTest.latestRole', 'Senaste roll')}: <strong>{recruiterSnapshot.latestRole}</strong> {recruiterSnapshot.latestCompany && t('cv.ats.analyzer.recruiterTest.at', 'på {{company}}', { company: recruiterSnapshot.latestCompany })}
           </p>
         )}
 
         {/* Skannbarhetspoäng - expanderbar */}
         {showRecruiterView && (
-          <div id="recruiter-view-details" className="mt-4 pt-4 border-t border-teal-200 dark:border-teal-700">
+          <div id="recruiter-view-details" className="mt-4 pt-4 border-t border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-teal-900 dark:text-teal-200">
+              <span className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
                 {t('cv.ats.analyzer.scanability.title', 'Skannbarhetspoäng')}
               </span>
               <span className={`text-lg font-bold ${getScoreColor(scanabilityScore)}`}>
@@ -613,7 +613,7 @@ export function ATSAnalyzer({
                 aria-hidden="true"
               />
             </div>
-            <p className="text-xs text-teal-700 dark:text-teal-300 mt-2">
+            <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-accent)] mt-2">
               {scanabilityScore >= 80
                 ? t('cv.ats.analyzer.scanability.excellent', 'Mycket lättskannat CV - rekryterare ser snabbt dina styrkor!')
                 : scanabilityScore >= 60
@@ -643,9 +643,9 @@ export function ATSAnalyzer({
               onClick={() => setSelectedIndustry(selectedIndustry === industry.id ? null : industry.id)}
               role="radio"
               aria-checked={selectedIndustry === industry.id}
-              className={`p-2 rounded-lg border text-center transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 ${
+              className={`p-2 rounded-lg border text-center transition-all focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 ${
                 selectedIndustry === industry.id
-                  ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
+                  ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30'
                   : 'border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500'
               }`}
             >
@@ -711,7 +711,7 @@ export function ATSAnalyzer({
           onClick={() => setShowKeywords(!showKeywords)}
           aria-expanded={showKeywords}
           aria-controls="keyword-analysis-section"
-          className="w-full flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700/50 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700/50 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
         >
           <div className="flex items-center gap-2">
             <Sparkles size={18} className="text-amber-500" />
@@ -722,7 +722,7 @@ export function ATSAnalyzer({
               {totalKeywordsFound}/{totalKeywords}
             </span>
           </div>
-          <ArrowRight className={`w-4 h-4 text-teal-600 dark:text-teal-400 transition-transform ${showKeywords ? 'rotate-90' : ''}`} />
+          <ArrowRight className={`w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)] transition-transform ${showKeywords ? 'rotate-90' : ''}`} />
         </button>
 
         {showKeywords && (
@@ -773,7 +773,7 @@ export function ATSAnalyzer({
           onClick={() => setShowATSChecks(!showATSChecks)}
           aria-expanded={showATSChecks}
           aria-controls="ats-checks-section"
-          className="w-full flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700/50 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700/50 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
         >
           <div className="flex items-center gap-2">
             <FileText size={18} className="text-stone-600 dark:text-stone-400" />
@@ -788,7 +788,7 @@ export function ATSAnalyzer({
               {technicalChecks.filter(c => c.passed).length}/{technicalChecks.length}
             </span>
           </div>
-          <ArrowRight className={`w-4 h-4 text-teal-600 dark:text-teal-400 transition-transform ${showATSChecks ? 'rotate-90' : ''}`} />
+          <ArrowRight className={`w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)] transition-transform ${showATSChecks ? 'rotate-90' : ''}`} />
         </button>
 
         {showATSChecks && (
@@ -852,7 +852,7 @@ export function ATSAnalyzer({
           onClick={() => setShowExportCheck(!showExportCheck)}
           aria-expanded={showExportCheck}
           aria-controls="export-check-section"
-          className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 rounded-lg hover:from-blue-100 hover:to-sky-100 dark:hover:from-blue-900/30 dark:hover:to-sky-900/30 transition-colors border border-blue-100 dark:border-blue-800/50 focus:outline-none focus:ring-2 focus:ring-teal-500"
+          className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 rounded-lg hover:from-blue-100 hover:to-sky-100 dark:hover:from-blue-900/30 dark:hover:to-sky-900/30 transition-colors border border-blue-100 dark:border-blue-800/50 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
         >
           <div className="flex items-center gap-2">
             <Download size={18} className="text-blue-600 dark:text-blue-400" />
@@ -920,7 +920,7 @@ export function ATSAnalyzer({
       </div>
 
       {/* Best Practices */}
-      <div className="p-3 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-100 dark:border-teal-800/50">
+      <div className="p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
         <p className="text-xs text-stone-600 dark:text-stone-400">
           <strong>{t('cv.ats.analyzer.tips.label', 'Tips')}:</strong> {t('cv.ats.analyzer.tips.description', 'ATS-system (Applicant Tracking Systems) används av de flesta större företag för att filtrera CV:n. Använd nyckelord från jobbannonser och undvik tabeller, bilder och komplicerad formatering.')}
         </p>

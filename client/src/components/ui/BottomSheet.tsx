@@ -107,7 +107,7 @@ export function BottomSheet({
             className="flex justify-center pt-3 pb-2 cursor-grab active:cursor-grabbing"
             onClick={onClose}
           >
-            <div className="w-12 h-1.5 bg-slate-300 dark:bg-stone-600 rounded-full" />
+            <div className="w-12 h-1.5 bg-stone-300 dark:bg-stone-600 rounded-full" />
           </div>
         )}
         
@@ -116,10 +116,10 @@ export function BottomSheet({
           <div className="flex items-start justify-between gap-4 px-6 pb-4">
             <div className="flex-1 min-w-0">
               {title && (
-                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{title}</h2>
+                <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">{title}</h2>
               )}
               {description && (
-                <p className="text-sm text-slate-700 dark:text-stone-300 mt-1">{description}</p>
+                <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">{description}</p>
               )}
             </div>
             {showCloseButton && (
@@ -170,7 +170,7 @@ export function BottomSheetItem({
         animations.press,
         isSelected
           ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
-          : 'hover:bg-slate-50 dark:hover:bg-stone-800',
+          : 'hover:bg-stone-50 dark:hover:bg-stone-800',
         isDestructive && !isSelected && 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
@@ -178,7 +178,7 @@ export function BottomSheetItem({
       {icon && (
         <div className={cn(
           'flex-shrink-0',
-          isSelected ? 'text-indigo-600 dark:text-indigo-400' : isDestructive ? 'text-red-500 dark:text-red-400' : 'text-slate-700 dark:text-stone-300'
+          isSelected ? 'text-indigo-600 dark:text-indigo-400' : isDestructive ? 'text-red-500 dark:text-red-400' : 'text-stone-700 dark:text-stone-300'
         )}>
           {icon}
         </div>
@@ -192,7 +192,7 @@ export function BottomSheetItem({
           {label}
         </div>
         {description && (
-          <div className="text-sm text-slate-700 dark:text-stone-400 mt-0.5">{description}</div>
+          <div className="text-sm text-stone-700 dark:text-stone-400 mt-0.5">{description}</div>
         )}
       </div>
       {isSelected && (
@@ -208,7 +208,7 @@ export function BottomSheetItem({
 // BOTTOM SHEET DIVIDER
 // ============================================
 export function BottomSheetDivider() {
-  return <div className="h-px bg-slate-200 dark:bg-stone-700 my-2" />
+  return <div className="h-px bg-stone-200 dark:bg-stone-700 my-2" />
 }
 
 // ============================================
@@ -244,14 +244,14 @@ export function FilterSheet({
         {children}
         
         {/* Actions */}
-        <div className="flex items-center gap-3 pt-4 border-t border-slate-200 dark:border-stone-700">
+        <div className="flex items-center gap-3 pt-4 border-t border-stone-200 dark:border-stone-700">
           <button
             onClick={onClear}
             disabled={filterCount === 0}
             className={cn(
               'flex-1 py-3 px-4 rounded-xl font-medium',
-              'border border-slate-200 text-slate-700',
-              'hover:bg-slate-50 transition-colors',
+              'border border-stone-200 text-stone-700',
+              'hover:bg-stone-50 transition-colors',
               'disabled:opacity-50 disabled:cursor-not-allowed'
             )}
           >
@@ -339,8 +339,8 @@ export function ActionSheet({
               onClick={onClose}
               className={cn(
                 'w-full py-4 px-4',
-                'text-center font-medium text-slate-600',
-                'hover:bg-slate-50 rounded-xl',
+                'text-center font-medium text-stone-600',
+                'hover:bg-stone-50 rounded-xl',
                 animations.press,
                 'transition-colors duration-200'
               )}

@@ -20,12 +20,12 @@ interface DashboardSectionProps {
 
 const colorConfig = {
   teal: {
-    headerBg: 'bg-gradient-to-r from-teal-50 via-teal-50/80 to-emerald-50/50 dark:from-teal-900/30 dark:via-teal-900/20 dark:to-emerald-900/10',
-    headerText: 'text-teal-800 dark:text-teal-200',
-    headerIcon: 'text-teal-600 dark:text-teal-400',
-    border: 'border-teal-200/60 dark:border-teal-800/40',
-    badge: 'bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300',
-    ring: 'focus-visible:ring-teal-500',
+    headerBg: 'bg-gradient-to-r from-[var(--c-bg)] via-[var(--c-bg)]/80 to-emerald-50/50 dark:from-[var(--c-bg)]/40 dark:via-[var(--c-bg)]/30 dark:to-emerald-900/10',
+    headerText: 'text-[var(--c-text)] dark:text-[var(--c-text)]',
+    headerIcon: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
+    border: 'border-[var(--c-accent)]/60/60 dark:border-[var(--c-accent)]/50/40',
+    badge: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]',
+    ring: 'focus-visible:ring-[var(--c-solid)]',
   },
   sky: {
     headerBg: 'bg-gradient-to-r from-sky-50 via-sky-50/80 to-blue-50/50 dark:from-sky-900/30 dark:via-sky-900/20 dark:to-blue-900/10',

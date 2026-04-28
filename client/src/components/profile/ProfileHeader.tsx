@@ -138,7 +138,7 @@ export function ProfileHeader() {
                 'text-sm font-bold',
                 completion.percent >= 75 ? 'text-emerald-600 dark:text-emerald-400' :
                 completion.percent >= 50 ? 'text-amber-600 dark:text-amber-400' :
-                'text-teal-600 dark:text-teal-400'
+                'text-[var(--c-text)] dark:text-[var(--c-solid)]'
               )}>
                 {completion.percent}%
               </span>
@@ -151,7 +151,7 @@ export function ProfileHeader() {
                   'h-full rounded-full transition-all duration-500',
                   completion.percent >= 75 ? 'bg-emerald-500' :
                   completion.percent >= 50 ? 'bg-amber-500' :
-                  'bg-teal-500'
+                  'bg-[var(--c-solid)]'
                 )}
                 style={{ width: `${completion.percent}%` }}
                 role="progressbar"
@@ -168,14 +168,14 @@ export function ProfileHeader() {
                 className="w-full flex items-center justify-between p-2 -mx-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700/50 transition-colors group"
               >
                 <div className="flex items-center gap-2">
-                  <span className="w-5 h-5 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
-                    <span className="w-2 h-2 rounded-full bg-teal-500" />
+                  <span className="w-5 h-5 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
+                    <span className="w-2 h-2 rounded-full bg-[var(--c-solid)]" />
                   </span>
                   <span className="text-sm text-stone-600 dark:text-stone-400">
-                    Nästa steg: <span className="text-teal-600 dark:text-teal-400 font-medium">{completion.nextStep.label}</span>
+                    Nästa steg: <span className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium">{completion.nextStep.label}</span>
                   </span>
                 </div>
-                <ChevronRight className="w-4 h-4 text-stone-400 group-hover:text-teal-500 group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight className="w-4 h-4 text-stone-400 group-hover:text-[var(--c-solid)] group-hover:translate-x-0.5 transition-all" />
               </button>
             )}
 

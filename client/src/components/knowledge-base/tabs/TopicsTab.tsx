@@ -71,7 +71,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
       <div className="lg:col-span-1 space-y-4">
         <Card variant="elevated" className="sticky top-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+            <h3 className="font-semibold text-stone-800 flex items-center gap-2">
               <SlidersHorizontal size={18} />
               {t('knowledgeBase.topics.filter')}
             </h3>
@@ -80,7 +80,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
           {/* Search */}
           <div className="mb-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <Input
                 type="text"
                 placeholder={t('knowledgeBase.topics.searchPlaceholder')}
@@ -93,15 +93,15 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
 
           {/* Category filter */}
           <div className="space-y-2">
-            <h4 className="text-sm font-medium text-slate-700">
+            <h4 className="text-sm font-medium text-stone-700">
               {t('knowledgeBase.topics.categories')}
             </h4>
             <button
               onClick={() => setSelectedCategory('')}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                 !selectedCategory
-                  ? 'bg-teal-100 text-teal-800 font-medium'
-                  : 'text-slate-600 hover:bg-slate-100'
+                  ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)] font-medium'
+                  : 'text-stone-600 hover:bg-stone-100'
               }`}
             >
               {t('knowledgeBase.topics.allCategories')} ({articles.length})
@@ -115,8 +115,8 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
                   onClick={() => setSelectedCategory(category)}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                     selectedCategory === category
-                      ? 'bg-teal-100 text-teal-800 font-medium'
-                      : 'text-slate-600 hover:bg-slate-100'
+                      ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)] font-medium'
+                      : 'text-stone-600 hover:bg-stone-100'
                   }`}
                 >
                   {displayName} ({count})
@@ -132,7 +132,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
                 setSearchQuery('')
                 setSelectedCategory('')
               }}
-              className="w-full mt-4 text-sm text-teal-600 hover:underline"
+              className="w-full mt-4 text-sm text-[var(--c-text)] hover:underline"
             >
               {t('knowledgeBase.topics.clearFilters')}
             </button>
@@ -145,28 +145,28 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-slate-900">
+            <h2 className="text-lg font-semibold text-stone-900">
               {searchQuery || selectedCategory
                 ? t('knowledgeBase.topics.searchResults')
                 : t('knowledgeBase.topics.allArticles')}
             </h2>
-            <p className="text-sm text-slate-700">
+            <p className="text-sm text-stone-700">
               {filteredArticles.length} {t('knowledgeBase.topics.articles')}
             </p>
           </div>
 
           {/* View mode toggle */}
-          <div className="flex items-center gap-2 bg-slate-100 rounded-lg p-1">
+          <div className="flex items-center gap-2 bg-stone-100 rounded-lg p-1">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'text-slate-700'}`}
+              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'text-stone-700'}`}
               aria-label={t('knowledgeBase.topics.gridView')}
             >
               <Grid className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded ${viewMode === 'list' ? 'bg-white shadow-sm' : 'text-slate-700'}`}
+              className={`p-2 rounded ${viewMode === 'list' ? 'bg-white shadow-sm' : 'text-stone-700'}`}
               aria-label={t('knowledgeBase.topics.listView')}
             >
               <List className="w-4 h-4" />
@@ -177,14 +177,14 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
         {/* Articles */}
         {filteredArticles.length === 0 ? (
           <Card className="text-center py-12">
-            <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-700">{t('knowledgeBase.topics.noMatches')}</p>
+            <BookOpen className="w-12 h-12 text-stone-300 mx-auto mb-4" />
+            <p className="text-stone-700">{t('knowledgeBase.topics.noMatches')}</p>
             <button
               onClick={() => {
                 setSearchQuery('')
                 setSelectedCategory('')
               }}
-              className="text-teal-600 hover:underline mt-2"
+              className="text-[var(--c-text)] hover:underline mt-2"
             >
               {t('knowledgeBase.topics.clearFilters')}
             </button>

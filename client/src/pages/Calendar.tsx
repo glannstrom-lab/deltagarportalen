@@ -214,7 +214,7 @@ export default function Calendar() {
               >
                 <span className={`
                   inline-flex items-center justify-center w-7 h-7 text-sm rounded-full
-                  ${isToday ? 'bg-teal-600 dark:bg-teal-500 text-white font-semibold' : 'text-stone-700 dark:text-stone-200'}
+                  ${isToday ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)] text-white font-semibold' : 'text-stone-700 dark:text-stone-200'}
                 `}>
                   {day}
                 </span>
@@ -301,7 +301,7 @@ export default function Calendar() {
               </p>
               <button
                 onClick={handleCreateEvent}
-                className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
+                className="mt-4 px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] transition-colors text-sm font-medium"
               >
                 {t('calendar.newEvent')}
               </button>
@@ -319,8 +319,8 @@ export default function Calendar() {
         <header className="mb-6">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center">
-                <CalendarDays className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <div className="w-10 h-10 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
+                <CalendarDays className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
               </div>
               <div>
                 <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">
@@ -333,7 +333,7 @@ export default function Calendar() {
             </div>
             <button
               onClick={handleCreateEvent}
-              className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium text-sm"
+              className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-text)] transition-colors font-medium text-sm"
             >
               <Plus className="w-4 h-4" />
               <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
@@ -349,7 +349,7 @@ export default function Calendar() {
 
           {/* Visible status toast */}
           {statusMessage && (
-            <div className="fixed bottom-4 right-4 z-50 px-4 py-3 bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-lg border border-green-200 dark:border-green-800 shadow-lg flex items-center gap-2">
+            <div className="fixed bottom-4 right-4 z-50 px-4 py-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-lg border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 shadow-lg flex items-center gap-2">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
@@ -376,7 +376,7 @@ export default function Calendar() {
 
           {loading && (
             <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
+              <Loader2 className="w-8 h-8 text-[var(--c-text)] dark:text-[var(--c-text)] animate-spin" />
               <span className="ml-3 text-stone-600 dark:text-stone-300">{t('common.loading')}</span>
             </div>
           )}
@@ -431,7 +431,7 @@ export default function Calendar() {
       {isSaving && (
         <div className="fixed inset-0 bg-black/20 z-[60] flex items-center justify-center">
           <div className="bg-white dark:bg-stone-800 rounded-xl p-4 flex items-center gap-3 shadow-lg border border-stone-200 dark:border-stone-700">
-            <Loader2 className="w-5 h-5 text-teal-600 animate-spin" />
+            <Loader2 className="w-5 h-5 text-[var(--c-text)] animate-spin" />
             <span className="text-stone-700 dark:text-stone-300">{t('common.loading')}</span>
           </div>
         </div>

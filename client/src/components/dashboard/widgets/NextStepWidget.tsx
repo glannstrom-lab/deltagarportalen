@@ -50,7 +50,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
         to="#"
         color="sky"
       >
-        <div className="h-24 bg-slate-100 rounded-lg animate-pulse" />
+        <div className="h-24 bg-stone-100 rounded-lg animate-pulse" />
       </DashboardWidget>
     )
   }
@@ -67,8 +67,8 @@ export const NextStepWidget = memo(function NextStepWidget() {
       timeEstimateKey: 'nextStepWidget.time.15min',
       energyLevel: 'medium',
       priority: 100,
-      color: 'text-teal-700',
-      gradient: 'from-teal-500 to-sky-600'
+      color: 'text-[var(--c-text)]',
+      gradient: 'from-[var(--c-solid)] to-sky-600'
     },
     {
       id: 'complete-cv',
@@ -80,8 +80,8 @@ export const NextStepWidget = memo(function NextStepWidget() {
       timeEstimateKey: 'nextStepWidget.time.10min',
       energyLevel: 'medium',
       priority: 90,
-      color: 'text-teal-700',
-      gradient: 'from-teal-500 to-sky-600',
+      color: 'text-[var(--c-text)]',
+      gradient: 'from-[var(--c-solid)] to-sky-600',
       interpolation: { progress: data.cv.progress }
     },
     {
@@ -94,8 +94,8 @@ export const NextStepWidget = memo(function NextStepWidget() {
       timeEstimateKey: 'nextStepWidget.time.5min',
       energyLevel: 'low',
       priority: 80,
-      color: 'text-teal-700',
-      gradient: 'from-teal-500 to-emerald-600'
+      color: 'text-[var(--c-text)]',
+      gradient: 'from-[var(--c-solid)] to-emerald-600'
     },
     {
       id: 'save-job',
@@ -202,7 +202,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
       <Link to={nextStep.link} className="block group">
         <div className={cn(
           "relative overflow-hidden rounded-2xl bg-gradient-to-br p-6 transition-all",
-          "hover:shadow-lg hover:shadow-teal-500/20 hover:-translate-y-0.5",
+          "hover:shadow-lg hover: hover:-translate-y-0.5",
           nextStep.gradient
         )}>
           {/* Background decoration */}
@@ -239,7 +239,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
                     <Clock size={12} />
                     {t(nextStep.timeEstimateKey)}
                   </span>
-                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white text-teal-700 text-sm font-semibold group-hover:bg-white/90 transition-colors">
+                  <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white text-[var(--c-text)] text-sm font-semibold group-hover:bg-white/90 transition-colors">
                     {t(nextStep.actionKey)}
                     <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                   </span>
@@ -269,11 +269,11 @@ export const NextStepWidgetCompact = memo(function NextStepWidgetCompact() {
   if (!data.cv.hasCV) {
     titleKey = 'nextStepWidget.compact.createCv'
     link = '/cv'
-    color = 'bg-teal-100 text-teal-700'
+    color = 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
   } else if (!data.interest.hasResult) {
     titleKey = 'nextStepWidget.compact.interestGuide'
     link = '/interest-guide'
-    color = 'bg-teal-100 text-teal-700'
+    color = 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
   } else if (data.jobs.savedCount === 0) {
     titleKey = 'nextStepWidget.compact.saveJob'
     link = '/job-search'

@@ -53,18 +53,18 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
               <Smile className="w-5 h-5 text-amber-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-900">Hur mår du idag?</h3>
+              <h3 className="font-semibold text-stone-900">Hur mår du idag?</h3>
               {todayEntry ? (
-                <p className="text-sm text-slate-700">
+                <p className="text-sm text-stone-700">
                   Registrerat: {getMoodEmoji(todayEntry.level)} {getMoodLabel(todayEntry.level).toLowerCase()}
                 </p>
               ) : (
-                <p className="text-sm text-slate-700">Klicka för att registrera</p>
+                <p className="text-sm text-stone-700">Klicka för att registrera</p>
               )}
             </div>
           </div>
           {avgMood > 0 && (
-            <div className="flex items-center gap-1 text-sm text-slate-700">
+            <div className="flex items-center gap-1 text-sm text-stone-700">
               <TrendingUp size={16} />
               Snitt vecka: {avgMood.toFixed(1)}/5
             </div>
@@ -73,13 +73,13 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
       ) : (
         <div className="p-4 space-y-4">
           <div className="flex items-center justify-between">
-            <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+            <h3 className="font-semibold text-stone-900 flex items-center gap-2">
               <Smile className="w-5 h-5 text-amber-600" />
               Dagens check-in
             </h3>
             <button
               onClick={() => setIsExpanded(false)}
-              className="text-sm text-slate-700 hover:text-slate-700"
+              className="text-sm text-stone-700 hover:text-stone-700"
             >
               Stäng
             </button>
@@ -87,7 +87,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
 
           {/* Mood */}
           <div>
-            <label className="text-sm font-medium text-slate-700 mb-2 block">
+            <label className="text-sm font-medium text-stone-700 mb-2 block">
               Humör
             </label>
             <div className="flex gap-2">
@@ -102,7 +102,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
                   }`}
                 >
                   <span className="text-2xl">{getMoodEmoji(level as MoodLevel)}</span>
-                  <p className="text-xs text-slate-600 mt-1">{getMoodLabel(level as MoodLevel)}</p>
+                  <p className="text-xs text-stone-600 mt-1">{getMoodLabel(level as MoodLevel)}</p>
                 </button>
               ))}
             </div>
@@ -110,7 +110,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
 
           {/* Energy */}
           <div>
-            <label className="text-sm font-medium text-slate-700 mb-2 block flex items-center gap-1">
+            <label className="text-sm font-medium text-stone-700 mb-2 block flex items-center gap-1">
               <Battery className="w-4 h-4" />
               Energinivå
             </label>
@@ -126,7 +126,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
                   }`}
                 >
                   <span className="text-lg">{getEnergyEmoji(level as 1 | 2 | 3 | 4 | 5)}</span>
-                  <p className="text-xs text-slate-600 mt-1">{level}/5</p>
+                  <p className="text-xs text-stone-600 mt-1">{level}/5</p>
                 </button>
               ))}
             </div>
@@ -134,7 +134,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
 
           {/* Stress */}
           <div>
-            <label className="text-sm font-medium text-slate-700 mb-2 block flex items-center gap-1">
+            <label className="text-sm font-medium text-stone-700 mb-2 block flex items-center gap-1">
               <AlertTriangle className="w-4 h-4" />
               Stressnivå
             </label>
@@ -157,7 +157,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
                     level === 3 ? 'bg-yellow-300' :
                     level === 4 ? 'bg-orange-400' : 'bg-red-500'
                   }`} />
-                  <p className="text-xs text-slate-600 mt-1">{level}/5</p>
+                  <p className="text-xs text-stone-600 mt-1">{level}/5</p>
                 </button>
               ))}
             </div>
@@ -165,14 +165,14 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
 
           {/* Note */}
           <div>
-            <label className="text-sm font-medium text-slate-700 mb-2 block">
+            <label className="text-sm font-medium text-stone-700 mb-2 block">
               Anteckning (valfritt)
             </label>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="Hur känns det idag? Vad påverkar ditt mående?"
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
+              className="w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-500 resize-none"
               rows={2}
             />
           </div>

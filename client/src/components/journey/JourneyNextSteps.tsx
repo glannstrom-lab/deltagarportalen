@@ -43,10 +43,10 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
       <Card className="p-6">
         <div className="text-center py-8">
           <Award className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">
+          <h3 className="text-lg font-semibold text-stone-900 mb-2">
             Fantastiskt jobbat!
           </h3>
-          <p className="text-slate-600">
+          <p className="text-stone-600">
             Du har klarat alla aktuella steg. Fortsätt utforska portalen!
           </p>
         </div>
@@ -57,8 +57,8 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-slate-900">Nästa steg</h3>
-        <span className="text-sm text-slate-700 bg-slate-100 px-3 py-1 rounded-full">
+        <h3 className="text-lg font-semibold text-stone-900">Nästa steg</h3>
+        <span className="text-sm text-stone-700 bg-stone-100 px-3 py-1 rounded-full">
           {energyLabels[energyLevel]}
         </span>
       </div>
@@ -75,7 +75,7 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
                 relative p-4 rounded-xl border-2 transition-all
                 ${index === 0
                   ? 'border-indigo-200 bg-indigo-50/50'
-                  : 'border-slate-100 bg-white hover:border-slate-200'
+                  : 'border-stone-100 bg-white hover:border-stone-200'
                 }
               `}
             >
@@ -92,7 +92,7 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
                   w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0
                   ${index === 0
                     ? 'bg-indigo-100 text-indigo-600'
-                    : 'bg-slate-100 text-slate-600'
+                    : 'bg-stone-100 text-stone-600'
                   }
                 `}>
                   <Icon className="w-6 h-6" />
@@ -101,7 +101,7 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 mb-1">
-                    <h4 className="font-medium text-slate-900">
+                    <h4 className="font-medium text-stone-900">
                       {step.milestone.name}
                     </h4>
                     <span className="text-xs text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">
@@ -109,13 +109,13 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
                     </span>
                   </div>
 
-                  <p className="text-sm text-slate-600 mb-3">
+                  <p className="text-sm text-stone-600 mb-3">
                     {step.milestone.description}
                   </p>
 
                   {/* Progress Bar */}
                   <div className="flex items-center gap-3">
-                    <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                    <div className="flex-1 h-2 bg-stone-200 rounded-full overflow-hidden">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${
                           isReady ? 'bg-emerald-500' : 'bg-indigo-500'
@@ -123,7 +123,7 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
                         style={{ width: `${step.progress}%` }}
                       />
                     </div>
-                    <span className="text-sm font-medium text-slate-700">
+                    <span className="text-sm font-medium text-stone-700">
                       {step.progress}%
                     </span>
                   </div>
@@ -156,8 +156,8 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
       </div>
 
       {/* Encouraging Footer */}
-      <div className="mt-6 pt-4 border-t border-slate-100">
-        <div className="flex items-center gap-2 text-sm text-slate-700">
+      <div className="mt-6 pt-4 border-t border-stone-100">
+        <div className="flex items-center gap-2 text-sm text-stone-700">
           <Clock className="w-4 h-4" />
           <span>Varje steg tar dig närmare målet. Du klarar detta!</span>
         </div>

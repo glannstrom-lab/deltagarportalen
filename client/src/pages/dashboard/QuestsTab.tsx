@@ -174,10 +174,10 @@ export default function QuestsTab() {
   if (loading) {
     return (
       <div className="space-y-6">
-        <div className="h-32 bg-slate-100 dark:bg-stone-700 rounded-2xl animate-pulse" />
+        <div className="h-32 bg-stone-100 dark:bg-stone-700 rounded-2xl animate-pulse" />
         <div className="grid gap-4">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-32 bg-slate-100 dark:bg-stone-700 rounded-xl animate-pulse" />
+            <div key={i} className="h-32 bg-stone-100 dark:bg-stone-700 rounded-xl animate-pulse" />
           ))}
         </div>
       </div>
@@ -204,7 +204,7 @@ export default function QuestsTab() {
           <p className="text-sm text-orange-600 dark:text-orange-400">{t('quests.daysInRow')}</p>
         </div>
 
-        <div className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl border border-emerald-200 dark:border-emerald-700">
+        <div className="p-4 bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/30 dark:to-[var(--c-bg)]/40 rounded-2xl border border-emerald-200 dark:border-emerald-700">
           <div className="w-10 h-10 bg-white dark:bg-stone-800 rounded-xl flex items-center justify-center shadow-sm mb-3">
             <Trophy size={20} className="text-emerald-600 dark:text-emerald-400" />
           </div>
@@ -214,30 +214,30 @@ export default function QuestsTab() {
       </div>
 
       {/* Progress */}
-      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-slate-200 dark:border-stone-700 p-6">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('quests.todaysProgress')}</h3>
+          <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('quests.todaysProgress')}</h3>
           <span className="text-lg font-bold text-yellow-600 dark:text-yellow-400">{progress}%</span>
         </div>
-        <div className="w-full bg-slate-100 dark:bg-stone-700 rounded-full h-3 overflow-hidden">
+        <div className="w-full bg-stone-100 dark:bg-stone-700 rounded-full h-3 overflow-hidden">
           <div
             className="bg-gradient-to-r from-yellow-400 to-amber-500 h-3 rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="text-sm text-slate-700 dark:text-stone-300 mt-3">
+        <p className="text-sm text-stone-700 dark:text-stone-300 mt-3">
           {t('quests.ofQuestsCompleted', { completed: completedCount, total: quests.length })}
         </p>
       </div>
 
       {/* Quests List */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-slate-800 dark:text-stone-100 text-lg">{t('quests.todaysQuests')}</h3>
+        <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-lg">{t('quests.todaysQuests')}</h3>
 
         {quests.length === 0 ? (
-          <div className="p-8 bg-slate-50 dark:bg-stone-800 rounded-2xl text-center">
-            <p className="text-slate-600 dark:text-stone-400">{t('quests.noQuestsYet')}</p>
-            <p className="text-sm text-slate-700 dark:text-stone-300 mt-1">{t('quests.comeBackTomorrow')}</p>
+          <div className="p-8 bg-stone-50 dark:bg-stone-800 rounded-2xl text-center">
+            <p className="text-stone-600 dark:text-stone-400">{t('quests.noQuestsYet')}</p>
+            <p className="text-sm text-stone-700 dark:text-stone-300 mt-1">{t('quests.comeBackTomorrow')}</p>
           </div>
         ) : (
           quests.map((quest) => {
@@ -250,7 +250,7 @@ export default function QuestsTab() {
                   'relative p-5 rounded-2xl border-2 transition-all',
                   quest.is_completed
                     ? 'bg-emerald-50/50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-700'
-                    : 'bg-white dark:bg-stone-900 border-slate-200 dark:border-stone-700 hover:border-yellow-300 dark:hover:border-yellow-600'
+                    : 'bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-700 hover:border-yellow-300 dark:hover:border-yellow-600'
                 )}
               >
                 <div className="flex items-start gap-4">
@@ -262,7 +262,7 @@ export default function QuestsTab() {
                       'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all',
                       quest.is_completed
                         ? 'bg-emerald-500 text-white'
-                        : 'bg-slate-100 dark:bg-stone-700 text-slate-600 dark:text-stone-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 hover:text-yellow-600 dark:hover:text-yellow-400'
+                        : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400 hover:bg-yellow-100 dark:hover:bg-yellow-900/40 hover:text-yellow-600 dark:hover:text-yellow-400'
                     )}
                   >
                     {completingId === quest.id ? (
@@ -278,7 +278,7 @@ export default function QuestsTab() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-lg">{categoryIcons[quest.category]}</span>
-                      <span className="text-xs font-medium text-slate-700 dark:text-stone-300">
+                      <span className="text-xs font-medium text-stone-700 dark:text-stone-300">
                         {categoryLabels[quest.category]}
                       </span>
                       <span className={cn('text-xs px-2 py-0.5 rounded-full', energy.color)}>
@@ -288,8 +288,8 @@ export default function QuestsTab() {
 
                     <h4
                       className={cn(
-                        'font-semibold text-slate-800 dark:text-stone-100 mt-1',
-                        quest.is_completed && 'line-through text-slate-600 dark:text-stone-400'
+                        'font-semibold text-stone-800 dark:text-stone-100 mt-1',
+                        quest.is_completed && 'line-through text-stone-600 dark:text-stone-400'
                       )}
                     >
                       {quest.title}
@@ -298,14 +298,14 @@ export default function QuestsTab() {
                     <p
                       className={cn(
                         'text-sm mt-1',
-                        quest.is_completed ? 'text-slate-600 dark:text-stone-400' : 'text-slate-600 dark:text-stone-400'
+                        quest.is_completed ? 'text-stone-600 dark:text-stone-400' : 'text-stone-600 dark:text-stone-400'
                       )}
                     >
                       {quest.description}
                     </p>
 
                     <div className="flex items-center gap-4 mt-3 text-sm">
-                      <span className="text-slate-700 dark:text-stone-300">⏱ {quest.estimated_minutes} {t('quests.min')}</span>
+                      <span className="text-stone-700 dark:text-stone-300">⏱ {quest.estimated_minutes} {t('quests.min')}</span>
                       <span className="text-yellow-600 dark:text-yellow-400 font-medium">+{quest.points} {t('quests.points')}</span>
                     </div>
                   </div>
@@ -327,7 +327,7 @@ export default function QuestsTab() {
 
       {/* All completed celebration */}
       {completedCount === quests.length && quests.length > 0 && (
-        <div className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/30 dark:to-teal-900/30 rounded-2xl border border-emerald-200 dark:border-emerald-700 text-center">
+        <div className="p-6 bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/30 dark:to-[var(--c-bg)]/40 rounded-2xl border border-emerald-200 dark:border-emerald-700 text-center">
           <div className="w-16 h-16 bg-white dark:bg-stone-800 rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-4">
             <Trophy size={32} className="text-emerald-500" />
           </div>

@@ -33,10 +33,10 @@ const getIcon = (iconName: string): React.ElementType => {
 // Color mapping for Tailwind
 const colorClasses: Record<string, { bg: string; text: string; border: string; progress: string }> = {
   violet: {
-    bg: 'bg-teal-100 dark:bg-teal-900/40',
-    text: 'text-teal-600 dark:text-teal-400',
-    border: 'border-teal-200 dark:border-teal-700',
-    progress: 'bg-teal-500'
+    bg: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40',
+    text: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
+    border: 'border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50',
+    progress: 'bg-[var(--c-solid)]'
   },
   blue: {
     bg: 'bg-blue-100 dark:bg-blue-900/40',
@@ -69,10 +69,10 @@ const colorClasses: Record<string, { bg: string; text: string; border: string; p
     progress: 'bg-rose-500'
   },
   teal: {
-    bg: 'bg-teal-100 dark:bg-teal-900/40',
-    text: 'text-teal-600 dark:text-teal-400',
-    border: 'border-teal-200 dark:border-teal-700',
-    progress: 'bg-teal-500'
+    bg: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40',
+    text: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
+    border: 'border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50',
+    progress: 'bg-[var(--c-solid)]'
   },
   orange: {
     bg: 'bg-orange-100 dark:bg-orange-900/40',
@@ -183,7 +183,7 @@ export default function ActivityTab() {
       {inProgressMilestones.length > 0 && (
         <section>
           <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-            <TrendingUp size={20} className="text-teal-500" />
+            <TrendingUp size={20} className="text-[var(--c-solid)]" />
             {t('dashboard.activity.sections.activeMilestones')}
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
@@ -295,7 +295,7 @@ function LevelProgress({ level, title, currentPoints, nextLevelPoints, t }: {
     : 100
 
   return (
-    <div className="bg-gradient-to-r from-teal-500 to-sky-600 rounded-2xl p-6 text-white">
+    <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-600 rounded-2xl p-6 text-white">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
@@ -365,7 +365,7 @@ function MilestoneCard({ milestone, progressLabel }: { milestone: Milestone; pro
             <p className="text-sm text-stone-500 dark:text-stone-400">{m.description}</p>
           </div>
         </div>
-        <ChevronRight size={20} className="text-stone-300 dark:text-stone-400 group-hover:text-teal-500 transition-colors" />
+        <ChevronRight size={20} className="text-stone-300 dark:text-stone-400 group-hover:text-[var(--c-solid)] transition-colors" />
       </div>
 
       <div className="space-y-2">
@@ -404,7 +404,7 @@ function MilestoneCardCompact({ milestone }: { milestone: Milestone }) {
   return (
     <Link
       to={route}
-      className="group flex items-center gap-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md transition-all"
+      className="group flex items-center gap-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md transition-all"
     >
       <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0", colors.bg)}>
         <Icon size={20} className={colors.text} />
@@ -416,7 +416,7 @@ function MilestoneCardCompact({ milestone }: { milestone: Milestone }) {
           +{m.reward_points} XP
         </p>
       </div>
-      <ChevronRight size={16} className="text-stone-300 group-hover:text-teal-500 transition-colors" />
+      <ChevronRight size={16} className="text-stone-300 group-hover:text-[var(--c-solid)] transition-colors" />
     </Link>
   )
 }
@@ -491,7 +491,7 @@ function ActivityItem({ activity }: { activity: ActivityLog }) {
       </div>
       <div className="text-right flex-shrink-0">
         {activity.points_earned > 0 && (
-          <p className="text-sm font-medium text-teal-600 dark:text-teal-400">+{activity.points_earned} XP</p>
+          <p className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">+{activity.points_earned} XP</p>
         )}
         <p className="text-xs text-stone-600">{formatActivityTime(activity.created_at)}</p>
       </div>

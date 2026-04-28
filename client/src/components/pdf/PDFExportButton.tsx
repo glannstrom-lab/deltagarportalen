@@ -46,7 +46,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
   const variantClasses = {
     primary: 'bg-primary-600 text-white hover:bg-primary-700',
     secondary: 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-    outline: 'border border-slate-300 text-slate-700 bg-white hover:bg-slate-50',
+    outline: 'border border-stone-300 text-stone-700 bg-white hover:bg-stone-50',
     light: 'bg-white text-indigo-600 hover:bg-indigo-50 font-medium',
   };
 

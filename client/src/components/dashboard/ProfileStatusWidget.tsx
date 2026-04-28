@@ -44,11 +44,11 @@ export function ProfileStatusWidget() {
 
   if (loading) {
     return (
-      <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-4 animate-pulse">
-        <div className="h-4 bg-slate-200 dark:bg-stone-700 rounded w-1/3 mb-3" />
+      <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-4 animate-pulse">
+        <div className="h-4 bg-stone-200 dark:bg-stone-700 rounded w-1/3 mb-3" />
         <div className="space-y-2">
-          <div className="h-8 bg-slate-100 dark:bg-stone-800 rounded" />
-          <div className="h-8 bg-slate-100 dark:bg-stone-800 rounded" />
+          <div className="h-8 bg-stone-100 dark:bg-stone-800 rounded" />
+          <div className="h-8 bg-stone-100 dark:bg-stone-800 rounded" />
         </div>
       </div>
     )
@@ -115,7 +115,7 @@ export function ProfileStatusWidget() {
     switch (status) {
       case 'good': return 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800'
       case 'warning': return 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800'
-      case 'missing': return 'bg-slate-100 dark:bg-stone-800 text-slate-500 dark:text-stone-400 border-slate-200 dark:border-stone-700'
+      case 'missing': return 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 border-stone-200 dark:border-stone-700'
     }
   }
 
@@ -123,28 +123,28 @@ export function ProfileStatusWidget() {
     switch (status) {
       case 'good': return <CheckCircle className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
       case 'warning': return <AlertCircle className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-      case 'missing': return <AlertCircle className="w-3 h-3 text-slate-400 dark:text-stone-500" />
+      case 'missing': return <AlertCircle className="w-3 h-3 text-stone-400 dark:text-stone-500" />
     }
   }
 
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 border-b border-slate-200 dark:border-stone-700">
+      <div className="px-4 py-3 bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 border-b border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-teal-100 dark:bg-teal-900/50 rounded-lg flex items-center justify-center">
-              <User className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+            <div className="w-8 h-8 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 rounded-lg flex items-center justify-center">
+              <User className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-stone-100 text-sm">
+              <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-sm">
                 {profile?.first_name ? t('profile.status.namedProfile', { name: profile.first_name }) : t('profile.status.yourProfile')}
               </h3>
             </div>
           </div>
           <Link
             to="/profile"
-            className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium flex items-center gap-0.5"
+            className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] font-medium flex items-center gap-0.5"
           >
             {t('common.show')} <ChevronRight className="w-3 h-3" />
           </Link>
@@ -172,17 +172,17 @@ export function ProfileStatusWidget() {
 
         {/* Quick actions */}
         {(prefs?.consultant_data?.nextSteps?.length || 0) > 0 && (
-          <div className="mt-3 pt-3 border-t border-slate-100 dark:border-stone-700">
-            <p className="text-xs font-medium text-slate-500 dark:text-stone-400 mb-2">{t('profile.status.nextSteps')}</p>
+          <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-700">
+            <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">{t('profile.status.nextSteps')}</p>
             <div className="space-y-1">
               {(prefs?.consultant_data?.nextSteps || [])
                 .filter(s => !s.completed)
                 .slice(0, 2)
                 .map((step, i) => (
-                  <div key={i} className="flex items-center gap-2 text-xs text-slate-600 dark:text-stone-400">
-                    <div className="w-1.5 h-1.5 bg-teal-500 dark:bg-teal-400 rounded-full" />
+                  <div key={i} className="flex items-center gap-2 text-xs text-stone-600 dark:text-stone-400">
+                    <div className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)]/80 rounded-full" />
                     <span className="truncate">{step.activity}</span>
-                    <span className="text-slate-400 dark:text-stone-500 ml-auto">{step.date}</span>
+                    <span className="text-stone-400 dark:text-stone-500 ml-auto">{step.date}</span>
                   </div>
                 ))}
             </div>
@@ -211,20 +211,20 @@ export function ProfileStatusCompact() {
   return (
     <Link
       to="/profile"
-      className="flex items-center gap-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-slate-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700 transition-colors"
+      className="flex items-center gap-3 p-3 bg-white dark:bg-stone-900 rounded-lg border border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-accent)]/60 transition-colors"
     >
-      <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-sky-600 rounded-xl flex items-center justify-center">
+      <div className="w-10 h-10 bg-gradient-to-br from-[var(--c-solid)] to-sky-600 rounded-xl flex items-center justify-center">
         <User className="w-5 h-5 text-white" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-slate-800 dark:text-stone-100">{t('profile.status.myProfile')}</p>
-        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-stone-400">
+        <p className="text-sm font-medium text-stone-800 dark:text-stone-100">{t('profile.status.myProfile')}</p>
+        <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400">
           {cvStatus && (
             <span className={cn(
               'px-1.5 py-0.5 rounded',
               cvStatus === 'complete' ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400' :
               cvStatus === 'needs_update' ? 'bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400' :
-              'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400'
+              'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
             )}>
               CV: {cvStatus === 'complete' ? 'OK' : cvStatus === 'needs_update' ? '!' : '?'}
             </span>
@@ -233,7 +233,7 @@ export function ProfileStatusCompact() {
           {shortTermProgress > 0 && <span>{t('profile.status.goalProgress', { progress: shortTermProgress })}</span>}
         </div>
       </div>
-      <ChevronRight className="w-4 h-4 text-slate-400 dark:text-stone-500" />
+      <ChevronRight className="w-4 h-4 text-stone-400 dark:text-stone-500" />
     </Link>
   )
 }

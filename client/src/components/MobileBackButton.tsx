@@ -38,7 +38,7 @@ export function MobileBackButton() {
         'fixed z-50',
         'w-11 h-11', // 44px för att matcha safe area
         'bg-white rounded-full',
-        'shadow-lg border border-slate-100',
+        'shadow-lg border border-stone-100',
         'flex items-center justify-center',
         'transition-all duration-200',
         'hover:shadow-xl hover:scale-105',
@@ -52,7 +52,7 @@ export function MobileBackButton() {
       aria-label="Gå tillbaka"
       title="Gå tillbaka"
     >
-      <ArrowLeft className="w-5 h-5 text-slate-700" />
+      <ArrowLeft className="w-5 h-5 text-stone-700" />
     </button>
   )
 }

@@ -30,7 +30,7 @@ const getMoodColor = (mood: number) => {
     case 3: return 'bg-yellow-100 text-yellow-700 border-yellow-200'
     case 2: return 'bg-orange-100 text-orange-700 border-orange-200'
     case 1: return 'bg-rose-100 text-rose-700 border-rose-200'
-    default: return 'bg-slate-100 text-slate-700 border-slate-200'
+    default: return 'bg-stone-100 text-stone-700 border-stone-200'
   }
 }
 
@@ -104,18 +104,18 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} />
       <div className="relative bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
-              <BookHeart className="w-5 h-5 text-teal-600" />
+            <div className="w-10 h-10 bg-[var(--c-accent)]/40 rounded-xl flex items-center justify-center">
+              <BookHeart className="w-5 h-5 text-[var(--c-text)]" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-900">Ny dagboksanteckning</h2>
-              <p className="text-sm text-slate-700">{wordCount} ord</p>
+              <h2 className="text-lg font-bold text-stone-900">Ny dagboksanteckning</h2>
+              <p className="text-sm text-stone-700">{wordCount} ord</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg">
-            <X className="w-5 h-5 text-slate-600" />
+          <button onClick={onClose} className="p-2 hover:bg-stone-100 rounded-lg">
+            <X className="w-5 h-5 text-stone-600" />
           </button>
         </div>
 
@@ -126,12 +126,12 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Titel (valfritt)"
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-lg font-medium"
+            className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-lg font-medium"
           />
 
           {/* Mood selector */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 mb-2">
               Hur mår du?
             </label>
             <div className="flex gap-2">
@@ -143,8 +143,8 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
                   className={cn(
                     "flex-1 py-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1",
                     mood === m
-                      ? "border-teal-500 bg-teal-50"
-                      : "border-slate-200 hover:border-teal-300"
+                      ? "border-[var(--c-solid)] bg-[var(--c-bg)]"
+                      : "border-stone-200 hover:border-[var(--c-accent)]"
                   )}
                 >
                   <span className="text-2xl">{getMoodEmoji(m)}</span>
@@ -161,20 +161,20 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
               onChange={(e) => setContent(e.target.value)}
               placeholder="Skriv dina tankar..."
               rows={10}
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none leading-relaxed"
+              className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] resize-none leading-relaxed"
             />
           </div>
 
           {/* Tags */}
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 mb-2">
               Taggar
             </label>
             <div className="flex flex-wrap gap-2 mb-2">
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-full text-sm"
                 >
                   #{tag}
                   <button onClick={() => handleRemoveTag(tag)} className="hover:text-violet-900">
@@ -190,7 +190,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                 placeholder="Lägg till tagg..."
-                className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
+                className="flex-1 px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-sm"
               />
               <Button variant="outline" size="sm" onClick={handleAddTag}>
                 <Plus className="w-4 h-4" />
@@ -199,7 +199,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
           </div>
         </div>
 
-        <div className="sticky bottom-0 bg-white border-t border-slate-100 p-4 flex gap-3">
+        <div className="sticky bottom-0 bg-white border-t border-stone-100 p-4 flex gap-3">
           <Button variant="outline" className="flex-1" onClick={onClose}>
             Avbryt
           </Button>
@@ -275,7 +275,7 @@ export function JournalTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--c-solid)]" />
       </div>
     )
   }
@@ -313,13 +313,13 @@ export function JournalTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="relative flex-1 sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Sök i dagboken..."
-              className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="w-full pl-10 pr-4 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             />
           </div>
           <button
@@ -327,8 +327,8 @@ export function JournalTab() {
             className={cn(
               "p-2 rounded-lg border transition-colors",
               showFilters || filterTag
-                ? "border-teal-300 bg-teal-50 text-teal-600"
-                : "border-slate-200 text-slate-700 hover:bg-slate-50"
+                ? "border-[var(--c-accent)] bg-[var(--c-bg)] text-[var(--c-text)]"
+                : "border-stone-200 text-stone-700 hover:bg-stone-50"
             )}
           >
             <Filter className="w-5 h-5" />
@@ -349,8 +349,8 @@ export function JournalTab() {
             className={cn(
               "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
               !filterTag
-                ? "bg-teal-600 text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                ? "bg-[var(--c-solid)] text-white"
+                : "bg-stone-100 text-stone-600 hover:bg-stone-200"
             )}
           >
             Alla
@@ -362,8 +362,8 @@ export function JournalTab() {
               className={cn(
                 "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
                 filterTag === tag
-                  ? "bg-teal-600 text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  ? "bg-[var(--c-solid)] text-white"
+                  : "bg-stone-100 text-stone-600 hover:bg-stone-200"
               )}
             >
               #{tag}
@@ -376,11 +376,11 @@ export function JournalTab() {
       <div className="space-y-3">
         {filteredEntries.length === 0 ? (
           <Card className="p-12 text-center">
-            <BookHeart className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-slate-700 mb-2">
+            <BookHeart className="w-16 h-16 text-stone-200 mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-stone-700 mb-2">
               {searchQuery || filterTag ? 'Inga träffar' : 'Din dagbok är tom'}
             </h3>
-            <p className="text-slate-700 mb-6">
+            <p className="text-stone-700 mb-6">
               {searchQuery || filterTag
                 ? 'Prova att ändra din sökning'
                 : 'Börja skriva och samla dina tankar på ett ställe'}
@@ -402,7 +402,7 @@ export function JournalTab() {
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="font-semibold text-slate-900 truncate">
+                    <h3 className="font-semibold text-stone-900 truncate">
                       {entry.title || 'Utan titel'}
                     </h3>
                     {entry.mood && (
@@ -417,10 +417,10 @@ export function JournalTab() {
                       <Star className="w-4 h-4 text-amber-500 fill-current" />
                     )}
                   </div>
-                  <p className="text-sm text-slate-600 line-clamp-2 mb-2">
+                  <p className="text-sm text-stone-600 line-clamp-2 mb-2">
                     {entry.content}
                   </p>
-                  <div className="flex items-center gap-3 text-xs text-slate-600">
+                  <div className="flex items-center gap-3 text-xs text-stone-600">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       {new Date(entry.entry_date).toLocaleDateString('sv-SE', {
@@ -433,7 +433,7 @@ export function JournalTab() {
                     {entry.tags.length > 0 && (
                       <div className="flex gap-1">
                         {entry.tags.slice(0, 3).map(tag => (
-                          <span key={tag} className="text-teal-500">#{tag}</span>
+                          <span key={tag} className="text-[var(--c-solid)]">#{tag}</span>
                         ))}
                         {entry.tags.length > 3 && (
                           <span>+{entry.tags.length - 3}</span>
@@ -449,7 +449,7 @@ export function JournalTab() {
                       "p-2 rounded-lg transition-colors",
                       entry.is_favorite
                         ? "text-amber-500 hover:bg-amber-50"
-                        : "text-slate-600 hover:bg-slate-100"
+                        : "text-stone-600 hover:bg-stone-100"
                     )}
                   >
                     <Star className={cn("w-4 h-4", entry.is_favorite && "fill-current")} />
@@ -461,7 +461,7 @@ export function JournalTab() {
                         deleteEntry(entry.id)
                       }
                     }}
-                    className="p-2 rounded-lg text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    className="p-2 rounded-lg text-stone-600 hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -491,10 +491,10 @@ export function JournalTab() {
             className="relative bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
             onClick={e => e.stopPropagation()}
           >
-            <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex items-center justify-between">
+            <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">{selectedEntry.title}</h2>
-                <p className="text-sm text-slate-700">
+                <h2 className="text-xl font-bold text-stone-900">{selectedEntry.title}</h2>
+                <p className="text-sm text-stone-700">
                   {new Date(selectedEntry.entry_date).toLocaleDateString('sv-SE', {
                     weekday: 'long',
                     day: 'numeric',
@@ -503,8 +503,8 @@ export function JournalTab() {
                   })} · {selectedEntry.word_count} ord
                 </p>
               </div>
-              <button onClick={() => setSelectedEntry(null)} className="p-2 hover:bg-slate-100 rounded-lg">
-                <X className="w-5 h-5 text-slate-600" />
+              <button onClick={() => setSelectedEntry(null)} className="p-2 hover:bg-stone-100 rounded-lg">
+                <X className="w-5 h-5 text-stone-600" />
               </button>
             </div>
 
@@ -519,15 +519,15 @@ export function JournalTab() {
                 </div>
               )}
 
-              <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
+              <p className="text-stone-700 leading-relaxed whitespace-pre-wrap">
                 {selectedEntry.content}
               </p>
 
               {selectedEntry.tags.length > 0 && (
-                <div className="mt-6 pt-4 border-t border-slate-100">
+                <div className="mt-6 pt-4 border-t border-stone-100">
                   <div className="flex flex-wrap gap-2">
                     {selectedEntry.tags.map((tag: string) => (
-                      <span key={tag} className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">
+                      <span key={tag} className="px-3 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-full text-sm">
                         #{tag}
                       </span>
                     ))}

@@ -152,18 +152,18 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
     const isExpanded = expandedSections.includes(section)
     const sectionId = `filter-${section}`
     return (
-      <div className="border-b border-slate-100 dark:border-stone-700 last:border-0">
+      <div className="border-b border-stone-100 dark:border-stone-700 last:border-0">
         <button
           onClick={() => toggleSection(section)}
           aria-expanded={isExpanded}
           aria-controls={`${sectionId}-content`}
-          className="w-full flex items-center justify-between py-3 px-1 hover:bg-slate-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
+          className="w-full flex items-center justify-between py-3 px-1 hover:bg-stone-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
         >
           <div className="flex items-center gap-2">
-            {Icon && <Icon size={18} className="text-slate-700 dark:text-stone-300" aria-hidden="true" />}
-            <span className="font-medium text-slate-700 dark:text-stone-300">{title}</span>
+            {Icon && <Icon size={18} className="text-stone-700 dark:text-stone-300" aria-hidden="true" />}
+            <span className="font-medium text-stone-700 dark:text-stone-300">{title}</span>
           </div>
-          {isExpanded ? <ChevronUp size={18} className="text-slate-600 dark:text-stone-400" aria-hidden="true" /> : <ChevronDown size={18} className="text-slate-600 dark:text-stone-400" aria-hidden="true" />}
+          {isExpanded ? <ChevronUp size={18} className="text-stone-600 dark:text-stone-400" aria-hidden="true" /> : <ChevronDown size={18} className="text-stone-600 dark:text-stone-400" aria-hidden="true" />}
         </button>
         {isExpanded && (
           <div id={`${sectionId}-content`} role="region" aria-label={title} className="pb-4 px-1">
@@ -179,13 +179,13 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       {/* Search */}
       <FilterSection title={t('jobs.filters.search')} section="search" icon={Search}>
         <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 dark:text-stone-400" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 dark:text-stone-400" />
           <input
             type="text"
             placeholder={t('jobs.filters.searchPlaceholder')}
             value={filters.search}
             onChange={(e) => updateFilter('search', e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
+            className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:border-transparent text-sm"
           />
         </div>
       </FilterSection>
@@ -195,20 +195,20 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
         <div className="space-y-3">
           {/* Kommun/Ort */}
           <div className="relative">
-            <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 dark:text-stone-400" />
+            <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 dark:text-stone-400" />
             <input
               type="text"
               placeholder={t('jobs.filters.locationPlaceholder')}
               value={filters.location}
               onChange={(e) => updateFilter('location', e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
+              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-sm"
             />
           </div>
 
           {/* Avstånd */}
           {filters.location && (
-            <div className="bg-teal-50 p-3 rounded-xl">
-              <label className="text-sm font-medium text-teal-900 mb-2 block">
+            <div className="bg-[var(--c-bg)] p-3 rounded-xl">
+              <label className="text-sm font-medium text-[var(--c-text)] mb-2 block">
                 {t('jobs.filters.distance', { km: filters.distanceKm })}
               </label>
               <input
@@ -218,9 +218,9 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
                 step="5"
                 value={filters.distanceKm}
                 onChange={(e) => updateFilter('distanceKm', parseInt(e.target.value))}
-                className="w-full accent-teal-600"
+                className="w-full accent-[var(--c-solid)]"
               />
-              <div className="flex justify-between text-xs text-teal-600 mt-1">
+              <div className="flex justify-between text-xs text-[var(--c-text)] mt-1">
                 <span>5 km</span>
                 <span>100 km</span>
                 <span>200 km</span>
@@ -232,7 +232,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           <select
             value={filters.region}
             onChange={(e) => updateFilter('region', e.target.value)}
-            className="w-full px-4 py-2.5 border border-slate-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm bg-white dark:bg-stone-800 dark:text-stone-100"
+            className="w-full px-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-sm bg-white dark:bg-stone-800 dark:text-stone-100"
           >
             <option value="">{t('jobs.filters.allRegions')}</option>
             {swedishRegions.map(region => (
@@ -256,8 +256,8 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               onClick={() => updateFilter('publishedWithin', option.value as any)}
               className={`px-3 py-2.5 text-sm rounded-xl transition-colors text-left ${
                 filters.publishedWithin === option.value
-                  ? 'bg-teal-100 text-teal-700 font-medium border-2 border-teal-200'
-                  : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
+                  ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)] font-medium border-2 border-[var(--c-accent)]/60'
+                  : 'bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border-2 border-transparent hover:bg-stone-100 dark:hover:bg-stone-700'
               }`}
             >
               {t(option.labelKey)}
@@ -275,8 +275,8 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               onClick={() => toggleArrayFilter('workArrangement', type.id)}
               className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${
                 filters.workArrangement.includes(type.id)
-                  ? 'bg-teal-100 text-teal-700 border-2 border-teal-200'
-                  : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
+                  ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-2 border-[var(--c-accent)]/60'
+                  : 'bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border-2 border-transparent hover:bg-stone-100 dark:hover:bg-stone-700'
               }`}
             >
               <type.icon size={18} />
@@ -298,8 +298,8 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               onClick={() => toggleArrayFilter('employmentType', type.id)}
               className={`flex items-center gap-1.5 px-3 py-2 text-sm rounded-xl transition-colors ${
                 filters.employmentType.includes(type.id)
-                  ? 'bg-teal-600 text-white'
-                  : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-200 dark:hover:bg-stone-700'
+                  ? 'bg-[var(--c-solid)] text-white'
+                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700'
               }`}
             >
               <type.icon size={14} />
@@ -319,7 +319,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className={`w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left ${
                 filters.experienceLevel.includes(level.id)
                   ? `bg-${level.color}-100 text-${level.color}-700 border-2 border-${level.color}-200`
-                  : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
+                  : 'bg-stone-50 dark:bg-stone-800 text-stone-600 dark:text-stone-400 border-2 border-transparent hover:bg-stone-100 dark:hover:bg-stone-700'
               }`}
             >
               <span className="font-medium text-sm">{t(level.labelKey)}</span>
@@ -340,18 +340,18 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               placeholder={t('jobs.filters.salaryMin')}
               value={filters.salaryMin || ''}
               onChange={(e) => updateFilter('salaryMin', parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl text-sm"
+              className="w-full px-3 py-2 border border-stone-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl text-sm"
             />
-            <span className="text-slate-600 dark:text-stone-400">-</span>
+            <span className="text-stone-600 dark:text-stone-400">-</span>
             <input
               type="number"
               placeholder={t('jobs.filters.salaryMax')}
               value={filters.salaryMax || ''}
               onChange={(e) => updateFilter('salaryMax', parseInt(e.target.value) || 0)}
-              className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl text-sm"
+              className="w-full px-3 py-2 border border-stone-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl text-sm"
             />
           </div>
-          <p className="text-xs text-slate-700 dark:text-stone-300">{t('jobs.filters.salaryHint')}</p>
+          <p className="text-xs text-stone-700 dark:text-stone-300">{t('jobs.filters.salaryHint')}</p>
         </div>
       </FilterSection>
 
@@ -364,8 +364,8 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               onClick={() => toggleArrayFilter('language', lang.id)}
               className={`px-3 py-2 text-sm rounded-xl transition-colors ${
                 filters.language.includes(lang.id)
-                  ? 'bg-teal-600 text-white'
-                  : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-200 dark:hover:bg-stone-700'
+                  ? 'bg-[var(--c-solid)] text-white'
+                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-700'
               }`}
             >
               {t(lang.labelKey)}
@@ -376,24 +376,24 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
 
       {/* Driving License */}
       <FilterSection title={t('jobs.filters.other')} section="other" icon={Car}>
-        <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-stone-800 cursor-pointer hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors">
+        <label className="flex items-center gap-3 p-3 rounded-xl bg-stone-50 dark:bg-stone-800 cursor-pointer hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors">
           <input
             type="checkbox"
             checked={filters.drivingLicense}
             onChange={(e) => updateFilter('drivingLicense', e.target.checked)}
-            className="w-5 h-5 rounded border-slate-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500"
+            className="w-5 h-5 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] focus:ring-[var(--c-solid)]"
           />
           <div>
-            <div className="font-medium text-sm text-slate-700 dark:text-stone-300">{t('jobs.filters.drivingLicenseRequired')}</div>
-            <div className="text-xs text-slate-700 dark:text-stone-400">{t('jobs.filters.drivingLicenseHint')}</div>
+            <div className="font-medium text-sm text-stone-700 dark:text-stone-300">{t('jobs.filters.drivingLicenseRequired')}</div>
+            <div className="text-xs text-stone-700 dark:text-stone-400">{t('jobs.filters.drivingLicenseHint')}</div>
           </div>
         </label>
       </FilterSection>
 
       {/* Match percentage */}
       <FilterSection title={t('jobs.filters.cvMatch')} section="match" icon={Sliders}>
-        <div className="bg-gradient-to-r from-teal-50 to-sky-50 p-4 rounded-xl">
-          <label className="text-sm font-medium text-teal-900 mb-3 block">
+        <div className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 p-4 rounded-xl">
+          <label className="text-sm font-medium text-[var(--c-text)] mb-3 block">
             {t('jobs.filters.minMatch', { percent: filters.minMatchPercentage })}
           </label>
           <input
@@ -403,9 +403,9 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             step="5"
             value={filters.minMatchPercentage}
             onChange={(e) => updateFilter('minMatchPercentage', parseInt(e.target.value))}
-            className="w-full accent-teal-600"
+            className="w-full accent-[var(--c-solid)]"
           />
-          <div className="flex justify-between text-xs text-teal-600 mt-2">
+          <div className="flex justify-between text-xs text-[var(--c-text)] mt-2">
             <span>{t('jobs.filters.noMin')}</span>
             <span>50%</span>
             <span>{t('jobs.filters.perfectMatch')}</span>
@@ -418,12 +418,12 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
   return (
     <>
       {/* Desktop filter panel */}
-      <div className="hidden lg:block bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-slate-200 dark:border-stone-700 overflow-hidden">
+      <div className="hidden lg:block bg-white dark:bg-stone-900 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-stone-700">
+        <div className="flex items-center justify-between p-4 border-b border-stone-100 dark:border-stone-700">
           <div className="flex items-center gap-2">
-            <Filter size={20} className="text-teal-600" />
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('jobs.filters.title')}</h3>
+            <Filter size={20} className="text-[var(--c-text)]" />
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('jobs.filters.title')}</h3>
           </div>
           {hasActiveFilters && (
             <button
@@ -442,13 +442,13 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
         </div>
 
         {/* Footer with count */}
-        <div className="p-4 border-t border-slate-100 dark:border-stone-700 bg-slate-50 dark:bg-stone-800">
+        <div className="p-4 border-t border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-slate-600 dark:text-stone-400">
+            <span className="text-sm text-stone-600 dark:text-stone-400">
               {t('jobs.filters.showing', { count: jobCount })}
             </span>
             {totalJobs > jobCount && (
-              <span className="text-xs text-slate-700 dark:text-stone-300">
+              <span className="text-xs text-stone-700 dark:text-stone-300">
                 {t('jobs.filters.ofTotal', { total: totalJobs })}
               </span>
             )}
@@ -460,12 +460,12 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       <div className="lg:hidden">
         <button
           onClick={() => setShowMobileFilters(true)}
-          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-700 rounded-xl text-slate-700 dark:text-stone-300 font-medium shadow-sm"
+          className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-700 dark:text-stone-300 font-medium shadow-sm"
         >
           <Filter size={18} />
           {t('jobs.filters.title')}
           {activeFilterCount > 0 && (
-            <span className="ml-1 px-2 py-0.5 bg-teal-600 text-white text-xs rounded-full">
+            <span className="ml-1 px-2 py-0.5 bg-[var(--c-solid)] text-white text-xs rounded-full">
               {activeFilterCount}
             </span>
           )}
@@ -480,13 +480,13 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             />
             <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white dark:bg-stone-900 shadow-xl overflow-hidden flex flex-col">
               {/* Mobile header */}
-              <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-stone-700 bg-white dark:bg-stone-900">
-                <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('jobs.filters.filterJobs')}</h3>
+              <div className="flex items-center justify-between p-4 border-b border-stone-100 dark:border-stone-700 bg-white dark:bg-stone-900">
+                <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('jobs.filters.filterJobs')}</h3>
                 <button
                   onClick={() => setShowMobileFilters(false)}
-                  className="p-2 hover:bg-slate-100 dark:hover:bg-stone-800 rounded-lg"
+                  className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
                 >
-                  <X size={20} className="text-slate-700 dark:text-stone-300" />
+                  <X size={20} className="text-stone-700 dark:text-stone-300" />
                 </button>
               </div>
 
@@ -496,16 +496,16 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               </div>
 
               {/* Mobile footer */}
-              <div className="p-4 border-t border-slate-100 dark:border-stone-700 bg-slate-50 dark:bg-stone-800 flex gap-3">
+              <div className="p-4 border-t border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-800 flex gap-3">
                 <button
                   onClick={clearAllFilters}
-                  className="flex-1 px-4 py-3 border border-slate-200 dark:border-stone-700 rounded-xl text-slate-700 dark:text-stone-300 font-medium"
+                  className="flex-1 px-4 py-3 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-700 dark:text-stone-300 font-medium"
                 >
                   {t('jobs.filters.clear')}
                 </button>
                 <button
                   onClick={() => setShowMobileFilters(false)}
-                  className="flex-1 px-4 py-3 bg-teal-600 text-white rounded-xl font-medium"
+                  className="flex-1 px-4 py-3 bg-[var(--c-solid)] text-white rounded-xl font-medium"
                 >
                   {t('jobs.filters.showJobs', { count: jobCount })}
                 </button>

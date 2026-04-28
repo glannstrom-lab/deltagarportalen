@@ -59,12 +59,12 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
             <Compass className="w-5 h-5 text-amber-600" />
           </div>
           <div className="text-left">
-            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+            <h3 className="font-semibold text-stone-800 flex items-center gap-2">
               Tips från din intresseprofil
               <Sparkles className="w-4 h-4 text-amber-500" />
             </h3>
             {matchScore !== null && (
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-stone-600">
                 {matchScore >= 60
                   ? 'Detta jobb matchar dina intressen väl!'
                   : matchScore >= 30
@@ -75,9 +75,9 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
           </div>
         </div>
         {isExpanded ? (
-          <ChevronUp className="w-5 h-5 text-slate-600" />
+          <ChevronUp className="w-5 h-5 text-stone-600" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-slate-600" />
+          <ChevronDown className="w-5 h-5 text-stone-600" />
         )}
       </button>
 
@@ -87,13 +87,13 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
           {/* Interest match score */}
           {matchScore !== null && (
             <div className="flex items-center gap-3">
-              <span className="text-sm text-slate-600">Intressematch:</span>
+              <span className="text-sm text-stone-600">Intressematch:</span>
               <div className="flex-1 h-2 bg-amber-100 rounded-full overflow-hidden">
                 <div
                   className={cn(
                     "h-full rounded-full transition-all duration-500",
                     matchScore >= 60 ? "bg-green-500" :
-                      matchScore >= 30 ? "bg-amber-500" : "bg-slate-400"
+                      matchScore >= 30 ? "bg-amber-500" : "bg-stone-400"
                   )}
                   style={{ width: `${matchScore}%` }}
                 />
@@ -101,7 +101,7 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
               <span className={cn(
                 "font-bold text-sm",
                 matchScore >= 60 ? "text-green-600" :
-                  matchScore >= 30 ? "text-amber-600" : "text-slate-700"
+                  matchScore >= 30 ? "text-amber-600" : "text-stone-700"
               )}>
                 {matchScore}%
               </span>
@@ -111,24 +111,24 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
           {/* RIASEC type */}
           {dominantRiasec && (
             <div className="bg-white rounded-lg p-3 border border-amber-100">
-              <p className="text-sm text-slate-600 mb-1">Din profil:</p>
-              <p className="font-medium text-slate-800">
+              <p className="text-sm text-stone-600 mb-1">Din profil:</p>
+              <p className="font-medium text-stone-800">
                 {dominantRiasec.nameSv} ({dominantRiasec.code.charAt(0).toUpperCase()})
               </p>
-              <p className="text-xs text-slate-700 mt-1">{dominantRiasec.description}</p>
+              <p className="text-xs text-stone-700 mt-1">{dominantRiasec.description}</p>
             </div>
           )}
 
           {/* Tips */}
           {tips.length > 0 && (
             <div>
-              <h4 className="font-medium text-slate-700 mb-2 flex items-center gap-2">
+              <h4 className="font-medium text-stone-700 mb-2 flex items-center gap-2">
                 <Lightbulb className="w-4 h-4 text-amber-500" />
                 Tips för ditt brev
               </h4>
               <ul className="space-y-2">
                 {tips.map((tip, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
+                  <li key={i} className="flex items-start gap-2 text-sm text-stone-600">
                     <span className="text-amber-500 mt-1">•</span>
                     {tip}
                   </li>
@@ -140,7 +140,7 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
           {/* Strengths to highlight */}
           {strengths.length > 0 && (
             <div>
-              <h4 className="font-medium text-slate-700 mb-2">
+              <h4 className="font-medium text-stone-700 mb-2">
                 Styrkor att framhäva
               </h4>
               <div className="flex flex-wrap gap-2">

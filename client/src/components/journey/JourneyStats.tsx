@@ -68,8 +68,8 @@ export function JourneyStats({ stats }: JourneyStatsProps) {
       icon: BookOpen,
       label: 'Artiklar lästa',
       value: stats.articlesRead.toString(),
-      color: 'text-teal-600',
-      bgColor: 'bg-teal-100'
+      color: 'text-[var(--c-text)]',
+      bgColor: 'bg-[var(--c-accent)]/40'
     },
     {
       icon: FileText,
@@ -82,7 +82,7 @@ export function JourneyStats({ stats }: JourneyStatsProps) {
 
   return (
     <Card className="p-6">
-      <h3 className="text-lg font-semibold text-slate-900 mb-6">Din statistik</h3>
+      <h3 className="text-lg font-semibold text-stone-900 mb-6">Din statistik</h3>
 
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
         {statItems.map(item => {
@@ -90,14 +90,14 @@ export function JourneyStats({ stats }: JourneyStatsProps) {
           return (
             <div
               key={item.label}
-              className="flex items-center gap-3 p-3 rounded-xl bg-slate-50"
+              className="flex items-center gap-3 p-3 rounded-xl bg-stone-50"
             >
               <div className={`w-10 h-10 rounded-lg ${item.bgColor} flex items-center justify-center`}>
                 <Icon className={`w-5 h-5 ${item.color}`} />
               </div>
               <div>
-                <div className="text-sm text-slate-700">{item.label}</div>
-                <div className="font-semibold text-slate-900">{item.value}</div>
+                <div className="text-sm text-stone-700">{item.label}</div>
+                <div className="font-semibold text-stone-900">{item.value}</div>
               </div>
             </div>
           )
@@ -106,10 +106,10 @@ export function JourneyStats({ stats }: JourneyStatsProps) {
 
       {/* Longest streak highlight */}
       {stats.longestStreak > 0 && (
-        <div className="mt-6 pt-4 border-t border-slate-100">
-          <div className="flex items-center gap-2 text-sm text-slate-600">
+        <div className="mt-6 pt-4 border-t border-stone-100">
+          <div className="flex items-center gap-2 text-sm text-stone-600">
             <Flame className="w-4 h-4 text-orange-500" />
-            <span>Längsta streak: <strong className="text-slate-900">{stats.longestStreak} dagar</strong></span>
+            <span>Längsta streak: <strong className="text-stone-900">{stats.longestStreak} dagar</strong></span>
           </div>
         </div>
       )}

@@ -105,7 +105,7 @@ export function CalendarSync({
       case 'network':
         return 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400'
       case 'calendar':
-        return 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
+        return 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)]'
       default:
         return 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400'
     }
@@ -118,7 +118,7 @@ export function CalendarSync({
       case 'medium':
         return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
       case 'low':
-        return 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+        return 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
     }
   }
 
@@ -170,7 +170,7 @@ export function CalendarSync({
   return (
     <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 overflow-hidden">
       {/* Header */}
-      <div className="px-5 py-4 bg-gradient-to-r from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-b border-sky-100 dark:border-sky-800/50">
+      <div className="px-5 py-4 bg-gradient-to-r from-sky-50 to-[var(--c-bg)] dark:from-sky-900/20 dark:to-[var(--c-bg)]/30 border-b border-sky-100 dark:border-sky-800/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center">

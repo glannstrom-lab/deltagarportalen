@@ -33,10 +33,10 @@ export function MicroLearning() {
 
   if (activeLesson) {
     return (
-      <div className="p-4 bg-slate-50 rounded-xl">
-        <button onClick={() => setActiveLesson(null)} className="text-sm text-slate-700 mb-3">← Tillbaka</button>
+      <div className="p-4 bg-stone-50 rounded-xl">
+        <button onClick={() => setActiveLesson(null)} className="text-sm text-stone-700 mb-3">← Tillbaka</button>
         <h3 className="font-semibold mb-3">{activeLesson.title}</h3>
-        <div className="aspect-video bg-slate-800 rounded-lg flex items-center justify-center mb-4">
+        <div className="aspect-video bg-stone-800 rounded-lg flex items-center justify-center mb-4">
           <button onClick={() => setIsPlaying(!isPlaying)} className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center">
             {isPlaying ? <Pause size={32} className="text-white" /> : <Play size={32} className="text-white ml-1" />}
           </button>
@@ -51,19 +51,19 @@ export function MicroLearning() {
 
   return (
     <div className="space-y-3">
-      <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-        <BookOpen size={18} className="text-teal-500" />
+      <h3 className="font-semibold text-stone-800 flex items-center gap-2">
+        <BookOpen size={18} className="text-[var(--c-solid)]" />
         Dagens mikro-läxa
       </h3>
       {lessons.filter(l => !completed.includes(l.id)).slice(0, 1).map(lesson => (
-        <div key={lesson.id} onClick={() => setActiveLesson(lesson)} className="p-3 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100">
+        <div key={lesson.id} onClick={() => setActiveLesson(lesson)} className="p-3 bg-stone-50 rounded-xl cursor-pointer hover:bg-stone-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-teal-100 flex items-center justify-center">
-              <Play size={16} className="text-teal-600" />
+            <div className="w-10 h-10 rounded-lg bg-[var(--c-accent)]/40 flex items-center justify-center">
+              <Play size={16} className="text-[var(--c-text)]" />
             </div>
             <div className="flex-1">
               <p className="font-medium text-sm">{lesson.title}</p>
-              <p className="text-xs text-slate-700 flex items-center gap-1">
+              <p className="text-xs text-stone-700 flex items-center gap-1">
                 <Clock size={10} /> {lesson.duration}
               </p>
             </div>

@@ -75,7 +75,7 @@ export default function JobAdaptPage() {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="flex items-center gap-3">
-          <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
+          <Loader2 className="w-6 h-6 animate-spin text-[var(--c-text)]" />
           <span className="text-stone-600 dark:text-stone-400">
             {t('common.loading', 'Laddar...')}
           </span>
@@ -89,8 +89,8 @@ export default function JobAdaptPage() {
     return (
       <div className="max-w-2xl mx-auto py-12">
         <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-sm border border-stone-200 dark:border-stone-700 p-8 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
-            <FileText className="w-8 h-8 text-teal-600 dark:text-teal-400" />
+          <div className="w-16 h-16 mx-auto mb-4 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-full flex items-center justify-center">
+            <FileText className="w-8 h-8 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           </div>
           <h2 className="text-xl font-bold text-stone-800 dark:text-stone-200 mb-2">
             {t('cv.jobAdapt.noCVTitle', 'Skapa ett CV först')}
@@ -100,7 +100,7 @@ export default function JobAdaptPage() {
           </p>
           <Link
             to="/cv"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-text)] transition-colors font-medium"
           >
             {t('cv.jobAdapt.createCV', 'Skapa CV')}
             <ArrowRight className="w-5 h-5" />
@@ -166,7 +166,7 @@ export default function JobAdaptPage() {
               {cvData.skills.slice(0, 10).map((skill) => (
                 <span
                   key={skill.id}
-                  className="px-3 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-full text-sm"
+                  className="px-3 py-1 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-full text-sm"
                 >
                   {skill.name}
                 </span>
@@ -183,7 +183,7 @@ export default function JobAdaptPage() {
         <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
           <Link
             to="/cv"
-            className="text-teal-600 dark:text-teal-400 hover:underline text-sm font-medium"
+            className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline text-sm font-medium"
           >
             {t('cv.jobAdapt.editCV', 'Redigera CV')} &rarr;
           </Link>

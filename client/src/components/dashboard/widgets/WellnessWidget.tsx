@@ -35,14 +35,14 @@ export const WellnessWidget = memo(function WellnessWidget({
     return (
       <Link
         to="/wellness"
-        className="group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-md transition-all duration-200"
+        className="group flex items-center gap-3 bg-white dark:bg-stone-800 p-3 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-md transition-all duration-200"
       >
         <div className="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center flex-shrink-0">
           {moodInfo ? <span className="text-lg">{moodInfo.icon}</span> : <Heart size={16} />}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('wellnessWidget.wellness')}</p>
-          <p className={cn("text-xs", moodInfo ? moodInfo.color : "text-slate-500 dark:text-slate-400")}>
+          <p className="text-sm font-semibold text-stone-800 dark:text-stone-100">{t('wellnessWidget.wellness')}</p>
+          <p className={cn("text-xs", moodInfo ? moodInfo.color : "text-stone-500 dark:text-stone-400")}>
             {moodInfo ? t(moodInfo.labelKey) : t('wellnessWidget.logMood')}
           </p>
         </div>
@@ -61,7 +61,7 @@ export const WellnessWidget = memo(function WellnessWidget({
     return (
       <Link
         to="/wellness"
-        className="group block bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+        className="group block bg-white dark:bg-stone-800 p-4 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -69,11 +69,11 @@ export const WellnessWidget = memo(function WellnessWidget({
               <Heart size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('wellnessWidget.wellness')}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t('wellnessWidget.howAreYou')}</p>
+              <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-sm">{t('wellnessWidget.wellness')}</h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400">{t('wellnessWidget.howAreYou')}</p>
             </div>
           </div>
-          <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors" />
+          <ChevronRight size={16} className="text-stone-300 dark:text-stone-600 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors" />
         </div>
 
         <div className="flex items-center gap-3">
@@ -111,7 +111,7 @@ export const WellnessWidget = memo(function WellnessWidget({
   return (
     <Link
       to="/wellness"
-      className="group block bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg transition-all duration-200"
+      className="group block bg-white dark:bg-stone-800 p-5 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
@@ -119,8 +119,8 @@ export const WellnessWidget = memo(function WellnessWidget({
             <Heart size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('wellnessWidget.yourWellness')}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t('wellnessWidget.activitiesThisWeek', { count: completedActivities })}</p>
+            <h3 className="font-bold text-stone-800 dark:text-stone-100">{t('wellnessWidget.yourWellness')}</h3>
+            <p className="text-sm text-stone-500 dark:text-stone-400">{t('wellnessWidget.activitiesThisWeek', { count: completedActivities })}</p>
           </div>
         </div>
         {streakDays > 0 && (
@@ -140,7 +140,7 @@ export const WellnessWidget = memo(function WellnessWidget({
         )}>
           <span className="text-4xl">{moodInfo.icon}</span>
           <div>
-            <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('wellnessWidget.todaysMood')}</p>
+            <p className="text-sm font-semibold text-stone-800 dark:text-stone-100">{t('wellnessWidget.todaysMood')}</p>
             <p className={cn("text-lg font-bold", moodInfo.color)}>{t(moodInfo.labelKey)}</p>
           </div>
         </div>
@@ -151,7 +151,7 @@ export const WellnessWidget = memo(function WellnessWidget({
             {moodOptions.map(mood => (
               <span
                 key={mood}
-                className="w-10 h-10 flex items-center justify-center bg-white dark:bg-slate-700 rounded-lg border border-rose-200 dark:border-rose-700 text-xl hover:scale-110 transition-transform"
+                className="w-10 h-10 flex items-center justify-center bg-white dark:bg-stone-700 rounded-lg border border-rose-200 dark:border-rose-700 text-xl hover:scale-110 transition-transform"
               >
                 {moodConfig[mood].icon}
               </span>
@@ -165,16 +165,16 @@ export const WellnessWidget = memo(function WellnessWidget({
         <div className="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <Sparkles size={16} className="text-rose-500 dark:text-rose-400" />
-            <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{completedActivities}</span>
+            <span className="text-lg font-bold text-stone-800 dark:text-stone-100">{completedActivities}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('wellnessWidget.activities')}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400">{t('wellnessWidget.activities')}</p>
         </div>
         <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <Flame size={16} className="text-orange-500 dark:text-orange-400" />
-            <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{streakDays}</span>
+            <span className="text-lg font-bold text-stone-800 dark:text-stone-100">{streakDays}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('wellnessWidget.daysStreak')}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400">{t('wellnessWidget.daysStreak')}</p>
         </div>
       </div>
 

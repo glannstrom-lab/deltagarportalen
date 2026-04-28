@@ -112,12 +112,12 @@ export function ChipSelect({
               disabled={disabled}
               className={cn(
                 'rounded-full border font-medium transition-all',
-                'focus:outline-none focus:ring-2 focus:ring-teal-500/50 focus:ring-offset-1',
+                'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50 focus:ring-offset-1',
                 size === 'sm' ? 'px-2.5 py-1 text-xs min-h-[32px]' : 'px-3 py-1.5 text-sm min-h-[40px]',
                 checked
-                  ? 'bg-teal-100 dark:bg-teal-900/40 border-teal-300 dark:border-teal-700 text-teal-700 dark:text-teal-300'
+                  ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]'
                   : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-600 text-stone-600 dark:text-stone-300',
-                !disabled && !checked && 'hover:border-teal-200 dark:hover:border-teal-700 hover:bg-teal-50 dark:hover:bg-teal-900/20',
+                !disabled && !checked && 'hover:border-[var(--c-accent)]/60 dark:hover:border-[var(--c-accent)]/60 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30',
                 disabled && 'opacity-50 cursor-not-allowed'
               )}
             >

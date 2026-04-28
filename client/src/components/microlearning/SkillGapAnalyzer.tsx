@@ -131,7 +131,7 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
       case 'medium':
         return 'bg-blue-100 text-blue-700 border-blue-200';
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-200';
+        return 'bg-stone-100 text-stone-700 border-stone-200';
     }
   };
 
@@ -152,14 +152,14 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
       <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-slate-200">
+        <div className="flex items-center justify-between p-6 border-b border-stone-200">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center">
               <Target className="text-indigo-600" size={20} />
             </div>
             <div>
-              <h2 className="text-lg font-semibold text-slate-800">Kompetensanalys</h2>
-              <p className="text-sm text-slate-700">
+              <h2 className="text-lg font-semibold text-stone-800">Kompetensanalys</h2>
+              <p className="text-sm text-stone-700">
                 {step === 'intro' && 'Upptäck vad du behöver lära dig'}
                 {step === 'select-role' && 'Välj ditt målyrke'}
                 {step === 'analyzing' && 'Analyserar ditt CV...'}
@@ -169,9 +169,9 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-stone-100 rounded-lg transition-colors"
           >
-            <X size={20} className="text-slate-600" />
+            <X size={20} className="text-stone-600" />
           </button>
         </div>
 
@@ -236,13 +236,13 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
 
           {step === 'select-role' && (
             <div className="space-y-6">
-              <p className="text-slate-600">
+              <p className="text-stone-600">
                 Välj det yrke du vill jobba med. Du kan även skriva in ett annat yrke 
                 om det inte finns i listan.
               </p>
 
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-2">
+                <label className="block text-sm font-medium text-stone-700 mb-2">
                   Vilket yrke siktar du på?
                 </label>
                 <Autocomplete
@@ -260,8 +260,8 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
                 />
               </div>
 
-              <div className="bg-slate-50 rounded-xl p-4">
-                <h4 className="text-sm font-medium text-slate-700 mb-2">
+              <div className="bg-stone-50 rounded-xl p-4">
+                <h4 className="text-sm font-medium text-stone-700 mb-2">
                   Vanliga yrken att byta till:
                 </h4>
                 <div className="flex flex-wrap gap-2">
@@ -272,7 +272,7 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
                       className={`px-3 py-1.5 rounded-lg text-sm transition-colors ${
                         selectedRole === occupation.label
                           ? 'bg-indigo-500 text-white'
-                          : 'bg-white border border-slate-200 text-slate-700 hover:border-indigo-300'
+                          : 'bg-white border border-stone-200 text-stone-700 hover:border-indigo-300'
                       }`}
                     >
                       {occupation.label}
@@ -304,10 +304,10 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
           {step === 'analyzing' && (
             <div className="flex flex-col items-center justify-center py-12">
               <div className="w-16 h-16 border-4 border-indigo-200 border-t-indigo-500 rounded-full animate-spin mb-4" />
-              <h3 className="text-lg font-semibold text-slate-800 mb-2">
+              <h3 className="text-lg font-semibold text-stone-800 mb-2">
                 Analyserar ditt CV...
               </h3>
-              <p className="text-slate-700 text-center max-w-sm">
+              <p className="text-stone-700 text-center max-w-sm">
                 AI:n jämför dina kompetenser med vad som efterfrågas för {selectedRole}
               </p>
             </div>
@@ -332,22 +332,22 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
                 {skillGaps.map((gap, index) => (
                   <div
                     key={index}
-                    className="bg-white border border-slate-200 rounded-xl p-4 hover:border-indigo-300 transition-colors"
+                    className="bg-white border border-stone-200 rounded-xl p-4 hover:border-indigo-300 transition-colors"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
-                          <h4 className="font-semibold text-slate-800">
+                          <h4 className="font-semibold text-stone-800">
                             {gap.skill}
                           </h4>
                           <span className={`px-2 py-0.5 rounded text-xs font-medium border ${getImportanceColor(gap.importance)}`}>
                             {getImportanceLabel(gap.importance)}
                           </span>
                         </div>
-                        <p className="text-sm text-slate-600 mb-2">
+                        <p className="text-sm text-stone-600 mb-2">
                           {gap.rationale}
                         </p>
-                        <div className="flex items-center gap-4 text-xs text-slate-700">
+                        <div className="flex items-center gap-4 text-xs text-stone-700">
                           <span className="flex items-center gap-1">
                             <span className="w-2 h-2 rounded-full bg-emerald-500" />
                             Efterfrågan: {gap.demandLevel === 'very-high' ? 'Mycket hög' : gap.demandLevel === 'high' ? 'Hög' : gap.demandLevel}
@@ -385,16 +385,16 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
 
         {/* Footer */}
         {step !== 'intro' && step !== 'results' && (
-          <div className="p-6 border-t border-slate-200 flex justify-between">
+          <div className="p-6 border-t border-stone-200 flex justify-between">
             <button
               onClick={() => setStep(step === 'select-role' ? 'intro' : 'select-role')}
-              className="px-4 py-2 text-slate-600 hover:text-slate-800"
+              className="px-4 py-2 text-stone-600 hover:text-stone-800"
             >
               Tillbaka
             </button>
             <button
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 hover:text-slate-800"
+              className="px-4 py-2 text-stone-600 hover:text-stone-800"
             >
               Avbryt
             </button>

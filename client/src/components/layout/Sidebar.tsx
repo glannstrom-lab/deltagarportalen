@@ -247,7 +247,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
           title={isCollapsed ? user?.first_name || user?.email : undefined}
         >
           <div className={cn(
-            'rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white font-medium',
+            'rounded-full bg-gradient-to-br from-[var(--c-solid)]/80 to-[var(--c-solid)] flex items-center justify-center text-white font-medium',
             isCollapsed ? 'w-7 h-7 text-xs' : 'w-6 h-6 text-[11px]'
           )}>
             {user?.first_name?.[0] || user?.email?.[0] || '?'}

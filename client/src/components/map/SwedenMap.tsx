@@ -78,7 +78,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
 
   // Färg-skala baserat på antal jobb
   const getColorIntensity = (count: number): string => {
-    if (count === 0) return 'bg-slate-100'
+    if (count === 0) return 'bg-stone-100'
     const ratio = count / maxJobs
     if (ratio < 0.2) return 'bg-blue-100'
     if (ratio < 0.4) return 'bg-blue-200'
@@ -88,7 +88,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
   }
 
   const getTextColor = (count: number): string => {
-    if (count === 0) return 'text-slate-600'
+    if (count === 0) return 'text-stone-600'
     const ratio = count / maxJobs
     if (ratio < 0.6) return 'text-blue-700'
     return 'text-white'
@@ -135,29 +135,29 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
   `
 
   return (
-    <div className={cn("bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden", className)}>
+    <div className={cn("bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden", className)}>
       {/* Header */}
-      <div className="p-4 border-b border-slate-100">
+      <div className="p-4 border-b border-stone-100">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
               <MapIcon className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800">Jobb i Sverige</h3>
-              <p className="text-xs text-slate-700">
+              <h3 className="font-semibold text-stone-800">Jobb i Sverige</h3>
+              <p className="text-xs text-stone-700">
                 {totalJobs.toLocaleString()} lediga jobb
               </p>
             </div>
           </div>
           
           {/* View mode toggle */}
-          <div className="flex items-center bg-slate-100 rounded-lg p-1">
+          <div className="flex items-center bg-stone-100 rounded-lg p-1">
             <button
               onClick={() => setViewMode('map')}
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                viewMode === 'map' ? "bg-white shadow-sm text-blue-600" : "text-slate-700"
+                viewMode === 'map' ? "bg-white shadow-sm text-blue-600" : "text-stone-700"
               )}
               title="Kartvy"
             >
@@ -167,7 +167,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
               onClick={() => setViewMode('list')}
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                viewMode === 'list' ? "bg-white shadow-sm text-blue-600" : "text-slate-700"
+                viewMode === 'list' ? "bg-white shadow-sm text-blue-600" : "text-stone-700"
               )}
               title="Listvy"
             >
@@ -177,7 +177,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
               onClick={() => setViewMode('grid')}
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                viewMode === 'grid' ? "bg-white shadow-sm text-blue-600" : "text-slate-700"
+                viewMode === 'grid' ? "bg-white shadow-sm text-blue-600" : "text-stone-700"
               )}
               title="Rutnät"
             >
@@ -188,16 +188,16 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
 
         {/* Legend */}
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-700">Färre jobb</span>
+          <span className="text-stone-700">Färre jobb</span>
           <div className="flex gap-1">
-            <div className="w-6 h-3 rounded bg-slate-100" />
+            <div className="w-6 h-3 rounded bg-stone-100" />
             <div className="w-6 h-3 rounded bg-blue-100" />
             <div className="w-6 h-3 rounded bg-blue-200" />
             <div className="w-6 h-3 rounded bg-blue-300" />
             <div className="w-6 h-3 rounded bg-blue-400" />
             <div className="w-6 h-3 rounded bg-blue-500" />
           </div>
-          <span className="text-slate-700">Fler jobb</span>
+          <span className="text-stone-700">Fler jobb</span>
         </div>
       </div>
 
@@ -267,7 +267,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                             ? "border-blue-400 ring-2 ring-blue-50"
                             : hasJobs 
                               ? "border-white shadow-md"
-                              : "border-slate-200",
+                              : "border-stone-200",
                         isHovered && "scale-110"
                       )}
                       style={{
@@ -291,15 +291,15 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                     {/* Tooltip */}
                     {(isHovered || isSelected) && (
                       <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 pointer-events-none z-30">
-                        <div className="bg-slate-900 text-white text-sm rounded-xl py-2 px-3 shadow-xl whitespace-nowrap">
+                        <div className="bg-stone-900 text-white text-sm rounded-xl py-2 px-3 shadow-xl whitespace-nowrap">
                           <div className="font-semibold">{region.name}</div>
-                          <div className="flex items-center gap-1.5 mt-1 text-slate-300 text-xs">
+                          <div className="flex items-center gap-1.5 mt-1 text-stone-300 text-xs">
                             <Briefcase className="w-3.5 h-3.5" />
                             {region.jobCount.toLocaleString()} lediga jobb
                           </div>
                           {/* Pil */}
                           <div className="absolute top-full left-1/2 transform -translate-x-1/2 -mt-1">
-                            <div className="border-4 border-transparent border-t-slate-900" />
+                            <div className="border-4 border-transparent border-t-stone-900" />
                           </div>
                         </div>
                       </div>
@@ -327,7 +327,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                       "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm transition-colors",
                       selectedRegion === city.id
                         ? "bg-blue-100 text-blue-700 border border-blue-200"
-                        : "bg-slate-50 text-slate-600 hover:bg-slate-100 border border-transparent"
+                        : "bg-stone-50 text-stone-600 hover:bg-stone-100 border border-transparent"
                     )}
                   >
                     <span>{city.icon}</span>
@@ -348,13 +348,13 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
           <div className="space-y-2 max-h-[400px] overflow-y-auto">
             {/* Sort toggle */}
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-slate-700">
+              <span className="text-sm text-stone-700">
                 {sortedRegions.length} regioner med jobb
               </span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'jobs' | 'name')}
-                className="text-sm border border-slate-200 rounded-lg px-2 py-1"
+                className="text-sm border border-stone-200 rounded-lg px-2 py-1"
               >
                 <option value="jobs">Sortera: Flest jobb</option>
                 <option value="name">Sortera: Namn</option>
@@ -369,7 +369,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                   "w-full flex items-center justify-between p-3 rounded-xl transition-colors text-left",
                   selectedRegion === region.id
                     ? "bg-blue-50 border-2 border-blue-200"
-                    : "bg-slate-50 hover:bg-slate-100 border-2 border-transparent"
+                    : "bg-stone-50 hover:bg-stone-100 border-2 border-transparent"
                 )}
               >
                 <div className="flex items-center gap-3">
@@ -377,26 +377,26 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                     "w-10 h-10 rounded-lg flex items-center justify-center",
                     getColorIntensity(region.jobCount)
                   )}>
-                    <MapPin size={18} className={region.jobCount > 0 ? "text-blue-600" : "text-slate-600"} />
+                    <MapPin size={18} className={region.jobCount > 0 ? "text-blue-600" : "text-stone-600"} />
                   </div>
                   <div>
-                    <div className="font-medium text-slate-800 text-sm">{region.name}</div>
-                    <div className="text-xs text-slate-700">
+                    <div className="font-medium text-stone-800 text-sm">{region.name}</div>
+                    <div className="text-xs text-stone-700">
                       {region.population.toLocaleString()} invånare
                     </div>
                   </div>
                 </div>
                 <div className="text-right">
-                  <div className="font-semibold text-slate-800">
+                  <div className="font-semibold text-stone-800">
                     {region.jobCount.toLocaleString()}
                   </div>
-                  <div className="text-xs text-slate-700">jobb</div>
+                  <div className="text-xs text-stone-700">jobb</div>
                 </div>
               </button>
             ))}
 
             {sortedRegions.length === 0 && (
-              <div className="text-center py-8 text-slate-700">
+              <div className="text-center py-8 text-stone-700">
                 <MapPin className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p>Inga jobb hittades i någon region</p>
                 <p className="text-sm mt-1">Ändra dina sökkriterier</p>
@@ -415,20 +415,20 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                   "p-3 rounded-xl transition-colors text-left",
                   selectedRegion === region.id
                     ? "bg-blue-50 border-2 border-blue-200"
-                    : "bg-slate-50 hover:bg-slate-100 border-2 border-transparent"
+                    : "bg-stone-50 hover:bg-stone-100 border-2 border-transparent"
                 )}
               >
                 <div className={cn(
                   "w-8 h-8 rounded-lg flex items-center justify-center mb-2",
                   getColorIntensity(region.jobCount)
                 )}>
-                  <Briefcase size={14} className={region.jobCount > 0 ? "text-blue-600" : "text-slate-600"} />
+                  <Briefcase size={14} className={region.jobCount > 0 ? "text-blue-600" : "text-stone-600"} />
                 </div>
-                <div className="font-medium text-slate-800 text-sm truncate">{region.name}</div>
-                <div className="text-lg font-semibold text-slate-700">
+                <div className="font-medium text-stone-800 text-sm truncate">{region.name}</div>
+                <div className="text-lg font-semibold text-stone-700">
                   {region.jobCount.toLocaleString()}
                 </div>
-                <div className="text-xs text-slate-700">lediga jobb</div>
+                <div className="text-xs text-stone-700">lediga jobb</div>
               </button>
             ))}
           </div>
@@ -444,17 +444,17 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                 <MapPin className="w-5 h-5" />
               </div>
               <div>
-                <h4 className="font-semibold text-slate-900">
+                <h4 className="font-semibold text-stone-900">
                   {regions.find(r => r.id === selectedRegion)?.name}
                 </h4>
-                <p className="text-slate-600 text-sm">
+                <p className="text-stone-600 text-sm">
                   {regions.find(r => r.id === selectedRegion)?.jobCount.toLocaleString()} lediga jobb
                 </p>
               </div>
             </div>
             <button
               onClick={() => onRegionSelect?.('')}
-              className="p-2 text-slate-600 hover:text-slate-600 hover:bg-white rounded-lg transition-colors"
+              className="p-2 text-stone-600 hover:text-stone-600 hover:bg-white rounded-lg transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

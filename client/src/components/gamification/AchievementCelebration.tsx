@@ -71,16 +71,16 @@ export function AchievementCelebration({ achievement, onClose }: AchievementCele
         </div>
         <h2 
           id="achievement-title"
-          className="text-2xl font-bold text-slate-800 mb-2"
+          className="text-2xl font-bold text-stone-800 mb-2"
         >
           {achievement.title}
         </h2>
-        <p className="text-slate-600 mb-6">
+        <p className="text-stone-600 mb-6">
           {achievement.description}
         </p>
         <button
           onClick={onClose}
-          className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+          className="w-full bg-[var(--c-solid)] text-white py-3 rounded-xl font-semibold hover:bg-[var(--c-text)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2"
         >
           Fortsätt! 🎉
         </button>

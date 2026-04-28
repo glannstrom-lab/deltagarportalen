@@ -93,10 +93,10 @@ export function CommutePlannerPanel({
               <MapPin className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
-              <h4 className="font-medium text-slate-800 dark:text-slate-200">
+              <h4 className="font-medium text-stone-800 dark:text-stone-200">
                 Pendlingsplanerare
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-600">
+              <p className="text-sm text-stone-600 dark:text-stone-600">
                 Beräkna restid och kostnad
               </p>
             </div>
@@ -104,7 +104,7 @@ export function CommutePlannerPanel({
 
           <div className="space-y-3">
             <div className="relative">
-              <Home className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+              <Home className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <Input
                 placeholder="Din hemadress"
                 value={homeAddress}
@@ -113,7 +113,7 @@ export function CommutePlannerPanel({
               />
             </div>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600" />
               <Input
                 placeholder={workCompanyName || "Arbetsplatsens adress"}
                 value={workAddress}
@@ -167,25 +167,25 @@ export function CommutePlannerPanel({
                 <div className="p-4 rounded-xl border-2 border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/20">
                   <div className="flex items-center gap-2 mb-3">
                     <Train className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    <span className="font-medium text-slate-800 dark:text-slate-200">
+                    <span className="font-medium text-stone-800 dark:text-stone-200">
                       Kollektivtrafik
                     </span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-700">Restid</span>
-                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                      <span className="text-xs text-stone-700">Restid</span>
+                      <span className="text-sm font-bold text-stone-800 dark:text-stone-200">
                         {result.publicTransit.duration}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-700">Byten</span>
-                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                      <span className="text-xs text-stone-700">Byten</span>
+                      <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                         {result.publicTransit.transfers}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-700">Månadskostnad</span>
+                      <span className="text-xs text-stone-700">Månadskostnad</span>
                       <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
                         {result.publicTransit.monthlyCost}
                       </span>
@@ -210,34 +210,34 @@ export function CommutePlannerPanel({
 
               {/* Car */}
               {result.car && (
-                <div className="p-4 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                <div className="p-4 rounded-xl border-2 border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-800/50">
                   <div className="flex items-center gap-2 mb-3">
-                    <Car className="w-5 h-5 text-slate-600 dark:text-slate-600" />
-                    <span className="font-medium text-slate-800 dark:text-slate-200">
+                    <Car className="w-5 h-5 text-stone-600 dark:text-stone-600" />
+                    <span className="font-medium text-stone-800 dark:text-stone-200">
                       Bil
                     </span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-700">Restid</span>
-                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                      <span className="text-xs text-stone-700">Restid</span>
+                      <span className="text-sm font-bold text-stone-800 dark:text-stone-200">
                         {result.car.duration}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-700">Avstånd</span>
-                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                      <span className="text-xs text-stone-700">Avstånd</span>
+                      <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                         {result.car.distance}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-700">Månadskostnad</span>
-                      <span className="text-sm font-bold text-slate-700 dark:text-slate-300">
+                      <span className="text-xs text-stone-700">Månadskostnad</span>
+                      <span className="text-sm font-bold text-stone-700 dark:text-stone-300">
                         {result.car.monthlyCost}
                       </span>
                     </div>
                     {result.car.parkingInfo && (
-                      <p className="text-xs text-slate-700 pt-2 border-t border-slate-200 dark:border-slate-700">
+                      <p className="text-xs text-stone-700 pt-2 border-t border-stone-200 dark:border-stone-700">
                         {result.car.parkingInfo}
                       </p>
                     )}
@@ -250,30 +250,30 @@ export function CommutePlannerPanel({
                 <div className="p-4 rounded-xl border-2 border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20">
                   <div className="flex items-center gap-2 mb-3">
                     <Bike className="w-5 h-5 text-green-600 dark:text-green-400" />
-                    <span className="font-medium text-slate-800 dark:text-slate-200">
+                    <span className="font-medium text-stone-800 dark:text-stone-200">
                       Cykel
                     </span>
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-700">Restid</span>
-                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200">
+                      <span className="text-xs text-stone-700">Restid</span>
+                      <span className="text-sm font-bold text-stone-800 dark:text-stone-200">
                         {result.bike.duration}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-700">Avstånd</span>
-                      <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                      <span className="text-xs text-stone-700">Avstånd</span>
+                      <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                         {result.bike.distance}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-slate-700">Kostnad</span>
+                      <span className="text-xs text-stone-700">Kostnad</span>
                       <span className="text-sm font-bold text-green-600 dark:text-green-400">
                         0 kr
                       </span>
                     </div>
-                    <p className="text-xs text-slate-700 pt-2 border-t border-green-200 dark:border-green-800">
+                    <p className="text-xs text-stone-700 pt-2 border-t border-green-200 dark:border-green-800">
                       {result.bike.feasibility}
                     </p>
                   </div>
@@ -283,14 +283,14 @@ export function CommutePlannerPanel({
 
             {/* Recommendation */}
             {result.recommendation && (
-              <div className="p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
                 <div className="flex items-start gap-3">
-                  <Lightbulb className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
+                  <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
+                    <h4 className="font-medium text-stone-800 dark:text-stone-200 mb-1">
                       Rekommendation
                     </h4>
-                    <p className="text-sm text-slate-700 dark:text-slate-300">
+                    <p className="text-sm text-stone-700 dark:text-stone-300">
                       {result.recommendation}
                     </p>
                   </div>
@@ -313,15 +313,15 @@ export function CommutePlannerPanel({
                 title="Alternativa jobb"
                 icon={<Building2 className="w-4 h-4" />}
               >
-                <p className="text-sm text-slate-700 dark:text-slate-300">
+                <p className="text-sm text-stone-700 dark:text-stone-300">
                   {result.alternativeJobs.suggestion}
                 </p>
               </CollapsibleSection>
             )}
 
             {/* Summary Stats */}
-            <div className="pt-4 border-t border-slate-200 dark:border-slate-700">
-              <p className="text-xs text-slate-600 text-center">
+            <div className="pt-4 border-t border-stone-200 dark:border-stone-700">
+              <p className="text-xs text-stone-600 text-center">
                 Från: {homeAddress} → Till: {workAddress}
               </p>
             </div>

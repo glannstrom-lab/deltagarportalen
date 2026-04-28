@@ -34,8 +34,8 @@ const appTools: AppTool[] = [
     descriptionKey: 'knowledgeBase.tools.cvBuilder.description',
     icon: FileText,
     link: '/cv',
-    color: 'bg-teal-50 border-teal-100',
-    iconColor: 'bg-teal-100 text-teal-600',
+    color: 'bg-[var(--c-bg)] border-[var(--c-accent)]/40',
+    iconColor: 'bg-[var(--c-accent)]/40 text-[var(--c-text)]',
   },
   {
     id: 'cover-letter',
@@ -79,8 +79,8 @@ const appTools: AppTool[] = [
     descriptionKey: 'knowledgeBase.tools.profile.description',
     icon: User,
     link: '/settings',
-    color: 'bg-slate-50 border-slate-200',
-    iconColor: 'bg-slate-100 text-slate-600',
+    color: 'bg-stone-50 border-stone-200',
+    iconColor: 'bg-stone-100 text-stone-600',
   },
 ]
 
@@ -96,10 +96,10 @@ export default function ToolsTab() {
             <Wrench className="w-6 h-6 text-amber-600" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-stone-900">
               {t('knowledgeBase.tools.title')}
             </h2>
-            <p className="text-slate-600 mt-1">
+            <p className="text-stone-600 mt-1">
               {t('knowledgeBase.tools.description')}
             </p>
           </div>
@@ -127,10 +127,10 @@ export default function ToolsTab() {
 
                 {/* Content */}
                 <div className="mb-4">
-                  <h3 className="font-semibold text-slate-900 group-hover:text-amber-700 transition-colors">
+                  <h3 className="font-semibold text-stone-900 group-hover:text-amber-700 transition-colors">
                     {t(tool.titleKey)}
                   </h3>
-                  <p className="text-sm text-slate-600 mt-1">
+                  <p className="text-sm text-stone-600 mt-1">
                     {t(tool.descriptionKey)}
                   </p>
                 </div>

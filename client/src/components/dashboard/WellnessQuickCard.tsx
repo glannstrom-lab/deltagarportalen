@@ -20,8 +20,8 @@ const MOOD_OPTIONS = [
   { value: 1, emoji: '😢', label: 'Dåligt', color: 'from-rose-400 to-rose-500' },
   { value: 2, emoji: '😕', label: 'Lite nere', color: 'from-orange-400 to-orange-500' },
   { value: 3, emoji: '😐', label: 'Okej', color: 'from-amber-400 to-yellow-500' },
-  { value: 4, emoji: '🙂', label: 'Bra', color: 'from-emerald-400 to-teal-500' },
-  { value: 5, emoji: '😊', label: 'Fantastiskt', color: 'from-teal-400 to-cyan-500' },
+  { value: 4, emoji: '🙂', label: 'Bra', color: 'from-emerald-400 to-[var(--c-solid)]' },
+  { value: 5, emoji: '😊', label: 'Fantastiskt', color: 'from-[var(--c-solid)]/80 to-cyan-500' },
 ]
 
 function getMoodFromValue(mood: number | string): typeof MOOD_OPTIONS[0] | undefined {

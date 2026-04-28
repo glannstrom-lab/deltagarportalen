@@ -77,21 +77,21 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Welcome header */}
-      <Card className="bg-gradient-to-r from-teal-50 to-sky-50 border-teal-100">
+      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 border-[var(--c-accent)]/40">
         <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
           <div className="flex items-center gap-3 sm:block">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[var(--c-accent)]/40 rounded-xl flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--c-text)]" />
             </div>
-            <h2 className="text-lg sm:text-xl font-bold text-slate-900 sm:hidden">
+            <h2 className="text-lg sm:text-xl font-bold text-stone-900 sm:hidden">
               {t('knowledgeBase.forYou.greeting', { name: userName })}
             </h2>
           </div>
           <div className="flex-1">
-            <h2 className="hidden sm:block text-xl font-bold text-slate-900">
+            <h2 className="hidden sm:block text-xl font-bold text-stone-900">
               {t('knowledgeBase.forYou.greeting', { name: userName })}
             </h2>
-            <p className="text-sm sm:text-base text-slate-600 sm:mt-1">
+            <p className="text-sm sm:text-base text-stone-600 sm:mt-1">
               {riasecProfile.hasResult
                 ? t('knowledgeBase.forYou.personalizedContent')
                 : t('knowledgeBase.forYou.curatedContent')}
@@ -111,11 +111,11 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
               <span className="text-xl">{moodData.moodEmoji}</span>
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+              <h3 className="font-semibold text-stone-900 flex items-center gap-2">
                 <Heart className="w-4 h-4 text-rose-500" />
                 Baserat på ditt humör
               </h3>
-              <p className="text-sm text-slate-600 mt-1">
+              <p className="text-sm text-stone-600 mt-1">
                 {moodData.encouragingMessage}
               </p>
               {moodData.recommendations.length > 0 && (
@@ -144,15 +144,15 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
             {riasecProfile.hasResult ? (
               <Compass className="w-5 h-5 text-amber-600" />
             ) : (
-              <Target className="w-5 h-5 text-teal-600" />
+              <Target className="w-5 h-5 text-[var(--c-text)]" />
             )}
-            <h3 className="text-lg font-semibold text-slate-900">
+            <h3 className="text-lg font-semibold text-stone-900">
               {riasecProfile.hasResult
                 ? t('knowledgeBase.forYou.recommended')
                 : t('knowledgeBase.forYou.allArticles')}
             </h3>
             {riasecProfile.hasResult && (
-              <span className="text-sm text-slate-600">
+              <span className="text-sm text-stone-600">
                 {t('knowledgeBase.forYou.basedOnProfile')}
               </span>
             )}
@@ -174,7 +174,7 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
         <section>
           <div className="flex items-center gap-2 mb-4">
             <BookOpen className="w-5 h-5 text-sky-600" />
-            <h3 className="text-lg font-semibold text-slate-900">
+            <h3 className="text-lg font-semibold text-stone-900">
               {t('knowledgeBase.forYou.recentArticles')}
             </h3>
           </div>
@@ -192,11 +192,11 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
       {/* Empty state */}
       {articles.length === 0 && (
         <Card className="p-8 text-center">
-          <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-900 mb-2">
+          <BookOpen className="w-12 h-12 text-stone-300 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-stone-900 mb-2">
             {t('knowledgeBase.forYou.noArticles')}
           </h3>
-          <p className="text-slate-700">
+          <p className="text-stone-700">
             {t('knowledgeBase.forYou.noArticlesDescription')}
           </p>
         </Card>

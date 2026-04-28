@@ -140,7 +140,7 @@ export function RichTextEditor({
     <div className="space-y-2">
       {label && (
         <div className="flex items-center justify-between">
-          <label htmlFor={editorId} className="text-sm font-medium text-slate-700">{label}</label>
+          <label htmlFor={editorId} className="text-sm font-medium text-stone-700">{label}</label>
           <button
             type="button"
             onClick={() => setShowToolbar(!showToolbar)}
@@ -160,11 +160,11 @@ export function RichTextEditor({
           role="toolbar"
           aria-label="Formateringsverktyg"
           aria-controls={editorId}
-          className="flex flex-wrap items-center gap-1 p-2 bg-slate-50 border border-slate-200 rounded-t-lg"
+          className="flex flex-wrap items-center gap-1 p-2 bg-stone-50 border border-stone-200 rounded-t-lg"
         >
           {toolbarButtons.map((btn, idx) =>
             btn.separator ? (
-              <div key={idx} className="w-px h-6 bg-slate-300 mx-1" role="separator" aria-orientation="vertical" />
+              <div key={idx} className="w-px h-6 bg-stone-300 mx-1" role="separator" aria-orientation="vertical" />
             ) : (
               <button
                 key={idx}
@@ -174,8 +174,8 @@ export function RichTextEditor({
                 aria-label={btn.title}
                 title={btn.title}
                 className={`
-                  p-1.5 rounded hover:bg-slate-200 transition-colors
-                  ${btn.disabled ? 'opacity-30 cursor-not-allowed' : 'text-slate-600 hover:text-slate-800'}
+                  p-1.5 rounded hover:bg-stone-200 transition-colors
+                  ${btn.disabled ? 'opacity-30 cursor-not-allowed' : 'text-stone-600 hover:text-stone-800'}
                 `}
               >
                 <btn.icon className="w-4 h-4" aria-hidden="true" />
@@ -197,10 +197,10 @@ export function RichTextEditor({
           aria-describedby={`${helpText ? helpTextId : ''} ${counterId}`.trim() || undefined}
           aria-label={label || 'Textredigerare'}
           className={`
-            w-full px-4 py-3 border border-slate-200
+            w-full px-4 py-3 border border-stone-200
             ${showToolbar ? 'rounded-b-lg' : 'rounded-lg'}
             focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
-            text-slate-700 placeholder:text-slate-600
+            text-stone-700 placeholder:text-stone-600
             resize-y
           `}
           style={{ minHeight }}
@@ -213,7 +213,7 @@ export function RichTextEditor({
             className={`
             text-xs font-medium
             ${charPercentage > 90 ? 'text-red-500' :
-              charPercentage > 75 ? 'text-amber-500' : 'text-slate-600'}
+              charPercentage > 75 ? 'text-amber-500' : 'text-stone-600'}
           `}
             aria-live="polite"
             aria-atomic="true"
@@ -221,7 +221,7 @@ export function RichTextEditor({
             {charCount}/{maxLength}
           </span>
           <div
-            className="w-12 h-1 bg-slate-200 rounded-full overflow-hidden"
+            className="w-12 h-1 bg-stone-200 rounded-full overflow-hidden"
             role="progressbar"
             aria-valuenow={charCount}
             aria-valuemin={0}
@@ -240,7 +240,7 @@ export function RichTextEditor({
       </div>
 
       {helpText && (
-        <p id={helpTextId} className="text-xs text-slate-700">{helpText}</p>
+        <p id={helpTextId} className="text-xs text-stone-700">{helpText}</p>
       )}
     </div>
   )

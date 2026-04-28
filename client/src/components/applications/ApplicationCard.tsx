@@ -61,7 +61,7 @@ export function ApplicationCard({
   const priorityColors = {
     high: 'bg-red-100 text-red-700 border-red-200',
     medium: 'bg-amber-100 text-amber-700 border-amber-200',
-    low: 'bg-slate-100 text-slate-600 border-slate-200'
+    low: 'bg-stone-100 text-stone-600 border-stone-200'
   }
 
   const handleStatusChange = (newStatus: ApplicationStatus) => {
@@ -74,15 +74,15 @@ export function ApplicationCard({
       <div
         className={cn(
           "bg-white rounded-lg border p-3 cursor-pointer hover:shadow-md transition-all",
-          isDragging && "shadow-lg ring-2 ring-teal-400 rotate-2",
+          isDragging && "shadow-lg ring-2 ring-[var(--c-solid)] rotate-2",
           isStale && "border-amber-300"
         )}
         onClick={() => onViewDetails?.(application)}
       >
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-slate-900 text-sm line-clamp-1">{jobTitle}</h4>
-            <p className="text-xs text-slate-700 flex items-center gap-1 mt-0.5">
+            <h4 className="font-medium text-stone-900 text-sm line-clamp-1">{jobTitle}</h4>
+            <p className="text-xs text-stone-700 flex items-center gap-1 mt-0.5">
               <Building2 className="w-3 h-3 flex-shrink-0" />
               <span className="truncate">{companyName}</span>
             </p>
@@ -93,7 +93,7 @@ export function ApplicationCard({
         </div>
 
         <div className="flex items-center justify-between mt-2">
-          <span className="text-xs text-slate-600">
+          <span className="text-xs text-stone-600">
             {daysSinceUpdate === 0 ? 'Idag' : `${daysSinceUpdate}d sedan`}
           </span>
           {isStale && (
@@ -108,7 +108,7 @@ export function ApplicationCard({
     <Card
       className={cn(
         "p-4 hover:shadow-md transition-all cursor-pointer group",
-        isDragging && "shadow-lg ring-2 ring-teal-400",
+        isDragging && "shadow-lg ring-2 ring-[var(--c-solid)]",
         isStale && "border-amber-200 bg-amber-50/30"
       )}
       onClick={() => onViewDetails?.(application)}
@@ -126,8 +126,8 @@ export function ApplicationCard({
           {/* Header */}
           <div className="flex items-start justify-between gap-2">
             <div>
-              <h3 className="font-semibold text-slate-900 line-clamp-1">{jobTitle}</h3>
-              <p className="text-sm text-slate-600">{companyName}</p>
+              <h3 className="font-semibold text-stone-900 line-clamp-1">{jobTitle}</h3>
+              <p className="text-sm text-stone-600">{companyName}</p>
             </div>
 
             {showActions && (
@@ -158,7 +158,7 @@ export function ApplicationCard({
                           setShowStatusMenu(false)
                         }}
                       />
-                      <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20 min-w-[140px]">
+                      <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[140px]">
                         {getNextStatuses(application.status).map((status) => {
                           const config = APPLICATION_STATUS_CONFIG[status]
                           return (
@@ -169,7 +169,7 @@ export function ApplicationCard({
                                 handleStatusChange(status)
                               }}
                               className={cn(
-                                "w-full text-left px-3 py-1.5 text-sm hover:bg-slate-50 flex items-center gap-2",
+                                "w-full text-left px-3 py-1.5 text-sm hover:bg-stone-50 flex items-center gap-2",
                                 config.color
                               )}
                             >
@@ -190,9 +190,9 @@ export function ApplicationCard({
                       e.stopPropagation()
                       setShowMenu(!showMenu)
                     }}
-                    className="p-1.5 hover:bg-slate-100 rounded"
+                    className="p-1.5 hover:bg-stone-100 rounded"
                   >
-                    <MoreVertical className="w-4 h-4 text-slate-600" />
+                    <MoreVertical className="w-4 h-4 text-stone-600" />
                   </button>
 
                   {showMenu && (
@@ -204,14 +204,14 @@ export function ApplicationCard({
                           setShowMenu(false)
                         }}
                       />
-                      <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20 min-w-[150px]">
+                      <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[150px]">
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
                             onEdit?.(application)
                             setShowMenu(false)
                           }}
-                          className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                          className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
                         >
                           <Edit2 className="w-4 h-4" />
                           Redigera
@@ -222,7 +222,7 @@ export function ApplicationCard({
                             onArchive?.(application.id)
                             setShowMenu(false)
                           }}
-                          className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                          className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
                         >
                           <Archive className="w-4 h-4" />
                           Arkivera
@@ -249,7 +249,7 @@ export function ApplicationCard({
           </div>
 
           {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-slate-700">
+          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-stone-700">
             {location && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
@@ -290,7 +290,7 @@ export function ApplicationCard({
 
             {/* Has CV */}
             {application.cvVersionId && (
-              <span className="px-2 py-0.5 rounded text-xs bg-teal-100 text-teal-700 flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded text-xs bg-[var(--c-accent)]/40 text-[var(--c-text)] flex items-center gap-1">
                 <FileText className="w-3 h-3" />
                 CV
               </span>
@@ -298,7 +298,7 @@ export function ApplicationCard({
 
             {/* Has cover letter */}
             {application.coverLetterId && (
-              <span className="px-2 py-0.5 rounded text-xs bg-teal-100 text-teal-700 flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded text-xs bg-[var(--c-accent)]/40 text-[var(--c-text)] flex items-center gap-1">
                 <FileText className="w-3 h-3" />
                 Brev
               </span>
@@ -307,7 +307,7 @@ export function ApplicationCard({
 
           {/* Notes preview */}
           {application.notes && variant === 'expanded' && (
-            <p className="text-sm text-slate-700 mt-2 line-clamp-2 italic">
+            <p className="text-sm text-stone-700 mt-2 line-clamp-2 italic">
               "{application.notes}"
             </p>
           )}
@@ -316,7 +316,7 @@ export function ApplicationCard({
 
       {/* Footer with link */}
       {application.jobUrl && (
-        <div className="mt-3 pt-3 border-t border-slate-100 flex justify-end">
+        <div className="mt-3 pt-3 border-t border-stone-100 flex justify-end">
           <a
             href={application.jobUrl}
             target="_blank"

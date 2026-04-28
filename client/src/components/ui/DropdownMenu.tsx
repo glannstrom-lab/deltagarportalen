@@ -116,7 +116,7 @@ export function DropdownMenuContent({
       <div
         ref={ref}
         className={cn(
-          'absolute z-50 mt-1 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-slate-200 dark:border-stone-700 py-1 min-w-[180px]',
+          'absolute z-50 mt-1 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 min-w-[180px]',
           alignmentClasses[align],
           className
         )}
@@ -155,8 +155,8 @@ export function DropdownMenuItem({
       className={cn(
         'w-full text-left px-3 py-2 text-sm flex items-center gap-2 transition-colors',
         disabled
-          ? 'text-slate-600 dark:text-stone-400 cursor-not-allowed'
-          : 'text-slate-700 dark:text-stone-200 hover:bg-slate-100 dark:hover:bg-stone-800',
+          ? 'text-stone-600 dark:text-stone-400 cursor-not-allowed'
+          : 'text-stone-700 dark:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800',
         className
       )}
     >
@@ -167,5 +167,5 @@ export function DropdownMenuItem({
 
 // Separator line
 export function DropdownMenuSeparator() {
-  return <div className="h-px bg-slate-200 dark:bg-stone-700 my-1" />
+  return <div className="h-px bg-stone-200 dark:bg-stone-700 my-1" />
 }

@@ -93,7 +93,7 @@ export const CompactInput = forwardRef<HTMLInputElement, CompactInputProps>(({
           ) || undefined}
           className={cn(
             'w-full py-2 bg-white dark:bg-stone-800 border rounded-lg text-sm text-stone-900 dark:text-stone-100',
-            'focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500',
+            'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 dark:focus:ring-[var(--c-solid)]/30 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)]',
             'placeholder:text-stone-400 dark:placeholder:text-stone-500 transition-all',
             icon ? 'pl-9 pr-3' : 'px-3',
             error

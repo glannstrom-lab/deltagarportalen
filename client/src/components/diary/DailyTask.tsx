@@ -64,8 +64,8 @@ const dailyTasks: Task[] = [
 ]
 
 const typeConfig = {
-  diary: { color: 'bg-teal-100 text-teal-700 border-teal-200', icon: Sparkles },
-  exercise: { color: 'bg-teal-100 text-teal-700 border-teal-200', icon: CheckCircle2 },
+  diary: { color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-[var(--c-accent)]/60', icon: Sparkles },
+  exercise: { color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-[var(--c-accent)]/60', icon: CheckCircle2 },
   cv: { color: 'bg-blue-100 text-blue-700 border-blue-200', icon: CheckCircle2 },
   jobsearch: { color: 'bg-emerald-100 text-emerald-700 border-emerald-200', icon: CheckCircle2 },
   networking: { color: 'bg-amber-100 text-amber-700 border-amber-200', icon: CheckCircle2 },
@@ -177,12 +177,12 @@ export function DailyTask() {
 
   if (loading) {
     return (
-      <div className="rounded-2xl border-2 border-slate-200 p-5 bg-white">
+      <div className="rounded-2xl border-2 border-stone-200 p-5 bg-white">
         <div className="animate-pulse flex space-x-4">
-          <div className="w-12 h-12 bg-slate-200 rounded-xl"></div>
+          <div className="w-12 h-12 bg-stone-200 rounded-xl"></div>
           <div className="flex-1 space-y-2 py-1">
-            <div className="h-4 bg-slate-200 rounded w-3/4"></div>
-            <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+            <div className="h-4 bg-stone-200 rounded w-3/4"></div>
+            <div className="h-3 bg-stone-200 rounded w-1/2"></div>
           </div>
         </div>
       </div>
@@ -193,8 +193,8 @@ export function DailyTask() {
     <div className={cn(
       'rounded-2xl border-2 p-5 transition-all',
       completed 
-        ? 'bg-slate-50 border-slate-200 opacity-75' 
-        : 'bg-white border-slate-200 hover:border-teal-300 shadow-sm'
+        ? 'bg-stone-50 border-stone-200 opacity-75' 
+        : 'bg-white border-stone-200 hover:border-[var(--c-accent)] shadow-sm'
     )}>
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
@@ -208,12 +208,12 @@ export function DailyTask() {
           <div>
             <h3 className={cn(
               'font-semibold transition-all',
-              completed ? 'text-slate-700 line-through' : 'text-slate-900'
+              completed ? 'text-stone-700 line-through' : 'text-stone-900'
             )}>
               Dagens uppgift
             </h3>
             {!completed && (
-              <span className="text-xs text-slate-700">
+              <span className="text-xs text-stone-700">
                 Tar cirka {currentTask.estimatedTime}
               </span>
             )}
@@ -223,7 +223,7 @@ export function DailyTask() {
         {!completed && (
           <button
             onClick={handleRefresh}
-            className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
             title="Få en annan uppgift"
           >
             <RefreshCw size={18} />
@@ -235,13 +235,13 @@ export function DailyTask() {
       <div className="mb-4">
         <h4 className={cn(
           'font-medium mb-1 transition-all',
-          completed ? 'text-slate-700 line-through' : 'text-slate-800'
+          completed ? 'text-stone-700 line-through' : 'text-stone-800'
         )}>
           {currentTask.title}
         </h4>
         <p className={cn(
           'text-sm transition-all',
-          completed ? 'text-slate-600' : 'text-slate-600'
+          completed ? 'text-stone-600' : 'text-stone-600'
         )}>
           {currentTask.description}
         </p>
@@ -254,8 +254,8 @@ export function DailyTask() {
           className={cn(
             'flex-1 py-2.5 px-4 rounded-xl font-medium text-sm transition-all flex items-center justify-center gap-2',
             completed
-              ? 'bg-slate-200 text-slate-600 hover:bg-slate-300'
-              : 'bg-teal-600 text-white hover:bg-teal-700'
+              ? 'bg-stone-200 text-stone-600 hover:bg-stone-300'
+              : 'bg-[var(--c-solid)] text-white hover:bg-[var(--c-text)]'
           )}
         >
           {completed ? (
@@ -276,8 +276,8 @@ export function DailyTask() {
           className={cn(
             'py-2.5 px-4 rounded-xl font-medium text-sm transition-all flex items-center gap-2',
             completed
-              ? 'bg-slate-100 text-slate-600 cursor-not-allowed pointer-events-none'
-              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              ? 'bg-stone-100 text-stone-600 cursor-not-allowed pointer-events-none'
+              : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
           )}
         >
           Gå till
@@ -287,7 +287,7 @@ export function DailyTask() {
 
       {/* Completion Message */}
       {completed && (
-        <div className="mt-4 pt-4 border-t border-slate-200">
+        <div className="mt-4 pt-4 border-t border-stone-200">
           <p className="text-sm text-green-700 flex items-center gap-2">
             <Sparkles size={16} className="text-amber-500" />
             Bra jobbat! Du är ett steg närmare ditt mål.

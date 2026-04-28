@@ -31,7 +31,7 @@ export function Skeleton({ className, ...props }: SkeletonProps) {
  */
 export function CardSkeleton({ className, ...props }: SkeletonProps) {
   return (
-    <div className={cn('bg-white rounded-xl border border-slate-200 p-4', className)} {...props}>
+    <div className={cn('bg-white rounded-xl border border-stone-200 p-4', className)} {...props}>
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
         <Skeleton className="w-10 h-10 rounded-lg" />
@@ -74,7 +74,7 @@ export function TextSkeleton({ lines = 3, className }: SkeletonProps & { lines?:
  */
 export function DashboardWidgetSkeleton() {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-3 h-full min-h-[140px]">
+    <div className="bg-white rounded-xl border border-stone-200 p-3 h-full min-h-[140px]">
       {/* Header */}
       <div className="flex items-center gap-2 mb-2">
         <Skeleton className="w-8 h-8 rounded-lg" />
@@ -114,7 +114,7 @@ export function ListSkeleton({ items = 5 }: { items?: number }) {
   return (
     <div className="space-y-2">
       {Array.from({ length: items }).map((_, i) => (
-        <div key={i} className="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200">
+        <div key={i} className="flex items-center gap-3 p-3 bg-white rounded-lg border border-stone-200">
           <Skeleton className="w-10 h-10 rounded-lg" />
           <div className="flex-1">
             <Skeleton className="w-32 h-4 mb-2" />

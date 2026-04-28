@@ -94,7 +94,7 @@ export function TopBar() {
           />
           <div className="hidden sm:block">
             <span className="text-lg font-semibold text-stone-800 dark:text-stone-100">
-              jobin<span className="text-teal-600 dark:text-teal-400">.se</span>
+              jobin<span className="text-[var(--c-text)] dark:text-[var(--c-solid)]">.se</span>
             </span>
           </div>
         </Link>
@@ -116,7 +116,7 @@ export function TopBar() {
             onClick={toggleFocusMode}
             className={cn(
               iconButtonClass,
-              isFocusMode && 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400'
+              isFocusMode && 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-solid)]'
             )}
             title={isFocusMode ? t('topbar.focusModeOff', 'Stäng av fokusläge') : t('topbar.focusModeOn', 'Aktivera fokusläge')}
             aria-label={isFocusMode ? t('topbar.focusModeOff', 'Stäng av fokusläge') : t('topbar.focusModeOn', 'Aktivera fokusläge')}
@@ -164,11 +164,11 @@ export function TopBar() {
               aria-haspopup="menu"
             >
               {/* Avatar */}
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center overflow-hidden">
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 flex items-center justify-center overflow-hidden">
                 {profile?.profile_image_url ? (
                   <img src={profile.profile_image_url} alt="" className="w-full h-full object-cover" />
                 ) : (
-                  <span className="text-teal-700 dark:text-teal-300 text-[10px] sm:text-xs font-semibold">
+                  <span className="text-[var(--c-text)] dark:text-[var(--c-accent)] text-[10px] sm:text-xs font-semibold">
                     {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'}
                   </span>
                 )}
@@ -209,7 +209,7 @@ export function TopBar() {
                     <Link
                       to="/profile"
                       onClick={() => setShowUserMenu(false)}
-                      className="mt-2.5 sm:mt-3 block w-full text-center py-1.5 text-xs sm:text-sm font-medium text-teal-600 dark:text-teal-400 border border-teal-500 dark:border-teal-500/50 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-colors"
+                      className="mt-2.5 sm:mt-3 block w-full text-center py-1.5 text-xs sm:text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] border border-[var(--c-solid)] dark:border-[var(--c-solid)]/50 rounded-lg hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30 transition-colors"
                     >
                       {t('topbar.viewProfile', 'Visa profil')}
                     </Link>
@@ -228,7 +228,7 @@ export function TopBar() {
                           className={cn(
                             'px-3 py-1 text-xs font-medium rounded-full transition-colors',
                             i18n.language === 'sv'
-                              ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+                              ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
                               : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                           )}
                         >
@@ -239,7 +239,7 @@ export function TopBar() {
                           className={cn(
                             'px-3 py-1 text-xs font-medium rounded-full transition-colors',
                             i18n.language === 'en'
-                              ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+                              ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
                               : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                           )}
                         >

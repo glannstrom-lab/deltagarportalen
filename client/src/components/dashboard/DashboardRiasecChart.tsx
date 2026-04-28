@@ -27,7 +27,7 @@ const RIASEC_COLORS: Record<keyof RiasecScores, { main: string; light: string; g
   realistic: { main: '#f59e0b', light: '#fef3c7', gradient: 'from-amber-500 to-orange-500' },
   investigative: { main: '#3b82f6', light: '#dbeafe', gradient: 'from-blue-500 to-indigo-500' },
   artistic: { main: '#8b5cf6', light: '#ede9fe', gradient: 'from-violet-500 to-purple-500' },
-  social: { main: '#10b981', light: '#d1fae5', gradient: 'from-emerald-500 to-teal-500' },
+  social: { main: '#10b981', light: '#d1fae5', gradient: 'from-emerald-500 to-[var(--c-solid)]' },
   enterprising: { main: '#ef4444', light: '#fee2e2', gradient: 'from-red-500 to-rose-500' },
   conventional: { main: '#6366f1', light: '#e0e7ff', gradient: 'from-indigo-500 to-blue-500' }
 }
@@ -153,7 +153,7 @@ export function DashboardRiasecChart({ scores, size = 220 }: DashboardRiasecChar
         <polygon
           points={polygonPoints}
           fill="none"
-          className="stroke-teal-500 dark:stroke-teal-400"
+          className="stroke-[var(--c-solid)] dark:stroke-[var(--c-solid)]"
           strokeWidth="2.5"
           strokeLinejoin="round"
         />
@@ -268,7 +268,7 @@ export function DashboardRiasecChart({ scores, size = 220 }: DashboardRiasecChar
               x={center}
               y={center + 12}
               textAnchor="middle"
-              className="fill-teal-600 dark:fill-teal-400 text-sm font-bold"
+              className="fill-[var(--c-solid)] dark:fill-[var(--c-solid)] text-sm font-bold"
             >
               {Math.round((scores[hoveredType] / maxScore) * 100)}%
             </text>

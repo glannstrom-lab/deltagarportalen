@@ -30,8 +30,8 @@ export default function InsightsTab() {
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
-          <p className="text-slate-700 dark:text-stone-300">{t('dashboard.insights.analyzing')}</p>
+          <Loader2 className="w-8 h-8 text-[var(--c-solid)] animate-spin mx-auto mb-3" aria-hidden="true" />
+          <p className="text-stone-700 dark:text-stone-300">{t('dashboard.insights.analyzing')}</p>
         </div>
       </div>
     )
@@ -43,10 +43,10 @@ export default function InsightsTab() {
         <div className="w-16 h-16 bg-red-100 dark:bg-red-900/40 rounded-full flex items-center justify-center mx-auto mb-4">
           <Brain className="w-8 h-8 text-red-500" />
         </div>
-        <h3 className="text-lg font-semibold text-slate-800 dark:text-stone-100 mb-2">
+        <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-2">
           {t('dashboard.insights.errorTitle')}
         </h3>
-        <p className="text-slate-700 dark:text-stone-300 mb-4">{error}</p>
+        <p className="text-stone-700 dark:text-stone-300 mb-4">{error}</p>
         <Button onClick={refresh} variant="outline">
           <RefreshCw className="w-4 h-4 mr-2" />
           {t('common.tryAgain')}
@@ -60,11 +60,11 @@ export default function InsightsTab() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
-            <Brain className="text-teal-500" size={28} />
+          <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100 flex items-center gap-2">
+            <Brain className="text-[var(--c-solid)]" size={28} />
             {t('dashboard.insights.title')}
           </h2>
-          <p className="text-slate-700 dark:text-stone-300">{t('dashboard.insights.subtitle')}</p>
+          <p className="text-stone-700 dark:text-stone-300">{t('dashboard.insights.subtitle')}</p>
         </div>
         <Button onClick={refresh} variant="secondary" size="sm">
           <RefreshCw className="w-4 h-4 mr-2" />
@@ -151,7 +151,7 @@ interface SummaryCardProps {
 
 function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, color }: SummaryCardProps) {
   const colorClasses = {
-    violet: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
+    violet: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]',
     orange: 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400',
     blue: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
     emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400'
@@ -160,19 +160,19 @@ function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, 
   const trendColors = {
     up: 'text-emerald-600 dark:text-emerald-400',
     down: 'text-red-500 dark:text-red-400',
-    stable: 'text-slate-700 dark:text-stone-300'
+    stable: 'text-stone-700 dark:text-stone-300'
   }
 
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus
 
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-4">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-4">
       <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center mb-3", colorClasses[color])}>
         <Icon size={20} />
       </div>
-      <p className="text-sm text-slate-700 dark:text-stone-300">{label}</p>
+      <p className="text-sm text-stone-700 dark:text-stone-300">{label}</p>
       <div className="flex items-baseline gap-2 mt-1">
-        <p className="text-2xl font-bold text-slate-800 dark:text-stone-100">{value}</p>
+        <p className="text-2xl font-bold text-stone-800 dark:text-stone-100">{value}</p>
         {trend && changePercent !== undefined && (
           <span className={cn("flex items-center text-sm font-medium", trendColors[trend])}>
             <TrendIcon size={14} className="mr-0.5" />
@@ -180,7 +180,7 @@ function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, 
           </span>
         )}
       </div>
-      {subtext && <p className="text-xs text-slate-600 dark:text-stone-400 mt-1">{subtext}</p>}
+      {subtext && <p className="text-xs text-stone-600 dark:text-stone-400 mt-1">{subtext}</p>}
     </div>
   )
 }
@@ -198,9 +198,9 @@ function ActivityChart({ dailyActivity, t }: ActivityChartProps) {
   const maxCount = Math.max(...dailyActivity.map(d => d.count), 1)
 
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
-      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-        <BarChart3 size={20} className="text-teal-500" />
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
+      <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
+        <BarChart3 size={20} className="text-[var(--c-solid)]" />
         {t('dashboard.insights.activityLast14Days')}
       </h3>
       <div className="flex items-end justify-between gap-1 h-32">
@@ -216,14 +216,14 @@ function ActivityChart({ dailyActivity, t }: ActivityChartProps) {
                 transition={{ delay: index * 0.03 }}
                 className={cn(
                   "w-full max-w-8 rounded-t-sm",
-                  isToday ? "bg-teal-500" : "bg-teal-200 dark:bg-teal-700",
-                  day.count === 0 && "bg-slate-100 dark:bg-stone-700"
+                  isToday ? "bg-[var(--c-solid)]" : "bg-[var(--c-accent)]/60 dark:bg-[var(--c-text)]",
+                  day.count === 0 && "bg-stone-100 dark:bg-stone-700"
                 )}
                 title={`${day.date}: ${t('dashboard.insights.activitiesCount', { count: day.count })}`}
               />
               <span className={cn(
                 "text-xs",
-                isToday ? "text-teal-600 dark:text-teal-400 font-medium" : "text-slate-600 dark:text-stone-400"
+                isToday ? "text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium" : "text-stone-600 dark:text-stone-400"
               )}>
                 {day.dayName}
               </span>
@@ -258,13 +258,13 @@ function ActivityBreakdown({ activities, t }: ActivityBreakdownProps) {
   const total = activities.reduce((sum, a) => sum + a.count, 0)
 
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
-      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
+      <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Activity size={20} className="text-blue-500" />
         {t('dashboard.insights.activityBreakdown')}
       </h3>
       {activities.length === 0 ? (
-        <p className="text-slate-700 dark:text-stone-300 text-sm py-4 text-center">
+        <p className="text-stone-700 dark:text-stone-300 text-sm py-4 text-center">
           {t('dashboard.insights.noActivityYet')}
         </p>
       ) : (
@@ -275,15 +275,15 @@ function ActivityBreakdown({ activities, t }: ActivityBreakdownProps) {
 
             return (
               <div key={activity.type} className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
-                  <Icon size={16} className="text-slate-600 dark:text-stone-400" />
+                <div className="w-8 h-8 rounded-lg bg-stone-100 dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
+                  <Icon size={16} className="text-stone-600 dark:text-stone-400" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <span className="text-sm text-slate-700 dark:text-stone-300">{activity.label}</span>
-                    <span className="text-sm font-medium text-slate-800 dark:text-stone-100">{activity.count}</span>
+                    <span className="text-sm text-stone-700 dark:text-stone-300">{activity.label}</span>
+                    <span className="text-sm font-medium text-stone-800 dark:text-stone-100">{activity.count}</span>
                   </div>
-                  <div className="h-2 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
+                  <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${percent}%` }}
@@ -311,8 +311,8 @@ interface WeeklyProgressChartProps {
 
 function WeeklyProgressChart({ progress, t }: WeeklyProgressChartProps) {
   return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-6">
-      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
+    <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-6">
+      <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Calendar size={20} className="text-emerald-500" />
         {t('dashboard.insights.weeklyProgress')}
       </h3>
@@ -320,8 +320,8 @@ function WeeklyProgressChart({ progress, t }: WeeklyProgressChartProps) {
         {progress.map(week => (
           <div key={week.week} className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="text-sm text-slate-600 dark:text-stone-400">{t('dashboard.insights.week', { number: week.week })}</span>
-              <span className="text-xs text-slate-600 dark:text-stone-400">
+              <span className="text-sm text-stone-600 dark:text-stone-400">{t('dashboard.insights.week', { number: week.week })}</span>
+              <span className="text-xs text-stone-600 dark:text-stone-400">
                 {t('dashboard.insights.activitiesCount', { count: week.applications + week.exercises })}
               </span>
             </div>
@@ -341,12 +341,12 @@ function WeeklyProgressChart({ progress, t }: WeeklyProgressChartProps) {
                 />
               )}
               {week.applications === 0 && week.exercises === 0 && (
-                <div className="flex-1 bg-slate-100 dark:bg-stone-700 rounded" />
+                <div className="flex-1 bg-stone-100 dark:bg-stone-700 rounded" />
               )}
             </div>
           </div>
         ))}
-        <div className="flex gap-4 mt-2 text-xs text-slate-700 dark:text-stone-300">
+        <div className="flex gap-4 mt-2 text-xs text-stone-700 dark:text-stone-300">
           <span className="flex items-center gap-1">
             <div className="w-3 h-3 bg-emerald-500 rounded" />
             {t('dashboard.insights.applications')}
@@ -376,7 +376,7 @@ function RecommendationsSection({ recommendations, expandedId, onToggle, t }: Re
   const priorityColors = {
     high: 'border-red-200 dark:border-red-700 bg-red-50/50 dark:bg-red-900/20',
     medium: 'border-amber-200 dark:border-amber-700 bg-amber-50/50 dark:bg-amber-900/20',
-    low: 'border-slate-200 dark:border-stone-700'
+    low: 'border-stone-200 dark:border-stone-700'
   }
 
   const categoryIcons = {
@@ -388,8 +388,8 @@ function RecommendationsSection({ recommendations, expandedId, onToggle, t }: Re
 
   return (
     <div>
-      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-        <Target size={20} className="text-teal-500" />
+      <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
+        <Target size={20} className="text-[var(--c-solid)]" />
         {t('dashboard.insights.personalRecommendations')}
       </h3>
       <div className="space-y-3">
@@ -413,31 +413,31 @@ function RecommendationsSection({ recommendations, expandedId, onToggle, t }: Re
                   <div className={cn(
                     "w-10 h-10 rounded-lg flex items-center justify-center",
                     rec.priority === 'high' ? "bg-red-100 dark:bg-red-900/40" :
-                    rec.priority === 'medium' ? "bg-amber-100 dark:bg-amber-900/40" : "bg-teal-100 dark:bg-teal-900/40"
+                    rec.priority === 'medium' ? "bg-amber-100 dark:bg-amber-900/40" : "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40"
                   )}>
                     <Icon size={18} className={cn(
                       rec.priority === 'high' ? "text-red-600 dark:text-red-400" :
-                      rec.priority === 'medium' ? "text-amber-600 dark:text-amber-400" : "text-teal-600 dark:text-teal-400"
+                      rec.priority === 'medium' ? "text-amber-600 dark:text-amber-400" : "text-[var(--c-text)] dark:text-[var(--c-solid)]"
                     )} />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-slate-800 dark:text-stone-100">{rec.action}</h4>
+                    <h4 className="font-semibold text-stone-800 dark:text-stone-100">{rec.action}</h4>
                     <p className="text-sm text-emerald-600 dark:text-emerald-400 font-medium">{rec.impact}</p>
                   </div>
                 </div>
                 {expandedId === rec.id ? (
-                  <ChevronUp size={20} className="text-slate-600 dark:text-stone-400" />
+                  <ChevronUp size={20} className="text-stone-600 dark:text-stone-400" />
                 ) : (
-                  <ChevronDown size={20} className="text-slate-600 dark:text-stone-400" />
+                  <ChevronDown size={20} className="text-stone-600 dark:text-stone-400" />
                 )}
               </div>
               {expandedId === rec.id && (
                 <motion.div
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: 'auto', opacity: 1 }}
-                  className="mt-3 pt-3 border-t border-slate-100 dark:border-stone-700"
+                  className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-700"
                 >
-                  <p className="text-sm text-slate-600 dark:text-stone-400">{rec.reason}</p>
+                  <p className="text-sm text-stone-600 dark:text-stone-400">{rec.reason}</p>
                 </motion.div>
               )}
             </motion.div>
@@ -486,17 +486,17 @@ function PatternsSection({ mostActiveDay, mostActiveHour, conversionRate, activi
 
   return (
     <div>
-      <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
+      <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
         <Lightbulb size={20} className="text-amber-500" />
         {t('dashboard.insights.yourPatterns')}
       </h3>
       <div className="space-y-3">
         {patterns.map((pattern, index) => (
-          <div key={index} className="flex items-start gap-3 p-4 bg-slate-50 dark:bg-stone-800 rounded-xl">
+          <div key={index} className="flex items-start gap-3 p-4 bg-stone-50 dark:bg-stone-800 rounded-xl">
             <div className="w-8 h-8 rounded-lg bg-white dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
-              <pattern.icon size={14} className="text-teal-500" />
+              <pattern.icon size={14} className="text-[var(--c-solid)]" />
             </div>
-            <p className="text-slate-700 dark:text-stone-300">{pattern.text}</p>
+            <p className="text-stone-700 dark:text-stone-300">{pattern.text}</p>
           </div>
         ))}
       </div>

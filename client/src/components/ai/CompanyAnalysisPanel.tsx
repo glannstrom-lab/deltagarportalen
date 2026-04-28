@@ -84,7 +84,7 @@ export function CompanyAnalysisPanel({
       case 'negative':
         return <ThumbsDown className="w-3 h-3 text-red-500" />
       default:
-        return <Minus className="w-3 h-3 text-slate-600" />
+        return <Minus className="w-3 h-3 text-stone-600" />
     }
   }
 
@@ -95,23 +95,23 @@ export function CompanyAnalysisPanel({
       case 'negative':
         return 'border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/20'
       default:
-        return 'border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50'
+        return 'border-stone-200 bg-stone-50 dark:border-stone-700 dark:bg-stone-800/50'
     }
   }
 
   if (!hasStarted) {
     return (
       <AiConsentGate compact featureName="Företagsanalys">
-        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20', className)}>
+        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20', className)}>
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/50">
-              <Building2 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <div className="p-2 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50">
+              <Building2 className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             </div>
             <div className="flex-1">
-              <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
+              <h4 className="font-medium text-stone-800 dark:text-stone-200 mb-1">
                 Analysera {companyName}
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-600 mb-3">
+              <p className="text-sm text-stone-600 dark:text-stone-600 mb-3">
                 Få AI-genererade insikter om nyheter, kultur och tips för din spontanansökan.
               </p>
               <Button
@@ -172,15 +172,15 @@ export function CompanyAnalysisPanel({
                       )}
                     >
                       <div className="flex items-start justify-between gap-2 mb-1">
-                        <h5 className="text-sm font-medium text-slate-800 dark:text-slate-200 flex items-center gap-2">
+                        <h5 className="text-sm font-medium text-stone-800 dark:text-stone-200 flex items-center gap-2">
                           {getSentimentIcon(news.sentiment)}
                           {news.title}
                         </h5>
-                        <span className="text-xs text-slate-600 flex-shrink-0">
+                        <span className="text-xs text-stone-600 flex-shrink-0">
                           {news.date}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 dark:text-slate-600">
+                      <p className="text-xs text-stone-600 dark:text-stone-600">
                         {news.summary}
                       </p>
                     </div>
@@ -195,30 +195,30 @@ export function CompanyAnalysisPanel({
               icon={<TrendingUp className="w-4 h-4" />}
               defaultOpen
             >
-              <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">
+              <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
                 {result.financialStatus.summary}
               </p>
               <div className="grid grid-cols-3 gap-2">
                 {result.financialStatus.revenue && (
-                  <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-center">
-                    <p className="text-xs text-slate-700 mb-0.5">Omsättning</p>
-                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                  <div className="p-2 rounded-lg bg-stone-50 dark:bg-stone-800/50 text-center">
+                    <p className="text-xs text-stone-700 mb-0.5">Omsättning</p>
+                    <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
                       {result.financialStatus.revenue}
                     </p>
                   </div>
                 )}
                 {result.financialStatus.employees && (
-                  <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-center">
-                    <p className="text-xs text-slate-700 mb-0.5">Anställda</p>
-                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                  <div className="p-2 rounded-lg bg-stone-50 dark:bg-stone-800/50 text-center">
+                    <p className="text-xs text-stone-700 mb-0.5">Anställda</p>
+                    <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
                       {result.financialStatus.employees}
                     </p>
                   </div>
                 )}
                 {result.financialStatus.growth && (
-                  <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-center">
-                    <p className="text-xs text-slate-700 mb-0.5">Tillväxt</p>
-                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
+                  <div className="p-2 rounded-lg bg-stone-50 dark:bg-stone-800/50 text-center">
+                    <p className="text-xs text-stone-700 mb-0.5">Tillväxt</p>
+                    <p className="text-sm font-medium text-stone-800 dark:text-stone-200">
                       {result.financialStatus.growth}
                     </p>
                   </div>
@@ -237,7 +237,7 @@ export function CompanyAnalysisPanel({
                     'px-2 py-0.5 rounded-full text-xs font-medium',
                     result.recruitmentNeeds.hiring
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
-                      : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-600'
+                      : 'bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-600'
                   )}
                 >
                   {result.recruitmentNeeds.hiring ? 'Rekryterar aktivt' : 'Ej aktiv rekrytering'}
@@ -246,14 +246,14 @@ export function CompanyAnalysisPanel({
 
               {result.recruitmentNeeds.roles.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
                     Roller som efterfrågas
                   </p>
                   <div className="flex flex-wrap gap-1">
                     {result.recruitmentNeeds.roles.map((role, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 text-xs rounded-full"
+                        className="px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)] text-xs rounded-full"
                       >
                         {role}
                       </span>
@@ -264,7 +264,7 @@ export function CompanyAnalysisPanel({
 
               {result.recruitmentNeeds.signals.length > 0 && (
                 <>
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
                     Signaler
                   </p>
                   <AIList items={result.recruitmentNeeds.signals} />
@@ -277,13 +277,13 @@ export function CompanyAnalysisPanel({
               title="Företagskultur"
               icon={<Users className="w-4 h-4" />}
             >
-              <p className="text-sm text-slate-700 dark:text-slate-300 mb-3">
+              <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
                 {result.companyCulture.summary}
               </p>
 
               {result.companyCulture.values.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
                     Värderingar
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -299,7 +299,7 @@ export function CompanyAnalysisPanel({
                 </div>
               )}
 
-              <p className="text-xs text-slate-600 dark:text-slate-600">
+              <p className="text-xs text-stone-600 dark:text-stone-600">
                 {result.companyCulture.workEnvironment}
               </p>
 
@@ -308,7 +308,7 @@ export function CompanyAnalysisPanel({
                   {result.companyCulture.ratings.glassdoor && (
                     <div className="flex items-center gap-1">
                       <Star className="w-3 h-3 text-amber-500" />
-                      <span className="text-xs text-slate-600 dark:text-slate-600">
+                      <span className="text-xs text-stone-600 dark:text-stone-600">
                         Glassdoor: {result.companyCulture.ratings.glassdoor}
                       </span>
                     </div>
@@ -316,7 +316,7 @@ export function CompanyAnalysisPanel({
                   {result.companyCulture.ratings.indeed && (
                     <div className="flex items-center gap-1">
                       <Star className="w-3 h-3 text-amber-500" />
-                      <span className="text-xs text-slate-600 dark:text-slate-600">
+                      <span className="text-xs text-stone-600 dark:text-stone-600">
                         Indeed: {result.companyCulture.ratings.indeed}
                       </span>
                     </div>
@@ -332,26 +332,26 @@ export function CompanyAnalysisPanel({
               defaultOpen
             >
               <div className="space-y-3">
-                <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800">
-                  <p className="text-xs font-medium text-teal-600 dark:text-teal-400 mb-1">
+                <div className="p-3 rounded-lg bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+                  <p className="text-xs font-medium text-[var(--c-text)] dark:text-[var(--c-solid)] mb-1">
                     Bästa approach
                   </p>
-                  <p className="text-sm text-slate-700 dark:text-slate-300">
+                  <p className="text-sm text-stone-700 dark:text-stone-300">
                     {result.spontaneousApplicationTips.bestApproach}
                   </p>
                 </div>
 
                 <div>
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
+                  <p className="text-xs font-medium text-stone-700 dark:text-stone-600 mb-2">
                     Samtalsämnen att lyfta
                   </p>
                   <div className="space-y-1">
                     {result.spontaneousApplicationTips.talkingPoints.map((point, i) => (
                       <div
                         key={i}
-                        className="flex items-start justify-between gap-2 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50"
+                        className="flex items-start justify-between gap-2 p-2 rounded-lg bg-stone-50 dark:bg-stone-800/50"
                       >
-                        <span className="text-sm text-slate-700 dark:text-slate-300">
+                        <span className="text-sm text-stone-700 dark:text-stone-300">
                           {point}
                         </span>
                         <CopyButton text={point} />

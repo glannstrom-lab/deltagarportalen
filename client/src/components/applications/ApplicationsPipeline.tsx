@@ -78,11 +78,11 @@ function PipelineColumn({
       <div className={cn(
         "flex items-center justify-between p-3 rounded-t-xl border-t-4",
         config.borderColor,
-        "bg-white border border-b-0 border-slate-200"
+        "bg-white border border-b-0 border-stone-200"
       )}>
         <div className="flex items-center gap-2">
           <Icon className={cn("w-4 h-4", config.color)} />
-          <h3 className="font-semibold text-slate-900 text-sm">
+          <h3 className="font-semibold text-stone-900 text-sm">
             {getStatusLabel(status)}
           </h3>
           <span className={cn(
@@ -95,9 +95,9 @@ function PipelineColumn({
       </div>
 
       {/* Column content */}
-      <div className="flex-1 bg-slate-50 border border-t-0 border-slate-200 rounded-b-xl p-2 space-y-2 min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto">
+      <div className="flex-1 bg-stone-50 border border-t-0 border-stone-200 rounded-b-xl p-2 space-y-2 min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto">
         {sortedApps.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8 text-slate-600">
+          <div className="flex flex-col items-center justify-center py-8 text-stone-600">
             <Icon className="w-8 h-8 mb-2 opacity-50" />
             <p className="text-xs text-center">Inga ansökningar</p>
           </div>
@@ -201,10 +201,10 @@ export function ApplicationsPipeline({
       {/* Toolbar */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <span className="px-3 py-1.5 bg-teal-100 text-teal-700 rounded-full text-sm font-medium">
+          <span className="px-3 py-1.5 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-full text-sm font-medium">
             {stats.active} aktiva
           </span>
-          <span className="text-sm text-slate-700 hidden sm:inline">
+          <span className="text-sm text-stone-700 hidden sm:inline">
             {stats.applied} ansökta • {stats.interview} intervjuer
           </span>
         </div>
@@ -217,8 +217,8 @@ export function ApplicationsPipeline({
               className={cn(
                 "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-sm",
                 priorityFilter
-                  ? "border-teal-300 bg-teal-50 text-teal-700"
-                  : "border-slate-200 hover:bg-slate-50 text-slate-600"
+                  ? "border-[var(--c-accent)] bg-[var(--c-bg)] text-[var(--c-text)]"
+                  : "border-stone-200 hover:bg-stone-50 text-stone-600"
               )}
             >
               <Filter className="w-4 h-4" />
@@ -231,12 +231,12 @@ export function ApplicationsPipeline({
             {showFilters && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowFilters(false)} />
-                <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20 min-w-[150px]">
+                <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[150px]">
                   <button
                     onClick={() => { setPriorityFilter(null); setShowFilters(false) }}
                     className={cn(
-                      "w-full text-left px-3 py-2 text-sm hover:bg-slate-50",
-                      !priorityFilter && "text-teal-600 bg-teal-50"
+                      "w-full text-left px-3 py-2 text-sm hover:bg-stone-50",
+                      !priorityFilter && "text-[var(--c-text)] bg-[var(--c-bg)]"
                     )}
                   >
                     Alla prioriteter
@@ -244,8 +244,8 @@ export function ApplicationsPipeline({
                   <button
                     onClick={() => { setPriorityFilter('high'); setShowFilters(false) }}
                     className={cn(
-                      "w-full text-left px-3 py-2 text-sm hover:bg-slate-50",
-                      priorityFilter === 'high' && "text-teal-600 bg-teal-50"
+                      "w-full text-left px-3 py-2 text-sm hover:bg-stone-50",
+                      priorityFilter === 'high' && "text-[var(--c-text)] bg-[var(--c-bg)]"
                     )}
                   >
                     Hög prioritet
@@ -253,8 +253,8 @@ export function ApplicationsPipeline({
                   <button
                     onClick={() => { setPriorityFilter('medium'); setShowFilters(false) }}
                     className={cn(
-                      "w-full text-left px-3 py-2 text-sm hover:bg-slate-50",
-                      priorityFilter === 'medium' && "text-teal-600 bg-teal-50"
+                      "w-full text-left px-3 py-2 text-sm hover:bg-stone-50",
+                      priorityFilter === 'medium' && "text-[var(--c-text)] bg-[var(--c-bg)]"
                     )}
                   >
                     Medium prioritet
@@ -262,8 +262,8 @@ export function ApplicationsPipeline({
                   <button
                     onClick={() => { setPriorityFilter('low'); setShowFilters(false) }}
                     className={cn(
-                      "w-full text-left px-3 py-2 text-sm hover:bg-slate-50",
-                      priorityFilter === 'low' && "text-teal-600 bg-teal-50"
+                      "w-full text-left px-3 py-2 text-sm hover:bg-stone-50",
+                      priorityFilter === 'low' && "text-[var(--c-text)] bg-[var(--c-bg)]"
                     )}
                   >
                     Låg prioritet
@@ -335,13 +335,13 @@ export function ApplicationsPipeline({
       {/* Empty state */}
       {stats.total === 0 && (
         <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-teal-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <Bookmark className="w-8 h-8 text-teal-600" />
+          <div className="w-16 h-16 bg-[var(--c-accent)]/40 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <Bookmark className="w-8 h-8 text-[var(--c-text)]" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-700 mb-2">
+          <h3 className="text-xl font-semibold text-stone-700 mb-2">
             Inga ansökningar än
           </h3>
-          <p className="text-slate-700 mb-6 max-w-md mx-auto">
+          <p className="text-stone-700 mb-6 max-w-md mx-auto">
             Börja spåra dina jobbansökningar genom att spara jobb från jobbsökningen
             eller lägg till en ansökan manuellt.
           </p>

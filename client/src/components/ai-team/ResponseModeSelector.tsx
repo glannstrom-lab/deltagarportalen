@@ -40,7 +40,7 @@ export function ResponseModeSelector({ className }: ResponseModeSelectorProps) {
             className={cn(
               'flex-1 px-3 py-2 rounded-md text-xs font-medium',
               'transition-all duration-150',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500',
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]',
               responseMode === mode
                 ? 'bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100 shadow-sm'
                 : 'text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300'

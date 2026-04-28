@@ -323,8 +323,8 @@ export default function SearchTab() {
     <div className="space-y-6">
       {/* Search Section */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
-          <Search className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-stone-800 dark:text-stone-100">
+          <Search className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
           {t('spontaneous.search.title')}
         </h2>
 
@@ -334,7 +334,7 @@ export default function SearchTab() {
             variant={searchMode === 'ai' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSearchMode('ai')}
-            className={`flex items-center gap-2 ${searchMode === 'ai' ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
+            className={`flex items-center gap-2 ${searchMode === 'ai' ? 'bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Sparkles className="w-4 h-4" />
             {t('spontaneous.search.aiSearch')}
@@ -343,14 +343,14 @@ export default function SearchTab() {
             variant={searchMode === 'orgnr' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSearchMode('orgnr')}
-            className={`flex items-center gap-2 ${searchMode === 'orgnr' ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
+            className={`flex items-center gap-2 ${searchMode === 'orgnr' ? 'bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Hash className="w-4 h-4" />
             {t('spontaneous.search.orgNumber')}
           </Button>
         </div>
 
-        <p className="text-slate-600 dark:text-stone-400 mb-4">
+        <p className="text-stone-600 dark:text-stone-400 mb-4">
           {searchMode === 'ai' ? (
             <>{t('spontaneous.search.aiDescription')}</>
           ) : (
@@ -360,7 +360,7 @@ export default function SearchTab() {
                 href="https://allabolag.se"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-teal-500 dark:text-teal-400 hover:underline inline-flex items-center gap-1"
+                className="text-[var(--c-solid)] dark:text-[var(--c-solid)] hover:underline inline-flex items-center gap-1"
               >
                 allabolag.se
                 <ExternalLink className="w-3 h-3" />
@@ -372,9 +372,9 @@ export default function SearchTab() {
         <div className="flex gap-3">
           <div className="flex-1 relative">
             {searchMode === 'ai' ? (
-              <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400 dark:text-teal-500" />
+              <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
             ) : (
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 dark:text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600 dark:text-stone-400" />
             )}
             <Input
               type="text"
@@ -385,14 +385,14 @@ export default function SearchTab() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="pl-10 bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 text-slate-900 dark:text-stone-100"
+              className="pl-10 bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 text-stone-900 dark:text-stone-100"
               disabled={isSearching}
             />
           </div>
           <Button
             onClick={handleSearch}
             disabled={isSearching || !searchQuery.trim()}
-            className="min-w-[100px] bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
+            className="min-w-[100px] bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]"
           >
             {isSearching ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -418,15 +418,15 @@ export default function SearchTab() {
           <div className="flex justify-between items-start gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Building2 className="w-5 h-5 text-teal-500 dark:text-teal-400" />
-                <h3 className="text-xl font-semibold text-slate-800 dark:text-stone-100">{searchResult.name}</h3>
+                <Building2 className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
+                <h3 className="text-xl font-semibold text-stone-800 dark:text-stone-100">{searchResult.name}</h3>
                 {/* Company Status Indicator */}
                 {searchResult._raw && (
                   <CompanyStatusBadge rawData={searchResult._raw} />
                 )}
               </div>
 
-              <p className="text-sm text-slate-600 dark:text-stone-400 mb-4">
+              <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
                 Org.nr: {formatOrgNumber(searchResult.orgNumber)}
                 {searchResult.legalForm && ` - ${searchResult.legalForm}`}
               </p>
@@ -435,10 +435,10 @@ export default function SearchTab() {
                 {/* Address */}
                 {searchResult.address && (searchResult.address.street || searchResult.address.city) && (
                   <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-slate-600 dark:text-stone-400 mt-0.5" />
+                    <MapPin className="w-4 h-4 text-stone-600 dark:text-stone-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">{t('spontaneous.company.address')}</p>
-                      <p className="text-sm text-slate-600 dark:text-stone-400">
+                      <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('spontaneous.company.address')}</p>
+                      <p className="text-sm text-stone-600 dark:text-stone-400">
                         {searchResult.address.street && <span>{searchResult.address.street}<br /></span>}
                         {searchResult.address.postalCode} {searchResult.address.city}
                       </p>
@@ -449,18 +449,18 @@ export default function SearchTab() {
                 {/* Industry */}
                 {searchResult.sniCodes && searchResult.sniCodes.length > 0 && (
                   <div className="flex items-start gap-2">
-                    <Briefcase className="w-4 h-4 text-slate-600 dark:text-stone-400 mt-0.5" />
+                    <Briefcase className="w-4 h-4 text-stone-600 dark:text-stone-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">{t('spontaneous.company.industry')}</p>
-                      <p className="text-sm text-slate-600 dark:text-stone-400">
+                      <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('spontaneous.company.industry')}</p>
+                      <p className="text-sm text-stone-600 dark:text-stone-400">
                         {searchResult.sniCodes.slice(0, 3).map(sni => (
                           <span key={sni.code} className="block">
-                            <span className="text-xs text-slate-500 dark:text-stone-500">{sni.code}</span>{' '}
+                            <span className="text-xs text-stone-500 dark:text-stone-500">{sni.code}</span>{' '}
                             {sni.description || getSniDescription(sni.code)}
                           </span>
                         ))}
                         {searchResult.sniCodes.length > 3 && (
-                          <span className="text-xs text-slate-500 dark:text-stone-500">
+                          <span className="text-xs text-stone-500 dark:text-stone-500">
                             +{searchResult.sniCodes.length - 3} {t('common.more').toLowerCase()}
                           </span>
                         )}
@@ -472,10 +472,10 @@ export default function SearchTab() {
                 {/* Registration Date */}
                 {searchResult.registrationDate && (
                   <div className="flex items-start gap-2">
-                    <Calendar className="w-4 h-4 text-slate-600 dark:text-stone-400 mt-0.5" />
+                    <Calendar className="w-4 h-4 text-stone-600 dark:text-stone-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">{t('spontaneous.company.registered')}</p>
-                      <p className="text-sm text-slate-600 dark:text-stone-400">
+                      <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('spontaneous.company.registered')}</p>
+                      <p className="text-sm text-stone-600 dark:text-stone-400">
                         {new Date(searchResult.registrationDate).toLocaleDateString('sv-SE')}
                       </p>
                     </div>
@@ -486,8 +486,8 @@ export default function SearchTab() {
               {/* Business Description */}
               {searchResult.businessDescription && (
                 <div className="mt-4">
-                  <p className="text-sm font-medium text-slate-800 dark:text-stone-200 mb-1">{t('spontaneous.company.business')}</p>
-                  <p className="text-sm text-slate-600 dark:text-stone-400">
+                  <p className="text-sm font-medium text-stone-800 dark:text-stone-200 mb-1">{t('spontaneous.company.business')}</p>
+                  <p className="text-sm text-stone-600 dark:text-stone-400">
                     {searchResult.businessDescription}
                   </p>
                 </div>
@@ -496,13 +496,13 @@ export default function SearchTab() {
               {/* Annual Reports Section */}
               <div className="mt-6 pt-4 border-t border-stone-200 dark:border-stone-700">
                 <div className="flex items-center gap-2 mb-3">
-                  <FileText className="w-4 h-4 text-teal-500 dark:text-teal-400" />
-                  <p className="text-sm font-medium text-slate-800 dark:text-stone-200">{t('spontaneous.annualReports')}</p>
-                  {isLoadingDocs && <Loader2 className="w-4 h-4 animate-spin text-slate-600 dark:text-stone-400" />}
+                  <FileText className="w-4 h-4 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
+                  <p className="text-sm font-medium text-stone-800 dark:text-stone-200">{t('spontaneous.annualReports')}</p>
+                  {isLoadingDocs && <Loader2 className="w-4 h-4 animate-spin text-stone-600 dark:text-stone-400" />}
                 </div>
 
                 {!isLoadingDocs && documents.length === 0 && (
-                  <p className="text-sm text-slate-600 dark:text-stone-400">{t('spontaneous.noAnnualReports')}</p>
+                  <p className="text-sm text-stone-600 dark:text-stone-400">{t('spontaneous.noAnnualReports')}</p>
                 )}
 
                 {documents.length > 0 && (
@@ -525,7 +525,7 @@ export default function SearchTab() {
                       </Button>
                     ))}
                     {documents.length > 5 && (
-                      <span className="text-xs text-slate-600 dark:text-stone-400 self-center">
+                      <span className="text-xs text-stone-600 dark:text-stone-400 self-center">
                         +{documents.length - 5} {t('common.more').toLowerCase()}
                       </span>
                     )}
@@ -540,7 +540,7 @@ export default function SearchTab() {
                 onClick={handleSave}
                 disabled={isSaving || alreadySaved}
                 variant={alreadySaved ? 'outline' : 'default'}
-                className={alreadySaved ? 'border-stone-200 dark:border-stone-700' : 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500'}
+                className={alreadySaved ? 'border-stone-200 dark:border-stone-700' : 'bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]'}
               >
                 {isSaving ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
@@ -559,12 +559,12 @@ export default function SearchTab() {
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-lg font-semibold flex items-center gap-2 text-slate-800 dark:text-stone-100">
-                <Sparkles className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+              <h3 className="text-lg font-semibold flex items-center gap-2 text-stone-800 dark:text-stone-100">
+                <Sparkles className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
                 {t('spontaneous.searchResults')}
               </h3>
               {aiSearchStats && (
-                <p className="text-sm text-slate-600 dark:text-stone-400">
+                <p className="text-sm text-stone-600 dark:text-stone-400">
                   {t('spontaneous.aiSearch.resultsFound', { total: aiSearchStats.total, verified: aiSearchStats.verified })}
                 </p>
               )}
@@ -585,7 +585,7 @@ export default function SearchTab() {
                   size="sm"
                   onClick={handleSaveSelected}
                   disabled={isSearching}
-                  className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
+                  className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]"
                 >
                   <Save className="w-4 h-4 mr-1" />
                   {t('spontaneous.saveSelected', { count: selectedForSave.size })}
@@ -606,7 +606,7 @@ export default function SearchTab() {
                   className={`p-4 rounded-lg border transition-colors ${
                     isSelected
                       ? 'border-primary-300 bg-primary-50 dark:bg-primary-900/20'
-                      : 'border-slate-200 dark:border-stone-700 hover:border-slate-300 dark:hover:border-stone-600'
+                      : 'border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
                   }`}
                 >
                   <div className="flex items-start gap-4">
@@ -617,15 +617,15 @@ export default function SearchTab() {
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => toggleSelection(company.orgNumber!)}
-                          className="w-4 h-4 text-primary-500 rounded border-slate-300 focus:ring-primary-500"
+                          className="w-4 h-4 text-primary-500 rounded border-stone-300 focus:ring-primary-500"
                         />
                       </div>
                     )}
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <Building2 className="w-4 h-4 text-teal-500 dark:text-teal-400 flex-shrink-0" />
-                        <h4 className="font-semibold truncate text-slate-800 dark:text-stone-100">{company.name}</h4>
+                        <Building2 className="w-4 h-4 text-[var(--c-solid)] dark:text-[var(--c-solid)] flex-shrink-0" />
+                        <h4 className="font-semibold truncate text-stone-800 dark:text-stone-100">{company.name}</h4>
 
                         {/* Verification badge */}
                         {company.verified ? (
@@ -639,7 +639,7 @@ export default function SearchTab() {
                             {t('spontaneous.notVerified')}
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 dark:bg-stone-800 dark:text-stone-400">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400">
                             {t('spontaneous.missingOrgNumber')}
                           </span>
                         )}
@@ -652,7 +652,7 @@ export default function SearchTab() {
                         )}
                       </div>
 
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-stone-400">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-stone-600 dark:text-stone-400">
                         {company.orgNumber && (
                           <span>Org.nr: {formatOrgNumber(company.orgNumber)}</span>
                         )}
@@ -671,13 +671,13 @@ export default function SearchTab() {
                       </div>
 
                       {company.description && (
-                        <p className="text-sm text-slate-600 dark:text-stone-400 mt-2 line-clamp-2">
+                        <p className="text-sm text-stone-600 dark:text-stone-400 mt-2 line-clamp-2">
                           {company.description}
                         </p>
                       )}
 
                       {company.verifiedData && (
-                        <p className="text-xs text-slate-500 dark:text-stone-500 mt-1">
+                        <p className="text-xs text-stone-500 dark:text-stone-500 mt-1">
                           {company.verifiedData.legalForm}
                           {company.verifiedData.address?.street && ` - ${company.verifiedData.address.street}`}
                         </p>
@@ -691,7 +691,7 @@ export default function SearchTab() {
                         variant="outline"
                         size="sm"
                         onClick={() => setExpandedAnalysis(expandedAnalysis === company.orgNumber ? null : (company.orgNumber || `idx-${index}`))}
-                        className="text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800 hover:bg-teal-50 dark:hover:bg-teal-900/20"
+                        className="text-[var(--c-text)] dark:text-[var(--c-solid)] border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/30"
                       >
                         <Sparkles className="w-4 h-4" />
                       </Button>
@@ -735,8 +735,8 @@ export default function SearchTab() {
 
       {/* Tips Section */}
       <Card className="p-6 bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800">
-        <h3 className="font-medium mb-2 text-slate-800 dark:text-stone-100">{t('spontaneous.tips.title')}</h3>
-        <ul className="text-sm text-slate-600 dark:text-stone-400 space-y-1.5">
+        <h3 className="font-medium mb-2 text-stone-800 dark:text-stone-100">{t('spontaneous.tips.title')}</h3>
+        <ul className="text-sm text-stone-600 dark:text-stone-400 space-y-1.5">
           {searchMode === 'ai' ? (
             <>
               <li>{t('spontaneous.tips.aiTip1')}</li>
@@ -746,7 +746,7 @@ export default function SearchTab() {
             </>
           ) : (
             <>
-              <li>{t('spontaneous.tips.orgTip1')} <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-teal-500 dark:text-teal-400 hover:underline">allabolag.se</a></li>
+              <li>{t('spontaneous.tips.orgTip1')} <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-[var(--c-solid)] dark:text-[var(--c-solid)] hover:underline">allabolag.se</a></li>
               <li>{t('spontaneous.tips.tip2')}</li>
               <li>{t('spontaneous.tips.tip3')}</li>
               <li>{t('spontaneous.tips.tip4')}</li>

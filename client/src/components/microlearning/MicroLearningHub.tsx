@@ -296,7 +296,7 @@ export default function MicroLearningHub() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-96">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)]" />
       </div>
     );
   }
@@ -383,9 +383,9 @@ export default function MicroLearningHub() {
 
       {/* Aktiva lärandemål */}
       {learningPaths.length > 0 && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+            <h3 className="font-semibold text-stone-800 flex items-center gap-2">
               <Target className="text-indigo-500" size={20} />
               Dina lärandemål
             </h3>
@@ -413,7 +413,7 @@ export default function MicroLearningHub() {
       {/* Pågående kurser */}
       {inProgressCourses.length > 0 && (
         <section>
-          <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-stone-800 mb-4 flex items-center gap-2">
             <Play className="text-emerald-500" size={20} />
             Fortsätt där du slutade
           </h3>
@@ -434,21 +434,21 @@ export default function MicroLearningHub() {
       {recommendations.length > 0 && (
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+            <h3 className="text-lg font-semibold text-stone-800 flex items-center gap-2">
               <Zap className="text-amber-500" size={20} />
               Rekommenderat för dig
               {learningPaths.length > 0 && (
-                <span className="text-sm font-normal text-slate-700">
+                <span className="text-sm font-normal text-stone-700">
                   (baserat på: {learningPaths[0]?.target_skill})
                 </span>
               )}
             </h3>
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-slate-600" />
+              <Filter size={16} className="text-stone-600" />
               <select
                 value={activeFilter}
                 onChange={(e) => setActiveFilter(e.target.value as 'all' | 'short' | 'beginner')}
-                className="text-sm border-slate-200 rounded-lg focus:ring-indigo-500"
+                className="text-sm border-stone-200 rounded-lg focus:ring-indigo-500"
               >
                 <option value="all">Alla</option>
                 <option value="short">Korta (&lt;15 min)</option>
@@ -472,7 +472,7 @@ export default function MicroLearningHub() {
       {/* Avslutade kurser */}
       {completedCourses.length > 0 && (
         <section>
-          <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-stone-800 mb-4 flex items-center gap-2">
             <CheckCircle className="text-emerald-500" size={20} />
             Avslutade kurser
           </h3>

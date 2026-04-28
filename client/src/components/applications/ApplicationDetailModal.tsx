@@ -126,7 +126,7 @@ export function ApplicationDetailModal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
       <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-slate-100 p-4">
+        <div className="sticky top-0 bg-white border-b border-stone-100 p-4">
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-start gap-3">
               <div className={cn(
@@ -136,20 +136,20 @@ export function ApplicationDetailModal({
                 <Building2 className={cn("w-6 h-6", statusConfig.color)} />
               </div>
               <div className="min-w-0">
-                <h2 className="text-lg font-semibold text-slate-900 line-clamp-1">{jobTitle}</h2>
-                <p className="text-slate-600">{companyName}</p>
+                <h2 className="text-lg font-semibold text-stone-900 line-clamp-1">{jobTitle}</h2>
+                <p className="text-stone-600">{companyName}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-100 rounded-full transition-colors flex-shrink-0"
+              className="p-2 hover:bg-stone-100 rounded-full transition-colors flex-shrink-0"
             >
-              <X className="w-5 h-5 text-slate-700" />
+              <X className="w-5 h-5 text-stone-700" />
             </button>
           </div>
 
           {/* Quick info */}
-          <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-slate-700">
+          <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-stone-700">
             {location && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
@@ -186,7 +186,7 @@ export function ApplicationDetailModal({
               {showStatusMenu && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setShowStatusMenu(false)} />
-                  <div className="absolute left-0 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20 min-w-[160px]">
+                  <div className="absolute left-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[160px]">
                     {getNextStatuses(application.status).map((status) => {
                       const config = APPLICATION_STATUS_CONFIG[status]
                       return (
@@ -194,7 +194,7 @@ export function ApplicationDetailModal({
                           key={status}
                           onClick={() => handleStatusChange(status)}
                           className={cn(
-                            "w-full text-left px-3 py-2 text-sm hover:bg-slate-50 flex items-center gap-2",
+                            "w-full text-left px-3 py-2 text-sm hover:bg-stone-50 flex items-center gap-2",
                             config.color
                           )}
                         >
@@ -214,7 +214,7 @@ export function ApplicationDetailModal({
                 "px-2 py-1 rounded text-xs font-medium border",
                 application.priority === 'high'
                   ? "bg-red-100 text-red-700 border-red-200"
-                  : "bg-slate-100 text-slate-600 border-slate-200"
+                  : "bg-stone-100 text-stone-600 border-stone-200"
               )}>
                 {application.priority === 'high' ? 'Hög prioritet' : 'Låg prioritet'}
               </span>
@@ -225,21 +225,21 @@ export function ApplicationDetailModal({
             {/* Actions */}
             <button
               onClick={() => onEdit(application)}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600 hover:text-slate-600"
+              className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-600 hover:text-stone-600"
               title="Redigera"
             >
               <Edit2 className="w-4 h-4" />
             </button>
             <button
               onClick={handleArchive}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600 hover:text-slate-600"
+              className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-600 hover:text-stone-600"
               title="Arkivera"
             >
               <Archive className="w-4 h-4" />
             </button>
             <button
               onClick={handleDelete}
-              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-600 hover:text-red-600"
+              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-stone-600 hover:text-red-600"
               title="Ta bort"
             >
               <Trash2 className="w-4 h-4" />
@@ -248,7 +248,7 @@ export function ApplicationDetailModal({
         </div>
 
         {/* Tabs */}
-        <div className="border-b border-slate-100 px-4">
+        <div className="border-b border-stone-100 px-4">
           <div className="flex gap-4">
             {[
               { id: 'overview' as const, label: 'Översikt' },
@@ -263,13 +263,13 @@ export function ApplicationDetailModal({
                 className={cn(
                   "py-3 px-1 text-sm font-medium border-b-2 transition-colors",
                   activeTab === tab.id
-                    ? "border-teal-600 text-teal-600"
-                    : "border-transparent text-slate-700 hover:text-slate-700"
+                    ? "border-[var(--c-solid)] text-[var(--c-text)]"
+                    : "border-transparent text-stone-700 hover:text-stone-700"
                 )}
               >
                 {tab.label}
                 {tab.count !== undefined && tab.count > 0 && (
-                  <span className="ml-1.5 px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded text-xs">
+                  <span className="ml-1.5 px-1.5 py-0.5 bg-stone-100 text-stone-600 rounded text-xs">
                     {tab.count}
                   </span>
                 )}
@@ -290,41 +290,41 @@ export function ApplicationDetailModal({
               {/* Notes */}
               {application.notes && (
                 <Card className="p-4">
-                  <h4 className="text-sm font-medium text-slate-700 mb-2">Anteckningar</h4>
-                  <p className="text-slate-600">{application.notes}</p>
+                  <h4 className="text-sm font-medium text-stone-700 mb-2">Anteckningar</h4>
+                  <p className="text-stone-600">{application.notes}</p>
                 </Card>
               )}
 
               {/* Documents summary */}
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-medium text-slate-700">Dokument</h4>
+                  <h4 className="text-sm font-medium text-stone-700">Dokument</h4>
                   <button
                     onClick={() => setActiveTab('documents')}
-                    className="text-xs text-teal-600 hover:text-teal-700 font-medium"
+                    className="text-xs text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
                   >
                     Hantera →
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {selectedCVId ? (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded text-xs">
                       <FileText className="w-3 h-3" />
                       CV kopplat
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-stone-100 text-stone-700 rounded text-xs">
                       <FileText className="w-3 h-3" />
                       Inget CV
                     </span>
                   )}
                   {selectedCoverLetterId ? (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded text-xs">
                       <FileText className="w-3 h-3" />
                       Brev kopplat
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-stone-100 text-stone-700 rounded text-xs">
                       <FileText className="w-3 h-3" />
                       Inget brev
                     </span>
@@ -338,7 +338,7 @@ export function ApplicationDetailModal({
                   href={application.jobUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 p-3 bg-slate-100 rounded-lg text-slate-700 hover:bg-slate-200 transition-colors"
+                  className="flex items-center justify-center gap-2 p-3 bg-stone-100 rounded-lg text-stone-700 hover:bg-stone-200 transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
                   Visa jobbannons
@@ -351,8 +351,8 @@ export function ApplicationDetailModal({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-slate-900">Koppla dokument</h3>
-                  <p className="text-sm text-slate-700">Välj CV och personligt brev för denna ansökan</p>
+                  <h3 className="font-medium text-stone-900">Koppla dokument</h3>
+                  <p className="text-sm text-stone-700">Välj CV och personligt brev för denna ansökan</p>
                 </div>
                 {documentsChanged && (
                   <Button
@@ -388,29 +388,29 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" />
                 </div>
               ) : history.length === 0 ? (
-                <div className="text-center py-8 text-slate-700">
-                  <Clock className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+                <div className="text-center py-8 text-stone-700">
+                  <Clock className="w-8 h-8 mx-auto mb-2 text-stone-300" />
                   <p>Ingen historik än</p>
                 </div>
               ) : (
                 history.map((entry) => (
-                  <div key={entry.id} className="flex gap-3 p-3 bg-slate-50 rounded-lg">
+                  <div key={entry.id} className="flex gap-3 p-3 bg-stone-50 rounded-lg">
                     <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                      <Clock className="w-4 h-4 text-slate-600" />
+                      <Clock className="w-4 h-4 text-stone-600" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-slate-700">
+                      <p className="text-sm text-stone-700">
                         {entry.eventType === 'status_change'
                           ? `Status ändrad: ${entry.oldValue} → ${entry.newValue}`
                           : entry.eventType.replace(/_/g, ' ')}
                       </p>
                       {entry.note && (
-                        <p className="text-sm text-slate-700 mt-1">{entry.note}</p>
+                        <p className="text-sm text-stone-700 mt-1">{entry.note}</p>
                       )}
-                      <p className="text-xs text-slate-600 mt-1">
+                      <p className="text-xs text-stone-600 mt-1">
                         {new Date(entry.createdAt).toLocaleString('sv-SE')}
                       </p>
                     </div>
@@ -424,11 +424,11 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" />
                 </div>
               ) : contacts.length === 0 ? (
-                <div className="text-center py-8 text-slate-700">
-                  <User className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+                <div className="text-center py-8 text-stone-700">
+                  <User className="w-8 h-8 mx-auto mb-2 text-stone-300" />
                   <p>Inga kontakter tillagda</p>
                   <Button variant="outline" size="sm" className="mt-3">
                     <Plus className="w-4 h-4 mr-1" />
@@ -439,13 +439,13 @@ export function ApplicationDetailModal({
                 contacts.map((contact) => (
                   <Card key={contact.id} className="p-3">
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                        <User className="w-5 h-5 text-slate-600" />
+                      <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center">
+                        <User className="w-5 h-5 text-stone-600" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-slate-900">{contact.name}</p>
+                        <p className="font-medium text-stone-900">{contact.name}</p>
                         {contact.title && (
-                          <p className="text-sm text-slate-700">{contact.title}</p>
+                          <p className="text-sm text-stone-700">{contact.title}</p>
                         )}
                         {contact.email && (
                           <a href={`mailto:${contact.email}`} className="text-sm text-sky-600 hover:underline">
@@ -464,11 +464,11 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" />
                 </div>
               ) : reminders.filter(r => !r.isCompleted).length === 0 ? (
-                <div className="text-center py-8 text-slate-700">
-                  <Bell className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+                <div className="text-center py-8 text-stone-700">
+                  <Bell className="w-8 h-8 mx-auto mb-2 text-stone-300" />
                   <p>Inga aktiva påminnelser</p>
                   <Button variant="outline" size="sm" className="mt-3">
                     <Plus className="w-4 h-4 mr-1" />
@@ -483,13 +483,13 @@ export function ApplicationDetailModal({
                         <Bell className="w-5 h-5 text-amber-600" />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-slate-900">{reminder.title}</p>
-                        <p className="text-sm text-slate-700">
+                        <p className="font-medium text-stone-900">{reminder.title}</p>
+                        <p className="text-sm text-stone-700">
                           {new Date(reminder.reminderDate).toLocaleDateString('sv-SE')}
                           {reminder.reminderTime && ` kl ${reminder.reminderTime.slice(0, 5)}`}
                         </p>
                       </div>
-                      <button className="p-2 hover:bg-green-50 rounded-lg text-slate-600 hover:text-green-600">
+                      <button className="p-2 hover:bg-green-50 rounded-lg text-stone-600 hover:text-green-600">
                         <CheckCircle className="w-5 h-5" />
                       </button>
                     </div>

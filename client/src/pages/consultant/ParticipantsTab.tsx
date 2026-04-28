@@ -592,8 +592,8 @@ export function ParticipantsTab() {
                           className={cn(
                             'w-5 h-5 rounded border-2 flex items-center justify-center transition-all',
                             isSelected
-                              ? 'bg-teal-600 border-teal-600 text-white'
-                              : 'border-stone-300 dark:border-stone-600 hover:border-teal-400'
+                              ? 'bg-[var(--c-solid)] border-[var(--c-solid)] text-white'
+                              : 'border-stone-300 dark:border-stone-600 hover:border-[var(--c-solid)]/60'
                           )}
                         >
                           {isSelected && <Check className="w-3 h-3" />}

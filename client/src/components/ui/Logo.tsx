@@ -90,7 +90,7 @@ export function Logo({
           <h1 className={cn('font-bold text-white', sizes.text)}>
             Jobin
           </h1>
-          <p className="text-teal-200 mt-1 text-sm">
+          <p className="text-[var(--c-text)] mt-1 text-sm">
             Vägen till nytt jobb
           </p>
         </div>

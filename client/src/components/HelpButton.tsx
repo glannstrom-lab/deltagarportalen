@@ -83,8 +83,8 @@ export function HelpButton({ content }: HelpButtonProps) {
         onClick={() => setIsOpen(true)}
         className={cn(
           'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 w-14 h-14 rounded-full',
-          'bg-gradient-to-br from-teal-500 to-sky-600 text-white',
-          'shadow-lg shadow-teal-500/30 hover:shadow-xl hover:shadow-teal-500/40',
+          'bg-gradient-to-br from-[var(--c-solid)] to-sky-600 text-white',
+          'shadow-lg hover:shadow-xl ',
           'flex items-center justify-center',
           'transition-all duration-300 hover:scale-110 active:scale-95',
           'group'
@@ -119,7 +119,7 @@ export function HelpButton({ content }: HelpButtonProps) {
             'animate-in slide-in-from-bottom-4 fade-in duration-300'
           )}>
             {/* Header */}
-            <div className="bg-gradient-to-br from-teal-500 to-sky-600 text-white p-5">
+            <div className="bg-gradient-to-br from-[var(--c-solid)] to-sky-600 text-white p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
@@ -128,7 +128,7 @@ export function HelpButton({ content }: HelpButtonProps) {
                   <div>
                     <h2 id="help-modal-title" className="text-lg font-bold">{content.title}</h2>
                     {content.description && (
-                      <p className="text-teal-100 text-sm">{content.description}</p>
+                      <p className="text-white text-sm">{content.description}</p>
                     )}
                   </div>
                 </div>
@@ -165,15 +165,15 @@ export function HelpButton({ content }: HelpButtonProps) {
 
               {/* FAQ Section */}
               <div>
-                <div className="flex items-center gap-2 text-slate-700 font-semibold mb-3">
-                  <MessageCircle className="w-5 h-5 text-teal-500" aria-hidden="true" />
+                <div className="flex items-center gap-2 text-stone-700 font-semibold mb-3">
+                  <MessageCircle className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
                   <span>Vanliga frågor</span>
                 </div>
                 <div className="space-y-2">
                   {content.faqs.map((faq, index) => (
                     <div
                       key={index}
-                      className="border border-slate-200 rounded-xl overflow-hidden"
+                      className="border border-stone-200 rounded-xl overflow-hidden"
                     >
                       <button
                         onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
@@ -181,21 +181,21 @@ export function HelpButton({ content }: HelpButtonProps) {
                         aria-controls={`faq-answer-${index}`}
                         className={cn(
                           'w-full px-4 py-3 text-left flex items-center justify-between gap-3',
-                          'hover:bg-slate-50 transition-colors',
-                          expandedIndex === index && 'bg-slate-50'
+                          'hover:bg-stone-50 transition-colors',
+                          expandedIndex === index && 'bg-stone-50'
                         )}
                       >
-                        <span className="font-medium text-slate-700 text-sm">{faq.question}</span>
+                        <span className="font-medium text-stone-700 text-sm">{faq.question}</span>
                         {expandedIndex === index ? (
-                          <ChevronUp className="w-5 h-5 text-slate-600 flex-shrink-0" aria-hidden="true" />
+                          <ChevronUp className="w-5 h-5 text-stone-600 flex-shrink-0" aria-hidden="true" />
                         ) : (
-                          <ChevronDown className="w-5 h-5 text-slate-600 flex-shrink-0" aria-hidden="true" />
+                          <ChevronDown className="w-5 h-5 text-stone-600 flex-shrink-0" aria-hidden="true" />
                         )}
                       </button>
                       <div
                         id={`faq-answer-${index}`}
                         className={cn(
-                          'px-4 pb-4 text-sm text-slate-600 border-t border-slate-100 pt-3',
+                          'px-4 pb-4 text-sm text-stone-600 border-t border-stone-100 pt-3',
                           expandedIndex !== index && 'hidden'
                         )}
                         hidden={expandedIndex !== index}
@@ -209,8 +209,8 @@ export function HelpButton({ content }: HelpButtonProps) {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-slate-200 p-4 bg-slate-50">
-              <p className="text-center text-sm text-slate-700">
+            <div className="border-t border-stone-200 p-4 bg-stone-50">
+              <p className="text-center text-sm text-stone-700">
                 Behöver du mer hjälp? Kontakta din handledare.
               </p>
             </div>

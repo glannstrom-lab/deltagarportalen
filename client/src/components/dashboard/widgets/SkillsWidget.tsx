@@ -27,14 +27,14 @@ export const SkillsWidget = memo(function SkillsWidget({
     return (
       <Link
         to="/skills-gap-analysis"
-        className="group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-md transition-all duration-200"
+        className="group flex items-center gap-3 bg-white dark:bg-stone-800 p-3 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-md transition-all duration-200"
       >
         <div className="w-8 h-8 rounded-lg bg-cyan-100 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center flex-shrink-0">
           <BarChart3 size={16} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('skillsWidget.skills')}</p>
-          <p className={cn("text-xs", hasAnalysis ? (isGood ? "text-emerald-600 dark:text-emerald-400" : "text-cyan-600 dark:text-cyan-400") : "text-slate-500 dark:text-slate-400")}>
+          <p className="text-sm font-semibold text-stone-800 dark:text-stone-100">{t('skillsWidget.skills')}</p>
+          <p className={cn("text-xs", hasAnalysis ? (isGood ? "text-emerald-600 dark:text-emerald-400" : "text-cyan-600 dark:text-cyan-400") : "text-stone-500 dark:text-stone-400")}>
             {hasAnalysis ? `${matchScore}%` : t('skillsWidget.analyze')}
           </p>
         </div>
@@ -52,7 +52,7 @@ export const SkillsWidget = memo(function SkillsWidget({
     return (
       <Link
         to="/skills-gap-analysis"
-        className="group block bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+        className="group block bg-white dark:bg-stone-800 p-4 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
@@ -60,13 +60,13 @@ export const SkillsWidget = memo(function SkillsWidget({
               <BarChart3 size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('skillsWidget.skillsAnalysis')}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <h3 className="font-semibold text-stone-800 dark:text-stone-100 text-sm">{t('skillsWidget.skillsAnalysis')}</h3>
+              <p className="text-xs text-stone-500 dark:text-stone-400">
                 {hasAnalysis ? t('skillsWidget.analyzed') : t('skillsWidget.findStrengths')}
               </p>
             </div>
           </div>
-          <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors" />
+          <ChevronRight size={16} className="text-stone-300 dark:text-stone-600 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 transition-colors" />
         </div>
 
         {hasAnalysis ? (
@@ -74,7 +74,7 @@ export const SkillsWidget = memo(function SkillsWidget({
             <span className={cn("text-2xl font-bold", isGood ? "text-emerald-600 dark:text-emerald-400" : "text-cyan-600 dark:text-cyan-400")}>
               {matchScore}%
             </span>
-            <span className="text-sm text-slate-500 dark:text-slate-400">{t('skillsWidget.match')}</span>
+            <span className="text-sm text-stone-500 dark:text-stone-400">{t('skillsWidget.match')}</span>
             {gapCount > 0 && (
               <span className="ml-auto px-2 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-full text-xs font-medium">
                 {t('skillsWidget.gapsCount', { count: gapCount })}
@@ -95,39 +95,39 @@ export const SkillsWidget = memo(function SkillsWidget({
   return (
     <Link
       to="/skills-gap-analysis"
-      className="group block bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg transition-all duration-200"
+      className="group block bg-white dark:bg-stone-800 p-5 rounded-xl border border-stone-200 dark:border-stone-700 hover:border-cyan-300 dark:hover:border-cyan-600 hover:shadow-lg transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 to-teal-100 dark:from-cyan-900/40 dark:to-teal-900/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 to-[var(--c-accent)]/40 dark:from-cyan-900/40 dark:to-[var(--c-bg)]/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
             <BarChart3 size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('skillsWidget.skillsAnalysis')}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <h3 className="font-bold text-stone-800 dark:text-stone-100">{t('skillsWidget.skillsAnalysis')}</h3>
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               {hasAnalysis ? t('skillsWidget.yourSkillsAnalyzed') : t('skillsWidget.findYourStrengths')}
             </p>
           </div>
         </div>
-        <ChevronRight size={18} className="text-slate-300 dark:text-slate-600 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 mt-1 transition-colors" />
+        <ChevronRight size={18} className="text-stone-300 dark:text-stone-600 group-hover:text-cyan-500 dark:group-hover:text-cyan-400 mt-1 transition-colors" />
       </div>
 
       {/* Status card */}
       {hasAnalysis ? (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-500 dark:text-slate-400">{t('skillsWidget.matchWithGoals')}</span>
+            <span className="text-sm font-medium text-stone-500 dark:text-stone-400">{t('skillsWidget.matchWithGoals')}</span>
             <span className={cn("text-lg font-bold", isGood ? "text-emerald-600 dark:text-emerald-400" : "text-cyan-600 dark:text-cyan-400")}>
               {matchScore}%
             </span>
           </div>
-          <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
+          <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
             <div
               className={cn(
                 "h-full rounded-full transition-all duration-500",
                 isGood
-                  ? "bg-gradient-to-r from-emerald-400 to-teal-500"
-                  : "bg-gradient-to-r from-cyan-400 to-teal-500"
+                  ? "bg-gradient-to-r from-emerald-400 to-[var(--c-solid)]"
+                  : "bg-gradient-to-r from-cyan-400 to-[var(--c-solid)]"
               )}
               style={{ width: `${matchScore}%` }}
             />
@@ -150,16 +150,16 @@ export const SkillsWidget = memo(function SkillsWidget({
         <div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <TrendingUp size={16} className="text-cyan-500 dark:text-cyan-400" />
-            <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{analyzedSkills}</span>
+            <span className="text-lg font-bold text-stone-800 dark:text-stone-100">{analyzedSkills}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('skillsWidget.analyzed')}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400">{t('skillsWidget.analyzed')}</p>
         </div>
         <div className={cn("p-3 rounded-lg", gapCount > 0 ? "bg-amber-50 dark:bg-amber-900/20" : "bg-emerald-50 dark:bg-emerald-900/20")}>
           <div className="flex items-center gap-2">
             <Target size={16} className={gapCount > 0 ? "text-amber-500 dark:text-amber-400" : "text-emerald-500 dark:text-emerald-400"} />
-            <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{gapCount}</span>
+            <span className="text-lg font-bold text-stone-800 dark:text-stone-100">{gapCount}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('skillsWidget.gapsToFill')}</p>
+          <p className="text-xs text-stone-500 dark:text-stone-400">{t('skillsWidget.gapsToFill')}</p>
         </div>
       </div>
 

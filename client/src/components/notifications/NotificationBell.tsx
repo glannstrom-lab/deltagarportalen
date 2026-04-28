@@ -101,7 +101,7 @@ function NotificationItem({
         'group relative flex items-start gap-3 p-3 rounded-xl transition-colors cursor-pointer',
         notification.read
           ? 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
-          : 'bg-teal-50/50 dark:bg-teal-900/20 hover:bg-teal-100/50 dark:hover:bg-teal-900/30'
+          : 'bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/20 hover:bg-[var(--c-accent)]/40/50 dark:hover:bg-[var(--c-bg)]/40'
       )}
       onClick={handleClick}
       role="button"
@@ -127,7 +127,7 @@ function NotificationItem({
             {notification.title}
           </p>
           {!notification.read && (
-            <span className="flex-shrink-0 w-2 h-2 mt-1.5 bg-teal-500 rounded-full" aria-label="Oläst" />
+            <span className="flex-shrink-0 w-2 h-2 mt-1.5 bg-[var(--c-solid)] rounded-full" aria-label="Oläst" />
           )}
         </div>
         <p className="text-xs text-stone-500 dark:text-stone-600 mt-0.5 line-clamp-2">
@@ -185,7 +185,7 @@ function CategoryTab({ category, label, count, active, onClick }: CategoryTabPro
       className={cn(
         'px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap',
         active
-          ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300'
+          ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-accent)]'
           : 'text-stone-600 dark:text-stone-600 hover:bg-stone-100 dark:hover:bg-stone-700'
       )}
       aria-pressed={active}
@@ -196,7 +196,7 @@ function CategoryTab({ category, label, count, active, onClick }: CategoryTabPro
           className={cn(
             'ml-1.5 px-1.5 py-0.5 text-[10px] font-bold rounded-full',
             active
-              ? 'bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200'
+              ? 'bg-[var(--c-accent)]/60 dark:bg-[var(--c-solid)] text-[var(--c-text)] dark:text-[var(--c-text)]'
               : 'bg-stone-200 dark:bg-stone-600 text-stone-600 dark:text-stone-300'
           )}
         >
@@ -333,7 +333,7 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
                 {unreadCount > 0 && (
                   <button
                     onClick={markAllAsRead}
-                    className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
+                    className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)] font-medium"
                   >
                     Markera alla som lästa
                   </button>
@@ -391,7 +391,7 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
             <div className="flex-1 overflow-y-auto p-2 space-y-1">
               {isLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-teal-500 border-t-transparent" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-2 border-[var(--c-solid)] border-t-transparent" />
                 </div>
               ) : filteredNotifications.length === 0 ? (
                 <div className="text-center py-8 px-4">
@@ -421,7 +421,7 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
               <div className="px-4 py-2 border-t border-stone-100 dark:border-stone-700">
                 <Link
                   to="/settings"
-                  className="block text-center text-xs text-stone-500 dark:text-stone-600 hover:text-teal-600 dark:hover:text-teal-400"
+                  className="block text-center text-xs text-stone-500 dark:text-stone-600 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)]"
                   onClick={handleClose}
                 >
                   Hantera notifikationsinställningar

@@ -43,10 +43,10 @@ function TodayGratitude() {
     return (
       <Card className="p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-slate-200 rounded w-1/3" />
-          <div className="h-12 bg-slate-200 rounded" />
-          <div className="h-12 bg-slate-200 rounded" />
-          <div className="h-12 bg-slate-200 rounded" />
+          <div className="h-6 bg-stone-200 rounded w-1/3" />
+          <div className="h-12 bg-stone-200 rounded" />
+          <div className="h-12 bg-stone-200 rounded" />
+          <div className="h-12 bg-stone-200 rounded" />
         </div>
       </Card>
     )
@@ -158,9 +158,9 @@ function GratitudeHistory() {
     return (
       <Card className="p-6">
         <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-slate-200 rounded w-1/3" />
+          <div className="h-6 bg-stone-200 rounded w-1/3" />
           {[1, 2, 3].map(i => (
-            <div key={i} className="h-20 bg-slate-200 rounded" />
+            <div key={i} className="h-20 bg-stone-200 rounded" />
           ))}
         </div>
       </Card>
@@ -176,9 +176,9 @@ function GratitudeHistory() {
   if (entries.length === 0) {
     return (
       <Card className="p-8 text-center">
-        <Heart className="w-12 h-12 text-slate-200 mx-auto mb-4" />
-        <h3 className="font-semibold text-slate-700 mb-2">Ingen historik än</h3>
-        <p className="text-sm text-slate-700">
+        <Heart className="w-12 h-12 text-stone-200 mx-auto mb-4" />
+        <h3 className="font-semibold text-stone-700 mb-2">Ingen historik än</h3>
+        <p className="text-sm text-stone-700">
           Börja logga din dagliga tacksamhet för att se din historik här
         </p>
       </Card>
@@ -188,8 +188,8 @@ function GratitudeHistory() {
   return (
     <Card className="p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-slate-600" />
+        <h3 className="font-semibold text-stone-900 flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-stone-600" />
           Historik
         </h3>
         {totalPages > 1 && (
@@ -197,19 +197,19 @@ function GratitudeHistory() {
             <button
               onClick={() => setCurrentPage(p => Math.max(0, p - 1))}
               disabled={currentPage === 0}
-              className="p-1 hover:bg-slate-100 rounded disabled:opacity-50"
+              className="p-1 hover:bg-stone-100 rounded disabled:opacity-50"
             >
-              <ChevronLeft className="w-5 h-5 text-slate-700" />
+              <ChevronLeft className="w-5 h-5 text-stone-700" />
             </button>
-            <span className="text-sm text-slate-700">
+            <span className="text-sm text-stone-700">
               {currentPage + 1} / {totalPages}
             </span>
             <button
               onClick={() => setCurrentPage(p => Math.min(totalPages - 1, p + 1))}
               disabled={currentPage === totalPages - 1}
-              className="p-1 hover:bg-slate-100 rounded disabled:opacity-50"
+              className="p-1 hover:bg-stone-100 rounded disabled:opacity-50"
             >
-              <ChevronRight className="w-5 h-5 text-slate-700" />
+              <ChevronRight className="w-5 h-5 text-stone-700" />
             </button>
           </div>
         )}
@@ -219,9 +219,9 @@ function GratitudeHistory() {
         {paginatedEntries.map((entry) => (
           <div
             key={entry.id}
-            className="p-4 bg-slate-50 rounded-xl border border-slate-100"
+            className="p-4 bg-stone-50 rounded-xl border border-stone-100"
           >
-            <div className="flex items-center gap-2 text-sm text-slate-700 mb-2">
+            <div className="flex items-center gap-2 text-sm text-stone-700 mb-2">
               <Calendar className="w-4 h-4" />
               {new Date(entry.entry_date).toLocaleDateString('sv-SE', {
                 weekday: 'long',
@@ -233,25 +233,25 @@ function GratitudeHistory() {
             <ul className="space-y-1.5">
               <li className="flex items-start gap-2">
                 <Heart className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
-                <span className="text-slate-700">{entry.item1}</span>
+                <span className="text-stone-700">{entry.item1}</span>
               </li>
               {entry.item2 && (
                 <li className="flex items-start gap-2">
                   <Heart className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-slate-700">{entry.item2}</span>
+                  <span className="text-stone-700">{entry.item2}</span>
                 </li>
               )}
               {entry.item3 && (
                 <li className="flex items-start gap-2">
                   <Heart className="w-4 h-4 text-rose-400 mt-0.5 flex-shrink-0" />
-                  <span className="text-slate-700">{entry.item3}</span>
+                  <span className="text-stone-700">{entry.item3}</span>
                 </li>
               )}
             </ul>
 
             {entry.reflection && (
-              <div className="mt-3 p-3 bg-white rounded-lg border border-slate-100">
-                <p className="text-sm text-slate-600 italic">"{entry.reflection}"</p>
+              <div className="mt-3 p-3 bg-white rounded-lg border border-stone-100">
+                <p className="text-sm text-stone-600 italic">"{entry.reflection}"</p>
               </div>
             )}
           </div>
@@ -296,15 +296,15 @@ function GratitudeStats() {
       </Card>
 
       <Card className="p-4 text-center">
-        <Calendar className="w-6 h-6 text-slate-600 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-slate-900">{entries.length}</p>
-        <p className="text-sm text-slate-700">inlägg totalt</p>
+        <Calendar className="w-6 h-6 text-stone-600 mx-auto mb-2" />
+        <p className="text-2xl font-bold text-stone-900">{entries.length}</p>
+        <p className="text-sm text-stone-700">inlägg totalt</p>
       </Card>
 
       <Card className="p-4 text-center">
-        <Star className="w-6 h-6 text-slate-600 mx-auto mb-2" />
-        <p className="text-2xl font-bold text-slate-900">{totalItems}</p>
-        <p className="text-sm text-slate-700">saker att vara tacksam för</p>
+        <Star className="w-6 h-6 text-stone-600 mx-auto mb-2" />
+        <p className="text-2xl font-bold text-stone-900">{totalItems}</p>
+        <p className="text-sm text-stone-700">saker att vara tacksam för</p>
       </Card>
     </div>
   )

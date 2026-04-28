@@ -81,20 +81,20 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
     >
       <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
         {/* Header */}
-        <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-slate-200 dark:border-stone-700 p-6 flex items-start justify-between">
+        <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700 p-6 flex items-start justify-between">
           <div>
-            <h2 id={titleId} className="text-2xl font-bold text-slate-800 dark:text-stone-100">{job.title}</h2>
-            <div className="flex items-center gap-2 mt-1 text-slate-600 dark:text-stone-400">
+            <h2 id={titleId} className="text-2xl font-bold text-stone-800 dark:text-stone-100">{job.title}</h2>
+            <div className="flex items-center gap-2 mt-1 text-stone-600 dark:text-stone-400">
               <Building size={16} />
               {job.company}
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 dark:hover:bg-stone-800 rounded-full transition-colors"
+            className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-full transition-colors"
             aria-label={t('jobs.modal.closeDialog')}
           >
-            <X size={20} className="text-slate-700 dark:text-stone-300" aria-hidden="true" />
+            <X size={20} className="text-stone-700 dark:text-stone-300" aria-hidden="true" />
           </button>
         </div>
 
@@ -105,7 +105,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-[#4f46e5]">{matchResult.matchPercentage}%</div>
-                  <div className="text-xs text-slate-600">{t('jobs.modal.match')}</div>
+                  <div className="text-xs text-stone-600">{t('jobs.modal.match')}</div>
                 </div>
                 <div className="flex-1">
                   {matchResult.matchingSkills.length > 0 && (
@@ -122,8 +122,8 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
               </div>
               {matchResult.suggestions.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-[#4f46e5]/20">
-                  <p className="text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">{t('jobs.modal.suggestionsForBetterMatch')}:</p>
-                  <ul className="text-sm text-slate-600 dark:text-stone-400 space-y-1">
+                  <p className="text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">{t('jobs.modal.suggestionsForBetterMatch')}:</p>
+                  <ul className="text-sm text-stone-600 dark:text-stone-400 space-y-1">
                     {matchResult.suggestions.map((suggestion, index) => (
                       <li key={index}>• {suggestion}</li>
                     ))}
@@ -135,20 +135,20 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
 
           {/* Job details */}
           <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400">
+            <div className="flex items-center gap-2 text-stone-600 dark:text-stone-400">
               <MapPin size={18} className="text-[#4f46e5]" />
               {job.location}
             </div>
-            <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400">
+            <div className="flex items-center gap-2 text-stone-600 dark:text-stone-400">
               <Briefcase size={18} className="text-[#4f46e5]" />
               {job.employmentType}
             </div>
-            <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400">
+            <div className="flex items-center gap-2 text-stone-600 dark:text-stone-400">
               <Clock size={18} className="text-[#4f46e5]" />
               {job.experienceLevel}
             </div>
             {job.salaryRange && (
-              <div className="flex items-center gap-2 text-slate-600 dark:text-stone-400">
+              <div className="flex items-center gap-2 text-stone-600 dark:text-stone-400">
                 <DollarSign size={18} className="text-[#4f46e5]" />
                 {job.salaryRange}
               </div>
@@ -157,18 +157,18 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
 
           {/* Description */}
           <div className="mb-6">
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-2">{t('jobs.modal.aboutPosition')}</h3>
-            <p className="text-slate-600 dark:text-stone-400 leading-relaxed">{job.description}</p>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-2">{t('jobs.modal.aboutPosition')}</h3>
+            <p className="text-stone-600 dark:text-stone-400 leading-relaxed">{job.description}</p>
           </div>
 
           {/* Requirements */}
           <div className="mb-6">
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-2">{t('jobs.modal.requirements')}</h3>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-2">{t('jobs.modal.requirements')}</h3>
             <div className="flex flex-wrap gap-2">
               {job.requirements.map((req, index) => (
                 <span
                   key={index}
-                  className="px-3 py-1 bg-slate-100 dark:bg-stone-800 text-slate-700 dark:text-stone-300 rounded-full text-sm"
+                  className="px-3 py-1 bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 rounded-full text-sm"
                 >
                   {req}
                 </span>
@@ -177,7 +177,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
           </div>
 
           {/* Dates */}
-          <div className="flex items-center gap-4 text-sm text-slate-700 dark:text-stone-300 mb-6">
+          <div className="flex items-center gap-4 text-sm text-stone-700 dark:text-stone-300 mb-6">
             <div className="flex items-center gap-1">
               <Calendar size={14} />
               {t('jobs.modal.published')}: {new Date(job.publishedDate || job.publishedAt || Date.now()).toLocaleDateString('sv-SE')}
@@ -192,13 +192,13 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
         </div>
 
         {/* Actions */}
-        <div className="sticky bottom-0 bg-white dark:bg-stone-900 border-t border-slate-200 dark:border-stone-700 p-6 flex gap-3 flex-wrap">
+        <div className="sticky bottom-0 bg-white dark:bg-stone-900 border-t border-stone-200 dark:border-stone-700 p-6 flex gap-3 flex-wrap">
           <button
             onClick={onSave}
             className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 transition-colors ${
               isSaved
                 ? 'border-red-200 bg-red-50 text-red-600'
-                : 'border-slate-200 dark:border-stone-700 text-slate-700 dark:text-stone-300 hover:border-slate-300 dark:hover:border-stone-600'
+                : 'border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 hover:border-stone-300 dark:hover:border-stone-600'
             }`}
           >
             <Heart size={18} fill={isSaved ? 'currentColor' : 'none'} />
@@ -208,7 +208,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
           {/* Dela med konsulent */}
           <button
             onClick={() => setShowShareDialog(true)}
-            className="flex items-center gap-2 px-4 py-3 border-2 border-teal-200 text-teal-700 rounded-xl hover:bg-teal-50 transition-colors"
+            className="flex items-center gap-2 px-4 py-3 border-2 border-[var(--c-accent)]/60 text-[var(--c-text)] rounded-xl hover:bg-[var(--c-bg)] transition-colors"
           >
             <Share2 size={18} />
             {t('jobs.modal.share')}
@@ -249,7 +249,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
             href={job.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-3 border border-slate-200 dark:border-stone-700 text-slate-700 dark:text-stone-300 rounded-xl hover:bg-slate-50 dark:hover:bg-stone-800 transition-colors"
+            className="flex items-center gap-2 px-4 py-3 border border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
           >
             <Send size={18} />
             {t('jobs.modal.apply')}

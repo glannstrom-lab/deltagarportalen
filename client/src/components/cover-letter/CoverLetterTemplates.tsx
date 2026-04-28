@@ -27,7 +27,7 @@ import { cn } from '@/lib/utils'
 const categoryColors: Record<string, { bg: string; text: string; icon: string }> = {
   standard: { bg: 'bg-blue-100', text: 'text-blue-700', icon: 'text-blue-600' },
   short: { bg: 'bg-green-100', text: 'text-green-700', icon: 'text-green-600' },
-  formal: { bg: 'bg-slate-100', text: 'text-slate-700', icon: 'text-slate-600' },
+  formal: { bg: 'bg-stone-100', text: 'text-stone-700', icon: 'text-stone-600' },
   creative: { bg: 'bg-sky-100', text: 'text-sky-700', icon: 'text-sky-600' },
   'career-change': { bg: 'bg-amber-100', text: 'text-amber-700', icon: 'text-amber-600' },
   graduate: { bg: 'bg-rose-100', text: 'text-rose-700', icon: 'text-rose-600' },
@@ -56,10 +56,10 @@ export function CoverLetterTemplates() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-6 border border-teal-200 dark:border-teal-800/50">
+      <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl p-6 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-white dark:bg-stone-800 rounded-lg flex items-center justify-center">
-            <FileText className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            <FileText className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
@@ -82,7 +82,7 @@ export function CoverLetterTemplates() {
           return (
             <Card
               key={template.id}
-              className="p-5 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700/50 hover:shadow-lg transition-all cursor-pointer group hover:border-teal-200 dark:hover:border-teal-700"
+              className="p-5 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-700/50 hover:shadow-lg transition-all cursor-pointer group hover:border-[var(--c-accent)]/60 dark:hover:border-[var(--c-accent)]/60"
               onClick={() => setSelectedTemplate(template)}
             >
               {/* Header */}
@@ -91,7 +91,7 @@ export function CoverLetterTemplates() {
                   <Icon className={cn('w-5 h-5', colors.icon)} />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-stone-800 dark:text-stone-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                  <h3 className="font-semibold text-stone-800 dark:text-stone-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-solid)] transition-colors">
                     {template.name}
                   </h3>
                   <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
@@ -114,7 +114,7 @@ export function CoverLetterTemplates() {
               <div className="space-y-1.5 mb-4">
                 {Object.entries(template.structure).slice(0, 2).map(([key, value]) => (
                   <div key={key} className="flex items-start gap-2 text-xs">
-                    <CheckCircle2 size={12} className="text-teal-500 dark:text-teal-400 mt-0.5 shrink-0" />
+                    <CheckCircle2 size={12} className="text-[var(--c-solid)] dark:text-[var(--c-solid)] mt-0.5 shrink-0" />
                     <span className="text-stone-600 dark:text-stone-400 line-clamp-1">{value}</span>
                   </div>
                 ))}
@@ -131,7 +131,7 @@ export function CoverLetterTemplates() {
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="gap-1.5 text-teal-600 dark:text-teal-400 group-hover:bg-teal-50 dark:group-hover:bg-teal-900/20"
+                  className="gap-1.5 text-[var(--c-text)] dark:text-[var(--c-solid)] group-hover:bg-[var(--c-bg)] dark:group-hover:bg-[var(--c-bg)]/30"
                   onClick={(e) => {
                     e.stopPropagation()
                     handleUseTemplate(template.id)
@@ -208,7 +208,7 @@ function TemplateModal({
                 className={cn(
                   'px-6 py-3 text-sm font-medium border-b-2 transition-colors',
                   activeTab === tab.id
-                    ? 'border-teal-500 text-teal-600 dark:text-teal-400'
+                    ? 'border-[var(--c-solid)] text-[var(--c-text)] dark:text-[var(--c-solid)]'
                     : 'border-transparent text-stone-600 dark:text-stone-400 hover:text-stone-800 dark:hover:text-stone-200'
                 )}
               >
@@ -227,7 +227,7 @@ function TemplateModal({
               </p>
               {Object.entries(template.structure).map(([key, value], index) => (
                 <div key={key} className="flex gap-4">
-                  <div className="w-8 h-8 rounded-full bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400 flex items-center justify-center font-semibold text-sm shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)] flex items-center justify-center font-semibold text-sm shrink-0">
                     {index + 1}
                   </div>
                   <div>

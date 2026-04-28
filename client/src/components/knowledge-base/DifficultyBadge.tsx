@@ -10,7 +10,7 @@ const config = {
   'easy-swedish': {
     label: 'Lätt svenska',
     description: 'Skriven på lätt svenska',
-    color: 'bg-teal-100 text-teal-700',
+    color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)]',
     icon: Languages,
   },
   easy: {

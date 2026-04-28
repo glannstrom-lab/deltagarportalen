@@ -34,11 +34,11 @@ export function CircleChart({ percentage, label, sublabel }: CircleChartProps) {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-2xl font-bold text-slate-800">{percentage}%</span>
+          <span className="text-2xl font-bold text-stone-800">{percentage}%</span>
         </div>
       </div>
-      <h4 className="font-semibold text-slate-800">{label}</h4>
-      {sublabel && <p className="text-sm text-slate-700 mt-1">{sublabel}</p>}
+      <h4 className="font-semibold text-stone-800">{label}</h4>
+      {sublabel && <p className="text-sm text-stone-700 mt-1">{sublabel}</p>}
     </div>
   )
 }

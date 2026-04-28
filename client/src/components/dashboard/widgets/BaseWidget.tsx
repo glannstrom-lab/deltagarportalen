@@ -45,13 +45,13 @@ export interface BaseWidgetProps {
 
 const colorClasses = {
   teal: {
-    icon: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
+    icon: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]',
     iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
-    hover: 'hover:border-teal-300 dark:hover:border-teal-600',
-    progress: 'bg-teal-500',
+    hover: 'hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]',
+    progress: 'bg-[var(--c-solid)]',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-teal-600 dark:text-teal-400',
-    light: 'bg-teal-50 dark:bg-teal-900/20',
+    accent: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
+    light: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20',
   },
   blue: {
     icon: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
@@ -119,7 +119,7 @@ const colorClasses = {
 }
 
 const badgeClasses = {
-  default: 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600',
+  default: 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300 border-stone-200 dark:border-stone-600',
   success: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-700',
   warning: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-700',
   info: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-700',
@@ -148,14 +148,14 @@ export const BaseWidget = memo(function BaseWidget({
     <Link
       to={to}
       className={cn(
-        "group block bg-white dark:bg-slate-800 rounded-2xl border-2",
+        "group block bg-white dark:bg-stone-800 rounded-2xl border-2",
         "card-interactive", // Consistent hover lift effect
-        "focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900",
+        "focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-stone-900",
         colors.hover,
         `focus:ring-${color}-500`,
         isComplete
-          ? "border-emerald-200 dark:border-emerald-700 bg-gradient-to-br from-emerald-50/50 dark:from-emerald-900/20 to-white dark:to-slate-800"
-          : "border-slate-200 dark:border-slate-700",
+          ? "border-emerald-200 dark:border-emerald-700 bg-gradient-to-br from-emerald-50/50 dark:from-emerald-900/20 to-white dark:to-stone-800"
+          : "border-stone-200 dark:border-stone-700",
         isSmall ? "p-4" : "p-5",
         className
       )}
@@ -175,19 +175,19 @@ export const BaseWidget = memo(function BaseWidget({
           </div>
           <div>
             <h3 className={cn(
-              "font-semibold text-slate-800 dark:text-slate-100",
+              "font-semibold text-stone-800 dark:text-stone-100",
               isSmall ? "text-sm" : "text-base"
             )}>
               {title}
             </h3>
             {subtitle && !isSmall && (
-              <p className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
+              <p className="text-xs text-stone-500 dark:text-stone-400">{subtitle}</p>
             )}
           </div>
         </div>
         <ChevronRight
           size={isSmall ? 16 : 18}
-          className="text-slate-300 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all"
+          className="text-stone-300 dark:text-stone-600 group-hover:text-stone-500 dark:group-hover:text-stone-400 group-hover:translate-x-0.5 transition-all"
         />
       </div>
 
@@ -201,7 +201,7 @@ export const BaseWidget = memo(function BaseWidget({
           )}>
             {stat.value}
           </span>
-          <span className="text-sm text-slate-500 dark:text-slate-400">{stat.label}</span>
+          <span className="text-sm text-stone-500 dark:text-stone-400">{stat.label}</span>
         </div>
       )}
 
@@ -225,14 +225,14 @@ export const BaseWidget = memo(function BaseWidget({
         <div className={cn(isSmall ? "mt-3" : "mt-4")}>
           {progress.showLabel && (
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-xs text-slate-500 dark:text-slate-400">{t('common.progress')}</span>
+              <span className="text-xs text-stone-500 dark:text-stone-400">{t('common.progress')}</span>
               <span className={cn("text-sm font-semibold", isComplete ? "text-emerald-600 dark:text-emerald-400" : colors.accent)}>
                 {progress.value}%
               </span>
             </div>
           )}
           <div className={cn(
-            "bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden",
+            "bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden",
             isSmall ? "h-1.5" : "h-2.5"
           )}>
             <div

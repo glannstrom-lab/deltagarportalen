@@ -66,17 +66,17 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
       case 'alternative': return 'bg-amber-100 text-amber-700'
       case 'progression': return 'bg-green-100 text-green-700'
       case 'related': return 'bg-purple-100 text-purple-700'
-      default: return 'bg-slate-100 text-slate-700'
+      default: return 'bg-stone-100 text-stone-700'
     }
   }
 
   return (
     <div className="space-y-4">
       {/* Suggestions */}
-      <div className="bg-gradient-to-r from-teal-50 to-emerald-50 p-4 rounded-xl border border-teal-100">
+      <div className="bg-gradient-to-r from-[var(--c-bg)] to-emerald-50 p-4 rounded-xl border border-[var(--c-accent)]/40">
         <div className="flex items-center gap-2 mb-3">
-          <Lightbulb className="w-5 h-5 text-teal-600" />
-          <h3 className="font-semibold text-teal-900">
+          <Lightbulb className="w-5 h-5 text-[var(--c-text)]" />
+          <h3 className="font-semibold text-[var(--c-text)]">
             Du sökte på "{query}" - kanske är du också intresserad av?
           </h3>
         </div>
@@ -86,15 +86,15 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
             <button
               key={idx}
               onClick={() => onSuggestionClick(suggestion.occupation)}
-              className="group flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-teal-200 hover:border-teal-400 hover:shadow-sm transition-all"
+              className="group flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-[var(--c-accent)]/60 hover:border-[var(--c-solid)]/60 hover:shadow-sm transition-all"
             >
-              <span className="text-slate-700 group-hover:text-teal-700">
+              <span className="text-stone-700 group-hover:text-[var(--c-text)]">
                 {suggestion.occupation}
               </span>
               <span className={`text-xs px-2 py-0.5 rounded-full ${getTypeColor(suggestion.type)}`}>
                 {getTypeLabel(suggestion.type)}
               </span>
-              <ArrowRight className="w-3 h-3 text-slate-600 group-hover:text-teal-500" />
+              <ArrowRight className="w-3 h-3 text-stone-600 group-hover:text-[var(--c-solid)]" />
             </button>
           ))}
         </div>
@@ -102,24 +102,24 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
 
       {/* Related jobs */}
       {relatedJobs.length > 0 && (
-        <div className="bg-white p-4 rounded-xl border border-slate-200">
+        <div className="bg-white p-4 rounded-xl border border-stone-200">
           <div className="flex items-center gap-2 mb-3">
-            <TrendingUp className="w-5 h-5 text-teal-600" />
-            <h3 className="font-semibold text-slate-900">Aktuella jobb inom relaterade områden</h3>
+            <TrendingUp className="w-5 h-5 text-[var(--c-text)]" />
+            <h3 className="font-semibold text-stone-900">Aktuella jobb inom relaterade områden</h3>
           </div>
           
           <div className="space-y-3">
             {relatedJobs.map((job) => (
               <div
                 key={job.id}
-                className="p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer"
+                className="p-3 bg-stone-50 rounded-lg hover:bg-stone-100 transition-colors cursor-pointer"
                 onClick={() => onSuggestionClick(job.headline)}
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h4 className="font-medium text-slate-900">{job.headline}</h4>
-                    <p className="text-sm text-slate-600">{job.employer.name}</p>
-                    <div className="flex items-center gap-3 mt-1 text-xs text-slate-700">
+                    <h4 className="font-medium text-stone-900">{job.headline}</h4>
+                    <p className="text-sm text-stone-600">{job.employer.name}</p>
+                    <div className="flex items-center gap-3 mt-1 text-xs text-stone-700">
                       {job.workplace_address?.municipality && (
                         <span className="flex items-center gap-1">
                           <MapPin size={12} />
@@ -133,7 +133,7 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
                       )}
                     </div>
                   </div>
-                  <Briefcase className="w-5 h-5 text-slate-600" />
+                  <Briefcase className="w-5 h-5 text-stone-600" />
                 </div>
               </div>
             ))}

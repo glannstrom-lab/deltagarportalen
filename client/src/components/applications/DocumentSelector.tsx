@@ -39,8 +39,8 @@ export function DocumentSelector({
   if (isLoading) {
     return (
       <div className="space-y-3">
-        <div className="h-12 bg-slate-100 animate-pulse rounded-lg" />
-        <div className="h-12 bg-slate-100 animate-pulse rounded-lg" />
+        <div className="h-12 bg-stone-100 animate-pulse rounded-lg" />
+        <div className="h-12 bg-stone-100 animate-pulse rounded-lg" />
       </div>
     )
   }
@@ -49,46 +49,46 @@ export function DocumentSelector({
     <div className="space-y-4">
       {/* CV Version Selector */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-2">
+        <label className="block text-sm font-medium text-stone-700 mb-2">
           CV-version
         </label>
 
         {selectedCV ? (
-          <div className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-[var(--c-bg)] border border-[var(--c-accent)]/60 rounded-lg">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-teal-600" />
-              <span className="font-medium text-teal-900">{selectedCV.name}</span>
-              <span className="text-xs text-teal-600">
+              <FileText className="w-4 h-4 text-[var(--c-text)]" />
+              <span className="font-medium text-[var(--c-text)]">{selectedCV.name}</span>
+              <span className="text-xs text-[var(--c-text)]">
                 {new Date(selectedCV.created_at).toLocaleDateString('sv-SE')}
               </span>
             </div>
             <button
               onClick={() => onSelectCV(null)}
-              className="p-1 hover:bg-teal-100 rounded"
+              className="p-1 hover:bg-[var(--c-accent)]/40 rounded"
             >
-              <X className="w-4 h-4 text-teal-600" />
+              <X className="w-4 h-4 text-[var(--c-text)]" />
             </button>
           </div>
         ) : (
           <div className="relative">
             <button
               onClick={() => setShowCVDropdown(!showCVDropdown)}
-              className="w-full flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-stone-50 border border-stone-200 rounded-lg hover:bg-stone-100 transition-colors"
             >
-              <span className="text-slate-700">Välj CV-version</span>
-              <ChevronDown className={cn("w-4 h-4 text-slate-600 transition-transform", showCVDropdown && "rotate-180")} />
+              <span className="text-stone-700">Välj CV-version</span>
+              <ChevronDown className={cn("w-4 h-4 text-stone-600 transition-transform", showCVDropdown && "rotate-180")} />
             </button>
 
             {showCVDropdown && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowCVDropdown(false)} />
-                <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-20 w-full mt-1 bg-white border border-stone-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                   {cvVersions.length === 0 ? (
                     <div className="p-4 text-center">
-                      <p className="text-sm text-slate-700 mb-2">Inga CV-versioner sparade</p>
+                      <p className="text-sm text-stone-700 mb-2">Inga CV-versioner sparade</p>
                       <Link
                         to="/cv"
-                        className="text-sm text-teal-600 hover:text-teal-700 font-medium"
+                        className="text-sm text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
                       >
                         Skapa CV →
                       </Link>
@@ -101,12 +101,12 @@ export function DocumentSelector({
                           onSelectCV(cv.id)
                           setShowCVDropdown(false)
                         }}
-                        className="w-full flex items-center gap-2 p-3 hover:bg-slate-50 text-left border-b border-slate-100 last:border-0"
+                        className="w-full flex items-center gap-2 p-3 hover:bg-stone-50 text-left border-b border-stone-100 last:border-0"
                       >
-                        <FileText className="w-4 h-4 text-slate-600" />
+                        <FileText className="w-4 h-4 text-stone-600" />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-slate-900 truncate">{cv.name}</p>
-                          <p className="text-xs text-slate-700">
+                          <p className="font-medium text-stone-900 truncate">{cv.name}</p>
+                          <p className="text-xs text-stone-700">
                             {new Date(cv.created_at).toLocaleDateString('sv-SE')}
                           </p>
                         </div>
@@ -122,7 +122,7 @@ export function DocumentSelector({
         {cvVersions.length > 0 && !selectedCV && (
           <Link
             to="/cv"
-            className="mt-2 inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-700"
+            className="mt-2 inline-flex items-center gap-1 text-xs text-[var(--c-text)] hover:text-[var(--c-text)]"
           >
             <Plus className="w-3 h-3" />
             Skapa ny CV-version
@@ -132,20 +132,20 @@ export function DocumentSelector({
 
       {/* Cover Letter Selector */}
       <div>
-        <label className="block text-sm font-medium text-slate-700 mb-2">
+        <label className="block text-sm font-medium text-stone-700 mb-2">
           Personligt brev
         </label>
 
         {selectedLetter ? (
-          <div className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-[var(--c-bg)] border border-[var(--c-accent)]/60 rounded-lg">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-teal-600" />
+              <FileText className="w-4 h-4 text-[var(--c-text)]" />
               <div>
-                <span className="font-medium text-teal-900">
+                <span className="font-medium text-[var(--c-text)]">
                   {selectedLetter.title || `${selectedLetter.company_name || 'Brev'}`}
                 </span>
                 {selectedLetter.job_title && (
-                  <span className="text-xs text-teal-600 ml-2">
+                  <span className="text-xs text-[var(--c-text)] ml-2">
                     ({selectedLetter.job_title})
                   </span>
                 )}
@@ -153,31 +153,31 @@ export function DocumentSelector({
             </div>
             <button
               onClick={() => onSelectCoverLetter(null)}
-              className="p-1 hover:bg-teal-100 rounded"
+              className="p-1 hover:bg-[var(--c-accent)]/40 rounded"
             >
-              <X className="w-4 h-4 text-teal-600" />
+              <X className="w-4 h-4 text-[var(--c-text)]" />
             </button>
           </div>
         ) : (
           <div className="relative">
             <button
               onClick={() => setShowLetterDropdown(!showLetterDropdown)}
-              className="w-full flex items-center justify-between p-3 bg-slate-50 border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors"
+              className="w-full flex items-center justify-between p-3 bg-stone-50 border border-stone-200 rounded-lg hover:bg-stone-100 transition-colors"
             >
-              <span className="text-slate-700">Välj personligt brev</span>
-              <ChevronDown className={cn("w-4 h-4 text-slate-600 transition-transform", showLetterDropdown && "rotate-180")} />
+              <span className="text-stone-700">Välj personligt brev</span>
+              <ChevronDown className={cn("w-4 h-4 text-stone-600 transition-transform", showLetterDropdown && "rotate-180")} />
             </button>
 
             {showLetterDropdown && (
               <>
                 <div className="fixed inset-0 z-10" onClick={() => setShowLetterDropdown(false)} />
-                <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                <div className="absolute z-20 w-full mt-1 bg-white border border-stone-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
                   {coverLetters.length === 0 ? (
                     <div className="p-4 text-center">
-                      <p className="text-sm text-slate-700 mb-2">Inga personliga brev sparade</p>
+                      <p className="text-sm text-stone-700 mb-2">Inga personliga brev sparade</p>
                       <Link
                         to={`/cover-letter${companyName ? `?company=${encodeURIComponent(companyName)}` : ''}${jobTitle ? `&title=${encodeURIComponent(jobTitle)}` : ''}`}
-                        className="text-sm text-teal-600 hover:text-teal-700 font-medium"
+                        className="text-sm text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
                       >
                         Skapa brev →
                       </Link>
@@ -190,14 +190,14 @@ export function DocumentSelector({
                           onSelectCoverLetter(letter.id)
                           setShowLetterDropdown(false)
                         }}
-                        className="w-full flex items-center gap-2 p-3 hover:bg-slate-50 text-left border-b border-slate-100 last:border-0"
+                        className="w-full flex items-center gap-2 p-3 hover:bg-stone-50 text-left border-b border-stone-100 last:border-0"
                       >
-                        <FileText className="w-4 h-4 text-slate-600" />
+                        <FileText className="w-4 h-4 text-stone-600" />
                         <div className="flex-1 min-w-0">
-                          <p className="font-medium text-slate-900 truncate">
+                          <p className="font-medium text-stone-900 truncate">
                             {letter.title || letter.company_name || 'Utan titel'}
                           </p>
-                          <p className="text-xs text-slate-700">
+                          <p className="text-xs text-stone-700">
                             {letter.job_title && `${letter.job_title} • `}
                             {new Date(letter.created_at).toLocaleDateString('sv-SE')}
                           </p>
@@ -214,7 +214,7 @@ export function DocumentSelector({
         {coverLetters.length > 0 && !selectedLetter && (
           <Link
             to={`/cover-letter${companyName ? `?company=${encodeURIComponent(companyName)}` : ''}${jobTitle ? `&title=${encodeURIComponent(jobTitle)}` : ''}`}
-            className="mt-2 inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-700"
+            className="mt-2 inline-flex items-center gap-1 text-xs text-[var(--c-text)] hover:text-[var(--c-text)]"
           >
             <Plus className="w-3 h-3" />
             Skapa nytt brev för denna ansökan

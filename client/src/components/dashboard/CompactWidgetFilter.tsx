@@ -21,12 +21,12 @@ import type { WidgetType, WidgetFilterItem } from './WidgetFilter'
 export { availableWidgets, type WidgetType, type WidgetFilterItem } from './WidgetFilter'
 
 const compactWidgets: WidgetFilterItem[] = [
-  { id: 'cv', label: 'CV', icon: FileText, color: 'text-teal-600 bg-teal-50 border-teal-200' },
+  { id: 'cv', label: 'CV', icon: FileText, color: 'text-[var(--c-text)] bg-[var(--c-bg)] border-[var(--c-accent)]/60' },
   { id: 'coverLetter', label: 'Brev', icon: Mail, color: 'text-rose-600 bg-rose-50 border-rose-200' },
   { id: 'jobSearch', label: 'Jobb', icon: Briefcase, color: 'text-blue-600 bg-blue-50 border-blue-200' },
   { id: 'applications', label: 'Ansökningar', icon: Send, color: 'text-orange-600 bg-orange-50 border-orange-200' },
   { id: 'career', label: 'Karriär', icon: Target, color: 'text-sky-600 bg-sky-50 border-sky-200' },
-  { id: 'interests', label: 'Intressen', icon: Compass, color: 'text-teal-600 bg-teal-50 border-teal-200' },
+  { id: 'interests', label: 'Intressen', icon: Compass, color: 'text-[var(--c-text)] bg-[var(--c-bg)] border-[var(--c-accent)]/60' },
   { id: 'exercises', label: 'Övningar', icon: Dumbbell, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { id: 'diary', label: 'Dagbok', icon: BookHeart, color: 'text-rose-600 bg-rose-50 border-rose-200' },
   { id: 'wellness', label: 'Hälsa', icon: Sparkles, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
@@ -51,18 +51,18 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
   const visibleCount = visibleWidgets.length
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
       {/* Compact Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-3 hover:bg-slate-50 transition-colors"
+        className="w-full flex items-center justify-between p-3 hover:bg-stone-50 transition-colors"
       >
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <LayoutGrid size={16} className="text-slate-700" />
-            <span className="text-sm font-medium text-slate-700">Moduler</span>
+            <LayoutGrid size={16} className="text-stone-700" />
+            <span className="text-sm font-medium text-stone-700">Moduler</span>
           </div>
-          <span className="text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">
+          <span className="text-xs text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">
             {visibleCount}/{compactWidgets.length}
           </span>
         </div>
@@ -87,7 +87,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
                 )
               })}
             {visibleCount > 5 && (
-              <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-xs text-slate-700 font-medium">
+              <div className="w-6 h-6 rounded-full bg-stone-100 border-2 border-white flex items-center justify-center text-xs text-stone-700 font-medium">
                 +{visibleCount - 5}
               </div>
             )}
@@ -95,7 +95,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
           <ChevronDown 
             size={18} 
             className={cn(
-              'text-slate-600 transition-transform duration-200',
+              'text-stone-600 transition-transform duration-200',
               isExpanded && 'rotate-180'
             )} 
           />
@@ -104,10 +104,10 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
 
       {/* Expanded content */}
       {isExpanded && (
-        <div className="px-3 pb-3 border-t border-slate-100">
+        <div className="px-3 pb-3 border-t border-stone-100">
           {/* Quick actions */}
           <div className="flex items-center justify-between py-2 mb-2">
-            <span className="text-xs text-slate-700">Välj moduler att visa:</span>
+            <span className="text-xs text-stone-700">Välj moduler att visa:</span>
             <div className="flex items-center gap-1">
               <button
                 onClick={onShowAll}
@@ -115,10 +115,10 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
               >
                 Alla
               </button>
-              <span className="text-slate-300">|</span>
+              <span className="text-stone-300">|</span>
               <button
                 onClick={onHideAll}
-                className="text-xs text-slate-700 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded transition-colors"
+                className="text-xs text-stone-700 hover:text-stone-700 px-2 py-1 hover:bg-stone-100 rounded transition-colors"
               >
                 Ingen
               </button>
@@ -139,7 +139,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
                     'flex flex-col items-center gap-1.5 p-2 rounded-lg text-xs font-medium transition-all duration-200',
                     isVisible
                       ? `${widget.color} border border-current`
-                      : 'bg-slate-50 text-slate-600 border border-transparent opacity-60 hover:opacity-80'
+                      : 'bg-stone-50 text-stone-600 border border-transparent opacity-60 hover:opacity-80'
                   )}
                 >
                   <Icon size={16} />
@@ -149,7 +149,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
             })}
           </div>
 
-          <p className="mt-3 text-xs text-slate-600">
+          <p className="mt-3 text-xs text-stone-600">
             Tips: Du kan ändra storlek på varje widget med ikonen uppe till höger på kortet.
           </p>
         </div>

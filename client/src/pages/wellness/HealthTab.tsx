@@ -30,7 +30,7 @@ interface DailyActivity {
 
 // Mood option definitions (labels will be translated in component)
 const moodOptionDefs: { value: MoodType; icon: string; labelKey: string; color: string; bgColor: string }[] = [
-  { value: 'great', icon: '😄', labelKey: 'wellness.health.moods.great', color: 'text-emerald-600 dark:text-emerald-400', bgColor: 'bg-emerald-100 dark:bg-emerald-900/30 hover:bg-emerald-200 dark:hover:bg-emerald-900/50 border-emerald-200 dark:border-emerald-800' },
+  { value: 'great', icon: '😄', labelKey: 'wellness.health.moods.great', color: 'text-[var(--c-text)] dark:text-[var(--c-text)]', bgColor: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-bg)]/50 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50' },
   { value: 'good', icon: '🙂', labelKey: 'wellness.health.moods.good', color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 border-blue-200 dark:border-blue-800' },
   { value: 'okay', icon: '😐', labelKey: 'wellness.health.moods.okay', color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-900/50 border-amber-200 dark:border-amber-800' },
   { value: 'bad', icon: '😔', labelKey: 'wellness.health.moods.bad', color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/30 hover:bg-orange-200 dark:hover:bg-orange-900/50 border-orange-200 dark:border-orange-800' },
@@ -40,7 +40,7 @@ const moodOptionDefs: { value: MoodType; icon: string; labelKey: string; color: 
 // Wellness tip definitions (titles/descriptions will be translated in component)
 const wellnessTipDefs: { id: string; category: WellnessTip['category']; titleKey: string; descKey: string; icon: React.ElementType; color: string }[] = [
   { id: '1', category: 'mental', titleKey: 'wellness.health.tips.mindfulness.title', descKey: 'wellness.health.tips.mindfulness.description', icon: Brain, color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400' },
-  { id: '2', category: 'physical', titleKey: 'wellness.health.tips.exercise.title', descKey: 'wellness.health.tips.exercise.description', icon: Activity, color: 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400' },
+  { id: '2', category: 'physical', titleKey: 'wellness.health.tips.exercise.title', descKey: 'wellness.health.tips.exercise.description', icon: Activity, color: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]' },
   { id: '3', category: 'sleep', titleKey: 'wellness.health.tips.sleep.title', descKey: 'wellness.health.tips.sleep.description', icon: Moon, color: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400' },
   { id: '4', category: 'social', titleKey: 'wellness.health.tips.social.title', descKey: 'wellness.health.tips.social.description', icon: Coffee, color: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' },
 ]
@@ -213,7 +213,7 @@ export default function HealthTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-emerald-600 dark:text-emerald-400" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)] dark:text-[var(--c-text)]" />
       </div>
     )
   }
@@ -224,11 +224,11 @@ export default function HealthTab() {
   return (
     <div className="space-y-6">
       {/* Mood Logging - Prominent at top */}
-      <Card className="p-4 sm:p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200 dark:border-emerald-800">
+      <Card className="p-4 sm:p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center shrink-0">
-              <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-emerald-600 dark:text-emerald-400" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center shrink-0">
+              <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-bold text-gray-800 dark:text-gray-100">{t('wellness.health.howAreYou')}</h2>
@@ -267,7 +267,7 @@ export default function HealthTab() {
                 {option.label}
               </span>
               {currentMood === option.value && moodSaved && (
-                <Check className="w-4 h-4 text-emerald-500 dark:text-emerald-400 absolute -top-1 -right-1" />
+                <Check className="w-4 h-4 text-[var(--c-solid)] dark:text-[var(--c-text)] absolute -top-1 -right-1" />
               )}
             </button>
           ))}
@@ -280,7 +280,7 @@ export default function HealthTab() {
             selectedMoodOption.bgColor.split(' ')[0]
           )}>
             <div className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-emerald-500 dark:text-emerald-400" />
+              <CheckCircle className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-text)]" />
               <span className="text-sm font-medium text-gray-700 dark:text-gray-200">
                 {t('wellness.health.moodLogged')} {selectedMoodOption.label}
               </span>
@@ -303,7 +303,7 @@ export default function HealthTab() {
               value={moodNote}
               onChange={(e) => setMoodNote(e.target.value)}
               placeholder={t('wellness.health.notePlaceholder')}
-              className="w-full p-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 resize-none text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+              className="w-full p-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)]/60 focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] resize-none text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               rows={2}
             />
             <div className="flex justify-end gap-2 mt-2">
@@ -327,14 +327,14 @@ export default function HealthTab() {
       </Card>
 
       {/* Daily Quote */}
-      <Card className="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
+      <Card className="p-5 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
-          <Quote className="w-6 h-6 text-emerald-400 dark:text-emerald-500 flex-shrink-0" />
+          <Quote className="w-6 h-6 text-[var(--c-solid)] dark:text-[var(--c-solid)] flex-shrink-0" />
           <div>
-            <p className="text-base font-medium text-emerald-900 dark:text-emerald-100 italic">
+            <p className="text-base font-medium text-[var(--c-text)] dark:text-[var(--c-text)] italic">
               "{quote.text}"
             </p>
-            <p className="text-sm text-emerald-600 dark:text-emerald-400 mt-1">— {quote.author}</p>
+            <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">— {quote.author}</p>
           </div>
         </div>
       </Card>
@@ -348,8 +348,8 @@ export default function HealthTab() {
               {t('wellness.health.xOfYCompleted', { completed: completedCount, total: activities.length })}
             </p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <div className="w-10 h-10 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           </div>
         </div>
 
@@ -363,23 +363,23 @@ export default function HealthTab() {
                 className={cn(
                   "w-full flex items-center gap-3 p-3 rounded-xl border-2 transition-all",
                   activity.completed
-                    ? "bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800"
-                    : "bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-emerald-300 dark:hover:border-emerald-700"
+                    ? "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
+                    : "bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]"
                 )}
               >
                 <div className={cn(
                   "w-9 h-9 rounded-lg flex items-center justify-center",
-                  activity.completed ? "bg-emerald-100 dark:bg-emerald-900/30" : "bg-stone-100 dark:bg-stone-600"
+                  activity.completed ? "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40" : "bg-stone-100 dark:bg-stone-600"
                 )}>
                   {activity.completed ? (
-                    <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                    <CheckCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
                   ) : (
                     <Icon className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                   )}
                 </div>
                 <span className={cn(
                   "flex-1 text-left font-medium text-sm",
-                  activity.completed ? "text-emerald-700 dark:text-emerald-400 line-through" : "text-gray-700 dark:text-gray-200"
+                  activity.completed ? "text-[var(--c-text)] dark:text-[var(--c-text)] line-through" : "text-gray-700 dark:text-gray-200"
                 )}>
                   {activity.title}
                 </span>
@@ -412,14 +412,14 @@ export default function HealthTab() {
       {/* Reflection */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
-          <PenLine className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+          <PenLine className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('wellness.health.dailyReflection')}</h3>
         </div>
         <textarea
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
           placeholder={t('wellness.health.reflectionPlaceholder')}
-          className="w-full h-24 p-4 rounded-xl border bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 resize-none text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+          className="w-full h-24 p-4 rounded-xl border bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)]/60 focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] resize-none text-sm text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
         />
         <div className="flex justify-end mt-3">
           <Button

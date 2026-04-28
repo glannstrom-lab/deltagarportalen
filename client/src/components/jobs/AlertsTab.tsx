@@ -86,9 +86,9 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
         <button
           onClick={onClose}
           aria-label="Stäng dialogrutan"
-          className="absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center"
+          className="absolute top-4 right-4 p-2 hover:bg-stone-100 rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
-          <X className="w-5 h-5 text-slate-600" aria-hidden="true" />
+          <X className="w-5 h-5 text-stone-600" aria-hidden="true" />
         </button>
 
         <div className="flex items-center gap-3 mb-6">
@@ -96,14 +96,14 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
             <Bell className="w-6 h-6 text-indigo-600" aria-hidden="true" />
           </div>
           <div>
-            <h2 id="create-alert-title" className="text-xl font-bold text-slate-900">Skapa bevakning</h2>
-            <p className="text-sm text-slate-700">Få notiser om nya jobb</p>
+            <h2 id="create-alert-title" className="text-xl font-bold text-stone-900">Skapa bevakning</h2>
+            <p className="text-sm text-stone-700">Få notiser om nya jobb</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-stone-700 mb-1">
               Namn på bevakningen *
             </label>
             <input
@@ -111,13 +111,13 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="t.ex. Utvecklare i Stockholm"
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-stone-700 mb-1">
               Sökord
             </label>
             <input
@@ -125,18 +125,18 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="t.ex. React, projektledare, ekonom"
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1">
+            <label className="block text-sm font-medium text-stone-700 mb-1">
               Region
             </label>
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">Hela Sverige</option>
               <option value="SE110">Stockholms län</option>
@@ -152,9 +152,9 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
               type="checkbox"
               checked={remote}
               onChange={(e) => setRemote(e.target.checked)}
-              className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+              className="w-5 h-5 rounded border-stone-300 text-indigo-600 focus:ring-indigo-500"
             />
-            <span className="text-sm text-slate-700">Endast distansjobb</span>
+            <span className="text-sm text-stone-700">Endast distansjobb</span>
           </label>
 
           <div className="flex gap-3 pt-4">
@@ -215,10 +215,10 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
 
   if (isLoading) {
     return (
-      <div className="bg-slate-50 rounded-xl p-6 mb-6">
+      <div className="bg-stone-50 rounded-xl p-6 mb-6">
         <div className="animate-pulse flex items-center gap-3">
-          <div className="w-10 h-10 bg-slate-200 rounded-lg" />
-          <div className="h-4 bg-slate-200 rounded w-32" />
+          <div className="w-10 h-10 bg-stone-200 rounded-lg" />
+          <div className="h-4 bg-stone-200 rounded w-32" />
         </div>
       </div>
     )
@@ -232,15 +232,15 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
             <Mail className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">E-postaviseringar</h3>
-            <p className="text-sm text-slate-600">Välj hur du vill bli notifierad om nya jobb</p>
+            <h3 className="font-semibold text-stone-900">E-postaviseringar</h3>
+            <p className="text-sm text-stone-600">Välj hur du vill bli notifierad om nya jobb</p>
           </div>
         </div>
         <button
           onClick={onClose}
           className="p-1 hover:bg-white/50 rounded-lg transition-colors"
         >
-          <X className="w-5 h-5 text-slate-500" />
+          <X className="w-5 h-5 text-stone-500" />
         </button>
       </div>
 
@@ -250,14 +250,14 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
             type="checkbox"
             checked={emailEnabled}
             onChange={(e) => setEmailEnabled(e.target.checked)}
-            className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+            className="w-5 h-5 rounded border-stone-300 text-indigo-600 focus:ring-indigo-500"
           />
-          <span className="text-sm text-slate-700">Aktivera e-postaviseringar för jobbvarningar</span>
+          <span className="text-sm text-stone-700">Aktivera e-postaviseringar för jobbvarningar</span>
         </label>
 
         {emailEnabled && (
           <div className="ml-8">
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 mb-2">
               Frekvens
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -273,7 +273,7 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
                     "flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors",
                     frequency === option.value
                       ? "bg-indigo-50 border-indigo-300"
-                      : "bg-white border-slate-200 hover:border-indigo-200"
+                      : "bg-white border-stone-200 hover:border-indigo-200"
                   )}
                 >
                   <input
@@ -284,7 +284,7 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
                     onChange={(e) => setFrequency(e.target.value as typeof frequency)}
                     className="text-indigo-600 focus:ring-indigo-500"
                   />
-                  <span className="text-sm text-slate-700">{option.label}</span>
+                  <span className="text-sm text-stone-700">{option.label}</span>
                 </label>
               ))}
             </div>
@@ -329,12 +329,12 @@ function AlertCard({
   return (
     <div className={cn(
       "bg-white rounded-xl border p-5 transition-all",
-      alert.is_active ? "border-slate-200 shadow-sm" : "border-slate-100 opacity-60"
+      alert.is_active ? "border-stone-200 shadow-sm" : "border-stone-100 opacity-60"
     )}>
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-slate-900">{alert.name}</h3>
+            <h3 className="font-semibold text-stone-900">{alert.name}</h3>
             {alert.new_jobs_count > 0 && alert.is_active && (
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
                 {alert.new_jobs_count} nya
@@ -345,13 +345,13 @@ function AlertCard({
           {/* Criteria */}
           <div className="flex flex-wrap gap-2 mt-2">
             {alert.query && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-lg">
                 <Search className="w-3 h-3" />
                 {alert.query}
               </span>
             )}
             {alert.region && (
-              <span className="inline-flex items-center gap-1 px-2 py-1 bg-slate-100 text-slate-600 text-xs rounded-lg">
+              <span className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-lg">
                 <MapPin className="w-3 h-3" />
                 {REGION_NAMES[alert.region] || alert.region}
               </span>
@@ -365,7 +365,7 @@ function AlertCard({
 
           {/* Last checked */}
           {alert.last_checked_at && (
-            <p className="text-xs text-slate-600 mt-2 flex items-center gap-1">
+            <p className="text-xs text-stone-600 mt-2 flex items-center gap-1">
               <Clock className="w-3 h-3" />
               Senast kollad: {new Date(alert.last_checked_at).toLocaleDateString('sv-SE')}
             </p>
@@ -376,13 +376,13 @@ function AlertCard({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onToggle(alert.id, !alert.is_active)}
-            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-stone-100 rounded-lg transition-colors"
             title={alert.is_active ? 'Pausa bevakning' : 'Aktivera bevakning'}
           >
             {alert.is_active ? (
               <ToggleRight className="w-6 h-6 text-green-600" />
             ) : (
-              <ToggleLeft className="w-6 h-6 text-slate-600" />
+              <ToggleLeft className="w-6 h-6 text-stone-600" />
             )}
           </button>
 
@@ -392,7 +392,7 @@ function AlertCard({
                 onDelete(alert.id)
               }
             }}
-            className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-600 hover:text-red-600"
+            className="p-2 hover:bg-red-50 rounded-lg transition-colors text-stone-600 hover:text-red-600"
             title="Ta bort"
           >
             <Trash2 className="w-5 h-5" />
@@ -408,7 +408,7 @@ function AlertCard({
           "w-full mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors",
           alert.is_active
             ? "bg-indigo-600 text-white hover:bg-indigo-700"
-            : "bg-slate-100 text-slate-600 cursor-not-allowed"
+            : "bg-stone-100 text-stone-600 cursor-not-allowed"
         )}
       >
         {isChecking ? (
@@ -475,14 +475,14 @@ export function AlertsTab() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-slate-900">Dina bevakningar</h2>
+            <h2 className="text-lg font-semibold text-stone-900">Dina bevakningar</h2>
             {unreadCount > 0 && (
               <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">
                 {unreadCount} nya
               </span>
             )}
           </div>
-          <p className="text-sm text-slate-700">
+          <p className="text-sm text-stone-700">
             {alerts.length === 0
               ? 'Skapa bevakningar för att få notiser om nya jobb'
               : `${alerts.filter(a => a.is_active).length} aktiva av ${alerts.length} bevakningar`}
@@ -493,7 +493,7 @@ export function AlertsTab() {
             onClick={() => setShowEmailSettings(!showEmailSettings)}
             className={cn(
               "p-2 rounded-lg transition-colors",
-              showEmailSettings ? "bg-indigo-100 text-indigo-600" : "hover:bg-slate-100 text-slate-600"
+              showEmailSettings ? "bg-indigo-100 text-indigo-600" : "hover:bg-stone-100 text-stone-600"
             )}
             title="E-postinställningar"
           >
@@ -517,10 +517,10 @@ export function AlertsTab() {
           <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <Bell className="w-8 h-8 text-amber-600" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-700 mb-2">
+          <h3 className="text-xl font-semibold text-stone-700 mb-2">
             Inga bevakningar
           </h3>
-          <p className="text-slate-700 mb-6 max-w-md mx-auto">
+          <p className="text-stone-700 mb-6 max-w-md mx-auto">
             Skapa en bevakning för att få notifieringar när nya jobb som matchar dina kriterier publiceras.
           </p>
           <Button onClick={() => setShowCreateModal(true)}>

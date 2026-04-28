@@ -138,8 +138,8 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
     <div className="max-w-lg mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Search className="w-8 h-8 text-teal-500" />
+        <div className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Search className="w-8 h-8 text-[var(--c-solid)]" />
         </div>
         <h2 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100 mb-2">
           {t('focusGuide.jobs.title', 'Hitta jobb')}
@@ -158,13 +158,13 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
               total: JOB_STEPS.length
             })}
           </span>
-          <span className="font-medium text-teal-600 dark:text-teal-400">
+          <span className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">
             {Math.round(progress)}%
           </span>
         </div>
         <div className="h-2 bg-stone-100 dark:bg-stone-800 rounded-full overflow-hidden">
           <div
-            className="h-full bg-teal-500 rounded-full transition-all duration-500"
+            className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -181,8 +181,8 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
                 key={s.id}
                 className={cn(
                   'w-10 h-10 rounded-full flex items-center justify-center transition-all',
-                  isActive && 'bg-teal-500 text-white ring-4 ring-teal-500/20',
-                  isDone && 'bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400',
+                  isActive && 'bg-[var(--c-solid)] text-white ring-4 ring-[var(--c-solid)]/20',
+                  isDone && 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)]',
                   !isActive && !isDone && 'bg-stone-100 dark:bg-stone-800 text-stone-400'
                 )}
               >
@@ -196,8 +196,8 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
       {/* Current step form */}
       <div className="bg-white dark:bg-stone-800/50 rounded-2xl p-6 mb-6">
         <div className="flex items-center gap-3 mb-6">
-          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
-            <StepIcon className="w-6 h-6 text-teal-500" />
+          <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center">
+            <StepIcon className="w-6 h-6 text-[var(--c-solid)]" />
           </div>
           <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
             {t(step.titleKey, step.titleDefault)}
@@ -218,7 +218,7 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
                   <button
                     key={job}
                     onClick={() => toggleJob(job)}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-teal-500 text-white rounded-full text-sm"
+                    className="flex items-center gap-1 px-3 py-1.5 bg-[var(--c-solid)] text-white rounded-full text-sm"
                   >
                     {job}
                     <span className="ml-1">×</span>
@@ -234,7 +234,7 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
                   <button
                     key={job}
                     onClick={() => toggleJob(job)}
-                    className="px-3 py-1.5 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 rounded-full text-sm hover:bg-teal-100 hover:text-teal-700 dark:hover:bg-teal-900/50 dark:hover:text-teal-300 transition-colors"
+                    className="px-3 py-1.5 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 rounded-full text-sm hover:bg-[var(--c-accent)]/40 hover:text-[var(--c-text)] dark:hover:bg-[var(--c-bg)]/50 dark:hover:text-[var(--c-accent)] transition-colors"
                   >
                     {job}
                   </button>
@@ -255,12 +255,12 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
                   }
                 }}
                 placeholder={t('focusGuide.jobs.customJob', 'Annat yrke...')}
-                className="flex-1 px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                className="flex-1 px-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
               />
               <button
                 onClick={addCustomJob}
                 disabled={!customJob.trim()}
-                className="px-4 py-3 bg-teal-500 text-white rounded-xl hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-3 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-solid)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 +
               </button>
@@ -286,7 +286,7 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder={t('focusGuide.jobs.locationPlaceholder', 'T.ex. Stockholm, Göteborg...')}
-                  className="w-full pl-12 pr-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-teal-500/50"
+                  className="w-full pl-12 pr-4 py-3 bg-stone-50 dark:bg-stone-900 border border-stone-200 dark:border-stone-700 rounded-xl text-stone-800 dark:text-stone-100 placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/50"
                   autoFocus
                 />
               </div>
@@ -305,8 +305,8 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
                   className={cn(
                     'px-3 py-1.5 rounded-full text-sm transition-colors',
                     location === city
-                      ? 'bg-teal-500 text-white'
-                      : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-teal-100 hover:text-teal-700'
+                      ? 'bg-[var(--c-solid)] text-white'
+                      : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 hover:bg-[var(--c-accent)]/40 hover:text-[var(--c-text)]'
                   )}
                 >
                   {city}
@@ -321,7 +321,7 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
           <div className="space-y-4">
             {isSearching ? (
               <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-8 h-8 animate-spin text-teal-500" />
+                <Loader2 className="w-8 h-8 animate-spin text-[var(--c-solid)]" />
               </div>
             ) : jobs && jobs.length > 0 ? (
               <>
@@ -390,8 +390,8 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
           disabled={saveMutation.isPending}
           className={cn(
             'flex items-center justify-center gap-2 w-full py-4 rounded-xl font-semibold text-lg transition-all',
-            'bg-teal-500 text-white hover:bg-teal-600',
-            'focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30',
+            'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
+            'focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--c-solid)]/30',
             'disabled:opacity-50 disabled:cursor-not-allowed'
           )}
         >

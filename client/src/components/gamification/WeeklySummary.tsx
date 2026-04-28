@@ -58,10 +58,10 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
       color: 'bg-blue-50 text-blue-700'
     },
     {
-      icon: <FileText className="w-5 h-5 text-teal-500" />,
+      icon: <FileText className="w-5 h-5 text-[var(--c-solid)]" />,
       label: 'CV framsteg',
       value: `${stats.cvProgress}%`,
-      color: 'bg-teal-50 text-teal-700'
+      color: 'bg-[var(--c-bg)] text-[var(--c-text)]'
     },
     {
       icon: <Briefcase className="w-5 h-5 text-amber-500" />,
@@ -86,7 +86,7 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
     >
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-300">
         {/* Header */}
-        <div className="bg-gradient-to-br from-teal-500 to-teal-600 text-white p-6 rounded-t-3xl">
+        <div className="bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)] text-white p-6 rounded-t-3xl">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
@@ -107,7 +107,7 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
           >
             Din vecka i siffror
           </h2>
-          <p className="text-teal-100 text-sm">
+          <p className="text-white text-sm">
             {new Date().toLocaleDateString('sv-SE', { month: 'long', day: 'numeric' })} - idag
           </p>
         </div>
@@ -147,9 +147,9 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
           </div>
 
           {/* Comparison */}
-          <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl mb-6">
-            <TrendingUp className="w-5 h-5 text-teal-500 flex-shrink-0" />
-            <p className="text-sm text-slate-600">
+          <div className="flex items-center gap-3 p-4 bg-stone-50 rounded-xl mb-6">
+            <TrendingUp className="w-5 h-5 text-[var(--c-solid)] flex-shrink-0" />
+            <p className="text-sm text-stone-600">
               Du har varit aktiv <strong>{stats.logins} dagar</strong> denna vecka. 
               {stats.logins >= 3 
                 ? ' Fantastisk kontinuitet!' 
@@ -158,23 +158,23 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
           </div>
 
           {/* Next Week Goals */}
-          <div className="border-t border-slate-100 pt-4">
-            <h3 className="font-medium text-slate-800 mb-3">Inför nästa vecka</h3>
+          <div className="border-t border-stone-100 pt-4">
+            <h3 className="font-medium text-stone-800 mb-3">Inför nästa vecka</h3>
             <ul className="space-y-2">
               {stats.cvProgress < 100 && (
-                <li className="flex items-center gap-2 text-sm text-slate-600">
-                  <div className="w-1.5 h-1.5 bg-teal-500 rounded-full" />
+                <li className="flex items-center gap-2 text-sm text-stone-600">
+                  <div className="w-1.5 h-1.5 bg-[var(--c-solid)] rounded-full" />
                   Färdigställ ditt CV
                 </li>
               )}
               {stats.applications === 0 && (
-                <li className="flex items-center gap-2 text-sm text-slate-600">
-                  <div className="w-1.5 h-1.5 bg-teal-500 rounded-full" />
+                <li className="flex items-center gap-2 text-sm text-stone-600">
+                  <div className="w-1.5 h-1.5 bg-[var(--c-solid)] rounded-full" />
                   Skicka din första ansökan
                 </li>
               )}
-              <li className="flex items-center gap-2 text-sm text-slate-600">
-                <div className="w-1.5 h-1.5 bg-teal-500 rounded-full" />
+              <li className="flex items-center gap-2 text-sm text-stone-600">
+                <div className="w-1.5 h-1.5 bg-[var(--c-solid)] rounded-full" />
                 Fortsätt ta små steg varje dag
               </li>
             </ul>
@@ -182,10 +182,10 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-slate-100">
+        <div className="p-4 border-t border-stone-100">
           <button
             onClick={onClose}
-            className="w-full bg-teal-600 text-white py-3 rounded-xl font-semibold hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
+            className="w-full bg-[var(--c-solid)] text-white py-3 rounded-xl font-semibold hover:bg-[var(--c-text)] transition-colors focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
           >
             Fortsätt mot nya mål! 🚀
           </button>

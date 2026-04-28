@@ -47,10 +47,10 @@ const ENERGY_OPTIONS: EnergyOption[] = [
 
 export default function EnergyLevelSelector({ value, onChange }: EnergyLevelSelectorProps) {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
       <div className="flex items-center gap-2 mb-4">
-        <BatteryFull className="text-slate-600" size={20} />
-        <h3 className="font-medium text-slate-700">Hur är din energi idag?</h3>
+        <BatteryFull className="text-stone-600" size={20} />
+        <h3 className="font-medium text-stone-700">Hur är din energi idag?</h3>
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -66,18 +66,18 @@ export default function EnergyLevelSelector({ value, onChange }: EnergyLevelSele
                 flex flex-col items-center p-4 rounded-xl border-2 transition-all
                 ${isSelected 
                   ? `${option.bgColor} ${option.borderColor} ring-2 ring-offset-2 ring-${option.color.split('-')[1]}-500` 
-                  : 'bg-white border-slate-200 hover:border-slate-300'
+                  : 'bg-white border-stone-200 hover:border-stone-300'
                 }
               `}
             >
               <Icon 
                 size={32} 
-                className={`mb-2 ${isSelected ? option.color : 'text-slate-600'}`} 
+                className={`mb-2 ${isSelected ? option.color : 'text-stone-600'}`} 
               />
-              <span className={`font-medium ${isSelected ? option.color : 'text-slate-700'}`}>
+              <span className={`font-medium ${isSelected ? option.color : 'text-stone-700'}`}>
                 {option.label}
               </span>
-              <span className="text-xs text-slate-700 text-center mt-1">
+              <span className="text-xs text-stone-700 text-center mt-1">
                 {option.description}
               </span>
             </button>
@@ -85,7 +85,7 @@ export default function EnergyLevelSelector({ value, onChange }: EnergyLevelSele
         })}
       </div>
       
-      <p className="text-xs text-slate-700 mt-4 text-center">
+      <p className="text-xs text-stone-700 mt-4 text-center">
         Vi anpassar rekommendationerna efter din energinivå. 
         Du kan ändra detta när som helst.
       </p>

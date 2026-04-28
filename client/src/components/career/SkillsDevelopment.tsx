@@ -150,7 +150,7 @@ export default function SkillsDevelopment() {
       case 'soft': return 'bg-purple-100 text-purple-700';
       case 'certification': return 'bg-amber-100 text-amber-700';
       case 'language': return 'bg-emerald-100 text-emerald-700';
-      default: return 'bg-slate-100 text-slate-700';
+      default: return 'bg-stone-100 text-stone-700';
     }
   };
 
@@ -167,7 +167,7 @@ export default function SkillsDevelopment() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-8 text-white">
+      <div className="bg-gradient-to-br from-emerald-500 to-[var(--c-solid)] rounded-2xl p-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
             <Wrench size={24} />
@@ -185,10 +185,10 @@ export default function SkillsDevelopment() {
       </div>
 
       {/* Sök */}
-      <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+      <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1">
-            <label className="block text-sm font-medium text-slate-700 mb-2">
+            <label className="block text-sm font-medium text-stone-700 mb-2">
               Välj yrke att analysera
             </label>
             <Autocomplete
@@ -204,7 +204,7 @@ export default function SkillsDevelopment() {
             <button
               onClick={analyzeSkills}
               disabled={!occupation || loading}
-              className="w-full md:w-auto px-6 py-2.5 bg-emerald-500 text-white rounded-xl font-medium hover:bg-emerald-600 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+              className="w-full md:w-auto px-6 py-2.5 bg-emerald-500 text-white rounded-xl font-medium hover:bg-emerald-600 disabled:bg-stone-300 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
             >
               {loading ? (
                 <>
@@ -224,8 +224,8 @@ export default function SkillsDevelopment() {
 
       {/* Sparade kompetenser */}
       {savedSkills.length > 0 && (
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-          <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
+          <h3 className="text-sm font-medium text-stone-700 mb-3 flex items-center gap-2">
             <Bookmark className="text-emerald-500" size={16} />
             Dina sparade kompetenser ({savedSkills.length})
           </h3>
@@ -267,13 +267,13 @@ export default function SkillsDevelopment() {
                   className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-colors ${
                     selectedCategory === cat.id
                       ? 'bg-emerald-500 text-white'
-                      : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200'
+                      : 'bg-white text-stone-600 hover:bg-stone-50 border border-stone-200'
                   }`}
                 >
                   <Icon size={18} />
                   {cat.title}
                   <span className={`px-2 py-0.5 rounded-full text-xs ${
-                    selectedCategory === cat.id ? 'bg-white/20' : 'bg-slate-100'
+                    selectedCategory === cat.id ? 'bg-white/20' : 'bg-stone-100'
                   }`}>
                     {count}
                   </span>
@@ -289,10 +289,10 @@ export default function SkillsDevelopment() {
               return (
               <div
                 key={skill.name}
-                className="bg-white rounded-xl p-5 shadow-sm border border-slate-200 hover:border-emerald-300 transition-colors"
+                className="bg-white rounded-xl p-5 shadow-sm border border-stone-200 hover:border-emerald-300 transition-colors"
               >
                 <div className="flex items-start justify-between mb-3">
-                  <h4 className="font-semibold text-slate-800">{skill.name}</h4>
+                  <h4 className="font-semibold text-stone-800">{skill.name}</h4>
                   <div className="flex items-center gap-2">
                     <span className={`text-xs px-2 py-1 rounded-full ${getDemandColor(skill.category)}`}>
                       {getCategoryLabel(skill.category)}
@@ -309,7 +309,7 @@ export default function SkillsDevelopment() {
                       <button
                         onClick={() => occupation && saveSkill(skill.name, skill.category, occupation.label)}
                         disabled={!occupation}
-                        className="p-1 text-slate-600 hover:text-emerald-500 transition-colors"
+                        className="p-1 text-stone-600 hover:text-emerald-500 transition-colors"
                         title="Spara kompetens"
                       >
                         <Heart size={18} />
@@ -319,13 +319,13 @@ export default function SkillsDevelopment() {
                 </div>
                 
                 <div className="mb-3">
-                  <div className="flex items-center gap-2 text-sm text-slate-700 mb-1">
+                  <div className="flex items-center gap-2 text-sm text-stone-700 mb-1">
                     <TrendingUp size={14} />
                     Viktighet: {skill.importance}
                   </div>
                 </div>
                 
-                <div className="mt-3 pt-3 border-t border-slate-100">
+                <div className="mt-3 pt-3 border-t border-stone-100">
                   <a
                     href="#/career?tab=microlearning"
                     className="inline-flex items-center gap-1.5 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
@@ -341,20 +341,20 @@ export default function SkillsDevelopment() {
       )}
 
       {!loading && skills.length === 0 && occupation && (
-        <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
-          <Wrench size={48} className="text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-slate-800 mb-2">Inga kompetenser hittades</h3>
-          <p className="text-slate-700">
+        <div className="bg-white rounded-2xl p-8 shadow-sm border border-stone-200 text-center">
+          <Wrench size={48} className="text-stone-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-stone-800 mb-2">Inga kompetenser hittades</h3>
+          <p className="text-stone-700">
             Kunde inte extrahera kompetenser från jobbannonser. Detta kan bero på att få annonser nämner specifika kompetenser eller att yrket är ovanligt.
           </p>
         </div>
       )}
 
       {!loading && !occupation && (
-        <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
-          <Search size={48} className="text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-slate-800 mb-2">Analysera kompetensbehov</h3>
-          <p className="text-slate-700 max-w-md mx-auto">
+        <div className="bg-white rounded-2xl p-12 shadow-sm border border-stone-200 text-center">
+          <Search size={48} className="text-stone-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-stone-800 mb-2">Analysera kompetensbehov</h3>
+          <p className="text-stone-700 max-w-md mx-auto">
             Välj ett yrke ovan för att se vilka kompetenser som efterfrågas mest 
             baserat på aktuella jobbannonser från Arbetsförmedlingen.
           </p>

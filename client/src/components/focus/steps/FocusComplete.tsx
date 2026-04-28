@@ -31,7 +31,7 @@ export function FocusComplete({ onExit, onRestart }: FocusCompleteProps) {
       </p>
 
       {/* Summary card */}
-      <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl p-6 mb-8 max-w-md w-full border border-teal-100 dark:border-teal-800/50">
+      <div className="bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-2xl p-6 mb-8 max-w-md w-full border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
         <h2 className="font-semibold text-stone-800 dark:text-stone-100 mb-4">
           {t('focusGuide.complete.whatYouDid', 'Det här har du gjort:')}
         </h2>
@@ -66,8 +66,8 @@ export function FocusComplete({ onExit, onRestart }: FocusCompleteProps) {
           onClick={onExit}
           className={cn(
             'flex items-center justify-center gap-2 w-full py-4 rounded-xl font-semibold text-lg transition-all',
-            'bg-teal-500 text-white hover:bg-teal-600',
-            'focus:outline-none focus-visible:ring-4 focus-visible:ring-teal-500/30'
+            'bg-[var(--c-solid)] text-white hover:bg-[var(--c-solid)]',
+            'focus:outline-none focus-visible:ring-4 focus-visible:ring-[var(--c-solid)]/30'
           )}
         >
           <Home className="w-5 h-5" />

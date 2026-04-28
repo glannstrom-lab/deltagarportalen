@@ -53,8 +53,8 @@ const PROVIDER_COLORS: Record<string, string> = {
   'FUTURELEARN': 'bg-pink-100 text-pink-700',
   'COURSERA': 'bg-indigo-100 text-indigo-700',
   'UDEMY': 'bg-purple-100 text-purple-700',
-  'OTHER': 'bg-slate-100 text-slate-700',
-  'INTERNAL': 'bg-teal-100 text-teal-700'
+  'OTHER': 'bg-stone-100 text-stone-700',
+  'INTERNAL': 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
 };
 
 const PROVIDER_NAMES: Record<string, string> = {
@@ -149,21 +149,21 @@ export default function CourseCard({
   // Compact variant för listor
   if (variant === 'compact') {
     return (
-      <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
-        <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center shrink-0">
-          <Play size={16} className="text-slate-600" />
+      <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-stone-50 transition-colors group">
+        <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center shrink-0">
+          <Play size={16} className="text-stone-600" />
         </div>
         <div className="flex-1 min-w-0">
-          <h4 className="font-medium text-slate-800 truncate">{course.title}</h4>
-          <div className="flex items-center gap-2 text-xs text-slate-700">
+          <h4 className="font-medium text-stone-800 truncate">{course.title}</h4>
+          <div className="flex items-center gap-2 text-xs text-stone-700">
             <Clock size={12} />
             {formatDuration(course.duration_minutes)}
-            <span className="w-1 h-1 bg-slate-300 rounded-full" />
+            <span className="w-1 h-1 bg-stone-300 rounded-full" />
             {PROVIDER_NAMES[course.provider] || course.provider}
           </div>
         </div>
         {progress_percent > 0 && (
-          <div className="w-16 h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div className="w-16 h-2 bg-stone-200 rounded-full overflow-hidden">
             <div 
               className="h-full bg-emerald-500 rounded-full"
               style={{ width: `${progress_percent}%` }}
@@ -177,7 +177,7 @@ export default function CourseCard({
   return (
     <div 
       className={`bg-white rounded-2xl border transition-all ${
-        isHovered ? 'border-indigo-300 shadow-md' : 'border-slate-200'
+        isHovered ? 'border-indigo-300 shadow-md' : 'border-stone-200'
       }`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => {
@@ -214,7 +214,7 @@ export default function CourseCard({
         
         {/* Progress overlay för pågående kurser */}
         {variant === 'progress' && (
-          <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-slate-200">
+          <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-stone-200">
             <div 
               className="h-full bg-emerald-500 transition-all"
               style={{ width: `${progress_percent}%` }}
@@ -236,15 +236,15 @@ export default function CourseCard({
           onClick={() => setShowMenu(!showMenu)}
           className="absolute top-3 right-3 p-2 bg-white/90 rounded-lg hover:bg-white transition-colors"
         >
-          <MoreVertical size={16} className="text-slate-600" />
+          <MoreVertical size={16} className="text-stone-600" />
         </button>
         
         {showMenu && (
-          <div className="absolute top-12 right-3 bg-white rounded-xl shadow-lg border border-slate-200 py-1 min-w-[150px] z-10">
+          <div className="absolute top-12 right-3 bg-white rounded-xl shadow-lg border border-stone-200 py-1 min-w-[150px] z-10">
             {status !== 'COMPLETED' && (
               <button
                 onClick={handleBookmark}
-                className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2"
+                className="w-full px-4 py-2 text-left text-sm hover:bg-stone-50 flex items-center gap-2"
               >
                 <Bookmark size={14} />
                 Spara för senare
@@ -253,7 +253,7 @@ export default function CourseCard({
             {status === 'STARTED' && (
               <button
                 onClick={handleComplete}
-                className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2 text-emerald-600"
+                className="w-full px-4 py-2 text-left text-sm hover:bg-stone-50 flex items-center gap-2 text-emerald-600"
               >
                 <Check size={14} />
                 Markera som klar
@@ -263,7 +263,7 @@ export default function CourseCard({
               href={course.content_url}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full px-4 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2"
+              className="w-full px-4 py-2 text-left text-sm hover:bg-stone-50 flex items-center gap-2"
             >
               <ExternalLink size={14} />
               Öppna i ny flik
@@ -280,19 +280,19 @@ export default function CourseCard({
             {PROVIDER_NAMES[course.provider] || course.provider}
           </span>
           {course.difficulty && (
-            <span className="px-2 py-0.5 rounded text-xs font-medium bg-slate-100 text-slate-600">
+            <span className="px-2 py-0.5 rounded text-xs font-medium bg-stone-100 text-stone-600">
               {DIFFICULTY_LABELS[course.difficulty]}
             </span>
           )}
         </div>
         
         {/* Title */}
-        <h4 className="font-semibold text-slate-800 mb-2 line-clamp-2">
+        <h4 className="font-semibold text-stone-800 mb-2 line-clamp-2">
           {course.title}
         </h4>
         
         {/* Description */}
-        <p className="text-sm text-slate-600 mb-3 line-clamp-2">
+        <p className="text-sm text-stone-600 mb-3 line-clamp-2">
           {course.description || match_reason}
         </p>
         
@@ -307,7 +307,7 @@ export default function CourseCard({
         )}
         
         {/* Meta info */}
-        <div className="flex items-center gap-3 text-sm text-slate-700 mb-4">
+        <div className="flex items-center gap-3 text-sm text-stone-700 mb-4">
           <span className="flex items-center gap-1">
             <Clock size={14} />
             {formatDuration(course.duration_minutes)}
@@ -331,7 +331,7 @@ export default function CourseCard({
           {course.skills?.slice(0, 3).map((skill, idx) => (
             <span 
               key={idx}
-              className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs"
+              className="px-2 py-0.5 bg-stone-100 text-stone-600 rounded text-xs"
             >
               {skill}
             </span>
@@ -343,7 +343,7 @@ export default function CourseCard({
           {variant === 'completed' ? (
             <button
               onClick={() => window.open(course.content_url, '_blank')}
-              className="flex-1 py-2 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors flex items-center justify-center gap-2"
+              className="flex-1 py-2 bg-stone-100 text-stone-700 rounded-xl font-medium hover:bg-stone-200 transition-colors flex items-center justify-center gap-2"
             >
               <Play size={16} />
               Se igen
@@ -376,10 +376,10 @@ export default function CourseCard({
               {status === 'SUGGESTED' && (
                 <button
                   onClick={handleBookmark}
-                  className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
+                  className="p-2 border border-stone-200 rounded-xl hover:bg-stone-50 transition-colors"
                   title="Spara för senare"
                 >
-                  <Bookmark size={18} className="text-slate-600" />
+                  <Bookmark size={18} className="text-stone-600" />
                 </button>
               )}
             </>

@@ -66,8 +66,8 @@ export function CoverLetterStatistics() {
           Här samlas en översikt över dina ansökningar – hur många du skickat,
           vilka som fått svar och var du är i processen.
         </p>
-        <div className="bg-teal-50 dark:bg-teal-900/20 rounded-xl p-4 max-w-md mx-auto border border-teal-200 dark:border-teal-800/50">
-          <p className="text-sm text-teal-700 dark:text-teal-300">
+        <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 rounded-xl p-4 max-w-md mx-auto border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50">
+          <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-accent)]">
             💡 <strong>Det börjar här:</strong> När du skickat ditt första personliga
             brev börjar statistiken växa. Tänk på att varje ansökan är ett steg framåt,
             oavsett utfallet.
@@ -154,7 +154,7 @@ export function CoverLetterStatistics() {
                     <div className="w-full flex gap-1 items-end h-32">
                       {/* Skickade */}
                       <div
-                        className="flex-1 bg-teal-500 rounded-t transition-all hover:bg-teal-600 relative group"
+                        className="flex-1 bg-[var(--c-solid)] rounded-t transition-all hover:bg-[var(--c-solid)] relative group"
                         style={{ height: `${heightPercent}%` }}
                       >
                         <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-stone-800 dark:bg-stone-700 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -178,7 +178,7 @@ export function CoverLetterStatistics() {
             {/* Legend */}
             <div className="flex items-center gap-6 mt-4 pt-4 border-t border-stone-100 dark:border-stone-800">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-teal-500 rounded" />
+                <div className="w-3 h-3 bg-[var(--c-solid)] rounded" />
                 <span className="text-sm text-stone-600 dark:text-stone-400">Skickade brev</span>
               </div>
               <div className="flex items-center gap-2">
@@ -194,7 +194,7 @@ export function CoverLetterStatistics() {
             <div className="space-y-4">
               {mockStats.topIndustries.map((industry, index) => (
                 <div key={industry.name} className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 flex items-center justify-center font-semibold text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)] flex items-center justify-center font-semibold text-sm">
                     {index + 1}
                   </div>
                   <div className="flex-1">
@@ -223,9 +223,9 @@ export function CoverLetterStatistics() {
         {/* Höger kolumn - Insights och tips */}
         <div className="space-y-6">
           {/* Insights */}
-          <Card className="p-6 bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800/50">
+          <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50">
             <div className="flex items-center gap-2 mb-4">
-              <Lightbulb className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
               <h3 className="font-semibold text-stone-800 dark:text-stone-100">Dina styrkor</h3>
             </div>
             <div className="space-y-3">
@@ -266,7 +266,7 @@ export function CoverLetterStatistics() {
               <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">brev skickade</p>
               <div className="bg-stone-100 dark:bg-stone-800 rounded-full h-3 overflow-hidden">
                 <div
-                  className="h-full bg-teal-500 rounded-full transition-all"
+                  className="h-full bg-[var(--c-solid)] rounded-full transition-all"
                   style={{ width: `${Math.min(100, (mockStats.thisMonth.sent / 5) * 100)}%` }}
                 />
               </div>
@@ -335,7 +335,7 @@ function StatCard({
 }) {
   const colors = {
     blue: { bg: 'bg-blue-50 dark:bg-blue-900/30', text: 'text-blue-600 dark:text-blue-400', icon: 'text-blue-500 dark:text-blue-400' },
-    sky: { bg: 'bg-teal-50 dark:bg-teal-900/30', text: 'text-teal-600 dark:text-teal-400', icon: 'text-teal-500 dark:text-teal-400' },
+    sky: { bg: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30', text: 'text-[var(--c-text)] dark:text-[var(--c-solid)]', icon: 'text-[var(--c-solid)] dark:text-[var(--c-solid)]' },
     emerald: { bg: 'bg-emerald-50 dark:bg-emerald-900/30', text: 'text-emerald-600 dark:text-emerald-400', icon: 'text-emerald-500 dark:text-emerald-400' },
     amber: { bg: 'bg-amber-50 dark:bg-amber-900/30', text: 'text-amber-600 dark:text-amber-400', icon: 'text-amber-500 dark:text-amber-400' },
   }

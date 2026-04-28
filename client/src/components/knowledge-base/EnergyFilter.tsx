@@ -51,7 +51,7 @@ export function EnergyFilter({ selectedLevel, onChange, articleCount }: EnergyFi
     <div className="space-y-3">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="w-full flex items-center justify-between p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors"
+        className="w-full flex items-center justify-between p-3 rounded-lg bg-stone-50 hover:bg-stone-100 transition-colors"
       >
         <div className="flex items-center gap-3">
           <div className={cn(
@@ -59,23 +59,23 @@ export function EnergyFilter({ selectedLevel, onChange, articleCount }: EnergyFi
             selectedLevel === 'low' && "bg-sky-100",
             selectedLevel === 'medium' && "bg-amber-100",
             selectedLevel === 'high' && "bg-rose-100",
-            !selectedLevel && "bg-slate-200"
+            !selectedLevel && "bg-stone-200"
           )}>
             <Zap className={cn(
               "w-5 h-5",
               selectedLevel === 'low' && "text-sky-600",
               selectedLevel === 'medium' && "text-amber-600",
               selectedLevel === 'high' && "text-rose-600",
-              !selectedLevel && "text-slate-700"
+              !selectedLevel && "text-stone-700"
             )} />
           </div>
           <div className="text-left">
-            <p className="font-medium text-slate-800">
+            <p className="font-medium text-stone-800">
               {selectedLevel 
                 ? `Filtrerat: ${energyOptions.find(e => e.level === selectedLevel)?.label}`
                 : 'Filtrera efter energinivå'}
             </p>
-            <p className="text-sm text-slate-700">
+            <p className="text-sm text-stone-700">
               {selectedLevel
                 ? `${articleCount[selectedLevel]} artiklar passar din energi`
                 : 'Anpassa innehåll efter hur du mår idag'}
@@ -83,7 +83,7 @@ export function EnergyFilter({ selectedLevel, onChange, articleCount }: EnergyFi
           </div>
         </div>
         <svg 
-          className={cn("w-5 h-5 text-slate-600 transition-transform", isExpanded && "rotate-180")}
+          className={cn("w-5 h-5 text-stone-600 transition-transform", isExpanded && "rotate-180")}
           fill="none" 
           viewBox="0 0 24 24" 
           stroke="currentColor"
@@ -99,16 +99,16 @@ export function EnergyFilter({ selectedLevel, onChange, articleCount }: EnergyFi
             className={cn(
               "w-full flex items-center gap-3 p-3 rounded-lg border transition-all",
               !selectedLevel
-                ? "bg-slate-100 border-slate-300 text-slate-800"
-                : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"
+                ? "bg-stone-100 border-stone-300 text-stone-800"
+                : "bg-white border-stone-200 text-stone-600 hover:bg-stone-50"
             )}
           >
-            <div className="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-slate-700" />
+            <div className="w-8 h-8 rounded-lg bg-stone-200 flex items-center justify-center">
+              <Zap className="w-4 h-4 text-stone-700" />
             </div>
             <div className="text-left flex-1">
               <p className="font-medium">Visa alla</p>
-              <p className="text-xs text-slate-700">
+              <p className="text-xs text-stone-700">
                 {articleCount.low + articleCount.medium + articleCount.high} artiklar
               </p>
             </div>

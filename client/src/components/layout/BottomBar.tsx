@@ -131,7 +131,7 @@ function FAQItemComponent({ item, isOpen, onToggle }: { item: FAQItem; isOpen: b
     <div className="border-b border-stone-100 dark:border-stone-800 last:border-b-0">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between py-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset rounded"
+        className="w-full flex items-center justify-between py-3 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-inset rounded"
       >
         <span className="text-sm font-medium text-stone-700 dark:text-stone-300 pr-4">
           {item.question}
@@ -179,7 +179,7 @@ export function BottomBar() {
         {/* FAQ Toggle */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="flex items-center gap-2 py-1.5 px-3 rounded-full text-[13px] text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+          className="flex items-center gap-2 py-1.5 px-3 rounded-full text-[13px] text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)]"
         >
           <HelpCircle className="w-4 h-4" />
           <span className="hidden sm:inline">{faq.title}</span>
@@ -214,7 +214,7 @@ export function BottomBar() {
           <div className="mt-3 text-center">
             <Link
               to="/help"
-              className="inline-flex items-center gap-1.5 text-[13px] text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300"
+              className="inline-flex items-center gap-1.5 text-[13px] text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-accent)]"
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Behöver du mer hjälp? Besök vår hjälpsida</span>

@@ -254,7 +254,7 @@ export default function NetworkTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)]" />
         <span className="ml-3 text-gray-600 dark:text-gray-400">{t('career.networkTab.loading')}</span>
       </div>
     )
@@ -379,12 +379,12 @@ export default function NetworkTab() {
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <Users className="w-6 h-6 text-teal-600 dark:text-teal-400 mx-auto mb-2" />
+          <Users className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
           <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{contacts.length}</p>
           <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.network.contacts')}</p>
         </Card>
         <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <MessageCircle className="w-6 h-6 text-green-600 dark:text-green-400 mx-auto mb-2" />
+          <MessageCircle className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
           <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {contacts.filter(c => c.last_contact_date && getDaysSinceContact(c.last_contact_date)! < 30).length}
           </p>
@@ -398,7 +398,7 @@ export default function NetworkTab() {
           <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.networkTab.toReconnect')}</p>
         </Card>
         <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <Calendar className="w-6 h-6 text-teal-600 dark:text-teal-400 mx-auto mb-2" />
+          <Calendar className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
           <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{needsFollowUp}</p>
           <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.networkTab.followUpThisWeek')}</p>
         </Card>
@@ -408,7 +408,7 @@ export default function NetworkTab() {
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('career.network.myNetwork')}</h3>
-          <Button size="sm" onClick={() => setIsAdding(true)} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
+          <Button size="sm" onClick={() => setIsAdding(true)} className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)]/90 dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-text)]">
             <Plus className="w-4 h-4 mr-1" />
             {t('career.network.addContact')}
           </Button>
@@ -462,7 +462,7 @@ export default function NetworkTab() {
               />
             </div>
             <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={addContact} disabled={isSaving} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
+              <Button size="sm" onClick={addContact} disabled={isSaving} className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)]/90 dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-text)]">
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t('career.network.save')}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setIsAdding(false)}>{t('career.network.cancel')}</Button>
@@ -493,12 +493,12 @@ export default function NetworkTab() {
                     ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
                     : isReminderSoon
                     ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
-                    : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600'
+                    : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]'
                 )}
               >
                 <div className="flex items-start gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
-                    <span className="text-sm font-bold text-teal-600 dark:text-teal-400">
+                  <div className="w-10 h-10 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center flex-shrink-0">
+                    <span className="text-sm font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">
                       {contact.name.charAt(0)}
                     </span>
                   </div>
@@ -577,7 +577,7 @@ export default function NetworkTab() {
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-            <Zap className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <Zap className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
             {t('career.networkTab.networkingEvents')}
           </h3>
           <Button size="sm" variant="outline" onClick={() => setIsAddingEvent(true)}>
@@ -611,7 +611,7 @@ export default function NetworkTab() {
               </div>
             </div>
             <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={addEvent} disabled={isSaving} className="bg-teal-500 hover:bg-teal-600">
+              <Button size="sm" onClick={addEvent} disabled={isSaving} className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)]/90">
                 {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t('career.network.save')}
               </Button>
               <Button size="sm" variant="ghost" onClick={() => setIsAddingEvent(false)}>{t('career.network.cancel')}</Button>
@@ -631,8 +631,8 @@ export default function NetworkTab() {
               className={cn(
                 'p-4 rounded-xl border transition-all',
                 event.is_attending
-                  ? 'bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700'
-                  : 'bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600'
+                  ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50'
+                  : 'bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]'
               )}
             >
               <div className="flex items-start justify-between mb-2">
@@ -654,7 +654,7 @@ export default function NetworkTab() {
                     size="sm"
                     variant={event.is_attending ? 'default' : 'outline'}
                     onClick={() => toggleEventAttending(event.id)}
-                    className={event.is_attending ? 'bg-teal-500' : ''}
+                    className={event.is_attending ? 'bg-[var(--c-solid)]' : ''}
                   >
                     {event.is_attending ? t('career.networkTab.attending') : t('career.networkTab.attend')}
                   </Button>
@@ -678,8 +678,8 @@ export default function NetworkTab() {
               className={cn(
                 'p-4 rounded-xl border-2 cursor-pointer transition-all',
                 selectedTemplate === template.id
-                  ? 'border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20'
-                  : 'border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600'
+                  ? 'border-[var(--c-solid)] dark:border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30'
+                  : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]'
               )}
               onClick={() => setSelectedTemplate(template.id)}
             >
@@ -692,7 +692,7 @@ export default function NetworkTab() {
                   <Button
                     size="sm"
                     onClick={() => copyToClipboard(template.text)}
-                    className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700"
+                    className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)]/90 dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-text)]"
                   >
                     <Copy className="w-4 h-4 mr-1" />
                     {copiedScript === template.text ? t('career.networkTab.copied') : t('career.networkTab.copy')}

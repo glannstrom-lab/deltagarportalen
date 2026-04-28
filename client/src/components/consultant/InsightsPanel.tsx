@@ -128,7 +128,7 @@ export function InsightsPanel({
       case 'medium':
         return 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
       case 'low':
-        return 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+        return 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)]'
     }
   }
 
@@ -142,7 +142,7 @@ export function InsightsPanel({
     return (
       <Card className="p-6">
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
+          <Loader2 className="w-6 h-6 animate-spin text-[var(--c-text)]" />
           <span className="ml-2 text-stone-600 dark:text-stone-400">Analyserar data...</span>
         </div>
       </Card>

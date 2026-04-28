@@ -38,13 +38,13 @@ export function ProgressSlider({
   const hintId = `${sliderId}-hint`
 
   const colorClasses = {
-    teal: 'accent-teal-500',
+    teal: 'accent-[var(--c-solid)]',
     amber: 'accent-amber-500',
     sky: 'accent-sky-500'
   }
 
   const valueColorClasses = {
-    teal: 'text-teal-600 dark:text-teal-400',
+    teal: 'text-[var(--c-text)] dark:text-[var(--c-solid)]',
     amber: 'text-amber-600 dark:text-amber-400',
     sky: 'text-sky-600 dark:text-sky-400'
   }
@@ -91,7 +91,7 @@ export function ProgressSlider({
         aria-describedby={hint ? hintId : undefined}
         className={cn(
           'w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer',
-          'focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:ring-offset-2',
+          'focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/30 focus:ring-offset-2',
           colorClasses[colorScheme],
           disabled && 'opacity-50 cursor-not-allowed'
         )}

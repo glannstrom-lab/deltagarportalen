@@ -711,7 +711,7 @@ export function OverviewTab() {
                       <span className="text-sm text-stone-600 dark:text-stone-400">{cat.category}</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-teal-600 rounded-full transition-all"
+                          className="h-full bg-[var(--c-solid)] rounded-full transition-all"
                           style={{ width: `${cat.percentage}%` }}
                         />
                       </div>
@@ -722,19 +722,19 @@ export function OverviewTab() {
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-stone-600 dark:text-stone-400">{t('consultant.overview.goalCategories.cvImprovement')}</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-teal-600 rounded-full" style={{ width: '75%' }} />
+                        <div className="h-full bg-[var(--c-solid)] rounded-full" style={{ width: '75%' }} />
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-stone-600 dark:text-stone-400">{t('consultant.overview.goalCategories.jobApplications')}</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-teal-600 rounded-full" style={{ width: '60%' }} />
+                        <div className="h-full bg-[var(--c-solid)] rounded-full" style={{ width: '60%' }} />
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-stone-600 dark:text-stone-400">{t('consultant.overview.goalCategories.interviewTraining')}</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                        <div className="h-full bg-teal-600 rounded-full" style={{ width: '45%' }} />
+                        <div className="h-full bg-[var(--c-solid)] rounded-full" style={{ width: '45%' }} />
                       </div>
                     </div>
                   </>

@@ -80,28 +80,28 @@ export class ErrorBoundary extends Component<Props, State> {
 
       // Default error UI
       return (
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="min-h-screen bg-stone-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-lg w-full p-8 text-center">
             <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <AlertTriangle className="w-10 h-10 text-red-600" />
             </div>
             
-            <h1 className="text-2xl font-bold text-slate-800 mb-2">
+            <h1 className="text-2xl font-bold text-stone-800 mb-2">
               Något gick fel
             </h1>
             
-            <p className="text-slate-600 mb-6">
+            <p className="text-stone-600 mb-6">
               Vi ber om ursäkt, men något oväntat händer. 
               Du kan försöka ladda om sidan eller gå tillbaka till startsidan.
             </p>
 
             {import.meta.env.DEV && this.state.error && (
-              <div className="bg-slate-100 rounded-xl p-4 mb-6 text-left overflow-auto">
+              <div className="bg-stone-100 rounded-xl p-4 mb-6 text-left overflow-auto">
                 <p className="text-sm font-mono text-red-600 mb-2">
                   {this.state.error.toString()}
                 </p>
                 {this.state.errorInfo && (
-                  <pre className="text-xs text-slate-600 overflow-auto">
+                  <pre className="text-xs text-stone-600 overflow-auto">
                     {this.state.errorInfo.componentStack}
                   </pre>
                 )}
@@ -111,7 +111,7 @@ export class ErrorBoundary extends Component<Props, State> {
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={this.handleReload}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] transition-colors"
               >
                 <RefreshCw className="w-4 h-4" />
                 Ladda om sidan
@@ -120,14 +120,14 @@ export class ErrorBoundary extends Component<Props, State> {
               <Link
                 to="/"
                 onClick={this.handleReset}
-                className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-slate-700 border border-slate-200 rounded-xl font-medium hover:bg-slate-50 transition-colors"
+                className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-stone-700 border border-stone-200 rounded-xl font-medium hover:bg-stone-50 transition-colors"
               >
                 <Home className="w-4 h-4" />
                 Till startsidan
               </Link>
             </div>
 
-            <p className="text-xs text-slate-600 mt-6">
+            <p className="text-xs text-stone-600 mt-6">
               Om problemet kvarstår, kontakta support.
             </p>
           </div>

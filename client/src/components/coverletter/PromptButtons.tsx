@@ -41,11 +41,11 @@ const emotionColors: Record<string, string> = {
   positiv: 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100',
   nyfiken: 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100',
   engagerad: 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100',
-  professionell: 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100',
-  intresse: 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100',
+  professionell: 'bg-stone-50 text-stone-700 border-stone-200 hover:bg-stone-100',
+  intresse: 'bg-[var(--c-bg)] text-[var(--c-text)] border-[var(--c-accent)]/60 hover:bg-[var(--c-accent)]/40',
   värderingar: 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100',
   utveckling: 'bg-cyan-50 text-cyan-700 border-cyan-200 hover:bg-cyan-100',
-  arbetsplats: 'bg-teal-50 text-teal-700 border-teal-200 hover:bg-teal-100',
+  arbetsplats: 'bg-[var(--c-bg)] text-[var(--c-text)] border-[var(--c-accent)]/60 hover:bg-[var(--c-accent)]/40',
   erfarenhet: 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100',
   kompetens: 'bg-sky-50 text-sky-700 border-sky-200 hover:bg-sky-100',
   lärdomar: 'bg-orange-50 text-orange-700 border-orange-200 hover:bg-orange-100',
@@ -68,7 +68,7 @@ export function PromptButtons({ onSelect, type }: PromptButtonsProps) {
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-slate-700 font-medium">
+      <p className="text-xs text-stone-700 font-medium">
         {type === 'opening' && 'Välj en inledning:'}
         {type === 'motivation' && 'Välj vad som motiverar dig:'}
         {type === 'experience' && 'Välj hur du beskriver erfarenhet:'}
@@ -117,7 +117,7 @@ export function QuickPhrases({ onSelect }: { onSelect: (text: string) => void })
         <button
           key={index}
           onClick={() => onSelect(phrase)}
-          className="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs rounded-full transition-colors"
+          className="px-2.5 py-1 bg-stone-100 hover:bg-stone-200 text-stone-600 text-xs rounded-full transition-colors"
         >
           {phrase}
         </button>

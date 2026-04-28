@@ -25,7 +25,7 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
       descriptionKey: 'knowledgeBase.quickHelp.actions.cv.description',
       icon: FileText,
       link: '/cv',
-      color: 'bg-teal-50 text-teal-700 border-teal-200',
+      color: 'bg-[var(--c-bg)] text-[var(--c-text)] border-[var(--c-accent)]/60',
     },
     {
       id: 'cover-letter',
@@ -85,10 +85,10 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
             <AlertCircle className="w-6 h-6 text-rose-600" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-stone-900">
               {t('knowledgeBase.quickHelp.title')}
             </h2>
-            <p className="text-slate-600 mt-1">
+            <p className="text-stone-600 mt-1">
               {t('knowledgeBase.quickHelp.description')}
             </p>
           </div>
@@ -97,7 +97,7 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
 
       {/* Quick actions - link to real app features */}
       <section>
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+        <h3 className="text-lg font-semibold text-stone-900 mb-4">
           {t('knowledgeBase.quickHelp.quickActions')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -132,21 +132,21 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
 
       {/* Quick checklists */}
       <section>
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+        <h3 className="text-lg font-semibold text-stone-900 mb-4">
           {t('knowledgeBase.quickHelp.checklists.title')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {quickChecklists.map((checklist) => (
-            <Card key={checklist.titleKey} className="bg-slate-50">
-              <h4 className="font-semibold text-slate-800 mb-3">
+            <Card key={checklist.titleKey} className="bg-stone-50">
+              <h4 className="font-semibold text-stone-800 mb-3">
                 {t(checklist.titleKey)}
               </h4>
               <ul className="space-y-2">
                 {checklist.items.map((itemKey, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
+                  <li key={i} className="flex items-start gap-2 text-sm text-stone-600">
                     <input
                       type="checkbox"
-                      className="mt-1 rounded border-slate-300"
+                      className="mt-1 rounded border-stone-300"
                     />
                     <span>{t(itemKey)}</span>
                   </li>
@@ -160,7 +160,7 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
       {/* Related articles from database */}
       {articles.length > 0 && (
         <section>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">
+          <h3 className="text-lg font-semibold text-stone-900 mb-4">
             {t('knowledgeBase.quickHelp.relatedArticles')}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -171,14 +171,14 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
                 className="block"
               >
                 <Card className="hover:shadow-md transition-shadow h-full">
-                  <h4 className="font-medium text-slate-900 hover:text-teal-600">
+                  <h4 className="font-medium text-stone-900 hover:text-[var(--c-text)]">
                     {article.title}
                   </h4>
-                  <p className="text-sm text-slate-600 mt-1 line-clamp-2">
+                  <p className="text-sm text-stone-600 mt-1 line-clamp-2">
                     {article.summary}
                   </p>
                   {article.readingTime && (
-                    <div className="flex items-center gap-2 mt-3 text-xs text-slate-700">
+                    <div className="flex items-center gap-2 mt-3 text-xs text-stone-700">
                       <Clock className="w-3 h-3" />
                       <span>{article.readingTime} min</span>
                     </div>
@@ -197,10 +197,10 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
             <Phone className="w-6 h-6 text-sky-600" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-900">
+            <h3 className="font-bold text-stone-900">
               {t('knowledgeBase.quickHelp.needSupport.title')}
             </h3>
-            <p className="text-slate-600 mt-1 text-sm">
+            <p className="text-stone-600 mt-1 text-sm">
               {t('knowledgeBase.quickHelp.needSupport.description')}
             </p>
             <Link

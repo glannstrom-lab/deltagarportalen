@@ -198,15 +198,15 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
   const totalCount = userBadges.length
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 p-6">
+    <div className="bg-white rounded-2xl border border-stone-200 p-6">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+          <h2 className="text-xl font-bold text-stone-800 flex items-center gap-2">
             <Trophy className="text-amber-500" size={24} />
             Dina Badges
           </h2>
-          <p className="text-slate-700">
+          <p className="text-stone-700">
             {unlockedCount} av {totalCount} upplåsta
           </p>
         </div>
@@ -222,8 +222,8 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
             className={cn(
               "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
               filter === cat
-                ? 'bg-teal-100 text-teal-700'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
+                : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
             )}
           >
             {cat === 'all' ? 'Alla' : 
@@ -247,25 +247,25 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
               "relative aspect-square rounded-2xl border-2 transition-all flex flex-col items-center justify-center p-3",
               badge.isUnlocked
                 ? getTierStyles(badge.tier)
-                : 'bg-slate-50 border-slate-200 opacity-60'
+                : 'bg-stone-50 border-stone-200 opacity-60'
             )}
           >
             {/* Badge Icon */}
             <div className={cn(
               "w-12 h-12 rounded-full flex items-center justify-center mb-2",
-              badge.isUnlocked ? 'bg-white/80' : 'bg-slate-200'
+              badge.isUnlocked ? 'bg-white/80' : 'bg-stone-200'
             )}>
               {badge.isUnlocked ? (
                 badge.icon
               ) : (
-                <Lock size={20} className="text-slate-600" />
+                <Lock size={20} className="text-stone-600" />
               )}
             </div>
 
             {/* Badge Name */}
             <p className={cn(
               "text-xs font-medium text-center line-clamp-2",
-              badge.isUnlocked ? 'text-slate-800' : 'text-slate-600'
+              badge.isUnlocked ? 'text-stone-800' : 'text-stone-600'
             )}>
               {badge.name}
             </p>
@@ -273,13 +273,13 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
             {/* Progress indicator for locked badges */}
             {!badge.isUnlocked && badge.progress !== undefined && (
               <div className="absolute bottom-2 left-2 right-2">
-                <div className="h-1 bg-slate-200 rounded-full overflow-hidden">
+                <div className="h-1 bg-stone-200 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-slate-400 rounded-full"
+                    className="h-full bg-stone-400 rounded-full"
                     style={{ width: `${(badge.progress / (badge.total || 1)) * 100}%` }}
                   />
                 </div>
-                <p className="text-xs text-slate-600 text-center mt-0.5">
+                <p className="text-xs text-stone-600 text-center mt-0.5">
                   {badge.progress}/{badge.total}
                 </p>
               </div>
@@ -316,8 +316,8 @@ function ProgressBadge({ unlocked, total }: { unlocked: number; total: number })
   return (
     <div className="flex items-center gap-3">
       <div className="text-right">
-        <p className="text-2xl font-bold text-slate-800">{percentage}%</p>
-        <p className="text-xs text-slate-700">Komplett</p>
+        <p className="text-2xl font-bold text-stone-800">{percentage}%</p>
+        <p className="text-xs text-stone-700">Komplett</p>
       </div>
       <div className="w-12 h-12 relative">
         <svg className="w-12 h-12 transform -rotate-90">
@@ -341,7 +341,7 @@ function ProgressBadge({ unlocked, total }: { unlocked: number; total: number })
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <Trophy size={16} className="text-teal-600" />
+          <Trophy size={16} className="text-[var(--c-text)]" />
         </div>
       </div>
     </div>
@@ -380,18 +380,18 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
           <div className={cn(
             "absolute inset-0 opacity-10",
             badge.tier === 'bronze' ? 'bg-amber-500' :
-            badge.tier === 'silver' ? 'bg-slate-400' :
+            badge.tier === 'silver' ? 'bg-stone-400' :
             badge.tier === 'gold' ? 'bg-yellow-400' :
-            'bg-teal-500'
+            'bg-[var(--c-solid)]'
           )} />
         )}
 
         {/* Close button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center"
         >
-          <X size={18} className="text-slate-600" />
+          <X size={18} className="text-stone-600" />
         </button>
 
         {/* Badge Icon */}
@@ -403,29 +403,29 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
             "w-24 h-24 rounded-full mx-auto mb-6 flex items-center justify-center",
             badge.isUnlocked 
               ? getTierStyles(badge.tier).replace('border-2', '')
-              : 'bg-slate-100'
+              : 'bg-stone-100'
           )}
         >
           {badge.isUnlocked ? (
             <div className="text-4xl">{badge.icon}</div>
           ) : (
-            <Lock size={32} className="text-slate-600" />
+            <Lock size={32} className="text-stone-600" />
           )}
         </motion.div>
 
         {/* Badge Info */}
-        <h3 className="text-xl font-bold text-slate-800 mb-1">{badge.name}</h3>
+        <h3 className="text-xl font-bold text-stone-800 mb-1">{badge.name}</h3>
         <p className={cn(
           "text-sm font-medium mb-4",
           badge.tier === 'bronze' ? 'text-amber-600' :
-          badge.tier === 'silver' ? 'text-slate-700' :
+          badge.tier === 'silver' ? 'text-stone-700' :
           badge.tier === 'gold' ? 'text-yellow-600' :
-          'text-teal-600'
+          'text-[var(--c-text)]'
         )}>
           {tierNames[badge.tier]}-nivå
         </p>
 
-        <p className="text-slate-600 mb-4">{badge.description}</p>
+        <p className="text-stone-600 mb-4">{badge.description}</p>
 
         {/* Progress or Unlocked Date */}
         {badge.isUnlocked ? (
@@ -436,18 +436,18 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
             </p>
           </div>
         ) : (
-          <div className="p-3 bg-slate-50 rounded-xl mb-4">
-            <p className="text-sm text-slate-600 mb-2">Krav: {badge.requirement}</p>
+          <div className="p-3 bg-stone-50 rounded-xl mb-4">
+            <p className="text-sm text-stone-600 mb-2">Krav: {badge.requirement}</p>
             {badge.progress !== undefined && (
               <div>
-                <div className="h-2 bg-slate-200 rounded-full overflow-hidden mb-1">
+                <div className="h-2 bg-stone-200 rounded-full overflow-hidden mb-1">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(badge.progress / (badge.total || 1)) * 100}%` }}
-                    className="h-full bg-teal-500 rounded-full"
+                    className="h-full bg-[var(--c-solid)] rounded-full"
                   />
                 </div>
-                <p className="text-xs text-slate-700">
+                <p className="text-xs text-stone-700">
                   {badge.progress} av {badge.total} ({Math.round((badge.progress / (badge.total || 1)) * 100)}%)
                 </p>
               </div>
@@ -476,13 +476,13 @@ function getTierStyles(tier: BadgeTier): string {
     case 'bronze':
       return 'bg-amber-50 border-amber-300 text-amber-700'
     case 'silver':
-      return 'bg-slate-50 border-slate-300 text-slate-700'
+      return 'bg-stone-50 border-stone-300 text-stone-700'
     case 'gold':
       return 'bg-yellow-50 border-yellow-300 text-yellow-700'
     case 'platinum':
-      return 'bg-teal-50 border-teal-300 text-teal-700'
+      return 'bg-[var(--c-bg)] border-[var(--c-accent)] text-[var(--c-text)]'
     default:
-      return 'bg-slate-50 border-slate-200 text-slate-700'
+      return 'bg-stone-50 border-stone-200 text-stone-700'
   }
 }
 

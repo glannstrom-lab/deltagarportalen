@@ -41,7 +41,7 @@ export function AutoSaveIndicator({
               ? 'bg-green-50 text-green-700' 
               : status === 'saving'
               ? 'bg-amber-50 text-amber-700'
-              : 'bg-slate-50 text-slate-700'
+              : 'bg-stone-50 text-stone-700'
           }`}
           aria-live="polite"
         >
@@ -66,7 +66,7 @@ export function AutoSaveIndicator({
         {hasRestoredData && onRestore && (
           <button
             onClick={() => setShowRestoreConfirm(true)}
-            className="text-xs text-teal-600 hover:text-teal-700 flex items-center gap-1"
+            className="text-xs text-[var(--c-text)] hover:text-[var(--c-text)] flex items-center gap-1"
             aria-label="Återställ tidigare sparad data"
           >
             <RotateCcw className="w-3 h-3" />
@@ -77,7 +77,7 @@ export function AutoSaveIndicator({
         {showRestoreConfirm && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl p-4 max-w-sm mx-4">
-              <p className="text-sm text-slate-700 mb-3">
+              <p className="text-sm text-stone-700 mb-3">
                 Vill du återställa till senast sparad version?
               </p>
               <div className="flex gap-2">
@@ -86,13 +86,13 @@ export function AutoSaveIndicator({
                     if (onRestore) onRestore()
                     setShowRestoreConfirm(false)
                   }}
-                  className="flex-1 px-3 py-2 bg-teal-600 text-white rounded-lg text-sm hover:bg-teal-700"
+                  className="flex-1 px-3 py-2 bg-[var(--c-solid)] text-white rounded-lg text-sm hover:bg-[var(--c-text)]"
                 >
                   Ja, återställ
                 </button>
                 <button
                   onClick={() => setShowRestoreConfirm(false)}
-                  className="flex-1 px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-sm hover:bg-slate-200"
+                  className="flex-1 px-3 py-2 bg-stone-100 text-stone-700 rounded-lg text-sm hover:bg-stone-200"
                 >
                   Avbryt
                 </button>
@@ -107,7 +107,7 @@ export function AutoSaveIndicator({
   // Full version
   return (
     <div 
-      className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg"
+      className="flex items-center gap-3 p-3 bg-stone-50 rounded-lg"
       aria-live="polite"
     >
       <div className={`p-2 rounded-full ${
@@ -127,14 +127,14 @@ export function AutoSaveIndicator({
       </div>
       
       <div className="flex-1">
-        <p className="text-sm font-medium text-slate-700">
+        <p className="text-sm font-medium text-stone-700">
           {status === 'saving' && 'Sparar ändringar...'}
           {status === 'saved' && 'Allt sparat automatiskt'}
           {status === 'unsaved' && 'Ej sparat'}
           {status === 'error' && 'Kunde inte spara'}
         </p>
         {lastSaved && status === 'saved' && (
-          <p className="text-xs text-slate-700">
+          <p className="text-xs text-stone-700">
             Senast sparad: {formatLastSaved(lastSaved)}
           </p>
         )}
@@ -143,7 +143,7 @@ export function AutoSaveIndicator({
       {hasRestoredData && onRestore && (
         <button
           onClick={() => setShowRestoreConfirm(true)}
-          className="flex items-center gap-1 px-3 py-1.5 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+          className="flex items-center gap-1 px-3 py-1.5 text-sm text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg transition-colors"
         >
           <RotateCcw className="w-4 h-4" />
           Återställ

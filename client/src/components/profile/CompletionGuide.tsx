@@ -147,24 +147,24 @@ export function CompletionGuide({
   return (
     <div className={cn('space-y-4', className)}>
       {/* Progress overview */}
-      <div className="p-4 bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-xl border border-teal-200 dark:border-teal-800/50">
+      <div className="p-4 bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50">
         <div className="flex items-center justify-between mb-3">
-          <span className="font-semibold text-teal-800 dark:text-teal-300">
+          <span className="font-semibold text-[var(--c-text)] dark:text-[var(--c-accent)]">
             {t('profile.completionGuide.title')}
           </span>
-          <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">
+          <span className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
             {completionPercent}%
           </span>
         </div>
 
-        <div className="h-2 bg-teal-200 dark:bg-teal-900 rounded-full overflow-hidden">
+        <div className="h-2 bg-[var(--c-accent)]/60 dark:bg-[var(--c-bg)] rounded-full overflow-hidden">
           <div
-            className="h-full bg-teal-500 dark:bg-teal-400 rounded-full transition-all duration-500"
+            className="h-full bg-[var(--c-solid)] dark:bg-[var(--c-solid)]/80 rounded-full transition-all duration-500"
             style={{ width: `${completionPercent}%` }}
           />
         </div>
 
-        <p className="text-xs text-teal-600 dark:text-teal-400 mt-2">
+        <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] mt-2">
           {t('profile.completionGuide.stepsComplete', { completed: completedCount, total: totalCount })}
         </p>
       </div>
@@ -228,7 +228,7 @@ export function CompletionGuide({
             {!item.completed && item.link && (
               <Link
                 to={item.link}
-                className="p-2 text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/40 rounded-lg transition-colors"
+                className="p-2 text-[var(--c-solid)] hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/40 rounded-lg transition-colors"
               >
                 <ChevronRight className="w-4 h-4" />
               </Link>

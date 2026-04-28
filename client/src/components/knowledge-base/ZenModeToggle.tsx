@@ -30,8 +30,8 @@ export function ZenModeToggle({ isZenMode, onToggle }: ZenModeToggleProps) {
         className={cn(
           "flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all",
           isZenMode
-            ? "bg-teal-100 text-teal-800 border border-teal-200"
-            : "bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200"
+            ? "bg-[var(--c-accent)]/40 text-[var(--c-text)] border border-[var(--c-accent)]/60"
+            : "bg-stone-100 text-stone-700 border border-stone-200 hover:bg-stone-200"
         )}
       >
         {isZenMode ? (
@@ -48,7 +48,7 @@ export function ZenModeToggle({ isZenMode, onToggle }: ZenModeToggleProps) {
       </button>
       
       {showTooltip && !isZenMode && (
-        <div className="absolute top-full left-0 mt-2 w-64 p-3 bg-slate-800 text-white text-sm rounded-lg shadow-lg z-50">
+        <div className="absolute top-full left-0 mt-2 w-64 p-3 bg-stone-800 text-white text-sm rounded-lg shadow-lg z-50">
           <div className="flex items-start gap-2">
             <Info className="w-4 h-4 mt-0.5 shrink-0" />
             <p>
@@ -56,7 +56,7 @@ export function ZenModeToggle({ isZenMode, onToggle }: ZenModeToggleProps) {
               Perfekt när du behöver fokusera eller har låg energi.
             </p>
           </div>
-          <div className="absolute -top-1 left-6 w-2 h-2 bg-slate-800 rotate-45" />
+          <div className="absolute -top-1 left-6 w-2 h-2 bg-stone-800 rotate-45" />
         </div>
       )}
     </div>
@@ -78,16 +78,16 @@ export function ZenArticleCard({ article, onClick }: ZenArticleCardProps) {
   return (
     <button
       onClick={onClick}
-      className="w-full text-left p-4 bg-white rounded-xl border border-slate-100 hover:border-teal-200 hover:bg-teal-50/30 transition-all group"
+      className="w-full text-left p-4 bg-white rounded-xl border border-stone-100 hover:border-[var(--c-accent)]/60 hover:bg-[var(--c-bg)]/30 transition-all group"
     >
-      <h3 className="font-medium text-slate-800 group-hover:text-teal-800 text-lg mb-2">
+      <h3 className="font-medium text-stone-800 group-hover:text-[var(--c-text)] text-lg mb-2">
         {article.title}
       </h3>
-      <p className="text-slate-600 text-sm leading-relaxed mb-3">
+      <p className="text-stone-600 text-sm leading-relaxed mb-3">
         {article.summary}
       </p>
       {article.readingTime && (
-        <span className="text-xs text-slate-600">
+        <span className="text-xs text-stone-600">
           {article.readingTime} min läsning
         </span>
       )}
@@ -103,10 +103,10 @@ interface ZenLayoutProps {
 
 export function ZenLayout({ children, title }: ZenLayoutProps) {
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-stone-50">
       <div className="max-w-2xl mx-auto px-4 py-8">
         {title && (
-          <h1 className="text-2xl font-bold text-slate-800 mb-8 text-center">
+          <h1 className="text-2xl font-bold text-stone-800 mb-8 text-center">
             {title}
           </h1>
         )}

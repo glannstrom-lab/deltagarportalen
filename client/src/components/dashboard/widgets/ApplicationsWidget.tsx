@@ -60,9 +60,9 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
       <div className="flex items-center gap-2">
         <div className="flex items-center gap-1.5">
           <Trophy size={14} className="text-orange-500" />
-          <span className="text-lg font-bold text-slate-800 dark:text-stone-100">{total}</span>
+          <span className="text-lg font-bold text-stone-800 dark:text-stone-100">{total}</span>
         </div>
-        <span className="text-xs text-slate-700 dark:text-stone-300">
+        <span className="text-xs text-stone-700 dark:text-stone-300">
           {t('applicationsWidget.applicationsCount', { count: total })}
         </span>
       </div>
@@ -127,14 +127,14 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
               <Trophy size={24} className="text-orange-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-800 dark:text-stone-100">{total}</p>
-              <p className="text-xs text-slate-700 dark:text-stone-300">{t('applicationsWidget.total')}</p>
+              <p className="text-2xl font-bold text-stone-800 dark:text-stone-100">{total}</p>
+              <p className="text-xs text-stone-700 dark:text-stone-300">{t('applicationsWidget.total')}</p>
             </div>
           </div>
           {responseRate > 0 && (
             <div className="text-right">
               <p className="text-lg font-semibold text-emerald-600">{responseRate}%</p>
-              <p className="text-xs text-slate-700 dark:text-stone-300">{t('applicationsWidget.responseRate')}</p>
+              <p className="text-xs text-stone-700 dark:text-stone-300">{t('applicationsWidget.responseRate')}</p>
             </div>
           )}
         </div>
@@ -251,10 +251,10 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
             <p className="text-xl font-bold text-emerald-700">{offer}</p>
             <p className="text-xs text-emerald-600">{t('applicationsWidget.pipeline.offers')}</p>
           </div>
-          <div className="p-3 bg-slate-100 rounded-xl text-center">
-            <XCircle size={20} className="text-slate-700 dark:text-stone-300 mx-auto mb-1" />
-            <p className="text-xl font-bold text-slate-700 dark:text-stone-300">{rejected}</p>
-            <p className="text-xs text-slate-600">{t('applicationsWidget.pipeline.rejected')}</p>
+          <div className="p-3 bg-stone-100 rounded-xl text-center">
+            <XCircle size={20} className="text-stone-700 dark:text-stone-300 mx-auto mb-1" />
+            <p className="text-xl font-bold text-stone-700 dark:text-stone-300">{rejected}</p>
+            <p className="text-xs text-stone-600">{t('applicationsWidget.pipeline.rejected')}</p>
           </div>
         </div>
 
@@ -262,8 +262,8 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
         {total > 0 && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">{t('applicationsWidget.yourPipeline')}</span>
-              <span className="font-medium text-slate-800 dark:text-stone-100">{t('applicationsWidget.responseRatePercent', { rate: responseRate })}</span>
+              <span className="text-stone-600">{t('applicationsWidget.yourPipeline')}</span>
+              <span className="font-medium text-stone-800 dark:text-stone-100">{t('applicationsWidget.responseRatePercent', { rate: responseRate })}</span>
             </div>
             <div className="flex h-3 rounded-full overflow-hidden">
               {applied > 0 && (
@@ -276,7 +276,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
                 <div className="bg-emerald-400" style={{ width: `${(offer / total) * 100}%` }} />
               )}
               {rejected > 0 && (
-                <div className="bg-slate-300" style={{ width: `${(rejected / total) * 100}%` }} />
+                <div className="bg-stone-300" style={{ width: `${(rejected / total) * 100}%` }} />
               )}
             </div>
           </div>
@@ -300,8 +300,8 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
             </div>
           </div>
         ) : total > 0 ? (
-          <div className="p-4 bg-slate-50 rounded-xl">
-            <div className="flex items-center gap-2 text-slate-600">
+          <div className="p-4 bg-stone-50 rounded-xl">
+            <div className="flex items-center gap-2 text-stone-600">
               <CheckCircle2 size={18} className="text-emerald-500" />
               <p className="text-sm">{t('applicationsWidget.noUpcomingFollowUps')}</p>
             </div>

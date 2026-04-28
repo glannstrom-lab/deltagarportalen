@@ -156,9 +156,9 @@ export function SuccessProvider({ children }: { children: ReactNode }) {
       case 'streak':
         return 'bg-gradient-to-r from-orange-100 to-red-100 border-orange-300 text-orange-900'
       case 'milestone':
-        return 'bg-gradient-to-r from-teal-100 to-sky-100 border-teal-300 text-teal-900'
+        return 'bg-gradient-to-r from-[var(--c-accent)]/40 to-sky-100 border-[var(--c-accent)] text-[var(--c-text)]'
       default:
-        return 'bg-gradient-to-r from-emerald-100 to-teal-100 border-emerald-300 text-emerald-900'
+        return 'bg-gradient-to-r from-emerald-100 to-[var(--c-accent)]/40 border-emerald-300 text-emerald-900'
     }
   }
 
@@ -169,7 +169,7 @@ export function SuccessProvider({ children }: { children: ReactNode }) {
       case 'streak':
         return <Flame className="w-5 h-5 text-orange-600" />
       case 'milestone':
-        return <Star className="w-5 h-5 text-teal-600" />
+        return <Star className="w-5 h-5 text-[var(--c-text)]" />
       default:
         return <CheckCircle2 className="w-5 h-5 text-emerald-600" />
     }
@@ -298,15 +298,15 @@ export function CelebrationOverlay({
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="w-24 h-24 rounded-full bg-gradient-to-br from-teal-400 to-pink-400 flex items-center justify-center mx-auto mb-6"
+              className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--c-solid)]/80 to-pink-400 flex items-center justify-center mx-auto mb-6"
             >
               <span className="text-5xl">{emoji}</span>
             </motion.div>
-            <h2 className="text-2xl font-bold text-slate-800 mb-2">{title}</h2>
-            <p className="text-slate-600 mb-6">{message}</p>
+            <h2 className="text-2xl font-bold text-stone-800 mb-2">{title}</h2>
+            <p className="text-stone-600 mb-6">{message}</p>
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-teal-500 to-sky-600 text-white font-semibold hover:shadow-lg transition-shadow"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--c-solid)] to-sky-600 text-white font-semibold hover:shadow-lg transition-shadow"
             >
               Fortsätt! 🚀
             </button>

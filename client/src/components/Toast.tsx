@@ -36,7 +36,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
     error: <XCircle className="w-5 h-5 text-red-500" />,
     warning: <AlertCircle className="w-5 h-5 text-amber-500" />,
     info: <Info className="w-5 h-5 text-blue-500" />,
-    loading: <Loader2 className="w-5 h-5 text-teal-500 animate-spin" />
+    loading: <Loader2 className="w-5 h-5 text-[var(--c-solid)] animate-spin" />
   }
 
   const styles = {
@@ -44,7 +44,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
     error: 'border-l-4 border-red-500 bg-white',
     warning: 'border-l-4 border-amber-500 bg-white',
     info: 'border-l-4 border-blue-500 bg-white',
-    loading: 'border-l-4 border-teal-500 bg-white'
+    loading: 'border-l-4 border-[var(--c-solid)] bg-white'
   }
 
   useEffect(() => {
@@ -96,9 +96,9 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
 
       {/* Content */}
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-slate-900">{toast.title}</p>
+        <p className="font-semibold text-stone-900">{toast.title}</p>
         {toast.message && (
-          <p className="text-sm text-slate-600 mt-1">{toast.message}</p>
+          <p className="text-sm text-stone-600 mt-1">{toast.message}</p>
         )}
         
         {/* Action button */}
@@ -108,7 +108,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
               toast.action?.onClick()
               handleRemove()
             }}
-            className="mt-2 text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors"
+            className="mt-2 text-sm font-medium text-[var(--c-text)] hover:text-[var(--c-text)] transition-colors"
           >
             {toast.action.label}
           </button>
@@ -119,14 +119,14 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       <button
         onClick={handleRemove}
         aria-label="Stäng meddelande"
-        className="flex-shrink-0 p-1 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+        className="flex-shrink-0 p-1 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded transition-colors"
       >
         <X className="w-4 h-4" aria-hidden="true" />
       </button>
 
       {/* Progress bar */}
       {toast.type !== 'loading' && toast.duration !== Infinity && (
-        <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-100 rounded-b-xl overflow-hidden">
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-stone-100 rounded-b-xl overflow-hidden">
           <div 
             className="h-full bg-current opacity-20 transition-all duration-100"
             style={{ width: `${progress}%` }}

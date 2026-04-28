@@ -96,7 +96,7 @@ export function ProfileHistory({ className }: Props) {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
-        <Loader2 className="w-6 h-6 text-teal-500 animate-spin" />
+        <Loader2 className="w-6 h-6 text-[var(--c-solid)] animate-spin" />
       </div>
     )
   }

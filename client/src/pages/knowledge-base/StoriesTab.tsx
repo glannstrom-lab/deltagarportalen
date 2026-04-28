@@ -66,7 +66,7 @@ const stories: Story[] = [
     id: '3',
     name: 'Sofia, 28',
     avatar: 'S',
-    avatarColor: 'from-emerald-400 to-teal-400',
+    avatarColor: 'from-emerald-400 to-[var(--c-solid)]/80',
     occupation: 'Sjuksköterska',
     background: 'Nyexaminerad med osäkerhet',
     category: 'Nyexaminerad',
@@ -146,7 +146,7 @@ export default function StoriesTab() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Card className="p-6 bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50 dark:from-teal-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800">
+        <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] via-cyan-50 to-sky-50 dark:from-[var(--c-bg)]/30 dark:via-cyan-900/20 dark:to-sky-900/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
           <div className="flex items-start gap-4">
             <motion.div
               initial={{ scale: 0 }}
@@ -154,7 +154,7 @@ export default function StoriesTab() {
               transition={{ type: 'spring', delay: 0.1 }}
               className="w-14 h-14 bg-white dark:bg-stone-700 rounded-2xl flex items-center justify-center shadow-md"
             >
-              <Quote className="w-7 h-7 text-teal-600 dark:text-teal-400" />
+              <Quote className="w-7 h-7 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             </motion.div>
             <div>
               <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Framgångsberättelser</h3>
@@ -173,9 +173,9 @@ export default function StoriesTab() {
         transition={{ delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-4 gap-4"
       >
-        <Card className="p-4 bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 border-teal-200 dark:border-teal-800">
-          <p className="text-3xl font-bold text-teal-600 dark:text-teal-400">127</p>
-          <p className="text-xs text-teal-700 dark:text-teal-300 mt-1">Berättelser</p>
+        <Card className="p-4 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-accent)]/40 dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+          <p className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">127</p>
+          <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-accent)] mt-1">Berättelser</p>
         </Card>
         <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
           <p className="text-3xl font-bold text-green-600 dark:text-green-400">89%</p>
@@ -212,7 +212,7 @@ export default function StoriesTab() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-4 py-2 border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 cursor-pointer"
+            className="px-4 py-2 border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-[var(--c-solid)] cursor-pointer"
           >
             <option value="recent">Senaste först</option>
             <option value="popular">Mest sedda</option>
@@ -229,7 +229,7 @@ export default function StoriesTab() {
               className={cn(
                 'px-4 py-2 rounded-full text-sm font-medium transition-all',
                 selectedCategory === cat
-                  ? 'bg-teal-600 dark:bg-teal-700 text-white shadow-md'
+                  ? 'bg-[var(--c-solid)] dark:bg-[var(--c-text)] text-white shadow-md'
                   : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-200 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
@@ -241,7 +241,7 @@ export default function StoriesTab() {
         {/* Results count */}
         {searchQuery || selectedCategory !== 'Alla' ? (
           <p className="text-sm text-gray-600 dark:text-gray-300">
-            Visar <span className="font-semibold text-teal-600 dark:text-teal-400">{filteredStories.length}</span> av{' '}
+            Visar <span className="font-semibold text-[var(--c-text)] dark:text-[var(--c-solid)]">{filteredStories.length}</span> av{' '}
             <span className="font-semibold">{stories.length}</span> berättelser
           </p>
         ) : null}
@@ -253,21 +253,21 @@ export default function StoriesTab() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <Card className="p-6 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border-teal-200 dark:border-teal-800">
+        <Card className="p-6 bg-gradient-to-r from-[var(--c-bg)] to-cyan-50 dark:from-[var(--c-bg)]/30 dark:to-cyan-900/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 className="w-12 h-12 bg-white dark:bg-stone-700 rounded-xl flex items-center justify-center shadow-sm"
               >
-                <Users className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+                <Users className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
               </motion.div>
               <div>
                 <h4 className="font-semibold text-gray-800 dark:text-gray-100">Hitta en mentor</h4>
                 <p className="text-sm text-gray-600 dark:text-gray-300">Matchas med någon som har liknande bakgrund</p>
               </div>
             </div>
-            <Button className="gap-2 bg-teal-600 dark:bg-teal-700 hover:bg-teal-700 dark:hover:bg-teal-600">
+            <Button className="gap-2 bg-[var(--c-solid)] dark:bg-[var(--c-text)] hover:bg-[var(--c-text)] dark:hover:bg-[var(--c-solid)]">
               Hitta matchning
               <ChevronRight className="w-4 h-4" />
             </Button>
@@ -319,7 +319,7 @@ export default function StoriesTab() {
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div>
                           <h4 className="text-lg font-bold text-gray-800 dark:text-gray-100">{story.name}</h4>
-                          <p className="text-teal-600 dark:text-teal-400 font-semibold">{story.occupation}</p>
+                          <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold">{story.occupation}</p>
                           <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">{story.background}</p>
                         </div>
                         <div className="flex gap-2 flex-wrap justify-end">
@@ -338,7 +338,7 @@ export default function StoriesTab() {
                       </div>
 
                       {/* Summary/Quote */}
-                      <blockquote className="mt-3 text-gray-700 dark:text-gray-200 italic border-l-4 border-teal-300 dark:border-teal-600 pl-4 py-2 bg-stone-50 dark:bg-stone-900/50 rounded-r-lg">
+                      <blockquote className="mt-3 text-gray-700 dark:text-gray-200 italic border-l-4 border-[var(--c-accent)] dark:border-[var(--c-solid)] pl-4 py-2 bg-stone-50 dark:bg-stone-900/50 rounded-r-lg">
                         "{story.summary}"
                       </blockquote>
 
@@ -407,11 +407,11 @@ export default function StoriesTab() {
                           />
                           Spara
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-medium">
+                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] transition-colors font-medium">
                           <MessageCircle className="w-4 h-4" />
                           Kommentera
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-medium">
+                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] transition-colors font-medium">
                           <Share2 className="w-4 h-4" />
                           Dela
                         </button>
@@ -455,7 +455,7 @@ export default function StoriesTab() {
       >
         <Card className="p-6 bg-stone-50 dark:bg-stone-900/50 border-stone-200 dark:border-stone-700">
           <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-2">
-            <MessageCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <MessageCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             Ställ dina frågor anonymt
           </h4>
           <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
@@ -466,7 +466,7 @@ export default function StoriesTab() {
               placeholder="Vad undrar du över?"
               className="flex-1"
             />
-            <Button className="bg-teal-600 dark:bg-teal-700 hover:bg-teal-700 dark:hover:bg-teal-600 whitespace-nowrap">
+            <Button className="bg-[var(--c-solid)] dark:bg-[var(--c-text)] hover:bg-[var(--c-text)] dark:hover:bg-[var(--c-solid)] whitespace-nowrap">
               Skicka fråga
             </Button>
           </div>
@@ -514,12 +514,12 @@ export default function StoriesTab() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <Card className="p-4 bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
+          <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
             <div className="flex items-start gap-3">
-              <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400 mt-0.5 flex-shrink-0" />
+              <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
-                  Förslag: Läs berättelser från kategori "<span className="text-teal-600 dark:text-teal-400">{selectedCategory}</span>"
+                  Förslag: Läs berättelser från kategori "<span className="text-[var(--c-text)] dark:text-[var(--c-solid)]">{selectedCategory}</span>"
                 </p>
                 <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                   Vi har valt ut de mest inspirerande berättelserna för din situation.

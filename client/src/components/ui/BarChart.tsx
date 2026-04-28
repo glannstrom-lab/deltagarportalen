@@ -7,18 +7,18 @@ export function BarChart({ data }: BarChartProps) {
 
   return (
     <div className="card">
-      <h3 className="font-semibold text-slate-800 mb-6">Jobbsök aktivitet</h3>
+      <h3 className="font-semibold text-stone-800 mb-6">Jobbsök aktivitet</h3>
       <div className="space-y-4">
         {data.map((item) => (
           <div key={item.label} className="flex items-center gap-3">
-            <span className="text-sm text-slate-700 w-16">{item.label}</span>
-            <div className="flex-1 h-8 bg-slate-100 rounded-lg overflow-hidden">
+            <span className="text-sm text-stone-700 w-16">{item.label}</span>
+            <div className="flex-1 h-8 bg-stone-100 rounded-lg overflow-hidden">
               <div
                 className={`h-full rounded-lg transition-all duration-500 ${item.color}`}
                 style={{ width: `${(item.value / max) * 100}%` }}
               />
             </div>
-            <span className="text-sm font-semibold text-slate-700 w-8">{item.value}</span>
+            <span className="text-sm font-semibold text-stone-700 w-8">{item.value}</span>
           </div>
         ))}
       </div>

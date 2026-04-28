@@ -47,7 +47,7 @@ function ScoreRing({ score, size = 'lg' }: { score: number; size?: 'sm' | 'md' |
     if (s >= 80) return 'text-emerald-500'
     if (s >= 60) return 'text-blue-500'
     if (s >= 30) return 'text-amber-500'
-    return 'text-slate-600'
+    return 'text-stone-600'
   }
 
   return (
@@ -61,7 +61,7 @@ function ScoreRing({ score, size = 'lg' }: { score: number; size?: 'sm' | 'md' |
           stroke="currentColor"
           strokeWidth={stroke}
           fill="none"
-          className="text-slate-200"
+          className="text-stone-200"
         />
         {/* Progress circle */}
         <motion.circle
@@ -92,28 +92,28 @@ function SectionProgressBar({ section }: { section: ProgressSection }) {
   const Icon = iconMap[section.icon] || Target
 
   const colorClasses: Record<string, string> = {
-    violet: 'bg-teal-500',
+    violet: 'bg-[var(--c-solid)]',
     indigo: 'bg-sky-500',
     amber: 'bg-amber-500',
     blue: 'bg-blue-500',
     emerald: 'bg-emerald-500',
     rose: 'bg-rose-500',
-    teal: 'bg-teal-500',
+    teal: 'bg-[var(--c-solid)]',
     sky: 'bg-sky-500',
   }
 
-  const bgColor = colorClasses[section.color] || 'bg-slate-500'
+  const bgColor = colorClasses[section.color] || 'bg-stone-500'
 
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Icon className={cn('w-4 h-4', `text-${section.color}-600`)} />
-          <span className="text-sm font-medium text-slate-700">{section.nameSv}</span>
+          <span className="text-sm font-medium text-stone-700">{section.nameSv}</span>
         </div>
-        <span className="text-sm text-slate-700">{section.percentage}%</span>
+        <span className="text-sm text-stone-700">{section.percentage}%</span>
       </div>
-      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+      <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
         <motion.div
           className={cn('h-full rounded-full', bgColor)}
           initial={{ width: 0 }}
@@ -142,10 +142,10 @@ function RecommendationCard({ recommendation }: { recommendation: Recommendation
     >
       <div className="flex items-start justify-between gap-2">
         <div>
-          <h4 className="font-medium text-slate-800 text-sm">{recommendation.title}</h4>
-          <p className="text-xs text-slate-600 mt-0.5">{recommendation.description}</p>
+          <h4 className="font-medium text-stone-800 text-sm">{recommendation.title}</h4>
+          <p className="text-xs text-stone-600 mt-0.5">{recommendation.description}</p>
         </div>
-        <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0 mt-0.5" />
+        <ChevronRight className="w-4 h-4 text-stone-600 flex-shrink-0 mt-0.5" />
       </div>
     </Link>
   )
@@ -172,10 +172,10 @@ export function CareerReadinessScore({
     return (
       <Card className={cn('animate-pulse', className)}>
         <div className="flex items-center gap-4 p-6">
-          <div className="w-24 h-24 rounded-full bg-slate-200" />
+          <div className="w-24 h-24 rounded-full bg-stone-200" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 bg-slate-200 rounded w-1/3" />
-            <div className="h-3 bg-slate-200 rounded w-1/2" />
+            <div className="h-4 bg-stone-200 rounded w-1/3" />
+            <div className="h-3 bg-stone-200 rounded w-1/2" />
           </div>
         </div>
       </Card>
@@ -187,8 +187,8 @@ export function CareerReadinessScore({
       <div className={cn('flex items-center gap-3', className)}>
         <ScoreRing score={progress.careerReadinessScore} size="sm" />
         <div>
-          <p className="text-sm font-medium text-slate-700">Karriärberedskap</p>
-          <p className="text-xs text-slate-700">{progress.careerReadinessLabel}</p>
+          <p className="text-sm font-medium text-stone-700">Karriärberedskap</p>
+          <p className="text-xs text-stone-700">{progress.careerReadinessLabel}</p>
         </div>
       </div>
     )
@@ -200,9 +200,9 @@ export function CareerReadinessScore({
         <div className="flex items-center gap-4">
           <ScoreRing score={progress.careerReadinessScore} size="md" />
           <div className="flex-1">
-            <h3 className="font-semibold text-slate-800">Karriärberedskap</h3>
-            <p className="text-sm text-slate-600">{progress.careerReadinessLabel}</p>
-            <div className="flex items-center gap-4 mt-2 text-xs text-slate-700">
+            <h3 className="font-semibold text-stone-800">Karriärberedskap</h3>
+            <p className="text-sm text-stone-600">{progress.careerReadinessLabel}</p>
+            <div className="flex items-center gap-4 mt-2 text-xs text-stone-700">
               <span>{progress.completedMilestones}/{progress.totalMilestones} områden klara</span>
             </div>
           </div>
@@ -224,23 +224,23 @@ export function CareerReadinessScore({
         <ScoreRing score={progress.careerReadinessScore} size="lg" />
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
-            <Target className="w-5 h-5 text-teal-600" />
-            <h2 className="text-xl font-bold text-slate-900">Karriärberedskap</h2>
+            <Target className="w-5 h-5 text-[var(--c-text)]" />
+            <h2 className="text-xl font-bold text-stone-900">Karriärberedskap</h2>
           </div>
-          <p className="text-slate-600 mb-3">{progress.careerReadinessLabel}</p>
+          <p className="text-stone-600 mb-3">{progress.careerReadinessLabel}</p>
 
           {/* Quick stats */}
           <div className="flex flex-wrap gap-4 text-sm">
             <div className="flex items-center gap-1.5">
               <TrendingUp className="w-4 h-4 text-emerald-500" />
-              <span className="text-slate-600">
+              <span className="text-stone-600">
                 {progress.completedMilestones} av {progress.totalMilestones} områden
               </span>
             </div>
             {progress.hasRiasecProfile && progress.dominantTypes.length > 0 && (
               <div className="flex items-center gap-1.5">
-                <Compass className="w-4 h-4 text-teal-500" />
-                <span className="text-slate-600">
+                <Compass className="w-4 h-4 text-[var(--c-solid)]" />
+                <span className="text-stone-600">
                   {progress.dominantTypes[0].nameSv}
                 </span>
               </div>
@@ -248,7 +248,7 @@ export function CareerReadinessScore({
             {progress.moodStreak > 0 && (
               <div className="flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-amber-500" />
-                <span className="text-slate-600">
+                <span className="text-stone-600">
                   {progress.moodStreak} dagars streak
                 </span>
               </div>
@@ -259,7 +259,7 @@ export function CareerReadinessScore({
 
       {/* Section breakdown */}
       <div className="space-y-3 mb-6">
-        <h3 className="text-sm font-semibold text-slate-700">Områden</h3>
+        <h3 className="text-sm font-semibold text-stone-700">Områden</h3>
         {progress.sections.map(section => (
           <SectionProgressBar key={section.id} section={section} />
         ))}
@@ -268,7 +268,7 @@ export function CareerReadinessScore({
       {/* Recommendations */}
       {showRecommendations && progress.recommendations.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-slate-700 mb-3">Rekommenderade nästa steg</h3>
+          <h3 className="text-sm font-semibold text-stone-700 mb-3">Rekommenderade nästa steg</h3>
           <div className="space-y-2">
             {progress.recommendations.slice(0, 3).map(rec => (
               <RecommendationCard key={rec.id} recommendation={rec} />
@@ -291,10 +291,10 @@ export function CareerReadinessWidget() {
     return (
       <Card className="animate-pulse p-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-full bg-slate-200" />
+          <div className="w-16 h-16 rounded-full bg-stone-200" />
           <div className="flex-1 space-y-2">
-            <div className="h-4 bg-slate-200 rounded w-2/3" />
-            <div className="h-3 bg-slate-200 rounded w-1/2" />
+            <div className="h-4 bg-stone-200 rounded w-2/3" />
+            <div className="h-3 bg-stone-200 rounded w-1/2" />
           </div>
         </div>
       </Card>
@@ -307,17 +307,17 @@ export function CareerReadinessWidget() {
         <div className="flex items-center gap-4">
           <ScoreRing score={progress.careerReadinessScore} size="sm" />
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-slate-800 truncate">Karriärberedskap</h3>
-            <p className="text-sm text-slate-700">{progress.careerReadinessLabel}</p>
+            <h3 className="font-semibold text-stone-800 truncate">Karriärberedskap</h3>
+            <p className="text-sm text-stone-700">{progress.careerReadinessLabel}</p>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-600" />
+          <ChevronRight className="w-5 h-5 text-stone-600" />
         </div>
 
         {/* Top recommendation */}
         {progress.recommendations.length > 0 && (
-          <div className="mt-3 pt-3 border-t border-slate-100">
-            <p className="text-xs text-slate-700 mb-1">Nästa steg:</p>
-            <p className="text-sm font-medium text-slate-700">
+          <div className="mt-3 pt-3 border-t border-stone-100">
+            <p className="text-xs text-stone-700 mb-1">Nästa steg:</p>
+            <p className="text-sm font-medium text-stone-700">
               {progress.recommendations[0].title}
             </p>
           </div>

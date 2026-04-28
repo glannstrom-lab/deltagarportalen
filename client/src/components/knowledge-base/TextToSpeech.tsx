@@ -64,20 +64,20 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
   if (!isSupported) return null
 
   return (
-    <div className="inline-flex items-center gap-2 bg-slate-100 rounded-lg p-1.5">
+    <div className="inline-flex items-center gap-2 bg-stone-100 rounded-lg p-1.5">
       <button
         onClick={togglePlay}
-        className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-md text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+        className="flex items-center gap-2 px-3 py-1.5 bg-white rounded-md text-sm font-medium text-stone-700 hover:bg-stone-50 transition-colors"
         title={isPlaying && !isPaused ? 'Pausa' : 'Lyssna'}
       >
         {isPlaying && !isPaused ? (
           <>
-            <Pause size={16} className="text-teal-600" />
+            <Pause size={16} className="text-[var(--c-text)]" />
             <span>Pausa</span>
           </>
         ) : (
           <>
-            <Play size={16} className="text-teal-600" />
+            <Play size={16} className="text-[var(--c-text)]" />
             <span>Lyssna</span>
           </>
         )}
@@ -86,14 +86,14 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
       {isPlaying && (
         <button
           onClick={stop}
-          className="p-1.5 text-slate-700 hover:text-slate-700"
+          className="p-1.5 text-stone-700 hover:text-stone-700"
           title="Stoppa"
         >
           <VolumeX size={16} />
         </button>
       )}
       
-      <Volume2 size={16} className="text-slate-600 ml-1" />
+      <Volume2 size={16} className="text-stone-600 ml-1" />
     </div>
   )
 }

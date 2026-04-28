@@ -67,12 +67,12 @@ export function WordCounter({
 
   if (compact) {
     return (
-      <div className="flex items-center gap-2 text-xs text-slate-700">
+      <div className="flex items-center gap-2 text-xs text-stone-700">
         <span>{words} ord</span>
-        <span className="text-slate-300">|</span>
+        <span className="text-stone-300">|</span>
         <span>{chars} tecken</span>
         {showProgress && (
-          <div className="w-16 h-1.5 bg-slate-200 rounded-full overflow-hidden">
+          <div className="w-16 h-1.5 bg-stone-200 rounded-full overflow-hidden">
             <div 
               className={`h-full rounded-full transition-all duration-300 ${getProgressColor()}`}
               style={{ width: `${wordPercent}%` }}
@@ -124,7 +124,7 @@ export function InlineCounter({ text, maxLength }: { text: string; maxLength?: n
   const words = text.trim() ? text.trim().split(/\s+/).length : 0
   
   return (
-    <div className="flex items-center gap-3 text-xs text-slate-600">
+    <div className="flex items-center gap-3 text-xs text-stone-600">
       <span className={words < 50 ? 'text-amber-500' : words > 400 ? 'text-red-500' : ''}>
         {words} ord
       </span>

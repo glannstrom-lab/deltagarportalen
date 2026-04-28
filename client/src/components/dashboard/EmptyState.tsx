@@ -73,10 +73,10 @@ const emptyStateConfig = {
 
 const colorClasses: Record<string, { bg: string; text: string; border: string; button: string }> = {
   teal: {
-    bg: 'bg-teal-50',
-    text: 'text-teal-700',
-    border: 'border-teal-200',
-    button: 'bg-teal-600 hover:bg-teal-700'
+    bg: 'bg-[var(--c-bg)]',
+    text: 'text-[var(--c-text)]',
+    border: 'border-[var(--c-accent)]/60',
+    button: 'bg-[var(--c-solid)] hover:bg-[var(--c-text)]'
   },
   blue: {
     bg: 'bg-blue-50',
@@ -97,10 +97,10 @@ const colorClasses: Record<string, { bg: string; text: string; border: string; b
     button: 'bg-amber-600 hover:bg-amber-700'
   },
   teal: {
-    bg: 'bg-teal-50',
-    text: 'text-teal-700',
-    border: 'border-teal-200',
-    button: 'bg-teal-600 hover:bg-teal-700'
+    bg: 'bg-[var(--c-bg)]',
+    text: 'text-[var(--c-text)]',
+    border: 'border-[var(--c-accent)]/60',
+    button: 'bg-[var(--c-solid)] hover:bg-[var(--c-text)]'
   }
 }
 
@@ -157,10 +157,10 @@ export function EmptyState({
       </div>
       
       {/* Text */}
-      <h3 className="text-lg font-semibold text-slate-800 mb-2">
+      <h3 className="text-lg font-semibold text-stone-800 mb-2">
         {finalTitle}
       </h3>
-      <p className="text-sm text-slate-600 mb-5 max-w-xs">
+      <p className="text-sm text-stone-600 mb-5 max-w-xs">
         {finalDescription}
       </p>
       
@@ -219,7 +219,7 @@ export function EmptyStateCompact({
       )}>
         <Icon size={20} />
       </div>
-      <p className="text-sm text-slate-600">
+      <p className="text-sm text-stone-600">
         {description || config.defaultDescription}
       </p>
     </div>

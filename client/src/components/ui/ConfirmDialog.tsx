@@ -123,7 +123,7 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
       {/* Dialog Overlay */}
       {state.isOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 dark:bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/50 dark:bg-stone-950/70 backdrop-blur-sm animate-in fade-in duration-200"
           onClick={handleCancel}
           role="dialog"
           aria-modal="true"
@@ -139,7 +139,7 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
             {/* Close button */}
             <button
               onClick={handleCancel}
-              className="absolute top-4 right-4 p-1 text-slate-600 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-stone-800 transition-colors"
+              className="absolute top-4 right-4 p-1 text-stone-600 dark:text-stone-400 hover:text-stone-600 dark:hover:text-stone-300 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
               aria-label={t('common.close')}
             >
               <X className="w-5 h-5" />
@@ -154,7 +154,7 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
               {/* Title */}
               <h2
                 id="confirm-dialog-title"
-                className="text-xl font-bold text-slate-800 dark:text-stone-100 mb-2"
+                className="text-xl font-bold text-stone-800 dark:text-stone-100 mb-2"
               >
                 {state.title}
               </h2>
@@ -162,7 +162,7 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
               {/* Message */}
               <p
                 id="confirm-dialog-description"
-                className="text-slate-600 dark:text-stone-300 mb-6"
+                className="text-stone-600 dark:text-stone-300 mb-6"
               >
                 {state.message}
               </p>
@@ -171,7 +171,7 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
               <div className="flex gap-3">
                 <button
                   onClick={handleCancel}
-                  className="flex-1 px-4 py-2.5 border border-slate-300 dark:border-stone-600 text-slate-700 dark:text-stone-200 font-medium rounded-xl hover:bg-slate-50 dark:hover:bg-stone-800 transition-colors"
+                  className="flex-1 px-4 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-200 font-medium rounded-xl hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
                 >
                   {state.cancelText}
                 </button>

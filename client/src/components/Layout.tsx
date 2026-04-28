@@ -131,7 +131,7 @@ function MobileTopBar() {
               loading="eager"
               className="h-6 w-auto object-contain"
             />
-            <span className="text-sm font-semibold text-teal-600 dark:text-teal-400">jobin.se</span>
+            <span className="text-sm font-semibold text-[var(--c-text)] dark:text-[var(--c-solid)]">jobin.se</span>
           </Link>
 
           {/* Höger: Notifikationer + Profil + Meny */}
@@ -142,8 +142,8 @@ function MobileTopBar() {
               className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
               aria-label={t('nav.profile')}
             >
-              <div className="w-6 h-6 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center">
-                <User className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+              <div className="w-6 h-6 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg flex items-center justify-center">
+                <User className="w-3.5 h-3.5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
               </div>
             </button>
             <button
@@ -203,8 +203,8 @@ function MobileTopBar() {
         {/* Profil-info */}
         <div className="p-3">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
-              <User className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+            <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center">
+              <User className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             </div>
             <div className="min-w-0">
               <p className="text-sm font-semibold text-stone-800 dark:text-stone-100 truncate">{user?.email || t('roles.user')}</p>
@@ -332,7 +332,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                         className={cn(
                           'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
                           isActive
-                            ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 font-medium'
+                            ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)] font-medium'
                             : 'text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
                         )}
                       >
@@ -423,7 +423,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
           className={cn(
             'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
             location.pathname === '/settings'
-              ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 font-medium'
+              ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)] font-medium'
               : 'text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
           )}
         >
@@ -436,7 +436,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
           className={cn(
             'flex items-center gap-2.5 px-3 py-2.5 rounded-lg transition-colors min-h-[44px] text-sm',
             location.pathname === '/help'
-              ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 font-medium'
+              ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-accent)] font-medium'
               : 'text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800'
           )}
         >

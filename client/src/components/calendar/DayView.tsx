@@ -37,8 +37,8 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
   return (
     <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
       {/* Day header */}
-      <div className={`p-4 border-b border-stone-200 dark:border-stone-700/50 ${isToday ? 'bg-teal-50 dark:bg-teal-900/20' : 'bg-stone-50 dark:bg-stone-800'}`}>
-        <h2 className={`text-xl font-semibold ${isToday ? 'text-teal-900 dark:text-teal-100' : 'text-stone-900 dark:text-stone-100'}`}>
+      <div className={`p-4 border-b border-stone-200 dark:border-stone-700/50 ${isToday ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20' : 'bg-stone-50 dark:bg-stone-800'}`}>
+        <h2 className={`text-xl font-semibold ${isToday ? 'text-[var(--c-text)] dark:text-white' : 'text-stone-900 dark:text-stone-100'}`}>
           {date.toLocaleDateString(i18n.language === 'sv' ? 'sv-SE' : 'en-US', {
             weekday: 'long',
             year: 'numeric',
@@ -46,7 +46,7 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
             day: 'numeric',
           })}
         </h2>
-        {isToday && <span className="text-sm text-teal-700 dark:text-teal-400 font-medium">{t('calendar.today')}</span>}
+        {isToday && <span className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium">{t('calendar.today')}</span>}
       </div>
 
       {/* Timeline */}

@@ -53,8 +53,8 @@ function CareerWidgetSmall({
       <div className="flex items-center gap-2">
         <Briefcase size={14} className="text-indigo-500" />
         <div className="flex items-center gap-1">
-          <span className="text-lg font-bold text-slate-800">{exploredCount}</span>
-          <span className="text-xs text-slate-700">
+          <span className="text-lg font-bold text-stone-800">{exploredCount}</span>
+          <span className="text-xs text-stone-700">
             {t('careerWidget.occupations', { count: exploredCount })}
           </span>
         </div>
@@ -105,8 +105,8 @@ function CareerWidgetMedium({
         <div className="flex items-center gap-3">
           <Briefcase size={22} className="text-indigo-500" />
           <div>
-            <p className="text-2xl font-bold text-slate-800">{exploredCount}</p>
-            <p className="text-xs text-slate-700">{t('careerWidget.exploredOccupations')}</p>
+            <p className="text-2xl font-bold text-stone-800">{exploredCount}</p>
+            <p className="text-xs text-stone-700">{t('careerWidget.exploredOccupations')}</p>
           </div>
         </div>
 
@@ -173,18 +173,18 @@ function CareerWidgetLarge({
             <Briefcase size={28} className="text-indigo-600" />
           </div>
           <div>
-            <p className="text-3xl font-bold text-slate-800">{exploredCount}</p>
-            <p className="text-sm text-slate-700">{t('careerWidget.exploredOccupations')}</p>
+            <p className="text-3xl font-bold text-stone-800">{exploredCount}</p>
+            <p className="text-sm text-stone-700">{t('careerWidget.exploredOccupations')}</p>
           </div>
           <div className="ml-auto text-right">
-            <p className="text-2xl font-bold text-slate-800">{savedPaths.length}</p>
-            <p className="text-sm text-slate-700">{t('careerWidget.savedPaths')}</p>
+            <p className="text-2xl font-bold text-stone-800">{savedPaths.length}</p>
+            <p className="text-sm text-stone-700">{t('careerWidget.savedPaths')}</p>
           </div>
         </div>
 
         {recommendedOccupations.length > 0 && (
           <div className="space-y-2">
-            <p className="text-sm font-medium text-slate-700 flex items-center gap-2">
+            <p className="text-sm font-medium text-stone-700 flex items-center gap-2">
               <Sparkles size={14} className="text-amber-500" />
               {t('careerWidget.recommendedForYou')}
             </p>
@@ -203,7 +203,7 @@ function CareerWidgetLarge({
 
         {/* Snabblänkar till nya career tabs */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-700">{t('careerWidget.careerTools')}:</p>
+          <p className="text-sm font-medium text-stone-700">{t('careerWidget.careerTools')}:</p>
           <div className="grid grid-cols-3 gap-2">
             {careerTabs.map((tab) => (
               <Link

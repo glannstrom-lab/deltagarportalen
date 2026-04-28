@@ -90,21 +90,21 @@ export default function MyJourneyTab() {
               <Briefcase className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{savedJobsData?.count || 0}</p>
-              <p className="text-sm text-slate-600">{t('knowledgeBase.myJourney.savedJobs')}</p>
+              <p className="text-2xl font-bold text-stone-900">{savedJobsData?.count || 0}</p>
+              <p className="text-sm text-stone-600">{t('knowledgeBase.myJourney.savedJobs')}</p>
             </div>
           </div>
         </Card>
 
         {/* CV Status */}
-        <Card className="bg-teal-50 border-teal-100">
+        <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]/40">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-teal-600" />
+            <div className="w-10 h-10 bg-[var(--c-accent)]/40 rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[var(--c-text)]" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{cvData?.completeness || 0}%</p>
-              <p className="text-sm text-slate-600">{t('knowledgeBase.myJourney.cvCompleteness')}</p>
+              <p className="text-2xl font-bold text-stone-900">{cvData?.completeness || 0}%</p>
+              <p className="text-sm text-stone-600">{t('knowledgeBase.myJourney.cvCompleteness')}</p>
             </div>
           </div>
         </Card>
@@ -118,15 +118,15 @@ export default function MyJourneyTab() {
             <div>
               {riasecProfile.hasResult ? (
                 <>
-                  <p className="text-lg font-bold text-slate-900">
+                  <p className="text-lg font-bold text-stone-900">
                     {dominantTypes.map(t => t.code.charAt(0).toUpperCase()).join('')}
                   </p>
-                  <p className="text-sm text-slate-600">{t('knowledgeBase.myJourney.interestProfile')}</p>
+                  <p className="text-sm text-stone-600">{t('knowledgeBase.myJourney.interestProfile')}</p>
                 </>
               ) : (
                 <>
-                  <p className="text-lg font-bold text-slate-600">—</p>
-                  <p className="text-sm text-slate-600">{t('knowledgeBase.myJourney.noProfile')}</p>
+                  <p className="text-lg font-bold text-stone-600">—</p>
+                  <p className="text-sm text-stone-600">{t('knowledgeBase.myJourney.noProfile')}</p>
                 </>
               )}
             </div>
@@ -140,8 +140,8 @@ export default function MyJourneyTab() {
               <PenTool className="w-5 h-5 text-emerald-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-slate-900">{coverLetterData?.count || 0}</p>
-              <p className="text-sm text-slate-600">{t('knowledgeBase.myJourney.coverLetters')}</p>
+              <p className="text-2xl font-bold text-stone-900">{coverLetterData?.count || 0}</p>
+              <p className="text-sm text-stone-600">{t('knowledgeBase.myJourney.coverLetters')}</p>
             </div>
           </div>
         </Card>
@@ -150,7 +150,7 @@ export default function MyJourneyTab() {
       {/* RIASEC Profile Details */}
       {riasecProfile.hasResult && (
         <section>
-          <h3 className="text-lg font-semibold text-slate-900 mb-4">
+          <h3 className="text-lg font-semibold text-stone-900 mb-4">
             {t('knowledgeBase.myJourney.yourProfile')}
           </h3>
           <Card>
@@ -165,16 +165,16 @@ export default function MyJourneyTab() {
                       </span>
                     </div>
                     <div className="flex-1">
-                      <h4 className="font-semibold text-slate-900">{riasecType?.nameSv}</h4>
-                      <p className="text-sm text-slate-600">{riasecType?.description}</p>
+                      <h4 className="font-semibold text-stone-900">{riasecType?.nameSv}</h4>
+                      <p className="text-sm text-stone-600">{riasecType?.description}</p>
                       <div className="mt-2">
-                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
                           <div
                             className="h-full bg-amber-500 rounded-full"
                             style={{ width: `${type.score}%` }}
                           />
                         </div>
-                        <span className="text-xs text-slate-700 mt-1">{type.score}%</span>
+                        <span className="text-xs text-stone-700 mt-1">{type.score}%</span>
                       </div>
                     </div>
                   </div>
@@ -194,7 +194,7 @@ export default function MyJourneyTab() {
 
       {/* Quick Actions */}
       <section>
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">
+        <h3 className="text-lg font-semibold text-stone-900 mb-4">
           {t('knowledgeBase.myJourney.nextSteps')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -202,15 +202,15 @@ export default function MyJourneyTab() {
             <Card className="hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-teal-600" />
+                  <FileText className="w-5 h-5 text-[var(--c-text)]" />
                   <div>
-                    <h4 className="font-medium text-slate-900">{t('knowledgeBase.myJourney.createCV')}</h4>
-                    <p className="text-sm text-slate-700">{t('knowledgeBase.myJourney.createCVDescription')}</p>
+                    <h4 className="font-medium text-stone-900">{t('knowledgeBase.myJourney.createCV')}</h4>
+                    <p className="text-sm text-stone-700">{t('knowledgeBase.myJourney.createCVDescription')}</p>
                   </div>
                 </div>
                 <Link
                   to="/cv"
-                  className="px-3 py-1.5 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700"
+                  className="px-3 py-1.5 bg-[var(--c-solid)] text-white rounded-lg text-sm font-medium hover:bg-[var(--c-text)]"
                 >
                   {t('knowledgeBase.myJourney.start')}
                 </Link>
@@ -224,8 +224,8 @@ export default function MyJourneyTab() {
                 <div className="flex items-center gap-3">
                   <Compass className="w-5 h-5 text-amber-600" />
                   <div>
-                    <h4 className="font-medium text-slate-900">{t('knowledgeBase.myJourney.takeInterestGuide')}</h4>
-                    <p className="text-sm text-slate-700">{t('knowledgeBase.myJourney.takeInterestGuideDescription')}</p>
+                    <h4 className="font-medium text-stone-900">{t('knowledgeBase.myJourney.takeInterestGuide')}</h4>
+                    <p className="text-sm text-stone-700">{t('knowledgeBase.myJourney.takeInterestGuideDescription')}</p>
                   </div>
                 </div>
                 <Link
@@ -244,8 +244,8 @@ export default function MyJourneyTab() {
                 <div className="flex items-center gap-3">
                   <Briefcase className="w-5 h-5 text-blue-600" />
                   <div>
-                    <h4 className="font-medium text-slate-900">{t('knowledgeBase.myJourney.searchJobs')}</h4>
-                    <p className="text-sm text-slate-700">{t('knowledgeBase.myJourney.searchJobsDescription')}</p>
+                    <h4 className="font-medium text-stone-900">{t('knowledgeBase.myJourney.searchJobs')}</h4>
+                    <p className="text-sm text-stone-700">{t('knowledgeBase.myJourney.searchJobsDescription')}</p>
                   </div>
                 </div>
                 <Link
@@ -260,12 +260,12 @@ export default function MyJourneyTab() {
 
           {/* All done state */}
           {cvData?.hasCV && riasecProfile.hasResult && savedJobsData && savedJobsData.count > 0 && (
-            <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-100 md:col-span-2">
+            <Card className="bg-gradient-to-r from-emerald-50 to-[var(--c-bg)] border-emerald-100 md:col-span-2">
               <div className="flex items-center gap-4">
                 <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                 <div>
-                  <h4 className="font-semibold text-slate-900">{t('knowledgeBase.myJourney.greatProgress')}</h4>
-                  <p className="text-sm text-slate-600">{t('knowledgeBase.myJourney.greatProgressDescription')}</p>
+                  <h4 className="font-semibold text-stone-900">{t('knowledgeBase.myJourney.greatProgress')}</h4>
+                  <p className="text-sm text-stone-600">{t('knowledgeBase.myJourney.greatProgressDescription')}</p>
                 </div>
               </div>
             </Card>
@@ -277,7 +277,7 @@ export default function MyJourneyTab() {
       {savedJobsData && savedJobsData.count > 0 && (
         <section>
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-slate-900">
+            <h3 className="text-lg font-semibold text-stone-900">
               {t('knowledgeBase.myJourney.recentSavedJobs')}
             </h3>
             <Link
@@ -292,10 +292,10 @@ export default function MyJourneyTab() {
               <Card key={job.id} className="hover:shadow-sm transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h4 className="font-medium text-slate-900">
+                    <h4 className="font-medium text-stone-900">
                       {job.job_data?.headline || job.job_data?.title || t('knowledgeBase.myJourney.unknownJob')}
                     </h4>
-                    <p className="text-sm text-slate-700">
+                    <p className="text-sm text-stone-700">
                       {job.job_data?.employer?.name || job.job_data?.company || ''}
                     </p>
                   </div>
@@ -303,7 +303,7 @@ export default function MyJourneyTab() {
                     job.status === 'APPLIED' ? 'bg-blue-100 text-blue-700' :
                     job.status === 'INTERVIEW' ? 'bg-amber-100 text-amber-700' :
                     job.status === 'ACCEPTED' ? 'bg-emerald-100 text-emerald-700' :
-                    'bg-slate-100 text-slate-600'
+                    'bg-stone-100 text-stone-600'
                   }`}>
                     {t(`knowledgeBase.myJourney.jobStatus.${job.status?.toLowerCase() || 'saved'}`)}
                   </span>

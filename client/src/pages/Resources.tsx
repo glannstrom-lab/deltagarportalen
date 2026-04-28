@@ -143,7 +143,7 @@ interface UploadedFile {
 }
 
 const statusLabels: Record<string, { label: string; color: string; bg: string; icon: React.ComponentType<{ size?: number; className?: string }> }> = {
-  'SAVED': { label: 'Sparad', color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-800', icon: Bookmark },
+  'SAVED': { label: 'Sparad', color: 'text-stone-600 dark:text-stone-400', bg: 'bg-stone-100 dark:bg-stone-800', icon: Bookmark },
   'APPLIED': { label: 'Ansökt', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/30', icon: CheckCircle2 },
   'INTERVIEW': { label: 'Intervju', color: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-100 dark:bg-sky-900/30', icon: Sparkles },
   'REJECTED': { label: 'Avslag', color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30', icon: X },
@@ -545,7 +545,7 @@ export default function Resources() {
 
   // Status labels with translations
   const statusLabelsTranslated: Record<string, { label: string; color: string; bg: string; icon: React.ComponentType<{ size?: number; className?: string }> }> = {
-    'SAVED': { label: t('resources.status.saved'), color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-800', icon: Bookmark },
+    'SAVED': { label: t('resources.status.saved'), color: 'text-stone-600 dark:text-stone-400', bg: 'bg-stone-100 dark:bg-stone-800', icon: Bookmark },
     'APPLIED': { label: t('resources.status.applied'), color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/30', icon: CheckCircle2 },
     'INTERVIEW': { label: t('resources.status.interview'), color: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-100 dark:bg-sky-900/30', icon: Sparkles },
     'REJECTED': { label: t('resources.status.rejected'), color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30', icon: X },
@@ -703,8 +703,8 @@ export default function Resources() {
                   <FileText className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-800 dark:text-slate-100">Sparade CV</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">{cvVersions.length} {cvVersions.length === 1 ? 'version' : 'versioner'}</p>
+                  <h3 className="text-base font-bold text-stone-800 dark:text-stone-100">Sparade CV</h3>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">{cvVersions.length} {cvVersions.length === 1 ? 'version' : 'versioner'}</p>
                 </div>
               </div>
               <Link
@@ -719,36 +719,36 @@ export default function Resources() {
               {cvVersions.map((version) => {
                 const versionData = version.data || {}
                 return (
-                  <div key={version.id} className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 overflow-hidden hover:shadow-lg hover:border-amber-200 dark:hover:border-amber-700 transition-all group">
-                    <div className="p-4 border-b border-slate-100 dark:border-stone-700">
+                  <div key={version.id} className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover:shadow-lg hover:border-amber-200 dark:hover:border-amber-700 transition-all group">
+                    <div className="p-4 border-b border-stone-100 dark:border-stone-700">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-semibold text-slate-800 dark:text-slate-100 truncate group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">{version.name}</h4>
-                          <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">
+                          <h4 className="font-semibold text-stone-800 dark:text-stone-100 truncate group-hover:text-amber-700 dark:group-hover:text-amber-400 transition-colors">{version.name}</h4>
+                          <p className="text-xs text-stone-400 dark:text-stone-500 mt-0.5">
                             {new Date(version.created_at).toLocaleDateString('sv-SE', { year: 'numeric', month: 'short', day: 'numeric' })}
                           </p>
                         </div>
                         <button
                           onClick={() => setPreviewModal({type: 'cv', data: versionData as CVData})}
-                          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
+                          className="p-1.5 text-stone-400 dark:text-stone-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                           title="Förhandsgranska"
                         >
                           <Eye size={16} />
                         </button>
                       </div>
                       {(versionData.firstName || versionData.title) && (
-                        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-stone-700">
+                        <div className="mt-3 pt-3 border-t border-stone-100 dark:border-stone-700">
                           {versionData.firstName && (
-                            <p className="text-sm font-medium text-slate-700 dark:text-slate-300">{versionData.firstName} {versionData.lastName}</p>
+                            <p className="text-sm font-medium text-stone-700 dark:text-stone-300">{versionData.firstName} {versionData.lastName}</p>
                           )}
                           {versionData.title && (
-                            <p className="text-xs text-slate-500 dark:text-slate-400 truncate">{versionData.title}</p>
+                            <p className="text-xs text-stone-500 dark:text-stone-400 truncate">{versionData.title}</p>
                           )}
                         </div>
                       )}
                     </div>
-                    <div className="p-3 bg-slate-50/50 dark:bg-stone-900/50 flex items-center gap-2">
-                      <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 flex-1">
+                    <div className="p-3 bg-stone-50/50 dark:bg-stone-900/50 flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-xs text-stone-500 dark:text-stone-400 flex-1">
                         <span className="flex items-center gap-1">
                           <Briefcase size={12} className="text-blue-500" />
                           {versionData.workExperience?.length || 0}
@@ -797,8 +797,8 @@ export default function Resources() {
                   <FileText className="w-7 h-7 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">{cvData.firstName} {cvData.lastName}</h2>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{cvData.title || t('resources.myCV')}</p>
+                  <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100">{cvData.firstName} {cvData.lastName}</h2>
+                  <p className="text-sm text-stone-600 dark:text-stone-400">{cvData.title || t('resources.myCV')}</p>
                   <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
                     <Sparkles size={12} />
                     Spara en version på CV-sidan för att hantera flera versioner
@@ -842,8 +842,8 @@ export default function Resources() {
                   <Heart className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="font-semibold text-slate-800 dark:text-slate-100">{t('resources.interestGuide')}</h2>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">
+                  <h2 className="font-semibold text-stone-800 dark:text-stone-100">{t('resources.interestGuide')}</h2>
+                  <p className="text-xs text-stone-600 dark:text-stone-400">
                     {t('resources.completed')} {new Date(interestResult.completed_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                     {interestResult.recommended_jobs && (
                       <span> • {interestResult.recommended_jobs.length} {t('resources.jobSuggestions')}</span>
@@ -873,7 +873,7 @@ export default function Resources() {
         {(activeTab === 'all' || activeTab === 'documents') && coverLetters.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">
                 <FileText className="text-sky-600 dark:text-sky-400" size={18} />
                 {t('resources.coverLetters')} ({coverLetters.length})
               </h3>
@@ -899,7 +899,7 @@ export default function Resources() {
                     <>
                       <button
                         onClick={() => setPreviewModal({type: 'letter', data: letter})}
-                        className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+                        className="flex items-center gap-1 px-2 py-1 text-xs text-stone-500 dark:text-stone-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
                       >
                         <Eye size={14} />
                         {t('resources.read')}
@@ -932,7 +932,7 @@ export default function Resources() {
         {(activeTab === 'all' || activeTab === 'jobs') && savedJobs.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">
                 <BriefcaseIcon className="text-blue-600 dark:text-blue-400" size={18} />
                 {t('resources.savedJobs')} ({filteredJobs.length})
               </h3>
@@ -944,26 +944,26 @@ export default function Resources() {
                 <ChevronRight size={14} />
               </Link>
             </div>
-            <div className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 divide-y divide-slate-100 dark:divide-stone-700">
+            <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 divide-y divide-stone-100 dark:divide-stone-700">
               {filteredJobs.slice(0, activeTab === 'all' ? 5 : undefined).map((job) => {
                 const StatusIcon = statusLabelsTranslated[job.status]?.icon || Bookmark
                 return (
                   <div
                     key={job.id}
-                    className="p-3 hover:bg-slate-50 dark:hover:bg-stone-700/50 transition-colors"
+                    className="p-3 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
                   >
                     <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 ${statusLabelsTranslated[job.status]?.bg || 'bg-slate-100'} rounded-lg flex items-center justify-center flex-shrink-0`}>
-                        <StatusIcon className={`w-4 h-4 ${statusLabelsTranslated[job.status]?.color || 'text-slate-600'}`} />
+                      <div className={`w-9 h-9 ${statusLabelsTranslated[job.status]?.bg || 'bg-stone-100'} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                        <StatusIcon className={`w-4 h-4 ${statusLabelsTranslated[job.status]?.color || 'text-stone-600'}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-2">
-                          <h4 className="font-medium text-slate-800 dark:text-slate-100 text-sm truncate">{job.job_data?.headline || t('resources.jobAd')}</h4>
+                          <h4 className="font-medium text-stone-800 dark:text-stone-100 text-sm truncate">{job.job_data?.headline || t('resources.jobAd')}</h4>
                           <span className={`px-2 py-0.5 text-xs font-medium rounded-full flex-shrink-0 ${statusLabelsTranslated[job.status]?.bg} ${statusLabelsTranslated[job.status]?.color}`}>
                             {statusLabelsTranslated[job.status]?.label}
                           </span>
                         </div>
-                        <div className="flex items-center gap-3 text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                        <div className="flex items-center gap-3 text-xs text-stone-500 dark:text-stone-400 mt-0.5">
                           {job.job_data?.employer?.name && (
                             <span className="flex items-center gap-1 truncate">
                               <Building2 size={12} />
@@ -981,7 +981,7 @@ export default function Resources() {
                       <div className="flex items-center gap-1 flex-shrink-0">
                         <button
                           onClick={() => setPreviewModal({type: 'job', data: job})}
-                          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+                          className="p-1.5 text-stone-400 dark:text-stone-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
                           title={t('resources.viewDetails')}
                         >
                           <Eye size={16} />
@@ -991,7 +991,7 @@ export default function Resources() {
                             href={job.job_data.webpage_url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
+                            className="p-1.5 text-stone-400 dark:text-stone-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded transition-colors"
                             title={t('resources.openAd')}
                           >
                             <ExternalLink size={16} />
@@ -999,7 +999,7 @@ export default function Resources() {
                         )}
                         <button
                           onClick={() => handleDeleteJob(job.job_id)}
-                          className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                          className="p-1.5 text-stone-400 dark:text-stone-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
                           title="Ta bort"
                         >
                           <Trash2 size={16} />
@@ -1025,7 +1025,7 @@ export default function Resources() {
         {(activeTab === 'all' || activeTab === 'articles') && bookmarkedArticles.length > 0 && (
           <section>
             <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">
                 <BookOpen className="text-blue-600 dark:text-blue-400" size={18} />
                 {t('resources.bookmarkedArticles')} ({bookmarkedArticles.length})
               </h3>
@@ -1042,19 +1042,19 @@ export default function Resources() {
                 <Link
                   key={article.id}
                   to={`/knowledge-base/article/${article.id}`}
-                  className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 p-3 hover:shadow-md transition-all group flex items-center gap-3"
+                  className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-3 hover:shadow-md transition-all group flex items-center gap-3"
                 >
                   <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-sky-500 rounded-lg flex items-center justify-center flex-shrink-0">
                     <BookOpen className="w-4 h-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h4 className="font-medium text-slate-800 dark:text-slate-100 text-sm truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{article.title}</h4>
+                    <h4 className="font-medium text-stone-800 dark:text-stone-100 text-sm truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{article.title}</h4>
                     <div className="flex items-center gap-2 mt-0.5">
                       <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-xs rounded">
                         {article.category}
                       </span>
                       {article.readingTime && (
-                        <span className="text-xs text-slate-400 dark:text-slate-500 flex items-center gap-1">
+                        <span className="text-xs text-stone-400 dark:text-stone-500 flex items-center gap-1">
                           <Clock size={10} />
                           {article.readingTime} min
                         </span>
@@ -1067,7 +1067,7 @@ export default function Resources() {
                       e.stopPropagation()
                       handleRemoveBookmark(article.id)
                     }}
-                    className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                    className="p-1.5 text-stone-400 dark:text-stone-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -1080,7 +1080,7 @@ export default function Resources() {
         {/* Uploaded Files - Compact */}
         {(activeTab === 'all') && uploadedFiles.length > 0 && (
           <section>
-            <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3 flex items-center gap-2">
+            <h3 className="text-sm font-semibold text-stone-800 dark:text-stone-100 mb-3 flex items-center gap-2">
               <Folder className="text-amber-600 dark:text-amber-400" size={18} />
               {t('resources.uploadedFiles')} ({uploadedFiles.length})
             </h3>
@@ -1088,20 +1088,20 @@ export default function Resources() {
               {uploadedFiles.map((file) => (
                 <div
                   key={file.id}
-                  className="bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 p-3 hover:shadow-md transition-all flex items-center gap-2"
+                  className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-3 hover:shadow-md transition-all flex items-center gap-2"
                 >
                   <div className="w-8 h-8 bg-amber-100 dark:bg-amber-900/30 rounded-lg flex items-center justify-center flex-shrink-0">
                     <File className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-slate-800 dark:text-slate-100 text-sm truncate">{file.name}</p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="font-medium text-stone-800 dark:text-stone-100 text-sm truncate">{file.name}</p>
+                    <p className="text-xs text-stone-500 dark:text-stone-400">
                       {file.type === 'CV' ? 'CV' : file.type === 'COVER_LETTER' ? t('resources.coverLetter') : t('resources.other')}
                     </p>
                   </div>
                   <button
                     onClick={() => handleDeleteFile(file.id)}
-                    className="p-1.5 text-slate-400 dark:text-slate-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
+                    className="p-1.5 text-stone-400 dark:text-stone-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 rounded transition-colors"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -1143,15 +1143,15 @@ export default function Resources() {
       {previewModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPreviewModal(null)}>
           <div className="bg-white dark:bg-stone-900 rounded-xl max-w-3xl w-full max-h-[85vh] overflow-auto" onClick={e => e.stopPropagation()}>
-            <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-slate-200 dark:border-stone-700 p-3 flex items-center justify-between z-10">
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100">
+            <div className="sticky top-0 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700 p-3 flex items-center justify-between z-10">
+              <h3 className="font-semibold text-stone-800 dark:text-stone-100">
                 {previewModal.type === 'cv' && `${t('resources.preview')} - CV`}
                 {previewModal.type === 'letter' && (previewModal.data as CoverLetter).title}
                 {previewModal.type === 'job' && (previewModal.data as SavedJob).job_data?.headline}
               </h3>
               <button
                 onClick={() => setPreviewModal(null)}
-                className="p-1.5 hover:bg-slate-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
               >
                 <X size={18} />
               </button>
@@ -1162,12 +1162,12 @@ export default function Resources() {
                 return (
                   <div className="space-y-5">
                     {/* Header */}
-                    <div className="border-b border-slate-100 dark:border-stone-700 pb-4">
-                      <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100">
+                    <div className="border-b border-stone-100 dark:border-stone-700 pb-4">
+                      <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">
                         {cv.firstName} {cv.lastName}
                       </h2>
-                      {cv.title && <p className="text-slate-600 dark:text-slate-400">{cv.title}</p>}
-                      <div className="flex flex-wrap gap-3 mt-2 text-sm text-slate-500 dark:text-slate-400">
+                      {cv.title && <p className="text-stone-600 dark:text-stone-400">{cv.title}</p>}
+                      <div className="flex flex-wrap gap-3 mt-2 text-sm text-stone-500 dark:text-stone-400">
                         {cv.email && <span className="flex items-center gap-1"><Mail size={14} />{cv.email}</span>}
                         {cv.phone && <span className="flex items-center gap-1"><Phone size={14} />{cv.phone}</span>}
                         {cv.location && <span className="flex items-center gap-1"><MapPinned size={14} />{cv.location}</span>}
@@ -1177,28 +1177,28 @@ export default function Resources() {
                     {/* Summary */}
                     {cv.summary && (
                       <div>
-                        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-1">Sammanfattning</h3>
-                        <p className="text-sm text-slate-600 dark:text-slate-400">{cv.summary}</p>
+                        <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-1">Sammanfattning</h3>
+                        <p className="text-sm text-stone-600 dark:text-stone-400">{cv.summary}</p>
                       </div>
                     )}
 
                     {/* Work Experience */}
                     {cv.workExperience && cv.workExperience.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                        <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2 flex items-center gap-2">
                           <Briefcase size={16} className="text-blue-500 dark:text-blue-400" />
                           Arbetslivserfarenhet
                         </h3>
                         <div className="space-y-3">
                           {cv.workExperience.map((job, i) => (
                             <div key={i} className="pl-4 border-l-2 border-blue-200 dark:border-blue-700">
-                              <p className="font-medium text-slate-800 dark:text-slate-100">{job.title}</p>
-                              <p className="text-sm text-slate-600 dark:text-slate-400">{job.company}</p>
-                              <p className="text-xs text-slate-400 dark:text-slate-500">
+                              <p className="font-medium text-stone-800 dark:text-stone-100">{job.title}</p>
+                              <p className="text-sm text-stone-600 dark:text-stone-400">{job.company}</p>
+                              <p className="text-xs text-stone-400 dark:text-stone-500">
                                 {job.startDate} - {job.current ? 'Nuvarande' : job.endDate}
                               </p>
                               {job.description && (
-                                <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">{job.description}</p>
+                                <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">{job.description}</p>
                               )}
                             </div>
                           ))}
@@ -1209,16 +1209,16 @@ export default function Resources() {
                     {/* Education */}
                     {cv.education && cv.education.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                        <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2 flex items-center gap-2">
                           <GraduationCap size={16} className="text-sky-500 dark:text-sky-400" />
                           Utbildning
                         </h3>
                         <div className="space-y-2">
                           {cv.education.map((edu, i) => (
                             <div key={i} className="pl-4 border-l-2 border-purple-200 dark:border-purple-700">
-                              <p className="font-medium text-slate-800 dark:text-slate-100">{edu.degree}</p>
-                              <p className="text-sm text-slate-600 dark:text-slate-400">{edu.school}</p>
-                              <p className="text-xs text-slate-400 dark:text-slate-500">{edu.startDate} - {edu.endDate}</p>
+                              <p className="font-medium text-stone-800 dark:text-stone-100">{edu.degree}</p>
+                              <p className="text-sm text-stone-600 dark:text-stone-400">{edu.school}</p>
+                              <p className="text-xs text-stone-400 dark:text-stone-500">{edu.startDate} - {edu.endDate}</p>
                             </div>
                           ))}
                         </div>
@@ -1228,13 +1228,13 @@ export default function Resources() {
                     {/* Skills */}
                     {cv.skills && cv.skills.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                        <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2 flex items-center gap-2">
                           <Wrench size={16} className="text-amber-500 dark:text-amber-400" />
                           Kompetenser
                         </h3>
                         <div className="flex flex-wrap gap-1.5">
                           {cv.skills.map((skill, i) => (
-                            <span key={i} className="px-2 py-1 bg-slate-100 dark:bg-stone-700 text-slate-700 dark:text-slate-300 text-xs rounded">
+                            <span key={i} className="px-2 py-1 bg-stone-100 dark:bg-stone-700 text-stone-700 dark:text-stone-300 text-xs rounded">
                               {typeof skill === 'string' ? skill : (skill as { name: string }).name}
                             </span>
                           ))}
@@ -1245,7 +1245,7 @@ export default function Resources() {
                     {/* Languages */}
                     {cv.languages && cv.languages.length > 0 && (
                       <div>
-                        <h3 className="text-sm font-semibold text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-2">
+                        <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-300 mb-2 flex items-center gap-2">
                           <Languages size={16} className="text-blue-500 dark:text-blue-400" />
                           Språk
                         </h3>
@@ -1260,7 +1260,7 @@ export default function Resources() {
                     )}
 
                     {/* Download Buttons */}
-                    <div className="pt-4 border-t border-slate-100 dark:border-stone-700 flex gap-2">
+                    <div className="pt-4 border-t border-stone-100 dark:border-stone-700 flex gap-2">
                       <PDFExportButton
                         type="cv"
                         data={cv}
@@ -1282,8 +1282,8 @@ export default function Resources() {
               })()}
               {previewModal.type === 'letter' && (
                 <div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 whitespace-pre-wrap">{(previewModal.data as CoverLetter).content}</p>
-                  <div className="pt-3 mt-4 border-t border-slate-100 dark:border-stone-700 flex gap-2">
+                  <p className="text-sm text-stone-600 dark:text-stone-400 whitespace-pre-wrap">{(previewModal.data as CoverLetter).content}</p>
+                  <div className="pt-3 mt-4 border-t border-stone-100 dark:border-stone-700 flex gap-2">
                     <button
                       onClick={() => handleDownloadLetter(previewModal.data as CoverLetter, 'pdf')}
                       className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
@@ -1303,7 +1303,7 @@ export default function Resources() {
               )}
               {previewModal.type === 'job' && (
                 <div className="space-y-3">
-                  <p className="text-sm text-slate-600 dark:text-slate-400">{(previewModal.data as SavedJob).job_data?.description?.text}</p>
+                  <p className="text-sm text-stone-600 dark:text-stone-400">{(previewModal.data as SavedJob).job_data?.description?.text}</p>
                   {(previewModal.data as SavedJob).job_data?.webpage_url && (
                     <a
                       href={(previewModal.data as SavedJob).job_data!.webpage_url}

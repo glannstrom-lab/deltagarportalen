@@ -648,7 +648,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-16" role="status" aria-live="polite">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600 mr-3" aria-hidden="true" />
+        <Loader2 className="w-8 h-8 animate-spin text-[var(--c-text)] mr-3" aria-hidden="true" />
         <span className="text-gray-600 dark:text-gray-400">
           {isEn ? 'Loading your adaptations...' : 'Laddar dina anpassningar...'}
         </span>
@@ -669,7 +669,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
               onClick={() => setActiveView(view as typeof activeView)}
               className={cn(
                 'text-sm',
-                activeView === view && 'bg-teal-600 hover:bg-teal-700'
+                activeView === view && 'bg-[var(--c-solid)] hover:bg-[var(--c-text)]'
               )}
             >
               {view === 'select' && (isEn ? 'Select' : 'Välj')}
@@ -692,7 +692,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
               {isEn ? 'Unsaved changes' : 'Osparade ändringar'}
             </span>
           ) : lastSaved ? (
-            <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+            <span className="flex items-center gap-1 text-[var(--c-text)] dark:text-[var(--c-text)]">
               <Cloud className="w-4 h-4" />
               {isEn ? 'Saved' : 'Sparat'}
             </span>
@@ -702,7 +702,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
 
       {/* Progress Summary */}
       {totalSelected > 0 && (
-        <Card className="p-4 bg-gradient-to-r from-teal-50 to-violet-50 dark:from-teal-900/20 dark:to-violet-900/20 border border-teal-200 dark:border-teal-700">
+        <Card className="p-4 bg-gradient-to-r from-[var(--c-bg)] to-violet-50 dark:from-[var(--c-bg)]/30 dark:to-violet-900/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold text-gray-800 dark:text-gray-100">
@@ -793,8 +793,8 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
         <div className="space-y-4">
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <div className="flex items-start gap-4 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
-                <Accessibility className="w-6 h-6 text-teal-600 dark:text-teal-400" />
+              <div className="w-12 h-12 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center flex-shrink-0">
+                <Accessibility className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">
@@ -821,16 +821,16 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                       className={cn(
                         'w-full text-left p-4 rounded-xl border-2 transition-all',
                         expandedCategory === category.id
-                          ? 'border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20'
-                          : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:border-teal-300 dark:hover:border-teal-600',
-                        selectedCount > 0 && 'border-teal-300 dark:border-teal-600'
+                          ? 'border-[var(--c-solid)] dark:border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30'
+                          : 'border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]',
+                        selectedCount > 0 && 'border-[var(--c-accent)] dark:border-[var(--c-solid)]'
                       )}
                     >
                       <div className="flex items-center gap-3">
                         <div className={cn(
                           'p-2 rounded-lg',
                           selectedCount > 0
-                            ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400'
+                            ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]'
                             : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400'
                         )}>
                           <Icon className="w-5 h-5" />
@@ -843,7 +843,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                             {isEn ? catInfo.desc.en : catInfo.desc.sv}
                           </p>
                           {selectedCount > 0 && (
-                            <span className="text-xs text-teal-600 dark:text-teal-400 font-medium">
+                            <span className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] font-medium">
                               {selectedCount} {isEn ? 'selected' : 'valda'}
                             </span>
                           )}
@@ -866,7 +866,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                                 className={cn(
                                   'flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-colors',
                                   isSelected
-                                    ? 'bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-700'
+                                    ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50'
                                     : 'hover:bg-stone-50 dark:hover:bg-stone-700'
                                 )}
                               >
@@ -874,7 +874,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                                   type="checkbox"
                                   checked={isSelected}
                                   onChange={() => toggleOption(category.id, option.key)}
-                                  className="w-5 h-5 rounded border-stone-300 dark:border-stone-600 text-teal-600"
+                                  className="w-5 h-5 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)]"
                                 />
                                 <span className="text-gray-700 dark:text-gray-300 text-sm">
                                   {isEn ? option.labelEn : option.labelSv}
@@ -917,7 +917,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                   return (
                     <div key={category.id} className="border border-stone-200 dark:border-stone-700 rounded-lg p-4">
                       <div className="flex items-center gap-2 mb-3">
-                        <Icon className="w-5 h-5 text-teal-600" />
+                        <Icon className="w-5 h-5 text-[var(--c-text)]" />
                         <h4 className="font-semibold text-gray-800 dark:text-gray-100">
                           {isEn ? catInfo.en : catInfo.sv}
                         </h4>
@@ -992,7 +992,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                     className="w-full p-4 text-left flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-700"
                   >
                     <div className="flex items-center gap-3">
-                      {key === 'employer' && <Building2 className="w-5 h-5 text-teal-600" />}
+                      {key === 'employer' && <Building2 className="w-5 h-5 text-[var(--c-text)]" />}
                       {key === 'fk' && <FileText className="w-5 h-5 text-blue-600" />}
                       {key === 'union' && <Scale className="w-5 h-5 text-violet-600" />}
                       {key === 'doctor' && <Stethoscope className="w-5 h-5 text-pink-600" />}
@@ -1065,16 +1065,16 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                         {isEn ? resource.descriptionEn : resource.descriptionSv}
                       </p>
                     </div>
-                    <ExternalLink className="w-5 h-5 text-teal-600 flex-shrink-0" />
+                    <ExternalLink className="w-5 h-5 text-[var(--c-text)] flex-shrink-0" />
                   </div>
                 </a>
               ))}
             </div>
 
             {/* Rights Information */}
-            <div className="mt-6 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-200 dark:border-teal-700">
+            <div className="mt-6 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
               <div className="flex items-start gap-3">
-                <HelpCircle className="w-5 h-5 text-teal-600 flex-shrink-0 mt-0.5" />
+                <HelpCircle className="w-5 h-5 text-[var(--c-text)] flex-shrink-0 mt-0.5" />
                 <div>
                   <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">
                     {isEn ? 'Know Your Rights' : 'Känn till dina rättigheter'}
@@ -1109,7 +1109,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                   onClick={() => generateDocument('text')}
                   className="p-4 border border-stone-200 dark:border-stone-700 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors text-left"
                 >
-                  <FileText className="w-8 h-8 text-teal-600 mb-3" />
+                  <FileText className="w-8 h-8 text-[var(--c-text)] mb-3" />
                   <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
                     {isEn ? 'Simple Summary' : 'Enkel sammanfattning'}
                   </h4>

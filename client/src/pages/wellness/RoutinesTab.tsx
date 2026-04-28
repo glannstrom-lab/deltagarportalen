@@ -99,16 +99,16 @@ export default function RoutinesTab() {
         animate={{ opacity: 1, y: 0 }}
         className="grid grid-cols-2 gap-4"
       >
-        <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
+        <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Idag</p>
-              <h3 className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{completedToday}/{routines.length}</h3>
+              <h3 className="text-3xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completedToday}/{routines.length}</h3>
               <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">rutiner slutförda</p>
             </div>
             <div className="text-right">
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Andel</p>
-              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{completionPercentage}%</p>
+              <p className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completionPercentage}%</p>
             </div>
           </div>
         </Card>
@@ -138,7 +138,7 @@ export default function RoutinesTab() {
             initial={{ width: 0 }}
             animate={{ width: `${completionPercentage}%` }}
             transition={{ duration: 0.5 }}
-            className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400"
+            className="h-full bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-solid)]"
           />
         </div>
       </div>
@@ -151,13 +151,13 @@ export default function RoutinesTab() {
             <div key={day} className="text-center">
               <div className={`p-3 rounded-xl border-2 ${
                 index < 5
-                  ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20'
+                  ? 'border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30'
                   : 'border-stone-200 dark:border-stone-600 bg-stone-50 dark:bg-stone-700'
               }`}>
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{day}</span>
                 <div className="mt-2 flex justify-center gap-0.5">
                   {routines.filter(r => r.days.includes(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index])).map(() => (
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 dark:bg-emerald-500" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]/80 dark:bg-[var(--c-solid)]" />
                   ))}
                 </div>
               </div>
@@ -197,8 +197,8 @@ export default function RoutinesTab() {
                   className={cn(
                     'flex items-center gap-3 p-4 rounded-xl border-2 transition-all cursor-grab active:cursor-grabbing',
                     routine.completed
-                      ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800'
-                      : 'bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-emerald-300 dark:hover:border-emerald-700'
+                      ? 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50'
+                      : 'bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)]'
                   )}
                 >
                   <GripVertical className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
@@ -209,18 +209,18 @@ export default function RoutinesTab() {
                     onClick={() => toggleRoutine(routine.id)}
                     className={cn(
                       'w-8 h-8 rounded-xl flex items-center justify-center transition-colors flex-shrink-0',
-                      routine.completed ? 'bg-emerald-500 dark:bg-emerald-600' : 'bg-stone-100 dark:bg-stone-600 hover:bg-stone-200 dark:hover:bg-stone-500'
+                      routine.completed ? 'bg-[var(--c-solid)] dark:bg-[var(--c-solid)]' : 'bg-stone-100 dark:bg-stone-600 hover:bg-stone-200 dark:hover:bg-stone-500'
                     )}
                   >
                     <CheckCircle2 className={cn('w-5 h-5', routine.completed ? 'text-white' : 'text-gray-600 dark:text-gray-300')} />
                   </motion.button>
 
-                  <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <div className="w-8 h-8 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)]" />
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h4 className={cn('font-medium', routine.completed ? 'text-emerald-700 dark:text-emerald-400 line-through' : 'text-gray-800 dark:text-gray-100')}>
+                    <h4 className={cn('font-medium', routine.completed ? 'text-[var(--c-text)] dark:text-[var(--c-text)] line-through' : 'text-gray-800 dark:text-gray-100')}>
                       {routine.title}
                     </h4>
                     <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mt-1">
@@ -274,7 +274,7 @@ export default function RoutinesTab() {
                 value={newRoutine.title}
                 onChange={(e) => setNewRoutine(prev => ({ ...prev, title: e.target.value }))}
                 placeholder={t('wellness.routines.routineNamePlaceholder')}
-                className="flex-1 px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-200 dark:border-stone-500 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+                className="flex-1 px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-200 dark:border-stone-500 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)]/60 focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
               <input
                 type="time"
@@ -292,7 +292,7 @@ export default function RoutinesTab() {
       </Card>
 
       {/* Suggested Routines - Templates */}
-      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
+      <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.suggestedRoutines')}</h3>
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Förslagade rutiner som kan hjälpa dig få en strukturerad dag:</p>
         <div className="space-y-2">
@@ -311,14 +311,14 @@ export default function RoutinesTab() {
                   setNewRoutine({ title, time: suggestion.time.includes(':') ? suggestion.time : '09:00' })
                   setIsAdding(true)
                 }}
-                className="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-emerald-300 dark:border-emerald-700 hover:border-emerald-400 dark:hover:border-emerald-600 hover:bg-white dark:hover:bg-stone-800 transition-all text-left"
+                className="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-[var(--c-accent)] dark:border-[var(--c-solid)] hover:border-[var(--c-solid)]/60 dark:hover:border-[var(--c-solid)] hover:bg-white dark:hover:bg-stone-800 transition-all text-left"
               >
-                <Icon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-gray-800 dark:text-gray-100">{title}</p>
                   <p className="text-xs text-gray-600 dark:text-gray-300">{suggestion.time} • {suggestion.desc}</p>
                 </div>
-                <Plus className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                <Plus className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" />
               </motion.button>
             )
           })}
@@ -341,12 +341,12 @@ export default function RoutinesTab() {
 
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 border-2 border-teal-200 dark:border-teal-800 cursor-pointer hover:shadow-md transition-all"
+            className="p-4 rounded-xl bg-gradient-to-br from-[var(--c-accent)]/40 to-[var(--c-accent)]/40 dark:from-[var(--c-bg)]/40 dark:to-[var(--c-bg)]/40 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 cursor-pointer hover:shadow-md transition-all"
           >
-            <Moon className="w-6 h-6 text-teal-600 dark:text-teal-400 mb-2" />
-            <h4 className="font-semibold text-teal-900 dark:text-teal-200">Kväll-rutin</h4>
-            <p className="text-xs text-teal-800 dark:text-teal-300 mt-1">4 aktiviteter för bättre sömn</p>
-            <p className="text-xs text-teal-700 dark:text-teal-400 mt-2">20:00 - 21:30</p>
+            <Moon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mb-2" />
+            <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-text)]">Kväll-rutin</h4>
+            <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">4 aktiviteter för bättre sömn</p>
+            <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-2">20:00 - 21:30</p>
           </motion.div>
         </div>
       </Card>

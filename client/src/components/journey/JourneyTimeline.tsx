@@ -82,10 +82,10 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
   if (activities.length === 0) {
     return (
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-900 mb-4">Din resa hittills</h3>
+        <h3 className="text-lg font-semibold text-stone-900 mb-4">Din resa hittills</h3>
         <div className="text-center py-8">
-          <Activity className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-700">
+          <Activity className="w-12 h-12 text-stone-300 mx-auto mb-3" />
+          <p className="text-stone-700">
             Dina aktiviteter kommer att visas här när du börjar använda portalen.
           </p>
         </div>
@@ -96,7 +96,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="text-lg font-semibold text-slate-900">Din resa hittills</h3>
+        <h3 className="text-lg font-semibold text-stone-900">Din resa hittills</h3>
         {activities.length > maxItems && (
           <button className="text-sm text-indigo-600 hover:text-indigo-700 font-medium">
             Se alla →
@@ -107,13 +107,13 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
       <div className="space-y-6">
         {Object.entries(groupedActivities).map(([dateGroup, dateActivities]) => (
           <div key={dateGroup}>
-            <h4 className="text-sm font-medium text-slate-700 uppercase tracking-wide mb-3">
+            <h4 className="text-sm font-medium text-stone-700 uppercase tracking-wide mb-3">
               {dateGroup}
             </h4>
 
             <div className="relative pl-6 space-y-4">
               {/* Vertical Line */}
-              <div className="absolute left-2 top-2 bottom-2 w-0.5 bg-slate-200" />
+              <div className="absolute left-2 top-2 bottom-2 w-0.5 bg-stone-200" />
 
               {dateActivities.map((activity, index) => {
                 const Icon = iconMap[activity.icon || 'activity'] || Activity
@@ -136,14 +136,14 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
                       flex-1 flex items-start gap-3 p-3 rounded-lg
                       ${isMilestone || isBadge
                         ? 'bg-amber-50 border border-amber-100'
-                        : 'bg-slate-50'
+                        : 'bg-stone-50'
                       }
                     `}>
                       <div className={`
                         w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0
                         ${isMilestone || isBadge
                           ? 'bg-amber-100 text-amber-600'
-                          : 'bg-white text-slate-600'
+                          : 'bg-white text-stone-600'
                         }
                       `}>
                         <Icon className="w-4 h-4" />
@@ -151,7 +151,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
-                          <span className="font-medium text-slate-900 text-sm">
+                          <span className="font-medium text-stone-900 text-sm">
                             {activity.title}
                           </span>
                           {activity.xpEarned > 0 && (
@@ -162,7 +162,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
                         </div>
 
                         {activity.description && (
-                          <p className="text-xs text-slate-700 mt-0.5">
+                          <p className="text-xs text-stone-700 mt-0.5">
                             {activity.description}
                           </p>
                         )}
@@ -175,7 +175,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
                         )}
                       </div>
 
-                      <span className="text-xs text-slate-600 flex-shrink-0">
+                      <span className="text-xs text-stone-600 flex-shrink-0">
                         {formatTimeAgo(activity.timestamp)}
                       </span>
                     </div>

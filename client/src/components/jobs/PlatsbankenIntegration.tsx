@@ -339,28 +339,28 @@ export default function PlatsbankenIntegration() {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-stone-50">
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-20">
+      <div className="bg-white border-b border-stone-200 sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h1 className="text-2xl font-bold text-slate-800">Platsbanken</h1>
-              <p className="text-sm text-slate-700">Sök bland tusentals lediga jobb från Arbetsförmedlingen</p>
+              <h1 className="text-2xl font-bold text-stone-800">Platsbanken</h1>
+              <p className="text-sm text-stone-700">Sök bland tusentals lediga jobb från Arbetsförmedlingen</p>
             </div>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowSavedJobs(!showSavedJobs)}
                 className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                   showSavedJobs 
-                    ? 'bg-teal-100 text-teal-700' 
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)]' 
+                    : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
                 }`}
               >
                 <Bookmark size={18} />
                 Sparade jobb
                 {savedJobs.length > 0 && (
-                  <span className="bg-teal-600 text-white text-xs px-2 py-0.5 rounded-full">
+                  <span className="bg-[var(--c-solid)] text-white text-xs px-2 py-0.5 rounded-full">
                     {savedJobs.length}
                   </span>
                 )}
@@ -371,7 +371,7 @@ export default function PlatsbankenIntegration() {
           {/* Sökfält */}
           <div className="flex gap-3">
             <div className="flex-1 relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600">
+              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600">
                 <Search size={20} />
               </div>
               <input
@@ -381,17 +381,17 @@ export default function PlatsbankenIntegration() {
                 onChange={(e) => handleInputChange(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 placeholder="Sök på yrke, titel eller nyckelord..."
-                className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:border-transparent"
               />
               
               {/* Autocomplete-förslag */}
               {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-10">
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-stone-200 rounded-xl shadow-lg z-10">
                   {suggestions.map((suggestion, index) => (
                     <button
                       key={index}
                       onClick={() => selectSuggestion(suggestion)}
-                      className="w-full text-left px-4 py-2 hover:bg-slate-50 first:rounded-t-xl last:rounded-b-xl"
+                      className="w-full text-left px-4 py-2 hover:bg-stone-50 first:rounded-t-xl last:rounded-b-xl"
                     >
                       {suggestion}
                     </button>
@@ -404,14 +404,14 @@ export default function PlatsbankenIntegration() {
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-colors ${
                 showFilters 
-                  ? 'bg-teal-600 text-white' 
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-[var(--c-solid)] text-white' 
+                  : 'bg-stone-100 text-stone-700 hover:bg-stone-200'
               }`}
             >
               <Filter size={18} />
               Filter
               {(filters.municipality || filters.region || filters.employment_type) && (
-                <span className="bg-teal-800 text-white text-xs px-2 py-0.5 rounded-full">
+                <span className="bg-[var(--c-solid)] text-white text-xs px-2 py-0.5 rounded-full">
                   Active
                 </span>
               )}
@@ -420,7 +420,7 @@ export default function PlatsbankenIntegration() {
             <button
               onClick={handleSearch}
               disabled={loading}
-              className="px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-3 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? <Loader2 size={18} className="animate-spin" /> : 'Sök'}
             </button>
@@ -428,15 +428,15 @@ export default function PlatsbankenIntegration() {
 
           {/* Filter-panel */}
           {showFilters && (
-            <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+            <div className="mt-4 p-4 bg-stone-50 rounded-xl border border-stone-200">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Region */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Län</label>
+                  <label className="block text-sm font-medium text-stone-700 mb-1">Län</label>
                   <select
                     value={filters.region}
                     onChange={(e) => setFilters(prev => ({ ...prev, region: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                   >
                     <option value="">Alla län</option>
                     {regions.map(region => (
@@ -449,11 +449,11 @@ export default function PlatsbankenIntegration() {
 
                 {/* Kommun */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Kommun</label>
+                  <label className="block text-sm font-medium text-stone-700 mb-1">Kommun</label>
                   <select
                     value={filters.municipality}
                     onChange={(e) => setFilters(prev => ({ ...prev, municipality: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                   >
                     <option value="">Alla kommuner</option>
                     {municipalities.map(mun => (
@@ -466,11 +466,11 @@ export default function PlatsbankenIntegration() {
 
                 {/* Anställningstyp */}
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Anställningstyp</label>
+                  <label className="block text-sm font-medium text-stone-700 mb-1">Anställningstyp</label>
                   <select
                     value={filters.employment_type}
                     onChange={(e) => setFilters(prev => ({ ...prev, employment_type: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                   >
                     {employmentTypes.map(type => (
                       <option key={type.value} value={type.value}>
@@ -491,9 +491,9 @@ export default function PlatsbankenIntegration() {
                       ...prev, 
                       experience: e.target.checked ? false : null 
                     }))}
-                    className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
+                    className="w-4 h-4 text-[var(--c-text)] rounded focus:ring-[var(--c-solid)]"
                   />
-                  <span className="text-sm text-slate-700">Ingen erfarenhet krävs</span>
+                  <span className="text-sm text-stone-700">Ingen erfarenhet krävs</span>
                 </label>
 
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -504,23 +504,23 @@ export default function PlatsbankenIntegration() {
                       ...prev, 
                       remote: e.target.checked ? true : null 
                     }))}
-                    className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
+                    className="w-4 h-4 text-[var(--c-text)] rounded focus:ring-[var(--c-solid)]"
                   />
-                  <span className="text-sm text-slate-700">Distansarbete möjligt</span>
+                  <span className="text-sm text-stone-700">Distansarbete möjligt</span>
                 </label>
               </div>
 
               {/* Filter-actions */}
-              <div className="flex justify-between items-center mt-4 pt-4 border-t border-slate-200">
+              <div className="flex justify-between items-center mt-4 pt-4 border-t border-stone-200">
                 <button
                   onClick={clearFilters}
-                  className="text-sm text-slate-700 hover:text-slate-700"
+                  className="text-sm text-stone-700 hover:text-stone-700"
                 >
                   Rensa filter
                 </button>
                 <button
                   onClick={saveSearch}
-                  className="flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-medium"
+                  className="flex items-center gap-2 text-sm text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
                 >
                   <Bell size={16} />
                   Spara sökning med jobbalert
@@ -532,28 +532,28 @@ export default function PlatsbankenIntegration() {
           {/* Sparade sökningar */}
           {savedSearches.length > 0 && !showSavedJobs && (
             <div className="mt-4 flex flex-wrap gap-2">
-              <span className="text-sm text-slate-700 py-1">Sparade sökningar:</span>
+              <span className="text-sm text-stone-700 py-1">Sparade sökningar:</span>
               {savedSearches.map(search => (
                 <div
                   key={search.id}
-                  className="flex items-center gap-1 px-3 py-1 bg-slate-100 rounded-full text-sm"
+                  className="flex items-center gap-1 px-3 py-1 bg-stone-100 rounded-full text-sm"
                 >
                   <button
                     onClick={() => activateSearch(search)}
-                    className="text-slate-700 hover:text-teal-600"
+                    className="text-stone-700 hover:text-[var(--c-text)]"
                   >
                     {search.name}
                   </button>
                   <button
                     onClick={() => toggleAlert(search.id)}
-                    className={`p-0.5 rounded ${search.notify ? 'text-teal-600' : 'text-slate-600 hover:text-slate-600'}`}
+                    className={`p-0.5 rounded ${search.notify ? 'text-[var(--c-text)]' : 'text-stone-600 hover:text-stone-600'}`}
                     title={search.notify ? 'Stäng av jobbalert' : 'Aktivera jobbalert'}
                   >
                     <Bell size={12} fill={search.notify ? 'currentColor' : 'none'} />
                   </button>
                   <button
                     onClick={() => deleteSavedSearch(search.id)}
-                    className="p-0.5 text-slate-600 hover:text-red-500"
+                    className="p-0.5 text-stone-600 hover:text-red-500"
                   >
                     <X size={12} />
                   </button>
@@ -567,7 +567,7 @@ export default function PlatsbankenIntegration() {
       {/* Notification */}
       {notification && (
         <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 animate-in slide-in-from-top-2 ${
-          notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-slate-800 text-white'
+          notification.type === 'success' ? 'bg-green-500 text-white' : 'bg-stone-800 text-white'
         }`}>
           {notification.type === 'success' ? <Check size={18} /> : <Bell size={18} />}
           {notification.message}
@@ -595,25 +595,25 @@ export default function PlatsbankenIntegration() {
           /* Sparade jobb-vy */
           <div>
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-slate-800">
+              <h2 className="text-xl font-semibold text-stone-800">
                 Sparade jobb ({savedJobs.length})
               </h2>
               <button
                 onClick={() => setShowSavedJobs(false)}
-                className="text-slate-700 hover:text-slate-700"
+                className="text-stone-700 hover:text-stone-700"
               >
                 <X size={20} />
               </button>
             </div>
 
             {savedJobs.length === 0 ? (
-              <div className="text-center py-12 bg-white rounded-xl border border-slate-200">
-                <Bookmark size={48} className="text-slate-300 mx-auto mb-4" />
-                <h3 className="text-lg font-medium text-slate-700 mb-2">Inga sparade jobb</h3>
-                <p className="text-slate-700 mb-4">Spara intressanta jobb för att hitta dem lättare senare</p>
+              <div className="text-center py-12 bg-white rounded-xl border border-stone-200">
+                <Bookmark size={48} className="text-stone-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-stone-700 mb-2">Inga sparade jobb</h3>
+                <p className="text-stone-700 mb-4">Spara intressanta jobb för att hitta dem lättare senare</p>
                 <button
                   onClick={() => setShowSavedJobs(false)}
-                  className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                  className="px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)]"
                 >
                   Sök jobb
                 </button>
@@ -621,14 +621,14 @@ export default function PlatsbankenIntegration() {
             ) : (
               <div className="space-y-4">
                 {savedJobs.map(savedJob => (
-                  <div key={savedJob.id} className="bg-white rounded-xl p-5 border border-slate-200">
+                  <div key={savedJob.id} className="bg-white rounded-xl p-5 border border-stone-200">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-slate-800 text-lg">
+                        <h3 className="font-semibold text-stone-800 text-lg">
                           {savedJob.jobData.headline}
                         </h3>
-                        <p className="text-slate-600">{savedJob.jobData.employer?.name}</p>
-                        <div className="flex items-center gap-4 mt-2 text-sm text-slate-700">
+                        <p className="text-stone-600">{savedJob.jobData.employer?.name}</p>
+                        <div className="flex items-center gap-4 mt-2 text-sm text-stone-700">
                           <span className="flex items-center gap-1">
                             <MapPin size={14} />
                             {savedJob.jobData.workplace_address?.municipality || 'Ort ej angiven'}
@@ -642,7 +642,7 @@ export default function PlatsbankenIntegration() {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => openApplication(savedJob.jobData)}
-                          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                          className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)]"
                         >
                           <ExternalLink size={16} />
                           Ansök
@@ -666,13 +666,13 @@ export default function PlatsbankenIntegration() {
             {/* Resultat-info */}
             {jobs.length > 0 && (
               <div className="flex items-center justify-between mb-4">
-                <p className="text-slate-600">
+                <p className="text-stone-600">
                   Visar <span className="font-semibold">{jobs.length}</span> av{' '}
                   <span className="font-semibold">{totalJobs.toLocaleString('sv-SE')}</span> jobb
                 </p>
                 <button
                   onClick={saveSearch}
-                  className="flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700"
+                  className="flex items-center gap-2 text-sm text-[var(--c-text)] hover:text-[var(--c-text)]"
                 >
                   <Bell size={16} />
                   Skapa jobbalert
@@ -702,7 +702,7 @@ export default function PlatsbankenIntegration() {
                 <button
                   onClick={loadMore}
                   disabled={loading}
-                  className="px-6 py-3 bg-white border border-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-50 disabled:opacity-50"
+                  className="px-6 py-3 bg-white border border-stone-200 text-stone-700 rounded-xl font-medium hover:bg-stone-50 disabled:opacity-50"
                 >
                   {loading ? (
                     <span className="flex items-center gap-2">
@@ -719,11 +719,11 @@ export default function PlatsbankenIntegration() {
             {/* Tomt tillstånd */}
             {!loading && jobs.length === 0 && !error && (
               <div className="text-center py-12">
-                <Search size={64} className="text-slate-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-700 mb-2">
+                <Search size={64} className="text-stone-300 mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-stone-700 mb-2">
                   Börja söka jobb
                 </h3>
-                <p className="text-slate-700 max-w-md mx-auto mb-6">
+                <p className="text-stone-700 max-w-md mx-auto mb-6">
                   Ange ett sökord ovan för att hitta lediga jobb från Arbetsförmedlingen. 
                   Du kan filtrera på plats, anställningstyp och mer.
                 </p>
@@ -737,7 +737,7 @@ export default function PlatsbankenIntegration() {
                         setFilters(prev => ({ ...prev, q: term }));
                         searchJobs(true);
                       }}
-                      className="px-4 py-2 bg-slate-100 text-slate-700 rounded-full hover:bg-slate-200 transition-colors"
+                      className="px-4 py-2 bg-stone-100 text-stone-700 rounded-full hover:bg-stone-200 transition-colors"
                     >
                       {term}
                     </button>
@@ -750,13 +750,13 @@ export default function PlatsbankenIntegration() {
             {error && jobs.length === 0 && (
               <div className="text-center py-12">
                 <AlertCircle size={64} className="text-red-300 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-slate-700 mb-2">
+                <h3 className="text-xl font-semibold text-stone-700 mb-2">
                   Något gick fel
                 </h3>
-                <p className="text-slate-700 mb-4">{error}</p>
+                <p className="text-stone-700 mb-4">{error}</p>
                 <button
                   onClick={() => searchJobs(true)}
-                  className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700"
+                  className="px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)]"
                 >
                   Försök igen
                 </button>

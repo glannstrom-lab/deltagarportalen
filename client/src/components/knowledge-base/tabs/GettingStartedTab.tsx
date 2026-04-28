@@ -145,10 +145,10 @@ export default function GettingStartedTab() {
             <Rocket className="w-6 h-6 text-blue-600" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">
+            <h2 className="text-xl font-bold text-stone-900">
               {t('knowledgeBase.gettingStarted.title')}
             </h2>
-            <p className="text-slate-600 mt-1">
+            <p className="text-stone-600 mt-1">
               {t('knowledgeBase.gettingStarted.description', { completed: completedCount, total: steps.length })}
             </p>
 
@@ -194,9 +194,9 @@ export default function GettingStartedTab() {
                       w-6 h-6 rounded-full border-2 flex items-center justify-center
                       ${isNext
                         ? 'border-blue-500 bg-blue-50'
-                        : 'border-slate-300'}
+                        : 'border-stone-300'}
                     `}>
-                      <Icon className={`w-3 h-3 ${isNext ? 'text-blue-600' : 'text-slate-600'}`} />
+                      <Icon className={`w-3 h-3 ${isNext ? 'text-blue-600' : 'text-stone-600'}`} />
                     </div>
                   )}
                 </div>
@@ -207,11 +207,11 @@ export default function GettingStartedTab() {
                     <div>
                       <h3 className={`
                         font-semibold text-lg
-                        ${step.isCompleted ? 'text-slate-700 line-through' : 'text-slate-900'}
+                        ${step.isCompleted ? 'text-stone-700 line-through' : 'text-stone-900'}
                       `}>
                         {step.title}
                       </h3>
-                      <p className="text-slate-600 mt-1">
+                      <p className="text-stone-600 mt-1">
                         {step.description}
                       </p>
                       {step.isCompleted && (
@@ -242,16 +242,16 @@ export default function GettingStartedTab() {
 
       {/* Completion celebration */}
       {completedCount === steps.length && (
-        <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-100">
+        <Card className="bg-gradient-to-r from-emerald-50 to-[var(--c-bg)] border-emerald-100">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-emerald-600" />
             </div>
             <div>
-              <h3 className="font-bold text-slate-900">
+              <h3 className="font-bold text-stone-900">
                 {t('knowledgeBase.gettingStarted.allComplete')} 🎉
               </h3>
-              <p className="text-slate-600">
+              <p className="text-stone-600">
                 {t('knowledgeBase.gettingStarted.allCompleteDescription')}
               </p>
             </div>

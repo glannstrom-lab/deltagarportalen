@@ -232,7 +232,7 @@ export function SupportSection() {
               onChange={(e) => updateConsultantData({
                 internship: { ...preferences.consultant_data?.internship, active: e.target.checked }
               })}
-              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
+              className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] dark:bg-stone-700"
             />
             <span className="text-sm text-stone-700 dark:text-stone-300">
               {t('profile.support.ongoingInternship')}
@@ -300,7 +300,7 @@ export function SupportSection() {
                   steps[i] = { ...steps[i], completed: e.target.checked }
                   updateConsultantData({ nextSteps: steps })
                 }}
-                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
+                className="w-4 h-4 rounded border-stone-300 dark:border-stone-600 text-[var(--c-text)] dark:bg-stone-700"
               />
               <label
                 htmlFor={`step-${i}`}
@@ -328,7 +328,7 @@ export function SupportSection() {
             <input
               type="text"
               placeholder={t('profile.support.newActivity')}
-              className="flex-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
+              className="flex-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-600 rounded-lg text-sm text-stone-900 dark:text-stone-100 placeholder:text-stone-400 dark:placeholder:text-stone-500 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]/20 focus:border-[var(--c-solid)]"
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                   const steps = [...(preferences.consultant_data?.nextSteps || []), {
@@ -354,7 +354,7 @@ export function SupportSection() {
                   input.value = ''
                 }
               }}
-              className="px-3 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg text-sm font-medium transition-colors"
+              className="px-3 py-2 bg-[var(--c-solid)] hover:bg-[var(--c-solid)] text-white rounded-lg text-sm font-medium transition-colors"
             >
               <Plus className="w-4 h-4" />
             </button>

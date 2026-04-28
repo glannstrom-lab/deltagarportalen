@@ -37,12 +37,12 @@ export interface WidgetFilterItem {
 
 // Widget-färger - varje widget har sin egen distinkta färg för enkel igenkänning
 export const availableWidgets: WidgetFilterItem[] = [
-  { id: 'cv', label: 'Ditt CV', icon: FileText, color: 'text-teal-600 bg-teal-50 border-teal-200' },
+  { id: 'cv', label: 'Ditt CV', icon: FileText, color: 'text-[var(--c-text)] bg-[var(--c-bg)] border-[var(--c-accent)]/60' },
   { id: 'coverLetter', label: 'Brev', icon: Mail, color: 'text-rose-600 bg-rose-50 border-rose-200' },
   { id: 'jobSearch', label: 'Jobb', icon: Briefcase, color: 'text-blue-600 bg-blue-50 border-blue-200' },
   { id: 'applications', label: 'Ansökningar', icon: Send, color: 'text-orange-600 bg-orange-50 border-orange-200' },
   { id: 'career', label: 'Karriär', icon: Target, color: 'text-sky-600 bg-sky-50 border-sky-200' },
-  { id: 'interests', label: 'Intressen', icon: Compass, color: 'text-teal-600 bg-teal-50 border-teal-200' },
+  { id: 'interests', label: 'Intressen', icon: Compass, color: 'text-[var(--c-text)] bg-[var(--c-bg)] border-[var(--c-accent)]/60' },
   { id: 'exercises', label: 'Övningar', icon: Dumbbell, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { id: 'diary', label: 'Dagbok', icon: BookHeart, color: 'text-rose-600 bg-rose-50 border-rose-200' },
   { id: 'wellness', label: 'Hälsa', icon: Sparkles, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
@@ -67,15 +67,15 @@ export const WidgetFilter = memo(function WidgetFilter({
   const totalCount = availableWidgets.length
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4 mb-4 sm:mb-6 w-full max-w-full overflow-hidden">
+    <div className="bg-white rounded-xl border border-stone-200 p-3 sm:p-4 mb-4 sm:mb-6 w-full max-w-full overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-2 sm:mb-3">
         <div className="flex items-center gap-2">
-          <LayoutGrid size={16} className="text-slate-700 sm:w-[18px] sm:h-[18px]" />
-          <h3 className="text-sm font-medium text-slate-700">
+          <LayoutGrid size={16} className="text-stone-700 sm:w-[18px] sm:h-[18px]" />
+          <h3 className="text-sm font-medium text-stone-700">
             Visa moduler
           </h3>
-          <span className="text-xs text-slate-600">
+          <span className="text-xs text-stone-600">
             ({visibleCount}/{totalCount})
           </span>
         </div>
@@ -86,10 +86,10 @@ export const WidgetFilter = memo(function WidgetFilter({
           >
             Alla
           </button>
-          <span className="text-slate-300">|</span>
+          <span className="text-stone-300">|</span>
           <button
             onClick={onHideAll}
-            className="text-xs text-slate-700 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded transition-colors"
+            className="text-xs text-stone-700 hover:text-stone-700 px-2 py-1 hover:bg-stone-100 rounded transition-colors"
           >
             Dölj
           </button>
@@ -110,7 +110,7 @@ export const WidgetFilter = memo(function WidgetFilter({
                 'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shrink-0',
                 isVisible
                   ? `${widget.color} border border-current opacity-100`
-                  : 'bg-slate-100 text-slate-600 border border-transparent opacity-60 hover:opacity-80'
+                  : 'bg-stone-100 text-stone-600 border border-transparent opacity-60 hover:opacity-80'
               )}
               title={isVisible ? 'Klicka för att dölja' : 'Klicka för att visa'}
             >
@@ -125,7 +125,7 @@ export const WidgetFilter = memo(function WidgetFilter({
       </div>
 
       {/* Hint - endast desktop */}
-      <p className="hidden sm:block text-xs text-slate-600 mt-3">
+      <p className="hidden sm:block text-xs text-stone-600 mt-3">
         Klicka på en modul för att visa eller dölja den. Ändra storlek på varje widget med ikonen uppe till höger.
       </p>
     </div>

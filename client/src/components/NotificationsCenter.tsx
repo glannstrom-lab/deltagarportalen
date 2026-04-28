@@ -93,7 +93,7 @@ export default function NotificationsCenter() {
       {/* Bell button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-40 flex items-center gap-2 px-4 py-3 bg-white text-slate-700 rounded-full shadow-lg hover:shadow-xl transition-all border border-slate-200"
+        className="fixed bottom-6 left-6 z-40 flex items-center gap-2 px-4 py-3 bg-white text-stone-700 rounded-full shadow-lg hover:shadow-xl transition-all border border-stone-200"
       >
         <div className="relative">
           <Bell className="w-5 h-5" />
@@ -113,16 +113,16 @@ export default function NotificationsCenter() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
           <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden">
             {/* Header */}
-            <div className="p-6 border-b border-slate-200 flex items-center justify-between">
+            <div className="p-6 border-b border-stone-200 flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="p-2 bg-teal-100 rounded-xl">
-                  <Bell className="w-5 h-5 text-teal-600" />
+                <div className="p-2 bg-[var(--c-accent)]/40 rounded-xl">
+                  <Bell className="w-5 h-5 text-[var(--c-text)]" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-slate-900">
+                  <h2 className="text-xl font-bold text-stone-900">
                     {showSettings ? 'Jobbbevakningar' : 'Notifikationer'}
                   </h2>
-                  <p className="text-sm text-slate-700">
+                  <p className="text-sm text-stone-700">
                     {showSettings 
                       ? `${alerts.length} bevakningar` 
                       : `${unreadCount} olästa`
@@ -133,14 +133,14 @@ export default function NotificationsCenter() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowSettings(!showSettings)}
-                  className={`p-2 rounded-lg transition-colors ${showSettings ? 'bg-teal-100 text-teal-600' : 'hover:bg-slate-100'}`}
+                  className={`p-2 rounded-lg transition-colors ${showSettings ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)]' : 'hover:bg-stone-100'}`}
                   title={showSettings ? 'Visa notifikationer' : 'Hantera bevakningar'}
                 >
                   <Settings className="w-5 h-5" />
                 </button>
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="p-2 hover:bg-slate-100 rounded-lg"
+                  className="p-2 hover:bg-stone-100 rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -153,54 +153,54 @@ export default function NotificationsCenter() {
                 // Settings / Alerts view
                 <div className="p-6 space-y-6">
                   {/* Create new alert */}
-                  <div className="p-4 bg-slate-50 rounded-xl">
-                    <h3 className="font-semibold text-slate-900 mb-3">Skapa ny bevakning</h3>
+                  <div className="p-4 bg-stone-50 rounded-xl">
+                    <h3 className="font-semibold text-stone-900 mb-3">Skapa ny bevakning</h3>
                     <div className="flex gap-2">
                       <input
                         type="text"
                         value={newAlertQuery}
                         onChange={(e) => setNewAlertQuery(e.target.value)}
                         placeholder="T.ex. 'utvecklare', 'sjuksköterska', 'lärare'..."
-                        className="flex-1 px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500"
+                        className="flex-1 px-4 py-2 border border-stone-200 rounded-lg focus:ring-2 focus:ring-[var(--c-solid)]"
                         onKeyPress={(e) => e.key === 'Enter' && handleCreateAlert()}
                       />
                       <button
                         onClick={handleCreateAlert}
                         disabled={!newAlertQuery.trim()}
-                        className="px-4 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 disabled:opacity-50 flex items-center gap-2"
+                        className="px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg font-medium hover:bg-[var(--c-text)] disabled:opacity-50 flex items-center gap-2"
                       >
                         <Plus className="w-4 h-4" />
                         Lägg till
                       </button>
                     </div>
-                    <p className="text-xs text-slate-700 mt-2">
+                    <p className="text-xs text-stone-700 mt-2">
                       Du får notifikationer när nya jobb matchar din sökning. Vi kontrollerar var 5:e minut.
                     </p>
                   </div>
 
                   {/* Alerts list */}
                   <div className="space-y-3">
-                    <h3 className="font-semibold text-slate-900">Dina bevakningar</h3>
+                    <h3 className="font-semibold text-stone-900">Dina bevakningar</h3>
                     {alerts.length === 0 ? (
-                      <p className="text-slate-700 text-center py-8">
+                      <p className="text-stone-700 text-center py-8">
                         Inga bevakningar än. Skapa en ovan för att börja få notifikationer!
                       </p>
                     ) : (
                       alerts.map((alert) => (
                         <div
                           key={alert.id}
-                          className="flex items-center justify-between p-4 border border-slate-200 rounded-xl hover:border-slate-300"
+                          className="flex items-center justify-between p-4 border border-stone-200 rounded-xl hover:border-stone-300"
                         >
                           <div>
-                            <h4 className="font-medium text-slate-900">{alert.name}</h4>
-                            <p className="text-sm text-slate-700">
+                            <h4 className="font-medium text-stone-900">{alert.name}</h4>
+                            <p className="text-sm text-stone-700">
                               Senast kontrollerad: {new Date(alert.lastChecked).toLocaleString('sv-SE')}
                             </p>
                           </div>
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => handleCheckNow(alert)}
-                              className="px-3 py-1.5 text-sm text-teal-600 hover:bg-teal-50 rounded-lg"
+                              className="px-3 py-1.5 text-sm text-[var(--c-text)] hover:bg-[var(--c-bg)] rounded-lg"
                             >
                               Kontrollera nu
                             </button>
@@ -218,25 +218,25 @@ export default function NotificationsCenter() {
                 </div>
               ) : (
                 // Notifications view
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-stone-100">
                   {notifications.length === 0 ? (
                     <div className="text-center py-12">
-                      <Bell className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                      <p className="text-slate-700">Inga notifikationer än</p>
-                      <p className="text-sm text-slate-600 mt-1">
+                      <Bell className="w-12 h-12 text-stone-300 mx-auto mb-3" />
+                      <p className="text-stone-700">Inga notifikationer än</p>
+                      <p className="text-sm text-stone-600 mt-1">
                         Skapa en jobbbevakning för att få notifikationer
                       </p>
                     </div>
                   ) : (
                     <>
                       {unreadCount > 0 && (
-                        <div className="p-3 bg-slate-50 flex items-center justify-between">
-                          <span className="text-sm text-slate-600">
+                        <div className="p-3 bg-stone-50 flex items-center justify-between">
+                          <span className="text-sm text-stone-600">
                             {unreadCount} olästa notifikationer
                           </span>
                           <button
                             onClick={handleMarkAllAsRead}
-                            className="text-sm text-teal-600 hover:text-teal-700 font-medium"
+                            className="text-sm text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
                           >
                             Markera alla som lästa
                           </button>
@@ -245,8 +245,8 @@ export default function NotificationsCenter() {
                       {notifications.map((notification) => (
                         <div
                           key={notification.id}
-                          className={`p-4 hover:bg-slate-50 transition-colors cursor-pointer ${
-                            !notification.read ? 'bg-teal-50/30' : ''
+                          className={`p-4 hover:bg-stone-50 transition-colors cursor-pointer ${
+                            !notification.read ? 'bg-[var(--c-bg)]/30' : ''
                           }`}
                           onClick={() => {
                             handleMarkAsRead(notification.id)
@@ -254,15 +254,15 @@ export default function NotificationsCenter() {
                           }}
                         >
                           <div className="flex items-start gap-3">
-                            <div className={`p-2 rounded-lg ${!notification.read ? 'bg-teal-100' : 'bg-slate-100'}`}>
-                              <Briefcase className={`w-4 h-4 ${!notification.read ? 'text-teal-600' : 'text-slate-700'}`} />
+                            <div className={`p-2 rounded-lg ${!notification.read ? 'bg-[var(--c-accent)]/40' : 'bg-stone-100'}`}>
+                              <Briefcase className={`w-4 h-4 ${!notification.read ? 'text-[var(--c-text)]' : 'text-stone-700'}`} />
                             </div>
                             <div className="flex-1">
-                              <h4 className={`font-medium ${!notification.read ? 'text-slate-900' : 'text-slate-700'}`}>
+                              <h4 className={`font-medium ${!notification.read ? 'text-stone-900' : 'text-stone-700'}`}>
                                 {notification.title}
                               </h4>
-                              <p className="text-sm text-slate-600">{notification.employer}</p>
-                              <div className="flex items-center gap-3 mt-1 text-xs text-slate-700">
+                              <p className="text-sm text-stone-600">{notification.employer}</p>
+                              <div className="flex items-center gap-3 mt-1 text-xs text-stone-700">
                                 {notification.municipality && (
                                   <span className="flex items-center gap-1">
                                     <MapPin size={12} />
@@ -276,7 +276,7 @@ export default function NotificationsCenter() {
                               </div>
                             </div>
                             {!notification.read && (
-                              <div className="w-2 h-2 bg-teal-500 rounded-full mt-2" />
+                              <div className="w-2 h-2 bg-[var(--c-solid)] rounded-full mt-2" />
                             )}
                           </div>
                         </div>
@@ -296,12 +296,12 @@ export default function NotificationsCenter() {
           <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6">
             <div className="flex items-start justify-between mb-4">
               <div>
-                <h2 className="text-xl font-bold text-slate-900">{selectedJob.headline}</h2>
-                <p className="text-slate-600">{selectedJob.employer.name}</p>
+                <h2 className="text-xl font-bold text-stone-900">{selectedJob.headline}</h2>
+                <p className="text-stone-600">{selectedJob.employer.name}</p>
               </div>
               <button
                 onClick={() => setSelectedJob(null)}
-                className="p-2 hover:bg-slate-100 rounded-lg"
+                className="p-2 hover:bg-stone-100 rounded-lg"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -319,7 +319,7 @@ export default function NotificationsCenter() {
                 href={selectedJob.application_details.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700"
+                className="mt-6 inline-flex items-center gap-2 px-6 py-3 bg-[var(--c-solid)] text-white rounded-lg font-medium hover:bg-[var(--c-text)]"
               >
                 <Briefcase className="w-4 h-4" />
                 Ansök nu

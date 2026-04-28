@@ -155,7 +155,7 @@ export default function StorageTest() {
       case 'success': return <Check className="w-6 h-6 text-green-500" />
       case 'error': return <X className="w-6 h-6 text-red-500" />
       case 'running': return <Loader2 className="w-6 h-6 text-blue-500 animate-spin" />
-      default: return <div className="w-6 h-6 rounded-full border-2 border-slate-300" />
+      default: return <div className="w-6 h-6 rounded-full border-2 border-stone-300" />
     }
   }
 
@@ -163,25 +163,25 @@ export default function StorageTest() {
   const hasErrors = results.some(r => r.status === 'error')
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen bg-stone-50 p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-slate-800 mb-2">🧪 Storage-test</h1>
-        <p className="text-slate-600 mb-6">
+        <h1 className="text-3xl font-bold text-stone-800 mb-2">🧪 Storage-test</h1>
+        <p className="text-stone-600 mb-6">
           Testar om Supabase Storage är korrekt konfigurerat för CV-bilder.
         </p>
 
         {/* User info */}
-        <div className="bg-white rounded-xl p-4 mb-6 shadow-sm border border-slate-200">
-          <p className="text-sm text-slate-700">Inloggad användare:</p>
-          <p className="font-medium text-slate-800">{user?.email || 'Inte inloggad'}</p>
-          <p className="text-xs text-slate-600 mt-1">User ID: {user?.id || 'N/A'}</p>
+        <div className="bg-white rounded-xl p-4 mb-6 shadow-sm border border-stone-200">
+          <p className="text-sm text-stone-700">Inloggad användare:</p>
+          <p className="font-medium text-stone-800">{user?.email || 'Inte inloggad'}</p>
+          <p className="text-xs text-stone-600 mt-1">User ID: {user?.id || 'N/A'}</p>
         </div>
 
         {/* Run button */}
         <button
           onClick={runTests}
           disabled={isRunning}
-          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-slate-400 text-white py-3 px-6 rounded-xl font-semibold mb-8 flex items-center justify-center gap-2 transition-colors"
+          className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-stone-400 text-white py-3 px-6 rounded-xl font-semibold mb-8 flex items-center justify-center gap-2 transition-colors"
         >
           {isRunning ? (
             <>
@@ -205,22 +205,22 @@ export default function StorageTest() {
                 result.status === 'success' ? 'border-green-500' :
                 result.status === 'error' ? 'border-red-500' :
                 result.status === 'running' ? 'border-blue-500' :
-                'border-slate-300'
+                'border-stone-300'
               }`}
             >
               <div className="flex items-start gap-3">
                 {getStatusIcon(result.status)}
                 <div className="flex-1">
-                  <h3 className="font-semibold text-slate-800">{result.name}</h3>
+                  <h3 className="font-semibold text-stone-800">{result.name}</h3>
                   <p className={`text-sm ${
                     result.status === 'error' ? 'text-red-600' :
                     result.status === 'success' ? 'text-green-600' :
-                    'text-slate-600'
+                    'text-stone-600'
                   }`}>
                     {result.message}
                   </p>
                   {result.details && (
-                    <pre className="mt-2 p-2 bg-slate-100 rounded text-xs text-slate-700 overflow-x-auto whitespace-pre-wrap">
+                    <pre className="mt-2 p-2 bg-stone-100 rounded text-xs text-stone-700 overflow-x-auto whitespace-pre-wrap">
                       {result.details}
                     </pre>
                   )}
@@ -242,7 +242,7 @@ export default function StorageTest() {
             </p>
             {testImage && (
               <div className="mt-3">
-                <p className="text-sm text-slate-600 mb-2">Testbild som laddades upp:</p>
+                <p className="text-sm text-stone-600 mb-2">Testbild som laddades upp:</p>
                 <img 
                   src={testImage} 
                   alt="Test" 
@@ -273,9 +273,9 @@ export default function StorageTest() {
         )}
 
         {/* Manual test section */}
-        <div className="mt-8 p-4 bg-slate-100 rounded-xl">
-          <h3 className="font-semibold text-slate-800 mb-2">Manuell test</h3>
-          <p className="text-sm text-slate-600 mb-3">
+        <div className="mt-8 p-4 bg-stone-100 rounded-xl">
+          <h3 className="font-semibold text-stone-800 mb-2">Manuell test</h3>
+          <p className="text-sm text-stone-600 mb-3">
             Om automatiska tester misslyckas, prova att ladda upp en bild manuellt:
           </p>
           <a 

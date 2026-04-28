@@ -35,48 +35,48 @@ function ContactCard({
   return (
     <Card className="p-4 hover:shadow-md transition-shadow group">
       <div className="flex items-start gap-3">
-        <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center flex-shrink-0">
-          <User className="w-6 h-6 text-slate-600" />
+        <div className="w-12 h-12 bg-gradient-to-br from-stone-100 to-stone-200 rounded-xl flex items-center justify-center flex-shrink-0">
+          <User className="w-6 h-6 text-stone-600" />
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between">
             <div>
-              <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+              <h3 className="font-semibold text-stone-900 flex items-center gap-2">
                 {contact.name}
                 {contact.isPrimary && (
-                  <span className="px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-medium">
+                  <span className="px-2 py-0.5 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded text-xs font-medium">
                     Primär
                   </span>
                 )}
               </h3>
               {contact.title && (
-                <p className="text-sm text-slate-700">{contact.title}</p>
+                <p className="text-sm text-stone-700">{contact.title}</p>
               )}
             </div>
 
             <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
-                className="p-1.5 hover:bg-slate-100 rounded opacity-0 group-hover:opacity-100 transition-opacity"
+                className="p-1.5 hover:bg-stone-100 rounded opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                <MoreVertical className="w-4 h-4 text-slate-600" />
+                <MoreVertical className="w-4 h-4 text-stone-600" />
               </button>
 
               {showMenu && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-                  <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-20 min-w-[150px]">
+                  <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[150px]">
                     <button
                       onClick={() => { onMarkContacted(contact.id); setShowMenu(false) }}
-                      className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                      className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
                     >
                       <MessageSquare className="w-4 h-4" />
                       Markera kontaktad
                     </button>
                     <button
                       onClick={() => { onEdit(contact); setShowMenu(false) }}
-                      className="w-full text-left px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 flex items-center gap-2"
+                      className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
                     >
                       <Edit2 className="w-4 h-4" />
                       Redigera
@@ -99,7 +99,7 @@ function ContactCard({
             {contact.email && (
               <a
                 href={`mailto:${contact.email}`}
-                className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-sky-600"
+                className="flex items-center gap-1.5 text-sm text-stone-600 hover:text-sky-600"
               >
                 <Mail className="w-4 h-4" />
                 {contact.email}
@@ -108,7 +108,7 @@ function ContactCard({
             {contact.phone && (
               <a
                 href={`tel:${contact.phone}`}
-                className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-sky-600"
+                className="flex items-center gap-1.5 text-sm text-stone-600 hover:text-sky-600"
               >
                 <Phone className="w-4 h-4" />
                 {contact.phone}
@@ -119,7 +119,7 @@ function ContactCard({
                 href={contact.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-sky-600"
+                className="flex items-center gap-1.5 text-sm text-stone-600 hover:text-sky-600"
               >
                 <Linkedin className="w-4 h-4" />
                 LinkedIn
@@ -129,12 +129,12 @@ function ContactCard({
 
           {/* Notes */}
           {contact.notes && (
-            <p className="text-sm text-slate-700 mt-2 italic">"{contact.notes}"</p>
+            <p className="text-sm text-stone-700 mt-2 italic">"{contact.notes}"</p>
           )}
 
           {/* Last contacted */}
           {contact.lastContactedAt && (
-            <p className="text-xs text-slate-600 mt-2 flex items-center gap-1">
+            <p className="text-xs text-stone-600 mt-2 flex items-center gap-1">
               <Clock className="w-3 h-3" />
               Senast kontaktad: {daysSinceContact === 0 ? 'Idag' : `${daysSinceContact} dagar sedan`}
             </p>
@@ -202,8 +202,8 @@ export function ApplicationsContacts() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">Kontakter</h2>
-          <p className="text-sm text-slate-700">
+          <h2 className="text-lg font-semibold text-stone-900">Kontakter</h2>
+          <p className="text-sm text-stone-700">
             {contacts.length} kontakt{contacts.length !== 1 ? 'er' : ''} sparade
           </p>
         </div>
@@ -211,11 +211,11 @@ export function ApplicationsContacts() {
 
       {contacts.length === 0 ? (
         <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <User className="w-8 h-8 text-slate-600" />
+          <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <User className="w-8 h-8 text-stone-600" />
           </div>
-          <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga kontakter än</h3>
-          <p className="text-slate-700 mb-4 max-w-md mx-auto">
+          <h3 className="text-xl font-semibold text-stone-700 mb-2">Inga kontakter än</h3>
+          <p className="text-stone-700 mb-4 max-w-md mx-auto">
             Lägg till kontakter från dina ansökningar för att hålla koll på rekryterare och kontaktpersoner.
           </p>
         </Card>

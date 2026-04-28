@@ -24,13 +24,13 @@ export function WhyItMattersInline({
   className 
 }: Omit<WhyItMattersProps, 'variant' | 'title'>) {
   return (
-    <div className={cn("text-sm text-slate-700 mt-2 space-y-1", className)}>
+    <div className={cn("text-sm text-stone-700 mt-2 space-y-1", className)}>
       <div className="flex items-start gap-2">
         <Lightbulb size={14} className="text-amber-500 mt-0.5 flex-shrink-0" />
         <span>{reason}</span>
       </div>
       {statistic && (
-        <div className="flex items-center gap-2 ml-5 text-xs text-slate-600">
+        <div className="flex items-center gap-2 ml-5 text-xs text-stone-600">
           <span>📊</span>
           <span>{statistic}</span>
         </div>
@@ -60,7 +60,7 @@ export function WhyItMattersTooltip({
         onMouseEnter={() => setIsOpen(true)}
         onMouseLeave={() => setIsOpen(false)}
         onClick={() => setIsOpen(!isOpen)}
-        className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-teal-600 transition-colors"
+        className="inline-flex items-center gap-1 text-xs text-stone-600 hover:text-[var(--c-text)] transition-colors"
       >
         <HelpCircle size={14} />
         <span>Varför?</span>
@@ -72,13 +72,13 @@ export function WhyItMattersTooltip({
             initial={{ opacity: 0, y: 5, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 5, scale: 0.95 }}
-            className="absolute z-50 left-0 top-full mt-2 w-64 p-3 bg-white rounded-xl shadow-lg border border-slate-200"
+            className="absolute z-50 left-0 top-full mt-2 w-64 p-3 bg-white rounded-xl shadow-lg border border-stone-200"
           >
-            <div className="text-sm text-slate-700">
-              <p className="font-medium text-slate-900 mb-1">{title}</p>
+            <div className="text-sm text-stone-700">
+              <p className="font-medium text-stone-900 mb-1">{title}</p>
               <p className="mb-2">{reason}</p>
               {statistic && (
-                <p className="text-xs text-slate-700 mb-1">📊 {statistic}</p>
+                <p className="text-xs text-stone-700 mb-1">📊 {statistic}</p>
               )}
               {benefit && (
                 <p className="text-xs text-emerald-600 font-medium">✨ {benefit}</p>
@@ -104,7 +104,7 @@ export function WhyItMattersExpandable({
     <div className="mt-3">
       <button
         onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-medium transition-colors"
+        className="flex items-center gap-2 text-sm text-[var(--c-text)] hover:text-[var(--c-text)] font-medium transition-colors"
       >
         <Lightbulb size={16} />
         <span>Varför är detta viktigt?</span>
@@ -124,17 +124,17 @@ export function WhyItMattersExpandable({
             exit={{ height: 0, opacity: 0 }}
             className="overflow-hidden"
           >
-            <div className="mt-3 p-4 bg-gradient-to-br from-teal-50 to-sky-50 rounded-xl border border-teal-100">
+            <div className="mt-3 p-4 bg-gradient-to-br from-[var(--c-bg)] to-sky-50 rounded-xl border border-[var(--c-accent)]/40">
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm flex-shrink-0">
-                  <Lightbulb size={16} className="text-teal-500" />
+                  <Lightbulb size={16} className="text-[var(--c-solid)]" />
                 </div>
                 <div className="flex-1">
-                  <h4 className="font-semibold text-slate-800 mb-1">{title}</h4>
-                  <p className="text-sm text-slate-600 mb-2">{reason}</p>
+                  <h4 className="font-semibold text-stone-800 mb-1">{title}</h4>
+                  <p className="text-sm text-stone-600 mb-2">{reason}</p>
                   
                   {statistic && (
-                    <div className="flex items-center gap-2 text-xs text-slate-700 mb-1">
+                    <div className="flex items-center gap-2 text-xs text-stone-700 mb-1">
                       <span className="w-5 h-5 rounded-full bg-blue-100 flex items-center justify-center">📊</span>
                       <span>{statistic}</span>
                     </div>
@@ -151,7 +151,7 @@ export function WhyItMattersExpandable({
                   onClick={() => setIsExpanded(false)}
                   className="w-6 h-6 rounded-full hover:bg-white/50 flex items-center justify-center transition-colors"
                 >
-                  <X size={14} className="text-slate-600" />
+                  <X size={14} className="text-stone-600" />
                 </button>
               </div>
             </div>
@@ -189,10 +189,10 @@ export function WhyItMattersBadge({
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 5 }}
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-slate-800 text-white text-xs rounded-lg"
+            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 p-2 bg-stone-800 text-white text-xs rounded-lg"
           >
             {reason}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800" />
+            <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-stone-800" />
           </motion.div>
         )}
       </AnimatePresence>

@@ -513,7 +513,7 @@ export function CoverLetterWrite() {
                   <div
                     className={cn(
                       'w-10 h-10 rounded-full flex items-center justify-center transition-colors',
-                      isActive && 'bg-teal-600 text-white',
+                      isActive && 'bg-[var(--c-solid)] text-white',
                       isCompleted && 'bg-emerald-500 text-white',
                       !isActive && !isCompleted && 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400'
                     )}
@@ -523,7 +523,7 @@ export function CoverLetterWrite() {
                   </div>
                   <span className={cn(
                     'text-xs mt-2 font-medium hidden sm:block',
-                    isActive && 'text-teal-600 dark:text-teal-400',
+                    isActive && 'text-[var(--c-text)] dark:text-[var(--c-text)]',
                     isCompleted && 'text-emerald-600 dark:text-emerald-400',
                     !isActive && !isCompleted && 'text-stone-600 dark:text-stone-400'
                   )}>
@@ -748,8 +748,8 @@ function Step1JobAndTemplate({
       {/* Template selection */}
       <div>
         <div className="flex items-start gap-4 mb-4">
-          <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center shrink-0">
-            <FileText className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+          <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg flex items-center justify-center shrink-0">
+            <FileText className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
@@ -772,8 +772,8 @@ function Step1JobAndTemplate({
       {/* Job selection */}
       <div>
         <div className="flex items-start gap-4 mb-4">
-          <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center shrink-0">
-            <Building2 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+          <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg flex items-center justify-center shrink-0">
+            <Building2 className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
@@ -805,8 +805,8 @@ function Step1JobAndTemplate({
                     className={cn(
                       'p-3 rounded-lg border text-left transition-all',
                       formData.selectedJobId === job.job_id
-                        ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
-                        : 'border-stone-200 dark:border-stone-700 hover:border-teal-200'
+                        ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
+                        : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60'
                     )}
                   >
                     <div className="flex items-center gap-3">
@@ -818,7 +818,7 @@ function Step1JobAndTemplate({
                         </div>
                       </div>
                       {formData.selectedJobId === job.job_id && (
-                        <Check size={16} className="text-teal-600 shrink-0" />
+                        <Check size={16} className="text-[var(--c-text)] shrink-0" />
                       )}
                     </div>
                   </button>
@@ -841,8 +841,8 @@ function Step1JobAndTemplate({
           className={cn(
             'w-full p-3 rounded-lg border transition-all text-left',
             formData.useManualInput
-              ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
-              : 'border-stone-200 dark:border-stone-700 hover:border-teal-200'
+              ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
+              : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60'
           )}
         >
           <div className="flex items-center gap-3">
@@ -867,7 +867,7 @@ function Step1JobAndTemplate({
                 value={formData.company}
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                 placeholder="t.ex. Acme AB"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none"
               />
             </div>
             <div>
@@ -880,7 +880,7 @@ function Step1JobAndTemplate({
                 value={formData.jobTitle}
                 onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
                 placeholder="t.ex. Projektledare"
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none"
               />
             </div>
             <div>
@@ -893,7 +893,7 @@ function Step1JobAndTemplate({
                 onChange={(e) => setFormData({ ...formData, jobAd: e.target.value })}
                 placeholder="Klistra in texten från jobbannonsen..."
                 rows={3}
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none resize-none"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-none"
               />
             </div>
           </div>
@@ -936,8 +936,8 @@ function Step2Write({
   return (
     <div className="space-y-6">
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 bg-teal-100 dark:bg-teal-900/30 rounded-lg flex items-center justify-center shrink-0">
-          <Target className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+        <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-lg flex items-center justify-center shrink-0">
+          <Target className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
         </div>
         <div>
           <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100">
@@ -980,8 +980,8 @@ function Step2Write({
               className={cn(
                 'p-3 rounded-lg border text-left transition-all',
                 formData.tone === tone.id
-                  ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20'
-                  : 'border-stone-200 dark:border-stone-700 hover:border-teal-200'
+                  ? 'border-[var(--c-solid)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20'
+                  : 'border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)]/60'
               )}
             >
               <div className="font-medium text-stone-800 dark:text-stone-100 text-sm">{tone.label}</div>
@@ -1002,7 +1002,7 @@ function Step2Write({
           onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
           placeholder="t.ex. Jag är särskilt intresserad av er satsning på hållbarhet..."
           rows={3}
-          className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none resize-none"
+          className="w-full px-3 py-2 rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-none"
         />
       </div>
 
@@ -1039,7 +1039,7 @@ function Step2Write({
           <textarea
             value={editedLetter}
             onChange={(e) => setEditedLetter(e.target.value)}
-            className="w-full px-4 py-3 min-h-[300px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none resize-y"
+            className="w-full px-4 py-3 min-h-[300px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-y"
           />
           <div className="flex gap-2 mt-2">
             <Button variant="outline" size="sm" onClick={onGenerate} disabled={isGenerating} className="gap-1">
@@ -1133,7 +1133,7 @@ function Step3ReviewSave({
         <textarea
           value={editedLetter}
           onChange={(e) => setEditedLetter(e.target.value)}
-          className="w-full px-4 py-3 min-h-[250px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none resize-y"
+          className="w-full px-4 py-3 min-h-[250px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-y"
         />
       </div>
 

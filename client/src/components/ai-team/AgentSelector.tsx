@@ -137,7 +137,7 @@ export function AgentSelector({ className }: AgentSelectorProps) {
             className={cn(
               'relative flex flex-col items-center p-3 sm:p-4 rounded-xl',
               'transition-all duration-200',
-              'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-teal-500',
+              'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--c-solid)]',
               isSelected
                 ? cn(
                     'bg-white dark:bg-stone-800',

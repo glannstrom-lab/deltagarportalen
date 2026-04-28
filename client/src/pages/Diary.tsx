@@ -110,7 +110,7 @@ function AchievementBanner() {
       emoji: '✍️',
       title: t('diary.achievements.thousandWords.title'),
       description: t('diary.achievements.thousandWords.description'),
-      color: 'from-sky-50 to-teal-50 dark:from-sky-900/30 dark:to-teal-900/30 border-sky-200 dark:border-sky-800'
+      color: 'from-sky-50 to-[var(--c-bg)] dark:from-sky-900/30 dark:to-[var(--c-bg)]/40 border-sky-200 dark:border-sky-800'
     }
   } else if (longestStreak >= 14) {
     achievement = {
