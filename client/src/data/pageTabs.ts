@@ -53,7 +53,6 @@ export const cvBuilderTabDefs = [
 // Cover Letter tab definitions with i18n keys
 export const coverLetterPageTabDefs = [
   { id: 'generator', labelKey: 'pageTabs.coverLetter.generator', path: '/cover-letter', icon: Sparkles },
-  { id: 'templates', labelKey: 'pageTabs.coverLetter.templates', path: '/cover-letter/templates', icon: FileText },
   { id: 'saved', labelKey: 'pageTabs.coverLetter.saved', path: '/cover-letter/saved', icon: Bookmark },
 ]
 
@@ -103,7 +102,6 @@ export const cvBuilderTabs: Tab[] = [
 // Cover Letter tabs - backwards compatibility
 export const coverLetterTabs: Tab[] = [
   { id: 'generator', label: 'Generator', path: '/cover-letter', icon: Sparkles },
-  { id: 'templates', label: 'Mallar', path: '/cover-letter/templates', icon: FileText },
   { id: 'saved', label: 'Sparade brev', path: '/cover-letter/saved', icon: Bookmark },
 ]
 

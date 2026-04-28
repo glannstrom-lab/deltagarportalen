@@ -11,7 +11,6 @@ import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
 import { CoverLetterWrite } from '@/components/cover-letter/CoverLetterWrite'
 import { CoverLetterMyLetters } from '@/components/cover-letter/CoverLetterMyLetters'
-import { CoverLetterTemplates } from '@/components/cover-letter/CoverLetterTemplates'
 import { Mail } from '@/components/ui/icons'
 
 export default function CoverLetterPage() {
@@ -82,7 +81,6 @@ export default function CoverLetterPage() {
         <Routes>
           <Route path="/" element={<CoverLetterWrite />} />
           <Route path="/my-letters" element={<CoverLetterMyLetters />} />
-          <Route path="/templates" element={<CoverLetterTemplates />} />
           <Route path="*" element={<Navigate to="/cover-letter" replace />} />
         </Routes>
       </div>

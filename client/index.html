@@ -11,9 +11,10 @@
     <meta name="theme-color" content="#4f46e5">
     
     <!-- Security Headers (Note: frame-ancestors and X-Frame-Options must be set via HTTP headers, not meta tags) -->
-    <!-- CSP: Strict policy - unsafe-inline needed for Vite/React inline styles, but no unsafe-eval -->
-    <!-- TODO: In production, serve CSP via HTTP headers with nonce for stronger security -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://translate.google.com https://*.googleapis.com https://*.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob: https://*.public.blob.vercel-storage.com https://www.google.com https://translate.google.com https://*.gstatic.com; connect-src 'self' https://*.supabase.co https://*.arbetsformedlingen.se https://jobsearch.api.jobtechdev.se wss://*.supabase.co https://*.public.blob.vercel-storage.com https://*.googleapis.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests;">
+    <!-- CSP: 'wasm-unsafe-eval' krävs av @react-pdf/renderer (yoga-layout kompilerar WASM).
+         data: i connect-src krävs av samma — WASM:en hämtas som data: URL.
+         frame-ancestors flyttat till HTTP-header (vercel.json) eftersom <meta> ignorerar det. -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://translate.google.com https://*.googleapis.com https://*.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://*.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https: blob: https://*.public.blob.vercel-storage.com https://www.google.com https://translate.google.com https://*.gstatic.com; connect-src 'self' data: https://*.supabase.co https://*.arbetsformedlingen.se https://jobsearch.api.jobtechdev.se wss://*.supabase.co https://*.public.blob.vercel-storage.com https://*.googleapis.com; base-uri 'self'; form-action 'self'; object-src 'none'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="X-XSS-Protection" content="0">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
