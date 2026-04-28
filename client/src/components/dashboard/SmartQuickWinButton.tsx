@@ -4,19 +4,16 @@
  */
 import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Sparkles, 
-  X, 
+import {
+  Sparkles,
+  X,
   Clock,
   Sun,
-  CloudRain,
   Moon,
   Flame,
   Calendar,
   Zap,
   ChevronRight,
-  Cloud,
-  Wind,
   Coffee,
   Target,
   TrendingUp
@@ -57,12 +54,9 @@ function getCurrentContext() {
   return { hour, dayOfWeek, isWeekend, timeOfDay }
 }
 
-// Mock väder (i produktion skulle detta hämtas från API)
-function getWeatherContext() {
-  // Simulerat - slumpmässigt väder för demo
-  const weathers = ['sunny', 'cloudy', 'rainy', 'snowy'] as const
-  return weathers[Math.floor(Math.random() * weathers.length)]
-}
+// Vädermock borttagen 2026-04-28 — slumpmässigt fake-väder vilseledde
+// användare. Återinför som riktig väder-API-integration när det finns ett
+// faktiskt behov (kandidater: SMHI öppna data, OpenWeatherMap).
 
 export function SmartQuickWinButton() {
   const [isOpen, setIsOpen] = useState(false)
@@ -72,7 +66,6 @@ export function SmartQuickWinButton() {
   const { data } = useDashboardData()
 
   const context = getCurrentContext()
-  const weather = getWeatherContext()
 
   // Load last login date from cloud
   useEffect(() => {
@@ -116,24 +109,10 @@ export function SmartQuickWinButton() {
       })
     }
 
-    // 2. Väderbaserade förslag
-    if (weather === 'rainy') {
-      wins.push({
-        id: 'rainy-reading',
-        title: 'Läs en inspirerande artikel',
-        description: 'Perfekt väder för att lära sig något nytt',
-        timeEstimate: '5 min',
-        energyLevel: 'low',
-        icon: <CloudRain size={18} />,
-        link: '/knowledge-base',
-        color: 'bg-blue-100 text-blue-700 border-blue-200',
-        context: '🌧️ Perfekt inomhusaktivitet',
-        priority: 80,
-        whyItMatters: 'Regniga dagar är perfekta för inlärning',
-      })
-    }
+    // (Väderbaserade förslag borttagna — krävde mock-väder. Återinför med riktig
+    //  väder-API om vi vill ha kontextuella förslag baserat på utomhusförhållanden.)
 
-    // 3. Streak-räddare (om streak håller på att brytas)
+    // 3. Streak-räddare (om streak håller på att brytes)
     const streakDays = data?.activity?.streakDays || 0
     const today = new Date().toDateString()
 
@@ -164,7 +143,7 @@ export function SmartQuickWinButton() {
         energyLevel: 'medium',
         icon: <Target size={18} />,
         link: '/cv',
-        color: 'bg-teal-100 text-teal-700 border-teal-200',
+        color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-[var(--c-accent)]/60',
         context: `📈 ${data.cv.progress}% klart`,
         priority: 90,
         whyItMatters: 'Att slutföra påbörjade uppgifter ger en skön känsla',
@@ -240,7 +219,7 @@ export function SmartQuickWinButton() {
       })
       .sort((a, b) => b.priority - a.priority)
       .slice(0, 5)
-  }, [context, weather, energyLevel, data, lastLoginDate])
+  }, [context, energyLevel, data, lastLoginDate])
 
   const handleComplete = (id: string) => {
     setCompletedId(id)
@@ -269,8 +248,8 @@ export function SmartQuickWinButton() {
         whileTap={{ scale: 0.95 }}
         className={cn(
           "fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
-          "bg-gradient-to-r from-teal-500 to-sky-600 text-white font-medium",
-          "hover:shadow-xl hover:shadow-teal-500/25 transition-shadow"
+          "bg-gradient-to-r from-[var(--c-solid)] to-sky-600 text-white font-medium",
+          "hover:shadow-xl hover:transition-shadow"
         )}
       >
         <Sparkles size={18} />
@@ -297,35 +276,28 @@ export function SmartQuickWinButton() {
               className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto"
             >
               {/* Header */}
-              <div className="sticky top-0 bg-white border-b border-slate-100 p-5 rounded-t-3xl">
+              <div className="sticky top-0 bg-white border-b border-stone-100 p-5 rounded-t-3xl">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-800">{getGreeting()}</h3>
-                    <p className="text-sm text-slate-700">
+                    <h3 className="text-lg font-bold text-stone-800">{getGreeting()}</h3>
+                    <p className="text-sm text-stone-700">
                       Här är vad vi föreslår för dig just nu
                     </p>
                   </div>
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors"
+                    className="w-8 h-8 rounded-full hover:bg-stone-100 flex items-center justify-center transition-colors"
                   >
-                    <X size={18} className="text-slate-600" />
+                    <X size={18} className="text-stone-600" />
                   </button>
                 </div>
 
                 {/* Kontext-indikatorer */}
                 <div className="flex gap-2 mt-3">
-                  <span className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-600">
+                  <span className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-stone-100 text-stone-600">
                     <Clock size={12} />
-                    {context.timeOfDay === 'morning' ? 'Morgon' : 
+                    {context.timeOfDay === 'morning' ? 'Morgon' :
                      context.timeOfDay === 'afternoon' ? 'Eftermiddag' : 'Kväll'}
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-xs px-2 py-1 rounded-full bg-slate-100 text-slate-600">
-                    {weather === 'sunny' ? <Sun size={12} /> : 
-                     weather === 'rainy' ? <CloudRain size={12} /> : 
-                     <Cloud size={12} />}
-                    {weather === 'sunny' ? 'Soligt' : 
-                     weather === 'rainy' ? 'Regnigt' : 'Molnigt'}
                   </span>
                 </div>
               </div>
@@ -370,7 +342,7 @@ export function SmartQuickWinButton() {
                             {win.icon}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="font-semibold text-slate-800 group-hover:text-current transition-colors">
+                            <h4 className="font-semibold text-stone-800 group-hover:text-current transition-colors">
                               {win.title}
                             </h4>
                             <p className="text-sm opacity-80 line-clamp-2">
@@ -392,10 +364,10 @@ export function SmartQuickWinButton() {
               </div>
 
               {/* Footer */}
-              <div className="p-5 border-t border-slate-100 text-center">
+              <div className="p-5 border-t border-stone-100 text-center">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-sm text-slate-700 hover:text-slate-700 transition-colors"
+                  className="text-sm text-stone-700 hover:text-stone-700 transition-colors"
                 >
                   Kanske senare
                 </button>

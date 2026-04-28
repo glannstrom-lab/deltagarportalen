@@ -5,6 +5,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Sparkles, X } from '@/components/ui/icons';
+import { chatWithAI } from '@/services/aiApi';
 
 interface Message {
   id: string;
@@ -46,41 +47,48 @@ export const CareerCoach: React.FC = () => {
     };
 
     setMessages(prev => [...prev, userMessage]);
+    const userInput = input;
     setInput('');
     setLoading(true);
 
-    // Simulera AI-svar (fallback tills Edge Function är deployad)
-    setTimeout(() => {
-      const aiResponse = getFallbackResponse(input);
-      
+    // Anropa riktig AI via /api/ai chatbot-endpoint.
+    // Tidigare användes en setTimeout-mock med 4 hårdkodade keyword-svar
+    // ("getFallbackResponse") som låtsades vara AI — borttagen 2026-04-28.
+    try {
+      // Bygg historik i format som API:t förväntar (svenska fältnamn)
+      const historik = messages
+        .filter(m => m.id !== 'welcome')
+        .slice(-6)  // håll prompten kort — senaste 6 meddelanden
+        .map(m => ({ roll: m.role, innehall: m.content }));
+
+      const response = await chatWithAI({ meddelande: userInput, historik });
+      const aiText = typeof response === 'string'
+        ? response
+        : (response as { result?: string; svar?: string; message?: string }).result
+          || (response as { result?: string; svar?: string; message?: string }).svar
+          || (response as { result?: string; svar?: string; message?: string }).message
+          || 'Jag har inget svar att ge just nu — kan du formulera om frågan?';
+
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: aiResponse,
+        content: aiText,
         timestamp: new Date(),
       };
-
       setMessages(prev => [...prev, assistantMessage]);
+    } catch (err) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        role: 'assistant',
+        content: err instanceof Error
+          ? `Tyvärr kunde jag inte svara just nu: ${err.message}`
+          : 'Tyvärr kunde jag inte svara just nu. Försök igen om en stund.',
+        timestamp: new Date(),
+      };
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setLoading(false);
-    }, 1000);
-  };
-
-  const getFallbackResponse = (userInput: string): string => {
-    const lower = userInput.toLowerCase();
-    
-    if (lower.includes('cv') || lower.includes('meritförteckning')) {
-      return 'För ett starkt CV, se till att:\n\n1. Anpassa det för varje jobb\n2. Använd konkreta siffror och resultat\n3. Håll det max 2 sidor\n4. Använd nyckelord från jobbannonsen\n\nVill du gå till CV-byggaren?';
     }
-    
-    if (lower.includes('intervju')) {
-      return 'Inför intervjun:\n\n• Förbered dig med STAR-metoden\n• Researcha företaget\n• Förbered frågor att ställa\n• Öva på vanliga frågor\n\nVill du se vår intervjuguides?';
-    }
-    
-    if (lower.includes('jobb') || lower.includes('söka')) {
-      return 'Tips för jobbsökning:\n\n• Sök bredare än bara din titel\n• Använd ditt nätverk\n• Skräddarsy varje ansökan\n• Följ upp efter 1 vecka\n\nGå till Jobbsök för att börja!';
-    }
-    
-    return 'Det är en bra fråga! För att ge dig bästa råden, berätta mer om din situation och vad du söker för typ av jobb.';
   };
 
   if (!isOpen) {
