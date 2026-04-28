@@ -368,6 +368,41 @@ export async function saveInterviewSession(session: InterviewSession): Promise<v
 }
 
 /**
+ * Phase 3 / DATA-01 — save session AND persist its score + breakdown.
+ * The score is stored on interview_sessions.score (NUMERIC(4,1)) and
+ * score_breakdown (JSONB) — both added by migration 20260429_interview_score.sql.
+ *
+ * Existing `saveInterviewSession(session)` remains the no-score path for
+ * call-sites that have not yet computed a score.
+ */
+export async function saveInterviewSessionWithScore(
+  session: InterviewSession,
+  score: number | null,
+  breakdown?: Record<string, unknown>
+): Promise<void> {
+  try {
+    const created = await interviewSessionsApi.create({
+      mock_interview_id: session.mockInterviewId,
+      start_time: session.startTime,
+      end_time: session.endTime,
+      answers: session.answers,
+      completed: session.completed,
+    } as Parameters<typeof interviewSessionsApi.create>[0])
+    // Only persist the score if one was provided — preserves null-default semantics
+    if (score !== null && created?.id) {
+      await interviewSessionsApi.update(created.id, {
+        score,
+        score_breakdown: breakdown ?? null,
+      })
+    }
+  } catch (error) {
+    console.error('Fel vid sparande av intervjusession med poäng:', error)
+    // No localStorage fallback for the scored variant — DB is the source of truth for DATA-01
+    throw error
+  }
+}
+
+/**
  * Hämta alla intervjusessioner (från molnet!)
  */
 interface InterviewSessionDB {
