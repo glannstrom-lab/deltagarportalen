@@ -83,3 +83,8 @@ personal/
 
 # Windows artifacts
 nul
+
+# Test outputs
+client/coverage/
+playwright-report/
+test-results/
