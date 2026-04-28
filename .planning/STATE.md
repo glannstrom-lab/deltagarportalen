@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-data-wiring-wcag/03-01-db-perf-migrations-traceability-PLAN.md
-last_updated: "2026-04-28T21:06:44.295Z"
+stopped_at: Completed 03-data-wiring-wcag/03-02-hub-summary-loader-PLAN.md
+last_updated: "2026-04-28T21:14:55.818Z"
 last_activity: 2026-04-28 — Plan 01-03 sidebar refactor completed
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 15
-  completed_plans: 11
+  completed_plans: 12
   percent: 80
 ---
 
@@ -60,6 +60,7 @@ Progress: [████████░░] 80%
 | Phase 02-static-widget-grid P04 | 6 | 3 tasks | 6 files |
 | Phase 02-static-widget-grid P05 | 8 | 3 tasks | 3 files |
 | Phase 03-data-wiring-wcag P01 | 4 | 4 tasks | 4 files |
+| Phase 03-data-wiring-wcag P02 | 5 | 3 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,9 @@ Progress: [████████░░] 80%
 - [Phase 03-01]: interview_sessions uses completed_at TIMESTAMPTZ (nullable) not a boolean completed column — Plan 02 hub-loader must filter on completed_at IS NOT NULL
 - [Phase 03-01]: salary_data and international_targets tables absent from live DB — SalaryWidget and InternationalWidget stay in empty-state mode in Phase 3, wire deferred to Phase 5
 - [Phase 03-01]: Hub-summary Promise.all approach confirmed viable: cumulative 4.211ms PASS, no RPC migration needed for v1.0
+- [Phase 03-02]: interview_sessions filter uses .not('completed_at', 'is', null) — schema discovery from Plan 01 applied (not .eq('completed', true))
+- [Phase 03-02]: salary_data / international_targets excluded from Promise.all — tables absent from live DB, widgets stay in empty-state mode for Phase 3
+- [Phase 03-02]: JobsokDataProvider wraps all PageLayout children — aria-live region preserved inside provider (Pitfall D compliant)
 
 ### Pending Todos
 
@@ -107,6 +111,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T21:06:44.293Z
-Stopped at: Completed 03-data-wiring-wcag/03-01-db-perf-migrations-traceability-PLAN.md
+Last session: 2026-04-28T21:14:55.815Z
+Stopped at: Completed 03-data-wiring-wcag/03-02-hub-summary-loader-PLAN.md
 Resume file: None
