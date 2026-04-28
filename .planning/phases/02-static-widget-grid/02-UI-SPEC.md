@@ -74,6 +74,7 @@ Source: nav-hub-sketch.html `.kpi-big { font-size: 32px }`, `.kpi-mid { font-siz
 **Declared sizes (4) and weights (2):**
 - Sizes: 32px, 22px, 13px, 12px
 - Weights: 400 (regular) and 700 (bold) — 600 is not used; widget titles previously at 13px/600 are 13px/700 (visual difference negligible at this size)
+- **Exception:** size-toggle button labels (S/M/L) use `font-size: 9px` — single-character micro control on an 18×18px button, not a content typographic role. Documented here to prevent re-flagging.
 
 **Section heading:**
 - 12px, weight 700, uppercase, letter-spacing 0.06em, color `--c-text`
@@ -370,7 +371,7 @@ Skeleton bars: `bg-stone-200 animate-pulse rounded` — standard Tailwind utilit
 | Mina ansökningar | — (no footer in default M) | — |
 | Spontanansökan | — (link only: "+ Lägg till →") | — |
 | Lön & förhandling | — (no footer in M) | — |
-| Internationellt | — (link only: "Utforska →") | — |
+| Internationellt | — (link only: "Utforska länder →") | — |
 | Anpassa vy (header) | "Anpassa vy" | — |
 
 Source: nav-hub-sketch.html widget footer sections.
