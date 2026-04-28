@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed 01-02-hub-pages-and-routes-PLAN.md — ready for 01-03-sidebar
+last_updated: "2026-04-28T18:03:38.879Z"
+last_activity: 2026-04-28 — Plan 01-01 navigation-refactor completed
+progress:
+  total_phases: 5
+  completed_phases: 0
+  total_plans: 5
+  completed_plans: 2
+  percent: 40
+---
+
 # State — Deltagarportalen
 
 ## Project Reference
@@ -10,26 +26,31 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 ## Current Position
 
 Phase: 1 of 5 (Hub Navigation Shell)
-Plan: 1 of 5 in current phase
+Plan: 2 of 5 in current phase
 Status: In progress
-Last activity: 2026-04-28 — Plan 01-01 navigation-refactor completed
+Last activity: 2026-04-28 — Plan 01-02 hub pages and routes completed
 
-Progress: [█░░░░░░░░░] 10%
+Progress: [████░░░░░░] 40%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: ~2 min
-- Total execution time: ~2 min
+- Total plans completed: 2
+- Average duration: ~5 min
+- Total execution time: ~10 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 - Hub Navigation Shell | 1/5 | ~2 min | ~2 min |
+| 1 - Hub Navigation Shell | 2/5 | ~10 min | ~5 min |
 
-**Recent Trend:** 1 plan completed 2026-04-28
+**Recent Trend:** 2 plans completed 2026-04-28
+
+| Plan | Duration | Tasks | Files |
+|------|----------|-------|-------|
+| Phase 01-hub-navigation-shell P01 | ~2 min | 2 tasks | 3 files |
+| Phase 01-hub-navigation-shell P02 | ~8 min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -43,6 +64,8 @@ Progress: [█░░░░░░░░░] 10%
 - [v1.0 pre-planning]: react-grid-layout introduced in v1.1 only — Phases 1-4 use plain CSS grid
 - [01-01]: pageToHub built by explicit memberPaths iteration (not URL prefix matching) per PITFALLS.md Pitfall 2
 - [01-01]: Oversikt hub memberPaths includes '/' so legacy bookmarks resolve cleanly before redirect plan ships
+- [Phase 01-02]: Hub routes added as peers inside existing RootRoute block (not a new layout wrapper) per ARCHITECTURE.md Anti-Pattern 3
+- [Phase 01-02]: isHubNavEnabled() evaluated inline in JSX — flag is build-time env constant, no runtime state needed
 
 ### Pending Todos
 
@@ -56,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28
-Stopped at: Completed 01-01-navigation-refactor-PLAN.md — ready for 01-02-hub-pages-and-routes
+Last session: 2026-04-28T18:03:38.875Z
+Stopped at: Completed 01-02-hub-pages-and-routes-PLAN.md — ready for 01-03-sidebar
 Resume file: None

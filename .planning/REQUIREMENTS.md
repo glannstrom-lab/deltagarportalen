@@ -12,7 +12,7 @@ Hubbarna ersätter den platta 27-sidors-navigationen med 5 domän-orienterade hu
 - [x] **NAV-01**: Användaren ser och navigerar via 5 hubbar (Översikt, Söka Jobb, Karriär, Resurser, Min Vardag) i sidebaren
 - [x] **NAV-02**: Användaren ser aktiv hubbs undersidor expanderade i sidebaren
 - [ ] **NAV-03**: Mobilanvändare har 5-fliks bottom-nav på hubb-nivå
-- [ ] **NAV-04**: Alla 27 befintliga deep-links fungerar oförändrat efter migrering (smoke-tested)
+- [x] **NAV-04**: Alla 27 befintliga deep-links fungerar oförändrat efter migrering (smoke-tested)
 - [x] **NAV-05**: Rollout styrs av environment-flagga (`VITE_HUB_NAV_ENABLED`); båda navigationerna kan köras parallellt under övergång
 
 ### Widget-grund (WIDG)
@@ -91,7 +91,7 @@ Vilka faser täcker vilka requirements.
 | NAV-01 | Phase 1 | Complete |
 | NAV-02 | Phase 1 | Complete |
 | NAV-03 | Phase 1 | Pending |
-| NAV-04 | Phase 1 | Pending |
+| NAV-04 | Phase 1 | Complete |
 | NAV-05 | Phase 1 | Complete |
 | WIDG-01 | Phase 2 | Pending |
 | WIDG-02 | Phase 2 | Pending |

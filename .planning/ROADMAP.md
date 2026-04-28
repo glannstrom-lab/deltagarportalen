@@ -78,7 +78,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Hub Navigation Shell | 0/5 | Planned | - |
+| 1. Hub Navigation Shell | 2/5 | In Progress|  |
 | 2. Static Widget Grid | 0/TBD | Not started | - |
 | 3. Data Wiring + WCAG | 0/TBD | Not started | - |
 | 4. Layout Persistence + Hide/Show | 0/TBD | Not started | - |
