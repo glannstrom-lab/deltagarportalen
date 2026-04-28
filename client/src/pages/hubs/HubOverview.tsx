@@ -1,13 +1,27 @@
-import { PageLayout } from '@/components/layout/PageLayout'
+import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { PageLayout } from '@/components/layout/PageLayout'
+import { HubGrid } from '@/components/widgets/HubGrid'
+import { WIDGET_REGISTRY, type WidgetId } from '@/components/widgets/registry'
+import { getDefaultLayout } from '@/components/widgets/defaultLayouts'
+import type { WidgetSize } from '@/components/widgets/types'
+
+const HUB_ID = 'oversikt' as const
 
 /**
- * Översikt hub — placeholder.
- * Phase 1 ships only the navigation shell. Widgets land in Phase 2 (WIDG-01..03).
- * Domain: action (drives --c-* tokens via PageLayout's data-domain attribute).
+ * Översikt hub — Phase 2 stub (1 placeholder widget via HubGrid).
+ * Full widget set lands in Phase 5 (HUB-02).
  */
 export default function HubOverview() {
   const { t } = useTranslation()
+  const layout = getDefaultLayout(HUB_ID)
+  const [sizes, setSizes] = useState<Record<string, WidgetSize>>(() =>
+    Object.fromEntries(layout.map(item => [item.id, item.size]))
+  )
+
+  const handleSizeChange = useCallback((widgetId: string, newSize: WidgetSize) => {
+    setSizes(prev => ({ ...prev, [widgetId]: newSize }))
+  }, [])
 
   return (
     <PageLayout
@@ -16,11 +30,25 @@ export default function HubOverview() {
       domain="action"
       showTabs={false}
     >
-      <div className="rounded-2xl border-2 border-dashed border-stone-200 dark:border-stone-700 p-8 text-center">
-        <p className="text-sm text-stone-600 dark:text-stone-400">
-          {t('hubs.placeholder', 'Här kommer widgets för Översikt. Den här sidan byggs ut i nästa fas.')}
-        </p>
-      </div>
+      <HubGrid>
+        {layout.map(item => {
+          const entry = WIDGET_REGISTRY[item.id as WidgetId]
+          if (!entry) return null
+          const Component = entry.component
+          const currentSize = sizes[item.id] ?? entry.defaultSize
+          return (
+            <HubGrid.Slot key={item.id} size={currentSize}>
+              <Component
+                id={item.id}
+                size={currentSize}
+                onSizeChange={(s) => handleSizeChange(item.id, s)}
+                allowedSizes={entry.allowedSizes}
+                editMode={false}
+              />
+            </HubGrid.Slot>
+          )
+        })}
+      </HubGrid>
     </PageLayout>
   )
 }
