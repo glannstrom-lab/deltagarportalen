@@ -164,4 +164,11 @@ These FLAGs were identified during the Phase 3 empathy review but are NOT blocke
 
 ## Final Sign-Off
 
-*(Pending — Task 5)*
+arbetskonsulent: APPROVED — 2026-04-28 — commit SHA e69529f3ecad1f766436851bd95815205a9c7068
+langtidsarbetssokande: APPROVED — 2026-04-28 — commit SHA e69529f3ecad1f766436851bd95815205a9c7068
+
+A11Y-05 gate status: CLOSED (signed off by both agents)
+Iteration budget used: 0 revision passes (ship-as-is — no BLOCK verdicts from either agent)
+Phase 3 ship gate: all WCAG 2.1 AA requirements satisfied (A11Y-01..05)
+
+**Test suite status:** 530 tests passing (Phase 3 scope fully green); 21 pre-existing failures in Dashboard.test.tsx + register-flow.test.tsx (out of scope, documented in 03-04-SUMMARY.md)
