@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 04-layout-persistence-hide-show/04-03-hidden-widgets-panel-and-reset-PLAN.md
-last_updated: "2026-04-28T22:52:20.883Z"
+stopped_at: Completed 04-layout-persistence-hide-show/04-04-jobsokhub-wiring-and-integration-tests-PLAN.md
+last_updated: "2026-04-28T23:15:52.214Z"
 last_activity: 2026-04-28 — Plan 04-02 Widget hide-button + JobsokLayoutContext completed
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 19
-  completed_plans: 18
+  completed_plans: 19
   percent: 89
 ---
 
@@ -67,6 +67,7 @@ Progress: [█████████░] 89%
 | Phase 04-layout-persistence-hide-show P01 | 15 | 3 tasks | 9 files |
 | Phase 04-layout-persistence-hide-show P02 | 5 | 2 tasks | 7 files |
 | Phase 04-layout-persistence-hide-show P03 | 2 | 1 tasks | 3 files |
+| Phase 04-layout-persistence-hide-show P04 | 20 | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -124,6 +125,9 @@ Progress: [█████████░] 89%
 - [Phase 04-03]: Panel isOpen controlled by caller (JobsokHub useState), not context — maximum composability
 - [Phase 04-03]: WIDGET_LABELS uses Record<WidgetId, string> (exhaustive, not Partial) — TypeScript enforces all 8 keys present
 - [Phase 04-03]: Reset button always rendered even with no hidden widgets — user may reset sizes without hiding any widget
+- [Phase 04-04]: effectiveLayout fallback to getDefaultLayout when layout=[] prevents mutations from producing empty arrays before Supabase query resolves
+- [Phase 04-04]: All widget components must destructure and forward onHide from WidgetProps to Widget — required for hide button to appear in Widget.Header
+- [Phase 04-04]: HiddenWidgetsPanel must render inside JobsokLayoutProvider tree — trigger button can be in PageLayout actions slot but panel cannot
 
 ### Pending Todos
 
@@ -137,6 +141,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T22:52:20.880Z
-Stopped at: Completed 04-layout-persistence-hide-show/04-03-hidden-widgets-panel-and-reset-PLAN.md
+Last session: 2026-04-28T23:15:52.211Z
+Stopped at: Completed 04-layout-persistence-hide-show/04-04-jobsokhub-wiring-and-integration-tests-PLAN.md
 Resume file: None
