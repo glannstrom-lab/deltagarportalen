@@ -58,9 +58,9 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
   5. All widget copy, empty-states, and framing have been reviewed and signed off by the `arbetskonsulent` and `langtidsarbetssokande` agents before this phase ships
   6. Interview session scores and Personal Brand audit scores persist in Supabase and are visible across sessions in their respective widgets
 **Plans**: 5 plans
-- [ ] 03-01-db-perf-migrations-traceability-PLAN.md — DB performance audit (Pitfalls 3+18) + DATA-01/02 migrations + REQUIREMENTS.md HUB-02..04 remap
-- [ ] 03-02-hub-summary-loader-PLAN.md — useJobsokHubSummary hook + JobsokDataContext + Wave 0 widget test stubs
-- [ ] 03-03-widget-data-wiring-PLAN.md — Wire 8 widgets to JobsokDataContext (HUB-01) + Interview score (DATA-01) + Personal Brand audit history (DATA-02) + ApplicationsWidget closed-toggle (A11Y-04)
+- [x] 03-01-db-perf-migrations-traceability-PLAN.md — DB performance audit (Pitfalls 3+18) + DATA-01/02 migrations + REQUIREMENTS.md HUB-02..04 remap
+- [x] 03-02-hub-summary-loader-PLAN.md — useJobsokHubSummary hook + JobsokDataContext + Wave 0 widget test stubs
+- [x] 03-03-widget-data-wiring-PLAN.md — Wire 8 widgets to JobsokDataContext (HUB-01) + Interview score (DATA-01) + Personal Brand audit history (DATA-02) + ApplicationsWidget closed-toggle (A11Y-04)
 - [ ] 03-04-wcag-hardening-PLAN.md — A11Y-01/02/03 regression tests + 03-PRE-IMPL-COPY-REVIEW.md artifact
 - [ ] 03-05-empathy-review-ship-gate-PLAN.md — 24 screenshots + arbetskonsulent + langtidsarbetssokande agent review + nyquist_compliant flip (A11Y-05)
 
