@@ -1,0 +1,123 @@
+# Requirements: Deltagarportalen — v1.0 Hub-Navigation
+
+**Defined:** 2026-04-28
+**Core Value:** Hjälp utsatta arbetssökande att komma framåt med empati, tillgänglighet och AI-stöd som sänker tröskeln.
+
+## v1.0 Requirements
+
+Hubbarna ersätter den platta 27-sidors-navigationen med 5 domän-orienterade hubbar och smarta widget-kort. Drag/resize är deferred till v1.1.
+
+### Navigation (NAV)
+
+- [ ] **NAV-01**: Användaren ser och navigerar via 5 hubbar (Översikt, Söka Jobb, Karriär, Resurser, Min Vardag) i sidebaren
+- [ ] **NAV-02**: Användaren ser aktiv hubbs undersidor expanderade i sidebaren
+- [ ] **NAV-03**: Mobilanvändare har 5-fliks bottom-nav på hubb-nivå
+- [ ] **NAV-04**: Alla 27 befintliga deep-links fungerar oförändrat efter migrering (smoke-tested)
+- [ ] **NAV-05**: Rollout styrs av environment-flagga (`VITE_HUB_NAV_ENABLED`); båda navigationerna kan köras parallellt under övergång
+
+### Widget-grund (WIDG)
+
+- [ ] **WIDG-01**: Användaren ser hub-sidor med widgets grupperade i sektioner med rubriker
+- [ ] **WIDG-02**: Användaren kan ändra storlek på widget mellan S/M/L/XL via tangentbord-tillgänglig toggle
+- [ ] **WIDG-03**: En widget med fel eller timeout visar graceful fallback utan att krascha hela hubben
+
+### Hub-innehåll (HUB)
+
+- [ ] **HUB-01**: Söka Jobb visar widgets för Sök jobb, Mina ansökningar, Spontanansökan, CV, Personligt brev, Intervjuträning, Lön, Internationellt — alla med riktig data
+- [ ] **HUB-02**: Karriär visar widgets för Karriärmål, Intresseguide, Kompetensgap, Personligt varumärke, Utbildning, LinkedIn — alla med riktig data
+- [ ] **HUB-03**: Resurser visar widgets för Mina dokument, Kunskapsbank, Externa resurser, Utskriftsmaterial, AI-team, Övningar — alla med riktig data
+- [ ] **HUB-04**: Min Vardag visar widgets för Hälsa, Dagbok, Kalender, Nätverk, Min konsulent — alla med riktig data
+- [ ] **HUB-05**: Översikt visar onboarding/next-step XL-widget + max 6 sammanfattande widgets från övriga hubbar
+- [ ] **HUB-06**: Alla widget-empty-states har handlingsstöttande kopia (ej bara nollor)
+
+### Backend-persistens (DATA)
+
+- [ ] **DATA-01**: Interview-sessionsscore persisteras i Supabase och syns över tid i widget
+- [ ] **DATA-02**: Personal Brand-audit-score persisteras i Supabase och syns i widget
+
+### Tillgänglighet & empati (A11Y)
+
+- [ ] **A11Y-01**: Användaren kan navigera och styra alla hub-funktioner via tangentbord
+- [ ] **A11Y-02**: Alla widget- och hub-animationer respekterar `prefers-reduced-motion`
+- [ ] **A11Y-03**: Inga råa procent-KPI:er som läses som otillräcklighet; milstolpe-framing ersätter "75% klart"
+- [ ] **A11Y-04**: Avslutade/avslagna ansökningar är dolda som default i Mina ansökningar-widget
+- [ ] **A11Y-05**: All widget-kopia, framing och empty-states är granskade av `arbetskonsulent` + `langtidsarbetssokande` agenter innan Phase 3 ships
+
+### Anpassning (CUST)
+
+- [ ] **CUST-01**: Användaren kan dölja och återvisa enskilda widgets per hub
+- [ ] **CUST-02**: Användaren kan återställa default-layout per hub
+- [ ] **CUST-03**: Användarens layout (storlekar, dolda widgets) sparas per hub i Supabase och återställs vid återbesök
+
+## v1.1 Requirements
+
+Deferrad till nästa milstolpe. Spårade men inte i nuvarande roadmap.
+
+### Drag & sortering (DRAG)
+
+- **DRAG-01**: Drag-and-drop omsortering av widgets via react-grid-layout
+- **DRAG-02**: Tangentbord-tillgänglig sortering (aria-grabbed/aria-dropeffect)
+- **DRAG-03**: Per-breakpoint layout-anpassning exponerad till användare
+
+### Widget-katalog (CAT)
+
+- **CAT-01**: Användaren kan lägga till widgets från en katalog/registry-bläddrare
+
+### Smarta förslag (SMART)
+
+- **SMART-01**: Smart contextual suggestions på Översikt baserat på användarens aktivitet
+
+## Out of Scope
+
+Explicit utelämnat. Dokumenterat för att förhindra scope creep.
+
+| Feature | Reason |
+|---------|--------|
+| Notifikations-prickar per widget | Stress för NPF/utmattnings-användare; max ett badge i nav samtidigt |
+| Gamification (poäng, nivåer, leaderboards) | Kontraproduktivt för utsatt målgrupp |
+| Procent-progress som dominerande KPI | Läses som "X% otillräcklig"; milstolpe-framing istället |
+| Dense multi-axis data visualizations | Kognitiv överbelastning för NPF-användare |
+| Comparison till andra användare | Skambaserad design, oförenligt med portal-tone |
+| Mandatory wellness-loggning | Alltid "om du vill"-framing |
+| Per-användare DB-flagga för rollout | Skapar två navigations-realiteter — omöjligt för konsulent-coachning |
+| Egen recharts/chart-lib | Hand-rolled SVG räcker för sparklines (~160 KB sparat) |
+
+## Traceability
+
+Vilka faser täcker vilka requirements. Uppdateras under roadmap-skapande.
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| NAV-01 | TBD | Pending |
+| NAV-02 | TBD | Pending |
+| NAV-03 | TBD | Pending |
+| NAV-04 | TBD | Pending |
+| NAV-05 | TBD | Pending |
+| WIDG-01 | TBD | Pending |
+| WIDG-02 | TBD | Pending |
+| WIDG-03 | TBD | Pending |
+| HUB-01 | TBD | Pending |
+| HUB-02 | TBD | Pending |
+| HUB-03 | TBD | Pending |
+| HUB-04 | TBD | Pending |
+| HUB-05 | TBD | Pending |
+| HUB-06 | TBD | Pending |
+| DATA-01 | TBD | Pending |
+| DATA-02 | TBD | Pending |
+| A11Y-01 | TBD | Pending |
+| A11Y-02 | TBD | Pending |
+| A11Y-03 | TBD | Pending |
+| A11Y-04 | TBD | Pending |
+| A11Y-05 | TBD | Pending |
+| CUST-01 | TBD | Pending |
+| CUST-02 | TBD | Pending |
+| CUST-03 | TBD | Pending |
+
+**Coverage:**
+- v1.0 requirements: 24 total
+- Mapped to phases: 0 (fylls av roadmapper)
+- Unmapped: 24 ⚠️
+
+---
+*Requirements definierade: 2026-04-28*
+*Last updated: 2026-04-28 efter initial definition*
