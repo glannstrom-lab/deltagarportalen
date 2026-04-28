@@ -24,6 +24,7 @@ import {
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { personalBrandApi } from '@/services/cloudStorage'
+import { personalBrandAuditsApi } from '@/services/personalBrandAuditsApi'
 import { motion, AnimatePresence } from 'framer-motion'
 
 interface AuditQuestion {
@@ -194,6 +195,16 @@ export default function BrandAuditTab() {
           Object.keys(CATEGORIES).map(cat => [cat, getCategoryScore(cat)])
         )
         await personalBrandApi.saveAuditAnswers(answers, totalScore, categoryScores)
+        // Phase 3 / DATA-02 — append audit history row (separate from upsert above)
+        try {
+          await personalBrandAuditsApi.create({
+            score: totalScore,
+            dimensions: categoryScores,
+            summary: undefined,
+          })
+        } catch (auditError) {
+          console.error('Phase 3 DATA-02 audit-history append failed (non-blocking):', auditError)
+        }
       } finally {
         setIsSaving(false)
       }
