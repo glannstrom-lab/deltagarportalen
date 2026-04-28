@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-05-deep-link-smoke-test-PLAN.md — Phase 1 complete
-last_updated: "2026-04-28T18:20:57.977Z"
+stopped_at: Completed 02-01-widget-foundation-PLAN.md
+last_updated: "2026-04-28T19:35:45.495Z"
 last_activity: 2026-04-28 — Plan 01-03 sidebar refactor completed
 progress:
   total_phases: 5
   completed_phases: 1
-  total_plans: 5
-  completed_plans: 5
+  total_plans: 10
+  completed_plans: 6
   percent: 80
 ---
 
@@ -54,6 +54,7 @@ Progress: [████████░░] 80%
 | Phase 01-hub-navigation-shell P04 | ~5 min | 2 tasks | 3 files |
 | Phase 01-hub-navigation-shell P03 | ~8 min | 1 task | 2 files |
 | Phase 01-hub-navigation-shell P05 | 4 | 2 tasks | 3 files |
+| Phase 02-static-widget-grid P01 | 7 | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,9 @@ Progress: [████████░░] 80%
 - [Phase 01-04]: pb-20 added to main content only when showHubBottomNav — on desktop and flag-off no layout change
 - [Phase 01-05]: ThemeContext mocked (not wrapped) in smoke test — avoids ThemeProvider boilerplate for 61 cases, theme irrelevant to routing behavior
 - [Phase 01-05]: data-testid='route-error-fallback' added to RouteErrorBoundary — enables programmatic error boundary detection in integration tests
+- [Phase 02-01]: WidgetContext carries size/onSizeChange/allowedSizes/editMode from Root to Header — avoids prop-drilling in compound sub-components
+- [Phase 02-01]: Footer renders null at S-size (not display:none) — keeps DOM clean and avoids ARIA confusion with invisible interactive content
+- [Phase 02-01]: WIDGET_REGISTRY uses satisfies WidgetRegistryEntry and lazy() exclusively — zero static widget imports in main bundle (WIDG-01 / Bundle Contract)
 
 ### Pending Todos
 
@@ -86,6 +90,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T18:16:40.683Z
-Stopped at: Completed 01-05-deep-link-smoke-test-PLAN.md — Phase 1 complete
+Last session: 2026-04-28T19:35:45.492Z
+Stopped at: Completed 02-01-widget-foundation-PLAN.md
 Resume file: None

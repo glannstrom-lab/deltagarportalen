@@ -17,9 +17,9 @@ Hubbarna ersätter den platta 27-sidors-navigationen med 5 domän-orienterade hu
 
 ### Widget-grund (WIDG)
 
-- [ ] **WIDG-01**: Användaren ser hub-sidor med widgets grupperade i sektioner med rubriker
-- [ ] **WIDG-02**: Användaren kan ändra storlek på widget mellan S/M/L/XL via tangentbord-tillgänglig toggle
-- [ ] **WIDG-03**: En widget med fel eller timeout visar graceful fallback utan att krascha hela hubben
+- [x] **WIDG-01**: Användaren ser hub-sidor med widgets grupperade i sektioner med rubriker
+- [x] **WIDG-02**: Användaren kan ändra storlek på widget mellan S/M/L/XL via tangentbord-tillgänglig toggle
+- [x] **WIDG-03**: En widget med fel eller timeout visar graceful fallback utan att krascha hela hubben
 
 ### Hub-innehåll (HUB)
 
@@ -93,9 +93,9 @@ Vilka faser täcker vilka requirements.
 | NAV-03 | Phase 1 | Complete |
 | NAV-04 | Phase 1 | Complete |
 | NAV-05 | Phase 1 | Complete |
-| WIDG-01 | Phase 2 | Pending |
-| WIDG-02 | Phase 2 | Pending |
-| WIDG-03 | Phase 2 | Pending |
+| WIDG-01 | Phase 2 | Complete |
+| WIDG-02 | Phase 2 | Complete |
+| WIDG-03 | Phase 2 | Complete |
 | HUB-01 | Phase 3 | Pending |
 | HUB-02 | Phase 3 | Pending |
 | HUB-03 | Phase 3 | Pending |
