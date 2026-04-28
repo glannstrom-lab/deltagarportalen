@@ -24,25 +24,34 @@ const DEFAULT_CONFIG: CacheConfig = {
 class CacheService {
   private cache: Map<string, CacheEntry<any>> = new Map();
   private config: CacheConfig;
+  // Hit-rate tracking — separata counters för korrekt rate-beräkning
+  private hits: number = 0;
+  private misses: number = 0;
 
   constructor(config: Partial<CacheConfig> = {}) {
     this.config = { ...DEFAULT_CONFIG, ...config };
   }
 
   /**
-   * Hämta data från cache
+   * Hämta data från cache.
+   * Räknas som hit bara om data fanns OCH inte var utgången.
    */
   get<T>(key: string): T | null {
     const entry = this.cache.get(key);
-    
-    if (!entry) return null;
-    
+
+    if (!entry) {
+      this.misses++;
+      return null;
+    }
+
     // Kolla om cachen har gått ut
     if (Date.now() > entry.expiresAt) {
       this.cache.delete(key);
+      this.misses++;
       return null;
     }
-    
+
+    this.hits++;
     return entry.data as T;
   }
 
@@ -122,13 +131,26 @@ class CacheService {
   }
 
   /**
-   * Statistik över cachen
+   * Statistik över cachen.
+   * hitRate = hits / (hits + misses), 0-1 (eller 0 om inga get-anrop gjorts).
    */
-  getStats(): { size: number; hitRate: number } {
+  getStats(): { size: number; hits: number; misses: number; hitRate: number } {
+    const total = this.hits + this.misses;
     return {
       size: this.cache.size,
-      hitRate: 0, // TODO: Implementera tracking
+      hits: this.hits,
+      misses: this.misses,
+      hitRate: total === 0 ? 0 : this.hits / total,
     };
+  }
+
+  /**
+   * Nollställ hit/miss-counters (utan att rensa cachen).
+   * Användbart för att mäta hit-rate per tidsfönster.
+   */
+  resetStats(): void {
+    this.hits = 0;
+    this.misses = 0;
   }
 }
 
