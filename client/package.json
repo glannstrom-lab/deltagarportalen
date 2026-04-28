@@ -13,7 +13,8 @@
     "test:coverage": "vitest --coverage",
     "test:run": "vitest run",
     "analyze": "vite build --mode analyze",
-    "build:prod": "vite build --mode production"
+    "build:prod": "vite build --mode production",
+    "verify:widget-chunks": "node scripts/verify-widget-chunks.cjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.2",
