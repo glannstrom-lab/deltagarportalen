@@ -8,7 +8,7 @@
  * - Professionell PDF-export
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -44,7 +44,7 @@ import { useProfileStore } from '@/stores/profileStore'
 import { showToast } from '@/components/Toast'
 import { callAI } from '@/services/aiApi'
 import { coverLetterApi, userApi } from '@/services/supabaseApi'
-import { generateCoverLetterPDF, downloadPDF } from '@/services/pdfExportService'
+import { generateCoverLetterPDFFromElement, downloadPDF } from '@/services/pdfExportService'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import type { CVData, ProfilePreferences } from '@/services/supabaseApi'
 
@@ -86,6 +86,7 @@ interface FormData {
 async function generateCoverLetterWithAI(data: {
   cvData: CVData | null
   profileData: ProfilePreferences | null
+  profile: { first_name?: string; last_name?: string; email?: string; phone?: string } | null
   jobData: {
     company: string
     jobTitle: string
@@ -157,8 +158,25 @@ async function generateCoverLetterWithAI(data: {
       : `Information om kandidaten: ${profileInfo}`
   }
 
+  // Get user's real name from profile or CV
+  const firstName = data.profile?.first_name || data.cvData?.first_name || ''
+  const lastName = data.profile?.last_name || data.cvData?.last_name || ''
+  const email = data.profile?.email || data.cvData?.email || ''
+  const phone = data.profile?.phone || data.cvData?.phone || ''
+
   return callAI('personligt-brev', {
-    cvData: data.cvData,
+    cvData: {
+      ...data.cvData,
+      // Ensure correct property names for backend
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      phone: phone
+    },
+    // Send sender info explicitly for the AI to use
+    senderName: [firstName, lastName].filter(Boolean).join(' '),
+    senderEmail: email,
+    senderPhone: phone,
     companyName: data.jobData.company,
     jobTitle: data.jobData.jobTitle,
     jobDescription: data.jobData.jobAd,
@@ -366,6 +384,7 @@ export function CoverLetterWrite() {
       const result = await generateCoverLetterWithAI({
         cvData,
         profileData,
+        profile, // Pass profile data with real name/email/phone
         jobData: {
           company: formData.company,
           jobTitle: formData.jobTitle,
@@ -424,18 +443,18 @@ export function CoverLetterWrite() {
     }
   }
 
+  // Ref till hidden full-storlek preview som html2canvas använder för PDF-generering.
+  // Synlig preview ovan ändrar storlek beroende på skärm — denna är alltid 794px (A4).
+  const pdfPreviewRef = useRef<HTMLDivElement>(null)
+
   const handleDownloadPDF = async () => {
+    if (!pdfPreviewRef.current) {
+      showToast.error('Förhandsgranskning är inte redo. Vänta ett ögonblick och försök igen.')
+      return
+    }
     try {
-      const pdfBlob = await generateCoverLetterPDF({
-        content: editedLetter,
-        company: formData.company,
-        jobTitle: formData.jobTitle,
-        template: formData.selectedTemplate,
-        firstName: profile?.first_name || cvData?.first_name,
-        lastName: profile?.last_name || cvData?.last_name,
-        email: profile?.email || cvData?.email,
-        phone: profile?.phone || cvData?.phone,
-        location: profile?.location || cvData?.location,
+      const pdfBlob = await generateCoverLetterPDFFromElement(pdfPreviewRef.current, {
+        multiPage: true,
       })
 
       const fileName = `Personligt_brev_${formData.company || 'ansökan'}_${formData.jobTitle || ''}`
@@ -678,6 +697,29 @@ export function CoverLetterWrite() {
             </div>
           </div>
         )}
+      </div>
+
+      {/* Hidden A4-storlek preview för PDF-generering.
+          html2canvas behöver elementet i DOM:en med exakt rätt storlek (794px = A4 @ 96dpi).
+          aria-hidden + position:fixed off-screen gör den osynlig för användare och skärmläsare. */}
+      <div
+        ref={pdfPreviewRef}
+        aria-hidden="true"
+        style={{
+          position: 'fixed',
+          left: '-99999px',
+          top: 0,
+          width: '794px',
+          pointerEvents: 'none',
+        }}
+      >
+        <CoverLetterPreview
+          content={editedLetter || ''}
+          company={formData.company}
+          jobTitle={formData.jobTitle}
+          templateId={formData.selectedTemplate}
+          sender={senderInfo}
+        />
       </div>
     </div>
   )

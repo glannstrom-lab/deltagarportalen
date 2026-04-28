@@ -1816,4 +1816,101 @@ export async function generateCoverLetterPDF(letter: CoverLetterForPDF): Promise
   return doc.output('blob')
 }
 
+/**
+ * Generera PDF för personligt brev genom att rendera HTML-templaten direkt.
+ *
+ * Detta är den NUVARANDE rekommenderade vägen — ger PDF som ser ut EXAKT
+ * som preview eftersom samma React-komponent används för både skärm och PDF.
+ *
+ * Mönstret: html2canvas fångar offscreen-renderat element, jsPDF embedda
+ * canvasen som A4. Samma teknik som CVExport.tsx använder.
+ *
+ * @param element  Det DOM-element som ska bli PDF (typiskt en CoverLetterPreview-wrapper)
+ * @param options  multiPage:true delar upp långa brev över flera sidor
+ *
+ * NOTERA: Resulterande PDF är en bild (ej söbar text). För söbar text
+ * krävs @react-pdf/renderer-rewrite av templates — separat refactor.
+ */
+export async function generateCoverLetterPDFFromElement(
+  element: HTMLElement,
+  options: { multiPage?: boolean } = {}
+): Promise<Blob> {
+  const { jsPDF, html2canvas } = await import('./pdfLazyLoad').then((m) => m.loadPDFLibraries())
+
+  // Spara ursprungliga styles innan vi flyttar elementet off-screen
+  const original = {
+    position: element.style.position,
+    left: element.style.left,
+    top: element.style.top,
+    opacity: element.style.opacity,
+    zIndex: element.style.zIndex,
+    width: element.style.width,
+    height: element.style.height,
+    display: element.style.display,
+  }
+
+  // A4 @ 96 DPI = 794×1123 px. Vi sätter bredd och låter höjd vara auto.
+  // Position: fixed + opacity: 0 tar bort det visuellt utan att påverka layout.
+  element.style.position = 'fixed'
+  element.style.left = '0'
+  element.style.top = '0'
+  element.style.opacity = '0'
+  element.style.zIndex = '-9999'
+  element.style.width = '794px'
+  element.style.height = 'auto'
+  element.style.display = 'block'
+
+  // Vänta på React paint + font-load
+  await new Promise((resolve) => setTimeout(resolve, 150))
+
+  let canvas: HTMLCanvasElement
+  try {
+    canvas = await html2canvas(element, {
+      scale: 2,                     // 2× upplösning för skarp PDF
+      useCORS: true,
+      logging: false,
+      backgroundColor: '#ffffff',
+      windowWidth: 794,
+      width: 794,
+    })
+  } finally {
+    // Återställ ursprungliga styles oavsett om html2canvas lyckades
+    Object.assign(element.style, original)
+  }
+
+  const pdf = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4',
+    compress: true,
+  })
+
+  const pdfWidth = pdf.internal.pageSize.getWidth()    // 210mm
+  const pdfHeight = pdf.internal.pageSize.getHeight()  // 297mm
+
+  const imgWidth = pdfWidth
+  const imgHeight = (canvas.height * pdfWidth) / canvas.width
+
+  const imgData = canvas.toDataURL('image/png')
+
+  if (!options.multiPage || imgHeight <= pdfHeight) {
+    // Enkel sida (vanligast för cover letter)
+    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight, undefined, 'FAST')
+  } else {
+    // Flersidig — dela upp canvasen
+    let position = 0
+    let heightLeft = imgHeight
+    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST')
+    heightLeft -= pdfHeight
+    while (heightLeft > 0) {
+      position = heightLeft - imgHeight
+      pdf.addPage()
+      pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight, undefined, 'FAST')
+      heightLeft -= pdfHeight
+    }
+  }
+
+  return pdf.output('blob')
+}
+
 export default generateCVPDF
