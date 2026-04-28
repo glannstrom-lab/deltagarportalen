@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-02-hub-pages-and-routes-PLAN.md — ready for 01-03-sidebar
-last_updated: "2026-04-28T18:03:38.879Z"
-last_activity: 2026-04-28 — Plan 01-01 navigation-refactor completed
+stopped_at: Completed 01-04-mobile-bottom-nav-PLAN.md — ready for 01-05
+last_updated: "2026-04-28T20:05:00.000Z"
+last_activity: 2026-04-28 — Plan 01-04 mobile bottom nav completed
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
-  percent: 40
+  completed_plans: 4
+  percent: 80
 ---
 
 # State — Deltagarportalen
@@ -26,31 +26,32 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 ## Current Position
 
 Phase: 1 of 5 (Hub Navigation Shell)
-Plan: 2 of 5 in current phase
+Plan: 4 of 5 in current phase
 Status: In progress
-Last activity: 2026-04-28 — Plan 01-02 hub pages and routes completed
+Last activity: 2026-04-28 — Plan 01-04 mobile bottom nav completed
 
-Progress: [████░░░░░░] 40%
+Progress: [████████░░] 80%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
+- Total plans completed: 4
 - Average duration: ~5 min
-- Total execution time: ~10 min
+- Total execution time: ~20 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 1 - Hub Navigation Shell | 2/5 | ~10 min | ~5 min |
+| 1 - Hub Navigation Shell | 4/5 | ~20 min | ~5 min |
 
-**Recent Trend:** 2 plans completed 2026-04-28
+**Recent Trend:** 4 plans completed 2026-04-28
 
 | Plan | Duration | Tasks | Files |
 |------|----------|-------|-------|
 | Phase 01-hub-navigation-shell P01 | ~2 min | 2 tasks | 3 files |
 | Phase 01-hub-navigation-shell P02 | ~8 min | 2 tasks | 6 files |
+| Phase 01-hub-navigation-shell P04 | ~5 min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -66,6 +67,8 @@ Progress: [████░░░░░░] 40%
 - [01-01]: Oversikt hub memberPaths includes '/' so legacy bookmarks resolve cleanly before redirect plan ships
 - [Phase 01-02]: Hub routes added as peers inside existing RootRoute block (not a new layout wrapper) per ARCHITECTURE.md Anti-Pattern 3
 - [Phase 01-02]: isHubNavEnabled() evaluated inline in JSX — flag is build-time env constant, no runtime state needed
+- [Phase 01-04]: data-domain placed on <li> wrapper (not <Link>) so CSS variable cascade resolves via the active-state parent
+- [Phase 01-04]: pb-20 added to main content only when showHubBottomNav — on desktop and flag-off no layout change
 
 ### Pending Todos
 
@@ -79,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T18:03:38.875Z
-Stopped at: Completed 01-02-hub-pages-and-routes-PLAN.md — ready for 01-03-sidebar
+Last session: 2026-04-28T20:05:00.000Z
+Stopped at: Completed 01-04-mobile-bottom-nav-PLAN.md — ready for 01-05
 Resume file: None
