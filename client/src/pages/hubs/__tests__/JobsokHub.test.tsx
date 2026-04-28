@@ -10,8 +10,26 @@ vi.mock('react-i18next', () => ({
 }))
 
 // Mock hub-summary loader — tests verify UI/layout, not data loading (data wiring tested in 03-03)
+// Provide a stub summary so widgets render their filled/empty states (not loading-state) in hub tests
+const STUB_SUMMARY = {
+  cv: null,
+  coverLetters: [],
+  interviewSessions: [],
+  applicationStats: {
+    total: 12,
+    byStatus: { saved: 4, applied: 2, interview: 1, rejected: 3, pending_response: 1 },
+    segments: [
+      { label: 'aktiva', count: 4, deEmphasized: false },
+      { label: 'svar inväntas', count: 2, deEmphasized: false },
+      { label: 'intervju', count: 1, deEmphasized: false },
+      { label: 'avslutade', count: 3, deEmphasized: true },
+    ],
+  },
+  spontaneousCount: 0,
+}
+
 vi.mock('@/hooks/useJobsokHubSummary', () => ({
-  useJobsokHubSummary: () => ({ data: undefined, isLoading: false, isError: false }),
+  useJobsokHubSummary: () => ({ data: STUB_SUMMARY, isLoading: false, isError: false }),
   JOBSOK_HUB_KEY: (id: string) => ['hub', 'jobsok', id],
 }))
 
