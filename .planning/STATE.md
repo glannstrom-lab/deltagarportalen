@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-04-hub-wiring-PLAN.md
-last_updated: "2026-04-28T19:48:36.784Z"
+stopped_at: Completed 02-05-bundle-verification-PLAN.md
+last_updated: "2026-04-28T20:01:01.722Z"
 last_activity: 2026-04-28 — Plan 01-03 sidebar refactor completed
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 10
-  completed_plans: 9
+  completed_plans: 10
   percent: 80
 ---
 
@@ -58,6 +58,7 @@ Progress: [████████░░] 80%
 | Phase 02-static-widget-grid P02 | 2 | 3 tasks | 6 files |
 | Phase 02-static-widget-grid P03 | 2 | 3 tasks | 6 files |
 | Phase 02-static-widget-grid P04 | 6 | 3 tasks | 6 files |
+| Phase 02-static-widget-grid P05 | 8 | 3 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,8 @@ Progress: [████████░░] 80%
 - [Phase 02-03]: InternationalWidget empty state uses question framing per UI-SPEC Empty State Copy Contract (no bare zero)
 - [Phase Phase 02-04]: Hub-local sizes state (not global store) is correct for Phase 2 — Phase 3 lifts to query-backed persistence without changing hub-page contract
 - [Phase Phase 02-04]: Error isolation test validates healthy state (no fallback) rather than injecting failure via dynamic vi.doMock — ESM re-import is environmentally unreliable; WidgetErrorBoundary tested in 02-01
+- [Phase Phase 02-05]: Chunk-file existence is the definitive proof of lazy() code-splitting — if widget was statically imported, Vite would not emit a separate chunk file
+- [Phase Phase 02-05]: Comment-line lazy() count exclusion needed in lazy-isolation test: registry.ts JSDoc comment on line 12 contains lazy() literal, filter lines starting with // or * before counting
 
 ### Pending Todos
 
@@ -100,6 +103,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-28T19:48:36.782Z
-Stopped at: Completed 02-04-hub-wiring-PLAN.md
+Last session: 2026-04-28T20:01:01.719Z
+Stopped at: Completed 02-05-bundle-verification-PLAN.md
 Resume file: None

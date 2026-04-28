@@ -7,7 +7,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 ## Phases
 
 - [x] **Phase 1: Hub Navigation Shell** - Nav refactor, 5 empty hub routes, mobile bottom nav, deep-link smoke test (completed 2026-04-28)
-- [ ] **Phase 2: Static Widget Grid** - Widget compound component, HubGrid, 8-10 representative widgets with mock data, S/M/L toggle, error boundaries
+- [x] **Phase 2: Static Widget Grid** - Widget compound component, HubGrid, 8-10 representative widgets with mock data, S/M/L toggle, error boundaries (completed 2026-04-28)
 - [ ] **Phase 3: Data Wiring + WCAG** - React Query data hooks, hub-level loader, empathy-reviewed copy, prefers-reduced-motion, keyboard, Interview + Personal Brand Supabase migration
 - [ ] **Phase 4: Layout Persistence + Hide/Show** - user_widget_layouts table + RLS, useWidgetLayout hook, hide/show widget, reset layout (no drag/resize)
 - [ ] **Phase 5: Full Hub Coverage + Översikt** - Remaining widgets for all hubs, Översikt onboarding XL widget + cross-hub summaries, full empty-state pass
@@ -84,7 +84,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Hub Navigation Shell | 5/5 | Complete    | 2026-04-28 |
-| 2. Static Widget Grid | 4/5 | In Progress|  |
+| 2. Static Widget Grid | 5/5 | Complete   | 2026-04-28 |
 | 3. Data Wiring + WCAG | 0/TBD | Not started | - |
 | 4. Layout Persistence + Hide/Show | 0/TBD | Not started | - |
 | 5. Full Hub Coverage + Översikt | 0/TBD | Not started | - |
