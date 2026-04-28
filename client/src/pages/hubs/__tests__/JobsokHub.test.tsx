@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import JobsokHub from '../JobsokHub'
 
 // Mock i18next so t() returns the fallback string
@@ -8,11 +9,25 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string, fallback?: string) => fallback ?? key }),
 }))
 
+// Mock hub-summary loader — tests verify UI/layout, not data loading (data wiring tested in 03-03)
+vi.mock('@/hooks/useJobsokHubSummary', () => ({
+  useJobsokHubSummary: () => ({ data: undefined, isLoading: false, isError: false }),
+  JOBSOK_HUB_KEY: (id: string) => ['hub', 'jobsok', id],
+}))
+
+// Mock useAuth so the hook doesn't need the live supabase client
+vi.mock('@/hooks/useSupabase', () => ({
+  useAuth: () => ({ user: null, profile: null, loading: false, isAuthenticated: false }),
+}))
+
 function renderHub() {
+  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
-    <MemoryRouter initialEntries={['/jobb']}>
-      <JobsokHub />
-    </MemoryRouter>
+    <QueryClientProvider client={qc}>
+      <MemoryRouter initialEntries={['/jobb']}>
+        <JobsokHub />
+      </MemoryRouter>
+    </QueryClientProvider>
   )
 }
 
