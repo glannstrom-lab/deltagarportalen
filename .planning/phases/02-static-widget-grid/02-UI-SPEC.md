@@ -54,30 +54,31 @@ Standard 8-point scale. All grid and widget measurements are multiples of 4.
 - Size-toggle button: `18px × 18px`, font `9px` — use `w-[18px] h-[18px] text-[9px]`. Source: nav-hub-sketch.html `.size-toggle button`.
 - Touch targets for S/M/L toggle group: the toggle group as a whole must be at least `44px` wide to satisfy WCAG 2.1 AA touch target requirements. Three 18px buttons fill ~56px total; this requirement is met by the group.
 
+**Product decision note:** The 14px/26px/18px non-multiples above are deliberate prototype-fidelity exceptions, not errors — do not "correct" them to 16/24/20px without re-validating the prototype.
+
 ---
 
 ## Typography
 
-Four roles in descending size order.
+Four sizes, two weights. All roles map to the 32/22/13/12px scale.
 
 | Role | Size | Weight | Line Height | Usage |
 |------|------|--------|-------------|-------|
-| Hub title (PageHeader) | 22px | 700 (bold) | 1.2 | Hub page `<h2>` title in header |
-| Widget title | 13px | 600 (semibold) | 1.3 | Widget card `<h3>` in `.w-title` |
 | KPI large | 32px | 700 (bold) | 1.1 | Primary numeric KPI (e.g. "12 nya träffar") in S-mode or as featured stat in L-widget |
-| KPI medium | 22px | 700 (bold) | 1.1 | Secondary KPI (e.g. "3 utkast", last score) |
-| Body / label | 12px | 400 (regular) | 1.5 | KPI labels, check-list items, match-card company names, section text |
-| Sub-label / legend | 11px | 400 (regular) | 1.4 | Stack-bar legend, range bar labels, alert chips |
+| Hub title / KPI medium | 22px | 700 (bold) | 1.2 / 1.1 | Hub page `<h2>` title in header (1.2); secondary KPI (e.g. "3 utkast", last score) (1.1) |
+| Widget title | 13px | 700 (bold) | 1.3 | Widget card `<h3>` in `.w-title` |
+| Body / label / sub-label | 12px | 400 (regular) | 1.5 | KPI labels, check-list items, match-card company names, section text, stack-bar legend, range bar labels, alert chips |
 
-Source: nav-hub-sketch.html `.kpi-big { font-size: 32px }`, `.kpi-mid { font-size: 22px }`, `.w-title h3 { font-size: 13px }`, `.hero h2 { font-size: 22px }`, `.kpi-label { font-size: 12px }`, `.stack-legend { font-size: 11px }`.
+Source: nav-hub-sketch.html `.kpi-big { font-size: 32px }`, `.kpi-mid { font-size: 22px }`, `.w-title h3 { font-size: 13px }`, `.hero h2 { font-size: 22px }`, `.kpi-label { font-size: 12px }`, `.stack-legend { font-size: 11px }` (merged into 12px role).
 
-**Declared roles (4 sizes, 2 weights):**
-- Sizes: 32px, 22px, 13px, 12px (11px is a sub-label variant of the 12px body role — no additional weight)
-- Weights: 400 (regular) and 600/700 (semibold/bold — use 600 for widget titles, 700 for numeric KPIs)
+**Declared sizes (4) and weights (2):**
+- Sizes: 32px, 22px, 13px, 12px
+- Weights: 400 (regular) and 700 (bold) — 600 is not used; widget titles previously at 13px/600 are 13px/700 (visual difference negligible at this size)
 
 **Section heading:**
-- 11px, weight 700, uppercase, letter-spacing 0.08em, color `--c-text`
-- Source: nav-hub-sketch.html `.section-head h4 { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700 }`
+- 12px, weight 700, uppercase, letter-spacing 0.06em, color `--c-text`
+- Differentiates from body/label (12px/400) via weight + uppercase + letter-spacing, not via a separate font size
+- Source: nav-hub-sketch.html `.section-head h4` — size harmonized to 12px per typography constraint; uppercase + letter-spacing preserved for visual distinction
 
 ---
 
@@ -137,6 +138,8 @@ Source: docs/DESIGN.md "Domäner" table, tokens.css per-domain blocks, ARCHITECT
 
 Source: nav-hub-sketch.html `.grid` + `.widget.size-*` + ARCHITECTURE.md "Per-size rendering contract".
 
+**Focal point declaration:** Primary visual anchor on Söka Jobb hub: CV widget at L-size, first position. The 32px KPI number is the primary eye-attractor on any hub section containing a numeric KPI.
+
 ### Grid Container
 
 ```
@@ -187,7 +190,7 @@ Hover state: `border-color: var(--c-accent)` — no box-shadow by default; hover
 
 Layout: `display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px`.
 
-Left side: icon container (26×26px, radius 7px, `bg: var(--c-bg)`, icon color `var(--c-text)`, aria-hidden) + `<h3>` at 13px/600 in `var(--stone-900)`.
+Left side: icon container (26×26px, radius 7px, `bg: var(--c-bg)`, icon color `var(--c-text)`, aria-hidden) + `<h3>` at 13px/700 in `var(--stone-900)`.
 
 Right side: size-toggle group (see below) — visible only when `editMode=true` OR on hover (opacity 0 → 1 at 150ms).
 
@@ -249,9 +252,9 @@ margin-top: 10px
 Hidden in S-size. In M: max 1 button. In L: max 2 buttons.
 
 Button variants in widget footers:
-- Primary: `background: var(--c-solid); color: #fff; border-radius: 7px; padding: 6px 12px; font-size: 12px; font-weight: 500`
-- Soft: `background: var(--c-bg); color: var(--c-text); border-radius: 7px; padding: 6px 12px; font-size: 12px; font-weight: 500`
-- Link: `background: transparent; color: var(--c-text); font-size: 12px; font-weight: 500; padding: 6px 0`
+- Primary: `background: var(--c-solid); color: #fff; border-radius: 7px; padding: 6px 12px; font-size: 12px; font-weight: 700`
+- Soft: `background: var(--c-bg); color: var(--c-text); border-radius: 7px; padding: 6px 12px; font-size: 12px; font-weight: 700`
+- Link: `background: transparent; color: var(--c-text); font-size: 12px; font-weight: 700; padding: 6px 0`
 
 Source: nav-hub-sketch.html `.btn`, `.btn-soft`, `.btn-link`.
 
@@ -268,17 +271,19 @@ margin-bottom: 10px
 
 Label:
 ```
-font-size: 11px; font-weight: 700
-text-transform: uppercase; letter-spacing: 0.08em
+font-size: 12px; font-weight: 700
+text-transform: uppercase; letter-spacing: 0.06em
 color: var(--c-text)
 ```
+
+Visual distinction from body/label text (also 12px/400) is achieved through weight 700 + uppercase + letter-spacing-wide — no additional font size is needed or used.
 
 Rule (decorative line after label):
 ```
 flex: 1; height: 1px; background: var(--stone-150)
 ```
 
-Source: nav-hub-sketch.html `.section-head`.
+Source: nav-hub-sketch.html `.section-head` — font-size harmonized from 11px to 12px per typography constraint; visual character (uppercase + letter-spacing) is preserved.
 
 ---
 
@@ -326,7 +331,7 @@ gap: 8px
 
 Content:
 - Lucide `AlertCircle` icon, `16px`, color `var(--stone-500)`, `aria-hidden="true"`
-- Heading: `"Kunde inte ladda"` — 13px/600/`var(--stone-700)`
+- Heading: `"Kunde inte ladda"` — 13px/700/`var(--stone-700)`
 - Body: `"Försök igen om en stund"` — 12px/400/`var(--stone-500)`
 - Retry `<button>`: link-style, `font-size: 12px; color: var(--c-text)`, text `"Försök igen"`
 
