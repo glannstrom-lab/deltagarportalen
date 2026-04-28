@@ -10,26 +10,26 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 ## Current Position
 
 Phase: 1 of 5 (Hub Navigation Shell)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-04-28 — Roadmap created for v1.0 Hub-Navigation (5 phases, 24 requirements mapped)
+Plan: 1 of 5 in current phase
+Status: In progress
+Last activity: 2026-04-28 — Plan 01-01 navigation-refactor completed
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 10%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: ~2 min
+- Total execution time: ~2 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 1 - Hub Navigation Shell | 1/5 | ~2 min | ~2 min |
 
-**Recent Trend:** No data yet
+**Recent Trend:** 1 plan completed 2026-04-28
 
 ## Accumulated Context
 
@@ -41,6 +41,8 @@ Progress: [░░░░░░░░░░] 0%
 - [v1.0 pre-planning]: Interview session scores (DATA-01) and Personal Brand audit scores (DATA-02) go to Supabase in Phase 3
 - [v1.0 pre-planning]: No recharts dependency — hand-rolled SVG polylines for sparklines (~160 KB saved)
 - [v1.0 pre-planning]: react-grid-layout introduced in v1.1 only — Phases 1-4 use plain CSS grid
+- [01-01]: pageToHub built by explicit memberPaths iteration (not URL prefix matching) per PITFALLS.md Pitfall 2
+- [01-01]: Oversikt hub memberPaths includes '/' so legacy bookmarks resolve cleanly before redirect plan ships
 
 ### Pending Todos
 
@@ -55,5 +57,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-28
-Stopped at: ROADMAP.md created and REQUIREMENTS.md traceability updated — ready to run `/gsd:plan-phase 1`
+Stopped at: Completed 01-01-navigation-refactor-PLAN.md — ready for 01-02-hub-pages-and-routes
 Resume file: None
