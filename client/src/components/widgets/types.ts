@@ -22,4 +22,6 @@ export interface WidgetLayoutItem {
   id: string
   size: WidgetSize
   order: number
+  /** Phase 4: defaults to true. Set to false when user hides via hide-button. */
+  visible: boolean
 }

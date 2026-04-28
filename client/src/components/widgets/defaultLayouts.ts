@@ -1,37 +1,49 @@
 import type { HubId, WidgetLayoutItem } from './types'
 
 /**
- * Default widget layouts per hub for Phase 2.
+ * Default widget layouts per hub.
+ * Phase 4 extends: adds `visible: true` to all items, and accepts optional breakpoint param.
  * Söka jobb is the demo hub — full 8-widget layout.
- * Other hubs get 1-2 placeholder widgets so navigation works visually.
+ * Other hubs get 1 placeholder widget so navigation works visually.
  * Phase 5 fills in the rest (HUB-02..HUB-04).
  */
-export function getDefaultLayout(hubId: HubId): WidgetLayoutItem[] {
-  const defaults: Record<HubId, WidgetLayoutItem[]> = {
+export function getDefaultLayout(
+  hubId: HubId,
+  breakpoint: 'desktop' | 'mobile' = 'desktop'
+): WidgetLayoutItem[] {
+  const desktop: Record<HubId, WidgetLayoutItem[]> = {
     jobb: [
       // Section 1: Skapa & öva (focal point: CV at L, position 0)
-      { id: 'cv',           size: 'L', order: 0 },
-      { id: 'cover-letter', size: 'M', order: 1 },
-      { id: 'interview',    size: 'M', order: 2 },
+      { id: 'cv',           size: 'L', order: 0, visible: true },
+      { id: 'cover-letter', size: 'M', order: 1, visible: true },
+      { id: 'interview',    size: 'M', order: 2, visible: true },
       // Section 2: Sök & ansök
-      { id: 'job-search',   size: 'L', order: 3 },
-      { id: 'applications', size: 'M', order: 4 },
-      { id: 'spontaneous',  size: 'S', order: 5 },
+      { id: 'job-search',   size: 'L', order: 3, visible: true },
+      { id: 'applications', size: 'M', order: 4, visible: true },
+      { id: 'spontaneous',  size: 'S', order: 5, visible: true },
       // Section 3: Marknad
-      { id: 'salary',        size: 'M', order: 6 },
-      { id: 'international', size: 'S', order: 7 },
+      { id: 'salary',        size: 'M', order: 6, visible: true },
+      { id: 'international', size: 'S', order: 7, visible: true },
     ],
     // Phase 2 placeholder hubs — single S widget each, real widgets in Phase 5
-    karriar:      [{ id: 'cv', size: 'S', order: 0 }],
-    resurser:     [{ id: 'cv', size: 'S', order: 0 }],
-    'min-vardag': [{ id: 'cv', size: 'S', order: 0 }],
-    oversikt:     [{ id: 'cv', size: 'S', order: 0 }],
+    karriar:      [{ id: 'cv', size: 'S', order: 0, visible: true }],
+    resurser:     [{ id: 'cv', size: 'S', order: 0, visible: true }],
+    'min-vardag': [{ id: 'cv', size: 'S', order: 0, visible: true }],
+    oversikt:     [{ id: 'cv', size: 'S', order: 0, visible: true }],
   }
-  return defaults[hubId]
+  const base = desktop[hubId]
+  if (breakpoint === 'mobile') {
+    // Mobile cap: L→M, XL→M (mobile grid is 2-col)
+    return base.map(item => ({
+      ...item,
+      size: (item.size === 'L' || item.size === 'XL') ? 'M' as const : item.size,
+    }))
+  }
+  return base
 }
 
 /**
- * For Phase 2, jobb-hub layout grouped into named sections.
+ * For Phase 2/3, jobb-hub layout grouped into named sections.
  * Each section gets a labeled HubGrid.Section in JobsokHub.
  */
 export interface SectionedLayout {
