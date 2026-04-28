@@ -16,7 +16,8 @@ import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
 import { OptimizedImage } from './ui/OptimizedImage'
-import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge } from './layout/navigation'
+import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge, isHubNavEnabled } from './layout/navigation'
+import { HubBottomNav } from './layout/HubBottomNav'
 
 const SIDEBAR_COLLAPSED_KEY = 'sidebar-collapsed'
 
@@ -43,6 +44,12 @@ export default function Layout() {
 
   // Bestäm om vi ska visa tillbaka-knapp (alla sidor utom startsidan)
   const showBackButton = isMobile && location.pathname !== '/'
+
+  const hubModeEnabled = isHubNavEnabled()
+  // When flag is on AND on mobile, the hub bottom nav replaces the FAQ BottomBar.
+  // Otherwise the FAQ BottomBar stays where it is today.
+  const showHubBottomNav = hubModeEnabled && isMobile && showBars
+  const showLegacyBottomBar = showBars && !showHubBottomNav
 
   return (
     <>
@@ -76,7 +83,8 @@ export default function Layout() {
               id="main-content"
               className={cn(
                 'flex-1 overflow-auto',
-                isMobile ? 'p-4' : 'p-6'
+                isMobile ? 'p-4' : 'p-6',
+                showHubBottomNav && 'pb-20'  // 64px footroom for the fixed bottom nav (h ~56px + safe-area)
               )}
               tabIndex={-1}
             >
@@ -93,8 +101,11 @@ export default function Layout() {
         {/* Tillbaka-knapp på mobil (alla sidor utom dashboard) */}
         {showBackButton && <MobileBackButton />}
 
-        {/* FAQ BottomBar - always visible like TopBar */}
-        {showBars && <BottomBar />}
+        {/* Hub bottom nav (mobile + flag on) — replaces FAQ BottomBar in this state */}
+        {showHubBottomNav && <HubBottomNav />}
+
+        {/* FAQ BottomBar — preserved for desktop and for flag-off rollout */}
+        {showLegacyBottomBar && <BottomBar />}
 
         {/* Övriga komponenter */}
         <BreakReminder workDuration={15} />
