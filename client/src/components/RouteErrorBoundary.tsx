@@ -128,6 +128,7 @@ export class RouteErrorBoundary extends Component<Props, State> {
           className="min-h-[60vh] flex items-center justify-center p-4"
           role="alert"
           aria-live="assertive"
+          data-testid="route-error-fallback"
         >
           <div className="bg-white dark:bg-stone-800 rounded-2xl shadow-xl max-w-md w-full p-6 sm:p-8 text-center border border-stone-200 dark:border-stone-700">
             {/* Icon */}
