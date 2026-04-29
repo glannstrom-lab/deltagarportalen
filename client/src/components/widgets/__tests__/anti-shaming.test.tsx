@@ -5,6 +5,8 @@ import { JobsokDataProvider } from '../JobsokDataContext'
 import type { JobsokSummary } from '../JobsokDataContext'
 import { KarriarDataProvider } from '../KarriarDataContext'
 import type { KarriarSummary } from '../KarriarDataContext'
+import { ResurserDataProvider } from '../ResurserDataContext'
+import type { ResurserSummary } from '../ResurserDataContext'
 import CvWidget from '../CvWidget'
 import CoverLetterWidget from '../CoverLetterWidget'
 import InterviewWidget from '../InterviewWidget'
@@ -16,6 +18,12 @@ import InternationalWidget from '../InternationalWidget'
 import CareerGoalWidget from '../CareerGoalWidget'
 import SkillGapWidget from '../SkillGapWidget'
 import PersonalBrandWidget from '../PersonalBrandWidget'
+import MyDocumentsWidget from '../MyDocumentsWidget'
+import KnowledgeBaseWidget from '../KnowledgeBaseWidget'
+import ExternalResourcesWidget from '../ExternalResourcesWidget'
+import PrintResourcesWidget from '../PrintResourcesWidget'
+import AITeamWidget from '../AITeamWidget'
+import ExercisesWidget from '../ExercisesWidget'
 
 // Mock useInterestProfile for InterestGuideWidget (called inside the widget directly)
 vi.mock('@/hooks/useInterestProfile', () => ({
@@ -96,6 +104,22 @@ function karriarFixture(): KarriarSummary {
   }
 }
 
+function resurserFixture(): ResurserSummary {
+  return {
+    cv: { id: 'cv-1', updated_at: '2026-04-25' },
+    coverLetters: [
+      { id: 'cl-1', title: 'Spotify', created_at: '2026-04-26' },
+      { id: 'cl-2', title: 'Klarna',  created_at: '2026-04-27' },
+    ],
+    recentArticles: [
+      { article_id: 'cv-tips', progress_percent: 100, is_completed: true, completed_at: '2026-04-20' },
+    ],
+    articleCompletedCount: 5,
+    aiTeamSessions: [{ agent_id: 'career-coach', updated_at: '2026-04-25' }],
+    aiTeamSessionCount: 3,
+  }
+}
+
 function renderWidget(W: React.ComponentType<any>, widgetId: string) {
   const data = fixture()
   return render(
@@ -118,6 +142,17 @@ function renderKarriarWidget(W: React.ComponentType<any>, widgetId: string) {
   )
 }
 
+function renderResurserWidget(W: React.ComponentType<any>, widgetId: string) {
+  const data = resurserFixture()
+  return render(
+    <MemoryRouter>
+      <ResurserDataProvider value={data}>
+        <W id={widgetId} size="L" />
+      </ResurserDataProvider>
+    </MemoryRouter>
+  )
+}
+
 const cases: [string, React.ComponentType<any>, string][] = [
   ['CvWidget', CvWidget, 'cv'],
   ['CoverLetterWidget', CoverLetterWidget, 'cover-letter'],
@@ -134,6 +169,15 @@ const karriarCases: [string, React.ComponentType<any>, string][] = [
   ['InterestGuideWidget', InterestGuideWidget, 'intresseguide'],
   ['SkillGapWidget', SkillGapWidget, 'kompetensgap'],
   ['PersonalBrandWidget', PersonalBrandWidget, 'personligt-varumarke'],
+]
+
+const resurserCases: [string, React.ComponentType<any>, string][] = [
+  ['MyDocumentsWidget',        MyDocumentsWidget,        'mina-dokument'],
+  ['KnowledgeBaseWidget',      KnowledgeBaseWidget,      'kunskapsbanken'],
+  ['ExternalResourcesWidget',  ExternalResourcesWidget,  'externa-resurser'],
+  ['PrintResourcesWidget',     PrintResourcesWidget,     'utskriftsmaterial'],
+  ['AITeamWidget',             AITeamWidget,             'ai-team'],
+  ['ExercisesWidget',          ExercisesWidget,          'ovningar'],
 ]
 
 describe('A11Y-03: no raw % in primary KPI slot', () => {
@@ -162,6 +206,19 @@ describe('A11Y-03: no raw % in primary KPI slot', () => {
 describe('A11Y-03 Karriär: no raw % in primary KPI slot (HUB-02)', () => {
   it.each(karriarCases)('%s does not render a number followed by %% in primary-KPI typography', (name, W, widgetId) => {
     const { container } = renderKarriarWidget(W, widgetId)
+    const allEls = Array.from(container.querySelectorAll('*'))
+    const primaryKPIs = allEls.filter(isPrimaryKPI)
+
+    for (const el of primaryKPIs) {
+      const text = (el.textContent ?? '').trim()
+      expect(text, `${name}: primary KPI element should not contain raw percentage, got: "${text}"`).not.toMatch(/\d+%/)
+    }
+  })
+})
+
+describe('A11Y-03 Resurser: no raw % in primary KPI slot (HUB-03)', () => {
+  it.each(resurserCases)('%s does not render a number followed by %% in primary-KPI typography', (name, W, widgetId) => {
+    const { container } = renderResurserWidget(W, widgetId)
     const allEls = Array.from(container.querySelectorAll('*'))
     const primaryKPIs = allEls.filter(isPrimaryKPI)
 
