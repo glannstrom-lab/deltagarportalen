@@ -130,4 +130,11 @@ describe('HubOverview — minimal launchpad', () => {
     renderHub()
     expect(screen.queryByText(/din samlade vy/i)).not.toBeInTheDocument()
   })
+
+  it('renders date disc on the right with day-of-month', () => {
+    mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
+    renderHub()
+    const today = new Date()
+    expect(screen.getByText(String(today.getDate()))).toBeInTheDocument()
+  })
 })

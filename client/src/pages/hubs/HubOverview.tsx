@@ -32,6 +32,10 @@ import { streakDays } from '@/utils/streakDays'
 
 const HUB_ID = 'oversikt' as const
 
+const SWEDISH_DAYS_SHORT = [
+  'sön', 'mån', 'tis', 'ons', 'tor', 'fre', 'lör',
+] as const
+
 function daysSince(iso: string | null | undefined): number | null {
   if (!iso) return null
   const then = new Date(iso)
@@ -64,6 +68,7 @@ export default function HubOverview() {
   const firstName = summary?.profile?.full_name?.trim().split(/\s+/)[0] ?? null
   const profileImageUrl = summary?.profile?.profile_image_url ?? null
   const initials = (firstName?.[0] ?? 'M').toUpperCase()
+  const today = new Date()
 
   // ---------- Senaste aktivitet per hub ----------
   const hubActivity = useMemo(() => {
@@ -166,32 +171,16 @@ export default function HubOverview() {
           }}
         />
 
-        <div className="flex items-start justify-between gap-6 relative">
-          <div>
-            <h1
-              id="hero-greeting"
-              className="text-[40px] font-bold text-[var(--stone-900)] leading-[1.05] tracking-tight m-0"
-            >
-              {firstName ? `Hej ${firstName}` : 'Välkommen tillbaka'}
-            </h1>
-            <p className="text-[22px] font-medium text-[var(--stone-700)] tracking-tight mt-3">
-              Vad vill du göra idag?
-            </p>
-          </div>
-
-          {/* Profil-block: avatar + besök profilen-länk */}
-          <div className="flex flex-col items-center gap-2 flex-shrink-0">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 relative">
+          {/* Vänster: profil-block (avatar + besök profilen-länk) */}
+          <div className="flex flex-col items-center gap-2 flex-shrink-0 order-1">
             <Link
               to="/profile"
               aria-label="Besök din profil"
               className="block w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm transition-all hover:border-[var(--c-solid)] hover:shadow-md"
             >
               {profileImageUrl ? (
-                <img
-                  src={profileImageUrl}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
+                <img src={profileImageUrl} alt="" className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-[var(--c-bg)]">
                   <span className="text-[28px] font-bold text-[var(--c-text)] tracking-tight">
@@ -207,6 +196,32 @@ export default function HubOverview() {
               <User size={12} aria-hidden="true" />
               Besök din profil
             </Link>
+          </div>
+
+          {/* Mitten: greeting + frågan */}
+          <div className="flex-1 text-center md:text-center order-2 px-4">
+            <h1
+              id="hero-greeting"
+              className="text-[40px] font-bold text-[var(--stone-900)] leading-[1.05] tracking-tight m-0"
+            >
+              {firstName ? `Hej ${firstName}` : 'Välkommen tillbaka'}
+            </h1>
+            <p className="text-[22px] font-medium text-[var(--stone-700)] tracking-tight mt-3">
+              Vad vill du göra idag?
+            </p>
+          </div>
+
+          {/* Höger: datum-disc */}
+          <div
+            aria-hidden="true"
+            className="flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] flex-shrink-0 shadow-sm order-3 self-center"
+          >
+            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] leading-none">
+              {SWEDISH_DAYS_SHORT[today.getDay()]}
+            </span>
+            <span className="text-[28px] font-bold text-[var(--c-text)] leading-none mt-1 tracking-tight">
+              {today.getDate()}
+            </span>
           </div>
         </div>
       </motion.section>
