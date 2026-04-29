@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-04-min-vardag-hub-PLAN.md
-last_updated: "2026-04-29T15:42:55.333Z"
-last_activity: 2026-04-29 — Plan 05-04 Min Vardag Hub (HUB-04) completed — 5 widgets, 114 tests, streakDays utility
+stopped_at: Completed 05-05-oversikt-hub-PLAN.md
+last_updated: "2026-04-29T16:07:42.394Z"
+last_activity: 2026-04-29 — Plan 05-05 Översikt Hub (HUB-05) completed — 7 widgets, 14 integration tests (α-ν), 280/280 final suite, useOversiktHubSummary cross-hub aggregator, useOnboardedHubsTracking, registry now 32 widgets
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 25
-  completed_plans: 23
-  percent: 92
+  completed_plans: 24
+  percent: 96
 ---
 
 # State — Deltagarportalen
@@ -26,11 +26,11 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 ## Current Position
 
 Phase: 5 of 5 (Full Hub Coverage + Översikt)
-Plan: 4 of 6 in current phase (completed)
+Plan: 5 of 6 in current phase (completed)
 Status: In progress
-Last activity: 2026-04-29 — Plan 05-04 Min Vardag Hub (HUB-04) completed — 5 widgets, 114 tests, streakDays utility
+Last activity: 2026-04-29 — Plan 05-05 Översikt Hub (HUB-05) completed — 7 widgets, 14 integration tests (α-ν), 280/280 final suite, useOversiktHubSummary cross-hub aggregator, useOnboardedHubsTracking, registry now 32 widgets
 
-Progress: [█████████░] 92%
+Progress: [██████████] 96%
 
 ## Performance Metrics
 
@@ -72,6 +72,7 @@ Progress: [█████████░] 92%
 | Phase 05-full-hub-coverage-oversikt P02 | 10 | 3 tasks | 21 files |
 | Phase 05 P03 | 9m | 3 tasks | 17 files |
 | Phase 05 P04 | 13 | 3 tasks | 17 files |
+| Phase 05 P05 | 25 | 4 tasks | 32 files |
 
 ## Accumulated Context
 
@@ -148,6 +149,12 @@ Progress: [█████████░] 92%
 - [Phase 05-04]: HealthWidget anti-shaming: primary 22px font-bold KPI is streak label or last-log-date, NEVER raw mood_level number; mood values appear ONLY as decorative Sparkline SVG
 - [Phase 05-04]: Hälsa empty-state copy locked verbatim: 'Hur mår du idag?' / 'Om du vill — logga ditt mående med ett klick' / 'Logga idag' (anti-pressure empathy contract enforced via test)
 - [Phase 05-04]: consultant_participants join filter uses .eq('participant_id', userId) per 05-DB-DISCOVERY (NOT user_id); test asserts column matches discovery via CONSULTANT_PARTICIPANT_COL constant
+- [Phase 05-05]: useOversiktHubSummary is a cross-hub aggregator (Pitfall D resolution) — fires Översikt-specific profile fetch (onboarded_hubs + full_name) and triggers the 4 sibling hub-loaders to leverage React Query dedup; cross-hub summary widgets read getQueryData(JOBSOK|KARRIAR|MIN_VARDAG_HUB_KEY), never call supabase.from
+- [Phase 05-05]: useOnboardedHubsTracking uses useRef + useMutation pattern: fires once per hook instance on first mount when userId non-empty; idempotent (no-op when hubId already in cached array); updates OVERSIKT_HUB_KEY cache via setQueryData on success
+- [Phase 05-05]: All 5 hub pages call useOnboardedHubsTracking(HUB_ID) on mount; 4 existing hub-test files patched with vi.mock for the tracking hook to keep regression suites green
+- [Phase 05-05]: OnboardingWidget is the only XL-only widget in the registry (allowedSizes: ['XL']); detection logic via profile.onboarded_hubs.length === 0 → new user (Välkommen + 4 quick-links) vs returning user (Bra jobbat firstName + deterministic next-step CTA via pickNextStep)
+- [Phase 05-05]: HealthSummaryWidget imports streakDays from @/utils/streakDays (single source of truth from Plan 04 Task 2 — verified by grep: 1 match for @/utils/streakDays import, 0 matches for any HealthWidget import — template-copy leak guard passes)
+- [Phase 05-05]: Pre-existing lazy-isolation.test.tsx hard-coded to 8 widgets — Rule 3 fix extended EXPECTED_WIDGETS to 32 (all 5 hubs); Bundle Contract preserved at 32 lazy() entries; final test suite 280/280 green
 
 ### Pending Todos
 
@@ -161,6 +168,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-29T15:42:55.329Z
-Stopped at: Completed 05-04-min-vardag-hub-PLAN.md
+Last session: 2026-04-29T16:07:19.960Z
+Stopped at: Completed 05-05-oversikt-hub-PLAN.md
 Resume file: None
