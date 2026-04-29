@@ -37,7 +37,7 @@ export function useJobsokHubSummary() {
       // salary_data and international_targets tables do NOT exist in live DB (Plan 01 verified).
       // Those widgets stay in empty-state mode — not included in this Promise.all.
       const [cvR, lettersR, sessionsR, appsR, sponR] = await Promise.all([
-        supabase.from('cvs').select('id, updated_at, completion_pct').eq('user_id', userId).maybeSingle(),
+        supabase.from('cvs').select('id, updated_at').eq('user_id', userId).maybeSingle(),
         supabase.from('cover_letters').select('id, title, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(3),
         supabase.from('interview_sessions').select('id, score, created_at').eq('user_id', userId).not('completed_at', 'is', null).order('created_at', { ascending: false }).limit(8),
         supabase.from('job_applications').select('status').eq('user_id', userId),
