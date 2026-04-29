@@ -88,7 +88,7 @@ The error-state row format is uniform across all widgets — they all wrap in `<
 | Widget | State | Heading | Body | CTA | Source |
 |--------|-------|---------|------|-----|--------|
 | OnboardingXL | new-user | "Välkommen till din portal" (22px bold) | "Utforska dina hubbar och kom igång med din jobbsökning" + 4 quick-link chips | (no Footer in new-user — chips serve as CTAs: "Söka jobb →", "Karriär →", "Resurser →", "Min Vardag →") | OnboardingWidget.tsx:88-105 |
-| OnboardingXL | returning-user (no apps) | "Bra jobbat `{firstName}`!" (22px bold) | "Du har inte sökt något jobb än. Vill du börja idag?" | "Öppna Söka jobb →" → /jobb | OnboardingWidget.tsx:40-45,109-123 |
+| OnboardingXL | returning-user (no apps) | "Hej `{firstName}`" (22px bold) — neutral greeting per Plan 06 BLOCK B1 fix | "Vill du ta första steget idag?" | "Öppna Söka jobb →" → /jobb | OnboardingWidget.tsx:46-51,118-120 |
 | OnboardingXL | returning-user (no diary) | "Bra jobbat `{firstName}`!" (22px bold) | "Reflektera över din vecka i dagboken — om du vill" | "Öppna Min Vardag →" → /min-vardag | OnboardingWidget.tsx:46-52,109-123 |
 | OnboardingXL | returning-user (default) | "Bra jobbat `{firstName}`!" (22px bold) | "Fortsätt med dina mål" | "Öppna Karriär →" → /karriar | OnboardingWidget.tsx:53-58,109-123 |
 | OnboardingXL | error | "Kunde inte ladda" | "Försök igen om en stund" | "Försök igen" (button) | WidgetErrorBoundary.tsx |
@@ -136,7 +136,7 @@ Forbidden-string counts:
 
 The executor noticed the following copy patterns that may merit agent attention. These are NOT defects — they are choices the agents should evaluate against the empathy contract.
 
-1. **OnboardingWidget returning-user state** — Body text "Du har inte sökt något jobb än. Vill du börja idag?" is direct and personal. Does it read as inviting (per pickNextStep design intent) or as an implicit accusation that the user has been inactive? Verdict requested.
+1. **OnboardingWidget returning-user state** — ~~Body text "Du har inte sökt något jobb än. Vill du börja idag?" is direct and personal. Does it read as inviting (per pickNextStep design intent) or as an implicit accusation that the user has been inactive? Verdict requested.~~ **RESOLVED 2026-04-29 (Plan 06 BLOCK B1, langtidsarbetssokande):** body softened to "Vill du ta första steget idag?" AND heading swapped to neutral "Hej `{firstName}`" on the no-apps branch only — see commit `ade4426`. Other returning-user branches (no-diary, default) keep "Bra jobbat `{firstName}`!" heading.
 2. **JobsokSummaryWidget empty state** — Body repeats the heading: "Inga ansökningar än" (heading) → "Inga ansökningar än — börja söka idag" (body). The repetition is intentional (heading is short for S-size, body adds CTA hint). Verdict on whether redundancy reads natural or robotic.
 3. **DiaryWidget filled state primary KPI** — "1 inlägg" / "12 inlägg" — uses "inlägg" for both singular and plural (Swedish grammar accepts both, "inlägg" is uninflected). Verdict on whether "1 inlägg, 2 inlägg, 12 inlägg" feels OK or whether it should differentiate (e.g., "1 anteckning" / "2 inlägg").
 4. **NetworkWidget filled state body** — "1 kontakt" vs "2 kontakter" — the milestone label drives primary KPI ("Första kontakter"), but the secondary count "1 kontakt" is exposed in 12px text. Acceptable per anti-shaming (label is primary, count is secondary), but verdict requested.
