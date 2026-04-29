@@ -66,7 +66,8 @@ export function PageLayout({
 
   return (
     <div className={cn(
-      'min-h-screen bg-stone-50 dark:bg-stone-900',
+      // Removed min-h-screen — Layout.tsx already provides the scrolling <main> container.
+      // Adding min-h-screen here created a second scroll viewport (dubbel scrollbar).
       'space-y-4 sm:space-y-5 md:space-y-6',
       'page-transition',
       className

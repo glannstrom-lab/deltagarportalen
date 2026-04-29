@@ -51,7 +51,7 @@ function Section({ title, children }: SectionProps) {
         </h2>
         <div className="flex-1 h-px bg-[var(--c-accent)] opacity-60" />
       </div>
-      <div className="grid grid-cols-2 min-[900px]:grid-cols-4 auto-rows-[150px] gap-[14px]">
+      <div className="grid grid-cols-2 min-[900px]:grid-cols-4 auto-rows-[170px] gap-[16px] [grid-auto-flow:dense]">
         {children}
       </div>
     </section>

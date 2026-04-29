@@ -47,10 +47,10 @@ function WidgetRoot({
     <WidgetContext.Provider value={{ size, onSizeChange, allowedSizes, editMode, onHide }}>
       <div
         className={[
-          'bg-[var(--surface)] border border-[var(--stone-150)] rounded-[12px]',
-          'p-[14px_16px] flex flex-col overflow-hidden',
-          'transition-[border-color,box-shadow] duration-[var(--motion-fast)]',
-          'hover:border-[var(--c-accent)] hover:shadow-[0_2px_6px_rgb(0_0_0/0.05)]',
+          'bg-[var(--surface)] border border-[var(--stone-200)] rounded-[14px]',
+          'shadow-sm p-[16px_18px] flex flex-col overflow-hidden',
+          'transition-[border-color,box-shadow,transform] duration-[var(--motion-fast)]',
+          'hover:border-[var(--c-accent)] hover:shadow-md',
           'group relative',
           className ?? '',
         ].join(' ')}
