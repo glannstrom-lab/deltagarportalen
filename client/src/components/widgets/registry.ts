@@ -43,14 +43,7 @@ export const WIDGET_REGISTRY = {
   kalender:               { component: lazy(() => import('./CalendarWidget')),           defaultSize: 'L' as const, allowedSizes: ['M', 'L'] as WidgetSize[] },
   natverk:                { component: lazy(() => import('./NetworkWidget')),            defaultSize: 'S' as const, allowedSizes: ['S', 'M'] as WidgetSize[] },
   'min-konsulent':        { component: lazy(() => import('./ConsultantWidget')),         defaultSize: 'M' as const, allowedSizes: ['S', 'M', 'L'] as WidgetSize[] },
-  // Översikt hub (7 widgets — Phase 5 / HUB-05)
-  'onboarding-xl':        { component: lazy(() => import('./OnboardingWidget')),         defaultSize: 'XL' as const, allowedSizes: ['XL'] as WidgetSize[] },
-  'jobsok-summary':       { component: lazy(() => import('./JobsokSummaryWidget')),      defaultSize: 'M' as const,  allowedSizes: ['S', 'M'] as WidgetSize[] },
-  'cv-status-summary':    { component: lazy(() => import('./CvStatusSummaryWidget')),    defaultSize: 'S' as const,  allowedSizes: ['S', 'M'] as WidgetSize[] },
-  'interview-summary':    { component: lazy(() => import('./InterviewSummaryWidget')),   defaultSize: 'S' as const,  allowedSizes: ['S', 'M'] as WidgetSize[] },
-  'karriar-mal-summary':  { component: lazy(() => import('./CareerGoalSummaryWidget')),  defaultSize: 'M' as const,  allowedSizes: ['S', 'M'] as WidgetSize[] },
-  'halsa-summary':        { component: lazy(() => import('./HealthSummaryWidget')),      defaultSize: 'M' as const,  allowedSizes: ['S', 'M'] as WidgetSize[] },
-  'dagbok-summary':       { component: lazy(() => import('./DiarySummaryWidget')),       defaultSize: 'S' as const,  allowedSizes: ['S', 'M'] as WidgetSize[] },
+  // Översikt hub: rebuilt as a static page (HubOverview.tsx) — no widgets here.
 } satisfies Record<string, WidgetRegistryEntry>
 
 export type WidgetId = keyof typeof WIDGET_REGISTRY

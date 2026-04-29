@@ -36,18 +36,11 @@ const EXPECTED_WIDGETS = [
   'CalendarWidget',
   'NetworkWidget',
   'ConsultantWidget',
-  // Översikt hub (Phase 5 / HUB-05)
-  'OnboardingWidget',
-  'JobsokSummaryWidget',
-  'CvStatusSummaryWidget',
-  'InterviewSummaryWidget',
-  'CareerGoalSummaryWidget',
-  'HealthSummaryWidget',
-  'DiarySummaryWidget',
+  // Översikt rebuilt as static page (HubOverview.tsx) — no widgets in registry.
 ]
 
 describe('Widget registry — lazy isolation (Bundle / Code-Split Contract)', () => {
-  it('contains exactly EXPECTED_WIDGETS entries (Phase 5 final: 32 widgets across 5 hubs)', () => {
+  it('contains exactly EXPECTED_WIDGETS entries (post-Översikt-rebuild: 25 widgets across 4 hubs)', () => {
     expect(Object.keys(WIDGET_REGISTRY).length).toBe(EXPECTED_WIDGETS.length)
   })
 

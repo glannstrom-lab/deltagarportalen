@@ -49,17 +49,8 @@ export function getDefaultLayout(
       { id: 'natverk',       size: 'S', order: 3, visible: true },
       { id: 'min-konsulent', size: 'M', order: 4, visible: true },
     ],
-    oversikt: [
-      // Section 1: Idag (XL onboarding banner)
-      { id: 'onboarding-xl',       size: 'XL', order: 0, visible: true },
-      // Section 2: Aktivitet (6 cross-hub summary widgets)
-      { id: 'jobsok-summary',      size: 'M',  order: 1, visible: true },
-      { id: 'cv-status-summary',   size: 'S',  order: 2, visible: true },
-      { id: 'interview-summary',   size: 'S',  order: 3, visible: true },
-      { id: 'karriar-mal-summary', size: 'M',  order: 4, visible: true },
-      { id: 'halsa-summary',       size: 'M',  order: 5, visible: true },
-      { id: 'dagbok-summary',      size: 'S',  order: 6, visible: true },
-    ],
+    // Översikt rebuilt as static page (HubOverview.tsx) — no widget layout needed.
+    oversikt: [],
   }
   const base = desktop[hubId]
   if (breakpoint === 'mobile') {
@@ -128,14 +119,4 @@ export function getMinVardagSections(): SectionedLayout[] {
   ]
 }
 
-/**
- * Översikt hub layout grouped into named sections (Phase 5 — HUB-05).
- * Two sections: Idag (XL onboarding) / Aktivitet (6 cross-hub summary widgets).
- */
-export function getOversiktSections(): SectionedLayout[] {
-  const all = getDefaultLayout('oversikt')
-  return [
-    { title: 'Idag',      items: all.slice(0, 1) }, // OnboardingWidget XL
-    { title: 'Aktivitet', items: all.slice(1, 7) }, // 6 cross-hub summary widgets
-  ]
-}
+// Översikt rebuilt as a static page — getOversiktSections removed.

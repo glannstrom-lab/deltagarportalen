@@ -5,7 +5,22 @@ import { useJobsokHubSummary } from './useJobsokHubSummary'
 import { useKarriarHubSummary } from './useKarriarHubSummary'
 import { useResurserHubSummary } from './useResurserHubSummary'
 import { useMinVardagHubSummary } from './useMinVardagHubSummary'
-import type { OversiktSummary } from '@/components/widgets/OversiktDataContext'
+import type { JobsokSummary } from '@/components/widgets/JobsokDataContext'
+import type { KarriarSummary } from '@/components/widgets/KarriarDataContext'
+import type { ResurserSummary } from '@/components/widgets/ResurserDataContext'
+import type { MinVardagSummary } from '@/components/widgets/MinVardagDataContext'
+
+/**
+ * Aggregated shape consumed by HubOverview. Defined here (was in the deleted
+ * OversiktDataContext.tsx) since the static page no longer needs a context wrapper.
+ */
+export interface OversiktSummary {
+  profile: { onboarded_hubs: string[]; full_name: string | null } | null
+  jobsok: JobsokSummary | undefined
+  karriar: KarriarSummary | undefined
+  resurser: ResurserSummary | undefined
+  minVardag: MinVardagSummary | undefined
+}
 
 /**
  * Stable query key — exported so tests, DevTools and useOnboardedHubsTracking

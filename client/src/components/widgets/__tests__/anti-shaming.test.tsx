@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { JobsokDataProvider } from '../JobsokDataContext'
 import type { JobsokSummary } from '../JobsokDataContext'
 import { KarriarDataProvider } from '../KarriarDataContext'
@@ -10,8 +9,6 @@ import { ResurserDataProvider } from '../ResurserDataContext'
 import type { ResurserSummary } from '../ResurserDataContext'
 import { MinVardagDataProvider } from '../MinVardagDataContext'
 import type { MinVardagSummary } from '../MinVardagDataContext'
-import { OversiktDataProvider } from '../OversiktDataContext'
-import type { OversiktSummary } from '../OversiktDataContext'
 import CvWidget from '../CvWidget'
 import CoverLetterWidget from '../CoverLetterWidget'
 import InterviewWidget from '../InterviewWidget'
@@ -34,13 +31,6 @@ import DiaryWidget from '../DiaryWidget'
 import CalendarWidget from '../CalendarWidget'
 import NetworkWidget from '../NetworkWidget'
 import ConsultantWidget from '../ConsultantWidget'
-import OnboardingWidget from '../OnboardingWidget'
-import JobsokSummaryWidget from '../JobsokSummaryWidget'
-import CvStatusSummaryWidget from '../CvStatusSummaryWidget'
-import InterviewSummaryWidget from '../InterviewSummaryWidget'
-import CareerGoalSummaryWidget from '../CareerGoalSummaryWidget'
-import HealthSummaryWidget from '../HealthSummaryWidget'
-import DiarySummaryWidget from '../DiarySummaryWidget'
 
 // Phase 5 Plan 05 — Översikt cross-hub widgets call useAuth via useSupabase.
 vi.mock('@/hooks/useSupabase', () => ({
@@ -214,48 +204,14 @@ function renderMinVardagWidget(W: React.ComponentType<any>, widgetId: string) {
   )
 }
 
-function oversiktSummaryFixture(): OversiktSummary {
-  return {
-    profile: { onboarded_hubs: ['jobb', 'karriar'], full_name: 'Anna Karlsson' },
-    jobsok: fixture(),
-    karriar: karriarFixture(),
-    resurser: resurserFixture(),
-    minVardag: minVardagFixture(),
-  }
-}
+// Översikt rebuilt as static page — cross-hub summary widgets removed.
+// (Was: oversiktSummaryFixture / makeOversiktQueryClient / renderOversiktOnboarding /
+//  renderOversiktSummaryWidget. Removed alongside the widget files.)
 
-/** Pre-seed all relevant cache keys so cross-hub summary widgets see populated data. */
-function makeOversiktQueryClient(): QueryClient {
-  const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  qc.setQueryData(['hub', 'jobsok', 'u1'], fixture())
-  qc.setQueryData(['hub', 'karriar', 'u1'], karriarFixture())
-  qc.setQueryData(['hub', 'min-vardag', 'u1'], minVardagFixture())
-  return qc
-}
-
-function renderOversiktOnboarding(W: React.ComponentType<any>, widgetId: string) {
-  const qc = makeOversiktQueryClient()
-  return render(
-    <QueryClientProvider client={qc}>
-      <MemoryRouter>
-        <OversiktDataProvider value={oversiktSummaryFixture()}>
-          <W id={widgetId} size="XL" allowedSizes={['XL']} />
-        </OversiktDataProvider>
-      </MemoryRouter>
-    </QueryClientProvider>
-  )
-}
-
-function renderOversiktSummaryWidget(W: React.ComponentType<any>, widgetId: string) {
-  const qc = makeOversiktQueryClient()
-  return render(
-    <QueryClientProvider client={qc}>
-      <MemoryRouter>
-        <W id={widgetId} size="L" allowedSizes={['S', 'M']} />
-      </MemoryRouter>
-    </QueryClientProvider>
-  )
-}
+void resurserFixture
+void karriarFixture
+void fixture
+void minVardagFixture
 
 const cases: [string, React.ComponentType<any>, string][] = [
   ['CvWidget', CvWidget, 'cv'],
@@ -292,16 +248,7 @@ const minVardagCases: [string, React.ComponentType<any>, string][] = [
   ['ConsultantWidget', ConsultantWidget, 'min-konsulent'],
 ]
 
-// Plan 05 / HUB-05 — Översikt cross-hub summary widgets (read getQueryData).
-// 6 summary widgets here; OnboardingWidget is asserted separately via OversiktDataProvider.
-const oversiktSummaryCases: [string, React.ComponentType<any>, string][] = [
-  ['JobsokSummaryWidget',     JobsokSummaryWidget,     'jobsok-summary'],
-  ['CvStatusSummaryWidget',   CvStatusSummaryWidget,   'cv-status-summary'],
-  ['InterviewSummaryWidget',  InterviewSummaryWidget,  'interview-summary'],
-  ['CareerGoalSummaryWidget', CareerGoalSummaryWidget, 'karriar-mal-summary'],
-  ['HealthSummaryWidget',     HealthSummaryWidget,     'halsa-summary'],
-  ['DiarySummaryWidget',      DiarySummaryWidget,      'dagbok-summary'],
-]
+// Översikt cross-hub summary widgets removed — sidan är nu statisk (HubOverview.tsx).
 
 describe('A11Y-03: no raw % in primary KPI slot', () => {
   it.each(cases)('%s does not render a number followed by %% in primary-KPI typography', (name, W, widgetId) => {
@@ -375,42 +322,5 @@ describe('A11Y-03 Min Vardag: no raw % in primary KPI slot (HUB-04)', () => {
   })
 })
 
-describe('A11Y-03 Översikt: no raw % in primary KPI slot (HUB-05)', () => {
-  it.each(oversiktSummaryCases)('%s does not render a number followed by %% in primary-KPI typography', (name, W, widgetId) => {
-    const { container } = renderOversiktSummaryWidget(W, widgetId)
-    const allEls = Array.from(container.querySelectorAll('*'))
-    const primaryKPIs = allEls.filter(isPrimaryKPI)
-
-    for (const el of primaryKPIs) {
-      const text = (el.textContent ?? '').trim()
-      expect(text, `${name}: primary KPI element should not contain raw percentage, got: "${text}"`).not.toMatch(/\d+%/)
-    }
-  })
-
-  it('OnboardingWidget (XL) does not render raw % anywhere in the body or heading', () => {
-    const { container } = renderOversiktOnboarding(OnboardingWidget, 'onboarding-xl')
-    const text = container.textContent ?? ''
-    expect(text).not.toMatch(/\d+%/)
-  })
-
-  it('InterviewSummaryWidget primary KPI never renders the raw score number', () => {
-    // Pre-seed cache with a session score of 85
-    const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-    qc.setQueryData(['hub', 'jobsok', 'u1'], {
-      interviewSessions: [{ id: 's1', score: 85, created_at: '2026-04-27' }],
-    })
-    const { container } = render(
-      <QueryClientProvider client={qc}>
-        <MemoryRouter>
-          <InterviewSummaryWidget id="interview-summary" size="M" allowedSizes={['S', 'M']} />
-        </MemoryRouter>
-      </QueryClientProvider>
-    )
-    const allEls = Array.from(container.querySelectorAll('*'))
-    const primaryKPIs = allEls.filter(isPrimaryKPI)
-    for (const el of primaryKPIs) {
-      const text = (el.textContent ?? '').trim()
-      expect(text, `InterviewSummaryWidget: primary KPI must NOT contain raw score number, got: "${text}"`).not.toMatch(/\b\d{2,3}\b/)
-    }
-  })
-})
+// Översikt: anti-shaming covered by HubOverview.test.tsx — page is now static
+// (no widget grid, no raw % anywhere in the rebuilt design).

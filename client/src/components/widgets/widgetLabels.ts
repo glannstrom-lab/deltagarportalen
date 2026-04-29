@@ -38,12 +38,5 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   kalender:            'Kalender',
   natverk:             'Nätverk',
   'min-konsulent':     'Min konsulent',
-  // Översikt hub (Phase 5 — HUB-05)
-  'onboarding-xl':       'Välkommen',
-  'jobsok-summary':      'Söka jobb-status',
-  'cv-status-summary':   'CV-status',
-  'interview-summary':   'Intervju-status',
-  'karriar-mal-summary': 'Karriärmål-status',
-  'halsa-summary':       'Hälsa-status',
-  'dagbok-summary':      'Dagbok-status',
+  // Översikt: rebuilt as static page — no widgets to label.
 }
