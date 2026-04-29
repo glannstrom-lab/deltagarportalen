@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-03-resurser-hub-PLAN.md
-last_updated: "2026-04-29T15:23:25.841Z"
-last_activity: 2026-04-29 — Plan 05-03 Resurser Hub (HUB-03) completed — 6 widgets, 87 tests
+stopped_at: Completed 05-04-min-vardag-hub-PLAN.md
+last_updated: "2026-04-29T15:42:55.333Z"
+last_activity: 2026-04-29 — Plan 05-04 Min Vardag Hub (HUB-04) completed — 5 widgets, 114 tests, streakDays utility
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 25
-  completed_plans: 22
-  percent: 88
+  completed_plans: 23
+  percent: 92
 ---
 
 # State — Deltagarportalen
@@ -26,11 +26,11 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 ## Current Position
 
 Phase: 5 of 5 (Full Hub Coverage + Översikt)
-Plan: 3 of 6 in current phase (completed)
+Plan: 4 of 6 in current phase (completed)
 Status: In progress
-Last activity: 2026-04-29 — Plan 05-03 Resurser Hub (HUB-03) completed — 6 widgets, 87 tests
+Last activity: 2026-04-29 — Plan 05-04 Min Vardag Hub (HUB-04) completed — 5 widgets, 114 tests, streakDays utility
 
-Progress: [█████████░] 88%
+Progress: [█████████░] 92%
 
 ## Performance Metrics
 
@@ -71,6 +71,7 @@ Progress: [█████████░] 88%
 | Phase 05-full-hub-coverage-oversikt P01 | 6 | 3 tasks | 6 files |
 | Phase 05-full-hub-coverage-oversikt P02 | 10 | 3 tasks | 21 files |
 | Phase 05 P03 | 9m | 3 tasks | 17 files |
+| Phase 05 P04 | 13 | 3 tasks | 17 files |
 
 ## Accumulated Context
 
@@ -142,6 +143,11 @@ Progress: [█████████░] 88%
 - [Phase 05-03]: Övningar widget ships STATIC for v1.0 per Pitfall G + 05-DB-DISCOVERY (no exercise_progress table; exercise_answers tracks answers, not completion)
 - [Phase 05-03]: Externa resurser + Utskriftsmaterial are unconditionally STATIC widgets (curated 3-link / 3-template lists) — never crash on missing slice
 - [Phase 05-03]: AI-team agent_id translated to Swedish display names (career-coach → Karriärcoach) via local AGENT_NAMES map; primary KPI is qualitative agent name (never a number)
+- [Phase 05-04]: useMinVardagHubSummary fires Promise.all of 6 supabase calls (mood_logs, diary_entries count + latest, calendar_events, network_contacts count, consultant_participants join with profiles)
+- [Phase 05-04]: streakDays utility extracted to client/src/utils/streakDays.ts as single source of truth — Plan 05 HealthSummaryWidget will import from same path; HealthWidget does not export streakDays (single source verified)
+- [Phase 05-04]: HealthWidget anti-shaming: primary 22px font-bold KPI is streak label or last-log-date, NEVER raw mood_level number; mood values appear ONLY as decorative Sparkline SVG
+- [Phase 05-04]: Hälsa empty-state copy locked verbatim: 'Hur mår du idag?' / 'Om du vill — logga ditt mående med ett klick' / 'Logga idag' (anti-pressure empathy contract enforced via test)
+- [Phase 05-04]: consultant_participants join filter uses .eq('participant_id', userId) per 05-DB-DISCOVERY (NOT user_id); test asserts column matches discovery via CONSULTANT_PARTICIPANT_COL constant
 
 ### Pending Todos
 
@@ -155,6 +161,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-29T15:23:06.998Z
-Stopped at: Completed 05-03-resurser-hub-PLAN.md
+Last session: 2026-04-29T15:42:55.329Z
+Stopped at: Completed 05-04-min-vardag-hub-PLAN.md
 Resume file: None
