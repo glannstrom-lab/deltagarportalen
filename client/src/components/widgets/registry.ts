@@ -23,6 +23,13 @@ export const WIDGET_REGISTRY = {
   spontaneous:    { component: lazy(() => import('./SpontaneousWidget')),   defaultSize: 'S' as const,  allowedSizes: ['S', 'M'] as WidgetSize[] },
   salary:         { component: lazy(() => import('./SalaryWidget')),        defaultSize: 'M' as const,  allowedSizes: ['S', 'M'] as WidgetSize[] },
   international:  { component: lazy(() => import('./InternationalWidget')), defaultSize: 'S' as const,  allowedSizes: ['S', 'M'] as WidgetSize[] },
+  // Karriär hub (6 widgets — Phase 5 / HUB-02)
+  'karriar-mal':          { component: lazy(() => import('./CareerGoalWidget')),     defaultSize: 'M' as const, allowedSizes: ['S', 'M', 'L'] as WidgetSize[] },
+  intresseguide:          { component: lazy(() => import('./InterestGuideWidget')),  defaultSize: 'M' as const, allowedSizes: ['S', 'M', 'L'] as WidgetSize[] },
+  kompetensgap:           { component: lazy(() => import('./SkillGapWidget')),       defaultSize: 'L' as const, allowedSizes: ['M', 'L'] as WidgetSize[] },
+  'personligt-varumarke': { component: lazy(() => import('./PersonalBrandWidget')),  defaultSize: 'M' as const, allowedSizes: ['S', 'M', 'L'] as WidgetSize[] },
+  utbildning:             { component: lazy(() => import('./EducationWidget')),      defaultSize: 'S' as const, allowedSizes: ['S', 'M'] as WidgetSize[] },
+  linkedin:               { component: lazy(() => import('./LinkedInWidget')),       defaultSize: 'S' as const, allowedSizes: ['S', 'M'] as WidgetSize[] },
 } satisfies Record<string, WidgetRegistryEntry>
 
 export type WidgetId = keyof typeof WIDGET_REGISTRY

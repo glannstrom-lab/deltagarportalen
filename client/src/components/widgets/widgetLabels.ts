@@ -9,6 +9,7 @@ import type { WidgetId } from './registry'
  * Keep in sync with WIDGET_REGISTRY keys (Phase 5 adds new widgets — extend this map).
  */
 export const WIDGET_LABELS: Record<WidgetId, string> = {
+  // Söka jobb hub
   cv:              'Mitt CV',
   'cover-letter':  'Personligt brev',
   interview:       'Intervjuträning',
@@ -17,4 +18,11 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   spontaneous:     'Spontanansökan',
   salary:          'Lön & förhandling',
   international:   'Internationellt',
+  // Karriär hub (Phase 5 — HUB-02)
+  'karriar-mal':          'Karriärmål',
+  intresseguide:          'Intresseguide',
+  kompetensgap:           'Kompetensgap',
+  'personligt-varumarke': 'Personligt varumärke',
+  utbildning:             'Utbildning',
+  linkedin:               'LinkedIn',
 }

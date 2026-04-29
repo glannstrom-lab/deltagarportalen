@@ -25,8 +25,15 @@ export function getDefaultLayout(
       { id: 'salary',        size: 'M', order: 6, visible: true },
       { id: 'international', size: 'S', order: 7, visible: true },
     ],
-    // Phase 2 placeholder hubs — single S widget each, real widgets in Phase 5
-    karriar:      [{ id: 'cv', size: 'S', order: 0, visible: true }],
+    // Phase 5 full widget sets — replacing Phase 2 placeholders
+    karriar: [
+      { id: 'karriar-mal',          size: 'M', order: 0, visible: true },
+      { id: 'intresseguide',        size: 'M', order: 1, visible: true },
+      { id: 'kompetensgap',         size: 'L', order: 2, visible: true },
+      { id: 'personligt-varumarke', size: 'M', order: 3, visible: true },
+      { id: 'utbildning',           size: 'S', order: 4, visible: true },
+      { id: 'linkedin',             size: 'S', order: 5, visible: true },
+    ],
     resurser:     [{ id: 'cv', size: 'S', order: 0, visible: true }],
     'min-vardag': [{ id: 'cv', size: 'S', order: 0, visible: true }],
     oversikt:     [{ id: 'cv', size: 'S', order: 0, visible: true }],
@@ -57,5 +64,18 @@ export function getJobbSections(): SectionedLayout[] {
     { title: 'Skapa & öva', items: all.slice(0, 3) },
     { title: 'Sök & ansök', items: all.slice(3, 6) },
     { title: 'Marknad',     items: all.slice(6, 8) },
+  ]
+}
+
+/**
+ * Karriär hub layout grouped into named sections (Phase 5 — HUB-02).
+ * Three sections: Utforska / Analysera / Utveckla.
+ */
+export function getKarriarSections(): SectionedLayout[] {
+  const all = getDefaultLayout('karriar')
+  return [
+    { title: 'Utforska',  items: all.slice(0, 2) }, // Karriärmål, Intresseguide
+    { title: 'Analysera', items: all.slice(2, 4) }, // Kompetensgap, Personligt varumärke
+    { title: 'Utveckla',  items: all.slice(4, 6) }, // Utbildning, LinkedIn
   ]
 }
