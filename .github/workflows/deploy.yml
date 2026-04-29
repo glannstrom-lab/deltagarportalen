@@ -75,7 +75,7 @@ jobs:
 
       - name: Health check
         run: |
-          response=$(curl -s -o /dev/null -w "%{http_code}" https://deltagarportalen.se)
+          response=$(curl -sL -o /dev/null -w "%{http_code}" https://jobin.se)
           if [ "$response" != "200" ]; then
             echo "Health check failed with status: $response"
             exit 1
