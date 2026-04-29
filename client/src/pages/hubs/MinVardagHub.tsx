@@ -1,193 +1,116 @@
-import { useCallback, useMemo, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import { SlidersHorizontal } from 'lucide-react'
-import { PageLayout } from '@/components/layout/PageLayout'
-import { HubGrid } from '@/components/widgets/HubGrid'
-import { WIDGET_REGISTRY, type WidgetId } from '@/components/widgets/registry'
-import { getMinVardagSections, getDefaultLayout } from '@/components/widgets/defaultLayouts'
-import type { WidgetSize, WidgetLayoutItem } from '@/components/widgets/types'
-import { useMinVardagHubSummary } from '@/hooks/useMinVardagHubSummary'
-import { MinVardagDataProvider } from '@/components/widgets/MinVardagDataContext'
+import { useMemo } from 'react'
 import {
-  MinVardagLayoutProvider,
-  type MinVardagLayoutValue,
-} from '@/components/widgets/MinVardagLayoutContext'
-import { HiddenWidgetsPanel } from '@/components/widgets/HiddenWidgetsPanel'
-import { WIDGET_LABELS } from '@/components/widgets/widgetLabels'
-import { useWidgetLayout } from '@/hooks/useWidgetLayout'
-import { useBreakpoint } from '@/hooks/useBreakpoint'
+  Heart,
+  Smile,
+  NotebookPen,
+  Calendar,
+  Dumbbell,
+  UserCheck,
+  Users,
+} from 'lucide-react'
+import HubPage, { type HubFeature } from './HubPage'
+import { useMinVardagHubSummary } from '@/hooks/useMinVardagHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
+import { streakDays } from '@/utils/streakDays'
 
-/**
- * Min Vardag hub — Phase 5 / HUB-04: full wiring with provider stack.
- *
- * Replaces the Phase 2 stub (single-widget grid). Wellbeing-domain hub for
- * utsatta målgrupper — empathy is paramount in widget copy.
- *
- * Provider order (locked from 04-CONTEXT.md):
- *   <MinVardagLayoutProvider>  ← outer (resolves layout first)
- *     <MinVardagDataProvider>  ← inner (data fetch can read visible-widget set)
- */
-
-const HUB_ID = 'min-vardag' as const
+function relativeShort(iso: string | null | undefined): string | null {
+  if (!iso) return null
+  const then = new Date(iso)
+  const now = new Date()
+  const days = Math.floor((now.getTime() - then.getTime()) / (1000 * 60 * 60 * 24))
+  if (days <= 0) return 'idag'
+  if (days === 1) return 'i går'
+  if (days < 7) return `${days} dagar sen`
+  if (days < 14) return '1 vecka sen'
+  return `${Math.floor(days / 7)} veckor sen`
+}
 
 export default function MinVardagHub() {
-  const { t } = useTranslation()
-  const sections = useMemo(() => getMinVardagSections(), [])
-  const breakpoint = useBreakpoint()
+  useOnboardedHubsTracking('min-vardag')
+  const { data } = useMinVardagHubSummary()
 
-  // Phase 4 pattern: persisted layout from Supabase
-  const { layout, isLoading, saveDebounced, save } = useWidgetLayout(HUB_ID)
+  const features = useMemo<HubFeature[]>(() => {
+    const moodLogs = data?.recentMoodLogs ?? []
+    const streak = streakDays(moodLogs)
+    const diaryCount = data?.diaryEntryCount ?? 0
+    const latestDiary = data?.latestDiaryEntry
+    const upcoming = data?.upcomingEvents?.[0]
+    const networkCount = data?.networkContactsCount ?? 0
+    const consultant = data?.consultant
 
-  // Plan 05 (HUB-05): track that the user visited this hub.
-  useOnboardedHubsTracking(HUB_ID)
-
-  // Edit-mode is hub-local (locked decision: useState, not Zustand)
-  const [editMode, setEditMode] = useState(false)
-  const [panelOpen, setPanelOpen] = useState(false)
-  const [announcement, setAnnouncement] = useState('')
-
-  // Effective layout: falls back to defaults when query hasn't resolved yet (loading).
-  const effectiveLayout = useMemo(
-    () => (layout.length > 0 ? layout : getDefaultLayout(HUB_ID, breakpoint)),
-    [layout, breakpoint]
-  )
-
-  // Build a Map<id, WidgetLayoutItem> for quick lookups in render
-  const layoutById = useMemo(() => {
-    const m = new Map<string, WidgetLayoutItem>()
-    for (const item of effectiveLayout) m.set(item.id, item)
-    return m
-  }, [effectiveLayout])
-
-  // Mutators — produce a new layout array and call saveDebounced
-  const hideWidget = useCallback((id: string) => {
-    const next = effectiveLayout.map(w => w.id === id ? { ...w, visible: false } : w)
-    saveDebounced(next)
-    const label = WIDGET_LABELS[id as WidgetId] ?? id
-    setAnnouncement(`Widget ${label} dold`)
-  }, [effectiveLayout, saveDebounced])
-
-  const showWidget = useCallback((id: string) => {
-    const next = effectiveLayout.map(w => w.id === id ? { ...w, visible: true } : w)
-    saveDebounced(next)
-    const label = WIDGET_LABELS[id as WidgetId] ?? id
-    setAnnouncement(`Widget ${label} återvisad`)
-  }, [effectiveLayout, saveDebounced])
-
-  const updateSize = useCallback((id: string, size: WidgetSize) => {
-    const next = effectiveLayout.map(w => w.id === id ? { ...w, size } : w)
-    saveDebounced(next)
-    setAnnouncement(`Widgeten är nu ${size}-storlek.`)
-  }, [effectiveLayout, saveDebounced])
-
-  const resetLayout = useCallback(() => {
-    const fresh = getDefaultLayout(HUB_ID, breakpoint)
-    save(fresh)
-    setAnnouncement('Layout återställd')
-  }, [breakpoint, save])
-
-  const layoutValue: MinVardagLayoutValue = useMemo(() => ({
-    layout: effectiveLayout,
-    editMode,
-    setEditMode,
-    hideWidget,
-    showWidget,
-    updateSize,
-    resetLayout,
-    isLoading,
-  }), [effectiveLayout, editMode, hideWidget, showWidget, updateSize, resetLayout, isLoading])
-
-  // Hub-summary loader
-  const { data: summary } = useMinVardagHubSummary()
-
-  // "Anpassa vy" button — placed in PageLayout actions slot
-  const customizeButton = (
-    <button
-      type="button"
-      onClick={() => {
-        setEditMode(prev => !prev)
-        setPanelOpen(prev => !prev)
-      }}
-      aria-pressed={editMode}
-      aria-expanded={panelOpen}
-      aria-controls="hidden-widgets-panel"
-      className={[
-        'inline-flex items-center gap-2 px-3 py-1.5',
-        'text-[13px] font-bold rounded-[8px] border',
-        editMode
-          ? 'bg-[var(--c-bg)] text-[var(--c-text)] border-[var(--c-solid)]'
-          : 'bg-transparent text-[var(--header-text)] border-[var(--header-border)]',
-        'hover:bg-[var(--c-bg)] hover:text-[var(--c-text)]',
-        'focus:outline-none focus:shadow-[0_0_0_3px_var(--header-bg),0_0_0_4px_var(--c-solid)]',
-        'cursor-pointer',
-      ].join(' ')}
-    >
-      <SlidersHorizontal size={14} aria-hidden="true" />
-      Anpassa vy
-    </button>
-  )
+    return [
+      {
+        key: 'wellness',
+        icon: Smile,
+        title: 'Mående',
+        description: 'Logga ditt mående och se hur det varierar över tid.',
+        status: streak > 0
+          ? `${streak} dagar i rad`
+          : moodLogs.length > 0 ? 'Pågående' : 'Logga om du vill',
+        isActive: streak > 0 || moodLogs.length > 0,
+        href: '/wellness',
+      },
+      {
+        key: 'diary',
+        icon: NotebookPen,
+        title: 'Dagbok',
+        description: 'Reflektera fritt om din vecka och dina framsteg.',
+        status: diaryCount > 0
+          ? `${diaryCount} ${diaryCount === 1 ? 'inlägg' : 'inlägg'}${latestDiary ? ` · ${relativeShort(latestDiary.created_at)}` : ''}`
+          : 'Skriv idag',
+        isActive: diaryCount > 0,
+        href: '/diary',
+      },
+      {
+        key: 'calendar',
+        icon: Calendar,
+        title: 'Kalender',
+        description: 'Möten, påminnelser och planerade aktiviteter.',
+        status: upcoming
+          ? `Nästa: ${upcoming.title}`
+          : 'Inget inplanerat',
+        isActive: !!upcoming,
+        href: '/calendar',
+      },
+      {
+        key: 'exercises',
+        icon: Dumbbell,
+        title: 'Övningar',
+        description: 'Träna intervjuer, presentationer och mer.',
+        status: 'Utforska',
+        href: '/exercises',
+      },
+      {
+        key: 'my-consultant',
+        icon: UserCheck,
+        title: 'Min konsulent',
+        description: 'Kontakta din arbetskonsulent och se anteckningar.',
+        status: consultant?.full_name ? consultant.full_name : 'Inte tilldelad',
+        isActive: !!consultant?.full_name,
+        href: '/my-consultant',
+      },
+      {
+        key: 'network',
+        icon: Users,
+        title: 'Nätverk',
+        description: 'Håll koll på dina kontakter och nätverkstillfällen.',
+        status: networkCount > 0 ? `${networkCount} kontakter` : 'Bygg nätverk',
+        isActive: networkCount > 0,
+        href: '/nätverk',
+      },
+    ]
+  }, [data])
 
   return (
-    <PageLayout
-      title={t('nav.hubs.min-vardag', 'Min Vardag')}
-      subtitle={t(
-        'hubs.min-vardag.subtitle',
-        'Vardagsstöd och balans — hälsa, dagbok, kalender, nätverk och din konsulent'
-      )}
+    <HubPage
+      titleKey="hub-min-vardag"
+      title="Min vardag"
+      hubLabel="Hub · Min vardag"
+      hubTitle="Mina vardagliga rutiner"
+      hubDescription="Mående, dagbok, kalender och möten med din konsulent."
+      hubIcon={Heart}
       domain="wellbeing"
-      showTabs={false}
-      actions={customizeButton}
-    >
-      <MinVardagLayoutProvider value={layoutValue}>
-        <MinVardagDataProvider value={summary}>
-          {/* Live region for screen readers */}
-          <div role="status" aria-live="polite" className="sr-only">
-            {announcement}
-          </div>
-
-          {/* Hidden widgets panel — props-based (hub-agnostic after Plan 01 refactor). */}
-          <div className="relative" id="hidden-widgets-panel">
-            <HiddenWidgetsPanel
-              isOpen={panelOpen}
-              onClose={() => setPanelOpen(false)}
-              layout={effectiveLayout}
-              onShowWidget={showWidget}
-              onResetLayout={resetLayout}
-            />
-          </div>
-
-          {sections.map(section => (
-            <HubGrid.Section key={section.title} title={section.title}>
-              {section.items.map(item => {
-                const entry = WIDGET_REGISTRY[item.id as WidgetId]
-                if (!entry) return null
-                const Component = entry.component
-                const persisted = layoutById.get(item.id)
-                const currentSize: WidgetSize = persisted?.size ?? entry.defaultSize
-                const isVisible = persisted?.visible !== false
-
-                return (
-                  <HubGrid.Slot
-                    key={item.id}
-                    size={currentSize}
-                    visible={isVisible}
-                  >
-                    <Component
-                      id={item.id}
-                      size={currentSize}
-                      onSizeChange={(newSize) => updateSize(item.id, newSize)}
-                      allowedSizes={entry.allowedSizes}
-                      editMode={editMode}
-                      onHide={() => hideWidget(item.id)}
-                    />
-                  </HubGrid.Slot>
-                )
-              })}
-            </HubGrid.Section>
-          ))}
-        </MinVardagDataProvider>
-      </MinVardagLayoutProvider>
-    </PageLayout>
+      features={features}
+    />
   )
 }

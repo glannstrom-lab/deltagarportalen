@@ -1,335 +1,64 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { render, screen, waitFor, act } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ConfirmDialogProvider } from '@/components/ui/ConfirmDialog'
 import ResurserHub from '../ResurserHub'
 
-// Mock i18next so t() returns the fallback string
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string, fallback?: string) => fallback ?? key }),
-}))
-
-// Mock hub-summary loader — tests verify UI/layout, not data loading
-const STUB_SUMMARY = {
-  cv: { id: 'cv-r', updated_at: '2026-04-25' },
-  coverLetters: [{ id: 'cl-r', title: 'Spotify', created_at: '2026-04-26' }],
-  recentArticles: [],
-  articleCompletedCount: 0,
-  aiTeamSessions: [],
-  aiTeamSessionCount: 0,
-}
-
+const mockSummary = vi.fn()
 vi.mock('@/hooks/useResurserHubSummary', () => ({
-  useResurserHubSummary: () => ({ data: STUB_SUMMARY, isLoading: false, isError: false }),
-  RESURSER_HUB_KEY: (id: string) => ['hub', 'resurser', id],
+  useResurserHubSummary: () => mockSummary(),
+  RESURSER_HUB_KEY: (uid: string) => ['hub', 'resurser', uid],
 }))
 
-// Plan 05 (HUB-05): mock useOnboardedHubsTracking so the real hook does not
-// hit supabase.update.
+const trackingSpy = vi.fn()
 vi.mock('@/hooks/useOnboardedHubsTracking', () => ({
-  useOnboardedHubsTracking: vi.fn(),
+  useOnboardedHubsTracking: (id: string) => trackingSpy(id),
 }))
 
-// Mock useAuth — return logged-in user so useWidgetLayout enabled:true resolves
 vi.mock('@/hooks/useSupabase', () => ({
-  useAuth: () => ({ user: { id: 'test-user' }, profile: null, loading: false, isAuthenticated: true }),
+  useAuth: () => ({ user: { id: 'u1' }, profile: null, loading: false, isAuthenticated: true }),
 }))
 
-// Supabase mock — default: select returns null (no persisted layout), upsert resolves ok
-const upsertSpy = vi.fn().mockResolvedValue({ error: null })
-const selectChain = {
-  eq: vi.fn().mockReturnThis(),
-  maybeSingle: vi.fn<[], Promise<{ data: unknown; error: null }>>().mockResolvedValue({ data: null, error: null }),
-}
-
-vi.mock('@/lib/supabase', () => ({
-  supabase: {
-    from: vi.fn(() => ({
-      select: vi.fn(() => selectChain),
-      upsert: upsertSpy,
-    })),
-  },
-}))
-
-// useBreakpoint mock
-vi.mock('@/hooks/useBreakpoint', () => ({ useBreakpoint: vi.fn(() => 'desktop') }))
-
-// window.matchMedia stub
-Object.defineProperty(window, 'matchMedia', {
-  writable: true,
-  value: vi.fn().mockImplementation((query: string) => ({
-    matches: (query as string).includes('900'),
-    media: query,
-    onchange: null,
-    addEventListener: vi.fn(),
-    removeEventListener: vi.fn(),
-    addListener: vi.fn(),
-    removeListener: vi.fn(),
-    dispatchEvent: vi.fn(),
-  })),
-})
-
-// renderHub helper
 function renderHub() {
   const qc = new QueryClient({ defaultOptions: { queries: { retry: false } } })
   return render(
     <QueryClientProvider client={qc}>
-      <ConfirmDialogProvider>
-        <MemoryRouter initialEntries={['/resurser']}>
-          <ResurserHub />
-        </MemoryRouter>
-      </ConfirmDialogProvider>
+      <MemoryRouter initialEntries={['/resurser']}>
+        <ResurserHub />
+      </MemoryRouter>
     </QueryClientProvider>
   )
 }
 
-/** Wait for layout query to resolve — 6 widget size-toggle groups present */
-async function waitForLayoutReady() {
-  await waitFor(
-    () => expect(screen.getAllByRole('group', { name: 'Välj widgetstorlek' }).length).toBeGreaterThanOrEqual(6),
-    { timeout: 5000 }
-  )
-}
+beforeEach(() => {
+  trackingSpy.mockClear()
+  mockSummary.mockReset()
+  mockSummary.mockReturnValue({ data: undefined, isLoading: false })
+})
 
-// ---------------------------------------------------------------------------
-// Tests α–λ (Phase 5 Resurser integration)
-// ---------------------------------------------------------------------------
-describe('ResurserHub integration — α–λ', () => {
-  beforeEach(() => {
-    vi.spyOn(console, 'error').mockImplementation(() => {})
-    upsertSpy.mockClear()
-    selectChain.eq.mockClear()
-    selectChain.maybeSingle.mockResolvedValue({ data: null, error: null })
+describe('ResurserHub — feature-page', () => {
+  it('tracks the hub visit', () => {
+    renderHub()
+    expect(trackingSpy).toHaveBeenCalledWith('resurser')
   })
 
-  afterEach(() => {
-    vi.useRealTimers()
+  it('renders hero title "Hantera resurser"', () => {
+    renderHub()
+    expect(screen.getByRole('heading', { name: 'Hantera resurser' })).toBeInTheDocument()
   })
 
-  async function renderAndWait() {
+  it('renders feature-card links to sub-pages', () => {
     renderHub()
-    await waitForLayoutReady()
-    await act(async () => { await Promise.resolve() })
-  }
-
-  // Test α: "Anpassa vy" button present
-  it('α: Anpassa vy button is rendered in PageLayout actions slot', async () => {
-    renderHub()
-    const btn = await screen.findByRole('button', { name: /Anpassa vy/i })
-    expect(btn).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Kunskapsbank/ })).toHaveAttribute('href', '/knowledge-base')
+    expect(screen.getByRole('link', { name: /Mina dokument/ })).toHaveAttribute('href', '/resources')
+    expect(screen.getByRole('link', { name: /Utskriftsmaterial/ })).toHaveAttribute('href', '/print-resources')
+    expect(screen.getByRole('link', { name: /Externa resurser/ })).toHaveAttribute('href', '/externa-resurser')
+    expect(screen.getByRole('link', { name: /AI-team/ })).toHaveAttribute('href', '/ai-team')
+    expect(screen.getByRole('link', { name: /Nätverk/ })).toHaveAttribute('href', '/nätverk')
   })
 
-  // Test β: clicking toggles editMode (aria-pressed)
-  it('β: clicking Anpassa vy toggles editMode (aria-pressed)', async () => {
-    const user = userEvent.setup()
+  it('does NOT render legacy widget grid', () => {
     renderHub()
-    const btn = await screen.findByRole('button', { name: /Anpassa vy/i })
-    expect(btn).toHaveAttribute('aria-pressed', 'false')
-    await user.click(btn)
-    expect(btn).toHaveAttribute('aria-pressed', 'true')
-    await user.click(btn)
-    expect(btn).toHaveAttribute('aria-pressed', 'false')
+    expect(screen.queryByRole('button', { name: /Anpassa vy/i })).not.toBeInTheDocument()
   })
-
-  // Test γ: 6 hide buttons appear in edit mode (one per widget)
-  it('γ: when editMode is on, each widget renders its hide button (6 total)', async () => {
-    const user = userEvent.setup()
-    await renderAndWait()
-    const btn = screen.getByRole('button', { name: /Anpassa vy/i })
-    await user.click(btn)
-    await waitFor(() => {
-      const hideButtons = screen.getAllByRole('button', { name: /^Dölj widget / })
-      expect(hideButtons.length).toBe(6)
-    }, { timeout: 5000 })
-  }, 15000)
-
-  // Test δ: clicking hide button removes widget from grid (CUST-01 hide flow)
-  it('δ: clicking a widget hide button removes it from grid (CUST-01)', async () => {
-    const user = userEvent.setup()
-    await renderAndWait()
-    // Mina dokument widget is visible
-    expect(screen.getByRole('heading', { level: 3, name: 'Mina dokument' })).toBeInTheDocument()
-    // Enable edit mode
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    // Wait for hide button (uses widget's internal title "Mina dokument")
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Dölj widget Mina dokument' })).toBeInTheDocument()
-    }, { timeout: 5000 })
-    // Click hide
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Mina dokument' }))
-    // Mina dokument heading should be gone
-    await waitFor(() => {
-      expect(screen.queryByRole('heading', { level: 3, name: 'Mina dokument' })).not.toBeInTheDocument()
-    })
-  }, 15000)
-
-  // Test ε: clicking Återvisa restores hidden widget (CUST-01 restore flow)
-  it('ε: clicking Återvisa widget restores it to the grid (CUST-01)', async () => {
-    const user = userEvent.setup()
-    await renderAndWait()
-    // Enable edit mode
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    // Hide Mina dokument
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Dölj widget Mina dokument' })).toBeInTheDocument()
-    }, { timeout: 5000 })
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Mina dokument' }))
-    await waitFor(() => {
-      expect(screen.queryByRole('heading', { level: 3, name: 'Mina dokument' })).not.toBeInTheDocument()
-    })
-    // Re-open panel
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    // Panel shows Återvisa button using WIDGET_LABELS name "Mina dokument"
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Återvisa widget Mina dokument' })).toBeInTheDocument()
-    })
-    // Restore
-    await user.click(screen.getByRole('button', { name: 'Återvisa widget Mina dokument' }))
-    // Mina dokument reappears
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { level: 3, name: 'Mina dokument' })).toBeInTheDocument()
-    }, { timeout: 5000 })
-  }, 20000)
-
-  // Test ζ: Återställ button opens ConfirmDialog (CUST-02)
-  it('ζ: Återställ standardlayout opens ConfirmDialog with locked Swedish copy', async () => {
-    const user = userEvent.setup()
-    renderHub()
-    await screen.findByRole('heading', { level: 2, name: 'Mina' })
-    // Open panel
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    // Click reset
-    const resetBtn = await screen.findByRole('button', { name: /Återställ standardlayout/i })
-    await user.click(resetBtn)
-    // Dialog appears with locked copy
-    await waitFor(() => {
-      expect(screen.getByText('Återställ layout?')).toBeInTheDocument()
-      expect(screen.getByText('Är du säker? Detta tar bort alla anpassningar för denna hub.')).toBeInTheDocument()
-    })
-  })
-
-  // Test η: confirming reset restores all 6 widgets (CUST-02)
-  it('η: confirming reset restores all 6 widgets to default (CUST-02)', async () => {
-    const user = userEvent.setup()
-    await renderAndWait()
-    // Enable edit mode
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    // Hide Mina dokument
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Dölj widget Mina dokument' })).toBeInTheDocument()
-    }, { timeout: 5000 })
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Mina dokument' }))
-    await waitFor(() => {
-      expect(screen.queryByRole('heading', { level: 3, name: 'Mina dokument' })).not.toBeInTheDocument()
-    })
-    // Re-open panel
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    const resetBtn = await screen.findByRole('button', { name: /Återställ standardlayout/i })
-    await user.click(resetBtn)
-    // Confirm
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
-    })
-    const dialog = screen.getByRole('dialog')
-    const confirmBtn = Array.from(dialog.querySelectorAll('button')).find(
-      b => b.textContent?.trim() === 'Återställ'
-    )
-    expect(confirmBtn).toBeTruthy()
-    await user.click(confirmBtn!)
-    // Mina dokument reappears
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { level: 3, name: 'Mina dokument' })).toBeInTheDocument()
-    }, { timeout: 5000 })
-  }, 20000)
-
-  // Test θ: cancelling reset leaves layout unchanged
-  it('θ: cancelling reset dialog leaves layout unchanged', async () => {
-    const user = userEvent.setup()
-    await renderAndWait()
-    // Enable edit mode
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    // Hide Mina dokument
-    await waitFor(() => {
-      expect(screen.getByRole('button', { name: 'Dölj widget Mina dokument' })).toBeInTheDocument()
-    }, { timeout: 5000 })
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Mina dokument' }))
-    await waitFor(() => {
-      expect(screen.queryByRole('heading', { level: 3, name: 'Mina dokument' })).not.toBeInTheDocument()
-    })
-    // Re-open panel
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    const resetBtn = await screen.findByRole('button', { name: /Återställ standardlayout/i })
-    await user.click(resetBtn)
-    // Cancel
-    await waitFor(() => {
-      expect(screen.getByRole('dialog')).toBeInTheDocument()
-    })
-    const dialog = screen.getByRole('dialog')
-    const cancelBtn = Array.from(dialog.querySelectorAll('button')).find(
-      b => b.textContent?.trim() === 'Avbryt'
-    )
-    expect(cancelBtn).toBeTruthy()
-    await user.click(cancelBtn!)
-    // Mina dokument should remain hidden
-    expect(screen.queryByRole('heading', { level: 3, name: 'Mina dokument' })).not.toBeInTheDocument()
-  }, 20000)
-
-  // Test ι: upsert payload contains hub_id='resurser' and breakpoint='desktop'
-  it('ι: hide action calls supabase upsert with hub_id=resurser and breakpoint=desktop in payload', async () => {
-    vi.useFakeTimers({ shouldAdvanceTime: true })
-    const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime.bind(vi) })
-    renderHub()
-    await act(async () => { await Promise.resolve() })
-    await waitFor(
-      () => expect(screen.getByRole('button', { name: /Anpassa vy/i })).toBeInTheDocument(),
-      { timeout: 5000 }
-    )
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    await waitFor(
-      () => expect(screen.getByRole('button', { name: 'Dölj widget Mina dokument' })).toBeInTheDocument(),
-      { timeout: 5000 }
-    )
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Mina dokument' }))
-    await act(async () => {
-      vi.advanceTimersByTime(1100)
-      await Promise.resolve()
-    })
-    await waitFor(() => expect(upsertSpy).toHaveBeenCalled(), { timeout: 3000 })
-    const firstCallArg = upsertSpy.mock.calls[0][0] as Record<string, unknown>
-    expect(firstCallArg).toMatchObject({ hub_id: 'resurser', breakpoint: 'desktop' })
-  }, 15000)
-
-  // Test κ: with mocked fetch, all 6 widget headings render (HUB-03 acceptance)
-  it('κ: all 6 Resurser widgets render (HUB-03 acceptance)', async () => {
-    renderHub()
-    await waitFor(() => {
-      expect(screen.getByRole('heading', { level: 3, name: 'Mina dokument' })).toBeInTheDocument()
-      expect(screen.getByRole('heading', { level: 3, name: 'Kunskapsbanken' })).toBeInTheDocument()
-      expect(screen.getByRole('heading', { level: 3, name: 'Externa resurser' })).toBeInTheDocument()
-      expect(screen.getByRole('heading', { level: 3, name: 'Utskriftsmaterial' })).toBeInTheDocument()
-      expect(screen.getByRole('heading', { level: 3, name: 'AI-team' })).toBeInTheDocument()
-      expect(screen.getByRole('heading', { level: 3, name: 'Övningar' })).toBeInTheDocument()
-    }, { timeout: 5000 })
-  })
-
-  // Test λ: aria-live announces "Widget Mina dokument dold" when mina-dokument is hidden
-  it('λ: aria-live region announces Widget Mina dokument dold when mina-dokument is hidden', async () => {
-    const user = userEvent.setup()
-    await renderAndWait()
-    // Enable edit mode
-    await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
-    // Wait for hide button
-    await waitFor(
-      () => expect(screen.getByRole('button', { name: 'Dölj widget Mina dokument' })).toBeInTheDocument(),
-      { timeout: 5000 }
-    )
-    // Hide Mina dokument — announcement uses WIDGET_LABELS['mina-dokument'] = 'Mina dokument'
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Mina dokument' }))
-    await waitFor(() => {
-      const liveRegion = document.querySelector('[role="status"][aria-live="polite"]')!
-      expect(liveRegion.textContent).toBe('Widget Mina dokument dold')
-    })
-  }, 15000)
 })
