@@ -7,6 +7,8 @@ import { KarriarDataProvider } from '../KarriarDataContext'
 import type { KarriarSummary } from '../KarriarDataContext'
 import { ResurserDataProvider } from '../ResurserDataContext'
 import type { ResurserSummary } from '../ResurserDataContext'
+import { MinVardagDataProvider } from '../MinVardagDataContext'
+import type { MinVardagSummary } from '../MinVardagDataContext'
 import CvWidget from '../CvWidget'
 import CoverLetterWidget from '../CoverLetterWidget'
 import InterviewWidget from '../InterviewWidget'
@@ -24,6 +26,11 @@ import ExternalResourcesWidget from '../ExternalResourcesWidget'
 import PrintResourcesWidget from '../PrintResourcesWidget'
 import AITeamWidget from '../AITeamWidget'
 import ExercisesWidget from '../ExercisesWidget'
+import HealthWidget from '../HealthWidget'
+import DiaryWidget from '../DiaryWidget'
+import CalendarWidget from '../CalendarWidget'
+import NetworkWidget from '../NetworkWidget'
+import ConsultantWidget from '../ConsultantWidget'
 
 // Mock useInterestProfile for InterestGuideWidget (called inside the widget directly)
 vi.mock('@/hooks/useInterestProfile', () => ({
@@ -104,6 +111,29 @@ function karriarFixture(): KarriarSummary {
   }
 }
 
+function minVardagFixture(): MinVardagSummary {
+  return {
+    recentMoodLogs: [
+      { mood_level: 4, energy_level: 3, log_date: '2026-04-27' },
+      { mood_level: 3, energy_level: 3, log_date: '2026-04-26' },
+      { mood_level: 4, energy_level: 4, log_date: '2026-04-25' },
+    ],
+    diaryEntryCount: 5,
+    latestDiaryEntry: { id: 'd1', created_at: '2026-04-25' },
+    upcomingEvents: [
+      {
+        id: 'e1',
+        title: 'Intervju Klarna',
+        date: '2026-05-05',
+        time: '14:00',
+        type: 'meeting',
+      },
+    ],
+    networkContactsCount: 12, // triggers "Bra nätverk" milestone
+    consultant: { id: 'c1', full_name: 'Anna Karlsson', avatar_url: null },
+  }
+}
+
 function resurserFixture(): ResurserSummary {
   return {
     cv: { id: 'cv-1', updated_at: '2026-04-25' },
@@ -153,6 +183,17 @@ function renderResurserWidget(W: React.ComponentType<any>, widgetId: string) {
   )
 }
 
+function renderMinVardagWidget(W: React.ComponentType<any>, widgetId: string) {
+  const data = minVardagFixture()
+  return render(
+    <MemoryRouter>
+      <MinVardagDataProvider value={data}>
+        <W id={widgetId} size="L" />
+      </MinVardagDataProvider>
+    </MemoryRouter>
+  )
+}
+
 const cases: [string, React.ComponentType<any>, string][] = [
   ['CvWidget', CvWidget, 'cv'],
   ['CoverLetterWidget', CoverLetterWidget, 'cover-letter'],
@@ -178,6 +219,14 @@ const resurserCases: [string, React.ComponentType<any>, string][] = [
   ['PrintResourcesWidget',     PrintResourcesWidget,     'utskriftsmaterial'],
   ['AITeamWidget',             AITeamWidget,             'ai-team'],
   ['ExercisesWidget',          ExercisesWidget,          'ovningar'],
+]
+
+const minVardagCases: [string, React.ComponentType<any>, string][] = [
+  ['HealthWidget',     HealthWidget,     'halsa'],
+  ['DiaryWidget',      DiaryWidget,      'dagbok'],
+  ['CalendarWidget',   CalendarWidget,   'kalender'],
+  ['NetworkWidget',    NetworkWidget,    'natverk'],
+  ['ConsultantWidget', ConsultantWidget, 'min-konsulent'],
 ]
 
 describe('A11Y-03: no raw % in primary KPI slot', () => {
@@ -225,6 +274,29 @@ describe('A11Y-03 Resurser: no raw % in primary KPI slot (HUB-03)', () => {
     for (const el of primaryKPIs) {
       const text = (el.textContent ?? '').trim()
       expect(text, `${name}: primary KPI element should not contain raw percentage, got: "${text}"`).not.toMatch(/\d+%/)
+    }
+  })
+})
+
+describe('A11Y-03 Min Vardag: no raw % in primary KPI slot (HUB-04)', () => {
+  it.each(minVardagCases)('%s does not render a number followed by %% in primary-KPI typography', (name, W, widgetId) => {
+    const { container } = renderMinVardagWidget(W, widgetId)
+    const allEls = Array.from(container.querySelectorAll('*'))
+    const primaryKPIs = allEls.filter(isPrimaryKPI)
+
+    for (const el of primaryKPIs) {
+      const text = (el.textContent ?? '').trim()
+      expect(text, `${name}: primary KPI element should not contain raw percentage, got: "${text}"`).not.toMatch(/\d+%/)
+    }
+  })
+
+  it('HealthWidget primary KPI never contains a raw mood number like "4/5"', () => {
+    const { container } = renderMinVardagWidget(HealthWidget, 'halsa')
+    const allEls = Array.from(container.querySelectorAll('*'))
+    const primaryKPIs = allEls.filter(isPrimaryKPI)
+    for (const el of primaryKPIs) {
+      const text = (el.textContent ?? '').trim()
+      expect(text, `HealthWidget: primary KPI must not contain raw mood number "${text}"`).not.toMatch(/\d+\s*\/\s*5/)
     }
   })
 })
