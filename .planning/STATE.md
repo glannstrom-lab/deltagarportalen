@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-05-oversikt-hub-PLAN.md
-last_updated: "2026-04-29T16:07:42.394Z"
-last_activity: 2026-04-29 — Plan 05-05 Översikt Hub (HUB-05) completed — 7 widgets, 14 integration tests (α-ν), 280/280 final suite, useOversiktHubSummary cross-hub aggregator, useOnboardedHubsTracking, registry now 32 widgets
+stopped_at: Phase 5 Plan 06 Tasks 1-3 committed; Task 4 HELD on langtidsarbetssokande BLOCK
+last_updated: "2026-04-29T16:28:57.382Z"
+last_activity: 2026-04-29 — Plan 05-06 HUB-06 empathy review HELD: PRE-IMPL artifact (86 rows) + agent verdicts committed. arbetskonsulent 79 PASS/7 FLAG/0 BLOCK. langtidsarbetssokande 82 PASS/3 FLAG/1 BLOCK on OnboardingWidget returning-user-no-apps. Tasks 1-3 done; Task 4-5 awaiting Mikael adjudication.
 progress:
   total_phases: 5
   completed_phases: 4
@@ -26,9 +26,9 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 ## Current Position
 
 Phase: 5 of 5 (Full Hub Coverage + Översikt)
-Plan: 5 of 6 in current phase (completed)
-Status: In progress
-Last activity: 2026-04-29 — Plan 05-05 Översikt Hub (HUB-05) completed — 7 widgets, 14 integration tests (α-ν), 280/280 final suite, useOversiktHubSummary cross-hub aggregator, useOnboardedHubsTracking, registry now 32 widgets
+Plan: 6 of 6 in current phase (HELD on Task 4 — langtidsarbetssokande BLOCK)
+Status: In progress (awaiting Mikael adjudication)
+Last activity: 2026-04-29 — Plan 05-06 HUB-06 empathy review HELD: PRE-IMPL artifact (86 rows) + agent verdicts committed. arbetskonsulent 79 PASS/7 FLAG/0 BLOCK. langtidsarbetssokande 82 PASS/3 FLAG/1 BLOCK on OnboardingWidget returning-user-no-apps. Tasks 1-3 done; Task 4-5 awaiting Mikael adjudication.
 
 Progress: [██████████] 96%
 
@@ -155,6 +155,7 @@ Progress: [██████████] 96%
 - [Phase 05-05]: OnboardingWidget is the only XL-only widget in the registry (allowedSizes: ['XL']); detection logic via profile.onboarded_hubs.length === 0 → new user (Välkommen + 4 quick-links) vs returning user (Bra jobbat firstName + deterministic next-step CTA via pickNextStep)
 - [Phase 05-05]: HealthSummaryWidget imports streakDays from @/utils/streakDays (single source of truth from Plan 04 Task 2 — verified by grep: 1 match for @/utils/streakDays import, 0 matches for any HealthWidget import — template-copy leak guard passes)
 - [Phase 05-05]: Pre-existing lazy-isolation.test.tsx hard-coded to 8 widgets — Rule 3 fix extended EXPECTED_WIDGETS to 32 (all 5 hubs); Bundle Contract preserved at 32 lazy() entries; final test suite 280/280 green
+- [Phase 05-06]: Phase 5 Plan 06 empathy review held: arbetskonsulent 79 PASS / 7 FLAG / 0 BLOCK; langtidsarbetssokande 82 PASS / 3 FLAG / 1 BLOCK on OnboardingWidget returning-user-no-apps. Per overnight policy, Tasks 1-3 committed, Task 4 stopped without applying revisions, Task 5 (VALIDATION frontmatter flip) NOT executed. Mikael adjudicates.
 
 ### Pending Todos
 
@@ -165,9 +166,10 @@ None yet.
 - [Phase 1]: Rollout communication plan for consultants should be prepared before Phase 1 ships (one-pager; consultants see nav change on flag-flip date)
 - [Phase 3]: Hub-summary query performance needs `EXPLAIN ANALYZE` before data loader is designed — see PITFALLS.md Pitfall 3/18
 - [Phase 4]: Per-breakpoint persistence schema decision must be made before the Supabase migration is written — cannot change post-deploy without destructive migration
+- Phase 5 Plan 06 Task 4 HELD: 1 BLOCK from langtidsarbetssokande on OnboardingWidget returning-user-no-apps state. Mikael adjudicates revision pass next session.
 
 ## Session Continuity
 
-Last session: 2026-04-29T16:07:19.960Z
-Stopped at: Completed 05-05-oversikt-hub-PLAN.md
+Last session: 2026-04-29T16:28:51.931Z
+Stopped at: Phase 5 Plan 06 Tasks 1-3 committed; Task 4 HELD on langtidsarbetssokande BLOCK
 Resume file: None
