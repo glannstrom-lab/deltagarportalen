@@ -25,4 +25,11 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   'personligt-varumarke': 'Personligt varumärke',
   utbildning:             'Utbildning',
   linkedin:               'LinkedIn',
+  // Resurser hub (Phase 5 — HUB-03)
+  'mina-dokument':     'Mina dokument',
+  kunskapsbanken:      'Kunskapsbanken',
+  'externa-resurser':  'Externa resurser',
+  utskriftsmaterial:   'Utskriftsmaterial',
+  'ai-team':           'AI-team',
+  ovningar:            'Övningar',
 }

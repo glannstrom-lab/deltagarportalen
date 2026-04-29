@@ -34,7 +34,14 @@ export function getDefaultLayout(
       { id: 'utbildning',           size: 'S', order: 4, visible: true },
       { id: 'linkedin',             size: 'S', order: 5, visible: true },
     ],
-    resurser:     [{ id: 'cv', size: 'S', order: 0, visible: true }],
+    resurser: [
+      { id: 'mina-dokument',     size: 'M', order: 0, visible: true },
+      { id: 'kunskapsbanken',    size: 'M', order: 1, visible: true },
+      { id: 'externa-resurser',  size: 'S', order: 2, visible: true },
+      { id: 'utskriftsmaterial', size: 'S', order: 3, visible: true },
+      { id: 'ai-team',           size: 'L', order: 4, visible: true },
+      { id: 'ovningar',          size: 'M', order: 5, visible: true },
+    ],
     'min-vardag': [{ id: 'cv', size: 'S', order: 0, visible: true }],
     oversikt:     [{ id: 'cv', size: 'S', order: 0, visible: true }],
   }
@@ -77,5 +84,18 @@ export function getKarriarSections(): SectionedLayout[] {
     { title: 'Utforska',  items: all.slice(0, 2) }, // Karriärmål, Intresseguide
     { title: 'Analysera', items: all.slice(2, 4) }, // Kompetensgap, Personligt varumärke
     { title: 'Utveckla',  items: all.slice(4, 6) }, // Utbildning, LinkedIn
+  ]
+}
+
+/**
+ * Resurser hub layout grouped into named sections (Phase 5 — HUB-03).
+ * Three sections: Mina / Bibliotek / Vägledning.
+ */
+export function getResurserSections(): SectionedLayout[] {
+  const all = getDefaultLayout('resurser')
+  return [
+    { title: 'Mina',       items: all.slice(0, 2) }, // Mina dokument, Kunskapsbanken
+    { title: 'Bibliotek',  items: all.slice(2, 4) }, // Externa resurser, Utskriftsmaterial
+    { title: 'Vägledning', items: all.slice(4, 6) }, // AI-team, Övningar
   ]
 }
