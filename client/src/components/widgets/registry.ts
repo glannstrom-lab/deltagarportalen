@@ -37,6 +37,12 @@ export const WIDGET_REGISTRY = {
   utskriftsmaterial:      { component: lazy(() => import('./PrintResourcesWidget')),    defaultSize: 'S' as const, allowedSizes: ['S', 'M'] as WidgetSize[] },
   'ai-team':              { component: lazy(() => import('./AITeamWidget')),            defaultSize: 'L' as const, allowedSizes: ['M', 'L'] as WidgetSize[] },
   ovningar:               { component: lazy(() => import('./ExercisesWidget')),         defaultSize: 'M' as const, allowedSizes: ['S', 'M'] as WidgetSize[] },
+  // Min Vardag hub (5 widgets — Phase 5 / HUB-04)
+  halsa:                  { component: lazy(() => import('./HealthWidget')),             defaultSize: 'M' as const, allowedSizes: ['S', 'M', 'L'] as WidgetSize[] },
+  dagbok:                 { component: lazy(() => import('./DiaryWidget')),              defaultSize: 'M' as const, allowedSizes: ['S', 'M', 'L'] as WidgetSize[] },
+  kalender:               { component: lazy(() => import('./CalendarWidget')),           defaultSize: 'L' as const, allowedSizes: ['M', 'L'] as WidgetSize[] },
+  natverk:                { component: lazy(() => import('./NetworkWidget')),            defaultSize: 'S' as const, allowedSizes: ['S', 'M'] as WidgetSize[] },
+  'min-konsulent':        { component: lazy(() => import('./ConsultantWidget')),         defaultSize: 'M' as const, allowedSizes: ['S', 'M', 'L'] as WidgetSize[] },
 } satisfies Record<string, WidgetRegistryEntry>
 
 export type WidgetId = keyof typeof WIDGET_REGISTRY

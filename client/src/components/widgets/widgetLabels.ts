@@ -32,4 +32,10 @@ export const WIDGET_LABELS: Record<WidgetId, string> = {
   utskriftsmaterial:   'Utskriftsmaterial',
   'ai-team':           'AI-team',
   ovningar:            'Övningar',
+  // Min Vardag hub (Phase 5 — HUB-04)
+  halsa:               'Hälsa',
+  dagbok:              'Dagbok',
+  kalender:            'Kalender',
+  natverk:             'Nätverk',
+  'min-konsulent':     'Min konsulent',
 }

@@ -42,7 +42,13 @@ export function getDefaultLayout(
       { id: 'ai-team',           size: 'L', order: 4, visible: true },
       { id: 'ovningar',          size: 'M', order: 5, visible: true },
     ],
-    'min-vardag': [{ id: 'cv', size: 'S', order: 0, visible: true }],
+    'min-vardag': [
+      { id: 'halsa',         size: 'M', order: 0, visible: true },
+      { id: 'dagbok',        size: 'M', order: 1, visible: true },
+      { id: 'kalender',      size: 'L', order: 2, visible: true },
+      { id: 'natverk',       size: 'S', order: 3, visible: true },
+      { id: 'min-konsulent', size: 'M', order: 4, visible: true },
+    ],
     oversikt:     [{ id: 'cv', size: 'S', order: 0, visible: true }],
   }
   const base = desktop[hubId]
@@ -97,5 +103,17 @@ export function getResurserSections(): SectionedLayout[] {
     { title: 'Mina',       items: all.slice(0, 2) }, // Mina dokument, Kunskapsbanken
     { title: 'Bibliotek',  items: all.slice(2, 4) }, // Externa resurser, Utskriftsmaterial
     { title: 'Vägledning', items: all.slice(4, 6) }, // AI-team, Övningar
+  ]
+}
+
+/**
+ * Min Vardag hub layout grouped into named sections (Phase 5 — HUB-04).
+ * Two sections: Mig själv / Mitt stöd.
+ */
+export function getMinVardagSections(): SectionedLayout[] {
+  const all = getDefaultLayout('min-vardag')
+  return [
+    { title: 'Mig själv', items: all.slice(0, 3) }, // Hälsa, Dagbok, Kalender
+    { title: 'Mitt stöd', items: all.slice(3, 5) }, // Nätverk, Min konsulent
   ]
 }
