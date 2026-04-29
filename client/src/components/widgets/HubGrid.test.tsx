@@ -50,6 +50,16 @@ describe('HubGrid', () => {
     expect(container.firstElementChild!.className).toContain('min-[900px]:col-span-4')
   })
 
+  it('renders XL size with col-span-4 row-span-1 on desktop (Plan 05 / HUB-05)', () => {
+    const { container } = render(<HubGrid.Slot size="XL"><div>onboarding</div></HubGrid.Slot>)
+    const slot = container.firstElementChild as HTMLElement
+    // Desktop responsive variant must include col-span-4 (Phase 2 UI-SPEC XL row layout)
+    expect(slot.className).toMatch(/col-span-4/)
+    expect(slot.className).toMatch(/row-span-1/)
+    // Mobile fallback (2-col grid) — XL collapses to col-span-2 (full-width on mobile)
+    expect(slot.className).toMatch(/col-span-2/)
+  })
+
   it('Slot wraps child in error boundary (sibling slot survives child throw)', () => {
     const Boom = () => { throw new Error('boom') }
     render(
