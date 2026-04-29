@@ -28,7 +28,7 @@ Hubbarna ersätter den platta 27-sidors-navigationen med 5 domän-orienterade hu
 - [x] **HUB-03**: Resurser visar widgets för Mina dokument, Kunskapsbank, Externa resurser, Utskriftsmaterial, AI-team, Övningar — alla med riktig data
 - [x] **HUB-04**: Min Vardag visar widgets för Hälsa, Dagbok, Kalender, Nätverk, Min konsulent — alla med riktig data
 - [x] **HUB-05**: Översikt visar onboarding/next-step XL-widget + max 6 sammanfattande widgets från övriga hubbar
-- [ ] **HUB-06**: Alla widget-empty-states har handlingsstöttande kopia (ej bara nollor)
+- [x] **HUB-06**: Alla widget-empty-states har handlingsstöttande kopia (ej bara nollor)
 
 ### Backend-persistens (DATA)
 
@@ -101,7 +101,7 @@ Vilka faser täcker vilka requirements.
 | HUB-03 | Phase 5 | Complete |
 | HUB-04 | Phase 5 | Complete |
 | HUB-05 | Phase 5 | Complete |
-| HUB-06 | Phase 5 | Pending |
+| HUB-06 | Phase 5 | Complete |
 | DATA-01 | Phase 3 | Complete |
 | DATA-02 | Phase 3 | Complete |
 | A11Y-01 | Phase 3 | Complete |

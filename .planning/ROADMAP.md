@@ -10,7 +10,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 - [x] **Phase 2: Static Widget Grid** - Widget compound component, HubGrid, 8-10 representative widgets with mock data, S/M/L toggle, error boundaries (completed 2026-04-28)
 - [x] **Phase 3: Data Wiring + WCAG** - React Query data hooks, hub-level loader, empathy-reviewed copy, prefers-reduced-motion, keyboard, Interview + Personal Brand Supabase migration (completed 2026-04-28)
 - [x] **Phase 4: Layout Persistence + Hide/Show** - user_widget_layouts table + RLS, useWidgetLayout hook, hide/show widget, reset layout (no drag/resize) (completed 2026-04-28)
-- [ ] **Phase 5: Full Hub Coverage + Översikt** - Remaining widgets for all hubs, Översikt onboarding XL widget + cross-hub summaries, full empty-state pass
+- [x] **Phase 5: Full Hub Coverage + Översikt** - Remaining widgets for all hubs, Översikt onboarding XL widget + cross-hub summaries, full empty-state pass (completed 2026-04-29)
 
 ## Phase Details
 
@@ -88,12 +88,12 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
   2. Every widget across all 5 hubs has a compassionate, action-oriented empty state — no bare zeros, no "Inga data" — verified by loading each hub with a fresh test account
   3. All widgets described in HUB-01 through HUB-04 are present and showing real data, completing full widget coverage across every hub
 **Plans**: 6 plans
-- [ ] 05-01-db-discovery-and-migrations-PLAN.md — DB introspection + onboarded_hubs/linkedin_url migrations + HiddenWidgetsPanel hub-agnostic refactor
-- [ ] 05-02-karriar-hub-PLAN.md — 6 Karriär widgets + useKarriarHubSummary loader + KarriarHub wiring (HUB-02)
-- [ ] 05-03-resurser-hub-PLAN.md — 6 Resurser widgets + useResurserHubSummary loader + ResurserHub wiring (HUB-03)
-- [ ] 05-04-min-vardag-hub-PLAN.md — 5 Min Vardag widgets + useMinVardagHubSummary loader + MinVardagHub wiring (HUB-04)
-- [ ] 05-05-oversikt-hub-PLAN.md — 1 XL Onboarding + 6 cross-hub summary widgets + useOversiktHubSummary aggregator + HubGrid XL extension (HUB-05)
-- [ ] 05-06-empty-state-pass-empathy-review-PLAN.md — HUB-06 empty-state pass + empathy review ship-gate
+- [x] 05-01-db-discovery-and-migrations-PLAN.md — DB introspection + onboarded_hubs/linkedin_url migrations + HiddenWidgetsPanel hub-agnostic refactor
+- [x] 05-02-karriar-hub-PLAN.md — 6 Karriär widgets + useKarriarHubSummary loader + KarriarHub wiring (HUB-02)
+- [x] 05-03-resurser-hub-PLAN.md — 6 Resurser widgets + useResurserHubSummary loader + ResurserHub wiring (HUB-03)
+- [x] 05-04-min-vardag-hub-PLAN.md — 5 Min Vardag widgets + useMinVardagHubSummary loader + MinVardagHub wiring (HUB-04)
+- [x] 05-05-oversikt-hub-PLAN.md — 1 XL Onboarding + 6 cross-hub summary widgets + useOversiktHubSummary aggregator + HubGrid XL extension (HUB-05)
+- [x] 05-06-empty-state-pass-empathy-review-PLAN.md — HUB-06 empty-state pass + empathy review ship-gate
 
 ## Progress
 
@@ -103,7 +103,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 | 2. Static Widget Grid | 5/5 | Complete   | 2026-04-28 |
 | 3. Data Wiring + WCAG | 5/5 | Complete   | 2026-04-28 |
 | 4. Layout Persistence + Hide/Show | 4/4 | Complete   | 2026-04-28 |
-| 5. Full Hub Coverage + Översikt | 2/6 | In Progress|  |
+| 5. Full Hub Coverage + Översikt | 6/6 | Complete   | 2026-04-29 |
 
 ---
 *Roadmap created: 2026-04-28*

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Phase 5 Plan 06 Tasks 1-3 committed; Task 4 HELD on langtidsarbetssokande BLOCK
-last_updated: "2026-04-29T16:28:57.382Z"
-last_activity: 2026-04-29 — Plan 05-06 HUB-06 empathy review HELD: PRE-IMPL artifact (86 rows) + agent verdicts committed. arbetskonsulent 79 PASS/7 FLAG/0 BLOCK. langtidsarbetssokande 82 PASS/3 FLAG/1 BLOCK on OnboardingWidget returning-user-no-apps. Tasks 1-3 done; Task 4-5 awaiting Mikael adjudication.
+stopped_at: Completed 05-full-hub-coverage-oversikt/05-06-empty-state-pass-empathy-review-PLAN.md
+last_updated: "2026-04-29T18:45:00.000Z"
+last_activity: 2026-04-29 — Plan 05-06 HUB-06 ship gate closed via revision pass. Mikael adjudicated BLOCK B1 (option 3: heading + body fix). Both agents APPROVED on revised OnboardingWidget no-apps copy. nyquist_compliant flipped true. Phase 5 ready for /gsd:verify-work.
 progress:
   total_phases: 5
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 25
-  completed_plans: 24
-  percent: 96
+  completed_plans: 25
+  percent: 100
 ---
 
 # State — Deltagarportalen
@@ -25,12 +25,12 @@ See: `.planning/PROJECT.md` (updated 2026-04-28)
 
 ## Current Position
 
-Phase: 5 of 5 (Full Hub Coverage + Översikt)
-Plan: 6 of 6 in current phase (HELD on Task 4 — langtidsarbetssokande BLOCK)
-Status: In progress (awaiting Mikael adjudication)
-Last activity: 2026-04-29 — Plan 05-06 HUB-06 empathy review HELD: PRE-IMPL artifact (86 rows) + agent verdicts committed. arbetskonsulent 79 PASS/7 FLAG/0 BLOCK. langtidsarbetssokande 82 PASS/3 FLAG/1 BLOCK on OnboardingWidget returning-user-no-apps. Tasks 1-3 done; Task 4-5 awaiting Mikael adjudication.
+Phase: 5 of 5 (Full Hub Coverage + Översikt) — COMPLETE
+Plan: 6 of 6 — COMPLETE (HUB-06 ship gate CLOSED)
+Status: Phase 5 ready for /gsd:verify-work
+Last activity: 2026-04-29 — Plan 05-06 HUB-06 ship gate closed via revision pass. Mikael adjudicated BLOCK B1 (option 3: heading + body fix). Both agents APPROVED on revised OnboardingWidget no-apps copy. nyquist_compliant flipped true. Phase 5 ready for /gsd:verify-work.
 
-Progress: [██████████] 96%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -73,6 +73,7 @@ Progress: [██████████] 96%
 | Phase 05 P03 | 9m | 3 tasks | 17 files |
 | Phase 05 P04 | 13 | 3 tasks | 17 files |
 | Phase 05 P05 | 25 | 4 tasks | 32 files |
+| Phase 05 P06 | ~60min (2 sessions) | 5 tasks (3 prior + 2 revision) | 7 files (3 created + 4 modified) |
 
 ## Accumulated Context
 
@@ -156,6 +157,9 @@ Progress: [██████████] 96%
 - [Phase 05-05]: HealthSummaryWidget imports streakDays from @/utils/streakDays (single source of truth from Plan 04 Task 2 — verified by grep: 1 match for @/utils/streakDays import, 0 matches for any HealthWidget import — template-copy leak guard passes)
 - [Phase 05-05]: Pre-existing lazy-isolation.test.tsx hard-coded to 8 widgets — Rule 3 fix extended EXPECTED_WIDGETS to 32 (all 5 hubs); Bundle Contract preserved at 32 lazy() entries; final test suite 280/280 green
 - [Phase 05-06]: Phase 5 Plan 06 empathy review held: arbetskonsulent 79 PASS / 7 FLAG / 0 BLOCK; langtidsarbetssokande 82 PASS / 3 FLAG / 1 BLOCK on OnboardingWidget returning-user-no-apps. Per overnight policy, Tasks 1-3 committed, Task 4 stopped without applying revisions, Task 5 (VALIDATION frontmatter flip) NOT executed. Mikael adjudicates.
+- [Phase 05-06]: HUB-06 BLOCK B1 (OnboardingWidget no-apps) resolved via heading+body revision (Mikael option 3) — heading swap to neutral "Hej {firstName}" only on no-apps branch; body softened to "Vill du ta första steget idag?" — drops the negative "Du har inte sökt något jobb än" framing. Other returning-user branches (no-diary, default) keep "Bra jobbat" praise heading where there's something to praise. Implementation via NextStep.usePraiseHeading boolean flag.
+- [Phase 05-06]: 10 cumulative FLAGs (article slug, education progression, exercises progression, consultant passive framing, jobsok-summary heading/body redundancy) deferred to v1.1 backlog — see 05-EMPATHY-REVIEW.md. All are 2-30 minute copy fixes or v1.1 data wiring; none structural.
+- [Phase 05-06]: nyquist_compliant flipped true; status complete; wave_0_complete true. Both empathy agents APPROVED on revision pass (commit ade4426). Phase 5 ship gate CLOSED — ready for /gsd:verify-work.
 
 ### Pending Todos
 
@@ -166,10 +170,10 @@ None yet.
 - [Phase 1]: Rollout communication plan for consultants should be prepared before Phase 1 ships (one-pager; consultants see nav change on flag-flip date)
 - [Phase 3]: Hub-summary query performance needs `EXPLAIN ANALYZE` before data loader is designed — see PITFALLS.md Pitfall 3/18
 - [Phase 4]: Per-breakpoint persistence schema decision must be made before the Supabase migration is written — cannot change post-deploy without destructive migration
-- Phase 5 Plan 06 Task 4 HELD: 1 BLOCK from langtidsarbetssokande on OnboardingWidget returning-user-no-apps state. Mikael adjudicates revision pass next session.
+- ~~Phase 5 Plan 06 Task 4 HELD: 1 BLOCK from langtidsarbetssokande on OnboardingWidget returning-user-no-apps state. Mikael adjudicates revision pass next session.~~ **RESOLVED 2026-04-29:** Mikael adjudicated option 3 (heading + body fix). Revision pass executed; both agents APPROVED. Phase 5 closed.
 
 ## Session Continuity
 
-Last session: 2026-04-29T16:28:51.931Z
-Stopped at: Phase 5 Plan 06 Tasks 1-3 committed; Task 4 HELD on langtidsarbetssokande BLOCK
+Last session: 2026-04-29T18:45:00.000Z
+Stopped at: Completed 05-full-hub-coverage-oversikt/05-06-empty-state-pass-empathy-review-PLAN.md
 Resume file: None
