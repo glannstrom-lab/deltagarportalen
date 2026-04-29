@@ -82,12 +82,18 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 ### Phase 5: Full Hub Coverage + Översikt
 **Goal**: Every hub has its full widget set with real data and empathy-safe empty states, and Översikt shows an actionable onboarding widget plus cross-hub summary cards
 **Depends on**: Phase 4
-**Requirements**: HUB-05, HUB-06
+**Requirements**: HUB-02, HUB-03, HUB-04, HUB-05, HUB-06
 **Success Criteria** (what must be TRUE):
   1. Översikt shows an onboarding/next-step XL widget surfacing the user's most relevant next action, plus up to 6 cross-hub summary widgets covering activity across all 4 content hubs
   2. Every widget across all 5 hubs has a compassionate, action-oriented empty state — no bare zeros, no "Inga data" — verified by loading each hub with a fresh test account
   3. All widgets described in HUB-01 through HUB-04 are present and showing real data, completing full widget coverage across every hub
-**Plans**: TBD
+**Plans**: 6 plans
+- [ ] 05-01-db-discovery-and-migrations-PLAN.md — DB introspection + onboarded_hubs/linkedin_url migrations + HiddenWidgetsPanel hub-agnostic refactor
+- [ ] 05-02-karriar-hub-PLAN.md — 6 Karriär widgets + useKarriarHubSummary loader + KarriarHub wiring (HUB-02)
+- [ ] 05-03-resurser-hub-PLAN.md — 6 Resurser widgets + useResurserHubSummary loader + ResurserHub wiring (HUB-03)
+- [ ] 05-04-min-vardag-hub-PLAN.md — 5 Min Vardag widgets + useMinVardagHubSummary loader + MinVardagHub wiring (HUB-04)
+- [ ] 05-05-oversikt-hub-PLAN.md — 1 XL Onboarding + 6 cross-hub summary widgets + useOversiktHubSummary aggregator + HubGrid XL extension (HUB-05)
+- [ ] 05-06-empty-state-pass-empathy-review-PLAN.md — HUB-06 empty-state pass + empathy review ship-gate
 
 ## Progress
 
@@ -97,7 +103,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 | 2. Static Widget Grid | 5/5 | Complete   | 2026-04-28 |
 | 3. Data Wiring + WCAG | 5/5 | Complete   | 2026-04-28 |
 | 4. Layout Persistence + Hide/Show | 4/4 | Complete   | 2026-04-28 |
-| 5. Full Hub Coverage + Översikt | 0/TBD | Not started | - |
+| 5. Full Hub Coverage + Översikt | 0/6 | Not started | - |
 
 ---
 *Roadmap created: 2026-04-28*
