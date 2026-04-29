@@ -15,7 +15,11 @@ import type { MinVardagSummary } from '@/components/widgets/MinVardagDataContext
  * OversiktDataContext.tsx) since the static page no longer needs a context wrapper.
  */
 export interface OversiktSummary {
-  profile: { onboarded_hubs: string[]; full_name: string | null } | null
+  profile: {
+    onboarded_hubs: string[]
+    full_name: string | null
+    profile_image_url: string | null
+  } | null
   jobsok: JobsokSummary | undefined
   karriar: KarriarSummary | undefined
   resurser: ResurserSummary | undefined
@@ -61,13 +65,18 @@ export function useOversiktHubSummary(): {
     queryFn: async () => {
       const r = await supabase
         .from('profiles')
-        .select('onboarded_hubs, full_name')
+        .select('onboarded_hubs, full_name, profile_image_url')
         .eq('id', userId)
         .maybeSingle()
-      const row = r.data as { onboarded_hubs?: string[] | null; full_name?: string | null } | null
+      const row = r.data as {
+        onboarded_hubs?: string[] | null
+        full_name?: string | null
+        profile_image_url?: string | null
+      } | null
       return {
         onboarded_hubs: row?.onboarded_hubs ?? [],
         full_name: row?.full_name ?? null,
+        profile_image_url: row?.profile_image_url ?? null,
       }
     },
   })

@@ -22,7 +22,11 @@ vi.mock('@/hooks/useSupabase', () => ({
 
 function emptySummary(profileFullName: string | null = 'Mikael Andersson'): OversiktSummary {
   return {
-    profile: { onboarded_hubs: ['oversikt'], full_name: profileFullName },
+    profile: {
+      onboarded_hubs: ['oversikt'],
+      full_name: profileFullName,
+      profile_image_url: null,
+    },
     jobsok: undefined,
     karriar: undefined,
     resurser: undefined,
@@ -77,7 +81,18 @@ describe('HubOverview — minimal launchpad', () => {
     expect(screen.getByRole('link', { name: /Hitta och söka jobb/ })).toHaveAttribute('href', '/jobb')
     expect(screen.getByRole('link', { name: /Planera min karriär/ })).toHaveAttribute('href', '/karriar')
     expect(screen.getByRole('link', { name: /Hantera resurser/ })).toHaveAttribute('href', '/resurser')
-    expect(screen.getByRole('link', { name: /Hantera mina rutiner/ })).toHaveAttribute('href', '/min-vardag')
+    expect(screen.getByRole('link', { name: /Mina vardagliga rutiner/ })).toHaveAttribute('href', '/min-vardag')
+  })
+
+  it('renders profile avatar + "Besök din profil" link', () => {
+    mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
+    renderHub()
+    // Two elements link to /profile (avatar circle + text label) — both legitimate
+    const profileLinks = screen.getAllByRole('link', { name: /Besök din profil/ })
+    expect(profileLinks.length).toBeGreaterThanOrEqual(1)
+    profileLinks.forEach((l) => expect(l).toHaveAttribute('href', '/profile'))
+    // Initial fallback when no image: first letter of firstName
+    expect(screen.getByText('M')).toBeInTheDocument()
   })
 
   it('renders empty-state activity ("Inga händelser än") when sub-hub data is missing', () => {
@@ -110,10 +125,9 @@ describe('HubOverview — minimal launchpad', () => {
     expect(screen.queryByRole('heading', { name: 'En idé för idag' })).not.toBeInTheDocument()
   })
 
-  it('renders date disc with day-short + day-of-month', () => {
+  it('does NOT render the page-tagg "Översikt · din samlade vy"', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    const today = new Date()
-    expect(screen.getByText(String(today.getDate()))).toBeInTheDocument()
+    expect(screen.queryByText(/din samlade vy/i)).not.toBeInTheDocument()
   })
 })

@@ -7,6 +7,7 @@ import {
   Heart,
   Compass,
   GraduationCap,
+  User,
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useOversiktHubSummary } from '@/hooks/useOversiktHubSummary'
@@ -30,10 +31,6 @@ import { streakDays } from '@/utils/streakDays'
  */
 
 const HUB_ID = 'oversikt' as const
-
-const SWEDISH_DAYS_SHORT = [
-  'sön', 'mån', 'tis', 'ons', 'tor', 'fre', 'lör',
-] as const
 
 function daysSince(iso: string | null | undefined): number | null {
   if (!iso) return null
@@ -65,7 +62,8 @@ export default function HubOverview() {
   const { data: summary } = useOversiktHubSummary()
 
   const firstName = summary?.profile?.full_name?.trim().split(/\s+/)[0] ?? null
-  const today = new Date()
+  const profileImageUrl = summary?.profile?.profile_image_url ?? null
+  const initials = (firstName?.[0] ?? 'M').toUpperCase()
 
   // ---------- Senaste aktivitet per hub ----------
   const hubActivity = useMemo(() => {
@@ -170,10 +168,6 @@ export default function HubOverview() {
 
         <div className="flex items-start justify-between gap-6 relative">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] mb-3.5 inline-flex items-center gap-2">
-              <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]" />
-              Översikt · din samlade vy
-            </p>
             <h1
               id="hero-greeting"
               className="text-[40px] font-bold text-[var(--stone-900)] leading-[1.05] tracking-tight m-0"
@@ -185,17 +179,34 @@ export default function HubOverview() {
             </p>
           </div>
 
-          {/* Datum-disc */}
-          <div
-            aria-hidden="true"
-            className="flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] flex-shrink-0 shadow-sm"
-          >
-            <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] leading-none">
-              {SWEDISH_DAYS_SHORT[today.getDay()]}
-            </span>
-            <span className="text-[28px] font-bold text-[var(--c-text)] leading-none mt-1 tracking-tight">
-              {today.getDate()}
-            </span>
+          {/* Profil-block: avatar + besök profilen-länk */}
+          <div className="flex flex-col items-center gap-2 flex-shrink-0">
+            <Link
+              to="/profile"
+              aria-label="Besök din profil"
+              className="block w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm transition-all hover:border-[var(--c-solid)] hover:shadow-md"
+            >
+              {profileImageUrl ? (
+                <img
+                  src={profileImageUrl}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-[var(--c-bg)]">
+                  <span className="text-[28px] font-bold text-[var(--c-text)] tracking-tight">
+                    {initials}
+                  </span>
+                </div>
+              )}
+            </Link>
+            <Link
+              to="/profile"
+              className="text-[12px] font-semibold text-[var(--c-text)] hover:text-[var(--c-solid)] no-underline inline-flex items-center gap-1"
+            >
+              <User size={12} aria-hidden="true" />
+              Besök din profil
+            </Link>
           </div>
         </div>
       </motion.section>
@@ -230,7 +241,7 @@ export default function HubOverview() {
           to="/min-vardag"
           domain="wellbeing"
           icon={Heart}
-          title="Hantera mina rutiner"
+          title="Mina vardagliga rutiner"
           description="Mående, dagbok, kalender och möten med din konsulent."
           activity={hubActivity.minVardag}
         />
