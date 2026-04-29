@@ -103,7 +103,7 @@ This milestone transforms Deltagarportalen's flat 27-item sidebar into 5 domain-
 | 2. Static Widget Grid | 5/5 | Complete   | 2026-04-28 |
 | 3. Data Wiring + WCAG | 5/5 | Complete   | 2026-04-28 |
 | 4. Layout Persistence + Hide/Show | 4/4 | Complete   | 2026-04-28 |
-| 5. Full Hub Coverage + Översikt | 1/6 | In Progress|  |
+| 5. Full Hub Coverage + Översikt | 2/6 | In Progress|  |
 
 ---
 *Roadmap created: 2026-04-28*

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-full-hub-coverage-oversikt/05-01-db-discovery-and-migrations-PLAN.md
-last_updated: "2026-04-29T00:22:59.021Z"
+stopped_at: Completed 05-full-hub-coverage-oversikt/05-02-karriar-hub-PLAN.md
+last_updated: "2026-04-29T00:36:33.483Z"
 last_activity: 2026-04-28 — Plan 04-02 Widget hide-button + JobsokLayoutContext completed
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 25
-  completed_plans: 20
+  completed_plans: 21
   percent: 89
 ---
 
@@ -69,6 +69,7 @@ Progress: [█████████░] 89%
 | Phase 04-layout-persistence-hide-show P03 | 2 | 1 tasks | 3 files |
 | Phase 04-layout-persistence-hide-show P04 | 20 | 2 tasks | 10 files |
 | Phase 05-full-hub-coverage-oversikt P01 | 6 | 3 tasks | 6 files |
+| Phase 05-full-hub-coverage-oversikt P02 | 10 | 3 tasks | 21 files |
 
 ## Accumulated Context
 
@@ -132,6 +133,9 @@ Progress: [█████████░] 89%
 - [Phase 05-01]: profiles.career_goals JSONB already exists — no separate career_goals table migration needed for Karriar hub
 - [Phase 05-01]: consultant_participants uses participant_id (NOT user_id) — Plan 04 loader must filter on participant_id
 - [Phase 05-01]: HiddenWidgetsPanel outside-click guard extended to exclude clicks inside [role=dialog] — prevents double-close on ConfirmDialog
+- [Phase 05-02]: useKarriarHubSummary fires Promise.all of 3 selects (profiles×1 covering career_goals+linkedin_url, skills_analyses, personal_brand_audits) — Pitfall E compliant single profiles query
+- [Phase 05-02]: InterestGuideWidget reads useInterestProfile() directly (Pitfall F — no KarriarDataContext slice)
+- [Phase 05-02]: EducationWidget is a static-content widget — always renders CTA, no DB query
 
 ### Pending Todos
 
@@ -145,6 +149,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-29T00:22:59.018Z
-Stopped at: Completed 05-full-hub-coverage-oversikt/05-01-db-discovery-and-migrations-PLAN.md
+Last session: 2026-04-29T00:36:33.480Z
+Stopped at: Completed 05-full-hub-coverage-oversikt/05-02-karriar-hub-PLAN.md
 Resume file: None
