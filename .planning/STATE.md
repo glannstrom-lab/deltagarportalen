@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 05-full-hub-coverage-oversikt/05-02-karriar-hub-PLAN.md
-last_updated: "2026-04-29T00:36:33.483Z"
-last_activity: 2026-04-28 — Plan 04-02 Widget hide-button + JobsokLayoutContext completed
+stopped_at: Completed 05-03-resurser-hub-PLAN.md
+last_updated: "2026-04-29T15:23:25.841Z"
+last_activity: 2026-04-29 — Plan 05-03 Resurser Hub (HUB-03) completed — 6 widgets, 87 tests
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 25
-  completed_plans: 21
-  percent: 89
+  completed_plans: 22
+  percent: 88
 ---
 
 # State — Deltagarportalen
@@ -21,16 +21,16 @@ progress:
 See: `.planning/PROJECT.md` (updated 2026-04-28)
 
 **Core value:** Hjälp utsatta arbetssökande att komma framåt med empati, tillgänglighet och AI-stöd som sänker tröskeln.
-**Current focus:** Phase 4 — Layout Persistence + Hide/Show
+**Current focus:** Phase 5 — Full Hub Coverage + Översikt
 
 ## Current Position
 
-Phase: 4 of 5 (Layout Persistence + Hide/Show)
-Plan: 2 of 5 in current phase (completed)
+Phase: 5 of 5 (Full Hub Coverage + Översikt)
+Plan: 3 of 6 in current phase (completed)
 Status: In progress
-Last activity: 2026-04-28 — Plan 04-02 Widget hide-button + JobsokLayoutContext completed
+Last activity: 2026-04-29 — Plan 05-03 Resurser Hub (HUB-03) completed — 6 widgets, 87 tests
 
-Progress: [█████████░] 89%
+Progress: [█████████░] 88%
 
 ## Performance Metrics
 
@@ -70,6 +70,7 @@ Progress: [█████████░] 89%
 | Phase 04-layout-persistence-hide-show P04 | 20 | 2 tasks | 10 files |
 | Phase 05-full-hub-coverage-oversikt P01 | 6 | 3 tasks | 6 files |
 | Phase 05-full-hub-coverage-oversikt P02 | 10 | 3 tasks | 21 files |
+| Phase 05 P03 | 9m | 3 tasks | 17 files |
 
 ## Accumulated Context
 
@@ -136,6 +137,11 @@ Progress: [█████████░] 89%
 - [Phase 05-02]: useKarriarHubSummary fires Promise.all of 3 selects (profiles×1 covering career_goals+linkedin_url, skills_analyses, personal_brand_audits) — Pitfall E compliant single profiles query
 - [Phase 05-02]: InterestGuideWidget reads useInterestProfile() directly (Pitfall F — no KarriarDataContext slice)
 - [Phase 05-02]: EducationWidget is a static-content widget — always renders CTA, no DB query
+- [Phase 05-03]: useResurserHubSummary fires Promise.all of 4 selects (cvs, cover_letters, article_reading_progress, ai_team_sessions); 3 of 6 widgets are static-content (no DB)
+- [Phase 05-03]: Deep-link cache shared with JobsokHub via setQueryData(['cv-versions'], ['cover-letters']) — single source of truth for documents across two hubs
+- [Phase 05-03]: Övningar widget ships STATIC for v1.0 per Pitfall G + 05-DB-DISCOVERY (no exercise_progress table; exercise_answers tracks answers, not completion)
+- [Phase 05-03]: Externa resurser + Utskriftsmaterial are unconditionally STATIC widgets (curated 3-link / 3-template lists) — never crash on missing slice
+- [Phase 05-03]: AI-team agent_id translated to Swedish display names (career-coach → Karriärcoach) via local AGENT_NAMES map; primary KPI is qualitative agent name (never a number)
 
 ### Pending Todos
 
@@ -149,6 +155,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-29T00:36:33.480Z
-Stopped at: Completed 05-full-hub-coverage-oversikt/05-02-karriar-hub-PLAN.md
+Last session: 2026-04-29T15:23:06.998Z
+Stopped at: Completed 05-03-resurser-hub-PLAN.md
 Resume file: None
