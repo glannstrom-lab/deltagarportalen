@@ -62,8 +62,8 @@ describe('OnboardingWidget', () => {
     expect(screen.getByText('Välkommen tillbaka')).toBeInTheDocument()
     // Body softened from "Du har inte sökt något jobb än. Vill du börja idag?"
     expect(screen.getByText('Vill du ta första steget idag?')).toBeInTheDocument()
-    // Next-step CTA visible (footer link)
-    expect(screen.getByRole('link', { name: /Öppna Söka jobb →/ })).toBeInTheDocument()
+    // Quick-links visible in body (Footer was removed; quick-links cover navigation)
+    expect(screen.getByRole('link', { name: /Söka jobb →/ })).toBeInTheDocument()
   })
 
   it("Test C — no-apps branch: full_name='Anna Karlsson' produces 'Hej Anna' (neutral, no praise)", () => {

@@ -144,16 +144,8 @@ export default function OnboardingWidget({
           </div>
         )}
       </Widget.Body>
-      {!isNewUser && (
-        <Widget.Footer>
-          <Link
-            to={nextStep.href}
-            className="inline-flex items-center min-h-[44px] px-3 py-1.5 rounded-[7px] bg-[var(--c-solid)] text-white text-[12px] font-bold no-underline"
-          >
-            {nextStep.cta}
-          </Link>
-        </Widget.Footer>
-      )}
+      {/* No Footer — quick-links in Body cover navigation for both branches.
+          Avoids the duplicate green CTA bar that appeared on returning-user XL. */}
     </Widget>
   )
 }

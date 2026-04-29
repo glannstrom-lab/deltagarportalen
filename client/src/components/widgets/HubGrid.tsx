@@ -40,11 +40,16 @@ interface SectionProps {
 function Section({ title, children }: SectionProps) {
   return (
     <section aria-label={title} className="mb-[28px] last:mb-0">
-      <div className="flex items-center gap-[10px] mb-[10px]">
-        <h4 className="text-[12px] font-bold uppercase tracking-[0.06em] text-[var(--c-text)] m-0">
+      <div className="flex items-center gap-[10px] mb-[12px]">
+        {/* Colored dot signals domain — matches legacy nav-group pattern */}
+        <span
+          className="w-[6px] h-[6px] rounded-full bg-[var(--c-solid)] flex-shrink-0"
+          aria-hidden="true"
+        />
+        <h2 className="text-[13px] font-bold uppercase tracking-[0.08em] text-[var(--c-text)] m-0">
           {title}
-        </h4>
-        <div className="flex-1 h-px bg-[var(--stone-150)]" />
+        </h2>
+        <div className="flex-1 h-px bg-[var(--c-accent)] opacity-60" />
       </div>
       <div className="grid grid-cols-2 min-[900px]:grid-cols-4 auto-rows-[150px] gap-[14px]">
         {children}

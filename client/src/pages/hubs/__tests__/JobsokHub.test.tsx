@@ -125,9 +125,9 @@ describe('JobsokHub integration', () => {
 
   it('renders 3 sectioned headings (Skapa & öva, Sök & ansök, Marknad)', async () => {
     renderHub()
-    expect(await screen.findByRole('heading', { level: 4, name: 'Skapa & öva' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 4, name: 'Sök & ansök' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 4, name: 'Marknad' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { level: 2, name: 'Skapa & öva' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Sök & ansök' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 2, name: 'Marknad' })).toBeInTheDocument()
   })
 
   it('renders 3 sections via aria-label regions', async () => {
@@ -153,7 +153,7 @@ describe('JobsokHub integration', () => {
 
   it('exposes a polite live region for size announcements', async () => {
     renderHub()
-    await screen.findByRole('heading', { level: 4, name: 'Skapa & öva' })
+    await screen.findByRole('heading', { level: 2, name: 'Skapa & öva' })
     const liveRegion = document.querySelector('[role="status"][aria-live="polite"]')
     expect(liveRegion).toBeInTheDocument()
     expect(liveRegion).toHaveClass('sr-only')
@@ -364,7 +364,7 @@ describe('JobsokHub Phase 4 — layout persistence + hide/show', () => {
   it('ζ: Återställ standardlayout opens ConfirmDialog with locked Swedish copy', async () => {
     const user = userEvent.setup()
     renderHub()
-    await screen.findByRole('heading', { level: 4, name: 'Skapa & öva' })
+    await screen.findByRole('heading', { level: 2, name: 'Skapa & öva' })
     // Open panel
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     // Click reset

@@ -197,7 +197,7 @@ describe('ResurserHub integration — α–λ', () => {
   it('ζ: Återställ standardlayout opens ConfirmDialog with locked Swedish copy', async () => {
     const user = userEvent.setup()
     renderHub()
-    await screen.findByRole('heading', { level: 4, name: 'Mina' })
+    await screen.findByRole('heading', { level: 2, name: 'Mina' })
     // Open panel
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     // Click reset

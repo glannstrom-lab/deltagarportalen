@@ -224,7 +224,7 @@ describe('HubOverview integration — α–ν', () => {
   it('ζ: Återställ standardlayout opens ConfirmDialog with locked Swedish copy', async () => {
     const user = userEvent.setup()
     renderHub()
-    await screen.findByRole('heading', { level: 4, name: 'Idag' })
+    await screen.findByRole('heading', { level: 2, name: 'Idag' })
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     const resetBtn = await screen.findByRole('button', {
       name: /Återställ standardlayout/i,

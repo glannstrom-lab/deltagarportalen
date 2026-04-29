@@ -227,7 +227,7 @@ describe('MinVardagHub integration — α–λ', () => {
   it('ζ: Återställ standardlayout opens ConfirmDialog with locked Swedish copy', async () => {
     const user = userEvent.setup()
     renderHub()
-    await screen.findByRole('heading', { level: 4, name: 'Mig själv' })
+    await screen.findByRole('heading', { level: 2, name: 'Mig själv' })
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     const resetBtn = await screen.findByRole('button', {
       name: /Återställ standardlayout/i,
