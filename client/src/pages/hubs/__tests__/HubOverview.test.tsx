@@ -1,24 +1,21 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, within } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import HubOverview from '../HubOverview'
 import type { OversiktSummary } from '@/hooks/useOversiktHubSummary'
 
-// Mock the data hook — tests exercise the static page logic, not the loader.
 const mockSummary = vi.fn<() => { data: OversiktSummary | undefined; isLoading: boolean }>()
 vi.mock('@/hooks/useOversiktHubSummary', () => ({
   useOversiktHubSummary: () => mockSummary(),
   OVERSIKT_HUB_KEY: (uid: string) => ['hub', 'oversikt', uid],
 }))
 
-// Tracking hook — no-op; assert it was called with 'oversikt'.
 const trackingSpy = vi.fn()
 vi.mock('@/hooks/useOnboardedHubsTracking', () => ({
   useOnboardedHubsTracking: (id: string) => trackingSpy(id),
 }))
 
-// Auth — needed indirectly by some children.
 vi.mock('@/hooks/useSupabase', () => ({
   useAuth: () => ({ user: { id: 'u1' }, profile: null, loading: false, isAuthenticated: true }),
 }))
@@ -49,7 +46,7 @@ beforeEach(() => {
   mockSummary.mockReset()
 })
 
-describe('HubOverview — clean rebuild', () => {
+describe('HubOverview — minimal launchpad', () => {
   it('renders firstName from profile.full_name', () => {
     mockSummary.mockReturnValue({ data: emptySummary('Mikael Andersson'), isLoading: false })
     renderHub()
@@ -68,50 +65,55 @@ describe('HubOverview — clean rebuild', () => {
     expect(trackingSpy).toHaveBeenCalledWith('oversikt')
   })
 
-  it('renders 3 status cards: CV, Ansökningar, Mående', () => {
+  it('renders the launchpad question "Vad vill du göra idag?"', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    const region = screen.getByRole('region', { name: 'Min status' })
-    expect(within(region).getByText('CV')).toBeInTheDocument()
-    expect(within(region).getByText('Ansökningar')).toBeInTheDocument()
-    expect(within(region).getByText('Mående')).toBeInTheDocument()
+    expect(screen.getByText('Vad vill du göra idag?')).toBeInTheDocument()
   })
 
-  it('renders empty-state values when all sub-hub data is undefined', () => {
+  it('renders 4 hub cards with action-oriented titles', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    expect(screen.getByText('Inget CV')).toBeInTheDocument()
-    expect(screen.getByText('Inga än')).toBeInTheDocument()
-    expect(screen.getByText('Inte loggat')).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Hitta och söka jobb/ })).toHaveAttribute('href', '/jobb')
+    expect(screen.getByRole('link', { name: /Planera min karriär/ })).toHaveAttribute('href', '/karriar')
+    expect(screen.getByRole('link', { name: /Hantera resurser/ })).toHaveAttribute('href', '/resurser')
+    expect(screen.getByRole('link', { name: /Hantera mina rutiner/ })).toHaveAttribute('href', '/min-vardag')
   })
 
-  it('Nästa-steg block proposes CV when CV is missing', () => {
+  it('renders empty-state activity ("Inga händelser än") when sub-hub data is missing', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
-    expect(screen.getByRole('heading', { name: 'Vill du börja med ditt CV idag?' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: /Öppna CV/ })).toHaveAttribute('href', '/cv')
+    const empties = screen.getAllByText(/Inga händelser än — börja utforska/)
+    expect(empties).toHaveLength(4)
   })
 
-  it('renders activity feed empty-state when nothing has happened', () => {
-    mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
+  it('renders activity row when career goal is set', () => {
+    const sum = emptySummary()
+    sum.karriar = {
+      careerGoals: { shortTerm: 'career-change', updatedAt: new Date().toISOString() },
+      linkedinUrl: null,
+      latestSkillsAnalysis: null,
+      latestBrandAudit: null,
+    } as unknown as OversiktSummary['karriar']
+    mockSummary.mockReturnValue({ data: sum, isLoading: false })
     renderHub()
-    expect(screen.getByText('Här samlas din historik')).toBeInTheDocument()
+    expect(screen.getByText(/Du satte målet/)).toBeInTheDocument()
+    expect(screen.getByText('Byta karriär')).toBeInTheDocument()
   })
 
-  it('renders 4 hub link cards (Söka jobb, Karriär, Resurser, Min Vardag)', () => {
-    mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
-    renderHub()
-    expect(screen.getByRole('link', { name: /Söka jobb/ })).toHaveAttribute('href', '/jobb')
-    expect(screen.getByRole('link', { name: /Karriär/ })).toHaveAttribute('href', '/karriar')
-    expect(screen.getByRole('link', { name: /Resurser/ })).toHaveAttribute('href', '/resurser')
-    expect(screen.getByRole('link', { name: /Min Vardag/ })).toHaveAttribute('href', '/min-vardag')
-  })
-
-  it('does NOT render the legacy widget grid (no Anpassa-vy button, no Idag/Aktivitet sections)', () => {
+  it('does NOT render legacy widget grid, status row, or activity feed', () => {
     mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
     renderHub()
     expect(screen.queryByRole('button', { name: /Anpassa vy/i })).not.toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Idag' })).not.toBeInTheDocument()
-    expect(screen.queryByRole('heading', { name: 'Aktivitet' })).not.toBeInTheDocument()
+    expect(screen.queryByText('Min status')).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Senaste aktivitet' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'En idé för idag' })).not.toBeInTheDocument()
+  })
+
+  it('renders date disc with day-short + day-of-month', () => {
+    mockSummary.mockReturnValue({ data: emptySummary(), isLoading: false })
+    renderHub()
+    const today = new Date()
+    expect(screen.getByText(String(today.getDate()))).toBeInTheDocument()
   })
 })
