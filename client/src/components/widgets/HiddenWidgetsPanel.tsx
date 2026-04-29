@@ -1,28 +1,39 @@
 import { useEffect, useRef } from 'react'
 import { Plus, RotateCcw } from 'lucide-react'
-import { useJobsokLayout, selectHiddenWidgets } from './JobsokLayoutContext'
 import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import { WIDGET_LABELS } from './widgetLabels'
 import type { WidgetId } from './registry'
+import type { WidgetLayoutItem } from './types'
 
 interface HiddenWidgetsPanelProps {
   isOpen: boolean
   onClose: () => void
+  layout: WidgetLayoutItem[]
+  onShowWidget: (id: string) => void
+  onResetLayout: () => void
 }
 
 /**
  * Dropdown panel listing hidden widgets.
- * Triggered by the "Anpassa vy" button (Plan 04 wires the trigger).
- * Auto-closes on outside click + Escape key.
- * Reset button at bottom uses ConfirmDialog (warning variant) before calling resetLayout().
+ * Hub-agnostic — accepts layout/onShowWidget/onResetLayout as props (no context dependency).
+ * Plans 02-05 can pass their own hub-specific layout + mutators without context-namespace conflicts.
  *
- * ConfirmDialogProvider is already mounted at root (main.tsx line 104) — no need to add it here.
+ * Triggered by the "Anpassa vy" button.
+ * Auto-closes on outside click + Escape key.
+ * Reset button at bottom uses ConfirmDialog (warning variant) before calling onResetLayout().
+ *
+ * ConfirmDialogProvider is already mounted at root (main.tsx) — no need to add it here.
  */
-export function HiddenWidgetsPanel({ isOpen, onClose }: HiddenWidgetsPanelProps) {
-  const { layout, showWidget, resetLayout } = useJobsokLayout()
+export function HiddenWidgetsPanel({
+  isOpen,
+  onClose,
+  layout,
+  onShowWidget,
+  onResetLayout,
+}: HiddenWidgetsPanelProps) {
   const { confirm } = useConfirmDialog()
   const containerRef = useRef<HTMLDivElement | null>(null)
-  const hidden = selectHiddenWidgets(layout)
+  const hidden = layout.filter(item => item.visible === false)
 
   // Outside click + Escape key handlers
   useEffect(() => {
@@ -33,7 +44,10 @@ export function HiddenWidgetsPanel({ isOpen, onClose }: HiddenWidgetsPanelProps)
     }
 
     const onMouseDown = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      // Do not close if click target is inside a dialog (ConfirmDialog overlay)
+      const target = e.target as Node
+      const inDialog = (target as Element).closest?.('[role="dialog"]') !== null
+      if (!inDialog && containerRef.current && !containerRef.current.contains(target)) {
         onClose()
       }
     }
@@ -56,7 +70,7 @@ export function HiddenWidgetsPanel({ isOpen, onClose }: HiddenWidgetsPanelProps)
       variant: 'warning',
     })
     if (ok) {
-      resetLayout()
+      onResetLayout()
       onClose()
     }
   }
@@ -91,7 +105,7 @@ export function HiddenWidgetsPanel({ isOpen, onClose }: HiddenWidgetsPanelProps)
                 <span className="text-[13px] text-[var(--stone-800)]">{label}</span>
                 <button
                   type="button"
-                  onClick={() => showWidget(item.id)}
+                  onClick={() => onShowWidget(item.id)}
                   aria-label={`Återvisa widget ${label}`}
                   className={[
                     'flex items-center gap-1 px-2 py-1',

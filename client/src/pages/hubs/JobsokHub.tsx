@@ -135,12 +135,15 @@ export default function JobsokHub() {
             {announcement}
           </div>
 
-          {/* Hidden widgets panel — rendered inside provider (needs useJobsokLayout).
+          {/* Hidden widgets panel — props-based (hub-agnostic after Plan 01 refactor).
               Positioned absolutely relative to the hub content area. */}
           <div className="relative" id="hidden-widgets-panel">
             <HiddenWidgetsPanel
               isOpen={panelOpen}
               onClose={() => setPanelOpen(false)}
+              layout={effectiveLayout}
+              onShowWidget={showWidget}
+              onResetLayout={resetLayout}
             />
           </div>
 
