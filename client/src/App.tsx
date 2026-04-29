@@ -75,6 +75,7 @@ const PrintableResources = lazy(() => import('./pages/PrintableResources'))
 
 // Hub pages (Phase 1 — navigation shell)
 const HubOverview = lazy(() => import('./pages/hubs/HubOverview'))
+const HubOverviewHistory = lazy(() => import('./pages/hubs/HubOverviewHistory'))
 const JobsokHub = lazy(() => import('./pages/hubs/JobsokHub'))
 const KarriarHub = lazy(() => import('./pages/hubs/KarriarHub'))
 const ResurserHub = lazy(() => import('./pages/hubs/ResurserHub'))
@@ -273,6 +274,7 @@ function App() {
           <Route path="externa-resurser" element={<LazyRoute><RouteErrorBoundary><ExternalResources /></RouteErrorBoundary></LazyRoute>} />
           {/* Hub routes (Phase 1 — navigation shell) */}
           <Route path="oversikt" element={<LazyRoute><RouteErrorBoundary><HubOverview /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="oversikt/historik" element={<LazyRoute><RouteErrorBoundary><HubOverviewHistory /></RouteErrorBoundary></LazyRoute>} />
           <Route path="jobb" element={<LazyRoute><RouteErrorBoundary><JobsokHub /></RouteErrorBoundary></LazyRoute>} />
           <Route path="karriar" element={<LazyRoute><RouteErrorBoundary><KarriarHub /></RouteErrorBoundary></LazyRoute>} />
           <Route path="resurser" element={<LazyRoute><RouteErrorBoundary><ResurserHub /></RouteErrorBoundary></LazyRoute>} />
