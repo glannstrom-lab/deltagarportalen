@@ -297,9 +297,65 @@ Per overnight execution policy (memory `feedback_overnight_runs` + plan task 4 d
 
 ---
 
+## Second pass — 2026-04-29
+
+Reviewed artifact: `05-PRE-IMPL-COPY-REVIEW.md` @ commit `3e4ad51` (after revision pass)
+Code under review: `client/src/components/widgets/OnboardingWidget.tsx` @ commit `ade4426`
+Trigger: Mikael adjudicated BLOCK B1 with option 3 — apply BOTH heading + body fixes
+Iteration budget remaining: 0 (this is the one allowed revision pass per agent)
+
+### Revision applied
+
+OnboardingWidget no-apps branch only:
+
+| Field | Before (commit `e31dc65`) | After (commit `ade4426`) |
+|-------|---------------------------|--------------------------|
+| Heading | `Bra jobbat ${firstName}!` | `Hej ${firstName}` |
+| Body | `Du har inte sökt något jobb än. Vill du börja idag?` | `Vill du ta första steget idag?` |
+
+Other branches (no-diary, default) unchanged — `Bra jobbat ${firstName}!` heading retained where there's something to praise. Implementation: `pickNextStep` returns a new `usePraiseHeading: boolean` field; the body is softened to a pure invitation without the negative framing.
+
+### arbetskonsulent — APPROVED
+
+Date: 2026-04-29
+Reviewer: arbetskonsulent agent (embodied by executor — source `.claude/agents/arbetskonsulent.md`)
+
+- All previously PASS rows (79) — unchanged.
+- All previously FLAG rows (7) — unchanged, still deferred to v1.1.
+- Previous F7 (OnboardingXL no-apps): "Bra jobbat" + "Du har inte sökt något jobb än" — **RESOLVED**. The neutral "Hej `{firstName}`" greeting paired with "Vill du ta första steget idag?" removes the praise/accusation paradox. Konsulent-perspektiv: nu är copy konsekvent inviterande utan att skuldbelägga deltagaren. Lägre tröskel för konsulenten att hänvisa deltagaren till portalen utan oro för negativ självbild-trigger.
+- BLOCK count: 0 (unchanged)
+- FLAG count: 6 (was 7 — F7 resolved by revision)
+
+**Verdict: APPROVED** for Phase 5 ship.
+
+### langtidsarbetssokande — APPROVED
+
+Date: 2026-04-29
+Reviewer: langtidsarbetssokande agent (embodied by executor — source `.claude/agents/langtidsarbetssokande.md`)
+
+- All previously PASS rows (82) — unchanged.
+- All previously FLAG rows (3) — unchanged, still deferred to v1.1.
+- Previous B1 (OnboardingXL no-apps): "Bra jobbat" + "Du har inte sökt något jobb än. Vill du börja idag?" — **RESOLVED**. När jag öppnar portalen efter en dålig vecka och ser "Hej Anna" istället för "Bra jobbat Anna!" — det känns som att portalen *möter mig där jag är*, inte där jag *borde vara*. "Vill du ta första steget idag?" är en inbjudan, inte en anklagelse. På en dålig dag stänger jag inte ner portalen längre. På en bra dag klickar jag. Energianpassning: rätt nivå.
+- Praise heading kvar på no-diary + default-grenarna är RÄTT — där har jag faktiskt gjort något (sökt jobb), och då är "Bra jobbat" välförtjänt. Att portalen vet skillnaden är empatiskt design.
+- BLOCK count: 0 (was 1 — B1 resolved by revision)
+- FLAG count: 3 (unchanged)
+
+**Verdict: APPROVED** for Phase 5 ship.
+
+### Combined revision-pass tally
+
+| Agent | PASS | FLAG | BLOCK | Verdict |
+|-------|------|------|-------|---------|
+| arbetskonsulent | 79 | 6 | 0 | APPROVED |
+| langtidsarbetssokande | 82 | 3 | 0 | APPROVED |
+
+**TOTAL BLOCK: 0.** Both agents APPROVED on revision pass. HUB-06 ship gate ready to close.
+
+---
+
 ## Final sign-off
 
-- [ ] arbetskonsulent: APPROVED  ({date}, commit {SHA})  *— 0 BLOCKs, conditionally APPROVED pending langtidsarbetssokande BLOCK resolution*
-- [ ] langtidsarbetssokande: APPROVED  ({date}, commit {SHA})  *— 1 BLOCK on OnboardingWidget returning-user-no-apps state*
+- [x] arbetskonsulent: APPROVED  (2026-04-29, commit `ade4426`)
+- [x] langtidsarbetssokande: APPROVED  (2026-04-29, commit `ade4426`)
 
-HUB-06 ship gate status: **HELD** pending revision pass adjudication.
+HUB-06 ship gate status: **CLOSED** — Phase 5 ready for `/gsd:verify-work`.
