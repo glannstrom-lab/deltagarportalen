@@ -1,8 +1,10 @@
-import { describe, it, expect } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { JobsokDataProvider } from '../JobsokDataContext'
 import type { JobsokSummary } from '../JobsokDataContext'
+import { KarriarDataProvider } from '../KarriarDataContext'
+import type { KarriarSummary } from '../KarriarDataContext'
 import CvWidget from '../CvWidget'
 import CoverLetterWidget from '../CoverLetterWidget'
 import InterviewWidget from '../InterviewWidget'
@@ -11,6 +13,27 @@ import ApplicationsWidget from '../ApplicationsWidget'
 import SpontaneousWidget from '../SpontaneousWidget'
 import SalaryWidget from '../SalaryWidget'
 import InternationalWidget from '../InternationalWidget'
+import CareerGoalWidget from '../CareerGoalWidget'
+import SkillGapWidget from '../SkillGapWidget'
+import PersonalBrandWidget from '../PersonalBrandWidget'
+
+// Mock useInterestProfile for InterestGuideWidget (called inside the widget directly)
+vi.mock('@/hooks/useInterestProfile', () => ({
+  useInterestProfile: () => ({
+    profile: {
+      hasResult: true,
+      riasecScores: { realistic: 20, investigative: 80, artistic: 60, social: 40, enterprising: 30, conventional: 10 },
+      dominantTypes: [{ code: 'investigative', score: 80 }],
+      recommendedOccupations: [{ name: 'UX Designer', matchPercentage: 85 }],
+      completedAt: '2026-04-20',
+    },
+    isLoading: false,
+    error: null,
+    refetch: vi.fn(),
+  }),
+}))
+
+import InterestGuideWidget from '../InterestGuideWidget'
 
 /**
  * A11Y-03 — anti-shaming guard.
@@ -55,6 +78,24 @@ function fixture(): JobsokSummary {
   }
 }
 
+function karriarFixture(): KarriarSummary {
+  return {
+    careerGoals: { shortTerm: 'Senior UX Designer', longTerm: 'Design Lead' },
+    linkedinUrl: 'https://linkedin.com/in/test',
+    latestSkillsAnalysis: {
+      dream_job: 'UX Designer',
+      skills_comparison: { missing: ['Figma', 'User research'] },
+      match_percentage: 72, // MUST NOT appear raw in 32/22px font-bold
+      created_at: '2026-04-20',
+    },
+    latestBrandAudit: {
+      score: 84, // MUST NOT appear raw in 32/22px font-bold
+      dimensions: { presence: 90 },
+      created_at: '2026-04-15T00:00:00Z',
+    },
+  }
+}
+
 function renderWidget(W: React.ComponentType<any>, widgetId: string) {
   const data = fixture()
   return render(
@@ -62,6 +103,17 @@ function renderWidget(W: React.ComponentType<any>, widgetId: string) {
       <JobsokDataProvider value={data}>
         <W id={widgetId} size="L" />
       </JobsokDataProvider>
+    </MemoryRouter>
+  )
+}
+
+function renderKarriarWidget(W: React.ComponentType<any>, widgetId: string) {
+  const data = karriarFixture()
+  return render(
+    <MemoryRouter>
+      <KarriarDataProvider value={data}>
+        <W id={widgetId} size="L" />
+      </KarriarDataProvider>
     </MemoryRouter>
   )
 }
@@ -75,6 +127,13 @@ const cases: [string, React.ComponentType<any>, string][] = [
   ['SpontaneousWidget', SpontaneousWidget, 'spontaneous'],
   ['SalaryWidget', SalaryWidget, 'salary'],
   ['InternationalWidget', InternationalWidget, 'international'],
+]
+
+const karriarCases: [string, React.ComponentType<any>, string][] = [
+  ['CareerGoalWidget', CareerGoalWidget, 'karriar-mal'],
+  ['InterestGuideWidget', InterestGuideWidget, 'intresseguide'],
+  ['SkillGapWidget', SkillGapWidget, 'kompetensgap'],
+  ['PersonalBrandWidget', PersonalBrandWidget, 'personligt-varumarke'],
 ]
 
 describe('A11Y-03: no raw % in primary KPI slot', () => {
@@ -97,5 +156,18 @@ describe('A11Y-03: no raw % in primary KPI slot', () => {
     // Forbidden: "94% match", "85%", etc. Allowed: "Bra match", "Mycket bra match"
     expect(text).not.toMatch(/\d+%\s*match/i)
     expect(text).not.toMatch(/match\s*\d+%/i)
+  })
+})
+
+describe('A11Y-03 Karriär: no raw % in primary KPI slot (HUB-02)', () => {
+  it.each(karriarCases)('%s does not render a number followed by %% in primary-KPI typography', (name, W, widgetId) => {
+    const { container } = renderKarriarWidget(W, widgetId)
+    const allEls = Array.from(container.querySelectorAll('*'))
+    const primaryKPIs = allEls.filter(isPrimaryKPI)
+
+    for (const el of primaryKPIs) {
+      const text = (el.textContent ?? '').trim()
+      expect(text, `${name}: primary KPI element should not contain raw percentage, got: "${text}"`).not.toMatch(/\d+%/)
+    }
   })
 })
