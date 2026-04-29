@@ -26,6 +26,12 @@ vi.mock('@/hooks/useResurserHubSummary', () => ({
   RESURSER_HUB_KEY: (id: string) => ['hub', 'resurser', id],
 }))
 
+// Plan 05 (HUB-05): mock useOnboardedHubsTracking so the real hook does not
+// hit supabase.update.
+vi.mock('@/hooks/useOnboardedHubsTracking', () => ({
+  useOnboardedHubsTracking: vi.fn(),
+}))
+
 // Mock useAuth — return logged-in user so useWidgetLayout enabled:true resolves
 vi.mock('@/hooks/useSupabase', () => ({
   useAuth: () => ({ user: { id: 'test-user' }, profile: null, loading: false, isAuthenticated: true }),

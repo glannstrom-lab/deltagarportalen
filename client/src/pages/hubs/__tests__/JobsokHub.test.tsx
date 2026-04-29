@@ -34,6 +34,12 @@ vi.mock('@/hooks/useJobsokHubSummary', () => ({
   JOBSOK_HUB_KEY: (id: string) => ['hub', 'jobsok', id],
 }))
 
+// Plan 05 (HUB-05) added useOnboardedHubsTracking() to each hub page; tests
+// must mock it so the real hook does not hit supabase.update.
+vi.mock('@/hooks/useOnboardedHubsTracking', () => ({
+  useOnboardedHubsTracking: vi.fn(),
+}))
+
 // Mock useAuth — return logged-in user so useWidgetLayout enabled:true resolves.
 // With user: {id: 'test-user'}, the query fires and resolves to getDefaultLayout('jobb') from mergeLayouts.
 vi.mock('@/hooks/useSupabase', () => ({

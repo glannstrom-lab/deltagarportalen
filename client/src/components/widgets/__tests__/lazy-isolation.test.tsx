@@ -7,6 +7,7 @@ const REGISTRY_PATH = resolve(__dirname, '../registry.ts')
 const REGISTRY_SRC = readFileSync(REGISTRY_PATH, 'utf8')
 
 const EXPECTED_WIDGETS = [
+  // Söka jobb hub (Phase 2)
   'CvWidget',
   'CoverLetterWidget',
   'InterviewWidget',
@@ -15,11 +16,39 @@ const EXPECTED_WIDGETS = [
   'SpontaneousWidget',
   'SalaryWidget',
   'InternationalWidget',
+  // Karriär hub (Phase 5 / HUB-02)
+  'CareerGoalWidget',
+  'InterestGuideWidget',
+  'SkillGapWidget',
+  'PersonalBrandWidget',
+  'EducationWidget',
+  'LinkedInWidget',
+  // Resurser hub (Phase 5 / HUB-03)
+  'MyDocumentsWidget',
+  'KnowledgeBaseWidget',
+  'ExternalResourcesWidget',
+  'PrintResourcesWidget',
+  'AITeamWidget',
+  'ExercisesWidget',
+  // Min Vardag hub (Phase 5 / HUB-04)
+  'HealthWidget',
+  'DiaryWidget',
+  'CalendarWidget',
+  'NetworkWidget',
+  'ConsultantWidget',
+  // Översikt hub (Phase 5 / HUB-05)
+  'OnboardingWidget',
+  'JobsokSummaryWidget',
+  'CvStatusSummaryWidget',
+  'InterviewSummaryWidget',
+  'CareerGoalSummaryWidget',
+  'HealthSummaryWidget',
+  'DiarySummaryWidget',
 ]
 
 describe('Widget registry — lazy isolation (Bundle / Code-Split Contract)', () => {
-  it('contains 8 entries (one per Söka jobb widget)', () => {
-    expect(Object.keys(WIDGET_REGISTRY).length).toBe(8)
+  it('contains exactly EXPECTED_WIDGETS entries (Phase 5 final: 32 widgets across 5 hubs)', () => {
+    expect(Object.keys(WIDGET_REGISTRY).length).toBe(EXPECTED_WIDGETS.length)
   })
 
   it('every entry has a component field', () => {
@@ -54,7 +83,7 @@ describe('Widget registry — lazy isolation (Bundle / Code-Split Contract)', ()
     }
   })
 
-  it('registry source has exactly one lazy() call per widget (8 total)', () => {
+  it('registry source has exactly one lazy() call per widget', () => {
     // Count only lazy() calls that are actual code (not in comments).
     // We exclude lines that start with optional whitespace + '*' or '//' (comment lines).
     const codeLines = REGISTRY_SRC
@@ -62,7 +91,7 @@ describe('Widget registry — lazy isolation (Bundle / Code-Split Contract)', ()
       .filter(line => !/^\s*(\/\/|\*)/.test(line))
       .join('\n')
     const lazyCount = (codeLines.match(/lazy\(/g) ?? []).length
-    expect(lazyCount).toBe(8)
+    expect(lazyCount).toBe(EXPECTED_WIDGETS.length)
   })
 
   it('every expected widget name appears inside a lazy import path', () => {

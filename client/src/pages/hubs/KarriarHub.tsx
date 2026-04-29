@@ -13,6 +13,7 @@ import { HiddenWidgetsPanel } from '@/components/widgets/HiddenWidgetsPanel'
 import { WIDGET_LABELS } from '@/components/widgets/widgetLabels'
 import { useWidgetLayout } from '@/hooks/useWidgetLayout'
 import { useBreakpoint } from '@/hooks/useBreakpoint'
+import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 
 /**
  * Karriär hub — Phase 5 / HUB-02: full wiring with provider stack.
@@ -30,6 +31,9 @@ export default function KarriarHub() {
 
   // Phase 4 pattern: persisted layout from Supabase
   const { layout, isLoading, saveDebounced, save } = useWidgetLayout(HUB_ID)
+
+  // Plan 05 (HUB-05): track that the user visited this hub.
+  useOnboardedHubsTracking(HUB_ID)
 
   // Edit-mode is hub-local (locked decision: useState, not Zustand)
   const [editMode, setEditMode] = useState(false)

@@ -4,39 +4,39 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ConfirmDialogProvider } from '@/components/ui/ConfirmDialog'
-import MinVardagHub from '../MinVardagHub'
+import HubOverview from '../HubOverview'
 
 // Mock i18next so t() returns the fallback string
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string, fallback?: string) => fallback ?? key }),
 }))
 
-// Mock hub-summary loader — tests verify UI/layout, not data loading
-const STUB_SUMMARY = {
-  recentMoodLogs: [{ mood_level: 4, energy_level: 3, log_date: '2026-04-27' }],
-  diaryEntryCount: 0,
-  latestDiaryEntry: null,
-  upcomingEvents: [],
-  networkContactsCount: 0,
-  consultant: null,
+// Mock the Översikt aggregator — controlled per test via mutable STUB_SUMMARY.
+let stubProfile: { onboarded_hubs: string[]; full_name: string | null } = {
+  onboarded_hubs: [],
+  full_name: 'Anna Karlsson',
 }
-
-vi.mock('@/hooks/useMinVardagHubSummary', () => ({
-  useMinVardagHubSummary: () => ({
-    data: STUB_SUMMARY,
+vi.mock('@/hooks/useOversiktHubSummary', () => ({
+  useOversiktHubSummary: () => ({
+    data: {
+      profile: stubProfile,
+      jobsok: undefined,
+      karriar: undefined,
+      resurser: undefined,
+      minVardag: undefined,
+    },
     isLoading: false,
-    isError: false,
   }),
-  MIN_VARDAG_HUB_KEY: (id: string) => ['hub', 'min-vardag', id],
+  OVERSIKT_HUB_KEY: (id: string) => ['hub', 'oversikt', id],
 }))
 
-// Plan 05 (HUB-05): mock useOnboardedHubsTracking so the real hook does not
-// hit supabase.update.
+// Mock useOnboardedHubsTracking — also captures invocations for the ν test.
+const trackingMock = vi.fn()
 vi.mock('@/hooks/useOnboardedHubsTracking', () => ({
-  useOnboardedHubsTracking: vi.fn(),
+  useOnboardedHubsTracking: (hubId: string) => trackingMock(hubId),
 }))
 
-// Mock useAuth — return logged-in user so useWidgetLayout enabled:true resolves
+// useAuth — logged-in user
 vi.mock('@/hooks/useSupabase', () => ({
   useAuth: () => ({
     user: { id: 'test-user' },
@@ -46,7 +46,7 @@ vi.mock('@/hooks/useSupabase', () => ({
   }),
 }))
 
-// Supabase mock — default: select returns null (no persisted layout), upsert resolves ok
+// Supabase mock — default: select returns null, upsert resolves ok
 const upsertSpy = vi.fn().mockResolvedValue({ error: null })
 const selectChain = {
   eq: vi.fn().mockReturnThis(),
@@ -64,10 +64,8 @@ vi.mock('@/lib/supabase', () => ({
   },
 }))
 
-// useBreakpoint mock
 vi.mock('@/hooks/useBreakpoint', () => ({ useBreakpoint: vi.fn(() => 'desktop') }))
 
-// window.matchMedia stub
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
   value: vi.fn().mockImplementation((query: string) => ({
@@ -87,34 +85,36 @@ function renderHub() {
   return render(
     <QueryClientProvider client={qc}>
       <ConfirmDialogProvider>
-        <MemoryRouter initialEntries={['/min-vardag']}>
-          <MinVardagHub />
+        <MemoryRouter initialEntries={['/oversikt']}>
+          <HubOverview />
         </MemoryRouter>
       </ConfirmDialogProvider>
     </QueryClientProvider>
   )
 }
 
-/** Wait for layout query to resolve — 5 widget size-toggle groups present */
+/** Wait for layout query to resolve — 7 widget size-toggle groups (1 XL + 6 summary) */
 async function waitForLayoutReady() {
   await waitFor(
     () =>
       expect(
         screen.getAllByRole('group', { name: 'Välj widgetstorlek' }).length
-      ).toBeGreaterThanOrEqual(5),
+      ).toBeGreaterThanOrEqual(7),
     { timeout: 5000 }
   )
 }
 
 // ---------------------------------------------------------------------------
-// Tests α–λ (Phase 5 Min Vardag integration)
+// Tests α–ν (Plan 05 / HUB-05 — Översikt integration)
 // ---------------------------------------------------------------------------
-describe('MinVardagHub integration — α–λ', () => {
+describe('HubOverview integration — α–ν', () => {
   beforeEach(() => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     upsertSpy.mockClear()
     selectChain.eq.mockClear()
     selectChain.maybeSingle.mockResolvedValue({ data: null, error: null })
+    trackingMock.mockClear()
+    stubProfile = { onboarded_hubs: [], full_name: 'Anna Karlsson' }
   })
 
   afterEach(() => {
@@ -129,14 +129,14 @@ describe('MinVardagHub integration — α–λ', () => {
     })
   }
 
-  // Test α
+  // α — Anpassa vy button
   it('α: Anpassa vy button is rendered in PageLayout actions slot', async () => {
     renderHub()
     const btn = await screen.findByRole('button', { name: /Anpassa vy/i })
     expect(btn).toBeInTheDocument()
   })
 
-  // Test β
+  // β — toggle editMode
   it('β: clicking Anpassa vy toggles editMode (aria-pressed)', async () => {
     const user = userEvent.setup()
     renderHub()
@@ -148,8 +148,8 @@ describe('MinVardagHub integration — α–λ', () => {
     expect(btn).toHaveAttribute('aria-pressed', 'false')
   })
 
-  // Test γ — 5 hide buttons in edit mode
-  it('γ: when editMode is on, each widget renders its hide button (5 total)', async () => {
+  // γ — 7 hide buttons in edit mode
+  it('γ: when editMode is on, each widget renders its hide button (7 total)', async () => {
     const user = userEvent.setup()
     await renderAndWait()
     const btn = screen.getByRole('button', { name: /Anpassa vy/i })
@@ -159,75 +159,72 @@ describe('MinVardagHub integration — α–λ', () => {
         const hideButtons = screen.getAllByRole('button', {
           name: /^Dölj widget /,
         })
-        expect(hideButtons.length).toBe(5)
+        expect(hideButtons.length).toBe(7)
       },
       { timeout: 5000 }
     )
   }, 15000)
 
-  // Test δ — hide widget removes from grid
+  // δ — hide widget removes from grid
   it('δ: clicking a widget hide button removes it from grid (CUST-01)', async () => {
     const user = userEvent.setup()
     await renderAndWait()
-    expect(screen.getByRole('heading', { level: 3, name: 'Hälsa' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 3, name: 'Välkommen' })).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     await waitFor(
-      () => {
+      () =>
         expect(
-          screen.getByRole('button', { name: 'Dölj widget Hälsa' })
-        ).toBeInTheDocument()
-      },
+          screen.getByRole('button', { name: 'Dölj widget Välkommen' })
+        ).toBeInTheDocument(),
       { timeout: 5000 }
     )
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Hälsa' }))
+    await user.click(screen.getByRole('button', { name: 'Dölj widget Välkommen' }))
     await waitFor(() => {
       expect(
-        screen.queryByRole('heading', { level: 3, name: 'Hälsa' })
+        screen.queryByRole('heading', { level: 3, name: 'Välkommen' })
       ).not.toBeInTheDocument()
     })
   }, 15000)
 
-  // Test ε — Återvisa restores hidden widget
+  // ε — Återvisa restores hidden widget
   it('ε: clicking Återvisa widget restores it to the grid (CUST-01)', async () => {
     const user = userEvent.setup()
     await renderAndWait()
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     await waitFor(
-      () => {
+      () =>
         expect(
-          screen.getByRole('button', { name: 'Dölj widget Hälsa' })
-        ).toBeInTheDocument()
-      },
+          screen.getByRole('button', { name: 'Dölj widget Välkommen' })
+        ).toBeInTheDocument(),
       { timeout: 5000 }
     )
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Hälsa' }))
+    await user.click(screen.getByRole('button', { name: 'Dölj widget Välkommen' }))
     await waitFor(() => {
       expect(
-        screen.queryByRole('heading', { level: 3, name: 'Hälsa' })
+        screen.queryByRole('heading', { level: 3, name: 'Välkommen' })
       ).not.toBeInTheDocument()
     })
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: 'Återvisa widget Hälsa' })
+        screen.getByRole('button', { name: 'Återvisa widget Välkommen' })
       ).toBeInTheDocument()
     })
-    await user.click(screen.getByRole('button', { name: 'Återvisa widget Hälsa' }))
+    await user.click(screen.getByRole('button', { name: 'Återvisa widget Välkommen' }))
     await waitFor(
-      () => {
+      () =>
         expect(
-          screen.getByRole('heading', { level: 3, name: 'Hälsa' })
-        ).toBeInTheDocument()
-      },
+          screen.getByRole('heading', { level: 3, name: 'Välkommen' })
+        ).toBeInTheDocument(),
       { timeout: 5000 }
     )
   }, 20000)
 
-  // Test ζ
+  // ζ — Återställ standardlayout opens dialog
   it('ζ: Återställ standardlayout opens ConfirmDialog with locked Swedish copy', async () => {
     const user = userEvent.setup()
     renderHub()
-    await screen.findByRole('heading', { level: 4, name: 'Mig själv' })
+    await screen.findByRole('heading', { level: 4, name: 'Idag' })
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     const resetBtn = await screen.findByRole('button', {
       name: /Återställ standardlayout/i,
@@ -241,23 +238,22 @@ describe('MinVardagHub integration — α–λ', () => {
     })
   })
 
-  // Test η — confirm reset restores all 5 widgets
-  it('η: confirming reset restores all 5 widgets to default (CUST-02)', async () => {
+  // η — confirm reset restores all 7 widgets
+  it('η: confirming reset restores all 7 widgets to default (CUST-02)', async () => {
     const user = userEvent.setup()
     await renderAndWait()
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     await waitFor(
-      () => {
+      () =>
         expect(
-          screen.getByRole('button', { name: 'Dölj widget Hälsa' })
-        ).toBeInTheDocument()
-      },
+          screen.getByRole('button', { name: 'Dölj widget Välkommen' })
+        ).toBeInTheDocument(),
       { timeout: 5000 }
     )
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Hälsa' }))
+    await user.click(screen.getByRole('button', { name: 'Dölj widget Välkommen' }))
     await waitFor(() => {
       expect(
-        screen.queryByRole('heading', { level: 3, name: 'Hälsa' })
+        screen.queryByRole('heading', { level: 3, name: 'Välkommen' })
       ).not.toBeInTheDocument()
     })
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
@@ -275,32 +271,30 @@ describe('MinVardagHub integration — α–λ', () => {
     expect(confirmBtn).toBeTruthy()
     await user.click(confirmBtn!)
     await waitFor(
-      () => {
+      () =>
         expect(
-          screen.getByRole('heading', { level: 3, name: 'Hälsa' })
-        ).toBeInTheDocument()
-      },
+          screen.getByRole('heading', { level: 3, name: 'Välkommen' })
+        ).toBeInTheDocument(),
       { timeout: 5000 }
     )
   }, 20000)
 
-  // Test θ — cancel reset leaves layout unchanged
+  // θ — cancel reset leaves layout unchanged
   it('θ: cancelling reset dialog leaves layout unchanged', async () => {
     const user = userEvent.setup()
     await renderAndWait()
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     await waitFor(
-      () => {
+      () =>
         expect(
-          screen.getByRole('button', { name: 'Dölj widget Hälsa' })
-        ).toBeInTheDocument()
-      },
+          screen.getByRole('button', { name: 'Dölj widget Välkommen' })
+        ).toBeInTheDocument(),
       { timeout: 5000 }
     )
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Hälsa' }))
+    await user.click(screen.getByRole('button', { name: 'Dölj widget Välkommen' }))
     await waitFor(() => {
       expect(
-        screen.queryByRole('heading', { level: 3, name: 'Hälsa' })
+        screen.queryByRole('heading', { level: 3, name: 'Välkommen' })
       ).not.toBeInTheDocument()
     })
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
@@ -318,12 +312,12 @@ describe('MinVardagHub integration — α–λ', () => {
     expect(cancelBtn).toBeTruthy()
     await user.click(cancelBtn!)
     expect(
-      screen.queryByRole('heading', { level: 3, name: 'Hälsa' })
+      screen.queryByRole('heading', { level: 3, name: 'Välkommen' })
     ).not.toBeInTheDocument()
   }, 20000)
 
-  // Test ι — upsert payload contains hub_id='min-vardag'
-  it('ι: hide action calls supabase upsert with hub_id=min-vardag and breakpoint=desktop in payload', async () => {
+  // ι — upsert payload contains hub_id='oversikt'
+  it("ι: hide action calls supabase upsert with hub_id='oversikt' and breakpoint='desktop'", async () => {
     vi.useFakeTimers({ shouldAdvanceTime: true })
     const user = userEvent.setup({ advanceTimers: vi.advanceTimersByTime.bind(vi) })
     renderHub()
@@ -331,62 +325,90 @@ describe('MinVardagHub integration — α–λ', () => {
       await Promise.resolve()
     })
     await waitFor(
-      () => expect(screen.getByRole('button', { name: /Anpassa vy/i })).toBeInTheDocument(),
+      () =>
+        expect(screen.getByRole('button', { name: /Anpassa vy/i })).toBeInTheDocument(),
       { timeout: 5000 }
     )
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     await waitFor(
       () =>
         expect(
-          screen.getByRole('button', { name: 'Dölj widget Hälsa' })
+          screen.getByRole('button', { name: 'Dölj widget Välkommen' })
         ).toBeInTheDocument(),
       { timeout: 5000 }
     )
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Hälsa' }))
+    await user.click(screen.getByRole('button', { name: 'Dölj widget Välkommen' }))
     await act(async () => {
       vi.advanceTimersByTime(1100)
       await Promise.resolve()
     })
     await waitFor(() => expect(upsertSpy).toHaveBeenCalled(), { timeout: 3000 })
     const firstCallArg = upsertSpy.mock.calls[0][0] as Record<string, unknown>
-    expect(firstCallArg).toMatchObject({ hub_id: 'min-vardag', breakpoint: 'desktop' })
+    expect(firstCallArg).toMatchObject({ hub_id: 'oversikt', breakpoint: 'desktop' })
   }, 15000)
 
-  // Test κ — all 5 widget headings + icons render
-  it('κ: all 5 Min Vardag widgets render (HUB-04 acceptance)', async () => {
+  // κ — all 7 widget headings render
+  it('κ: all 7 Översikt widget headings render (HUB-05 acceptance)', async () => {
     renderHub()
     await waitFor(
       () => {
+        expect(screen.getByRole('heading', { level: 3, name: 'Välkommen' })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 3, name: 'Söka jobb' })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 3, name: 'CV' })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 3, name: 'Intervju' })).toBeInTheDocument()
+        expect(screen.getByRole('heading', { level: 3, name: 'Karriärmål' })).toBeInTheDocument()
         expect(screen.getByRole('heading', { level: 3, name: 'Hälsa' })).toBeInTheDocument()
         expect(screen.getByRole('heading', { level: 3, name: 'Dagbok' })).toBeInTheDocument()
-        expect(screen.getByRole('heading', { level: 3, name: 'Kalender' })).toBeInTheDocument()
-        expect(screen.getByRole('heading', { level: 3, name: 'Nätverk' })).toBeInTheDocument()
-        expect(
-          screen.getByRole('heading', { level: 3, name: 'Min konsulent' })
-        ).toBeInTheDocument()
       },
       { timeout: 5000 }
     )
   })
 
-  // Test λ — aria-live announces widget hidden
-  it('λ: aria-live region announces "Widget Hälsa dold" when halsa is hidden', async () => {
+  // λ — aria-live announces "Widget Välkommen dold"
+  it('λ: aria-live region announces "Widget Välkommen dold" when onboarding-xl is hidden', async () => {
     const user = userEvent.setup()
     await renderAndWait()
     await user.click(screen.getByRole('button', { name: /Anpassa vy/i }))
     await waitFor(
       () =>
         expect(
-          screen.getByRole('button', { name: 'Dölj widget Hälsa' })
+          screen.getByRole('button', { name: 'Dölj widget Välkommen' })
         ).toBeInTheDocument(),
       { timeout: 5000 }
     )
-    await user.click(screen.getByRole('button', { name: 'Dölj widget Hälsa' }))
+    await user.click(screen.getByRole('button', { name: 'Dölj widget Välkommen' }))
     await waitFor(() => {
       const liveRegion = document.querySelector(
         '[role="status"][aria-live="polite"]'
       )!
-      expect(liveRegion.textContent).toBe('Widget Hälsa dold')
+      expect(liveRegion.textContent).toBe('Widget Välkommen dold')
     })
   }, 15000)
+
+  // μ1 — new-user state when onboarded_hubs=[]
+  it('μ1: OnboardingWidget renders "Välkommen till din portal" when onboarded_hubs=[]', async () => {
+    stubProfile = { onboarded_hubs: [], full_name: 'Anna Karlsson' }
+    renderHub()
+    await waitFor(
+      () => expect(screen.getByText(/Välkommen till din portal/)).toBeInTheDocument(),
+      { timeout: 5000 }
+    )
+  })
+
+  // μ2 — returning-user state when onboarded_hubs=['jobb']
+  it("μ2: OnboardingWidget renders 'Bra jobbat Anna!' when onboarded_hubs=['jobb']", async () => {
+    stubProfile = { onboarded_hubs: ['jobb'], full_name: 'Anna Karlsson' }
+    renderHub()
+    await waitFor(
+      () => expect(screen.getByText('Bra jobbat Anna!')).toBeInTheDocument(),
+      { timeout: 5000 }
+    )
+  })
+
+  // ν — useOnboardedHubsTracking is invoked with 'oversikt'
+  it("ν: useOnboardedHubsTracking is invoked once with 'oversikt' on mount", async () => {
+    renderHub()
+    await waitFor(() => expect(trackingMock).toHaveBeenCalled())
+    expect(trackingMock).toHaveBeenCalledWith('oversikt')
+  })
 })

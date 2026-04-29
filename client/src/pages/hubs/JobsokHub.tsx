@@ -13,6 +13,7 @@ import { HiddenWidgetsPanel } from '@/components/widgets/HiddenWidgetsPanel'
 import { WIDGET_LABELS } from '@/components/widgets/widgetLabels'
 import { useWidgetLayout } from '@/hooks/useWidgetLayout'
 import { useBreakpoint } from '@/hooks/useBreakpoint'
+import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 
 /**
  * Söka jobb hub — Phase 4: layout persistence + hide/show.
@@ -20,13 +21,19 @@ import { useBreakpoint } from '@/hooks/useBreakpoint'
  *   <JobsokLayoutProvider>  ← outer (resolves layout first)
  *     <JobsokDataProvider>  ← inner (data fetch can read visible-widget set)
  */
+
+const HUB_ID = 'jobb' as const
+
 export default function JobsokHub() {
   const { t } = useTranslation()
   const sections = useMemo(() => getJobbSections(), [])
   const breakpoint = useBreakpoint()
 
   // Phase 4: persisted layout from Supabase
-  const { layout, isLoading, saveDebounced, save } = useWidgetLayout('jobb')
+  const { layout, isLoading, saveDebounced, save } = useWidgetLayout(HUB_ID)
+
+  // Plan 05 (HUB-05): track that the user visited this hub.
+  useOnboardedHubsTracking(HUB_ID)
 
   // Edit-mode is hub-local (locked decision: useState, not Zustand)
   const [editMode, setEditMode] = useState(false)
@@ -37,7 +44,7 @@ export default function JobsokHub() {
   // This ensures mutations (updateSize / hideWidget) work correctly before the
   // first DB response arrives — they operate on the default layout rather than [].
   const effectiveLayout = useMemo(
-    () => (layout.length > 0 ? layout : getDefaultLayout('jobb', breakpoint)),
+    () => (layout.length > 0 ? layout : getDefaultLayout(HUB_ID, breakpoint)),
     [layout, breakpoint]
   )
 
@@ -70,7 +77,7 @@ export default function JobsokHub() {
   }, [effectiveLayout, saveDebounced])
 
   const resetLayout = useCallback(() => {
-    const fresh = getDefaultLayout('jobb', breakpoint)
+    const fresh = getDefaultLayout(HUB_ID, breakpoint)
     // Use save (non-debounced) for reset — user-initiated, immediate persist
     save(fresh)
     setAnnouncement('Layout återställd')
