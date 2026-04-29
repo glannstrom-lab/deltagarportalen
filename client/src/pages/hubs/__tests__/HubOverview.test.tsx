@@ -395,14 +395,20 @@ describe('HubOverview integration — α–ν', () => {
     )
   })
 
-  // μ2 — returning-user state when onboarded_hubs=['jobb']
-  it("μ2: OnboardingWidget renders 'Bra jobbat Anna!' when onboarded_hubs=['jobb']", async () => {
+  // μ2 — returning-user no-apps state when onboarded_hubs=['jobb']
+  // Plan 06 BLOCK B1 (langtidsarbetssokande, 2026-04-29): the no-apps branch
+  // must use neutral "Hej {firstName}" greeting, NOT "Bra jobbat" — pairing
+  // praise with a zero-applications body triggered anxiety.
+  it("μ2: OnboardingWidget renders 'Hej Anna' (neutral greeting) on no-apps branch when onboarded_hubs=['jobb']", async () => {
     stubProfile = { onboarded_hubs: ['jobb'], full_name: 'Anna Karlsson' }
     renderHub()
     await waitFor(
-      () => expect(screen.getByText('Bra jobbat Anna!')).toBeInTheDocument(),
+      () => expect(screen.getByText('Hej Anna')).toBeInTheDocument(),
       { timeout: 5000 }
     )
+    // Confirm praise heading is NOT used here (it is reserved for branches
+    // where the user has something to praise — apps>0 with no-diary or default)
+    expect(screen.queryByText('Bra jobbat Anna!')).not.toBeInTheDocument()
   })
 
   // ν — useOnboardedHubsTracking is invoked with 'oversikt'

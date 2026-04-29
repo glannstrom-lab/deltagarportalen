@@ -11,11 +11,15 @@ import type { MinVardagSummary } from './MinVardagDataContext'
  *
  * Detection logic:
  *   - `profiles.onboarded_hubs` length === 0 → NEW user (Välkommen + 4 quick links)
- *   - otherwise → returning user ("Bra jobbat {firstName}") with deterministic
- *     next-step CTA based on which sub-hub has the least activity.
+ *   - otherwise → returning user with deterministic next-step CTA based on which
+ *     sub-hub has the least activity. Heading is "Bra jobbat {firstName}!" EXCEPT
+ *     on the no-apps branch where it softens to "Hej {firstName}" (Plan 06 BLOCK
+ *     B1 — pairing praise with a zero-applications body triggered anxiety).
  *
  * Empathy contract: never use raw % anywhere; never shame the user for missed
- * activity; CTA framing is invitational ("Vill du börja idag?") not directive.
+ * activity; CTA framing is invitational ("Vill du ta första steget idag?") not
+ * accusatory ("Du har inte sökt..."). Praise heading is reserved for branches
+ * where there is something to praise.
  */
 
 const QUICK_LINKS = [
@@ -29,6 +33,14 @@ interface NextStep {
   text: string
   href: string
   cta: string
+  /**
+   * Per HUB-06 empathy review (Plan 06 BLOCK B1, langtidsarbetssokande):
+   * The no-apps branch must NOT pair "Bra jobbat" praise with a no-applications
+   * body — it triggers anxiety in users with avslags-trötthet. Branches set
+   * `usePraiseHeading: false` to render the neutral "Hej {firstName}" greeting
+   * instead. Other branches keep the cheerful "Bra jobbat" framing.
+   */
+  usePraiseHeading: boolean
 }
 
 function pickNextStep(summary: {
@@ -39,9 +51,10 @@ function pickNextStep(summary: {
   const minVardag = summary.minVardag
   if (!jobsok || (jobsok.applicationStats?.total ?? 0) === 0) {
     return {
-      text: 'Du har inte sökt något jobb än. Vill du börja idag?',
+      text: 'Vill du ta första steget idag?',
       href: '/jobb',
       cta: 'Öppna Söka jobb →',
+      usePraiseHeading: false,
     }
   }
   if (!minVardag || (minVardag.diaryEntryCount ?? 0) === 0) {
@@ -49,12 +62,14 @@ function pickNextStep(summary: {
       text: 'Reflektera över din vecka i dagboken — om du vill',
       href: '/min-vardag',
       cta: 'Öppna Min Vardag →',
+      usePraiseHeading: true,
     }
   }
   return {
     text: 'Fortsätt med dina mål',
     href: '/karriar',
     cta: 'Öppna Karriär →',
+    usePraiseHeading: true,
   }
 }
 
@@ -107,7 +122,7 @@ export default function OnboardingWidget({
         ) : (
           <div className="flex-1 flex flex-col justify-center">
             <p className="text-[22px] font-bold text-[var(--stone-900)] leading-tight m-0 mb-1">
-              {`Bra jobbat ${firstName}!`}
+              {nextStep.usePraiseHeading ? `Bra jobbat ${firstName}!` : `Hej ${firstName}`}
             </p>
             <p className="text-[12px] text-[var(--stone-700)] m-0">
               {nextStep.text}
