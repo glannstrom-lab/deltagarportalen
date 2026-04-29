@@ -4,6 +4,7 @@ import { useQueryClient } from '@tanstack/react-query'
 import { Widget } from './Widget'
 import { useAuth } from '@/hooks/useSupabase'
 import { KARRIAR_HUB_KEY } from '@/hooks/useKarriarHubSummary'
+import { careerGoalLabel } from '@/utils/careerGoalLabel'
 import type { KarriarSummary } from './KarriarDataContext'
 import type { WidgetProps } from './types'
 
@@ -27,7 +28,8 @@ export default function CareerGoalSummaryWidget({
   const userId = user?.id ?? ''
   const queryClient = useQueryClient()
   const data = queryClient.getQueryData(KARRIAR_HUB_KEY(userId)) as KarriarSummary | undefined
-  const shortTerm = data?.careerGoals?.shortTerm ?? null
+  const shortTermRaw = data?.careerGoals?.shortTerm ?? null
+  const shortTerm = careerGoalLabel(shortTermRaw)
   const truncated =
     shortTerm && shortTerm.length > TRUNC_LIMIT
       ? shortTerm.slice(0, TRUNC_LIMIT) + '…'

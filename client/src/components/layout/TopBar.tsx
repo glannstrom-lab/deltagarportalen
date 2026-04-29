@@ -26,6 +26,7 @@ import { NotificationBell } from '@/components/notifications/NotificationBell'
 import { LanguageSwitcher } from './LanguageSwitcher'
 import { GoogleTranslate } from './GoogleTranslate'
 import { useFocusMode } from '@/components/FocusModeProvider'
+import CrisisSupport from '@/components/CrisisSupport'
 
 interface UserProfile {
   first_name: string
@@ -135,15 +136,18 @@ export function TopBar() {
             {isDark ? <Sun size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Moon size={16} className="sm:w-[18px] sm:h-[18px]" />}
           </button>
 
-          {/* Help - hidden on mobile */}
+          {/* Vanliga frågor — labeled link to /help (BottomBar replacement) */}
           <Link
             to="/help"
-            className={cn(iconButtonClass, 'hidden sm:flex')}
-            title={t('topbar.help')}
-            aria-label={t('topbar.help')}
+            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[13px] text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title={t('topbar.faq', 'Vanliga frågor')}
           >
-            <HelpCircle size={18} />
+            <HelpCircle size={16} className="text-stone-400" />
+            <span>{t('topbar.faq', 'Vanliga frågor')}</span>
           </Link>
+
+          {/* Behöver du prata? — Crisis Support inline (BottomBar replacement) */}
+          <CrisisSupport variant="inline" />
 
           {/* Notifications */}
           <NotificationBell variant="compact" />

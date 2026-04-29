@@ -6,11 +6,11 @@ import {
 } from '@/components/ui/icons'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
-import { BottomBar } from './layout/BottomBar'
 import { MobileBackButton } from './MobileBackButton'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
 import { SkipLinks } from './SkipLinks'
+import CrisisSupport from './CrisisSupport'
 import { cn } from '@/lib/utils'
 import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
@@ -46,10 +46,9 @@ export default function Layout() {
   const showBackButton = isMobile && location.pathname !== '/'
 
   const hubModeEnabled = isHubNavEnabled()
-  // When flag is on AND on mobile, the hub bottom nav replaces the FAQ BottomBar.
-  // Otherwise the FAQ BottomBar stays where it is today.
+  // FAQ + Crisis Support moved into TopBar; BottomBar removed.
+  // HubBottomNav still renders on mobile when hub flag is on (for hub-level navigation).
   const showHubBottomNav = hubModeEnabled && isMobile && showBars
-  const showLegacyBottomBar = showBars && !showHubBottomNav
 
   return (
     <>
@@ -101,11 +100,9 @@ export default function Layout() {
         {/* Tillbaka-knapp på mobil (alla sidor utom dashboard) */}
         {showBackButton && <MobileBackButton />}
 
-        {/* Hub bottom nav (mobile + flag on) — replaces FAQ BottomBar in this state */}
+        {/* Hub bottom nav (mobile + flag on) — hub-level navigation only.
+            FAQ + Crisis Support live in TopBar. */}
         {showHubBottomNav && <HubBottomNav />}
-
-        {/* FAQ BottomBar — preserved for desktop and for flag-off rollout */}
-        {showLegacyBottomBar && <BottomBar />}
 
         {/* Övriga komponenter */}
         <BreakReminder workDuration={15} />
@@ -145,8 +142,9 @@ function MobileTopBar() {
             <span className="text-sm font-semibold text-[var(--c-text)] dark:text-[var(--c-solid)]">jobin.se</span>
           </Link>
 
-          {/* Höger: Notifikationer + Profil + Meny */}
+          {/* Höger: Krishjälp + Notifikationer + Profil + Meny */}
           <div className="flex items-center gap-0.5">
+            <CrisisSupport variant="inline" />
             <NotificationBell variant="compact" />
             <button
               onClick={() => setIsProfileOpen(true)}

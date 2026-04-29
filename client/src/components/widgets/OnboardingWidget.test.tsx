@@ -58,8 +58,8 @@ describe('OnboardingWidget', () => {
       minVardag: undefined,
     }
     renderWithSummary(summary)
-    // No-apps branch → neutral "Hej där" greeting (no "Bra jobbat" praise here)
-    expect(screen.getByText('Hej där')).toBeInTheDocument()
+    // No-apps branch + null full_name → "Välkommen tillbaka" fallback (no "Bra jobbat")
+    expect(screen.getByText('Välkommen tillbaka')).toBeInTheDocument()
     // Body softened from "Du har inte sökt något jobb än. Vill du börja idag?"
     expect(screen.getByText('Vill du ta första steget idag?')).toBeInTheDocument()
     // Next-step CTA visible (footer link)

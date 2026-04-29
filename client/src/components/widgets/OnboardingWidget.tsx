@@ -85,7 +85,7 @@ export default function OnboardingWidget({
   const profile = summary?.profile ?? null
   const onboardedHubs = profile?.onboarded_hubs ?? []
   const isNewUser = onboardedHubs.length === 0
-  const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? 'där'
+  const firstName = profile?.full_name?.trim().split(/\s+/)[0] ?? null
   const nextStep = pickNextStep({ jobsok: summary?.jobsok, minVardag: summary?.minVardag })
 
   return (
@@ -122,11 +122,25 @@ export default function OnboardingWidget({
         ) : (
           <div className="flex-1 flex flex-col justify-center">
             <p className="text-[22px] font-bold text-[var(--stone-900)] leading-tight m-0 mb-1">
-              {nextStep.usePraiseHeading ? `Bra jobbat ${firstName}!` : `Hej ${firstName}`}
+              {nextStep.usePraiseHeading
+                ? (firstName ? `Bra jobbat ${firstName}!` : 'Bra jobbat!')
+                : (firstName ? `Hej ${firstName}` : 'Välkommen tillbaka')}
             </p>
-            <p className="text-[12px] text-[var(--stone-700)] m-0">
+            <p className="text-[12px] text-[var(--stone-700)] m-0 mb-2">
               {nextStep.text}
             </p>
+            {/* Quick-links — fyller XL-bredden så widgeten inte känns tom */}
+            <div className="flex flex-wrap gap-2 mt-1">
+              {QUICK_LINKS.map((link) => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className="inline-flex items-center min-h-[36px] px-3 py-1 rounded-[7px] border border-[var(--stone-150)] bg-[var(--surface)] text-[12px] font-bold text-[var(--stone-900)] no-underline hover:border-[var(--c-accent)]"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
         )}
       </Widget.Body>

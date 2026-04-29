@@ -33,9 +33,10 @@ function renderWithCache(cacheData: unknown, props: Record<string, unknown> = {}
 }
 
 describe('JobsokSummaryWidget', () => {
-  it('renders empty state "Inga ansökningar än — börja söka idag" when cache is undefined', () => {
+  it('renders empty state "Kom igång / Börja söka jobb idag" when cache is undefined', () => {
     renderWithCache(undefined)
-    expect(screen.getByText(/Inga ansökningar än — börja söka idag/)).toBeInTheDocument()
+    expect(screen.getByText('Kom igång')).toBeInTheDocument()
+    expect(screen.getByText(/Börja söka jobb idag/)).toBeInTheDocument()
   })
 
   it('renders count when cache has applicationStats.total=12', () => {

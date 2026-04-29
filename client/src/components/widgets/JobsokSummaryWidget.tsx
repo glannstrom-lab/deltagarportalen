@@ -44,10 +44,10 @@ export default function JobsokSummaryWidget({
         {isEmpty ? (
           <div className="flex-1 flex flex-col justify-center">
             <p className="text-[13px] font-bold text-[var(--stone-900)] m-0 mb-1">
-              Inga ansökningar än
+              Kom igång
             </p>
             <p className="text-[12px] text-[var(--stone-700)] m-0">
-              Inga ansökningar än — börja söka idag
+              Börja söka jobb idag
             </p>
           </div>
         ) : (

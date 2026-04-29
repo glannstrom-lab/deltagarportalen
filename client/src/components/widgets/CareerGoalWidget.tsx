@@ -2,6 +2,7 @@ import { Target } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Widget } from './Widget'
 import { useKarriarWidgetData } from './KarriarDataContext'
+import { careerGoalLabel } from '@/utils/careerGoalLabel'
 import type { WidgetProps } from './types'
 
 export default function CareerGoalWidget({
@@ -38,7 +39,7 @@ export default function CareerGoalWidget({
         ) : (
           <div className="flex-1 flex flex-col justify-center">
             <p className="text-[22px] font-bold text-[var(--stone-900)] leading-tight m-0 mb-1 line-clamp-2">
-              {data!.shortTerm ?? data!.longTerm}
+              {careerGoalLabel(data!.shortTerm) ?? careerGoalLabel(data!.longTerm)}
             </p>
             {data!.preferredRoles?.[0] && (
               <p className="text-[12px] text-[var(--stone-700)] m-0">
