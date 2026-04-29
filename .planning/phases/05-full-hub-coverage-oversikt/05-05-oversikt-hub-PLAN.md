@@ -29,6 +29,7 @@ files_modified:
   - client/src/components/widgets/widgetLabels.ts
   - client/src/components/widgets/defaultLayouts.ts
   - client/src/components/widgets/HubGrid.tsx
+  - client/src/components/widgets/HubGrid.test.tsx
   - client/src/components/widgets/__tests__/anti-shaming.test.tsx
   - client/src/pages/hubs/HubOverview.tsx
   - client/src/pages/hubs/__tests__/HubOverview.test.tsx
@@ -36,6 +37,10 @@ files_modified:
   - client/src/pages/hubs/KarriarHub.tsx
   - client/src/pages/hubs/ResurserHub.tsx
   - client/src/pages/hubs/MinVardagHub.tsx
+  - client/src/pages/hubs/__tests__/JobsokHub.test.tsx
+  - client/src/pages/hubs/__tests__/KarriarHub.test.tsx
+  - client/src/pages/hubs/__tests__/ResurserHub.test.tsx
+  - client/src/pages/hubs/__tests__/MinVardagHub.test.tsx
 autonomous: true
 requirements: [HUB-05]
 must_haves:
@@ -48,6 +53,7 @@ must_haves:
     - "All 7 Översikt widgets are lazy() in WIDGET_REGISTRY"
     - "Anti-shaming guard extended: no Översikt summary widget renders raw \\d+% in primary KPI"
     - "Layout persistence works on Översikt — hide/show works for the 6 summary widgets (CUST-01..03 reused)"
+    - "HealthSummaryWidget imports streakDays from `@/utils/streakDays` (NOT from HealthWidget.tsx) — single source of truth established in Plan 04"
   artifacts:
     - path: "client/src/hooks/useOversiktHubSummary.ts"
       provides: "Cross-hub aggregator — runs all 4 hub loaders in parallel and reads cache"
@@ -64,6 +70,9 @@ must_haves:
     - path: "client/src/components/widgets/HubGrid.tsx"
       provides: "Extended Slot supporting XL size"
       contains: "size === 'XL'"
+    - path: "client/src/components/widgets/HubGrid.test.tsx"
+      provides: "HubGrid unit tests — XL size assertion added"
+      contains: "col-span-4"
   key_links:
     - from: "client/src/hooks/useOversiktHubSummary.ts"
       to: "useJobsokHubSummary, useKarriarHubSummary, useResurserHubSummary, useMinVardagHubSummary"
@@ -77,6 +86,10 @@ must_haves:
       to: "useOnboardedHubsTracking(HUB_ID)"
       via: "called from hub mount effect"
       pattern: "useOnboardedHubsTracking\\("
+    - from: "client/src/components/widgets/HealthSummaryWidget.tsx"
+      to: "client/src/utils/streakDays.ts"
+      via: "imports streakDays helper from utils (Plan 04 single source)"
+      pattern: "from\\s+'@/utils/streakDays'"
 ---
 
 <objective>
@@ -116,8 +129,10 @@ Output: One aggregator hook, one onboarding-tracking hook, two contexts, 1 XL wi
 @client/src/components/widgets/widgetLabels.ts
 @client/src/components/widgets/defaultLayouts.ts
 @client/src/components/widgets/HubGrid.tsx
+@client/src/components/widgets/HubGrid.test.tsx
 @client/src/components/widgets/Widget.tsx
 @client/src/components/widgets/types.ts
+@client/src/utils/streakDays.ts
 @client/src/pages/hubs/JobsokHub.tsx
 @client/src/pages/hubs/KarriarHub.tsx
 @client/src/pages/hubs/ResurserHub.tsx
@@ -395,6 +410,9 @@ const sizeClass = {
 <!--   useOnboardedHubsTracking(HUB_ID) -->
 <!-- For JobsokHub.tsx specifically — it currently uses HUB_ID inline ('jobb'). Make sure const HUB_ID = 'jobb' as const exists at top, then call useOnboardedHubsTracking(HUB_ID). -->
 
+<!-- streakDays — single source of truth at client/src/utils/streakDays.ts (created in Plan 04 Task 2). -->
+<!-- HealthSummaryWidget MUST import from `@/utils/streakDays` — NOT from HealthWidget.tsx. -->
+
 <!-- Anti-shaming extension: 6 cross-hub summary widgets must NOT render raw \\d+% in 32/22px font-bold. -->
 <!-- The OnboardingWidget is XL — anti-shaming rule still applies (no raw % anywhere primary). -->
 </interfaces>
@@ -403,13 +421,14 @@ const sizeClass = {
 <tasks>
 
 <task type="auto" tdd="true">
-  <name>Task 1: Hub plumbing — useOversiktHubSummary aggregator + useOnboardedHubsTracking + OversiktDataContext + OversiktLayoutContext + registry/labels/defaultLayouts/HubGrid extensions</name>
+  <name>Task 1: Hub plumbing — useOversiktHubSummary aggregator + useOnboardedHubsTracking + OversiktDataContext + OversiktLayoutContext + registry/labels/defaultLayouts/HubGrid extensions (incl. HubGrid.test.tsx XL test)</name>
   <read_first>
     - client/src/hooks/useMinVardagHubSummary.ts (loader template)
     - client/src/hooks/useJobsokHubSummary.ts, useKarriarHubSummary.ts, useResurserHubSummary.ts (verify exported KEY constants)
     - client/src/components/widgets/MinVardagDataContext.tsx (context template)
     - client/src/components/widgets/MinVardagLayoutContext.tsx (layout context template)
     - client/src/components/widgets/HubGrid.tsx (extend with XL size — find the size→class map)
+    - client/src/components/widgets/HubGrid.test.tsx (CONFIRMED EXISTS — extend with XL test case; do not create from scratch)
     - .planning/phases/05-full-hub-coverage-oversikt/05-RESEARCH.md §"Cross-hub summary-widgets" + §"Pitfall D"
     - .planning/phases/02-static-widget-grid/02-UI-SPEC.md §"Widget Size Specifications" (XL spec: col-span-4 row-span-1 desktop)
   </read_first>
@@ -418,9 +437,9 @@ const sizeClass = {
     - Test 2: When other hubs' caches are populated, summary.jobsok / .karriar / .resurser / .minVardag are present (test by pre-seeding QueryClient)
     - Test 3: useOnboardedHubsTracking('jobb') updates profiles.onboarded_hubs to ['jobb'] on first mount; second invocation no-op (uses ref guard)
     - Test 4: useOnboardedHubsTracking is no-op when userId is empty
-    - Test 5: HubGrid.Slot with size='XL' renders col-span-4 row-span-1 class on desktop
+    - Test 5: HubGrid.Slot with size='XL' renders col-span-4 row-span-1 class on desktop (test added/extended in HubGrid.test.tsx — file exists, this task ADDS one new `it()` block)
   </behavior>
-  <files>client/src/hooks/useOversiktHubSummary.ts, client/src/hooks/useOversiktHubSummary.test.ts, client/src/hooks/useOnboardedHubsTracking.ts, client/src/hooks/useOnboardedHubsTracking.test.ts, client/src/components/widgets/OversiktDataContext.tsx, client/src/components/widgets/OversiktLayoutContext.tsx, client/src/components/widgets/registry.ts, client/src/components/widgets/widgetLabels.ts, client/src/components/widgets/defaultLayouts.ts, client/src/components/widgets/HubGrid.tsx</files>
+  <files>client/src/hooks/useOversiktHubSummary.ts, client/src/hooks/useOversiktHubSummary.test.ts, client/src/hooks/useOnboardedHubsTracking.ts, client/src/hooks/useOnboardedHubsTracking.test.ts, client/src/components/widgets/OversiktDataContext.tsx, client/src/components/widgets/OversiktLayoutContext.tsx, client/src/components/widgets/registry.ts, client/src/components/widgets/widgetLabels.ts, client/src/components/widgets/defaultLayouts.ts, client/src/components/widgets/HubGrid.tsx, client/src/components/widgets/HubGrid.test.tsx</files>
   <action>
     Build all the plumbing first.
 
@@ -446,7 +465,17 @@ const sizeClass = {
 
     **G. `HubGrid.tsx`** — extend. Find the existing size mapping (likely a `getSizeClasses` function or inline switch). Add 'XL' case: `col-span-4 row-span-1` (desktop). Mobile override: 'XL' becomes `col-span-2 row-span-1` (full width in 2-col grid). If HubGrid uses Tailwind classes with media queries (e.g. `max-md:col-span-2`), follow same pattern.
 
-    Write a small test (or extend HubGrid.test.tsx if it exists) — Test 5 from <behavior>: render `<HubGrid.Slot size="XL"><div /></HubGrid.Slot>` and assert the rendered element has `col-span-4` in className.
+    **G2. `HubGrid.test.tsx` (DETERMINISTIC — file already exists at client/src/components/widgets/HubGrid.test.tsx, confirmed via Glob).**
+    EXTEND (do not overwrite) the existing HubGrid.test.tsx with one new `it('renders XL size with col-span-4 row-span-1', ...)` block. Pattern:
+    ```typescript
+    it('renders XL size with col-span-4 row-span-1 on desktop', () => {
+      const { container } = render(<HubGrid.Slot id="x" size="XL" allowedSizes={['XL']}><div /></HubGrid.Slot>)
+      const slot = container.firstChild as HTMLElement
+      expect(slot.className).toMatch(/col-span-4/)
+      expect(slot.className).toMatch(/row-span-1/)
+    })
+    ```
+    Use whichever render-style the existing tests use (renderHook vs render — look at the file before writing). The new test must run as part of the existing describe block.
 
     **H. `defaultLayouts.ts`** — REPLACE `oversikt:` placeholder with the 7-widget array (1 XL + 6 summary). APPEND `getOversiktSections()`.
 
@@ -454,31 +483,30 @@ const sizeClass = {
 
     **J. `widgetLabels.ts`** — EXTEND with 7 new labels. Now exhaustive across 32 widget IDs (8 + 6 + 6 + 5 + 7).
 
-    Verification: `npx tsc --noEmit` zero, `useOversiktHubSummary.test.ts` and `useOnboardedHubsTracking.test.ts` green.
+    Verification: `npx tsc --noEmit` zero, all three test files green.
   </action>
   <verify>
     <automated>cd client && npx tsc --noEmit 2>&1 | tail -3 && npm run test:run -- src/hooks/useOversiktHubSummary.test.ts src/hooks/useOnboardedHubsTracking.test.ts src/components/widgets/HubGrid.test.tsx --reporter=dot 2>&1 | tail -5</automated>
   </verify>
   <done>
-    - All 10 listed files exist
-    - HubGrid supports XL size (verified via test or grep)
+    - All 11 listed files exist (HubGrid.test.tsx already existed pre-task; this task added one new it() block to it)
+    - HubGrid supports XL size (verified via the new test in HubGrid.test.tsx — `grep "col-span-4" client/src/components/widgets/HubGrid.test.tsx` returns at least 1 match)
     - getDefaultLayout('oversikt') returns 7 items (1 XL + 6 summary)
     - getOversiktSections() returns 2 sections
     - WIDGET_REGISTRY has at least 32 entries
     - WIDGET_LABELS exhaustively maps all 32 widget IDs
-    - useOversiktHubSummary tests + useOnboardedHubsTracking tests green
+    - useOversiktHubSummary tests + useOnboardedHubsTracking tests + HubGrid.test.tsx all green
     - npx tsc --noEmit zero errors
   </done>
 </task>
 
 <task type="auto" tdd="true">
-  <name>Task 2: Build OnboardingWidget (XL) + 6 cross-hub summary widgets</name>
+  <name>Task 2a: Build OnboardingWidget (XL) + 3 cross-hub summary widgets (Jobsok, CvStatus, Interview) — all read JOBSOK_HUB_KEY</name>
   <read_first>
     - client/src/components/widgets/Widget.tsx (XL size handling — verify Widget compound supports XL)
     - client/src/components/widgets/CareerGoalWidget.tsx (Plan 02 widget pattern reference)
     - client/src/components/widgets/JobSearchWidget.tsx (Phase 2 — XL-style empty wide widget reference)
-    - client/src/hooks/useJobsokHubSummary.ts, useKarriarHubSummary.ts, useResurserHubSummary.ts, useMinVardagHubSummary.ts (verify exported KEY constants and summary slice shapes)
-    - client/src/components/widgets/__tests__/anti-shaming.test.tsx
+    - client/src/hooks/useJobsokHubSummary.ts (verify JOBSOK_HUB_KEY export + JobsokSummary slice shapes for cv/interviewSessions)
     - .planning/phases/05-full-hub-coverage-oversikt/05-RESEARCH.md §"Cross-hub summary-widgets" + §"Onboarding XL-widget"
   </read_first>
   <behavior>
@@ -487,13 +515,13 @@ const sizeClass = {
     - OnboardingWidget Test C: when full_name='Anna Karlsson', heading is "Bra jobbat Anna!"
     - JobsokSummaryWidget Test A (cache empty): renders "Inga ansökningar än — börja söka idag" empty state
     - JobsokSummaryWidget Test B (cache has total=12): renders "12 aktiva ansökningar"
-    - Each of the 5 other summary widgets: 2 tests (empty + filled state)
-    - All 7 widgets forward onHide
-    - Anti-shaming extended for the 7 widgets (now ~32 total cases)
+    - CvStatusSummaryWidget: 2 tests (no CV → "Inget CV"; has CV → "CV uppdaterat {date}")
+    - InterviewSummaryWidget: 2 tests (no session → "Tid för övning"; session score=85 → "Stark prestation"; verify NO raw \\d+% rendered)
+    - All 4 widgets forward `onHide` to Widget (Pitfall B regression)
   </behavior>
-  <files>client/src/components/widgets/OnboardingWidget.tsx, client/src/components/widgets/OnboardingWidget.test.tsx, client/src/components/widgets/JobsokSummaryWidget.tsx, client/src/components/widgets/JobsokSummaryWidget.test.tsx, client/src/components/widgets/CvStatusSummaryWidget.tsx, client/src/components/widgets/CvStatusSummaryWidget.test.tsx, client/src/components/widgets/InterviewSummaryWidget.tsx, client/src/components/widgets/InterviewSummaryWidget.test.tsx, client/src/components/widgets/CareerGoalSummaryWidget.tsx, client/src/components/widgets/CareerGoalSummaryWidget.test.tsx, client/src/components/widgets/HealthSummaryWidget.tsx, client/src/components/widgets/HealthSummaryWidget.test.tsx, client/src/components/widgets/DiarySummaryWidget.tsx, client/src/components/widgets/DiarySummaryWidget.test.tsx, client/src/components/widgets/__tests__/anti-shaming.test.tsx</files>
+  <files>client/src/components/widgets/OnboardingWidget.tsx, client/src/components/widgets/OnboardingWidget.test.tsx, client/src/components/widgets/JobsokSummaryWidget.tsx, client/src/components/widgets/JobsokSummaryWidget.test.tsx, client/src/components/widgets/CvStatusSummaryWidget.tsx, client/src/components/widgets/CvStatusSummaryWidget.test.tsx, client/src/components/widgets/InterviewSummaryWidget.tsx, client/src/components/widgets/InterviewSummaryWidget.test.tsx</files>
   <action>
-    Implement the 7 Översikt widgets.
+    Implement OnboardingWidget (XL) + 3 JOBSOK-reading cross-hub summary widgets. (Anti-shaming test extension and the 3 KARRIAR/MIN_VARDAG-reading widgets are deferred to Task 2b.)
 
     **1. `OnboardingWidget.tsx` (XL — only allowedSize)**
     - Read `useOversiktSummary()` (from OversiktDataContext) — get profile + jobsok + karriar + resurser + minVardag slices
@@ -511,32 +539,26 @@ const sizeClass = {
     - CTA: single primary action (not 4) for returning user
     - Icon: `Sparkles`. allowedSizes ['XL']. Defaults size XL
 
-    **2-7. Cross-hub summary widgets** — pattern identical:
-    ```typescript
-    import { useQueryClient } from '@tanstack/react-query'
-    import { useAuth } from '@/hooks/useSupabase'
-    import { JOBSOK_HUB_KEY } from '@/hooks/useJobsokHubSummary'
-    import type { JobsokSummary } from './JobsokDataContext'
-    // ... Widget compound + Link
-
-    export default function JobsokSummaryWidget({ id, size, allowedSizes, onSizeChange, editMode, onHide }: WidgetProps) {
+    **2. `JobsokSummaryWidget.tsx`** (M default, S/M allowed) — read JOBSOK_HUB_KEY:
+    - Pattern (canonical for cross-hub widgets):
+      ```typescript
       const { user } = useAuth()
       const queryClient = useQueryClient()
       const data = queryClient.getQueryData(JOBSOK_HUB_KEY(user?.id ?? '')) as JobsokSummary | undefined
-      // render with data?.applicationStats?.total etc.
-    }
-    ```
+      const totalApps = data?.applicationStats?.total ?? 0
+      ```
+    - Icon Briefcase, header "Söka jobb"; primary "{n} aktiva ansökningar" or empty "Inga ansökningar än — börja söka idag"; CTA → /soka-jobb
 
-    Per-widget specifics (consult <interfaces> table):
+    **3. `CvStatusSummaryWidget.tsx`** (S default) — read JOBSOK_HUB_KEY → cv slice:
+    - Icon FileText, header "CV"
+    - Primary: "CV uppdaterat {locale-date(cv.updated_at)}" if `data?.cv` else "Inget CV"
+    - CTA → `/cv` (or fallback `/soka-jobb` if `/cv` not registered — check navigation.ts; document fallback in code comment)
 
-    - **JobsokSummaryWidget** (M default, S/M allowed): icon Briefcase, "Söka jobb"; primary "{n} aktiva ansökningar" or empty; CTA → /soka-jobb
-    - **CvStatusSummaryWidget** (S default): icon FileText, "CV"; primary "CV uppdaterat {locale-date}" if cv else "Inget CV"; CTA → /cv (or /soka-jobb if cv-route differs)
-    - **InterviewSummaryWidget** (S default): icon MessageSquare, "Intervju"; reads `interviewSessions[0].score` (NEVER raw); qualitative label: >=80 "Stark prestation", >=60 "Bra framsteg", >=40 "Bygger upp", <40 or null "Tid för övning"; CTA → /interview-simulator
-    - **CareerGoalSummaryWidget** (M default): icon Target, "Karriärmål"; primary `karriar?.careerGoals?.shortTerm` truncated 50 chars or "Inget mål satt"; CTA → /career-plan
-    - **HealthSummaryWidget** (M default): icon Heart, "Hälsa"; primary "Loggat {streak} dagar" (reuse streakDays from Plan 04 — import from HealthWidget) or "Logga ditt mående"; CTA → /mood
-    - **DiarySummaryWidget** (S default): icon BookText, "Dagbok"; primary "{count} inlägg" or "Skriv idag"; CTA → /diary
-
-    All forward `onHide` and respect anti-shaming (no raw % in 32/22px font-bold slot).
+    **4. `InterviewSummaryWidget.tsx`** (S default) — read JOBSOK_HUB_KEY → interviewSessions slice:
+    - Icon MessageSquare, header "Intervju"
+    - Score from `data?.interviewSessions?.[0]?.score` (NEVER render the raw number)
+    - Qualitative label: `>=80` → "Stark prestation", `>=60` → "Bra framsteg", `>=40` → "Bygger upp", `<40 || null` → "Tid för övning"
+    - CTA → /interview-simulator
 
     **Test pattern (cross-hub widgets):**
     ```typescript
@@ -573,47 +595,121 @@ const sizeClass = {
       })
     })
     ```
-
     OnboardingWidget tests use `OversiktDataProvider` instead of cache pre-seeding.
 
-    Anti-shaming extension: add 7 cases to anti-shaming.test.tsx. Render each with appropriate provider/cache fixture. Verify no raw \d+% in primary KPI slots.
+    Anti-shaming extension is NOT done in this task — Task 2b adds all 7 anti-shaming cases (4 from this task + 3 from 2b) in one batch.
 
-    Verification: per-widget tests + extended anti-shaming green; npx tsc --noEmit zero.
+    Verification: per-widget tests green; npx tsc --noEmit zero.
   </action>
   <verify>
-    <automated>cd client && npm run test:run -- src/components/widgets/OnboardingWidget.test.tsx src/components/widgets/JobsokSummaryWidget.test.tsx src/components/widgets/CvStatusSummaryWidget.test.tsx src/components/widgets/InterviewSummaryWidget.test.tsx src/components/widgets/CareerGoalSummaryWidget.test.tsx src/components/widgets/HealthSummaryWidget.test.tsx src/components/widgets/DiarySummaryWidget.test.tsx src/components/widgets/__tests__/anti-shaming.test.tsx --reporter=dot 2>&1 | tail -5</automated>
+    <automated>cd client && npm run test:run -- src/components/widgets/OnboardingWidget.test.tsx src/components/widgets/JobsokSummaryWidget.test.tsx src/components/widgets/CvStatusSummaryWidget.test.tsx src/components/widgets/InterviewSummaryWidget.test.tsx --reporter=dot 2>&1 | tail -5</automated>
   </verify>
   <done>
-    - All 7 widget files default-exported
+    - 4 widget files default-exported (OnboardingWidget, JobsokSummaryWidget, CvStatusSummaryWidget, InterviewSummaryWidget)
     - OnboardingWidget renders both new-user and returning-user states
-    - 6 cross-hub summary widgets read from getQueryData (NO new SELECTs — verify by grep absence of `supabase.from`)
-    - Anti-shaming extended (now covers 32 cases) all green
-    - All 7 widgets forward `onHide`
+    - 3 cross-hub summary widgets read from getQueryData (NO new SELECTs — `grep "supabase\\.from" client/src/components/widgets/JobsokSummaryWidget.tsx client/src/components/widgets/CvStatusSummaryWidget.tsx client/src/components/widgets/InterviewSummaryWidget.tsx` returns 0)
+    - InterviewSummaryWidget renders qualitative label NOT raw score (verify with screen.queryByText for `\\d+%` returns null)
+    - All 4 widgets forward `onHide`
     - npx tsc --noEmit zero
   </done>
 </task>
 
 <task type="auto" tdd="true">
-  <name>Task 3: Wire HubOverview.tsx + integration tests + add useOnboardedHubsTracking to all 5 hub pages</name>
+  <name>Task 2b: Build remaining 3 cross-hub summary widgets (CareerGoal, Health, Diary) + extend anti-shaming test for all 7 Översikt widgets</name>
+  <read_first>
+    - client/src/components/widgets/JobsokSummaryWidget.tsx (Task 2a — pattern reference for cross-hub reads)
+    - client/src/hooks/useKarriarHubSummary.ts (verify KARRIAR_HUB_KEY + careerGoals slice)
+    - client/src/hooks/useMinVardagHubSummary.ts (verify MIN_VARDAG_HUB_KEY + recentMoodLogs/diaryEntryCount slices)
+    - client/src/utils/streakDays.ts (Plan 04 single source — HealthSummaryWidget imports from here)
+    - client/src/components/widgets/__tests__/anti-shaming.test.tsx (extend with 7 Översikt cases)
+    - .planning/phases/05-full-hub-coverage-oversikt/05-RESEARCH.md §"Cross-hub summary-widgets"
+  </read_first>
+  <behavior>
+    - CareerGoalSummaryWidget: 2 tests (no goal → "Inget mål satt"; has shortTerm='Få första intervjun' → renders truncated 50 chars)
+    - HealthSummaryWidget: 2 tests (no logs → "Logga ditt mående"; 5-day streak via fixture → "Loggat 5 dagar"); imports streakDays from `@/utils/streakDays` (NOT from HealthWidget)
+    - DiarySummaryWidget: 2 tests (count=0 → "Skriv idag"; count=4 → "4 inlägg")
+    - All 3 widgets forward `onHide`
+    - Anti-shaming extended for all 7 Översikt widgets (4 from Task 2a + 3 from Task 2b) → cases array now ~32 total
+    - No widget renders raw \\d+% in 32/22px font-bold primary slot
+  </behavior>
+  <files>client/src/components/widgets/CareerGoalSummaryWidget.tsx, client/src/components/widgets/CareerGoalSummaryWidget.test.tsx, client/src/components/widgets/HealthSummaryWidget.tsx, client/src/components/widgets/HealthSummaryWidget.test.tsx, client/src/components/widgets/DiarySummaryWidget.tsx, client/src/components/widgets/DiarySummaryWidget.test.tsx, client/src/components/widgets/__tests__/anti-shaming.test.tsx</files>
+  <action>
+    Implement remaining 3 cross-hub summary widgets and extend anti-shaming for all 7 Översikt widgets.
+
+    **5. `CareerGoalSummaryWidget.tsx`** (M default) — read KARRIAR_HUB_KEY → careerGoals slice:
+    ```typescript
+    const data = queryClient.getQueryData(KARRIAR_HUB_KEY(user?.id ?? '')) as KarriarSummary | undefined
+    const shortTerm = data?.careerGoals?.shortTerm ?? null
+    const truncated = shortTerm && shortTerm.length > 50 ? shortTerm.slice(0, 50) + '…' : shortTerm
+    ```
+    - Icon Target, header "Karriärmål"
+    - Primary: `truncated` or "Inget mål satt"
+    - CTA → /career-plan
+
+    **6. `HealthSummaryWidget.tsx`** (M default) — read MIN_VARDAG_HUB_KEY → recentMoodLogs:
+    ```typescript
+    import { streakDays } from '@/utils/streakDays'  // ← single source of truth (Plan 04 Task 2)
+
+    const data = queryClient.getQueryData(MIN_VARDAG_HUB_KEY(user?.id ?? '')) as MinVardagSummary | undefined
+    const logs = data?.recentMoodLogs ?? []
+    const streak = streakDays(logs)
+    ```
+    - Icon Heart, header "Hälsa"
+    - Primary: `streak > 0 ? \`Loggat ${streak} dagar\` : "Logga ditt mående"`
+    - CTA → /mood
+    - **CRITICAL: Import path is `@/utils/streakDays` — NOT from `./HealthWidget` and NOT a sibling utility. Plan 04 Task 2 established this single source of truth.**
+
+    **7. `DiarySummaryWidget.tsx`** (S default) — read MIN_VARDAG_HUB_KEY → diaryEntryCount:
+    - Icon BookText, header "Dagbok"
+    - Primary: `count > 0 ? \`${count} inlägg\` : "Skriv idag"`
+    - CTA → /diary
+
+    All 3 widgets follow the canonical cross-hub-widget pattern from Task 2a. All forward `onHide`.
+
+    **Test pattern:** identical to Task 2a — pre-seed QueryClient with the relevant cache key, render with QueryClientProvider + MemoryRouter, assert text. For HealthSummaryWidget streak test, fixture must have N consecutive days of mood_logs entries (the streakDays helper has its own unit tests in Plan 04, so we only need to verify the rendered string here, not re-test the streak math).
+
+    **Anti-shaming extension (`__tests__/anti-shaming.test.tsx`):**
+    Extend the cases array with all 7 Översikt widgets (1 OnboardingWidget + 6 summary). The cases array becomes:
+    `[...JOBSOK, ...KARRIAR, ...RESURSER, ...MINVARDAG, ...OVERSIKT]`
+    Total cases: 8 + 6 + 6 + 5 + 7 = 32. Each case asserts no raw `\d+%` in 32/22px font-bold slot. For OnboardingWidget specifically — also verify no raw % in the heading or body. Use `OversiktDataProvider` for OnboardingWidget; pre-seeded QueryClient cache for the 6 summary widgets.
+
+    Verification: 3 new widget tests + extended anti-shaming green; npx tsc --noEmit zero.
+  </action>
+  <verify>
+    <automated>cd client && npm run test:run -- src/components/widgets/CareerGoalSummaryWidget.test.tsx src/components/widgets/HealthSummaryWidget.test.tsx src/components/widgets/DiarySummaryWidget.test.tsx src/components/widgets/__tests__/anti-shaming.test.tsx --reporter=dot 2>&1 | tail -5</automated>
+  </verify>
+  <done>
+    - 3 widget files default-exported (CareerGoalSummaryWidget, HealthSummaryWidget, DiarySummaryWidget)
+    - HealthSummaryWidget imports streakDays from `@/utils/streakDays` (verifiable: `grep "from '@/utils/streakDays'" client/src/components/widgets/HealthSummaryWidget.tsx` returns 1 match; `grep "from.*HealthWidget" client/src/components/widgets/HealthSummaryWidget.tsx` returns 0 matches)
+    - Cross-hub widgets read via getQueryData (`grep "supabase\\.from" client/src/components/widgets/CareerGoalSummaryWidget.tsx client/src/components/widgets/HealthSummaryWidget.tsx client/src/components/widgets/DiarySummaryWidget.tsx` returns 0)
+    - All 3 widgets forward `onHide`
+    - Anti-shaming test cases array has 32 cases all green (verifiable: `grep -c "id:.*'" client/src/components/widgets/__tests__/anti-shaming.test.tsx` ≥ 32)
+    - npx tsc --noEmit zero
+  </done>
+</task>
+
+<task type="auto" tdd="true">
+  <name>Task 3: Wire HubOverview.tsx + integration tests + add useOnboardedHubsTracking to all 5 hub pages (incl. mock injection in 4 existing hub test files)</name>
   <read_first>
     - client/src/pages/hubs/MinVardagHub.tsx (Plan 04 wiring template — copy + swap)
     - client/src/pages/hubs/__tests__/MinVardagHub.test.tsx (test template — copy + swap)
     - client/src/pages/hubs/HubOverview.tsx (current Phase 2 stub — REPLACE)
     - client/src/pages/hubs/JobsokHub.tsx, KarriarHub.tsx, ResurserHub.tsx, MinVardagHub.tsx (each gets one new line: useOnboardedHubsTracking call)
+    - client/src/pages/hubs/__tests__/JobsokHub.test.tsx, KarriarHub.test.tsx, ResurserHub.test.tsx, MinVardagHub.test.tsx (each gets one new vi.mock for useOnboardedHubsTracking)
     - client/src/hooks/useOnboardedHubsTracking.ts (Task 1 output)
   </read_first>
   <behavior>
-    HubOverview.test.tsx — 11 integration tests (α-λ) mirroring earlier hubs:
+    HubOverview.test.tsx — 13 integration tests (α-λ + μ + ν) mirroring earlier hubs:
     - α-θ: same as Plan 04 swapped for Översikt (7 widgets — note: panel can hide widgets, including XL onboarding)
     - ι: upsert payload includes hub_id='oversikt'
     - κ: all 7 widget icons render
     - λ: aria-live announces "Widget Välkommen dold" when hideWidget('onboarding-xl') runs
     - Extra μ test: Onboarding shows new-user state when profile.onboarded_hubs=[]; returning state when ['jobb']
-    - Extra ν test: useOnboardedHubsTracking is invoked once on HubOverview mount
+    - Extra ν test: useOnboardedHubsTracking is invoked once on HubOverview mount with 'oversikt'
 
-    Plus: each of the 4 OTHER hub-page tests still passes after adding useOnboardedHubsTracking call (regression).
+    Plus: each of the 4 OTHER hub-page tests still passes after adding useOnboardedHubsTracking call (regression — the 4 existing hub test files MUST get a vi.mock for useOnboardedHubsTracking, otherwise the real hook will hit supabase.update and fail).
   </behavior>
-  <files>client/src/pages/hubs/HubOverview.tsx, client/src/pages/hubs/__tests__/HubOverview.test.tsx, client/src/pages/hubs/JobsokHub.tsx, client/src/pages/hubs/KarriarHub.tsx, client/src/pages/hubs/ResurserHub.tsx, client/src/pages/hubs/MinVardagHub.tsx</files>
+  <files>client/src/pages/hubs/HubOverview.tsx, client/src/pages/hubs/__tests__/HubOverview.test.tsx, client/src/pages/hubs/JobsokHub.tsx, client/src/pages/hubs/KarriarHub.tsx, client/src/pages/hubs/ResurserHub.tsx, client/src/pages/hubs/MinVardagHub.tsx, client/src/pages/hubs/__tests__/JobsokHub.test.tsx, client/src/pages/hubs/__tests__/KarriarHub.test.tsx, client/src/pages/hubs/__tests__/ResurserHub.test.tsx, client/src/pages/hubs/__tests__/MinVardagHub.test.tsx</files>
   <action>
     **A. Replace `HubOverview.tsx`** with full Phase 3+4+5 wiring. Copy `MinVardagHub.tsx` template, swap:
     - HUB_ID 'min-vardag' → 'oversikt'
@@ -667,7 +763,11 @@ const sizeClass = {
     Add ν test:
     - useOnboardedHubsTracking is invoked with 'oversikt' on mount (assert `vi.mocked(useOnboardedHubsTracking).mock.calls[0][0] === 'oversikt'`)
 
-    **D. Regression check:** the existing JobsokHub, KarriarHub, ResurserHub, MinVardagHub test files do NOT mock useOnboardedHubsTracking. Now those tests will hit the real hook, which will call supabase.update — likely failing. Fix: add `vi.mock('@/hooks/useOnboardedHubsTracking', () => ({ useOnboardedHubsTracking: vi.fn() }))` to ALL 4 existing hub test files.
+    **D. Regression — inject useOnboardedHubsTracking mock into 4 existing hub test files.** The existing JobsokHub, KarriarHub, ResurserHub, MinVardagHub test files do NOT mock useOnboardedHubsTracking. Now those tests will hit the real hook, which will call supabase.update — likely failing. Fix: add this exact line near the top of each (after the existing vi.mock blocks):
+    ```typescript
+    vi.mock('@/hooks/useOnboardedHubsTracking', () => ({ useOnboardedHubsTracking: vi.fn() }))
+    ```
+    Verifiable post-edit: `grep "vi.mock.*useOnboardedHubsTracking" client/src/pages/hubs/__tests__/JobsokHub.test.tsx client/src/pages/hubs/__tests__/KarriarHub.test.tsx client/src/pages/hubs/__tests__/ResurserHub.test.tsx client/src/pages/hubs/__tests__/MinVardagHub.test.tsx | wc -l` returns 4.
 
     Run all hub-test files including the 4 existing ones — all green.
     `npm run build` succeeds.
@@ -678,7 +778,8 @@ const sizeClass = {
   <done>
     - HubOverview.tsx full wiring (~180 lines)
     - HubOverview.test.tsx has 13 integration tests (α-λ + μ + ν) all green
-    - All 4 existing hub-test files updated with useOnboardedHubsTracking mock — all regression suites green
+    - All 4 existing hub-test files updated with useOnboardedHubsTracking mock — verifiable: `grep -l "useOnboardedHubsTracking" client/src/pages/hubs/__tests__/JobsokHub.test.tsx client/src/pages/hubs/__tests__/KarriarHub.test.tsx client/src/pages/hubs/__tests__/ResurserHub.test.tsx client/src/pages/hubs/__tests__/MinVardagHub.test.tsx` returns 4 files
+    - All 4 regression suites green
     - Each of 5 hub pages calls useOnboardedHubsTracking(HUB_ID) on mount (verifiable via grep)
     - npm run build succeeds
     - HUB-05 acceptance: HubOverview renders 1 XL onboarding + 6 cross-hub summary widgets
@@ -693,6 +794,8 @@ const sizeClass = {
 - `grep -c "lazy(() => import('./" client/src/components/widgets/registry.ts` — at least 32 lazy entries
 - `grep "supabase\\.from" client/src/components/widgets/JobsokSummaryWidget.tsx client/src/components/widgets/CvStatusSummaryWidget.tsx client/src/components/widgets/InterviewSummaryWidget.tsx client/src/components/widgets/CareerGoalSummaryWidget.tsx client/src/components/widgets/HealthSummaryWidget.tsx client/src/components/widgets/DiarySummaryWidget.tsx` — 0 matches (Pitfall D — cross-hub widgets do not query)
 - `grep "useOnboardedHubsTracking(" client/src/pages/hubs/*.tsx | wc -l` — at least 5 (one per hub page)
+- `grep "from '@/utils/streakDays'" client/src/components/widgets/HealthSummaryWidget.tsx` — 1 match (Plan 04 single source)
+- `grep "col-span-4" client/src/components/widgets/HubGrid.test.tsx` — at least 1 match (XL test added)
 - `npx tsc --noEmit` — zero errors
 - `npm run build` — zero errors
 </verification>
@@ -702,12 +805,13 @@ const sizeClass = {
 - Cross-hub widgets read from React Query cache via getQueryData — NO new SELECTs (Pitfall D resolved)
 - Onboarding detection: new vs. returning user differentiated by profile.onboarded_hubs
 - All 5 hub pages track visits via useOnboardedHubsTracking
-- HubGrid supports XL size (col-span-4 desktop, col-span-2 mobile per UI-SPEC)
+- HubGrid supports XL size (col-span-4 desktop, col-span-2 mobile per UI-SPEC) — verified by HubGrid.test.tsx XL test
 - Bundle contract preserved: 7 new lazy widgets
 - Anti-shaming extended: no Översikt widget renders raw \d+% in primary KPI
-- All previous hub regression suites still green
+- streakDays single source of truth honored: HealthSummaryWidget imports from `@/utils/streakDays`
+- All previous hub regression suites still green (4 existing hub test files now mock useOnboardedHubsTracking)
 </success_criteria>
 
 <output>
-Create `.planning/phases/05-full-hub-coverage-oversikt/05-05-oversikt-hub-SUMMARY.md` documenting: (a) aggregator approach (Pitfall D — invokes 4 sub-hooks; React Query dedup), (b) onboarding-tracking mechanism + which hubs got the new line, (c) HubGrid XL extension, (d) 7 widgets implemented, (e) integration test count (α-ν), (f) full Phase 5 widget tally: 8 (Jobsok) + 6 (Karriar) + 6 (Resurser) + 5 (Min Vardag) + 7 (Översikt) = 32 widgets across 5 hubs.
+Create `.planning/phases/05-full-hub-coverage-oversikt/05-05-oversikt-hub-SUMMARY.md` documenting: (a) aggregator approach (Pitfall D — invokes 4 sub-hooks; React Query dedup), (b) onboarding-tracking mechanism + which hubs got the new line + which existing hub tests were patched with the mock, (c) HubGrid XL extension + the new HubGrid.test.tsx XL test, (d) 7 widgets implemented across Tasks 2a (4 widgets) + 2b (3 widgets), (e) integration test count (α-ν), (f) full Phase 5 widget tally: 8 (Jobsok) + 6 (Karriar) + 6 (Resurser) + 5 (Min Vardag) + 7 (Översikt) = 32 widgets across 5 hubs.
 </output>

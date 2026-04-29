@@ -23,6 +23,8 @@ files_modified:
   - client/src/components/widgets/widgetLabels.ts
   - client/src/components/widgets/defaultLayouts.ts
   - client/src/components/widgets/__tests__/anti-shaming.test.tsx
+  - client/src/utils/streakDays.ts
+  - client/src/utils/streakDays.test.ts
   - client/src/pages/hubs/MinVardagHub.tsx
   - client/src/pages/hubs/__tests__/MinVardagHub.test.tsx
 autonomous: true
@@ -37,6 +39,7 @@ must_haves:
     - "All 5 Min Vardag widgets are lazy() in WIDGET_REGISTRY (bundle contract preserved)"
     - "Anti-shaming guard extended: no widget renders raw \\d+% in primary KPI slot"
     - "Hälsa widget empty-state copy is non-pressuring per A11Y empathy contract: 'Om du vill — logga ditt mående...' (NOT 'Logga nu' / 'Du har inte loggat på X dagar')"
+    - "streakDays utility lives at client/src/utils/streakDays.ts — single export source consumed by HealthWidget AND HealthSummaryWidget (Plan 05)"
   artifacts:
     - path: "client/src/hooks/useMinVardagHubSummary.ts"
       provides: "Hub-summary loader for Min Vardag"
@@ -47,6 +50,9 @@ must_haves:
     - path: "client/src/components/widgets/MinVardagLayoutContext.tsx"
       provides: "Layout context for Min Vardag hub"
       exports: ["MinVardagLayoutProvider", "useMinVardagLayout", "MinVardagLayoutValue"]
+    - path: "client/src/utils/streakDays.ts"
+      provides: "Pure helper — count consecutive days ending at most-recent log"
+      exports: ["streakDays"]
     - path: "client/src/pages/hubs/MinVardagHub.tsx"
       provides: "Hub page replacing Phase 2 stub"
       contains: "MinVardagLayoutProvider"
@@ -63,6 +69,10 @@ must_haves:
       to: "client/src/components/widgets/Sparkline.tsx"
       via: "imports Sparkline for 7-day mood trend"
       pattern: "from\\s+'./Sparkline'"
+    - from: "client/src/components/widgets/HealthWidget.tsx"
+      to: "client/src/utils/streakDays.ts"
+      via: "imports streakDays helper from utils"
+      pattern: "from\\s+'@/utils/streakDays'"
 ---
 
 <objective>
@@ -198,6 +208,35 @@ export function useMinVardagHubSummary() {
 
 <!-- IF 05-DB-DISCOVERY.md showed consultant_participants uses 'user_id' instead of 'participant_id', the executor MUST adjust the .eq filter accordingly. The discovery file is the source of truth. -->
 
+<!-- streakDays utility (LOCKED location — single export source; Plan 05 cross-hub HealthSummaryWidget imports from same path): -->
+```typescript
+// client/src/utils/streakDays.ts
+/**
+ * Count consecutive days ending at the most-recent log.
+ * Pure function — no Date side effects beyond input.
+ *
+ * Single source of truth for streak counting. Imported by:
+ *   - client/src/components/widgets/HealthWidget.tsx (this plan, Min Vardag)
+ *   - client/src/components/widgets/HealthSummaryWidget.tsx (Plan 05, Översikt)
+ */
+export function streakDays(logs: Array<{ log_date: string }>): number {
+  if (!logs || logs.length === 0) return 0
+  // Sort descending by date (most recent first) — defensive even if caller already sorted
+  const sorted = [...logs].sort((a, b) => b.log_date.localeCompare(a.log_date))
+  let streak = 0
+  let cursor = new Date(sorted[0].log_date)
+  for (const log of sorted) {
+    const logDate = new Date(log.log_date)
+    const expected = cursor.toISOString().slice(0, 10)
+    const actual = logDate.toISOString().slice(0, 10)
+    if (expected !== actual) break
+    streak += 1
+    cursor.setDate(cursor.getDate() - 1)
+  }
+  return streak
+}
+```
+
 <!-- Default layout for min-vardag (REPLACES placeholder { id: 'cv', size: 'S', ... }): -->
 ```typescript
 'min-vardag': [
@@ -249,7 +288,7 @@ Min konsulent: "Ingen konsulent ännu" / "Kontakta arbetsförmedlingen för att 
 
 <!-- Filled-state framing (NEVER raw mood/stress numbers as primary KPI): -->
 ```
-Hälsa:   Sparkline of recentMoodLogs[].mood_level (last 7 days). Primary text label: "5 dagar i rad" (streak — calculated from log_date sequence) OR "Senast loggad: {date}" if no streak.
+Hälsa:   Sparkline of recentMoodLogs[].mood_level (last 7 days). Primary text label: "5 dagar i rad" (streak — calculated via streakDays helper from @/utils/streakDays) OR "Senast loggad: {date}" if no streak.
 Dagbok:  "{count} inlägg" (label, not 32px font-bold KPI)
 Kalender: Next event: title + date (e.g. "Intervju mån 5 maj 14:00")
 Nätverk: Milestone label from networkContactsCount: ">10 → 'Bra nätverk'", ">3 → 'Bygger nätverk'", ">0 → 'Första kontakter'", "0 → empty state"
@@ -294,7 +333,7 @@ import { Sparkline } from './Sparkline'
     - Test 2: Returns MinVardagSummary shape with all 6 slices populated from fixture
     - Test 3: When mood_logs fixture is empty, recentMoodLogs is [] (not undefined) — Sparkline-safe
     - Test 4: consultant join — when consultant_participants returns null, summary.consultant is null
-    - Test 5: When discovery says column is `user_id`, the .eq matches user_id; when `participant_id`, matches participant_id (test the actual implementation matches discovery — the test mock should accept whichever the implementation uses)
+    - Test 5: The .eq filter on consultant_participants matches the exact column name recorded in 05-DB-DISCOVERY.md §"consultant_participants" (e.g. `participant_id` or `user_id`). Verification: `grep "\\.eq\\('participant_id'\\|\\.eq\\('user_id'" client/src/hooks/useMinVardagHubSummary.ts` returns the same column name as the discovery file's recorded value (post-impl assertion — the test file documents the expected column in a comment, then asserts the fromMock chain receives it).
   </behavior>
   <files>client/src/hooks/useMinVardagHubSummary.ts, client/src/hooks/useMinVardagHubSummary.test.ts, client/src/components/widgets/MinVardagDataContext.tsx, client/src/components/widgets/MinVardagLayoutContext.tsx, client/src/components/widgets/registry.ts, client/src/components/widgets/widgetLabels.ts, client/src/components/widgets/defaultLayouts.ts</files>
   <action>
@@ -324,7 +363,19 @@ import { Sparkline } from './Sparkline'
     - network_contacts (count): `makeBuilder(null, 8)` returns count=8
     - consultant_participants: `{ consultant_id: 'c1', profiles: { id: 'c1', full_name: 'Anna Karlsson', avatar_url: null } }`
 
-    Add tests 1-5 from <behavior> block. Test 5 specifically asserts the consultant_participants `.eq` was called with whatever column-name the implementation uses (read the impl source — fromMock will record the chained calls).
+    Add tests 1-5 from <behavior> block.
+
+    **Test 5 specifics — discovery-driven column assertion:**
+    Before writing test 5, read 05-DB-DISCOVERY.md §"consultant_participants" and copy the recorded column name (e.g. `participant_id`) into a const at top of the test file:
+    ```typescript
+    // Source of truth: .planning/phases/05-full-hub-coverage-oversikt/05-DB-DISCOVERY.md §consultant_participants
+    const CONSULTANT_PARTICIPANT_COL = 'participant_id' // ← replace with discovery value
+    ```
+    Then test 5 asserts `fromMock` was called with that column on the consultant_participants chain. After implementation, also run a grep to verify the source uses the same column:
+    ```bash
+    grep -E "consultant_participants[\\s\\S]*?\\.eq\\('${CONSULTANT_PARTICIPANT_COL}'" client/src/hooks/useMinVardagHubSummary.ts
+    ```
+    Both the test and the implementation must use whatever value is recorded in 05-DB-DISCOVERY.md — that file is single source of truth.
 
     **E. `defaultLayouts.ts`** — REPLACE `min-vardag:` placeholder with 5-widget array. APPEND `getMinVardagSections()`.
 
@@ -345,12 +396,12 @@ import { Sparkline } from './Sparkline'
     - WIDGET_REGISTRY has at least 25 entries
     - WIDGET_LABELS exhaustively maps all 25 widget IDs
     - npx tsc --noEmit zero errors
-    - consultant_participants column-name matches 05-DB-DISCOVERY.md (verifiable via grep)
+    - consultant_participants column-name in source matches the value recorded in 05-DB-DISCOVERY.md (verifiable via grep)
   </done>
 </task>
 
 <task type="auto" tdd="true">
-  <name>Task 2: Build 5 Min Vardag widgets with empathy-locked copy + Sparkline integration</name>
+  <name>Task 2: Build 5 Min Vardag widgets with empathy-locked copy + Sparkline integration + extract streakDays utility</name>
   <read_first>
     - client/src/components/widgets/InterviewWidget.tsx (Sparkline integration reference + L-size pattern)
     - client/src/components/widgets/Sparkline.tsx (primitive — accepts values: number[])
@@ -364,16 +415,31 @@ import { Sparkline } from './Sparkline'
     - Test A (empty): heading + body + CTA from <interfaces>; Hälsa specifically must show non-pressuring copy "Om du vill — logga..."
     - Test B (filled): correct milestone label / sparkline / consultant card; never raw \\d+% or \\d+/5 in 32/22px slot
     - Test C (onHide forwarding — Pitfall B regression rule)
+    Plus: streakDays unit tests (separate file `client/src/utils/streakDays.test.ts`):
+    - returns 0 for empty array
+    - returns 1 for a single log
+    - returns 3 for 3 consecutive days, returns 1 if there's a gap after the most-recent log
     Anti-shaming extended for 5 widgets (now 19 cases total).
   </behavior>
-  <files>client/src/components/widgets/HealthWidget.tsx, client/src/components/widgets/HealthWidget.test.tsx, client/src/components/widgets/DiaryWidget.tsx, client/src/components/widgets/DiaryWidget.test.tsx, client/src/components/widgets/CalendarWidget.tsx, client/src/components/widgets/CalendarWidget.test.tsx, client/src/components/widgets/NetworkWidget.tsx, client/src/components/widgets/NetworkWidget.test.tsx, client/src/components/widgets/ConsultantWidget.tsx, client/src/components/widgets/ConsultantWidget.test.tsx, client/src/components/widgets/__tests__/anti-shaming.test.tsx</files>
+  <files>client/src/utils/streakDays.ts, client/src/utils/streakDays.test.ts, client/src/components/widgets/HealthWidget.tsx, client/src/components/widgets/HealthWidget.test.tsx, client/src/components/widgets/DiaryWidget.tsx, client/src/components/widgets/DiaryWidget.test.tsx, client/src/components/widgets/CalendarWidget.tsx, client/src/components/widgets/CalendarWidget.test.tsx, client/src/components/widgets/NetworkWidget.tsx, client/src/components/widgets/NetworkWidget.test.tsx, client/src/components/widgets/ConsultantWidget.tsx, client/src/components/widgets/ConsultantWidget.test.tsx, client/src/components/widgets/__tests__/anti-shaming.test.tsx</files>
   <action>
     Implement 5 widgets following the established pattern. Every widget destructures + forwards `onHide` to `<Widget>`.
 
+    **0. `client/src/utils/streakDays.ts` (FIRST — extracted utility, single source of truth):**
+    Create the helper at `client/src/utils/streakDays.ts` per <interfaces> §streakDays. Export as a named export `streakDays`. No React imports. No widget-specific logic. Pure function over `Array<{ log_date: string }>`.
+
+    Also create `client/src/utils/streakDays.test.ts` with the 4 unit tests from <behavior>:
+    - `streakDays([])` returns 0
+    - `streakDays([{ log_date: '2026-04-27' }])` returns 1
+    - `streakDays([{ log_date: '2026-04-27' }, { log_date: '2026-04-26' }, { log_date: '2026-04-25' }])` returns 3
+    - `streakDays([{ log_date: '2026-04-27' }, { log_date: '2026-04-25' }])` returns 1 (gap on 2026-04-26 breaks streak)
+
+    **CRITICAL:** This is the SINGLE export source. HealthWidget (this plan) AND HealthSummaryWidget (Plan 05) BOTH import from `@/utils/streakDays`. Do not also export it from HealthWidget.tsx — that would create two sources.
+
     **1. `HealthWidget.tsx` — slice: `recentMoodLogs` (Pitfall: empathy-critical)**
     - Empty (`recentMoodLogs.length === 0`): heading "Hur mår du idag?", body "Om du vill — logga ditt mående med ett klick", CTA "Logga idag" → `/mood` (verify route)
-    - Filled: heading "Hälsa", primary slot label = streak ("5 dagar i rad" — calculated from log_date sequence) OR "Senast: {locale-formatted log_date}" (NOT a mood number). Below: `<Sparkline values={recentMoodLogs.map(l => l.mood_level).reverse()} />` (reverse so chronological)
-    - Streak calc: count consecutive days ending at most-recent log. Helper `function streakDays(logs: Array<{log_date: string}>): number` — pure function, easy to unit-test
+    - Filled: heading "Hälsa", primary slot label = streak ("5 dagar i rad" — calculated by `streakDays(recentMoodLogs)` imported from `@/utils/streakDays`) OR "Senast: {locale-formatted log_date}" (NOT a mood number). Below: `<Sparkline values={recentMoodLogs.map(l => l.mood_level).reverse()} />` (reverse so chronological)
+    - Import: `import { streakDays } from '@/utils/streakDays'` (NOT from a sibling file)
     - Icon: `Heart`. allowedSizes ['S','M','L']. Domain colour comes from MinVardagHub `domain="wellbeing"` cascade
 
     **2. `DiaryWidget.tsx` — slice: `diaryEntryCount` + `latestDiaryEntry`**
@@ -401,20 +467,24 @@ import { Sparkline } from './Sparkline'
     - Filled: heading "Min konsulent", primary slot consultant.full_name (or "Konsulent" if name null). Avatar (if avatar_url) — use `<img src alt="" aria-hidden>` with sr-only fallback "Konsulent {full_name}". Below: if upcomingEvents has a `meeting` type → "Nästa möte: {date}"; else "Inget möte inplanerat"
     - Icon: `UserCheck`. allowedSizes ['S','M','L']
 
-    **Test pattern:** Wrap in `MinVardagDataProvider` with full `MinVardagSummary` fixture. For empty state, all slices null/empty/0. For filled state, populate the relevant slice. For HealthWidget streak calc, write a separate unit test for the `streakDays` helper (export it as a named export from the widget file or a sibling utility).
+    **Test pattern:** Wrap in `MinVardagDataProvider` with full `MinVardagSummary` fixture. For empty state, all slices null/empty/0. For filled state, populate the relevant slice. The streakDays helper has its OWN test file (`client/src/utils/streakDays.test.ts`) — do not duplicate those tests inside HealthWidget.test.tsx; HealthWidget tests only verify the rendered string given a fixture.
 
     **HealthWidget anti-shaming:** Verify `<p className="text-[32px] font-bold">` does NOT contain `\d+/5` (e.g. "4/5"). The mood_level appearing in the sparkline (SVG decorative) is allowed, but never as the primary text KPI.
 
     **Anti-shaming extension:** add 5 new cases to `anti-shaming.test.tsx`. Total cases: 8 Jobsok + 6 Karriar + 6 Resurser + 5 MinVardag = 25 cases. The `cases` array becomes: `[...JOBSOK, ...KARRIAR, ...RESURSER, ...MINVARDAG]`. Use a separate fixture function for each provider (`fixtureMinVardag()`).
 
-    Verification: per-widget tests + extended anti-shaming green; npx tsc --noEmit zero.
+    Verification: streakDays unit tests + per-widget tests + extended anti-shaming green; npx tsc --noEmit zero.
   </action>
   <verify>
-    <automated>cd client && npm run test:run -- src/components/widgets/HealthWidget.test.tsx src/components/widgets/DiaryWidget.test.tsx src/components/widgets/CalendarWidget.test.tsx src/components/widgets/NetworkWidget.test.tsx src/components/widgets/ConsultantWidget.test.tsx src/components/widgets/__tests__/anti-shaming.test.tsx --reporter=dot 2>&1 | tail -5</automated>
+    <automated>cd client && npm run test:run -- src/utils/streakDays.test.ts src/components/widgets/HealthWidget.test.tsx src/components/widgets/DiaryWidget.test.tsx src/components/widgets/CalendarWidget.test.tsx src/components/widgets/NetworkWidget.test.tsx src/components/widgets/ConsultantWidget.test.tsx src/components/widgets/__tests__/anti-shaming.test.tsx --reporter=dot 2>&1 | tail -5</automated>
   </verify>
   <done>
+    - `client/src/utils/streakDays.ts` exists and exports `streakDays` as a named export
+    - `client/src/utils/streakDays.test.ts` has 4 passing unit tests
+    - HealthWidget imports streakDays from `@/utils/streakDays` (verifiable: `grep "from '@/utils/streakDays'" client/src/components/widgets/HealthWidget.tsx` returns 1 match)
+    - HealthWidget does NOT export streakDays itself (single source of truth: `grep "export.*streakDays" client/src/components/widgets/HealthWidget.tsx` returns 0 matches)
     - All 5 widget files default-exported with 3+ tests each
-    - HealthWidget includes Sparkline integration; streakDays helper tested
+    - HealthWidget includes Sparkline integration
     - Anti-shaming test extended (now ~25 cases) all green
     - All 5 widgets forward `onHide` to Widget
     - Empty-state copy verbatim from <interfaces> (verify with screen.getByText literal-match)
@@ -485,9 +555,10 @@ import { Sparkline } from './Sparkline'
 </tasks>
 
 <verification>
-- `npm run test:run -- src/hooks/useMinVardagHubSummary.test.ts src/components/widgets/HealthWidget.test.tsx src/components/widgets/DiaryWidget.test.tsx src/components/widgets/CalendarWidget.test.tsx src/components/widgets/NetworkWidget.test.tsx src/components/widgets/ConsultantWidget.test.tsx src/components/widgets/__tests__/anti-shaming.test.tsx src/pages/hubs/__tests__/MinVardagHub.test.tsx src/pages/hubs/__tests__/ResurserHub.test.tsx src/pages/hubs/__tests__/KarriarHub.test.tsx src/pages/hubs/__tests__/JobsokHub.test.tsx` — all green
+- `npm run test:run -- src/utils/streakDays.test.ts src/hooks/useMinVardagHubSummary.test.ts src/components/widgets/HealthWidget.test.tsx src/components/widgets/DiaryWidget.test.tsx src/components/widgets/CalendarWidget.test.tsx src/components/widgets/NetworkWidget.test.tsx src/components/widgets/ConsultantWidget.test.tsx src/components/widgets/__tests__/anti-shaming.test.tsx src/pages/hubs/__tests__/MinVardagHub.test.tsx src/pages/hubs/__tests__/ResurserHub.test.tsx src/pages/hubs/__tests__/KarriarHub.test.tsx src/pages/hubs/__tests__/JobsokHub.test.tsx` — all green
 - `grep -c "lazy(() => import('./" client/src/components/widgets/registry.ts` — at least 25 lazy entries
 - `grep "useResurserLayout\|useKarriarLayout\|useJobsokLayout" client/src/pages/hubs/MinVardagHub.tsx` — 0 matches
+- `grep "from '@/utils/streakDays'" client/src/components/widgets/HealthWidget.tsx` — 1 match (single source of truth)
 - `npx tsc --noEmit` — zero errors
 - `npm run build` — zero errors
 </verification>
@@ -496,6 +567,7 @@ import { Sparkline } from './Sparkline'
 - HUB-04 fulfilled: MinVardagHub renders 5 widgets with real Supabase data
 - Hälsa widget uses non-pressuring copy ("Om du vill — logga...") — verifiable via test
 - Min konsulent widget joins consultant info correctly per 05-DB-DISCOVERY.md
+- streakDays utility lives at `client/src/utils/streakDays.ts` (single export source — Plan 05 will import from same path)
 - Layout persistence + hide/show work on Min Vardag (CUST-01..03 reused)
 - Bundle contract preserved (5 new lazy widgets, build green)
 - Anti-shaming extended: no widget renders raw mood/stress numbers as primary KPI
@@ -503,5 +575,5 @@ import { Sparkline } from './Sparkline'
 </success_criteria>
 
 <output>
-Create `.planning/phases/05-full-hub-coverage-oversikt/05-04-min-vardag-hub-SUMMARY.md` documenting: (a) loader's 6-call Promise.all + count-style query handling, (b) consultant_participants join column choice (per discovery), (c) HealthWidget streak calculation + Sparkline, (d) 5 widgets implemented, (e) integration test count, (f) HUB-04 acceptance check.
+Create `.planning/phases/05-full-hub-coverage-oversikt/05-04-min-vardag-hub-SUMMARY.md` documenting: (a) loader's 6-call Promise.all + count-style query handling, (b) consultant_participants join column choice (per discovery), (c) HealthWidget streak calculation via extracted streakDays utility (single source — `client/src/utils/streakDays.ts`), (d) 5 widgets implemented, (e) integration test count, (f) HUB-04 acceptance check.
 </output>
