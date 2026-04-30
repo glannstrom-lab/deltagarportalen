@@ -13,6 +13,7 @@ import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
 import { sanitizeHTMLWithLineBreaks } from '@/utils/sanitize';
+import { validatedStorage } from '@/lib/validatedStorage';
 
 import { PageLayout } from '@/components/layout/index';
 import {
@@ -87,7 +88,11 @@ function SearchTab() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totalJobs, setTotalJobs] = useState(0);
-  const [filters, setFilters] = useState<SearchFilters>(defaultFilters);
+  // Lazy init: läs senast sparat filter från localStorage. Validerat via Zod.
+  const [filters, setFilters] = useState<SearchFilters>(() => {
+    const saved = validatedStorage.get('jobSearchFilters');
+    return saved ?? defaultFilters;
+  });
   const [selectedJob, setSelectedJob] = useState<PlatsbankenJob | null>(null);
   const [isSearchExpanded, setIsSearchExpanded] = useState(true);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -117,6 +122,21 @@ function SearchTab() {
       performSearch();
     }, 300);
     return () => clearTimeout(timer);
+  }, [filters]);
+
+  // Persistera filter — så användaren får tillbaka sitt urval vid återbesök
+  useEffect(() => {
+    const isDefault =
+      !filters.query &&
+      !filters.municipality &&
+      !filters.region &&
+      !filters.employmentType &&
+      filters.publishedWithin === 'all';
+    if (isDefault) {
+      validatedStorage.remove('jobSearchFilters');
+    } else {
+      validatedStorage.set('jobSearchFilters', filters);
+    }
   }, [filters]);
 
   // Hämta autocomplete-förslag (med debounce för att minska API-anrop)

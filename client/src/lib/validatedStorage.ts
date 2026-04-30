@@ -132,6 +132,17 @@ export const energyLevelHistorySchema = z.object({
 })
 
 /**
+ * Job Search Filters - persists user's last filter selection across sessions
+ */
+export const jobSearchFiltersSchema = z.object({
+  query: z.string().max(200).default(''),
+  municipality: z.string().max(100).default(''),
+  region: z.string().max(20).default(''),
+  employmentType: z.string().max(100).default(''),
+  publishedWithin: z.enum(['today', 'week', 'month', 'all']).default('all')
+})
+
+/**
  * Calendar Preferences - calendar view settings
  */
 export const calendarPreferencesSchema = z.object({
@@ -158,7 +169,8 @@ export const storageSchemas = {
   interestGuideResults: interestGuideResultsSchema,
   draftCoverLetter: draftCoverLetterSchema,
   energyLevelHistory: energyLevelHistorySchema,
-  calendarPreferences: calendarPreferencesSchema
+  calendarPreferences: calendarPreferencesSchema,
+  jobSearchFilters: jobSearchFiltersSchema
 } as const
 
 // Type for storage keys
@@ -175,6 +187,7 @@ export type InterestGuideResults = z.infer<typeof interestGuideResultsSchema>
 export type DraftCoverLetter = z.infer<typeof draftCoverLetterSchema>
 export type EnergyLevelHistory = z.infer<typeof energyLevelHistorySchema>
 export type CalendarPreferences = z.infer<typeof calendarPreferencesSchema>
+export type JobSearchFilters = z.infer<typeof jobSearchFiltersSchema>
 
 // Type map for get/set operations
 type StorageTypeMap = {
@@ -188,6 +201,7 @@ type StorageTypeMap = {
   draftCoverLetter: DraftCoverLetter
   energyLevelHistory: EnergyLevelHistory
   calendarPreferences: CalendarPreferences
+  jobSearchFilters: JobSearchFilters
 }
 
 // ============================================
