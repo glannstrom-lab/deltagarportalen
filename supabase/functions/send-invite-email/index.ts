@@ -150,29 +150,113 @@ serve(async (req) => {
       expiresAt: expiresAtFormatted
     })
 
-    // Skicka email via Supabase
-    const { error: emailError } = await supabaseClient.auth.admin.sendRawEmail({
-      to: invitation.email,
-      subject: 'Inbjudan till Jobin',
-      html: emailHtml,
-    })
+    // Email-utskick. Två lägen:
+    // 1) RESEND_API_KEY satt → använd Resend med custom-HTML-template +
+    //    Supabase generateLink för att få magic-link
+    // 2) Fallback → Supabase native inviteUserByEmail (default-template)
+    //
+    // NOTE: tidigare anropade vi `auth.admin.sendRawEmail()` här — den
+    // metoden finns inte i Supabase JS SDK och anropet kastade TypeError
+    // som fångades till generisk 500.
+    const resendApiKey = Deno.env.get('RESEND_API_KEY')
+    const emailFrom = Deno.env.get('EMAIL_FROM') || 'Jobin <onboarding@resend.dev>'
+    let emailErrorMessage: string | null = null
 
-    if (emailError) {
-      console.error('Email error:', emailError)
+    if (resendApiKey) {
+      // === RESEND-LÄGE: custom HTML ===
+      try {
+        // Generera magic-link utan att skicka email (generateLink skickar inte själv).
+        const { data: linkData, error: linkError } = await supabaseClient.auth.admin.generateLink({
+          type: 'invite',
+          email: invitation.email,
+          options: {
+            data: {
+              first_name: invitation.metadata?.first_name,
+              last_name: invitation.metadata?.last_name,
+              consultant_name: consultantName,
+              consultant_id: invitation.invited_by_id ?? invitation.consultant_id,
+              invitation_id: invitation.id,
+              message: invitation.metadata?.message,
+            },
+            redirectTo: inviteUrl,
+          },
+        })
+
+        if (linkError || !linkData) {
+          throw new Error(linkError?.message ?? 'generateLink returned no data')
+        }
+
+        const actionLink =
+          (linkData as { properties?: { action_link?: string } })?.properties?.action_link ||
+          inviteUrl
+
+        // Bygg HTML med magic-link som CTA
+        const html = getInviteEmailTemplate({
+          firstName: invitation.metadata?.first_name,
+          consultantName,
+          inviteUrl: actionLink,
+          message: invitation.metadata?.message,
+          expiresAt: expiresAtFormatted,
+        })
+
+        // Skicka via Resend REST API (slipper SDK-bundle i edge-funktion)
+        const resendResponse = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${resendApiKey}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            from: emailFrom,
+            to: [invitation.email],
+            subject: 'Inbjudan till Jobin',
+            html,
+          }),
+        })
+
+        if (!resendResponse.ok) {
+          const errBody = await resendResponse.text().catch(() => 'unknown')
+          throw new Error(`Resend ${resendResponse.status}: ${errBody}`)
+        }
+      } catch (err) {
+        emailErrorMessage = err instanceof Error ? err.message : 'Unknown Resend error'
+      }
+    } else {
+      // === FALLBACK-LÄGE: Supabase native invite (default-template) ===
+      const { error: inviteErr } = await supabaseClient.auth.admin.inviteUserByEmail(
+        invitation.email,
+        {
+          data: {
+            first_name: invitation.metadata?.first_name,
+            last_name: invitation.metadata?.last_name,
+            consultant_name: consultantName,
+            consultant_id: invitation.invited_by_id ?? invitation.consultant_id,
+            invitation_id: invitation.id,
+            message: invitation.metadata?.message,
+          },
+          redirectTo: inviteUrl,
+        }
+      )
+      if (inviteErr) emailErrorMessage = inviteErr.message
+      void emailHtml  // bevarad för Resend-läget — används inte här
+    }
+
+    if (emailErrorMessage) {
+      console.error('Email error:', emailErrorMessage)
 
       // Fallback: logga att email behöver skickas manuellt
       await supabaseClient
         .from('invitations')
         .update({
           email_sent: false,
-          email_error: emailError.message,
+          email_error: emailErrorMessage,
           updated_at: new Date().toISOString()
         })
         .eq('id', invitationId)
 
       return createCorsResponse({
         error: 'Could not send email automatically',
-        details: emailError.message,
+        details: emailErrorMessage,
         fallback: 'Email logged for manual sending'
       }, 500, origin)
     }
