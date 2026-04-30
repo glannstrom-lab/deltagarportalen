@@ -473,7 +473,7 @@ function SearchTab() {
                   }
                 }}
                 aria-label={`${job.headline} - ${job.employer?.name || t('common.employerNotSpecified')}`}
-                className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl sm:rounded-2xl border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 p-4 sm:p-5 hover:border-[var(--c-solid)] hover:shadow-[var(--shadow-hover)] transition-[border-color,box-shadow] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 dark:focus:ring-offset-stone-900"
+                className="bg-white dark:bg-stone-800 rounded-xl sm:rounded-2xl border border-stone-200 dark:border-stone-700 p-4 sm:p-5 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-[var(--shadow-hover)] transition-[border-color,box-shadow] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 dark:focus:ring-offset-stone-900"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1 min-w-0">
@@ -839,7 +839,7 @@ function SavedJobsTab() {
         {filteredJobs.map((job) => {
           const jobData = job.jobData;
           return (
-            <Card key={job.id} className="p-5 hover:border-[var(--c-solid)] hover:shadow-[var(--shadow-hover)] transition-[border-color,box-shadow] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+            <Card key={job.id} className="p-5 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-[var(--shadow-hover)] transition-[border-color,box-shadow] bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
               <div className="flex items-start gap-4">
                 {/* Company logo placeholder */}
                 <div className="w-12 h-12 bg-stone-100 dark:bg-stone-700 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -893,7 +893,7 @@ function SavedJobsTab() {
 
               {/* Footer with link */}
               {jobData?.webpage_url && (
-                <div className="mt-4 pt-3 border-t border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/30 flex justify-end">
+                <div className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-700 flex justify-end">
                   <a
                     href={jobData.webpage_url}
                     target="_blank"
