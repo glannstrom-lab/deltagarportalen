@@ -1,7 +1,8 @@
 # Designprinciper för Deltagarportalen
 
-> **Status:** Aktiv från 2026-04-29. Ersätter "C-Pastell 3-domän"-spec.
-> **Riktning:** 5 ljusa pastellfärger som lever i innehållet — uniform neutral grå hjälte/header på alla sidor.
+> **Status:** Aktiv från 2026-04-30. Ersätter tidigare "action/reflektion/utåtriktat"-modell (3-domän) — den är borttagen som koncept.
+> **Riktning:** Hubbarna är organiseringsprincipen. 4 hubbar (**Söka jobb**, **Karriär**, **Resurser**, **Min vardag**) + **Översikt** har var sitt färgschema. Undersidor ärver moderhubbens färg.
+> **Redesignstatus:** Bara de 5 hub-landningssidorna är klara med redesignen. Underliggande sidor (CV, Wellness, JobSearch m.fl.) väntar fortfarande på pass.
 
 ## Kontext
 
@@ -15,31 +16,54 @@ WCAG 2.1 AA är minimikrav. Pastell-intensiteten är vald för att minska visuel
 
 | Princip | Konsekvens |
 |--------|-----------|
-| **Hjältesektion = neutral grå** | Alla sidors `PageHeader` använder `--header-bg` (varm grå). Ingen domänfärg och ingen gradient i toppen. En 4px vänsterkant i domänfärg ger subtil identifiering. |
+| **Hjältesektion = neutral grå** | Alla sidors `PageHeader` använder `--header-bg` (varm grå). Ingen hub-färg och ingen gradient i toppen. En 4px vänsterkant i hub-färgen ger subtil identifiering. (Översikt-hero är dokumenterat undantag — se nedan.) |
 | **Pasteller bor i innehållet** | KPI-kort, sektionsbakgrunder, tabs, ikon-badges använder pastellerna. Inte rubrikbanderoller. |
 | **Inga gradients i återkommande UI** | Gradient-bakgrunder (from-X to-Y) är förbjudna i KPI-kort, sektionsheaders, knappar. En platt pastell räcker. Gradient endast tillåten för dekorativa hjältebilder. |
-| **5 distinkta domäner** | Färgen kommunicerar **vad sidan är** — inte enbart "vilken accent finns på sidan". |
+| **Undersidor ärver moderhubbens färg** | En sida under `/jobb`-hubben (t.ex. CV, Applications) använder persika. En sida under `/karriar` använder rosa. Färgen säger **vilken hub du är i**, inte vilken specifik sida. |
 
 ---
 
-## Färgsystem — Fem semantiska domäner
+## Färgsystem — Fem hub-färgscheman
 
-Färger representerar **aktivitetsdomäner**, inte dekoration. Varje domän har en egen ljus pastellfärg som används konsekvent i innehållet, aldrig i hjälte/header.
+Varje hub har **ett färgschema** som dess landningssida och alla undersidor delar. Färgen säger "var i portalen är du?" — inte "vad gör den här sidan?".
 
-### Domäner
+### Hub-färger
 
-| Domän | Färg | Soft bg | Accent | Solid (CTA) | Text | Sidor |
-|-------|------|---------|--------|-------------|------|-------|
-| **Action** | Mint/Turkos | `#ECF7F1` | `#C5E5D4` | `#1F8A66` | `#155F47` | Dashboard, AI-Team, Inställningar, Profil, Min konsulent |
-| **Info** | Sky/Blå | `#ECF4FA` | `#C8DEEF` | `#2F7DB5` | `#1F5985` | Help, Resources, KnowledgeBase, Nätverk, ExternalResources |
-| **Activity** | Persika | `#FCF1E6` | `#F5D3B5` | `#C97A2E` | `#8B5418` | JobSearch, Applications, Spontanansökan, LinkedIn, Salary, International |
-| **Wellbeing** | Lavendel | `#F2EDF8` | `#D4C5EB` | `#7058A8` | `#4F3D7C` | Wellness, Diary, Calendar |
-| **Coaching** | Rosa/Coral | `#FBEEEF` | `#F2C8CD` | `#B85363` | `#843845` | CV, Cover Letter, Career, InterestGuide, SkillsGap, PersonalBrand, Education, InterviewSimulator, Exercises |
+| Hub | Path | Färg | Soft bg | Accent | Solid (CTA) | Text |
+|-----|------|------|---------|--------|-------------|------|
+| **Översikt** | `/oversikt` | Mint/Turkos | `#ECF7F1` | `#C5E5D4` | `#1F8A66` | `#155F47` |
+| **Söka jobb** | `/jobb` | Persika | `#FCF1E6` | `#F5D3B5` | `#C97A2E` | `#8B5418` |
+| **Karriär** | `/karriar` | Rosa/Coral | `#FBEEEF` | `#F2C8CD` | `#B85363` | `#843845` |
+| **Resurser** | `/resurser` | Sky/Blå | `#ECF4FA` | `#C8DEEF` | `#2F7DB5` | `#1F5985` |
+| **Min vardag** | `/min-vardag` | Lavendel | `#F2EDF8` | `#D4C5EB` | `#7058A8` | `#4F3D7C` |
 
-### Bakåtkompatibilitet
+### Hub-medlemskap (vilka sidor ärver vilken färg)
 
-`reflection` aliasar till `wellbeing` och `outbound` aliasar till `activity` (CSS-aliasing i `tokens.css`).
-Detta så att sidor som migrerades till det korta 3-domän-systemet fortsätter fungera utan kodändringar.
+Sanning: `client/src/components/layout/navigation.ts::navHubs[].memberPaths`. **En sida får bara tillhöra en hub** — ingen dubblering tillåten.
+
+| Hub | Undersidor som ärver hub-färgen |
+|-----|----------------------------------|
+| **Översikt** | Bara `/oversikt` (och `/` som redirect) |
+| **Söka jobb** | JobSearch, Applications, Spontanansökan, CV, Cover Letter, Interview Simulator, Salary, International, LinkedIn Optimizer |
+| **Karriär** | Career, Interest Guide, Skills Gap, Personal Brand, Education |
+| **Resurser** | Knowledge Base, Resources, Print Resources, External Resources, AI-team, Nätverk |
+| **Min vardag** | Wellness, Diary, Calendar, Exercises, My Consultant, Profile |
+
+Sidor utanför hubbarna (Help, Settings, AdminPanel, Login) använder neutral grå utan hub-accent.
+
+### CSS-tokennamn (implementation)
+
+Hub-färgerna implementeras i `tokens.css` via tekniska tokennamn som *inte* speglar hub-namnen 1-till-1. Detta är ett implementationsspår från tidigare arkitektur — använd hub-namnet när du resonerar, tokennamnet när du skriver kod:
+
+| Hub | `data-domain`-värde | Token-prefix |
+|-----|---------------------|--------------|
+| Översikt | `action` | `--action-*` |
+| Söka jobb | `activity` | `--activity-*` |
+| Karriär | `coaching` | `--coaching-*` |
+| Resurser | `info` | `--info-*` |
+| Min vardag | `wellbeing` | `--wellbeing-*` |
+
+> **Nedlagda koncept:** Den tidigare 3-domän-modellen (`action`/`reflection`/`outbound`) är **borttagen som designkoncept**. CSS-aliaser för `reflection` (→ wellbeing) och `outbound` (→ activity) finns kvar i `tokens.css` så gammal kod inte kraschar, men ska **inte** användas i ny kod eller refereras i designval.
 
 ### Pastell-intensitetsregler
 
@@ -74,27 +98,31 @@ Detta så att sidor som migrerades till det korta 3-domän-systemet fortsätter 
 
 ### CSS-tokens
 
-Implementerade i `client/src/styles/tokens.css`. Aktiveras per sida via `<div data-domain="...">`.
+Implementerade i `client/src/styles/tokens.css`. Aktiveras per sida via `<div data-domain="...">` — sätts av `PageLayout` som läser routens hub-tillhörighet från `lib/domains.ts`.
 
 ```css
 :root {
+  /* Default = Översikt (action/mint) */
   --c-bg:     var(--action-bg);
   --c-accent: var(--action-accent);
   --c-solid:  var(--action-solid);
   --c-text:   var(--action-text);
 }
 
-[data-domain="info"]      { --c-bg: var(--info-bg); ... }
-[data-domain="activity"]  { --c-bg: var(--activity-bg); ... }
-[data-domain="wellbeing"] { --c-bg: var(--wellbeing-bg); ... }
-[data-domain="coaching"]  { --c-bg: var(--coaching-bg); ... }
+[data-domain="action"]    { /* Översikt-hubben */ }
+[data-domain="activity"]  { /* Söka jobb-hubben */ }
+[data-domain="coaching"]  { /* Karriär-hubben */ }
+[data-domain="info"]      { /* Resurser-hubben */ }
+[data-domain="wellbeing"] { /* Min vardag-hubben */ }
 ```
+
+Komponenter konsumerar **alltid** `--c-bg` / `--c-accent` / `--c-solid` / `--c-text` — aldrig en specifik hubs token direkt. Det enda undantaget är `HubOverview.tsx` där 4 olika hub-färger visas samtidigt (HubCard-griden) och behöver direktreferenser.
 
 ### Fördelning (60/30/10)
 
 - **60 %** Neutrala (canvas, surface, header-bg, stone)
-- **30 %** Pastell soft-bg (domänens 50-mix som zon-bakgrund i innehållet)
-- **10 %** Solid accent (domänens 700-nyans för CTA, ikoner, progress)
+- **30 %** Pastell soft-bg (hubbens 50-mix som zon-bakgrund i innehållet)
+- **10 %** Solid accent (hubbens 700-nyans för CTA, ikoner, progress)
 
 ---
 
@@ -104,7 +132,7 @@ Implementerade i `client/src/styles/tokens.css`. Aktiveras per sida via `<div da
 
 ```
 ┌──────────────────────────────────────────────┐
-│▌ Title                            [actions]  │  ← border-left 4px = --c-solid (domän)
+│▌ Title                            [actions]  │  ← border-left 4px = --c-solid (hub)
 │  Subtitle                                     │
 │  ┌──────────────────────────────────────┐    │
 │  │ Tab1  Tab2  Tab3  Tab4               │    │  ← tabs i vit underyta
@@ -117,16 +145,40 @@ Implementerade i `client/src/styles/tokens.css`. Aktiveras per sida via `<div da
 Implementeras i `client/src/components/layout/PageTabs.tsx::PageHeader`.
 
 - Bakgrund: `--header-bg` (samma på alla sidor)
-- Vänsterkant: 4px `--c-solid` (subtil domän-identifiering)
+- Vänsterkant: 4px `--c-solid` (subtil hub-identifiering)
 - Titel: `--header-text`
 - Undertext: `--header-muted`
-- Tabs: vit underyta i `--header-border`-ram, accent-färg på aktiv tab är `--c-bg` (domänens pastell)
+- Tabs: vit underyta i `--header-border`-ram, accent-färg på aktiv tab är `--c-bg` (hubbens pastell)
 
 ### Vad som FÖRBJÖD
 
 - Inga gradients i header
 - Ingen pastell-bakgrund i header (det skapar flera olika "hero"-kulörer som skriker)
 - Inga shadow på header (border räcker)
+
+### Undantag: Översikt-hero (Launchpad)
+
+Översikt (`/oversikt`) är **launchpad-sidan** och får ett särskilt hero-mönster — inte standard PageHeader:
+
+```
+┌──────────────────────────────────────────────────────┐
+│  ◉ profilbild     Hej Mikael            ◉ TIS       │
+│  (80×80, vit)     ↳ Besök din profil →   28          │
+│                                                       │
+│  ─────────────────────────────────────────            │
+│  Vad vill du göra idag?                              │
+└──────────────────────────────────────────────────────┘
+   bg = --c-bg (action/mint)        ← undantag från neutral header
+   border = --c-accent              radius 24px
+   subtil radial-glow i --c-accent  ← dekorativ gradient (tillåten)
+```
+
+- Hero-bakgrund: `--c-bg` (action-mint) — **enda sidan** där hjältesektionen får domänfärg.
+- Profilbild + datum-disc: 80×80, `bg-white`, `border-2 border-[--c-accent]`, runda.
+- Subtil radial-gradient (top-right) i `--c-accent` är tillåten som **dekorativ** lager (konsekvent med gradient-undantaget för dekorativa hero-bilder).
+- Implementation: `client/src/pages/hubs/HubOverview.tsx`. Aktiveras med `<PageLayout showHeader={false} ...>` så standard-PageHeader inte renderas.
+
+Övriga hub-sidor (`/jobb`, `/karriar`, `/resurser`, `/min-vardag`) använder **standard neutral PageHeader** med 4px vänsterkant i sin hub-färg.
 
 ---
 
@@ -159,8 +211,34 @@ Implementeras i `client/src/components/layout/PageTabs.tsx::PageHeader`.
 ### Kort
 
 - **Default:** `bg-white`, `border-stone-150`, radius 12px. Ingen skugga. Hover: subtil elevation.
-- **Tinted:** `bg-[--c-bg]`, `border-[--c-accent]`. Används när kortet hör tematiskt till sidans domän.
+- **Tinted:** `bg-[--c-bg]`, `border-[--c-accent]`. Används när kortet hör tematiskt till sidans hub.
 - **Förbjudet:** gradient-bakgrund i kort.
+
+### HubCard (på Översikt)
+
+Hub-kortet är ett distinkt mönster — **vitt kort** med hub-accent bara på toppstrecket, ikon-tilen och aktivitets-pricken. Inte tintat. Det skapar lugn yta där 4 olika hub-färger kan samexistera utan att skrika.
+
+```
+┌──────────────────────────────────────┐
+│ ▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔▔     │  ← 4px topp-accent i hub-solid
+│  ┌──┐  Hitta och söka jobb           │
+│  │🧳│  ↳ ikon i hub-pastell-tile     │  ← 48×48 rounded-14, bg = hub-bg
+│  └──┘                                 │
+│        Matcha din profil, ansök ...   │
+│  ─────────────────────────────────    │
+│  ● 3 aktiva ansökningar     2d sen   │  ← prick i hub-solid
+└──────────────────────────────────────┘
+   bg = white, border = stone-200, radius 18px, min-height 200px
+   hover: y -2px + shadow-md
+```
+
+- Implementation: `HubOverview.tsx::HubCard`.
+
+### Hub-feature-page (`/jobb`, `/karriar`, `/resurser`, `/min-vardag`)
+
+De 4 hub-landningssidorna renderas via `HubPage.tsx` och är de enda hub-sidorna som är klara med redesignen. De följer **standard neutral PageHeader** + grid av feature-kort (en per member-path). Hubbens färg används som accent på vänsterkant, ikon-tile och aktiv-tab — aldrig som hero-bakgrund.
+
+**Undersidor (CV, Wellness, JobSearch m.fl.) är ännu inte redesignade** men ska när de migreras ärva moderhubbens färg via `data-domain` på `PageLayout`.
 
 ### KPI-kort
 
@@ -177,7 +255,7 @@ Implementeras i `client/src/components/layout/PageTabs.tsx::PageHeader`.
 
 - Radius: 14px
 - Default: `bg-stone-50`, `text-stone-700`, `border-stone-150`
-- Aktiv/Domän: `bg-[--c-bg]`, `text-[--c-text]`, `border-[--c-accent]`
+- Aktiv/Hub: `bg-[--c-bg]`, `text-[--c-text]`, `border-[--c-accent]`
 - Status (amber/röd): semantisk färg + matchande tint
 
 ### Progress
@@ -187,37 +265,40 @@ Implementeras i `client/src/components/layout/PageTabs.tsx::PageHeader`.
 
 ### Sidebar
 
-Grupperad i 3 navigationsblock med små färgpunkter (sidebar-domänerna är förenklade jämfört med sid-domänerna):
+5 hub-länkar i fast ordning. Varje länk wrappas i `<div data-domain="...">` så hover/aktiv-färg matchar respektive hubs pastell.
 
 ```
-ACTION ●         (turkos punkt)
-  Dashboard
-  AI-Team
-  ...
-
-REFLEKTION ●     (lila/lavendel punkt)
-  CV
-  Personligt brev
-  Wellness
-  ...
-
-UTÅTRIKTAT ●     (persika punkt)
-  Jobbsökning
-  Ansökningar
-  ...
+●  Översikt        (mint)
+●  Söka jobb       (persika)
+   ├─ Sök jobb
+   ├─ Mina ansökningar
+   ├─ ... sub-items syns BARA för aktiv hub
+●  Karriär         (rosa)
+●  Resurser        (sky)
+●  Min vardag      (lavendel)
 ```
 
-Aktiv länk: `bg-[--c-bg]`, `text-[--c-text]`, vänsterkant 3px `--c-solid`.
+- **Aktiv hub:** `bg-[--c-bg]`, `text-[--c-text]`, vänsterkant 2px `--c-solid`, font-semibold.
+- **Inaktiv hover:** `bg-[--c-bg]/40`, `text-[--c-text]` — hover på en hub förhandsvisar dess färg.
+- **Sub-items (bara aktiv hub):** indragna med vänster-rail i `border-[--c-accent]`, samma hover/aktiv-regler — så ankaret visuellt knyter ihop hubben med dess undersidor.
+- **Hub-uppslag:** `getActiveHub(pathname)` mot `pageToHub`-mappen (byggd från `navHubs[].memberPaths`). **Aldrig** URL-prefix-matchning — det knäcker djup-länkar.
+
+#### Konsulent-/Admin-sektioner
+
+- Konsulent-blocket: använder lavendel via äldre `data-domain="reflection"`-alias (kvar tills konsulent-flödet redesignas).
+- Admin-länkar: semantisk amber (status-färg, **inte** hub) — visuellt åtskild för att signalera elevated permissions.
+
+> **Implementation:** `client/src/components/layout/Sidebar.tsx` har även en legacy-renderingsväg bakom `VITE_HUB_NAV_ENABLED=false` — den är dödkod i prod och ska inte refereras i designval.
 
 ---
 
 ## Tillgänglighet
 
-- **Fokusring:** `outline: none; box-shadow: 0 0 0 3px var(--c-bg), 0 0 0 4px var(--c-solid);` — synlig på alla domäner, ingen hårdkodad färg.
+- **Fokusring:** `outline: none; box-shadow: 0 0 0 3px var(--c-bg), 0 0 0 4px var(--c-solid);` — synlig på alla hubbar, ingen hårdkodad färg.
 - **Kontrast:** WCAG 2.1 AA minimum. Pastell-bakgrunderna är medvetet ljusa — text MÅSTE använda 900-nyansen för att klippa minst 7:1 kontrast.
 - **Touch targets:** minst 44px.
 - **prefers-reduced-motion:** alla animationer reduceras till 0.01ms via `@media`.
-- **prefers-contrast: high:** byt till mörkare nyanser av domänfärgerna automatiskt.
+- **prefers-contrast: high:** byt till mörkare nyanser av hub-färgerna automatiskt.
 
 ---
 
@@ -233,21 +314,39 @@ Inga animationer över 600ms. Float, spin-slow och liknande bortkastade-uppmärk
 
 ---
 
-## Vad som ändrats från föregående DESIGN.md (3-domän, 2026-04-28)
+## Designhistorik
 
-| Område | 3-domän | 5-pastell (nu) |
-|--------|---------|----------------|
-| Antal domäner | 3 (Action/Reflektion/Utåtriktat) | 5 (Action/Info/Activity/Wellbeing/Coaching) |
-| Header | Gradient i domänfärg `from-[--c-bg] via-white to-sky-50` | Uniform `--header-bg` (varm grå), 4px vänsterkant i domänfärg |
-| Gradients i UI | Tillåtet på KPI, sektionsheaders | Förbjudet på återkommande UI |
-| Solid-fyllning | 700-nyans | 700-nyans (oförändrat) |
+| Version | Datum | Modell |
+|---------|-------|--------|
+| **Hub-färg (nu)** | 2026-04-30 | 5 hub-färgscheman (Översikt + 4 hubbar). Hubbar är organiseringsprincipen. Undersidor ärver moderhubbens färg. |
+| 5-pastell-domän | 2026-04-29 | 5 abstrakta domäner (action/info/activity/wellbeing/coaching). Bytt namn — koncept lever kvar som CSS-tokens. |
+| 3-domän | 2026-04-28 | Action/Reflektion/Utåtriktat. **Borttaget koncept.** CSS-aliaser kvar för rollback. |
+
+### Vad är klart (2026-04-30)
+
+- ✅ **Översikt** (`/oversikt`) — launchpad-hero, 4 HubCards
+- ✅ **Söka jobb** (`/jobb`) — landningssida
+- ✅ **Karriär** (`/karriar`) — landningssida
+- ✅ **Resurser** (`/resurser`) — landningssida
+- ✅ **Min vardag** (`/min-vardag`) — landningssida
+- ✅ Sidebar (hub-läge med pastellfärger per hub)
+
+### Vad återstår
+
+- ⏳ **Undersidor** (CV, Wellness, JobSearch, Career, m.fl. ~25 sidor) — ska migreras till neutral PageHeader + ärva moderhubbens färg via `data-domain`.
+- ⏳ Konsulent- och Admin-flöden (egen designvärdering när de tas upp).
+- ⏳ Mobil bottom nav (HubBottomNav) — fungerar tekniskt men inte designgranskad.
 
 ---
 
 ## Referens
 
 - Tokens: `client/src/styles/tokens.css`
-- Domän-mappning: `client/src/lib/domains.ts`
+- Hub→`data-domain`-mappning: `client/src/lib/domains.ts`
+- Hub-definitioner: `client/src/components/layout/navigation.ts::navHubs`
 - PageHeader (uniform): `client/src/components/layout/PageTabs.tsx::PageHeader`
+- Översikt-hero: `client/src/pages/hubs/HubOverview.tsx`
+- Hub-landningssidor: `client/src/pages/hubs/HubPage.tsx`
+- Sidebar: `client/src/components/layout/Sidebar.tsx`
 
-*Senast uppdaterad: 2026-04-29*
+*Senast uppdaterad: 2026-04-30*

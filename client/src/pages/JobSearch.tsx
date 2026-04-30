@@ -219,7 +219,7 @@ function SearchTab() {
           className="w-full flex items-center justify-between p-4 hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-text)] rounded-xl flex items-center justify-center">
+            <div className="w-10 h-10 bg-[var(--c-solid)] rounded-xl flex items-center justify-center">
               <Filter className="w-5 h-5 text-white" />
             </div>
             <div className="text-left">
@@ -407,24 +407,24 @@ function SearchTab() {
                     </span>
                   )}
                   {filters.employmentType && (
-                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 rounded-lg text-sm min-h-[44px]">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-lg text-sm min-h-[44px]">
                       💼 {filters.employmentType}
                       <button
                         onClick={() => setFilters({ ...filters, employmentType: '' })}
                         aria-label={t('jobSearch.removeFilter', { filter: filters.employmentType }) || `Ta bort filter: ${filters.employmentType}`}
-                        className="ml-1 p-1 hover:text-sky-900 dark:hover:text-sky-200 hover:bg-sky-200 dark:hover:bg-sky-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        className="ml-1 p-1 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-text)] rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </span>
                   )}
                   {filters.publishedWithin !== 'all' && (
-                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 rounded-lg text-sm min-h-[44px]">
+                    <span className="inline-flex items-center gap-1 px-3 py-2 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] rounded-lg text-sm min-h-[44px]">
                       📅 {filters.publishedWithin === 'today' ? t('jobSearch.today') : filters.publishedWithin === 'week' ? t('jobSearch.lastWeek') : t('jobSearch.lastMonth')}
                       <button
                         onClick={() => setFilters({ ...filters, publishedWithin: 'all' })}
                         aria-label={t('jobSearch.removeFilter', { filter: t('jobSearch.' + filters.publishedWithin) }) || `Ta bort datumfilter`}
-                        className="ml-1 p-1 hover:text-emerald-900 dark:hover:text-emerald-200 hover:bg-emerald-200 dark:hover:bg-emerald-800 rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
+                        className="ml-1 p-1 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-text)] rounded min-w-[28px] min-h-[28px] flex items-center justify-center"
                       >
                         <X className="w-4 h-4" aria-hidden="true" />
                       </button>
@@ -473,7 +473,7 @@ function SearchTab() {
                   }
                 }}
                 aria-label={`${job.headline} - ${job.employer?.name || t('common.employerNotSpecified')}`}
-                className="bg-orange-50 dark:bg-orange-900/20 rounded-xl sm:rounded-2xl shadow-sm border border-orange-200 dark:border-orange-800 p-4 sm:p-5 hover:shadow-md hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 dark:focus:ring-offset-stone-900"
+                className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl sm:rounded-2xl border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 p-4 sm:p-5 hover:border-[var(--c-solid)] hover:shadow-[var(--shadow-hover)] transition-[border-color,box-shadow] cursor-pointer focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 dark:focus:ring-offset-stone-900"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1 min-w-0">
@@ -656,8 +656,8 @@ function SearchTab() {
                     className={cn(
                       "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-colors",
                       showCommutePlanner
-                        ? "bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800"
-                        : "bg-sky-50 dark:bg-sky-900/20 text-sky-600 dark:text-sky-400 hover:bg-sky-100 dark:hover:bg-sky-900/40"
+                        ? "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
+                        : "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/40"
                     )}
                   >
                     <Train size={16} />
@@ -839,10 +839,10 @@ function SavedJobsTab() {
         {filteredJobs.map((job) => {
           const jobData = job.jobData;
           return (
-            <Card key={job.id} className="p-5 hover:shadow-md transition-shadow bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800">
+            <Card key={job.id} className="p-5 hover:border-[var(--c-solid)] hover:shadow-[var(--shadow-hover)] transition-[border-color,box-shadow] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
               <div className="flex items-start gap-4">
                 {/* Company logo placeholder */}
-                <div className="w-12 h-12 bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-700 dark:to-stone-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-stone-100 dark:bg-stone-700 rounded-xl flex items-center justify-center flex-shrink-0">
                   <Building2 className="w-6 h-6 text-stone-600 dark:text-stone-400" />
                 </div>
 
@@ -893,7 +893,7 @@ function SavedJobsTab() {
 
               {/* Footer with link */}
               {jobData?.webpage_url && (
-                <div className="mt-4 pt-3 border-t border-orange-100 dark:border-orange-800/50 flex justify-end">
+                <div className="mt-4 pt-3 border-t border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/30 flex justify-end">
                   <a
                     href={jobData.webpage_url}
                     target="_blank"
@@ -934,7 +934,7 @@ export default function JobSearch() {
         tabs={jobSearchTabs}
         tabVariant="glass"
         className="max-w-7xl mx-auto"
-        domain="info"
+        domain="activity"
       >
         <Routes>
           <Route index element={<SearchTab />} />
