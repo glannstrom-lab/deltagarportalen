@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
-import { supabase, Profile, CV, CoverLetter, getCurrentUser, getProfile } from '../lib/supabase'
+import { supabase, getCurrentUser, getProfile } from '../lib/supabase'
+import type { Profile, CV, CoverLetter } from '../lib/supabase'
 import type { User } from '@supabase/supabase-js'
 
 // Hook for auth state
