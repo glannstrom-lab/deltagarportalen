@@ -3,8 +3,11 @@ import { useTranslation } from 'react-i18next'
 import { Globe, Check, RotateCcw } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
-// Språk med namn på sitt eget språk och flagg-emoji
+// Språk med namn på sitt eget språk och flagg-emoji.
+// Engelska ligger överst eftersom i18n-täckningen sv→en ännu inte är komplett —
+// Google Translate fyller i resten när användaren bytt UI-språk till engelska.
 const LANGUAGES = [
+  { code: 'en', name: 'English', flag: '🇬🇧', english: 'English' },
   { code: 'ar', name: 'العربية', flag: '🇸🇦', english: 'Arabic' },
   { code: 'fa', name: 'فارسی', flag: '🇮🇷', english: 'Persian' },
   { code: 'so', name: 'Soomaali', flag: '🇸🇴', english: 'Somali' },
