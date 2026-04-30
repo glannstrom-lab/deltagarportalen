@@ -554,7 +554,9 @@ export default function Resources() {
 
   if (loading) {
     return (
-      <PageLayout title={t('resources.title')} description={t('resources.description')} showTabs={false}>
+      <PageLayout title={t('resources.title')} description={t('resources.description')} showTabs={false}
+      className="max-w-7xl mx-auto"
+>
         <div
           className="flex items-center justify-center py-20"
           role="status"
@@ -574,7 +576,8 @@ export default function Resources() {
       description={t('resources.description')}
       showTabs={false}
       domain="info"
-    >
+      className="max-w-7xl mx-auto"
+>
       {/* Stats Overview */}
       <div className="bg-gradient-to-br from-blue-500 via-blue-600 to-sky-700 dark:from-blue-600 dark:via-blue-700 dark:to-sky-800 rounded-2xl p-6 mb-6 text-white shadow-xl shadow-blue-500/20 dark:shadow-blue-900/30">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -835,7 +838,7 @@ export default function Resources() {
 
         {/* Interest Guide Result - Compact */}
         {(activeTab === 'all' || activeTab === 'documents') && interestResult && (
-          <section className="bg-gradient-to-r from-pink-50 to-sky-50 dark:from-pink-900/20 dark:to-sky-900/20 rounded-xl border border-pink-200 dark:border-pink-800 p-4">
+          <section className="bg-gradient-to-r from-pink-50 to-sky-50 dark:from-pink-900/20 dark:to-sky-900/20 rounded-xl border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-sky-500 rounded-lg flex items-center justify-center">
@@ -854,7 +857,7 @@ export default function Resources() {
               <div className="flex items-center gap-2">
                 <Link
                   to="/interest-guide"
-                  className="px-3 py-1.5 text-sm bg-white dark:bg-stone-800 text-pink-700 dark:text-pink-400 rounded-lg font-medium hover:bg-pink-50 dark:hover:bg-pink-900/30 border border-pink-200 dark:border-pink-700 transition-colors"
+                  className="px-3 py-1.5 text-sm bg-white dark:bg-stone-800 text-[var(--c-text)] dark:text-pink-400 rounded-lg font-medium hover:bg-pink-50 dark:hover:bg-pink-900/30 border border-pink-200 dark:border-pink-700 transition-colors"
                 >
                   {t('resources.seeResults')}
                 </Link>

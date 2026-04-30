@@ -31,7 +31,7 @@ interface DailyActivity {
 // Mood option definitions (labels will be translated in component)
 const moodOptionDefs: { value: MoodType; icon: string; labelKey: string; color: string; bgColor: string }[] = [
   { value: 'great', icon: '😄', labelKey: 'wellness.health.moods.great', color: 'text-[var(--c-text)] dark:text-[var(--c-text)]', bgColor: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 hover:bg-[var(--c-accent)]/60 dark:hover:bg-[var(--c-bg)]/50 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50' },
-  { value: 'good', icon: '🙂', labelKey: 'wellness.health.moods.good', color: 'text-blue-600 dark:text-blue-400', bgColor: 'bg-blue-100 dark:bg-blue-900/30 hover:bg-blue-200 dark:hover:bg-blue-900/50 border-blue-200 dark:border-blue-800' },
+  { value: 'good', icon: '🙂', labelKey: 'wellness.health.moods.good', color: 'text-[var(--c-text)] dark:text-blue-400', bgColor: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 hover:bg-blue-200 dark:hover:bg-blue-900/50 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50' },
   { value: 'okay', icon: '😐', labelKey: 'wellness.health.moods.okay', color: 'text-amber-600 dark:text-amber-400', bgColor: 'bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-900/50 border-amber-200 dark:border-amber-800' },
   { value: 'bad', icon: '😔', labelKey: 'wellness.health.moods.bad', color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-100 dark:bg-orange-900/30 hover:bg-orange-200 dark:hover:bg-orange-900/50 border-orange-200 dark:border-orange-800' },
   { value: 'terrible', icon: '😢', labelKey: 'wellness.health.moods.terrible', color: 'text-rose-600 dark:text-rose-400', bgColor: 'bg-rose-100 dark:bg-rose-900/30 hover:bg-rose-200 dark:hover:bg-rose-900/50 border-rose-200 dark:border-rose-800' },
@@ -39,7 +39,7 @@ const moodOptionDefs: { value: MoodType; icon: string; labelKey: string; color: 
 
 // Wellness tip definitions (titles/descriptions will be translated in component)
 const wellnessTipDefs: { id: string; category: WellnessTip['category']; titleKey: string; descKey: string; icon: React.ElementType; color: string }[] = [
-  { id: '1', category: 'mental', titleKey: 'wellness.health.tips.mindfulness.title', descKey: 'wellness.health.tips.mindfulness.description', icon: Brain, color: 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400' },
+  { id: '1', category: 'mental', titleKey: 'wellness.health.tips.mindfulness.title', descKey: 'wellness.health.tips.mindfulness.description', icon: Brain, color: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]' },
   { id: '2', category: 'physical', titleKey: 'wellness.health.tips.exercise.title', descKey: 'wellness.health.tips.exercise.description', icon: Activity, color: 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]' },
   { id: '3', category: 'sleep', titleKey: 'wellness.health.tips.sleep.title', descKey: 'wellness.health.tips.sleep.description', icon: Moon, color: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400' },
   { id: '4', category: 'social', titleKey: 'wellness.health.tips.social.title', descKey: 'wellness.health.tips.social.description', icon: Coffee, color: 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400' },

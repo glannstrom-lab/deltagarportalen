@@ -188,7 +188,8 @@ export default function PrintableResources() {
     <PageLayout
       title={t('printable.title', 'Skriv ut resurser')}
       description={t('printable.description', 'Välj artiklar och övningar att skriva ut eller spara som PDF')}
-    >
+      className="max-w-7xl mx-auto"
+>
       <div className="max-w-5xl mx-auto space-y-6">
         {/* Verktygsrad */}
         <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-4 shadow-sm">

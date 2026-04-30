@@ -8,6 +8,7 @@ import { EventModal } from '@/components/calendar/EventModal'
 import { calendarApi } from '@/services/cloudStorage'
 import type { CalendarEvent, CalendarView } from '@/services/calendarData'
 import { eventTypeConfig, formatTime } from '@/services/calendarData'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 export default function Calendar() {
   const { t, i18n } = useTranslation()
@@ -314,33 +315,22 @@ export default function Calendar() {
 
   return (
     <>
-      <div className="pb-8 max-w-6xl mx-auto">
-        {/* Page Header */}
-        <header className="mb-6">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
-                <CalendarDays className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-              </div>
-              <div>
-                <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">
-                  {t('calendar.title')}
-                </h1>
-                <p className="text-sm text-stone-500 dark:text-stone-400">
-                  {t('calendar.subtitle', 'Planera dina aktiviteter och möten')}
-                </p>
-              </div>
-            </div>
-            <button
-              onClick={handleCreateEvent}
-              className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-text)] transition-colors font-medium text-sm"
-            >
-              <Plus className="w-4 h-4" />
-              <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
-            </button>
-          </div>
-        </header>
-
+      <PageLayout
+        title={t('calendar.title')}
+        subtitle={t('calendar.subtitle', 'Planera dina aktiviteter och möten')}
+        domain="wellbeing"
+        showTabs={false}
+        className="max-w-7xl mx-auto"
+        actions={
+          <button
+            onClick={handleCreateEvent}
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-xl hover:brightness-[1.08] transition-all font-medium text-sm"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
+          </button>
+        }
+      >
         <div className="space-y-4">
           {/* Status message - aria-live for screen readers */}
           <div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
@@ -410,7 +400,7 @@ export default function Calendar() {
             </>
           )}
         </div>
-      </div>
+      </PageLayout>
 
       {/* Event Modal - outside PageLayout for proper z-index */}
       <EventModal

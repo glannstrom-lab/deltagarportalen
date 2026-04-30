@@ -41,7 +41,8 @@ export default function InterestGuide() {
         tabs={interestGuideTabs}
         tabVariant="glass"
         domain="coaching"
-      >
+        className="max-w-7xl mx-auto"
+>
         <Suspense fallback={<TabLoading />}>
           <Routes>
             <Route index element={<TestTab />} />

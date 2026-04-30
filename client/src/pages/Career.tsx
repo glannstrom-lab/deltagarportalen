@@ -46,7 +46,7 @@ export default function CareerPage() {
         customTabs={careerTabs}
         tabVariant="glass"
         showTabs={true}
-        className="space-y-6"
+        className="max-w-7xl mx-auto space-y-6"
         domain="coaching"
       >
         <Routes>

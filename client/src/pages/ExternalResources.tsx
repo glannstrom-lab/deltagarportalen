@@ -3446,7 +3446,7 @@ export default function ExternalResources() {
       description={`${externalResources.length} användbara länkar för jobbsökande`}
       icon={ExternalLink}
       domain="info"
-      className="space-y-6"
+      className="max-w-7xl mx-auto space-y-6"
     >
       {/* Search bar */}
       <div className="relative">

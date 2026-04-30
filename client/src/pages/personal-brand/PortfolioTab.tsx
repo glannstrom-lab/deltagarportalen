@@ -414,7 +414,7 @@ export default function PortfolioTab() {
           </div>
           <div className="flex items-start gap-3">
             <div className="w-8 h-8 bg-sky-100 dark:bg-sky-800/50 rounded-lg flex items-center justify-center shrink-0">
-              <Briefcase className="w-4 h-4 text-sky-600 dark:text-sky-400" />
+              <Briefcase className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             </div>
             <div>
               <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)] text-sm">Beskriv din roll</p>
@@ -462,7 +462,7 @@ function PortfolioCard({
           <div className={cn(
             "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
             typeInfo.color === 'teal' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-solid)]",
-            typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400",
+            typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-400",
             typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400",
             typeInfo.color === 'slate' && "bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400"
           )}>
@@ -497,7 +497,7 @@ function PortfolioCard({
         <div className={cn(
           "w-12 h-12 rounded-xl flex items-center justify-center shrink-0",
           typeInfo.color === 'teal' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-solid)]",
-          typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400",
+          typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-400",
           typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400",
           typeInfo.color === 'slate' && "bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-400"
         )}>

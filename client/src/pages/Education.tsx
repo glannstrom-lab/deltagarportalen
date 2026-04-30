@@ -49,10 +49,10 @@ import { useEducationSearch } from '@/hooks/useEducationSearch';
 
 // Coaching domain uses purple accent colors
 const TYPE_COLORS: Record<string, string> = {
-  yrkeshogskola: 'bg-purple-50 text-purple-900 dark:bg-purple-900/30 dark:text-purple-300',
-  hogskola: 'bg-purple-50 text-purple-900 dark:bg-purple-900/30 dark:text-purple-300',
-  universitet: 'bg-purple-50 text-purple-900 dark:bg-purple-900/30 dark:text-purple-300',
-  komvux: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300',
+  yrkeshogskola: 'bg-purple-50 text-purple-900 dark:bg-purple-900/30 dark:text-[var(--c-text)]',
+  hogskola: 'bg-purple-50 text-purple-900 dark:bg-purple-900/30 dark:text-[var(--c-text)]',
+  universitet: 'bg-purple-50 text-purple-900 dark:bg-purple-900/30 dark:text-[var(--c-text)]',
+  komvux: 'bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-[var(--c-text)]',
   folkhogskola: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
 };
 
@@ -83,7 +83,7 @@ function EducationCard({ education }: { education: Education }) {
             <TypeIcon className="w-5 h-5 text-current" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-800 dark:text-gray-100 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100 line-clamp-2 group-hover:text-[var(--c-solid)] dark:group-hover:text-[var(--c-solid)] transition-colors">
               {education.title}
             </h3>
             <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
@@ -101,7 +101,7 @@ function EducationCard({ education }: { education: Education }) {
             {education.typeLabel}
           </span>
           {education.distance && (
-            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+            <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-sky-100 text-[var(--c-text)] dark:bg-sky-900/30 dark:text-sky-300">
               <Laptop className="w-3 h-3" />
               {t('education.distance')}
             </span>
@@ -153,7 +153,7 @@ function EducationCard({ education }: { education: Education }) {
               href={education.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 transition-colors ml-auto"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-[var(--c-solid)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] transition-colors ml-auto"
             >
               {t('education.readMore')}
               <ExternalLink className="w-4 h-4" />
@@ -211,8 +211,8 @@ function QuickSearchCard({
         'transition-all duration-200'
       )}
     >
-      <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-        <Icon className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+      <div className="p-2 rounded-lg bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40">
+        <Icon className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
       </div>
       <div>
         <h4 className="font-medium text-gray-800 dark:text-gray-100">{title}</h4>
@@ -319,7 +319,8 @@ export default function Education() {
       description={t('education.description')}
       showTabs={false}
       domain="coaching"
-    >
+      className="max-w-7xl mx-auto"
+>
       {/* Search Section */}
       <PageSection>
         <div className="space-y-4">
@@ -336,14 +337,14 @@ export default function Education() {
                 aria-label={t('education.searchPlaceholder')}
               />
               {isSearching && (
-                <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-500 animate-spin" />
+                <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--c-solid)] animate-spin" />
               )}
             </div>
             <Button
               type="button"
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className={cn(showFilters && 'bg-purple-50 dark:bg-purple-900/30 border-purple-300 dark:border-purple-600')}
+              className={cn(showFilters && 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-purple-300 dark:border-purple-600')}
               aria-expanded={showFilters}
               aria-controls="education-filters"
             >
@@ -401,7 +402,7 @@ export default function Education() {
                     className={cn(
                       'inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                       distanceOnly
-                        ? 'bg-sky-100 text-sky-700 border-2 border-sky-300 dark:bg-sky-900/40 dark:text-sky-300 dark:border-sky-600'
+                        ? 'bg-sky-100 text-[var(--c-text)] border-2 border-sky-300 dark:bg-sky-900/40 dark:text-sky-300 dark:border-sky-600'
                         : 'bg-white text-gray-600 border border-gray-300 hover:border-sky-300 dark:bg-stone-700 dark:text-gray-300 dark:border-stone-600'
                     )}
                     aria-pressed={distanceOnly}
@@ -424,7 +425,7 @@ export default function Education() {
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-sm text-gray-500 dark:text-gray-400">{t('education.activeFilters')}:</span>
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-purple-100 text-[var(--c-text)] dark:bg-purple-900/30 dark:text-[var(--c-text)]">
                   "{searchQuery}"
                   <button onClick={() => setSearchQuery('')} className="hover:text-purple-900 dark:hover:text-purple-200" aria-label={t('education.removeFilter')}>
                     <X className="w-3 h-3" />
@@ -432,7 +433,7 @@ export default function Education() {
                 </span>
               )}
               {selectedType !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-purple-100 text-[var(--c-text)] dark:bg-purple-900/30 dark:text-[var(--c-text)]">
                   {educationTypes.find(t => t.id === selectedType)?.label}
                   <button onClick={() => setSelectedType('all')} className="hover:text-purple-900 dark:hover:text-purple-200" aria-label={t('education.removeFilter')}>
                     <X className="w-3 h-3" />
@@ -448,7 +449,7 @@ export default function Education() {
                 </span>
               )}
               {distanceOnly && (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-sky-100 text-[var(--c-text)] dark:bg-sky-900/30 dark:text-sky-300">
                   <Globe className="w-3 h-3" />
                   {t('education.distanceOnly', 'Distans')}
                   <button onClick={() => setDistanceOnly(false)} className="hover:text-sky-900 dark:hover:text-sky-200" aria-label={t('education.removeFilter')}>
@@ -471,10 +472,10 @@ export default function Education() {
       {!hasSearched && (
         <div className="mt-6 space-y-6">
           {/* Info Banner */}
-          <Card className="bg-gradient-to-r from-purple-50 to-sky-50 dark:from-purple-900/20 dark:to-sky-900/20 border-purple-200 dark:border-purple-800">
+          <Card className="bg-gradient-to-r from-purple-50 to-sky-50 dark:from-purple-900/20 dark:to-sky-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
             <div className="p-4 sm:p-5 flex items-start gap-4">
-              <div className="p-2 rounded-lg bg-purple-100 dark:bg-purple-900/30">
-                <Info className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <div className="p-2 rounded-lg bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40">
+                <Info className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
               </div>
               <div>
                 <h3 className="font-semibold text-gray-800 dark:text-gray-100">

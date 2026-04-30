@@ -437,7 +437,7 @@ export default function BrandAuditTab() {
               <span className="flex items-center gap-2">
                 <Icon className={cn(
                   "w-5 h-5",
-                  category.color === 'blue' && "text-blue-600 dark:text-blue-400",
+                  category.color === 'blue' && "text-[var(--c-text)] dark:text-blue-400",
                   category.color === 'teal' && "text-[var(--c-text)] dark:text-[var(--c-solid)]",
                   category.color === 'emerald' && "text-emerald-600 dark:text-emerald-400",
                   category.color === 'amber' && "text-amber-600 dark:text-amber-400"

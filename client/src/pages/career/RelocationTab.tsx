@@ -351,7 +351,7 @@ export default function RelocationTab() {
                     className={cn(
                       "border-b border-stone-100 dark:border-stone-700 cursor-pointer transition-all",
                       isTarget && "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30",
-                      isCurrent && "bg-blue-50 dark:bg-blue-900/20",
+                      isCurrent && "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30",
                       !isTarget && !isCurrent && "hover:bg-stone-50 dark:hover:bg-stone-700"
                     )}
                   >
@@ -365,7 +365,7 @@ export default function RelocationTab() {
                     <td className="py-3 px-2">
                       <span className="font-medium text-gray-800 dark:text-gray-100">{region.name}</span>
                       {isCurrent && (
-                        <span className="ml-2 text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-1.5 py-0.5 rounded">
+                        <span className="ml-2 text-xs bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-blue-300 px-1.5 py-0.5 rounded">
                           {isEn ? 'Current' : 'Nu'}
                         </span>
                       )}
@@ -381,7 +381,7 @@ export default function RelocationTab() {
                       <span className={cn(
                         "text-xs px-2 py-0.5 rounded-full",
                         region.jobMarket.includes('stark') || region.jobMarket.includes('Mycket') ? "bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]" :
-                        region.jobMarket.includes('Växande') ? "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300" :
+                        region.jobMarket.includes('Växande') ? "bg-blue-100 text-[var(--c-text)] dark:bg-blue-900/30 dark:text-blue-300" :
                         "bg-stone-100 text-stone-600 dark:bg-stone-700 dark:text-stone-300"
                       )}>
                         {region.jobMarket}

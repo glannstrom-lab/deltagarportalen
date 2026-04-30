@@ -708,7 +708,7 @@ export default function NetworkTab() {
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setShowLinkedInTips(!showLinkedInTips)}>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-            <Linkedin className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+            <Linkedin className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
             {t('career.networkTab.linkedinTips.title')}
           </h3>
           <ChevronRight className={cn('w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform', showLinkedInTips && 'rotate-90')} />
@@ -717,7 +717,7 @@ export default function NetworkTab() {
         {showLinkedInTips && (
           <div className="space-y-3">
             {linkedinTips.map((tip, idx) => (
-              <div key={idx} className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+              <div key={idx} className="p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
                 <h4 className="font-semibold text-blue-900 dark:text-blue-100 flex items-center gap-2 mb-1">
                   <span className="text-lg">{tip.icon}</span>
                   {tip.title}
@@ -733,7 +733,7 @@ export default function NetworkTab() {
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setShowNetworkingScripts(!showNetworkingScripts)}>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+            <BookOpen className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             {t('career.networkTab.networkingScripts.title')}
           </h3>
           <ChevronRight className={cn('w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform', showNetworkingScripts && 'rotate-90')} />
@@ -742,7 +742,7 @@ export default function NetworkTab() {
         {showNetworkingScripts && (
           <div className="space-y-3">
             {networkingScripts.map((script, idx) => (
-              <div key={idx} className="p-3 bg-sky-50 dark:bg-sky-900/20 rounded-lg border border-sky-200 dark:border-sky-800">
+              <div key={idx} className="p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
                 <h4 className="font-semibold text-sky-900 dark:text-sky-100 mb-2">{script.title}</h4>
                 <p className="text-sm text-sky-800 dark:text-sky-200 italic mb-2">
                   "{script.script}"
@@ -765,8 +765,8 @@ export default function NetworkTab() {
       {/* LinkedIn Integration */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-            <Linkedin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+          <div className="w-12 h-12 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center">
+            <Linkedin className="w-6 h-6 text-[var(--c-text)] dark:text-blue-400" />
           </div>
           <div className="flex-1">
             <h3 className="font-semibold text-gray-800 dark:text-gray-100">{t('career.network.syncWithLinkedIn')}</h3>

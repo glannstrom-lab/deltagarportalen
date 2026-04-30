@@ -41,6 +41,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 // Types
 interface ConsultantInfo {
@@ -122,7 +123,7 @@ function ConsultantCard({ consultant, nextMeeting }: { consultant: ConsultantInf
   return (
     <Card className="overflow-hidden">
       {/* Header with gradient */}
-      <div className="bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-text)] p-6 text-white">
+      <div className="bg-[var(--c-solid)] p-6 text-white">
         <div className="flex items-center gap-4">
           {consultant.avatar_url ? (
             <img
@@ -884,25 +885,27 @@ export default function MyConsultant() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
+      <PageLayout
+        title={t('myConsultant.title')}
+        domain="wellbeing"
+        showTabs={false}
+        className="max-w-7xl mx-auto"
+      >
         <LoadingState type="dashboard" />
-      </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      {/* Page header */}
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100">
-          {t('myConsultant.title')}
-        </h1>
-        <p className="text-stone-600 dark:text-stone-400 mt-2">
-          {consultant
-            ? t('myConsultant.subtitle', { name: consultant.first_name })
-            : t('myConsultant.subtitleNoConsultant')}
-        </p>
-      </div>
+    <PageLayout
+      title={t('myConsultant.title')}
+      subtitle={consultant
+        ? t('myConsultant.subtitle', { name: consultant.first_name })
+        : t('myConsultant.subtitleNoConsultant')}
+      domain="wellbeing"
+      showTabs={false}
+      className="max-w-7xl mx-auto"
+    >
 
       {/* No consultant message */}
       {!consultant && (
@@ -951,6 +954,6 @@ export default function MyConsultant() {
           <QuickActions consultant={consultant} onBookMeeting={handleBookMeeting} />
         </div>
       )}
-    </div>
+    </PageLayout>
   )
 }

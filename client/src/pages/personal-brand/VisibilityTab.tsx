@@ -342,8 +342,8 @@ export default function VisibilityTab() {
                     key={item.id}
                     className={cn(
                       "text-xs p-1 rounded mb-1 truncate",
-                      item.platform === 'linkedin' && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
-                      item.platform === 'twitter' && "bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300",
+                      item.platform === 'linkedin' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-300",
+                      item.platform === 'twitter' && "bg-sky-100 dark:bg-sky-900/50 text-[var(--c-text)] dark:text-sky-300",
                       item.platform === 'blog' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]",
                       item.platform === 'other' && "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300"
                     )}
@@ -472,7 +472,7 @@ export default function VisibilityTab() {
                         <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                       )}
                       {status === 'in_progress' && (
-                        <Play className="w-4 h-4 text-blue-600 dark:text-blue-400 fill-blue-600 dark:fill-blue-400" />
+                        <Play className="w-4 h-4 text-[var(--c-text)] dark:text-blue-400 fill-blue-600 dark:fill-blue-400" />
                       )}
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{strategy.description}</p>
@@ -489,7 +489,7 @@ export default function VisibilityTab() {
                       <span className={cn(
                         "px-2 py-1 rounded-full text-xs font-medium",
                         strategy.impact === 'low' && "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300",
-                        strategy.impact === 'medium' && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
+                        strategy.impact === 'medium' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-300",
                         strategy.impact === 'high' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]"
                       )}>
                         {strategy.impact === 'low' ? 'Låg' : strategy.impact === 'medium' ? 'Medel' : 'Hög'} påverkan
@@ -510,7 +510,7 @@ export default function VisibilityTab() {
                           className="p-2 hover:bg-blue-100 dark:hover:bg-blue-900/30 rounded-lg transition-colors"
                           title="Starta"
                         >
-                          <Play className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+                          <Play className="w-4 h-4 text-[var(--c-text)] dark:text-blue-400" />
                         </button>
                         <button
                           onClick={() => updateStrategyStatus(strategy.id, 'skipped')}
@@ -568,7 +568,7 @@ export default function VisibilityTab() {
       {/* LinkedIn Quick Wins */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Linkedin className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <Linkedin className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
           LinkedIn Quick Wins
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">

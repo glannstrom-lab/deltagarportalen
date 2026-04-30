@@ -40,7 +40,7 @@ function TabNavigation({
   return (
     <div className="flex items-center justify-between gap-4">
       <div className={cn(
-        "flex gap-1 p-1 bg-purple-50 dark:bg-purple-900/30 rounded-xl overflow-x-auto scrollbar-hide flex-1",
+        "flex gap-1 p-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl overflow-x-auto scrollbar-hide flex-1",
       )}>
         {TAB_DEFS.map((tab) => {
           const Icon = tab.icon
@@ -61,7 +61,7 @@ function TabNavigation({
             >
               <Icon className={cn(
                 "w-4 h-4 flex-shrink-0",
-                isActive && tab.color === 'purple' && "text-purple-900 dark:text-purple-400",
+                isActive && tab.color === 'purple' && "text-purple-900 dark:text-[var(--c-solid)]",
                 isActive && tab.color === 'amber' && "text-amber-600 dark:text-amber-400",
                 isActive && tab.color === 'blue' && "text-blue-900 dark:text-blue-400",
                 isActive && tab.color === 'rose' && "text-pink-900 dark:text-pink-400"
@@ -103,14 +103,14 @@ function AchievementBanner() {
       emoji: '📚',
       title: t('diary.achievements.tenEntries.title'),
       description: t('diary.achievements.tenEntries.description'),
-      color: 'from-sky-50 to-sky-100 dark:from-sky-900/30 dark:to-sky-800/30 border-sky-200 dark:border-sky-800'
+      color: 'from-sky-50 to-sky-100 dark:from-sky-900/30 dark:to-sky-800/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50'
     }
   } else if (totalWords >= 1000 && totalWords < 1100) {
     achievement = {
       emoji: '✍️',
       title: t('diary.achievements.thousandWords.title'),
       description: t('diary.achievements.thousandWords.description'),
-      color: 'from-sky-50 to-[var(--c-bg)] dark:from-sky-900/30 dark:to-[var(--c-bg)]/40 border-sky-200 dark:border-sky-800'
+      color: 'from-sky-50 to-[var(--c-bg)] dark:from-sky-900/30 dark:to-[var(--c-bg)]/40 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50'
     }
   } else if (longestStreak >= 14) {
     achievement = {
@@ -194,8 +194,9 @@ export default function Diary() {
       title={t('diary.title')}
       description={t('diary.description')}
       showTabs={false}
-      domain="coaching"
-    >
+      domain="wellbeing"
+      className="max-w-7xl mx-auto"
+>
       <WellnessConsentGate>
       <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
         {/* Achievement Banner (only for significant milestones) */}

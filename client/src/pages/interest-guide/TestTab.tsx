@@ -203,7 +203,7 @@ export default function TestTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
+      <div className="flex items-center justify-center py-12 ">
         <LoadingState title={t('interestGuide.test.loading')} size="lg" />
       </div>
     )
@@ -212,7 +212,7 @@ export default function TestTab() {
   // Completed screen - test is done, show options
   if (screen === 'completed') {
     return (
-      <div className="max-w-2xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
+      <div className="max-w-2xl mx-auto min-h-screen  p-4">
         <div className="text-center">
           {/* Success icon */}
           <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 dark:from-green-500 dark:to-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30 dark:shadow-green-600/20">
@@ -274,7 +274,7 @@ export default function TestTab() {
   // Intro screen
   if (screen === 'intro') {
     return (
-      <div className="max-w-4xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
+      <div className="max-w-4xl mx-auto min-h-screen  p-4">
         {error && (
           <InfoCard variant="error" className="mb-6">
             {error}
@@ -328,7 +328,7 @@ export default function TestTab() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
+    <div className="max-w-2xl mx-auto min-h-screen  p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
           {error}

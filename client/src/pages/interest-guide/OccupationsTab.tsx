@@ -127,7 +127,7 @@ export default function OccupationsTab() {
   // Now conditional returns are safe - all hooks have been called
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
+      <div className="flex items-center justify-center py-12 ">
         <LoadingState title={t('common.loading') || 'Laddar yrken...'} size="lg" />
       </div>
     )
@@ -135,7 +135,7 @@ export default function OccupationsTab() {
 
   if (calculationError) {
     return (
-      <div className="max-w-lg mx-auto text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen">
+      <div className="max-w-lg mx-auto text-center py-12  min-h-screen">
         <InfoCard variant="error" className="mb-6">
           {calculationError}
         </InfoCard>
@@ -152,7 +152,7 @@ export default function OccupationsTab() {
 
   if (!profile) {
     return (
-      <div className="max-w-lg mx-auto text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen">
+      <div className="max-w-lg mx-auto text-center py-12  min-h-screen">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -179,7 +179,7 @@ export default function OccupationsTab() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
+    <div className="max-w-5xl mx-auto space-y-8 min-h-screen  p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
           {error}
@@ -222,25 +222,25 @@ export default function OccupationsTab() {
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-blue-200 dark:border-blue-800">
+        <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-200 dark:bg-blue-800/50 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+              <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
             </div>
             <div>
               <p className="text-2xl font-bold text-blue-900 dark:text-blue-100">{stats.goodMatches}</p>
-              <p className="text-xs text-blue-700 dark:text-blue-300">Bra (70%+)</p>
+              <p className="text-xs text-[var(--c-text)] dark:text-blue-300">Bra (70%+)</p>
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-800">
+        <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-purple-200 dark:bg-purple-800/50 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <BarChart3 className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
             </div>
             <div>
               <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{stats.growingJobs}</p>
-              <p className="text-xs text-purple-700 dark:text-purple-300">Växande yrken</p>
+              <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)]">Växande yrken</p>
             </div>
           </div>
         </Card>
@@ -411,7 +411,7 @@ export default function OccupationsTab() {
                           </span>
                         )}
                         {match.occupation.education && (
-                          <span className="text-xs bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full font-medium">
+                          <span className="text-xs bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-blue-300 px-2.5 py-1 rounded-full font-medium">
                             {match.occupation.education.name}
                           </span>
                         )}

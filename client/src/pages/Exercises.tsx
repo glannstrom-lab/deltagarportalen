@@ -29,16 +29,16 @@ import { PageLayout } from '@/components/layout/index'
 // Extended category colors for all 38 categories
 const categoryColors: { [key: string]: string } = {
   // Original categories
-  'Självkännedom': 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400',
-  'Jobbsökning': 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400',
+  'Självkännedom': 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]',
+  'Jobbsökning': 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-blue-400',
   'Nätverkande': 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400',
   'Digital närvaro': 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400',
   'Arbetsrätt': 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400',
-  'Karriärutveckling': 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400',
+  'Karriärutveckling': 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-pink-400',
   'Välmående': 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400',
   // New categories from the 38 list
   'Arbetslivskunskap': 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
-  'Arbetssökande': 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400',
+  'Arbetssökande': 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)]',
   'Rehabilitering': 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)]',
 }
 
@@ -320,7 +320,8 @@ export default function Exercises() {
         title={t('exercises.title')}
         description="Praktiska övningar för att utveckla dina jobbsökar-skills"
         showTabs={false}
-      >
+        className="max-w-7xl mx-auto"
+>
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 dark:border-emerald-400"></div>
           <p className="ml-3 text-gray-600 dark:text-gray-300">{t('exercises.loadingAnswers')}</p>
@@ -339,7 +340,8 @@ export default function Exercises() {
         title={t('exercises.title')}
         description="Praktiska övningar för att utveckla dina jobbsökar-skills"
         showTabs={false}
-      >
+        className="max-w-7xl mx-auto"
+>
       <div className="space-y-6">
         {/* Status indicators */}
         <div className="flex flex-wrap items-center justify-between gap-3">
@@ -531,7 +533,8 @@ export default function Exercises() {
         title="Övningar"
         description="Praktiska övningar för att utveckla dina jobbsökar-skills"
         showTabs={false}
-      >
+        className="max-w-7xl mx-auto"
+>
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Back button */}
         <button
@@ -612,7 +615,8 @@ export default function Exercises() {
       title="Övningar"
       description="Praktiska övningar för att utveckla dina jobbsökar-skills"
       showTabs={false}
-    >
+      className="max-w-7xl mx-auto"
+>
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Back button */}
       <button

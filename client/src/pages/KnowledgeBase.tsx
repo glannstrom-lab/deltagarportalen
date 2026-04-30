@@ -34,7 +34,7 @@ type TabId = typeof tabDefs[number]['id']
 
 function TabLoader({ message }: { message?: string }) {
   return (
-    <div className="min-h-[400px] flex items-center justify-center bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 rounded-xl">
+    <div className="min-h-[400px] flex items-center justify-center  rounded-xl">
       <LoadingState title={message || 'Loading...'} />
     </div>
   )
@@ -180,7 +180,8 @@ export default function KnowledgeBase() {
       tabs={tabs}
       tabVariant="glass"
       domain="info"
-    >
+      className="max-w-7xl mx-auto"
+>
       {/* Tab content */}
       <div className="min-h-[300px] sm:min-h-[400px]">
         {renderContent()}

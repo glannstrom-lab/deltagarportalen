@@ -117,7 +117,7 @@ export default function ExploreTab() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
+    <div className="max-w-5xl mx-auto min-h-screen  p-4">
       {/* Header */}
       <div className="text-center mb-8">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium mb-4">

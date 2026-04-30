@@ -162,8 +162,8 @@ export default function LaborMarketTab() {
             </div>
           </Card>
 
-          <Card className="p-4 text-center bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-purple-200 dark:border-purple-800">
-            <Building2 className="w-8 h-8 text-purple-600 dark:text-purple-400 mx-auto mb-2" />
+          <Card className="p-4 text-center bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+            <Building2 className="w-8 h-8 text-[var(--c-solid)] dark:text-[var(--c-solid)] mx-auto mb-2" />
             <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">
               {marketStats.avg_time_to_hire_days}
             </div>
@@ -247,14 +247,14 @@ export default function LaborMarketTab() {
       {marketStats?.by_region && marketStats.by_region.length > 0 && (
         <Card className="p-5">
           <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-sky-500" />
+            <MapPin className="w-5 h-5 text-[var(--c-solid)]" />
             {lang === 'en' ? 'Jobs by Region' : 'Jobb per region'}
           </h3>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
             {marketStats.by_region.map((region, i) => (
               <div
                 key={i}
-                className="p-3 rounded-lg bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 border border-sky-200 dark:border-sky-800 text-center"
+                className="p-3 rounded-lg bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 text-center"
               >
                 <div className="text-lg font-bold text-stone-800 dark:text-stone-100">
                   {region.job_count.toLocaleString('sv-SE')}

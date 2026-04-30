@@ -993,9 +993,9 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                   >
                     <div className="flex items-center gap-3">
                       {key === 'employer' && <Building2 className="w-5 h-5 text-[var(--c-text)]" />}
-                      {key === 'fk' && <FileText className="w-5 h-5 text-blue-600" />}
+                      {key === 'fk' && <FileText className="w-5 h-5 text-[var(--c-text)]" />}
                       {key === 'union' && <Scale className="w-5 h-5 text-violet-600" />}
-                      {key === 'doctor' && <Stethoscope className="w-5 h-5 text-pink-600" />}
+                      {key === 'doctor' && <Stethoscope className="w-5 h-5 text-[var(--c-solid)]" />}
                       <span className="font-medium text-gray-800 dark:text-gray-100">
                         {isEn ? template.titleEn : template.titleSv}
                       </span>
@@ -1122,7 +1122,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                   onClick={() => generateDocument('letter')}
                   className="p-4 border border-stone-200 dark:border-stone-700 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors text-left"
                 >
-                  <Mail className="w-8 h-8 text-blue-600 mb-3" />
+                  <Mail className="w-8 h-8 text-[var(--c-text)] mb-3" />
                   <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">
                     {isEn ? 'Formal Letter' : 'Formellt brev'}
                   </h4>

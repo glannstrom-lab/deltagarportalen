@@ -276,7 +276,7 @@ export default function CredentialsTab() {
                           <span className={cn(
                             "px-2 py-0.5 rounded-full text-xs font-medium",
                             typeColor === 'violet' && "bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300",
-                            typeColor === 'blue' && "bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300",
+                            typeColor === 'blue' && "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-blue-300",
                             typeColor === 'emerald' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]",
                             typeColor === 'amber' && "bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300"
                           )}>

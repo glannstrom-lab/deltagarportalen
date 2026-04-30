@@ -304,23 +304,23 @@ export default function PlanTab() {
 
               {/* Auto-fill from CV/Profile */}
               {hasProfileData && !currentSituation && (
-                <div className="mb-3 p-3 bg-sky-50 dark:bg-sky-900/20 rounded-lg border border-sky-200 dark:border-sky-700">
+                <div className="mb-3 p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-sky-200 dark:border-sky-700">
                   <div className="flex items-start gap-2">
-                    <FileText className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 flex-shrink-0" />
+                    <FileText className="w-4 h-4 text-[var(--c-text)] dark:text-[var(--c-solid)] mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-sky-700 dark:text-sky-300 mb-2">
+                      <p className="text-sm text-[var(--c-text)] dark:text-sky-300 mb-2">
                         {i18n.language === 'en'
                           ? 'We found information from your CV and profile:'
                           : 'Vi hittade information från ditt CV och din profil:'}
                       </p>
-                      <p className="text-xs text-sky-600 dark:text-sky-400 mb-3 line-clamp-3">
+                      <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] mb-3 line-clamp-3">
                         {generatedSituation}
                       </p>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={autoFillCurrentSituation}
-                        className="border-sky-300 dark:border-sky-600 text-sky-700 dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-800/30"
+                        className="border-sky-300 dark:border-sky-600 text-[var(--c-text)] dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-800/30"
                       >
                         <FileText className="w-3 h-3 mr-1" />
                         {i18n.language === 'en' ? 'Use this information' : 'Använd denna information'}

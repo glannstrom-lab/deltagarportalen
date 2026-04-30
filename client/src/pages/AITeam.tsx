@@ -16,6 +16,7 @@ import { useAITeamStore } from '@/stores/aiTeamStore'
 import { agentColorClasses } from '@/components/ai-team/types'
 import { Users, Lightbulb } from '@/components/ui/icons'
 import { useSuggestedAgent } from '@/hooks/useSuggestedAgent'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 export default function AITeam() {
   const { t } = useTranslation()
@@ -38,7 +39,13 @@ export default function AITeam() {
   }, [suggestedAgent, setAgent])
 
   return (
-    <div className="pb-8 max-w-6xl mx-auto">
+    <PageLayout
+      title={t('aiTeam.title')}
+      subtitle={t('aiTeam.description')}
+      domain="info"
+      showTabs={false}
+      className="max-w-7xl mx-auto"
+    >
       {/* Skip link for accessibility */}
       <a
         href="#ai-chat"
@@ -49,23 +56,6 @@ export default function AITeam() {
 
       {/* Onboarding for new users */}
       <OnboardingModal />
-
-      {/* Page Header */}
-      <header className="mb-6">
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
-            <Users className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-          </div>
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-stone-800 dark:text-stone-100">
-              {t('aiTeam.title')}
-            </h1>
-            <p className="text-sm text-stone-500 dark:text-stone-400">
-              {t('aiTeam.description')}
-            </p>
-          </div>
-        </div>
-      </header>
 
       {/* Suggested Agent Banner */}
       {suggestedAgent && suggestedAgent.agentId !== selectedAgent && (
@@ -165,6 +155,6 @@ export default function AITeam() {
           <AgentChat ref={chatRef} />
         </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }

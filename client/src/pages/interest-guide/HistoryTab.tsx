@@ -91,7 +91,7 @@ export default function HistoryTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
+      <div className="flex items-center justify-center py-12 ">
         <LoadingState title={t('interestGuide.history.loading')} size="lg" />
       </div>
     )
@@ -99,7 +99,7 @@ export default function HistoryTab() {
 
   if (history.length === 0) {
     return (
-      <div className="max-w-lg mx-auto text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen">
+      <div className="max-w-lg mx-auto text-center py-12  min-h-screen">
         <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <History className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </div>
@@ -119,7 +119,7 @@ export default function HistoryTab() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
+    <div className="max-w-4xl mx-auto min-h-screen  p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
           {error}

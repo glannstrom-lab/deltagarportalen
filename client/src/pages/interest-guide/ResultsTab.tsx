@@ -150,7 +150,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
+      <div className="flex items-center justify-center py-12 ">
         <LoadingState title={t('common.loading') || 'Laddar resultat...'} size="lg" />
       </div>
     )
@@ -158,7 +158,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
 
   if (!profile) {
     return (
-      <div className="max-w-lg mx-auto text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen">
+      <div className="max-w-lg mx-auto text-center py-12  min-h-screen">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -189,7 +189,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   const goodMatches = jobMatches.filter(m => m.matchPercentage >= 70).length
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8 min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
+    <div className="max-w-5xl mx-auto space-y-8 min-h-screen  p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
           {error}
@@ -229,14 +229,14 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-800">
+        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-purple-600 dark:text-purple-400 font-medium mb-2">Totalt yrken</p>
+              <p className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)] font-medium mb-2">Totalt yrken</p>
               <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{jobMatches.length}</p>
-              <p className="text-xs text-purple-700 dark:text-purple-300 mt-1">att utforska</p>
+              <p className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">att utforska</p>
             </div>
-            <CheckCircle className="w-6 h-6 text-purple-600 dark:text-purple-400 opacity-50" />
+            <CheckCircle className="w-6 h-6 text-[var(--c-solid)] dark:text-[var(--c-solid)] opacity-50" />
           </div>
         </Card>
       </motion.div>
@@ -248,11 +248,11 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
         >
-          <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-blue-200 dark:border-blue-800">
+          <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800/50 rounded-xl flex items-center justify-center">
-                  <History className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                  <History className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
                 </div>
                 <div>
                   <h3 className="font-bold text-gray-900 dark:text-gray-100">Jämförelse med tidigare test</h3>
@@ -261,7 +261,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                   </p>
                 </div>
               </div>
-              <span className="text-xs bg-blue-100 dark:bg-blue-800/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full">
+              <span className="text-xs bg-blue-100 dark:bg-blue-800/50 text-[var(--c-text)] dark:text-blue-300 px-2 py-1 rounded-full">
                 {history.length} tester totalt
               </span>
             </div>

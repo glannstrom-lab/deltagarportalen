@@ -299,7 +299,7 @@ export default function PitchTab() {
                           <span className={cn(
                             "px-2 py-0.5 rounded-full text-xs font-medium",
                             typeInfo.color === 'teal' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]",
-                            typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
+                            typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-300",
                             typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300",
                             typeInfo.color === 'amber' && "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300"
                           )}>
@@ -562,7 +562,7 @@ export default function PitchTab() {
                         <span className={cn(
                           "px-2 py-0.5 rounded-full text-xs font-medium",
                           PITCH_TYPES[selectedPitch.pitch_type].color === 'teal' && "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-accent)]",
-                          PITCH_TYPES[selectedPitch.pitch_type].color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-[var(--c-text)] dark:text-blue-300",
                           PITCH_TYPES[selectedPitch.pitch_type].color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300",
                           PITCH_TYPES[selectedPitch.pitch_type].color === 'amber' && "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300"
                         )}>
