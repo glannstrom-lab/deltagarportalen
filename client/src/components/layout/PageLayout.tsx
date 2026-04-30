@@ -5,7 +5,7 @@
  */
 
 import { useLocation } from 'react-router-dom'
-import { PageTabs, PageHeader, type Tab } from './PageTabs'
+import { PageTabs, PageHeader, type Tab, type PageStat } from './PageTabs'
 import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
 import { getDomainForPath, type LegacyColorDomain } from '@/lib/domains'
@@ -35,6 +35,8 @@ interface PageLayoutProps {
   /** Semantic color domain for accent colors */
   domain?: ColorDomain
   icon?: React.ComponentType<{ className?: string }>
+  /** Optional inline stat chips rendered in the header (right side) */
+  stats?: PageStat[]
 }
 
 export function PageLayout({
@@ -52,6 +54,7 @@ export function PageLayout({
   contentClassName,
   domain,
   icon,
+  stats,
 }: PageLayoutProps) {
   const location = useLocation()
   // Support both "tabs" and "customTabs" props for flexibility
@@ -80,6 +83,7 @@ export function PageLayout({
           tabs={shouldShowTabs ? tabs : undefined}
           tabVariant={tabVariant}
           actions={actions}
+          stats={stats}
         />
       )}
 

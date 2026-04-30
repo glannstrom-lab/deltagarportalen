@@ -921,12 +921,35 @@ function SavedJobsTab() {
 export default function JobSearch() {
   const location = useLocation();
   const { t } = useTranslation();
+  const { savedJobs } = useSavedJobs();
 
   // Build tabs with translated labels
   const jobSearchTabs = jobSearchTabDefs.map((tab) => ({
     ...tab,
     label: t(tab.labelKey),
   }));
+
+  // Live header stats — derived from saved jobs (no extra fetch)
+  const headerStats = [
+    {
+      label: 'sparade',
+      value: savedJobs.filter(j => j.status === 'saved').length,
+      icon: Bookmark,
+      to: '/job-search/saved',
+    },
+    {
+      label: 'ansökta',
+      value: savedJobs.filter(j => j.status === 'applied').length,
+      icon: Send,
+      to: '/applications',
+    },
+    {
+      label: 'intervjuer',
+      value: savedJobs.filter(j => j.status === 'interview').length,
+      icon: MessageSquare,
+      to: '/applications',
+    },
+  ];
 
   return (
     <>
@@ -937,6 +960,7 @@ export default function JobSearch() {
         tabVariant="glass"
         className="max-w-7xl mx-auto"
         domain="activity"
+        stats={headerStats}
       >
         <Routes>
           <Route index element={<SearchTab />} />

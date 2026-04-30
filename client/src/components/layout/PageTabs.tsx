@@ -327,7 +327,20 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
 }
 
 /**
- * Page Header with Tabs - Soft Pastel Style
+ * Page Stat — small chip shown inline in the page header.
+ * Optional `to` makes the chip a link.
+ */
+export interface PageStat {
+  label: string
+  value: string | number
+  icon?: React.ComponentType<{ className?: string }>
+  to?: string
+}
+
+/**
+ * Page Header with Tabs — neutral card surface with 4 px domain edge.
+ * Title + tabs share a single rounded card. Identity comes from the peach
+ * left edge. Optional stat-chips render in the right cluster.
  */
 interface PageHeaderProps {
   title: string
@@ -335,32 +348,53 @@ interface PageHeaderProps {
   tabs?: Tab[]
   tabVariant?: TabVariant
   actions?: React.ReactNode
+  stats?: PageStat[]
   className?: string
 }
 
-export function PageHeader({ title, description, tabs, tabVariant = 'minimal', actions, className }: PageHeaderProps) {
+export function PageHeader({ title, description, tabs, tabVariant = 'minimal', actions, stats, className }: PageHeaderProps) {
   const hasTabs = tabs && tabs.length > 0
+  const hasStats = stats && stats.length > 0
 
   return (
     <div className={cn(
-      // Uniform neutral hero — samma på alla sidor, oavsett domän.
-      // Pasteller får visas i innehållet nedan istället.
       'bg-[var(--header-bg)] rounded-2xl border border-[var(--header-border)]',
-      // Tunn vänsterkant i domänfärg ger subtil identifiering utan att skrika
       'border-l-4 border-l-[var(--c-solid)]',
       className
     )}>
       {/* Header content */}
       <div className="px-5 py-4">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="min-w-0">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="min-w-0 flex-1">
             <h1 className="text-xl sm:text-2xl font-bold text-[var(--header-text)] tracking-tight truncate">{title}</h1>
             {description && (
               <p className="text-sm text-[var(--header-muted)] mt-1">{description}</p>
             )}
           </div>
-          {actions && (
+
+          {/* Right cluster: stats + actions */}
+          {(hasStats || actions) && (
             <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
+              {hasStats && stats!.map((stat) => {
+                const StatIcon = stat.icon
+                const chipClass = 'inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-[var(--header-border)] bg-white/80 hover:bg-white transition-colors'
+                const inner = (
+                  <>
+                    <div className="w-7 h-7 rounded-md bg-[var(--c-bg)] flex items-center justify-center flex-shrink-0">
+                      {StatIcon && <StatIcon className="w-3.5 h-3.5 text-[var(--c-solid)]" />}
+                    </div>
+                    <div className="text-left leading-tight">
+                      <div className="text-sm font-bold text-[var(--header-text)] tabular-nums">{stat.value}</div>
+                      <div className="text-[11px] text-[var(--header-muted)]">{stat.label}</div>
+                    </div>
+                  </>
+                )
+                return stat.to ? (
+                  <Link key={stat.label} to={stat.to} className={chipClass}>{inner}</Link>
+                ) : (
+                  <div key={stat.label} className={chipClass}>{inner}</div>
+                )
+              })}
               {actions}
             </div>
           )}

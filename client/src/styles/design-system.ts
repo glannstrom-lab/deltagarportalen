@@ -200,14 +200,14 @@ export const typography = {
 // Button varianter - UPPDATERADE med nya färger och förbättrad tillgänglighet
 export const buttonVariants = {
   primary: cn(
-    'bg-teal-600 text-white hover:bg-teal-700',
+    'bg-[var(--c-solid)] text-white hover:brightness-95',
     shadows.button,
     'hover:shadow',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2'
   ),
   secondary: cn(
     'bg-white border border-stone-200 text-stone-700',
@@ -216,16 +216,16 @@ export const buttonVariants = {
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2'
   ),
   outline: cn(
-    'bg-transparent border-2 border-teal-600 text-teal-600',
-    'hover:bg-teal-50',
+    'bg-transparent border-2 border-[var(--c-solid)] text-[var(--c-text)]',
+    'hover:bg-[var(--c-bg)]',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2'
   ),
   ghost: cn(
     'bg-transparent text-stone-600',
@@ -234,7 +234,7 @@ export const buttonVariants = {
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2'
   ),
   danger: cn(
     'bg-red-50 text-red-600 border border-red-200',
