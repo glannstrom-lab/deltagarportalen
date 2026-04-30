@@ -121,21 +121,6 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
       'h-full flex flex-col bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800 transition-all duration-200',
       isCollapsed ? 'w-[52px]' : 'w-[220px]'
     )}>
-      {/* Collapse Toggle */}
-      {onToggleCollapse && (
-        <button
-          onClick={onToggleCollapse}
-          className="absolute -right-3 top-16 z-10 w-6 h-6 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-full shadow-sm flex items-center justify-center hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors"
-          aria-label={isCollapsed ? t('sidebar.expand', 'Expandera') : t('sidebar.collapse', 'Minimera')}
-        >
-          {isCollapsed ? (
-            <ChevronRight className="w-3.5 h-3.5 text-stone-500" />
-          ) : (
-            <ChevronLeft className="w-3.5 h-3.5 text-stone-500" />
-          )}
-        </button>
-      )}
-
       {/* Navigation */}
       <nav className={cn(
         'flex-1 overflow-y-auto py-3',
@@ -349,6 +334,27 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
             <LogOut className={cn(isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4')} />
             {!isCollapsed && <span className="text-[13px]">{t('nav.logout')}</span>}
           </button>
+
+          {onToggleCollapse && (
+            <button
+              onClick={onToggleCollapse}
+              title={isCollapsed ? t('sidebar.expand', 'Expandera') : t('sidebar.collapse', 'Minimera')}
+              className={cn(
+                'w-full flex items-center rounded-md text-stone-400 dark:text-stone-500 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-600 dark:hover:text-stone-300 transition-colors',
+                isCollapsed ? 'p-2 justify-center' : 'gap-2.5 px-2 py-1.5'
+              )}
+              aria-label={isCollapsed ? t('sidebar.expand', 'Expandera') : t('sidebar.collapse', 'Minimera')}
+            >
+              {isCollapsed ? (
+                <ChevronRight className={cn(isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4')} />
+              ) : (
+                <ChevronLeft className={cn(isCollapsed ? 'w-[18px] h-[18px]' : 'w-4 h-4')} />
+              )}
+              {!isCollapsed && (
+                <span className="text-[13px]">{t('sidebar.collapse', 'Minimera')}</span>
+              )}
+            </button>
+          )}
         </div>
       </div>
     </aside>
