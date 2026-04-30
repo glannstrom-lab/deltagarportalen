@@ -21,9 +21,17 @@ export const jobSearchFiltersSchema = z.object({
 
 export type JobSearchFilters = z.infer<typeof jobSearchFiltersSchema>
 
+export const DEFAULT_JOB_SEARCH_FILTERS: JobSearchFilters = {
+  query: '',
+  municipality: '',
+  region: '',
+  employmentType: '',
+  publishedWithin: 'all',
+}
+
 const SAVE_DEBOUNCE_MS = 500
 
-function isDefaultFilters(f: JobSearchFilters): boolean {
+export function isDefaultFilters(f: JobSearchFilters): boolean {
   return (
     !f.query &&
     !f.municipality &&
@@ -31,6 +39,11 @@ function isDefaultFilters(f: JobSearchFilters): boolean {
     !f.employmentType &&
     f.publishedWithin === 'all'
   )
+}
+
+/** Compact deterministic key — used for cache invalidation when filter changes. */
+export function jobSearchFiltersKey(f: JobSearchFilters): string {
+  return `${f.query}|${f.municipality}|${f.region}|${f.employmentType}|${f.publishedWithin}`
 }
 
 export function useJobSearchFilters(defaultFilters: JobSearchFilters) {

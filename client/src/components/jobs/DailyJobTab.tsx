@@ -20,6 +20,7 @@ import {
   Clock,
   CheckCircle,
   Send,
+  Filter,
 } from '@/components/ui/icons';
 import { Card, Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
@@ -29,10 +30,17 @@ import { cvApi } from '@/services/supabaseApi';
 import { interestGuideApi } from '@/services/cloudStorage';
 import { calculateUserProfile, calculateJobMatches } from '@/services/interestGuideData';
 import { unifiedProfileApi } from '@/services/unifiedProfileApi';
+import {
+  useJobSearchFilters,
+  DEFAULT_JOB_SEARCH_FILTERS,
+  isDefaultFilters,
+  jobSearchFiltersKey,
+} from '@/hooks/useJobSearchFilters';
 
-// Storage key for daily job
+// Storage keys for daily job — filter-key invalidates when search criteria change
 const DAILY_JOB_KEY = 'jobin_daily_job';
 const DAILY_JOB_DATE_KEY = 'jobin_daily_job_date';
+const DAILY_JOB_FILTER_KEY = 'jobin_daily_job_filter';
 
 interface DailyJobData {
   job: PlatsbankenJob;
@@ -52,6 +60,7 @@ export function DailyJobTab() {
   const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const { saveJob, isSaved, removeJob } = useSavedJobs();
+  const [filters, , filtersLoaded] = useJobSearchFilters(DEFAULT_JOB_SEARCH_FILTERS);
 
   const [isLoading, setIsLoading] = useState(true);
   const [dailyJob, setDailyJob] = useState<DailyJobData | null>(null);
@@ -120,19 +129,29 @@ export function DailyJobTab() {
     return profile;
   };
 
-  // Load or generate daily job
+  // Load or generate daily job. Re-runs when the active filter changes so
+  // Dagens jobb stays in sync with the user's current Sök-tab criteria.
   useEffect(() => {
+    if (!filtersLoaded) return; // Wait for persisted filter to arrive
     let isMounted = true;
 
     const loadDailyJob = async () => {
       setIsLoading(true);
 
       try {
-        // Check if we have today's job cached
+        const filterKey = jobSearchFiltersKey(filters);
+        const filterIsActive = !isDefaultFilters(filters);
+
+        // Cache hit: same date AND same filter signature
         const cachedDate = localStorage.getItem(DAILY_JOB_DATE_KEY);
         const cachedJob = localStorage.getItem(DAILY_JOB_KEY);
+        const cachedFilter = localStorage.getItem(DAILY_JOB_FILTER_KEY);
 
-        if (cachedDate === getTodayKey() && cachedJob) {
+        if (
+          cachedDate === getTodayKey() &&
+          cachedJob &&
+          cachedFilter === filterKey
+        ) {
           if (isMounted) {
             setDailyJob(JSON.parse(cachedJob));
             setIsLoading(false);
@@ -140,75 +159,80 @@ export function DailyJobTab() {
           return;
         }
 
-        // Load user profile data
+        // Load user profile data (used either as search queries or for ranking)
         const userProfile = await loadUserProfile();
 
-        // Build search queries based on profile
-        const searchQueries: string[] = [];
-
-        // Add preferred roles as search terms
-        if (userProfile.preferredRoles.length > 0) {
-          searchQueries.push(...userProfile.preferredRoles.slice(0, 2));
-        }
-
-        // Add top work titles
-        if (userProfile.workTitles.length > 0) {
-          searchQueries.push(...userProfile.workTitles.slice(0, 2));
-        }
-
-        // Add top skills if no roles/titles
-        if (searchQueries.length === 0 && userProfile.skills.length > 0) {
-          searchQueries.push(...userProfile.skills.slice(0, 3));
-        }
-
-        // Add top occupation matches from interest guide
-        if (userProfile.occupationMatches.length > 0) {
-          const topOcc = userProfile.occupationMatches[0].name.split('/')[0].trim();
-          if (topOcc.length > 3) searchQueries.push(topOcc);
-        }
-
-        // Fetch jobs - use profile-based search if available, otherwise generic
         let allJobs: PlatsbankenJob[] = [];
 
-        if (searchQueries.length > 0) {
-          // Search with profile-based queries (parallel searches)
-          const uniqueQueries = [...new Set(searchQueries)].slice(0, 3);
-          const searchPromises = uniqueQueries.map(query =>
-            searchJobs({
-              query,
+        if (filterIsActive) {
+          // Filter-driven mode: use exactly what the user set in Sök-tabben.
+          // Profile data still feeds selectBestJob for ranking within the pool.
+          const result = await searchJobs({
+            query: filters.query || undefined,
+            municipality: filters.municipality || undefined,
+            region: filters.region || undefined,
+            employmentType: filters.employmentType || undefined,
+            publishedWithin: filters.publishedWithin,
+            limit: 50,
+          }).catch(() => ({ hits: [] }));
+          allJobs = result.hits;
+        } else {
+          // No active filter — fall back to profile-driven search (existing logic).
+          const searchQueries: string[] = [];
+
+          if (userProfile.preferredRoles.length > 0) {
+            searchQueries.push(...userProfile.preferredRoles.slice(0, 2));
+          }
+          if (userProfile.workTitles.length > 0) {
+            searchQueries.push(...userProfile.workTitles.slice(0, 2));
+          }
+          if (searchQueries.length === 0 && userProfile.skills.length > 0) {
+            searchQueries.push(...userProfile.skills.slice(0, 3));
+          }
+          if (userProfile.occupationMatches.length > 0) {
+            const topOcc = userProfile.occupationMatches[0].name.split('/')[0].trim();
+            if (topOcc.length > 3) searchQueries.push(topOcc);
+          }
+
+          if (searchQueries.length > 0) {
+            const uniqueQueries = [...new Set(searchQueries)].slice(0, 3);
+            const searchPromises = uniqueQueries.map(query =>
+              searchJobs({
+                query,
+                municipality: userProfile.location || undefined,
+                limit: 30,
+                publishedWithin: 'week'
+              }).catch(() => ({ hits: [] }))
+            );
+
+            const results = await Promise.all(searchPromises);
+            const seenIds = new Set<string>();
+
+            results.forEach(result => {
+              result.hits.forEach(job => {
+                if (!seenIds.has(job.id)) {
+                  seenIds.add(job.id);
+                  allJobs.push(job);
+                }
+              });
+            });
+          }
+
+          // Fallback to generic search if profile yielded too few results
+          if (allJobs.length < 10) {
+            const fallbackResult = await searchJobs({
               municipality: userProfile.location || undefined,
-              limit: 30,
+              limit: 50,
               publishedWithin: 'week'
-            }).catch(() => ({ hits: [] }))
-          );
+            });
 
-          const results = await Promise.all(searchPromises);
-          const seenIds = new Set<string>();
-
-          results.forEach(result => {
-            result.hits.forEach(job => {
+            const seenIds = new Set(allJobs.map(j => j.id));
+            fallbackResult.hits.forEach(job => {
               if (!seenIds.has(job.id)) {
-                seenIds.add(job.id);
                 allJobs.push(job);
               }
             });
-          });
-        }
-
-        // Fallback to generic search if no profile-based results
-        if (allJobs.length < 10) {
-          const fallbackResult = await searchJobs({
-            municipality: userProfile.location || undefined,
-            limit: 50,
-            publishedWithin: 'week'
-          });
-
-          const seenIds = new Set(allJobs.map(j => j.id));
-          fallbackResult.hits.forEach(job => {
-            if (!seenIds.has(job.id)) {
-              allJobs.push(job);
-            }
-          });
+          }
         }
 
         if (allJobs.length === 0) {
@@ -219,12 +243,12 @@ export function DailyJobTab() {
           return;
         }
 
-        // Select best job based on profile matching
         const selectedJob = selectBestJob(allJobs, userProfile);
 
-        // Cache for today
+        // Cache with filter signature so a filter change forces a fresh pick
         localStorage.setItem(DAILY_JOB_DATE_KEY, getTodayKey());
         localStorage.setItem(DAILY_JOB_KEY, JSON.stringify(selectedJob));
+        localStorage.setItem(DAILY_JOB_FILTER_KEY, filterKey);
 
         if (isMounted) {
           setDailyJob(selectedJob);
@@ -243,7 +267,9 @@ export function DailyJobTab() {
     return () => {
       isMounted = false;
     };
-  }, []);
+    // Re-run when filter signature changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtersLoaded, jobSearchFiltersKey(filters)]);
 
   // Select the best job based on user profile and various criteria
   const selectBestJob = (jobs: PlatsbankenJob[], userProfile: UserProfileData): DailyJobData => {
@@ -401,8 +427,8 @@ export function DailyJobTab() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16" role="status">
-        <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center mb-4 animate-pulse">
-          <Star className="w-8 h-8 text-white" />
+        <div className="w-16 h-16 bg-[var(--c-bg)] rounded-2xl flex items-center justify-center mb-4 animate-pulse">
+          <Star className="w-8 h-8 text-[var(--c-solid)]" />
         </div>
         <p className="text-stone-600 dark:text-stone-400">
           {lang === 'en' ? 'Finding your job of the day...' : 'Hittar dagens jobb åt dig...'}
@@ -434,12 +460,20 @@ export function DailyJobTab() {
   const { job, reason, matchScore } = dailyJob;
   const jobIsSaved = isSaved(job.id);
 
+  // Build readable summary of active filter (for UI hint)
+  const activeFilterParts: string[] = [];
+  if (filters.query) activeFilterParts.push(`"${filters.query}"`);
+  if (filters.municipality) activeFilterParts.push(filters.municipality);
+  if (filters.region) activeFilterParts.push(filters.region);
+  if (filters.employmentType) activeFilterParts.push(filters.employmentType);
+  const filterIsActive = !isDefaultFilters(filters);
+
   return (
     <div className="max-w-2xl mx-auto space-y-6">
-      {/* Header card */}
-      <Card className="p-6 bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-amber-900/20 dark:via-orange-900/20 dark:to-rose-900/20 border-amber-200 dark:border-amber-800">
+      {/* Header card — flat domain pastell, no gradient */}
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/40">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-amber-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-200 dark:shadow-amber-900/30">
+          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center">
             <Star className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -456,7 +490,7 @@ export function DailyJobTab() {
             </p>
           </div>
           <div className="ml-auto text-right">
-            <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+            <div className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
               {matchScore}%
             </div>
             <div className="text-xs text-stone-500 dark:text-stone-400">
@@ -465,8 +499,22 @@ export function DailyJobTab() {
           </div>
         </div>
 
-        <p className="text-sm text-stone-600 dark:text-stone-400 bg-white/50 dark:bg-stone-900/30 rounded-lg p-3">
-          <Sparkles className="w-4 h-4 inline mr-1 text-amber-500" />
+        {/* Filter hint — when an active Sök-filter is driving the daily pick */}
+        {filterIsActive && activeFilterParts.length > 0 && (
+          <Link
+            to="/job-search"
+            className="mb-3 inline-flex items-center gap-2 text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] bg-white/70 dark:bg-stone-900/40 hover:bg-white dark:hover:bg-stone-900/60 rounded-lg px-3 py-1.5 transition-colors"
+          >
+            <Filter className="w-3.5 h-3.5" />
+            <span>
+              {lang === 'en' ? 'Based on your filter: ' : 'Baserat på ditt filter: '}
+              <span className="font-semibold">{activeFilterParts.join(' · ')}</span>
+            </span>
+          </Link>
+        )}
+
+        <p className="text-sm text-stone-600 dark:text-stone-400 bg-white/60 dark:bg-stone-900/30 rounded-lg p-3">
+          <Sparkles className="w-4 h-4 inline mr-1 text-[var(--c-solid)]" />
           {lang === 'en'
             ? 'Focus on one opportunity at a time. No pressure, no overwhelm.'
             : 'Fokusera på en möjlighet i taget. Ingen press, ingen stress.'}
@@ -498,7 +546,7 @@ export function DailyJobTab() {
 
           {/* Why this job */}
           <div className="mt-4 flex items-center gap-2 text-sm">
-            <span className="px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 rounded-full font-medium">
+            <span className="px-2 py-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)] rounded-full font-medium">
               {reason}
             </span>
           </div>
@@ -598,7 +646,7 @@ export function DailyJobTab() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => setHasActioned(true)}
-                  className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-[var(--c-solid)] to-emerald-500 text-white rounded-xl font-medium hover:from-[var(--c-solid)] hover:to-emerald-600 transition-colors shadow-lg "
+                  className="flex items-center justify-center gap-2 w-full py-3 bg-[var(--c-solid)] hover:brightness-95 text-white rounded-xl font-medium transition-all"
                 >
                   <Send className="w-5 h-5" />
                   {lang === 'en' ? 'Apply Now' : 'Ansök nu'}
