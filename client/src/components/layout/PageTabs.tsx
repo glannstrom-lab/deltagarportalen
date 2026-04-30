@@ -358,8 +358,7 @@ export function PageHeader({ title, description, tabs, tabVariant = 'minimal', a
 
   return (
     <div className={cn(
-      'bg-[var(--header-bg)] rounded-2xl border border-[var(--header-border)]',
-      'border-l-4 border-l-[var(--c-solid)]',
+      'bg-[var(--header-bg)] rounded-2xl border border-stone-300 dark:border-stone-700 shadow overflow-hidden',
       className
     )}>
       {/* Header content */}
@@ -401,9 +400,9 @@ export function PageHeader({ title, description, tabs, tabVariant = 'minimal', a
         </div>
       </div>
 
-      {/* Tabs integrated in header — inline on hero bg, no wrapper */}
+      {/* Tabs separated from title row by a hairline */}
       {hasTabs && (
-        <div className="px-5 pb-4 pt-0">
+        <div className="px-5 py-2.5 border-t border-[var(--header-border)] bg-white/30 dark:bg-stone-900/20">
           <PageTabs tabs={tabs} variant={tabVariant} />
         </div>
       )}

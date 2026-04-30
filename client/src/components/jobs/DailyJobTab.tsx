@@ -469,7 +469,7 @@ export function DailyJobTab() {
   const filterIsActive = !isDefaultFilters(filters);
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="space-y-6">
       {/* Header card — flat domain pastell, no gradient */}
       <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/40">
         <div className="flex items-center gap-3 mb-4">
