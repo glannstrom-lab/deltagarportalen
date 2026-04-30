@@ -143,21 +143,23 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
       <button
         ref={openButtonRef}
         onClick={() => setIsOpen(true)}
-        className={`
-          flex items-center justify-center transition-all gap-2
-          ${variant === 'fixed'
-            ? 'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 px-4 py-3 bg-white text-stone-700 border-2 border-rose-200 rounded-full shadow-lg hover:shadow-xl hover:border-rose-300 hover:bg-rose-50 focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 text-sm'
-            : 'py-1.5 px-3 rounded-full text-[13px] text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/30 focus-visible:ring-2 focus-visible:ring-rose-400'
-          }
-        `}
+        className={
+          variant === 'fixed'
+            ? 'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex items-center justify-center gap-2 px-4 py-3 bg-white text-stone-700 border-2 border-rose-200 rounded-full shadow-lg hover:shadow-xl hover:border-rose-300 hover:bg-rose-50 focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 text-sm transition-all'
+            : 'w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/30 focus-visible:ring-2 focus-visible:ring-rose-400 transition-colors'
+        }
         style={{ outline: 'none' }}
         aria-label={t('crisis.ariaLabel')}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
       >
-        <Heart size={16} className="text-rose-500" aria-hidden="true" />
-        <span className="hidden sm:inline">{t('crisis.needToTalk', 'Behöver du prata?')}</span>
-        <span className="sm:hidden">{t('crisis.support', 'Krishjälp')}</span>
+        <Heart size={variant === 'fixed' ? 16 : 18} className="text-rose-500" aria-hidden="true" />
+        {variant === 'fixed' && (
+          <>
+            <span className="hidden sm:inline">{t('crisis.needToTalk', 'Behöver du prata?')}</span>
+            <span className="sm:hidden">{t('crisis.support', 'Krishjälp')}</span>
+          </>
+        )}
       </button>
 
       {/* Modal - rendered via Portal to escape parent overflow/z-index issues */}

@@ -43,14 +43,10 @@ export function Logo({
   if (variant === 'icon') {
     return (
       <OptimizedImage
-        src="/logo-icon.png"
+        src="/logo-icon.svg"
         alt="Jobin"
         loading="eager"
-        className={cn(
-          'rounded-lg object-contain',
-          sizes.container,
-          className
-        )}
+        className={cn('object-contain', sizes.container, className)}
       />
     )
   }
@@ -59,10 +55,10 @@ export function Logo({
     return (
       <div className={cn('flex items-center gap-2.5', className)}>
         <OptimizedImage
-          src="/logo-icon.png"
+          src="/logo-icon.svg"
           alt=""
           loading="eager"
-          className="w-8 h-8 rounded-lg object-contain bg-white shadow-sm"
+          className="w-8 h-8 object-contain"
         />
         {showText && (
           <span className="font-bold text-base tracking-tight text-white">
@@ -73,24 +69,21 @@ export function Logo({
     )
   }
 
-  // Full variant (default)
+  // Full variant (default) — icon + composed wordmark
   return (
     <div className={cn('flex flex-col items-center', className)}>
       <OptimizedImage
-        src="/logo-jobin.png"
+        src="/logo-icon.svg"
         alt="Jobin"
         loading="eager"
-        className={cn(
-          'rounded-2xl shadow-lg object-contain bg-white',
-          sizes.container
-        )}
+        className={cn('object-contain', sizes.container)}
       />
       {showText && (
         <div className="mt-4 text-center">
-          <h1 className={cn('font-bold text-white', sizes.text)}>
+          <h1 className={cn('font-bold text-stone-900 dark:text-white', sizes.text)}>
             Jobin
           </h1>
-          <p className="text-[var(--c-text)] mt-1 text-sm">
+          <p className="text-stone-600 dark:text-stone-300 mt-1 text-sm">
             Vägen till nytt jobb
           </p>
         </div>

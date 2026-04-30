@@ -88,7 +88,7 @@ export function TopBar() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2">
           <OptimizedImage
-            src="/logo-jobin-new.png"
+            src="/logo-icon.svg"
             alt="Jobin"
             loading="eager"
             className="h-6 sm:h-8 w-auto object-contain"
@@ -136,14 +136,14 @@ export function TopBar() {
             {isDark ? <Sun size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Moon size={16} className="sm:w-[18px] sm:h-[18px]" />}
           </button>
 
-          {/* Vanliga frågor — labeled link to /help (BottomBar replacement) */}
+          {/* Vanliga frågor — icon-only link to /help */}
           <Link
             to="/help"
-            className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[13px] text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 active:bg-stone-200 dark:active:bg-stone-700 transition-colors"
             title={t('topbar.faq', 'Vanliga frågor')}
+            aria-label={t('topbar.faq', 'Vanliga frågor')}
           >
-            <HelpCircle size={16} className="text-stone-400" />
-            <span>{t('topbar.faq', 'Vanliga frågor')}</span>
+            <HelpCircle size={18} />
           </Link>
 
           {/* Behöver du prata? — Crisis Support inline (BottomBar replacement) */}
