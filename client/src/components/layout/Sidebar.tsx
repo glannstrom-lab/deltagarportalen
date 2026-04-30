@@ -57,7 +57,8 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
     label,
     item,
     isActive,
-    variant = 'default'
+    variant = 'default',
+    isSubItem = false,
   }: {
     to: string
     icon: React.ComponentType<{ className?: string }>
@@ -65,6 +66,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
     item?: NavItem
     isActive?: boolean
     variant?: 'default' | 'admin'
+    isSubItem?: boolean
   }) => {
     const showBadge = item && shouldShowBadge(item)
 
@@ -75,18 +77,28 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
         title={isCollapsed ? label : undefined}
         aria-current={isActive ? 'page' : undefined}
         className={cn(
-          'group flex items-center gap-2.5 rounded-md transition-colors relative border-l-2 border-transparent',
+          'group flex items-center gap-2.5 rounded-md transition-colors relative',
+          // Hubs/top-level get a 2 px left edge that turns solid when active.
+          // Sub-items skip it — the wrapper's accent line already groups them
+          // visually, so a second left edge per item reads as a duplicate.
+          !isSubItem && 'border-l-2 border-transparent',
           isCollapsed ? 'p-2 justify-center' : 'px-2 py-1.5',
           // Default variant — använder --c-* från group-wrapper (data-domain)
           variant === 'default' && [
             isActive
-              ? 'bg-[var(--c-bg)] text-[var(--c-text)] border-l-[var(--c-solid)] font-semibold'
+              ? cn(
+                  'bg-[var(--c-bg)] text-[var(--c-text)] font-semibold',
+                  !isSubItem && 'border-l-[var(--c-solid)]'
+                )
               : 'text-stone-600 dark:text-stone-400 hover:bg-[var(--c-bg)]/40 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]'
           ],
           // Admin variant — semantisk status-färg, inte domän
           variant === 'admin' && [
             isActive
-              ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border-l-amber-500'
+              ? cn(
+                  'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400',
+                  !isSubItem && 'border-l-amber-500'
+                )
               : 'text-stone-600 dark:text-stone-400 hover:bg-amber-50/50 dark:hover:bg-stone-800/50 hover:text-amber-700 dark:hover:text-amber-400'
           ]
         )}
@@ -154,6 +166,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
                             label={t(item.labelKey)}
                             item={item}
                             isActive={itemActive}
+                            isSubItem
                           />
                         )
                       })}
