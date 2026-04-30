@@ -76,19 +76,25 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
         onClick={onClose}
         title={isCollapsed ? label : undefined}
         aria-current={isActive ? 'page' : undefined}
+        // Inline style: mobile.css globally forces min-width/height: 48 px on
+        // every <a> for touch targets. That rule is unlayered and beats our
+        // Tailwind utilities, which would otherwise let the link respect its
+        // sidebar column. Inline style wins and keeps the icon centered.
+        style={{ minWidth: 0, minHeight: 0 }}
         className={cn(
           'group flex items-center gap-2.5 rounded-md transition-colors relative',
           // Hubs/top-level get a 2 px left edge that turns solid when active.
-          // Sub-items skip it — the wrapper's accent line already groups them
-          // visually, so a second left edge per item reads as a duplicate.
-          !isSubItem && 'border-l-2 border-transparent',
+          // Sub-items skip it — the wrapper's accent line already groups them.
+          // Collapsed mode also skips it — the bg-pastel already shows active
+          // state and the asymmetric border throws off icon centering.
+          !isSubItem && !isCollapsed && 'border-l-2 border-transparent',
           isCollapsed ? 'p-2 justify-center' : 'px-2 py-1.5',
           // Default variant — använder --c-* från group-wrapper (data-domain)
           variant === 'default' && [
             isActive
               ? cn(
                   'bg-[var(--c-bg)] text-[var(--c-text)] font-semibold',
-                  !isSubItem && 'border-l-[var(--c-solid)]'
+                  !isSubItem && !isCollapsed && 'border-l-[var(--c-solid)]'
                 )
               : 'text-stone-600 dark:text-stone-400 hover:bg-[var(--c-bg)]/40 hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]'
           ],
@@ -97,7 +103,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
             isActive
               ? cn(
                   'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400',
-                  !isSubItem && 'border-l-amber-500'
+                  !isSubItem && !isCollapsed && 'border-l-amber-500'
                 )
               : 'text-stone-600 dark:text-stone-400 hover:bg-amber-50/50 dark:hover:bg-stone-800/50 hover:text-amber-700 dark:hover:text-amber-400'
           ]
@@ -131,7 +137,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
   return (
     <aside className={cn(
       'h-full flex flex-col bg-white dark:bg-stone-900 border-r border-stone-200 dark:border-stone-800 transition-all duration-200',
-      isCollapsed ? 'w-[52px]' : 'w-[220px]'
+      isCollapsed ? 'w-14' : 'w-[220px]'
     )}>
       {/* Navigation */}
       <nav className={cn(
