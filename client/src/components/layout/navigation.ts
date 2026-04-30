@@ -113,9 +113,7 @@ export const navGroups: NavGroup[] = [
       { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
       { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList },
       { path: '/spontanansökan', labelKey: 'nav.spontaneous', icon: Building2, isNew: true },
-      { path: '/linkedin-optimizer', labelKey: 'nav.linkedinOptimizer', icon: Linkedin },
       { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
-      { path: '/international', labelKey: 'nav.international', icon: Globe },
       { path: '/print-resources', labelKey: 'nav.printResources', icon: Printer, isNew: true },
       { path: '/externa-resurser', labelKey: 'nav.externalResources', icon: ExternalLink },
     ],
@@ -225,8 +223,6 @@ export const navHubs: NavHub[] = [
       '/cover-letter',
       '/interview-simulator',
       '/salary',
-      '/international',
-      '/linkedin-optimizer',
     ],
     items: [
       { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
@@ -236,8 +232,6 @@ export const navHubs: NavHub[] = [
       { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
       { path: '/interview-simulator', labelKey: 'nav.interviewSimulator', icon: Mic },
       { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
-      { path: '/international', labelKey: 'nav.international', icon: Globe },
-      { path: '/linkedin-optimizer', labelKey: 'nav.linkedinOptimizer', icon: Linkedin },
     ],
   },
   {

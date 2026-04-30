@@ -99,22 +99,6 @@ export default function JobsokHub() {
         status: 'Utforska',
         href: '/salary',
       },
-      {
-        key: 'international',
-        icon: Globe,
-        title: 'Internationellt',
-        description: 'Utforska jobb och möjligheter utomlands.',
-        status: 'Utforska',
-        href: '/international',
-      },
-      {
-        key: 'linkedin',
-        icon: Linkedin,
-        title: 'LinkedIn-optimering',
-        description: 'Få förslag på hur din profil kan stärkas.',
-        status: 'Utforska',
-        href: '/linkedin-optimizer',
-      },
     ]
   }, [data])
 
