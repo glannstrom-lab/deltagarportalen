@@ -52,7 +52,6 @@ const ROUTE_DOMAIN_MAP: Array<[string, ColorDomain]> = [
   ['/calendar',              'wellbeing'],
   ['/exercises',             'wellbeing'],
   ['/my-consultant',         'wellbeing'],
-  ['/profile',               'wellbeing'],
 
   // === INFO (Sky) — /resurser-hubben: kunskapsbank och stöd ===
   ['/help',                  'info'],
@@ -64,8 +63,8 @@ const ROUTE_DOMAIN_MAP: Array<[string, ColorDomain]> = [
   ['/nätverk',               'info'],
   ['/ai-team',               'info'],
 
-  // === ACTION (Mint/Turkos) — Översikt + system ===
-  // /, /oversikt, /settings, /consultant, /admin
+  // === ACTION (Mint/Turkos) — Översikt + system (åtkomst via topbar) ===
+  // /, /oversikt, /profile, /settings, /consultant, /admin
 ]
 
 /**

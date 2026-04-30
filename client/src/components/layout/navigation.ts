@@ -300,7 +300,6 @@ export const navHubs: NavHub[] = [
       '/calendar',
       '/exercises',
       '/my-consultant',
-      '/profile',
     ],
     items: [
       { path: '/wellness', labelKey: 'nav.wellness', icon: Smile },
@@ -308,7 +307,6 @@ export const navHubs: NavHub[] = [
       { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
       { path: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
       { path: '/my-consultant', labelKey: 'nav.myConsultant', icon: UserCheck },
-      { path: '/profile', labelKey: 'nav.profile', icon: Users },
     ],
   },
 ]
