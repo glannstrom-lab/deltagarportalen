@@ -86,7 +86,7 @@ function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
   // No marketing block indicator (good for spontaneous applications)
   if (reklamsparr?.kod === 'NEJ') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--c-bg)] text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]">
         {t('spontaneous.companyStatus.openForContact')}
       </span>
     )

@@ -4,6 +4,7 @@ import { Linkedin, Copy, Check, Sparkles, RefreshCw, User, FileText, Share2, Mes
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'
+import { PageLayout } from '@/components/layout/PageLayout'
 import { callAI } from '@/services/aiApi'
 
 interface SectionAudit {
@@ -138,18 +139,14 @@ export default function LinkedInOptimizer() {
   const auditGrade = profileCompleteness >= 80 ? 'A' : profileCompleteness >= 70 ? 'B' : profileCompleteness >= 60 ? 'C' : 'D'
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-20 min-h-screen p-4" data-domain="activity">
-      {/* Header */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 mb-2">
-          <Linkedin className="w-7 h-7 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
-        </div>
-        <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.title')}</h1>
-        <p className="text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
-          {t('linkedInOptimizer.description')}
-        </p>
-      </div>
-
+    <PageLayout
+      title={t('linkedInOptimizer.title')}
+      subtitle={t('linkedInOptimizer.description')}
+      domain="activity"
+      showTabs={false}
+      className="max-w-4xl mx-auto"
+      contentClassName="space-y-6"
+    >
       {/* Tabs */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
         {tabs.map((tab) => (
@@ -467,7 +464,7 @@ export default function LinkedInOptimizer() {
           </Button>
         </div>
       )}
-    </div>
+    </PageLayout>
   )
 }
 

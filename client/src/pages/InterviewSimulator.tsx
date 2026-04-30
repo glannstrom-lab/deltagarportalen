@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { MessageCircle, Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp, Mic, MicOff, Pause, Play, HelpCircle, Circle, Save } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { PageLayout } from '@/components/layout/PageLayout'
 import { useAchievementTracker } from '@/hooks/useAchievementTracker'
 import { callAI } from '@/services/aiApi'
 import { useAudioRecorder } from '@/hooks/useAudioRecorder'
@@ -413,23 +414,14 @@ TIPS FÖR FÖRBÄTTRING:
 
   if (!harStartat) {
     return (
-      <div className="max-w-3xl mx-auto space-y-8 pb-20 min-h-screen p-4 md:p-6" data-domain="activity">
-        {/* Hero Section — flat persika hub bg per DESIGN.md (inga gradients) */}
-        <div className="relative overflow-hidden rounded-2xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-8 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--c-accent)]/30 dark:bg-[var(--c-bg)]/30 rounded-full -translate-y-1/2 translate-x-1/2" aria-hidden="true" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-[var(--c-accent)]/30 dark:bg-[var(--c-text)]/20 rounded-full translate-y-1/2 -translate-x-1/2" aria-hidden="true" />
-
-          <div className="relative text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[var(--c-solid)] dark:bg-[var(--c-solid)] shadow-lg dark:mb-2">
-              <MessageCircle className="w-8 h-8 text-white" aria-hidden="true" />
-            </div>
-            <h1 className="text-3xl font-bold text-stone-800 dark:text-stone-100">{t('interviewSimulator.title')}</h1>
-            <p className="text-lg text-stone-600 dark:text-stone-400 max-w-lg mx-auto">
-              {t('interviewSimulator.description')}
-            </p>
-          </div>
-        </div>
-
+      <PageLayout
+        title={t('interviewSimulator.title')}
+        subtitle={t('interviewSimulator.description')}
+        domain="activity"
+        showTabs={false}
+        className="max-w-3xl mx-auto"
+        contentClassName="space-y-6"
+      >
         {/* Setup Form */}
         <Card className="p-6 md:p-8 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 shadow-sm">
           <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-6">{t('interviewSimulator.setup.startTraining')}</h2>
@@ -562,15 +554,21 @@ TIPS FÖR FÖRBÄTTRING:
             ))}
           </div>
         </div>
-      </div>
+      </PageLayout>
     )
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 pb-20 min-h-screen p-4 md:p-6" data-domain="activity">
-      {/* Header med progress — flat persika hub bg */}
-      <Card className="p-6 md:p-8 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--c-accent)]/30 dark:bg-[var(--c-bg)]/30 rounded-full -translate-y-1/2 translate-x-1/2" aria-hidden="true" />
+    <PageLayout
+      title={t('interviewSimulator.title')}
+      subtitle={`${roll}${foretag ? ' — ' + foretag : ''}`}
+      domain="activity"
+      showTabs={false}
+      className="max-w-3xl mx-auto"
+      contentClassName="space-y-6"
+    >
+      {/* Progress-card — neutralt vitt kort med persika-progress */}
+      <Card className="p-6 md:p-8 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 relative overflow-hidden">
 
         <div className="relative flex items-center justify-between mb-6">
           <div>
@@ -911,6 +909,6 @@ TIPS FÖR FÖRBÄTTRING:
           </div>
         </Card>
       </div>
-    </div>
+    </PageLayout>
   )
 }
