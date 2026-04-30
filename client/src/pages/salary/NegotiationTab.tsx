@@ -245,7 +245,7 @@ export default function NegotiationTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-accent)]/40 dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center shrink-0">
             <TrendingUp className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
@@ -449,9 +449,9 @@ export default function NegotiationTab() {
       </Card>
 
       {/* Scenario Simulator */}
-      <Card className="border-sky-200 dark:border-sky-800 bg-sky-50/30 dark:bg-sky-900/10">
+      <Card className="border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)]/40 dark:bg-[var(--c-bg)]/20">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <Play className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+          <Play className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
           {t('salary.negotiation.scenarioSimulator')}
         </h3>
 
@@ -464,9 +464,9 @@ export default function NegotiationTab() {
                   setSelectedScenario(scenario)
                   setShowScenario(true)
                 }}
-                className="p-4 bg-white dark:bg-stone-700 rounded-xl border border-sky-200 dark:border-sky-700 hover:border-sky-400 dark:hover:border-sky-500 hover:shadow-md transition-all text-left group"
+                className="p-4 bg-white dark:bg-stone-700 rounded-xl border border-[var(--c-accent)] dark:border-[var(--c-accent)]/40 hover:border-[var(--c-solid)] dark:hover:border-[var(--c-solid)] hover:shadow-md transition-all text-left group"
               >
-                <p className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">{scenario.title}</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-solid)] transition-colors">{scenario.title}</p>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{scenario.description}</p>
               </button>
             ))}
@@ -484,7 +484,7 @@ export default function NegotiationTab() {
               ← {t('salary.negotiation.backToScenarios')}
             </button>
 
-            <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-sky-200 dark:border-sky-700">
+            <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/40">
               <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">{selectedScenario.title}</h4>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{selectedScenario.description}</p>
 
@@ -507,7 +507,7 @@ export default function NegotiationTab() {
               </div>
 
               {/* Analysis */}
-              <div className="p-3 bg-gradient-to-r from-sky-50 to-sky-100 dark:from-sky-900/20 dark:to-sky-800/20 rounded-lg border border-sky-200 dark:border-sky-700 mb-4">
+              <div className="p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg border border-[var(--c-accent)] dark:border-[var(--c-accent)]/40 mb-4">
                 <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">{t('salary.negotiation.recommendation')}</p>
                 <p className="text-sm text-gray-700 dark:text-gray-300">{selectedScenario.recommendation}</p>
               </div>
@@ -555,7 +555,7 @@ export default function NegotiationTab() {
                   </div>
                   <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-sky-500 dark:bg-sky-400"
+                      className="h-full bg-[var(--c-solid)]"
                       style={{
                         width: `${(selectedScenario.targetSalary / selectedScenario.marketRate) * 100}%`,
                         maxWidth: '100%'
@@ -570,7 +570,7 @@ export default function NegotiationTab() {
       </Card>
 
       {/* Tips Carousel */}
-      <Card className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-700">
+      <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400" />
           {t('salary.negotiation.dailyTip')}

@@ -413,14 +413,14 @@ TIPS FÖR FÖRBÄTTRING:
 
   if (!harStartat) {
     return (
-      <div className="max-w-3xl mx-auto space-y-8 pb-20 min-h-screen p-4 md:p-6">
-        {/* Hero Section with soft gradient */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--c-bg)] via-cyan-50 to-sky-50 dark:from-[var(--c-bg)]/30 dark:via-cyan-900/20 dark:to-sky-900/20 p-8 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-[var(--c-accent)]/30 to-cyan-200/30 dark:from-[var(--c-bg)]/30 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-sky-200/30 to-[var(--c-accent)]/30 dark:from-sky-700/20 dark:to-[var(--c-text)]/20 rounded-full translate-y-1/2 -translate-x-1/2" />
+      <div className="max-w-3xl mx-auto space-y-8 pb-20 min-h-screen p-4 md:p-6" data-domain="activity">
+        {/* Hero Section — flat persika hub bg per DESIGN.md (inga gradients) */}
+        <div className="relative overflow-hidden rounded-2xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-8 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-[var(--c-accent)]/30 dark:bg-[var(--c-bg)]/30 rounded-full -translate-y-1/2 translate-x-1/2" aria-hidden="true" />
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-[var(--c-accent)]/30 dark:bg-[var(--c-text)]/20 rounded-full translate-y-1/2 -translate-x-1/2" aria-hidden="true" />
 
           <div className="relative text-center space-y-4">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--c-solid)]/80 to-cyan-500 dark:from-[var(--c-solid)] dark:to-cyan-600 shadow-lg dark:mb-2">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-[var(--c-solid)] dark:bg-[var(--c-solid)] shadow-lg dark:mb-2">
               <MessageCircle className="w-8 h-8 text-white" aria-hidden="true" />
             </div>
             <h1 className="text-3xl font-bold text-stone-800 dark:text-stone-100">{t('interviewSimulator.title')}</h1>
@@ -483,7 +483,7 @@ TIPS FÖR FÖRBÄTTRING:
             <Button
               onClick={startaIntervju}
               disabled={!roll.trim() || isLoading}
-              className="w-full bg-gradient-to-r from-[var(--c-solid)] to-cyan-500 hover:from-[var(--c-solid)] hover:to-cyan-600 dark:from-[var(--c-solid)] dark:to-cyan-600 dark:hover:from-[var(--c-solid)] dark:hover:to-cyan-500 text-white font-medium py-3 rounded-xl shadow-md dark:transition-all"
+              className="w-full bg-[var(--c-solid)] hover:brightness-[1.08] text-white font-medium py-3 rounded-xl shadow-md transition-all"
               aria-busy={isLoading}
             >
               {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" aria-label="Laddar" /> : t('interviewSimulator.startInterview')}
@@ -492,7 +492,7 @@ TIPS FÖR FÖRBÄTTRING:
         </Card>
 
         {/* Tips Section */}
-        <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800/50">
+        <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50">
           <h3 className="font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" aria-hidden="true" />
             {t('interviewSimulator.star.title')}
@@ -542,7 +542,7 @@ TIPS FÖR FÖRBÄTTRING:
         {/* Related Articles */}
         <div className="space-y-4">
           <h3 className="font-bold text-stone-800 dark:text-stone-100 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-sky-600 dark:text-sky-400" aria-hidden="true" />
+            <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
             {t('interviewSimulator.readMore')}
           </h3>
           <div className="space-y-2">
@@ -550,9 +550,9 @@ TIPS FÖR FÖRBÄTTRING:
               <a
                 key={idx}
                 href={article.url}
-                className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-600 hover:shadow-md transition-all group"
+                className="flex items-center justify-between p-4 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md transition-all group"
               >
-                <span className="font-medium text-stone-800 dark:text-stone-100 group-hover:text-sky-600 dark:group-hover:text-sky-400 transition-colors">
+                <span className="font-medium text-stone-800 dark:text-stone-100 group-hover:text-[var(--c-text)] dark:group-hover:text-[var(--c-solid)] transition-colors">
                   {article.title}
                 </span>
                 <span className="text-sm text-stone-500 dark:text-stone-500 bg-stone-100 dark:bg-stone-700 px-2 py-1 rounded-lg">
@@ -567,10 +567,10 @@ TIPS FÖR FÖRBÄTTRING:
   }
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 pb-20 min-h-screen p-4 md:p-6">
-      {/* Header med progress - improved design */}
-      <Card className="p-6 md:p-8 bg-gradient-to-br from-[var(--c-bg)] via-cyan-50 to-sky-50 dark:from-[var(--c-bg)]/30 dark:via-cyan-900/20 dark:to-sky-900/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50/50 relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[var(--c-accent)]/30 to-cyan-200/30 dark:from-[var(--c-bg)]/30 dark:to-cyan-700/20 rounded-full -translate-y-1/2 translate-x-1/2" />
+    <div className="max-w-3xl mx-auto space-y-6 pb-20 min-h-screen p-4 md:p-6" data-domain="activity">
+      {/* Header med progress — flat persika hub bg */}
+      <Card className="p-6 md:p-8 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-[var(--c-accent)]/30 dark:bg-[var(--c-bg)]/30 rounded-full -translate-y-1/2 translate-x-1/2" aria-hidden="true" />
 
         <div className="relative flex items-center justify-between mb-6">
           <div>
@@ -613,7 +613,7 @@ TIPS FÖR FÖRBÄTTRING:
               <div className="space-y-4">
                 {/* Fråga */}
                 <div className="flex gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[var(--c-accent)]/40 to-cyan-100 dark:from-[var(--c-bg)]/50 dark:to-cyan-900/50 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 flex items-center justify-center flex-shrink-0">
                     <User className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" aria-hidden="true" />
                   </div>
                   <div className="flex-1">
@@ -624,7 +624,7 @@ TIPS FÖR FÖRBÄTTRING:
 
                 {/* Svar */}
                 <div className="flex gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-100 to-[var(--c-accent)]/40 dark:from-emerald-900/50 dark:to-[var(--c-bg)]/50 flex items-center justify-center flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
                     <Bot className="w-5 h-5 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                   </div>
                   <div className="flex-1">
@@ -681,7 +681,7 @@ TIPS FÖR FÖRBÄTTRING:
                           <strong>{t('interviewSimulator.session.aiFeedback')}</strong> {fs.feedback}
                         </div>
                       )}
-                      <div className="bg-sky-50 dark:bg-sky-900/20 p-3 rounded-xl text-sm text-sky-800 dark:text-sky-300 border border-sky-100 dark:border-sky-800/50">
+                      <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-3 rounded-xl text-sm text-[var(--c-text)] dark:text-[var(--c-text)] border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
                         <strong>Tips:</strong> {t('interviewSimulator.session.starTip')}
                       </div>
                     </div>
@@ -694,9 +694,9 @@ TIPS FÖR FÖRBÄTTRING:
       )}
 
       {/* Nuvarande fråga - with aria-live for AI questions */}
-      <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800/50 shadow-sm" role="region" aria-label="Nuvarande fråga">
+      <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800/50 shadow-sm" role="region" aria-label="Nuvarande fråga">
         <div className="flex gap-4" aria-live="polite">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--c-solid)]/80 to-cyan-500 dark:from-[var(--c-solid)] dark:to-cyan-600 flex items-center justify-center flex-shrink-0 shadow-md ">
+          <div className="w-12 h-12 rounded-xl bg-[var(--c-solid)] flex items-center justify-center flex-shrink-0 shadow-md">
             <User className="w-6 h-6 text-white" aria-hidden="true" />
           </div>
           <div className="flex-1">
@@ -725,7 +725,7 @@ TIPS FÖR FÖRBÄTTRING:
             <button
               onClick={getSupportPhrase}
               disabled={isLoadingSupportPhrase || !nuvarandeFraga}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/50 hover:from-purple-100 hover:to-pink-100 dark:hover:from-purple-900/30 dark:hover:to-pink-900/30 transition-all disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-700/60 hover:border-[var(--c-accent)] transition-all disabled:opacity-50"
               aria-busy={isLoadingSupportPhrase}
             >
               {isLoadingSupportPhrase ? (
@@ -736,7 +736,7 @@ TIPS FÖR FÖRBÄTTRING:
               {t('interviewSimulator.input.giveStart')}
             </button>
             {supportPhrase && (
-              <div className="flex-1 p-3 rounded-xl bg-purple-50 dark:bg-purple-900/20 text-sm text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800/50" aria-live="polite">
+              <div className="flex-1 p-3 rounded-xl bg-stone-50 dark:bg-stone-700/40 text-sm text-stone-700 dark:text-stone-200 border border-stone-200 dark:border-stone-600 italic" aria-live="polite">
                 "{supportPhrase}"
               </div>
             )}
@@ -793,7 +793,7 @@ TIPS FÖR FÖRBÄTTRING:
             <Button
               onClick={svara}
               disabled={!anvandarSvar.trim() || isLoading}
-              className="flex-1 bg-gradient-to-r from-[var(--c-solid)] to-cyan-500 hover:from-[var(--c-solid)] hover:to-cyan-600 dark:from-[var(--c-solid)] dark:to-cyan-600 dark:hover:from-[var(--c-solid)] dark:hover:to-cyan-500 text-white font-medium py-3 rounded-xl shadow-md "
+              className="flex-1 bg-[var(--c-solid)] hover:brightness-[1.08] text-white font-medium py-3 rounded-xl shadow-md transition-all"
               aria-busy={isLoading}
             >
               {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" aria-label={t('common.loading')} /> : <><Send className="w-4 h-4 mr-2" aria-hidden="true" /> {t('interviewSimulator.input.nextQuestion')}</>}
@@ -854,9 +854,9 @@ TIPS FÖR FÖRBÄTTRING:
 
       {/* Example Answer - improved design */}
       {exampleAnswers[nuvarandeFraga] && (
-        <Card className="p-5 bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/20 dark:to-[var(--c-bg)]/30 border-emerald-200 dark:border-emerald-800/50 shadow-sm">
+        <Card className="p-5 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50 shadow-sm">
           <div className="flex items-start gap-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 to-[var(--c-solid)] dark:from-emerald-500 dark:to-[var(--c-solid)] flex items-center justify-center flex-shrink-0 shadow-md shadow-emerald-200 dark:shadow-emerald-900/30">
+            <div className="w-10 h-10 rounded-xl bg-emerald-500 dark:bg-emerald-600 flex items-center justify-center flex-shrink-0 shadow-md">
               <Zap className="w-5 h-5 text-white" aria-hidden="true" />
             </div>
             <div>
@@ -901,7 +901,7 @@ TIPS FÖR FÖRBÄTTRING:
             </div>
             <div className="w-full h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[var(--c-solid)]/80 to-cyan-500 rounded-full transition-all duration-500"
+                className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(antalFragor * 20, 100)}%` }}
               />
             </div>

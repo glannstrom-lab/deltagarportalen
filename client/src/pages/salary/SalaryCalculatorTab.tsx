@@ -154,7 +154,7 @@ export default function SalaryCalculatorTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-accent)]/40 dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center shrink-0">
             <Calculator className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
@@ -411,15 +411,15 @@ export default function SalaryCalculatorTab() {
 
       {/* Comparison mode */}
       {comparisons.length > 0 && (
-        <Card className="border-sky-200 dark:border-sky-800 bg-sky-50/30 dark:bg-sky-900/10">
+        <Card className="border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)]/40 dark:bg-[var(--c-bg)]/20">
           <div className="flex items-center gap-2 mb-4">
-            <BarChart3 className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+            <BarChart3 className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             <h3 className="font-semibold text-gray-900 dark:text-gray-100">{t('salary.calculator.salaryComparisons', { count: comparisons.length })}</h3>
           </div>
 
           <div className="space-y-3">
             {comparisons.map((comp, idx) => (
-              <div key={comp.id} className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-sky-100 dark:border-sky-800">
+              <div key={comp.id} className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <p className="font-medium text-gray-900 dark:text-gray-100">{comp.occupation}</p>
@@ -434,11 +434,11 @@ export default function SalaryCalculatorTab() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-sky-50 dark:bg-sky-900/30 rounded-lg p-3">
+                  <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg p-3">
                     <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.calculator.gross')}</p>
                     <p className="font-bold text-gray-900 dark:text-gray-100">{comp.gross.toLocaleString('sv-SE')} kr</p>
                   </div>
-                  <div className="bg-sky-50 dark:bg-sky-900/30 rounded-lg p-3">
+                  <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg p-3">
                     <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">{t('salary.calculator.net')}</p>
                     <p className="font-bold text-gray-900 dark:text-gray-100">{comp.net.toLocaleString('sv-SE')} kr</p>
                   </div>
@@ -446,7 +446,7 @@ export default function SalaryCalculatorTab() {
 
                 {/* Comparison bar with current */}
                 {calculatedSalary && (
-                  <div className="mt-3 pt-3 border-t border-sky-100 dark:border-sky-800">
+                  <div className="mt-3 pt-3 border-t border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
                     <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{t('salary.calculator.comparedToCurrent')}</p>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 bg-stone-100 dark:bg-stone-600 rounded-full h-2 overflow-hidden">

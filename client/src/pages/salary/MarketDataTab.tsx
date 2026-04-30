@@ -117,7 +117,7 @@ export default function MarketDataTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-accent)]/40 dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-xl flex items-center justify-center shrink-0">
             <BarChart3 className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
@@ -263,7 +263,7 @@ export default function MarketDataTab() {
                         </div>
                         <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)]/80 dark:to-[var(--c-solid)] rounded-full transition-all group-hover:from-[var(--c-solid)] group-hover:to-[var(--c-text)]"
+                            className="h-full bg-[var(--c-solid)] rounded-full transition-all group-hover:from-[var(--c-solid)] group-hover:to-[var(--c-text)]"
                             style={{ width: `${(industry.median / maxMedian) * 100}%` }}
                           />
                         </div>
@@ -450,7 +450,7 @@ export default function MarketDataTab() {
           {HOT_SKILLS.map((item) => (
             <div
               key={item.skill}
-              className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border border-amber-100 dark:border-amber-800"
+              className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800"
             >
               <p className="font-medium text-gray-800 dark:text-gray-100">{item.skill}</p>
               <p className="text-lg font-bold text-amber-700 dark:text-amber-400 mt-1">{item.premium}</p>

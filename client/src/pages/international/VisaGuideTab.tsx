@@ -88,9 +88,9 @@ export default function VisaGuideTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-900/30 dark:to-blue-900/30 border-sky-100 dark:border-sky-800">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-sky-500 to-blue-500 dark:from-sky-600 dark:to-blue-600 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
             <FileCheck className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -123,7 +123,7 @@ export default function VisaGuideTab() {
             key={visa.id}
             className={cn(
               "transition-all cursor-pointer bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700",
-              expandedVisa === visa.id && "ring-2 ring-sky-200 dark:ring-sky-700"
+              expandedVisa === visa.id && "ring-2 ring-[var(--c-accent)] dark:ring-[var(--c-accent)]/50"
             )}
           >
             <button
@@ -134,11 +134,11 @@ export default function VisaGuideTab() {
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "w-10 h-10 rounded-xl flex items-center justify-center",
-                    expandedVisa === visa.id ? "bg-gradient-to-br from-sky-500 to-blue-500 dark:from-sky-600 dark:to-blue-600" : "bg-sky-100 dark:bg-sky-900/50"
+                    expandedVisa === visa.id ? "bg-[var(--c-solid)]" : "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50"
                   )}>
                     <FileCheck className={cn(
                       "w-5 h-5",
-                      expandedVisa === visa.id ? "text-white" : "text-sky-600 dark:text-sky-400"
+                      expandedVisa === visa.id ? "text-white" : "text-[var(--c-text)] dark:text-[var(--c-solid)]"
                     )} />
                   </div>
                   <div>
@@ -232,14 +232,14 @@ export default function VisaGuideTab() {
           <div className="absolute left-4 top-0 bottom-0 w-0.5 bg-stone-200 dark:bg-stone-600" />
           <div className="space-y-6 relative">
             <div className="flex items-start gap-4">
-              <div className="w-8 h-8 bg-sky-600 dark:bg-sky-700 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">1</div>
+              <div className="w-8 h-8 bg-[var(--c-solid)] rounded-full flex items-center justify-center text-white font-bold text-sm z-10">1</div>
               <div>
                 <p className="font-medium text-gray-800 dark:text-gray-100">År 0: Arbetstillstånd</p>
                 <p className="text-sm text-gray-600 dark:text-gray-300">Få ditt första arbetstillstånd (max 2 år)</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
-              <div className="w-8 h-8 bg-sky-500 dark:bg-sky-600 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">2</div>
+              <div className="w-8 h-8 bg-[var(--c-solid)] rounded-full flex items-center justify-center text-white font-bold text-sm z-10">2</div>
               <div>
                 <p className="font-medium text-gray-800 dark:text-gray-100">År 2: Förläng tillståndet</p>
                 <p className="text-sm text-gray-600 dark:text-gray-300">Ansök om förlängning innan det går ut</p>

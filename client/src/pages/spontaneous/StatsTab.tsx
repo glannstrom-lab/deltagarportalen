@@ -199,7 +199,7 @@ export default function StatsTab() {
       </Card>
 
       {/* Tips */}
-      <Card className="p-6 bg-gradient-to-br from-sky-50 to-[var(--c-bg)] dark:from-sky-900/20 dark:to-[var(--c-bg)]/30 border-sky-200 dark:border-sky-800">
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
         <h3 className="font-semibold mb-2 text-stone-800 dark:text-stone-100">{t('spontaneous.tips.title')}</h3>
         <ul className="text-sm text-stone-600 dark:text-stone-400 space-y-1.5">
           <li>{t('spontaneous.tips.tip1')}</li>

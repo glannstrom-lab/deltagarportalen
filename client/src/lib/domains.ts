@@ -28,31 +28,31 @@ export type LegacyColorDomain = ColorDomain | 'reflection' | 'outbound'
  * Längre prefix matchas före kortare (mer specifika först).
  */
 const ROUTE_DOMAIN_MAP: Array<[string, ColorDomain]> = [
-  // === COACHING (Rosa) — utveckling, CV, ansökansmaterial, karriärhandledning ===
-  ['/cv',                    'coaching'],
-  ['/cover-letter',          'coaching'],
+  // === ACTIVITY (Persika) — /jobb-hubben: hela jobbsökningsflödet ===
+  ['/job-search',            'activity'],
+  ['/applications',          'activity'],
+  ['/spontanansökan',        'activity'],
+  ['/cv',                    'activity'],
+  ['/cover-letter',          'activity'],
+  ['/interview-simulator',   'activity'],
+  ['/linkedin-optimizer',    'activity'],
+  ['/international',         'activity'],
+  ['/salary',                'activity'],
+
+  // === COACHING (Rosa) — /karriar-hubben: utveckling och vägval ===
   ['/career',                'coaching'],
   ['/interest-guide',        'coaching'],
   ['/skills-gap-analysis',   'coaching'],
   ['/personal-brand',        'coaching'],
   ['/education',             'coaching'],
-  ['/interview-simulator',   'coaching'],
-  ['/exercises',             'coaching'],
 
-  // === WELLBEING (Lavendel) — hälsa, reflektion, planering ===
+  // === WELLBEING (Lavendel) — /min-vardag-hubben: rutiner och mående ===
   ['/wellness',              'wellbeing'],
   ['/diary',                 'wellbeing'],
   ['/calendar',              'wellbeing'],
+  ['/exercises',             'wellbeing'],
 
-  // === ACTIVITY (Persika) — jobbsökning, utåtriktade åtgärder ===
-  ['/job-search',            'activity'],
-  ['/applications',          'activity'],
-  ['/spontanansökan',        'activity'],
-  ['/linkedin-optimizer',    'activity'],
-  ['/international',         'activity'],
-  ['/salary',                'activity'],
-
-  // === INFO (Sky) — informativt material och hjälp ===
+  // === INFO (Sky) — /resurser-hubben: kunskapsbank och stöd ===
   ['/help',                  'info'],
   ['/resources',             'info'],
   ['/externa-resurser',      'info'],
@@ -61,8 +61,8 @@ const ROUTE_DOMAIN_MAP: Array<[string, ColorDomain]> = [
   ['/network',               'info'],
   ['/nätverk',               'info'],
 
-  // === ACTION (Mint/Turkos) — Default ===
-  // /, /ai-team, /settings, /profile, /my-consultant, /consultant, /admin
+  // === ACTION (Mint/Turkos) — Översikt + system ===
+  // /, /oversikt, /ai-team, /settings, /profile, /my-consultant, /consultant, /admin
 ]
 
 /**
@@ -85,8 +85,8 @@ export function getDomainForPath(pathname: string): ColorDomain {
  */
 export const DOMAIN_LABELS: Record<ColorDomain, string> = {
   action:    'Översikt',
-  info:      'Information',
-  activity:  'Jobbsökning',
-  wellbeing: 'Välmående',
-  coaching:  'Utveckling',
+  activity:  'Söka jobb',
+  coaching:  'Karriär',
+  info:      'Resurser',
+  wellbeing: 'Min vardag',
 }

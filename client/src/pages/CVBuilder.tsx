@@ -620,7 +620,7 @@ export default function CVBuilder() {
         {isImageUploading && (
           <div className="absolute inset-0 bg-white/80 dark:bg-stone-900/80 rounded-2xl flex items-center justify-center z-10">
             <div className="flex items-center gap-3">
-              <Loader2 className="w-5 h-5 animate-spin text-sky-600" />
+              <Loader2 className="w-5 h-5 animate-spin text-[var(--c-solid)]" />
               <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('cvBuilder.profileImage.uploading')}</span>
             </div>
           </div>
@@ -700,7 +700,7 @@ export default function CVBuilder() {
 
       <div>
         <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
-          <Briefcase className="w-5 h-5 text-sky-500" />
+          <Briefcase className="w-5 h-5 text-[var(--c-solid)]" />
           {t('cvBuilder.sections.workExperience')}
         </h3>
         <ExperienceEditor
@@ -711,7 +711,7 @@ export default function CVBuilder() {
 
       <div>
         <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
-          <GraduationCap className="w-5 h-5 text-sky-500" />
+          <GraduationCap className="w-5 h-5 text-[var(--c-solid)]" />
           {t('cvBuilder.sections.education')}
         </h3>
         <EducationEditor
@@ -729,7 +729,7 @@ export default function CVBuilder() {
 
       <div>
         <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-4 flex items-center gap-2">
-          <Award className="w-5 h-5 text-sky-500" />
+          <Award className="w-5 h-5 text-[var(--c-solid)]" />
           {t('cvBuilder.sections.skills')}
         </h3>
         <SkillsEditor

@@ -734,7 +734,7 @@ export default function SearchTab() {
       )}
 
       {/* Tips Section */}
-      <Card className="p-6 bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800">
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
         <h3 className="font-medium mb-2 text-stone-800 dark:text-stone-100">{t('spontaneous.tips.title')}</h3>
         <ul className="text-sm text-stone-600 dark:text-stone-400 space-y-1.5">
           {searchMode === 'ai' ? (

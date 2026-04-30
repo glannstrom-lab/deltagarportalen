@@ -289,9 +289,9 @@ export default function IntegrationTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-900/30 dark:to-blue-900/30 border-sky-100 dark:border-sky-800">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-sky-500 to-blue-500 dark:from-sky-600 dark:to-blue-600 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
             <Users className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
@@ -303,14 +303,14 @@ export default function IntegrationTab() {
         </div>
 
         {/* Progress bar */}
-        <div className="mt-4 pt-4 border-t border-sky-100 dark:border-sky-800">
+        <div className="mt-4 pt-4 border-t border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-sky-800 dark:text-sky-200">{t('international.integration.yourProgress')}</span>
-            <span className="text-sm font-bold text-sky-700 dark:text-sky-300">{completedItems}/{totalItems} ({progress}%)</span>
+            <span className="text-sm font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">{t('international.integration.yourProgress')}</span>
+            <span className="text-sm font-bold text-[var(--c-text)] dark:text-[var(--c-text)]">{completedItems}/{totalItems} ({progress}%)</span>
           </div>
-          <div className="h-3 bg-sky-100 dark:bg-sky-900/50 rounded-full overflow-hidden">
+          <div className="h-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-sky-500 dark:bg-sky-600 rounded-full"
+              className="h-full bg-[var(--c-solid)] rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${progress}%` }}
               transition={{ duration: 0.5, ease: 'easeOut' }}
@@ -324,7 +324,7 @@ export default function IntegrationTab() {
             size="sm"
             variant="outline"
             onClick={exportChecklist}
-            className="gap-2 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700"
+            className="gap-2 text-[var(--c-text)] dark:text-[var(--c-text)] border-[var(--c-accent)] dark:border-[var(--c-accent)]/40"
           >
             <Download className="w-4 h-4" />
             {t('international.integration.exportChecklist')}
@@ -336,7 +336,7 @@ export default function IntegrationTab() {
       {CHECKLIST_CATEGORIES.map((category) => (
         <Card key={category.id} className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+            <Clock className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             {category.title}
           </h3>
 
@@ -385,7 +385,7 @@ export default function IntegrationTab() {
                             </span>
                           )}
                           {itemState?.notes && (
-                            <span className="px-2 py-0.5 bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 text-xs rounded-full">
+                            <span className="px-2 py-0.5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)] text-xs rounded-full">
                               <MessageSquare className="w-3 h-3 inline mr-1" />
                               Anteckning
                             </span>
@@ -417,7 +417,7 @@ export default function IntegrationTab() {
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   onClick={(e) => e.stopPropagation()}
-                                  className="text-xs text-sky-600 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300 flex items-center gap-1"
+                                  className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] flex items-center gap-1"
                                 >
                                   {link.label}
                                   <ExternalLink className="w-3 h-3" />
@@ -481,7 +481,7 @@ export default function IntegrationTab() {
                                   value={tempNotes}
                                   onChange={(e) => setTempNotes(e.target.value)}
                                   placeholder="Lägg till anteckningar..."
-                                  className="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-stone-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-sky-500"
+                                  className="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-stone-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-[var(--c-solid)]"
                                   rows={3}
                                 />
                                 <div className="flex gap-2">
@@ -524,7 +524,7 @@ export default function IntegrationTab() {
                                       setEditingNotes(item.id)
                                       setTempNotes('')
                                     }}
-                                    className="text-sm text-sky-600 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300"
+                                    className="text-sm text-[var(--c-text)] dark:text-[var(--c-solid)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)]"
                                   >
                                     + Lägg till anteckning
                                   </button>
@@ -556,12 +556,12 @@ export default function IntegrationTab() {
       ))}
 
       {/* Tips */}
-      <Card className="bg-sky-50 dark:bg-sky-900/30 border-sky-100 dark:border-sky-800">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-sky-900 dark:text-sky-100">Bra att veta</p>
-            <ul className="text-sm text-sky-700 dark:text-sky-300 mt-2 space-y-1">
+            <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-text)]">Bra att veta</p>
+            <ul className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)] mt-2 space-y-1">
               <li>- Personnummer kan ta 2-8 veckor att få</li>
               <li>- BankID kräver svenskt personnummer och bankkonto</li>
               <li>- Många tjänster fungerar inte utan BankID</li>

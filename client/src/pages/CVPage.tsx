@@ -42,7 +42,7 @@ export default function CVPage() {
   // In focus mode, show simplified CV builder on main route
   if (isFocusMode && isBuilderPage) {
     return (
-      <div className="pb-8 max-w-7xl mx-auto">
+      <div className="pb-8 max-w-7xl mx-auto" data-domain="activity">
         <header className="mb-6">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
@@ -64,7 +64,7 @@ export default function CVPage() {
   }
 
   return (
-    <div className="pb-8 max-w-7xl mx-auto">
+    <div className="pb-8 max-w-7xl mx-auto" data-domain="activity">
       {/* Page Header */}
       <header className="mb-6">
         <div className="flex items-center justify-between gap-3">

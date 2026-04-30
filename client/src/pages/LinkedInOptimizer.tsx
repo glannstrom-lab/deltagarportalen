@@ -138,11 +138,11 @@ export default function LinkedInOptimizer() {
   const auditGrade = profileCompleteness >= 80 ? 'A' : profileCompleteness >= 70 ? 'B' : profileCompleteness >= 60 ? 'C' : 'D'
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-20 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen p-4">
+    <div className="max-w-4xl mx-auto space-y-6 pb-20 min-h-screen p-4" data-domain="activity">
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-sky-100 to-sky-200 dark:from-sky-900/30 dark:to-sky-800/30 mb-2">
-          <Linkedin className="w-7 h-7 text-sky-700 dark:text-sky-400" />
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 mb-2">
+          <Linkedin className="w-7 h-7 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
         </div>
         <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.title')}</h1>
         <p className="text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
@@ -190,8 +190,8 @@ export default function LinkedInOptimizer() {
                   onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, erfarenhet: e.target.value } })}
                   className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-accent)] dark:focus:ring-[var(--c-solid)] outline-none bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                 />
-                <div className="bg-sky-50 dark:bg-sky-900/20 p-4 rounded-lg border border-sky-200 dark:border-sky-800">
-                  <p className="text-sm text-sky-800 dark:text-sky-300"><strong>{t('linkedInOptimizer.headline.tipLabel')}:</strong> {t('linkedInOptimizer.headline.tipText')}</p>
+                <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-4 rounded-lg border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+                  <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]"><strong>{t('linkedInOptimizer.headline.tipLabel')}:</strong> {t('linkedInOptimizer.headline.tipText')}</p>
                 </div>
               </div>
             )}
@@ -294,7 +294,7 @@ export default function LinkedInOptimizer() {
 
           {/* Resultat */}
           {resultat && (
-            <Card className="p-6 bg-gradient-to-br from-sky-50 to-[var(--c-bg)] dark:from-sky-900/20 dark:to-[var(--c-bg)]/30 border-sky-200 dark:border-sky-800">
+            <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('linkedInOptimizer.result.title')}</h3>
                 <button
@@ -305,7 +305,7 @@ export default function LinkedInOptimizer() {
                   {copied ? t('linkedInOptimizer.result.copied') : t('linkedInOptimizer.result.copy')}
                 </button>
               </div>
-              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-sky-100 dark:border-sky-800">
+              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
                 <p className="text-stone-700 dark:text-stone-300 whitespace-pre-wrap">{resultat}</p>
               </div>
               <p className="text-xs text-stone-600 dark:text-stone-400 mt-3">
@@ -318,7 +318,7 @@ export default function LinkedInOptimizer() {
         /* Audit View */
         <div className="space-y-6">
           {/* Completeness Overview */}
-          <Card className="p-6 bg-gradient-to-br from-sky-50 to-[var(--c-bg)] dark:from-sky-900/20 dark:to-[var(--c-bg)]/30 border-sky-200 dark:border-sky-800">
+          <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100 flex items-center gap-2">
                 <Shield className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
