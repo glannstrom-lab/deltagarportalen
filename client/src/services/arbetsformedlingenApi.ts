@@ -190,6 +190,10 @@ export interface SearchParams {
   employmentType?: string;
   publishedWithin?: 'today' | 'week' | 'month' | 'all';
   limit?: number;
+  /** Pagineringsoffset — används för "load more" / infinite scroll. */
+  offset?: number;
+  /** AF sort-param. Default 'pubdate-desc' (senaste jobben överst). */
+  sort?: 'relevance' | 'pubdate-desc' | 'pubdate-asc' | 'applydate-desc' | 'applydate-asc' | 'updated';
 }
 
 export async function searchJobs(params: SearchParams): Promise<JobSearchResponse> {
@@ -214,7 +218,12 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
     
     searchParams.set('q', searchQuery);
     searchParams.set('limit', String(params.limit || 50));
-    
+    if (params.offset && params.offset > 0) {
+      searchParams.set('offset', String(params.offset));
+    }
+    // Sortering — default 'pubdate-desc' så nyaste jobben kommer först
+    searchParams.set('sort', params.sort ?? 'pubdate-desc');
+
     // Anställningstyp (denna parameter fungerar bra i AF API)
     if (params.employmentType) {
       const empTypeMap: Record<string, string> = {
@@ -274,9 +283,14 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
       });
     }
     
-    // Filtrera på anställningstyp om inte redan filtrerat via API
-    if (params.employmentType && !params.employmentType === 'Heltid' && !params.employmentType === 'Deltid') {
-      hits = hits.filter((job: PlatsbankenJob) => 
+    // Filtrera på anställningstyp om inte redan filtrerat via API.
+    // (Tidigare hade vi en operator-precedence-bug här: `!x === 'Y'` parsas som
+    // `(!x) === 'Y'` vilket alltid är false. Använd parentes för korrekt logik.)
+    if (
+      params.employmentType &&
+      !(params.employmentType === 'Heltid' || params.employmentType === 'Deltid')
+    ) {
+      hits = hits.filter((job: PlatsbankenJob) =>
         job.employment_type?.label?.toLowerCase().includes(params.employmentType!.toLowerCase())
       );
     }
@@ -284,7 +298,11 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
     jobLogger.debug(`Found ${hits.length} jobs after filtering`);
 
     return {
-      total: { value: hits.length },
+      // Behåll AF:s totala antal träffar (data.total) i stället för att skriva
+      // över med post-filter hits.length — annars går "Visar X av Y" sönder
+      // och infinite scroll tror att det inte finns fler jobb när första sidan
+      // är klar.
+      total: { value: data.total?.value ?? hits.length },
       hits: hits,
     };
     

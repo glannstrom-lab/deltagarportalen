@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useRef, useId } from 'react';
+import { useState, useEffect, useMemo, useRef, useId, useCallback } from 'react';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useTranslation } from 'react-i18next';
 import {
@@ -94,7 +94,10 @@ function SearchTab() {
   const [isSearchExpanded, setIsSearchExpanded] = useState(true);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
+  // Infinite scroll: hämta första 20, ladda 20 till när användaren scrollar nära slutet
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
   const [isListening, setIsListening] = useState(false);
 
   // Saved jobs hook
@@ -141,11 +144,6 @@ function SearchTab() {
     return () => clearTimeout(timer);
   }, [filters.query]);
 
-  // Reset pagination när filter ändras
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [filters.query, filters.municipality, filters.region, filters.employmentType, filters.publishedWithin]);
-
   const performSearch = async () => {
     try {
       setLoading(true);
@@ -157,11 +155,14 @@ function SearchTab() {
         region: filters.region,
         employmentType: filters.employmentType,
         publishedWithin: filters.publishedWithin,
-        limit: JOBS_PER_PAGE, // Hämta endast det som visas per sida för snabbare LCP
+        limit: JOBS_PER_PAGE,
+        offset: 0,
+        sort: 'pubdate-desc',
       });
 
       setJobs(result.hits);
       setTotalJobs(result.total.value);
+      setHasMore(result.hits.length >= JOBS_PER_PAGE);
     } catch (err) {
       console.error('Search error:', err);
       setError(t('jobSearch.couldNotSearch'));
@@ -169,6 +170,47 @@ function SearchTab() {
       setLoading(false);
     }
   };
+
+  // Hämtar nästa 20 jobb och lägger till i listan. Triggas av sentinel-
+  // IntersectionObservern när slutet av listan kommer in i viewporten.
+  const loadMoreJobs = useCallback(async () => {
+    if (loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    try {
+      const result = await searchJobs({
+        query: filters.query,
+        municipality: filters.municipality,
+        region: filters.region,
+        employmentType: filters.employmentType,
+        publishedWithin: filters.publishedWithin,
+        limit: JOBS_PER_PAGE,
+        offset: jobs.length,
+        sort: 'pubdate-desc',
+      });
+      setJobs(prev => [...prev, ...result.hits]);
+      setHasMore(result.hits.length >= JOBS_PER_PAGE);
+    } catch (err) {
+      console.error('Load more error:', err);
+      // Tysta inläsningsfel — användaren kan scrolla igen för retry
+    } finally {
+      setLoadingMore(false);
+    }
+  }, [loadingMore, hasMore, jobs.length, filters]);
+
+  // IntersectionObserver — auto-laddar nästa batch när sentinel:en blir synlig
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+    if (!sentinel || !hasMore || loading) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) loadMoreJobs();
+      },
+      { rootMargin: '200px' } // börja ladda 200 px innan sentinel når viewporten
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasMore, loading, loadMoreJobs]);
 
   const handleJobClick = async (jobId: string) => {
     const job = await getJobDetails(jobId);
@@ -198,10 +240,6 @@ function SearchTab() {
   };
 
   const hasActiveFilters = filters.municipality || filters.region || filters.employmentType || filters.publishedWithin !== 'all';
-
-  // Pagination
-  const totalPages = Math.ceil(jobs.length / JOBS_PER_PAGE);
-  const paginatedJobs = jobs.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
 
   // Filter count for badge
   const activeFilterCount = [
@@ -455,14 +493,14 @@ function SearchTab() {
           <Card className="p-8 sm:p-12">
             <ErrorState title={t('jobSearch.somethingWentWrong')} message={error} onRetry={performSearch} />
           </Card>
-        ) : paginatedJobs.length > 0 ? (
+        ) : jobs.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
             {/* Results count - announced to screen readers */}
             <p className="text-sm text-stone-700 dark:text-stone-400" role="status" aria-live="polite" aria-atomic="true">
-              {t('jobSearch.showingXofY', { shown: paginatedJobs.length, total: totalJobs })}
+              {t('jobSearch.showingXofY', { shown: jobs.length, total: totalJobs })}
             </p>
 
-            {paginatedJobs.map((job) => (
+            {jobs.map((job) => (
               <div
                 key={job.id}
                 role="button"
@@ -552,29 +590,20 @@ function SearchTab() {
               </div>
             ))}
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <nav className="flex items-center justify-center gap-2 pt-4" aria-label={t('jobSearch.pagination') || 'Sidnavigering'}>
-                <button
-                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                  disabled={currentPage === 1}
-                  aria-label={t('jobSearch.previousPage') || 'Föregående sida'}
-                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
-                >
-                  <ChevronLeft size={20} aria-hidden="true" />
-                </button>
-                <span className="px-4 py-2 text-sm text-stone-600 dark:text-stone-400" aria-current="page">
-                  {t('jobSearch.pageXofY', { current: currentPage, total: totalPages })}
-                </span>
-                <button
-                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
-                  disabled={currentPage === totalPages}
-                  aria-label={t('jobSearch.nextPage') || 'Nästa sida'}
-                  className="p-2 rounded-lg border border-stone-200 dark:border-stone-700 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-stone-50 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-300 min-w-[44px] min-h-[44px] flex items-center justify-center"
-                >
-                  <ChevronRight size={20} aria-hidden="true" />
-                </button>
-              </nav>
+            {/* Infinite scroll sentinel — IntersectionObserver triggar loadMoreJobs() */}
+            <div ref={sentinelRef} className="h-px" aria-hidden="true" />
+
+            {loadingMore && (
+              <div className="py-4 flex items-center justify-center text-sm text-stone-500 dark:text-stone-400" role="status" aria-live="polite">
+                <span className="inline-block w-4 h-4 mr-2 rounded-full border-2 border-stone-300 border-t-[var(--c-solid)] animate-spin" aria-hidden="true" />
+                {t('jobSearch.loadingMore', 'Laddar fler jobb…')}
+              </div>
+            )}
+
+            {!hasMore && jobs.length > 0 && (
+              <p className="py-4 text-center text-sm text-stone-500 dark:text-stone-400">
+                {t('jobSearch.endOfList', 'Inga fler jobb att visa')}
+              </p>
             )}
           </div>
         ) : (
