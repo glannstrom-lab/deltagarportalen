@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/icons'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-import { articleData } from '@/services/articleData'
 
 // ============================================
 // TYPES
