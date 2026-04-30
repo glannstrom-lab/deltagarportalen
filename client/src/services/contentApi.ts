@@ -6,6 +6,12 @@
  */
 
 import { supabase } from '@/lib/supabase'
+
+/** Returns true if the string is a canonical UUID (8-4-4-4-12 hex). */
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+function isUuid(s: string): boolean {
+  return UUID_REGEX.test(s)
+}
 import { mockArticlesData, articleCategories, type EnhancedArticle, type ArticleChecklistItem, type ArticleAction } from './articleData'
 import { exercises as mockExercises, type Exercise, type ExerciseStep, type ExerciseQuestion } from '@/data/exercises'
 import * as LucideIcons from 'lucide-react'
@@ -211,15 +217,17 @@ export const contentArticleApi = {
   },
 
   /**
-   * Get article by slug or ID
+   * Get article by slug or ID. Använder bara id.eq när identifieraren är ett
+   * giltigt UUID — annars failar postgres med "invalid input syntax for type
+   * uuid" och hela or-klausulen droppas (400 Bad Request).
    */
   async getById(identifier: string): Promise<EnhancedArticle | null> {
     try {
-      // Try by slug first
+      const column = isUuid(identifier) ? 'id' : 'slug'
       const { data, error } = await supabase
         .from('articles')
         .select('*')
-        .or(`slug.eq.${identifier},id.eq.${identifier}`)
+        .eq(column, identifier)
         .eq('is_active', true)
         .maybeSingle()
 
@@ -398,14 +406,16 @@ export const contentExerciseApi = {
   },
 
   /**
-   * Get exercise by slug or ID
+   * Get exercise by slug or ID. Samma UUID-detektion som articles.getById —
+   * undviker 400 vid slug-input.
    */
   async getById(identifier: string): Promise<Exercise | null> {
     try {
+      const column = isUuid(identifier) ? 'id' : 'slug'
       const { data: exercise, error } = await supabase
         .from('exercises')
         .select('*')
-        .or(`slug.eq.${identifier},id.eq.${identifier}`)
+        .eq(column, identifier)
         .eq('is_active', true)
         .maybeSingle()
 
