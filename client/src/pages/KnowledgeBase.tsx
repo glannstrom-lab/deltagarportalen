@@ -5,11 +5,11 @@
 import { useState, useEffect, useCallback, Suspense, lazy, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Sparkles, Rocket, BookOpen, Route, Wrench, AlertCircle } from '@/components/ui/icons'
 import { Card, LoadingState } from '@/components/ui'
 import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
 import { useAuthStore } from '@/stores/authStore'
 import { PageLayout } from '@/components/layout/index'
+import { knowledgeTabDefs, type KnowledgeTabId } from '@/data/knowledgeTabs'
 
 // Lazy load tab components for better performance
 const ForYouTab = lazy(() => import('@/components/knowledge-base/tabs/ForYouTab'))
@@ -19,17 +19,11 @@ const QuickHelpTab = lazy(() => import('@/components/knowledge-base/tabs/QuickHe
 const MyJourneyTab = lazy(() => import('@/components/knowledge-base/tabs/MyJourneyTab'))
 const ToolsTab = lazy(() => import('@/components/knowledge-base/tabs/ToolsTab'))
 
-// Tab definitions with i18n keys
-const tabDefs = [
-  { id: 'for-you', labelKey: 'knowledgeBase.tabs.forYou', path: '/knowledge-base', icon: Sparkles },
-  { id: 'getting-started', labelKey: 'knowledgeBase.tabs.gettingStarted', path: '/knowledge-base?tab=getting-started', icon: Rocket },
-  { id: 'topics', labelKey: 'knowledgeBase.tabs.topics', path: '/knowledge-base?tab=topics', icon: BookOpen },
-  { id: 'quick-help', labelKey: 'knowledgeBase.tabs.quickHelp', path: '/knowledge-base?tab=quick-help', icon: AlertCircle },
-  { id: 'my-journey', labelKey: 'knowledgeBase.tabs.myJourney', path: '/knowledge-base?tab=my-journey', icon: Route },
-  { id: 'tools', labelKey: 'knowledgeBase.tabs.tools', path: '/knowledge-base?tab=tools', icon: Wrench },
-] as const
+// Single source of truth — tab-definitionerna ligger i `data/knowledgeTabs.ts`
+// så `pageTabs.getTabsForPath()` och denna sida ser samma uppsättning.
+const tabDefs = knowledgeTabDefs
 
-type TabId = typeof tabDefs[number]['id']
+type TabId = KnowledgeTabId
 
 
 function TabLoader({ message }: { message?: string }) {
@@ -163,13 +157,18 @@ export default function KnowledgeBase() {
             <ToolsTab />
           </Suspense>
         )
-      default:
+      default: {
+        // TS-exhaustiveness — om någon lägger till en tab i knowledgeTabDefs
+        // utan att lägga case här blir _exhaustive otypbar och tsc failar.
+        const _exhaustive: never = activeTabId
+        void _exhaustive
         return (
           <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">{t('knowledgeBase.welcome')}</h2>
             <p className="text-gray-600 dark:text-gray-300">{t('knowledgeBase.selectTab')}</p>
           </Card>
         )
+      }
     }
   }
   
