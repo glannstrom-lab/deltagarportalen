@@ -182,13 +182,13 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
     </div>
   )
 
-  // Variant: Glass - Soft pastel style matching Dashboard/Profile
+  // Variant: Glass - Inline pill tabs sitting directly on the hero background.
+  // No outer wrapper — tabs read as content elements, not as a separate input field.
   // Compact mode for many tabs (>5)
   const isCompact = tabs.length > 5
   const GlassTabs = () => (
     <div className={cn(
       'hidden md:flex items-center gap-1 overflow-x-auto scrollbar-hide',
-      'pb-1', // Space for shadow
       className
     )}>
       {tabs.map((tab) => {
@@ -200,24 +200,31 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             key={tab.id}
             to={tab.path}
             title={tab.label}
+            aria-current={isActive ? 'page' : undefined}
             className={cn(
-              'flex items-center gap-1.5 rounded-xl',
-              'text-sm font-medium transition-all duration-200 ease-out whitespace-nowrap',
-              isCompact ? 'px-2.5 py-1.5 min-h-[36px]' : 'px-4 py-2 min-h-[44px]',
+              'flex items-center gap-2 rounded-lg whitespace-nowrap transition-colors',
+              'text-sm font-medium',
+              isCompact ? 'px-2.5 py-1.5' : 'px-3 py-2',
               isActive
-                ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] shadow-sm'
-                : 'text-stone-600 dark:text-stone-400 hover:bg-[var(--c-bg)] dark:hover:bg-stone-700'
+                ? 'bg-[var(--c-bg)] text-[var(--c-text)] ring-1 ring-[var(--c-accent)] dark:bg-[var(--c-bg)]/60 dark:ring-[var(--c-accent)]/40'
+                : 'text-[var(--header-muted)] hover:text-[var(--header-text)] hover:bg-white/60 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-800/50'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-[var(--c-text)] dark:text-[var(--c-text)]' : '')} />}
-            {/* Hide label on compact mode for inactive tabs on smaller screens */}
+            {Icon && (
+              <Icon className={cn(
+                'w-4 h-4 flex-shrink-0',
+                isActive ? 'text-[var(--c-solid)] dark:text-[var(--c-text)]' : ''
+              )} />
+            )}
             <span className={cn(isCompact && !isActive && 'hidden lg:inline')}>
               {tab.label}
             </span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
-                'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-[var(--c-accent)]/60 dark:bg-[var(--c-solid)]/80 text-[var(--c-text)] dark:text-[var(--c-text)]' : 'bg-[var(--c-accent)]/40 text-[var(--c-text)]'
+                'px-1.5 py-0.5 text-[11px] rounded-full font-semibold tabular-nums',
+                isActive
+                  ? 'bg-[var(--c-accent)]/70 text-[var(--c-text)]'
+                  : 'bg-stone-200 text-stone-600 dark:bg-stone-700 dark:text-stone-300'
               )}>
                 {tab.badge}
               </span>
@@ -360,12 +367,10 @@ export function PageHeader({ title, description, tabs, tabVariant = 'minimal', a
         </div>
       </div>
 
-      {/* Tabs integrated in header */}
+      {/* Tabs integrated in header — inline on hero bg, no wrapper */}
       {hasTabs && (
-        <div className="px-4 pb-3 pt-0">
-          <div className="bg-white/70 dark:bg-stone-900/40 rounded-xl px-2 py-1.5 border border-[var(--header-border)]">
-            <PageTabs tabs={tabs} variant={tabVariant} />
-          </div>
+        <div className="px-5 pb-4 pt-0">
+          <PageTabs tabs={tabs} variant={tabVariant} />
         </div>
       )}
     </div>
