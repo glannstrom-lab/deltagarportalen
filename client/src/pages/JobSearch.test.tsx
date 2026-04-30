@@ -38,8 +38,9 @@ vi.mock('@/lib/supabase', () => ({
     from: vi.fn(() => ({
       select: vi.fn().mockReturnThis(),
       eq: vi.fn().mockReturnThis(),
-      single: vi.fn(),
-      maybeSingle: vi.fn(),
+      upsert: vi.fn(() => Promise.resolve({ data: null, error: null })),
+      single: vi.fn(() => Promise.resolve({ data: null, error: null })),
+      maybeSingle: vi.fn(() => Promise.resolve({ data: null, error: null })),
     })),
   },
 }))
