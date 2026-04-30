@@ -23,6 +23,26 @@ interface State {
 // Max retries for chunk loading
 const MAX_RETRIES = 2
 
+// Auto-reload-on-chunk-error: när Vercel deployar nytt får alla bundlar nya
+// hash-namn. En öppen flik försöker lazy-loada en chunk som inte finns →
+// SPA-fallback returnerar index.html → MIME-fel. Lösning: reload själv en
+// gång. Cooldown (30 s) skyddar mot infinite reload-loop om chunken faktiskt
+// är trasig av annan anledning.
+const RELOAD_TS_KEY = 'jobin-chunk-reload-ts'
+const RELOAD_COOLDOWN_MS = 30_000
+
+function shouldAutoReloadOnChunkError(): boolean {
+  if (typeof window === 'undefined') return false
+  try {
+    const last = parseInt(sessionStorage.getItem(RELOAD_TS_KEY) || '0', 10)
+    if (Date.now() - last < RELOAD_COOLDOWN_MS) return false
+    sessionStorage.setItem(RELOAD_TS_KEY, String(Date.now()))
+    return true
+  } catch {
+    return false
+  }
+}
+
 /**
  * Detects if error is a chunk loading failure
  */
@@ -81,6 +101,13 @@ export class RouteErrorBoundary extends Component<Props, State> {
       componentStack: errorInfo.componentStack,
     })
 
+    // Auto-recovery för stale-deploy: vid första chunk-fel inom cooldown,
+    // reloada sidan automatiskt så användaren får senaste manifestet.
+    if (this.state.errorType === 'chunk' && shouldAutoReloadOnChunkError()) {
+      window.location.reload()
+      return
+    }
+
     // Report to error tracking in production
     if (import.meta.env.PROD && typeof window !== 'undefined') {
       // @ts-ignore - Sentry may be available globally
@@ -94,10 +121,17 @@ export class RouteErrorBoundary extends Component<Props, State> {
   }
 
   handleRetry = () => {
+    // För chunk-fel hjälper det inte att resetta state — chunk-URL:n är
+    // samma och finns inte längre. Hård reload löser det. Övriga fel kan
+    // recovery via setState (t.ex. transienta network-fel).
     const { retryCount, errorType } = this.state
 
-    if (errorType === 'chunk' && retryCount < MAX_RETRIES) {
-      // For chunk errors, try clearing cache and reloading the module
+    if (errorType === 'chunk') {
+      window.location.reload()
+      return
+    }
+
+    if (retryCount < MAX_RETRIES) {
       this.setState({
         hasError: false,
         error: null,
@@ -105,7 +139,6 @@ export class RouteErrorBoundary extends Component<Props, State> {
         retryCount: retryCount + 1,
       })
     } else {
-      // Full page reload as last resort
       window.location.reload()
     }
   }
