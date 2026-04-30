@@ -1,9 +1,15 @@
 /**
- * CommunicationTab - Messaging and Meeting Management
- * Message center, meeting scheduler, and group communication
+ * CommunicationTab — meddelanden + möten mellan konsulent och deltagare.
+ *
+ * Messages-läge: konversations-vy (en deltagare = en tråd). Vänster panel
+ * listar alla pågående konversationer, höger panel visar hela tråden med
+ * skicka-svar-input. Realtime via Supabase channel — nya meddelanden
+ * dyker upp utan reload.
+ *
+ * Meetings-läge: oförändrat — schemalagda möten med möteslänk/typ.
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   MessageSquare,
@@ -13,23 +19,15 @@ import {
   Send,
   Search,
   Plus,
-  Clock,
   Video,
   Phone,
   MapPin,
-  ChevronRight,
   Check,
   X,
-  RefreshCw,
   Bell,
   Inbox,
-  Archive,
-  Star,
-  MoreVertical,
   Edit2,
-  Trash2,
   Loader2,
-  Reply,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
@@ -45,7 +43,6 @@ interface Message {
   participantEmail: string
   content: string
   isRead: boolean
-  isStarred: boolean
   createdAt: string
   direction: 'incoming' | 'outgoing'
 }
@@ -70,73 +67,245 @@ interface Participant {
   email: string
 }
 
-// Message Item Component
-function MessageItem({
-  message,
-  onRead,
-  onStar,
+interface Conversation {
+  participantId: string
+  participantName: string
+  participantEmail: string
+  messages: Message[]
+  latestMessage: Message
+  unreadCount: number
+}
+
+// Mallar för Quick Messages — fyller compose-rutan så konsulenten slipper börja från noll.
+const QUICK_TEMPLATES = {
+  meetingReminder:
+    'Hej! Påminner om vårt möte. Säg till om något kommer i vägen så hittar vi en ny tid.',
+  checkIn:
+    'Hej! Hur har veckan varit? Säg till om det är något du behöver hjälp med.',
+  congrats:
+    'Snyggt jobbat! Det är roligt att se framstegen — fortsätt så.',
+} as const
+
+function initialsOf(name: string): string {
+  return name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2)
+}
+
+function formatRelativeDate(isoString: string, locale: string): string {
+  const date = new Date(isoString)
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMin = Math.floor(diffMs / (60 * 1000))
+  const diffHour = Math.floor(diffMs / (60 * 60 * 1000))
+  const diffDay = Math.floor(diffMs / (24 * 60 * 60 * 1000))
+
+  if (diffMin < 1) return locale === 'en' ? 'just now' : 'nyss'
+  if (diffMin < 60) return `${diffMin} ${locale === 'en' ? 'min' : 'min'}`
+  if (diffHour < 24) return `${diffHour}${locale === 'en' ? 'h' : 'h'}`
+  if (diffDay < 7) return `${diffDay}${locale === 'en' ? 'd' : 'd'}`
+  return date.toLocaleDateString(locale === 'en' ? 'en-SE' : 'sv-SE', {
+    month: 'short',
+    day: 'numeric',
+  })
+}
+
+// ============================================================================
+// Conversation list item (left panel)
+// ============================================================================
+function ConversationListItem({
+  conversation,
+  isActive,
   onClick,
+  locale,
 }: {
-  message: Message
-  onRead: (id: string) => void
-  onStar: (id: string) => void
-  onClick: (message: Message) => void
+  conversation: Conversation
+  isActive: boolean
+  onClick: () => void
+  locale: string
 }) {
+  const { participantName, latestMessage, unreadCount } = conversation
+  const preview =
+    (latestMessage.direction === 'outgoing' ? (locale === 'en' ? 'You: ' : 'Du: ') : '') +
+    latestMessage.content
+
   return (
     <button
-      onClick={() => onClick(message)}
+      onClick={onClick}
       className={cn(
-        'w-full text-left p-4 border-b border-stone-100 dark:border-stone-800',
+        'w-full text-left p-3 border-b border-stone-100 dark:border-stone-800',
         'hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors',
-        !message.isRead && 'bg-amber-50/50 dark:bg-amber-900/10'
+        isActive && 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30',
+        unreadCount > 0 && !isActive && 'bg-[var(--c-bg)]/40 dark:bg-[var(--c-bg)]/15'
       )}
     >
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-medium flex-shrink-0">
-          {message.participantName.split(' ').map(n => n[0]).join('').toUpperCase()}
+        <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)] flex items-center justify-center font-medium flex-shrink-0">
+          {initialsOf(participantName)}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <p className={cn(
-              'font-medium truncate',
-              message.isRead
-                ? 'text-stone-700 dark:text-stone-300'
-                : 'text-stone-900 dark:text-stone-100'
-            )}>
-              {message.participantName}
+            <p
+              className={cn(
+                'truncate',
+                unreadCount > 0
+                  ? 'font-semibold text-stone-900 dark:text-stone-100'
+                  : 'font-medium text-stone-700 dark:text-stone-200'
+              )}
+            >
+              {participantName}
             </p>
             <span className="text-xs text-stone-500 dark:text-stone-400 flex-shrink-0">
-              {new Date(message.createdAt).toLocaleDateString('sv-SE', {
-                month: 'short',
-                day: 'numeric',
-              })}
+              {formatRelativeDate(latestMessage.createdAt, locale)}
             </span>
           </div>
-          <p className={cn(
-            'text-sm truncate mt-0.5',
-            message.isRead ? 'text-stone-500 dark:text-stone-400' : 'text-stone-700 dark:text-stone-300'
-          )}>
-            {message.content}
-          </p>
+          <div className="flex items-center justify-between gap-2 mt-0.5">
+            <p
+              className={cn(
+                'text-sm truncate',
+                unreadCount > 0
+                  ? 'text-stone-700 dark:text-stone-300'
+                  : 'text-stone-500 dark:text-stone-400'
+              )}
+            >
+              {preview}
+            </p>
+            {unreadCount > 0 && (
+              <span className="flex-shrink-0 px-2 py-0.5 bg-[var(--c-solid)] text-white text-[11px] rounded-full font-semibold tabular-nums">
+                {unreadCount}
+              </span>
+            )}
+          </div>
         </div>
-        <button
-          onClick={e => {
-            e.stopPropagation()
-            onStar(message.id)
-          }}
-          className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg"
-        >
-          <Star className={cn(
-            'w-4 h-4',
-            message.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-400 dark:text-stone-500'
-          )} />
-        </button>
       </div>
     </button>
   )
 }
 
-// Meeting Card Component
+// ============================================================================
+// Conversation thread (right panel) — bubbla-stil
+// ============================================================================
+function ConversationThread({
+  conversation,
+  onSendReply,
+  isSending,
+  t,
+  locale,
+}: {
+  conversation: Conversation
+  onSendReply: (content: string) => Promise<void>
+  isSending: boolean
+  t: (key: string, fallback?: string) => string
+  locale: string
+}) {
+  const [reply, setReply] = useState('')
+  const endRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [conversation.messages.length])
+
+  const handleSend = async () => {
+    const content = reply.trim()
+    if (!content) return
+    await onSendReply(content)
+    setReply('')
+  }
+
+  return (
+    <div className="flex flex-col h-full">
+      {/* Thread header */}
+      <div className="p-4 border-b border-stone-200 dark:border-stone-700 flex items-center gap-3">
+        <div className="w-10 h-10 rounded-full bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)] flex items-center justify-center font-medium">
+          {initialsOf(conversation.participantName)}
+        </div>
+        <div className="min-w-0">
+          <p className="font-semibold text-stone-900 dark:text-stone-100 truncate">
+            {conversation.participantName}
+          </p>
+          <p className="text-xs text-stone-500 dark:text-stone-400 truncate">
+            {conversation.participantEmail}
+          </p>
+        </div>
+      </div>
+
+      {/* Bubblor */}
+      <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-stone-50/40 dark:bg-stone-900/20">
+        {conversation.messages.map(m => {
+          const isOwn = m.direction === 'outgoing'
+          return (
+            <div
+              key={m.id}
+              className={cn('flex', isOwn ? 'justify-end' : 'justify-start')}
+            >
+              <div
+                className={cn(
+                  'max-w-[78%] px-3.5 py-2 rounded-2xl',
+                  isOwn
+                    ? 'bg-[var(--c-solid)] text-white rounded-br-sm'
+                    : 'bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 rounded-bl-sm border border-stone-200 dark:border-stone-700'
+                )}
+              >
+                <p className="whitespace-pre-wrap break-words text-sm">{m.content}</p>
+                <p
+                  className={cn(
+                    'text-[11px] mt-1 tabular-nums',
+                    isOwn ? 'text-white/75' : 'text-stone-500 dark:text-stone-400'
+                  )}
+                >
+                  {new Date(m.createdAt).toLocaleString(
+                    locale === 'en' ? 'en-SE' : 'sv-SE',
+                    { hour: '2-digit', minute: '2-digit', month: 'short', day: 'numeric' }
+                  )}
+                </p>
+              </div>
+            </div>
+          )
+        })}
+        <div ref={endRef} />
+      </div>
+
+      {/* Reply input */}
+      <div className="p-3 border-t border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900">
+        <div className="flex gap-2 items-end">
+          <textarea
+            value={reply}
+            onChange={e => setReply(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+                e.preventDefault()
+                handleSend()
+              }
+            }}
+            placeholder={t('consultant.communication.writeReply', 'Skriv svar… (Ctrl+Enter för att skicka)')}
+            rows={2}
+            className={cn(
+              'flex-1 px-3 py-2 rounded-xl resize-none',
+              'bg-stone-100 dark:bg-stone-800',
+              'border border-transparent focus:border-[var(--c-accent)] focus:outline-none',
+              'text-stone-900 dark:text-stone-100 text-sm'
+            )}
+          />
+          <Button
+            onClick={handleSend}
+            disabled={!reply.trim() || isSending}
+            size="sm"
+            className="h-fit"
+          >
+            {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================================================
+// Meeting card (oförändrad — meetings-fliken är intakt)
+// ============================================================================
 function MeetingCard({
   meeting,
   onEdit,
@@ -159,25 +328,17 @@ function MeetingCard({
   const isToday = new Date(meeting.scheduledAt).toDateString() === new Date().toDateString()
 
   return (
-    <Card className={cn(
-      'p-4',
-      isToday && 'ring-2 ring-amber-500 dark:ring-amber-400'
-    )}>
+    <Card className={cn('p-4', isToday && 'ring-2 ring-[var(--c-solid)]')}>
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
-          <div className={cn(
-            'p-2.5 rounded-xl',
-            meeting.type === 'video' ? 'bg-blue-100 dark:bg-blue-900/40 text-blue-600' :
-            meeting.type === 'phone' ? 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600' :
-            'bg-amber-100 dark:bg-amber-900/40 text-amber-600'
-          )}>
+          <div className="p-2.5 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-solid)] dark:text-[var(--c-solid)]">
             <TypeIcon className="w-5 h-5" />
           </div>
           <div>
             <p className="font-medium text-stone-900 dark:text-stone-100">
               {meeting.participantName}
             </p>
-            <div className="flex items-center gap-2 mt-1">
+            <div className="flex items-center gap-2 mt-1 flex-wrap">
               <span className="text-sm text-stone-500 dark:text-stone-400">
                 {new Date(meeting.scheduledAt).toLocaleDateString('sv-SE', {
                   weekday: 'short',
@@ -227,7 +388,7 @@ function MeetingCard({
           href={meeting.meetingLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white rounded-lg text-sm font-medium hover:from-amber-600 hover:to-orange-600 transition-colors"
+          className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg text-sm font-medium hover:brightness-95 transition-all"
         >
           <Video className="w-4 h-4" />
           {joinMeetingLabel}
@@ -237,23 +398,31 @@ function MeetingCard({
   )
 }
 
-// New Message Dialog
+// ============================================================================
+// New Message Dialog — accepterar nu en initialContent-prop för Quick Messages
+// ============================================================================
 function NewMessageDialog({
   isOpen,
   onClose,
   participants,
   onSend,
+  initialContent = '',
   t,
 }: {
   isOpen: boolean
   onClose: () => void
   participants: Participant[]
   onSend: (participantIds: string[], message: string) => void
-  t: (key: string) => string
+  initialContent?: string
+  t: (key: string, fallback?: string) => string
 }) {
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([])
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState(initialContent)
   const [searchQuery, setSearchQuery] = useState('')
+
+  useEffect(() => {
+    if (isOpen) setMessage(initialContent)
+  }, [isOpen, initialContent])
 
   if (!isOpen) return null
 
@@ -276,7 +445,7 @@ function NewMessageDialog({
       <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-lg">
         <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
           <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-            {t('consultant.communication.newMessage')}
+            {t('consultant.communication.newMessage', 'Nytt meddelande')}
           </h3>
           <button
             onClick={onClose}
@@ -286,22 +455,21 @@ function NewMessageDialog({
           </button>
         </div>
         <div className="p-4 space-y-4">
-          {/* Participant Selection */}
           <div>
             <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-              {t('consultant.communication.to')}
+              {t('consultant.communication.to', 'Till')}
             </label>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
               <input
                 type="text"
-                placeholder={t('consultant.communication.searchParticipants')}
+                placeholder={t('consultant.communication.searchParticipants', 'Sök deltagare')}
                 value={searchQuery}
                 onChange={e => setSearchQuery(e.target.value)}
                 className={cn(
                   'w-full pl-10 pr-4 py-2.5 rounded-xl',
                   'bg-stone-100 dark:bg-stone-800',
-                  'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
+                  'border-2 border-transparent focus:border-[var(--c-accent)]',
                   'text-stone-900 dark:text-stone-100'
                 )}
               />
@@ -314,12 +482,11 @@ function NewMessageDialog({
                   return (
                     <span
                       key={id}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full text-sm"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-solid)] rounded-full text-sm"
                     >
                       {p.first_name} {p.last_name}
                       <button
                         onClick={() => setSelectedParticipants(prev => prev.filter(p => p !== id))}
-                        className="hover:text-violet-900"
                       >
                         <X className="w-3 h-3" />
                       </button>
@@ -341,15 +508,17 @@ function NewMessageDialog({
                   }}
                   className={cn(
                     'w-full flex items-center gap-3 p-3 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors',
-                    selectedParticipants.includes(p.participant_id) && 'bg-amber-50 dark:bg-amber-900/20'
+                    selectedParticipants.includes(p.participant_id) && 'bg-[var(--c-bg)]/40 dark:bg-[var(--c-bg)]/20'
                   )}
                 >
-                  <div className={cn(
-                    'w-5 h-5 rounded border-2 flex items-center justify-center',
-                    selectedParticipants.includes(p.participant_id)
-                      ? 'bg-amber-500 border-amber-500 text-white'
-                      : 'border-stone-300 dark:border-stone-600'
-                  )}>
+                  <div
+                    className={cn(
+                      'w-5 h-5 rounded border-2 flex items-center justify-center',
+                      selectedParticipants.includes(p.participant_id)
+                        ? 'bg-[var(--c-solid)] border-[var(--c-solid)] text-white'
+                        : 'border-stone-300 dark:border-stone-600'
+                    )}
+                  >
                     {selectedParticipants.includes(p.participant_id) && (
                       <Check className="w-3 h-3" />
                     )}
@@ -363,20 +532,19 @@ function NewMessageDialog({
             </div>
           </div>
 
-          {/* Message Input */}
           <div>
             <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-              {t('consultant.communication.message')}
+              {t('consultant.communication.message', 'Meddelande')}
             </label>
             <textarea
               value={message}
               onChange={e => setMessage(e.target.value)}
-              placeholder={t('consultant.communication.writeMessage')}
+              placeholder={t('consultant.communication.writeMessage', 'Skriv ditt meddelande')}
               rows={4}
               className={cn(
                 'w-full px-4 py-3 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
-                'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
+                'border-2 border-transparent focus:border-[var(--c-accent)]',
                 'text-stone-900 dark:text-stone-100',
                 'resize-none'
               )}
@@ -385,14 +553,14 @@ function NewMessageDialog({
         </div>
         <div className="flex items-center justify-end gap-3 p-4 border-t border-stone-200 dark:border-stone-700">
           <Button variant="ghost" onClick={onClose}>
-            {t('common.cancel')}
+            {t('common.cancel', 'Avbryt')}
           </Button>
           <Button
             onClick={handleSend}
             disabled={selectedParticipants.length === 0 || !message.trim()}
           >
             <Send className="w-4 h-4 mr-2" />
-            {t('consultant.communication.send')}
+            {t('consultant.communication.send', 'Skicka')}
           </Button>
         </div>
       </div>
@@ -400,31 +568,85 @@ function NewMessageDialog({
   )
 }
 
+// ============================================================================
+// Main component
+// ============================================================================
 export function CommunicationTab() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const locale = i18n.language
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<'messages' | 'meetings'>('messages')
   const [messages, setMessages] = useState<Message[]>([])
   const [meetings, setMeetings] = useState<Meeting[]>([])
   const [participants, setParticipants] = useState<Participant[]>([])
   const [showNewMessage, setShowNewMessage] = useState(false)
+  const [composeTemplate, setComposeTemplate] = useState('')
   const [showMeetingDialog, setShowMeetingDialog] = useState(false)
-  const [selectedMessage, setSelectedMessage] = useState<Message | null>(null)
-  const [messageFilter, setMessageFilter] = useState<'all' | 'unread' | 'starred'>('all')
+  const [activeParticipantId, setActiveParticipantId] = useState<string | null>(null)
   const [sendingMessage, setSendingMessage] = useState(false)
-  const [replyContent, setReplyContent] = useState('')
 
   useEffect(() => {
     fetchData()
   }, [])
 
+  // Realtime — när någon skickar/uppdaterar meddelande där jag är inblandad,
+  // re-fetcha. Filtret begränsar till min user.id för att slippa stora payloads.
+  useEffect(() => {
+    let isMounted = true
+    let channelCleanup: (() => void) | null = null
+
+    ;(async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
+      if (!user || !isMounted) return
+
+      const channel = supabase
+        .channel(`consultant-messages-${user.id}`)
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'consultant_messages',
+            filter: `receiver_id=eq.${user.id}`,
+          },
+          () => {
+            if (isMounted) fetchData()
+          }
+        )
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'consultant_messages',
+            filter: `sender_id=eq.${user.id}`,
+          },
+          () => {
+            if (isMounted) fetchData()
+          }
+        )
+        .subscribe()
+
+      channelCleanup = () => {
+        supabase.removeChannel(channel)
+      }
+    })()
+
+    return () => {
+      isMounted = false
+      channelCleanup?.()
+    }
+  }, [])
+
   const fetchData = async () => {
     try {
-      setLoading(true)
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
       if (!user) return
 
-      // Fetch participants
       const { data: participantsData } = await supabase
         .from('consultant_dashboard_participants')
         .select('participant_id, first_name, last_name, email')
@@ -432,62 +654,36 @@ export function CommunicationTab() {
 
       if (participantsData) {
         setParticipants(participantsData)
+        const participantMap = new Map(participantsData.map(p => [p.participant_id, p]))
 
-        // Create a map for quick participant lookup
-        const participantMap = new Map(
-          participantsData.map(p => [p.participant_id, p])
-        )
-
-        // Fetch real messages
         const { data: messagesData } = await supabase
           .from('consultant_messages')
           .select('*')
           .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
-          .order('created_at', { ascending: false })
-          .limit(50)
+          .order('created_at', { ascending: true })
+          .limit(500)
 
-        if (messagesData && messagesData.length > 0) {
-          const formattedMessages: Message[] = messagesData.map(m => {
+        if (messagesData) {
+          const formatted: Message[] = messagesData.map(m => {
             const isIncoming = m.receiver_id === user.id
             const participantId = isIncoming ? m.sender_id : m.receiver_id
-            const participant = participantMap.get(participantId)
-
+            const p = participantMap.get(participantId)
             return {
               id: m.id,
               participantId,
-              participantName: participant
-                ? `${participant.first_name} ${participant.last_name}`
-                : 'Okänd',
-              participantEmail: participant?.email || '',
+              participantName: p ? `${p.first_name} ${p.last_name}` : 'Okänd',
+              participantEmail: p?.email || '',
               content: m.content,
               isRead: m.is_read,
-              isStarred: false, // TODO: Add starred field to messages table
               createdAt: m.created_at,
               direction: isIncoming ? 'incoming' : 'outgoing',
             }
           })
-          setMessages(formattedMessages)
+          setMessages(formatted)
         } else {
-          // Fallback to sample messages if no real messages exist
-          const sampleMessages: Message[] = participantsData.slice(0, 3).map((p, i) => ({
-            id: `sample-${i}`,
-            participantId: p.participant_id,
-            participantName: `${p.first_name} ${p.last_name}`,
-            participantEmail: p.email,
-            content: [
-              'Hej! Jag har uppdaterat mitt CV, kan du kolla på det?',
-              'Tack för hjälpen med jobbansökan!',
-              'Har du tid för ett möte nästa vecka?'
-            ][i % 3],
-            isRead: i > 0,
-            isStarred: i === 0,
-            createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-            direction: 'incoming' as const,
-          }))
-          setMessages(sampleMessages)
+          setMessages([])
         }
 
-        // Fetch real meetings
         const { data: meetingsData } = await supabase
           .from('consultant_meetings')
           .select('*')
@@ -498,13 +694,11 @@ export function CommunicationTab() {
 
         if (meetingsData && meetingsData.length > 0) {
           const formattedMeetings: Meeting[] = meetingsData.map(m => {
-            const participant = participantMap.get(m.participant_id)
+            const p = participantMap.get(m.participant_id)
             return {
               id: m.id,
               participantId: m.participant_id,
-              participantName: participant
-                ? `${participant.first_name} ${participant.last_name}`
-                : 'Okänd',
+              participantName: p ? `${p.first_name} ${p.last_name}` : 'Okänd',
               scheduledAt: m.scheduled_at,
               duration: m.duration_minutes,
               type: m.meeting_type as 'video' | 'phone' | 'physical',
@@ -526,47 +720,95 @@ export function CommunicationTab() {
     }
   }
 
-  const handleReadMessage = async (id: string) => {
-    // Update local state immediately
-    setMessages(prev => prev.map(m => m.id === id ? { ...m, isRead: true } : m))
-
-    // Update in database
-    try {
-      await supabase
-        .from('consultant_messages')
-        .update({ is_read: true })
-        .eq('id', id)
-    } catch (error) {
-      console.error('Error marking message as read:', error)
+  // Bygg konversationer från flat messages-array — en per deltagare.
+  const conversations = useMemo<Conversation[]>(() => {
+    const map = new Map<string, Conversation>()
+    for (const m of messages) {
+      const existing = map.get(m.participantId)
+      if (existing) {
+        existing.messages.push(m)
+        if (new Date(m.createdAt) > new Date(existing.latestMessage.createdAt)) {
+          existing.latestMessage = m
+        }
+        if (m.direction === 'incoming' && !m.isRead) existing.unreadCount += 1
+      } else {
+        map.set(m.participantId, {
+          participantId: m.participantId,
+          participantName: m.participantName,
+          participantEmail: m.participantEmail,
+          messages: [m],
+          latestMessage: m,
+          unreadCount: m.direction === 'incoming' && !m.isRead ? 1 : 0,
+        })
+      }
     }
-  }
+    return Array.from(map.values()).sort(
+      (a, b) =>
+        new Date(b.latestMessage.createdAt).getTime() -
+        new Date(a.latestMessage.createdAt).getTime()
+    )
+  }, [messages])
 
-  const handleStarMessage = (id: string) => {
-    setMessages(prev => prev.map(m => m.id === id ? { ...m, isStarred: !m.isStarred } : m))
-  }
+  const activeConversation = activeParticipantId
+    ? conversations.find(c => c.participantId === activeParticipantId)
+    : null
+
+  const totalUnread = conversations.reduce((sum, c) => sum + c.unreadCount, 0)
+
+  // Auto-välj första konversationen när data laddats
+  useEffect(() => {
+    if (!activeParticipantId && conversations.length > 0) {
+      setActiveParticipantId(conversations[0].participantId)
+    }
+  }, [conversations, activeParticipantId])
+
+  // När man öppnar en konversation, markera incoming-meddelanden som lästa
+  useEffect(() => {
+    if (!activeConversation) return
+    const unreadIds = activeConversation.messages
+      .filter(m => m.direction === 'incoming' && !m.isRead)
+      .map(m => m.id)
+    if (unreadIds.length === 0) return
+
+    setMessages(prev =>
+      prev.map(m => (unreadIds.includes(m.id) ? { ...m, isRead: true } : m))
+    )
+
+    supabase
+      .from('consultant_messages')
+      .update({ is_read: true })
+      .in('id', unreadIds)
+      .then(({ error }) => {
+        if (error) console.error('Mark-as-read failed:', error)
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeParticipantId])
 
   const handleSendMessage = async (participantIds: string[], content: string) => {
     setSendingMessage(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
-      // Send message to each participant
-      const messages = participantIds.map(participantId => ({
+      const newRows = participantIds.map(participantId => ({
         sender_id: user.id,
         receiver_id: participantId,
         content,
         is_read: false,
       }))
 
-      const { error } = await supabase
-        .from('consultant_messages')
-        .insert(messages)
-
+      const { error } = await supabase.from('consultant_messages').insert(newRows)
       if (error) throw error
 
-      // Refresh messages
+      // Realtime-channel kommer triggar fetchData, men anropa direkt också för UI-snabbhet
       fetchData()
+
+      // Öppna konversationen med första mottagaren
+      if (participantIds.length > 0) {
+        setActiveParticipantId(participantIds[0])
+      }
     } catch (error) {
       console.error('Error sending message:', error)
     } finally {
@@ -574,27 +816,23 @@ export function CommunicationTab() {
     }
   }
 
-  const handleReplyToMessage = async () => {
-    if (!selectedMessage || !replyContent.trim()) return
-
+  const handleSendReply = async (content: string) => {
+    if (!activeConversation) return
     setSendingMessage(true)
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
-      const { error } = await supabase
-        .from('consultant_messages')
-        .insert({
-          sender_id: user.id,
-          receiver_id: selectedMessage.participantId,
-          content: replyContent.trim(),
-          is_read: false,
-        })
-
+      const { error } = await supabase.from('consultant_messages').insert({
+        sender_id: user.id,
+        receiver_id: activeConversation.participantId,
+        content,
+        is_read: false,
+      })
       if (error) throw error
 
-      setReplyContent('')
-      setSelectedMessage(null)
       fetchData()
     } catch (error) {
       console.error('Error sending reply:', error)
@@ -604,17 +842,13 @@ export function CommunicationTab() {
   }
 
   const handleCancelMeeting = async (meetingId: string) => {
-    if (!confirm(t('consultant.communication.confirmCancelMeeting'))) return
-
+    if (!confirm(t('consultant.communication.confirmCancelMeeting', 'Avboka mötet?'))) return
     try {
       const { error } = await supabase
         .from('consultant_meetings')
         .update({ status: 'cancelled' })
         .eq('id', meetingId)
-
       if (error) throw error
-
-      // Remove from local state
       setMeetings(prev => prev.filter(m => m.id !== meetingId))
     } catch (error) {
       console.error('Error cancelling meeting:', error)
@@ -623,23 +857,22 @@ export function CommunicationTab() {
 
   const handleScheduleMeeting = async (meetingData: any) => {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser()
       if (!user) throw new Error('Not authenticated')
 
-      const { error } = await supabase
-        .from('consultant_meetings')
-        .insert({
-          consultant_id: user.id,
-          participant_id: meetingData.participantId,
-          scheduled_at: meetingData.dateTime,
-          duration_minutes: meetingData.duration,
-          meeting_type: meetingData.type,
-          meeting_link: meetingData.meetingLink,
-          location: meetingData.location,
-          notes: meetingData.notes,
-          status: 'scheduled',
-        })
-
+      const { error } = await supabase.from('consultant_meetings').insert({
+        consultant_id: user.id,
+        participant_id: meetingData.participantId,
+        scheduled_at: meetingData.dateTime,
+        duration_minutes: meetingData.duration,
+        meeting_type: meetingData.type,
+        meeting_link: meetingData.meetingLink,
+        location: meetingData.location,
+        notes: meetingData.notes,
+        status: 'scheduled',
+      })
       if (error) throw error
 
       setShowMeetingDialog(false)
@@ -649,38 +882,35 @@ export function CommunicationTab() {
     }
   }
 
-  const filteredMessages = messages.filter(m => {
-    if (messageFilter === 'unread') return !m.isRead
-    if (messageFilter === 'starred') return m.isStarred
-    return true
-  })
-
   const upcomingMeetings = meetings
     .filter(m => new Date(m.scheduledAt) > new Date() && m.status === 'scheduled')
     .sort((a, b) => new Date(a.scheduledAt).getTime() - new Date(b.scheduledAt).getTime())
 
-  if (loading) {
-    return <LoadingState type="list" />
+  const openCompose = (template: string = '') => {
+    setComposeTemplate(template)
+    setShowNewMessage(true)
   }
+
+  if (loading) return <LoadingState type="list" />
 
   return (
     <div className="space-y-6">
-      {/* Tab Navigation */}
+      {/* Tab navigation */}
       <div className="flex items-center gap-4 border-b border-stone-200 dark:border-stone-700">
         <button
           onClick={() => setActiveTab('messages')}
           className={cn(
             'flex items-center gap-2 px-4 py-3 font-medium transition-colors',
             activeTab === 'messages'
-              ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-600 dark:border-amber-400'
+              ? 'text-[var(--c-text)] dark:text-[var(--c-solid)] border-b-2 border-[var(--c-solid)]'
               : 'text-stone-500 hover:text-stone-700 dark:hover:text-stone-300'
           )}
         >
           <MessageSquare className="w-5 h-5" />
-          {t('consultant.communication.messages')}
-          {messages.filter(m => !m.isRead).length > 0 && (
-            <span className="px-2 py-0.5 bg-amber-500 dark:bg-amber-600 text-white text-xs rounded-full">
-              {messages.filter(m => !m.isRead).length}
+          {t('consultant.communication.messages', 'Meddelanden')}
+          {totalUnread > 0 && (
+            <span className="px-2 py-0.5 bg-[var(--c-solid)] text-white text-xs rounded-full font-semibold">
+              {totalUnread}
             </span>
           )}
         </button>
@@ -689,14 +919,14 @@ export function CommunicationTab() {
           className={cn(
             'flex items-center gap-2 px-4 py-3 font-medium transition-colors',
             activeTab === 'meetings'
-              ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-600 dark:border-amber-400'
+              ? 'text-[var(--c-text)] dark:text-[var(--c-solid)] border-b-2 border-[var(--c-solid)]'
               : 'text-stone-500 hover:text-stone-700 dark:hover:text-stone-300'
           )}
         >
           <Calendar className="w-5 h-5" />
-          {t('consultant.communication.meetings')}
+          {t('consultant.communication.meetings', 'Möten')}
           {upcomingMeetings.length > 0 && (
-            <span className="px-2 py-0.5 bg-emerald-600 text-white text-xs rounded-full">
+            <span className="px-2 py-0.5 bg-[var(--c-solid)] text-white text-xs rounded-full font-semibold">
               {upcomingMeetings.length}
             </span>
           )}
@@ -704,128 +934,107 @@ export function CommunicationTab() {
       </div>
 
       {activeTab === 'messages' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Message List */}
-          <Card className="lg:col-span-2 overflow-hidden">
-            <div className="p-4 border-b border-stone-200 dark:border-stone-700">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <select
-                    value={messageFilter}
-                    onChange={e => setMessageFilter(e.target.value as typeof messageFilter)}
-                    className={cn(
-                      'px-3 py-2 rounded-lg',
-                      'bg-stone-100 dark:bg-stone-800',
-                      'border-0',
-                      'text-sm text-stone-900 dark:text-stone-100'
-                    )}
-                  >
-                    <option value="all">{t('consultant.communication.allMessages')}</option>
-                    <option value="unread">{t('consultant.communication.unread')}</option>
-                    <option value="starred">{t('consultant.communication.starred')}</option>
-                  </select>
-                </div>
-                <Button size="sm" onClick={() => setShowNewMessage(true)}>
-                  <Plus className="w-4 h-4 mr-1.5" />
-                  {t('consultant.communication.newMessage')}
-                </Button>
-              </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          {/* Vänster: konversationslista */}
+          <Card className="lg:col-span-4 overflow-hidden flex flex-col h-[600px]">
+            <div className="p-3 border-b border-stone-200 dark:border-stone-700 flex items-center justify-between">
+              <h3 className="font-semibold text-stone-900 dark:text-stone-100 text-sm">
+                {t('consultant.communication.conversations', 'Konversationer')}
+              </h3>
+              <Button size="sm" onClick={() => openCompose('')}>
+                <Plus className="w-4 h-4" />
+              </Button>
             </div>
-            <div className="max-h-[500px] overflow-y-auto">
-              {filteredMessages.length > 0 ? (
-                filteredMessages.map(message => (
-                  <MessageItem
-                    key={message.id}
-                    message={message}
-                    onRead={handleReadMessage}
-                    onStar={handleStarMessage}
-                    onClick={m => {
-                      setSelectedMessage(m)
-                      handleReadMessage(m.id)
-                    }}
+            <div className="flex-1 overflow-y-auto">
+              {conversations.length > 0 ? (
+                conversations.map(c => (
+                  <ConversationListItem
+                    key={c.participantId}
+                    conversation={c}
+                    isActive={c.participantId === activeParticipantId}
+                    onClick={() => setActiveParticipantId(c.participantId)}
+                    locale={locale}
                   />
                 ))
               ) : (
                 <div className="p-8 text-center">
                   <Inbox className="w-12 h-12 text-stone-300 dark:text-stone-500 mx-auto mb-3" />
-                  <p className="text-stone-500 dark:text-stone-400">
-                    {t('consultant.communication.noMessages')}
+                  <p className="text-stone-500 dark:text-stone-400 text-sm">
+                    {t('consultant.communication.noMessages', 'Inga meddelanden ännu')}
                   </p>
+                  <Button size="sm" className="mt-4" onClick={() => openCompose('')}>
+                    <Plus className="w-4 h-4 mr-1.5" />
+                    {t('consultant.communication.newMessage', 'Nytt meddelande')}
+                  </Button>
                 </div>
               )}
             </div>
           </Card>
 
-          {/* Quick Actions & Templates */}
-          <div className="space-y-4">
-            <Card className="p-4">
-              <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
-                {t('consultant.communication.quickMessages')}
-              </h4>
-              <div className="space-y-2">
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  onClick={() => setShowNewMessage(true)}
-                >
-                  <Mail className="w-4 h-4 mr-2" />
-                  {t('consultant.communication.meetingReminder')}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  onClick={() => setShowNewMessage(true)}
-                >
-                  <Bell className="w-4 h-4 mr-2" />
-                  {t('consultant.communication.checkInMessage')}
-                </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  onClick={() => setShowNewMessage(true)}
-                >
-                  <Star className="w-4 h-4 mr-2" />
-                  {t('consultant.communication.congratsProgress')}
-                </Button>
-              </div>
-            </Card>
+          {/* Höger: aktiv tråd eller quick-actions */}
+          <div className="lg:col-span-8 flex flex-col gap-4">
+            {activeConversation ? (
+              <Card className="overflow-hidden h-[600px]">
+                <ConversationThread
+                  conversation={activeConversation}
+                  onSendReply={handleSendReply}
+                  isSending={sendingMessage}
+                  t={t}
+                  locale={locale}
+                />
+              </Card>
+            ) : (
+              <Card className="p-12 text-center flex flex-col items-center justify-center h-[600px]">
+                <MessageSquare className="w-16 h-16 text-stone-300 dark:text-stone-500 mb-4" />
+                <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
+                  {t('consultant.communication.selectConversation', 'Välj en konversation')}
+                </h3>
+                <p className="text-sm text-stone-500 dark:text-stone-400 max-w-sm mb-6">
+                  {t(
+                    'consultant.communication.selectConversationDesc',
+                    'Klicka på en konversation till vänster eller starta ett nytt meddelande.'
+                  )}
+                </p>
 
-            <Card className="p-4">
-              <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
-                {t('consultant.communication.groupMessage')}
-              </h4>
-              <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
-                {t('consultant.communication.groupMessageDesc')}
-              </p>
-              <Button className="w-full" onClick={() => setShowNewMessage(true)}>
-                <Users className="w-4 h-4 mr-2" />
-                {t('consultant.communication.sendToGroup')}
-              </Button>
-            </Card>
+                {/* Quick templates — fungerar nu på riktigt */}
+                <div className="flex flex-wrap gap-2 justify-center">
+                  <Button variant="outline" size="sm" onClick={() => openCompose(QUICK_TEMPLATES.meetingReminder)}>
+                    <Mail className="w-4 h-4 mr-2" />
+                    {t('consultant.communication.meetingReminder', 'Mötespåminnelse')}
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => openCompose(QUICK_TEMPLATES.checkIn)}>
+                    <Bell className="w-4 h-4 mr-2" />
+                    {t('consultant.communication.checkInMessage', 'Check-in')}
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => openCompose(QUICK_TEMPLATES.congrats)}>
+                    <Users className="w-4 h-4 mr-2" />
+                    {t('consultant.communication.congratsProgress', 'Grattis till framsteg')}
+                  </Button>
+                </div>
+              </Card>
+            )}
           </div>
         </div>
       )}
 
       {activeTab === 'meetings' && (
         <div className="space-y-6">
-          {/* Quick Actions */}
           <div className="flex items-center justify-between">
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              {t('consultant.communication.upcomingMeetings')}
+              {t('consultant.communication.upcomingMeetings', 'Kommande möten')}
             </h3>
             <Button onClick={() => setShowMeetingDialog(true)}>
               <Plus className="w-4 h-4 mr-2" />
-              {t('consultant.communication.bookNewMeeting')}
+              {t('consultant.communication.bookNewMeeting', 'Boka nytt möte')}
             </Button>
           </div>
 
-          {/* Today's Meetings */}
-          {upcomingMeetings.some(m =>
-            new Date(m.scheduledAt).toDateString() === new Date().toDateString()
+          {upcomingMeetings.some(
+            m => new Date(m.scheduledAt).toDateString() === new Date().toDateString()
           ) && (
             <div>
               <h4 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
-                {t('common.today')}
+                {t('common.today', 'Idag')}
               </h4>
               <div className="space-y-3">
                 {upcomingMeetings
@@ -834,19 +1043,18 @@ export function CommunicationTab() {
                     <MeetingCard
                       key={meeting.id}
                       meeting={meeting}
-                      onEdit={m => setShowMeetingDialog(true)}
+                      onEdit={() => setShowMeetingDialog(true)}
                       onCancel={handleCancelMeeting}
-                      joinMeetingLabel={t('consultant.communication.joinMeeting')}
+                      joinMeetingLabel={t('consultant.communication.joinMeeting', 'Anslut till möte')}
                     />
                   ))}
               </div>
             </div>
           )}
 
-          {/* This Week */}
           <div>
             <h4 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
-              {t('consultant.communication.thisWeek')}
+              {t('consultant.communication.thisWeek', 'Denna vecka')}
             </h4>
             <div className="space-y-3">
               {upcomingMeetings
@@ -855,9 +1063,9 @@ export function CommunicationTab() {
                   <MeetingCard
                     key={meeting.id}
                     meeting={meeting}
-                    onEdit={m => setShowMeetingDialog(true)}
+                    onEdit={() => setShowMeetingDialog(true)}
                     onCancel={handleCancelMeeting}
-                    joinMeetingLabel={t('consultant.communication.joinMeeting')}
+                    joinMeetingLabel={t('consultant.communication.joinMeeting', 'Anslut till möte')}
                   />
                 ))}
             </div>
@@ -867,30 +1075,32 @@ export function CommunicationTab() {
             <Card className="p-12 text-center">
               <Calendar className="w-16 h-16 text-stone-300 dark:text-stone-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
-                {t('consultant.communication.noMeetings')}
+                {t('consultant.communication.noMeetings', 'Inga möten ännu')}
               </h3>
               <p className="text-stone-500 dark:text-stone-400 mb-6">
-                {t('consultant.communication.noMeetingsDesc')}
+                {t('consultant.communication.noMeetingsDesc', 'Boka ditt första möte med en deltagare.')}
               </p>
               <Button onClick={() => setShowMeetingDialog(true)}>
                 <Plus className="w-4 h-4 mr-2" />
-                {t('consultant.communication.bookMeeting')}
+                {t('consultant.communication.bookMeeting', 'Boka möte')}
               </Button>
             </Card>
           )}
         </div>
       )}
 
-      {/* New Message Dialog */}
       <NewMessageDialog
         isOpen={showNewMessage}
-        onClose={() => setShowNewMessage(false)}
+        onClose={() => {
+          setShowNewMessage(false)
+          setComposeTemplate('')
+        }}
         participants={participants}
         onSend={handleSendMessage}
+        initialContent={composeTemplate}
         t={t}
       />
 
-      {/* Meeting Scheduler Dialog */}
       <MeetingSchedulerDialog
         isOpen={showMeetingDialog}
         onClose={() => setShowMeetingDialog(false)}
@@ -901,93 +1111,6 @@ export function CommunicationTab() {
         }))}
         onSchedule={handleScheduleMeeting}
       />
-
-      {/* Message Detail Modal */}
-      {selectedMessage && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-lg">
-            <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-medium">
-                  {selectedMessage.participantName.split(' ').map(n => n[0]).join('').toUpperCase()}
-                </div>
-                <div>
-                  <p className="font-medium text-stone-900 dark:text-stone-100">
-                    {selectedMessage.participantName}
-                  </p>
-                  <p className="text-sm text-stone-500">{selectedMessage.participantEmail}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => {
-                  setSelectedMessage(null)
-                  setReplyContent('')
-                }}
-                className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
-              >
-                <X className="w-5 h-5 text-stone-500" />
-              </button>
-            </div>
-            <div className="p-4">
-              <div className="mb-4">
-                <p className="text-xs text-stone-500 mb-2">
-                  {new Date(selectedMessage.createdAt).toLocaleString('sv-SE')}
-                </p>
-                <p className="text-stone-900 dark:text-stone-100 whitespace-pre-wrap">
-                  {selectedMessage.content}
-                </p>
-              </div>
-
-              {/* Reply section */}
-              <div className="pt-4 border-t border-stone-200 dark:border-stone-700">
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
-                  {t('consultant.communication.reply')}
-                </label>
-                <textarea
-                  value={replyContent}
-                  onChange={e => setReplyContent(e.target.value)}
-                  placeholder={t('consultant.communication.writeReply')}
-                  rows={3}
-                  className={cn(
-                    'w-full px-4 py-3 rounded-xl',
-                    'bg-stone-100 dark:bg-stone-800',
-                    'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
-                    'text-stone-900 dark:text-stone-100',
-                    'resize-none'
-                  )}
-                />
-              </div>
-            </div>
-            <div className="flex items-center justify-end gap-3 p-4 border-t border-stone-200 dark:border-stone-700">
-              <Button
-                variant="ghost"
-                onClick={() => {
-                  setSelectedMessage(null)
-                  setReplyContent('')
-                }}
-              >
-                {t('common.close')}
-              </Button>
-              <Button
-                onClick={handleReplyToMessage}
-                disabled={!replyContent.trim() || sendingMessage}
-              >
-                {sendingMessage ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    {t('consultant.communication.sending')}
-                  </>
-                ) : (
-                  <>
-                    <Reply className="w-4 h-4 mr-2" />
-                    {t('consultant.communication.sendReply')}
-                  </>
-                )}
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
