@@ -144,7 +144,7 @@ export default function LinkedInOptimizer() {
       subtitle={t('linkedInOptimizer.description')}
       domain="activity"
       showTabs={false}
-      className="max-w-4xl mx-auto"
+      className="max-w-7xl mx-auto"
       contentClassName="space-y-6"
     >
       {/* Tabs */}

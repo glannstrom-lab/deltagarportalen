@@ -76,7 +76,7 @@ function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
   // Check if company is active
   if (verksamOrg?.kod === 'JA') {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--c-bg)] text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]">
         <CheckCircle2 className="w-3 h-3" />
         {t('spontaneous.companyStatus.active')}
       </span>
@@ -629,7 +629,7 @@ export default function SearchTab() {
 
                         {/* Verification badge */}
                         {company.verified ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                             <CheckCircle2 className="w-3 h-3" />
                             {t('spontaneous.verified')}
                           </span>
@@ -645,7 +645,7 @@ export default function SearchTab() {
                         )}
 
                         {isSaved && (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[var(--c-bg)] text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]">
                             <CheckCircle2 className="w-3 h-3" />
                             {t('spontaneous.status.saved')}
                           </span>

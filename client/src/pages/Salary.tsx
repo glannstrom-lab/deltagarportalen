@@ -30,7 +30,7 @@ export default function SalaryPage() {
       customTabs={salaryTabs}
       tabVariant="glass"
       showTabs={true}
-      className="space-y-6"
+      className="max-w-7xl mx-auto space-y-6"
       domain="activity"
     >
       <Routes>

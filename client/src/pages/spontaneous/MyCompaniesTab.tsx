@@ -50,14 +50,14 @@ const statusConfig: Record<SpontaneousStatus, {
   to_contact: {
     labelKey: 'spontaneous.status.to_contact',
     icon: Send,
-    color: 'text-blue-600',
-    bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+    color: 'text-[var(--c-text)]',
+    bgColor: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40',
   },
   contacted: {
     labelKey: 'spontaneous.status.contacted',
     icon: Send,
-    color: 'text-purple-600',
-    bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+    color: 'text-stone-700 dark:text-stone-300',
+    bgColor: 'bg-stone-100 dark:bg-stone-700/50',
   },
   waiting: {
     labelKey: 'spontaneous.status.waiting',
@@ -68,8 +68,8 @@ const statusConfig: Record<SpontaneousStatus, {
   response_positive: {
     labelKey: 'spontaneous.status.response_positive',
     icon: CheckCircle,
-    color: 'text-green-600',
-    bgColor: 'bg-green-100 dark:bg-green-900/30',
+    color: 'text-emerald-700',
+    bgColor: 'bg-emerald-50 dark:bg-emerald-900/30',
   },
   response_negative: {
     labelKey: 'spontaneous.status.response_negative',
@@ -254,7 +254,7 @@ function CompanyCard({
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => onUpdateStatus('response_positive')}>
-              <CheckCircle className="w-4 h-4 mr-2 text-green-600" />
+              <CheckCircle className="w-4 h-4 mr-2 text-emerald-600" />
               {t('spontaneous.status.response_positive')}
             </DropdownMenuItem>
             <DropdownMenuItem onClick={() => onUpdateStatus('response_negative')}>

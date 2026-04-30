@@ -337,15 +337,25 @@ export const pageToHub: Record<string, HubId> = (() => {
  * Returns undefined for unknown paths (e.g. '/login', '/admin', '/settings').
  */
 export function getActiveHub(pathname: string): NavHub | undefined {
+  // Avkoda URL-encoded tecken (t.ex. /spontanans%C3%B6kan -> /spontanansökan)
+  // så att member-paths med svenska tecken matchar oavsett browser-beteende.
+  const decoded = (() => {
+    try {
+      return decodeURIComponent(pathname)
+    } catch {
+      return pathname
+    }
+  })()
+
   // Exact match first
-  const directHubId = pageToHub[pathname]
+  const directHubId = pageToHub[decoded]
   if (directHubId) {
     return navHubs.find(h => h.id === directHubId)
   }
   // Sub-path match: find a member path that the pathname starts with + '/'
   for (const hub of navHubs) {
     for (const memberPath of hub.memberPaths) {
-      if (pathname === memberPath || pathname.startsWith(memberPath + '/')) {
+      if (decoded === memberPath || decoded.startsWith(memberPath + '/')) {
         return hub
       }
     }

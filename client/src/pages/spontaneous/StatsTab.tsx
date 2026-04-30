@@ -85,15 +85,15 @@ export default function StatsTab() {
             label={t('spontaneous.stats.contacted')}
             value={totalContacted}
             icon={Send}
-            color="text-blue-600"
-            bgColor="bg-blue-100 dark:bg-blue-900/30"
+            color="text-[var(--c-text)]"
+            bgColor="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30"
           />
           <StatCard
             label={t('spontaneous.stats.responses')}
             value={totalResponses}
             icon={CheckCircle}
-            color="text-green-600"
-            bgColor="bg-green-100 dark:bg-green-900/30"
+            color="text-[var(--c-text)]"
+            bgColor="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30"
           />
           <StatCard
             label={t('spontaneous.stats.waiting')}
@@ -151,7 +151,7 @@ export default function StatsTab() {
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <h3 className="font-semibold mb-4 text-stone-800 dark:text-stone-100">{t('spontaneous.stats.statusDistribution')}</h3>
           <div className="space-y-2">
-            <StatusRow label={t('spontaneous.status.to_contact')} value={stats.to_contact} color="bg-blue-500" total={totalCompanies} />
+            <StatusRow label={t('spontaneous.status.to_contact')} value={stats.to_contact} color="bg-[var(--c-solid)]" total={totalCompanies} />
             <StatusRow label={t('spontaneous.status.waiting')} value={stats.waiting} color="bg-amber-500" total={totalCompanies} />
             <StatusRow label={t('spontaneous.status.response_positive')} value={stats.response_positive} color="bg-emerald-500" total={totalCompanies} />
             <StatusRow label={t('spontaneous.status.response_negative')} value={stats.response_negative} color="bg-red-500" total={totalCompanies} />

@@ -419,7 +419,7 @@ TIPS FÖR FÖRBÄTTRING:
         subtitle={t('interviewSimulator.description')}
         domain="activity"
         showTabs={false}
-        className="max-w-3xl mx-auto"
+        className="max-w-7xl mx-auto"
         contentClassName="space-y-6"
       >
         {/* Setup Form */}
@@ -564,7 +564,7 @@ TIPS FÖR FÖRBÄTTRING:
       subtitle={`${roll}${foretag ? ' — ' + foretag : ''}`}
       domain="activity"
       showTabs={false}
-      className="max-w-3xl mx-auto"
+      className="max-w-7xl mx-auto"
       contentClassName="space-y-6"
     >
       {/* Progress-card — neutralt vitt kort med persika-progress */}

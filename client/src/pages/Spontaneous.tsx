@@ -61,7 +61,7 @@ export default function SpontaneousPage() {
         customTabs={tabs}
         tabVariant="glass"
         showTabs={true}
-        className="space-y-6"
+        className="max-w-7xl mx-auto space-y-6"
       >
         <Routes>
           <Route path="/" element={<SearchTab />} />

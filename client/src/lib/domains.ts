@@ -70,7 +70,15 @@ const ROUTE_DOMAIN_MAP: Array<[string, ColorDomain]> = [
  * Default = 'action' (mint/turkos) om ingen match.
  */
 export function getDomainForPath(pathname: string): ColorDomain {
-  const path = pathname.toLowerCase().replace(/\/$/, '') || '/'
+  // Avkoda URL-encoded tecken (t.ex. /spontanans%C3%B6kan -> /spontanansökan)
+  // så att routes med svenska tecken matchar konsekvent.
+  let decoded = pathname
+  try {
+    decoded = decodeURIComponent(pathname)
+  } catch {
+    // ignore invalid encoding
+  }
+  const path = decoded.toLowerCase().replace(/\/$/, '') || '/'
 
   for (const [prefix, domain] of ROUTE_DOMAIN_MAP) {
     if (path === prefix || path.startsWith(prefix + '/')) {

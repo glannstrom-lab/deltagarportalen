@@ -31,7 +31,7 @@ export default function InternationalPage() {
       tabVariant="glass"
       showTabs={true}
       domain="activity"
-      className="space-y-6"
+      className="max-w-7xl mx-auto space-y-6"
     >
       <Routes>
         <Route path="/" element={<VisaGuideTab />} />
