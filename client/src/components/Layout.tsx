@@ -18,6 +18,7 @@ import { NotificationBell } from './notifications/NotificationBell'
 import { OptimizedImage } from './ui/OptimizedImage'
 import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge, isHubNavEnabled } from './layout/navigation'
 import { HubBottomNav } from './layout/HubBottomNav'
+import { OnboardingFlow } from './onboarding/OnboardingFlow'
 
 const SIDEBAR_COLLAPSED_KEY = 'sidebar-collapsed'
 
@@ -107,6 +108,9 @@ export default function Layout() {
         {/* Övriga komponenter */}
         <BreakReminder workDuration={15} />
         <ToastContainer />
+
+        {/* Global welkomstmodal — visas bara om profile.onboarding_completed === false */}
+        <OnboardingFlow />
       </div>
     </>
   )

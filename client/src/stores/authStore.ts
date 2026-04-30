@@ -66,6 +66,9 @@ export interface Profile {
     strengths?: string[]
   } | null
   interests: string[] | null
+  // Global welcome-flow status (separat från onboarding_progress / onboarded_hubs
+  // som spårar checklistan respektive hub-besök)
+  onboarding_completed: boolean
   // GDPR Consent timestamps
   terms_accepted_at: string | null
   privacy_accepted_at: string | null
