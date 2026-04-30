@@ -206,7 +206,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
               'text-sm font-medium',
               isCompact ? 'px-2.5 py-1.5' : 'px-3 py-2',
               isActive
-                ? 'bg-[var(--c-bg)] text-[var(--c-text)] ring-1 ring-[var(--c-accent)] dark:bg-[var(--c-bg)]/60 dark:ring-[var(--c-accent)]/40'
+                ? 'bg-[var(--c-bg)] text-[var(--c-text)] ring-1 ring-inset ring-[var(--c-accent)] dark:bg-[var(--c-bg)]/60 dark:ring-[var(--c-accent)]/40'
                 : 'text-[var(--header-muted)] hover:text-[var(--header-text)] hover:bg-white/60 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-800/50'
             )}
           >
