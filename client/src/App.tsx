@@ -36,6 +36,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const CVPage = lazy(() => import('./pages/CVPage'))
 const CVBuilder = lazy(() => import('./pages/CVBuilder'))
 const TemplateSnapshot = lazy(() => import('./pages/TemplateSnapshot'))
+const PDFTestSnapshot = lazy(() => import('./pages/PDFTestSnapshot'))
 const CoverLetterPage = lazy(() => import('./pages/CoverLetterPage'))
 const InterestGuide = lazy(() => import('./pages/InterestGuide'))
 const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'))
@@ -225,6 +226,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/ai-policy" element={<AiPolicy />} />
         <Route path="/template-snapshot/:templateId" element={<LazyRoute><TemplateSnapshot /></LazyRoute>} />
+        <Route path="/pdf-test/:templateId" element={<LazyRoute><PDFTestSnapshot /></LazyRoute>} />
         <Route path="/linkedin/callback" element={<LazyRoute><LinkedInCallback /></LazyRoute>} />
         <Route path="/calendar/google-callback" element={<LazyRoute><GoogleCalendarCallback /></LazyRoute>} />
 
