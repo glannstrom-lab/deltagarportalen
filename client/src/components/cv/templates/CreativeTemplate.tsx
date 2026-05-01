@@ -7,8 +7,9 @@ import { Mail, Phone, MapPin } from '@/components/ui/icons'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getSkillName } from './helpers'
 
-const primary = '#7C3AED'
-const secondary = '#EC4899'
+// Sammanhållen mörk magenta — bold men inte gradient-trippy
+const primary = '#A21464'
+const secondary = '#A21464'
 
 export function CreativeTemplate({ data, fullName }: TemplateProps) {
   return (
@@ -22,52 +23,37 @@ export function CreativeTemplate({ data, fullName }: TemplateProps) {
         overflow: 'hidden',
       }}
     >
-      {/* Decorative circle */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '-100px',
-          right: '-100px',
-          width: '400px',
-          height: '400px',
-          background: `linear-gradient(135deg, ${primary}20 0%, ${secondary}20 100%)`,
-          borderRadius: '50%',
-        }}
-      />
-
       {/* Header */}
-      <header style={{ padding: '64px', paddingBottom: '48px', position: 'relative' }}>
-        <div style={{ display: 'flex', gap: '48px', alignItems: 'flex-end' }}>
+      <header style={{ padding: '64px', paddingBottom: '40px', position: 'relative' }}>
+        <div style={{ display: 'flex', gap: '40px', alignItems: 'center' }}>
           {data.profileImage && (
             <img
               src={data.profileImage}
               alt=""
               style={{
-                width: '180px',
-                height: '220px',
+                width: '160px',
+                height: '200px',
                 objectFit: 'cover',
-                borderRadius: '24px',
-                boxShadow: '0 20px 60px rgba(124, 58, 237, 0.2)',
+                borderRadius: '20px',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
               }}
             />
           )}
           <div style={{ flex: 1 }}>
             <h1
               style={{
-                fontSize: '72px',
-                fontWeight: '800',
-                letterSpacing: '-0.04em',
-                lineHeight: '0.95',
-                background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                marginBottom: '16px',
+                fontSize: '64px',
+                fontWeight: '700',
+                letterSpacing: '-0.03em',
+                lineHeight: '1',
+                color: primary,
+                marginBottom: '12px',
               }}
             >
               {fullName}
             </h1>
             {data.title && (
-              <p style={{ fontSize: '24px', fontWeight: '500', color: '#333333' }}>{data.title}</p>
+              <p style={{ fontSize: '20px', fontWeight: '500', color: '#333333', letterSpacing: '0.02em' }}>{data.title}</p>
             )}
           </div>
         </div>
@@ -205,7 +191,7 @@ export function CreativeTemplate({ data, fullName }: TemplateProps) {
             {data.skills?.length > 0 && (
               <section
                 style={{
-                  background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 100%)`,
+                  background: primary,
                   padding: '32px',
                   borderRadius: '24px',
                   color: '#FFFFFF',

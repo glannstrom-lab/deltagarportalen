@@ -4,7 +4,7 @@
  */
 
 import type { TemplateProps } from './types'
-import { getLanguageLevelPercent, getSkillName } from './helpers'
+import { getLanguageLevelPercent, getSkillName, getInitials } from './helpers'
 
 const accent = '#0EA5E9'
 
@@ -46,7 +46,8 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
             style={{
               width: '100%',
               aspectRatio: '1',
-              background: '#E2E8F0',
+              background: '#FFFFFF',
+              border: '1px solid #E2E8F0',
               borderRadius: '20px',
               marginBottom: '32px',
               display: 'flex',
@@ -54,7 +55,9 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
               justifyContent: 'center',
             }}
           >
-            <span style={{ fontSize: '64px', opacity: 0.3 }}>👤</span>
+            <span style={{ fontSize: '52px', fontWeight: 300, color: '#94A3B8', letterSpacing: '0.02em' }}>
+              {getInitials(data.firstName, data.lastName)}
+            </span>
           </div>
         )}
 

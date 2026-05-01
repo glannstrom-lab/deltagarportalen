@@ -7,8 +7,9 @@ import { Mail, Phone, MapPin } from '@/components/ui/icons'
 import type { TemplateProps } from './types'
 import { getLanguageLevelDisplay, getLanguageLevelPercent, getSkillName } from './helpers'
 
-const primary = '#6366F1'
-const secondary = '#8B5CF6'
+// Djup, klassisk navy istället för gradient — mer tidlös och mindre 2018-startup
+const primary = '#1E3A5F'
+const accent = '#C9A66B'
 
 export function CenteredTemplate({ data, fullName }: TemplateProps) {
   return (
@@ -20,64 +21,37 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
         fontFamily: "'Inter', -apple-system, sans-serif",
       }}
     >
-      {/* Gradient header */}
+      {/* Solid header — platt navy med tunn guld-accent under */}
       <header
         style={{
-          background: `linear-gradient(135deg, ${primary} 0%, ${secondary} 50%, #A855F7 100%)`,
-          padding: '64px',
+          background: primary,
+          padding: '72px 64px 56px',
           textAlign: 'center',
           color: '#FFFFFF',
-          position: 'relative',
-          overflow: 'hidden',
+          borderBottom: `3px solid ${accent}`,
         }}
       >
-        {/* Decorative circles */}
-        <div
-          style={{
-            position: 'absolute',
-            top: '-80px',
-            left: '-80px',
-            width: '200px',
-            height: '200px',
-            background: 'rgba(255,255,255,0.1)',
-            borderRadius: '50%',
-          }}
-        />
-        <div
-          style={{
-            position: 'absolute',
-            bottom: '-40px',
-            right: '10%',
-            width: '120px',
-            height: '120px',
-            background: 'rgba(255,255,255,0.08)',
-            borderRadius: '50%',
-          }}
-        />
-
         {data.profileImage && (
           <img
             src={data.profileImage}
             alt=""
             style={{
-              width: '140px',
-              height: '140px',
+              width: '120px',
+              height: '120px',
               objectFit: 'cover',
               borderRadius: '50%',
-              border: '4px solid rgba(255,255,255,0.3)',
+              border: '3px solid rgba(255,255,255,0.25)',
               marginBottom: '24px',
-              position: 'relative',
             }}
           />
         )}
 
         <h1
           style={{
-            fontSize: '48px',
-            fontWeight: '700',
-            letterSpacing: '-0.02em',
+            fontSize: '44px',
+            fontWeight: '600',
+            letterSpacing: '-0.01em',
             marginBottom: '8px',
-            position: 'relative',
           }}
         >
           {fullName}
@@ -85,10 +59,12 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
         {data.title && (
           <p
             style={{
-              fontSize: '20px',
-              opacity: 0.9,
-              marginBottom: '28px',
-              position: 'relative',
+              fontSize: '17px',
+              fontWeight: 400,
+              letterSpacing: '0.05em',
+              textTransform: 'uppercase',
+              color: accent,
+              marginBottom: '32px',
             }}
           >
             {data.title}
@@ -100,26 +76,25 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: '24px',
+            gap: '32px',
             flexWrap: 'wrap',
-            position: 'relative',
           }}
         >
           {data.email && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', opacity: 0.9 }}>
-              <Mail style={{ width: '16px', height: '16px' }} />
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'rgba(255,255,255,0.85)' }}>
+              <Mail style={{ width: '14px', height: '14px' }} />
               {data.email}
             </span>
           )}
           {data.phone && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', opacity: 0.9 }}>
-              <Phone style={{ width: '16px', height: '16px' }} />
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'rgba(255,255,255,0.85)' }}>
+              <Phone style={{ width: '14px', height: '14px' }} />
               {data.phone}
             </span>
           )}
           {data.location && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', opacity: 0.9 }}>
-              <MapPin style={{ width: '16px', height: '16px' }} />
+            <span style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'rgba(255,255,255,0.85)' }}>
+              <MapPin style={{ width: '14px', height: '14px' }} />
               {data.location}
             </span>
           )}
@@ -154,10 +129,11 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
                   style={{
                     fontSize: '13px',
                     fontWeight: '500',
-                    padding: '8px 20px',
-                    background: `linear-gradient(135deg, ${primary}15 0%, ${secondary}15 100%)`,
+                    padding: '8px 18px',
+                    background: '#F4F1EC',
                     color: primary,
-                    borderRadius: '100px',
+                    borderRadius: '4px',
+                    letterSpacing: '0.01em',
                   }}
                 >
                   {getSkillName(skill)}
@@ -285,7 +261,7 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
                             style={{
                               width: `${percent}%`,
                               height: '100%',
-                              background: `linear-gradient(90deg, ${primary} 0%, ${secondary} 100%)`,
+                              background: accent,
                               borderRadius: '2px',
                             }}
                           />

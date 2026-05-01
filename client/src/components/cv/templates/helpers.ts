@@ -27,3 +27,14 @@ export const getLanguageLevelPercent = (level: string): number => {
 export const getSkillName = (skill: string | { name: string; category?: string }): string => {
   return typeof skill === 'string' ? skill : skill?.name || ''
 }
+
+/**
+ * Initialer för profil-placeholder. Tomma värden hanteras så vi alltid får
+ * 1–2 tecken, default "C" + "V" om båda namn saknas.
+ */
+export const getInitials = (firstName?: string, lastName?: string): string => {
+  const f = (firstName || '').trim()
+  const l = (lastName || '').trim()
+  if (!f && !l) return 'CV'
+  return `${f.charAt(0)}${l.charAt(0)}`.toUpperCase() || 'CV'
+}

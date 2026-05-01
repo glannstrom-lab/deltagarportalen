@@ -296,7 +296,7 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
           {data.skills?.length > 0 && (
             <View style={styles.sidebarSection}>
-              <Text style={styles.sidebarLabel}>Tech Stack</Text>
+              <Text style={styles.sidebarLabel}>Kompetenser</Text>
               <View style={styles.skillWrap}>
                 {data.skills.slice(0, 12).map((skill, i) => (
                   <Text key={i} style={styles.skillTag}>{getSkillName(skill)}</Text>
@@ -369,8 +369,9 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
 // ============================================================================
 
 function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
-  const primary = '#7C3AED'
-  const secondary = '#EC4899'
+  // Matchar HTML-versionen — solid magenta, ingen gradient.
+  const primary = '#A21464'
+  const secondary = '#A21464'
 
   const styles = StyleSheet.create({
     page: { fontFamily: 'Helvetica', backgroundColor: '#FAFAFA' },
@@ -392,7 +393,7 @@ function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
     sectionLabel: { fontSize: 10, fontWeight: 'bold', letterSpacing: 1, textTransform: 'uppercase', color: primary, marginBottom: 20 },
     sectionLabelWhite: { fontSize: 10, fontWeight: 'bold', letterSpacing: 1, textTransform: 'uppercase', color: 'rgba(255,255,255,0.8)', marginBottom: 16 },
     entry: { marginBottom: 20 },
-    entryBadge: { fontSize: 9, fontWeight: 'bold', padding: '3 10', backgroundColor: 'rgba(124,58,237,0.1)', color: primary, borderRadius: 20, marginBottom: 8 },
+    entryBadge: { fontSize: 9, fontWeight: 'bold', padding: '3 10', backgroundColor: 'rgba(162,20,100,0.1)', color: primary, borderRadius: 20, marginBottom: 8 },
     entryTitle: { fontSize: 14, fontWeight: 'bold', color: '#1a1a1a', marginBottom: 2 },
     entryCompany: { fontSize: 11, color: secondary, marginBottom: 6 },
     entryDesc: { fontSize: 10, lineHeight: 1.5, color: '#666666' },
@@ -612,29 +613,31 @@ function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
 // ============================================================================
 
 function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
-  const primary = '#6366F1'
+  // Matchar HTML-versionen — navy header med guld-accent under.
+  const primary = '#1E3A5F'
+  const accent = '#C9A66B'
 
   const styles = StyleSheet.create({
     page: { fontFamily: 'Helvetica', backgroundColor: '#FFFFFF' },
-    header: { backgroundColor: primary, padding: 50, alignItems: 'center' },
-    photo: { width: 100, height: 100, borderRadius: 50, marginBottom: 16, border: '3pt solid rgba(255,255,255,0.3)' },
-    name: { fontSize: 36, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 6 },
-    title: { fontSize: 16, color: 'rgba(255,255,255,0.9)', marginBottom: 20 },
-    contactRow: { flexDirection: 'row', gap: 20, justifyContent: 'center' },
-    contactText: { fontSize: 11, color: 'rgba(255,255,255,0.9)' },
+    header: { backgroundColor: primary, padding: 50, alignItems: 'center', borderBottom: `3pt solid ${accent}` },
+    photo: { width: 90, height: 90, borderRadius: 45, marginBottom: 16, border: '3pt solid rgba(255,255,255,0.25)' },
+    name: { fontSize: 32, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 6 },
+    title: { fontSize: 13, fontWeight: 'normal', letterSpacing: 1, color: accent, marginBottom: 24, textTransform: 'uppercase' },
+    contactRow: { flexDirection: 'row', gap: 24, justifyContent: 'center' },
+    contactText: { fontSize: 10, color: 'rgba(255,255,255,0.85)' },
     main: { padding: '40 50' },
-    summary: { fontSize: 14, lineHeight: 1.7, color: '#4B5563', textAlign: 'center', marginBottom: 40, maxWidth: 500, alignSelf: 'center' },
-    skillWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginBottom: 40 },
-    skillTag: { fontSize: 10, fontWeight: 'bold', padding: '6 16', backgroundColor: `${primary}15`, color: primary, borderRadius: 20 },
+    summary: { fontSize: 13, lineHeight: 1.7, color: '#4B5563', textAlign: 'center', marginBottom: 36, maxWidth: 500, alignSelf: 'center' },
+    skillWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, justifyContent: 'center', marginBottom: 36 },
+    skillTag: { fontSize: 10, fontWeight: 'bold', padding: '6 14', backgroundColor: '#F4F1EC', color: primary, borderRadius: 4 },
     twoColumn: { flexDirection: 'row', gap: 50 },
     column: { flex: 1 },
-    sectionLabel: { fontSize: 10, fontWeight: 'bold', letterSpacing: 1, textTransform: 'uppercase', color: primary, marginBottom: 24 },
-    entry: { marginBottom: 24, paddingLeft: 16, borderLeft: `2pt solid ${primary}30` },
-    entryDate: { fontSize: 10, color: '#9CA3AF', marginBottom: 6 },
-    entryTitle: { fontSize: 14, fontWeight: 'bold', color: '#111827', marginBottom: 2 },
+    sectionLabel: { fontSize: 10, fontWeight: 'bold', letterSpacing: 1, textTransform: 'uppercase', color: primary, marginBottom: 22 },
+    entry: { marginBottom: 22, paddingLeft: 14, borderLeft: `2pt solid ${accent}` },
+    entryDate: { fontSize: 10, color: '#9CA3AF', marginBottom: 4 },
+    entryTitle: { fontSize: 13, fontWeight: 'bold', color: '#111827', marginBottom: 2 },
     entryCompany: { fontSize: 11, color: primary, marginBottom: 8 },
     entryDesc: { fontSize: 10, lineHeight: 1.6, color: '#6B7280' },
-    eduCard: { padding: 16, backgroundColor: '#F9FAFB', borderRadius: 10, marginBottom: 12 },
+    eduCard: { padding: 14, backgroundColor: '#F9FAFB', borderRadius: 6, marginBottom: 12 },
     eduTitle: { fontSize: 12, fontWeight: 'bold', color: '#111827' },
     eduSchool: { fontSize: 11, color: primary },
     eduDate: { fontSize: 10, color: '#9CA3AF', marginTop: 4 },
@@ -643,7 +646,7 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
     langName: { fontSize: 11, color: '#374151' },
     langLevel: { fontSize: 10, color: '#9CA3AF' },
     langBar: { height: 3, backgroundColor: '#E5E7EB', borderRadius: 2 },
-    langBarFill: { height: 3, backgroundColor: primary, borderRadius: 2 },
+    langBarFill: { height: 3, backgroundColor: accent, borderRadius: 2 },
   })
 
   const getLangPercent = (level: string) => {

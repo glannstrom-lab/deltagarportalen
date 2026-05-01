@@ -5,7 +5,7 @@
 
 import { Mail, Phone, MapPin } from '@/components/ui/icons'
 import type { TemplateProps } from './types'
-import { getLanguageLevelDisplay, getLanguageLevelPercent, getSkillName } from './helpers'
+import { getLanguageLevelDisplay, getLanguageLevelPercent, getSkillName, getInitials } from './helpers'
 
 const accent = '#6366F1'
 
@@ -54,9 +54,12 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              border: '1px solid rgba(255,255,255,0.08)',
             }}
           >
-            <span style={{ fontSize: '72px', opacity: 0.3 }}>👤</span>
+            <span style={{ fontSize: '56px', fontWeight: 300, color: 'rgba(255,255,255,0.5)', letterSpacing: '0.02em' }}>
+              {getInitials(data.firstName, data.lastName)}
+            </span>
           </div>
         )}
 
@@ -109,7 +112,7 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
                 marginBottom: '20px',
               }}
             >
-              Tech Stack
+              Kompetenser
             </h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {data.skills.slice(0, 12).map((skill, i) => (

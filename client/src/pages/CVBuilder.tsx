@@ -52,49 +52,50 @@ const LANGUAGE_LEVELS = [
   { value: 'native', labelKey: 'cvBuilder.languageLevels.native' },
 ] as const
 
-// Moderna CV-mallar 2025
+// Moderna CV-mallar 2025 — thumbnail-bilder genereras via
+// `node e2e/cv-template-snapshots.cjs` och bor i client/public/templates/.
 const TEMPLATES = [
-  { 
-    id: 'sidebar', 
-    name: 'Sidokolumn', 
-    desc: 'Modern layout med sidopanel för kontakt och skills',
-    preview: 'bg-gradient-to-br from-stone-700 to-stone-900',
-    features: ['Sidokolumn', 'Rundat foto', 'Skills i sidopanel']
+  {
+    id: 'sidebar',
+    name: 'Sidokolumn',
+    desc: 'Modern layout med mörk sidopanel för kontakt och kompetenser',
+    image: '/templates/sidebar.png',
+    features: ['Sidokolumn', 'Rundat foto', 'Kompetenser i sidopanel'],
   },
-  { 
-    id: 'centered', 
-    name: 'Centrerad', 
-    desc: 'Hero-design med stort foto och gradient',
-    preview: 'bg-gradient-to-br from-[var(--c-solid)] to-sky-500',
-    features: ['Gradient header', 'Centrerat foto', 'Timeline']
+  {
+    id: 'centered',
+    name: 'Centrerad',
+    desc: 'Klassisk navy-header med guld-accent och centrerad layout',
+    image: '/templates/centered.png',
+    features: ['Navy & guld', 'Centrerat namn', 'Tidlös'],
   },
-  { 
-    id: 'minimal', 
-    name: 'Minimal', 
-    desc: 'Luftig design med mycket whitespace',
-    preview: 'bg-gradient-to-br from-gray-50 to-gray-200',
-    features: ['Clean & luftig', 'Enkel typografi', 'Fokus på innehåll']
+  {
+    id: 'minimal',
+    name: 'Minimal',
+    desc: 'Swiss-inspirerad design med stor typografi och mycket luft',
+    image: '/templates/minimal.png',
+    features: ['Stor typografi', 'Luftig', 'Fokus på innehåll'],
   },
-  { 
-    id: 'creative', 
-    name: 'Kreativ', 
-    desc: 'Färgstark två-kolumns layout',
-    preview: 'bg-gradient-to-br from-pink-500 to-rose-500',
-    features: ['Färgstark', 'Progress bars', 'Kort-layout']
+  {
+    id: 'creative',
+    name: 'Kreativ',
+    desc: 'Magenta-accent med kort-baserad två-kolumns layout',
+    image: '/templates/creative.png',
+    features: ['Magenta-accent', 'Kort-layout', 'Bold typografi'],
   },
-  { 
-    id: 'executive', 
-    name: 'Executive', 
-    desc: 'Elegant med serif-typsnitt för ledare',
-    preview: 'bg-gradient-to-br from-stone-900 to-stone-800',
-    features: ['Serif rubriker', 'Guld-accenter', 'Klassisk']
+  {
+    id: 'executive',
+    name: 'Executive',
+    desc: 'Elegant serif med guld-accenter och drop cap',
+    image: '/templates/executive.png',
+    features: ['Serif typografi', 'Guld-accenter', 'Klassisk'],
   },
-  { 
-    id: 'nordic', 
-    name: 'Nordisk', 
-    desc: 'Skandinavisk design med mjuka färger',
-    preview: 'bg-gradient-to-br from-sky-100 to-blue-200',
-    features: ['Mjuka färger', 'Ljust tema', 'Clean']
+  {
+    id: 'nordic',
+    name: 'Nordisk',
+    desc: 'Skandinavisk minimalism med ljus sidopanel',
+    image: '/templates/nordic.png',
+    features: ['Ljus sidopanel', 'Sky-accent', 'Clean'],
   },
 ]
 
@@ -510,63 +511,20 @@ export default function CVBuilder() {
                   : "border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md"
               )}
             >
-              {/* Preview thumbnail */}
-              <div className={cn("h-36 w-full relative", tpl.preview)}>
+              {/* Riktig screenshot av mallen — toppen visas, hela CV-arket
+                  scrollar inte i kortet. Genereras via cv-template-snapshots.cjs. */}
+              <div className="relative bg-stone-50 dark:bg-stone-900 overflow-hidden border-b border-stone-200 dark:border-stone-700">
                 {selected && (
-                  <div className="absolute top-3 right-3 bg-[var(--c-solid)] text-white rounded-full p-1.5 shadow-lg">
+                  <div className="absolute top-3 right-3 z-10 bg-[var(--c-solid)] text-white rounded-full p-1.5 shadow-lg">
                     <Check className="w-5 h-5" />
                   </div>
                 )}
-
-                {/* Mock layout preview */}
-                <div className="absolute inset-0 flex items-center justify-center p-4">
-                  {tpl.id === 'sidebar' && (
-                    <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
-                      <div className="w-1/3 bg-stone-700 rounded" />
-                      <div className="w-2/3 space-y-1">
-                        <div className="h-3 bg-stone-200 rounded w-3/4" />
-                        <div className="h-2 bg-stone-200 rounded w-1/2" />
-                      </div>
-                    </div>
-                  )}
-                  {tpl.id === 'centered' && (
-                    <div className="flex flex-col items-center w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[var(--c-solid)]/80 to-sky-400 mb-2" />
-                      <div className="h-3 bg-stone-200 rounded w-1/2" />
-                    </div>
-                  )}
-                  {tpl.id === 'minimal' && (
-                    <div className="w-full h-20 bg-white/90 rounded-lg p-3 shadow-sm space-y-2">
-                      <div className="h-3 bg-stone-800 rounded w-1/3" />
-                      <div className="h-2 bg-stone-200 rounded w-full" />
-                      <div className="h-2 bg-stone-200 rounded w-2/3" />
-                    </div>
-                  )}
-                  {tpl.id === 'creative' && (
-                    <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
-                      <div className="w-2/5 bg-pink-500 rounded" />
-                      <div className="w-3/5 grid grid-cols-2 gap-1">
-                        <div className="bg-pink-100 rounded" />
-                        <div className="bg-pink-100 rounded" />
-                      </div>
-                    </div>
-                  )}
-                  {tpl.id === 'executive' && (
-                    <div className="w-full h-20 bg-stone-800 rounded-lg p-3 shadow-sm">
-                      <div className="h-3 bg-amber-400 rounded w-1/2 mb-2" />
-                      <div className="h-2 bg-stone-600 rounded w-full" />
-                    </div>
-                  )}
-                  {tpl.id === 'nordic' && (
-                    <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
-                      <div className="w-1/3 bg-sky-100 rounded" />
-                      <div className="w-2/3 space-y-1">
-                        <div className="h-3 bg-sky-200 rounded w-3/4" />
-                        <div className="h-2 bg-sky-100 rounded w-1/2" />
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <img
+                  src={tpl.image}
+                  alt={`Förhandsvisning av mallen ${tpl.name}`}
+                  loading="lazy"
+                  className="block w-full h-64 object-cover object-top"
+                />
               </div>
 
               {/* Info */}
