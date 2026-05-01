@@ -20,7 +20,7 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
     return (
       <div 
         onClick={() => setExpanded(true)}
-        className="bg-white rounded-xl border border-stone-200 p-4 cursor-pointer hover:border-purple-300 transition-colors"
+        className="bg-white rounded-xl border border-stone-200 p-4 cursor-pointer hover:border-[var(--c-solid)]/40 transition-colors"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -68,7 +68,7 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
         
         {/* Overall tip */}
         <p className="mt-3 text-sm text-stone-600 flex items-start gap-2">
-          <Award className="w-4 h-4 mt-0.5 flex-shrink-0 text-purple-500" />
+          <Award className="w-4 h-4 mt-0.5 flex-shrink-0 text-[var(--c-solid)]" />
           {overallTip}
         </p>
       </div>
@@ -90,7 +90,7 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
             <div className="h-1.5 bg-stone-100 rounded-full overflow-hidden mb-2">
               <div 
                 className={`h-full transition-all duration-300 ${
-                  section.score === section.max ? 'bg-green-500' : 'bg-purple-500'
+                  section.score === section.max ? 'bg-green-500' : 'bg-[var(--c-solid)]'
                 }`}
                 style={{ width: `${(section.score / section.max) * 100}%` }}
               />

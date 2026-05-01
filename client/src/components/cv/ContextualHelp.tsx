@@ -147,7 +147,7 @@ export function ContextualHelp({ context, data, onApplySuggestion }: ContextualH
       case 'success': return <CheckCircle className="w-5 h-5 text-green-500" />
       case 'warning': return <AlertCircle className="w-5 h-5 text-amber-500" />
       case 'info': return <Info className="w-5 h-5 text-blue-500" />
-      default: return <Lightbulb className="w-5 h-5 text-purple-500" />
+      default: return <Lightbulb className="w-5 h-5 text-[var(--c-solid)]" />
     }
   }
 
@@ -156,7 +156,7 @@ export function ContextualHelp({ context, data, onApplySuggestion }: ContextualH
       case 'success': return 'bg-green-50 border-green-200'
       case 'warning': return 'bg-amber-50 border-amber-200'
       case 'info': return 'bg-blue-50 border-blue-200'
-      default: return 'bg-purple-50 border-purple-200'
+      default: return 'bg-[var(--c-bg)] border-[var(--c-accent)]/40'
     }
   }
 
@@ -198,7 +198,7 @@ export function ContextualHelp({ context, data, onApplySuggestion }: ContextualH
               {tip.action && (
                 <button
                   onClick={tip.action.onClick}
-                  className="mt-2 text-sm font-medium text-purple-600 hover:text-purple-700 flex items-center gap-1"
+                  className="mt-2 text-sm font-medium text-[var(--c-text)] hover:text-[var(--c-solid)] flex items-center gap-1"
                 >
                   {tip.action.label}
                   <ChevronRight className="w-4 h-4" />
@@ -225,9 +225,9 @@ export function SuggestionChip({ text, onClick, icon }: SuggestionChipProps) {
       onClick={onClick}
       className="
         inline-flex items-center gap-1.5 px-3 py-1.5
-        bg-purple-50 text-purple-700 text-sm
-        rounded-full border border-purple-200
-        hover:bg-purple-100 hover:border-purple-300
+        bg-[var(--c-bg)] text-[var(--c-text)] text-sm
+        rounded-full border border-[var(--c-accent)]/40
+        hover:bg-[var(--c-accent)]/40 hover:border-[var(--c-solid)]/40
         transition-colors
       "
     >

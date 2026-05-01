@@ -64,10 +64,10 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
               onClick={() => onStepClick(step.id)}
               className={`
                 flex items-center gap-1.5 px-3 py-2 rounded-lg whitespace-nowrap transition-all
-                ${isCurrent 
-                  ? 'bg-indigo-100 text-indigo-700 font-medium' 
-                  : isCompleted 
-                    ? 'bg-green-50 text-green-700' 
+                ${isCurrent
+                  ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)] font-medium'
+                  : isCompleted
+                    ? 'bg-green-50 text-green-700'
                     : 'bg-stone-50 text-stone-700 hover:bg-stone-100'
                 }
               `}
@@ -75,7 +75,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
               {isCompleted ? (
                 <Check className="w-4 h-4" />
               ) : (
-                <Circle className={`w-4 h-4 ${isCurrent ? 'fill-indigo-200' : ''}`} />
+                <Circle className={`w-4 h-4 ${isCurrent ? 'fill-[var(--c-accent)]' : ''}`} />
               )}
               <span className="text-sm hidden sm:inline">{step.name}</span>
               <span className="text-sm sm:hidden">{index + 1}</span>

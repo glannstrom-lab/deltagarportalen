@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next'
 import { cvApi } from '@/services/api'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
-  Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
-  Lightbulb, Wand2, Loader2
+  Sparkles, Briefcase, GraduationCap, Award,
+  Lightbulb, Loader2
 } from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -21,7 +21,6 @@ import type { CVData, CVVersion } from '@/services/supabaseApi'
 
 // NYA IMPORTS för förbättringar
 import { useCVAutoSave } from '@/hooks/useCVAutoSave'
-import { useCVScore, getOverallTips, getScoreColor } from '@/hooks/useCVScore'
 // SaveIndicator is now rendered in CVPage header
 import { AIHelpButton } from '@/components/cv/AIHelpButton'
 import { RichTextEditor } from '@/components/cv/RichTextEditor'
@@ -268,7 +267,8 @@ export default function CVBuilder() {
   const { confirm } = useConfirmDialog()
 
   // NYA FEATURES: Auto-save (täcker ALLA fält, inte bara workExperience)
-  const { saveStatus, lastSavedAt, hasUnsavedChanges, triggerSave } = useCVAutoSave(data)
+  // saveStatus/lastSavedAt visas via SaveIndicator i CVPage-headern (läser från cvStore).
+  const { hasUnsavedChanges, triggerSave } = useCVAutoSave(data)
   const prevDataRef = useRef<string>('')
   const triggerSaveRef = useRef(triggerSave)
   triggerSaveRef.current = triggerSave
@@ -937,11 +937,9 @@ export default function CVBuilder() {
 
         {/* Right: Preview + Tools (desktop) */}
         <div className="hidden lg:block space-y-6">
-          {/* Preview - Clean A4 look */}
-          <div className="bg-stone-100 dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700/50">
-            <div className="bg-white dark:bg-stone-900 shadow-lg rounded-lg overflow-hidden max-h-[700px] overflow-y-auto">
-              <CVPreview data={data} />
-            </div>
+          {/* Preview — direkt på sidan, ingen extra stone-inramning som krymper ytan */}
+          <div className="bg-white dark:bg-stone-900 shadow-lg rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
+            <CVPreview data={data} />
           </div>
 
           {/* Contextual Knowledge - Fas 2 */}

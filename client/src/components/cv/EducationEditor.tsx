@@ -108,7 +108,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
           <p className="text-sm text-stone-600 mb-4">Lägg till din utbildningsbakgrund</p>
           <button
             onClick={addEducation}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+            className="px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] transition-colors font-medium"
           >
             + Lägg till utbildning
           </button>
@@ -129,7 +129,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                   onDragEnd={handleDragEnd}
                   className={`
                     bg-white border rounded-xl overflow-hidden transition-all
-                    ${isExpanded ? 'border-purple-300 shadow-md' : 'border-stone-200 hover:border-stone-300'}
+                    ${isExpanded ? 'border-[var(--c-solid)]/40 shadow-md' : 'border-stone-200 hover:border-stone-300'}
                     ${draggedId === ed.id ? 'opacity-50' : ''}
                   `}
                 >
@@ -184,7 +184,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                           <select
                             value={ed.level || ''}
                             onChange={(e) => updateEducation(ed.id, 'level', e.target.value)}
-                            className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                            className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white"
                           >
                             <option value="">Välj nivå...</option>
                             {educationLevels.map(level => (
@@ -207,7 +207,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                               value={ed.degree}
                               onChange={(e) => updateEducation(ed.id, 'degree', e.target.value)}
                               placeholder="t.ex. Civilingenjör"
-                              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                             />
                           </div>
                         </div>
@@ -222,7 +222,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                             value={ed.field}
                             onChange={(e) => updateEducation(ed.id, 'field', e.target.value)}
                             placeholder="t.ex. Datateknik"
-                            className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                            className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                           />
                         </div>
 
@@ -238,7 +238,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                               value={ed.school}
                               onChange={(e) => updateEducation(ed.id, 'school', e.target.value)}
                               placeholder="t.ex. KTH"
-                              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                             />
                           </div>
                         </div>
@@ -255,7 +255,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                               value={ed.location}
                               onChange={(e) => updateEducation(ed.id, 'location', e.target.value)}
                               placeholder="t.ex. Stockholm"
-                              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                             />
                           </div>
                         </div>
@@ -272,7 +272,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                                 type="month"
                                 value={ed.startDate}
                                 onChange={(e) => updateEducation(ed.id, 'startDate', e.target.value)}
-                                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                               />
                             </div>
                           </div>
@@ -288,7 +288,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                                 value={ed.endDate}
                                 onChange={(e) => updateEducation(ed.id, 'endDate', e.target.value)}
                                 disabled={ed.current}
-                                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-stone-100 disabled:text-stone-600"
+                                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] disabled:bg-stone-100 disabled:text-stone-600"
                               />
                             </div>
                           </div>
@@ -300,7 +300,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                             type="checkbox"
                             checked={ed.current}
                             onChange={(e) => updateEducation(ed.id, 'current', e.target.checked)}
-                            className="w-4 h-4 text-purple-600 border-stone-300 rounded focus:ring-purple-500"
+                            className="w-4 h-4 text-[var(--c-solid)] border-stone-300 rounded focus:ring-[var(--c-solid)]"
                           />
                           <span className="text-sm text-stone-700">Pågående utbildning</span>
                         </label>
@@ -331,7 +331,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                           
                           <button
                             onClick={() => setExpandedId(null)}
-                            className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                            className="px-4 py-2 bg-[var(--c-solid)] text-white text-sm font-medium rounded-lg hover:bg-[var(--c-text)] transition-colors"
                           >
                             Klar
                           </button>
@@ -346,7 +346,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
 
           <button
             onClick={addEducation}
-            className="w-full py-3 border-2 border-dashed border-stone-300 rounded-xl text-stone-600 hover:border-purple-400 hover:text-purple-600 hover:bg-purple-50 transition-all font-medium flex items-center justify-center gap-2"
+            className="w-full py-3 border-2 border-dashed border-stone-300 rounded-xl text-stone-600 hover:border-[var(--c-solid)] hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] transition-all font-medium flex items-center justify-center gap-2"
           >
             <Sparkles className="w-4 h-4" />
             + Lägg till ytterligare en utbildning

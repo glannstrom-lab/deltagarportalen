@@ -169,7 +169,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
           <p className="text-sm text-stone-600 mb-4">Lägg till din första arbetslivserfarenhet</p>
           <button
             onClick={addExperience}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
+            className="px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] transition-colors font-medium"
           >
             + Lägg till jobb
           </button>
@@ -193,7 +193,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                   role="listitem"
                   className={`
                     bg-white border rounded-xl overflow-hidden transition-all
-                    ${isExpanded ? 'border-purple-300 shadow-md' : 'border-stone-200 hover:border-stone-300'}
+                    ${isExpanded ? 'border-[var(--c-solid)]/40 shadow-md' : 'border-stone-200 hover:border-stone-300'}
                     ${draggedId === exp.id ? 'opacity-50' : ''}
                   `}
                 >
@@ -292,7 +292,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                               aria-invalid={!!errors[exp.id]?.title}
                               className={`
                                 w-full pl-10 pr-4 py-2.5 border rounded-lg
-                                focus:outline-none focus:ring-2 focus:ring-purple-500
+                                focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]
                                 ${errors[exp.id]?.title ? 'border-red-300 bg-red-50' : 'border-stone-200'}
                               `}
                             />
@@ -328,7 +328,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                               aria-invalid={!!errors[exp.id]?.company}
                               className={`
                                 w-full pl-10 pr-4 py-2.5 border rounded-lg
-                                focus:outline-none focus:ring-2 focus:ring-purple-500
+                                focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]
                                 ${errors[exp.id]?.company ? 'border-red-300 bg-red-50' : 'border-stone-200'}
                               `}
                             />
@@ -352,7 +352,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                               value={exp.location}
                               onChange={(e) => updateExperience(exp.id, 'location', e.target.value)}
                               placeholder="t.ex. Stockholm"
-                              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                              className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                             />
                           </div>
                         </div>
@@ -380,7 +380,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 max={new Date().toISOString().slice(0, 7)}
                                 className={`
                                   w-full pl-10 pr-4 py-2.5 border rounded-lg
-                                  focus:outline-none focus:ring-2 focus:ring-purple-500
+                                  focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]
                                   ${errors[exp.id]?.startDate ? 'border-red-300 bg-red-50' : 'border-stone-200'}
                                 `}
                               />
@@ -405,7 +405,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 disabled={exp.current}
                                 min={exp.startDate || undefined}
                                 max={new Date().toISOString().slice(0, 7)}
-                                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-stone-100 disabled:text-stone-600"
+                                className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] disabled:bg-stone-100 disabled:text-stone-600"
                               />
                             </div>
                           </div>
@@ -417,7 +417,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                             type="checkbox"
                             checked={exp.current}
                             onChange={(e) => updateExperience(exp.id, 'current', e.target.checked)}
-                            className="w-4 h-4 text-purple-600 border-stone-300 rounded focus:ring-purple-500"
+                            className="w-4 h-4 text-[var(--c-solid)] border-stone-300 rounded focus:ring-[var(--c-solid)]"
                           />
                           <span className="text-sm text-stone-700">Jag jobbar här fortfarande</span>
                         </label>
@@ -453,7 +453,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 setExpandedId(null)
                               }
                             }}
-                            className="px-4 py-2 bg-purple-600 text-white text-sm font-medium rounded-lg hover:bg-purple-700 transition-colors"
+                            className="px-4 py-2 bg-[var(--c-solid)] text-white text-sm font-medium rounded-lg hover:bg-[var(--c-text)] transition-colors"
                           >
                             Klar
                           </button>
@@ -469,7 +469,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
           {/* Add button */}
           <button
             onClick={addExperience}
-            className="w-full py-3 border-2 border-dashed border-stone-300 rounded-xl text-stone-600 hover:border-purple-400 hover:text-purple-600 hover:bg-purple-50 transition-all font-medium flex items-center justify-center gap-2"
+            className="w-full py-3 border-2 border-dashed border-stone-300 rounded-xl text-stone-600 hover:border-[var(--c-solid)] hover:text-[var(--c-text)] hover:bg-[var(--c-bg)] transition-all font-medium flex items-center justify-center gap-2"
           >
             <Sparkles className="w-4 h-4" />
             + Lägg till ytterligare ett jobb

@@ -146,7 +146,7 @@ export function RichTextEditor({
             onClick={() => setShowToolbar(!showToolbar)}
             aria-expanded={showToolbar}
             aria-controls={`${editorId}-toolbar`}
-            className="text-xs text-purple-600 hover:text-purple-700 font-medium"
+            className="text-xs text-[var(--c-text)] hover:text-[var(--c-solid)] font-medium"
           >
             {showToolbar ? 'Dölj verktygsfält' : 'Visa verktygsfält'}
           </button>
@@ -199,7 +199,7 @@ export function RichTextEditor({
           className={`
             w-full px-4 py-3 border border-stone-200
             ${showToolbar ? 'rounded-b-lg' : 'rounded-lg'}
-            focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
+            focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:border-transparent
             text-stone-700 placeholder:text-stone-600
             resize-y
           `}

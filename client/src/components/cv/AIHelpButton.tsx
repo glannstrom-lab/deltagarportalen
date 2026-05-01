@@ -42,7 +42,7 @@ export function AIHelpButton({ field, onFill }: AIHelpButtonProps) {
         transition-all duration-200
         ${state === 'done' 
           ? 'bg-green-100 text-green-700' 
-          : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
+          : 'bg-[var(--c-bg)] text-[var(--c-text)] hover:bg-[var(--c-accent)]/40'
         }
         ${state !== 'idle' && 'cursor-default'}
       `}

@@ -129,7 +129,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         {/* Header with progress */}
-        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white">
+        <div className="bg-[var(--c-solid)] p-6 text-white">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="p-2 bg-white/20 rounded-lg">
@@ -166,12 +166,12 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
           </p>
 
           {/* Tip box */}
-          <div className="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-6">
+          <div className="bg-[var(--c-bg)] border border-[var(--c-accent)]/40 rounded-xl p-4 mb-6">
             <div className="flex gap-3">
-              <Sparkles className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+              <Sparkles className="w-5 h-5 text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-purple-800 mb-1">Tips!</p>
-                <p className="text-sm text-purple-700">{step.tip}</p>
+                <p className="text-sm font-medium text-[var(--c-text)] mb-1">Tips!</p>
+                <p className="text-sm text-[var(--c-text)]">{step.tip}</p>
               </div>
             </div>
           </div>
@@ -202,7 +202,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
               </button>
               <button
                 onClick={handleNext}
-                className="flex items-center gap-1 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors"
+                className="flex items-center gap-1 px-6 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] font-medium transition-colors"
               >
                 {isLastStep ? (
                   <>
@@ -228,8 +228,8 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
               onClick={() => setCurrentStep(idx)}
               className={`
                 w-2 h-2 rounded-full transition-colors
-                ${idx === currentStep ? 'bg-purple-600' : 
-                  idx < currentStep ? 'bg-purple-300' : 'bg-stone-200'}
+                ${idx === currentStep ? 'bg-[var(--c-solid)]' :
+                  idx < currentStep ? 'bg-[var(--c-accent)]' : 'bg-stone-200'}
               `}
             />
           ))}

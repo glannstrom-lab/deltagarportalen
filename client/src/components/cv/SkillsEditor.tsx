@@ -148,13 +148,13 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
               onChange={(e) => setNewSkillName(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && addSkill()}
               placeholder="t.ex. Projektledning"
-              className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             />
           </div>
           <select
             value={newSkillCategory}
             onChange={(e) => setNewSkillCategory(e.target.value as SkillCategory)}
-            className="px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+            className="px-4 py-2.5 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white"
           >
             {categories.map(cat => (
               <option key={cat.value} value={cat.value}>{cat.label}</option>
@@ -163,7 +163,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
           <button
             onClick={() => addSkill()}
             disabled={!newSkillName.trim()}
-            className="px-6 py-2.5 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center gap-2"
+            className="px-6 py-2.5 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium flex items-center justify-center gap-2"
           >
             <Plus className="w-4 h-4" />
             Lägg till
@@ -174,7 +174,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
         <div className="mt-4">
           <button
             onClick={() => setShowSuggestions(showSuggestions ? null : newSkillCategory)}
-            className="text-sm text-purple-600 hover:text-purple-700 font-medium flex items-center gap-1"
+            className="text-sm text-[var(--c-text)] hover:text-[var(--c-solid)] font-medium flex items-center gap-1"
           >
             <Sparkles className="w-4 h-4" />
             Visa förslag för {getCategoryLabel(newSkillCategory).toLowerCase()}a kompetenser
@@ -188,7 +188,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                   <button
                     key={suggestion}
                     onClick={() => addSkill(suggestion, newSkillCategory)}
-                    className="px-3 py-1.5 bg-white border border-stone-200 rounded-full text-sm text-stone-700 hover:border-purple-400 hover:text-purple-700 transition-colors"
+                    className="px-3 py-1.5 bg-white border border-stone-200 rounded-full text-sm text-stone-700 hover:border-[var(--c-solid)] hover:text-[var(--c-text)] transition-colors"
                   >
                     + {suggestion}
                   </button>
@@ -206,7 +206,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
         return (
           <div key={category.value} className="space-y-3">
             <h4 className="font-medium text-stone-800 flex items-center gap-2">
-              <category.icon className="w-4 h-4 text-purple-500" />
+              <category.icon className="w-4 h-4 text-[var(--c-solid)]" />
               {category.label}
               <span className="text-sm font-normal text-stone-600">({categorySkills.length})</span>
             </h4>
@@ -222,7 +222,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                   role="listitem"
                   className={`
                     flex items-center gap-3 p-3 bg-white border border-stone-200 rounded-lg
-                    hover:border-purple-300 transition-colors
+                    hover:border-[var(--c-solid)]/40 transition-colors
                     ${draggedId === skill.id ? 'opacity-50' : ''}
                   `}
                 >
@@ -258,7 +258,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                     aria-valuetext={`${skill.level} av 5 stjärnor`}
                     tabIndex={0}
                     onKeyDown={(e) => handleStarKeyDown(e, skill.id, skill.level)}
-                    className="flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded p-1"
+                    className="flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] focus:ring-offset-2 rounded p-1"
                   >
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button

@@ -20,7 +20,7 @@ export function MobilePreviewFAB({ data }: MobilePreviewFABProps) {
       {/* FAB Button - positioned above navigation buttons */}
       <button
         onClick={() => setIsOpen(true)}
-        className="lg:hidden fixed bottom-24 right-4 z-40 w-14 h-14 bg-indigo-600 text-white rounded-full shadow-lg hover:bg-indigo-700 active:scale-95 transition-all flex items-center justify-center"
+        className="lg:hidden fixed bottom-24 right-4 z-40 w-14 h-14 bg-[var(--c-solid)] text-white rounded-full shadow-lg hover:bg-[var(--c-text)] active:scale-95 transition-all flex items-center justify-center"
         aria-label="Förhandsgranska CV"
       >
         <Eye className="w-6 h-6" />

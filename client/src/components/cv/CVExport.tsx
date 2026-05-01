@@ -767,7 +767,7 @@ export function CVExport({ cvData }: CVExportProps) {
           <Suspense fallback={
             <button
               disabled
-              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium opacity-50"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[var(--c-solid)] text-white rounded-xl font-medium opacity-50"
             >
               <Loader2 className="w-5 h-5 animate-spin" /> {t('common.loading')}
             </button>
@@ -791,7 +791,7 @@ export function CVExport({ cvData }: CVExportProps) {
                     }
                   }}
                   disabled={loading || !!error || isExportingVectorPDF}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:bg-stone-200 disabled:cursor-not-allowed transition-colors"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[var(--c-solid)] text-white rounded-xl font-medium hover:bg-[var(--c-text)] disabled:bg-stone-200 disabled:cursor-not-allowed transition-colors"
                 >
                   {exportSuccess === 'vector' ? (
                     <><Check className="w-5 h-5" /> {t('cv.export.pdfSaved')}</>
@@ -813,7 +813,7 @@ export function CVExport({ cvData }: CVExportProps) {
             onMouseEnter={preloadPDFLibraries}
             onFocus={preloadPDFLibraries}
             disabled={isExportingPDF || isExportingWord}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-indigo-200 text-indigo-600 rounded-xl font-medium hover:bg-indigo-50 disabled:bg-stone-100 disabled:border-stone-300 disabled:text-stone-600 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-[var(--c-accent)] text-[var(--c-text)] rounded-xl font-medium hover:bg-[var(--c-bg)] disabled:bg-stone-100 disabled:border-stone-300 disabled:text-stone-600 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'pdf' ? (
               <><Check className="w-5 h-5" /> {t('cv.export.pdfSaved')}</>
