@@ -212,12 +212,24 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           [data-template-wrapper] .cv-preview > main {
             margin-left: var(--sidebar-width, 280px) !important;
           }
-          /* h1 (CV-namn) hålls ihop med rubrik direkt under — gäller bara
-             första rubriken någonsin, så ingen sidbrott-risk. */
-          .cv-preview h1 {
+          /* Rubriker (h1, h2, h3) hålls ihop med första content-element
+             under sig — Word-konvention "Keep with next". Förhindrar
+             orphan headers (rubrik ensam i botten av sida).
+             Tradeoff: kan ge whitespace om rubrik+entry inte får plats
+             på sidans rest. Det är dock visuellt bättre än orphan headers
+             som signalerar "broken layout". */
+          .cv-preview h1,
+          .cv-preview h2,
+          .cv-preview h3 {
             page-break-after: avoid;
             break-after: avoid-page;
           }
+          .cv-preview h2 + *,
+          .cv-preview h3 + * {
+            page-break-before: avoid;
+            break-before: avoid;
+          }
+
           /* KRITISKT: display: flex blockerar break-inside: avoid i Chrome
              headless print (puppeteer issue #6366). Force block på cv-entry
              och cv-keep så break-inside faktiskt respekteras. Eventuell
@@ -230,14 +242,6 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
           }
-          /* Notera: vi BINDER INTE sektion-rubrik (h2/h3) till första entry.
-             Det skapade ett värre problem än det löste — om rubrik + entry
-             tillsammans inte fick plats på sidans rest, page-breakade HELA
-             paret till nästa sida och lämnade stor whitespace.
-             Resultatet: rubrik kan hamna ensam i botten ("orphan header").
-             Det är bättre än whitespace eftersom det signalerar "fortsättning
-             följer" snarare än "CV är trasigt". Användarna förväntar sig
-             multi-page-CV att flöda — de förväntar sig inte hål. */
 
           /* Prevent orphan/widow lines i textstycken — minst 3 rader
              tillsammans i bottom/top av en sida, så sista raden av en
