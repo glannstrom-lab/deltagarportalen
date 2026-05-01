@@ -213,20 +213,23 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               {data.workExperience.map(job => (
-                <div key={job.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px' }}>
-                  <div>
-                    <span style={{ fontSize: '12px', color: '#888888', fontFeatureSettings: '"tnum"' }}>
-                      {job.startDate}<br />— {job.current ? 'Nu' : job.endDate}
-                    </span>
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#0F0F0F', marginBottom: '4px' }}>
-                      {job.title}
-                    </h3>
-                    <div style={{ fontSize: '14px', color: accent, marginBottom: '12px' }}>{job.company}</div>
-                    {job.description && (
-                      <p style={{ fontSize: '14px', lineHeight: '1.7', color: '#666666' }}>{job.description}</p>
-                    )}
+                // Print-CSS tvingar block på .cv-entry — grid lever på inre div.
+                <div key={job.id} className="cv-entry">
+                  <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px' }}>
+                    <div>
+                      <span style={{ fontSize: '12px', color: '#888888', fontFeatureSettings: '"tnum"' }}>
+                        {job.startDate}<br />— {job.current ? 'Nu' : job.endDate}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#0F0F0F', marginBottom: '4px' }}>
+                        {job.title}
+                      </h3>
+                      <div style={{ fontSize: '14px', color: accent, marginBottom: '12px' }}>{job.company}</div>
+                      {job.description && (
+                        <p style={{ fontSize: '14px', lineHeight: '1.7', color: '#666666' }}>{job.description}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -251,13 +254,15 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {data.education.map(edu => (
-                <div key={edu.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px' }}>
-                  <span style={{ fontSize: '12px', color: '#888888' }}>
-                    {edu.startDate} — {edu.endDate}
-                  </span>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F0F0F' }}>{edu.degree}</h3>
-                    <div style={{ fontSize: '14px', color: '#666666' }}>{edu.school}</div>
+                <div key={edu.id} className="cv-entry">
+                  <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px' }}>
+                    <span style={{ fontSize: '12px', color: '#888888' }}>
+                      {edu.startDate} — {edu.endDate}
+                    </span>
+                    <div>
+                      <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F0F0F' }}>{edu.degree}</h3>
+                      <div style={{ fontSize: '14px', color: '#666666' }}>{edu.school}</div>
+                    </div>
                   </div>
                 </div>
               ))}

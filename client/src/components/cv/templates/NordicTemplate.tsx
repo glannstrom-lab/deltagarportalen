@@ -250,14 +250,16 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               {data.education.map(edu => (
-                <div key={edu.id} className="cv-entry" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F172A' }}>{edu.degree}</h3>
-                    <div style={{ fontSize: '14px', color: '#64748B' }}>{edu.school}</div>
+                <div key={edu.id} className="cv-entry">
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div>
+                      <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F172A' }}>{edu.degree}</h3>
+                      <div style={{ fontSize: '14px', color: '#64748B' }}>{edu.school}</div>
+                    </div>
+                    <span style={{ fontSize: '12px', color: '#94A3B8' }}>
+                      {edu.startDate} — {edu.endDate}
+                    </span>
                   </div>
-                  <span style={{ fontSize: '12px', color: '#94A3B8' }}>
-                    {edu.startDate} — {edu.endDate}
-                  </span>
                 </div>
               ))}
             </div>

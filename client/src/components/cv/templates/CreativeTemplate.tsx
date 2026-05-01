@@ -290,11 +290,13 @@ export function CreativeTemplate({ data, fullName }: TemplateProps) {
                   {data.languages.map(lang => {
                     const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                     return (
-                      <div key={lang.id} className="cv-entry" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ fontSize: '14px', color: '#333333' }}>{name}</span>
-                        <span style={{ fontSize: '14px', color: '#888888' }}>
-                          {getLanguageLevelDisplay(lang.level)}
-                        </span>
+                      <div key={lang.id} className="cv-entry">
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: '14px', color: '#333333' }}>{name}</span>
+                          <span style={{ fontSize: '14px', color: '#888888' }}>
+                            {getLanguageLevelDisplay(lang.level)}
+                          </span>
+                        </div>
                       </div>
                     )
                   })}

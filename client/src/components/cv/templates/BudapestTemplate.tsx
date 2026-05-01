@@ -228,25 +228,30 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
             <div style={{ height: '1px', background: '#E5E7EB', marginBottom: '20px' }} />
             <div>
               {data.workExperience.map((job) => (
-                <div key={job.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px', marginBottom: '20px' }}>
-                  <div>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: dark }}>{job.company}</div>
-                    {job.location && <div style={{ fontSize: '11px', color: '#888' }}>{job.location}</div>}
-                    <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>
-                      {job.startDate} - {job.current ? 'Nu' : job.endDate}
+                // VIKTIGT: print-CSS tvingar display:block på .cv-entry för
+                // att break-inside ska respekteras i Chrome (puppeteer #6366).
+                // Grid-layouten måste därför leva på en INNER div.
+                <div key={job.id} className="cv-entry" style={{ marginBottom: '20px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px' }}>
+                    <div>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: dark }}>{job.company}</div>
+                      {job.location && <div style={{ fontSize: '11px', color: '#888' }}>{job.location}</div>}
+                      <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>
+                        {job.startDate} - {job.current ? 'Nu' : job.endDate}
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '6px' }}>
-                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: dark }} />
-                    <div style={{ width: '1px', flex: 1, background: '#D1D5DB', marginTop: '4px' }} />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '13px', fontWeight: 700, color: dark, marginBottom: '4px' }}>
-                      {job.title}
-                    </h3>
-                    {job.description && (
-                      <p style={{ fontSize: '12px', lineHeight: 1.6, color: '#555' }}>{job.description}</p>
-                    )}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '6px' }}>
+                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: dark }} />
+                      <div style={{ width: '1px', flex: 1, background: '#D1D5DB', marginTop: '4px' }} />
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '13px', fontWeight: 700, color: dark, marginBottom: '4px' }}>
+                        {job.title}
+                      </h3>
+                      {job.description && (
+                        <p style={{ fontSize: '12px', lineHeight: 1.6, color: '#555' }}>{job.description}</p>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -271,22 +276,24 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
             <div style={{ height: '1px', background: '#E5E7EB', marginBottom: '20px' }} />
             <div>
               {data.education.map((edu) => (
-                <div key={edu.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px', marginBottom: '20px' }}>
-                  <div>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: dark }}>{edu.school}</div>
-                    {edu.location && <div style={{ fontSize: '11px', color: '#888' }}>{edu.location}</div>}
-                    <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>
-                      {edu.startDate} - {edu.endDate}
+                <div key={edu.id} className="cv-entry" style={{ marginBottom: '20px' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px' }}>
+                    <div>
+                      <div style={{ fontSize: '12px', fontWeight: 700, color: dark }}>{edu.school}</div>
+                      {edu.location && <div style={{ fontSize: '11px', color: '#888' }}>{edu.location}</div>}
+                      <div style={{ fontSize: '11px', color: '#888', marginTop: '2px' }}>
+                        {edu.startDate} - {edu.endDate}
+                      </div>
                     </div>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '6px' }}>
-                    <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: dark }} />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '13px', fontWeight: 700, color: dark, marginBottom: '4px' }}>
-                      {edu.degree}
-                    </h3>
-                    {edu.field && <div style={{ fontSize: '12px', color: '#555' }}>{edu.field}</div>}
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: '6px' }}>
+                      <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: dark }} />
+                    </div>
+                    <div>
+                      <h3 style={{ fontSize: '13px', fontWeight: 700, color: dark, marginBottom: '4px' }}>
+                        {edu.degree}
+                      </h3>
+                      {edu.field && <div style={{ fontSize: '12px', color: '#555' }}>{edu.field}</div>}
+                    </div>
                   </div>
                 </div>
               ))}
