@@ -261,7 +261,7 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
 
         {/* Education */}
         {data.education?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '32px' }}>
+          <section style={{ marginBottom: '32px' }}>
             <h2
               style={{
                 fontSize: '13px',

@@ -233,7 +233,7 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
 
         {/* Education */}
         {data.education?.length > 0 && (
-          <section className="cv-keep">
+          <section>
             <h2
               style={{
                 fontSize: '11px',

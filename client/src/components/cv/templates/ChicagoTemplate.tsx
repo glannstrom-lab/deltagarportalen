@@ -200,7 +200,7 @@ export function ChicagoTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.education?.length > 0 && (
-          <section className="cv-keep">
+          <section>
             <h3 style={{ ...sectionHeader, marginBottom: '18px' }}>UTBILDNING</h3>
             <div>
               {data.education.map((edu) => (

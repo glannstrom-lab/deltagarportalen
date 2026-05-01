@@ -358,7 +358,10 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.education?.length > 0 && (
-          <section className="cv-keep">
+          // Inget cv-keep här — då skulle hela utbildning-sektionen page-breaka
+          // som ett block och lämna tomt utrymme på föregående sida. Enskilda
+          // entries skyddas av .cv-entry; h2 + * håller rubriken vid första entry.
+          <section>
             <h2
               style={{
                 fontSize: '13px',

@@ -113,7 +113,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
           )}
 
           {data.education?.length > 0 && (
-            <section className="cv-keep">
+            <section>
               <h2
                 style={{
                   fontSize: '11px',

@@ -230,7 +230,7 @@ export function CreativeTemplate({ data, fullName }: TemplateProps) {
 
             {/* Education */}
             {data.education?.length > 0 && (
-              <section className="cv-keep"
+              <section
                 style={{
                   background: '#FFFFFF',
                   padding: '32px',
