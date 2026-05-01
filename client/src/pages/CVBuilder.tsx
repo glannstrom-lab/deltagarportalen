@@ -118,6 +118,20 @@ const TEMPLATES = [
     image: '/templates/chicago.png',
     features: ['Centrerad header', 'Klassisk', 'Monogram'],
   },
+  {
+    id: 'atelier',
+    name: 'Atelier',
+    desc: 'Editorial premium på cream-bakgrund med Crimson Pro serif och teal-accent',
+    image: '/templates/atelier.png',
+    features: ['Cream bakgrund', 'Serif headline', 'Editorial'],
+  },
+  {
+    id: 'manhattan',
+    name: 'Manhattan',
+    desc: 'Executive med mörk navy-sidebar, copper-accent och Playfair Display',
+    image: '/templates/manhattan.png',
+    features: ['Navy sidebar', 'Copper-accent', 'Executive'],
+  },
 ]
 
 // ============================================
@@ -524,7 +538,16 @@ export default function CVBuilder() {
           return (
             <button
               key={tpl.id}
-              onClick={() => setData(prev => ({ ...prev, template: tpl.id }))}
+              onClick={() => {
+                // Explicit save direkt vid mall-byte. Useeffect-baserad
+                // auto-save har visat sig opålitlig för enstaka fältändringar
+                // — så vi triggar save direkt här utan att vänta på debounce.
+                setData(prev => {
+                  const next = { ...prev, template: tpl.id }
+                  triggerSaveRef.current?.(next)
+                  return next
+                })
+              }}
               className={cn(
                 "group relative overflow-hidden rounded-xl border-2 text-left transition-all",
                 selected

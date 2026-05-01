@@ -100,7 +100,7 @@ const SAMPLE: CVData = {
   profileImage: null,
 }
 
-const VALID = ['sidebar', 'centered', 'minimal', 'creative', 'executive', 'nordic', 'budapest', 'rotterdam', 'chicago'] as const
+const VALID = ['sidebar', 'centered', 'minimal', 'creative', 'executive', 'nordic', 'budapest', 'rotterdam', 'chicago', 'atelier', 'manhattan'] as const
 
 export default function TemplateSnapshot() {
   const { templateId } = useParams<{ templateId: string }>()

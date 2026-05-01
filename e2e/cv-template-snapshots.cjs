@@ -16,7 +16,7 @@ const path = require('path')
 
 const ROOT = path.join(__dirname, '..')
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'
-const TEMPLATES = ['sidebar', 'centered', 'minimal', 'creative', 'executive', 'nordic', 'budapest', 'rotterdam', 'chicago']
+const TEMPLATES = ['sidebar', 'centered', 'minimal', 'creative', 'executive', 'nordic', 'budapest', 'rotterdam', 'chicago', 'atelier', 'manhattan']
 
 async function main() {
   const outDir = path.join(ROOT, 'client', 'public', 'templates')

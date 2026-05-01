@@ -22,6 +22,8 @@ import {
   BudapestTemplate,
   RotterdamTemplate,
   ChicagoTemplate,
+  AtelierTemplate,
+  ManhattanTemplate,
 } from './templates'
 
 interface CVPreviewProps {
@@ -136,6 +138,12 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
     case 'chicago':
       template = <ChicagoTemplate data={data} fullName={fullName} />
       break
+    case 'atelier':
+      template = <AtelierTemplate data={data} fullName={fullName} />
+      break
+    case 'manhattan':
+      template = <ManhattanTemplate data={data} fullName={fullName} />
+      break
     case 'sidebar':
     default:
       template = <ModernTemplate data={data} fullName={fullName} />
@@ -180,7 +188,8 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
              template-specifika. */
           [data-template-wrapper="sidebar"] .cv-preview > aside,
           [data-template-wrapper="nordic"] .cv-preview > aside,
-          [data-template-wrapper="budapest"] .cv-preview > aside {
+          [data-template-wrapper="budapest"] .cv-preview > aside,
+          [data-template-wrapper="manhattan"] .cv-preview > aside {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
@@ -193,17 +202,32 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           [data-template-wrapper="nordic"] .cv-preview > main { margin-left: 280px !important; }
           [data-template-wrapper="budapest"] .cv-preview > aside { width: 34% !important; }
           [data-template-wrapper="budapest"] .cv-preview > main { margin-left: 34% !important; }
+          [data-template-wrapper="manhattan"] .cv-preview > aside { width: 220px !important; }
+          [data-template-wrapper="manhattan"] .cv-preview > main { margin-left: 220px !important; }
           /* Sektion-rubriker (h2, h3, h4) ska aldrig hamna ensamma i bottnen
              utan följa med första entry på nästa sida. */
           .cv-preview h1, .cv-preview h2, .cv-preview h3, .cv-preview h4 {
             page-break-after: avoid;
             break-after: avoid-page;
           }
-          /* Enskilda jobb/utbildningar/certifikat splittas inte mitt i. */
+          /* KRITISKT: display: flex blockerar break-inside: avoid i Chrome
+             headless print (puppeteer issue #6366). Force block på cv-entry
+             och cv-keep så break-inside faktiskt respekteras. Eventuell
+             flex-layout för "title left, date right" måste leva i en INNER
+             div. */
           .cv-preview .cv-entry,
           .cv-preview .cv-keep {
-            page-break-inside: avoid;
-            break-inside: avoid;
+            display: block !important;
+            page-break-inside: avoid !important;
+            break-inside: avoid !important;
+            -webkit-column-break-inside: avoid !important;
+          }
+          /* Sektion-rubrik ska aldrig hamna ensam i bottnen — linka den med
+             första entry så de följs åt. */
+          .cv-preview h2 + *,
+          .cv-preview h3 + * {
+            page-break-before: avoid;
+            break-before: avoid;
           }
           /* Prevent orphan/widow lines i textstycken. */
           .cv-preview p, .cv-preview li {
