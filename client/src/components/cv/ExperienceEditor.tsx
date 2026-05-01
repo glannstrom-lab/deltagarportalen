@@ -131,16 +131,20 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
 
   const getDuration = (startDate: string, endDate: string, current: boolean) => {
     if (!startDate) return ''
-    
+
     const start = new Date(startDate)
     const end = current ? new Date() : (endDate ? new Date(endDate) : new Date())
-    
-    const months = (end.getFullYear() - start.getFullYear()) * 12 + 
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) return ''
+
+    const months = (end.getFullYear() - start.getFullYear()) * 12 +
                    (end.getMonth() - start.getMonth())
-    
+
+    if (months < 0) return ''
+
     const years = Math.floor(months / 12)
     const remainingMonths = months % 12
-    
+
     if (years === 0) return `${remainingMonths} mån`
     if (remainingMonths === 0) return `${years} år`
     return `${years} år ${remainingMonths} mån`

@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cvApi } from '@/services/api'
 import {
-  Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
+  Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
   Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
   Lightbulb, Wand2, Loader2
 } from '@/components/ui/icons'
@@ -20,8 +20,7 @@ import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { CVData, CVVersion } from '@/services/supabaseApi'
 
 // NYA IMPORTS för förbättringar
-import { useCVAutoSave, useCVDraft } from '@/hooks/useCVAutoSave'
-import type { WorkExperience } from '@/services/supabaseApi'
+import { useCVAutoSave } from '@/hooks/useCVAutoSave'
 import { useCVScore, getOverallTips, getScoreColor } from '@/hooks/useCVScore'
 // SaveIndicator is now rendered in CVPage header
 import { AIHelpButton } from '@/components/cv/AIHelpButton'
@@ -249,7 +248,6 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
 export default function CVBuilder() {
   const { t, i18n } = useTranslation()
   const [step, setStep] = useState(1)
-  const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [versions, setVersions] = useState<CVVersion[]>([])
   const [showSaveVersion, setShowSaveVersion] = useState(false)
@@ -269,21 +267,32 @@ export default function CVBuilder() {
   const { user } = useAuthStore()
   const { confirm } = useConfirmDialog()
 
-  // NYA FEATURES: Auto-save och draft
+  // NYA FEATURES: Auto-save (täcker ALLA fält, inte bara workExperience)
   const { saveStatus, lastSavedAt, hasUnsavedChanges, triggerSave } = useCVAutoSave(data)
-  const { restoreDraft, clearDraft } = useCVDraft()
-  const hasCheckedDraft = useRef(false)
-  const prevWorkExpRef = useRef(JSON.stringify(data.workExperience))
-  
-  // Auto-save när workExperience ändras
+  const prevDataRef = useRef<string>('')
+  const triggerSaveRef = useRef(triggerSave)
+  triggerSaveRef.current = triggerSave
+
+  // Auto-save vid varje data-ändring (alla fält). JSON-snapshot förhindrar
+  // dubbla anrop när effekten kör utan att innehållet faktiskt ändrats
+  // (t.ex. setData med samma värden från en input-blur). Första snapshoten
+  // efter laddning sparas utan att trigga save så vi inte sparar direkt
+  // efter att server-data populerats.
   useEffect(() => {
-    const currentWorkExp = JSON.stringify(data.workExperience)
-    if (prevWorkExpRef.current !== currentWorkExp) {
-      cvLogger.debug('CVBuilder: workExperience changed, triggering auto-save')
-      triggerSave(data)
-      prevWorkExpRef.current = currentWorkExp
+    if (!hasLoadedCV) return
+    let snapshot: string
+    try {
+      snapshot = JSON.stringify(data)
+    } catch {
+      return
     }
-  }, [data, triggerSave])
+    if (prevDataRef.current === snapshot) return
+    const isFirstSnapshot = prevDataRef.current === ''
+    prevDataRef.current = snapshot
+    if (isFirstSnapshot) return
+    cvLogger.debug('CVBuilder: data changed, triggering auto-save')
+    triggerSaveRef.current(data)
+  }, [data, hasLoadedCV])
   
   // Fråga om att återställa draft vid mount - efter att server data laddats
   useEffect(() => {
@@ -382,15 +391,6 @@ export default function CVBuilder() {
     } catch (e) { console.error(e) }
   }
 
-  const save = async () => {
-    setSaving(true)
-    try {
-      await cvApi.updateCV(data)
-      showToast.success(t('cvBuilder.messages.cvSaved'))
-    } catch { showToast.error(t('cvBuilder.messages.couldNotSave')) }
-    finally { setSaving(false) }
-  }
-
   const saveVersion = async () => {
     if (!versionName.trim()) return
     try {
@@ -456,8 +456,8 @@ export default function CVBuilder() {
       variant: 'info'
     })
     if (!confirmed) return
-    setData({
-      ...data,
+    setData(prev => ({
+      ...prev,
       firstName: 'Anna', lastName: 'Andersson', title: 'Projektledare',
       email: 'anna@example.com', phone: '070-123 45 67', location: 'Stockholm',
       profileImage: null,
@@ -473,17 +473,19 @@ export default function CVBuilder() {
       education: [
         { id: '1', school: 'Stockholms Universitet', degree: 'Kandidatexamen', field: 'Informatik', location: 'Stockholm', startDate: '2015-08', endDate: '2018-05', description: '' },
       ],
-    })
+    }))
   }
 
-  const add = <T extends { id: string }>(arr: T[], item: T, key: keyof CVData) => {
-    setData({ ...data, [key]: [...arr, item] } as CVData)
+  // Funktionella set-anrop — undviker stale-closure när användaren skriver
+  // snabbt eller flera onChange triggas samma render.
+  const add = <T extends { id: string }>(_arr: T[], item: T, key: keyof CVData) => {
+    setData(prev => ({ ...prev, [key]: [ ...((prev[key] as T[]) || []), item ] } as CVData))
   }
-  const remove = <T extends { id: string }>(arr: T[], id: string, key: keyof CVData) => {
-    setData({ ...data, [key]: arr.filter(x => x.id !== id) } as CVData)
+  const remove = <T extends { id: string }>(_arr: T[], id: string, key: keyof CVData) => {
+    setData(prev => ({ ...prev, [key]: ((prev[key] as T[]) || []).filter(x => x.id !== id) } as CVData))
   }
-  const update = <T extends { id: string }>(arr: T[], id: string, key: keyof CVData, field: keyof T, val: T[keyof T]) => {
-    setData({ ...data, [key]: arr.map(x => x.id === id ? { ...x, [field]: val } : x) } as CVData)
+  const update = <T extends { id: string }>(_arr: T[], id: string, key: keyof CVData, field: keyof T, val: T[keyof T]) => {
+    setData(prev => ({ ...prev, [key]: ((prev[key] as T[]) || []).map(x => x.id === id ? { ...x, [field]: val } : x) } as CVData))
   }
 
   // STEG 1: DESIGN - Moderna mallar 2025
@@ -500,7 +502,7 @@ export default function CVBuilder() {
           return (
             <button
               key={tpl.id}
-              onClick={() => setData({ ...data, template: tpl.id })}
+              onClick={() => setData(prev => ({ ...prev, template: tpl.id }))}
               className={cn(
                 "group relative overflow-hidden rounded-xl border-2 text-left transition-all",
                 selected
@@ -631,7 +633,7 @@ export default function CVBuilder() {
         </p>
         <CompactImageUpload
           value={data.profileImage}
-          onChange={(url) => setData({ ...data, profileImage: url })}
+          onChange={(url) => setData(prev => ({ ...prev, profileImage: url }))}
           onUpload={async (file) => {
             if (!user?.id) {
               showToast.error(t('cvBuilder.profileImage.mustBeLoggedIn'))
@@ -649,21 +651,21 @@ export default function CVBuilder() {
 
       <Card>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label={t('cvBuilder.fields.firstName')} value={data.firstName} onChange={(v) => setData({ ...data, firstName: v })} placeholder={t('cvBuilder.placeholders.firstName')} />
-          <Input label={t('cvBuilder.fields.lastName')} value={data.lastName} onChange={(v) => setData({ ...data, lastName: v })} placeholder={t('cvBuilder.placeholders.lastName')} />
+          <Input label={t('cvBuilder.fields.firstName')} value={data.firstName} onChange={(v) => setData(prev => ({ ...prev, firstName: v }))} placeholder={t('cvBuilder.placeholders.firstName')} />
+          <Input label={t('cvBuilder.fields.lastName')} value={data.lastName} onChange={(v) => setData(prev => ({ ...prev, lastName: v }))} placeholder={t('cvBuilder.placeholders.lastName')} />
         </div>
       </Card>
       <Card>
-        <Input label={t('cvBuilder.fields.jobTitle')} value={data.title} onChange={(v) => setData({ ...data, title: v })} placeholder={t('cvBuilder.placeholders.jobTitle')} />
+        <Input label={t('cvBuilder.fields.jobTitle')} value={data.title} onChange={(v) => setData(prev => ({ ...prev, title: v }))} placeholder={t('cvBuilder.placeholders.jobTitle')} />
       </Card>
       <Card>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label={t('cvBuilder.fields.email')} type="email" value={data.email} onChange={(v) => setData({ ...data, email: v })} placeholder={t('cvBuilder.placeholders.email')} />
-          <Input label={t('cvBuilder.fields.phone')} type="tel" value={data.phone} onChange={(v) => setData({ ...data, phone: v })} placeholder={t('cvBuilder.placeholders.phone')} />
+          <Input label={t('cvBuilder.fields.email')} type="email" value={data.email} onChange={(v) => setData(prev => ({ ...prev, email: v }))} placeholder={t('cvBuilder.placeholders.email')} />
+          <Input label={t('cvBuilder.fields.phone')} type="tel" value={data.phone} onChange={(v) => setData(prev => ({ ...prev, phone: v }))} placeholder={t('cvBuilder.placeholders.phone')} />
         </div>
       </Card>
       <Card>
-        <Input label={t('cvBuilder.fields.location')} value={data.location} onChange={(v) => setData({ ...data, location: v })} placeholder={t('cvBuilder.placeholders.location')} />
+        <Input label={t('cvBuilder.fields.location')} value={data.location} onChange={(v) => setData(prev => ({ ...prev, location: v }))} placeholder={t('cvBuilder.placeholders.location')} />
       </Card>
     </div>
   )
@@ -676,20 +678,20 @@ export default function CVBuilder() {
         <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">{t('cvBuilder.summary.description')}</p>
         <RichTextEditor
           value={data.summary || ''}
-          onChange={(v) => setData({ ...data, summary: v })}
+          onChange={(v) => setData(prev => ({ ...prev, summary: v }))}
           placeholder={t('cvBuilder.summary.placeholder')}
           maxLength={1000}
           minHeight="150px"
           helpText={t('cvBuilder.summary.helpText')}
         />
         <div className="mt-4">
-          <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" cvData={data} />
+          <AIWritingAssistant content={data.summary} onChange={(v) => setData(prev => ({ ...prev, summary: v }))} type="summary" cvData={data} />
         </div>
       </Card>
 
       <ContextualHelp context="summary" data={data.summary} />
 
-      <AIHelpButton field="summary" onFill={() => setData({ ...data, summary: t('cvBuilder.summary.aiTemplate') })} />
+      <AIHelpButton field="summary" onFill={() => setData(prev => ({ ...prev, summary: t('cvBuilder.summary.aiTemplate') }))} />
     </div>
   )
 
@@ -705,7 +707,7 @@ export default function CVBuilder() {
         </h3>
         <ExperienceEditor
           experiences={data.workExperience || []}
-          onChange={(experiences) => setData({ ...data, workExperience: experiences })}
+          onChange={(experiences) => setData(prev => ({ ...prev, workExperience: experiences }))}
         />
       </div>
 
@@ -716,7 +718,7 @@ export default function CVBuilder() {
         </h3>
         <EducationEditor
           education={data.education || []}
-          onChange={(education) => setData({ ...data, education })}
+          onChange={(education) => setData(prev => ({ ...prev, education }))}
         />
       </div>
     </div>
@@ -734,7 +736,7 @@ export default function CVBuilder() {
         </h3>
         <SkillsEditor
           skills={data.skills || []}
-          onChange={(skills) => setData({ ...data, skills })}
+          onChange={(skills) => setData(prev => ({ ...prev, skills }))}
         />
       </div>
 
@@ -875,23 +877,12 @@ export default function CVBuilder() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Action buttons bar */}
+      {/* Action buttons bar — auto-save sköter molnet, ingen manuell spara-knapp */}
       <div className="flex items-center justify-end gap-2 flex-wrap mb-4">
         <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors">
           <Sparkles className="w-4 h-4" />
           <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
         </button>
-        {/* Manuell spara-knapp - backup om auto-save misslyckas */}
-        <button
-          onClick={save}
-          disabled={saving}
-          className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-solid)]/90 disabled:opacity-50 text-sm font-medium"
-          title={t('cvBuilder.actions.saveManually')}
-        >
-          <Save className="w-4 h-4" />
-          {saving ? t('cvBuilder.actions.saving') : t('cvBuilder.actions.saveNow')}
-        </button>
-        <div className="w-px h-6 bg-stone-300 dark:bg-stone-600 mx-1 hidden sm:block" />
         <CVShare onShare={async () => await cvApi.shareCV()} variant="compact" />
         <PDFExportButton
           type="cv"
@@ -991,7 +982,7 @@ export default function CVBuilder() {
               <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
                 {t('cvBuilder.help.aiWritingDesc')}
               </p>
-              <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" cvData={data} />
+              <AIWritingAssistant content={data.summary} onChange={(v) => setData(prev => ({ ...prev, summary: v }))} type="summary" cvData={data} />
             </div>
           )}
 
