@@ -47,7 +47,7 @@ const getSkillName = (skill: { name: string } | string): string => {
 function MinimalPDF({ data, fullName }: { data: CVData; fullName: string }) {
   const styles = StyleSheet.create({
     page: { padding: 60, fontFamily: 'Helvetica', backgroundColor: '#FFFFFF' },
-    pageHeaderText: { position: 'absolute', top: 18, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#999999', letterSpacing: 0.5 },
+    pageHeaderText: { position: 'absolute', top: 10, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#999999', letterSpacing: 0.5 },
     header: { marginBottom: 40 },
     name: { fontSize: 42, fontWeight: 'bold', letterSpacing: -1, color: '#000000', marginBottom: 8 },
     title: { fontSize: 16, color: '#666666', marginBottom: 20 },
@@ -115,7 +115,7 @@ function MinimalPDF({ data, fullName }: { data: CVData; fullName: string }) {
           </View>
           <View style={styles.rightColumn}>
             {data.skills?.length > 0 && (
-              <View style={{ marginBottom: 30 }}>
+              <View style={{ marginBottom: 30 }} wrap={false}>
                 <Text fixed style={styles.sectionLabel} render={sectionTitle('Kompetenser')} />
                 {data.skills.map((skill, i) => (
                   <Text key={i} style={styles.skillText}>{getSkillName(skill)}</Text>
@@ -150,7 +150,7 @@ function ExecutivePDF({ data, fullName }: { data: CVData; fullName: string }) {
 
   const styles = StyleSheet.create({
     page: { fontFamily: 'Times-Roman', backgroundColor: '#FDFCFA', paddingBottom: 36 },
-    pageHeaderText: { position: 'absolute', top: 18, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5, fontFamily: 'Helvetica' },
+    pageHeaderText: { position: 'absolute', top: 10, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5, fontFamily: 'Helvetica' },
     header: { padding: '40 60', borderBottom: `3pt solid ${gold}`, backgroundColor: '#FFFFFF' },
     headerContent: { flexDirection: 'row', alignItems: 'center', gap: 30 },
     photo: { width: 90, height: 90, borderRadius: 4, border: `2pt solid ${gold}` },
@@ -232,9 +232,9 @@ function ExecutivePDF({ data, fullName }: { data: CVData; fullName: string }) {
                 </View>
               )}
               {data.skills?.length > 0 && (
-                <View style={{ marginBottom: 30 }}>
+                <View style={{ marginBottom: 30 }} wrap={false}>
                   <Text fixed style={styles.sectionTitle} render={sectionTitle('Expertis')} />
-                  <View style={styles.skillWrap}>
+                  <View style={styles.skillWrap} wrap={false}>
                     {data.skills.map((skill, i) => (
                       <Text key={i} style={styles.skillTag}>{getSkillName(skill)}</Text>
                     ))}
@@ -293,7 +293,7 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
     // pageHeader-Text behöver explicit width — annars layoutar Page (som är
     // flexDirection: row) varje bokstav som ett separat flex-item och texten
     // renderas vertikalt en char per rad.
-    pageHeaderText: { position: 'absolute', top: 18, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
+    pageHeaderText: { position: 'absolute', top: 10, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
     // 36pt istället för 42pt så långa namn (ex. "Anna Andersson") inte
     // bryts olämpligt med bindestreck i den smalare main-kolumnen.
     name: { fontSize: 36, fontWeight: 'bold', letterSpacing: -0.5, color: '#0F0F0F', marginBottom: 8 },
@@ -338,9 +338,9 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
           </View>
 
           {data.skills?.length > 0 && (
-            <View style={styles.sidebarSection}>
+            <View style={styles.sidebarSection} wrap={false}>
               <Text style={styles.sidebarLabel}>Kompetenser</Text>
-              <View style={styles.skillWrap}>
+              <View style={styles.skillWrap} wrap={false}>
                 {data.skills.slice(0, 12).map((skill, i) => (
                   <Text key={i} style={styles.skillTag}>{getSkillName(skill)}</Text>
                 ))}
@@ -420,7 +420,7 @@ function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
 
   const styles = StyleSheet.create({
     page: { fontFamily: 'Helvetica', backgroundColor: '#FAFAFA', paddingTop: 50, paddingBottom: 36 },
-    pageHeaderText: { position: 'absolute', top: 18, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
+    pageHeaderText: { position: 'absolute', top: 10, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
     header: { padding: '40 50', paddingBottom: 30 },
     headerContent: { flexDirection: 'row', gap: 30, alignItems: 'flex-end' },
     photo: { width: 140, height: 170, borderRadius: 18, objectFit: 'cover' },
@@ -496,9 +496,9 @@ function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
 
             <View style={styles.rightCol}>
               {data.skills?.length > 0 && (
-                <View style={styles.gradientCard}>
+                <View style={styles.gradientCard} wrap={false}>
                   <Text fixed style={styles.sectionLabelWhite} render={sectionTitle('Kompetenser')} />
-                  <View style={styles.skillWrap}>
+                  <View style={styles.skillWrap} wrap={false}>
                     {data.skills.map((skill, i) => (
                       <Text key={i} style={styles.skillTag}>{getSkillName(skill)}</Text>
                     ))}
@@ -536,7 +536,7 @@ function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
   const styles = StyleSheet.create({
     page: { flexDirection: 'row', fontFamily: 'Helvetica', paddingTop: 36, paddingBottom: 36 },
-    pageHeaderText: { position: 'absolute', top: 18, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#94A3B8', letterSpacing: 0.5 },
+    pageHeaderText: { position: 'absolute', top: 10, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#94A3B8', letterSpacing: 0.5 },
     sidebar: { width: '32%', backgroundColor: '#F8FAFC', paddingHorizontal: 36, borderRight: '1pt solid #E2E8F0' },
     sidebarPhoto: { width: '100%', aspectRatio: 1, borderRadius: 16, marginBottom: 24 },
     // Vit ruta med subtil border + initialer istället för tom grå platta
@@ -594,7 +594,7 @@ function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
           </View>
 
           {data.skills?.length > 0 && (
-            <View style={styles.sidebarSection}>
+            <View style={styles.sidebarSection} wrap={false}>
               <Text style={styles.sidebarLabel}>Kompetenser</Text>
               {data.skills.map((skill, i) => (
                 <Text key={i} style={styles.skillText}>{getSkillName(skill)}</Text>
@@ -673,7 +673,7 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
   const styles = StyleSheet.create({
     page: { fontFamily: 'Helvetica', backgroundColor: '#FFFFFF', paddingTop: 50, paddingBottom: 36 },
-    pageHeaderText: { position: 'absolute', top: 18, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
+    pageHeaderText: { position: 'absolute', top: 10, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
     header: { backgroundColor: primary, padding: 50, alignItems: 'center', borderBottom: `3pt solid ${accent}`, marginTop: -50 },
     photo: { width: 90, height: 90, borderRadius: 45, marginBottom: 16, border: '3pt solid rgba(255,255,255,0.25)' },
     name: { fontSize: 32, fontWeight: 'bold', color: '#FFFFFF', marginBottom: 6 },
@@ -728,7 +728,7 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
           {data.summary && <Text style={styles.summary}>{data.summary}</Text>}
 
           {data.skills?.length > 0 && (
-            <View style={styles.skillWrap}>
+            <View style={styles.skillWrap} wrap={false}>
               {data.skills.map((skill, i) => (
                 <Text key={i} style={styles.skillTag}>{getSkillName(skill)}</Text>
               ))}
@@ -801,7 +801,7 @@ function BudapestPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
   const styles = StyleSheet.create({
     page: { flexDirection: 'row', fontFamily: 'Helvetica', paddingTop: 36, paddingBottom: 36 },
-    pageHeaderText: { position: 'absolute', top: 18, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
+    pageHeaderText: { position: 'absolute', top: 10, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
     sidebar: { width: '34%', backgroundColor: dark, paddingHorizontal: 28, color: '#FFFFFF' },
     photoWrap: { alignItems: 'center', marginBottom: 30 },
     photo: { width: 120, height: 120, borderRadius: 60, border: `3pt solid ${accent}` },
@@ -941,7 +941,7 @@ function BudapestPDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View>
               <Text fixed style={styles.sectionTitle} render={sectionTitle('KOMPETENSER')} />
               <View style={styles.sectionRule} />
-              <View style={styles.skillWrap}>
+              <View style={styles.skillWrap} wrap={false}>
                 {data.skills.map((skill, i) => (
                   <Text key={i} style={styles.skillTag}>{getSkillName(skill)}</Text>
                 ))}
@@ -967,7 +967,7 @@ function RotterdamPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
   const styles = StyleSheet.create({
     page: { padding: 50, fontFamily: 'Helvetica', backgroundColor: '#FFFFFF' },
-    pageHeaderText: { position: 'absolute', top: 18, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
+    pageHeaderText: { position: 'absolute', top: 10, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
     firstName: { fontSize: 14, fontWeight: 'normal', letterSpacing: 6, color: ink },
     lastName: { fontSize: 48, fontWeight: 'bold', letterSpacing: 4, lineHeight: 1, color: ink, marginTop: 4 },
@@ -1026,7 +1026,7 @@ function RotterdamPDF({ data, fullName }: { data: CVData; fullName: string }) {
             </View>
 
             {data.skills?.length > 0 && (
-              <View style={{ marginBottom: 24 }}>
+              <View style={{ marginBottom: 24 }} wrap={false}>
                 <Text fixed style={styles.sectionLabel} render={sectionTitle('KOMPETENSER')} />
                 <View style={styles.sectionContent}>
                   {data.skills.map((skill, i) => (
@@ -1104,7 +1104,7 @@ function ChicagoPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
   const styles = StyleSheet.create({
     page: { padding: 50, fontFamily: 'Helvetica', backgroundColor: '#FFFFFF' },
-    pageHeaderText: { position: 'absolute', top: 18, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
+    pageHeaderText: { position: 'absolute', top: 10, left: 0, right: 50, textAlign: 'right', fontSize: 8, color: '#888888', letterSpacing: 0.5 },
     header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, paddingBottom: 18, borderBottom: '1pt solid #D1D5DB' },
     name: { fontSize: 30, fontWeight: 'normal', letterSpacing: 4, textTransform: 'uppercase', color: ink, lineHeight: 1.1 },
     title: { fontSize: 9, fontWeight: 'bold', letterSpacing: 3, textTransform: 'uppercase', color: muted, marginTop: 6 },
@@ -1170,7 +1170,7 @@ function ChicagoPDF({ data, fullName }: { data: CVData; fullName: string }) {
             )}
 
             {data.skills?.length > 0 && (
-              <View style={{ marginBottom: 24 }}>
+              <View style={{ marginBottom: 24 }} wrap={false}>
                 <Text fixed style={styles.sectionLabel} render={sectionTitle('KOMPETENSER')} />
                 <View style={styles.leftContent}>
                   {data.skills.map((skill, i) => (
