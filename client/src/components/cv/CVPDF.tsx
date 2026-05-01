@@ -17,6 +17,14 @@ const pageHeaderText = (fullName: string) =>
   ({ pageNumber, totalPages }: { pageNumber: number; totalPages: number }) =>
     pageNumber > 1 ? `${fullName} · sida ${pageNumber} av ${totalPages}` : ''
 
+// Sektion-titlar. Wrapped i en factory så Text fixed kan användas — då
+// upprepas rubriken automatiskt på varje sida som sektionen sträcker sig
+// över, vilket gör det tydligt vad innehållet tillhör. (forts.)-suffix
+// utelämnat eftersom react-pdf:s subPageNumber inte är tillförlitlig för
+// att avgöra om sektionen verkligen är en fortsättning eller bara börjar
+// på sida 2 för att tidigare sektion fyllde sida 1.
+const sectionTitle = (label: string) => () => label
+
 // Helper functions
 const getLanguageLevelDisplay = (level: string): string => {
   const levelMap: Record<string, string> = {
@@ -81,7 +89,7 @@ function MinimalPDF({ data, fullName }: { data: CVData; fullName: string }) {
           <View style={styles.leftColumn}>
             {data.workExperience?.length > 0 && (
               <View style={{ marginBottom: 30 }}>
-                <Text style={styles.sectionLabel}>Erfarenhet</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('Erfarenhet')} />
                 {data.workExperience.map(job => (
                   <View key={job.id} style={styles.entry} wrap={false}>
                     <Text style={styles.entryDate}>{job.startDate} — {job.current ? 'Nu' : job.endDate}</Text>
@@ -94,7 +102,7 @@ function MinimalPDF({ data, fullName }: { data: CVData; fullName: string }) {
             )}
             {data.education?.length > 0 && (
               <View>
-                <Text style={styles.sectionLabel}>Utbildning</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('Utbildning')} />
                 {data.education.map(edu => (
                   <View key={edu.id} style={styles.entry} wrap={false}>
                     <Text style={styles.entryDate}>{edu.startDate} — {edu.endDate}</Text>
@@ -108,7 +116,7 @@ function MinimalPDF({ data, fullName }: { data: CVData; fullName: string }) {
           <View style={styles.rightColumn}>
             {data.skills?.length > 0 && (
               <View style={{ marginBottom: 30 }}>
-                <Text style={styles.sectionLabel}>Kompetenser</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('Kompetenser')} />
                 {data.skills.map((skill, i) => (
                   <Text key={i} style={styles.skillText}>{getSkillName(skill)}</Text>
                 ))}
@@ -116,7 +124,7 @@ function MinimalPDF({ data, fullName }: { data: CVData; fullName: string }) {
             )}
             {data.languages?.length > 0 && (
               <View>
-                <Text style={styles.sectionLabel}>Språk</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('Språk')} />
                 {data.languages.map(lang => (
                   <View key={lang.id} style={styles.langRow}>
                     <Text style={styles.langName}>{lang.language || lang.name}</Text>
@@ -198,7 +206,7 @@ function ExecutivePDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View style={styles.column}>
               {data.workExperience?.length > 0 && (
                 <View>
-                  <Text style={styles.sectionTitle}>Karriär</Text>
+                  <Text fixed style={styles.sectionTitle} render={sectionTitle('Karriär')} />
                   {data.workExperience.map(job => (
                     <View key={job.id} style={styles.entry} wrap={false}>
                       <Text style={styles.entryTitle}>{job.title}</Text>
@@ -213,7 +221,7 @@ function ExecutivePDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View style={styles.column}>
               {data.education?.length > 0 && (
                 <View style={{ marginBottom: 30 }}>
-                  <Text style={styles.sectionTitle}>Utbildning</Text>
+                  <Text fixed style={styles.sectionTitle} render={sectionTitle('Utbildning')} />
                   {data.education.map(edu => (
                     <View key={edu.id} style={styles.entry} wrap={false}>
                       <Text style={styles.entryTitle}>{edu.degree}</Text>
@@ -225,7 +233,7 @@ function ExecutivePDF({ data, fullName }: { data: CVData; fullName: string }) {
               )}
               {data.skills?.length > 0 && (
                 <View style={{ marginBottom: 30 }}>
-                  <Text style={styles.sectionTitle}>Expertis</Text>
+                  <Text fixed style={styles.sectionTitle} render={sectionTitle('Expertis')} />
                   <View style={styles.skillWrap}>
                     {data.skills.map((skill, i) => (
                       <Text key={i} style={styles.skillTag}>{getSkillName(skill)}</Text>
@@ -235,7 +243,7 @@ function ExecutivePDF({ data, fullName }: { data: CVData; fullName: string }) {
               )}
               {data.languages?.length > 0 && (
                 <View>
-                  <Text style={styles.sectionTitle}>Språk</Text>
+                  <Text fixed style={styles.sectionTitle} render={sectionTitle('Språk')} />
                   {data.languages.map(lang => (
                     <View key={lang.id} style={styles.langRow}>
                       <Text style={styles.langName}>{lang.language || lang.name}</Text>
@@ -366,7 +374,7 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
           {data.workExperience?.length > 0 && (
             <View style={{ marginBottom: 30 }}>
               {/* sectionTitle som upprepas på varje sida som rubriken brutits över */}
-              <Text style={styles.sectionLabel}>Erfarenhet</Text>
+              <Text fixed style={styles.sectionLabel} render={sectionTitle('Erfarenhet')} />
               {data.workExperience.map(job => (
                 // wrap=false → en hel jobb-entry hålls samman, inte halv-bryts
                 <View key={job.id} style={styles.entry} wrap={false}>
@@ -383,7 +391,7 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
           {data.education?.length > 0 && (
             <View>
-              <Text style={styles.sectionLabel}>Utbildning</Text>
+              <Text fixed style={styles.sectionLabel} render={sectionTitle('Utbildning')} />
               {data.education.map(edu => (
                 <View key={edu.id} style={styles.entry} wrap={false}>
                   <Text style={styles.entryDate}>{edu.startDate} — {edu.endDate}</Text>
@@ -473,7 +481,7 @@ function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View style={styles.leftCol}>
               {data.workExperience?.length > 0 && (
                 <View style={styles.card}>
-                  <Text style={styles.sectionLabel}>Erfarenhet</Text>
+                  <Text fixed style={styles.sectionLabel} render={sectionTitle('Erfarenhet')} />
                   {data.workExperience.map(job => (
                     <View key={job.id} style={styles.entry} wrap={false}>
                       <Text style={styles.entryBadge}>{job.startDate} — {job.current ? 'Nu' : job.endDate}</Text>
@@ -489,7 +497,7 @@ function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View style={styles.rightCol}>
               {data.skills?.length > 0 && (
                 <View style={styles.gradientCard}>
-                  <Text style={styles.sectionLabelWhite}>Kompetenser</Text>
+                  <Text fixed style={styles.sectionLabelWhite} render={sectionTitle('Kompetenser')} />
                   <View style={styles.skillWrap}>
                     {data.skills.map((skill, i) => (
                       <Text key={i} style={styles.skillTag}>{getSkillName(skill)}</Text>
@@ -500,7 +508,7 @@ function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
 
               {data.education?.length > 0 && (
                 <View style={styles.card}>
-                  <Text style={styles.sectionLabel}>Utbildning</Text>
+                  <Text fixed style={styles.sectionLabel} render={sectionTitle('Utbildning')} />
                   {data.education.map(edu => (
                     <View key={edu.id} style={styles.eduEntry} wrap={false}>
                       <Text style={styles.eduTitle}>{edu.degree}</Text>
@@ -618,7 +626,7 @@ function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
           {data.workExperience?.length > 0 && (
             <View style={{ marginBottom: 30 }}>
-              <Text style={styles.sectionLabel}>Erfarenhet</Text>
+              <Text fixed style={styles.sectionLabel} render={sectionTitle('Erfarenhet')} />
               {data.workExperience.map(job => (
                 <View key={job.id} style={styles.entry} wrap={false}>
                   <View style={styles.entryRow}>
@@ -636,7 +644,7 @@ function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
           {data.education?.length > 0 && (
             <View>
-              <Text style={styles.sectionLabel}>Utbildning</Text>
+              <Text fixed style={styles.sectionLabel} render={sectionTitle('Utbildning')} />
               {data.education.map(edu => (
                 <View key={edu.id} style={styles.eduRow} wrap={false}>
                   <View style={styles.eduLeft}>
@@ -731,7 +739,7 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View style={styles.column}>
               {data.workExperience?.length > 0 && (
                 <View>
-                  <Text style={styles.sectionLabel}>Erfarenhet</Text>
+                  <Text fixed style={styles.sectionLabel} render={sectionTitle('Erfarenhet')} />
                   {data.workExperience.map(job => (
                     <View key={job.id} style={styles.entry} wrap={false}>
                       <Text style={styles.entryDate}>{job.startDate} — {job.current ? 'Nu' : job.endDate}</Text>
@@ -747,7 +755,7 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View style={styles.column}>
               {data.education?.length > 0 && (
                 <View style={{ marginBottom: 30 }}>
-                  <Text style={styles.sectionLabel}>Utbildning</Text>
+                  <Text fixed style={styles.sectionLabel} render={sectionTitle('Utbildning')} />
                   {data.education.map(edu => (
                     <View key={edu.id} style={styles.eduCard} wrap={false}>
                       <Text style={styles.eduTitle}>{edu.degree}</Text>
@@ -760,7 +768,7 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
               {data.languages?.length > 0 && (
                 <View>
-                  <Text style={styles.sectionLabel}>Språk</Text>
+                  <Text fixed style={styles.sectionLabel} render={sectionTitle('Språk')} />
                   {data.languages.map(lang => (
                     <View key={lang.id} style={styles.langItem}>
                       <View style={styles.langRow}>
@@ -885,7 +893,7 @@ function BudapestPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
           {data.workExperience?.length > 0 && (
             <View style={{ marginBottom: 24 }}>
-              <Text style={styles.sectionTitle}>ARBETSLIVSERFARENHET</Text>
+              <Text fixed style={styles.sectionTitle} render={sectionTitle('ARBETSLIVSERFARENHET')} />
               <View style={styles.sectionRule} />
               {data.workExperience.map((job) => (
                 <View key={job.id} style={styles.timelineRow} wrap={false}>
@@ -908,7 +916,7 @@ function BudapestPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
           {data.education?.length > 0 && (
             <View style={{ marginBottom: 24 }}>
-              <Text style={styles.sectionTitle}>UTBILDNING</Text>
+              <Text fixed style={styles.sectionTitle} render={sectionTitle('UTBILDNING')} />
               <View style={styles.sectionRule} />
               {data.education.map((edu) => (
                 <View key={edu.id} style={styles.timelineRow} wrap={false}>
@@ -931,7 +939,7 @@ function BudapestPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
           {data.skills?.length > 0 && (
             <View>
-              <Text style={styles.sectionTitle}>KOMPETENSER</Text>
+              <Text fixed style={styles.sectionTitle} render={sectionTitle('KOMPETENSER')} />
               <View style={styles.sectionRule} />
               <View style={styles.skillWrap}>
                 {data.skills.map((skill, i) => (
@@ -1009,7 +1017,7 @@ function RotterdamPDF({ data, fullName }: { data: CVData; fullName: string }) {
         <View style={styles.body}>
           <View style={styles.leftCol}>
             <View style={{ marginBottom: 24 }}>
-              <Text style={styles.sectionLabel}>KONTAKT</Text>
+              <Text fixed style={styles.sectionLabel} render={sectionTitle('KONTAKT')} />
               <View style={styles.sectionContent}>
                 {data.location && <Text>{data.location}</Text>}
                 {data.phone && <Text>{data.phone}</Text>}
@@ -1019,7 +1027,7 @@ function RotterdamPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
             {data.skills?.length > 0 && (
               <View style={{ marginBottom: 24 }}>
-                <Text style={styles.sectionLabel}>KOMPETENSER</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('KOMPETENSER')} />
                 <View style={styles.sectionContent}>
                   {data.skills.map((skill, i) => (
                     <Text key={i}>{getSkillName(skill)}</Text>
@@ -1030,7 +1038,7 @@ function RotterdamPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
             {data.education?.length > 0 && (
               <View style={{ marginBottom: 24 }}>
-                <Text style={styles.sectionLabel}>UTBILDNING</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('UTBILDNING')} />
                 {data.education.map((edu) => (
                   <View key={edu.id} style={styles.eduItem} wrap={false}>
                     <Text style={styles.eduTitle}>{edu.degree}</Text>
@@ -1043,7 +1051,7 @@ function RotterdamPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
             {data.languages?.length > 0 && (
               <View>
-                <Text style={styles.sectionLabel}>SPRÅK</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('SPRÅK')} />
                 <View style={styles.sectionContent}>
                   {data.languages.map((lang) => (
                     <View key={lang.id} style={styles.langRow}>
@@ -1059,14 +1067,14 @@ function RotterdamPDF({ data, fullName }: { data: CVData; fullName: string }) {
           <View style={styles.rightCol}>
             {data.summary && (
               <View style={{ marginBottom: 24 }}>
-                <Text style={styles.sectionLabel}>PROFIL</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('PROFIL')} />
                 <Text style={styles.summary}>{data.summary}</Text>
               </View>
             )}
 
             {data.workExperience?.length > 0 && (
               <View>
-                <Text style={styles.sectionLabel}>ERFARENHET</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('ERFARENHET')} />
                 {data.workExperience.map((job) => (
                   <View key={job.id} style={styles.expItem} wrap={false}>
                     <Text style={styles.expMeta}>
@@ -1141,7 +1149,7 @@ function ChicagoPDF({ data, fullName }: { data: CVData; fullName: string }) {
         <View style={styles.body}>
           <View style={styles.leftCol}>
             <View style={{ marginBottom: 24 }}>
-              <Text style={styles.sectionLabel}>KONTAKT</Text>
+              <Text fixed style={styles.sectionLabel} render={sectionTitle('KONTAKT')} />
               <View style={styles.leftContent}>
                 {data.phone && <Text style={styles.leftItem}>{data.phone}</Text>}
                 {data.email && <Text style={styles.leftItem}>{data.email}</Text>}
@@ -1151,7 +1159,7 @@ function ChicagoPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
             {data.links?.length > 0 && (
               <View style={{ marginBottom: 24 }}>
-                <Text style={styles.sectionLabel}>LÄNKAR</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('LÄNKAR')} />
                 {data.links.map((link) => (
                   <View key={link.id} style={{ marginBottom: 8 }}>
                     {link.label && <Text style={[styles.leftContent, { fontWeight: 'bold' }]}>{link.label}</Text>}
@@ -1163,7 +1171,7 @@ function ChicagoPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
             {data.skills?.length > 0 && (
               <View style={{ marginBottom: 24 }}>
-                <Text style={styles.sectionLabel}>KOMPETENSER</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('KOMPETENSER')} />
                 <View style={styles.leftContent}>
                   {data.skills.map((skill, i) => (
                     <Text key={i}>{getSkillName(skill)}</Text>
@@ -1174,7 +1182,7 @@ function ChicagoPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
             {data.languages?.length > 0 && (
               <View>
-                <Text style={styles.sectionLabel}>SPRÅK</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('SPRÅK')} />
                 <View style={styles.leftContent}>
                   {data.languages.map((lang) => (
                     <Text key={lang.id} style={{ marginBottom: 3 }}>
@@ -1189,14 +1197,14 @@ function ChicagoPDF({ data, fullName }: { data: CVData; fullName: string }) {
           <View style={styles.rightCol}>
             {data.summary && (
               <View style={{ marginBottom: 24 }}>
-                <Text style={styles.sectionLabel}>OM MIG</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('OM MIG')} />
                 <Text style={styles.summary}>{data.summary}</Text>
               </View>
             )}
 
             {data.workExperience?.length > 0 && (
               <View style={{ marginBottom: 24 }}>
-                <Text style={styles.sectionLabel}>ARBETSLIVSERFARENHET</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('ARBETSLIVSERFARENHET')} />
                 {data.workExperience.map((job) => (
                   <View key={job.id} style={styles.expItem} wrap={false}>
                     <View style={styles.expHeaderRow}>
@@ -1214,7 +1222,7 @@ function ChicagoPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
             {data.education?.length > 0 && (
               <View>
-                <Text style={styles.sectionLabel}>UTBILDNING</Text>
+                <Text fixed style={styles.sectionLabel} render={sectionTitle('UTBILDNING')} />
                 {data.education.map((edu) => (
                   <View key={edu.id} style={[styles.expItem, { marginBottom: 12 }]} wrap={false}>
                     <View style={styles.expHeaderRow}>
