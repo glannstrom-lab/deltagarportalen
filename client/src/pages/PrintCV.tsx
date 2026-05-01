@@ -1,22 +1,27 @@
 /**
- * Dev-route som direkt genererar PDF för en mall med Mikaels rika test-data
- * (5 jobb, 2 utb, lång summary) — det datasetet som triggar flersidiga
- * exporter och därmed sidbrytnings-problem.
+ * Print-route — renderar CVPreview med användarens (eller test-user's) CV-data
+ * och triggar window.print() automatiskt så browsern öppnar print-dialogen
+ * → "Spara som PDF". Detta är hur seriösa CV-byggare som Resume.io och
+ * Kickresume internt genererar PDF: HTML-render i Chrome headless +
+ * page.pdf() via Puppeteer (server-side) eller window.print() (client-side).
  *
- * URL: /#/pdf-test/:templateId
+ * Två lägen:
+ *   /#/print/cv               — laddar inloggad användares CV
+ *   /#/print/cv?template=ID   — bygger på inloggad data men byter mall
+ *   /#/print/cv?demo=mikael   — använder Mikael-test-fixture (för iterativ
+ *                                utveckling utan login)
  *
- * Klicka "Ladda ner" så genereras PDF via samma kodpath som CVBuilder.
- * Playwright triggar nedladdningen och sparar för verifiering.
- *
- * Templates: sidebar | centered | minimal | creative | executive | nordic |
- *            budapest | rotterdam | chicago
+ * Auto-print kan stängas av med ?manual=1 så Playwright (som använder
+ * page.pdf() direkt) inte triggar print-dialog som blockar.
  */
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
+import { CVPreview } from '@/components/cv/CVPreview'
+import { cvApi } from '@/services/supabaseApi'
 import type { CVData } from '@/services/supabaseApi'
 
-const MIKAEL: CVData = {
+const MIKAEL_DEMO: CVData = {
   firstName: 'Mikael',
   lastName: 'Glännström',
   title: 'Arbetskonsulent',
@@ -54,14 +59,8 @@ const MIKAEL: CVData = {
     },
   ],
   education: [
-    {
-      id: '1', school: 'Örebro Universitet', degree: 'Magisterexamen', field: 'Psykologi',
-      location: 'Örebro', startDate: '2006-08', endDate: '2011-06', description: '',
-    },
-    {
-      id: '2', school: 'Tingvallaskolan', degree: 'Samhällsvetenskapligt program', field: '',
-      location: 'Karlstad', startDate: '1994-08', endDate: '1996-06', description: '',
-    },
+    { id: '1', school: 'Örebro Universitet', degree: 'Magisterexamen', field: 'Psykologi', location: 'Örebro', startDate: '2006-08', endDate: '2011-06', description: '' },
+    { id: '2', school: 'Tingvallaskolan', degree: 'Samhällsvetenskapligt program', field: '', location: 'Karlstad', startDate: '1994-08', endDate: '1996-06', description: '' },
   ],
   languages: [
     { id: '1', language: 'Svenska', level: 'native' },
@@ -75,51 +74,65 @@ const MIKAEL: CVData = {
   profileImage: null,
 }
 
-const VALID = ['sidebar', 'centered', 'minimal', 'creative', 'executive', 'nordic', 'budapest', 'rotterdam', 'chicago'] as const
-
-export default function PDFTestSnapshot() {
-  const { templateId } = useParams<{ templateId: string }>()
-  const tpl = (VALID as readonly string[]).includes(templateId || '') ? templateId! : 'sidebar'
-  const [downloadUrl, setDownloadUrl] = useState<string | null>(null)
+export default function PrintCV() {
+  const [params] = useSearchParams()
+  const [cv, setCv] = useState<CVData | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const demo = params.get('demo')
+  const templateOverride = params.get('template')
+  const manual = params.get('manual') === '1'
 
   useEffect(() => {
     let cancelled = false
-    let createdUrl: string | null = null
     ;(async () => {
       try {
-        const [{ pdf }, { CVPDFDocument }] = await Promise.all([
-          import('@react-pdf/renderer'),
-          import('@/components/cv/CVPDF'),
-        ])
-        const blob = await pdf(<CVPDFDocument data={{ ...MIKAEL, template: tpl }} />).toBlob()
-        if (cancelled) return
-        createdUrl = URL.createObjectURL(blob)
-        setDownloadUrl(createdUrl)
+        let data: CVData
+        if (demo === 'mikael') {
+          data = MIKAEL_DEMO
+        } else {
+          const fromApi = await cvApi.getCV()
+          if (!fromApi) throw new Error('Inget CV hittades')
+          data = fromApi
+        }
+        if (templateOverride) data = { ...data, template: templateOverride }
+        if (!cancelled) setCv(data)
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : String(e))
       }
     })()
-    return () => {
-      cancelled = true
-      if (createdUrl) URL.revokeObjectURL(createdUrl)
-    }
-  }, [tpl])
+    return () => { cancelled = true }
+  }, [demo, templateOverride])
+
+  // Trigga print när content är renderat (om inte manual-flag)
+  useEffect(() => {
+    if (!cv || manual) return
+    const timer = setTimeout(() => window.print(), 300)
+    return () => clearTimeout(timer)
+  }, [cv, manual])
 
   if (error) {
-    return <div style={{ padding: 40, fontFamily: 'sans-serif', color: 'red' }}>Error: {error}</div>
+    return (
+      <div style={{ padding: 40, fontFamily: 'sans-serif', color: '#991B1B' }}>
+        Kunde inte ladda CV: {error}
+      </div>
+    )
+  }
+
+  if (!cv) {
+    return (
+      <div style={{ padding: 40, fontFamily: 'sans-serif', color: '#666' }}>
+        Laddar CV…
+      </div>
+    )
   }
 
   return (
-    <div style={{ padding: 40, fontFamily: 'sans-serif', minHeight: '100vh', background: '#FFF' }}>
-      <h1>PDF-test: {tpl}</h1>
-      {downloadUrl ? (
-        <a id="download-pdf" href={downloadUrl} download={`mikael-${tpl}.pdf`}>
-          Ladda ner mikael-{tpl}.pdf
-        </a>
-      ) : (
-        <p>Genererar PDF…</p>
-      )}
+    <div style={{ background: '#FFFFFF', minHeight: '100vh' }}>
+      {/* Skärmläge: visa CV centrerat med stand-in styling. Print-läge:
+          @media print i CVPreview tar över och dölja allt utom .cv-preview. */}
+      <div style={{ maxWidth: '794px', margin: '0 auto', boxShadow: '0 0 12px rgba(0,0,0,0.08)' }}>
+        <CVPreview data={cv} />
+      </div>
     </div>
   )
 }

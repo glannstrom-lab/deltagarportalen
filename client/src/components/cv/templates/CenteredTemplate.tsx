@@ -163,7 +163,7 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 {data.workExperience.map(job => (
                   <div
-                    key={job.id}
+                    key={job.id} className="cv-entry"
                     style={{
                       paddingLeft: '20px',
                       borderLeft: `2px solid ${primary}30`,
@@ -211,7 +211,7 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                   {data.education.map(edu => (
                     <div
-                      key={edu.id}
+                      key={edu.id} className="cv-entry"
                       style={{
                         padding: '20px',
                         background: '#F9FAFB',
@@ -249,7 +249,7 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
                     const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                     const percent = getLanguageLevelPercent(lang.level)
                     return (
-                      <div key={lang.id}>
+                      <div key={lang.id} className="cv-entry">
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                           <span style={{ fontSize: '14px', color: '#374151' }}>{name}</span>
                           <span style={{ fontSize: '12px', color: '#9CA3AF' }}>

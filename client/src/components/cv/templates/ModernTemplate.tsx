@@ -154,7 +154,7 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 const percent = getLanguageLevelPercent(lang.level)
                 return (
-                  <div key={lang.id}>
+                  <div key={lang.id} className="cv-entry">
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
                       <span style={{ fontSize: '13px' }}>{name}</span>
                       <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>
@@ -226,7 +226,7 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               {data.workExperience.map(job => (
-                <div key={job.id} style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px' }}>
+                <div key={job.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px' }}>
                   <div>
                     <span style={{ fontSize: '12px', color: '#888888', fontFeatureSettings: '"tnum"' }}>
                       {job.startDate}<br />— {job.current ? 'Nu' : job.endDate}
@@ -264,7 +264,7 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               {data.education.map(edu => (
-                <div key={edu.id} style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px' }}>
+                <div key={edu.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px' }}>
                   <span style={{ fontSize: '12px', color: '#888888' }}>
                     {edu.startDate} — {edu.endDate}
                   </span>

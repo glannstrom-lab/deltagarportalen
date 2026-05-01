@@ -14,19 +14,19 @@ import {
 import type { CVData, JobData } from '@/types/pdf.types';
 
 /**
- * CV använder vector-PDF via @react-pdf/renderer (samma 6 mallar som
- * CVPreview). Lazy-import så bundle inte sväller — modulen drar in både
- * react-pdf och fontkit som tillsammans är ~600 kB.
+ * CV-export öppnar /print/cv-routen i en ny tab. Den routen renderar samma
+ * CVPreview-komponent som on-screen-previewen, applicerar print-CSS
+ * (@page A4, page-break-inside: avoid på .cv-entry, position: fixed på
+ * sidopaneler) och triggar window.print() automatiskt. Browsern öppnar
+ * print-dialogen där användaren väljer "Spara som PDF" — samma flöde som
+ * Resume.io / Kickresume i sina free-tier (deras paid-tier använder server-
+ * side Puppeteer för seamless download, vilket vi kan addera senare som
+ * /api/cv-pdf).
  */
-async function generateCVPDFFromTemplates(data: CVData): Promise<Blob> {
-  const [{ pdf }, { CVPDFDocument }] = await Promise.all([
-    import('@react-pdf/renderer'),
-    import('@/components/cv/CVPDF'),
-  ])
-  // CVData från supabaseApi och pdf.types skiljer sig på obligatoriska fält;
-  // CVPDFDocument är toleranta mot saknade fält så cast är säker här.
-  const doc = pdf(<CVPDFDocument data={data as unknown as import('@/services/supabaseApi').CVData} />)
-  return await doc.toBlob()
+function openPrintRoute() {
+  // Hash-routing eftersom appen använder HashRouter
+  const url = `${window.location.origin}/#/print/cv`
+  window.open(url, '_blank', 'noopener,noreferrer')
 }
 
 interface PDFExportButtonProps {
@@ -96,9 +96,6 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
       let blob: Blob;
 
       switch (type) {
-        case 'cv':
-          blob = await generateCVPDFFromTemplates(data as CVData);
-          break;
         case 'job':
           blob = await generateJobPDF(data as JobData);
           break;
@@ -120,6 +117,12 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
   };
 
   const handleDownload = async () => {
+    if (type === 'cv') {
+      // CV använder browser print → "Spara som PDF" via print-route
+      openPrintRoute();
+      setShowMenu(false);
+      return;
+    }
     const blob = await generatePDF();
     if (blob) {
       downloadPDF(blob, finalFilename);
@@ -128,6 +131,11 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
   };
 
   const handlePreview = async () => {
+    if (type === 'cv') {
+      openPrintRoute();
+      setShowMenu(false);
+      return;
+    }
     const blob = await generatePDF();
     if (blob) {
       previewPDF(blob);

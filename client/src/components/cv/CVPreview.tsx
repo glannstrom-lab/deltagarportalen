@@ -110,27 +110,116 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
   }
 
   // Route to correct template
+  let template: React.ReactElement
   switch (data.template) {
     case 'minimal':
-      return <MinimalTemplate data={data} fullName={fullName} />
+      template = <MinimalTemplate data={data} fullName={fullName} />
+      break
     case 'executive':
-      return <ExecutiveTemplate data={data} fullName={fullName} />
+      template = <ExecutiveTemplate data={data} fullName={fullName} />
+      break
     case 'creative':
-      return <CreativeTemplate data={data} fullName={fullName} />
+      template = <CreativeTemplate data={data} fullName={fullName} />
+      break
     case 'nordic':
-      return <NordicTemplate data={data} fullName={fullName} />
+      template = <NordicTemplate data={data} fullName={fullName} />
+      break
     case 'centered':
-      return <CenteredTemplate data={data} fullName={fullName} />
+      template = <CenteredTemplate data={data} fullName={fullName} />
+      break
     case 'budapest':
-      return <BudapestTemplate data={data} fullName={fullName} />
+      template = <BudapestTemplate data={data} fullName={fullName} />
+      break
     case 'rotterdam':
-      return <RotterdamTemplate data={data} fullName={fullName} />
+      template = <RotterdamTemplate data={data} fullName={fullName} />
+      break
     case 'chicago':
-      return <ChicagoTemplate data={data} fullName={fullName} />
+      template = <ChicagoTemplate data={data} fullName={fullName} />
+      break
     case 'sidebar':
     default:
-      return <ModernTemplate data={data} fullName={fullName} />
+      template = <ModernTemplate data={data} fullName={fullName} />
   }
+
+  return (
+    <>
+      {/* Print-CSS: gör det möjligt att printa CV via window.print() med
+          korrekt sidbrytning. Samma rules som de stora aktörerna (resume.io,
+          kickresume) använder för Chrome headless print → PDF. */}
+      <style>{`
+        @page {
+          size: A4;
+          margin: 0;
+        }
+        @media print {
+          html, body {
+            background: #FFFFFF !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          body * {
+            visibility: hidden;
+          }
+          .cv-preview, .cv-preview * {
+            visibility: visible;
+          }
+          .cv-preview {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            min-height: auto !important;
+            box-shadow: none !important;
+            border: none !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          /* Sidebar-mallar (Modern, Nordic, Budapest): gör <aside> position
+             fixed så Chrome upprepar den på varje sida. Main får margin-left
+             lika med sidebar-bredden så det inte överlappar. Bredder är
+             template-specifika. */
+          [data-template-wrapper="sidebar"] .cv-preview > aside,
+          [data-template-wrapper="nordic"] .cv-preview > aside,
+          [data-template-wrapper="budapest"] .cv-preview > aside {
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            bottom: 0 !important;
+            height: 297mm !important;
+          }
+          [data-template-wrapper="sidebar"] .cv-preview > aside { width: 320px !important; }
+          [data-template-wrapper="sidebar"] .cv-preview > main { margin-left: 320px !important; }
+          [data-template-wrapper="nordic"] .cv-preview > aside { width: 280px !important; }
+          [data-template-wrapper="nordic"] .cv-preview > main { margin-left: 280px !important; }
+          [data-template-wrapper="budapest"] .cv-preview > aside { width: 34% !important; }
+          [data-template-wrapper="budapest"] .cv-preview > main { margin-left: 34% !important; }
+          /* Sektion-rubriker (h2, h3, h4) ska aldrig hamna ensamma i bottnen
+             utan följa med första entry på nästa sida. */
+          .cv-preview h1, .cv-preview h2, .cv-preview h3, .cv-preview h4 {
+            page-break-after: avoid;
+            break-after: avoid-page;
+          }
+          /* Enskilda jobb/utbildningar/certifikat splittas inte mitt i. */
+          .cv-preview .cv-entry,
+          .cv-preview .cv-keep {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+          /* Prevent orphan/widow lines i textstycken. */
+          .cv-preview p, .cv-preview li {
+            orphans: 3;
+            widows: 3;
+          }
+        }
+      `}</style>
+      {/* data-template på en wrapper så CSS kan target template-specifika
+          regler (t.ex. sidebar-bredd för print). Children-template har sin
+          egen .cv-preview class som styles applieras till. */}
+      <div data-template-wrapper={data.template || 'sidebar'} style={{ display: 'contents' }}>
+        {template}
+      </div>
+    </>
+  )
 }
 
 export default CVPreview

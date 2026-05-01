@@ -139,7 +139,7 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 const percent = getLanguageLevelPercent(lang.level)
                 return (
-                  <div key={lang.id}>
+                  <div key={lang.id} className="cv-entry">
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                       <span style={{ fontSize: '13px', color: '#334155' }}>{name}</span>
                     </div>
@@ -213,7 +213,7 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
               {data.workExperience.map(job => (
-                <div key={job.id}>
+                <div key={job.id} className="cv-entry">
                   <div
                     style={{
                       display: 'flex',
@@ -260,7 +260,7 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
               {data.education.map(edu => (
-                <div key={edu.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div key={edu.id} className="cv-entry" style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <div>
                     <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F172A' }}>{edu.degree}</h3>
                     <div style={{ fontSize: '14px', color: '#64748B' }}>{edu.school}</div>

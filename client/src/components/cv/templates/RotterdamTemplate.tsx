@@ -160,7 +160,7 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
               </h3>
               <div>
                 {data.education.map((edu) => (
-                  <div key={edu.id} style={{ marginBottom: '14px' }}>
+                  <div key={edu.id} className="cv-entry" style={{ marginBottom: '14px' }}>
                     <div style={{ fontSize: '11px', fontWeight: 700, color: ink }}>{edu.degree}</div>
                     <div style={{ fontSize: '10px', color: muted }}>{edu.school}</div>
                     <div style={{ fontSize: '10px', color: muted }}>
@@ -192,7 +192,7 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
                 {data.languages.map((lang) => {
                   const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                   return (
-                    <div key={lang.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div key={lang.id} className="cv-entry" style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span>{name}</span>
                       <span style={{ color: muted }}>{getLanguageLevelDisplay(lang.level)}</span>
                     </div>
@@ -243,7 +243,7 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
               </h3>
               <div>
                 {data.workExperience.map((job) => (
-                  <div key={job.id} style={{ marginBottom: '24px' }}>
+                  <div key={job.id} className="cv-entry" style={{ marginBottom: '24px' }}>
                     <div
                       style={{
                         fontSize: '10px',

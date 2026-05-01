@@ -89,7 +89,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '40px' }}>
                 {data.workExperience.map(job => (
-                  <div key={job.id}>
+                  <div key={job.id} className="cv-entry">
                     <div style={{ marginBottom: '8px' }}>
                       <span style={{ fontSize: '12px', color: '#999999', fontFeatureSettings: '"tnum"' }}>
                         {job.startDate} — {job.current ? 'Nu' : job.endDate}
@@ -128,7 +128,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                 {data.education.map(edu => (
-                  <div key={edu.id}>
+                  <div key={edu.id} className="cv-entry">
                     <span style={{ fontSize: '12px', color: '#999999', display: 'block', marginBottom: '4px' }}>
                       {edu.startDate} — {edu.endDate}
                     </span>
@@ -185,7 +185,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
                 {data.languages.map(lang => {
                   const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                   return (
-                    <div key={lang.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div key={lang.id} className="cv-entry" style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <span style={{ fontSize: '14px', color: '#333333' }}>{name}</span>
                       <span style={{ fontSize: '14px', color: '#999999' }}>
                         {getLanguageLevelDisplay(lang.level)}
@@ -213,7 +213,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {data.certificates.map(cert => (
-                  <div key={cert.id}>
+                  <div key={cert.id} className="cv-entry">
                     <div style={{ fontSize: '14px', color: '#333333' }}>{cert.name}</div>
                     <div style={{ fontSize: '12px', color: '#999999' }}>{cert.issuer}</div>
                   </div>

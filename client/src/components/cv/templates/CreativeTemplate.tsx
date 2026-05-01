@@ -158,7 +158,7 @@ export function CreativeTemplate({ data, fullName }: TemplateProps) {
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
                 {data.workExperience.map(job => (
-                  <div key={job.id}>
+                  <div key={job.id} className="cv-entry">
                     <span
                       style={{
                         display: 'inline-block',
@@ -252,7 +252,7 @@ export function CreativeTemplate({ data, fullName }: TemplateProps) {
                 </h2>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                   {data.education.map(edu => (
-                    <div key={edu.id}>
+                    <div key={edu.id} className="cv-entry">
                       <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1a1a1a' }}>{edu.degree}</h3>
                       <div style={{ fontSize: '14px', color: secondary }}>{edu.school}</div>
                       <div style={{ fontSize: '12px', color: '#888888' }}>
@@ -290,7 +290,7 @@ export function CreativeTemplate({ data, fullName }: TemplateProps) {
                   {data.languages.map(lang => {
                     const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                     return (
-                      <div key={lang.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <div key={lang.id} className="cv-entry" style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <span style={{ fontSize: '14px', color: '#333333' }}>{name}</span>
                         <span style={{ fontSize: '14px', color: '#888888' }}>
                           {getLanguageLevelDisplay(lang.level)}

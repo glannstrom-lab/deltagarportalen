@@ -132,7 +132,7 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
               {data.languages.map((lang) => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
-                  <div key={lang.id} style={{ marginBottom: '8px', fontSize: '12px' }}>
+                  <div key={lang.id} className="cv-entry" style={{ marginBottom: '8px', fontSize: '12px' }}>
                     <span style={{ color: '#FFFFFF', fontWeight: 600 }}>{name}</span>
                     <span style={{ color: 'rgba(255,255,255,0.7)', marginLeft: '6px' }}>
                       — {getLanguageLevelDisplay(lang.level)}
@@ -160,7 +160,7 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
                 CERTIFIKAT
               </h3>
               {data.certificates.map((cert) => (
-                <div key={cert.id} style={{ marginBottom: '12px' }}>
+                <div key={cert.id} className="cv-entry" style={{ marginBottom: '12px' }}>
                   <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFFFFF' }}>{cert.name}</div>
                   {cert.issuer && (
                     <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)' }}>{cert.issuer}</div>
@@ -228,7 +228,7 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
             <div style={{ height: '1px', background: '#E5E7EB', marginBottom: '20px' }} />
             <div>
               {data.workExperience.map((job) => (
-                <div key={job.id} style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px', marginBottom: '20px' }}>
+                <div key={job.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px', marginBottom: '20px' }}>
                   <div>
                     <div style={{ fontSize: '12px', fontWeight: 700, color: dark }}>{job.company}</div>
                     {job.location && <div style={{ fontSize: '11px', color: '#888' }}>{job.location}</div>}
@@ -271,7 +271,7 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
             <div style={{ height: '1px', background: '#E5E7EB', marginBottom: '20px' }} />
             <div>
               {data.education.map((edu) => (
-                <div key={edu.id} style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px', marginBottom: '20px' }}>
+                <div key={edu.id} className="cv-entry" style={{ display: 'grid', gridTemplateColumns: '120px 24px 1fr', gap: '12px', marginBottom: '20px' }}>
                   <div>
                     <div style={{ fontSize: '12px', fontWeight: 700, color: dark }}>{edu.school}</div>
                     {edu.location && <div style={{ fontSize: '11px', color: '#888' }}>{edu.location}</div>}

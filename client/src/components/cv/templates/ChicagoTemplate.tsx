@@ -189,7 +189,7 @@ export function ChicagoTemplate({ data, fullName }: TemplateProps) {
                 {data.languages.map((lang) => {
                   const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                   return (
-                    <div key={lang.id} style={{ marginBottom: '4px' }}>
+                    <div key={lang.id} className="cv-entry" style={{ marginBottom: '4px' }}>
                       <span style={{ fontWeight: 600 }}>{name}</span>
                       <span style={{ color: muted }}> — {getLanguageLevelDisplay(lang.level)}</span>
                     </div>
@@ -236,7 +236,7 @@ export function ChicagoTemplate({ data, fullName }: TemplateProps) {
               </h3>
               <div>
                 {data.workExperience.map((job) => (
-                  <div key={job.id} style={{ marginBottom: '20px' }}>
+                  <div key={job.id} className="cv-entry" style={{ marginBottom: '20px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
                       <h4 style={{ fontSize: '13px', fontWeight: 700, color: ink }}>
                         {job.title}
@@ -273,7 +273,7 @@ export function ChicagoTemplate({ data, fullName }: TemplateProps) {
               </h3>
               <div>
                 {data.education.map((edu) => (
-                  <div key={edu.id} style={{ marginBottom: '14px' }}>
+                  <div key={edu.id} className="cv-entry" style={{ marginBottom: '14px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
                       <h4 style={{ fontSize: '13px', fontWeight: 700, color: ink }}>
                         {edu.degree}
