@@ -242,12 +242,15 @@ function ExecutivePDF({ data, fullName }: { data: CVData; fullName: string }) {
 
 function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
   const accent = '#6366F1'
+  const initials = `${data.firstName?.charAt(0) || ''}${data.lastName?.charAt(0) || ''}`.toUpperCase() || 'CV'
 
   const styles = StyleSheet.create({
     page: { flexDirection: 'row', fontFamily: 'Helvetica' },
-    sidebar: { width: '35%', backgroundColor: '#0F0F0F', padding: 30, color: '#FFFFFF' },
+    sidebar: { width: '32%', backgroundColor: '#0F0F0F', padding: 28, color: '#FFFFFF' },
     sidebarPhoto: { width: '100%', aspectRatio: 1, borderRadius: 12, marginBottom: 24 },
-    sidebarPhotoPlaceholder: { width: '100%', aspectRatio: 1, borderRadius: 12, marginBottom: 24, backgroundColor: 'rgba(255,255,255,0.05)' },
+    // Mörk ruta med initialer istället för tom platshållare
+    sidebarPhotoPlaceholder: { width: '100%', aspectRatio: 1, borderRadius: 12, marginBottom: 24, backgroundColor: 'rgba(255,255,255,0.05)', border: '1pt solid rgba(255,255,255,0.08)', alignItems: 'center', justifyContent: 'center' },
+    sidebarPhotoInitials: { fontSize: 36, color: 'rgba(255,255,255,0.5)', letterSpacing: 1 },
     sidebarSection: { marginBottom: 30 },
     sidebarLabel: { fontSize: 8, fontWeight: 'bold', letterSpacing: 2, textTransform: 'uppercase', color: accent, marginBottom: 14 },
     sidebarText: { fontSize: 10, color: 'rgba(255,255,255,0.8)', marginBottom: 8 },
@@ -260,7 +263,9 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
     langBar: { height: 3, backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: 2 },
     langBarFill: { height: 3, backgroundColor: accent, borderRadius: 2 },
     main: { flex: 1, padding: 36, backgroundColor: '#FFFFFF' },
-    name: { fontSize: 42, fontWeight: 'bold', letterSpacing: -1, color: '#0F0F0F', marginBottom: 8 },
+    // 36pt istället för 42pt så långa namn (ex. "Anna Andersson") inte
+    // bryts olämpligt med bindestreck i den smalare main-kolumnen.
+    name: { fontSize: 36, fontWeight: 'bold', letterSpacing: -0.5, color: '#0F0F0F', marginBottom: 8 },
     title: { fontSize: 16, color: accent, fontWeight: 'bold', marginBottom: 30 },
     summary: { fontSize: 12, lineHeight: 1.7, color: '#444444', marginBottom: 30, maxWidth: 400 },
     sectionLabel: { fontSize: 9, fontWeight: 'bold', letterSpacing: 1.5, textTransform: 'uppercase', color: '#999999', marginBottom: 20 },
@@ -284,7 +289,9 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
           {data.profileImage ? (
             <Image src={data.profileImage} style={styles.sidebarPhoto} />
           ) : (
-            <View style={styles.sidebarPhotoPlaceholder} />
+            <View style={styles.sidebarPhotoPlaceholder}>
+              <Text style={styles.sidebarPhotoInitials}>{initials}</Text>
+            </View>
           )}
 
           <View style={styles.sidebarSection}>
@@ -485,12 +492,15 @@ function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
 
 function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
   const accent = '#0EA5E9'
+  const initials = `${data.firstName?.charAt(0) || ''}${data.lastName?.charAt(0) || ''}`.toUpperCase() || 'CV'
 
   const styles = StyleSheet.create({
     page: { flexDirection: 'row', fontFamily: 'Helvetica' },
-    sidebar: { width: '35%', backgroundColor: '#F8FAFC', padding: 40, borderRight: '1pt solid #E2E8F0' },
+    sidebar: { width: '32%', backgroundColor: '#F8FAFC', padding: 36, borderRight: '1pt solid #E2E8F0' },
     sidebarPhoto: { width: '100%', aspectRatio: 1, borderRadius: 16, marginBottom: 24 },
-    sidebarPhotoPlaceholder: { width: '100%', aspectRatio: 1, borderRadius: 16, marginBottom: 24, backgroundColor: '#E2E8F0' },
+    // Vit ruta med subtil border + initialer istället för tom grå platta
+    sidebarPhotoPlaceholder: { width: '100%', aspectRatio: 1, borderRadius: 16, marginBottom: 24, backgroundColor: '#FFFFFF', border: '1pt solid #E2E8F0', alignItems: 'center', justifyContent: 'center' },
+    sidebarPhotoInitials: { fontSize: 32, color: '#94A3B8', letterSpacing: 1 },
     sidebarSection: { marginBottom: 30 },
     sidebarLabel: { fontSize: 9, fontWeight: 'bold', letterSpacing: 1, textTransform: 'uppercase', color: '#94A3B8', marginBottom: 14 },
     sidebarText: { fontSize: 10, color: '#334155', marginBottom: 8 },
@@ -529,7 +539,9 @@ function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
           {data.profileImage ? (
             <Image src={data.profileImage} style={styles.sidebarPhoto} />
           ) : (
-            <View style={styles.sidebarPhotoPlaceholder} />
+            <View style={styles.sidebarPhotoPlaceholder}>
+              <Text style={styles.sidebarPhotoInitials}>{initials}</Text>
+            </View>
           )}
 
           <View style={styles.sidebarSection}>
@@ -738,23 +750,50 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
 // MAIN EXPORT COMPONENT
 // ============================================================================
 
-export function CVPDFDocument({ data }: CVPDFProps) {
-  const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
+// Filtrerar bort halvtomma entries som annars skulle ge t.ex. "• -" eller
+// bara ett datum-spann i exporten. En erfarenhet räknas som meaningful om
+// den har antingen titel eller företag — annars är den bara skräp från en
+// klickad "Lägg till"-knapp som inte fyllts i.
+function sanitize(data: CVData): CVData {
+  return {
+    ...data,
+    workExperience: (data.workExperience || []).filter(
+      (e) => (e?.title?.trim() || e?.company?.trim()),
+    ),
+    education: (data.education || []).filter(
+      (e) => (e?.degree?.trim() || e?.school?.trim()),
+    ),
+    skills: (data.skills || []).filter((s) => {
+      const name = typeof s === 'string' ? s : s?.name
+      return !!name?.trim()
+    }),
+    languages: (data.languages || []).filter((l) => {
+      const name = (l as { language?: string; name?: string })?.language || (l as { name?: string })?.name
+      return !!name?.trim()
+    }),
+    certificates: (data.certificates || []).filter((c) => c?.name?.trim()),
+    links: (data.links || []).filter((l) => l?.url?.trim()),
+  }
+}
 
-  switch (data.template) {
+export function CVPDFDocument({ data }: CVPDFProps) {
+  const clean = sanitize(data)
+  const fullName = `${clean.firstName} ${clean.lastName}`.trim() || 'Ditt Namn'
+
+  switch (clean.template) {
     case 'minimal':
-      return <MinimalPDF data={data} fullName={fullName} />
+      return <MinimalPDF data={clean} fullName={fullName} />
     case 'executive':
-      return <ExecutivePDF data={data} fullName={fullName} />
+      return <ExecutivePDF data={clean} fullName={fullName} />
     case 'creative':
-      return <CreativePDF data={data} fullName={fullName} />
+      return <CreativePDF data={clean} fullName={fullName} />
     case 'nordic':
-      return <NordicPDF data={data} fullName={fullName} />
+      return <NordicPDF data={clean} fullName={fullName} />
     case 'centered':
-      return <CenteredPDF data={data} fullName={fullName} />
+      return <CenteredPDF data={clean} fullName={fullName} />
     case 'sidebar':
     default:
-      return <ModernPDF data={data} fullName={fullName} />
+      return <ModernPDF data={clean} fullName={fullName} />
   }
 }
 

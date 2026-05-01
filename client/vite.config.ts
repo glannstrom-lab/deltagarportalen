@@ -189,7 +189,10 @@ export default defineConfig(({ mode }) => ({
       'zustand',
       'lucide-react',
     ],
-    // Exkludera tunga bibliotek som laddas dynamiskt
-    exclude: ['jspdf', 'jspdf-autotable', '@react-pdf/renderer'],
+    // Exkludera tunga bibliotek som laddas dynamiskt.
+    // OBS: @react-pdf/renderer FÅR INTE exkluderas — då bryter Vites dev-server
+    // dess CommonJS-dep base64-js (saknar default-export). Vi vill att Vite
+    // förbundlar det till ESM så den dynamiska importen i PDFExportButton funkar.
+    exclude: ['jspdf', 'jspdf-autotable'],
   },
 }))

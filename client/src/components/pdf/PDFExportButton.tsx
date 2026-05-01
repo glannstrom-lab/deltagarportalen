@@ -6,14 +6,28 @@
 import React, { useState } from 'react';
 import { FileDown, Loader2, Eye, Download } from '@/components/ui/icons';
 import {
-  generateCVPDF,
   generateJobPDF,
   generateApplicationHistoryPDF,
   downloadPDF,
   previewPDF,
 } from '@/services/pdfExportService';
 import type { CVData, JobData } from '@/types/pdf.types';
-// Type-only import to avoid runtime errors
+
+/**
+ * CV använder vector-PDF via @react-pdf/renderer (samma 6 mallar som
+ * CVPreview). Lazy-import så bundle inte sväller — modulen drar in både
+ * react-pdf och fontkit som tillsammans är ~600 kB.
+ */
+async function generateCVPDFFromTemplates(data: CVData): Promise<Blob> {
+  const [{ pdf }, { CVPDFDocument }] = await Promise.all([
+    import('@react-pdf/renderer'),
+    import('@/components/cv/CVPDF'),
+  ])
+  // CVData från supabaseApi och pdf.types skiljer sig på obligatoriska fält;
+  // CVPDFDocument är toleranta mot saknade fält så cast är säker här.
+  const doc = pdf(<CVPDFDocument data={data as unknown as import('@/services/supabaseApi').CVData} />)
+  return await doc.toBlob()
+}
 
 interface PDFExportButtonProps {
   type: 'cv' | 'job' | 'applications';
@@ -83,7 +97,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
 
       switch (type) {
         case 'cv':
-          blob = await generateCVPDF(data as CVData);
+          blob = await generateCVPDFFromTemplates(data as CVData);
           break;
         case 'job':
           blob = await generateJobPDF(data as JobData);

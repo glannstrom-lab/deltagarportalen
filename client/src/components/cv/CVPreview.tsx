@@ -25,7 +25,32 @@ interface CVPreviewProps {
   data: CVData
 }
 
-export function CVPreview({ data }: CVPreviewProps) {
+// Filtrera bort halvtomma entries så preview matchar PDF — annars syns
+// "• -" eller bara datum för en oifylld erfarenhet.
+function sanitize(data: CVData): CVData {
+  return {
+    ...data,
+    workExperience: (data.workExperience || []).filter(
+      (e) => (e?.title?.trim() || e?.company?.trim()),
+    ),
+    education: (data.education || []).filter(
+      (e) => (e?.degree?.trim() || e?.school?.trim()),
+    ),
+    skills: (data.skills || []).filter((s) => {
+      const name = typeof s === 'string' ? s : s?.name
+      return !!name?.trim()
+    }),
+    languages: (data.languages || []).filter((l) => {
+      const name = (l as { language?: string; name?: string })?.language || (l as { name?: string })?.name
+      return !!name?.trim()
+    }),
+    certificates: (data.certificates || []).filter((c) => c?.name?.trim()),
+    links: (data.links || []).filter((l) => l?.url?.trim()),
+  }
+}
+
+export function CVPreview({ data: rawData }: CVPreviewProps) {
+  const data = sanitize(rawData)
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
 
   // Check for content
