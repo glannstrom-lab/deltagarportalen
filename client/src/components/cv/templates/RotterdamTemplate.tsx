@@ -144,7 +144,7 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
 
           {/* Education */}
           {data.education?.length > 0 && (
-            <section style={{ marginBottom: '36px' }}>
+            <section className="cv-keep" style={{ marginBottom: '36px' }}>
               <h3
                 style={{
                   fontSize: '11px',
@@ -174,7 +174,7 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
 
           {/* Languages */}
           {data.languages?.length > 0 && (
-            <section>
+            <section className="cv-keep">
               <h3
                 style={{
                   fontSize: '11px',

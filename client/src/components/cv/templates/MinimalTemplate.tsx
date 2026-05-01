@@ -113,7 +113,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
           )}
 
           {data.education?.length > 0 && (
-            <section>
+            <section className="cv-keep">
               <h2
                 style={{
                   fontSize: '11px',
@@ -168,7 +168,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
           )}
 
           {data.languages?.length > 0 && (
-            <section style={{ marginBottom: '48px' }}>
+            <section className="cv-keep" style={{ marginBottom: '48px' }}>
               <h2
                 style={{
                   fontSize: '11px',
@@ -198,7 +198,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
           )}
 
           {data.certificates?.length > 0 && (
-            <section>
+            <section className="cv-keep">
               <h2
                 style={{
                   fontSize: '11px',

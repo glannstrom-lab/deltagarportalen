@@ -130,7 +130,7 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
           <div>
             {/* Education */}
             {data.education?.length > 0 && (
-              <section style={{ marginBottom: '48px' }}>
+              <section className="cv-keep" style={{ marginBottom: '48px' }}>
                 <h2
                   style={{
                     fontSize: '14px',
@@ -196,7 +196,7 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
 
             {/* Languages */}
             {data.languages?.length > 0 && (
-              <section>
+              <section className="cv-keep">
                 <h2
                   style={{
                     fontSize: '14px',

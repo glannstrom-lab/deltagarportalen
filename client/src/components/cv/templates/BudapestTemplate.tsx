@@ -89,7 +89,7 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
 
         {/* Links */}
         {data.links?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
+          <section className="cv-keep" style={{ marginBottom: '32px' }}>
             <h3
               style={{
                 fontSize: '12px',
@@ -256,7 +256,7 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
 
         {/* Education */}
         {data.education?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
+          <section className="cv-keep" style={{ marginBottom: '32px' }}>
             <h2
               style={{
                 fontSize: '13px',

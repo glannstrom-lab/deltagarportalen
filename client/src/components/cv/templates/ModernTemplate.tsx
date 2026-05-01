@@ -136,7 +136,7 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
 
         {/* Languages */}
         {data.languages?.length > 0 && (
-          <div style={{ marginTop: 'auto' }}>
+          <div className="cv-keep" style={{ marginTop: 'auto' }}>
             <h3
               style={{
                 fontSize: '10px',
@@ -249,7 +249,7 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
 
         {/* Education */}
         {data.education?.length > 0 && (
-          <section>
+          <section className="cv-keep">
             <h2
               style={{
                 fontSize: '11px',
