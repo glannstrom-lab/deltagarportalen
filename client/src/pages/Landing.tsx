@@ -31,7 +31,7 @@ function FAQItem({ question, answer, isOpen, onClick }: {
     <div className={`border-b border-stone-100 dark:border-stone-700 transition-colors ${isOpen ? 'bg-white dark:bg-stone-800' : ''}`}>
       <button
         onClick={onClick}
-        className="w-full px-0 py-5 sm:py-6 text-left flex justify-between items-start sm:items-center group"
+        className="w-full px-5 sm:px-6 py-5 sm:py-6 text-left flex justify-between items-start sm:items-center group"
         aria-expanded={isOpen}
       >
         <span className="font-semibold text-stone-800 dark:text-stone-100 pr-4 text-base sm:text-lg leading-snug">{question}</span>
@@ -40,7 +40,7 @@ function FAQItem({ question, answer, isOpen, onClick }: {
       <div
         className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-96 pb-6' : 'max-h-0'}`}
       >
-        <p className="text-stone-600 dark:text-stone-300 leading-relaxed text-base sm:text-base">{answer}</p>
+        <p className="text-stone-600 dark:text-stone-300 leading-relaxed text-base sm:text-base px-5 sm:px-6">{answer}</p>
       </div>
     </div>
   )
@@ -126,7 +126,7 @@ export default function Landing() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 sm:gap-3">
               <OptimizedImage
-                src="/logo-jobin-new.webp"
+                src="/logo-icon.svg"
                 alt="jobin.se"
                 loading="eager"
                 className="w-9 h-9 sm:w-11 sm:h-11 object-contain"
@@ -226,17 +226,19 @@ export default function Landing() {
 
       {/* Hero Section */}
       <section className="relative min-h-[100svh] flex items-center overflow-hidden">
-        {/* Hero Image - Background for desktop only */}
+        {/* Hero Image - bakgrund på alla viewports, med olika overlay för mobil/desktop */}
         <div className="absolute inset-0">
-          {/* Subtle gradient background on mobile, image on desktop */}
-          <div className="block sm:hidden absolute inset-0 bg-gradient-to-br from-[var(--c-bg)] via-white to-stone-50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800" />
+          {/* Mjuk pastell-bas under bilden så texten är läsbar oavsett bildens del */}
+          <div className="absolute inset-0 bg-gradient-to-br from-[var(--c-bg)] via-white to-stone-50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-800" />
           <OptimizedImage
             src="/hero-landing.webp"
             alt=""
-            className="hidden sm:block w-full h-full object-cover object-right dark:opacity-60"
+            className="absolute inset-0 w-full h-full object-cover object-right dark:opacity-60"
             loading="eager"
           />
-          {/* Fade overlay - desktop only */}
+          {/* Fade overlay — starkare och bottom-up på mobil så texten ovanpå alltid är läsbar,
+              starkare till vänster på desktop så vänsterspaltens text dominerar. */}
+          <div className="sm:hidden absolute inset-0 bg-gradient-to-t from-white/95 via-white/80 to-white/30 dark:from-stone-900/95 dark:via-stone-900/80 dark:to-stone-900/30" />
           <div className="hidden sm:block absolute inset-0 bg-gradient-to-r from-white/95 dark:from-stone-900/95 via-40% to-transparent" />
         </div>
 
@@ -273,18 +275,18 @@ export default function Landing() {
               </button>
             </div>
 
-            <div className="flex flex-row justify-center sm:justify-start gap-5 sm:gap-6 text-sm sm:text-sm text-stone-600 dark:text-stone-300">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-x-5 gap-y-2 sm:gap-6 text-sm text-stone-600 dark:text-stone-300">
               <span className="flex items-center gap-2">
                 <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0" />
-                <span className="whitespace-nowrap">{t('landing.hero.free')}</span>
+                <span>{t('landing.hero.free')}</span>
               </span>
               <span className="flex items-center gap-2">
                 <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0" />
-                <span className="whitespace-nowrap">{t('landing.hero.secure')}</span>
+                <span>{t('landing.hero.secure')}</span>
               </span>
               <span className="flex items-center gap-2">
                 <Check className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0" />
-                <span className="whitespace-nowrap">{t('landing.hero.quickStart')}</span>
+                <span>{t('landing.hero.quickStart')}</span>
               </span>
             </div>
           </div>

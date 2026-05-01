@@ -86,10 +86,10 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center mb-8">
           <OptimizedImage
-            src="/logo-jobin.png"
+            src="/logo-icon.svg"
             alt="Jobin"
             loading="eager"
-            className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white dark:bg-stone-800"
+            className="w-16 h-16 mx-auto mb-4 object-contain"
           />
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Jobin</h1>
           <p className="text-gray-600 dark:text-gray-300 mt-1">{t('auth.yourPath')}</p>

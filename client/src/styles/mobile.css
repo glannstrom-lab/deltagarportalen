@@ -101,7 +101,9 @@ input[type="button"],
 .mobile-device textarea,
 .mobile-device select {
   font-size: 16px; /* Förhindra zoom på iOS */
-  padding: 16px;
+  /* OBS: ingen padding-shorthand här — den dödar Tailwinds pl-10/pl-12 så
+     att ikoner inuti inputs överlappar placeholdertexten på mobil. */
+  padding-block: 12px;
   min-height: 48px;
   border-radius: 12px; /* Rundare = touch-vänligare */
 }
