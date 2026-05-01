@@ -212,9 +212,9 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           [data-template-wrapper] .cv-preview > main {
             margin-left: var(--sidebar-width, 280px) !important;
           }
-          /* Sektion-rubriker (h2, h3, h4) ska aldrig hamna ensamma i bottnen
-             utan följa med första entry på nästa sida. */
-          .cv-preview h1, .cv-preview h2, .cv-preview h3, .cv-preview h4 {
+          /* h1 (CV-namn) hålls ihop med rubrik direkt under — gäller bara
+             första rubriken någonsin, så ingen sidbrott-risk. */
+          .cv-preview h1 {
             page-break-after: avoid;
             break-after: avoid-page;
           }
@@ -230,14 +230,18 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
             break-inside: avoid !important;
             -webkit-column-break-inside: avoid !important;
           }
-          /* Sektion-rubrik ska aldrig hamna ensam i bottnen — linka den med
-             första entry så de följs åt. */
-          .cv-preview h2 + *,
-          .cv-preview h3 + * {
-            page-break-before: avoid;
-            break-before: avoid;
-          }
-          /* Prevent orphan/widow lines i textstycken. */
+          /* Notera: vi BINDER INTE sektion-rubrik (h2/h3) till första entry.
+             Det skapade ett värre problem än det löste — om rubrik + entry
+             tillsammans inte fick plats på sidans rest, page-breakade HELA
+             paret till nästa sida och lämnade stor whitespace.
+             Resultatet: rubrik kan hamna ensam i botten ("orphan header").
+             Det är bättre än whitespace eftersom det signalerar "fortsättning
+             följer" snarare än "CV är trasigt". Användarna förväntar sig
+             multi-page-CV att flöda — de förväntar sig inte hål. */
+
+          /* Prevent orphan/widow lines i textstycken — minst 3 rader
+             tillsammans i bottom/top av en sida, så sista raden av en
+             paragraph aldrig hamnar ensam. */
           .cv-preview p, .cv-preview li {
             orphans: 3;
             widows: 3;

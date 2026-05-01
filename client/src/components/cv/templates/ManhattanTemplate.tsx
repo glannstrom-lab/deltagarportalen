@@ -228,10 +228,11 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
         )}
       </aside>
 
-      {/* Höger huvudkolumn */}
-      <main style={{ flex: 1, padding: '56px 56px 64px' }}>
+      {/* Höger huvudkolumn — tightare padding så typisk CV (4 jobb + 2 utb)
+          får plats på 1 sida. Tidigare 56/64px → 40/48px. */}
+      <main style={{ flex: 1, padding: '40px 48px 48px' }}>
         {/* Header — stort namn i serif */}
-        <header style={{ marginBottom: '40px', paddingBottom: '24px', borderBottom: `2px solid ${copper}` }}>
+        <header style={{ marginBottom: '28px', paddingBottom: '18px', borderBottom: `2px solid ${copper}` }}>
           <h1
             style={{
               fontSize: '46px',
