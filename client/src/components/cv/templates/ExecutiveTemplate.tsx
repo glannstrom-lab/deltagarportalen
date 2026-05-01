@@ -106,7 +106,7 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
                   borderBottom: `1px solid ${goldLight}`,
                 }}
               >
-                Karriär
+                Erfarenhet
               </h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
                 {data.workExperience.map(job => (

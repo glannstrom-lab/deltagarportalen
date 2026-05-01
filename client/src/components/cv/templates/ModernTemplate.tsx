@@ -5,7 +5,7 @@
 
 import { Mail, Phone, MapPin } from '@/components/ui/icons'
 import type { TemplateProps } from './types'
-import { getLanguageLevelDisplay, getLanguageLevelPercent, getSkillName, getInitials } from './helpers'
+import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
 
 const accent = '#6366F1'
 
@@ -115,7 +115,7 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
               Kompetenser
             </h3>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {data.skills.slice(0, 12).map((skill, i) => (
+              {data.skills.map((skill, i) => (
                 <span
                   key={i}
                   style={{
@@ -149,27 +149,14 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
             >
               Språk
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {data.languages.map(lang => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
-                const percent = getLanguageLevelPercent(lang.level)
                 return (
                   <div key={lang.id} className="cv-entry">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '13px' }}>{name}</span>
-                      <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>
-                        {getLanguageLevelDisplay(lang.level)}
-                      </span>
-                    </div>
-                    <div style={{ height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
-                      <div
-                        style={{
-                          width: `${percent}%`,
-                          height: '100%',
-                          background: `linear-gradient(90deg, ${accent} 0%, #818CF8 100%)`,
-                          borderRadius: '2px',
-                        }}
-                      />
+                    <div style={{ fontSize: '13px', fontWeight: 500 }}>{name}</div>
+                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', marginTop: '2px' }}>
+                      {getLanguageLevelDisplay(lang.level)}
                     </div>
                   </div>
                 )

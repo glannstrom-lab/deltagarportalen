@@ -4,7 +4,7 @@
  */
 
 import type { TemplateProps } from './types'
-import { getLanguageLevelPercent, getSkillName, getInitials } from './helpers'
+import { getLanguageLevelDisplay, getSkillName, getInitials } from './helpers'
 
 const accent = '#0EA5E9'
 
@@ -134,24 +134,14 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
             >
               Språk
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {data.languages.map(lang => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
-                const percent = getLanguageLevelPercent(lang.level)
                 return (
                   <div key={lang.id} className="cv-entry">
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
-                      <span style={{ fontSize: '13px', color: '#334155' }}>{name}</span>
-                    </div>
-                    <div style={{ height: '3px', background: '#E2E8F0', borderRadius: '2px' }}>
-                      <div
-                        style={{
-                          width: `${percent}%`,
-                          height: '100%',
-                          background: accent,
-                          borderRadius: '2px',
-                        }}
-                      />
+                    <div style={{ fontSize: '13px', color: '#334155', fontWeight: 500 }}>{name}</div>
+                    <div style={{ fontSize: '11px', color: '#94A3B8', fontStyle: 'italic', marginTop: '2px' }}>
+                      {getLanguageLevelDisplay(lang.level)}
                     </div>
                   </div>
                 )

@@ -11,6 +11,7 @@ import {
   downloadPDF,
   previewPDF,
 } from '@/services/pdfExportService';
+import { showToast } from '@/components/Toast';
 import type { CVData, JobData } from '@/types/pdf.types';
 
 /**
@@ -118,8 +119,13 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
 
   const handleDownload = async () => {
     if (type === 'cv') {
-      // CV använder browser print → "Spara som PDF" via print-route
+      // CV använder browser print → "Spara som PDF" via print-route. Visa
+      // tydlig instruktion eftersom användaren själv måste välja "Spara som
+      // PDF" i print-dialogen — annars händer ingenting och flödet ser trasigt ut.
       openPrintRoute();
+      showToast.success(
+        'Print-dialog öppnas i ny flik. Välj "Spara som PDF" som mål.',
+      );
       setShowMenu(false);
       return;
     }
@@ -133,6 +139,9 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
   const handlePreview = async () => {
     if (type === 'cv') {
       openPrintRoute();
+      showToast.success(
+        'CV öppnas i ny flik för förhandsgranskning. Välj "Spara som PDF" i print-dialogen för att ladda ner.',
+      );
       setShowMenu(false);
       return;
     }

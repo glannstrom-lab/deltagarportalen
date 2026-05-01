@@ -30,6 +30,17 @@ interface CVPreviewProps {
   data: CVData
 }
 
+// Sidobars-bredd per template. Bredden måste matcha template-koden så att
+// preview och print ser likadana ut. Mallar utan sidobar listas inte.
+const SIDEBAR_WIDTHS: Record<string, string> = {
+  sidebar: '320px',
+  nordic: '280px',
+  budapest: '34%',
+  manhattan: '220px',
+  rotterdam: '220px',
+  chicago: '200px',
+}
+
 // Filtrera bort halvtomma entries så preview matchar PDF — annars syns
 // "• -" eller bara datum för en oifylld erfarenhet.
 function sanitize(data: CVData): CVData {
@@ -186,24 +197,21 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
              fixed så Chrome upprepar den på varje sida. Main får margin-left
              lika med sidebar-bredden så det inte överlappar. Bredder är
              template-specifika. */
-          [data-template-wrapper="sidebar"] .cv-preview > aside,
-          [data-template-wrapper="nordic"] .cv-preview > aside,
-          [data-template-wrapper="budapest"] .cv-preview > aside,
-          [data-template-wrapper="manhattan"] .cv-preview > aside {
+          /* Generisk regel för alla sidobar-mallar (cv-preview > aside).
+             Bredden styrs av CSS-variabeln --sidebar-width som sätts på
+             data-template-wrapper-noden, vilket gör att template-koden är
+             single source of truth för sin sidobars-bredd. */
+          [data-template-wrapper] .cv-preview > aside {
             position: fixed !important;
             top: 0 !important;
             left: 0 !important;
             bottom: 0 !important;
             height: 297mm !important;
+            width: var(--sidebar-width, 280px) !important;
           }
-          [data-template-wrapper="sidebar"] .cv-preview > aside { width: 320px !important; }
-          [data-template-wrapper="sidebar"] .cv-preview > main { margin-left: 320px !important; }
-          [data-template-wrapper="nordic"] .cv-preview > aside { width: 280px !important; }
-          [data-template-wrapper="nordic"] .cv-preview > main { margin-left: 280px !important; }
-          [data-template-wrapper="budapest"] .cv-preview > aside { width: 34% !important; }
-          [data-template-wrapper="budapest"] .cv-preview > main { margin-left: 34% !important; }
-          [data-template-wrapper="manhattan"] .cv-preview > aside { width: 220px !important; }
-          [data-template-wrapper="manhattan"] .cv-preview > main { margin-left: 220px !important; }
+          [data-template-wrapper] .cv-preview > main {
+            margin-left: var(--sidebar-width, 280px) !important;
+          }
           /* Sektion-rubriker (h2, h3, h4) ska aldrig hamna ensamma i bottnen
              utan följa med första entry på nästa sida. */
           .cv-preview h1, .cv-preview h2, .cv-preview h3, .cv-preview h4 {
@@ -237,9 +245,16 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
         }
       `}</style>
       {/* data-template på en wrapper så CSS kan target template-specifika
-          regler (t.ex. sidebar-bredd för print). Children-template har sin
-          egen .cv-preview class som styles applieras till. */}
-      <div data-template-wrapper={data.template || 'sidebar'} style={{ display: 'contents' }}>
+          regler (t.ex. sidebar-bredd för print). --sidebar-width sätts per
+          template här så template-koden själv inte behöver synka mot
+          print-CSS. För mallar utan sidobar har det ingen effekt. */}
+      <div
+        data-template-wrapper={data.template || 'sidebar'}
+        style={{
+          display: 'contents',
+          ['--sidebar-width' as string]: SIDEBAR_WIDTHS[data.template || 'sidebar'] || '280px',
+        } as React.CSSProperties}
+      >
         {template}
       </div>
     </>

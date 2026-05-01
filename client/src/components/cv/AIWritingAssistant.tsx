@@ -3,9 +3,9 @@
  * Använder server-side Vercel API med autentisering
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield } from '@/components/ui/icons'
+import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield, RotateCcw } from '@/components/ui/icons'
 import { callAI } from '@/services/aiApi'
 
 interface CVDataForAI {
@@ -40,6 +40,15 @@ export function AIWritingAssistant({ content, onChange, type, cvData }: AIWritin
   const [error, setError] = useState<string | null>(null)
   const [suggestion, setSuggestion] = useState('')
   const [activeFeature, setActiveFeature] = useState<FeatureType | null>(null)
+  // För att kunna ångra power-word-replace. Snapshot innan replace.
+  const [powerWordSnapshot, setPowerWordSnapshot] = useState<string | null>(null)
+
+  // Auto-rensa undo-snapshot efter 15s så knappen inte ligger kvar för evigt.
+  useEffect(() => {
+    if (!powerWordSnapshot) return
+    const t = setTimeout(() => setPowerWordSnapshot(null), 15000)
+    return () => clearTimeout(t)
+  }, [powerWordSnapshot])
 
   // Power words with translations
   const powerWords = useMemo(() => [
@@ -131,11 +140,20 @@ export function AIWritingAssistant({ content, onChange, type, cvData }: AIWritin
   }
 
   const applyPowerWords = () => {
-    let improved = content || ''
+    const before = content || ''
+    let improved = before
     powerWords.forEach(({ weak, strong }) => {
       improved = improved.replace(new RegExp(weak, 'gi'), strong)
     })
+    if (improved === before) return
+    setPowerWordSnapshot(before)
     onChange(improved)
+  }
+
+  const undoPowerWords = () => {
+    if (powerWordSnapshot == null) return
+    onChange(powerWordSnapshot)
+    setPowerWordSnapshot(null)
   }
 
   const weakWords = analyzeText()
@@ -177,11 +195,15 @@ export function AIWritingAssistant({ content, onChange, type, cvData }: AIWritin
                 <button
                   key={key}
                   onClick={() => callSecureAI(key)}
-                  disabled={loading}
+                  disabled={loading && activeFeature === key}
                   className="flex flex-col items-center gap-1 px-3 py-2 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] transition-colors disabled:opacity-50"
                   title={feat.description}
                 >
-                  <Icon size={18} className={feat.color} />
+                  {loading && activeFeature === key ? (
+                    <RefreshCw size={18} className={`${feat.color} animate-spin`} />
+                  ) : (
+                    <Icon size={18} className={feat.color} />
+                  )}
                   <span className="text-xs">{feat.label}</span>
                 </button>
               )
@@ -208,13 +230,25 @@ export function AIWritingAssistant({ content, onChange, type, cvData }: AIWritin
                   </p>
                 )}
               </div>
-              <button
-                onClick={applyPowerWords}
-                className="mt-2 flex items-center gap-1 px-3 py-1.5 bg-[var(--c-solid)] text-white text-sm rounded-lg hover:bg-[var(--c-text)]"
-              >
-                <Wand2 size={14} />
-                {t('cv.aiWriting.replaceAutomatically')}
-              </button>
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  onClick={applyPowerWords}
+                  className="flex items-center gap-1 px-3 py-1.5 bg-[var(--c-solid)] text-white text-sm rounded-lg hover:bg-[var(--c-text)]"
+                >
+                  <Wand2 size={14} />
+                  {t('cv.aiWriting.replaceAutomatically')}
+                </button>
+                {powerWordSnapshot != null && (
+                  <button
+                    onClick={undoPowerWords}
+                    className="flex items-center gap-1 px-3 py-1.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 text-sm rounded-lg hover:bg-white dark:hover:bg-stone-800"
+                    aria-label={t('cv.aiWriting.undoReplacements', 'Ångra ersättningar')}
+                  >
+                    <RotateCcw size={14} />
+                    {t('cv.aiWriting.undo', 'Ångra')}
+                  </button>
+                )}
+              </div>
             </div>
           )}
 

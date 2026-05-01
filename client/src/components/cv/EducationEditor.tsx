@@ -4,10 +4,10 @@
  */
 
 import { useState } from 'react'
-import { 
-  GraduationCap, School, MapPin, Calendar, 
+import {
+  GraduationCap, School, MapPin, Calendar,
   ChevronDown, ChevronUp, GripVertical, Trash2,
-  Award, CheckCircle, AlertCircle, Sparkles
+  Award, CheckCircle, AlertCircle, Sparkles, ArrowUp, ArrowDown
 } from '@/components/ui/icons'
 import { RichTextEditor } from './RichTextEditor'
 import type { Education } from '@/services/supabaseApi'
@@ -85,6 +85,23 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
     setDraggedId(null)
   }
 
+  // Tangentbords-tillgängligt alternativ till drag-and-drop.
+  const moveEducationUp = (id: string) => {
+    const index = education.findIndex(ed => ed.id === id)
+    if (index <= 0) return
+    const newEducation = [...education]
+    ;[newEducation[index - 1], newEducation[index]] = [newEducation[index], newEducation[index - 1]]
+    onChange(newEducation)
+  }
+
+  const moveEducationDown = (id: string) => {
+    const index = education.findIndex(ed => ed.id === id)
+    if (index === -1 || index >= education.length - 1) return
+    const newEducation = [...education]
+    ;[newEducation[index], newEducation[index + 1]] = [newEducation[index + 1], newEducation[index]]
+    onChange(newEducation)
+  }
+
   const getCompletionStatus = (ed: Education) => {
     const required = ['school', 'degree', 'startDate']
     const filled = required.filter(field => ed[field as keyof Education])
@@ -115,11 +132,11 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
         </div>
       ) : (
         <>
-          <div className="space-y-3">
-            {education.map((ed) => {
+          <div className="space-y-3" role="list" aria-label="Utbildningar">
+            {education.map((ed, index) => {
               const isExpanded = expandedId === ed.id
               const status = getCompletionStatus(ed)
-              
+
               return (
                 <div
                   key={ed.id}
@@ -127,6 +144,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                   onDragStart={() => handleDragStart(ed.id)}
                   onDragOver={(e) => handleDragOver(e, ed.id)}
                   onDragEnd={handleDragEnd}
+                  role="listitem"
                   className={`
                     bg-white border rounded-xl overflow-hidden transition-all
                     ${isExpanded ? 'border-[var(--c-solid)]/40 shadow-md' : 'border-stone-200 hover:border-stone-300'}
@@ -134,11 +152,40 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                   `}
                 >
                   {/* Header */}
-                  <div 
+                  <div
                     onClick={() => setExpandedId(isExpanded ? null : ed.id)}
                     className="flex items-center gap-3 p-4 cursor-pointer hover:bg-stone-50 transition-colors"
+                    role="button"
+                    aria-expanded={isExpanded}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setExpandedId(isExpanded ? null : ed.id)
+                      }
+                    }}
                   >
-                    <div className="text-stone-300 hover:text-stone-700 cursor-grab active:cursor-grabbing">
+                    {/* Tangentbordsknappar för att flytta */}
+                    <div className="flex flex-col gap-0.5" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => moveEducationUp(ed.id)}
+                        disabled={index === 0}
+                        className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        aria-label={`Flytta ${ed.degree || 'utbildning'} uppåt`}
+                      >
+                        <ArrowUp className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={() => moveEducationDown(ed.id)}
+                        disabled={index === education.length - 1}
+                        className="p-0.5 text-stone-300 hover:text-stone-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        aria-label={`Flytta ${ed.degree || 'utbildning'} nedåt`}
+                      >
+                        <ArrowDown className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="text-stone-300 hover:text-stone-700 cursor-grab active:cursor-grabbing" aria-hidden="true">
                       <GripVertical className="w-5 h-5" />
                     </div>
                     

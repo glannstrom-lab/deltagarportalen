@@ -5,7 +5,7 @@
 
 import { Mail, Phone, MapPin } from '@/components/ui/icons'
 import type { TemplateProps } from './types'
-import { getLanguageLevelDisplay, getLanguageLevelPercent, getSkillName } from './helpers'
+import { getLanguageLevelDisplay, getSkillName } from './helpers'
 
 // Djup, klassisk navy istället för gradient — mer tidlös och mindre 2018-startup
 const primary = '#1E3A5F'
@@ -244,27 +244,14 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
                 >
                   Språk
                 </h2>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                   {data.languages.map(lang => {
                     const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
-                    const percent = getLanguageLevelPercent(lang.level)
                     return (
                       <div key={lang.id} className="cv-entry">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                          <span style={{ fontSize: '14px', color: '#374151' }}>{name}</span>
-                          <span style={{ fontSize: '12px', color: '#9CA3AF' }}>
-                            {getLanguageLevelDisplay(lang.level)}
-                          </span>
-                        </div>
-                        <div style={{ height: '4px', background: '#E5E7EB', borderRadius: '2px' }}>
-                          <div
-                            style={{
-                              width: `${percent}%`,
-                              height: '100%',
-                              background: accent,
-                              borderRadius: '2px',
-                            }}
-                          />
+                        <div style={{ fontSize: '14px', color: '#374151', fontWeight: 500 }}>{name}</div>
+                        <div style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic', marginTop: '2px' }}>
+                          {getLanguageLevelDisplay(lang.level)}
                         </div>
                       </div>
                     )

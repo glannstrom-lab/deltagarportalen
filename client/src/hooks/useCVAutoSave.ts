@@ -17,6 +17,20 @@ interface UseCVAutoSaveReturn {
   triggerSave: (data: CVData) => void
   pendingCount: number
   isOnline: boolean
+  /** Sant om en annan flik sparat samma CV efter att den här fliken senast sparade. */
+  hasRemoteChanges: boolean
+}
+
+/**
+ * BroadcastChannel-namn för cross-tab CV-save-events. Varje gång en flik
+ * sparat ett CV broadcastar den `{ savedAt: number }` så andra flikar vet
+ * att deras lokala state nu är inaktuell.
+ */
+const CV_BROADCAST_CHANNEL = 'cv-autosave-sync'
+
+interface CVBroadcastMessage {
+  type: 'saved'
+  savedAt: number
 }
 
 /**
@@ -32,12 +46,15 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
   const { trackCVUpdate } = useAchievementTracker()
 
   const [isOnline, setIsOnline] = useState(navigator.onLine)
+  const [hasRemoteChanges, setHasRemoteChanges] = useState(false)
   const pendingQueue = useRef<CVData[]>([])
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const pendingData = useRef<CVData | null>(null)  // senaste data som väntar på server-flush
   const isFirstRender = useRef(true)
   const lastSavedData = useRef<CVData | null>(null)
   const lastTrackedTime = useRef<number>(0)
+  const ownLastSaveAt = useRef<number>(0)
+  const broadcastChannel = useRef<BroadcastChannel | null>(null)
   
   // Server mutation with retry
   const { mutate: saveToServer } = useMutation({
@@ -47,8 +64,14 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       queryClient.invalidateQueries({ queryKey: ['cv'] })
       setPendingCount(0)
       localStorage.removeItem('cv-draft')
-      localStorage.setItem('cv-last-saved', Date.now().toString())
+      const savedAt = Date.now()
+      localStorage.setItem('cv-last-saved', savedAt.toString())
+      ownLastSaveAt.current = savedAt
       lastSavedData.current = currentData
+      // Broadcast till andra flikar så de vet att deras state är gammalt.
+      try {
+        broadcastChannel.current?.postMessage({ type: 'saved', savedAt } as CVBroadcastMessage)
+      } catch { /* ignore */ }
 
       // Track CV update achievement (throttled to once per 30 seconds)
       const now = Date.now()
@@ -102,6 +125,30 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current)
       }
+    }
+  }, [])
+
+  // Cross-tab sync: lyssna på BroadcastChannel. Om en annan flik sparat
+  // efter vår senaste egna save, markera som hasRemoteChanges så CVBuilder
+  // kan visa varning. ownLastSaveAt skyddar mot egen-eko från postMessage.
+  useEffect(() => {
+    if (typeof BroadcastChannel === 'undefined') return
+    const channel = new BroadcastChannel(CV_BROADCAST_CHANNEL)
+    broadcastChannel.current = channel
+    channel.onmessage = (event: MessageEvent<CVBroadcastMessage>) => {
+      if (event.data?.type !== 'saved') return
+      if (!event.data.savedAt) return
+      // Eget save-event från egen flik — ignorera (BroadcastChannel skickar
+      // INTE till sig själv enligt spec, men dubbelkolla för säkerhets skull).
+      if (event.data.savedAt === ownLastSaveAt.current) return
+      // Annan flik har sparat efter vår senaste — vi är inaktuella.
+      if (event.data.savedAt > ownLastSaveAt.current) {
+        setHasRemoteChanges(true)
+      }
+    }
+    return () => {
+      channel.close()
+      broadcastChannel.current = null
     }
   }, [])
   
@@ -194,6 +241,7 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
     triggerSave,
     pendingCount,
     isOnline,
+    hasRemoteChanges,
   }
 }
 

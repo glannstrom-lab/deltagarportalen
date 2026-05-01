@@ -4,7 +4,7 @@ import { cvApi } from '@/services/api'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
   Sparkles, Briefcase, GraduationCap, Award,
-  Lightbulb, Loader2
+  Lightbulb, Loader2, AlertCircle
 } from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -304,7 +304,7 @@ export default function CVBuilder() {
 
   // NYA FEATURES: Auto-save (täcker ALLA fält, inte bara workExperience)
   // saveStatus/lastSavedAt visas via SaveIndicator i CVPage-headern (läser från cvStore).
-  const { hasUnsavedChanges, triggerSave } = useCVAutoSave(data)
+  const { hasUnsavedChanges, triggerSave, hasRemoteChanges } = useCVAutoSave(data)
   const prevDataRef = useRef<string>('')
   const triggerSaveRef = useRef(triggerSave)
   triggerSaveRef.current = triggerSave
@@ -357,12 +357,26 @@ export default function CVBuilder() {
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
   }, [hasUnsavedChanges])
 
+  // Räkna bara entries som ifyllda om de har minst titel/företag (jobb)
+  // eller examen/skola (utbildning) — annars markerar vi steg 4 som klart
+  // även för halvtomma kort som ger "• -" i PDF.
+  const hasValidExperience = data.workExperience.some(
+    e => (e?.title?.trim() || e?.company?.trim()),
+  )
+  const hasValidEducation = data.education.some(
+    e => (e?.degree?.trim() || e?.school?.trim()),
+  )
+  const hasValidSkills = data.skills.some(s => {
+    const name = typeof s === 'string' ? s : s?.name
+    return !!name?.trim()
+  })
+
   const completedSteps = [
     1,
     !!(data.firstName && data.lastName) && 2,
     !!data.summary && 3,
-    (data.workExperience.length > 0 || data.education.length > 0) && 4,
-    data.skills.length > 0 && 5,
+    (hasValidExperience || hasValidEducation) && 4,
+    hasValidSkills && 5,
   ].filter(Boolean) as number[]
 
   useEffect(() => { loadCV(); loadVersions() }, [])
@@ -749,37 +763,43 @@ export default function CVBuilder() {
         </div>
         {data.languages.length > 0 && (
           <div className="space-y-2">
-            {data.languages.map((lang) => (
-              <div key={lang.id} className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={lang.language}
-                  onChange={(e) => update(data.languages, lang.id, 'languages', 'language', e.target.value)}
-                  placeholder={t('cvBuilder.placeholders.language')}
-                  className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
-                  aria-label={t('cvBuilder.sections.languages')}
-                />
-                <select
-                  value={lang.level}
-                  onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)}
-                  className="px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm w-32 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
-                  aria-label={t('cvBuilder.fields.languageLevel')}
-                >
-                  {LANGUAGE_LEVELS.map(level => (
-                    <option key={level.value} value={level.value}>
-                      {t(level.labelKey)}
-                    </option>
-                  ))}
-                </select>
-                <button
-                  onClick={() => remove(data.languages, lang.id, 'languages')}
-                  className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
-                  aria-label={t('cvBuilder.actions.remove')}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            ))}
+            {data.languages.map((lang) => {
+              const langInputId = `lang-name-${lang.id}`
+              const langName = lang.language || t('cvBuilder.sections.languages')
+              return (
+                <div key={lang.id} className="flex items-center gap-3">
+                  <input
+                    id={langInputId}
+                    type="text"
+                    value={lang.language}
+                    onChange={(e) => update(data.languages, lang.id, 'languages', 'language', e.target.value)}
+                    placeholder={t('cvBuilder.placeholders.language')}
+                    className="flex-1 px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    aria-label={t('cvBuilder.sections.languages')}
+                  />
+                  <select
+                    value={lang.level}
+                    onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)}
+                    className="px-3 py-2 border border-stone-200 dark:border-stone-700 rounded-lg text-sm w-32 bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100"
+                    aria-label={`${t('cvBuilder.fields.languageLevel')}: ${langName}`}
+                    aria-labelledby={langInputId}
+                  >
+                    {LANGUAGE_LEVELS.map(level => (
+                      <option key={level.value} value={level.value}>
+                        {t(level.labelKey)}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => remove(data.languages, lang.id, 'languages')}
+                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+                    aria-label={`${t('cvBuilder.actions.remove')}: ${langName}`}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              )
+            })}
           </div>
         )}
       </Card>
@@ -895,6 +915,33 @@ export default function CVBuilder() {
         />
       </div>
 
+      {/* Cross-tab konflikt-varning. Visas när en annan flik sparat efter
+          oss — då skulle våra ändringar skriva över deras vid nästa save.
+          Klick på "Ladda om" hämtar in den nya versionen. */}
+      {hasRemoteChanges && (
+        <div
+          role="alert"
+          className="mb-4 p-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-300 dark:border-amber-700 rounded-xl flex items-start gap-3"
+        >
+          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+          <div className="flex-1">
+            <p className="text-sm font-medium text-amber-900 dark:text-amber-100">
+              CV:t uppdaterades i en annan flik
+            </p>
+            <p className="text-sm text-amber-700 dark:text-amber-200 mt-1">
+              Dina senaste ändringar här riskerar att skriva över den andra flikens ändringar.
+              Ladda om för att se den senaste versionen.
+            </p>
+          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-3 py-1.5 bg-amber-600 hover:bg-amber-700 text-white text-sm rounded-lg font-medium"
+          >
+            Ladda om
+          </button>
+        </div>
+      )}
+
       {/* Steg-indikator */}
       <StepIndicator currentStep={step} totalSteps={STEPS.length} onStepClick={setStep} completedSteps={completedSteps} />
 
@@ -906,7 +953,7 @@ export default function CVBuilder() {
               <h2 className="font-semibold text-stone-900 dark:text-stone-100">{t('cvBuilder.actions.preview')}</h2>
               <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-full"><X className="w-6 h-6 text-stone-700 dark:text-stone-300" /></button>
             </div>
-            <div className="flex-1 overflow-y-auto p-4">
+            <div className="flex-1 overflow-y-auto p-2 sm:p-4">
               <CVPreview data={data} />
             </div>
           </div>
