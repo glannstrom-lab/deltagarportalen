@@ -97,6 +97,27 @@ const TEMPLATES = [
     image: '/templates/nordic.png',
     features: ['Ljus sidopanel', 'Sky-accent', 'Clean'],
   },
+  {
+    id: 'budapest',
+    name: 'Budapest',
+    desc: 'Mörk sidopanel med cirkulärt foto och timeline-prickar',
+    image: '/templates/budapest.png',
+    features: ['Mörk sidopanel', 'Timeline', 'Cirkulärt foto'],
+  },
+  {
+    id: 'rotterdam',
+    name: 'Rotterdam',
+    desc: 'Spacious design med stort efternamn och 2-kolumns body',
+    image: '/templates/rotterdam.png',
+    features: ['Stort efternamn', 'Spacious', '2-kolumns'],
+  },
+  {
+    id: 'chicago',
+    name: 'Chicago',
+    desc: 'Klassisk centrerad header med tunn vertikal divider',
+    image: '/templates/chicago.png',
+    features: ['Centrerad header', 'Klassisk', 'Monogram'],
+  },
 ]
 
 // ============================================

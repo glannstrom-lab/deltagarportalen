@@ -19,6 +19,9 @@ import {
   CreativeTemplate,
   NordicTemplate,
   CenteredTemplate,
+  BudapestTemplate,
+  RotterdamTemplate,
+  ChicagoTemplate,
 } from './templates'
 
 interface CVPreviewProps {
@@ -118,6 +121,12 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
       return <NordicTemplate data={data} fullName={fullName} />
     case 'centered':
       return <CenteredTemplate data={data} fullName={fullName} />
+    case 'budapest':
+      return <BudapestTemplate data={data} fullName={fullName} />
+    case 'rotterdam':
+      return <RotterdamTemplate data={data} fullName={fullName} />
+    case 'chicago':
+      return <ChicagoTemplate data={data} fullName={fullName} />
     case 'sidebar':
     default:
       return <ModernTemplate data={data} fullName={fullName} />

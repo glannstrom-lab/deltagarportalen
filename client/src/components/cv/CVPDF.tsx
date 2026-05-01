@@ -69,7 +69,7 @@ function MinimalPDF({ data, fullName }: { data: CVData; fullName: string }) {
               <View style={{ marginBottom: 30 }}>
                 <Text style={styles.sectionLabel}>Erfarenhet</Text>
                 {data.workExperience.map(job => (
-                  <View key={job.id} style={styles.entry}>
+                  <View key={job.id} style={styles.entry} wrap={false}>
                     <Text style={styles.entryDate}>{job.startDate} — {job.current ? 'Nu' : job.endDate}</Text>
                     <Text style={styles.entryTitle}>{job.title}</Text>
                     <Text style={styles.entryCompany}>{job.company}</Text>
@@ -82,7 +82,7 @@ function MinimalPDF({ data, fullName }: { data: CVData; fullName: string }) {
               <View>
                 <Text style={styles.sectionLabel}>Utbildning</Text>
                 {data.education.map(edu => (
-                  <View key={edu.id} style={styles.entry}>
+                  <View key={edu.id} style={styles.entry} wrap={false}>
                     <Text style={styles.entryDate}>{edu.startDate} — {edu.endDate}</Text>
                     <Text style={styles.entryTitle}>{edu.degree}</Text>
                     <Text style={styles.entryCompany}>{edu.school}</Text>
@@ -184,7 +184,7 @@ function ExecutivePDF({ data, fullName }: { data: CVData; fullName: string }) {
                 <View>
                   <Text style={styles.sectionTitle}>Karriär</Text>
                   {data.workExperience.map(job => (
-                    <View key={job.id} style={styles.entry}>
+                    <View key={job.id} style={styles.entry} wrap={false}>
                       <Text style={styles.entryTitle}>{job.title}</Text>
                       <Text style={styles.entryCompany}>{job.company}</Text>
                       <Text style={styles.entryDate}>{job.startDate} — {job.current ? 'Nuvarande' : job.endDate}</Text>
@@ -199,7 +199,7 @@ function ExecutivePDF({ data, fullName }: { data: CVData; fullName: string }) {
                 <View style={{ marginBottom: 30 }}>
                   <Text style={styles.sectionTitle}>Utbildning</Text>
                   {data.education.map(edu => (
-                    <View key={edu.id} style={styles.entry}>
+                    <View key={edu.id} style={styles.entry} wrap={false}>
                       <Text style={styles.entryTitle}>{edu.degree}</Text>
                       <Text style={styles.entryCompany}>{edu.school}</Text>
                       <Text style={styles.entryDate}>{edu.startDate} — {edu.endDate}</Text>
@@ -285,7 +285,9 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <View style={styles.sidebar}>
+        {/* fixed=true → sidebar repeteras på varje sida så main-kolumnen kan
+            spilla över utan att ENDAST vita ytor visas till vänster på sida 2+. */}
+        <View style={styles.sidebar} fixed>
           {data.profileImage ? (
             <Image src={data.profileImage} style={styles.sidebarPhoto} />
           ) : (
@@ -337,9 +339,11 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
 
           {data.workExperience?.length > 0 && (
             <View style={{ marginBottom: 30 }}>
+              {/* sectionTitle som upprepas på varje sida som rubriken brutits över */}
               <Text style={styles.sectionLabel}>Erfarenhet</Text>
               {data.workExperience.map(job => (
-                <View key={job.id} style={styles.entry}>
+                // wrap=false → en hel jobb-entry hålls samman, inte halv-bryts
+                <View key={job.id} style={styles.entry} wrap={false}>
                   <Text style={styles.entryDate}>{job.startDate}{'\n'}— {job.current ? 'Nu' : job.endDate}</Text>
                   <View style={styles.entryContent}>
                     <Text style={styles.entryTitle}>{job.title}</Text>
@@ -355,7 +359,7 @@ function ModernPDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View>
               <Text style={styles.sectionLabel}>Utbildning</Text>
               {data.education.map(edu => (
-                <View key={edu.id} style={styles.entry}>
+                <View key={edu.id} style={styles.entry} wrap={false}>
                   <Text style={styles.entryDate}>{edu.startDate} — {edu.endDate}</Text>
                   <View style={styles.entryContent}>
                     <Text style={styles.entryTitle}>{edu.degree}</Text>
@@ -443,7 +447,7 @@ function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
                 <View style={styles.card}>
                   <Text style={styles.sectionLabel}>Erfarenhet</Text>
                   {data.workExperience.map(job => (
-                    <View key={job.id} style={styles.entry}>
+                    <View key={job.id} style={styles.entry} wrap={false}>
                       <Text style={styles.entryBadge}>{job.startDate} — {job.current ? 'Nu' : job.endDate}</Text>
                       <Text style={styles.entryTitle}>{job.title}</Text>
                       <Text style={styles.entryCompany}>{job.company}</Text>
@@ -470,7 +474,7 @@ function CreativePDF({ data, fullName }: { data: CVData; fullName: string }) {
                 <View style={styles.card}>
                   <Text style={styles.sectionLabel}>Utbildning</Text>
                   {data.education.map(edu => (
-                    <View key={edu.id} style={styles.eduEntry}>
+                    <View key={edu.id} style={styles.eduEntry} wrap={false}>
                       <Text style={styles.eduTitle}>{edu.degree}</Text>
                       <Text style={styles.eduSchool}>{edu.school}</Text>
                       <Text style={styles.eduDate}>{edu.startDate} — {edu.endDate}</Text>
@@ -535,7 +539,7 @@ function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        <View style={styles.sidebar}>
+        <View style={styles.sidebar} fixed>
           {data.profileImage ? (
             <Image src={data.profileImage} style={styles.sidebarPhoto} />
           ) : (
@@ -586,7 +590,7 @@ function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View style={{ marginBottom: 30 }}>
               <Text style={styles.sectionLabel}>Erfarenhet</Text>
               {data.workExperience.map(job => (
-                <View key={job.id} style={styles.entry}>
+                <View key={job.id} style={styles.entry} wrap={false}>
                   <View style={styles.entryRow}>
                     <View>
                       <Text style={styles.entryTitle}>{job.title}</Text>
@@ -604,7 +608,7 @@ function NordicPDF({ data, fullName }: { data: CVData; fullName: string }) {
             <View>
               <Text style={styles.sectionLabel}>Utbildning</Text>
               {data.education.map(edu => (
-                <View key={edu.id} style={styles.eduRow}>
+                <View key={edu.id} style={styles.eduRow} wrap={false}>
                   <View style={styles.eduLeft}>
                     <Text style={styles.eduTitle}>{edu.degree}</Text>
                     <Text style={styles.eduSchool}>{edu.school}</Text>
@@ -697,7 +701,7 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
                 <View>
                   <Text style={styles.sectionLabel}>Erfarenhet</Text>
                   {data.workExperience.map(job => (
-                    <View key={job.id} style={styles.entry}>
+                    <View key={job.id} style={styles.entry} wrap={false}>
                       <Text style={styles.entryDate}>{job.startDate} — {job.current ? 'Nu' : job.endDate}</Text>
                       <Text style={styles.entryTitle}>{job.title}</Text>
                       <Text style={styles.entryCompany}>{job.company}</Text>
@@ -713,7 +717,7 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
                 <View style={{ marginBottom: 30 }}>
                   <Text style={styles.sectionLabel}>Utbildning</Text>
                   {data.education.map(edu => (
-                    <View key={edu.id} style={styles.eduCard}>
+                    <View key={edu.id} style={styles.eduCard} wrap={false}>
                       <Text style={styles.eduTitle}>{edu.degree}</Text>
                       <Text style={styles.eduSchool}>{edu.school}</Text>
                       <Text style={styles.eduDate}>{edu.startDate} — {edu.endDate}</Text>
@@ -739,6 +743,454 @@ function CenteredPDF({ data, fullName }: { data: CVData; fullName: string }) {
                 </View>
               )}
             </View>
+          </View>
+        </View>
+      </Page>
+    </Document>
+  )
+}
+
+// ============================================================================
+// BUDAPEST TEMPLATE — Mörk sidopanel + cirkulärt foto + timeline
+// ============================================================================
+
+function BudapestPDF({ data, fullName }: { data: CVData; fullName: string }) {
+  const dark = '#2C3E50'
+  const accent = '#E67E22'
+  const initials = `${data.firstName?.charAt(0) || ''}${data.lastName?.charAt(0) || ''}`.toUpperCase() || 'CV'
+
+  const styles = StyleSheet.create({
+    page: { flexDirection: 'row', fontFamily: 'Helvetica' },
+    sidebar: { width: '34%', backgroundColor: dark, padding: 28, color: '#FFFFFF' },
+    photoWrap: { alignItems: 'center', marginBottom: 30 },
+    photo: { width: 120, height: 120, borderRadius: 60, border: `3pt solid ${accent}` },
+    photoPlaceholder: { width: 120, height: 120, borderRadius: 60, border: `3pt solid ${accent}`, backgroundColor: 'rgba(255,255,255,0.06)', alignItems: 'center', justifyContent: 'center' },
+    photoInitials: { fontSize: 36, color: 'rgba(255,255,255,0.6)', letterSpacing: 1 },
+    sidebarLabel: { fontSize: 10, fontWeight: 'bold', letterSpacing: 1.5, marginBottom: 10, color: '#FFFFFF' },
+    sidebarText: { fontSize: 10, lineHeight: 1.6, color: 'rgba(255,255,255,0.85)', marginBottom: 6 },
+    sidebarDivider: { height: 1, backgroundColor: 'rgba(255,255,255,0.12)', marginVertical: 24 },
+    main: { flex: 1, padding: 36, backgroundColor: '#FFFFFF' },
+    // Stack contact under namn istället för bredvid — så långa svenska namn
+    // får plats utan att bryts på flera rader.
+    header: { marginBottom: 30 },
+    name: { fontSize: 26, fontWeight: 'bold', letterSpacing: 0.8, textTransform: 'uppercase', color: dark, lineHeight: 1.15, marginBottom: 6 },
+    title: { fontSize: 10, fontWeight: 'bold', letterSpacing: 2, textTransform: 'uppercase', color: '#888888', marginBottom: 14 },
+    contactRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 14, fontSize: 10, color: '#555555' },
+    sectionTitle: { fontSize: 11, fontWeight: 'bold', letterSpacing: 1.5, color: dark, marginBottom: 4 },
+    sectionRule: { height: 1, backgroundColor: '#E5E7EB', marginBottom: 14 },
+    timelineRow: { flexDirection: 'row', marginBottom: 16 },
+    timelineLeft: { width: 95, paddingRight: 10 },
+    timelineDot: { width: 18, alignItems: 'center', paddingTop: 4 },
+    dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: dark },
+    timelineRight: { flex: 1 },
+    company: { fontSize: 11, fontWeight: 'bold', color: dark },
+    meta: { fontSize: 9, color: '#888888' },
+    jobTitle: { fontSize: 11, fontWeight: 'bold', color: dark, marginBottom: 4 },
+    jobDesc: { fontSize: 10, lineHeight: 1.6, color: '#555555' },
+    skillTag: { fontSize: 10, padding: '4 10', backgroundColor: '#F3F4F6', color: dark, borderRadius: 3, marginRight: 5, marginBottom: 5 },
+    skillWrap: { flexDirection: 'row', flexWrap: 'wrap' },
+  })
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.sidebar} fixed>
+          <View style={styles.photoWrap}>
+            {data.profileImage ? (
+              <Image src={data.profileImage} style={styles.photo} />
+            ) : (
+              <View style={styles.photoPlaceholder}>
+                <Text style={styles.photoInitials}>{initials}</Text>
+              </View>
+            )}
+          </View>
+
+          {data.summary && (
+            <View>
+              <Text style={styles.sidebarLabel}>OM MIG</Text>
+              <Text style={[styles.sidebarText, { lineHeight: 1.7 }]}>{data.summary}</Text>
+            </View>
+          )}
+
+          {data.links?.length > 0 && (
+            <>
+              <View style={styles.sidebarDivider} />
+              <Text style={styles.sidebarLabel}>LÄNKAR</Text>
+              {data.links.map((link) => (
+                <View key={link.id} style={{ marginBottom: 8 }}>
+                  {link.label && <Text style={[styles.sidebarText, { fontWeight: 'bold' }]}>{link.label}</Text>}
+                  <Text style={[styles.sidebarText, { fontSize: 9 }]}>{link.url}</Text>
+                </View>
+              ))}
+            </>
+          )}
+
+          {data.languages?.length > 0 && (
+            <>
+              <View style={styles.sidebarDivider} />
+              <Text style={styles.sidebarLabel}>SPRÅK</Text>
+              {data.languages.map((lang) => (
+                <Text key={lang.id} style={styles.sidebarText}>
+                  <Text style={{ fontWeight: 'bold' }}>{lang.language || lang.name}</Text> — {getLanguageLevelDisplay(lang.level)}
+                </Text>
+              ))}
+            </>
+          )}
+        </View>
+
+        <View style={styles.main}>
+          <View style={styles.header}>
+            <Text style={styles.name}>{fullName}</Text>
+            {data.title && <Text style={styles.title}>{data.title}</Text>}
+            <View style={styles.contactRow}>
+              {data.location && <Text>{data.location}</Text>}
+              {data.phone && <Text>{data.phone}</Text>}
+              {data.email && <Text>{data.email}</Text>}
+            </View>
+          </View>
+
+          {data.workExperience?.length > 0 && (
+            <View style={{ marginBottom: 24 }}>
+              <Text style={styles.sectionTitle}>ARBETSLIVSERFARENHET</Text>
+              <View style={styles.sectionRule} />
+              {data.workExperience.map((job) => (
+                <View key={job.id} style={styles.timelineRow} wrap={false}>
+                  <View style={styles.timelineLeft}>
+                    <Text style={styles.company}>{job.company}</Text>
+                    {job.location && <Text style={styles.meta}>{job.location}</Text>}
+                    <Text style={styles.meta}>{job.startDate} - {job.current ? 'Nu' : job.endDate}</Text>
+                  </View>
+                  <View style={styles.timelineDot}>
+                    <View style={styles.dot} />
+                  </View>
+                  <View style={styles.timelineRight}>
+                    <Text style={styles.jobTitle}>{job.title}</Text>
+                    {job.description && <Text style={styles.jobDesc}>{job.description}</Text>}
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {data.education?.length > 0 && (
+            <View style={{ marginBottom: 24 }}>
+              <Text style={styles.sectionTitle}>UTBILDNING</Text>
+              <View style={styles.sectionRule} />
+              {data.education.map((edu) => (
+                <View key={edu.id} style={styles.timelineRow} wrap={false}>
+                  <View style={styles.timelineLeft}>
+                    <Text style={styles.company}>{edu.school}</Text>
+                    {edu.location && <Text style={styles.meta}>{edu.location}</Text>}
+                    <Text style={styles.meta}>{edu.startDate} - {edu.endDate}</Text>
+                  </View>
+                  <View style={styles.timelineDot}>
+                    <View style={styles.dot} />
+                  </View>
+                  <View style={styles.timelineRight}>
+                    <Text style={styles.jobTitle}>{edu.degree}</Text>
+                    {edu.field && <Text style={styles.jobDesc}>{edu.field}</Text>}
+                  </View>
+                </View>
+              ))}
+            </View>
+          )}
+
+          {data.skills?.length > 0 && (
+            <View>
+              <Text style={styles.sectionTitle}>KOMPETENSER</Text>
+              <View style={styles.sectionRule} />
+              <View style={styles.skillWrap}>
+                {data.skills.map((skill, i) => (
+                  <Text key={i} style={styles.skillTag}>{getSkillName(skill)}</Text>
+                ))}
+              </View>
+            </View>
+          )}
+        </View>
+      </Page>
+    </Document>
+  )
+}
+
+// ============================================================================
+// ROTTERDAM TEMPLATE — Spacious med stort efternamn + 2-kol body
+// ============================================================================
+
+function RotterdamPDF({ data, fullName }: { data: CVData; fullName: string }) {
+  const ink = '#1F2937'
+  const muted = '#6B7280'
+  const initials = `${data.firstName?.charAt(0) || ''}${data.lastName?.charAt(0) || ''}`.toUpperCase() || 'CV'
+  const firstName = (data.firstName || '').toUpperCase()
+  const lastName = (data.lastName || '').toUpperCase()
+
+  const styles = StyleSheet.create({
+    page: { padding: 50, fontFamily: 'Helvetica', backgroundColor: '#FFFFFF' },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+    firstName: { fontSize: 14, fontWeight: 'normal', letterSpacing: 6, color: ink },
+    lastName: { fontSize: 48, fontWeight: 'bold', letterSpacing: 4, lineHeight: 1, color: ink, marginTop: 4 },
+    title: { fontSize: 9, fontWeight: 'bold', letterSpacing: 4, textTransform: 'uppercase', color: muted, marginTop: 6 },
+    photo: { width: 80, height: 80, borderRadius: 40 },
+    photoPlaceholder: { width: 80, height: 80, borderRadius: 40, border: '1pt solid #D1D5DB', alignItems: 'center', justifyContent: 'center' },
+    photoInitials: { fontSize: 24, color: muted, letterSpacing: 1 },
+    divider: { height: 1, backgroundColor: '#E5E7EB', marginVertical: 24 },
+    body: { flexDirection: 'row', gap: 36 },
+    leftCol: { width: 150 },
+    rightCol: { flex: 1 },
+    sectionLabel: { fontSize: 9, fontWeight: 'bold', letterSpacing: 3, color: ink, marginBottom: 8, paddingBottom: 4, borderBottom: `1pt solid ${ink}` },
+    sectionContent: { fontSize: 10, lineHeight: 1.7, color: '#374151' },
+    eduItem: { marginBottom: 12 },
+    eduTitle: { fontSize: 10, fontWeight: 'bold', color: ink },
+    eduMeta: { fontSize: 9, color: muted },
+    summary: { fontSize: 11, lineHeight: 1.7, color: '#374151' },
+    expItem: { marginBottom: 18 },
+    expMeta: { fontSize: 9, fontWeight: 'bold', letterSpacing: 1.2, color: muted, marginBottom: 4 },
+    expCompany: { fontSize: 12, fontWeight: 'bold', color: ink, marginBottom: 4 },
+    expDesc: { fontSize: 11, lineHeight: 1.6, color: '#4B5563' },
+    langRow: { flexDirection: 'row', justifyContent: 'space-between' },
+    langLevel: { color: muted },
+  })
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.firstName}>{firstName || fullName.toUpperCase()}</Text>
+            {lastName && <Text style={styles.lastName}>{lastName}</Text>}
+            {data.title && <Text style={styles.title}>{data.title}</Text>}
+          </View>
+          {data.profileImage ? (
+            <Image src={data.profileImage} style={styles.photo} />
+          ) : (
+            <View style={styles.photoPlaceholder}>
+              <Text style={styles.photoInitials}>{initials}</Text>
+            </View>
+          )}
+        </View>
+
+        <View style={styles.divider} />
+
+        <View style={styles.body}>
+          <View style={styles.leftCol}>
+            <View style={{ marginBottom: 24 }}>
+              <Text style={styles.sectionLabel}>KONTAKT</Text>
+              <View style={styles.sectionContent}>
+                {data.location && <Text>{data.location}</Text>}
+                {data.phone && <Text>{data.phone}</Text>}
+                {data.email && <Text>{data.email}</Text>}
+              </View>
+            </View>
+
+            {data.skills?.length > 0 && (
+              <View style={{ marginBottom: 24 }}>
+                <Text style={styles.sectionLabel}>KOMPETENSER</Text>
+                <View style={styles.sectionContent}>
+                  {data.skills.map((skill, i) => (
+                    <Text key={i}>{getSkillName(skill)}</Text>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {data.education?.length > 0 && (
+              <View style={{ marginBottom: 24 }}>
+                <Text style={styles.sectionLabel}>UTBILDNING</Text>
+                {data.education.map((edu) => (
+                  <View key={edu.id} style={styles.eduItem} wrap={false}>
+                    <Text style={styles.eduTitle}>{edu.degree}</Text>
+                    <Text style={styles.eduMeta}>{edu.school}</Text>
+                    <Text style={styles.eduMeta}>{edu.startDate} - {edu.endDate}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {data.languages?.length > 0 && (
+              <View>
+                <Text style={styles.sectionLabel}>SPRÅK</Text>
+                <View style={styles.sectionContent}>
+                  {data.languages.map((lang) => (
+                    <View key={lang.id} style={styles.langRow}>
+                      <Text>{lang.language || lang.name}</Text>
+                      <Text style={styles.langLevel}>{getLanguageLevelDisplay(lang.level)}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+          </View>
+
+          <View style={styles.rightCol}>
+            {data.summary && (
+              <View style={{ marginBottom: 24 }}>
+                <Text style={styles.sectionLabel}>PROFIL</Text>
+                <Text style={styles.summary}>{data.summary}</Text>
+              </View>
+            )}
+
+            {data.workExperience?.length > 0 && (
+              <View>
+                <Text style={styles.sectionLabel}>ERFARENHET</Text>
+                {data.workExperience.map((job) => (
+                  <View key={job.id} style={styles.expItem} wrap={false}>
+                    <Text style={styles.expMeta}>
+                      {job.title?.toUpperCase()} · {job.startDate} - {job.current ? 'Nu' : job.endDate}
+                    </Text>
+                    <Text style={styles.expCompany}>{job.company}</Text>
+                    {job.description && <Text style={styles.expDesc}>{job.description}</Text>}
+                  </View>
+                ))}
+              </View>
+            )}
+          </View>
+        </View>
+      </Page>
+    </Document>
+  )
+}
+
+// ============================================================================
+// CHICAGO TEMPLATE — Centrerad header + 2-kol body med vertikal divider
+// ============================================================================
+
+function ChicagoPDF({ data, fullName }: { data: CVData; fullName: string }) {
+  const ink = '#111827'
+  const muted = '#6B7280'
+  const initials = `${data.firstName?.charAt(0) || ''}${data.lastName?.charAt(0) || ''}`.toUpperCase() || 'CV'
+
+  const styles = StyleSheet.create({
+    page: { padding: 50, fontFamily: 'Helvetica', backgroundColor: '#FFFFFF' },
+    header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18, paddingBottom: 18, borderBottom: '1pt solid #D1D5DB' },
+    name: { fontSize: 30, fontWeight: 'normal', letterSpacing: 4, textTransform: 'uppercase', color: ink, lineHeight: 1.1 },
+    title: { fontSize: 9, fontWeight: 'bold', letterSpacing: 3, textTransform: 'uppercase', color: muted, marginTop: 6 },
+    monogram: { width: 70, height: 70, borderRadius: 35, border: `1pt solid ${ink}`, alignItems: 'center', justifyContent: 'center' },
+    monogramText: { fontSize: 18, color: ink, letterSpacing: 1 },
+    photo: { width: 60, height: 60, borderRadius: 30 },
+    body: { flexDirection: 'row', gap: 30 },
+    leftCol: { width: 140, paddingRight: 16, borderRight: '1pt solid #E5E7EB' },
+    rightCol: { flex: 1 },
+    sectionLabel: { fontSize: 9, fontWeight: 'bold', letterSpacing: 2, color: ink, marginBottom: 10 },
+    leftContent: { fontSize: 10, lineHeight: 1.7, color: '#374151' },
+    leftItem: { marginBottom: 4 },
+    expItem: { marginBottom: 16 },
+    expHeaderRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 4 },
+    expTitle: { fontSize: 11, fontWeight: 'bold', color: ink, flex: 1 },
+    expCompanyInline: { fontWeight: 'normal', color: '#4B5563' },
+    expDate: { fontSize: 10, color: muted },
+    expDesc: { fontSize: 11, lineHeight: 1.6, color: '#4B5563' },
+    summary: { fontSize: 11, lineHeight: 1.7, color: '#374151' },
+  })
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.name}>{fullName}</Text>
+            {data.title && <Text style={styles.title}>{data.title}</Text>}
+          </View>
+          {data.profileImage ? (
+            <View style={styles.monogram}>
+              <Image src={data.profileImage} style={styles.photo} />
+            </View>
+          ) : (
+            <View style={styles.monogram}>
+              <Text style={styles.monogramText}>{initials}</Text>
+            </View>
+          )}
+        </View>
+
+        <View style={styles.body}>
+          <View style={styles.leftCol}>
+            <View style={{ marginBottom: 24 }}>
+              <Text style={styles.sectionLabel}>KONTAKT</Text>
+              <View style={styles.leftContent}>
+                {data.phone && <Text style={styles.leftItem}>{data.phone}</Text>}
+                {data.email && <Text style={styles.leftItem}>{data.email}</Text>}
+                {data.location && <Text>{data.location}</Text>}
+              </View>
+            </View>
+
+            {data.links?.length > 0 && (
+              <View style={{ marginBottom: 24 }}>
+                <Text style={styles.sectionLabel}>LÄNKAR</Text>
+                {data.links.map((link) => (
+                  <View key={link.id} style={{ marginBottom: 8 }}>
+                    {link.label && <Text style={[styles.leftContent, { fontWeight: 'bold' }]}>{link.label}</Text>}
+                    <Text style={[styles.leftContent, { fontSize: 9, color: muted }]}>{link.url}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {data.skills?.length > 0 && (
+              <View style={{ marginBottom: 24 }}>
+                <Text style={styles.sectionLabel}>KOMPETENSER</Text>
+                <View style={styles.leftContent}>
+                  {data.skills.map((skill, i) => (
+                    <Text key={i}>{getSkillName(skill)}</Text>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {data.languages?.length > 0 && (
+              <View>
+                <Text style={styles.sectionLabel}>SPRÅK</Text>
+                <View style={styles.leftContent}>
+                  {data.languages.map((lang) => (
+                    <Text key={lang.id} style={{ marginBottom: 3 }}>
+                      <Text style={{ fontWeight: 'bold' }}>{lang.language || lang.name}</Text> — {getLanguageLevelDisplay(lang.level)}
+                    </Text>
+                  ))}
+                </View>
+              </View>
+            )}
+          </View>
+
+          <View style={styles.rightCol}>
+            {data.summary && (
+              <View style={{ marginBottom: 24 }}>
+                <Text style={styles.sectionLabel}>OM MIG</Text>
+                <Text style={styles.summary}>{data.summary}</Text>
+              </View>
+            )}
+
+            {data.workExperience?.length > 0 && (
+              <View style={{ marginBottom: 24 }}>
+                <Text style={styles.sectionLabel}>ARBETSLIVSERFARENHET</Text>
+                {data.workExperience.map((job) => (
+                  <View key={job.id} style={styles.expItem} wrap={false}>
+                    <View style={styles.expHeaderRow}>
+                      <Text style={styles.expTitle}>
+                        {job.title}
+                        {job.company && <Text style={styles.expCompanyInline}>, {job.company}</Text>}
+                      </Text>
+                      <Text style={styles.expDate}>{job.startDate} - {job.current ? 'Nu' : job.endDate}</Text>
+                    </View>
+                    {job.description && <Text style={styles.expDesc}>{job.description}</Text>}
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {data.education?.length > 0 && (
+              <View>
+                <Text style={styles.sectionLabel}>UTBILDNING</Text>
+                {data.education.map((edu) => (
+                  <View key={edu.id} style={[styles.expItem, { marginBottom: 12 }]} wrap={false}>
+                    <View style={styles.expHeaderRow}>
+                      <Text style={styles.expTitle}>
+                        {edu.degree}
+                        {edu.school && <Text style={styles.expCompanyInline}>, {edu.school}</Text>}
+                      </Text>
+                      <Text style={styles.expDate}>{edu.startDate} - {edu.endDate}</Text>
+                    </View>
+                    {edu.field && <Text style={[styles.expDesc, { color: muted }]}>{edu.field}</Text>}
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
         </View>
       </Page>
@@ -791,6 +1243,12 @@ export function CVPDFDocument({ data }: CVPDFProps) {
       return <NordicPDF data={clean} fullName={fullName} />
     case 'centered':
       return <CenteredPDF data={clean} fullName={fullName} />
+    case 'budapest':
+      return <BudapestPDF data={clean} fullName={fullName} />
+    case 'rotterdam':
+      return <RotterdamPDF data={clean} fullName={fullName} />
+    case 'chicago':
+      return <ChicagoPDF data={clean} fullName={fullName} />
     case 'sidebar':
     default:
       return <ModernPDF data={clean} fullName={fullName} />

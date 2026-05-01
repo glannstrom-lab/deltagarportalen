@@ -14,7 +14,7 @@ const path = require('path')
 
 const ROOT = path.join(__dirname, '..')
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3000'
-const TEMPLATES = ['sidebar', 'centered', 'minimal', 'creative', 'executive', 'nordic']
+const TEMPLATES = ['sidebar', 'centered', 'minimal', 'creative', 'executive', 'nordic', 'budapest', 'rotterdam', 'chicago']
 
 function loadEnv() {
   const envPath = path.join(ROOT, '.env.test.local')
@@ -108,6 +108,9 @@ async function main() {
     creative: 'Kreativ',
     executive: 'Executive',
     nordic: 'Nordisk',
+    budapest: 'Budapest',
+    rotterdam: 'Rotterdam',
+    chicago: 'Chicago',
   }
 
   for (const tpl of TEMPLATES) {
