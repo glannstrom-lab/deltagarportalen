@@ -93,48 +93,48 @@ export default function HubPage({
         animate="visible"
         variants={heroVariants}
         transition={{ duration: 0.35 }}
-        className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-[24px] p-[36px_40px] relative overflow-hidden"
+        className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-2xl sm:rounded-[24px] p-5 sm:p-7 md:p-[36px_40px] relative overflow-hidden"
         aria-labelledby={titleKey}
       >
         {/* Subtle radial decoration */}
         <div
           aria-hidden="true"
-          className="absolute -top-[100px] -right-[100px] w-[320px] h-[320px] rounded-full pointer-events-none"
+          className="absolute -top-[100px] -right-[100px] w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] rounded-full pointer-events-none"
           style={{
             background: 'radial-gradient(circle, var(--c-accent) 0%, transparent 70%)',
             opacity: 0.4,
           }}
         />
 
-        <div className="flex flex-col gap-6 relative">
+        <div className="flex flex-col gap-4 sm:gap-6 relative">
           {/* Topprad: hub-ikon inline med titel | datum-disc */}
-          <div className="flex items-center justify-between gap-6">
-            <div className="flex items-center gap-4 flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-3 sm:gap-6">
+            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
               {/* Hub-ikon (ersätter avatar) */}
               <div
                 aria-hidden="true"
-                className="w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm flex items-center justify-center text-[var(--c-text)] flex-shrink-0"
+                className="w-14 h-14 sm:w-[80px] sm:h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm flex items-center justify-center text-[var(--c-text)] flex-shrink-0"
               >
-                <HubIcon size={32} strokeWidth={2} />
+                <HubIcon className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={2} />
               </div>
 
-              <div className="flex flex-col gap-1.5 min-w-0">
-                <p className="text-[12px] font-semibold uppercase tracking-[0.1em] text-[var(--c-text)] leading-none">
+              <div className="flex flex-col gap-1 sm:gap-1.5 min-w-0">
+                <p className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.1em] text-[var(--c-text)] leading-none truncate">
                   {hubLabel}
                 </p>
                 <h1
                   id={titleKey}
-                  className="text-[36px] sm:text-[40px] font-bold text-[var(--stone-900)] leading-[1.05] tracking-tight m-0"
+                  className="text-[22px] sm:text-[32px] md:text-[40px] font-bold text-[var(--stone-900)] leading-[1.1] sm:leading-[1.05] tracking-tight m-0 break-words"
                 >
                   {hubTitle}
                 </h1>
               </div>
             </div>
 
-            {/* Datum-disc */}
+            {/* Datum-disc — döljs på små skärmar för att ge titeln plats */}
             <div
               aria-hidden="true"
-              className="flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] flex-shrink-0 shadow-sm"
+              className="hidden sm:flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] flex-shrink-0 shadow-sm"
             >
               <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] leading-none">
                 {SWEDISH_DAYS_SHORT[today.getDay()]}
@@ -149,7 +149,7 @@ export default function HubPage({
           <div aria-hidden="true" className="h-px bg-[var(--c-accent)] opacity-60" />
 
           {/* Beskrivning */}
-          <p className="text-[20px] sm:text-[22px] font-medium text-[var(--stone-700)] tracking-tight m-0">
+          <p className="text-base sm:text-[20px] md:text-[22px] font-medium text-[var(--stone-700)] tracking-tight m-0 leading-snug">
             {hubDescription}
           </p>
         </div>
@@ -171,7 +171,7 @@ export default function HubPage({
           <div className="flex-1 h-px bg-[var(--c-accent)] opacity-60" />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
           {features.map((f) => (
             <FeatureCard key={f.key} feature={f} />
           ))}
@@ -193,17 +193,17 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
       <motion.div
         whileHover={{ y: -2 }}
         transition={{ duration: 0.15 }}
-        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-[14px] p-[22px_24px] hover:border-[var(--c-solid)] hover:shadow-md transition-[border-color,box-shadow] flex flex-col gap-2.5 min-h-[170px]"
+        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-[14px] p-4 sm:p-[22px_24px] hover:border-[var(--c-solid)] hover:shadow-md transition-[border-color,box-shadow] flex flex-col gap-2 sm:gap-2.5 min-h-[140px] sm:min-h-[170px]"
       >
         {/* Header: ikon + titel */}
-        <div className="flex items-center gap-3 mb-1">
+        <div className="flex items-center gap-3 mb-0.5 sm:mb-1">
           <span
             aria-hidden="true"
-            className="w-10 h-10 rounded-[10px] flex items-center justify-center flex-shrink-0 bg-[var(--c-bg)] text-[var(--c-text)]"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-[10px] flex items-center justify-center flex-shrink-0 bg-[var(--c-bg)] text-[var(--c-text)]"
           >
-            <Icon size={18} strokeWidth={2} />
+            <Icon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" strokeWidth={2} />
           </span>
-          <span className="text-[15px] font-bold text-[var(--stone-900)] tracking-tight leading-tight">
+          <span className="text-[14px] sm:text-[15px] font-bold text-[var(--stone-900)] tracking-tight leading-tight min-w-0">
             {title}
           </span>
         </div>
@@ -214,10 +214,10 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
         </p>
 
         {/* Status + arrow */}
-        <div className="flex items-center justify-between pt-3 border-t border-[var(--stone-100)]">
+        <div className="flex items-center justify-between gap-2 pt-2.5 sm:pt-3 border-t border-[var(--stone-100)]">
           <span
             className={[
-              'inline-flex items-center gap-1.5 text-[12px] font-semibold px-2.5 py-1 rounded-full',
+              'inline-flex items-center gap-1.5 text-[11px] sm:text-[12px] font-semibold px-2 sm:px-2.5 py-1 rounded-full max-w-full truncate',
               isActive
                 ? 'bg-[var(--c-bg)] text-[var(--c-text)]'
                 : 'bg-[var(--stone-100)] text-[var(--stone-700)]',
@@ -225,7 +225,7 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
           >
             {status}
           </span>
-          <span aria-hidden="true" className="text-[14px] text-[var(--stone-400)]">→</span>
+          <span aria-hidden="true" className="text-[14px] text-[var(--stone-400)] flex-shrink-0">→</span>
         </div>
       </motion.div>
     </Link>

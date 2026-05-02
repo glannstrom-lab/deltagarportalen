@@ -344,12 +344,16 @@ export default function Education() {
               type="button"
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className={cn(showFilters && 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-purple-300 dark:border-purple-600')}
+              className={cn(
+                'flex-shrink-0',
+                showFilters && 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-purple-300 dark:border-purple-600'
+              )}
               aria-expanded={showFilters}
               aria-controls="education-filters"
+              aria-label={t('education.filters')}
             >
-              <Filter className="w-4 h-4 mr-2" />
-              {t('education.filters')}
+              <Filter className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">{t('education.filters')}</span>
             </Button>
           </div>
 

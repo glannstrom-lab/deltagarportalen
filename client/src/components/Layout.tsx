@@ -77,19 +77,22 @@ export default function Layout() {
           </div>
 
           {/* Huvudinnehåll */}
-          <div className="flex-1 flex flex-col min-h-0">
+          {/* min-w-0 + min-h-0 är kritiskt: utan dem expanderar flex-itemet
+              med innehållet (kanban-kolumner, breda tabeller) och tvingar
+              hela dokumentet att scrolla horisontellt på mobil. */}
+          <div className="flex-1 flex flex-col min-w-0 min-h-0">
             {/* Main content */}
             <main
               id="main-content"
               className={cn(
-                'flex-1 overflow-auto',
+                'flex-1 overflow-auto min-w-0',
                 isMobile ? 'p-4' : 'p-6',
                 showHubBottomNav && 'pb-20'  // 64px footroom for the fixed bottom nav (h ~56px + safe-area)
               )}
               tabIndex={-1}
             >
               <div className={cn(
-                'mx-auto',
+                'mx-auto min-w-0',
                 isMobile ? 'max-w-full' : 'max-w-7xl'
               )}>
                 <Outlet />
@@ -125,6 +128,11 @@ function MobileTopBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
+  // På sidor som visar MobileBackButton (icke-hub-rot) måste loggan ge plats
+  // för den 44px floatande knappen i övre vänstra hörnet.
+  const HUB_ROOT_PATHS = ['/', '/oversikt', '/jobb', '/karriar', '/resurser', '/min-vardag']
+  const showsBackButton = !HUB_ROOT_PATHS.includes(location.pathname)
+
   const handleLogout = async () => {
     await signOut()
     navigate('/login')
@@ -133,7 +141,10 @@ function MobileTopBar() {
   return (
     <>
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 px-3 py-2 safe-top">
+      <header className={cn(
+        'sticky top-0 z-30 bg-white dark:bg-stone-900 border-b border-stone-200 dark:border-stone-700/50 py-2 safe-top',
+        showsBackButton ? 'pl-[60px] pr-3' : 'px-3'
+      )}>
         <div className="flex items-center justify-between">
           {/* Vänster: Logo */}
           <Link to="/" className="flex items-center gap-2">

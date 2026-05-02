@@ -754,13 +754,13 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
       )}
 
       {/* Profile Summary - Auto-loaded */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center">
+      <Card className="p-4 sm:p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
               <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h2 className="font-semibold text-stone-800 dark:text-stone-100">
                 {t('skillsGapAnalysis.yourCurrentProfile')}
               </h2>
@@ -769,13 +769,13 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
               </p>
             </div>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3 sm:gap-2 sm:flex-shrink-0 pl-13 sm:pl-0">
             <Link
               to="/profile"
               className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)] hover:underline flex items-center gap-1"
             >
               <User className="w-4 h-4" />
-              {t('common.profile')}
+              {t('common.profile', 'Profil')}
             </Link>
             <Link
               to="/cv"

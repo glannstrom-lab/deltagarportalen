@@ -2,21 +2,25 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import { ArrowLeft } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useMobileOptimizer } from './MobileOptimizer'
+import { navHubs } from './layout/navigation'
 
 /**
  * MobileBackButton - Fast tillbaka-knapp för mobil
- * 
- * Visas på alla sidor utom dashboard.
+ *
+ * Visas på alla sidor utom hub-rotsidor (top-level destinations).
  * Ger användare med ångest alltid en synlig väg tillbaka.
  * Placerad i övre vänstra hörnet, utanför scroll.
  */
+const HUB_ROOT_PATHS = new Set<string>(['/', ...navHubs.map(h => h.path)])
+
 export function MobileBackButton() {
   const navigate = useNavigate()
   const location = useLocation()
   const { isMobile } = useMobileOptimizer()
-  
-  // Visa inte på dashboard (startsidan)
-  if (!isMobile || location.pathname === '/') {
+
+  // Visa inte på hub-rotsidor (Översikt, Söka jobb, Karriär, Resurser, Min vardag)
+  // — där fyller bottom-nav redan funktionen och knappen krockar med topbar-loggan.
+  if (!isMobile || HUB_ROOT_PATHS.has(location.pathname)) {
     return null
   }
   

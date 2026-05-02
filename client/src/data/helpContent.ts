@@ -4,7 +4,7 @@
  * Updated to reflect actual implemented features
  */
 
-import { HelpContent } from '@/components/HelpButton'
+import type { HelpContent } from '@/components/HelpButton'
 
 export const helpContent: Record<string, HelpContent> = {
   dashboard: {

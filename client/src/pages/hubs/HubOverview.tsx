@@ -158,43 +158,43 @@ export default function HubOverview() {
         animate="visible"
         variants={heroVariants}
         transition={{ duration: 0.35 }}
-        className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-[24px] p-[36px_40px] relative overflow-hidden"
+        className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-2xl sm:rounded-[24px] p-5 sm:p-7 md:p-[36px_40px] relative overflow-hidden"
         aria-labelledby="hero-greeting"
       >
         {/* Subtle radial decoration */}
         <div
           aria-hidden="true"
-          className="absolute -top-[100px] -right-[100px] w-[320px] h-[320px] rounded-full pointer-events-none"
+          className="absolute -top-[100px] -right-[100px] w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] rounded-full pointer-events-none"
           style={{
             background: 'radial-gradient(circle, var(--c-accent) 0%, transparent 70%)',
             opacity: 0.4,
           }}
         />
 
-        <div className="flex flex-col gap-6 relative">
+        <div className="flex flex-col gap-4 sm:gap-6 relative">
           {/* Topprad: avatar inline med greeting + visit-link | datum-disc */}
-          <div className="flex items-center justify-between gap-6">
-            <div className="flex items-center gap-4 flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-3 sm:gap-6">
+            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
               <Link
                 to="/profile"
                 aria-label="Besök din profil"
-                className="block w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm transition-all hover:border-[var(--c-solid)] hover:shadow-md flex-shrink-0"
+                className="block w-14 h-14 sm:w-[80px] sm:h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm transition-all hover:border-[var(--c-solid)] hover:shadow-md flex-shrink-0"
               >
                 {profileImageUrl ? (
                   <img src={profileImageUrl} alt="" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-[var(--c-bg)]">
-                    <span className="text-[28px] font-bold text-[var(--c-text)] tracking-tight">
+                    <span className="text-[22px] sm:text-[28px] font-bold text-[var(--c-text)] tracking-tight">
                       {initials}
                     </span>
                   </div>
                 )}
               </Link>
 
-              <div className="flex flex-col gap-1.5 min-w-0">
+              <div className="flex flex-col gap-1 sm:gap-1.5 min-w-0">
                 <h1
                   id="hero-greeting"
-                  className="text-[36px] sm:text-[40px] font-bold text-[var(--stone-900)] leading-[1.05] tracking-tight m-0"
+                  className="text-[24px] sm:text-[32px] md:text-[40px] font-bold text-[var(--stone-900)] leading-[1.1] sm:leading-[1.05] tracking-tight m-0 break-words"
                 >
                   {firstName ? `Hej ${firstName}` : 'Välkommen tillbaka'}
                 </h1>
@@ -209,10 +209,10 @@ export default function HubOverview() {
               </div>
             </div>
 
-            {/* Datum-disc */}
+            {/* Datum-disc — döljs på små skärmar för att ge greeting plats */}
             <div
               aria-hidden="true"
-              className="flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] flex-shrink-0 shadow-sm"
+              className="hidden sm:flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] flex-shrink-0 shadow-sm"
             >
               <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] leading-none">
                 {SWEDISH_DAYS_SHORT[today.getDay()]}
@@ -227,14 +227,14 @@ export default function HubOverview() {
           <div aria-hidden="true" className="h-px bg-[var(--c-accent)] opacity-60" />
 
           {/* Question på egen rad nedanför */}
-          <p className="text-[20px] sm:text-[22px] font-medium text-[var(--stone-700)] tracking-tight m-0">
+          <p className="text-base sm:text-[20px] md:text-[22px] font-medium text-[var(--stone-700)] tracking-tight m-0 leading-snug">
             Vad vill du göra idag?
           </p>
         </div>
       </motion.section>
 
       {/* 2. Hubs — 2×2-grid med distinkta domänfärger */}
-      <section aria-label="Välj en hub" className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <section aria-label="Välj en hub" className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         <HubCard
           to="/jobb"
           domain="activity"
@@ -320,7 +320,7 @@ function HubCard({ to, domain, icon: Icon, title, description, activity }: HubCa
       <motion.div
         whileHover={{ y: -2 }}
         transition={{ duration: 0.15 }}
-        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-[18px] p-[24px_28px] hover:shadow-md transition-[border-color,box-shadow] relative overflow-hidden flex flex-col gap-2.5 min-h-[200px]"
+        className="bg-[var(--surface)] border border-[var(--stone-200)] rounded-2xl sm:rounded-[18px] p-4 sm:p-[24px_28px] hover:shadow-md transition-[border-color,box-shadow] relative overflow-hidden flex flex-col gap-2 sm:gap-2.5 min-h-[160px] sm:min-h-[200px]"
         style={{ ['--hub-solid' as string]: domainSolid(domain) }}
       >
         {/* 4px topp-accent i domänfärg */}
@@ -331,45 +331,45 @@ function HubCard({ to, domain, icon: Icon, title, description, activity }: HubCa
         />
 
         {/* Header: ikon + titel */}
-        <div className="flex items-center gap-3.5 mb-1">
+        <div className="flex items-center gap-3 sm:gap-3.5 mb-0.5 sm:mb-1">
           <span
             aria-hidden="true"
-            className="w-12 h-12 rounded-[14px] flex items-center justify-center flex-shrink-0"
+            className="w-11 h-11 sm:w-12 sm:h-12 rounded-[12px] sm:rounded-[14px] flex items-center justify-center flex-shrink-0"
             style={{ background: domainBg(domain), color: domainText(domain) }}
           >
-            <Icon size={22} strokeWidth={2.25} />
+            <Icon className="w-5 h-5 sm:w-[22px] sm:h-[22px]" strokeWidth={2.25} />
           </span>
-          <span className="text-[18px] font-bold text-[var(--stone-900)] tracking-tight leading-tight">
+          <span className="text-[16px] sm:text-[18px] font-bold text-[var(--stone-900)] tracking-tight leading-tight min-w-0">
             {title}
           </span>
         </div>
 
-        {/* Beskrivning — alignar med titel */}
-        <p className="text-[14px] text-[var(--stone-600)] leading-[1.5] m-0 ml-[62px] -mt-1.5">
+        {/* Beskrivning — alignar med titel på desktop, fri på mobil */}
+        <p className="text-[13px] sm:text-[14px] text-[var(--stone-600)] leading-[1.5] m-0 sm:ml-[62px] sm:-mt-1.5">
           {description}
         </p>
 
         {/* Aktivitet eller empty-state — botten av kortet */}
         {activity ? (
-          <div className="mt-auto pt-3.5 border-t border-[var(--stone-100)] flex items-start justify-between gap-3">
+          <div className="mt-auto pt-3 sm:pt-3.5 border-t border-[var(--stone-100)] flex items-start justify-between gap-2 sm:gap-3">
             <span className="flex-1 min-w-0 inline-flex items-start gap-2">
               <span
                 aria-hidden="true"
                 className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-[7px]"
                 style={{ background: domainSolid(domain) }}
               />
-              <span className="text-[13px] text-[var(--stone-700)] leading-[1.4]">
+              <span className="text-[12px] sm:text-[13px] text-[var(--stone-700)] leading-[1.4]">
                 {activity.text}
               </span>
             </span>
             {activity.when && (
-              <span className="text-[12px] text-[var(--stone-500)] flex-shrink-0 mt-px">
+              <span className="text-[11px] sm:text-[12px] text-[var(--stone-500)] flex-shrink-0 mt-px whitespace-nowrap">
                 {activity.when}
               </span>
             )}
           </div>
         ) : (
-          <div className="mt-auto pt-3.5 border-t border-[var(--stone-100)] text-[13px] text-[var(--stone-500)] italic">
+          <div className="mt-auto pt-3 sm:pt-3.5 border-t border-[var(--stone-100)] text-[12px] sm:text-[13px] text-[var(--stone-500)] italic">
             Inga händelser än — börja utforska
           </div>
         )}

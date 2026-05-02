@@ -71,7 +71,7 @@ export function ChatInput({
           onClick={onToggleRecording}
           disabled={disabled || isLoading}
           className={cn(
-            'flex-shrink-0 p-3 rounded-xl',
+            'flex-shrink-0 p-2.5 sm:p-3 rounded-xl',
             'transition-all duration-200',
             isRecording
               ? 'bg-red-500 text-white animate-pulse'
@@ -94,8 +94,8 @@ export function ChatInput({
           disabled={disabled || isLoading}
           rows={1}
           className={cn(
-            'flex-1 resize-none',
-            'px-4 py-3 rounded-xl',
+            'flex-1 min-w-0 resize-none',
+            'px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl',
             'bg-stone-50 dark:bg-stone-800',
             'border border-stone-200 dark:border-stone-700',
             'focus:border-[var(--c-solid)] dark:focus:border-[var(--c-solid)]',
