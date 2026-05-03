@@ -4,9 +4,9 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
+import {
   Lightbulb, X, ChevronRight, CheckCircle,
-  AlertCircle, Info
+  AlertCircle, Info, Sparkles
 } from '@/components/ui/icons'
 
 interface HelpTip {

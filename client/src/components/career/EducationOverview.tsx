@@ -10,6 +10,7 @@ import { Autocomplete } from '@/components/common/Autocomplete';
 import { afDirectApi } from '@/services/afDirectApi';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 import type { EducationInfo } from '@/services/afDirectApi';
+import type { AIRecommendation } from '@/services/ai/aiAssistant';
 import { cn } from '@/lib/utils';
 import { COMMON_OCCUPATIONS } from './occupations';
 

@@ -4,10 +4,11 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  Bell, 
-  Clock, 
-  CheckCircle2, 
+import {
+  Bell,
+  Briefcase,
+  Clock,
+  CheckCircle2,
   X,
   Calendar,
   TrendingUp,

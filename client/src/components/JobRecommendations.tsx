@@ -26,7 +26,7 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
     // Sök jobb i relaterade kategorier
     const loadRelatedJobs = async () => {
       try {
-        const allJobs: RelatedJob[] = []
+        const allJobs: any[] = []
 
         // Sök på några av de relaterade yrkena
         for (const suggestion of related.slice(0, 3)) {

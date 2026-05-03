@@ -7,7 +7,7 @@ import {
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
   Bookmark, Send, Bell, MoreVertical,
   Trash2, CheckCircle, Clock, MessageSquare,
-  Star, Mic
+  Star, Mic, Train
 } from '@/components/ui/icons';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';

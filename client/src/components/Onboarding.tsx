@@ -59,6 +59,8 @@ const STEPS: StepInfo[] = [
   }
 ]
 
+const TOTAL_MINUTES = STEPS.reduce((sum, step) => sum + step.estimatedMinutes, 0)
+
 export default function Onboarding() {
   const [isOpen, setIsOpen] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)

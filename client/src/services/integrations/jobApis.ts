@@ -46,6 +46,25 @@ export const SearchFiltersSchema = z.object({
 export type JobPosting = z.infer<typeof JobPostingSchema>
 export type SearchFilters = z.infer<typeof SearchFiltersSchema>
 
+interface AFJobHit {
+  id: string;
+  headline?: string;
+  employer?: { name?: string };
+  workplace_address?: { municipality?: string };
+  description?: { text?: string };
+  must_have?: { skills?: Array<{ label: string }> };
+  nice_to_have?: { skills?: Array<{ label: string }> };
+  employment_type?: { label?: string };
+  publication_date: string;
+  application_deadline?: string;
+  webpage_url?: string;
+  experience_required?: boolean;
+}
+
+interface AFJobSearchResponse {
+  hits?: AFJobHit[];
+}
+
 // Arbetsförmedlingen API-integration
 export class ArbetsformedlingenAPI {
   private baseUrl = 'https://jobsearch.api.jobtechdev.se'
@@ -75,25 +94,6 @@ export class ArbetsformedlingenAPI {
       if (!response.ok) {
         throw new Error(`AF API error: ${response.status}`)
       }
-      
-interface AFJobHit {
-  id: string;
-  headline?: string;
-  employer?: { name?: string };
-  workplace_address?: { municipality?: string };
-  description?: { text?: string };
-  must_have?: { skills?: Array<{ label: string }> };
-  nice_to_have?: { skills?: Array<{ label: string }> };
-  employment_type?: { label?: string };
-  publication_date: string;
-  application_deadline?: string;
-  webpage_url?: string;
-  experience_required?: boolean;
-}
-
-interface AFJobSearchResponse {
-  hits?: AFJobHit[];
-}
 
       const data = await response.json() as AFJobSearchResponse;
 
