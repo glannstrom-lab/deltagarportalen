@@ -13,7 +13,7 @@ import { userApi } from '@/services/supabaseApi'
 import { cn } from '@/lib/utils'
 
 interface AiConsentGateProps {
-  children: ReactNode
+  children?: ReactNode
   /** Compact mode shows a smaller prompt */
   compact?: boolean
   /** Feature name to show in the prompt */

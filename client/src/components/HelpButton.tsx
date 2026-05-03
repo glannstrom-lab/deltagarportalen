@@ -16,7 +16,7 @@ export interface HelpContent {
   title: string
   description?: string
   tips?: string[]
-  faqs: HelpItem[]
+  faqs?: HelpItem[]
 }
 
 interface HelpButtonProps {
@@ -164,6 +164,7 @@ export function HelpButton({ content }: HelpButtonProps) {
               )}
 
               {/* FAQ Section */}
+              {content.faqs && content.faqs.length > 0 && (
               <div>
                 <div className="flex items-center gap-2 text-stone-700 font-semibold mb-3">
                   <MessageCircle className="w-5 h-5 text-[var(--c-solid)]" aria-hidden="true" />
@@ -206,6 +207,7 @@ export function HelpButton({ content }: HelpButtonProps) {
                   ))}
                 </div>
               </div>
+              )}
             </div>
 
             {/* Footer */}

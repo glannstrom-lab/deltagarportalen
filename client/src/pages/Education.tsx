@@ -371,13 +371,8 @@ export default function Education() {
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value as EducationType)}
                   className="bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600"
-                >
-                  {educationTypes.map((type) => (
-                    <option key={type.id} value={type.id}>
-                      {type.label}
-                    </option>
-                  ))}
-                </Select>
+                  options={educationTypes.map((type) => ({ value: type.id, label: type.label }))}
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
@@ -387,13 +382,8 @@ export default function Education() {
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
                   className="bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600"
-                >
-                  {regions.map((region) => (
-                    <option key={region.id} value={region.id}>
-                      {region.label}
-                    </option>
-                  ))}
-                </Select>
+                  options={regions.map((region) => ({ value: region.id, label: region.label }))}
+                />
               </div>
               <div className="sm:col-span-2 lg:col-span-2">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
