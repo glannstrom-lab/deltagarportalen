@@ -149,12 +149,14 @@ function MobileTopBar() {
           {/* Vänster: Logo */}
           <Link to="/" className="flex items-center gap-2">
             <OptimizedImage
-              src="/logo-jobin-new.png"
+              src="/logo-icon.svg"
               alt="Jobin"
               loading="eager"
-              className="h-6 w-auto object-contain"
+              className="h-7 w-7 object-contain"
             />
-            <span className="text-sm font-semibold text-[var(--c-text)] dark:text-[var(--c-solid)]">jobin.se</span>
+            <span className="text-sm font-semibold text-stone-800 dark:text-stone-100">
+              jobin<span className="text-[var(--c-text)] dark:text-[var(--c-solid)]">.se</span>
+            </span>
           </Link>
 
           {/* Höger: Krishjälp + Notifikationer + Profil + Meny */}
