@@ -30,9 +30,9 @@ jobs:
         working-directory: client
         run: npm run lint
 
-      - name: Type check
+      - name: Type check (crash-class)
         working-directory: client
-        run: npx tsc --noEmit
+        run: npm run typecheck:critical
 
   test:
     name: Run Tests

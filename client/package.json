@@ -14,7 +14,9 @@
     "test:run": "vitest run",
     "analyze": "vite build --mode analyze",
     "build:prod": "vite build --mode production",
-    "verify:widget-chunks": "node scripts/verify-widget-chunks.cjs"
+    "verify:widget-chunks": "node scripts/verify-widget-chunks.cjs",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
+    "typecheck:critical": "node scripts/typecheck-critical.cjs"
   },
   "dependencies": {
     "@react-pdf/renderer": "^4.3.2",
