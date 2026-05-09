@@ -42,7 +42,9 @@ import {
   MapPinned
 } from '@/components/ui/icons'
 import { savedJobsApi, articleBookmarksApi } from '@/services/cloudStorage'
-import { cvApi, coverLetterApi, interestApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
+import { coverLetterApi } from '@/services/coverLetterApi'
+import { interestApi } from '@/services/interestApi'
 import { PageLayout } from '@/components/layout/index'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 // NOTE: jsPDF and docx are dynamically imported in export functions to reduce bundle size

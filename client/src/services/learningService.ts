@@ -8,7 +8,7 @@
 import { supabase } from '@/lib/supabase'
 import { articleCategories, type EnhancedArticle } from '@/services/articleData'
 import { type Exercise } from '@/data/exercises'
-import { interestApi } from '@/services/supabaseApi'
+import { interestApi } from '@/services/interestApi'
 import { contentArticleApi, contentExerciseApi } from '@/services/contentApi'
 import { personalizeArticles, calculateExerciseRelevance, type RiasecScores } from '@/services/interestPersonalization'
 

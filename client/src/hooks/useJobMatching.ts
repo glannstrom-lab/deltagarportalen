@@ -6,7 +6,8 @@
 
 import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { cvApi, interestApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
+import { interestApi } from '@/services/interestApi'
 import { matchJobsToInterests, type JobInterestMatch, type RiasecScores } from '@/services/interestJobMatching'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 

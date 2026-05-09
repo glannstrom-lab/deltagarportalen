@@ -7,7 +7,9 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/stores/authStore'
-import { coverLetterApi, userApi, type ProfilePreferences } from '@/services/supabaseApi'
+import { coverLetterApi } from '@/services/coverLetterApi'
+import { userApi } from '@/services/userApi'
+import type { ProfilePreferences } from '@/services/supabaseApi'
 import { coverLetterTemplates, type CoverLetterTemplate } from '@/data/coverLetterTemplates'
 import {
   Mail, Briefcase, Heart, Sparkles, FileText, Save, Download,

@@ -6,7 +6,10 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
-import { cvApi, interestApi, savedJobsApi, coverLetterApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
+import { interestApi } from '@/services/interestApi'
+import { savedJobsApi } from '@/services/jobsApi'
+import { coverLetterApi } from '@/services/coverLetterApi'
 import { useInterestProfile, RIASEC_TYPES, type RiasecScores } from './useInterestProfile'
 
 // ============================================

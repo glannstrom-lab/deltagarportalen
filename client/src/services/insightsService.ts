@@ -3,7 +3,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
-import { activityApi } from '@/services/supabaseApi'
+import { activityApi } from '@/services/activityApi'
 import { moodApi } from '@/services/cloudStorage'
 
 // ============================================

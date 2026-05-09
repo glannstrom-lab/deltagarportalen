@@ -4,7 +4,8 @@
  */
 
 import { useQuery } from '@tanstack/react-query'
-import { cvApi, coverLetterApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
+import { coverLetterApi } from '@/services/coverLetterApi'
 
 export interface CVVersion {
   id: string
