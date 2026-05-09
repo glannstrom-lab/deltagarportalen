@@ -4,7 +4,8 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { userApi, type ProfilePreferences } from '@/services/supabaseApi'
+import { userApi } from '@/services/userApi'
+import type { ProfilePreferences } from '@/services/supabaseApi'
 
 export interface ProfileStatus {
   // Basic completion

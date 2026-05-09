@@ -17,7 +17,7 @@ import { IntroScreen } from '@/components/interest-guide/IntroScreen'
 import { Button, LoadingState, InfoCard } from '@/components/ui'
 import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2, BarChart3, RotateCcw, Briefcase } from '@/components/ui/icons'
 import { interestGuideApi } from '@/services/cloudStorage'
-import { userApi } from '@/services/supabaseApi'
+import { userApi } from '@/services/userApi'
 
 export default function TestTab() {
   const { t } = useTranslation()

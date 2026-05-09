@@ -19,7 +19,8 @@ import {
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
-import { cvApi, type CVData } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
+import type { CVData } from '@/services/supabaseApi'
 import { useAuthStore } from '@/stores/authStore'
 import { useAIStream } from '@/hooks/useAIStream'
 import {

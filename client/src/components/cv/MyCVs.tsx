@@ -30,7 +30,7 @@ import {
   X
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { cvApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
 import { userPreferencesApi } from '@/services/cloudStorage'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { CVPreview } from './CVPreview'

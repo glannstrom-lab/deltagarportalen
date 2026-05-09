@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { cvApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
 

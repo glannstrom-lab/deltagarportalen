@@ -10,16 +10,22 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
 import { useCVAutoSave } from './useCVAutoSave'
 
-// Mocka cvApi.updateCV (server-anropet)
+// Mocka cvApi.updateCV (server-anropet). Hooken importerar från
+// '@/services/cvApi' och '@/services/userApi' direkt sedan supabaseApi-
+// splitten 2026-05-09 — mocka samma paths.
 const mockUpdateCV = vi.fn().mockResolvedValue({ id: 'cv-1' })
-vi.mock('@/services/supabaseApi', () => ({
+vi.mock('@/services/cvApi', () => ({
   cvApi: {
     updateCV: (...args: unknown[]) => mockUpdateCV(...args),
   },
+}))
+vi.mock('@/services/userApi', () => ({
   userApi: {
     updateOnboardingStep: vi.fn().mockResolvedValue(undefined),
   },
 }))
+// supabaseApi behåller types-exporten — type-only mock räcker.
+vi.mock('@/services/supabaseApi', () => ({}))
 
 // Mocka useCVStore — return stub-funktioner
 vi.mock('@/stores/cvStore', () => ({

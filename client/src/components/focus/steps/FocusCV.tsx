@@ -6,7 +6,8 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { cvApi, type CVData } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
+import type { CVData } from '@/services/supabaseApi'
 import { useAuthStore } from '@/stores/authStore'
 import {
   FileText, Briefcase, GraduationCap, Star,

@@ -9,7 +9,7 @@ import {
   Briefcase, GraduationCap, Award, Calendar, MapPin,
   ChevronRight, Loader2, Plus
 } from '@/components/ui/icons'
-import { cvApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
 import { cn } from '@/lib/utils'
 
 interface TimelineItem {

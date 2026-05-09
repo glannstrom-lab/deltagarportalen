@@ -11,7 +11,8 @@ import {
   CheckCircle, AlertCircle, Clock, Briefcase
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { userApi, type ProfilePreferences } from '@/services/supabaseApi'
+import { userApi } from '@/services/userApi'
+import type { ProfilePreferences } from '@/services/supabaseApi'
 import { useAuthStore } from '@/stores/authStore'
 
 interface StatusItem {

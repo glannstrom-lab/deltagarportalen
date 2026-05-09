@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { jobAlertsApi, type JobAlert } from '@/services/supabaseApi'
+import { jobAlertsApi, type JobAlert } from '@/services/jobsApi'
 import { searchJobs } from '@/services/arbetsformedlingenApi'
 
 export function useJobAlerts() {

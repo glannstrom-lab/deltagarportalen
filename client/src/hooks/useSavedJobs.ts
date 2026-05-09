@@ -4,7 +4,8 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { savedJobsApi, userApi } from '@/services/supabaseApi'
+import { savedJobsApi } from '@/services/jobsApi'
+import { userApi } from '@/services/userApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { useAchievementTracker } from './useAchievementTracker'
 

@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { ATSAnalyzer } from './ATSAnalyzer'
-import { cvApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
 import type { CVData } from '@/services/supabaseApi'
 
 interface ATSCheck {

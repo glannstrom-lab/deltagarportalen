@@ -11,7 +11,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { cvApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
 import type { CVData, WorkExperience, Education, Skill } from '@/services/supabaseApi'
 import { cn } from '@/lib/utils'
 import { showToast } from '@/components/Toast'

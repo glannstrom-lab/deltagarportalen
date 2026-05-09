@@ -26,7 +26,7 @@ import { Card, Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { searchJobs, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs } from '@/hooks/useSavedJobs';
-import { cvApi } from '@/services/supabaseApi';
+import { cvApi } from '@/services/cvApi';
 import { interestGuideApi } from '@/services/cloudStorage';
 import { calculateUserProfile, calculateJobMatches } from '@/services/interestGuideData';
 import { unifiedProfileApi } from '@/services/unifiedProfileApi';

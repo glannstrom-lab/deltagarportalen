@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Heart, Shield, Settings, Loader2, AlertCircle } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
-import { userApi } from '@/services/supabaseApi'
+import { userApi } from '@/services/userApi'
 import { cn } from '@/lib/utils'
 
 interface WellnessConsentGateProps {

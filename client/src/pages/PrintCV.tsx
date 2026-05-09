@@ -18,7 +18,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { CVPreview } from '@/components/cv/CVPreview'
-import { cvApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
 import type { CVData } from '@/services/supabaseApi'
 
 const MIKAEL_DEMO: CVData = {

@@ -15,7 +15,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { cvApi, userApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/cvApi'
+import { userApi } from '@/services/userApi'
 import { useCVStore } from '@/stores/cvStore'
 import type { CVData } from '@/services/supabaseApi'
 import { useAchievementTracker } from './useAchievementTracker'

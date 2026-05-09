@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
-import { userApi } from '@/services/supabaseApi'
+import { userApi } from '@/services/userApi'
 import {
   User, Mail, Phone, MapPin,
   ArrowRight, Check, Loader2, SkipForward
