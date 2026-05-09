@@ -29,12 +29,10 @@ import AiPolicy from './pages/AiPolicy'
 import CookieConsent from './components/CookieConsent'
 import { EnergySaveMode } from './components/EnergySaveMode'
 import { FocusModeProvider } from './components/FocusModeProvider'
-import StorageTest from './pages/StorageTest'
 
 // Lazy-loaded sidor
 const Dashboard = lazy(() => import('./pages/Dashboard'))
 const CVPage = lazy(() => import('./pages/CVPage'))
-const CVBuilder = lazy(() => import('./pages/CVBuilder'))
 const TemplateSnapshot = lazy(() => import('./pages/TemplateSnapshot'))
 const PrintCV = lazy(() => import('./pages/PrintCV'))
 const CoverLetterPage = lazy(() => import('./pages/CoverLetterPage'))
@@ -52,7 +50,6 @@ const Exercises = lazy(() => import('./pages/Exercises'))
 const Settings = lazy(() => import('./pages/Settings'))
 const Resources = lazy(() => import('./pages/Resources'))
 const Help = lazy(() => import('./pages/Help'))
-const ConsultantDashboard = lazy(() => import('./components/consultant/ConsultantDashboard'))
 const Consultant = lazy(() => import('./pages/Consultant'))
 const SuperAdminPanel = lazy(() => import('./components/admin/SuperAdminPanel'))
 const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))

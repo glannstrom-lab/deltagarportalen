@@ -115,8 +115,8 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
                     {p.priority === 2 ? t('consultant.participants.priority.critical') : t('consultant.participants.priority.high')}
                   </span>
                 )}
-                <button className="p-1 hover:bg-gray-100 dark:hover:bg-stone-800 rounded">
-                  <MoreVertical className="w-5 h-5 text-gray-400 dark:text-stone-500" />
+                <button aria-label="Åtgärder för deltagare" className="p-1 hover:bg-gray-100 dark:hover:bg-stone-800 rounded">
+                  <MoreVertical className="w-5 h-5 text-gray-400 dark:text-stone-500" aria-hidden="true" />
                 </button>
               </div>
             </div>

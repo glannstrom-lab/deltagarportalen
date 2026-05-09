@@ -190,9 +190,12 @@ export function ApplicationCard({
                       e.stopPropagation()
                       setShowMenu(!showMenu)
                     }}
+                    aria-label="Fler åtgärder"
+                    aria-haspopup="menu"
+                    aria-expanded={showMenu}
                     className="p-1.5 hover:bg-stone-100 rounded"
                   >
-                    <MoreVertical className="w-4 h-4 text-stone-600" />
+                    <MoreVertical className="w-4 h-4 text-stone-600" aria-hidden="true" />
                   </button>
 
                   {showMenu && (

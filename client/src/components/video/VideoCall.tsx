@@ -40,7 +40,7 @@ export function VideoCall({ isOpen, onClose, participantName, isIncoming = false
           <h3 className="text-white font-semibold">{participantName}</h3>
           {isConnected && <p className="text-stone-600 text-sm">{formatDuration(callDuration)}</p>}
         </div>
-        <button onClick={onClose} className="text-white/60 hover:text-white"><X size={24} /></button>
+        <button onClick={onClose} aria-label="Stäng samtal" className="text-white/60 hover:text-white"><X size={24} /></button>
       </div>
 
       <div className="flex-1 relative bg-stone-950 flex items-center justify-center">
@@ -58,13 +58,27 @@ export function VideoCall({ isOpen, onClose, participantName, isIncoming = false
       </div>
 
       <div className="p-6 bg-stone-800/50 flex justify-center gap-4">
-        <button onClick={() => setIsMuted(!isMuted)} className={cn("w-14 h-14 rounded-full flex items-center justify-center", isMuted ? 'bg-red-500 text-white' : 'bg-stone-600 text-white')}>
+        <button
+          onClick={() => setIsMuted(!isMuted)}
+          aria-label={isMuted ? 'Slå på mikrofon' : 'Stäng av mikrofon'}
+          aria-pressed={isMuted}
+          className={cn("w-14 h-14 rounded-full flex items-center justify-center", isMuted ? 'bg-red-500 text-white' : 'bg-stone-600 text-white')}
+        >
           {isMuted ? <MicOff size={24} /> : <Mic size={24} />}
         </button>
-        <button onClick={onClose} className="w-16 h-16 rounded-full bg-red-500 text-white flex items-center justify-center">
+        <button
+          onClick={onClose}
+          aria-label="Lägg på"
+          className="w-16 h-16 rounded-full bg-red-500 text-white flex items-center justify-center"
+        >
           <PhoneOff size={28} />
         </button>
-        <button onClick={() => setIsVideoOff(!isVideoOff)} className={cn("w-14 h-14 rounded-full flex items-center justify-center", isVideoOff ? 'bg-red-500 text-white' : 'bg-stone-600 text-white')}>
+        <button
+          onClick={() => setIsVideoOff(!isVideoOff)}
+          aria-label={isVideoOff ? 'Slå på video' : 'Stäng av video'}
+          aria-pressed={isVideoOff}
+          className={cn("w-14 h-14 rounded-full flex items-center justify-center", isVideoOff ? 'bg-red-500 text-white' : 'bg-stone-600 text-white')}
+        >
           {isVideoOff ? <VideoOff size={24} /> : <Video size={24} />}
         </button>
       </div>

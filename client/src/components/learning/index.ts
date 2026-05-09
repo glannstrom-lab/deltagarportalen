@@ -1,1 +1,0 @@
-export { MicroLearning } from './MicroLearning'

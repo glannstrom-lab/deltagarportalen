@@ -464,12 +464,15 @@ export function MyCVs() {
                     <button
                       onClick={() => setActionMenuOpen(actionMenuOpen === cv.id ? null : cv.id)}
                       disabled={duplicatingId === cv.id || deletingId === cv.id}
+                      aria-label="Åtgärder för CV"
+                      aria-haspopup="menu"
+                      aria-expanded={actionMenuOpen === cv.id}
                       className="p-2 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors disabled:opacity-50"
                     >
                       {duplicatingId === cv.id || deletingId === cv.id ? (
-                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <Loader2 className="w-5 h-5 animate-spin" aria-hidden="true" />
                       ) : (
-                        <MoreVertical className="w-5 h-5" />
+                        <MoreVertical className="w-5 h-5" aria-hidden="true" />
                       )}
                     </button>
 
