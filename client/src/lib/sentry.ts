@@ -77,7 +77,21 @@ function doInitSentry(): void {
     environment: import.meta.env.MODE,
     release: import.meta.env.VITE_APP_VERSION || 'unknown',
 
-    // Performance monitoring
+    // Performance monitoring + Web Vitals (LCP, INP, CLS, FCP, TTFB).
+    // browserTracingIntegration kopplar automatiskt Web Vitals till
+    // page-load- och navigation-transaktioner sedan Sentry SDK v8+.
+    // Synas i Sentry under Performance → Web Vitals.
+    // Aktiverat 2026-05-09 (P2-skuld: roadmapens KPI:er var omätbara).
+    integrations: [
+      Sentry.browserTracingIntegration({
+        // Spåra fetch/XHR-traceparent på samma origin + Supabase
+        tracePropagationTargets: [
+          /^https:\/\/jobin\.se/,
+          /^https:\/\/.*\.supabase\.co/,
+          /^\//,  // Relativa URL:er (egna API-anrop)
+        ],
+      }),
+    ],
     tracesSampleRate: IS_PRODUCTION ? 0.1 : 1.0, // 10% in prod, 100% in dev
 
     // Session replay for debugging (optional, can be expensive)

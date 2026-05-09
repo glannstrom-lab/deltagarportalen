@@ -4,6 +4,7 @@
  */
 
 const { createClient } = require('@supabase/supabase-js');
+const { logAiUsage } = require('./_utils/ai-usage-log');
 
 // ============================================
 // SECURITY: Input Sanitization (paritet med ai.js + edge functions)
@@ -298,6 +299,7 @@ module.exports = async (req, res) => {
     const reader = aiResponse.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
+    let totalChars = 0; // Ackumulerar för token-approximation vid usage-loggning
 
     while (true) {
       const { done, value } = await reader.read();
@@ -318,6 +320,7 @@ module.exports = async (req, res) => {
             const parsed = JSON.parse(data);
             const content = parsed.choices?.[0]?.delta?.content;
             if (content) {
+              totalChars += content.length;
               res.write(`data: ${JSON.stringify({ content })}\n\n`);
             }
           } catch (e) {
@@ -326,6 +329,11 @@ module.exports = async (req, res) => {
         }
       }
     }
+
+    // Logga AI-usage (fire-and-forget). Tokens approximeras från svarslängd
+    // (~4 chars/token avg).
+    const streamModel = process.env.AI_MODEL || 'openai/gpt-oss-120b';
+    void logAiUsage(user.id, fn, streamModel, Math.ceil(totalChars / 4));
 
     res.end();
   } catch (error) {

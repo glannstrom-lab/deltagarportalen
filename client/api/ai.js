@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const { logAiUsage } = require('./_utils/ai-usage-log');
 
 // ============================================
 // SECURITY: Input Sanitization (paritet med supabase/functions/ai-assistant)
@@ -660,6 +661,13 @@ module.exports = async (req, res) => {
         // Suggestions failed, continue without them
       }
 
+      // Logga AI-usage (fire-and-forget). Tokens approximeras från svarslängd
+      // eftersom OpenRouter:s SSE-stream inte alltid inkluderar usage-fältet.
+      // ~4 chars per token är en rimlig avg för svenska/engelska.
+      const streamModel = process.env.AI_MODEL || 'openai/gpt-oss-120b';
+      const approxTokens = Math.ceil((fullResponse?.length || 0) / 4);
+      void logAiUsage(user.id, fn, streamModel, approxTokens);
+
       res.write('data: [DONE]\n\n');
       return res.end();
     }
@@ -694,6 +702,11 @@ module.exports = async (req, res) => {
     if (prompt.parseJson) {
       try { content = JSON.parse(content); } catch { content = { raw: content }; }
     }
+
+    // Logga AI-usage (fire-and-forget). OpenRouter returnerar usage-objekt
+    // i icke-streaming-svar — använd det för exakt tokensiffra.
+    const nonStreamModel = process.env.AI_MODEL || 'openai/gpt-oss-120b';
+    void logAiUsage(user.id, fn, nonStreamModel, aiData.usage?.total_tokens || 0);
 
     return res.status(200).json({ success: true, [prompt.responseKey]: content });
   } catch (error) {
