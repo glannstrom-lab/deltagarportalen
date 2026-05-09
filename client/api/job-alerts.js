@@ -42,19 +42,41 @@ async function verifyUserAuth(req) {
   }
 }
 
-// Verifiera cron-secret för server-till-server-anrop (Vercel Cron / GH Actions).
-// Konstant-tids jämförelse skyddar mot timing-attacker.
+// Konstant-tids strängjämförelse — skyddar mot timing-attacker.
+function constantTimeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
+// Verifiera cron-secret för server-till-server-anrop. Stöder två format:
+//   1. x-cron-secret: <secret>            — t.ex. GitHub Actions, externa cron
+//   2. Authorization: Bearer <secret>     — Vercel Cron's konvention
+// Den senare gör att samma endpoint fungerar OOTB med Vercel Cron-config i
+// vercel.json utan extra wiring. Kollas EFTER user-JWT-verifiering så att
+// giltiga user-tokens inte krockar med cron-secret.
 function verifyCronSecret(req) {
   const expected = process.env.CRON_SECRET;
   if (!expected) return false;
-  const provided = req.headers['x-cron-secret'] || req.headers['X-Cron-Secret'];
-  if (!provided || typeof provided !== 'string') return false;
-  if (provided.length !== expected.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < expected.length; i++) {
-    mismatch |= expected.charCodeAt(i) ^ provided.charCodeAt(i);
+
+  const xHeader = req.headers['x-cron-secret'] || req.headers['X-Cron-Secret'];
+  if (typeof xHeader === 'string' && constantTimeEqual(xHeader, expected)) {
+    return true;
   }
-  return mismatch === 0;
+
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (typeof authHeader === 'string' && authHeader.startsWith('Bearer ')) {
+    const token = authHeader.substring(7);
+    if (constantTimeEqual(token, expected)) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 // Security: Allowed origins for CORS
