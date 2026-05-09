@@ -200,24 +200,47 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
-          /* Sidebar-mallar (Modern, Nordic, Budapest): gör <aside> position
-             fixed så Chrome upprepar den på varje sida. Main får margin-left
-             lika med sidebar-bredden så det inte överlappar. Bredder är
-             template-specifika. */
-          /* Generisk regel för alla sidobar-mallar (cv-preview > aside).
-             Bredden styrs av CSS-variabeln --sidebar-width som sätts på
-             data-template-wrapper-noden, vilket gör att template-koden är
-             single source of truth för sin sidobars-bredd. */
-          [data-template-wrapper] .cv-preview > aside {
-            position: fixed !important;
-            top: 0 !important;
-            left: 0 !important;
-            bottom: 0 !important;
-            height: 297mm !important;
-            width: var(--sidebar-width, 280px) !important;
+          /* Sidobar-mallar (Modern, Nordic, Budapest, Atelier, Manhattan,
+             Chicago, Rotterdam): tidigare användes position:fixed på <aside>
+             för att "repetera" sidobaren på varje sida. Men Chrome:s
+             print-engine har en känd bug — fixerade element renderar
+             korrekt på varje sida MEN deras overflowing children flödar
+             ÄVEN i normal flow på efterföljande sidor, vilket skapar
+             ghost-rendering (t.ex. "Tyska" hamnade utanför mörka sidobaren
+             överst på sida 2).
+
+             Ny strategi: låt cv-preview vara en helt vanlig flex-container
+             med två kolumner som flödar genom alla sidor som ett vanligt
+             tvåkolumns-dokument. Aside stretchar (default flex-align)
+             till parent-höjd, vilket gör att den mörka bakgrunden täcker
+             hela cv-preview på alla sidor. Main flödar parallellt på
+             höger sida. Detta är samma teknik som akademiska papers och
+             de flesta tryck-CV:n.
+
+             Vi tvingar break-inside: auto på cv-preview och dess children
+             så Chrome tillåter naturliga sidbrytningar mitt i kolumnerna. */
+          /* Reglerna nedan gäller ENDAST mallar som har en <aside>
+             (sidobar-mallar). Single-kolumn-mallar (Centered, Executive,
+             Creative, Minimal) behåller sin egen layout — de behöver inte
+             flex eftersom de bara har en kolumn. */
+          [data-template-wrapper] .cv-preview:has(> aside) {
+            display: flex !important;
+            min-height: auto !important;
+            page-break-inside: auto !important;
+            break-inside: auto !important;
           }
-          [data-template-wrapper] .cv-preview > main {
-            margin-left: var(--sidebar-width, 280px) !important;
+          [data-template-wrapper] .cv-preview:has(> aside) > aside {
+            width: var(--sidebar-width, 280px) !important;
+            flex-shrink: 0 !important;
+            box-sizing: border-box !important;
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+          }
+          [data-template-wrapper] .cv-preview:has(> aside) > main {
+            flex: 1 !important;
+            box-sizing: border-box !important;
+            page-break-inside: auto !important;
+            break-inside: auto !important;
           }
           /* Rubriker (h1, h2, h3) får inte vara sista raden på en sida
              — annars hamnar rubriken ensam i botten och innehållet på
