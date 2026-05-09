@@ -87,10 +87,13 @@ describe('Register Flow Integration', () => {
     const passwordInput = screen.getByLabelText(/^lösenord$/i)
     await user.type(passwordInput, 'SecurePass123!')
 
-    // Requirements should show as met (green checkmarks appear)
+    // Requirements should show as met — Register.tsx renderar <Check>-iconer
+    // (lucide-check) när regler matchas, <X>-iconer annars. Tidigare letade
+    // testet efter .text-green-500 men styling använder nu CSS-variabler
+    // (--c-solid) som JSDOM inte beräknar. Testa beteende istället.
     await waitFor(() => {
-      const checkmarks = document.querySelectorAll('.text-green-500')
-      expect(checkmarks.length).toBeGreaterThan(0)
+      const checkIcons = document.querySelectorAll('svg.lucide-check')
+      expect(checkIcons.length).toBeGreaterThan(0)
     })
   })
 

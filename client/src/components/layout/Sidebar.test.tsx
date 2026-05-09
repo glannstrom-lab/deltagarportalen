@@ -136,12 +136,17 @@ describe('Legacy mode (isHubNavEnabled = false)', () => {
     expect(within(nav).getByText('Utåtriktat')).toBeInTheDocument()
   })
 
-  it('Test 8: Renders all nav items from navGroups (at least 27 links)', () => {
+  it('Test 8: Renders all nav items from navGroups', async () => {
+    // Räkna förväntat antal från navGroups istället för hårdkodat 27 — tidigare
+    // antagande har glidit eftersom outbound-gruppen krymptes (numera 25 items
+    // totalt: 7+12+6). Testet kollar fortfarande att alla items renderas.
+    const { navGroups } = await import('@/components/layout/navigation')
+    const expectedCount = navGroups.flatMap(g => g.items).length
+
     renderAt('/')
     const nav = document.querySelector('nav')!
     const navLinks = nav.querySelectorAll('a')
-    // navGroups has 7 + 12 + 8 = 27 items
-    expect(navLinks.length).toBeGreaterThanOrEqual(27)
+    expect(navLinks.length).toBeGreaterThanOrEqual(expectedCount)
   })
 
   it('Test 9: When on /cv, the /cv nav link is highlighted (aria-current="page")', () => {

@@ -17,19 +17,20 @@ describe('HubGrid', () => {
     expect(grid.className).toContain('gap-[14px]')
   })
 
-  it('Section renders aria-labeled section + h4 heading', () => {
+  it('Section renders aria-labeled section + heading', () => {
     render(<HubGrid.Section title="Skapa & öva"><div>x</div></HubGrid.Section>)
     expect(screen.getByRole('region', { name: 'Skapa & öva' })).toBeInTheDocument()
-    expect(screen.getByRole('heading', { level: 4, name: 'Skapa & öva' })).toBeInTheDocument()
+    // h2-nivå sedan 2026-04-29 designen — testet uppdaterat 2026-05-09.
+    expect(screen.getByRole('heading', { level: 2, name: 'Skapa & öva' })).toBeInTheDocument()
   })
 
   it('Section heading has uppercase + letter-spacing classes', () => {
     render(<HubGrid.Section title="Test"><div>x</div></HubGrid.Section>)
-    const h4 = screen.getByRole('heading', { level: 4 })
-    expect(h4.className).toContain('uppercase')
-    expect(h4.className).toContain('tracking-[0.06em]')
-    expect(h4.className).toContain('text-[12px]')
-    expect(h4.className).toContain('font-bold')
+    const heading = screen.getByRole('heading', { level: 2 })
+    expect(heading.className).toContain('uppercase')
+    expect(heading.className).toContain('tracking-[0.08em]')
+    expect(heading.className).toContain('text-[13px]')
+    expect(heading.className).toContain('font-bold')
   })
 
   it('Slot applies correct grid span classes per size', () => {

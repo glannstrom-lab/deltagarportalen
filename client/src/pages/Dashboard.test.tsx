@@ -22,9 +22,20 @@ const mockDashboardData = {
 }
 
 vi.mock('@/hooks/useDashboardData', () => ({
+  // Legacy hook (custom-shape: loading, isRefetching)
   useDashboardData: vi.fn(() => ({
     data: mockDashboardData,
     loading: false,
+    error: null,
+    refetch: vi.fn(),
+    isRefetching: false,
+  })),
+  // React Query hook (det som Dashboard.tsx faktiskt använder).
+  // Returnerar React Query-shape: isLoading istället för loading.
+  useDashboardDataQuery: vi.fn(() => ({
+    data: mockDashboardData,
+    isLoading: false,
+    isFetching: false,
     error: null,
     refetch: vi.fn(),
     isRefetching: false,
@@ -90,10 +101,14 @@ vi.mock('@/components/consultant/ConsultantRequestBanner', () => ({
 }))
 
 import Dashboard from './Dashboard'
-import { useDashboardData } from '@/hooks/useDashboardData'
+import { useDashboardData, useDashboardDataQuery } from '@/hooks/useDashboardData'
 import { useInterestProfile } from '@/hooks/useInterestProfile'
 
+// Dashboard.tsx använder useDashboardDataQuery (React Query). Den gamla
+// useDashboardData-mocken behålls för bakåtkompatibilitet men testen ska
+// asserta mot Query-versionen.
 const mockUseDashboardData = useDashboardData as ReturnType<typeof vi.fn>
+const mockUseDashboardDataQuery = useDashboardDataQuery as ReturnType<typeof vi.fn>
 const mockUseInterestProfile = useInterestProfile as ReturnType<typeof vi.fn>
 
 const createTestQueryClient = () => new QueryClient({
@@ -120,10 +135,12 @@ function renderDashboard() {
 describe('Dashboard', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    // Reset to default mock values
-    mockUseDashboardData.mockReturnValue({
+    // Default mock-state: data laddad, ingen loading. Specifika test
+    // overrider:ar via mockUseDashboardDataQuery.mockReturnValue(...).
+    mockUseDashboardDataQuery.mockReturnValue({
       data: mockDashboardData,
-      loading: false,
+      isLoading: false,
+      isFetching: false,
       error: null,
       refetch: vi.fn(),
       isRefetching: false,
@@ -145,9 +162,10 @@ describe('Dashboard', () => {
 
     it('should show loading state when data is loading', () => {
       // Mock loading state
-      mockUseDashboardData.mockReturnValue({
+      mockUseDashboardDataQuery.mockReturnValue({
         data: null,
-        loading: true,
+        isLoading: true,
+        isFetching: true,
         error: null,
         refetch: vi.fn(),
         isRefetching: false,
@@ -155,7 +173,7 @@ describe('Dashboard', () => {
 
       renderDashboard()
       // When loading, Dashboard shows DashboardSkeleton
-      expect(mockUseDashboardData).toHaveBeenCalled()
+      expect(mockUseDashboardDataQuery).toHaveBeenCalled()
     })
 
     it('should show content after loading', async () => {
@@ -165,7 +183,7 @@ describe('Dashboard', () => {
         expect(screen.queryByText('Laddar...')).not.toBeInTheDocument()
       })
 
-      expect(screen.getByText('Kom igång')).toBeInTheDocument()
+      expect(screen.getByText('Att göra')).toBeInTheDocument()
     })
 
     it('should render dashboard sections', async () => {
@@ -173,7 +191,7 @@ describe('Dashboard', () => {
 
       await waitFor(() => {
         // Current Dashboard structure - simplified without quick actions and development sections
-        expect(screen.getByText('Kom igång')).toBeInTheDocument()
+        expect(screen.getByText('Att göra')).toBeInTheDocument()
       })
     })
 
@@ -187,14 +205,17 @@ describe('Dashboard', () => {
   })
 
   describe('expandable categories', () => {
-    it('should have expand/collapse buttons with correct ARIA attributes', async () => {
+    // Dashboard har inte längre expanderbara kategorier som detta test
+    // antog (de togs bort när dashboard förenklades). Skippas tills antingen
+    // funktionen återintroduceras eller testet skrivs om mot nuvarande struktur.
+    it.skip('should have expand/collapse buttons with correct ARIA attributes', async () => {
       renderDashboard()
 
       await waitFor(() => {
         const buttons = screen.getAllByRole('button')
         const categoryButtons = buttons.filter((btn) => btn.getAttribute('aria-expanded') !== null)
 
-        // Dashboard has at least one expandable section (Kom igång)
+        // Dashboard has at least one expandable section (Att göra)
         expect(categoryButtons.length).toBeGreaterThanOrEqual(1)
         categoryButtons.forEach((btn) => {
           expect(btn).toHaveAttribute('aria-expanded')
@@ -203,12 +224,13 @@ describe('Dashboard', () => {
       })
     })
 
-    it('should toggle category expansion when clicked', async () => {
+    // Se kommentar ovan — gamla expanderbara kategorier finns inte längre.
+    it.skip('should toggle category expansion when clicked', async () => {
       const user = userEvent.setup()
       renderDashboard()
 
       await waitFor(() => {
-        expect(screen.getByText('Kom igång')).toBeInTheDocument()
+        expect(screen.getByText('Att göra')).toBeInTheDocument()
       })
 
       const categoryButton = screen.getByRole('button', { name: /kom igång/i })
@@ -225,7 +247,7 @@ describe('Dashboard', () => {
 
       await waitFor(() => {
         // Check that sections exist - simplified structure
-        expect(screen.getByText('Kom igång')).toBeInTheDocument()
+        expect(screen.getByText('Att göra')).toBeInTheDocument()
       })
     })
   })
@@ -235,8 +257,8 @@ describe('Dashboard', () => {
       renderDashboard()
 
       await waitFor(() => {
-        // The Kom igång section header should always be visible
-        expect(screen.getByText('Kom igång')).toBeInTheDocument()
+        // The Att göra section header should always be visible
+        expect(screen.getByText('Att göra')).toBeInTheDocument()
       })
     })
 
@@ -272,17 +294,18 @@ describe('Dashboard', () => {
 
       await waitFor(() => {
         // Dashboard should render with data from useDashboardData hook
-        expect(mockUseDashboardData).toHaveBeenCalled()
+        expect(mockUseDashboardDataQuery).toHaveBeenCalled()
       })
     })
 
     it('should update display when CV data exists', async () => {
-      mockUseDashboardData.mockReturnValue({
+      mockUseDashboardDataQuery.mockReturnValue({
         data: {
           ...mockDashboardData,
           cv: { ...mockDashboardData.cv, hasCV: true, progress: 50 },
         },
-        loading: false,
+        isLoading: false,
+        isFetching: false,
         error: null,
         refetch: vi.fn(),
         isRefetching: false,
@@ -291,7 +314,7 @@ describe('Dashboard', () => {
       renderDashboard()
 
       await waitFor(() => {
-        expect(mockUseDashboardData).toHaveBeenCalled()
+        expect(mockUseDashboardDataQuery).toHaveBeenCalled()
       })
     })
 
@@ -309,12 +332,13 @@ describe('Dashboard', () => {
     })
 
     it('should show cover letter count when letters exist', async () => {
-      mockUseDashboardData.mockReturnValue({
+      mockUseDashboardDataQuery.mockReturnValue({
         data: {
           ...mockDashboardData,
           coverLetters: { count: 3, drafts: 1, recentLetters: [] },
         },
-        loading: false,
+        isLoading: false,
+        isFetching: false,
         error: null,
         refetch: vi.fn(),
         isRefetching: false,
@@ -323,7 +347,7 @@ describe('Dashboard', () => {
       renderDashboard()
 
       await waitFor(() => {
-        expect(mockUseDashboardData).toHaveBeenCalled()
+        expect(mockUseDashboardDataQuery).toHaveBeenCalled()
       })
     })
   })
@@ -333,15 +357,15 @@ describe('Dashboard', () => {
       renderDashboard()
 
       await waitFor(() => {
-        expect(mockUseDashboardData).toHaveBeenCalled()
+        expect(mockUseDashboardDataQuery).toHaveBeenCalled()
         expect(mockUseInterestProfile).toHaveBeenCalled()
       })
     })
 
     it('should handle loading state gracefully', async () => {
-      mockUseDashboardData.mockReturnValue({
+      mockUseDashboardDataQuery.mockReturnValue({
         data: null,
-        loading: true,
+        isLoading: true,
         error: null,
         refetch: vi.fn(),
         isRefetching: false,
@@ -350,7 +374,7 @@ describe('Dashboard', () => {
       renderDashboard()
 
       // Should show loading skeleton when loading
-      expect(mockUseDashboardData).toHaveBeenCalled()
+      expect(mockUseDashboardDataQuery).toHaveBeenCalled()
     })
   })
 
