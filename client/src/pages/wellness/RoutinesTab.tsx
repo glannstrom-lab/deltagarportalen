@@ -3,7 +3,7 @@
  */
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion, Reorder } from 'framer-motion'
+import { motion, Reorder, MotionConfig } from 'framer-motion'
 import {
   CalendarDays, Clock, Sun, Moon, Coffee, Briefcase,
   Plus, Trash2, CheckCircle2, Play, Pause, Flame, GripVertical
@@ -92,6 +92,7 @@ export default function RoutinesTab() {
   const completionPercentage = Math.round((completedToday / routines.length) * 100)
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="space-y-6">
       {/* Progress Overview with Streak */}
       <motion.div
@@ -351,5 +352,6 @@ export default function RoutinesTab() {
         </div>
       </Card>
     </div>
+    </MotionConfig>
   )
 }

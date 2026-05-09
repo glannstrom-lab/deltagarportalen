@@ -3,7 +3,7 @@
  */
 import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
+import { motion, MotionConfig } from 'framer-motion'
 import {
   Brain, Clock, Target, RotateCcw, CheckCircle2, AlertCircle,
   ChevronRight, Trophy, Sparkles, Flame, Star
@@ -249,6 +249,7 @@ export default function CognitiveTab() {
   }
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="space-y-6">
       {/* Streak Banner */}
       <motion.div
@@ -450,5 +451,6 @@ export default function CognitiveTab() {
         </div>
       </Card>
     </div>
+    </MotionConfig>
   )
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Calendar, CheckCircle2, Clock, FileText, Briefcase, TrendingUp, Award } from '@/components/ui/icons'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 interface WeeklyStats {
   logins: number
@@ -18,6 +19,13 @@ interface WeeklySummaryProps {
 
 export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps) {
   const [, setShowConfetti] = useState(false)
+
+  // Focus-trap medan summary-modalen är synlig
+  const focusTrapRef = useFocusTrap<HTMLDivElement>(isVisible, {
+    onEscape: onClose,
+    restoreFocus: true,
+    autoFocus: true,
+  })
 
   useEffect(() => {
     if (isVisible) {
@@ -78,7 +86,8 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
   ]
 
   return (
-    <div 
+    <div
+      ref={focusTrapRef}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"

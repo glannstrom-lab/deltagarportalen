@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import type { Question } from '@/services/interestGuideData'
 import { Pause, Coffee, Save, RotateCcw } from '@/components/ui/icons'
 import { interestGuideApi } from '@/services/cloudStorage'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 interface QuestionCardProps {
   question: Question
@@ -52,6 +53,13 @@ export function QuestionCard({
   const [isAnimating, setIsAnimating] = useState(false)
   const [showPauseConfirm, setShowPauseConfirm] = useState(false)
 
+  // Focus-trap medan paus-confirmation visas
+  const pauseDialogRef = useFocusTrap<HTMLDivElement>(showPauseConfirm, {
+    onEscape: () => setShowPauseConfirm(false),
+    restoreFocus: true,
+    autoFocus: true,
+  })
+
   // Spara progress vid varje svar
   useEffect(() => {
     if (value > 0) {
@@ -96,6 +104,7 @@ export function QuestionCard({
       {/* Paus-confirmation modal */}
       {showPauseConfirm && (
         <div
+          ref={pauseDialogRef}
           className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10"
           role="dialog"
           aria-modal="true"
@@ -329,8 +338,16 @@ export function ResumeModal({
 }) {
   const hoursSince = Math.round((Date.now() - savedDate.getTime()) / (1000 * 60 * 60))
 
+  // Focus-trap. ResumeModal renders alltid när komponenten är mountad.
+  const modalRef = useFocusTrap<HTMLDivElement>(true, {
+    onEscape: onResume,
+    restoreFocus: true,
+    autoFocus: true,
+  })
+
   return (
     <div
+      ref={modalRef}
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"

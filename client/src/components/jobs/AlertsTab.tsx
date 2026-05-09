@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import {
   Bell, Plus, Search, Trash2, ToggleLeft, ToggleRight,
   MapPin, Briefcase, Clock, ExternalLink, AlertCircle,
@@ -49,6 +50,13 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
   const [remote, setRemote] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
+  // Focus-trap medan create-modalen är öppen
+  const dialogRef = useFocusTrap<HTMLDivElement>(isOpen, {
+    onEscape: onClose,
+    restoreFocus: true,
+    autoFocus: true,
+  })
+
   if (!isOpen) return null
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -78,6 +86,7 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4" role="presentation">
       <div className="fixed inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
       <div
+        ref={dialogRef}
         className="relative bg-white rounded-2xl shadow-xl max-w-md w-full p-6"
         role="dialog"
         aria-modal="true"

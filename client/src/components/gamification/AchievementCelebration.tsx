@@ -1,5 +1,6 @@
 import { useEffect, useCallback } from 'react'
 import confetti from 'canvas-confetti'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 export interface Achievement {
   id: string
@@ -14,6 +15,13 @@ interface AchievementCelebrationProps {
 }
 
 export function AchievementCelebration({ achievement, onClose }: AchievementCelebrationProps) {
+  // Focus-trap medan celebration-modalen är öppen (WCAG 2.4.3 / 2.1.2)
+  const focusTrapRef = useFocusTrap<HTMLDivElement>(!!achievement, {
+    onEscape: onClose,
+    restoreFocus: true,
+    autoFocus: true,
+  })
+
   const triggerConfetti = useCallback(() => {
     const duration = 3000
     const animationEnd = Date.now() + duration
@@ -59,7 +67,8 @@ export function AchievementCelebration({ achievement, onClose }: AchievementCele
   if (!achievement) return null
 
   return (
-    <div 
+    <div
+      ref={focusTrapRef}
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm"
       role="dialog"
       aria-modal="true"

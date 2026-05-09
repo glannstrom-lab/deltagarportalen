@@ -5,7 +5,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
+import { motion, MotionConfig } from 'framer-motion'
 import { calculateUserProfile, calculateJobMatches, type UserProfile } from '@/services/interestGuideData'
 import { ResultsView } from '@/components/interest-guide/ResultsView'
 import { CareerRecommendationsPanel } from '@/components/interest-guide/CareerRecommendationsPanel'
@@ -189,6 +189,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   const goodMatches = jobMatches.filter(m => m.matchPercentage >= 70).length
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="max-w-5xl mx-auto space-y-8 min-h-screen  p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
@@ -541,5 +542,6 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         </Button>
       </motion.div>
     </div>
+    </MotionConfig>
   )
 }

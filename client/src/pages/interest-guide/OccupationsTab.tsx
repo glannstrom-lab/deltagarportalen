@@ -4,7 +4,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion'
 import {
   calculateUserProfile,
   calculateJobMatches,
@@ -179,6 +179,7 @@ export default function OccupationsTab() {
   }
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="max-w-5xl mx-auto space-y-8 min-h-screen  p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
@@ -539,5 +540,6 @@ export default function OccupationsTab() {
         </motion.div>
       )}
     </div>
+    </MotionConfig>
   )
 }

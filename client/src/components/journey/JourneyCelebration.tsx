@@ -3,7 +3,7 @@
  */
 
 import { useEffect, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion'
 import { Award, Star, Zap, PartyPopper, X, Trophy } from '@/components/ui/icons'
 import { Button } from '@/components/ui'
 import { JOURNEY_PHASES } from '@/data/journeyData'
@@ -66,6 +66,7 @@ export function JourneyCelebration({
   }
 
   return (
+    <MotionConfig reducedMotion="user">
     <AnimatePresence>
       <motion.div
         initial={{ opacity: 0 }}
@@ -230,6 +231,7 @@ export function JourneyCelebration({
         </motion.div>
       </motion.div>
     </AnimatePresence>
+    </MotionConfig>
   )
 }
 
