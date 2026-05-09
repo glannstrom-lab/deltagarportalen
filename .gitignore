@@ -93,3 +93,6 @@ e2e/screenshots/
 
 # CV print audit output (e2e/cv-templates-print.cjs)
 cv-prints/
+
+# CV PDF endpoint verification output (e2e/cv-pdf-endpoint-verify.cjs)
+pdf-verify/

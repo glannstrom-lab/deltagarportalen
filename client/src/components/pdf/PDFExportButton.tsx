@@ -12,22 +12,40 @@ import {
   previewPDF,
 } from '@/services/pdfExportService';
 import { showToast } from '@/components/Toast';
+import { supabase } from '@/lib/supabase';
 import type { CVData, JobData } from '@/types/pdf.types';
 
 /**
- * CV-export öppnar /print/cv-routen i en ny tab. Den routen renderar samma
- * CVPreview-komponent som on-screen-previewen, applicerar print-CSS
- * (@page A4, page-break-inside: avoid på .cv-entry, position: fixed på
- * sidopaneler) och triggar window.print() automatiskt. Browsern öppnar
- * print-dialogen där användaren väljer "Spara som PDF" — samma flöde som
- * Resume.io / Kickresume i sina free-tier (deras paid-tier använder server-
- * side Puppeteer för seamless download, vilket vi kan addera senare som
- * /api/cv-pdf).
+ * Server-side CV PDF: POSTar mot /api/cv-pdf som lanserar headless Chromium
+ * och genererar en PDF med exakta A4-margins (12mm top / 10mm bottom).
+ * Anledningen är att ren CSS-print inte kan ge per-sida-padding utan
+ * tradeoff (vita band ELLER gleshet ELLER block-i-kanten på sida 2). Detta
+ * är samma teknik Resume.io/Kickresume använder i sin paid-tier.
  */
-function openPrintRoute() {
-  // Hash-routing eftersom appen använder HashRouter
-  const url = `${window.location.origin}/#/print/cv`
-  window.open(url, '_blank', 'noopener,noreferrer')
+async function generateServerCV(template: string): Promise<Blob> {
+  const { data: { session } } = await supabase.auth.getSession()
+  const token = session?.access_token
+  if (!token) throw new Error('Du måste vara inloggad för att exportera CV.')
+
+  const res = await fetch('/api/cv-pdf', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ template }),
+  })
+
+  if (!res.ok) {
+    let msg = 'PDF-generering misslyckades'
+    try {
+      const err = await res.json()
+      if (err?.error) msg = err.error
+    } catch { /* ignore */ }
+    throw new Error(msg)
+  }
+
+  return await res.blob()
 }
 
 interface PDFExportButtonProps {
@@ -119,14 +137,19 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
 
   const handleDownload = async () => {
     if (type === 'cv') {
-      // CV använder browser print → "Spara som PDF" via print-route. Visa
-      // tydlig instruktion eftersom användaren själv måste välja "Spara som
-      // PDF" i print-dialogen — annars händer ingenting och flödet ser trasigt ut.
-      openPrintRoute();
-      showToast.success(
-        'Print-dialog öppnas i ny flik. Välj "Spara som PDF" som mål.',
-      );
-      setShowMenu(false);
+      setIsGenerating(true);
+      try {
+        const template = (data as CVData)?.template || 'sidebar';
+        const blob = await generateServerCV(template);
+        downloadPDF(blob, finalFilename);
+        showToast.success('CV nedladdat.');
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Kunde inte generera PDF.';
+        showToast.error(msg);
+      } finally {
+        setIsGenerating(false);
+        setShowMenu(false);
+      }
       return;
     }
     const blob = await generatePDF();
@@ -138,11 +161,18 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
 
   const handlePreview = async () => {
     if (type === 'cv') {
-      openPrintRoute();
-      showToast.success(
-        'CV öppnas i ny flik för förhandsgranskning. Välj "Spara som PDF" i print-dialogen för att ladda ner.',
-      );
-      setShowMenu(false);
+      setIsGenerating(true);
+      try {
+        const template = (data as CVData)?.template || 'sidebar';
+        const blob = await generateServerCV(template);
+        previewPDF(blob);
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : 'Kunde inte generera PDF.';
+        showToast.error(msg);
+      } finally {
+        setIsGenerating(false);
+        setShowMenu(false);
+      }
       return;
     }
     const blob = await generatePDF();

@@ -5,11 +5,13 @@
  * Kickresume internt genererar PDF: HTML-render i Chrome headless +
  * page.pdf() via Puppeteer (server-side) eller window.print() (client-side).
  *
- * Två lägen:
+ * Fyra lägen:
  *   /#/print/cv               — laddar inloggad användares CV
  *   /#/print/cv?template=ID   — bygger på inloggad data men byter mall
  *   /#/print/cv?demo=mikael   — använder Mikael-test-fixture (för iterativ
  *                                utveckling utan login)
+ *   /#/print/cv?data=<base64> — CV-data injicerad via query (används av
+ *                                api/cv-pdf.js Puppeteer-flödet)
  *
  * Auto-print kan stängas av med ?manual=1 så Playwright (som använder
  * page.pdf() direkt) inte triggar print-dialog som blockar.
@@ -81,13 +83,27 @@ export default function PrintCV() {
   const demo = params.get('demo')
   const templateOverride = params.get('template')
   const manual = params.get('manual') === '1'
+  // ?data=<base64-encoded-JSON>: server-side Puppeteer (api/cv-pdf.js)
+  // injicerar CV-data direkt så vi slipper auth + Supabase-fetch i headless
+  // Chrome. Bearer-verifiering sker innan i Vercel-funktionen.
+  const dataParam = params.get('data')
 
   useEffect(() => {
     let cancelled = false
     ;(async () => {
       try {
         let data: CVData
-        if (demo === 'mikael') {
+        if (dataParam) {
+          try {
+            // atob = base64 decode. Decoder stödjer URL-safe variant via
+            // padding-fix om så behövs. CV-JSON är typiskt 5-50 kB —
+            // ryms gott i URL-query.
+            const json = decodeURIComponent(escape(atob(dataParam.replace(/-/g, '+').replace(/_/g, '/'))))
+            data = JSON.parse(json) as CVData
+          } catch (decodeErr) {
+            throw new Error('Kunde inte avkoda CV-data: ' + (decodeErr instanceof Error ? decodeErr.message : String(decodeErr)))
+          }
+        } else if (demo === 'mikael') {
           data = MIKAEL_DEMO
         } else {
           const fromApi = await cvApi.getCV()
@@ -101,7 +117,7 @@ export default function PrintCV() {
       }
     })()
     return () => { cancelled = true }
-  }, [demo, templateOverride])
+  }, [demo, templateOverride, dataParam])
 
   // Trigga print när content är renderat (om inte manual-flag)
   useEffect(() => {
