@@ -166,18 +166,13 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           korrekt sidbrytning. Samma rules som de stora aktörerna (resume.io,
           kickresume) använder för Chrome headless print → PDF. */}
       <style>{`
-        /* @page margin: 0 är medvetet — sidobaren (position: fixed) MÅSTE
-           fylla hela sidan från kant till kant. Att lägga top/bottom-margin
-           här bryter sidobars-templates eftersom aside då bara fyller
-           page-content-area och lämnar vita band överst/underst.
-           KÄND BUGG: cv-entry på sida 2+ hamnar mot pappret kant utan top-
-           luft eftersom CSS top-padding på <main> bara appliceras vid
-           elementets start, inte per sida. En riktig fix kräver server-
-           side PDF-generering (Puppeteer) som kan kontrollera per-sida
-           layout — inte möjligt med ren browser print-flow. */
+        /* @page top/bottom-margin ger main per-sida-luft. Aside (sidobars-
+           templates) kompenseras nedan via transform så den fyller hela
+           pappret kant-till-kant trots marginalen. Vänster/höger lämnas 0
+           så sidobaren ligger mot kanten. */
         @page {
           size: A4;
-          margin: 0;
+          margin: 12mm 0 10mm 0;
         }
         @media print {
           html, body {
@@ -215,6 +210,13 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
             top: 0 !important;
             left: 0 !important;
             bottom: 0 !important;
+            /* Aside ska fylla HELA pappret (kant-till-kant), inte bara
+               page-content-area. @page-margin är 12mm/10mm, så aside
+               sticker upp 12mm i top-margin och ner 10mm i bottom-margin
+               via transform + height = full A4. Templates' egna padding
+               (t.ex. 48px på MG-cirkeln) påverkas inte av transform —
+               box-modellen är intakt. */
+            transform: translateY(-12mm) !important;
             height: 297mm !important;
             width: var(--sidebar-width, 280px) !important;
           }
