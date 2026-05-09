@@ -189,17 +189,15 @@ module.exports = async (req, res) => {
     // Kort paus för att fonter ska laddas in färdigt
     await new Promise(r => setTimeout(r, 500));
 
-    // 6. Generera PDF med kontrollerade margins
+    // 6. Generera PDF. Margins styrs nu helt av CSS:s @page-regel i
+    // CVPreview.tsx (12mm top, 10mm bottom). Tidigare försökte vi sätta
+    // margin här, men Chrome respekterar @page-regeln framför Puppeteer:s
+    // parameter — så de hade ingen effekt. preferCSSPageSize: true för
+    // att vara explicit om att CSS äger sidstorlek + margins.
     const pdfData = await page.pdf({
       format: 'A4',
       printBackground: true,
-      preferCSSPageSize: false,
-      margin: {
-        top: '12mm',
-        bottom: '10mm',
-        left: 0,
-        right: 0,
-      },
+      preferCSSPageSize: true,
     });
 
     // puppeteer-core@24 returnerar Uint8Array, inte Buffer. Vercel:s

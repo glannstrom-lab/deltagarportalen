@@ -166,19 +166,16 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           korrekt sidbrytning. Samma rules som de stora aktörerna (resume.io,
           kickresume) använder för Chrome headless print → PDF. */}
       <style>{`
-        /* @page margin: 0 — sidobaren ska fylla hela pappret kant-till-
-           kant och templates har egen padding på header/main. KÄND
-           BEGRÄNSNING: när content flödar till sida 2 hamnar första
-           elementet pixel-mot-papperets-kant utan top-luft (CSS-flow:
-           padding-top på <main> appliceras bara EN GÅNG vid elementets
-           start, inte per sida). En riktig per-sida-padding kräver
-           server-side PDF-rendering (Puppeteer page.pdf med kontroll-
-           erade margins) — inte möjligt via ren browser print-CSS utan
-           tradeoff (vita band överst/underst, eller gleshet mellan
-           entries på samma sida). */
+        /* @page margin: 12mm 0 10mm 0 — varje sida får 12mm top-luft och
+           10mm bottom-luft. Sidobar-mallar (Modern, Budapest, Nordic) som
+           använder position:fixed på <aside> respekterar @page margin i
+           Chrome — sidobaren ritas bara inom det utskrivbara området, inte
+           edge-to-edge. Detta är OK för designen (mörk sidebar med 12mm
+           vit ovanför är tidlöst) och löser top-edge-problemet på alla
+           mallar utan template-specifika hacks. */
         @page {
           size: A4;
-          margin: 0;
+          margin: 12mm 0 10mm 0;
         }
         @media print {
           html, body {
@@ -222,19 +219,21 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           [data-template-wrapper] .cv-preview > main {
             margin-left: var(--sidebar-width, 280px) !important;
           }
-          /* Rubriker (h1, h2, h3) hålls ihop med första content-element
-             under sig — Word-konvention "Keep with next". Förhindrar
-             orphan headers (rubrik ensam i botten av sida). */
+          /* Rubriker (h1, h2, h3) får inte vara sista raden på en sida
+             — annars hamnar rubriken ensam i botten och innehållet på
+             nästa sida. Vi använder ENDAST break-after på rubriken (Word:s
+             "Keep with next"). Vi använder INTE break-before på följande
+             element — det skulle pusha hela sektioner till nästa sida när
+             rubriken+första entry inte ryms, vilket skapar massiv whitespace
+             på föregående sida (t.ex. SPRÅK-sektionen hamnar ensam på sida 3).
+             Lösningen: rubriken får följa med till nästa sida när den inte
+             ryms ihop med sin första content-rad, men sektioner kan annars
+             börja vart som helst. */
           .cv-preview h1,
           .cv-preview h2,
           .cv-preview h3 {
             page-break-after: avoid;
             break-after: avoid-page;
-          }
-          .cv-preview h2 + *,
-          .cv-preview h3 + * {
-            page-break-before: avoid;
-            break-before: avoid;
           }
 
           /* cv-entry: enskilda jobb/utbildningsposter måste hållas ihop
