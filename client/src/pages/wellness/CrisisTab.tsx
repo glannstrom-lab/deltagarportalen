@@ -3,7 +3,7 @@
  */
 import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { motion } from 'framer-motion'
+import { motion, MotionConfig } from 'framer-motion'
 import {
   Siren, Phone, MessageCircle, Heart, Wind, Eye, Ear, Hand,
   ExternalLink, AlertTriangle, ChevronRight, X, Activity
@@ -189,7 +189,13 @@ export default function CrisisTab() {
   })), [t])
 
 
+  // CrisisTab är en krishanteringssida — användare i kris ska inte mötas
+  // av dansande element. MotionConfig reducedMotion="user" gör att alla
+  // motion-element inom (19 st i denna fil) automatiskt stängs av för
+  // användare med prefers-reduced-motion satt. WCAG 2.3.3 / a11y-audit
+  // 2026-05-09.
   return (
+    <MotionConfig reducedMotion="user">
     <div className="space-y-6">
       {/* Emergency Banner - Prominent and Clear */}
       <motion.div
@@ -393,5 +399,6 @@ export default function CrisisTab() {
         </p>
       </motion.div>
     </div>
+    </MotionConfig>
   )
 }

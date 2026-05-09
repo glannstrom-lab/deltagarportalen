@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { navGroups, adminNavItems, consultantNavItems, markFeatureVisited, shouldShowBadge } from './layout/navigation'
 import { useAuthStore } from '@/stores/authStore'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import {
   User,
   Menu,
@@ -66,6 +67,13 @@ export function SideMenu({
   const { t } = useTranslation()
   const { profile, signOut } = useAuthStore()
 
+  // Focus-trap + Escape-hantering medan menyn är öppen (WCAG 2.4.3 / 2.1.2)
+  const focusTrapRef = useFocusTrap<HTMLDivElement>(isOpen, {
+    onEscape: onClose,
+    restoreFocus: true,
+    autoFocus: true,
+  })
+
   // Använd activeRole för att avgöra vilken vy som visas
   const activeRole = profile?.activeRole || profile?.role || 'USER'
   const isSuperAdmin = activeRole === 'SUPERADMIN'
@@ -92,6 +100,7 @@ export function SideMenu({
 
       {/* Menu */}
       <div
+        ref={focusTrapRef}
         className={cn(
           'fixed top-0 right-0 bottom-0 bg-white dark:bg-stone-900 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',

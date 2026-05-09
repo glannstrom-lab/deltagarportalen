@@ -173,8 +173,8 @@ function GoalCard({
             {goal.description}
           </p>
         </div>
-        <button className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg">
-          <MoreVertical className="w-4 h-4 text-stone-600" />
+        <button aria-label="Åtgärder för mål" className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg">
+          <MoreVertical className="w-4 h-4 text-stone-600" aria-hidden="true" />
         </button>
       </div>
 

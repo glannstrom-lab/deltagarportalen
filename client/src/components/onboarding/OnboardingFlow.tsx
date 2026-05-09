@@ -23,6 +23,7 @@ import {
 import { useAuthStore } from '@/stores/authStore'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 interface Step {
   id: number
@@ -118,6 +119,14 @@ export function OnboardingFlow() {
     if (shouldShow) setCurrentStep(0)
   }, [shouldShow])
 
+  // Focus-trap medan modalen är öppen (WCAG 2.4.3 / 2.1.2). Escape avskedar
+  // — samma effekt som "Hoppa över" så användaren inte kan fastna.
+  const focusTrapRef = useFocusTrap<HTMLDivElement>(shouldShow, {
+    onEscape: () => setDismissed(true),
+    restoreFocus: true,
+    autoFocus: true,
+  })
+
   if (!shouldShow) return null
 
   const step = STEPS[currentStep]
@@ -162,6 +171,7 @@ export function OnboardingFlow() {
 
   return (
     <div
+      ref={focusTrapRef}
       className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[100] p-4"
       role="dialog"
       aria-modal="true"

@@ -235,8 +235,8 @@ function CompanyCard({
         {/* Actions Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
-              <MoreVertical className="w-4 h-4" />
+            <Button variant="ghost" size="sm" aria-label="Åtgärder för företag" className="h-8 w-8 p-0">
+              <MoreVertical className="w-4 h-4" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">

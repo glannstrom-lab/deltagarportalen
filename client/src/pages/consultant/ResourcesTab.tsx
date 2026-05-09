@@ -118,9 +118,12 @@ function TemplateCard({
             <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
+                aria-label="Åtgärder för mall"
+                aria-haspopup="menu"
+                aria-expanded={showMenu}
                 className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
               >
-                <MoreVertical className="w-4 h-4 text-stone-500 dark:text-stone-400" />
+                <MoreVertical className="w-4 h-4 text-stone-500 dark:text-stone-400" aria-hidden="true" />
               </button>
               {showMenu && (
                 <div className="absolute right-0 top-full mt-1 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-10 min-w-[120px]">
@@ -182,8 +185,8 @@ function JobCollectionCard({
         <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-xl">
           <Folder className="w-5 h-5 text-amber-600 dark:text-amber-400" />
         </div>
-        <button className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg">
-          <MoreVertical className="w-4 h-4 text-stone-500 dark:text-stone-400" />
+        <button aria-label="Åtgärder för samling" className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg">
+          <MoreVertical className="w-4 h-4 text-stone-500 dark:text-stone-400" aria-hidden="true" />
         </button>
       </div>
       <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">

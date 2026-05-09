@@ -1128,6 +1128,32 @@ export const userApi = {
       .single()
 
     if (error) handleError(error)
+
+    // Sync till useAuthStore så Header, Sidebar, AgentChat och övriga UI-
+    // konsumenter direkt ser nya värden — utan denna propagering kunde
+    // Settings/FocusProfile/consent-gates skriva till Supabase men UI:s
+    // "current user" var fortsatt gammalt (P1-skuld 2026-05-09).
+    // Async-import undviker cirkulär dep vid module-init.
+    if (data) {
+      void (async () => {
+        try {
+          const { useAuthStore } = await import('../stores/authStore')
+          const current = useAuthStore.getState().profile
+          if (current) {
+            const cleaned: Record<string, unknown> = {}
+            for (const [key, value] of Object.entries(updates)) {
+              if (value !== undefined) cleaned[key] = value
+            }
+            useAuthStore.setState({
+              profile: { ...current, ...cleaned } as typeof current,
+            })
+          }
+        } catch (err) {
+          console.warn('[userApi.updateProfile] could not sync authStore:', err)
+        }
+      })()
+    }
+
     return data
   },
 

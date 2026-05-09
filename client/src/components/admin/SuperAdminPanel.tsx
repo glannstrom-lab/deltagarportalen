@@ -204,8 +204,8 @@ export const SuperAdminPanel: React.FC = () => {
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
-                        <button className="text-gray-400 hover:text-gray-600">
-                          <MoreVertical className="w-5 h-5" />
+                        <button aria-label="Åtgärder för användare" className="text-gray-400 hover:text-gray-600">
+                          <MoreVertical className="w-5 h-5" aria-hidden="true" />
                         </button>
                       </td>
                     </tr>

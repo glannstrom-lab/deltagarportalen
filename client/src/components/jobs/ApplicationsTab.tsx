@@ -73,9 +73,12 @@ function ApplicationCard({
         <div className="relative">
           <button
             onClick={() => setShowMenu(!showMenu)}
+            aria-label="Åtgärder för ansökan"
+            aria-haspopup="menu"
+            aria-expanded={showMenu}
             className="p-1.5 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg transition-colors"
           >
-            <MoreVertical className="w-4 h-4 text-stone-600 dark:text-stone-400" />
+            <MoreVertical className="w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
           </button>
 
           {showMenu && (
