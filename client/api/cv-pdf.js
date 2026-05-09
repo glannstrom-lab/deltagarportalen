@@ -190,7 +190,7 @@ module.exports = async (req, res) => {
     await new Promise(r => setTimeout(r, 500));
 
     // 6. Generera PDF med kontrollerade margins
-    const pdfBuffer = await page.pdf({
+    const pdfData = await page.pdf({
       format: 'A4',
       printBackground: true,
       preferCSSPageSize: false,
@@ -202,6 +202,11 @@ module.exports = async (req, res) => {
       },
     });
 
+    // puppeteer-core@24 returnerar Uint8Array, inte Buffer. Vercel:s
+    // res.send() JSON-stringifierar Uint8Array till {"0":37,"1":80,...}
+    // istället för binär. Konvertera explicit + använd res.end.
+    const pdfBuffer = Buffer.isBuffer(pdfData) ? pdfData : Buffer.from(pdfData);
+
     // 7. Returnera PDF
     const firstName = cv.firstName || 'cv';
     const lastName = cv.lastName || '';
@@ -210,7 +215,8 @@ module.exports = async (req, res) => {
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
     res.setHeader('Content-Length', pdfBuffer.length);
-    return res.status(200).send(pdfBuffer);
+    res.status(200);
+    return res.end(pdfBuffer);
   } catch (error) {
     console.error('[cv-pdf] error:', error);
     return res.status(500).json({
