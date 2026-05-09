@@ -6,6 +6,7 @@ import { TaskManager } from './TaskManager'
 import { InterviewPrepPanel } from './InterviewPrep'
 import { TravelPlanner } from './TravelPlanner'
 import { Button } from '@/components/ui/Button'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 interface EventModalProps {
   event: CalendarEvent | null
@@ -33,6 +34,13 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
   const [activeTab, setActiveTab] = useState<'details' | 'tasks' | 'prep' | 'travel'>('details')
   const [validationError, setValidationError] = useState<string | null>(null)
   const titleId = useId()
+
+  // Focus-trap medan modalen är öppen (WCAG 2.4.3 / 2.1.2)
+  const focusTrapRef = useFocusTrap<HTMLDivElement>(isOpen, {
+    onEscape: onClose,
+    restoreFocus: true,
+    autoFocus: true,
+  })
 
   const eventTypes = useMemo(() => eventTypeConfigs.map(type => ({
     ...type,
@@ -111,6 +119,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
 
   return (
     <div
+      ref={focusTrapRef}
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"

@@ -15,10 +15,14 @@
 const fs = require('fs');
 const path = require('path');
 
-// Baseline 2026-05-09: 444 träffar i src/. Dashboard har 16 widgets som alla
-// bryter regeln (audit docs/teknisk-skuld-2026-05/ux-design.md). Sänk siffran
-// vid varje städ-batch. När 0 är nått: byt regel till hård (return 1 vid >0).
-const BASELINE_TOTAL = 444;
+// Baseline 2026-05-09: börjat på 444 träffar i src/. Dashboard har 16 widgets
+// som alla bryter regeln (audit docs/teknisk-skuld-2026-05/ux-design.md).
+// Sänk siffran vid varje städ-batch. När 0 är nått: byt regel till hård
+// (return 1 vid >0).
+// Ändringslogg:
+//   2026-05-09 (initial): 444
+//   2026-05-09 (P2-S, dödkod EmptyState borttagen): 443
+const BASELINE_TOTAL = 443;
 
 const CHECK_DIR = path.join(__dirname, '..', 'src');
 const PATTERN = /bg-gradient-(to-[trbl]+|radial)/g;

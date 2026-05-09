@@ -35,7 +35,12 @@ export function HiddenWidgetsPanel({
   const containerRef = useRef<HTMLDivElement | null>(null)
   const hidden = layout.filter(item => item.visible === false)
 
-  // Outside click + Escape key handlers
+  // Outside click + Escape key handlers.
+  // OBS: useFocusTrap används medvetet INTE här eftersom dess
+  // handleClickOutside dubbelräknar med ConfirmDialog-overlays (klick på
+  // ConfirmDialog-knapp triggar både dialog-confirm OCH outside-close i
+  // panelen → onClose 2x). Hemmagjord variant kollar `[role="dialog"]`
+  // -ancestor och hoppar över i så fall.
   useEffect(() => {
     if (!isOpen) return
 

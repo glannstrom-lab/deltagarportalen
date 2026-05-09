@@ -3,11 +3,12 @@
  * Shows 3 steps at a time with positive language
  */
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X, ChevronRight, ChevronLeft, Sparkles, User, Briefcase, Heart } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useProfileStore } from '@/stores/profileStore'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 interface OnboardingStep {
   id: string
@@ -53,30 +54,15 @@ export function OnboardingModal() {
   const { showOnboarding, onboardingStep, setOnboardingStep, completeOnboarding, setActiveTab } = useProfileStore()
 
   const [isClosing, setIsClosing] = useState(false)
-  const modalRef = useRef<HTMLDivElement>(null)
-  const previousFocusRef = useRef<HTMLElement | null>(null)
 
-  // Focus management
-  useEffect(() => {
-    if (showOnboarding) {
-      previousFocusRef.current = document.activeElement as HTMLElement
-      modalRef.current?.focus()
-    } else if (previousFocusRef.current) {
-      previousFocusRef.current.focus()
-    }
-  }, [showOnboarding])
-
-  // Handle escape key
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && showOnboarding) {
-        handleClose()
-      }
-    }
-
-    document.addEventListener('keydown', handleEscape)
-    return () => document.removeEventListener('keydown', handleEscape)
-  }, [showOnboarding])
+  // Focus-trap + Escape-hantering + restore focus medan modalen är öppen.
+  // Ersätter tidigare hemmagjorda useEffect:s som bara hade focus och
+  // escape, men saknade Tab-trap (WCAG 2.4.3 / 2.1.2).
+  const modalRef = useFocusTrap<HTMLDivElement>(showOnboarding, {
+    onEscape: () => handleClose(),
+    restoreFocus: true,
+    autoFocus: true,
+  })
 
   if (!showOnboarding) return null
 

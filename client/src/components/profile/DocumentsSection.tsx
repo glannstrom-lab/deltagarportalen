@@ -9,6 +9,7 @@ import { Plus, X, FileText, Upload, Loader2, ExternalLink, Calendar, Building2 }
 import { profileDocumentsApi, type ProfileDocument } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
 import { notifications } from '@/lib/toast'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 const DOCUMENT_TYPES = [
   { value: 'certificate', labelKey: 'profile.documents.types.certificate' },
@@ -28,6 +29,13 @@ export function DocumentsSection({ className }: Props) {
   const [uploading, setUploading] = useState(false)
   const [showForm, setShowForm] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Focus-trap medan upload-modalen är öppen
+  const formRef = useFocusTrap<HTMLDivElement>(showForm, {
+    onEscape: () => setShowForm(false),
+    restoreFocus: true,
+    autoFocus: true,
+  })
 
   // Upload form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -187,6 +195,7 @@ export function DocumentsSection({ className }: Props) {
       {/* Upload form modal */}
       {showForm && selectedFile && (
         <div
+          ref={formRef}
           className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
           role="dialog"
           aria-modal="true"

@@ -6,6 +6,7 @@ import type { CVData } from '@/services/supabaseApi'
 import { jobsApi } from '@/services/api'
 import { ShareJobDialog } from './ShareJobDialog'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 interface JobDetailModalProps {
   job: Job | null
@@ -30,6 +31,14 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
   const [_loading, setLoading] = useState(false)
   const [showShareDialog, setShowShareDialog] = useState(false)
   const titleId = useId()
+
+  // Focus-trap medan modalen är öppen (WCAG 2.4.3 / 2.1.2). onEscape
+  // hanteras redan av handleKeyDown nedan; lämnas oset:t här för att
+  // undvika dubbla close-anrop.
+  const focusTrapRef = useFocusTrap<HTMLDivElement>(isOpen, {
+    restoreFocus: true,
+    autoFocus: true,
+  })
 
   // Stäng modal med Escape-tangent
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
@@ -73,6 +82,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
 
   return (
     <div
+      ref={focusTrapRef}
       className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"
