@@ -12,6 +12,34 @@ import { debounce } from '../lib/debounce'
 import { notifications, TOAST_MESSAGES } from '../lib/toast'
 import type { TabId } from '../components/profile/constants'
 
+// Propagera profil-uppdateringar till useAuthStore. useAuthStore.profile är
+// kanonisk källa för UI:ts "current user" (Header, Sidebar, AgentChat etc).
+// Async-import för att undvika cirkulär import vid module-init. (Konsolidering
+// 2026-05-09: tre parallella profil-källor som inte synkade — useAuthStore
+// är nu single source of truth. Dashboard har refetchOnMount:'always' så
+// React Query hämtar färsk data automatiskt när användaren navigerar dit.)
+async function propagateProfileToAuthStore(profile: ProfileData | null): Promise<void> {
+  if (!profile) return
+  try {
+    const { useAuthStore } = await import('./authStore')
+    const current = useAuthStore.getState().profile
+    if (!current) return // ingen authStore-profile betyder ej inloggad — låt loginflödet hantera
+
+    // Filtrera bort undefined-fält så vi inte skriver över giltiga värden i
+    // authStore med undefined från en partiell ProfileData-load.
+    const updates: Record<string, unknown> = {}
+    for (const [key, value] of Object.entries(profile)) {
+      if (value !== undefined) updates[key] = value
+    }
+
+    useAuthStore.setState({
+      profile: { ...current, ...updates } as typeof current,
+    })
+  } catch (err) {
+    console.warn('[profileStore] Could not propagate to authStore:', err)
+  }
+}
+
 // ============== TYPES ==============
 
 export interface ProfileData {
@@ -200,6 +228,9 @@ export const useProfileStore = create<ProfileState>()(
               profile: data,
               completion: get()._calculateCompletion()
             })
+            // Sync till authStore så Header/Sidebar/övrigt UI som läser
+            // useAuthStore.profile är aktuella.
+            void propagateProfileToAuthStore(data)
           } catch (error) {
             console.error('Load profile error:', error)
             notifications.error('Kunde inte ladda profil')
@@ -289,11 +320,16 @@ export const useProfileStore = create<ProfileState>()(
 
           try {
             await userApi.updateProfile(data)
+            const merged = get().profile
             set({
               cloudSynced: true,
               cloudSyncing: false,
               completion: get()._calculateCompletion()
             })
+            // Sync till authStore så Header och övriga UI-konsumenter
+            // som läser useAuthStore.profile får färska värden direkt
+            // (utan att behöva fetcha om från Supabase).
+            void propagateProfileToAuthStore(merged)
           } catch (error) {
             console.error('Update profile error:', error)
             // Rollback on error
