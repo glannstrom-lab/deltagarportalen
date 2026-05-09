@@ -445,7 +445,11 @@ export function OverviewTab() {
           setGoalCategories(sortedCategories)
         }
 
-        // Build report data for PDF export
+        // Build report data for PDF export.
+        // averageTimeToPlacement och monthlyProgress var hårdkodade mockvärden
+        // (45 dagar + en fast månadsserie). Borttaget 2026-05-09 — riktig
+        // beräkning finns i AnalyticsTab.tsx och bör återanvändas härifrån.
+        // Tills dess: 0 + tom serie så PDF inte ljuger om verksamheten.
         setReportData({
           totalParticipants: participantsData.length,
           activeParticipants: active.length,
@@ -453,15 +457,8 @@ export function OverviewTab() {
           cvCompletionRate: Math.round((completedCV.length / Math.max(participantsData.length, 1)) * 100),
           goalsCompletionRate: goalsData ? Math.round((completedGoals / Math.max(goalsData.length, 1)) * 100) : 0,
           engagementRate: Math.round((active.length / Math.max(participantsData.length, 1)) * 100),
-          averageTimeToPlacement: 45,
-          monthlyProgress: [
-            { month: 'Jan', value: 45 },
-            { month: 'Feb', value: 52 },
-            { month: 'Mar', value: 58 },
-            { month: 'Apr', value: 63 },
-            { month: 'Maj', value: 70 },
-            { month: 'Jun', value: stats.averageProgress },
-          ],
+          averageTimeToPlacement: 0,
+          monthlyProgress: [],
           statusDistribution: [
             { label: 'Aktiva', value: active.length },
             { label: 'Inaktiva', value: participantsData.filter(p => p.status === 'INACTIVE').length },

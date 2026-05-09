@@ -275,7 +275,8 @@ module.exports = async (req, res) => {
         'X-Title': 'Jobin'
       },
       body: JSON.stringify({
-        model: process.env.AI_MODEL || 'anthropic/claude-3.5-sonnet',
+        // Default Sonnet 4.5 (uppgraderat 2026-05-09 från claude-3.5-sonnet).
+        model: process.env.AI_MODEL || 'anthropic/claude-sonnet-4.5',
         messages: [
           { role: 'system', content: prompt.system },
           { role: 'user', content: prompt.user }

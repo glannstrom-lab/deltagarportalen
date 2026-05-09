@@ -300,15 +300,13 @@ export function ParticipantDetailPage() {
           })))
         }
 
-        // Generate mock timeline
-        const mockTimeline: TimelineEvent[] = [
-          { id: '1', type: 'cv_updated', description: 'Uppdaterade CV', timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString() },
-          { id: '2', type: 'job_saved', description: 'Sparade 3 nya jobb', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
-          { id: '3', type: 'login', description: 'Loggade in', timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString() },
-          { id: '4', type: 'goal_completed', description: 'Avklarade mål: Genomför intressetest', timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString() },
-          { id: '5', type: 'meeting', description: 'Uppföljningsmöte', timestamp: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString() },
-        ]
-        setTimeline(mockTimeline)
+        // Timeline: tidigare visades hårdkodad mock-data ("Sparade 3 jobb",
+        // "Uppföljningsmöte" osv) som lurade konsulenten att tro att det var
+        // riktig aktivitet. Borttaget 2026-05-09 (P1-skuld).
+        // user_activities-tabellen finns men RLS:en tillåter bara user_id =
+        // auth.uid() — konsulenter behöver en separat policy för att läsa
+        // sina deltagare. Spårad i docs/teknisk-skuld-2026-05/.
+        setTimeline([])
       }
     } catch (error) {
       console.error('Error fetching participant:', error)
@@ -652,6 +650,19 @@ export function ParticipantDetailPage() {
 
       {activeTab === 'timeline' && (
         <Card className="p-5">
+          {timeline.length === 0 && (
+            <div className="py-10 text-center">
+              <Clock className="w-10 h-10 mx-auto text-stone-400 dark:text-stone-500 mb-3" />
+              <p className="font-medium text-stone-700 dark:text-stone-200">
+                Aktivitetshistorik kommer
+              </p>
+              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-md mx-auto">
+                Vi spårar deltagarens aktiviteter (CV-uppdateringar, sparade
+                jobb, mål) men måste först ge konsulenter läsrättighet — kommer
+                i kommande version.
+              </p>
+            </div>
+          )}
           <div className="space-y-6">
             {timeline.map((event, index) => {
               const icons = {

@@ -487,7 +487,43 @@ class ConsultantService {
       participants.reduce((sum, p) => sum + (p.ats_score || 0), 0) / Math.max(total, 1)
     )
 
-    // TODO: Fetch goals and placements this month
+    // Beräkna goals + placements för innevarande månad. Tidigare returnerade
+    // detta hårdkodat 0 vilket var missvisande för konsulenter (P1-skuld
+    // 2026-05-09). Båda räknas best-effort — om RLS eller schema saknar
+    // åtkomst returneras 0 utan att hela getAnalytics-anropet failar.
+    const startOfMonth = new Date()
+    startOfMonth.setDate(1)
+    startOfMonth.setHours(0, 0, 0, 0)
+    const startIso = startOfMonth.toISOString()
+    const participantIds = participants.map(p => p.user_id).filter(Boolean)
+
+    let goalsCompletedThisMonth = 0
+    let placementsThisMonth = 0
+
+    if (participantIds.length > 0) {
+      try {
+        const { count: goalsCount } = await supabase
+          .from('journey_goals')
+          .select('id', { count: 'exact', head: true })
+          .in('user_id', participantIds)
+          .eq('is_completed', true)
+          .gte('completed_at', startIso)
+        goalsCompletedThisMonth = goalsCount ?? 0
+      } catch (err) {
+        console.warn('[consultantService] goalsCompletedThisMonth query failed:', err)
+      }
+
+      try {
+        const { count: placementsCount } = await supabase
+          .from('consultant_placements')
+          .select('id', { count: 'exact', head: true })
+          .eq('consultant_id', user.id)
+          .gte('placement_date', startIso)
+        placementsThisMonth = placementsCount ?? 0
+      } catch (err) {
+        console.warn('[consultantService] placementsThisMonth query failed:', err)
+      }
+    }
 
     return {
       totalParticipants: total,
@@ -495,8 +531,8 @@ class ConsultantService {
       completedParticipants: completed,
       cvCompletionRate: Math.round((withCV / Math.max(total, 1)) * 100),
       averageAtsScore: avgAts,
-      goalsCompletedThisMonth: 0, // TODO: Implement
-      placementsThisMonth: 0, // TODO: Implement
+      goalsCompletedThisMonth,
+      placementsThisMonth,
     }
   }
 

@@ -505,7 +505,9 @@ module.exports = async (req, res) => {
           'X-Title': 'Jobin'
         },
         body: JSON.stringify({
-          model: process.env.AI_MODEL || 'anthropic/claude-3.5-sonnet',
+          // Default Sonnet 4.5 (uppgraderat 2026-05-09 från claude-3.5-sonnet
+          // som var två generationer gammal). Override via AI_MODEL env-var.
+          model: process.env.AI_MODEL || 'anthropic/claude-sonnet-4.5',
           messages: [
             { role: 'system', content: prompt.system },
             { role: 'user', content: prompt.user }
@@ -547,7 +549,11 @@ module.exports = async (req, res) => {
                 const token = parsed.choices?.[0]?.delta?.content;
                 if (token) {
                   fullResponse += token;
-                  res.write(`data: ${JSON.stringify({ token })}\n\n`);
+                  // Skickar BÅDE { token } (legacy-fält för AgentChat) och
+                  // { content } (matchar ai-stream.js + aiStreamService).
+                  // Ny kod ska läsa { content }; { token } är deprecated och
+                  // tas bort när AgentChat är migrerad till useAIStream.
+                  res.write(`data: ${JSON.stringify({ token, content: token })}\n\n`);
                 }
               } catch (e) {
                 // Skip malformed JSON
@@ -570,7 +576,9 @@ module.exports = async (req, res) => {
             'X-Title': 'Jobin'
           },
           body: JSON.stringify({
-            model: 'anthropic/claude-3-haiku-20240307',
+            // Haiku 4.5: snabb + billig modell för korta följdfrågor.
+            // Tidigare claude-3-haiku-20240307 är DEPRECERAD av Anthropic.
+            model: process.env.AI_MODEL_HAIKU || 'anthropic/claude-haiku-4.5',
             messages: [
               { role: 'system', content: 'Du genererar korta, relevanta följdfrågor baserat på en konversation. Svara ENDAST med en JSON-array med exakt 3 korta frågor (max 8 ord var). Exempel: ["Hur skriver jag ett bra CV?", "Vilka jobb passar mig?", "Tips för intervjuer?"]' },
               { role: 'user', content: `Användaren frågade: "${data?.meddelande}"\n\nAssistenten svarade: "${fullResponse.substring(0, 500)}"\n\nGenerera 3 naturliga följdfrågor på svenska:` }
@@ -610,7 +618,8 @@ module.exports = async (req, res) => {
         'X-Title': 'Jobin'
       },
       body: JSON.stringify({
-        model: process.env.AI_MODEL || 'anthropic/claude-3.5-sonnet',
+        // Default Sonnet 4.5 (uppgraderat 2026-05-09).
+        model: process.env.AI_MODEL || 'anthropic/claude-sonnet-4.5',
         messages: [
           { role: 'system', content: prompt.system },
           { role: 'user', content: prompt.user }

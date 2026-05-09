@@ -31,6 +31,7 @@ import {
   Trash2,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
+import { notifications } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
@@ -806,9 +807,10 @@ export function ResourcesTab() {
   }
 
   const handleUseForParticipant = () => {
-    // In a real implementation, this would open a participant selector
-    // and create a goal for the selected participant
-    alert('Funktionen för att tilldela mål till deltagare kommer snart!')
+    // Funktionen är inte implementerad ännu (mall→deltagare-tilldelning kräver
+    // deltagarväljare + journey_goals-skrivning). Visar toast istället för
+    // browser-alert. Spårad i docs/teknisk-skuld-2026-05/ (P2).
+    notifications.info('Funktion under utveckling — kontakta support om du behöver tilldela mål nu.')
     setShowTemplateDetail(false)
     setSelectedTemplate(null)
   }
@@ -1030,7 +1032,7 @@ export function ResourcesTab() {
             <p className="text-stone-500 dark:text-stone-400">
               {t('consultant.resources.createAndShare')}
             </p>
-            <Button onClick={() => alert('Funktion för att skapa jobbsamlingar kommer snart!')}>
+            <Button onClick={() => notifications.info('Jobbsamlingar kommer i nästa version. Kontakta support om du behöver detta nu.')}>
               <Plus className="w-4 h-4 mr-2" />
               {t('consultant.resources.newCollection')}
             </Button>
@@ -1041,8 +1043,8 @@ export function ResourcesTab() {
               <JobCollectionCard
                 key={collection.id}
                 collection={collection}
-                onView={() => alert(`Visa samling: ${collection.name}\n\nDenna funktion kommer snart!`)}
-                onShare={() => alert(`Dela samling med deltagare:\n${collection.name}\n\nDenna funktion kommer snart!`)}
+                onView={() => notifications.info(`Visa-funktionen för "${collection.name}" kommer i nästa version.`)}
+                onShare={() => notifications.info(`Delningsfunktionen för "${collection.name}" kommer i nästa version.`)}
                 t={t}
               />
             ))}

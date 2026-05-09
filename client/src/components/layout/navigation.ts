@@ -223,6 +223,8 @@ export const navHubs: NavHub[] = [
       '/cover-letter',
       '/interview-simulator',
       '/salary',
+      '/linkedin-optimizer',
+      '/international',
     ],
     items: [
       { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
@@ -232,6 +234,8 @@ export const navHubs: NavHub[] = [
       { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
       { path: '/interview-simulator', labelKey: 'nav.interviewSimulator', icon: Mic },
       { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
+      { path: '/linkedin-optimizer', labelKey: 'nav.linkedinOptimizer', icon: Linkedin },
+      { path: '/international', labelKey: 'nav.international', icon: Globe },
     ],
   },
   {

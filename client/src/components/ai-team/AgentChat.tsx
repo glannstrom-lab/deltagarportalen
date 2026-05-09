@@ -241,8 +241,11 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
 
               try {
                 const parsed = JSON.parse(data)
-                if (parsed.token) {
-                  fullContent += parsed.token
+                // Föredrar { content } men accepterar { token } för bakåtkompatibilitet.
+                // Standardprotokollet är { content } per aiStreamService.ts (2026-05-09).
+                const chunk = parsed.content ?? parsed.token
+                if (chunk) {
+                  fullContent += chunk
                   setStreamingContent(fullContent)
                 }
                 if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
@@ -265,8 +268,9 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
             if (data !== '[DONE]') {
               try {
                 const parsed = JSON.parse(data)
-                if (parsed.token) {
-                  fullContent += parsed.token
+                const chunk = parsed.content ?? parsed.token
+                if (chunk) {
+                  fullContent += chunk
                 }
                 if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
                   setSuggestions(parsed.suggestions)
