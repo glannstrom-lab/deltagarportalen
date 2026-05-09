@@ -175,8 +175,13 @@ export function captureError(
 }
 
 /**
- * Set user context for error tracking
- * Call this after user logs in
+ * Set user context for error tracking. Call efter inloggning.
+ *
+ * GDPR 2026-05-09: skickar BARA user.id till Sentry. Tidigare skickade vi
+ * även email vilket är PII och inte nödvändigt för felspårning — vi kan
+ * korrelera mot Supabase via id om vi behöver kontakta användaren.
+ * Email-parametern accepteras fortfarande (för bakåtkompatibilitet med
+ * alla call sites) men skickas inte vidare.
  */
 export function setUser(user: {
   id: string;
@@ -188,8 +193,7 @@ export function setUser(user: {
   if (user) {
     Sentry.setUser({
       id: user.id,
-      email: user.email,
-      // Don't include PII like names
+      // email avsiktligt utelämnad — se kommentar ovan.
     });
 
     Sentry.setTag('user_role', user.role || 'unknown');

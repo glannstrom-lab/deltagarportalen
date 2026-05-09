@@ -136,46 +136,52 @@ export async function handleGoogleCallback(
 }
 
 /**
- * Store tokens in Supabase (encrypted in user_preferences)
+ * Store tokens in Supabase. ENBART Supabase — INGEN localStorage-backup.
+ *
+ * GDPR/säkerhet 2026-05-09 (HIGH-2026-05-001): tidigare lagrades OAuth-
+ * tokens även i localStorage som "backup". På delade datorer (bibliotek,
+ * AF-besökerdatorer — målgruppens vanligaste accesspunkt) läckte det
+ * föregående användares calendar-access till nästa. Supabase är primär,
+ * cross-device-sync är inbyggd, ingen lokal backup behövs.
  */
 async function storeTokens(tokens: StoredTokens): Promise<void> {
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (user) {
-    await supabase.from('user_preferences').upsert({
-      user_id: user.id,
-      google_calendar_tokens: tokens,
-      updated_at: new Date().toISOString(),
-    }, {
-      onConflict: 'user_id'
-    })
+  if (!user) {
+    throw new Error('Not authenticated — cannot store Google Calendar tokens')
   }
 
-  // Also store locally as backup
-  localStorage.setItem('google_calendar_tokens', JSON.stringify(tokens))
+  await supabase.from('user_preferences').upsert({
+    user_id: user.id,
+    google_calendar_tokens: tokens,
+    updated_at: new Date().toISOString(),
+  }, {
+    onConflict: 'user_id'
+  })
+
+  // Migrering: rensa eventuell gammal localStorage-token från före 2026-05-09.
+  try { localStorage.removeItem('google_calendar_tokens') } catch { /* ignore */ }
 }
 
 /**
- * Get stored tokens
+ * Get stored tokens. Läser BARA Supabase — ingen localStorage-fallback.
  */
 async function getStoredTokens(): Promise<StoredTokens | null> {
   const { data: { user } } = await supabase.auth.getUser()
 
-  if (user) {
-    const { data } = await supabase
-      .from('user_preferences')
-      .select('google_calendar_tokens')
-      .eq('user_id', user.id)
-      .single()
+  // Migrering: städa bort gammal localStorage-token (PII-läcka från före
+  // 2026-05-09). Görs vid varje read så det rensas snabbt på alla devices.
+  try { localStorage.removeItem('google_calendar_tokens') } catch { /* ignore */ }
 
-    if (data?.google_calendar_tokens) {
-      return data.google_calendar_tokens
-    }
-  }
+  if (!user) return null
 
-  // Fallback to localStorage
-  const stored = localStorage.getItem('google_calendar_tokens')
-  return stored ? JSON.parse(stored) : null
+  const { data } = await supabase
+    .from('user_preferences')
+    .select('google_calendar_tokens')
+    .eq('user_id', user.id)
+    .single()
+
+  return data?.google_calendar_tokens ?? null
 }
 
 /**

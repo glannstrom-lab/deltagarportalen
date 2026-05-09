@@ -176,9 +176,8 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       onSendMessage?.(text)
 
       try {
-        // Build context message with agent role, personality, and user data
-        const agentContext = t(`aiTeam.agents.${selectedAgent}.systemPrompt`)
-        const personalityContext = personality.systemPrompt
+        // Bara DATA om användaren skickas till servern — agent-systemprompt
+        // och personlighet är hårdkodade serverside (security 2026-05-09).
         const userDataContext = formatAITeamContext(userContext, selectedAgent)
 
         // Get auth token
@@ -204,7 +203,9 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
               agentTyp: selectedAgent,
               personlighet: selectedPersonality,
               responsLage: responseMode,
-              systemKontext: `${agentContext}\n\nPersonlighet: ${personalityContext}${userDataContext}`,
+              // Skicka bara DATA om användaren — agent + personlighet
+              // material:as serverside (security 2026-05-09).
+              userDataContext,
               historik: messages.slice(-10).map((m) => ({
                 roll: m.role === 'user' ? 'användare' : 'assistent',
                 innehall: m.content,
@@ -311,7 +312,6 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       selectedPersonality,
       responseMode,
       messages,
-      personality.systemPrompt,
       userContext,
       t,
       addMessage,
