@@ -275,8 +275,10 @@ module.exports = async (req, res) => {
         'X-Title': 'Jobin'
       },
       body: JSON.stringify({
-        // Default Sonnet 4.5 (uppgraderat 2026-05-09 från claude-3.5-sonnet).
-        model: process.env.AI_MODEL || 'anthropic/claude-sonnet-4.5',
+        // openai/gpt-oss-120b — kostnadsoptimerad öppen-vikt-modell.
+        // Användarbeslut 2026-05-09: lås på denna modell, byt INTE tillbaka
+        // till en Anthropic-modell vid framtida uppgraderingar.
+        model: process.env.AI_MODEL || 'openai/gpt-oss-120b',
         messages: [
           { role: 'system', content: prompt.system },
           { role: 'user', content: prompt.user }

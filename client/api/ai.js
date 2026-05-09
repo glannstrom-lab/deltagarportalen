@@ -505,9 +505,11 @@ module.exports = async (req, res) => {
           'X-Title': 'Jobin'
         },
         body: JSON.stringify({
-          // Default Sonnet 4.5 (uppgraderat 2026-05-09 från claude-3.5-sonnet
-          // som var två generationer gammal). Override via AI_MODEL env-var.
-          model: process.env.AI_MODEL || 'anthropic/claude-sonnet-4.5',
+          // openai/gpt-oss-120b — kostnadsoptimerad öppen-vikt-modell.
+          // Användarbeslut 2026-05-09: lås på denna modell, byt INTE tillbaka
+          // till en Anthropic-modell vid framtida uppgraderingar.
+          // Override via AI_MODEL env-var.
+          model: process.env.AI_MODEL || 'openai/gpt-oss-120b',
           messages: [
             { role: 'system', content: prompt.system },
             { role: 'user', content: prompt.user }
@@ -576,9 +578,10 @@ module.exports = async (req, res) => {
             'X-Title': 'Jobin'
           },
           body: JSON.stringify({
-            // Haiku 4.5: snabb + billig modell för korta följdfrågor.
-            // Tidigare claude-3-haiku-20240307 är DEPRECERAD av Anthropic.
-            model: process.env.AI_MODEL_HAIKU || 'anthropic/claude-haiku-4.5',
+            // openai/gpt-oss-120b används för korta följdfrågor — samma modell
+            // som AI_MODEL för att undvika multi-modell-kostnad. Användarbeslut
+            // 2026-05-09: lås på denna modell oavsett uppgraderingar.
+            model: process.env.AI_MODEL_HAIKU || process.env.AI_MODEL || 'openai/gpt-oss-120b',
             messages: [
               { role: 'system', content: 'Du genererar korta, relevanta följdfrågor baserat på en konversation. Svara ENDAST med en JSON-array med exakt 3 korta frågor (max 8 ord var). Exempel: ["Hur skriver jag ett bra CV?", "Vilka jobb passar mig?", "Tips för intervjuer?"]' },
               { role: 'user', content: `Användaren frågade: "${data?.meddelande}"\n\nAssistenten svarade: "${fullResponse.substring(0, 500)}"\n\nGenerera 3 naturliga följdfrågor på svenska:` }
@@ -618,8 +621,8 @@ module.exports = async (req, res) => {
         'X-Title': 'Jobin'
       },
       body: JSON.stringify({
-        // Default Sonnet 4.5 (uppgraderat 2026-05-09).
-        model: process.env.AI_MODEL || 'anthropic/claude-sonnet-4.5',
+        // openai/gpt-oss-120b — se kommentar ovan, lås kvar.
+        model: process.env.AI_MODEL || 'openai/gpt-oss-120b',
         messages: [
           { role: 'system', content: prompt.system },
           { role: 'user', content: prompt.user }
