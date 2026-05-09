@@ -166,9 +166,15 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           korrekt sidbrytning. Samma rules som de stora aktörerna (resume.io,
           kickresume) använder för Chrome headless print → PDF. */}
       <style>{`
+        /* Top/bottom-margin på @page så varje sida får andningsutrymme.
+           Tidigare var margin: 0 vilket gjorde att content som flödade till
+           sida 2 hamnade hårt mot pappret kant — top-padding på <main>
+           appliceras bara vid elementets start, inte per sida (klassiskt
+           CSS-flow). Vänster/höger lämnas 0 så sidobars-template ligger
+           kvar mot kanten. Bottom-margin förhindrar orphan-rader. */
         @page {
           size: A4;
-          margin: 0;
+          margin: 12mm 0 10mm 0;
         }
         @media print {
           html, body {
@@ -206,7 +212,10 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
             top: 0 !important;
             left: 0 !important;
             bottom: 0 !important;
-            height: 297mm !important;
+            /* Höjden bestäms av top:0 + bottom:0 så aside fyller hela
+               page-content-area. Tidigare hårdkodat 297mm vilket bara
+               stämmer när @page-margin är 0 — efter top/bottom-margin
+               ändringen blev 297mm för stort och klippte. */
             width: var(--sidebar-width, 280px) !important;
           }
           [data-template-wrapper] .cv-preview > main {
