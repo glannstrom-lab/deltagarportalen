@@ -200,7 +200,10 @@ export function ChicagoTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.education?.length > 0 && (
-          <section>
+          // cv-entry = break-inside: avoid på hela UTBILDNING så rubrik
+          // + alla entries håller ihop (max 2-3 entries i typiskt CV).
+          // Förhindrar att en ensam utbildningsrad blir orphan på sida 2.
+          <section className="cv-entry">
             <h3 style={{ ...sectionHeader, marginBottom: '18px' }}>UTBILDNING</h3>
             <div>
               {data.education.map((edu) => (

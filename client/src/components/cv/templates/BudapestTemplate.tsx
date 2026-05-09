@@ -301,9 +301,11 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
           </section>
         )}
 
-        {/* Skills */}
+        {/* Skills - cv-entry för att hela sektionen (rubrik + taggar) ska
+            hållas ihop på samma sida. Utan denna klass orphan-bryts
+            rubriken till sida 1 medan taggar ramlar till sida 2. */}
         {data.skills?.length > 0 && (
-          <section>
+          <section className="cv-entry">
             <h2
               style={{
                 fontSize: '13px',

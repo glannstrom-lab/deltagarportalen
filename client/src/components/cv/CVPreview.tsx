@@ -166,13 +166,19 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           korrekt sidbrytning. Samma rules som de stora aktörerna (resume.io,
           kickresume) använder för Chrome headless print → PDF. */}
       <style>{`
-        /* @page top/bottom-margin ger main per-sida-luft. Aside (sidobars-
-           templates) kompenseras nedan via transform så den fyller hela
-           pappret kant-till-kant trots marginalen. Vänster/höger lämnas 0
-           så sidobaren ligger mot kanten. */
+        /* @page margin: 0 — sidobaren ska fylla hela pappret kant-till-
+           kant och templates har egen padding på header/main. KÄND
+           BEGRÄNSNING: när content flödar till sida 2 hamnar första
+           elementet pixel-mot-papperets-kant utan top-luft (CSS-flow:
+           padding-top på <main> appliceras bara EN GÅNG vid elementets
+           start, inte per sida). En riktig per-sida-padding kräver
+           server-side PDF-rendering (Puppeteer page.pdf med kontroll-
+           erade margins) — inte möjligt via ren browser print-CSS utan
+           tradeoff (vita band överst/underst, eller gleshet mellan
+           entries på samma sida). */
         @page {
           size: A4;
-          margin: 12mm 0 10mm 0;
+          margin: 0;
         }
         @media print {
           html, body {
@@ -210,13 +216,6 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
             top: 0 !important;
             left: 0 !important;
             bottom: 0 !important;
-            /* Aside ska fylla HELA pappret (kant-till-kant), inte bara
-               page-content-area. @page-margin är 12mm/10mm, så aside
-               sticker upp 12mm i top-margin och ner 10mm i bottom-margin
-               via transform + height = full A4. Templates' egna padding
-               (t.ex. 48px på MG-cirkeln) påverkas inte av transform —
-               box-modellen är intakt. */
-            transform: translateY(-12mm) !important;
             height: 297mm !important;
             width: var(--sidebar-width, 280px) !important;
           }
@@ -225,10 +224,7 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           }
           /* Rubriker (h1, h2, h3) hålls ihop med första content-element
              under sig — Word-konvention "Keep with next". Förhindrar
-             orphan headers (rubrik ensam i botten av sida).
-             Tradeoff: kan ge whitespace om rubrik+entry inte får plats
-             på sidans rest. Det är dock visuellt bättre än orphan headers
-             som signalerar "broken layout". */
+             orphan headers (rubrik ensam i botten av sida). */
           .cv-preview h1,
           .cv-preview h2,
           .cv-preview h3 {
@@ -241,11 +237,10 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
             break-before: avoid;
           }
 
-          /* KRITISKT: display: flex blockerar break-inside: avoid i Chrome
-             headless print (puppeteer issue #6366). Force block på cv-entry
-             och cv-keep så break-inside faktiskt respekteras. Eventuell
-             flex-layout för "title left, date right" måste leva i en INNER
-             div. */
+          /* cv-entry: enskilda jobb/utbildningsposter måste hållas ihop
+             (break-inside: avoid). display: block tvingas eftersom flex
+             annars blockerar break-inside i Chrome headless (puppeteer
+             #6366). */
           .cv-preview .cv-entry,
           .cv-preview .cv-keep {
             display: block !important;
