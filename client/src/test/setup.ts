@@ -30,6 +30,20 @@ Object.defineProperty(window, 'localStorage', {
   value: localStorageMock,
 })
 
+// Mock sessionStorage. CV-draft skrivs hit (GDPR-fix 2026-05-09) — testa
+// uttryckligen att PII INTE går till localStorage genom att verifiera mot detta.
+// Backas av en in-memory store så tester kan göra setItem/getItem i samma test.
+const sessionStorageStore = new Map<string, string>()
+const sessionStorageMock = {
+  getItem: vi.fn((key: string) => sessionStorageStore.get(key) ?? null),
+  setItem: vi.fn((key: string, value: string) => { sessionStorageStore.set(key, value) }),
+  removeItem: vi.fn((key: string) => { sessionStorageStore.delete(key) }),
+  clear: vi.fn(() => { sessionStorageStore.clear() }),
+}
+Object.defineProperty(window, 'sessionStorage', {
+  value: sessionStorageMock,
+})
+
 // Mock IntersectionObserver
 class IntersectionObserverMock {
   observe = vi.fn()

@@ -1,2 +1,7 @@
 [functions.af-jobsearch]
-verify_jwt = false
+# Stängd proxy: kräver giltig Supabase-JWT. Open-proxy-läge togs bort
+# 2026-05-09 (säkerhetsrevision) — funktionen anropas inte av klienten just nu
+# (`client/src/services/arbetsformedlingenApi.ts` går direkt mot AF), så detta
+# bryter inget. Sätt tillbaka till false ENDAST om en publik konsument behövs
+# och då i kombination med strikt CORS + IP-rate-limit.
+verify_jwt = true

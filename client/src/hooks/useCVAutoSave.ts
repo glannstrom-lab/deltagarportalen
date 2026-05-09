@@ -1,6 +1,16 @@
 /**
- * Hook for auto-saving CV data
- * Two-tier strategy: localStorage (immediate) + server (debounced)
+ * Hook for auto-saving CV data.
+ *
+ * Strategi: server (debounced) är primär persistens. Som lokal fallback för
+ * tab-refresh och offline-redigering används sessionStorage — INTE localStorage.
+ *
+ * Skälet är GDPR/säkerhet: målgruppen använder ofta delade datorer (bibliotek,
+ * AF-besökerdatorer) där localStorage överlever inloggningar och läcker
+ * föregående användares CV (namn, jobbhistorik, kontaktuppgifter) till nästa.
+ * sessionStorage är tab-isolerad och rensas när fliken stängs — inget
+ * cross-user-läckage.
+ *
+ * Ändrat 2026-05-09 (säkerhetsrevision, HIGH-2026-05-002).
  */
 
 import { useEffect, useRef, useState } from 'react'
@@ -63,9 +73,11 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       markSaved()
       queryClient.invalidateQueries({ queryKey: ['cv'] })
       setPendingCount(0)
-      localStorage.removeItem('cv-draft')
+      // Rensa session-draft eftersom server är synkad. Vi sparar bara en
+      // boolean-flagga ("användaren har CV") i localStorage — INGEN PII.
+      try { sessionStorage.removeItem('cv-draft') } catch { /* ignore */ }
       const savedAt = Date.now()
-      localStorage.setItem('cv-last-saved', savedAt.toString())
+      try { localStorage.setItem('cv-last-saved', savedAt.toString()) } catch { /* ignore */ }
       ownLastSaveAt.current = savedAt
       lastSavedData.current = currentData
       // Broadcast till andra flikar så de vet att deras state är gammalt.
@@ -85,7 +97,10 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
         userApi.updateOnboardingStep('cv', true).catch(err => {
           console.error('Error updating onboarding progress:', err)
         })
-        localStorage.setItem('cv-data', JSON.stringify(currentData))
+        // Boolean-flagga (NOT PII) som dashboard/onboarding läser för att veta
+        // om användaren har ett CV. Tidigare lagrade vi hela CV:t här — det var
+        // GDPR-läckan. '1' räcker för truthiness-kontroller.
+        try { localStorage.setItem('cv-data', '1') } catch { /* ignore */ }
       }
     },
     onError: (error: unknown) => {
@@ -175,15 +190,18 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
   }, [isOnline, markSaving, saveToServer])
 
-  // Sista utvägen: spara till localStorage vid sidstängning så draft kan återställas.
-  // Detta är fallback för fall där visibilitychange inte hann skicka till server.
+  // Sista utvägen: spara draft till sessionStorage vid sidstängning så draft kan
+  // återställas i samma flik (efter F5/krasch). sessionStorage är tab-isolerad
+  // och rensas automatiskt när fliken stängs — ingen cross-user-läcka på
+  // delade datorer. Detta är fallback för fall där visibilitychange inte hann
+  // skicka till server.
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (debounceTimer.current) {
         clearTimeout(debounceTimer.current)
       }
       try {
-        localStorage.setItem('cv-draft', JSON.stringify({
+        sessionStorage.setItem('cv-draft', JSON.stringify({
           ...currentData,
           _timestamp: Date.now(),
         }))
@@ -211,9 +229,11 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       clearTimeout(debounceTimer.current)
     }
 
-    // Save to localStorage immediately (fallback om server-sync failar)
+    // Save to sessionStorage immediately (fallback om server-sync failar).
+    // sessionStorage är tab-isolerad så ingen risk att läcka PII till nästa
+    // användare på delade datorer.
     try {
-      localStorage.setItem('cv-draft', JSON.stringify({
+      sessionStorage.setItem('cv-draft', JSON.stringify({
         ...dataToSave,
         _timestamp: Date.now(),
       }))
@@ -246,48 +266,55 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
 }
 
 /**
- * Hook to restore draft from localStorage
+ * Hook to restore draft from sessionStorage. Migrerar/rensar bort eventuell
+ * gammal localStorage-draft (kvar från före 2026-05-09 GDPR-fixen).
  */
 export function useCVDraft() {
   const { setHasDraft } = useCVStore()
-  
+
   const restoreDraft = (): CVData | null => {
+    // Rensa bort gammal localStorage-draft om någon klient fortfarande har det
+    // kvar från en tidigare version. Detta är säkerhetsmigreringen.
+    try { localStorage.removeItem('cv-draft') } catch { /* ignore */ }
+    try { localStorage.removeItem('cv-data') } catch { /* ignore */ }
+
     try {
-      const draft = localStorage.getItem('cv-draft')
+      const draft = sessionStorage.getItem('cv-draft')
       if (!draft) return null
-      
+
       const parsed = JSON.parse(draft)
       const { _timestamp, ...data } = parsed
-      
+
       // Check if draft is newer than 7 days
       const age = Date.now() - (_timestamp || 0)
       if (age > 7 * 24 * 60 * 60 * 1000) {
-        localStorage.removeItem('cv-draft')
+        sessionStorage.removeItem('cv-draft')
         return null
       }
-      
+
       // Check if draft is newer than last server save
       const lastSaved = localStorage.getItem('cv-last-saved')
       if (lastSaved) {
         const lastSavedTime = parseInt(lastSaved)
         if (lastSavedTime > (_timestamp || 0)) {
-          localStorage.removeItem('cv-draft')
+          sessionStorage.removeItem('cv-draft')
           return null
         }
       }
-      
+
       setHasDraft(true)
       return data as CVData
     } catch {
       return null
     }
   }
-  
+
   const clearDraft = () => {
-    localStorage.removeItem('cv-draft')
-    localStorage.removeItem('cv-last-saved')
+    try { sessionStorage.removeItem('cv-draft') } catch { /* ignore */ }
+    try { localStorage.removeItem('cv-draft') } catch { /* ignore */ }
+    try { localStorage.removeItem('cv-last-saved') } catch { /* ignore */ }
     setHasDraft(false)
   }
-  
+
   return { restoreDraft, clearDraft }
 }

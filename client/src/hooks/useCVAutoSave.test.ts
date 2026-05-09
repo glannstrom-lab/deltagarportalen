@@ -69,8 +69,10 @@ describe('useCVAutoSave', () => {
   beforeEach(() => {
     vi.useFakeTimers()
     mockUpdateCV.mockClear()
-    // Reset localStorage spy
+    // Reset storage spies. Drafts skrivs nu till sessionStorage (GDPR-fix
+    // 2026-05-09) — localStorage används bara för icke-PII-flaggor.
     ;(window.localStorage.setItem as ReturnType<typeof vi.fn>).mockClear()
+    ;(window.sessionStorage.setItem as ReturnType<typeof vi.fn>).mockClear()
   })
 
   afterEach(() => {
@@ -94,7 +96,7 @@ describe('useCVAutoSave', () => {
     expect(mockUpdateCV).not.toHaveBeenCalled()
   })
 
-  it('sparar till localStorage omedelbart vid triggerSave', () => {
+  it('sparar draft till sessionStorage omedelbart vid triggerSave (INTE localStorage — GDPR)', () => {
     const { result } = renderHook(() => useCVAutoSave(sampleCV), {
       wrapper: makeWrapper(),
     })
@@ -105,10 +107,14 @@ describe('useCVAutoSave', () => {
       result.current.triggerSave({ ...sampleCV, firstName: 'Anna' })
     })
 
-    expect(window.localStorage.setItem).toHaveBeenCalledWith(
+    expect(window.sessionStorage.setItem).toHaveBeenCalledWith(
       'cv-draft',
       expect.stringContaining('"firstName":"Anna"')
     )
+    // Säkerställ att vi INTE skriver CV-PII till localStorage (cross-user-läcka).
+    const localCalls = (window.localStorage.setItem as ReturnType<typeof vi.fn>).mock?.calls || []
+    const cvDraftToLocal = localCalls.find((c: unknown[]) => c[0] === 'cv-draft')
+    expect(cvDraftToLocal).toBeUndefined()
   })
 
   it('skickar till server efter 800ms debounce (inte tidigare)', async () => {
@@ -191,9 +197,9 @@ describe('useCVAutoSave', () => {
       document.dispatchEvent(new Event('visibilitychange'))
     })
 
-    // Offline — inget server-call ska ske, men localStorage ska vara sparad
+    // Offline — inget server-call ska ske, men sessionStorage ska ha draften
     expect(mockUpdateCV).not.toHaveBeenCalled()
-    expect(window.localStorage.setItem).toHaveBeenCalledWith(
+    expect(window.sessionStorage.setItem).toHaveBeenCalledWith(
       'cv-draft',
       expect.stringContaining('"firstName":"Cecilia"')
     )

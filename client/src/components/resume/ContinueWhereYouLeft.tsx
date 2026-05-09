@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { interestGuideApi } from '@/services/cloudStorage'
+import { cvApi } from '@/services/supabaseApi'
 
 interface InProgressActivity {
   id: string
@@ -104,12 +105,14 @@ export function ContinueWhereYouLeft() {
       // Hämta alla påbörjade aktiviteter
       const inProgress: InProgressActivity[] = []
 
-      // CV-progress
-      const cvData = localStorage.getItem('cv-data')
-      if (cvData) {
-        try {
-          const cv = JSON.parse(cvData)
-          const cvProgress = calculateCVProgress(cv)
+      // CV-progress: hämta från Supabase istället för localStorage. Tidigare
+      // läste vi en JSON-blobb från localStorage som var en GDPR-läcka på
+      // delade datorer — den lagras nu i molnet (cv:s-tabell). Se
+      // useCVAutoSave.ts (2026-05-09).
+      try {
+        const cv = await cvApi.getCV()
+        if (cv) {
+          const cvProgress = calculateCVProgress(cv as CVData)
           if (cvProgress > 0 && cvProgress < 100) {
             inProgress.push({
               id: 'cv',
@@ -117,15 +120,15 @@ export function ContinueWhereYouLeft() {
               title: 'Fortsätt med ditt CV',
               description: `Du har fyllt i ${cvProgress}% av ditt CV`,
               progress: cvProgress,
-              lastActive: new Date(cv.updatedAt || Date.now()),
+              lastActive: new Date((cv as { updatedAt?: string }).updatedAt || Date.now()),
               path: '/cv',
               icon: FileText
             })
           }
-        } catch (cvParseError) {
-          // Ignore CV parse errors
-          console.debug('Could not parse CV data:', cvParseError)
         }
+      } catch (cvFetchError) {
+        // Ej inloggad eller nätverksfel — tyst skip
+        console.debug('Could not fetch CV data:', cvFetchError)
       }
 
       // Intresseguide-progress (from Supabase)

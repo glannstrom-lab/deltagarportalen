@@ -338,10 +338,13 @@ export default function CVBuilder() {
     }
   }, [])
   
-  // Rensa gammal localStorage draft vid mount för att undvika konflikter
+  // Rensa gammal draft vid mount för att undvika konflikter. Säkerställ
+  // också att eventuell PII-läcka från äldre versioner (full CV i localStorage)
+  // rensas — sedan 2026-05-09 lagras drafts i sessionStorage istället.
   useEffect(() => {
-    localStorage.removeItem('cv-draft')
-    localStorage.removeItem('cv-last-saved')
+    try { sessionStorage.removeItem('cv-draft') } catch { /* ignore */ }
+    try { localStorage.removeItem('cv-draft') } catch { /* ignore */ }
+    try { localStorage.removeItem('cv-last-saved') } catch { /* ignore */ }
   }, []) // Kör bara en gång vid mount
 
   // Warn user before leaving with unsaved changes
@@ -406,16 +409,18 @@ export default function CVBuilder() {
           cvLogger.debug('CVBuilder: Setting data with workExperience:', newData.workExperience)
           return newData
         })
-        // Viktigt: Markera att server-data är laddad så draft inte triggar
-        localStorage.setItem('cv-last-saved', Date.now().toString())
-        // Rensa eventuellt gammalt draft om det finns
-        const draft = localStorage.getItem('cv-draft')
+        // Viktigt: Markera att server-data är laddad så draft inte triggar.
+        // cv-last-saved är bara ett timestamp (ingen PII).
+        try { localStorage.setItem('cv-last-saved', Date.now().toString()) } catch { /* ignore */ }
+        // Rensa eventuellt gammalt draft i sessionStorage. Nuvarande draft-
+        // strategi är sessionStorage (per-flik, ingen cross-user-läcka).
+        const draft = sessionStorage.getItem('cv-draft')
         if (draft) {
           try {
             const parsed = JSON.parse(draft)
             // Om draft är äldre än 5 minuter, rensa det
             if (Date.now() - (parsed._timestamp || 0) > 5 * 5 * 1000) {
-              localStorage.removeItem('cv-draft')
+              sessionStorage.removeItem('cv-draft')
             }
           } catch { }
         }

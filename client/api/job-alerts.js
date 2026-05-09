@@ -9,11 +9,53 @@
 
 const { createClient } = require('@supabase/supabase-js');
 
-// Initialize Supabase
+// Service-klient: används för cron-jobb och för operationer som kräver
+// service-role (skriva till email_notifications, läsa profiles utan RLS).
+// ALDRIG använd utan föregående auth-kontroll (verifyUserAuth eller verifyCronSecret).
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY || process.env.VITE_SUPABASE_ANON_KEY
 );
+
+// Anon-klient enbart för token-verifiering (ger oss user-id från JWT).
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+const supabaseAnon = SUPABASE_URL && SUPABASE_ANON_KEY
+  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
+// Verifiera Bearer-token. Returnerar user-objekt eller null.
+async function verifyUserAuth(req) {
+  const authHeader = req.headers.authorization || req.headers.Authorization;
+  if (!authHeader || typeof authHeader !== 'string' || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+  if (!supabaseAnon) return null;
+  const token = authHeader.substring(7);
+  try {
+    const { data, error } = await supabaseAnon.auth.getUser(token);
+    if (error || !data?.user) return null;
+    return data.user;
+  } catch (err) {
+    console.error('[job-alerts] auth verify error:', err.message);
+    return null;
+  }
+}
+
+// Verifiera cron-secret för server-till-server-anrop (Vercel Cron / GH Actions).
+// Konstant-tids jämförelse skyddar mot timing-attacker.
+function verifyCronSecret(req) {
+  const expected = process.env.CRON_SECRET;
+  if (!expected) return false;
+  const provided = req.headers['x-cron-secret'] || req.headers['X-Cron-Secret'];
+  if (!provided || typeof provided !== 'string') return false;
+  if (provided.length !== expected.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < expected.length; i++) {
+    mismatch |= expected.charCodeAt(i) ^ provided.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
 
 // Security: Allowed origins for CORS
 const ALLOWED_ORIGINS = [
@@ -440,13 +482,45 @@ module.exports = async (req, res) => {
 
   const action = req.query.action || req.body?.action;
 
-  // Get identifier for rate limiting (IP for cron, userId for user actions)
+  // Auth-grindar PER ACTION. Detta är säkerhetspatch 2026-05-09 — tidigare
+  // saknade endpointen all auth, vilket gjorde service-key-skrivningar
+  // exploitbara via { action: 'check-user', userId: <godtycklig-uuid> }.
+  let authedUserId = null;
+  let isCron = false;
+
+  if (action === 'check-user') {
+    // Användar-triggad: kräver giltig Bearer-token. UserId tas FRÅN tokenen,
+    // inte från req.body — annars kan en angripare skicka annan användares uuid.
+    const user = await verifyUserAuth(req);
+    if (!user) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    authedUserId = user.id;
+  } else if (action === 'check') {
+    // Cron: kräver delad hemlighet.
+    if (!verifyCronSecret(req)) {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+    isCron = true;
+  } else if (action === 'send-digest') {
+    // Hybrid: en inloggad användare kan begära sin egen digest (Bearer),
+    // ELLER en cron-process kan triggar alla (cron-secret).
+    const user = await verifyUserAuth(req);
+    if (user) {
+      authedUserId = user.id;
+    } else if (verifyCronSecret(req)) {
+      isCron = true;
+    } else {
+      return res.status(401).json({ error: 'Unauthorized' });
+    }
+  }
+
+  // Rate limiting: använd den autentiserade user-iden om vi har en, annars IP.
   const clientIP = req.headers['x-forwarded-for']?.split(',')[0]?.trim()
     || req.headers['x-real-ip']
     || 'unknown';
-  const rateLimitId = req.body?.userId || clientIP;
+  const rateLimitId = authedUserId || clientIP;
 
-  // Check rate limit
   const rateLimit = await checkRateLimit(rateLimitId, action || 'default');
   if (!rateLimit.allowed) {
     const retryAfter = Math.ceil(rateLimit.resetIn / 1000);
@@ -460,7 +534,7 @@ module.exports = async (req, res) => {
   try {
     switch (action) {
       case 'check': {
-        // Check all alerts (for cron)
+        // Cron: kontrollera alla aktiva bevakningar
         const result = await checkAllAlerts();
         return res.json({
           success: true,
@@ -470,37 +544,36 @@ module.exports = async (req, res) => {
       }
 
       case 'check-user': {
-        // Check alerts for specific user
-        const userId = req.body?.userId;
-        if (!userId) {
-          return res.status(400).json({ error: 'userId required' });
-        }
-        const result = await checkUserAlerts(userId);
+        // Verifierad användare — alltid använd authedUserId, ignorera ev. userId i body
+        const result = await checkUserAlerts(authedUserId);
         return res.json({ success: true, ...result });
       }
 
       case 'send-digest': {
-        // Send daily digest to specific user or all
-        const userId = req.body?.userId;
-        if (userId) {
-          const sent = await sendDailyDigest(userId);
+        // Inloggad användare → bara sin egen digest (authedUserId override:ar body).
+        // Cron → alla användare med daily-frekvens.
+        if (authedUserId) {
+          const sent = await sendDailyDigest(authedUserId);
           return res.json({ success: true, sent });
-        } else {
-          // Send to all users with daily frequency
-          const { data: users } = await supabase
-            .from('job_alerts')
-            .select('user_id')
-            .eq('is_active', true)
-            .eq('notification_frequency', 'daily');
-
-          const uniqueUsers = [...new Set((users || []).map(u => u.user_id))];
-          let sentCount = 0;
-          for (const uid of uniqueUsers) {
-            const sent = await sendDailyDigest(uid);
-            if (sent) sentCount++;
-          }
-          return res.json({ success: true, digestsSent: sentCount, totalUsers: uniqueUsers.length });
         }
+        if (!isCron) {
+          // Säkerhetsbälte — borde aldrig hända pga auth-gate ovan.
+          return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const { data: users } = await supabase
+          .from('job_alerts')
+          .select('user_id')
+          .eq('is_active', true)
+          .eq('notification_frequency', 'daily');
+
+        const uniqueUsers = [...new Set((users || []).map(u => u.user_id))];
+        let sentCount = 0;
+        for (const uid of uniqueUsers) {
+          const sent = await sendDailyDigest(uid);
+          if (sent) sentCount++;
+        }
+        return res.json({ success: true, digestsSent: sentCount, totalUsers: uniqueUsers.length });
       }
 
       default:

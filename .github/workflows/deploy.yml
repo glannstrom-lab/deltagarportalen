@@ -54,10 +54,11 @@ jobs:
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
 
-      - name: Run database migrations
-        run: supabase db push
-        env:
-          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      # OBS: Migrationer körs INTE automatiskt här.
+      # `supabase db push` försöker köra ALLA migrationer och fail:ar på konflikter
+      # (se CLAUDE.md). Migrationer körs manuellt med:
+      #   npx supabase db query --linked -f supabase/migrations/<fil>.sql
+      # Skapa en GH Actions issue eller pre-deploy-checklista för att ej glömma.
 
       - name: Deploy Edge Functions
         run: supabase functions deploy
