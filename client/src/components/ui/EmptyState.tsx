@@ -1,6 +1,27 @@
 /**
  * Empty State Component
- * Standardiserad design för tomma tillstånd
+ *
+ * KONTRAKT (DESIGN.md §7): Detta är den ENDA accepterade vägen att rendera ett
+ * tomtillstånd. Varje tomtillstånd ska ha tre delar — ikon, mänsklig rubrik
+ * (beskriver vad sidan ÄR, inte vad som saknas), EN tydlig CTA.
+ *
+ * FÖRBJUDET enligt DESIGN.md:
+ * - Staplade tomtillstånd (t.ex. tom kolumn-skelett OCH stor empty-state-card)
+ * - "0" som primär information ("0 aktiva ansökningar" → "Du har inte börjat söka jobb än")
+ * - Oöversatta i18n-keys (sweep regelbundet)
+ * - Spinner som tomtillstånd (använd Skeleton-komponenten istället)
+ *
+ * VARIANTER:
+ * - <EmptyState>           Standardvariant (page-level)
+ * - <EmptyList>            För listor med "Skapa X"-CTA
+ * - <EmptySearch>          För tomma sökresultat
+ * - <EmptyWidget>          För dashboard-widgets (kompakt, dashed border)
+ * - <IllustratedEmptyState> Med SVG-illustration istället för ikon
+ *
+ * COPYWRITING-MALL (DESIGN.md §2):
+ *   title:       "Här bygger du ditt nätverk"            (vad sidan ÄR)
+ *   description: "Människor som hjälpte mig hitta jobb..." (varför man kommer hit)
+ *   action:      { label: "Lägg till första kontakten" } (konkret nästa steg)
  */
 
 import { cn } from '@/lib/utils'
@@ -246,7 +267,7 @@ export function EmptyWidget({
       {action && (
         <button
           onClick={handleClick}
-          className="mt-3 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
+          className="mt-3 text-sm font-medium text-[var(--c-text)] hover:text-[var(--c-solid)] transition-colors"
         >
           {action.label} →
         </button>
