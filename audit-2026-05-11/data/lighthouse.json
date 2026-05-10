@@ -1,0 +1,87 @@
+[
+  {
+    "id": "landing",
+    "label": "Landningssida",
+    "url": "https://jobin.se",
+    "scores": {
+      "performance": 60,
+      "accessibility": 94,
+      "best-practices": 96
+    },
+    "cwv": {
+      "LCP_ms": 7985,
+      "CLS": 0,
+      "INP_ms": 7985,
+      "FCP_ms": 6035,
+      "TBT_ms": 0
+    }
+  },
+  {
+    "id": "login",
+    "label": "Login",
+    "url": "https://jobin.se/#/login",
+    "scores": {
+      "performance": 67,
+      "accessibility": 94,
+      "best-practices": 96
+    },
+    "cwv": {
+      "LCP_ms": 7693,
+      "CLS": 0,
+      "INP_ms": 7693,
+      "FCP_ms": 2743,
+      "TBT_ms": 237
+    }
+  },
+  {
+    "id": "register",
+    "label": "Register",
+    "url": "https://jobin.se/#/register",
+    "scores": {
+      "performance": 67,
+      "accessibility": 94,
+      "best-practices": 96
+    },
+    "cwv": {
+      "LCP_ms": 7703,
+      "CLS": 0,
+      "INP_ms": 7703,
+      "FCP_ms": 2753,
+      "TBT_ms": 241
+    }
+  },
+  {
+    "id": "privacy",
+    "label": "Integritet",
+    "url": "https://jobin.se/#/privacy",
+    "scores": {
+      "performance": 67,
+      "accessibility": 93,
+      "best-practices": 96
+    },
+    "cwv": {
+      "LCP_ms": 7702,
+      "CLS": 0,
+      "INP_ms": 7702,
+      "FCP_ms": 2752,
+      "TBT_ms": 238
+    }
+  },
+  {
+    "id": "terms",
+    "label": "Villkor",
+    "url": "https://jobin.se/#/terms",
+    "scores": {
+      "performance": 66,
+      "accessibility": 93,
+      "best-practices": 96
+    },
+    "cwv": {
+      "LCP_ms": 7694,
+      "CLS": 0,
+      "INP_ms": 7694,
+      "FCP_ms": 2744,
+      "TBT_ms": 268
+    }
+  }
+]

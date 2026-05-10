@@ -1,0 +1,1413 @@
+{
+  "startedAt": "2026-05-10T16:05:37.271Z",
+  "baseUrl": "https://jobin.se",
+  "pages": [
+    {
+      "id": "01-landing-public",
+      "label": "Landningssida",
+      "path": "/",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [
+        {
+          "width": 113,
+          "height": 21,
+          "text": "integritetspolicy"
+        }
+      ],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 16
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\01-landing-public.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\01-landing-public.png"
+    },
+    {
+      "id": "02-login",
+      "label": "Inloggning",
+      "path": "/#/login",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [
+        {
+          "width": 114,
+          "height": 21,
+          "text": "Skapa ett konto"
+        },
+        {
+          "width": 135,
+          "height": 21,
+          "text": "← Tillbaka till Jobin"
+        },
+        {
+          "width": 113,
+          "height": 21,
+          "text": "integritetspolicy"
+        }
+      ],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\02-login.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\02-login.png"
+    },
+    {
+      "id": "03-register",
+      "label": "Registrering",
+      "path": "/#/register",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [
+        {
+          "width": 113,
+          "height": 21,
+          "text": "integritetspolicy"
+        }
+      ],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\03-register.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\03-register.png"
+    },
+    {
+      "id": "04-privacy",
+      "label": "Integritet",
+      "path": "/#/privacy",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [
+        {
+          "width": 113,
+          "height": 21,
+          "text": "integritetspolicy"
+        }
+      ],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\04-privacy.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\04-privacy.png"
+    },
+    {
+      "id": "05-terms",
+      "label": "Villkor",
+      "path": "/#/terms",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [
+        {
+          "width": 113,
+          "height": 21,
+          "text": "integritetspolicy"
+        }
+      ],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\05-terms.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\05-terms.png"
+    },
+    {
+      "id": "06-ai-policy",
+      "label": "AI-policy",
+      "path": "/#/ai-policy",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [
+        {
+          "width": 113,
+          "height": 21,
+          "text": "integritetspolicy"
+        }
+      ],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\06-ai-policy.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\06-ai-policy.png"
+    },
+    {
+      "id": "10-dashboard",
+      "label": "Dashboard",
+      "path": "/#/",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/diary_entries?select=id&user_id=eq.5b0904ac-936e-4b — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/network_contacts?select=id&user_id=eq.5b0904ac-936e — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 4
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\10-dashboard.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\10-dashboard.png"
+    },
+    {
+      "id": "11-hub-oversikt",
+      "label": "Hub: Översikt",
+      "path": "/#/oversikt",
+      "isHubLanding": true,
+      "consoleErrors": [],
+      "networkErrors": [
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/diary_entries?select=id&user_id=eq.5b0904ac-936e-4b — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/network_contacts?select=id&user_id=eq.5b0904ac-936e — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 4
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\11-hub-oversikt.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\11-hub-oversikt.png"
+    },
+    {
+      "id": "11b-hub-oversikt-historik",
+      "label": "Hub: Historik",
+      "path": "/#/oversikt/historik",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/diary_entries?select=id&user_id=eq.5b0904ac-936e-4b — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/network_contacts?select=id&user_id=eq.5b0904ac-936e — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\11b-hub-oversikt-historik.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\11b-hub-oversikt-historik.png"
+    },
+    {
+      "id": "12-hub-jobb",
+      "label": "Hub: Söka jobb",
+      "path": "/#/jobb",
+      "isHubLanding": true,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [
+        {
+          "rule": "hub-personalization-missing",
+          "detail": "Ingen \"Hej {namn}\"-greeting hittad"
+        }
+      ],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\12-hub-jobb.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\12-hub-jobb.png"
+    },
+    {
+      "id": "13-hub-karriar",
+      "label": "Hub: Karriär",
+      "path": "/#/karriar",
+      "isHubLanding": true,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [
+        {
+          "rule": "hub-personalization-missing",
+          "detail": "Ingen \"Hej {namn}\"-greeting hittad"
+        }
+      ],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\13-hub-karriar.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\13-hub-karriar.png"
+    },
+    {
+      "id": "14-hub-resurser",
+      "label": "Hub: Resurser",
+      "path": "/#/resurser",
+      "isHubLanding": true,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [
+        {
+          "rule": "hub-personalization-missing",
+          "detail": "Ingen \"Hej {namn}\"-greeting hittad"
+        }
+      ],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\14-hub-resurser.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\14-hub-resurser.png"
+    },
+    {
+      "id": "15-hub-vardag",
+      "label": "Hub: Min vardag",
+      "path": "/#/min-vardag",
+      "isHubLanding": true,
+      "consoleErrors": [],
+      "networkErrors": [
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/network_contacts?select=id&user_id=eq.5b0904ac-936e — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/diary_entries?select=id&user_id=eq.5b0904ac-936e-4b — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "designIssues": [
+        {
+          "rule": "hub-personalization-missing",
+          "detail": "Ingen \"Hej {namn}\"-greeting hittad"
+        }
+      ],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\15-hub-vardag.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\15-hub-vardag.png"
+    },
+    {
+      "id": "20-cv",
+      "label": "CV",
+      "path": "/#/cv",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "button-name",
+          "impact": "critical",
+          "help": "Buttons must have discernible text",
+          "nodes": 8
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 14
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\20-cv.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\20-cv.png"
+    },
+    {
+      "id": "20-cv-create",
+      "label": "CV",
+      "path": "/#/cv",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\20-cv-create.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "20-cv-my-cvs",
+      "label": "CV",
+      "path": "/#/cv/my-cvs",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\20-cv-my-cvs.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "20-cv-adapt",
+      "label": "CV",
+      "path": "/#/cv/adapt",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\20-cv-adapt.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "20-cv-ats",
+      "label": "CV",
+      "path": "/#/cv/ats",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\20-cv-ats.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "20-cv-tips",
+      "label": "CV",
+      "path": "/#/cv/tips",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\20-cv-tips.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "21-cover-letter",
+      "label": "Personligt brev",
+      "path": "/#/cover-letter",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\21-cover-letter.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\21-cover-letter.png"
+    },
+    {
+      "id": "21-cover-letter-generator",
+      "label": "Personligt brev",
+      "path": "/#/cover-letter",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\21-cover-letter-generator.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "21-cover-letter-saved",
+      "label": "Personligt brev",
+      "path": "/#/cover-letter/saved",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\21-cover-letter-saved.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "22-job-search",
+      "label": "Sök jobb",
+      "path": "/#/job-search",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 21
+        },
+        {
+          "id": "nested-interactive",
+          "impact": "serious",
+          "help": "Interactive controls must not be nested",
+          "nodes": 20
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\22-job-search.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\22-job-search.png"
+    },
+    {
+      "id": "23-applications",
+      "label": "Ansökningar",
+      "path": "/#/applications",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 2
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\23-applications.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\23-applications.png"
+    },
+    {
+      "id": "24-spontaneous",
+      "label": "Spontanansökan",
+      "path": "/#/spontanansökan",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\24-spontaneous.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\24-spontaneous.png"
+    },
+    {
+      "id": "24-spontaneous-search",
+      "label": "Spontanansökan",
+      "path": "/#/spontanansökan",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\24-spontaneous-search.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "24-spontaneous-companies",
+      "label": "Spontanansökan",
+      "path": "/#/spontanansökan/mina-foretag",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\24-spontaneous-companies.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "24-spontaneous-stats",
+      "label": "Spontanansökan",
+      "path": "/#/spontanansökan/statistik",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\24-spontaneous-stats.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "30-career",
+      "label": "Karriär",
+      "path": "/#/career",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 10
+        },
+        {
+          "id": "link-in-text-block",
+          "impact": "serious",
+          "help": "Links must be distinguishable without relying on color",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\30-career.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\30-career.png"
+    },
+    {
+      "id": "30-career-labor-market",
+      "label": "Karriär",
+      "path": "/#/career",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\30-career-labor-market.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "30-career-adaptation",
+      "label": "Karriär",
+      "path": "/#/career/adaptation",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\30-career-adaptation.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "30-career-credentials",
+      "label": "Karriär",
+      "path": "/#/career/credentials",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\30-career-credentials.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "30-career-relocation",
+      "label": "Karriär",
+      "path": "/#/career/relocation",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/job_applications?select=*&user_id=eq.5b0904ac-936e- — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/cover_letters?select=*&user_id=eq.5b0904ac-936e-4b4 — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\30-career-relocation.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "30-career-plan",
+      "label": "Karriär",
+      "path": "/#/career/plan",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\30-career-plan.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "31-interest-guide",
+      "label": "Intresseguide",
+      "path": "/#/interest-guide",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\31-interest-guide.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\31-interest-guide.png"
+    },
+    {
+      "id": "31-interest-guide-test",
+      "label": "Intresseguide",
+      "path": "/#/interest-guide",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\31-interest-guide-test.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "31-interest-guide-results",
+      "label": "Intresseguide",
+      "path": "/#/interest-guide/results",
+      "isHubLanding": false,
+      "consoleErrors": [
+        "16:08:07.181 [ERROR][API] Failed to load notifications {error: Object, errorMessage: [object Object], stack: undefined}",
+        "[Error] [API] Failed to load notifications {level: error, prefix: API, error: Object, errorMessage: [object Object], stack: undefined}"
+      ],
+      "networkErrors": [
+        "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/profiles?select=first_name%2Clast_name%2Cprofile_im — net::ERR_ABORTED",
+        "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/notifications?select=*&user_id=eq.5b0904ac-936e-4b4 — net::ERR_ABORTED",
+        "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/notifications?select=*&user_id=eq.5b0904ac-936e-4b4 — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\31-interest-guide-results.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "31-interest-guide-occupations",
+      "label": "Intresseguide",
+      "path": "/#/interest-guide/occupations",
+      "isHubLanding": false,
+      "consoleErrors": [
+        "16:08:09.922 [ERROR][API] Failed to load notifications {error: Object, errorMessage: [object Object], stack: undefined}",
+        "[Error] [API] Failed to load notifications {level: error, prefix: API, error: Object, errorMessage: [object Object], stack: undefined}"
+      ],
+      "networkErrors": [
+        "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/notifications?select=*&user_id=eq.5b0904ac-936e-4b4 — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\31-interest-guide-occupations.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "31-interest-guide-explore",
+      "label": "Intresseguide",
+      "path": "/#/interest-guide/explore",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\31-interest-guide-explore.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "31-interest-guide-history",
+      "label": "Intresseguide",
+      "path": "/#/interest-guide/history",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\31-interest-guide-history.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "32-skills-gap",
+      "label": "Kompetensanalys",
+      "path": "/#/skills-gap-analysis",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "scrollable-region-focusable",
+          "impact": "serious",
+          "help": "Scrollable region must have keyboard access",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\32-skills-gap.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\32-skills-gap.png"
+    },
+    {
+      "id": "33-personal-brand",
+      "label": "Varumärke",
+      "path": "/#/personal-brand",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "nested-interactive",
+          "impact": "serious",
+          "help": "Interactive controls must not be nested",
+          "nodes": 6
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\33-personal-brand.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\33-personal-brand.png"
+    },
+    {
+      "id": "34-education",
+      "label": "Utbildning",
+      "path": "/#/education",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [
+        {
+          "rule": "no-gradient-buttons",
+          "detail": "Yrkeshögskola\n\nPraktiska utbildningar me | Högskola & Universitet\n\nAkademiska utbil | IT & Programmering\n\nWebbutveckling, data | Vård & Omsorg\n\nSjukvård, äldreomsorg och | Ekonomi & Affär\n\nRedovisning, marknadsfö | Kreativa yrken\n\nDesign, media och kommun"
+        }
+      ],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\34-education.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\34-education.png"
+    },
+    {
+      "id": "35-linkedin",
+      "label": "LinkedIn",
+      "path": "/#/linkedin-optimizer",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\35-linkedin.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\35-linkedin.png"
+    },
+    {
+      "id": "36-salary",
+      "label": "Lön",
+      "path": "/#/salary",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "help": "Select element must have an accessible name",
+          "nodes": 3
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\36-salary.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\36-salary.png"
+    },
+    {
+      "id": "37-international",
+      "label": "International",
+      "path": "/#/international",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\37-international.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\37-international.png"
+    },
+    {
+      "id": "40-interview",
+      "label": "Intervju",
+      "path": "/#/interview-simulator",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\40-interview.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\40-interview.png"
+    },
+    {
+      "id": "41-ai-team",
+      "label": "AI-team",
+      "path": "/#/ai-team",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 2
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\41-ai-team.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\41-ai-team.png"
+    },
+    {
+      "id": "50-knowledge-base",
+      "label": "Kunskapsbank",
+      "path": "/#/knowledge-base",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [
+        {
+          "rule": "no-gradient-buttons",
+          "detail": "Få personaliserade rekommendationer\n\nGör"
+        }
+      ],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\50-knowledge-base.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\50-knowledge-base.png"
+    },
+    {
+      "id": "50-knowledge-base-for-you",
+      "label": "Kunskapsbank",
+      "path": "/#/knowledge-base",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [
+        {
+          "rule": "no-gradient-buttons",
+          "detail": "Få personaliserade rekommendationer\n\nGör"
+        }
+      ],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\50-knowledge-base-for-you.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "50-knowledge-base-getting-started",
+      "label": "Kunskapsbank",
+      "path": "/#/knowledge-base?tab=getting-started",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\50-knowledge-base-getting-started.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "50-knowledge-base-topics",
+      "label": "Kunskapsbank",
+      "path": "/#/knowledge-base?tab=topics",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\50-knowledge-base-topics.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "50-knowledge-base-quick-help",
+      "label": "Kunskapsbank",
+      "path": "/#/knowledge-base?tab=quick-help",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\50-knowledge-base-quick-help.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "50-knowledge-base-my-journey",
+      "label": "Kunskapsbank",
+      "path": "/#/knowledge-base?tab=my-journey",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\50-knowledge-base-my-journey.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "50-knowledge-base-tools",
+      "label": "Kunskapsbank",
+      "path": "/#/knowledge-base?tab=tools",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\50-knowledge-base-tools.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "51-resources",
+      "label": "Resurser",
+      "path": "/#/resources",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "button-name",
+          "impact": "critical",
+          "help": "Buttons must have discernible text",
+          "nodes": 2
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 5
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\51-resources.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\51-resources.png"
+    },
+    {
+      "id": "51-resources-all",
+      "label": "Resurser",
+      "path": "/#/resources",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\51-resources-all.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "51-resources-documents",
+      "label": "Resurser",
+      "path": "/#/resources?tab=documents",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\51-resources-documents.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "51-resources-jobs",
+      "label": "Resurser",
+      "path": "/#/resources?tab=jobs",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\51-resources-jobs.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "51-resources-articles",
+      "label": "Resurser",
+      "path": "/#/resources?tab=articles",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\51-resources-articles.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "52-print-resources",
+      "label": "Skriv ut",
+      "path": "/#/print-resources",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 2
+        },
+        {
+          "id": "select-name",
+          "impact": "critical",
+          "help": "Select element must have an accessible name",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\52-print-resources.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\52-print-resources.png"
+    },
+    {
+      "id": "53-external-resources",
+      "label": "Externa",
+      "path": "/#/externa-resurser",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\53-external-resources.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\53-external-resources.png"
+    },
+    {
+      "id": "54-network",
+      "label": "Nätverk",
+      "path": "/#/nätverk",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 2
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\54-network.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\54-network.png"
+    },
+    {
+      "id": "60-wellness",
+      "label": "Hälsa",
+      "path": "/#/wellness",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\60-wellness.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\60-wellness.png"
+    },
+    {
+      "id": "60-wellness-health",
+      "label": "Hälsa",
+      "path": "/#/wellness",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\60-wellness-health.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "60-wellness-routines",
+      "label": "Hälsa",
+      "path": "/#/wellness/routines",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\60-wellness-routines.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "60-wellness-cognitive",
+      "label": "Hälsa",
+      "path": "/#/wellness/cognitive",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\60-wellness-cognitive.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "60-wellness-crisis",
+      "label": "Hälsa",
+      "path": "/#/wellness/crisis",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\60-wellness-crisis.png",
+      "mobileScreenshot": null
+    },
+    {
+      "id": "61-diary",
+      "label": "Dagbok",
+      "path": "/#/diary",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\61-diary.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\61-diary.png"
+    },
+    {
+      "id": "62-calendar",
+      "label": "Kalender",
+      "path": "/#/calendar",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\62-calendar.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\62-calendar.png"
+    },
+    {
+      "id": "63-exercises",
+      "label": "Övningar",
+      "path": "/#/exercises",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 5
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\63-exercises.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\63-exercises.png"
+    },
+    {
+      "id": "64-my-consultant",
+      "label": "Min konsulent",
+      "path": "/#/my-consultant",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\64-my-consultant.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\64-my-consultant.png"
+    },
+    {
+      "id": "70-profile",
+      "label": "Profil",
+      "path": "/#/profile",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [
+        {
+          "rule": "no-gradient-buttons",
+          "detail": "Upptäck dina styrkor\n\nGör intresseguiden"
+        }
+      ],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "aria-progressbar-name",
+          "impact": "serious",
+          "help": "ARIA progressbar nodes must have an accessible name",
+          "nodes": 1
+        },
+        {
+          "id": "aria-required-children",
+          "impact": "critical",
+          "help": "Certain ARIA roles must contain particular children",
+          "nodes": 2
+        },
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 2
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\70-profile.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\70-profile.png"
+    },
+    {
+      "id": "71-settings",
+      "label": "Inställningar",
+      "path": "/#/settings",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\71-settings.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\71-settings.png"
+    },
+    {
+      "id": "72-help",
+      "label": "Hjälp",
+      "path": "/#/help",
+      "isHubLanding": false,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "designIssues": [],
+      "touchTargetIssues": [],
+      "axeIssues": [
+        {
+          "id": "color-contrast",
+          "impact": "serious",
+          "help": "Elements must meet minimum color contrast ratio thresholds",
+          "nodes": 1
+        }
+      ],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots\\72-help.png",
+      "mobileScreenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-11\\screenshots-mobile\\72-help.png"
+    }
+  ],
+  "axeViolations": [],
+  "designViolations": [],
+  "touchTargetViolations": [],
+  "summary": {
+    "totalPages": 41,
+    "totalTabs": 34,
+    "totalScreenshots": 116,
+    "consoleErrors": 4,
+    "networkErrors": 14,
+    "designIssues": 8,
+    "axeIssues": 34,
+    "touchIssues": 8
+  },
+  "completedAt": "2026-05-10T16:10:44.504Z"
+}

@@ -1,0 +1,89 @@
+=== Audit 2026-05-11 START ===
+
+[Publika sidor]
+  01-landing-public... 0d 1a 1t
+  02-login... 0d 1a 3t
+  03-register... 0d 0a 1t
+  04-privacy... 0d 1a 1t
+  05-terms... 0d 1a 1t
+  06-ai-policy... 0d 1a 1t
+
+[Loggar in]
+  ✓
+
+[Inloggade sidor]
+  10-dashboard... 0d 1a 0t
+  11-hub-oversikt... 0d 1a 0t
+  11b-hub-oversikt-historik... 0d 0a 0t
+  12-hub-jobb... 1d 0a 0t
+  13-hub-karriar... 1d 0a 0t
+  14-hub-resurser... 1d 0a 0t
+  15-hub-vardag... 1d 0a 0t
+  20-cv... 0d 2a 0t
+    └ create... 0d 0t
+    └ my-cvs... 0d 0t
+    └ adapt... 0d 0t
+    └ ats... 0d 0t
+    └ tips... 0d 0t
+  21-cover-letter... 0d 0a 0t
+    └ generator... 0d 0t
+    └ saved... 0d 0t
+  22-job-search... 0d 2a 0t
+  23-applications... 0d 1a 0t
+  24-spontaneous... 0d 1a 0t
+    └ search... 0d 0t
+    └ companies... 0d 0t
+    └ stats... 0d 0t
+  30-career... 0d 2a 0t
+    └ labor-market... 0d 0t
+    └ adaptation... 0d 0t
+    └ credentials... 0d 0t
+    └ relocation... 0d 0t
+    └ plan... 0d 0t
+  31-interest-guide... 0d 0a 0t
+    └ test... 0d 0t
+    └ results... 0d 0t
+    └ occupations... 0d 0t
+    └ explore... 0d 0t
+    └ history... 0d 0t
+  32-skills-gap... 0d 1a 0t
+  33-personal-brand... 0d 1a 0t
+  34-education... 1d 0a 0t
+  35-linkedin... 0d 1a 0t
+  36-salary... 0d 2a 0t
+  37-international... 0d 1a 0t
+  40-interview... 0d 0a 0t
+  41-ai-team... 0d 1a 0t
+  50-knowledge-base... 1d 0a 0t
+    └ for-you... 1d 0t
+    └ getting-started... 0d 0t
+    └ topics... 0d 0t
+    └ quick-help... 0d 0t
+    └ my-journey... 0d 0t
+    └ tools... 0d 0t
+  51-resources... 0d 2a 0t
+    └ all... 0d 0t
+    └ documents... 0d 0t
+    └ jobs... 0d 0t
+    └ articles... 0d 0t
+  52-print-resources... 0d 2a 0t
+  53-external-resources... 0d 1a 0t
+  54-network... 0d 1a 0t
+  60-wellness... 0d 0a 0t
+    └ health... 0d 0t
+    └ routines... 0d 0t
+    └ cognitive... 0d 0t
+    └ crisis... 0d 0t
+  61-diary... 0d 0a 0t
+  62-calendar... 0d 0a 0t
+  63-exercises... 0d 1a 0t
+  64-my-consultant... 0d 0a 0t
+  70-profile... 1d 3a 0t
+  71-settings... 0d 1a 0t
+  72-help... 0d 1a 0t
+
+=== SLUT ===
+Sidor: 41, Tabbar: 34
+Skärmdumpar: 116
+Console: 4, Net: 14
+Design-issues: 8, Axe: 34, Touch: 8
