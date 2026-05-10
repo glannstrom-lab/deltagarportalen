@@ -12,6 +12,7 @@ import HubPage, { type HubFeature } from './HubPage'
 import { useMinVardagHubSummary } from '@/hooks/useMinVardagHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { streakDays } from '@/utils/streakDays'
+import { useAuthStore } from '@/stores/authStore'
 
 function relativeShort(iso: string | null | undefined): string | null {
   if (!iso) return null
@@ -28,6 +29,7 @@ function relativeShort(iso: string | null | undefined): string | null {
 export default function MinVardagHub() {
   useOnboardedHubsTracking('min-vardag')
   const { data } = useMinVardagHubSummary()
+  const firstName = useAuthStore(s => s.profile?.first_name)
 
   const features = useMemo<HubFeature[]>(() => {
     const moodLogs = data?.recentMoodLogs ?? []
@@ -105,12 +107,12 @@ export default function MinVardagHub() {
     <HubPage
       titleKey="hub-min-vardag"
       title="Min vardag"
-      hubLabel="Hub · Min vardag"
-      hubTitle="Mina vardagliga rutiner"
+      hubTitle="Din vardag"
       hubDescription="Mående, dagbok, kalender och möten med din konsulent."
       hubIcon={Heart}
       domain="wellbeing"
       features={features}
+      firstName={firstName}
     />
   )
 }

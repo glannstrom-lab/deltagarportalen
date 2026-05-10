@@ -10,6 +10,7 @@ import {
 import HubPage, { type HubFeature } from './HubPage'
 import { useResurserHubSummary } from '@/hooks/useResurserHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
+import { useAuthStore } from '@/stores/authStore'
 
 function relativeShort(iso: string | null | undefined): string | null {
   if (!iso) return null
@@ -26,6 +27,7 @@ function relativeShort(iso: string | null | undefined): string | null {
 export default function ResurserHub() {
   useOnboardedHubsTracking('resurser')
   const { data } = useResurserHubSummary()
+  const firstName = useAuthStore(s => s.profile?.first_name)
 
   const features = useMemo<HubFeature[]>(() => {
     const articles = data?.recentArticles ?? []
@@ -96,12 +98,12 @@ export default function ResurserHub() {
     <HubPage
       titleKey="hub-resurser"
       title="Resurser"
-      hubLabel="Hub · Resurser"
-      hubTitle="Hantera resurser"
+      hubTitle="Dina sparade resurser"
       hubDescription="Dokument, kunskapsbank, AI-team och utskriftsmaterial."
       hubIcon={BookOpen}
       domain="info"
       features={features}
+      firstName={firstName}
     />
   )
 }

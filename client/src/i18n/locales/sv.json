@@ -44,10 +44,10 @@
     "show": "Visa",
     "hide": "Dölj",
     "selected": "Vald",
-    "activate": "Aktivera",
-    "deactivate": "Inaktivera",
-    "enabled": "Aktiverad",
-    "disabled": "Inaktiverad",
+    "activate": "Slå på",
+    "deactivate": "Stäng av",
+    "enabled": "På",
+    "disabled": "Av",
     "clearAll": "Rensa alla",
     "showing": "Visar",
     "of": "av",
@@ -257,7 +257,7 @@
     "tagline": "Din jobbportal",
     "welcome": "Välkommen",
     "accessibility": "Tillgänglighet",
-    "focusModeOn": "Aktivera fokusläge",
+    "focusModeOn": "Slå på fokusläge",
     "focusModeOff": "Stäng av fokusläge"
   },
   "language": {
@@ -1627,7 +1627,12 @@
     "takeInterestTest": "Gör intressetestet",
     "writeLetter": "Skriv brev",
     "writePersonalLetter": "Skriv personligt brev",
-    "somethingWentWrong": "Något gick fel"
+    "somethingWentWrong": "Något gick fel",
+    "municipality": "Kommun",
+    "region": "Län",
+    "employmentType": "Anställningsform",
+    "publishedWithin": "Publicerad inom",
+    "removeFilter": "Ta bort filter: {{filter}}"
   },
   "jobs": {
     "card": {
@@ -1790,8 +1795,8 @@
     }
   },
   "applications": {
-    "title": "Mina Ansökningar",
-    "subtitle": "Följ dina jobbansökningar genom hela processen",
+    "title": "Dina jobbansökningar",
+    "subtitle": "Följ dina ansökningar genom hela processen",
     "addApplication": "Ny ansökan",
     "tabs": {
       "pipeline": "Pipeline",
@@ -2502,6 +2507,7 @@
     "subtitleNoConsultant": "Ingen konsulent tilldelad ännu",
     "noConsultant": "Du har ingen konsulent tilldelad ännu",
     "noConsultantDesc": "Du har ännu inte kopplats till en arbetskonsulent. Kontakta oss om du behöver hjälp.",
+    "noConsultantFullDesc": "När du tilldelas en arbetskonsulent kan ni hålla kontakt här — boka möten, dela dokument och ställa frågor. Tills dess hjälper vi dig gärna direkt.",
     "contactSupport": "Kontakta support",
     "consultant": {
       "yourConsultant": "Din arbetskonsulent",
@@ -3677,7 +3683,7 @@
       "grantNow": "Ge samtycke",
       "manageInSettings": "Hantera i inställningar",
       "grantError": "Kunde inte ge samtycke. Försök igen.",
-      "fullTitle": "Aktivera AI-funktioner",
+      "fullTitle": "Slå på AI-funktioner",
       "fullDesc": "AI-funktionerna hjälper dig skriva bättre CV och personliga brev. För att använda dem behöver du ge samtycke.",
       "fullDescWithFeature": "{{feature}} använder AI för att hjälpa dig. För att använda denna funktion behöver du ge samtycke.",
       "whatThisMeans": "Vad innebär detta?",
@@ -6967,7 +6973,7 @@
       "daysCount": "{{count}} dagar",
       "emailNotifications": "E-postnotiser",
       "pushNotifications": "Push-notiser",
-      "enablePush": "Aktivera push-notiser",
+      "enablePush": "Slå på push-notiser",
       "enablePushDesc": "Få notiser direkt på enheten",
       "frequency": "Frekvens",
       "frequencyOptions": {

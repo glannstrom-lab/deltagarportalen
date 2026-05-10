@@ -55,6 +55,17 @@ function relativeWhen(iso: string | null | undefined): string {
   return 'Längesen'
 }
 
+/**
+ * Tidsanpassad hälsning enligt DESIGN.md §2.
+ * 06–09 = "God morgon", 18–22 = "God kväll", övrigt = "Hej".
+ */
+function timeOfDayGreeting(now: Date): 'God morgon' | 'God kväll' | 'Hej' {
+  const h = now.getHours()
+  if (h >= 6 && h < 10) return 'God morgon'
+  if (h >= 18 && h < 23) return 'God kväll'
+  return 'Hej'
+}
+
 const heroVariants = {
   hidden: { opacity: 0, y: 8 },
   visible: { opacity: 1, y: 0 },
@@ -196,7 +207,9 @@ export default function HubOverview() {
                   id="hero-greeting"
                   className="text-[24px] sm:text-[32px] md:text-[40px] font-bold text-[var(--stone-900)] leading-[1.1] sm:leading-[1.05] tracking-tight m-0 break-words"
                 >
-                  {firstName ? `Hej ${firstName}` : 'Välkommen tillbaka'}
+                  {firstName
+                    ? `${timeOfDayGreeting(today)}, ${firstName}`
+                    : `${timeOfDayGreeting(today)} 👋`}
                 </h1>
                 <Link
                   to="/profile"

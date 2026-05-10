@@ -14,6 +14,7 @@ import {
 import HubPage, { type HubFeature } from './HubPage'
 import { useJobsokHubSummary } from '@/hooks/useJobsokHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
+import { useAuthStore } from '@/stores/authStore'
 
 const SWEDISH_MONTHS = [
   'januari', 'februari', 'mars', 'april', 'maj', 'juni',
@@ -29,6 +30,7 @@ function shortDate(iso: string | null | undefined): string | null {
 export default function JobsokHub() {
   useOnboardedHubsTracking('jobb')
   const { data } = useJobsokHubSummary()
+  const firstName = useAuthStore(s => s.profile?.first_name)
 
   const features = useMemo<HubFeature[]>(() => {
     const cv = data?.cv
@@ -106,12 +108,12 @@ export default function JobsokHub() {
     <HubPage
       titleKey="hub-jobb"
       title="Söka jobb"
-      hubLabel="Hub · Söka jobb"
       hubTitle="Hitta och söka jobb"
       hubDescription="Matcha din profil, ansök och följ upp dina ansökningar."
       hubIcon={Briefcase}
       domain="activity"
       features={features}
+      firstName={firstName}
     />
   )
 }

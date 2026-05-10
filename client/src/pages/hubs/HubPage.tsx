@@ -43,8 +43,12 @@ export interface HubPageProps {
   titleKey: string
   /** Fallback title */
   title: string
-  /** Hub-tagg — visas över hub-titeln, t.ex. "Hub · Söka jobb" */
-  hubLabel: string
+  /**
+   * @deprecated Eyebrow-text ("HUB · X") togs bort 2026-05-10 enligt
+   * DESIGN.md §3 ("tag bort eyebrow-texten — användaren vet redan via
+   * sidobar och URL"). Behåll prop för bakåtkompabilitet — visas inte.
+   */
+  hubLabel?: string
   /** Stor hub-titel — t.ex. "Hitta och söka jobb" */
   hubTitle: string
   /** En rad beskrivning */
@@ -57,6 +61,12 @@ export interface HubPageProps {
   features: HubFeature[]
   /** Onboarding-tracking-hook anropas av parent (jobb/karriar/resurser/min-vardag) */
   trackingChild?: ReactNode
+  /**
+   * Användarens förnamn för personalisering enligt DESIGN.md §2.
+   * När satt visas "Hej {firstName}" som liten överrad till hub-titeln.
+   * När inte satt visas ingen greeting (vi spammar inte tomma fall).
+   */
+  firstName?: string | null
 }
 
 const heroVariants = {
@@ -67,15 +77,17 @@ const heroVariants = {
 export default function HubPage({
   titleKey,
   title,
-  hubLabel,
+  hubLabel: _hubLabel, // deprecated, ignoreras enligt DESIGN.md §3
   hubTitle,
   hubDescription,
   hubIcon: HubIcon,
   domain,
   features,
   trackingChild,
+  firstName,
 }: HubPageProps) {
   const today = new Date()
+  const trimmedFirstName = firstName?.trim() || null
 
   return (
     <PageLayout
@@ -119,9 +131,13 @@ export default function HubPage({
               </div>
 
               <div className="flex flex-col gap-1 sm:gap-1.5 min-w-0">
-                <p className="text-[11px] sm:text-[12px] font-semibold uppercase tracking-[0.1em] text-[var(--c-text)] leading-none truncate">
-                  {hubLabel}
-                </p>
+                {/* Personlig greeting när firstName finns. Ersätter den
+                    tidigare eyebrow-texten (DESIGN.md §3). */}
+                {trimmedFirstName && (
+                  <p className="text-[12px] sm:text-[13px] font-medium text-[var(--c-text)] leading-none truncate m-0">
+                    Hej {trimmedFirstName}
+                  </p>
+                )}
                 <h1
                   id={titleKey}
                   className="text-[22px] sm:text-[32px] md:text-[40px] font-bold text-[var(--stone-900)] leading-[1.1] sm:leading-[1.05] tracking-tight m-0 break-words"

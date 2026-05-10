@@ -44,10 +44,10 @@
     "show": "Show",
     "hide": "Hide",
     "selected": "Selected",
-    "activate": "Activate",
-    "deactivate": "Deactivate",
-    "enabled": "Enabled",
-    "disabled": "Disabled",
+    "activate": "Turn on",
+    "deactivate": "Turn off",
+    "enabled": "On",
+    "disabled": "Off",
     "clearAll": "Clear all",
     "showing": "Showing",
     "of": "of",
@@ -250,7 +250,7 @@
     "tagline": "Your job portal",
     "welcome": "Welcome",
     "accessibility": "Accessibility",
-    "focusModeOn": "Enable focus mode",
+    "focusModeOn": "Turn on focus mode",
     "focusModeOff": "Disable focus mode"
   },
   "language": {
@@ -1620,7 +1620,12 @@
     },
     "writeLetter": "Write letter",
     "writePersonalLetter": "Write personal letter",
-    "somethingWentWrong": "Something went wrong"
+    "somethingWentWrong": "Something went wrong",
+    "municipality": "Municipality",
+    "region": "Region",
+    "employmentType": "Employment type",
+    "publishedWithin": "Published within",
+    "removeFilter": "Remove filter: {{filter}}"
   },
   "jobs": {
     "card": {
@@ -1783,8 +1788,8 @@
     }
   },
   "applications": {
-    "title": "My Applications",
-    "subtitle": "Track your job applications through the entire process",
+    "title": "Your job applications",
+    "subtitle": "Track your applications through the entire process",
     "addApplication": "New application",
     "tabs": {
       "pipeline": "Pipeline",
@@ -2495,6 +2500,7 @@
     "subtitleNoConsultant": "No consultant assigned yet",
     "noConsultant": "You don't have a consultant assigned yet",
     "noConsultantDesc": "You haven't been connected to a career consultant yet. Contact us if you need help.",
+    "noConsultantFullDesc": "When you're assigned a career consultant, you'll be able to stay in touch here — book meetings, share documents, ask questions. Until then, we're happy to help directly.",
     "contactSupport": "Contact support",
     "consultant": {
       "yourConsultant": "Your career consultant",
@@ -3670,7 +3676,7 @@
       "grantNow": "Grant consent",
       "manageInSettings": "Manage in settings",
       "grantError": "Could not grant consent. Please try again.",
-      "fullTitle": "Enable AI features",
+      "fullTitle": "Turn on AI features",
       "fullDesc": "AI features help you write better CVs and cover letters. To use them, you need to grant consent.",
       "fullDescWithFeature": "{{feature}} uses AI to help you. To use this feature, you need to grant consent.",
       "whatThisMeans": "What does this mean?",
@@ -6721,7 +6727,7 @@
       "daysCount": "{{count}} days",
       "emailNotifications": "Email notifications",
       "pushNotifications": "Push notifications",
-      "enablePush": "Enable push notifications",
+      "enablePush": "Turn on push notifications",
       "enablePushDesc": "Get notifications directly on your device",
       "frequency": "Frequency",
       "frequencyOptions": {

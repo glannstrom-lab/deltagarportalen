@@ -10,6 +10,7 @@ import HubPage, { type HubFeature } from './HubPage'
 import { useKarriarHubSummary } from '@/hooks/useKarriarHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { careerGoalLabel } from '@/utils/careerGoalLabel'
+import { useAuthStore } from '@/stores/authStore'
 
 function relativeShort(iso: string | null | undefined): string | null {
   if (!iso) return null
@@ -27,6 +28,7 @@ function relativeShort(iso: string | null | undefined): string | null {
 export default function KarriarHub() {
   useOnboardedHubsTracking('karriar')
   const { data } = useKarriarHubSummary()
+  const firstName = useAuthStore(s => s.profile?.first_name)
 
   const features = useMemo<HubFeature[]>(() => {
     const goalLabel = careerGoalLabel(data?.careerGoals?.shortTerm)
@@ -85,12 +87,12 @@ export default function KarriarHub() {
     <HubPage
       titleKey="hub-karriar"
       title="Karriär"
-      hubLabel="Hub · Karriär"
       hubTitle="Planera min karriär"
       hubDescription="Sätt mål, kartlägg kompetens och bygg din väg framåt."
       hubIcon={Target}
       domain="coaching"
       features={features}
+      firstName={firstName}
     />
   )
 }
