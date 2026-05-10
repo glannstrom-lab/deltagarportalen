@@ -43,8 +43,10 @@ export default function Layout() {
   // Visa TopBar och BottomBar på alla sidor förutom login/register
   const showBars = !['/login', '/register'].includes(location.pathname)
 
-  // Bestäm om vi ska visa tillbaka-knapp (alla sidor utom startsidan)
-  const showBackButton = isMobile && location.pathname !== '/'
+  // Bestäm om vi ska visa tillbaka-knapp (DESIGN.md §9 — på alla undersidor
+  // UTOM hub-rotsidor där användaren använder HubBottomNav istället)
+  const HUB_ROOT_PATHS = ['/', '/oversikt', '/jobb', '/karriar', '/resurser', '/min-vardag']
+  const showBackButton = isMobile && !HUB_ROOT_PATHS.includes(location.pathname)
 
   const hubModeEnabled = isHubNavEnabled()
   // FAQ + Crisis Support moved into TopBar; BottomBar removed.

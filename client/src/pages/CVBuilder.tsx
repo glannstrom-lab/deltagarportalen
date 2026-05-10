@@ -551,7 +551,10 @@ export default function CVBuilder() {
         <p className="text-stone-700 dark:text-stone-300">{t('cvBuilder.templates.templateDescription')}</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* DESIGN.md §9 — på mobil horisontell snap-scroll-galleri istället
+          för vertikal stack (löser 6356 px sidlängd från audit-rapporten).
+          På sm+ är det vanlig grid. */}
+      <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 -mx-4 px-4 pb-3 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:mx-0 sm:gap-6 sm:pb-0 lg:grid-cols-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {TEMPLATES.map((tpl) => {
           const selected = data.template === tpl.id
           return (
@@ -569,6 +572,7 @@ export default function CVBuilder() {
               }}
               className={cn(
                 "group relative overflow-hidden rounded-xl border-2 text-left transition-all",
+                "flex-shrink-0 w-[82%] snap-center sm:w-auto sm:flex-shrink", // mobil: 82% bredd, snap; desktop: full
                 selected
                   ? "border-[var(--c-solid)] ring-2 ring-[var(--c-solid)] ring-offset-2 dark:ring-offset-stone-900 shadow-lg"
                   : "border-stone-200 dark:border-stone-700 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:shadow-md"

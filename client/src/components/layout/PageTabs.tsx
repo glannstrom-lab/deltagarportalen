@@ -246,7 +246,53 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
     }
   }
 
-  // Mobile dropdown (shared across all variants)
+  // Mobile horizontal scroll tabs (DESIGN.md §9 — sub-tabs synliga på mobil
+  // utan att gömmas i meny). Föredras för 2-5 tabs där en snap-scroll fungerar.
+  const MobileScrollTabs = () => (
+    <nav
+      aria-label={t('layout.pageTabs.mobileNav', 'Sidor')}
+      className={cn(
+        'md:hidden flex overflow-x-auto snap-x snap-mandatory gap-2 -mx-4 px-4 pb-1',
+        '[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden',
+        className
+      )}
+    >
+      {tabs.map((tab) => {
+        const Icon = tab.icon
+        const isActive = isTabActive(tab.path)
+        return (
+          <Link
+            key={tab.id}
+            to={tab.path}
+            aria-current={isActive ? 'page' : undefined}
+            className={cn(
+              'flex-shrink-0 snap-start',
+              'inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-sm font-medium transition-colors',
+              'min-h-[40px]', // touch-friendly
+              isActive
+                ? 'bg-[var(--c-bg)] text-[var(--c-text)] border border-[var(--c-accent)]'
+                : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-50'
+            )}
+          >
+            {Icon && <Icon className="w-4 h-4" />}
+            <span className="whitespace-nowrap">{tab.label}</span>
+            {tab.badge !== undefined && tab.badge > 0 && (
+              <span className={cn(
+                'px-1.5 py-0.5 text-[11px] rounded-full font-bold',
+                isActive ? 'bg-white/60 text-[var(--c-text)]' : 'bg-stone-100 text-stone-600'
+              )}>
+                {tab.badge}
+              </span>
+            )}
+          </Link>
+        )
+      })}
+    </nav>
+  )
+
+  // Mobile dropdown (shared across all variants) — kvar för bakåtkompabilitet
+  // men används inte längre som default. Användbar om antalet flikar > 6.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const MobileDropdown = () => (
     <div className={cn('md:hidden', className)}>
       <button
@@ -315,13 +361,14 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
     </div>
   )
 
-  // Show mobile dropdown for all variants when collapsible is enabled
-  const showMobileDropdown = collapsible
+  // Mobile-tabs visas alltid när tabs finns — som horisontell snap-scroll
+  // (DESIGN.md §9). Föregående dropdown finns kvar i koden men används inte.
+  void collapsible // referera prop för bakåtkompabilitet
 
   return (
     <>
       {renderDesktopTabs()}
-      {showMobileDropdown && <MobileDropdown />}
+      <MobileScrollTabs />
     </>
   )
 }
