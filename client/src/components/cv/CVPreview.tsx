@@ -10,6 +10,7 @@
  * - Centered: Elegant gradient, balanced, professional
  */
 
+import { useEffect } from 'react'
 import { Sparkles } from '@/components/ui/icons'
 import type { CVData } from '@/services/supabaseApi'
 import {
@@ -31,17 +32,47 @@ interface CVPreviewProps {
   data: CVData
 }
 
-// Sidobars-bredd per template. Bredden måste matcha template-koden så att
-// preview och print ser likadana ut. Mallar utan sidobar listas inte.
-const SIDEBAR_WIDTHS: Record<string, string> = {
-  sidebar: '320px',
-  nordic: '280px',
-  budapest: '34%',
-  manhattan: '220px',
-  rotterdam: '220px',
-  chicago: '200px',
-  berlin: '60px',
+// Per-template page-bakgrund för print. Vid sidbrytningar måste sidobar-
+// och main-bakgrunden gå edge-to-edge på ALLA sidor (inte bara sida 1).
+// Lösningen: sätt linear-gradient på <html> i print-CSS så bakgrunden
+// repeteras automatiskt per paginerad sida i Chrome.
+//
+// Width matchar template-koden så att preview och print ser likadana ut.
+// Bg-färger måste matcha template:s aside background och main background.
+// För single-column mallar har vi bara `main` (ingen sidobar).
+type PageBg = { sidebarBg?: string; mainBg: string; sidebarWidth?: string }
+const PAGE_BG: Record<string, PageBg> = {
+  // Sidobar-mallar
+  sidebar:    { sidebarBg: '#0F0F0F', mainBg: '#FFFFFF', sidebarWidth: '320px' },
+  nordic:     { sidebarBg: '#F8FAFC', mainBg: '#FFFFFF', sidebarWidth: '280px' },
+  budapest:   { sidebarBg: '#2C3E50', mainBg: '#FFFFFF', sidebarWidth: '34%' },
+  manhattan:  { sidebarBg: '#0F1B2D', mainBg: '#FFFFFF', sidebarWidth: '220px' },
+  rotterdam:  { sidebarBg: '#FFFFFF', mainBg: '#FFFFFF', sidebarWidth: '220px' },
+  chicago:    { sidebarBg: '#FFFFFF', mainBg: '#FFFFFF', sidebarWidth: '200px' },
+  berlin:     { sidebarBg: '#1A1A1A', mainBg: '#F4EDE0', sidebarWidth: '60px' },
+  // Single-column mallar (sidobar saknas — gradient blir bara mainBg)
+  centered:   { mainBg: '#FFFFFF' },
+  executive:  { mainBg: '#FDFCFA' },
+  creative:   { mainBg: '#FAFAFA' },
+  minimal:    { mainBg: '#FFFFFF' },
+  atelier:    { mainBg: '#FAF8F4' },
 }
+
+// Bygger linear-gradient som täcker varenda sida i printet edge-to-edge.
+// För single-column = enfärgad bakgrund.
+function buildPageGradient(bg: PageBg): string {
+  if (!bg.sidebarBg || !bg.sidebarWidth) return bg.mainBg
+  const w = bg.sidebarWidth
+  return `linear-gradient(to right, ${bg.sidebarBg} 0, ${bg.sidebarBg} ${w}, ${bg.mainBg} ${w}, ${bg.mainBg} 100%)`
+}
+
+// Behåll SIDEBAR_WIDTHS för bakåtkompatibilitet — print-CSS nedan refererar
+// till --sidebar-width via CSS-var.
+const SIDEBAR_WIDTHS: Record<string, string> = Object.fromEntries(
+  Object.entries(PAGE_BG)
+    .filter(([, v]) => v.sidebarWidth)
+    .map(([k, v]) => [k, v.sidebarWidth!])
+)
 
 // Filtrera bort halvtomma entries så preview matchar PDF — annars syns
 // "• -" eller bara datum för en oifylld erfarenhet.
@@ -70,6 +101,23 @@ function sanitize(data: CVData): CVData {
 export function CVPreview({ data: rawData }: CVPreviewProps) {
   const data = sanitize(rawData)
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
+
+  // Sätt template-specifik page-bakgrund som CSS-variabel på <html>.
+  // Används av print-CSS (linear-gradient i @media print) för att få
+  // bakgrundsfärger edge-to-edge på ALLA paginerade sidor — inte bara
+  // sida 1. Detta löser "vita sidbrytningar"-buggen.
+  useEffect(() => {
+    const tpl = data.template || 'sidebar'
+    const cfg = PAGE_BG[tpl] || PAGE_BG.sidebar
+    const gradient = buildPageGradient(cfg)
+    const html = document.documentElement
+    html.style.setProperty('--cv-page-bg', gradient)
+    html.style.setProperty('--cv-main-bg', cfg.mainBg)
+    return () => {
+      html.style.removeProperty('--cv-page-bg')
+      html.style.removeProperty('--cv-main-bg')
+    }
+  }, [data.template])
 
   // Check for content
   const hasContent = !!(
@@ -171,29 +219,28 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           korrekt sidbrytning. Samma rules som de stora aktörerna (resume.io,
           kickresume) använder för Chrome headless print → PDF. */}
       <style>{`
-        /* @page margin: sida 1 = 0 (full bleed, mörk sidobar går edge-to-
-           edge), sida 2+ = 12mm top + 10mm bottom (så content efter
-           sidbrytning inte hamnar mot kanten). Detta är samma trick
-           som tidsskrifter och de stora CV-byggarna använder: första
-           sidan är "cover" med full-bleed design, övriga sidor får
-           luft. Chrome stödjer @page :first sedan länge.
-
-           Konsekvens: på sidobar-mallar som flödar över sidor får sida 2+
-           en vit topp-zon ovanför sidobaren — det ser professionellt ut
-           och säkerställer att text aldrig kletas mot kanten.
-           Konsekvens 2: bottom-margin på sista sidan är 10mm — men
-           Chrome respekterar inte @page :last universellt, så vi sätter
-           10mm globalt. Sista sidans bottom blir 10mm vit. */
+        /* @page margin: 0 på alla sidor — sidobar/header går edge-to-edge.
+           Vita sidbrytningar löses via html linear-gradient nedan, som
+           ritar sidobar+main-färgerna på varje paginerad sida automatiskt.
+           Top/bottom-luft för text sköts via aside/main internal padding
+           (vilket repeteras vid sidbrytning eftersom flex-children får
+           ny padding-context vid pagebreak i Chrome). */
         @page {
           size: A4;
-          margin: 12mm 0 10mm 0;
-        }
-        @page :first {
-          margin: 0 0 10mm 0;
+          margin: 0;
         }
         @media print {
-          html, body {
-            background: #FFFFFF !important;
+          /* html bakgrund = template-specifik gradient som ritar sidobar +
+             main edge-to-edge på varenda paginerad sida. Denna bakgrund
+             repeteras automatiskt per sida i Chrome print-engine — det är
+             nyckeln till att slippa "vita sidbrytningar". */
+          html {
+            background: var(--cv-page-bg, #FFFFFF) !important;
+            margin: 0 !important;
+            padding: 0 !important;
+          }
+          body {
+            background: transparent !important;
             margin: 0 !important;
             padding: 0 !important;
           }
