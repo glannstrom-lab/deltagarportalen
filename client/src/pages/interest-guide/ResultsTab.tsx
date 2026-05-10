@@ -163,7 +163,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6"
+          className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-2xl flex items-center justify-center mx-auto mb-6"
         >
           <ClipboardList className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </motion.div>
@@ -219,7 +219,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
+        <Card className="p-6 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-green-600 dark:text-green-400 font-medium mb-2">Bra matchningar</p>
@@ -249,7 +249,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
         >
-          <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+          <Card className="p-6 bg-blue-50 dark:bg-blue-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800/50 rounded-xl flex items-center justify-center">
@@ -421,7 +421,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           <div className="space-y-3">
             {topMatches.map((match, index) => (
               <div key={match.occupation.id} className="flex items-center gap-4 p-3 bg-stone-50 dark:bg-stone-900/50 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700/50 transition-colors cursor-pointer">
-                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                <div className="flex-shrink-0 w-8 h-8 bg-[var(--c-solid)] rounded-full flex items-center justify-center text-white font-bold text-sm">
                   {index + 1}
                 </div>
                 <div className="flex-1">
@@ -466,7 +466,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800 relative">
+          <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] relative">
             <button
               onClick={() => setShowComparisonHint(false)}
               className="absolute top-4 right-4 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"

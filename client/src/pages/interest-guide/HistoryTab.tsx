@@ -100,7 +100,7 @@ export default function HistoryTab() {
   if (history.length === 0) {
     return (
       <div className="max-w-lg mx-auto text-center py-12  min-h-screen">
-        <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
+        <div className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-2xl flex items-center justify-center mx-auto mb-6">
           <History className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </div>
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">{t('interestGuide.history.noHistory')}</h2>
@@ -109,7 +109,7 @@ export default function HistoryTab() {
         </p>
         <Button
           onClick={() => navigate('/interest-guide')}
-          className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600"
+          className="gap-2 bg-[var(--c-solid)]"
         >
           <Sparkles className="w-4 h-4" />
           {t('interestGuide.history.startTest')}
@@ -142,7 +142,7 @@ export default function HistoryTab() {
       {currentProfile && (
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800 mb-8">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center flex-shrink-0">
               <Target className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
@@ -250,7 +250,7 @@ export default function HistoryTab() {
                           <span className="text-sm text-gray-500 dark:text-gray-400 w-32">{bigFiveNames[key]?.name ?? key}</span>
                           <div className="flex-1 h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-gradient-to-r from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 rounded-full"
+                              className="h-full bg-[var(--c-solid)] rounded-full"
                               style={{ width: `${value}%` }}
                             />
                           </div>

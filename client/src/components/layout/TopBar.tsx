@@ -74,8 +74,11 @@ export function TopBar() {
   }
 
   // Shared icon button style - clean minimal design
+  // DESIGN.md §10 — touch-targets ≥ 44 px på mobil (WCAG 2.1 AA SC 2.5.5).
+  // Visuell ikon-yta är liten (8x8 desktop) men hela klickytan är 44x44 mobil.
   const iconButtonClass = cn(
-    'w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg',
+    'min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0',
+    'w-11 h-11 sm:w-8 sm:h-8 flex items-center justify-center rounded-lg',
     'text-stone-500 dark:text-stone-400',
     'hover:bg-stone-100 dark:hover:bg-stone-800',
     'active:bg-stone-200 dark:active:bg-stone-700',

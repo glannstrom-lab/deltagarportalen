@@ -157,7 +157,7 @@ export default function OccupationsTab() {
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6"
+          className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-2xl flex items-center justify-center mx-auto mb-6"
         >
           <ClipboardList className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </motion.div>
@@ -212,7 +212,7 @@ export default function OccupationsTab() {
         transition={{ delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-4 gap-4"
       >
-        <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
+        <Card className="p-4 bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-green-200 dark:bg-green-800/50 rounded-lg flex items-center justify-center">
               <Star className="w-5 h-5 text-green-600 dark:text-green-400" />
@@ -223,7 +223,7 @@ export default function OccupationsTab() {
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+        <Card className="p-4 bg-blue-50 dark:bg-blue-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-blue-200 dark:bg-blue-800/50 rounded-lg flex items-center justify-center">
               <TrendingUp className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
@@ -245,7 +245,7 @@ export default function OccupationsTab() {
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-900/20 dark:to-orange-800/20 border-orange-200 dark:border-orange-800">
+        <Card className="p-4 bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-800">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-orange-200 dark:bg-orange-800/50 rounded-lg flex items-center justify-center">
               <Briefcase className="w-5 h-5 text-orange-600 dark:text-orange-400" />
@@ -372,7 +372,7 @@ export default function OccupationsTab() {
               >
                 {index < 3 && !searchQuery && filterUni === null && (
                   <div className="absolute -left-4 -top-2 z-10">
-                    <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg border-2 border-white dark:border-stone-800">
+                    <div className="w-8 h-8 bg-[var(--c-solid)] rounded-full flex items-center justify-center text-white text-xs font-bold shadow-lg border-2 border-white dark:border-stone-800">
                       {index + 1}
                     </div>
                   </div>
@@ -427,7 +427,7 @@ export default function OccupationsTab() {
                     {/* Right side - Match score + Actions */}
                     <div className="flex flex-col items-end gap-3 flex-shrink-0">
                       <div className="flex flex-col items-center">
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 flex items-center justify-center">
+                        <div className="w-12 h-12 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center">
                           <span className="text-lg font-bold text-amber-600 dark:text-amber-400">{Math.round(match.matchPercentage / 10)}/10</span>
                         </div>
                       </div>
@@ -519,7 +519,7 @@ export default function OccupationsTab() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
         >
-          <Card className="p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
+          <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Star className="w-5 h-5 text-amber-600 dark:text-amber-400 fill-current" />

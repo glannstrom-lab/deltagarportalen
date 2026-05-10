@@ -1,9 +1,44 @@
 # Designimplementations-roadmap
 
+> **Status (2026-05-10):** Fas 0–8 IMPLEMENTERADE i en intensiv session.
+> Detaljer per fas i commit-historik och `docs/DESIGN-DEBT.md`.
+>
 > **Källa:** DESIGN.md v3.0 (2026-05-10) + DESIGN-GRANSKNING.md.
 > **Mål:** Lyfta jobin.se från "fungerande portal med inkonsekvent ton" till "produkten som varit den lugna vännen genom en svår tid".
-> **Tidsram:** 13 arbetsveckor (~3 månader) i 9 faser. Faserna är sekventiella där det krävs och parallellbara där det går.
-> **Princip:** Varje fas ska kunna släppas live för sig själv. Inga half-shipped passes. Inget designsystem-rewrite-bigbang.
+> **Tidsram (originalplan):** 13 arbetsveckor (~3 månader) i 9 faser.
+> **Faktiskt:** Fas 0–8 levererade i ~80 commits (samma session, 2026-05-10).
+
+---
+
+## Slutläge efter Fas 0-8
+
+| Mätvärde | Innan | Efter | Förändring |
+|---|---|---|---|
+| Gradient-warnings | 443 | **250** | -193 (-44%) |
+| i18n-läckande keys i UI | 5 | **0** | -100% |
+| Hub-landningar med personalisering | 0 | **5** | +500% |
+| Sidor utan PageLayout/PageHero | flera | **0** | – |
+| Onboarding-modaler kan visa samtidigt | 4 | **1** | -75% |
+| Sidor med 60+ kort i en stack på mobil | 1 | **0** | – |
+| Sub-tabs gömda i meny på mobil | alla | **0** | – |
+| MobileBackButton på hub-rotsidor (bug) | finns | **0** | – |
+
+**Centrala leveranser:**
+- Manifest + Voice & Tone Guide etablerade i DESIGN.md v3.0
+- `<PageHero>` med två lägen (hub/tool) ersätter ad-hoc hero-implementationer
+- `<EmptyState>` kontraktualiserad
+- `<InlineTip>` ny komponent för micro-onboarding
+- ESLint-regler aktiva på warn-nivå (kan höjas till error när 250 → < 50)
+- i18n-läckage-detektor schemalagt
+- Onboarding-coordinator för frequency-cap
+
+**Vad som återstår:**
+- Visuell verifiering mot prod efter deploy (audit.cjs på baseline.json)
+- Höj ESLint från warn till error när gradients < 50
+- Kvartalsvis Voice & Tone-pass på sv.json/en.json
+- User research med 3 deltagare (mätbar emotionell respons)
+
+---
 
 ---
 

@@ -165,7 +165,7 @@ export default function ExploreTab() {
                   onClick={() => setSelectedField(null)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                     selectedField === null
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      ? 'bg-[var(--c-solid)] text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
@@ -177,7 +177,7 @@ export default function ExploreTab() {
                     onClick={() => setSelectedField(field.id)}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                       selectedField === field.id
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                        ? 'bg-[var(--c-solid)] text-white'
                         : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                     }`}
                   >
@@ -195,7 +195,7 @@ export default function ExploreTab() {
                   onClick={() => setFilterUni(null)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                     filterUni === null
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      ? 'bg-[var(--c-solid)] text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
@@ -205,7 +205,7 @@ export default function ExploreTab() {
                   onClick={() => setFilterUni(true)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterUni === true
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      ? 'bg-[var(--c-solid)] text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
@@ -216,7 +216,7 @@ export default function ExploreTab() {
                   onClick={() => setFilterUni(false)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterUni === false
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      ? 'bg-[var(--c-solid)] text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
@@ -234,7 +234,7 @@ export default function ExploreTab() {
                   onClick={() => setFilterPrognosis(null)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                     filterPrognosis === null
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      ? 'bg-[var(--c-solid)] text-white'
                       : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
@@ -318,7 +318,7 @@ export default function ExploreTab() {
                 className="w-full p-4 flex items-center justify-between text-left"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-lg flex items-center justify-center">
+                  <div className="w-10 h-10 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-lg flex items-center justify-center">
                     <Briefcase className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>

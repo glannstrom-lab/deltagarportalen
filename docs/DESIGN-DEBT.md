@@ -15,6 +15,7 @@
 | Efter Fas 4-pass 1 | 2026-05-10 | **426** (-17 totalt) | 0 | färre |
 | Efter Fas 4-pass 2 | 2026-05-10 | **388** (-55 totalt) | 0 | 4 hub-domäner ren |
 | Efter Fas 4-pass 3 | 2026-05-10 | **295** (-148 totalt, -33%) | 0 | de flesta verktygssidor |
+| Efter Fas 8 | 2026-05-10 | **250** (-193 totalt, -44%) | 0 | inga utöver legacy |
 
 ### Fas 4 pass 3 — sammanfattning
 - CVTemplates.tsx (43) whitelistade som "dekorativa CV-mall-thumbnails" enligt DESIGN.md §6

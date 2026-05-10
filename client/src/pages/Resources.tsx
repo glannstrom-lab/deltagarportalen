@@ -701,10 +701,10 @@ export default function Resources() {
       <div className="space-y-6">
         {/* Saved CV Versions Section */}
         {(activeTab === 'all' || activeTab === 'documents') && cvVersions.length > 0 && (
-          <section className="bg-gradient-to-br from-amber-50/50 via-white to-orange-50/50 dark:from-amber-900/20 dark:via-stone-900 dark:to-orange-900/20 rounded-2xl p-5 border border-amber-100/50 dark:border-amber-800/50">
+          <section className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-2xl p-5 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+                <div className="w-10 h-10 bg-[var(--c-solid)] rounded-xl flex items-center justify-center">
                   <FileText className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -795,10 +795,10 @@ export default function Resources() {
 
         {/* Current CV (if no versions saved, show current) */}
         {(activeTab === 'all' || activeTab === 'documents') && hasCV && cvData && cvVersions.length === 0 && (
-          <section className="bg-gradient-to-br from-amber-50/50 via-white to-orange-50/50 dark:from-amber-900/20 dark:via-stone-900 dark:to-orange-900/20 rounded-2xl p-5 border border-amber-100/50 dark:border-amber-800/50">
+          <section className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-2xl p-5 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+                <div className="w-14 h-14 bg-[var(--c-solid)] rounded-xl flex items-center justify-center">
                   <FileText className="w-7 h-7 text-white" />
                 </div>
                 <div>
@@ -840,10 +840,10 @@ export default function Resources() {
 
         {/* Interest Guide Result - Compact */}
         {(activeTab === 'all' || activeTab === 'documents') && interestResult && (
-          <section className="bg-gradient-to-r from-pink-50 to-sky-50 dark:from-pink-900/20 dark:to-sky-900/20 rounded-xl border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 p-4">
+          <section className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-sky-500 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-[var(--c-solid)] rounded-lg flex items-center justify-center">
                   <Heart className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -865,7 +865,7 @@ export default function Resources() {
                 </Link>
                 <Link
                   to="/career"
-                  className="px-3 py-1.5 text-sm bg-gradient-to-r from-pink-500 to-sky-500 text-white rounded-lg font-medium hover:from-pink-600 hover:to-sky-600 transition-colors"
+                  className="px-3 py-1.5 text-sm bg-[var(--c-solid)] text-white rounded-lg font-medium hover:brightness-110 transition-colors"
                 >
                   {t('resources.exploreJobs')}
                 </Link>
@@ -899,7 +899,7 @@ export default function Resources() {
                   type={letter.ai_generated ? t('resources.aiGenerated') : t('resources.manual')}
                   date={new Date(letter.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                   icon={FileText}
-                  color="bg-gradient-to-br from-sky-500 to-blue-500"
+                  color="bg-[var(--c-solid)]"
                   actions={
                     <>
                       <button
@@ -1049,7 +1049,7 @@ export default function Resources() {
                   to={`/knowledge-base/article/${article.id}`}
                   className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-3 hover:shadow-md transition-all group flex items-center gap-3"
                 >
-                  <div className="w-9 h-9 bg-gradient-to-br from-blue-500 to-sky-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                  <div className="w-9 h-9 bg-[var(--c-solid)] rounded-lg flex items-center justify-center flex-shrink-0">
                     <BookOpen className="w-4 h-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -1129,7 +1129,7 @@ export default function Resources() {
             <div className="flex flex-wrap justify-center gap-2">
               <Link
                 to="/cv"
-                className="px-4 py-2 text-sm bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white rounded-lg font-medium hover:from-blue-600 hover:to-blue-700 transition-all"
+                className="px-4 py-2 text-sm bg-[var(--c-solid)] text-white rounded-lg font-medium hover:brightness-110 transition-all"
               >
                 {t('resources.createCV')}
               </Link>
