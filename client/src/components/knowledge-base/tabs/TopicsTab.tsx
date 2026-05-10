@@ -24,11 +24,18 @@ interface TopicsTabProps {
   articles: Article[]
 }
 
+// DESIGN.md §8 — max 5-7 saker synliga utan val. Visa 12 artiklar (2 rader x 6
+// eller 3 rader x 4 i grid) och kräv "Visa fler"-klick för resten. När en
+// kategori är vald reduceras listan ändå, så pagineringen kommer mest till
+// nytta vid sökning eller "Alla kategorier".
+const VISIBLE_BATCH = 12
+
 export default function TopicsTab({ articles }: TopicsTabProps) {
   const { t } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [visibleCount, setVisibleCount] = useState(VISIBLE_BATCH)
 
   // Get unique categories from articles
   const categories = useMemo(() => {
@@ -64,6 +71,14 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
       return true
     })
   }, [articles, searchQuery, selectedCategory])
+
+  // Återställ pagination när filter ändras så användaren ser första 12 av nya
+  useMemo(() => {
+    setVisibleCount(VISIBLE_BATCH)
+  }, [searchQuery, selectedCategory])
+
+  const visibleArticles = filteredArticles.slice(0, visibleCount)
+  const hasMore = filteredArticles.length > visibleCount
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -192,7 +207,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
         ) : viewMode === 'grid' ? (
           // Grid view
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {filteredArticles.map((article) => (
+            {visibleArticles.map((article) => (
               <EnhancedArticleCard
                 key={article.id}
                 article={article}
@@ -202,13 +217,28 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
         ) : (
           // List view
           <div className="space-y-3">
-            {filteredArticles.map((article) => (
+            {visibleArticles.map((article) => (
               <EnhancedArticleCard
                 key={article.id}
                 article={article}
                 variant="compact"
               />
             ))}
+          </div>
+        )}
+
+        {/* Visa fler — DESIGN.md §8 (lugn före information) */}
+        {hasMore && (
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setVisibleCount(c => c + VISIBLE_BATCH)}
+              className="px-5 py-2.5 rounded-xl bg-white border border-stone-200 text-[var(--c-text)] font-medium hover:bg-[var(--c-bg)] hover:border-[var(--c-accent)] transition-colors"
+            >
+              {t('knowledgeBase.topics.showMore', 'Visa fler')}{' '}
+              <span className="text-stone-500 font-normal">
+                ({filteredArticles.length - visibleCount} {t('knowledgeBase.topics.remaining', 'kvar')})
+              </span>
+            </button>
           </div>
         )}
       </div>

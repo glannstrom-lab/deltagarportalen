@@ -237,6 +237,51 @@ export default function HubOverviewHistory() {
           </ul>
         )}
       </div>
+
+      {/* DESIGN.md §7 — kontextualiserade förslag när nästan tomt (< 3 items).
+          Hjälper en ny användare att hitta nästa steg istället för en stor blank yta. */}
+      {items.length < 3 && (
+        <section aria-labelledby="suggestions-heading" className="mt-6 sm:mt-8">
+          <h2
+            id="suggestions-heading"
+            className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--stone-600)] mb-3 px-1"
+          >
+            Här är 3 saker du kan utforska
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <Link
+              to="/jobb"
+              className="block p-4 bg-[var(--surface)] border border-[var(--stone-200)] rounded-[12px] hover:border-[var(--activity-solid)] hover:shadow-sm transition-all no-underline"
+            >
+              <div className="w-9 h-9 rounded-lg bg-[var(--activity-bg)] flex items-center justify-center mb-3">
+                <Briefcase size={18} className="text-[var(--activity-text)]" />
+              </div>
+              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">Sök ditt första jobb</h3>
+              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">Hitta jobb från Platsbanken som matchar dig.</p>
+            </Link>
+            <Link
+              to="/karriar"
+              className="block p-4 bg-[var(--surface)] border border-[var(--stone-200)] rounded-[12px] hover:border-[var(--coaching-solid)] hover:shadow-sm transition-all no-underline"
+            >
+              <div className="w-9 h-9 rounded-lg bg-[var(--coaching-bg)] flex items-center justify-center mb-3">
+                <Target size={18} className="text-[var(--coaching-text)]" />
+              </div>
+              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">Sätt ett karriärmål</h3>
+              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">Beskriv var du vill — vi hjälper dig dit.</p>
+            </Link>
+            <Link
+              to="/min-vardag"
+              className="block p-4 bg-[var(--surface)] border border-[var(--stone-200)] rounded-[12px] hover:border-[var(--wellbeing-solid)] hover:shadow-sm transition-all no-underline"
+            >
+              <div className="w-9 h-9 rounded-lg bg-[var(--wellbeing-bg)] flex items-center justify-center mb-3">
+                <Heart size={18} className="text-[var(--wellbeing-text)]" />
+              </div>
+              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">Logga ditt mående</h3>
+              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">Liten check-in — bara för dig.</p>
+            </Link>
+          </div>
+        </section>
+      )}
     </PageLayout>
   )
 }

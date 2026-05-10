@@ -37,10 +37,11 @@ export default function LaborMarketTab() {
     setError(null)
 
     try {
+      // DESIGN.md §8 — max 5-7 saker synliga utan val. Hämta 5, inte 8.
       const [statsResult, skillsResult, occupationsResult] = await Promise.all([
         trendsApi.getMarketStatsWithFallback(),
-        trendsApi.getTrendingSkillsWithFallback(8),
-        trendsApi.getPopularSearchesWithFallback('occupations', 8)
+        trendsApi.getTrendingSkillsWithFallback(5),
+        trendsApi.getPopularSearchesWithFallback('occupations', 5)
       ])
 
       setMarketStats(statsResult.data)
@@ -129,49 +130,25 @@ export default function LaborMarketTab() {
         </Button>
       </div>
 
-      {/* Key Stats */}
+      {/* Huvudsiffra med kontext (DESIGN.md §8 — en sak i centrum) */}
       {marketStats && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="p-4 text-center bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
-            <Briefcase className="w-8 h-8 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
-            <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">
-              {marketStats.total_jobs.toLocaleString('sv-SE')}
+        <Card className="p-6 sm:p-8 bg-[var(--c-bg)] border-[var(--c-accent)]">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-6">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white flex items-center justify-center flex-shrink-0">
+              <Briefcase className="w-7 h-7 sm:w-8 sm:h-8 text-[var(--c-text)]" aria-hidden="true" />
             </div>
-            <div className="text-xs text-stone-600 dark:text-stone-400">
-              {lang === 'en' ? 'Open positions' : 'Lediga tjänster'}
+            <div className="flex-1 min-w-0">
+              <div className="text-3xl sm:text-4xl font-bold text-[var(--c-text)] tabular-nums leading-tight">
+                {marketStats.total_jobs.toLocaleString('sv-SE')}
+              </div>
+              <p className="text-sm sm:text-base text-stone-700 dark:text-stone-300 mt-1">
+                {lang === 'en'
+                  ? `lediga jobb just nu — ${marketStats.new_jobs_week.toLocaleString('sv-SE')} nya denna vecka`
+                  : `lediga jobb just nu — ${marketStats.new_jobs_week.toLocaleString('sv-SE')} nya denna vecka`}
+              </p>
             </div>
-          </Card>
-
-          <Card className="p-4 text-center bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
-            <TrendingUp className="w-8 h-8 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
-            <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">
-              +{marketStats.new_jobs_week.toLocaleString('sv-SE')}
-            </div>
-            <div className="text-xs text-stone-600 dark:text-stone-400">
-              {lang === 'en' ? 'New this week' : 'Nya denna vecka'}
-            </div>
-          </Card>
-
-          <Card className="p-4 text-center bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
-            <Users className="w-8 h-8 text-amber-600 dark:text-amber-400 mx-auto mb-2" />
-            <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">
-              {marketStats.competition_index.toFixed(1)}
-            </div>
-            <div className="text-xs text-stone-600 dark:text-stone-400">
-              {lang === 'en' ? 'Applicants per job' : 'Sökande per jobb'}
-            </div>
-          </Card>
-
-          <Card className="p-4 text-center bg-gradient-to-br from-purple-50 to-violet-50 dark:from-purple-900/20 dark:to-violet-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
-            <Building2 className="w-8 h-8 text-[var(--c-solid)] dark:text-[var(--c-solid)] mx-auto mb-2" />
-            <div className="text-2xl font-bold text-stone-800 dark:text-stone-100">
-              {marketStats.avg_time_to_hire_days}
-            </div>
-            <div className="text-xs text-stone-600 dark:text-stone-400">
-              {lang === 'en' ? 'Avg. days to hire' : 'Dagar till anställning'}
-            </div>
-          </Card>
-        </div>
+          </div>
+        </Card>
       )}
 
       {/* Industry Radar */}
@@ -179,94 +156,64 @@ export default function LaborMarketTab() {
 
       {/* Two-column layout for skills and occupations */}
       <div className="grid md:grid-cols-2 gap-6">
-        {/* Trending Skills */}
+        {/* Trending Skills — DESIGN.md §8 chips */}
         <Card className="p-5">
           <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <Zap className="w-5 h-5 text-amber-500" />
             {lang === 'en' ? 'In-Demand Skills' : 'Efterfrågade kompetenser'}
           </h3>
-          <div className="space-y-3">
+          <div className="flex flex-wrap gap-2">
             {trendingSkills.map((skill, i) => (
-              <div
+              <span
                 key={i}
-                className="flex items-center justify-between p-3 rounded-lg bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--c-bg)] border border-[var(--c-accent)] text-sm text-[var(--c-text)] font-medium"
               >
-                <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-xs font-medium flex items-center justify-center">
-                    {i + 1}
-                  </span>
-                  <span className="font-medium text-stone-800 dark:text-stone-200">
-                    {skill.skill}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-stone-500 dark:text-stone-400">
-                    {skill.job_count.toLocaleString('sv-SE')} {lang === 'en' ? 'jobs' : 'jobb'}
-                  </span>
-                  {getTrendIcon(skill.trend)}
-                </div>
-              </div>
+                <span className="text-xs opacity-60">{i + 1}.</span>
+                {skill.skill}
+              </span>
             ))}
           </div>
         </Card>
 
-        {/* Popular Occupations */}
+        {/* Popular Occupations — DESIGN.md §8 chips, inga delta-procent */}
         <Card className="p-5">
           <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <Briefcase className="w-5 h-5 text-[var(--c-solid)]" />
             {lang === 'en' ? 'Most Searched Occupations' : 'Mest sökta yrken'}
           </h3>
-          <div className="space-y-3">
+          <div className="flex flex-wrap gap-2">
             {popularOccupations.map((occ, i) => (
-              <div
+              <span
                 key={i}
-                className="flex items-center justify-between p-3 rounded-lg bg-stone-50 dark:bg-stone-800 hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[var(--c-bg)] border border-[var(--c-accent)] text-sm text-[var(--c-text)] font-medium"
               >
-                <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-text)] text-xs font-medium flex items-center justify-center">
-                    {i + 1}
-                  </span>
-                  <span className="font-medium text-stone-800 dark:text-stone-200">
-                    {occ.term}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className={cn('text-xs font-medium', getTrendColor(occ.trend))}>
-                    {occ.change_percent !== undefined && occ.change_percent > 0 && '+'}
-                    {occ.change_percent !== undefined ? `${occ.change_percent}%` : ''}
-                  </span>
-                  {getTrendIcon(occ.trend)}
-                </div>
-              </div>
+                <span className="text-xs opacity-60">{i + 1}.</span>
+                {occ.term}
+              </span>
             ))}
           </div>
         </Card>
       </div>
 
-      {/* Regional Stats */}
+      {/* Regional Stats — DESIGN.md §8 top 3 städer, inga delta-procent */}
       {marketStats?.by_region && marketStats.by_region.length > 0 && (
         <Card className="p-5">
           <h3 className="font-semibold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
             <MapPin className="w-5 h-5 text-[var(--c-solid)]" />
-            {lang === 'en' ? 'Jobs by Region' : 'Jobb per region'}
+            {lang === 'en' ? 'Jobs by Region' : 'Var finns jobben?'}
           </h3>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
-            {marketStats.by_region.map((region, i) => (
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {marketStats.by_region.slice(0, 3).map((region, i) => (
               <div
                 key={i}
-                className="p-3 rounded-lg bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 border border-[var(--c-accent)] dark:border-[var(--c-accent)]/50 text-center"
+                className="p-4 rounded-lg bg-[var(--c-bg)] border border-[var(--c-accent)]"
               >
-                <div className="text-lg font-bold text-stone-800 dark:text-stone-100">
+                <div className="text-xl font-bold text-[var(--c-text)] tabular-nums">
                   {region.job_count.toLocaleString('sv-SE')}
                 </div>
-                <div className="text-xs text-stone-600 dark:text-stone-400 truncate" title={region.region}>
+                <div className="text-sm text-stone-700 dark:text-stone-300 mt-0.5">
                   {region.region.replace(' län', '')}
                 </div>
-                {region.growth_percent > 0 && (
-                  <div className="text-xs text-[var(--c-text)] dark:text-[var(--c-text)] mt-1">
-                    +{region.growth_percent}%
-                  </div>
-                )}
               </div>
             ))}
           </div>
