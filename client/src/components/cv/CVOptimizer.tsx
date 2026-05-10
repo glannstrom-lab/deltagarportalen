@@ -59,7 +59,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-      <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-600 p-6 text-white">
+      <div className="bg-[var(--c-solid)] p-6 text-white">
         <div className="flex items-center gap-3 mb-2">
           <Sparkles size={28} />
           <h3 className="text-xl font-bold">CV-optimerare</h3>
@@ -114,7 +114,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
         {optimization && (
           <div className="space-y-6">
             {/* Summary */}
-            <div className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 rounded-xl p-4">
+            <div className="bg-[var(--c-bg)] rounded-xl p-4">
               <h4 className="font-semibold text-[var(--c-text)] mb-2 flex items-center gap-2">
                 <Lightbulb size={18} className="text-amber-500" />
                 Sammanfattning

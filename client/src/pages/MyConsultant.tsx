@@ -585,7 +585,7 @@ function GoalsSection({ goals }: { goals: Goal[] }) {
       {/* Encouragement message */}
       {completedCount > 0 && (
         <div className="px-4 pb-4">
-          <div className="bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 rounded-xl p-4 flex items-center gap-3">
+          <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl p-4 flex items-center gap-3">
             <Sparkles className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0" />
             <p className="text-sm text-[var(--c-text)] dark:text-[var(--c-text)]">
               {t('myConsultant.greatJob', { count: completedCount })}
@@ -637,7 +637,7 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
           onClick={onBookMeeting}
           className={cn(
             'flex items-center gap-3 p-4 rounded-xl transition-all duration-200',
-            'bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] hover:from-[var(--c-solid)] hover:to-[var(--c-text)]',
+            'bg-[var(--c-solid)] hover:bg-[var(--c-text)]',
             'text-white'
           )}
         >

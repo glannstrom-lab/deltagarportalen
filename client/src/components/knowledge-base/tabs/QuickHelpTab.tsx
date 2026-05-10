@@ -79,7 +79,7 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-rose-50 to-amber-50 border-rose-100">
+      <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
             <AlertCircle className="w-6 h-6 text-rose-600" />
@@ -191,7 +191,7 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
       )}
 
       {/* Contact support */}
-      <Card className="bg-gradient-to-r from-sky-50 to-blue-50 border-sky-100">
+      <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
             <Phone className="w-6 h-6 text-sky-600" />

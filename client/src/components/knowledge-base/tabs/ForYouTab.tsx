@@ -77,7 +77,7 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Welcome header */}
-      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 border-[var(--c-accent)]/40">
+      <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]">
         <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
           <div className="flex items-center gap-3 sm:block">
             <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[var(--c-accent)]/40 rounded-xl flex items-center justify-center shrink-0">
@@ -105,7 +105,7 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
 
       {/* Mood-based suggestion (if mood logged today) */}
       {moodData.hasMoodToday && moodData.currentMood && (
-        <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-100">
+        <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
               <span className="text-xl">{moodData.moodEmoji}</span>

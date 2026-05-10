@@ -120,7 +120,7 @@ export default function EnergyTab() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="p-4 bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50"
+        className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50"
       >
         <div className="flex items-start gap-3">
           <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)] flex-shrink-0 mt-0.5" />
@@ -238,7 +238,7 @@ export default function EnergyTab() {
       </Card>
 
       {/* Weekly Summary Stats */}
-      <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Calendar className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           Veckovyn

@@ -224,7 +224,7 @@ export default function HealthTab() {
   return (
     <div className="space-y-6">
       {/* Mood Logging - Prominent at top */}
-      <Card className="p-4 sm:p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+      <Card className="p-4 sm:p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center shrink-0">
@@ -327,7 +327,7 @@ export default function HealthTab() {
       </Card>
 
       {/* Daily Quote */}
-      <Card className="p-5 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+      <Card className="p-5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
           <Quote className="w-6 h-6 text-[var(--c-solid)] dark:text-[var(--c-solid)] flex-shrink-0" />
           <div>

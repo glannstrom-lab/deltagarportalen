@@ -74,7 +74,7 @@ function TabNavigation({
 
       {/* Compact streak indicator */}
       {streak > 0 && (
-        <div className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-xl border border-orange-100 dark:border-orange-800">
+        <div className="flex items-center gap-1.5 px-3 py-2 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]">
           <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" />
           <span className="font-bold text-orange-600 dark:text-orange-400">{streak}</span>
           <span className="text-xs text-orange-500 dark:text-orange-400 hidden sm:inline">{t('diary.streak.days')}</span>

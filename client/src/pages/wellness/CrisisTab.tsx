@@ -89,7 +89,7 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
           duration: phase === 'breathe-in' ? 4 : phase === 'hold' ? 4 : phase === 'breathe-out' ? 6 : 2,
           ease: 'easeInOut'
         }}
-        className="w-40 h-40 mx-auto mb-8 rounded-full bg-gradient-to-br from-[var(--c-solid)]/80 to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-solid)] flex items-center justify-center shadow-lg"
+        className="w-40 h-40 mx-auto mb-8 rounded-full bg-[var(--c-solid)] flex items-center justify-center shadow-lg"
       >
         <Wind className="w-16 h-16 text-white" />
       </motion.div>
@@ -201,7 +201,7 @@ export default function CrisisTab() {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-red-600 to-red-700 rounded-xl p-6 text-white shadow-xl"
+        className="bg-red-600 rounded-xl p-6 text-white shadow-xl"
       >
         <div className="flex items-start gap-4">
           <motion.div
@@ -257,7 +257,7 @@ export default function CrisisTab() {
       </div>
 
       {/* Breathing Exercise */}
-      <Card className="p-6 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30">
+      <Card className="p-6 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
           <Wind className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           {t('wellness.crisis.breathingExercise')}
@@ -349,7 +349,7 @@ export default function CrisisTab() {
       </Card>
 
       {/* Chat Support */}
-      <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
           Chatt-stöd
@@ -386,7 +386,7 @@ export default function CrisisTab() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="text-center p-6 bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 rounded-xl border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
+        className="text-center p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
       >
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}

@@ -100,7 +100,7 @@ export default function RoutinesTab() {
         animate={{ opacity: 1, y: 0 }}
         className="grid grid-cols-2 gap-4"
       >
-        <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+        <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Idag</p>
@@ -114,7 +114,7 @@ export default function RoutinesTab() {
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-orange-100 dark:border-orange-800">
+        <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]">
           <div className="flex items-start gap-3">
             <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }}>
               <Flame className="w-8 h-8 text-orange-600 dark:text-orange-400" />
@@ -139,7 +139,7 @@ export default function RoutinesTab() {
             initial={{ width: 0 }}
             animate={{ width: `${completionPercentage}%` }}
             transition={{ duration: 0.5 }}
-            className="h-full bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-solid)]"
+            className="h-full bg-[var(--c-solid)]"
           />
         </div>
       </div>
@@ -293,7 +293,7 @@ export default function RoutinesTab() {
       </Card>
 
       {/* Suggested Routines - Templates */}
-      <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] to-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.suggestedRoutines')}</h3>
         <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Förslagade rutiner som kan hjälpa dig få en strukturerad dag:</p>
         <div className="space-y-2">
@@ -332,7 +332,7 @@ export default function RoutinesTab() {
         <div className="grid grid-cols-2 gap-3">
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 border-2 border-orange-200 dark:border-orange-800 cursor-pointer hover:shadow-md transition-all"
+            className="p-4 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-2 border-[var(--c-accent)] cursor-pointer hover:shadow-md transition-all"
           >
             <Sun className="w-6 h-6 text-orange-600 dark:text-orange-400 mb-2" />
             <h4 className="font-semibold text-orange-900 dark:text-orange-200">Morgon-rutin</h4>
@@ -342,7 +342,7 @@ export default function RoutinesTab() {
 
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-xl bg-gradient-to-br from-[var(--c-accent)]/40 to-[var(--c-accent)]/40 dark:from-[var(--c-bg)]/40 dark:to-[var(--c-bg)]/40 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 cursor-pointer hover:shadow-md transition-all"
+            className="p-4 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 border-2 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 cursor-pointer hover:shadow-md transition-all"
           >
             <Moon className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mb-2" />
             <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-text)]">Kväll-rutin</h4>

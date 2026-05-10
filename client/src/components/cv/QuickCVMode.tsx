@@ -176,7 +176,7 @@ export function QuickCVMode({ onComplete, onSwitchToFull, className }: QuickCVMo
 
   return (
     <div className={cn(
-      "bg-gradient-to-br from-[var(--c-solid)] to-sky-500 rounded-3xl p-6 sm:p-8 text-white",
+      "bg-[var(--c-solid)] rounded-3xl p-6 sm:p-8 text-white",
       className
     )}>
       {/* Header */}

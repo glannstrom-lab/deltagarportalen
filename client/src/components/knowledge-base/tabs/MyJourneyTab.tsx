@@ -260,7 +260,7 @@ export default function MyJourneyTab() {
 
           {/* All done state */}
           {cvData?.hasCV && riasecProfile.hasResult && savedJobsData && savedJobsData.count > 0 && (
-            <Card className="bg-gradient-to-r from-emerald-50 to-[var(--c-bg)] border-emerald-100 md:col-span-2">
+            <Card className="bg-[var(--c-bg)] border-[var(--c-accent)] md:col-span-2">
               <div className="flex items-center gap-4">
                 <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                 <div>

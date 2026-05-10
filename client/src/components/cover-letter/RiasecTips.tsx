@@ -48,7 +48,7 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
   const dominantRiasec = dominantType ? RIASEC_TYPES[dominantType.code] : null
 
   return (
-    <div className={cn("bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200 overflow-hidden", className)}>
+    <div className={cn("bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)] overflow-hidden", className)}>
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}

@@ -160,7 +160,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
               </div>
               <div className="flex-1 h-6 bg-stone-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-[var(--c-solid)] to-sky-500 rounded-full flex items-center justify-end px-2"
+                  className="h-full bg-[var(--c-solid)] rounded-full flex items-center justify-end px-2"
                   style={{ width: `${width}%` }}
                 >
                   <span className="text-xs font-medium text-white">{stage.count}</span>

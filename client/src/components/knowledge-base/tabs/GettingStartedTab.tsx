@@ -139,7 +139,7 @@ export default function GettingStartedTab() {
   return (
     <div className="space-y-6">
       {/* Progress header */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100">
+      <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
             <Rocket className="w-6 h-6 text-blue-600" />
@@ -242,7 +242,7 @@ export default function GettingStartedTab() {
 
       {/* Completion celebration */}
       {completedCount === steps.length && (
-        <Card className="bg-gradient-to-r from-emerald-50 to-[var(--c-bg)] border-emerald-100">
+        <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-emerald-600" />

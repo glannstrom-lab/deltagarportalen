@@ -255,7 +255,7 @@ export default function CognitiveTab() {
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-solid)] rounded-xl p-6 text-white shadow-lg"
+        className="bg-[var(--c-solid)] rounded-xl p-6 text-white shadow-lg"
       >
         <div className="flex items-center justify-between">
           <div>

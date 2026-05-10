@@ -90,7 +90,7 @@ export default function ToolsTab() {
   return (
     <div className="space-y-8">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-100">
+      <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center">
             <Wrench className="w-6 h-6 text-amber-600" />

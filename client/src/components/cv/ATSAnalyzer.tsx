@@ -495,7 +495,7 @@ export function ATSAnalyzer({
 
       {/* M3: Nästa steg - FLYTTAT HÖGRE UPP */}
       {nextSteps.length > 0 && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-sky-50 to-[var(--c-bg)] dark:from-sky-900/20 dark:to-[var(--c-bg)]/30 rounded-xl border border-sky-100 dark:border-sky-800/50">
+        <div className="mb-6 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-sky-100 dark:border-sky-800/50">
           <div className="flex items-center gap-2 mb-3">
             <Lightbulb size={18} className="text-sky-600 dark:text-sky-400" />
             <h4 className="font-medium text-sky-900 dark:text-sky-200">
@@ -526,7 +526,7 @@ export function ATSAnalyzer({
       )}
 
       {/* Rekryterarens ögonblicks-test */}
-      <div className="mb-6 p-4 bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
+      <div className="mb-6 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Eye size={18} className="text-[var(--c-text)] dark:text-[var(--c-text)]" />
@@ -852,7 +852,7 @@ export function ATSAnalyzer({
           onClick={() => setShowExportCheck(!showExportCheck)}
           aria-expanded={showExportCheck}
           aria-controls="export-check-section"
-          className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 rounded-lg hover:from-blue-100 hover:to-sky-100 dark:hover:from-blue-900/30 dark:hover:to-sky-900/30 transition-colors border border-blue-100 dark:border-blue-800/50 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
+          className="w-full flex items-center justify-between p-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg hover:bg-[var(--c-accent)]/40 transition-colors border border-blue-100 dark:border-blue-800/50 focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
         >
           <div className="flex items-center gap-2">
             <Download size={18} className="text-blue-600 dark:text-blue-400" />
