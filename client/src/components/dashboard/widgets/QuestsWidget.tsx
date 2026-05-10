@@ -130,8 +130,8 @@ export const QuestsWidget = memo(function QuestsWidget({
           <div className={cn(
             "w-12 h-12 rounded-xl flex items-center justify-center",
             isComplete
-              ? "bg-gradient-to-br from-emerald-100 to-emerald-200 dark:from-emerald-900/40 dark:to-emerald-800/40 text-emerald-600 dark:text-emerald-400"
-              : "bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/40 dark:to-orange-900/40 text-amber-600 dark:text-amber-400"
+              ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
+              : "bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400"
           )}>
             {isComplete ? <Zap size={24} /> : <Target size={24} />}
           </div>
@@ -166,8 +166,8 @@ export const QuestsWidget = memo(function QuestsWidget({
             className={cn(
               "h-full rounded-full transition-all duration-500",
               isComplete
-                ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
-                : "bg-gradient-to-r from-amber-400 to-orange-500"
+                ? "bg-emerald-500"
+                : "bg-amber-500"
             )}
             style={{ width: `${progress}%` }}
           />

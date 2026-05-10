@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax -- DESIGN.md §6 RIASEC-typer har semantiskt distinkta färger för 6 personlighetstyper */
 import { useState } from 'react'
 import { 
   calculateJobMatches, 

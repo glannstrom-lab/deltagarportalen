@@ -1,7 +1,13 @@
 /**
  * CV Templates Gallery
  * Creative and stylish templates downloadable in Word format
+ *
+ * DESIGN.md §6 tillåter gradient som "dekorativ hjältebild". CV-mall-thumbnails
+ * är just det — de visar visuellt olika designstilar (Tropical, Sunset, Coastal
+ * osv). Att tvinga platt färg här skulle göra alla mallar identiska visuellt.
+ * Whitelistas därför som file-level eslint-undantag.
  */
+/* eslint-disable no-restricted-syntax -- DESIGN.md §6 dekorativa CV-mall-thumbnails */
 
 import { useState } from 'react'
 import { 

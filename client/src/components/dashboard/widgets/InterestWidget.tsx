@@ -163,7 +163,7 @@ export const InterestWidget = memo(function InterestWidget({
           </div>
           <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-[var(--c-solid)]/80 to-cyan-500 transition-all duration-500"
+              className="h-full rounded-full bg-[var(--c-solid)] transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>

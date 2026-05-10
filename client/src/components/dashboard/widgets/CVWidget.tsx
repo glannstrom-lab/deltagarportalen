@@ -111,8 +111,8 @@ export const CVWidget = memo(function CVWidget({
           <div className={cn(
             "w-12 h-12 rounded-xl flex items-center justify-center",
             isComplete
-              ? "bg-gradient-to-br from-[var(--c-accent)]/40 to-emerald-200 dark:from-[var(--c-bg)]/40 dark:to-emerald-800/40 text-[var(--c-text)] dark:text-[var(--c-text)]"
-              : "bg-gradient-to-br from-[var(--c-accent)]/40 to-sky-100 dark:from-[var(--c-bg)]/40 dark:to-sky-900/40 text-[var(--c-text)] dark:text-[var(--c-text)]"
+              ? "bg-emerald-100 dark:bg-emerald-900/40 text-[var(--c-text)] dark:text-[var(--c-text)]"
+              : "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]"
           )}>
             {isComplete ? <CheckCircle2 size={24} /> : <FileText size={24} />}
           </div>
@@ -142,8 +142,8 @@ export const CVWidget = memo(function CVWidget({
             className={cn(
               "h-full rounded-full transition-all duration-500",
               isComplete
-                ? "bg-gradient-to-r from-emerald-400 to-emerald-500"
-                : "bg-gradient-to-r from-[var(--c-solid)] to-sky-500"
+                ? "bg-emerald-500"
+                : "bg-[var(--c-solid)]"
             )}
             style={{ width: `${progress}%` }}
           />

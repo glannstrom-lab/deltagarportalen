@@ -126,7 +126,7 @@ export const SkillsWidget = memo(function SkillsWidget({
               className={cn(
                 "h-full rounded-full transition-all duration-500",
                 isGood
-                  ? "bg-gradient-to-r from-emerald-400 to-[var(--c-solid)]"
+                  ? "bg-[var(--c-solid)]"
                   : "bg-gradient-to-r from-cyan-400 to-[var(--c-solid)]"
               )}
               style={{ width: `${matchScore}%` }}

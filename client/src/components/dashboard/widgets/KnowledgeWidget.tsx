@@ -85,7 +85,7 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/40 dark:to-orange-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400 flex items-center justify-center">
             <BookOpen size={24} />
           </div>
           <div>
@@ -117,7 +117,7 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
           </div>
           <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-amber-400 to-orange-500 transition-all duration-500"
+              className="h-full rounded-full bg-amber-500 transition-all duration-500"
               style={{ width: `${Math.min(100, (readCount / totalArticles) * 100)}%` }}
             />
           </div>

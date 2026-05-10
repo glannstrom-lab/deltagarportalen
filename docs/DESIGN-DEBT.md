@@ -13,6 +13,15 @@
 | Efter Fas 1 | 2026-05-10 | 443 | **0** | ≥4 |
 | Efter Fas 2 | 2026-05-10 | **437** (-6) | 0 | ≥4 |
 | Efter Fas 4-pass 1 | 2026-05-10 | **426** (-17 totalt) | 0 | färre |
+| Efter Fas 4-pass 2 | 2026-05-10 | **388** (-55 totalt) | 0 | 4 hub-domäner ren |
+| Efter Fas 4-pass 3 | 2026-05-10 | **295** (-148 totalt, -33%) | 0 | de flesta verktygssidor |
+
+### Fas 4 pass 3 — sammanfattning
+- CVTemplates.tsx (43) whitelistade som "dekorativa CV-mall-thumbnails" enligt DESIGN.md §6
+- ResultsView.tsx (13) whitelistad som "semantiskt distinkta RIASEC-typer"
+- AI-team MarkdownRenderer + MessageBubble (-7): self-gradients och blandningar borta
+- 15 dashboard widgets mass-replaced (-37): emerald/amber/blue self-gradients och hub-blandningar borta
+- CoverLetterWidget (-11): full sweep av rose/orange/amber-gradients
 
 Det här dokumentet listar varje känd överträdelse mot DESIGN.md v3.0 som finns i kodbasen idag, samt vilken fas i roadmapen som tar hand om den. Inga av punkterna nedan är blockers för CI — alla loggas som varningar och får leva tills sin fas städar dem.
 

@@ -113,8 +113,8 @@ export const LinkedInWidget = memo(function LinkedInWidget({
           <div className={cn(
             "w-12 h-12 rounded-xl flex items-center justify-center",
             isOptimized
-              ? "bg-gradient-to-br from-emerald-100 to-[var(--c-accent)]/40 dark:from-emerald-900/40 dark:to-[var(--c-bg)]/40 text-emerald-600 dark:text-emerald-400"
-              : "bg-gradient-to-br from-blue-100 to-cyan-100 dark:from-blue-900/40 dark:to-cyan-900/40 text-blue-600 dark:text-blue-400"
+              ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400"
+              : "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400"
           )}>
             <Linkedin size={24} />
           </div>
@@ -142,8 +142,8 @@ export const LinkedInWidget = memo(function LinkedInWidget({
               className={cn(
                 "h-full rounded-full transition-all duration-500",
                 isOptimized
-                  ? "bg-gradient-to-r from-emerald-400 to-[var(--c-solid)]"
-                  : "bg-gradient-to-r from-blue-400 to-cyan-500"
+                  ? "bg-[var(--c-solid)]"
+                  : "bg-blue-500"
               )}
               style={{ width: `${profileScore}%` }}
             />

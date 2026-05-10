@@ -168,7 +168,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
       <div className="space-y-4">
         {/* Stats Cards */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-rose-50 to-orange-50 rounded-xl border border-rose-100">
+          <div className="flex items-center gap-3 p-3 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]">
             <div className="w-12 h-12 bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center shadow-sm">
               <FileText size={22} className="text-rose-500" />
             </div>
@@ -178,7 +178,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
             </div>
           </div>
 
-          <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border border-orange-100">
+          <div className="flex items-center gap-3 p-3 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]">
             <div className="w-12 h-12 bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center shadow-sm">
               <Briefcase size={22} className="text-orange-500" />
             </div>
@@ -252,7 +252,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
 
         {/* Empty State */}
         {count === 0 && applicationsCount === 0 && (
-          <div className="relative overflow-hidden p-4 bg-gradient-to-br from-rose-50 via-orange-50 to-amber-50 rounded-xl border border-rose-100">
+          <div className="relative overflow-hidden p-4 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]">
             <div className="relative flex items-start gap-3">
               <div className="w-10 h-10 bg-white dark:bg-stone-900 rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
                 <Sparkles size={20} className="text-rose-500" />
@@ -309,7 +309,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4">
           {/* Letters Card */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500 to-orange-500 p-5 text-white">
+          <div className="relative overflow-hidden rounded-2xl bg-[var(--c-solid)] p-5 text-white">
             <div className="relative z-10 flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-white dark:bg-stone-900/20 backdrop-blur-sm flex items-center justify-center">
                 <FileText size={32} className="text-white" />
@@ -327,7 +327,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
           </div>
 
           {/* Applications Card */}
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-orange-500 to-amber-500 p-5 text-white">
+          <div className="relative overflow-hidden rounded-2xl bg-[var(--c-solid)] p-5 text-white">
             <div className="relative z-10 flex items-center gap-4">
               <div className="w-16 h-16 rounded-2xl bg-white dark:bg-stone-900/20 backdrop-blur-sm flex items-center justify-center">
                 <Briefcase size={32} className="text-white" />
@@ -358,7 +358,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
               {/* Connecting line */}
               <div className="absolute top-8 left-12 right-12 h-1 bg-stone-200 rounded-full">
                 <div
-                  className="h-full bg-gradient-to-r from-blue-500 via-amber-500 to-emerald-500 rounded-full transition-all duration-500"
+                  className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
                   style={{
                     width: `${Math.min(100, ((applicationsStatus.interview + applicationsStatus.offer) / Math.max(1, applicationsCount)) * 100)}%`
                   }}
@@ -378,7 +378,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                         relative w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-2
                         transition-all duration-300
                         ${isActive
-                          ? `bg-gradient-to-br ${step.gradient} text-white shadow-lg shadow-${step.color}-200`
+                          ? 'bg-[var(--c-solid)] text-white shadow'
                           : 'bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 text-stone-600 dark:text-stone-400'
                         }
                       `}>
@@ -454,7 +454,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                     onMouseLeave={() => setHoveredLetter(null)}
                   >
                     <div className="flex items-start gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-rose-50 to-orange-50 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:from-rose-100 group-hover:to-orange-100 transition-all">
+                      <div className="w-10 h-10 bg-[var(--c-bg)] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[var(--c-accent)]/40 transition-all">
                         <FileText size={18} className="text-rose-500" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -507,7 +507,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
           </div>
         ) : (
           /* Empty State with CTA */
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 p-6 text-white">
+          <div className="relative overflow-hidden rounded-2xl bg-[var(--c-solid)] p-6 text-white">
             <div className="relative z-10">
               <div className="flex items-start gap-4">
                 <div className="w-16 h-16 bg-white dark:bg-stone-900/20 backdrop-blur-sm rounded-2xl flex items-center justify-center flex-shrink-0">
@@ -554,7 +554,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
         {/* Tips Section */}
         {count > 0 && (
           <div className="grid grid-cols-2 gap-3">
-            <div className="p-3 bg-gradient-to-br from-rose-50 to-orange-50 rounded-xl border border-rose-100">
+            <div className="p-3 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]">
               <div className="flex items-start gap-2">
                 <div className="w-8 h-8 bg-rose-100 rounded-lg flex items-center justify-center shrink-0">
                   <Zap size={16} className="text-rose-600" />
@@ -568,7 +568,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
               </div>
             </div>
 
-            <div className="p-3 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl border border-amber-100">
+            <div className="p-3 bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]">
               <div className="flex items-start gap-2">
                 <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
                   <Target size={16} className="text-amber-600" />

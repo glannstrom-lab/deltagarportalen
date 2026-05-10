@@ -56,13 +56,13 @@ export function MessageBubble({
       isUser && 'flex-row-reverse'
     )}>
       {isUser ? (
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-stone-100 to-stone-200 dark:from-stone-700 dark:to-stone-600 flex items-center justify-center flex-shrink-0 shadow-sm">
+        <div className="w-9 h-9 rounded-xl bg-stone-100 dark:bg-stone-700 flex items-center justify-center flex-shrink-0 shadow-sm">
           <User className="w-4 h-4 text-stone-600 dark:text-stone-300" aria-hidden="true" />
         </div>
       ) : (
         <div className={cn(
           'w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0',
-          'bg-gradient-to-br shadow-sm',
+          'shadow-sm',
           colors.bgLight,
           colors.text
         )}>
@@ -74,10 +74,10 @@ export function MessageBubble({
           className={cn(
             'px-4 py-3 rounded-2xl',
             isUser
-              ? 'bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)] text-white shadow-md'
+              ? 'bg-[var(--c-solid)] text-white shadow-md'
               : cn(
-                  'bg-gradient-to-br from-stone-50 via-stone-100 to-stone-50',
-                  'dark:from-stone-800 dark:via-stone-800/90 dark:to-stone-800',
+                  'bg-stone-50',
+                  'dark:bg-stone-800',
                   'border border-stone-200/80 dark:border-stone-700/80',
                   'shadow-sm',
                   'text-stone-900 dark:text-stone-100'

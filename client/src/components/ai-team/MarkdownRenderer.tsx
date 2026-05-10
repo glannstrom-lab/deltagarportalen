@@ -264,7 +264,7 @@ function OrderedList({ items }: { items: string[] }) {
             key={idx}
             className={cn(
               'relative p-3 rounded-xl',
-              'bg-gradient-to-r from-white/80 to-white/40',
+              'bg-white/70',
               'dark:from-stone-800/80 dark:to-stone-800/40',
               'border border-stone-200/60 dark:border-stone-700/60',
               'shadow-sm'
@@ -274,7 +274,7 @@ function OrderedList({ items }: { items: string[] }) {
               {/* Number badge */}
               <div className={cn(
                 'flex-shrink-0 w-6 h-6 rounded-lg',
-                'bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)]',
+                'bg-[var(--c-solid)]',
                 'flex items-center justify-center',
                 'text-white text-xs font-bold',
                 'shadow-sm'
@@ -330,7 +330,7 @@ function Blockquote({ content }: { content: string }) {
   return (
     <blockquote className={cn(
       'relative pl-4 py-2 pr-3',
-      'bg-gradient-to-r from-amber-50/80 to-transparent',
+      'bg-amber-50/80',
       'dark:from-amber-900/20 dark:to-transparent',
       'border-l-4 border-amber-400 dark:border-amber-500',
       'rounded-r-lg'
