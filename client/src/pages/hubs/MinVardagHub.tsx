@@ -6,7 +6,6 @@ import {
   Calendar,
   Dumbbell,
   UserCheck,
-  Users,
 } from 'lucide-react'
 import HubPage, { type HubFeature } from './HubPage'
 import { useMinVardagHubSummary } from '@/hooks/useMinVardagHubSummary'
@@ -37,7 +36,6 @@ export default function MinVardagHub() {
     const diaryCount = data?.diaryEntryCount ?? 0
     const latestDiary = data?.latestDiaryEntry
     const upcoming = data?.upcomingEvents?.[0]
-    const networkCount = data?.networkContactsCount ?? 0
     const consultant = data?.consultant
 
     return [
@@ -91,15 +89,8 @@ export default function MinVardagHub() {
         isActive: !!consultant?.full_name,
         href: '/my-consultant',
       },
-      {
-        key: 'network',
-        icon: Users,
-        title: 'Nätverk',
-        description: 'Håll koll på dina kontakter och nätverkstillfällen.',
-        status: networkCount > 0 ? `${networkCount} kontakter` : 'Bygg nätverk',
-        isActive: networkCount > 0,
-        href: '/nätverk',
-      },
+      // Nätverk hör till Resurser-hubben (DESIGN.md §3 — en sida = en hub).
+      // Tidigare dubblerad här; fixat 2026-05-10 i Fas 3.4.
     ]
   }, [data])
 

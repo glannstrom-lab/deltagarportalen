@@ -253,7 +253,7 @@ export default function HubOverview() {
           domain="activity"
           icon={Briefcase}
           title="Hitta och söka jobb"
-          description="Matcha din profil, ansök och följ upp dina ansökningar."
+          description="Hitta jobb och håll koll på dina ansökningar."
           activity={hubActivity.jobb}
         />
         <HubCard
@@ -261,14 +261,14 @@ export default function HubOverview() {
           domain="coaching"
           icon={Compass}
           title="Planera min karriär"
-          description="Sätt mål, kartlägg kompetens och bygg ditt personliga varumärke."
+          description="Sätt mål, kartlägg kompetens och bygg din väg framåt."
           activity={hubActivity.karriar}
         />
         <HubCard
           to="/resurser"
           domain="info"
           icon={GraduationCap}
-          title="Hantera resurser"
+          title="Dina sparade resurser"
           description="Dokument, kunskapsbank, AI-team och utskriftsmaterial."
           activity={hubActivity.resurser}
         />
@@ -276,7 +276,7 @@ export default function HubOverview() {
           to="/min-vardag"
           domain="wellbeing"
           icon={Heart}
-          title="Mina vardagliga rutiner"
+          title="Din vardag"
           description="Mående, dagbok, kalender och möten med din konsulent."
           activity={hubActivity.minVardag}
         />

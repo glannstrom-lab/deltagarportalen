@@ -109,7 +109,7 @@ export default function JobsokHub() {
       titleKey="hub-jobb"
       title="Söka jobb"
       hubTitle="Hitta och söka jobb"
-      hubDescription="Matcha din profil, ansök och följ upp dina ansökningar."
+      hubDescription="Hitta jobb och håll koll på dina ansökningar."
       hubIcon={Briefcase}
       domain="activity"
       features={features}
