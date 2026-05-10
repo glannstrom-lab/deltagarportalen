@@ -10,7 +10,7 @@
  * - Centered: Elegant gradient, balanced, professional
  */
 
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect } from 'react'
 import { Sparkles } from '@/components/ui/icons'
 import type { CVData } from '@/services/supabaseApi'
 import {
@@ -32,47 +32,17 @@ interface CVPreviewProps {
   data: CVData
 }
 
-// Per-template page-bakgrund för print. Vid sidbrytningar måste sidobar-
-// och main-bakgrunden gå edge-to-edge på ALLA sidor (inte bara sida 1).
-// Lösningen: sätt linear-gradient på <html> i print-CSS så bakgrunden
-// repeteras automatiskt per paginerad sida i Chrome.
-//
-// Width matchar template-koden så att preview och print ser likadana ut.
-// Bg-färger måste matcha template:s aside background och main background.
-// För single-column mallar har vi bara `main` (ingen sidobar).
-type PageBg = { sidebarBg?: string; mainBg: string; sidebarWidth?: string }
-const PAGE_BG: Record<string, PageBg> = {
-  // Sidobar-mallar
-  sidebar:    { sidebarBg: '#0F0F0F', mainBg: '#FFFFFF', sidebarWidth: '320px' },
-  nordic:     { sidebarBg: '#F8FAFC', mainBg: '#FFFFFF', sidebarWidth: '280px' },
-  budapest:   { sidebarBg: '#2C3E50', mainBg: '#FFFFFF', sidebarWidth: '34%' },
-  manhattan:  { sidebarBg: '#0F1B2D', mainBg: '#FFFFFF', sidebarWidth: '220px' },
-  rotterdam:  { sidebarBg: '#FFFFFF', mainBg: '#FFFFFF', sidebarWidth: '220px' },
-  chicago:    { sidebarBg: '#FFFFFF', mainBg: '#FFFFFF', sidebarWidth: '200px' },
-  berlin:     { sidebarBg: '#1A1A1A', mainBg: '#F4EDE0', sidebarWidth: '60px' },
-  // Single-column mallar (sidobar saknas — gradient blir bara mainBg)
-  centered:   { mainBg: '#FFFFFF' },
-  executive:  { mainBg: '#FDFCFA' },
-  creative:   { mainBg: '#FAFAFA' },
-  minimal:    { mainBg: '#FFFFFF' },
-  atelier:    { mainBg: '#FAF8F4' },
+// Sidobars-bredd per template. Bredden måste matcha template-koden så att
+// preview och print ser likadana ut. Mallar utan sidobar listas inte.
+const SIDEBAR_WIDTHS: Record<string, string> = {
+  sidebar: '320px',
+  nordic: '280px',
+  budapest: '34%',
+  manhattan: '220px',
+  rotterdam: '220px',
+  chicago: '200px',
+  berlin: '60px',
 }
-
-// Bygger linear-gradient som täcker varenda sida i printet edge-to-edge.
-// För single-column = enfärgad bakgrund.
-function buildPageGradient(bg: PageBg): string {
-  if (!bg.sidebarBg || !bg.sidebarWidth) return bg.mainBg
-  const w = bg.sidebarWidth
-  return `linear-gradient(to right, ${bg.sidebarBg} 0, ${bg.sidebarBg} ${w}, ${bg.mainBg} ${w}, ${bg.mainBg} 100%)`
-}
-
-// Behåll SIDEBAR_WIDTHS för bakåtkompatibilitet — print-CSS nedan refererar
-// till --sidebar-width via CSS-var.
-const SIDEBAR_WIDTHS: Record<string, string> = Object.fromEntries(
-  Object.entries(PAGE_BG)
-    .filter(([, v]) => v.sidebarWidth)
-    .map(([k, v]) => [k, v.sidebarWidth!])
-)
 
 // Filtrera bort halvtomma entries så preview matchar PDF — annars syns
 // "• -" eller bara datum för en oifylld erfarenhet.
@@ -102,22 +72,44 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
   const data = sanitize(rawData)
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
 
-  // Sätt template-specifik page-bakgrund som CSS-variabel på <html>.
-  // Används av print-CSS (linear-gradient i @media print) för att få
-  // bakgrundsfärger edge-to-edge på ALLA paginerade sidor — inte bara
-  // sida 1. Detta löser "vita sidbrytningar"-buggen.
-  useEffect(() => {
-    const tpl = data.template || 'sidebar'
-    const cfg = PAGE_BG[tpl] || PAGE_BG.sidebar
-    const gradient = buildPageGradient(cfg)
-    const html = document.documentElement
-    html.style.setProperty('--cv-page-bg', gradient)
-    html.style.setProperty('--cv-main-bg', cfg.mainBg)
-    return () => {
-      html.style.removeProperty('--cv-page-bg')
-      html.style.removeProperty('--cv-main-bg')
+  // Tvinga aside att matcha main:s scrollHeight så sidobar-bakgrunden
+  // spans EXAKT alla sidor som main:s content flödar över. Detta löser
+  // "vita band mitt på sida 2" där flex-layout annars stoppar aside-bg
+  // efter sista aside-child slutar. CSS-only kan inte göra detta —
+  // Chrome:s flex-print-engine respekterar inte min-height: 100% på
+  // flex-children över page-breaks. JS-mätning är robusta.
+  useLayoutEffect(() => {
+    // A4-sida-höjd i pixlar @ 96dpi. Vi använder safeZone = 297mm - 12mm
+    // top - 10mm bottom = 275mm content area per sida.
+    const PAGE_SAFE_PX = (297 - 22) * (96 / 25.4) // ≈ 1040.5 px
+    const sync = () => {
+      const previews = document.querySelectorAll<HTMLElement>('.cv-preview')
+      previews.forEach(preview => {
+        const aside = preview.querySelector<HTMLElement>(':scope > aside')
+        const main = preview.querySelector<HTMLElement>(':scope > main')
+        if (!main) return
+        // Räkna antal sidor som main:s content behöver, avrunda uppåt
+        const pages = Math.max(1, Math.ceil(main.scrollHeight / PAGE_SAFE_PX))
+        const fullHeight = pages * PAGE_SAFE_PX
+        preview.style.minHeight = `${fullHeight}px`
+        // Aside stretchar till samma höjd så sidobar-bg täcker alla sidor
+        if (aside) aside.style.minHeight = `${fullHeight}px`
+      })
     }
-  }, [data.template])
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        sync()
+        if (document.fonts) document.fonts.ready.then(sync)
+      })
+    })
+    const ro = new ResizeObserver(sync)
+    document.querySelectorAll('.cv-preview > main').forEach(m => ro.observe(m))
+    window.addEventListener('beforeprint', sync)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('beforeprint', sync)
+    }
+  }, [data])
 
   // Check for content
   const hasContent = !!(
@@ -219,28 +211,17 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           korrekt sidbrytning. Samma rules som de stora aktörerna (resume.io,
           kickresume) använder för Chrome headless print → PDF. */}
       <style>{`
-        /* @page margin: 0 på alla sidor — sidobar/header går edge-to-edge.
-           Vita sidbrytningar löses via html linear-gradient nedan, som
-           ritar sidobar+main-färgerna på varje paginerad sida automatiskt.
-           Top/bottom-luft för text sköts via aside/main internal padding
-           (vilket repeteras vid sidbrytning eftersom flex-children får
-           ny padding-context vid pagebreak i Chrome). */
+        /* @page margin: 12mm topp + 10mm botten ger content-säkerhet på
+           ALLA sidor (text aldrig mot kanten). aside-höjd sätts via JS-
+           mätning (useLayoutEffect) så sidobar-bg spans alla sidor utan
+           vita band mitt på sidan. */
         @page {
           size: A4;
-          margin: 0;
+          margin: 12mm 0 10mm 0;
         }
         @media print {
-          /* html bakgrund = template-specifik gradient som ritar sidobar +
-             main edge-to-edge på varenda paginerad sida. Denna bakgrund
-             repeteras automatiskt per sida i Chrome print-engine — det är
-             nyckeln till att slippa "vita sidbrytningar". */
-          html {
-            background: var(--cv-page-bg, #FFFFFF) !important;
-            margin: 0 !important;
-            padding: 0 !important;
-          }
-          body {
-            background: transparent !important;
+          html, body {
+            background: #FFFFFF !important;
             margin: 0 !important;
             padding: 0 !important;
           }
@@ -250,6 +231,16 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           .cv-preview, .cv-preview * {
             visibility: visible;
           }
+          /* Page-background-fill: två position:fixed-element som ritar
+             sidobar-färg + main-färg edge-to-edge. Position:fixed repeteras
+             på VARJE paginerad sida i Chrome — det är hur Resume.io och
+             Kickresume får sidobaren att gå edge-to-edge på sida 2+. CSS-
+             variabler (--cv-bg-sidebar, --cv-bg-main, --cv-bg-sidebar-w)
+             sätts via useEffect i CVPreview baserat på template. */
+          /* aside:s minHeight sätts via JS (useLayoutEffect i CVPreview) så
+             den spans alla paginerade sidor utan vita band på sida 2+.
+             Detta är det enda som faktiskt fungerar — CSS-only kan inte
+             tvinga flex-children att stretcha över page-breaks i Chrome. */
           .cv-preview {
             position: absolute;
             left: 0;
