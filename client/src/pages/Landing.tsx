@@ -19,8 +19,6 @@ import {
   LayoutDashboard,
   Compass,
   BookOpen,
-  UserCheck,
-  Building2,
   Shield,
   Lock,
   Zap,
@@ -696,7 +694,7 @@ export default function Landing() {
           <p className="text-center text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-8">
             {t('landing.trust.title', 'Säkerhet och regelefterlevnad')}
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
             <TrustChip
               icon={Shield}
               title={t('landing.trust.gdpr', 'GDPR-kompatibel')}
@@ -706,11 +704,6 @@ export default function Landing() {
               icon={Lock}
               title={t('landing.trust.eu', 'EU-data')}
               description={t('landing.trust.euDesc', 'Servrar i EU. Ingen data lämnar EES.')}
-            />
-            <TrustChip
-              icon={UserCheck}
-              title={t('landing.trust.bankid', 'BankID-stöd')}
-              description={t('landing.trust.bankidDesc', 'Säker inloggning för deltagare och konsulenter')}
             />
             <TrustChip
               icon={Zap}

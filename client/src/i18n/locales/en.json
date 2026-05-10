@@ -4528,7 +4528,7 @@
         "title": "I lead a job-coaching company",
         "description": "Modern platform with GDPR-compliance, integration with Arbetsförmedlingen, and clear ROI.",
         "cta": "Book a 30-min demo",
-        "bullet1": "GDPR + EU data + BankID",
+        "bullet1": "GDPR + EU data + encrypted storage",
         "bullet2": "AF integration via API",
         "bullet3": "Customizable reporting"
       }
@@ -4564,8 +4564,6 @@
       "gdprDesc": "All data handled per EU's data-protection regulation",
       "eu": "EU data",
       "euDesc": "Servers in the EU. No data leaves the EEA.",
-      "bankid": "BankID support",
-      "bankidDesc": "Secure login for participants and consultants",
       "af": "AF integration",
       "afDesc": "Direct connection to Arbetsförmedlingen's APIs"
     },

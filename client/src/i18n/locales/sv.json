@@ -4535,7 +4535,7 @@
         "title": "Jag leder ett jobbcoach-företag",
         "description": "Modern plattform med GDPR-säkerhet, integration mot Arbetsförmedlingen och tydlig ROI.",
         "cta": "Boka 30 min demo",
-        "bullet1": "GDPR + EU-data + BankID",
+        "bullet1": "GDPR + EU-data + krypterad lagring",
         "bullet2": "AF-integration via API",
         "bullet3": "Anpassningsbara rapporter"
       }
@@ -4571,8 +4571,6 @@
       "gdprDesc": "All data hanteras enligt EU:s dataskyddsförordning",
       "eu": "EU-data",
       "euDesc": "Servrar i EU. Ingen data lämnar EES.",
-      "bankid": "BankID-stöd",
-      "bankidDesc": "Säker inloggning för deltagare och konsulenter",
       "af": "AF-integration",
       "afDesc": "Direkt koppling till Arbetsförmedlingens API:er"
     },
