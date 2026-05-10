@@ -19,7 +19,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { CVPreview } from '@/components/cv/CVPreview'
+import { PagedCVPrint } from '@/components/cv/PagedCVPrint'
 import { cvApi } from '@/services/cvApi'
 import type { CVData } from '@/services/supabaseApi'
 
@@ -144,11 +144,10 @@ export default function PrintCV() {
 
   return (
     <div style={{ background: '#FFFFFF', minHeight: '100vh' }}>
-      {/* Skärmläge: visa CV centrerat med stand-in styling. Print-läge:
-          @media print i CVPreview tar över och dölja allt utom .cv-preview. */}
-      <div style={{ maxWidth: '794px', margin: '0 auto', boxShadow: '0 0 12px rgba(0,0,0,0.08)' }}>
-        <CVPreview data={cv} />
-      </div>
+      {/* PagedCVPrint splittar content i flera 210×297mm-pages för att
+          ge edge-to-edge sidobar OCH content-luft på alla sidor utan
+          @page-margin band. */}
+      <PagedCVPrint data={cv} />
     </div>
   )
 }
