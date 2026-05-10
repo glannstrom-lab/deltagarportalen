@@ -580,60 +580,60 @@ export default function Resources() {
       domain="info"
       className="max-w-7xl mx-auto"
 >
-      {/* Stats Overview */}
-      <div className="bg-gradient-to-br from-blue-500 via-blue-600 to-sky-700 dark:from-blue-600 dark:via-blue-700 dark:to-sky-800 rounded-2xl p-6 mb-6 text-white shadow-xl shadow-blue-500/20 dark:shadow-blue-900/30">
+      {/* Stats Overview — sky-pastell enligt DESIGN.md §4 (en-färg-per-sida) */}
+      <div className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-2xl p-6 mb-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-          <p className="text-blue-100 text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
+          <p className="text-[var(--c-text)] text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
           <Link
             to="/cv"
-            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-colors backdrop-blur-sm border border-white/20"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--c-solid)] hover:brightness-110 text-white rounded-xl font-medium transition-colors"
           >
             <Plus size={18} />
             Skapa nytt dokument
           </Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Link to="/job-search" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-4 transition-colors border border-white/10">
+          <Link to="/job-search" className="bg-white hover:bg-stone-50 rounded-xl p-4 transition-colors border border-stone-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-400/20 rounded-lg flex items-center justify-center">
-                <BriefcaseIcon className="w-5 h-5 text-blue-200" />
+              <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
+                <BriefcaseIcon className="w-5 h-5 text-[var(--c-text)]" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{savedJobs.length}</p>
-                <p className="text-xs text-blue-200">{t('resources.stats.savedJobs')}</p>
+                <p className="text-2xl font-bold text-stone-900">{savedJobs.length}</p>
+                <p className="text-xs text-stone-600">{t('resources.stats.savedJobs')}</p>
               </div>
             </div>
           </Link>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+          <div className="bg-white rounded-xl p-4 border border-stone-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-sky-400/20 rounded-lg flex items-center justify-center">
-                <DocumentText className="w-5 h-5 text-sky-200" />
+              <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
+                <DocumentText className="w-5 h-5 text-[var(--c-text)]" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{cvVersions.length + coverLetters.length}</p>
-                <p className="text-xs text-blue-200">{t('resources.stats.documents')}</p>
+                <p className="text-2xl font-bold text-stone-900">{cvVersions.length + coverLetters.length}</p>
+                <p className="text-xs text-stone-600">{t('resources.stats.documents')}</p>
               </div>
             </div>
           </div>
-          <Link to="/knowledge-base" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-4 transition-colors border border-white/10">
+          <Link to="/knowledge-base" className="bg-white hover:bg-stone-50 rounded-xl p-4 transition-colors border border-stone-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-400/20 rounded-lg flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-blue-200" />
+              <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-[var(--c-text)]" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{bookmarkedArticles.length}</p>
-                <p className="text-xs text-blue-200">{t('resources.stats.bookmarks')}</p>
+                <p className="text-2xl font-bold text-stone-900">{bookmarkedArticles.length}</p>
+                <p className="text-xs text-stone-600">{t('resources.stats.bookmarks')}</p>
               </div>
             </div>
           </Link>
-          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+          <div className="bg-white rounded-xl p-4 border border-stone-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-400/20 rounded-lg flex items-center justify-center">
-                <Folder className="w-5 h-5 text-amber-200" />
+              <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center">
+                <Folder className="w-5 h-5 text-[var(--c-text)]" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{uploadedFiles.length}</p>
-                <p className="text-xs text-blue-200">{t('resources.stats.files')}</p>
+                <p className="text-2xl font-bold text-stone-900">{uploadedFiles.length}</p>
+                <p className="text-xs text-stone-600">{t('resources.stats.files')}</p>
               </div>
             </div>
           </div>
@@ -651,14 +651,14 @@ export default function Resources() {
                 onClick={() => setSearchParams({ tab: tab.id })}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   activeTab === tab.id
-                    ? 'bg-blue-600 dark:bg-blue-700 text-white shadow-sm'
+                    ? 'bg-[var(--c-solid)] text-white shadow-sm'
                     : 'text-gray-600 dark:text-gray-300 hover:bg-stone-100 dark:hover:bg-stone-700'
                 }`}
               >
                 {tab.label}
                 {tab.count > 0 && (
                   <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                    activeTab === tab.id ? 'bg-blue-500 dark:bg-blue-600 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
+                    activeTab === tab.id ? 'bg-white/20 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
                   }`}>
                     {tab.count}
                   </span>

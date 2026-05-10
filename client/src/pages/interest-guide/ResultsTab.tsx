@@ -175,7 +175,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         </p>
         <Button
           onClick={() => navigate('/interest-guide')}
-          className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600"
+          className="gap-2 bg-[var(--c-solid)] hover:brightness-110"
         >
           <Sparkles className="w-4 h-4" />
           {t('interestGuide.startTest') || 'Starta testet'}
@@ -328,7 +328,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                            index === 0 ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
+                            index === 0 ? 'bg-[var(--c-solid)] hover:brightness-110 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
                           }`}>
                             {index === 0 ? '*' : index + 1}
                           </div>
@@ -488,7 +488,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
       >
         <Link
           to="/cv"
-          className="block bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] group"
+          className="block bg-[var(--c-solid)] hover:brightness-110 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] group"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">

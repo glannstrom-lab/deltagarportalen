@@ -1,9 +1,18 @@
 # Designskuld — kända överträdelser mot DESIGN.md v3.0
 
-> **Senast uppdaterad:** 2026-05-10
+> **Senast uppdaterad:** 2026-05-10 (efter Fas 4-pass 1)
 > **Källa:** ESLint-regler från Fas 0 (`client/eslint.config.js`) + i18n-detektor (`scripts/i18n-leak-detector.cjs`).
 > **Tas bort när:** Fas 4-7 i `docs/DESIGN-ROADMAP.md` är genomförda.
-> **Status nu:** ESLint-reglerna håller `warn`-nivå. Kommer höjas till `error` i slutet av Fas 4.
+> **Status nu:** ESLint-reglerna håller `warn`-nivå. Höjs till `error` när gradient-warnings ≤ 50.
+
+### Framsteg
+
+| Fas | Datum | Gradient-warnings | i18n-läckor | Sidor med en-färg-violation |
+|-----|-------|-------------------|--------------|------------------------------|
+| Fas 0 baseline | 2026-05-10 | **443** | 5 | ≥4 |
+| Efter Fas 1 | 2026-05-10 | 443 | **0** | ≥4 |
+| Efter Fas 2 | 2026-05-10 | **437** (-6) | 0 | ≥4 |
+| Efter Fas 4-pass 1 | 2026-05-10 | **426** (-17 totalt) | 0 | färre |
 
 Det här dokumentet listar varje känd överträdelse mot DESIGN.md v3.0 som finns i kodbasen idag, samt vilken fas i roadmapen som tar hand om den. Inga av punkterna nedan är blockers för CI — alla loggas som varningar och får leva tills sin fas städar dem.
 

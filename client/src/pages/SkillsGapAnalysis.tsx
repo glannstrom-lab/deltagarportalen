@@ -28,6 +28,7 @@ import {
   type SkillsAnalysis, type SkillComparison, type CourseRecommendation,
   type ActionPlanItem, type FavoriteOccupation
 } from '@/services/careerApi'
+import { PageLayout } from '@/components/layout/PageLayout'
 
 // Skill categories with colors
 const skillColors: Record<string, string> = {
@@ -712,20 +713,16 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
     )
   }
 
-  // Input form
+  // Input form — DESIGN.md §3 läge B: neutral hero med 4 px karriär-rosa-kant
   return (
-    <div className="max-w-7xl mx-auto space-y-6 pb-20" data-domain="coaching">
-      {/* Header */}
-      <div className="text-center space-y-3">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-purple-100 to-sky-100 dark:from-purple-900/30 dark:to-sky-900/30 mb-2">
-          <Target className="w-7 h-7 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
-        </div>
-        <h1 className="text-2xl font-bold text-stone-800 dark:text-stone-100">{t('skillsGapAnalysis.title')}</h1>
-        <p className="text-stone-600 dark:text-stone-400 max-w-2xl mx-auto">
-          {t('skillsGapAnalysis.description')}
-        </p>
-      </div>
-
+    <PageLayout
+      title={t('skillsGapAnalysis.title')}
+      subtitle={t('skillsGapAnalysis.description')}
+      domain="coaching"
+      showTabs={false}
+      className="max-w-7xl mx-auto"
+      contentClassName="space-y-6 pb-20"
+    >
       {/* Previous Analyses */}
       {previousAnalyses.length > 0 && (
         <Card className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
@@ -871,6 +868,6 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
           {t('skillsGapAnalysis.analyzeGap')}
         </Button>
       </div>
-    </div>
+    </PageLayout>
   )
 }

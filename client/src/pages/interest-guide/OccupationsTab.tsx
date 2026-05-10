@@ -169,7 +169,7 @@ export default function OccupationsTab() {
         </p>
         <Button
           onClick={() => navigate('/interest-guide')}
-          className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600"
+          className="gap-2 bg-[var(--c-solid)] hover:brightness-110"
         >
           <Sparkles className="w-4 h-4" />
           {t('interestGuide.startTest') || 'Starta testet'}
@@ -302,7 +302,7 @@ export default function OccupationsTab() {
                 className={cn(
                   'px-3 py-1.5 text-sm rounded-lg transition-colors font-medium',
                   filterUni === null
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                    ? 'bg-[var(--c-solid)] hover:brightness-110 text-white'
                     : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                 )}
               >
@@ -313,7 +313,7 @@ export default function OccupationsTab() {
                 className={cn(
                   'px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 font-medium',
                   filterUni === true
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                    ? 'bg-[var(--c-solid)] hover:brightness-110 text-white'
                     : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                 )}
               >
@@ -325,7 +325,7 @@ export default function OccupationsTab() {
                 className={cn(
                   'px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 font-medium',
                   filterUni === false
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                    ? 'bg-[var(--c-solid)] hover:brightness-110 text-white'
                     : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                 )}
               >
