@@ -171,16 +171,25 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
           korrekt sidbrytning. Samma rules som de stora aktörerna (resume.io,
           kickresume) använder för Chrome headless print → PDF. */}
       <style>{`
-        /* @page margin: 12mm 0 10mm 0 — varje sida får 12mm top-luft och
-           10mm bottom-luft. Sidobar-mallar (Modern, Budapest, Nordic) som
-           använder position:fixed på <aside> respekterar @page margin i
-           Chrome — sidobaren ritas bara inom det utskrivbara området, inte
-           edge-to-edge. Detta är OK för designen (mörk sidebar med 12mm
-           vit ovanför är tidlöst) och löser top-edge-problemet på alla
-           mallar utan template-specifika hacks. */
+        /* @page margin: sida 1 = 0 (full bleed, mörk sidobar går edge-to-
+           edge), sida 2+ = 12mm top + 10mm bottom (så content efter
+           sidbrytning inte hamnar mot kanten). Detta är samma trick
+           som tidsskrifter och de stora CV-byggarna använder: första
+           sidan är "cover" med full-bleed design, övriga sidor får
+           luft. Chrome stödjer @page :first sedan länge.
+
+           Konsekvens: på sidobar-mallar som flödar över sidor får sida 2+
+           en vit topp-zon ovanför sidobaren — det ser professionellt ut
+           och säkerställer att text aldrig kletas mot kanten.
+           Konsekvens 2: bottom-margin på sista sidan är 10mm — men
+           Chrome respekterar inte @page :last universellt, så vi sätter
+           10mm globalt. Sista sidans bottom blir 10mm vit. */
         @page {
           size: A4;
           margin: 12mm 0 10mm 0;
+        }
+        @page :first {
+          margin: 0 0 10mm 0;
         }
         @media print {
           html, body {

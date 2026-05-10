@@ -1114,14 +1114,16 @@ export default function CVBuilder() {
         </div>
       )}
 
-      {/* Main Content — split-layout på sista steget, full editor i 1-4.
-          Användaren bad om "förhandsgranskning behöver inte vara med förrän
-          sista steget. alternativt en knapp för förhandsgranskningen". Vi
-          kombinerar: Steg 1-4 = full editor + förhandsgranska-knapp som
-          öppnar modal, Steg 5 = automatisk split-vy med live preview. */}
+      {/* Main Content — single-column på alla steg.
+          Steg 1-5: editor full-bredd + tools-sidebar till höger på desktop.
+          Steg 6 (granska): single-column max-w-4xl, A4-preview inuti
+          renderStep6 är den enda granskningsvyn. Tidigare hade vi
+          DUBBLA CVPreview här (en i renderStep6:s A4-wrapper, en i höger-
+          kolumn) — det såg dåligt ut och förvirrade användaren. */}
       <div className={cn(
         'grid grid-cols-1 gap-6',
-        step === STEPS.length && 'lg:grid-cols-2'
+        step < STEPS.length && 'lg:grid-cols-[1fr_320px]',
+        step === STEPS.length && 'max-w-4xl mx-auto'
       )}>
         {/* Left: Editor */}
         <div>
@@ -1158,18 +1160,10 @@ export default function CVBuilder() {
           <div className="h-24 lg:hidden" />
         </div>
 
-        {/* Right: Preview + Tools (desktop, bara på sista steget) */}
-        {step === STEPS.length && (
-          <div className="hidden lg:block space-y-6">
-            <div className="bg-white dark:bg-stone-900 shadow-lg rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
-              <CVPreview data={data} />
-            </div>
-            <ContextualKnowledgeWidget context="cv-building" variant="full" />
-          </div>
-        )}
-
-        {/* Tools-kolumn för steg 1-4 — utan preview men behåll knowledge-widget
-            som contextuell hjälp utan att ta upp skärm. */}
+        {/* Tools-kolumn för steg 1-5 — utan preview men behåll knowledge-widget
+            som contextuell hjälp utan att ta upp skärm.
+            På steg 6 (granska) finns ingen sidokolumn — A4-previewen är
+            hela vyn. */}
         {step < STEPS.length && (
           <div className="hidden lg:block">
             <ContextualKnowledgeWidget context="cv-building" variant="full" />
