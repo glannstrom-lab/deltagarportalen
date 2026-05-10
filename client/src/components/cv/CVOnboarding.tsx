@@ -4,10 +4,13 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
+import {
   X, ChevronRight, ChevronLeft, Sparkles, CheckCircle,
   FileText, User, Briefcase, Award, Eye, Download
 } from '@/components/ui/icons'
+import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
+
+const ONBOARDING_OWNER_ID = 'cv-builder' as const
 
 interface OnboardingStep {
   id: string
@@ -84,14 +87,16 @@ interface CVOnboardingProps {
 
 export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false) // start dold, claim:a session först
 
-  // Check if user has seen onboarding before
+  // Check if user has seen onboarding before + claim session (DESIGN.md §12)
   useEffect(() => {
     const hasSeenOnboarding = localStorage.getItem('cv-onboarding-completed')
-    if (hasSeenOnboarding) {
-      setIsVisible(false)
-    }
+    if (hasSeenOnboarding) return
+    // Frequency-cap: släpp endast EN onboarding per session
+    if (!claimOnboardingSession(ONBOARDING_OWNER_ID)) return
+    setIsVisible(true)
+    return () => releaseOnboardingSession(ONBOARDING_OWNER_ID)
   }, [])
 
   if (!isVisible) return null

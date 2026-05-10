@@ -10,8 +10,8 @@ import { AgentSelector, getAgentById } from '@/components/ai-team/AgentSelector'
 import { PersonalityDropdown } from '@/components/ai-team/PersonalityDropdown'
 import { QuickActions } from '@/components/ai-team/QuickActions'
 import { AgentChat, type AgentChatHandle } from '@/components/ai-team/AgentChat'
-import { OnboardingModal } from '@/components/ai-team/OnboardingModal'
 import { ResponseModeSelector } from '@/components/ai-team/ResponseModeSelector'
+import { InlineTip } from '@/components/ui/InlineTip'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { agentColorClasses } from '@/components/ai-team/types'
 import { Users, Lightbulb } from '@/components/ui/icons'
@@ -54,8 +54,13 @@ export default function AITeam() {
         {t('aiTeam.skipToChat', 'Hoppa till chatten')}
       </a>
 
-      {/* Onboarding for new users */}
-      <OnboardingModal />
+      {/* Onboarding via InlineTip — DESIGN.md §12 ersätter den tidigare
+          OnboardingModal. AI Team-sidan självförklarar (titel + agentkort)
+          så en kort inline-tip räcker. */}
+      <InlineTip storageKey="ai-team-intro" icon={Lightbulb} className="mb-4">
+        Välj en agent nedan för att börja chatta. Du kan byta personlighet
+        och svarsstil i sidopanelen — varje agent är expert på sitt område.
+      </InlineTip>
 
       {/* Suggested Agent Banner */}
       {suggestedAgent && suggestedAgent.agentId !== selectedAgent && (

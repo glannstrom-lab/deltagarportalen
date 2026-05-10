@@ -3,12 +3,15 @@
  * Shows 3 steps at a time with positive language
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { X, ChevronRight, ChevronLeft, Sparkles, User, Briefcase, Heart } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useProfileStore } from '@/stores/profileStore'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
+
+const ONBOARDING_OWNER_ID = 'profile-welcome' as const
 
 interface OnboardingStep {
   id: string
@@ -54,17 +57,27 @@ export function OnboardingModal() {
   const { showOnboarding, onboardingStep, setOnboardingStep, completeOnboarding, setActiveTab } = useProfileStore()
 
   const [isClosing, setIsClosing] = useState(false)
+  const [hasSessionClaim, setHasSessionClaim] = useState(false)
+
+  // Frequency-cap: max 1 onboarding per session (DESIGN.md §12)
+  useEffect(() => {
+    if (!showOnboarding) return
+    if (claimOnboardingSession(ONBOARDING_OWNER_ID)) {
+      setHasSessionClaim(true)
+      return () => releaseOnboardingSession(ONBOARDING_OWNER_ID)
+    }
+  }, [showOnboarding])
 
   // Focus-trap + Escape-hantering + restore focus medan modalen är öppen.
   // Ersätter tidigare hemmagjorda useEffect:s som bara hade focus och
   // escape, men saknade Tab-trap (WCAG 2.4.3 / 2.1.2).
-  const modalRef = useFocusTrap<HTMLDivElement>(showOnboarding, {
+  const modalRef = useFocusTrap<HTMLDivElement>(showOnboarding && hasSessionClaim, {
     onEscape: () => handleClose(),
     restoreFocus: true,
     autoFocus: true,
   })
 
-  if (!showOnboarding) return null
+  if (!showOnboarding || !hasSessionClaim) return null
 
   const currentStep = ONBOARDING_STEPS[onboardingStep]
   const isFirstStep = onboardingStep === 0

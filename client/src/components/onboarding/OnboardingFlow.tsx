@@ -24,6 +24,9 @@ import { useAuthStore } from '@/stores/authStore'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
+
+const ONBOARDING_OWNER_ID = 'global-flow' as const
 
 interface Step {
   id: number
@@ -109,10 +112,22 @@ export function OnboardingFlow() {
   const [dismissed, setDismissed] = useState(false)
   const [currentStep, setCurrentStep] = useState(0)
   const [saving, setSaving] = useState(false)
+  const [hasSessionClaim, setHasSessionClaim] = useState(false)
 
   // Visa endast när: inloggad + profil laddad + ej klar tidigare + ej lokalt avskedad
+  // + ingen annan onboarding har redan claim:at sessionen (DESIGN.md §12)
   const shouldShow =
-    !!user && !!profile && profile.onboarding_completed === false && !dismissed
+    !!user && !!profile && profile.onboarding_completed === false && !dismissed && hasSessionClaim
+
+  // Frequency-cap — denna globala flow ska visas FÖRST (har prioritet över
+  // sido-specifika onboardings) men bara om ingen annan claim:at sessionen
+  useEffect(() => {
+    if (!user || !profile || profile.onboarding_completed !== false || dismissed) return
+    if (claimOnboardingSession(ONBOARDING_OWNER_ID)) {
+      setHasSessionClaim(true)
+      return () => releaseOnboardingSession(ONBOARDING_OWNER_ID)
+    }
+  }, [user, profile, dismissed])
 
   // Reset step när modalen visas (t.ex. om användaren stänger och öppnar igen)
   useEffect(() => {

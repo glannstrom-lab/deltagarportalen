@@ -11,7 +11,14 @@ import { AgentAvatar } from './AgentAvatar'
 import { agents } from './AgentSelector'
 import { agentColorClasses } from './types'
 import { X, ChevronRight, ChevronLeft, Sparkles } from '@/components/ui/icons'
+import {
+  claimOnboardingSession,
+  releaseOnboardingSession,
+  hasCompletedOnboarding,
+  markOnboardingCompleted,
+} from '@/lib/onboardingCoordinator'
 
+const ONBOARDING_OWNER_ID = 'ai-team' as const
 const ONBOARDING_KEY = 'ai-team-onboarding-completed'
 
 interface OnboardingModalProps {
@@ -23,12 +30,13 @@ export function OnboardingModal({ onComplete }: OnboardingModalProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [step, setStep] = useState(0)
 
-  // Check if user has seen onboarding
+  // Check if user has seen onboarding + claim session
   useEffect(() => {
-    const hasCompleted = localStorage.getItem(ONBOARDING_KEY)
-    if (!hasCompleted) {
-      setIsOpen(true)
-    }
+    if (hasCompletedOnboarding(ONBOARDING_KEY)) return
+    // Frequency-cap: max 1 onboarding per session (DESIGN.md §12)
+    if (!claimOnboardingSession(ONBOARDING_OWNER_ID)) return
+    setIsOpen(true)
+    return () => releaseOnboardingSession(ONBOARDING_OWNER_ID)
   }, [])
 
   // Lås body-scroll medan modal är öppen så bakgrunden inte kan scrollas
@@ -41,13 +49,15 @@ export function OnboardingModal({ onComplete }: OnboardingModalProps) {
   }, [isOpen])
 
   const handleComplete = () => {
-    localStorage.setItem(ONBOARDING_KEY, 'true')
+    markOnboardingCompleted(ONBOARDING_KEY)
+    releaseOnboardingSession(ONBOARDING_OWNER_ID)
     setIsOpen(false)
     onComplete?.()
   }
 
   const handleSkip = () => {
-    localStorage.setItem(ONBOARDING_KEY, 'true')
+    markOnboardingCompleted(ONBOARDING_KEY)
+    releaseOnboardingSession(ONBOARDING_OWNER_ID)
     setIsOpen(false)
   }
 
