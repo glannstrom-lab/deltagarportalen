@@ -1,0 +1,188 @@
+=== AUDIT START ===
+
+=== PUBLIKA SIDOR (ej inloggad) ===
+
+[01-landing-public] Landningssida (utloggad) /
+  ✓ ren
+
+[02-login] Inloggning /#/login
+  ✓ ren
+
+[03-register] Registrering /#/register
+  ✓ ren
+
+[04-privacy] Integritetspolicy /#/privacy
+  ✓ ren
+
+[05-terms] Användarvillkor /#/terms
+  ✓ ren
+
+[06-ai-policy] AI-policy /#/ai-policy
+  ✓ ren
+
+=== LOGGAR IN ===
+  → Loggar in...
+  ✓ Inloggad
+
+=== INLOGGADE SIDOR ===
+
+[10-dashboard] Dashboard /#/
+  ⚠ 2 console / 5 net / 0 page / 0 detected
+
+[11-hub-oversikt] Hub: Översikt /#/oversikt
+  ⚠ 0 console / 2 net / 0 page / 0 detected
+
+[11b-hub-oversikt-historik] Hub: Översikt - Historik /#/oversikt/historik
+  ⚠ 0 console / 2 net / 0 page / 0 detected
+
+[12-hub-jobb] Hub: Söka jobb /#/jobb
+  ✓ ren
+
+[13-hub-karriar] Hub: Karriär /#/karriar
+  ✓ ren
+
+[14-hub-resurser] Hub: Resurser /#/resurser
+  ✓ ren
+
+[15-hub-vardag] Hub: Min vardag /#/min-vardag
+  ⚠ 0 console / 2 net / 0 page / 0 detected
+
+[20-cv] CV - Skapa /#/cv
+  ✓ ren
+    ✓ tab create
+    ✓ tab my-cvs
+    ✓ tab adapt
+    ✓ tab ats
+    ✓ tab tips
+
+[21-cover-letter] Personligt brev /#/cover-letter
+  ✓ ren
+    ✓ tab generator
+    ✓ tab saved
+
+[22-job-search] Sök jobb /#/job-search
+  ✓ ren
+
+[23-applications] Ansökningar /#/applications
+  ✓ ren
+
+[24-spontaneous] Spontanansökan /#/spontanansökan
+  ✓ ren
+    ✓ tab search
+    ✓ tab companies
+    ✓ tab stats
+
+[30-career] Karriär /#/career
+  ✓ ren
+    ✓ tab labor-market
+    ✓ tab adaptation
+    ✓ tab credentials
+    ⚠ tab relocation: 0c/2n/0p/0d
+    ✓ tab plan
+
+[31-interest-guide] Intresseguide /#/interest-guide
+  ✓ ren
+    ✓ tab test
+    ✓ tab results
+    ⚠ tab occupations: 2c/1n/0p/0d
+    ⚠ tab explore: 2c/1n/0p/0d
+    ✓ tab history
+
+[32-skills-gap] Kompetensanalys /#/skills-gap-analysis
+  ✓ ren
+
+[33-personal-brand] Personligt varumärke /#/personal-brand
+  ✓ ren
+
+[34-education] Utbildning /#/education
+  ✓ ren
+
+[35-linkedin] LinkedIn-optimerare /#/linkedin-optimizer
+  ✓ ren
+
+[36-salary] Lönestatistik /#/salary
+  ✓ ren
+
+[37-international] International /#/international
+  ✓ ren
+
+[40-interview] Intervjusimulator /#/interview-simulator
+  ✓ ren
+
+[41-ai-team] AI-team /#/ai-team
+  ✓ ren
+
+[50-knowledge-base] Kunskapsbank /#/knowledge-base
+  ✓ ren
+    ✓ tab for-you
+    ✓ tab getting-started
+    ✓ tab topics
+    ✓ tab quick-help
+    ✓ tab my-journey
+    ✓ tab tools
+
+[51-resources] Resurser /#/resources
+  ✓ ren
+    ✓ tab all
+    ✓ tab documents
+    ✓ tab jobs
+    ✓ tab articles
+
+[52-print-resources] Utskrivbara resurser /#/print-resources
+  ✓ ren
+
+[53-external-resources] Externa resurser /#/externa-resurser
+  ✓ ren
+
+[54-network] Nätverk /#/nätverk
+  ✓ ren
+
+[60-wellness] Hälsa /#/wellness
+  ✓ ren
+    ✓ tab health
+    ✓ tab routines
+    ✓ tab cognitive
+    ✓ tab crisis
+
+[61-diary] Dagbok /#/diary
+  ✓ ren
+
+[62-calendar] Kalender /#/calendar
+  ⚠ 2 console / 1 net / 0 page / 0 detected
+
+[63-exercises] Övningar /#/exercises
+  ⚠ 2 console / 1 net / 0 page / 0 detected
+
+[64-my-consultant] Min konsulent /#/my-consultant
+  ✓ ren
+
+[70-profile] Profil /#/profile
+  ✓ ren
+
+[71-settings] Inställningar /#/settings
+  ✓ ren
+
+[72-help] Hjälp /#/help
+  ✓ ren
+
+=== Interaktioner: kärnflöden ===
+
+[INT-CV-CREATE] CV-byggare: starta nytt CV
+
+[INT-COVER] Personligt brev
+
+[INT-INTERVIEW] Intervjusimulator
+
+[INT-JOBSEARCH] Jobbsökning
+
+[INT-SPONTANEOUS] Spontanansökan företagssökning
+
+[INT-DIARY] Dagbok
+
+[INT-AITEAM] AI-team
+
+[INT-MOBILE] Mobile-vy av dashboard + hubs
+
+=== AUDIT SLUT ===
+Sidor: 41, Tabbar: 34, Skärmdumpar: 75, Fel: 29
+Resultat: C:\Users\Mikael\Desktop\COWORK\deltagarportal\audit-2026-05-10\data\findings.json

@@ -31,6 +31,15 @@ export function OnboardingModal({ onComplete }: OnboardingModalProps) {
     }
   }, [])
 
+  // Lås body-scroll medan modal är öppen så bakgrunden inte kan scrollas
+  // (förhindrar förvirrande "dubbel-vy" där lång sida syns under modalen)
+  useEffect(() => {
+    if (!isOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => { document.body.style.overflow = prev }
+  }, [isOpen])
+
   const handleComplete = () => {
     localStorage.setItem(ONBOARDING_KEY, 'true')
     setIsOpen(false)

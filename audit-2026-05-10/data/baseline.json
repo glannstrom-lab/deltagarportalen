@@ -1,0 +1,1024 @@
+{
+  "startedAt": "2026-05-10T11:56:54.157Z",
+  "baseUrl": "https://jobin.se",
+  "pages": [
+    {
+      "id": "01-landing-public",
+      "label": "Landningssida (utloggad)",
+      "path": "/",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/",
+      "bodyLength": 5108,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\01-landing-public.png"
+    },
+    {
+      "id": "02-login",
+      "label": "Inloggning",
+      "path": "/#/login",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/login",
+      "bodyLength": 209,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\02-login.png"
+    },
+    {
+      "id": "03-register",
+      "label": "Registrering",
+      "path": "/#/register",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/register",
+      "bodyLength": 747,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\03-register.png"
+    },
+    {
+      "id": "04-privacy",
+      "label": "Integritetspolicy",
+      "path": "/#/privacy",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/privacy",
+      "bodyLength": 5976,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\04-privacy.png"
+    },
+    {
+      "id": "05-terms",
+      "label": "Användarvillkor",
+      "path": "/#/terms",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/terms",
+      "bodyLength": 2045,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\05-terms.png"
+    },
+    {
+      "id": "06-ai-policy",
+      "label": "AI-policy",
+      "path": "/#/ai-policy",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/ai-policy",
+      "bodyLength": 2862,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\06-ai-policy.png"
+    },
+    {
+      "id": "10-dashboard",
+      "label": "Dashboard",
+      "path": "/#/",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/",
+      "bodyLength": 713,
+      "consoleErrors": [
+        "11:57:12.198 [ERROR][API] Failed to load notifications {error: Object, errorMessage: [object Object], stack: undefined}",
+        "[Error] [API] Failed to load notifications {level: error, prefix: API, error: Object, errorMessage: [object Object], stack: undefined}"
+      ],
+      "networkErrors": [
+        "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/profiles?select=first_name%2Clast_name%2Cprofile_image_url&id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED",
+        "GET https://www.jobin.se/assets/vendor-animation-TQ4QLjCX.js — net::ERR_ABORTED",
+        "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/notifications?select=*&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba&order=created_at.desc&limit=50 — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/diary_entries?select=id&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/network_contacts?select=id&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\10-dashboard.png"
+    },
+    {
+      "id": "11-hub-oversikt",
+      "label": "Hub: Översikt",
+      "path": "/#/oversikt",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/oversikt",
+      "bodyLength": 713,
+      "consoleErrors": [],
+      "networkErrors": [
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/diary_entries?select=id&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/network_contacts?select=id&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\11-hub-oversikt.png"
+    },
+    {
+      "id": "11b-hub-oversikt-historik",
+      "label": "Hub: Översikt - Historik",
+      "path": "/#/oversikt/historik",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/oversikt/historik",
+      "bodyLength": 283,
+      "consoleErrors": [],
+      "networkErrors": [
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/network_contacts?select=id&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/diary_entries?select=id&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\11b-hub-oversikt-historik.png"
+    },
+    {
+      "id": "12-hub-jobb",
+      "label": "Hub: Söka jobb",
+      "path": "/#/jobb",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/jobb",
+      "bodyLength": 947,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\12-hub-jobb.png"
+    },
+    {
+      "id": "13-hub-karriar",
+      "label": "Hub: Karriär",
+      "path": "/#/karriar",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/karriar",
+      "bodyLength": 780,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\13-hub-karriar.png"
+    },
+    {
+      "id": "14-hub-resurser",
+      "label": "Hub: Resurser",
+      "path": "/#/resurser",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/resurser",
+      "bodyLength": 823,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\14-hub-resurser.png"
+    },
+    {
+      "id": "15-hub-vardag",
+      "label": "Hub: Min vardag",
+      "path": "/#/min-vardag",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/min-vardag",
+      "bodyLength": 802,
+      "consoleErrors": [],
+      "networkErrors": [
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/diary_entries?select=id&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED",
+        "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/network_contacts?select=id&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\15-hub-vardag.png"
+    },
+    {
+      "id": "20-cv",
+      "label": "CV - Skapa",
+      "path": "/#/cv",
+      "tabs": [
+        {
+          "id": "create",
+          "path": "/#/cv",
+          "url": "https://jobin.se/#/cv",
+          "bodyLength": 3211,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\20-cv-tab-create.png"
+        },
+        {
+          "id": "my-cvs",
+          "path": "/#/cv/my-cvs",
+          "url": "https://jobin.se/#/cv/my-cvs",
+          "bodyLength": 931,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\20-cv-tab-my-cvs.png"
+        },
+        {
+          "id": "adapt",
+          "path": "/#/cv/adapt",
+          "url": "https://jobin.se/#/cv/adapt",
+          "bodyLength": 843,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\20-cv-tab-adapt.png"
+        },
+        {
+          "id": "ats",
+          "path": "/#/cv/ats",
+          "url": "https://jobin.se/#/cv/ats",
+          "bodyLength": 2925,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\20-cv-tab-ats.png"
+        },
+        {
+          "id": "tips",
+          "path": "/#/cv/tips",
+          "url": "https://jobin.se/#/cv/tips",
+          "bodyLength": 2380,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\20-cv-tab-tips.png"
+        }
+      ],
+      "interactions": [],
+      "url": "https://jobin.se/#/cv",
+      "bodyLength": 3211,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\20-cv.png"
+    },
+    {
+      "id": "21-cover-letter",
+      "label": "Personligt brev",
+      "path": "/#/cover-letter",
+      "tabs": [
+        {
+          "id": "generator",
+          "path": "/#/cover-letter",
+          "url": "https://jobin.se/#/cover-letter",
+          "bodyLength": 1012,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\21-cover-letter-tab-generator.png"
+        },
+        {
+          "id": "saved",
+          "path": "/#/cover-letter/saved",
+          "url": "https://jobin.se/#/cover-letter/saved",
+          "bodyLength": 1012,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\21-cover-letter-tab-saved.png"
+        }
+      ],
+      "interactions": [],
+      "url": "https://jobin.se/#/cover-letter",
+      "bodyLength": 1012,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\21-cover-letter.png"
+    },
+    {
+      "id": "22-job-search",
+      "label": "Sök jobb",
+      "path": "/#/job-search",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/job-search",
+      "bodyLength": 10483,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\22-job-search.png"
+    },
+    {
+      "id": "23-applications",
+      "label": "Ansökningar",
+      "path": "/#/applications",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/applications",
+      "bodyLength": 911,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\23-applications.png"
+    },
+    {
+      "id": "24-spontaneous",
+      "label": "Spontanansökan",
+      "path": "/#/spontanansökan",
+      "tabs": [
+        {
+          "id": "search",
+          "path": "/#/spontanansökan",
+          "url": "https://jobin.se/#/spontanansökan",
+          "bodyLength": 818,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\24-spontaneous-tab-search.png"
+        },
+        {
+          "id": "companies",
+          "path": "/#/spontanansökan/mina-foretag",
+          "url": "https://jobin.se/#/spontanansökan/mina-foretag",
+          "bodyLength": 599,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\24-spontaneous-tab-companies.png"
+        },
+        {
+          "id": "stats",
+          "path": "/#/spontanansökan/statistik",
+          "url": "https://jobin.se/#/spontanansökan/statistik",
+          "bodyLength": 969,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\24-spontaneous-tab-stats.png"
+        }
+      ],
+      "interactions": [],
+      "url": "https://jobin.se/#/spontanansökan",
+      "bodyLength": 818,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\24-spontaneous.png"
+    },
+    {
+      "id": "30-career",
+      "label": "Karriär",
+      "path": "/#/career",
+      "tabs": [
+        {
+          "id": "labor-market",
+          "path": "/#/career",
+          "url": "https://jobin.se/#/career",
+          "bodyLength": 1247,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\30-career-tab-labor-market.png"
+        },
+        {
+          "id": "adaptation",
+          "path": "/#/career/adaptation",
+          "url": "https://jobin.se/#/career/adaptation",
+          "bodyLength": 975,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\30-career-tab-adaptation.png"
+        },
+        {
+          "id": "credentials",
+          "path": "/#/career/credentials",
+          "url": "https://jobin.se/#/career/credentials",
+          "bodyLength": 749,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\30-career-tab-credentials.png"
+        },
+        {
+          "id": "relocation",
+          "path": "/#/career/relocation",
+          "url": "https://jobin.se/#/career/relocation",
+          "bodyLength": 2452,
+          "consoleErrors": [],
+          "networkErrors": [
+            "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/job_applications?select=*&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED",
+            "HEAD https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/cover_letters?select=*&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba — net::ERR_ABORTED"
+          ],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\30-career-tab-relocation.png"
+        },
+        {
+          "id": "plan",
+          "path": "/#/career/plan",
+          "url": "https://jobin.se/#/career/plan",
+          "bodyLength": 991,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\30-career-tab-plan.png"
+        }
+      ],
+      "interactions": [],
+      "url": "https://jobin.se/#/career",
+      "bodyLength": 1245,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\30-career.png"
+    },
+    {
+      "id": "31-interest-guide",
+      "label": "Intresseguide",
+      "path": "/#/interest-guide",
+      "tabs": [
+        {
+          "id": "test",
+          "path": "/#/interest-guide",
+          "url": "https://jobin.se/#/interest-guide",
+          "bodyLength": 1053,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\31-interest-guide-tab-test.png"
+        },
+        {
+          "id": "results",
+          "path": "/#/interest-guide/results",
+          "url": "https://jobin.se/#/interest-guide/results",
+          "bodyLength": 501,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\31-interest-guide-tab-results.png"
+        },
+        {
+          "id": "occupations",
+          "path": "/#/interest-guide/occupations",
+          "url": "https://jobin.se/#/interest-guide/occupations",
+          "bodyLength": 516,
+          "consoleErrors": [
+            "11:58:31.680 [ERROR][API] Failed to load notifications {error: Object, errorMessage: [object Object], stack: undefined}",
+            "[Error] [API] Failed to load notifications {level: error, prefix: API, error: Object, errorMessage: [object Object], stack: undefined}"
+          ],
+          "networkErrors": [
+            "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/notifications?select=*&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba&order=created_at.desc&limit=50 — net::ERR_ABORTED"
+          ],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\31-interest-guide-tab-occupations.png"
+        },
+        {
+          "id": "explore",
+          "path": "/#/interest-guide/explore",
+          "url": "https://jobin.se/#/interest-guide/explore",
+          "bodyLength": 5330,
+          "consoleErrors": [
+            "11:58:34.200 [ERROR][API] Failed to load notifications {error: Object, errorMessage: [object Object], stack: undefined}",
+            "[Error] [API] Failed to load notifications {level: error, prefix: API, error: Object, errorMessage: [object Object], stack: undefined}"
+          ],
+          "networkErrors": [
+            "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/notifications?select=*&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba&order=created_at.desc&limit=50 — net::ERR_ABORTED"
+          ],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\31-interest-guide-tab-explore.png"
+        },
+        {
+          "id": "history",
+          "path": "/#/interest-guide/history",
+          "url": "https://jobin.se/#/interest-guide/history",
+          "bodyLength": 561,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\31-interest-guide-tab-history.png"
+        }
+      ],
+      "interactions": [],
+      "url": "https://jobin.se/#/interest-guide",
+      "bodyLength": 1053,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\31-interest-guide.png"
+    },
+    {
+      "id": "32-skills-gap",
+      "label": "Kompetensanalys",
+      "path": "/#/skills-gap-analysis",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/skills-gap-analysis",
+      "bodyLength": 882,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\32-skills-gap.png"
+    },
+    {
+      "id": "33-personal-brand",
+      "label": "Personligt varumärke",
+      "path": "/#/personal-brand",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/personal-brand",
+      "bodyLength": 1678,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\33-personal-brand.png"
+    },
+    {
+      "id": "34-education",
+      "label": "Utbildning",
+      "path": "/#/education",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/education",
+      "bodyLength": 1037,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\34-education.png"
+    },
+    {
+      "id": "35-linkedin",
+      "label": "LinkedIn-optimerare",
+      "path": "/#/linkedin-optimizer",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/linkedin-optimizer",
+      "bodyLength": 685,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\35-linkedin.png"
+    },
+    {
+      "id": "36-salary",
+      "label": "Lönestatistik",
+      "path": "/#/salary",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/salary",
+      "bodyLength": 1388,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\36-salary.png"
+    },
+    {
+      "id": "37-international",
+      "label": "International",
+      "path": "/#/international",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/international",
+      "bodyLength": 1830,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\37-international.png"
+    },
+    {
+      "id": "40-interview",
+      "label": "Intervjusimulator",
+      "path": "/#/interview-simulator",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/interview-simulator",
+      "bodyLength": 1145,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\40-interview.png"
+    },
+    {
+      "id": "41-ai-team",
+      "label": "AI-team",
+      "path": "/#/ai-team",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/ai-team",
+      "bodyLength": 1461,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\41-ai-team.png"
+    },
+    {
+      "id": "50-knowledge-base",
+      "label": "Kunskapsbank",
+      "path": "/#/knowledge-base",
+      "tabs": [
+        {
+          "id": "for-you",
+          "path": "/#/knowledge-base",
+          "url": "https://jobin.se/#/knowledge-base",
+          "bodyLength": 2476,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\50-knowledge-base-tab-for-you.png"
+        },
+        {
+          "id": "getting-started",
+          "path": "/#/knowledge-base?tab=getting-started",
+          "url": "https://jobin.se/#/knowledge-base?tab=getting-started",
+          "bodyLength": 923,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\50-knowledge-base-tab-getting-started.png"
+        },
+        {
+          "id": "topics",
+          "path": "/#/knowledge-base?tab=topics",
+          "url": "https://jobin.se/#/knowledge-base?tab=topics",
+          "bodyLength": 31101,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\50-knowledge-base-tab-topics.png"
+        },
+        {
+          "id": "quick-help",
+          "path": "/#/knowledge-base?tab=quick-help",
+          "url": "https://jobin.se/#/knowledge-base?tab=quick-help",
+          "bodyLength": 1792,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\50-knowledge-base-tab-quick-help.png"
+        },
+        {
+          "id": "my-journey",
+          "path": "/#/knowledge-base?tab=my-journey",
+          "url": "https://jobin.se/#/knowledge-base?tab=my-journey",
+          "bodyLength": 677,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\50-knowledge-base-tab-my-journey.png"
+        },
+        {
+          "id": "tools",
+          "path": "/#/knowledge-base?tab=tools",
+          "url": "https://jobin.se/#/knowledge-base?tab=tools",
+          "bodyLength": 986,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\50-knowledge-base-tab-tools.png"
+        }
+      ],
+      "interactions": [],
+      "url": "https://jobin.se/#/knowledge-base",
+      "bodyLength": 2476,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\50-knowledge-base.png"
+    },
+    {
+      "id": "51-resources",
+      "label": "Resurser",
+      "path": "/#/resources",
+      "tabs": [
+        {
+          "id": "all",
+          "path": "/#/resources",
+          "url": "https://jobin.se/#/resources",
+          "bodyLength": 627,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\51-resources-tab-all.png"
+        },
+        {
+          "id": "documents",
+          "path": "/#/resources?tab=documents",
+          "url": "https://jobin.se/#/resources?tab=documents",
+          "bodyLength": 627,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\51-resources-tab-documents.png"
+        },
+        {
+          "id": "jobs",
+          "path": "/#/resources?tab=jobs",
+          "url": "https://jobin.se/#/resources?tab=jobs",
+          "bodyLength": 506,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\51-resources-tab-jobs.png"
+        },
+        {
+          "id": "articles",
+          "path": "/#/resources?tab=articles",
+          "url": "https://jobin.se/#/resources?tab=articles",
+          "bodyLength": 506,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\51-resources-tab-articles.png"
+        }
+      ],
+      "interactions": [],
+      "url": "https://jobin.se/#/resources",
+      "bodyLength": 627,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\51-resources.png"
+    },
+    {
+      "id": "52-print-resources",
+      "label": "Utskrivbara resurser",
+      "path": "/#/print-resources",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/print-resources",
+      "bodyLength": 859,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\52-print-resources.png"
+    },
+    {
+      "id": "53-external-resources",
+      "label": "Externa resurser",
+      "path": "/#/externa-resurser",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/externa-resurser",
+      "bodyLength": 1987,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\53-external-resources.png"
+    },
+    {
+      "id": "54-network",
+      "label": "Nätverk",
+      "path": "/#/nätverk",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/nätverk",
+      "bodyLength": 901,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\54-network.png"
+    },
+    {
+      "id": "60-wellness",
+      "label": "Hälsa",
+      "path": "/#/wellness",
+      "tabs": [
+        {
+          "id": "health",
+          "path": "/#/wellness",
+          "url": "https://jobin.se/#/wellness",
+          "bodyLength": 972,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\60-wellness-tab-health.png"
+        },
+        {
+          "id": "routines",
+          "path": "/#/wellness/routines",
+          "url": "https://jobin.se/#/wellness/routines",
+          "bodyLength": 942,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\60-wellness-tab-routines.png"
+        },
+        {
+          "id": "cognitive",
+          "path": "/#/wellness/cognitive",
+          "url": "https://jobin.se/#/wellness/cognitive",
+          "bodyLength": 1203,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\60-wellness-tab-cognitive.png"
+        },
+        {
+          "id": "crisis",
+          "path": "/#/wellness/crisis",
+          "url": "https://jobin.se/#/wellness/crisis",
+          "bodyLength": 1719,
+          "consoleErrors": [],
+          "networkErrors": [],
+          "pageErrors": [],
+          "detectedIssues": [],
+          "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\60-wellness-tab-crisis.png"
+        }
+      ],
+      "interactions": [],
+      "url": "https://jobin.se/#/wellness",
+      "bodyLength": 996,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\60-wellness.png"
+    },
+    {
+      "id": "61-diary",
+      "label": "Dagbok",
+      "path": "/#/diary",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/diary",
+      "bodyLength": 1260,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\61-diary.png"
+    },
+    {
+      "id": "62-calendar",
+      "label": "Kalender",
+      "path": "/#/calendar",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/calendar",
+      "bodyLength": 441,
+      "consoleErrors": [
+        "11:59:56.834 [ERROR][API] Failed to load notifications {error: Object, errorMessage: [object Object], stack: undefined}",
+        "[Error] [API] Failed to load notifications {level: error, prefix: API, error: Object, errorMessage: [object Object], stack: undefined}"
+      ],
+      "networkErrors": [
+        "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/notifications?select=*&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba&order=created_at.desc&limit=50 — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\62-calendar.png"
+    },
+    {
+      "id": "63-exercises",
+      "label": "Övningar",
+      "path": "/#/exercises",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/exercises",
+      "bodyLength": 18829,
+      "consoleErrors": [
+        "11:59:59.349 [ERROR][API] Failed to load notifications {error: Object, errorMessage: [object Object], stack: undefined}",
+        "[Error] [API] Failed to load notifications {level: error, prefix: API, error: Object, errorMessage: [object Object], stack: undefined}"
+      ],
+      "networkErrors": [
+        "GET https://odcvrdkvzyrbdzvdrhkz.supabase.co/rest/v1/notifications?select=*&user_id=eq.5b0904ac-936e-4b44-9966-b43a43d53fba&order=created_at.desc&limit=50 — net::ERR_ABORTED"
+      ],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\63-exercises.png"
+    },
+    {
+      "id": "64-my-consultant",
+      "label": "Min konsulent",
+      "path": "/#/my-consultant",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/my-consultant",
+      "bodyLength": 354,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\64-my-consultant.png"
+    },
+    {
+      "id": "70-profile",
+      "label": "Profil",
+      "path": "/#/profile",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/profile",
+      "bodyLength": 1050,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\70-profile.png"
+    },
+    {
+      "id": "71-settings",
+      "label": "Inställningar",
+      "path": "/#/settings",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/settings",
+      "bodyLength": 1078,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\71-settings.png"
+    },
+    {
+      "id": "72-help",
+      "label": "Hjälp",
+      "path": "/#/help",
+      "tabs": [],
+      "interactions": [],
+      "url": "https://jobin.se/#/help",
+      "bodyLength": 2817,
+      "consoleErrors": [],
+      "networkErrors": [],
+      "pageErrors": [],
+      "detectedIssues": [],
+      "screenshot": "C:\\Users\\Mikael\\Desktop\\COWORK\\deltagarportal\\audit-2026-05-10\\screenshots\\72-help.png"
+    }
+  ],
+  "globalErrors": [
+    {
+      "pageId": "int-cv",
+      "kind": "INFO",
+      "message": "Hittade inget tydligt \"Skapa CV\"-CTA på /cv",
+      "ts": "2026-05-10T12:00:15.933Z"
+    },
+    {
+      "pageId": "int-cover",
+      "kind": "INFO",
+      "message": "Cover letter: 0 input-fält hittade",
+      "ts": "2026-05-10T12:00:19.006Z"
+    }
+  ],
+  "summary": {
+    "totalPages": 41,
+    "totalTabs": 34,
+    "totalErrors": 29,
+    "totalScreenshots": 75
+  },
+  "completedAt": "2026-05-10T12:00:55.991Z"
+}

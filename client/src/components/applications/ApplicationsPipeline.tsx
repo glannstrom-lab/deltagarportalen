@@ -273,12 +273,11 @@ export function ApplicationsPipeline({
             )}
           </div>
 
-          <Button onClick={onAddApplication} className="sm:hidden">
+          {/* Mobil-CTA — på desktop finns "Ny ansökan" redan i sidans header.
+              På mobil är den header-knappen dold (sm:flex) så vi behöver en
+              kompakt knapp här. */}
+          <Button onClick={onAddApplication} className="sm:hidden" aria-label="Ny ansökan">
             <Plus className="w-4 h-4" />
-          </Button>
-          <Button onClick={onAddApplication} className="hidden sm:flex">
-            <Plus className="w-4 h-4 mr-1" />
-            Ny ansökan
           </Button>
         </div>
       </div>
@@ -316,21 +315,24 @@ export function ApplicationsPipeline({
         </Card>
       )}
 
-      {/* Pipeline columns */}
-      <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-        {PIPELINE_COLUMNS.map((status) => (
-          <PipelineColumn
-            key={status}
-            status={status}
-            applications={filteredByStatus[status]}
-            onStatusChange={handleStatusChange}
-            onViewApplication={onViewApplication}
-            onEditApplication={onEditApplication}
-            onArchive={handleArchive}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
+      {/* Pipeline columns — visa bara när användaren har minst en ansökan.
+          När total är 0 visas bara empty-state-Card nedan (inte två tomtillstånd). */}
+      {stats.total > 0 && (
+        <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
+          {PIPELINE_COLUMNS.map((status) => (
+            <PipelineColumn
+              key={status}
+              status={status}
+              applications={filteredByStatus[status]}
+              onStatusChange={handleStatusChange}
+              onViewApplication={onViewApplication}
+              onEditApplication={onEditApplication}
+              onArchive={handleArchive}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      )}
 
       {/* Empty state */}
       {stats.total === 0 && (

@@ -210,13 +210,17 @@ export default function Settings() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                       label={t('settings.profile.firstName')}
+                      placeholder={t('settings.profile.firstNamePlaceholder', 'T.ex. Anna')}
                       value={profileData.firstName}
                       onChange={(e) => setProfileData({...profileData, firstName: e.target.value})}
+                      autoComplete="given-name"
                     />
                     <Input
                       label={t('settings.profile.lastName')}
+                      placeholder={t('settings.profile.lastNamePlaceholder', 'T.ex. Andersson')}
                       value={profileData.lastName}
                       onChange={(e) => setProfileData({...profileData, lastName: e.target.value})}
+                      autoComplete="family-name"
                     />
                   </div>
                 </CardSection>

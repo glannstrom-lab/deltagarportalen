@@ -15,6 +15,17 @@ import type { RealtimePayload } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { apiLogger } from '@/lib/logger'
 
+// Supabase fetch som avbryts vid unmount/navigation kastar AbortError eller
+// ERR_ABORTED-message. Dessa är förväntade och ska inte loggas som fel.
+function isAbortError(err: unknown): boolean {
+  if (!err) return false
+  const e = err as { name?: string; message?: string; code?: string }
+  if (e.name === 'AbortError') return true
+  if (e.code === '20') return true
+  const msg = (e.message || '').toLowerCase()
+  return msg.includes('abort') || msg.includes('cancel')
+}
+
 // ============================================
 // TYPES
 // ============================================
@@ -99,6 +110,8 @@ export function useNotifications(): UseNotificationsReturn {
       setNotifications(data || [])
       apiLogger.debug('Notifications loaded', { count: data?.length || 0 })
     } catch (err) {
+      // ERR_ABORTED från snabb navigation eller unmount är inte ett riktigt fel
+      if (isAbortError(err)) return
       const message = err instanceof Error ? err.message : 'Kunde inte ladda notifikationer'
       setError(message)
       apiLogger.error('Failed to load notifications', { error: err })
@@ -136,6 +149,7 @@ export function useNotifications(): UseNotificationsReturn {
         apiLogger.debug('Notifications loaded', { count: data?.length || 0 })
       } catch (err) {
         if (!isMounted) return
+        if (isAbortError(err)) return
         const message = err instanceof Error ? err.message : 'Kunde inte ladda notifikationer'
         setError(message)
         apiLogger.error('Failed to load notifications', { error: err })

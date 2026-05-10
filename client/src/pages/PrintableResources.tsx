@@ -12,6 +12,7 @@ import {
 import { PageLayout } from '@/components/layout/index'
 import { useArticles } from '@/hooks/knowledge-base/useArticles'
 import { exercises, type Exercise } from '@/data/exercises'
+import { articleCategories } from '@/services/articleData'
 import {
   generateArticlePDF,
   generateExercisePDF,
@@ -26,6 +27,15 @@ import { cn } from '@/lib/utils'
 
 type ResourceType = 'articles' | 'exercises'
 type ViewMode = 'select' | 'preview'
+
+// Mappa artikel-kategori-slug ('getting-started', 'easy-swedish' osv.) till
+// svenskt visningsnamn. Övningskategorier är redan på svenska och returneras
+// oförändrade.
+const articleCategoryLabel = new Map(
+  articleCategories.map(c => [c.id, c.name])
+)
+const localizeCategory = (slug: string): string =>
+  articleCategoryLabel.get(slug) ?? slug
 
 export default function PrintableResources() {
   const { t } = useTranslation()
@@ -254,7 +264,9 @@ export default function PrintableResources() {
             >
               <option value="all">{t('printable.allCategories', 'Alla kategorier')}</option>
               {categories.map(cat => (
-                <option key={cat} value={cat}>{cat}</option>
+                <option key={cat} value={cat}>
+                  {resourceType === 'articles' ? localizeCategory(cat) : cat}
+                </option>
               ))}
             </select>
           </div>
@@ -337,7 +349,7 @@ export default function PrintableResources() {
                 >
                   <div className="flex items-center gap-3">
                     <span className="font-semibold text-stone-800 dark:text-stone-200">
-                      {category}
+                      {resourceType === 'articles' ? localizeCategory(category) : category}
                     </span>
                     <span className="text-sm text-stone-500 dark:text-stone-400">
                       ({items.length})
