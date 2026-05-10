@@ -4,13 +4,16 @@ import { cvApi } from '@/services/api'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
   Sparkles, Briefcase, GraduationCap, Award,
-  Lightbulb, Loader2, AlertCircle
+  Lightbulb, Loader2, AlertCircle, Folder, FileText
 } from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
 import { showToast } from '@/components/Toast'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
-import { CVShare } from '@/components/cv/CVShare'
+import { generateCVWord } from '@/services/cvWordExport'
+// CVShare borttagen 2026-05-11 — route saknas i App.tsx + cv_shares-tabellen
+// saknar cv_id-kolumn. Återställs när hela delningsflödet är komplett.
+// import { CVShare } from '@/components/cv/CVShare'
 import { CompactImageUpload } from '@/components/ImageUpload'
 import { useVercelImageUpload } from '@/hooks/useVercelImageUpload'
 import { useAuthStore } from '@/stores/authStore'
@@ -42,6 +45,7 @@ const STEPS = [
   { id: 3, title: 'Profil', description: 'Sammanfattning', minutes: 5 },
   { id: 4, title: 'Erfarenhet', description: 'Jobb & utbildning', minutes: 10 },
   { id: 5, title: 'Kompetenser', description: 'Skills & övrigt', minutes: 5 },
+  { id: 6, title: 'Granska', description: 'Granska och spara', minutes: 2 },
 ] as const
 
 // Language level constants (stored in DB, display via translation)
@@ -131,6 +135,15 @@ const TEMPLATES = [
     desc: 'Executive med mörk navy-sidebar, copper-accent och Playfair Display',
     image: '/templates/manhattan.png',
     features: ['Navy sidebar', 'Copper-accent', 'Executive'],
+  },
+  {
+    // TODO: Designer behöver skapa unik preview-bild + variant av template-rendering.
+    // Tills vidare återanvänder Berlin Centered-renderern + centered.png-preview.
+    id: 'berlin',
+    name: 'Berlin',
+    desc: 'Stilren modernist-design — variant under utveckling',
+    image: '/templates/berlin.png',
+    features: ['Modernist', 'Sans-serif', 'Lugn typografi'],
   },
 ]
 
@@ -850,6 +863,137 @@ export default function CVBuilder() {
     </div>
   )
 
+  // STEG 6: GRANSKA OCH SPARA
+  const renderStep6 = () => {
+    const filledSections = [
+      { label: 'Kontaktuppgifter', filled: !!(data.firstName && data.lastName) },
+      { label: 'Profil-sammanfattning', filled: !!data.summary },
+      { label: 'Arbetslivserfarenhet', filled: hasValidExperience },
+      { label: 'Utbildning', filled: hasValidEducation },
+      { label: 'Kompetenser', filled: hasValidSkills },
+    ]
+    const missingSections = filledSections.filter(s => !s.filled)
+
+    return (
+      <div className="space-y-6">
+        <div className="text-center">
+          <h3 className="text-2xl font-bold text-stone-800 dark:text-stone-200 mb-2">
+            {t('cvBuilder.review.title', 'Granska och spara ditt CV')}
+          </h3>
+          <p className="text-stone-600 dark:text-stone-400">
+            {t('cvBuilder.review.subtitle', 'Här är ditt CV. Allt sparas automatiskt — ladda ner när du är nöjd.')}
+          </p>
+        </div>
+
+        {/* Checklista — vad är ifyllt */}
+        <Card className="p-5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]">
+          <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
+            {t('cvBuilder.review.checklistTitle', 'Innehåll i ditt CV')}
+          </h4>
+          <ul className="space-y-2">
+            {filledSections.map(s => (
+              <li key={s.label} className="flex items-center gap-2 text-sm">
+                {s.filled ? (
+                  <Check className="w-4 h-4 text-[var(--c-solid)] flex-shrink-0" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 text-amber-500 flex-shrink-0" />
+                )}
+                <span className={s.filled ? 'text-stone-700 dark:text-stone-300' : 'text-amber-700 dark:text-amber-400'}>
+                  {s.label}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {missingSections.length > 0 && (
+            <p className="text-sm text-amber-700 dark:text-amber-400 mt-3 pt-3 border-t border-amber-200 dark:border-amber-800/50">
+              {t('cvBuilder.review.missingHint', 'Ofyllda sektioner är inte krav — du kan ladda ner ändå.')}
+            </p>
+          )}
+        </Card>
+
+        {/* A4 papperskänsla — exakt så som det blir i PDF */}
+        <div className="bg-stone-100 dark:bg-stone-950/50 p-4 sm:p-8 rounded-2xl border border-stone-200 dark:border-stone-700">
+          <div className="flex items-center justify-between mb-4 px-2">
+            <span className="text-xs font-medium uppercase tracking-wider text-stone-500 dark:text-stone-400">
+              {t('cvBuilder.review.a4Note', 'Förhandsgranskning i A4-format')}
+            </span>
+            <span className="text-xs text-stone-400 dark:text-stone-500">
+              210 × 297 mm
+            </span>
+          </div>
+
+          {/* A4-pappers-yta. max-width = 210mm (=794px @ 96dpi) men skalbart
+              ned på mindre skärmar via max-w-full. Sidobrytning markerad med
+              en streckad linje var 297mm för att visa var ny sida börjar. */}
+          <div
+            className="bg-white shadow-2xl mx-auto relative"
+            style={{ maxWidth: '210mm', width: '100%' }}
+          >
+            {/* Sidbrytningsmarkör — visuell hint var nya sidan börjar.
+                Användaren kan flytta innehåll om sektion bryts olämpligt. */}
+            <div
+              aria-hidden="true"
+              className="absolute left-0 right-0 pointer-events-none z-10 flex items-center"
+              style={{ top: '297mm' }}
+            >
+              <div className="flex-1 border-t-2 border-dashed border-amber-400 opacity-60" />
+              <span className="px-3 py-1 mx-2 bg-amber-100 dark:bg-amber-900/60 text-amber-800 dark:text-amber-200 text-[11px] font-bold rounded-full whitespace-nowrap">
+                {t('cvBuilder.review.pageBreak', 'Sida 2 börjar här')}
+              </span>
+              <div className="flex-1 border-t-2 border-dashed border-amber-400 opacity-60" />
+            </div>
+
+            <CVPreview data={data} />
+          </div>
+
+          <p className="text-xs text-stone-500 dark:text-stone-400 mt-4 px-2 text-center">
+            {t('cvBuilder.review.editHint', 'Om en sektion bryts olämpligt — gå tillbaka och redigera. Den streckade linjen visar exakt var sida 2 börjar.')}
+          </p>
+        </div>
+
+        {/* Spara/exportera-actions */}
+        <Card className="p-5">
+          <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
+            {t('cvBuilder.review.actionsTitle', 'Klar?')}
+          </h4>
+          <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
+            {t('cvBuilder.review.actionsDesc', 'Ditt CV är sparat i molnet. Ladda ner som PDF eller skapa en versionssäkring att gå tillbaka till.')}
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <PDFExportButton
+              type="cv"
+              data={data}
+              variant="primary"
+              size="md"
+            />
+            <button
+              onClick={async () => {
+                try {
+                  await generateCVWord(data)
+                  showToast.success(t('cvBuilder.review.wordSuccess', 'Word-fil nedladdad'))
+                } catch (e) {
+                  console.error(e)
+                  showToast.error(t('cvBuilder.review.wordError', 'Kunde inte skapa Word-fil'))
+                }
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2.5 border border-stone-300 dark:border-stone-600 text-stone-700 dark:text-stone-300 rounded-xl text-sm font-medium hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors"
+            >
+              <FileText className="w-4 h-4" />
+              {t('cvBuilder.review.exportWord', 'Ladda ner Word')}
+            </button>
+            <button
+              onClick={() => setShowSaveVersion(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 border border-[var(--c-solid)] text-[var(--c-text)] rounded-xl text-sm font-medium hover:bg-[var(--c-bg)] transition-colors"
+            >
+              <Folder className="w-4 h-4" />
+              {t('cvBuilder.versions.saveCurrentVersion', 'Spara version')}
+            </button>
+          </div>
+        </Card>
+      </div>
+    )
+  }
+
   const renderContent = () => {
     switch (step) {
       case 1: return renderStep1()
@@ -857,6 +1001,7 @@ export default function CVBuilder() {
       case 3: return renderStep3()
       case 4: return renderStep4()
       case 5: return renderStep5()
+      case 6: return renderStep6()
       default: return null
     }
   }
@@ -908,13 +1053,15 @@ export default function CVBuilder() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Action buttons bar — auto-save sköter molnet, ingen manuell spara-knapp */}
+      {/* Action buttons bar — auto-save sköter molnet, ingen manuell spara-knapp.
+          CVShare borttaget 2026-05-11: route /cv/shared/:code saknas i App.tsx
+          så delningslänkar gick ingenstans. Returneras när delningsflödet är
+          komplett (cv_shares-tabellen behöver också cv_id-kolumn). */}
       <div className="flex items-center justify-end gap-2 flex-wrap mb-4">
         <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-stone-600 dark:text-stone-400 hover:bg-stone-50 dark:hover:bg-stone-700/50 border border-stone-200 dark:border-stone-700 rounded-lg transition-colors">
           <Sparkles className="w-4 h-4" />
           <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
         </button>
-        <CVShare onShare={async () => await cvApi.shareCV()} variant="compact" />
         <PDFExportButton
           type="cv"
           data={data}
@@ -969,8 +1116,15 @@ export default function CVBuilder() {
         </div>
       )}
 
-      {/* Main Content - 50/50 på desktop */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Main Content — split-layout på sista steget, full editor i 1-4.
+          Användaren bad om "förhandsgranskning behöver inte vara med förrän
+          sista steget. alternativt en knapp för förhandsgranskningen". Vi
+          kombinerar: Steg 1-4 = full editor + förhandsgranska-knapp som
+          öppnar modal, Steg 5 = automatisk split-vy med live preview. */}
+      <div className={cn(
+        'grid grid-cols-1 gap-6',
+        step === STEPS.length && 'lg:grid-cols-2'
+      )}>
         {/* Left: Editor */}
         <div>
           <div className="min-h-[400px]">
@@ -978,30 +1132,49 @@ export default function CVBuilder() {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center justify-between mt-6">
+          <div className="hidden lg:flex items-center justify-between mt-6 gap-3 flex-wrap">
             <button onClick={() => setStep(Math.max(1, step - 1))} disabled={step === 1} className="flex items-center gap-2 px-4 py-2.5 border border-stone-300 dark:border-stone-600 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 disabled:opacity-50 font-medium">
               <ChevronLeft className="w-5 h-5" />
               {t('cvBuilder.actions.previous')}
             </button>
-            <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-[var(--c-solid)] text-white rounded-xl hover:bg-[var(--c-solid)]/90 disabled:opacity-50 font-medium">
-              {t('cvBuilder.actions.next')}
-              <ChevronRight className="w-5 h-5" />
-            </button>
+            <div className="flex items-center gap-3">
+              {/* Förhandsgranska-knapp på steg 1-4 (på sista steget visas
+                  preview redan i högerkolumnen) */}
+              {step < STEPS.length && (
+                <button
+                  onClick={() => setShowPreview(true)}
+                  className="flex items-center gap-2 px-4 py-2.5 border border-stone-300 dark:border-stone-600 rounded-xl text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-800 font-medium"
+                >
+                  <Eye className="w-4 h-4" />
+                  {t('cvBuilder.actions.preview', 'Förhandsgranska')}
+                </button>
+              )}
+              <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-[var(--c-solid)] text-white rounded-xl hover:brightness-110 disabled:opacity-50 font-medium">
+                {t('cvBuilder.actions.next')}
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           {/* Spacer for fixed mobile navigation */}
           <div className="h-24 lg:hidden" />
         </div>
 
-        {/* Right: Preview + Tools (desktop) */}
-        <div className="hidden lg:block space-y-6">
-          {/* Preview — direkt på sidan, ingen extra stone-inramning som krymper ytan */}
-          <div className="bg-white dark:bg-stone-900 shadow-lg rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
-            <CVPreview data={data} />
+        {/* Right: Preview + Tools (desktop, bara på sista steget) */}
+        {step === STEPS.length && (
+          <div className="hidden lg:block space-y-6">
+            <div className="bg-white dark:bg-stone-900 shadow-lg rounded-xl border border-stone-200 dark:border-stone-700/50 overflow-hidden">
+              <CVPreview data={data} />
+            </div>
+            <ContextualKnowledgeWidget context="cv-building" variant="full" />
           </div>
+        )}
 
-          {/* Contextual Knowledge - Fas 2 */}
-          <ContextualKnowledgeWidget context="cv-building" variant="full" />
+        {/* Tools-kolumn för steg 1-4 — utan preview men behåll knowledge-widget
+            som contextuell hjälp utan att ta upp skärm. */}
+        {step < STEPS.length && (
+          <div className="hidden lg:block">
+            <ContextualKnowledgeWidget context="cv-building" variant="full" />
 
           {/* Help - Show onboarding again */}
           <div className="bg-white dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700/50 p-5">
@@ -1089,10 +1262,11 @@ export default function CVBuilder() {
             </div>
           </div>
 
-        </div>
+          </div>
+        )}
       </div>
 
-      
+
       {/* Onboarding */}
       {showOnboarding && (
         <CVOnboarding 

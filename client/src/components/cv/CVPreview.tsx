@@ -155,6 +155,11 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
     case 'manhattan':
       template = <ManhattanTemplate data={data} fullName={fullName} />
       break
+    case 'berlin':
+      // TODO: ersätt med dedikerad BerlinTemplate. Faller tillbaka till
+      // Centered tills designer levererar variant.
+      template = <CenteredTemplate data={data} fullName={fullName} />
+      break
     case 'sidebar':
     default:
       template = <ModernTemplate data={data} fullName={fullName} />
