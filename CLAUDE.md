@@ -195,22 +195,39 @@ Streaming via `useAIStream`-hooken (anropar `/api/ai-stream`).
 ## UI/Design-instruktioner
 
 ### Innan du ändrar UI
-1. **Läs `docs/DESIGN.md`** — definierar färgsystem, header, hierarki, typografi
+1. **Läs `docs/DESIGN.md`** — Manifestet (§1) + Voice & Tone (§2) är obligatoriska före allt annat. Avsnitt 4–9 är referens när du implementerar.
 2. **Designreferenser i rotmappen:** `ny1.png`–`ny5.png` (senaste designiterationer)
 3. **Sök i `client/src/components/ui/`** om komponenten redan finns — återanvänd alltid, kopiera aldrig
 
-### Designsystemet (DESIGN.md, aktivt från 2026-04-29)
-- **Hjältesektion = neutral grå** (`--header-bg`) på alla sidor — ingen domänfärg, inga gradients i toppen. 4px vänsterkant i domänfärg ger subtil identifiering.
-- **5 domäner:** `action` (mint), `info` (sky), `activity` (persika), `wellbeing` (lavendel), `coaching` (rosa). Definieras via `<div data-domain="...">`.
-- **Bakåtkompatibilitet:** `reflection` aliasar till `wellbeing`, `outbound` aliasar till `activity` — bevarar fungerande sidor.
-- **Inga gradients i återkommande UI** (KPI-kort, sektionsheaders, knappar). Platt pastell räcker.
-- **Pasteller bor i innehållet** — inte i rubrikbanderoller.
+### Designsystemet (DESIGN.md v3.0, aktivt från 2026-05-10)
+Sammanfattning av sanningarna i DESIGN.md — vid konflikt gäller DESIGN.md.
+
+- **Manifestet styr alla val.** Jobin är inte en jobbportal — det är en följeslagare. Tonen är "lugn vän", inte "myndighet" eller "tools-app". Inga prestationsmätningar i hjälteposition, inga gradient-knappar, inga "Aktivera"-knappar. Se DESIGN.md §1.
+- **Två lägen, inga kompromisser:**
+  - **Hub-landning** (`/oversikt`, `/jobb`, `/karriar`, `/resurser`, `/min-vardag`) = full pastell-hero i hub-färgen.
+  - **Verktygssida** (allt annat under hubbarna) = neutral grå hero (`--header-bg`) med 4px vänsterkant i hub-färgen.
+  - Dessa lägen blandas aldrig på samma sida. Se DESIGN.md §3.
+- **En sida = en hub-färg.** Alla pastell-element på en sida (KPI-kort, sektioner, ikon-tiles) använder samma hub-färg. Variation kommer från intensitet (50/200/700) och ikon — aldrig från olika hubars pasteller på samma sida. *Undantag: Översikt med 4 hubbar samtidigt.* Se DESIGN.md §4.
+- **5 hubbar:** Översikt (mint/`action`), Söka jobb (persika/`activity`), Karriär (rosa/`coaching`), Resurser (sky/`info`), Min vardag (lavendel/`wellbeing`). Aktiveras via `<div data-domain="...">` (sätts av `PageLayout`).
+- **Bakåtkompatibilitet:** `reflection` → wellbeing, `outbound` → activity (CSS-aliaser). Använd inte i ny kod.
+- **Inga gradients** i KPI-kort, sektionsheaders, knappar, modaler. Förbjudet enligt DESIGN.md §6.
+- **Personalisering:** Använd användarens förnamn när det finns ("Hej Anna", inte "Välkommen tillbaka"). Se DESIGN.md §2.
+
+### Voice & Tone (sammanfattning av DESIGN.md §2)
+- **Rubriker är inviter, inte etiketter.** "Hantera resurser" → "Dina sparade resurser".
+- **Aldrig administrationsspråk.** "Aktivera" → "Slå på". "Konfigurera" → "Ändra".
+- **Aldrig prestationsspråk i deltagarvyer.** "0 ansökningar" → "Du har inte börjat söka jobb än".
+- *Konsulent-/admin-vyer kan ha annan ton — det är en tydlig switch, inte slumpartat.*
+
+### Empty states är kontraktualiserade
+Alla tomtillstånd ska gå genom `<EmptyState>`-komponenten med tre delar: ikon, mänsklig rubrik, EN tydlig CTA. Inga staplade tomtillstånd, inga "0"-rubriker, inga oöversatta i18n-keys i UI. Se DESIGN.md §7.
 
 ### När du redesignar en sida
 1. Be om eller hänvisa till en screenshot av nuvarande sida
-2. Lista vilka designprinciper som bryts
+2. Lista vilka designprinciper som bryts mot Manifestet och §3-9
 3. Föreslå förändringar komponent för komponent
 4. Visa diff innan implementation
+5. Kör PR-checklistan i DESIGN.md §15 innan commit
 
 ### Innan du lägger till en ny färg
 **Stopp.** Använd befintliga tokens i `client/src/styles/tokens.css` och `tailwind.config.ts`.
@@ -297,7 +314,11 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 | `docs/claude-code-guide.md` | Hur Claude Code används effektivt i projektet |
 | `docs/security-audit.md` | Säkerhetsrevision 2026-04-23 (alla HIGH åtgärdade) |
 | `docs/audit-2026-04.md` | UI-audit mot DESIGN.md |
-| `docs/DESIGN.md` | **Designsystemets sanning** — 5 domäner, neutral header, inga gradients |
+| `docs/DESIGN.md` | **Designsystemets sanning v3.0** — Manifest + Voice & Tone + två-läges-system (hub-landning vs verktygssida) + en-färg-per-sida-regel |
+| `docs/DESIGN-ROADMAP.md` | **9-fasers implementationsplan** för DESIGN.md v3.0 (~13 arbetsveckor) |
+| `docs/DESIGN-DEBT.md` | Levande lista över designöverträdelser — uppdateras tills allt är ✅ |
+| `audit-2026-05-10/RAPPORT.md` | Produktionsaudit: 41 sidor + 34 flikar testade, buggrapport + förbättringar |
+| `audit-2026-05-10/DESIGN-GRANSKNING.md` | Världsklass-designerns granskning av audit-screenshots — underlag till DESIGN.md v3.0 |
 | `docs/AI_ARCHITECTURE_OVERVIEW.md` | Översikt över AI-stack (Vercel + Supabase edge) |
 | `docs/AI_ENGINEER_ANALYSIS.md` | Djupanalys av AI-funktionerna och förbättringsförslag |
 | `docs/RLS_VERIFICATION.md` | Supabase RLS-policy-verifiering |
