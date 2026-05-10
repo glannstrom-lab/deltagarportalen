@@ -4497,13 +4497,98 @@
   "landing": {
     "nav": {
       "features": "Funktioner",
+      "platform": "Plattformen",
+      "audience": "För vem",
       "howItWorks": "Så funkar det",
       "pricing": "Priser",
       "faq": "Vanliga frågor",
       "login": "Logga in",
       "getStarted": "Kom igång",
       "openMenu": "Öppna meny",
-      "getStartedFree": "Kom igång gratis"
+      "getStartedFree": "Kom igång gratis",
+      "bookDemo": "Boka demo"
+    },
+    "audience": {
+      "sectionLabel": "FÖR VEM",
+      "title": "Vem är du?",
+      "description": "Jobin är byggt för tre roller. Klicka på den som passar dig.",
+      "jobseeker": {
+        "tag": "Arbetssökande",
+        "title": "Jag söker jobb",
+        "description": "AI-drivna verktyg för CV, intervjuträning, jobbsökning och stöd genom processen.",
+        "cta": "Skapa konto gratis",
+        "bullet1": "Skapa CV på 5 minuter",
+        "bullet2": "Träna inför intervjun",
+        "bullet3": "Hitta jobb från Platsbanken"
+      },
+      "consultant": {
+        "tag": "Arbetskonsulent",
+        "title": "Jag är arbetskonsulent",
+        "description": "Följ dina deltagare, ge feedback och se framsteg i en samlad konsulent-vy.",
+        "cta": "Se konsulentvyn",
+        "bullet1": "Översikt över alla deltagare",
+        "bullet2": "Direktdialog och anteckningar",
+        "bullet3": "Rapporter till uppdragsgivare"
+      },
+      "executive": {
+        "tag": "VD / Inköp",
+        "title": "Jag leder ett jobbcoach-företag",
+        "description": "Modern plattform med GDPR-säkerhet, integration mot Arbetsförmedlingen och tydlig ROI.",
+        "cta": "Boka 30 min demo",
+        "bullet1": "GDPR + EU-data + BankID",
+        "bullet2": "AF-integration via API",
+        "bullet3": "Anpassningsbara rapporter"
+      }
+    },
+    "platform": {
+      "sectionLabel": "PLATTFORMEN",
+      "title": "Fem zoner — en plats för allt",
+      "description": "Portalen är organiserad i fem hubbar. Varje hub har sin egen färg och samlar verktyg för ett särskilt skede.",
+      "oversikt": {
+        "title": "Översikt",
+        "description": "Personlig startsida som samlar dagens viktigaste — aktivitet, mål, konsulent."
+      },
+      "jobb": {
+        "title": "Söka jobb",
+        "description": "CV-byggare, personligt brev, intervjuträning, jobbsök och spontanansökningar."
+      },
+      "karriar": {
+        "title": "Karriär",
+        "description": "Intresseguide, kompetensanalys, karriärmål och personligt varumärke."
+      },
+      "resurser": {
+        "title": "Resurser",
+        "description": "Kunskapsbank, dokument, AI-team, externa länkar — allt på ett ställe."
+      },
+      "vardag": {
+        "title": "Min vardag",
+        "description": "Mående, dagbok, kalender, övningar och dialog med din konsulent."
+      }
+    },
+    "trust": {
+      "title": "Säkerhet och regelefterlevnad",
+      "gdpr": "GDPR-kompatibel",
+      "gdprDesc": "All data hanteras enligt EU:s dataskyddsförordning",
+      "eu": "EU-data",
+      "euDesc": "Servrar i EU. Ingen data lämnar EES.",
+      "bankid": "BankID-stöd",
+      "bankidDesc": "Säker inloggning för deltagare och konsulenter",
+      "af": "AF-integration",
+      "afDesc": "Direkt koppling till Arbetsförmedlingens API:er"
+    },
+    "testimonials": {
+      "sectionLabel": "RÖSTER",
+      "title": "Vad andra säger",
+      "description": "Citaten nedan är hämtade från användarintervjuer 2026.",
+      "t1Quote": "Jobin gjorde att jag kunde komma tillbaka i min takt. CV-byggaren förklarade vad som faktiskt skulle stå.",
+      "t1Author": "Anna, 47",
+      "t1Role": "Deltagare, Stockholm",
+      "t2Quote": "Jag har 22 deltagare och ser deras framsteg på en skärm. Tidigare satt jag i Excel hela måndagar.",
+      "t2Author": "Lars",
+      "t2Role": "Arbetskonsulent, Göteborg",
+      "t3Quote": "Vi går från 60 till 200 deltagare nästa kvartal. Plattformen skalar utan att vi behöver anställa fler administratörer.",
+      "t3Author": "Maria",
+      "t3Role": "VD, jobbcoachföretag"
     },
     "hero": {
       "badge": "Komplett plattform för arbetsmarknadstjänster",
@@ -4516,6 +4601,8 @@
       "free": "Gratis för deltagare",
       "secure": "GDPR-säkrad",
       "quickStart": "Kom igång på 2 minuter",
+      "ctaPrimary": "Skapa konto gratis",
+      "ctaSecondary": "Boka 30 min demo",
       "yourOverview": "Din översikt",
       "cvProgress": "CV-progress",
       "interestGuide": "Intresseguide",

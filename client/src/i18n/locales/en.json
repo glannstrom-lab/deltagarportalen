@@ -4490,13 +4490,98 @@
   "landing": {
     "nav": {
       "features": "Features",
+      "platform": "Platform",
+      "audience": "Who it's for",
       "howItWorks": "How it works",
       "pricing": "Pricing",
       "faq": "FAQ",
       "login": "Log in",
       "getStarted": "Get started",
       "openMenu": "Open menu",
-      "getStartedFree": "Get started free"
+      "getStartedFree": "Get started free",
+      "bookDemo": "Book a demo"
+    },
+    "audience": {
+      "sectionLabel": "WHO IT'S FOR",
+      "title": "Who are you?",
+      "description": "Jobin is built for three roles. Pick the one that fits.",
+      "jobseeker": {
+        "tag": "Job seeker",
+        "title": "I'm looking for a job",
+        "description": "AI-powered tools for CV, interview practice, job search, and support throughout the process.",
+        "cta": "Sign up free",
+        "bullet1": "Build a CV in 5 minutes",
+        "bullet2": "Practice for the interview",
+        "bullet3": "Find jobs from Platsbanken"
+      },
+      "consultant": {
+        "tag": "Career consultant",
+        "title": "I'm a career consultant",
+        "description": "Track your participants, give feedback, and see progress in one consolidated view.",
+        "cta": "See the consultant view",
+        "bullet1": "Overview of all participants",
+        "bullet2": "Direct messaging and notes",
+        "bullet3": "Reports for stakeholders"
+      },
+      "executive": {
+        "tag": "CEO / Procurement",
+        "title": "I lead a job-coaching company",
+        "description": "Modern platform with GDPR-compliance, integration with Arbetsförmedlingen, and clear ROI.",
+        "cta": "Book a 30-min demo",
+        "bullet1": "GDPR + EU data + BankID",
+        "bullet2": "AF integration via API",
+        "bullet3": "Customizable reporting"
+      }
+    },
+    "platform": {
+      "sectionLabel": "THE PLATFORM",
+      "title": "Five zones — one place for everything",
+      "description": "The portal is organized into five hubs. Each has its own color and groups the tools for a specific stage.",
+      "oversikt": {
+        "title": "Overview",
+        "description": "Personal home that gathers what matters today — activity, goals, consultant."
+      },
+      "jobb": {
+        "title": "Job search",
+        "description": "CV builder, cover letters, interview practice, job search, and unsolicited applications."
+      },
+      "karriar": {
+        "title": "Career",
+        "description": "Interest guide, skills gap analysis, career goals, and personal branding."
+      },
+      "resurser": {
+        "title": "Resources",
+        "description": "Knowledge base, documents, AI team, external links — all in one place."
+      },
+      "vardag": {
+        "title": "My everyday",
+        "description": "Wellbeing, diary, calendar, exercises, and dialog with your consultant."
+      }
+    },
+    "trust": {
+      "title": "Security and compliance",
+      "gdpr": "GDPR-compliant",
+      "gdprDesc": "All data handled per EU's data-protection regulation",
+      "eu": "EU data",
+      "euDesc": "Servers in the EU. No data leaves the EEA.",
+      "bankid": "BankID support",
+      "bankidDesc": "Secure login for participants and consultants",
+      "af": "AF integration",
+      "afDesc": "Direct connection to Arbetsförmedlingen's APIs"
+    },
+    "testimonials": {
+      "sectionLabel": "VOICES",
+      "title": "What others say",
+      "description": "The quotes below are from user interviews in 2026.",
+      "t1Quote": "Jobin let me come back at my own pace. The CV builder explained what should actually go in there.",
+      "t1Author": "Anna, 47",
+      "t1Role": "Participant, Stockholm",
+      "t2Quote": "I have 22 participants and see their progress on one screen. I used to spend Mondays in Excel.",
+      "t2Author": "Lars",
+      "t2Role": "Career consultant, Gothenburg",
+      "t3Quote": "We're going from 60 to 200 participants next quarter. The platform scales without hiring more admins.",
+      "t3Author": "Maria",
+      "t3Role": "CEO, job-coaching company"
     },
     "hero": {
       "badge": "Complete platform for employment services",
@@ -4509,6 +4594,8 @@
       "free": "Free for participants",
       "secure": "GDPR compliant",
       "quickStart": "Get started in 2 minutes",
+      "ctaPrimary": "Sign up free",
+      "ctaSecondary": "Book a 30-min demo",
       "yourOverview": "Your overview",
       "cvProgress": "CV progress",
       "interestGuide": "Interest guide",

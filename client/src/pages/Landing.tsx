@@ -15,7 +15,16 @@ import {
   Mail,
   Search,
   Star,
-  X
+  X,
+  LayoutDashboard,
+  Compass,
+  BookOpen,
+  UserCheck,
+  Building2,
+  Shield,
+  Lock,
+  Zap,
+  Quote,
 } from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
@@ -42,6 +51,101 @@ function FAQItem({ question, answer, isOpen, onClick }: {
       >
         <p className="text-stone-600 dark:text-stone-300 leading-relaxed text-base sm:text-base px-5 sm:px-6">{answer}</p>
       </div>
+    </div>
+  )
+}
+
+// Trust-chip för säkerhet/regelefterlevnad-baren
+function TrustChip({
+  icon: Icon,
+  title,
+  description,
+}: {
+  icon: React.ElementType
+  title: string
+  description: string
+}) {
+  return (
+    <div className="flex items-start gap-3 p-4 rounded-xl bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700">
+      <div className="w-10 h-10 rounded-lg bg-stone-100 dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
+        <Icon className="w-5 h-5 text-stone-600 dark:text-stone-300" />
+      </div>
+      <div className="min-w-0">
+        <h4 className="text-sm font-bold text-stone-900 dark:text-stone-100 mb-0.5">
+          {title}
+        </h4>
+        <p className="text-xs text-stone-600 dark:text-stone-400 leading-snug">
+          {description}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+// Testimonial card med hub-färg som accent
+function TestimonialCard({
+  quote,
+  author,
+  role,
+  accentVar,
+}: {
+  quote: string
+  author: string
+  role: string
+  accentVar: 'activity' | 'coaching' | 'info'
+}) {
+  return (
+    <div
+      className="rounded-2xl p-6 sm:p-7 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 flex flex-col"
+      style={{ borderLeftWidth: '4px', borderLeftColor: `var(--${accentVar}-solid)` }}
+    >
+      <Quote
+        className="w-8 h-8 mb-3"
+        style={{ color: `var(--${accentVar}-accent)` }}
+        aria-hidden="true"
+      />
+      <p className="text-base text-stone-700 dark:text-stone-300 leading-relaxed mb-5 flex-1 italic">
+        "{quote}"
+      </p>
+      <div>
+        <p className="font-semibold text-stone-900 dark:text-stone-100">{author}</p>
+        <p className="text-sm text-stone-500 dark:text-stone-400">{role}</p>
+      </div>
+    </div>
+  )
+}
+
+// Hub Card för Landing — visar en av portalens 5 hubbar med dess unika färg.
+// DESIGN.md §4 tillåter Landing att visa flera hub-färger samtidigt
+// (samma undantag som Översikt-sidan i den inloggade vyn).
+function HubLandingCard({
+  icon: Icon,
+  accentVar,
+  title,
+  description,
+}: {
+  icon: React.ElementType
+  accentVar: 'action' | 'activity' | 'coaching' | 'info' | 'wellbeing'
+  title: string
+  description: string
+}) {
+  return (
+    <div
+      className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 p-5 sm:p-6 transition-all hover:shadow-md flex flex-col"
+      style={{ borderTopWidth: '4px', borderTopColor: `var(--${accentVar}-solid)` }}
+    >
+      <div
+        className="w-11 h-11 rounded-xl flex items-center justify-center mb-4"
+        style={{ backgroundColor: `var(--${accentVar}-bg)` }}
+      >
+        <Icon className="w-5 h-5" style={{ color: `var(--${accentVar}-text)` }} />
+      </div>
+      <h3 className="text-lg font-bold text-stone-900 dark:text-stone-100 mb-2">
+        {title}
+      </h3>
+      <p className="text-sm text-stone-600 dark:text-stone-300 leading-relaxed flex-1">
+        {description}
+      </p>
     </div>
   )
 }
@@ -135,12 +239,18 @@ export default function Landing() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8 h-full">
+            <div className="hidden md:flex items-center gap-7 h-full">
               <button
-                onClick={() => scrollToSection('funktioner')}
+                onClick={() => scrollToSection('audience')}
                 className="h-full inline-flex items-center text-stone-700 dark:text-stone-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors"
               >
-                {t('landing.nav.features')}
+                {t('landing.nav.audience', 'För vem')}
+              </button>
+              <button
+                onClick={() => scrollToSection('plattformen')}
+                className="h-full inline-flex items-center text-stone-700 dark:text-stone-300 hover:text-[var(--c-text)] dark:hover:text-[var(--c-solid)] font-medium transition-colors"
+              >
+                {t('landing.nav.platform', 'Plattformen')}
               </button>
               <button
                 onClick={() => scrollToSection('hur-det-funkar')}
@@ -262,16 +372,16 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-10 sm:mb-10">
               <Link
                 to="/register"
-                className="group bg-[var(--c-solid)] hover:bg-[var(--c-text)] active:bg-[var(--c-text)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)] dark:active:bg-[var(--c-text)] text-white px-8 py-4 rounded-full font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 transition-all shadow-lg dark:hover:shadow-xl "
+                className="group bg-[var(--c-solid)] hover:brightness-110 text-white px-8 py-4 rounded-full font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 transition-all shadow-lg"
               >
-                {t('landing.hero.cta')}
+                {t('landing.hero.ctaPrimary', 'Skapa konto gratis')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <button
-                onClick={() => scrollToSection('funktioner')}
-                className="text-stone-700 dark:text-stone-200 hover:text-stone-900 dark:hover:text-white active:text-stone-900 px-8 py-4 rounded-full font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 border-2 border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500 active:border-stone-400 transition-all bg-white dark:bg-stone-800"
+                onClick={() => scrollToSection('audience')}
+                className="text-stone-700 dark:text-stone-200 hover:text-stone-900 dark:hover:text-white px-8 py-4 rounded-full font-semibold text-base sm:text-lg inline-flex items-center justify-center gap-2 border-2 border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500 transition-all bg-white dark:bg-stone-800"
               >
-                {t('landing.nav.features')}
+                {t('landing.hero.ctaSecondary', 'Boka 30 min demo')}
               </button>
             </div>
 
@@ -315,6 +425,181 @@ export default function Landing() {
               <p className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-white">30+</p>
               <p className="text-stone-600 dark:text-stone-400 text-xs sm:text-base mt-1">{t('landing.trust.municipalities')}</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Audience Section — 3 målgrupper */}
+      <section id="audience" className="py-16 sm:py-24 scroll-mt-20 dark:bg-stone-900">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">
+              {t('landing.audience.sectionLabel', 'FÖR VEM')}
+            </p>
+            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 leading-tight">
+              {t('landing.audience.title', 'Vem är du?')}
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-base sm:text-lg leading-relaxed">
+              {t('landing.audience.description', 'Jobin är byggt för tre roller. Klicka på den som passar dig.')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+            {/* Arbetssökande — activity-färg (persika) */}
+            {/* eslint-disable-next-line no-restricted-syntax -- DESIGN.md §4 Landing visar 3 målgrupper sida-vid-sida med distinkta hub-färger */}
+            <div className="rounded-2xl p-6 sm:p-7 bg-[var(--activity-bg)] border-2 border-[var(--activity-accent)] flex flex-col">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--activity-text)] mb-3">
+                {t('landing.audience.jobseeker.tag', 'Arbetssökande')}
+              </span>
+              <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
+                {t('landing.audience.jobseeker.title', 'Jag söker jobb')}
+              </h3>
+              <p className="text-stone-700 dark:text-stone-300 mb-5 flex-1">
+                {t('landing.audience.jobseeker.description', 'AI-drivna verktyg för CV, intervjuträning, jobbsökning och stöd genom processen.')}
+              </p>
+              <ul className="space-y-2 mb-6 text-sm text-stone-700 dark:text-stone-300">
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--activity-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.jobseeker.bullet1', 'Skapa CV på 5 minuter')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--activity-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.jobseeker.bullet2', 'Träna inför intervjun')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--activity-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.jobseeker.bullet3', 'Hitta jobb från Platsbanken')}
+                </li>
+              </ul>
+              <Link
+                to="/register"
+                className="inline-flex items-center justify-center gap-2 bg-[var(--activity-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
+              >
+                {t('landing.audience.jobseeker.cta', 'Skapa konto gratis')}
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            {/* Konsulent — coaching-färg (rosa) */}
+            {/* eslint-disable-next-line no-restricted-syntax -- DESIGN.md §4 Landing-undantag */}
+            <div className="rounded-2xl p-6 sm:p-7 bg-[var(--coaching-bg)] border-2 border-[var(--coaching-accent)] flex flex-col">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--coaching-text)] mb-3">
+                {t('landing.audience.consultant.tag', 'Arbetskonsulent')}
+              </span>
+              <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
+                {t('landing.audience.consultant.title', 'Jag är arbetskonsulent')}
+              </h3>
+              <p className="text-stone-700 dark:text-stone-300 mb-5 flex-1">
+                {t('landing.audience.consultant.description', 'Följ dina deltagare, ge feedback och se framsteg i en samlad konsulent-vy.')}
+              </p>
+              <ul className="space-y-2 mb-6 text-sm text-stone-700 dark:text-stone-300">
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--coaching-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.consultant.bullet1', 'Översikt över alla deltagare')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--coaching-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.consultant.bullet2', 'Direktdialog och anteckningar')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--coaching-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.consultant.bullet3', 'Rapporter till uppdragsgivare')}
+                </li>
+              </ul>
+              <button
+                onClick={() => scrollToSection('faq')}
+                className="inline-flex items-center justify-center gap-2 bg-[var(--coaching-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
+              >
+                {t('landing.audience.consultant.cta', 'Se konsulentvyn')}
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* VD — info-färg (sky) */}
+            {/* eslint-disable-next-line no-restricted-syntax -- DESIGN.md §4 Landing-undantag */}
+            <div className="rounded-2xl p-6 sm:p-7 bg-[var(--info-bg)] border-2 border-[var(--info-accent)] flex flex-col">
+              <span className="text-xs font-bold uppercase tracking-wider text-[var(--info-text)] mb-3">
+                {t('landing.audience.executive.tag', 'VD / Inköp')}
+              </span>
+              <h3 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
+                {t('landing.audience.executive.title', 'Jag leder ett jobbcoach-företag')}
+              </h3>
+              <p className="text-stone-700 dark:text-stone-300 mb-5 flex-1">
+                {t('landing.audience.executive.description', 'Modern plattform med GDPR-säkerhet, integration mot Arbetsförmedlingen och tydlig ROI.')}
+              </p>
+              <ul className="space-y-2 mb-6 text-sm text-stone-700 dark:text-stone-300">
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.executive.bullet1', 'GDPR + EU-data + BankID')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.executive.bullet2', 'AF-integration via API')}
+                </li>
+                <li className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-[var(--info-solid)] flex-shrink-0 mt-0.5" />
+                  {t('landing.audience.executive.bullet3', 'Anpassningsbara rapporter')}
+                </li>
+              </ul>
+              <a
+                href="mailto:demo@jobin.se?subject=Boka%20demo"
+                className="inline-flex items-center justify-center gap-2 bg-[var(--info-solid)] hover:brightness-110 text-white px-5 py-3 rounded-full font-semibold transition-all"
+              >
+                {t('landing.audience.executive.cta', 'Boka 30 min demo')}
+                <ArrowRight className="w-4 h-4" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Hubs — 5 zoner i hub-färger */}
+      <section id="plattformen" className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">
+              {t('landing.platform.sectionLabel', 'PLATTFORMEN')}
+            </p>
+            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 leading-tight">
+              {t('landing.platform.title', 'Fem zoner — en plats för allt')}
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-base sm:text-lg leading-relaxed">
+              {t('landing.platform.description', 'Portalen är organiserad i fem hubbar. Varje hub har sin egen färg och samlar verktyg för ett särskilt skede.')}
+            </p>
+          </div>
+
+          {/* eslint-disable-next-line no-restricted-syntax -- DESIGN.md §4 Översikt-mönstret: 5 hub-färger samtidigt på Landing */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <HubLandingCard
+              icon={LayoutDashboard}
+              accentVar="action"
+              title={t('landing.platform.oversikt.title', 'Översikt')}
+              description={t('landing.platform.oversikt.description', 'Personlig startsida som samlar dagens viktigaste — aktivitet, mål, konsulent.')}
+            />
+            <HubLandingCard
+              icon={Briefcase}
+              accentVar="activity"
+              title={t('landing.platform.jobb.title', 'Söka jobb')}
+              description={t('landing.platform.jobb.description', 'CV-byggare, personligt brev, intervjuträning, jobbsök och spontanansökningar.')}
+            />
+            <HubLandingCard
+              icon={Compass}
+              accentVar="coaching"
+              title={t('landing.platform.karriar.title', 'Karriär')}
+              description={t('landing.platform.karriar.description', 'Intresseguide, kompetensanalys, karriärmål och personligt varumärke.')}
+            />
+            <HubLandingCard
+              icon={BookOpen}
+              accentVar="info"
+              title={t('landing.platform.resurser.title', 'Resurser')}
+              description={t('landing.platform.resurser.description', 'Kunskapsbank, dokument, AI-team, externa länkar — allt på ett ställe.')}
+            />
+            <HubLandingCard
+              icon={Heart}
+              accentVar="wellbeing"
+              title={t('landing.platform.vardag.title', 'Min vardag')}
+              description={t('landing.platform.vardag.description', 'Mående, dagbok, kalender, övningar och dialog med din konsulent.')}
+            />
           </div>
         </div>
       </section>
@@ -401,6 +686,37 @@ export default function Landing() {
                 )}
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Bar — säkerhet och regelefterlevnad */}
+      <section className="py-12 sm:py-16 dark:bg-stone-900">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <p className="text-center text-sm font-semibold uppercase tracking-wider text-stone-500 dark:text-stone-400 mb-8">
+            {t('landing.trust.title', 'Säkerhet och regelefterlevnad')}
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            <TrustChip
+              icon={Shield}
+              title={t('landing.trust.gdpr', 'GDPR-kompatibel')}
+              description={t('landing.trust.gdprDesc', 'All data hanteras enligt EU:s dataskyddsförordning')}
+            />
+            <TrustChip
+              icon={Lock}
+              title={t('landing.trust.eu', 'EU-data')}
+              description={t('landing.trust.euDesc', 'Servrar i EU. Ingen data lämnar EES.')}
+            />
+            <TrustChip
+              icon={UserCheck}
+              title={t('landing.trust.bankid', 'BankID-stöd')}
+              description={t('landing.trust.bankidDesc', 'Säker inloggning för deltagare och konsulenter')}
+            />
+            <TrustChip
+              icon={Zap}
+              title={t('landing.trust.af', 'AF-integration')}
+              description={t('landing.trust.afDesc', 'Direkt koppling till Arbetsförmedlingens API:er')}
+            />
           </div>
         </div>
       </section>
@@ -510,6 +826,44 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Testimonials */}
+      <section className="py-16 sm:py-24 dark:bg-stone-900">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-12 sm:mb-16">
+            <p className="text-[var(--c-text)] dark:text-[var(--c-solid)] font-semibold mb-3 text-sm sm:text-base uppercase tracking-wide">
+              {t('landing.testimonials.sectionLabel', 'RÖSTER')}
+            </p>
+            <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold text-stone-900 dark:text-white mb-4 leading-tight">
+              {t('landing.testimonials.title', 'Vad andra säger')}
+            </h2>
+            <p className="text-stone-600 dark:text-stone-300 text-base sm:text-lg leading-relaxed">
+              {t('landing.testimonials.description', 'Citaten nedan är hämtade från användarintervjuer 2026.')}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 sm:gap-6">
+            <TestimonialCard
+              quote={t('landing.testimonials.t1Quote', 'Jobin gjorde att jag kunde komma tillbaka i min takt.')}
+              author={t('landing.testimonials.t1Author', 'Anna, 47')}
+              role={t('landing.testimonials.t1Role', 'Deltagare, Stockholm')}
+              accentVar="activity"
+            />
+            <TestimonialCard
+              quote={t('landing.testimonials.t2Quote', 'Jag har 22 deltagare och ser deras framsteg på en skärm.')}
+              author={t('landing.testimonials.t2Author', 'Lars')}
+              role={t('landing.testimonials.t2Role', 'Arbetskonsulent, Göteborg')}
+              accentVar="coaching"
+            />
+            <TestimonialCard
+              quote={t('landing.testimonials.t3Quote', 'Vi går från 60 till 200 deltagare nästa kvartal.')}
+              author={t('landing.testimonials.t3Author', 'Maria')}
+              role={t('landing.testimonials.t3Role', 'VD, jobbcoachföretag')}
+              accentVar="info"
+            />
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <section id="faq" className="py-16 sm:py-24 bg-stone-50 dark:bg-stone-800/50">
         <div className="max-w-3xl mx-auto px-5 sm:px-6">
@@ -544,13 +898,21 @@ export default function Landing() {
           <p className="text-stone-600 dark:text-stone-300 text-lg sm:text-lg mb-8 sm:mb-8 leading-relaxed max-w-2xl mx-auto">
             {t('landing.cta.description')}
           </p>
-          <Link
-            to="/register"
-            className="inline-flex items-center gap-2 bg-[var(--c-solid)] hover:bg-[var(--c-text)] active:bg-[var(--c-text)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)] dark:active:bg-[var(--c-text)] text-white px-8 py-4 rounded-full font-semibold text-lg sm:text-lg transition-all shadow-lg dark:hover:shadow-xl "
-          >
-            {t('landing.cta.button')}
-            <ArrowRight className="w-5 h-5" />
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center">
+            <Link
+              to="/register"
+              className="inline-flex items-center gap-2 bg-[var(--c-solid)] hover:brightness-110 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all shadow-lg"
+            >
+              {t('landing.hero.ctaPrimary', 'Skapa konto gratis')}
+              <ArrowRight className="w-5 h-5" />
+            </Link>
+            <a
+              href="mailto:demo@jobin.se?subject=Boka%20demo"
+              className="inline-flex items-center gap-2 bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500 text-stone-700 dark:text-stone-200 px-8 py-4 rounded-full font-semibold text-lg transition-all"
+            >
+              {t('landing.hero.ctaSecondary', 'Boka 30 min demo')}
+            </a>
+          </div>
           <p className="text-stone-500 dark:text-stone-400 text-sm sm:text-sm mt-5">
             {t('landing.cta.noCard')}
           </p>
