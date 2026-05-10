@@ -137,13 +137,11 @@ const TEMPLATES = [
     features: ['Navy sidebar', 'Copper-accent', 'Executive'],
   },
   {
-    // TODO: Designer behöver skapa unik preview-bild + variant av template-rendering.
-    // Tills vidare återanvänder Berlin Centered-renderern + centered.png-preview.
     id: 'berlin',
     name: 'Berlin',
-    desc: 'Stilren modernist-design — variant under utveckling',
-    image: '/templates/berlin.png',
-    features: ['Modernist', 'Sans-serif', 'Lugn typografi'],
+    desc: 'Bauhaus-inspirerad editorial — cream/svart med rödorange accent och romersk numrering',
+    image: '/templates/berlin.svg',
+    features: ['Bauhaus', 'Editorial', 'Brutalist typografi'],
   },
 ]
 

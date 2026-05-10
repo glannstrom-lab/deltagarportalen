@@ -24,6 +24,7 @@ import {
   ChicagoTemplate,
   AtelierTemplate,
   ManhattanTemplate,
+  BerlinTemplate,
 } from './templates'
 
 interface CVPreviewProps {
@@ -39,6 +40,7 @@ const SIDEBAR_WIDTHS: Record<string, string> = {
   manhattan: '220px',
   rotterdam: '220px',
   chicago: '200px',
+  berlin: '60px',
 }
 
 // Filtrera bort halvtomma entries så preview matchar PDF — annars syns
@@ -156,9 +158,7 @@ export function CVPreview({ data: rawData }: CVPreviewProps) {
       template = <ManhattanTemplate data={data} fullName={fullName} />
       break
     case 'berlin':
-      // TODO: ersätt med dedikerad BerlinTemplate. Faller tillbaka till
-      // Centered tills designer levererar variant.
-      template = <CenteredTemplate data={data} fullName={fullName} />
+      template = <BerlinTemplate data={data} fullName={fullName} />
       break
     case 'sidebar':
     default:
