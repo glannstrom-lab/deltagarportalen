@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { PageHero } from '@/components/layout/PageHero'
 
 /**
  * HubPage — gemensam template för alla 4 hub-sidor.
@@ -99,58 +100,23 @@ export default function HubPage({
     >
       {trackingChild}
 
-      {/* HERO — samma DNA som Översikt: hub-ikon + titel + datum-disc */}
-      <motion.section
+      {/* HERO via gemensam PageHero (DESIGN.md §3 läge A) */}
+      <motion.div
         initial="hidden"
         animate="visible"
         variants={heroVariants}
         transition={{ duration: 0.35 }}
-        className="bg-[var(--c-bg)] border border-[var(--c-accent)] rounded-2xl sm:rounded-[24px] p-5 sm:p-7 md:p-[36px_40px] relative overflow-hidden"
-        aria-labelledby={titleKey}
       >
-        {/* Subtle radial decoration */}
-        <div
-          aria-hidden="true"
-          className="absolute -top-[100px] -right-[100px] w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] rounded-full pointer-events-none"
-          style={{
-            background: 'radial-gradient(circle, var(--c-accent) 0%, transparent 70%)',
-            opacity: 0.4,
-          }}
-        />
-
-        <div className="flex flex-col gap-4 sm:gap-6 relative">
-          {/* Topprad: hub-ikon inline med titel | datum-disc */}
-          <div className="flex items-center justify-between gap-3 sm:gap-6">
-            <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-              {/* Hub-ikon (ersätter avatar) */}
-              <div
-                aria-hidden="true"
-                className="w-14 h-14 sm:w-[80px] sm:h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm flex items-center justify-center text-[var(--c-text)] flex-shrink-0"
-              >
-                <HubIcon className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={2} />
-              </div>
-
-              <div className="flex flex-col gap-1 sm:gap-1.5 min-w-0">
-                {/* Personlig greeting när firstName finns. Ersätter den
-                    tidigare eyebrow-texten (DESIGN.md §3). */}
-                {trimmedFirstName && (
-                  <p className="text-[12px] sm:text-[13px] font-medium text-[var(--c-text)] leading-none truncate m-0">
-                    Hej {trimmedFirstName}
-                  </p>
-                )}
-                <h1
-                  id={titleKey}
-                  className="text-[22px] sm:text-[32px] md:text-[40px] font-bold text-[var(--stone-900)] leading-[1.1] sm:leading-[1.05] tracking-tight m-0 break-words"
-                >
-                  {hubTitle}
-                </h1>
-              </div>
-            </div>
-
-            {/* Datum-disc — döljs på små skärmar för att ge titeln plats */}
+        <PageHero
+          mode="hub"
+          title={hubTitle}
+          description={hubDescription}
+          greeting={trimmedFirstName ? `Hej ${trimmedFirstName}` : undefined}
+          icon={HubIcon}
+          rightDecoration={
             <div
               aria-hidden="true"
-              className="hidden sm:flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] flex-shrink-0 shadow-sm"
+              className="flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] shadow-sm"
             >
               <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] leading-none">
                 {SWEDISH_DAYS_SHORT[today.getDay()]}
@@ -159,17 +125,9 @@ export default function HubPage({
                 {today.getDate()}
               </span>
             </div>
-          </div>
-
-          {/* Subtil mintseparator */}
-          <div aria-hidden="true" className="h-px bg-[var(--c-accent)] opacity-60" />
-
-          {/* Beskrivning */}
-          <p className="text-base sm:text-[20px] md:text-[22px] font-medium text-[var(--stone-700)] tracking-tight m-0 leading-snug">
-            {hubDescription}
-          </p>
-        </div>
-      </motion.section>
+          }
+        />
+      </motion.div>
 
       {/* FUNKTIONER */}
       <motion.section

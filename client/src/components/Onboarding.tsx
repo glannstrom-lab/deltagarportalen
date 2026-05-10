@@ -231,7 +231,7 @@ export default function Onboarding() {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
       <div className="bg-white rounded-3xl shadow-2xl max-w-xl w-full overflow-hidden animate-scale-in">
         {/* Header with progress */}
-        <div className="bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-text)] p-6 text-white relative">
+        <div className="bg-[var(--c-solid)] p-6 text-white relative">
           <button
             onClick={handleClose}
             className="absolute top-4 right-4 p-2 hover:bg-white/20 rounded-full transition-colors"

@@ -646,7 +646,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                 <Button
                   onClick={addToCareerPlan}
                   disabled={isAddingToPlan}
-                  className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700"
+                  className="w-full bg-[var(--c-solid)] hover:brightness-110 text-white"
                 >
                   {isAddingToPlan ? (
                     <>
@@ -865,7 +865,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         <Button
           onClick={analyze}
           disabled={!hasProfileData || !dreamJob.trim() || isStreaming}
-          className="px-8 py-4 text-lg bg-gradient-to-r from-purple-500 to-sky-500 hover:from-purple-600 hover:to-sky-600 dark:from-purple-600 dark:to-sky-600 dark:hover:from-purple-500 dark:hover:to-sky-500"
+          className="px-8 py-4 text-lg bg-[var(--c-solid)] hover:brightness-110 text-white"
         >
           <Sparkles className="w-6 h-6 mr-2" />
           {t('skillsGapAnalysis.analyzeGap')}

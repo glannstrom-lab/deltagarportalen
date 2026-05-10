@@ -5,7 +5,8 @@
  */
 
 import { useLocation } from 'react-router-dom'
-import { PageTabs, PageHeader, type Tab, type PageStat } from './PageTabs'
+import { type Tab, type PageStat } from './PageTabs'
+import { PageHero } from './PageHero'
 import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
 import { getDomainForPath, type LegacyColorDomain } from '@/lib/domains'
@@ -75,9 +76,10 @@ export function PageLayout({
       'page-transition',
       className
     )} data-domain={resolvedDomain}>
-      {/* Page Header with Tabs */}
+      {/* Page Header — verktygssida (DESIGN.md §3 läge B) via PageHero */}
       {showHeader && (title || shouldShowTabs) && (
-        <PageHeader
+        <PageHero
+          mode="tool"
           title={title || ''}
           description={subtitle || description}
           tabs={shouldShowTabs ? tabs : undefined}

@@ -60,7 +60,7 @@ export function OnboardingModal({ onComplete }: OnboardingModalProps) {
       content: (
         <div className="flex justify-center py-8">
           <div className="relative">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--c-solid)]/80 to-cyan-500 flex items-center justify-center shadow-xl">
+            <div className="w-24 h-24 rounded-full bg-[var(--c-solid)] flex items-center justify-center shadow-xl">
               <Sparkles className="w-12 h-12 text-white" />
             </div>
             <div className="absolute -top-2 -right-2 w-8 h-8 bg-amber-400 rounded-full flex items-center justify-center text-white font-bold text-sm animate-bounce">

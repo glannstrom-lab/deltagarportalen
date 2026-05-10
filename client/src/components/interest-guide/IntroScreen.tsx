@@ -129,7 +129,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
             <Button
               onClick={onContinue}
               size="lg"
-              className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white py-6 text-base rounded-xl shadow-lg shadow-green-200"
+              className="w-full bg-[var(--c-solid)] hover:brightness-110 text-white py-6 text-base rounded-xl"
             >
               Fortsätt där du slutade
               <ArrowRight className="w-5 h-5 ml-2" />
@@ -147,7 +147,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
           <Button
             onClick={onStart}
             size="lg"
-            className="w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-6 text-base rounded-xl shadow-lg shadow-indigo-200"
+            className="w-full bg-[var(--c-solid)] hover:brightness-110 text-white py-6 text-base rounded-xl"
           >
             Starta Intresseguiden
             <ArrowRight className="w-5 h-5 ml-2" />
