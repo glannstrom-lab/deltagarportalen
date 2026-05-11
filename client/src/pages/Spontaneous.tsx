@@ -9,6 +9,10 @@ import { PageLayout } from '@/components/layout/index'
 import { spontaneousTabDefs } from '@/data/spontaneousTabs'
 import { userApi } from '@/services/api'
 import { HelpButton } from '@/components/HelpButton'
+import { Building2 } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusSpontaneousWizard } from '@/components/focus/pages/FocusSpontaneousWizard'
 
 // Tab components
 import SearchTab from './spontaneous/SearchTab'
@@ -17,6 +21,7 @@ import StatsTab from './spontaneous/StatsTab'
 
 export default function SpontaneousPage() {
   const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
 
   // Mark page as visited for onboarding tracking
   useEffect(() => {
@@ -32,6 +37,18 @@ export default function SpontaneousPage() {
     label: t(tab.labelKey, tab.labelKey.split('.').pop()),
     description: tab.descriptionKey ? t(tab.descriptionKey, '') : undefined,
   }))
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('spontaneous.title', 'Spontanansökan')}
+        icon={Building2}
+        domain="activity"
+      >
+        <FocusSpontaneousWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   // Help content for this page
   const helpContent = {

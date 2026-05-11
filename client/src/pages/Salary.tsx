@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { Calculator, TrendingUp, BarChart3, Wallet } from '@/components/ui/icons'
 import type { Tab } from '@/components/layout/PageTabs'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusSalaryWizard } from '@/components/focus/pages/FocusSalaryWizard'
 
 // Tab components
 import SalaryCalculatorTab from './salary/SalaryCalculatorTab'
@@ -21,6 +24,19 @@ const salaryTabs: Tab[] = [
 
 export default function SalaryPage() {
   const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('salary.title', 'Lön')}
+        icon={Wallet}
+        domain="activity"
+      >
+        <FocusSalaryWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   return (
     <PageLayout

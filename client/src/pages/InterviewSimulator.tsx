@@ -7,6 +7,9 @@ import { PageLayout } from '@/components/layout/PageLayout'
 import { useAchievementTracker } from '@/hooks/useAchievementTracker'
 import { callAI } from '@/services/aiApi'
 import { useAudioRecorder } from '@/hooks/useAudioRecorder'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusInterviewWizard } from '@/components/focus/pages/FocusInterviewWizard'
 
 interface FragaSvar {
   fraga: string
@@ -117,6 +120,25 @@ const exampleAnswers: Record<string, string> = {
 }
 
 export default function InterviewSimulator() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('interviewSimulator.title', 'Intervjusimulator')}
+        icon={Mic}
+        domain="activity"
+      >
+        <FocusInterviewWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <InterviewSimulatorInner />
+}
+
+function InterviewSimulatorInner() {
   const { t } = useTranslation()
   const [roll, setRoll] = useState('')
   const [foretag, setForetag] = useState('')

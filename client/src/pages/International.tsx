@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { Globe, FileCheck, Users, Languages } from '@/components/ui/icons'
 import type { Tab } from '@/components/layout/PageTabs'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusInternationalWizard } from '@/components/focus/pages/FocusInternationalWizard'
 
 // Tab components
 import VisaGuideTab from './international/VisaGuideTab'
@@ -21,6 +24,19 @@ const internationalTabs: Tab[] = [
 
 export default function InternationalPage() {
   const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('international.title', 'Internationellt')}
+        icon={Globe}
+        domain="activity"
+      >
+        <FocusInternationalWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   return (
     <PageLayout

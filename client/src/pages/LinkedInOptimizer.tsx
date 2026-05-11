@@ -6,6 +6,9 @@ import { Card } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { callAI } from '@/services/aiApi'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusLinkedInWizard } from '@/components/focus/pages/FocusLinkedInWizard'
 
 interface SectionAudit {
   name: string
@@ -16,6 +19,25 @@ interface SectionAudit {
 }
 
 export default function LinkedInOptimizer() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('linkedInOptimizer.title', 'LinkedIn-optimerare')}
+        icon={Linkedin}
+        domain="activity"
+      >
+        <FocusLinkedInWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <LinkedInOptimizerInner />
+}
+
+function LinkedInOptimizerInner() {
   const { t } = useTranslation()
   const [aktivTab, setAktivTab] = useState<'headline' | 'about' | 'post' | 'connection' | 'audit'>('headline')
   const [formData, setFormData] = useState({

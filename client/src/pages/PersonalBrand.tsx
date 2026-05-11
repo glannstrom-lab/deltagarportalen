@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { Star, ClipboardCheck, FolderOpen, Eye, Mic } from '@/components/ui/icons'
 import type { Tab } from '@/components/layout/PageTabs'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusPersonalBrandWizard } from '@/components/focus/pages/FocusPersonalBrandWizard'
 
 // Tab components
 import BrandAuditTab from './personal-brand/BrandAuditTab'
@@ -23,6 +26,19 @@ const brandTabs: Tab[] = [
 
 export default function PersonalBrandPage() {
   const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('personalBrand.title', 'Personligt varumärke')}
+        icon={Star}
+        domain="coaching"
+      >
+        <FocusPersonalBrandWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   return (
     <PageLayout

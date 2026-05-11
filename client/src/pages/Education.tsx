@@ -44,6 +44,9 @@ import {
   type RegionOption,
 } from '@/services/educationApi';
 import { useEducationSearch } from '@/hooks/useEducationSearch';
+import { useFocusMode } from '@/components/FocusModeProvider';
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell';
+import { FocusEducationWizard } from '@/components/focus/pages/FocusEducationWizard';
 
 // ============== CONSTANTS ==============
 
@@ -226,6 +229,25 @@ function QuickSearchCard({
 // ============== MAIN COMPONENT ==============
 
 export default function Education() {
+  const { t } = useTranslation();
+  const { isFocusMode, toggleFocusMode } = useFocusMode();
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('education.title', 'Utbildning')}
+        icon={GraduationCap}
+        domain="coaching"
+      >
+        <FocusEducationWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    );
+  }
+
+  return <EducationInner />;
+}
+
+function EducationInner() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
