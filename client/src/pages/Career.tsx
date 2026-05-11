@@ -10,6 +10,10 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { careerTabDefs } from '../data/careerTabs'
 import { userApi } from '@/services/api'
+import { Target } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusCareerWizard } from '@/components/focus/pages/FocusCareerWizard'
 
 // Tab components
 import LaborMarketTab from './career/LaborMarketTab'
@@ -20,6 +24,7 @@ import RelocationTab from './career/RelocationTab'
 
 export default function CareerPage() {
   const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
 
   // Mark career page as visited for onboarding tracking (cloud + localStorage fallback)
   useEffect(() => {
@@ -29,6 +34,18 @@ export default function CareerPage() {
       console.error('Error updating onboarding progress:', err)
     })
   }, [])
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('career.title', 'Karriär')}
+        icon={Target}
+        domain="coaching"
+      >
+        <FocusCareerWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   // Build tabs with translated labels
   const careerTabs = careerTabDefs.map((tab) => ({

@@ -7,10 +7,13 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import {
-  Kanban, Clock, Calendar, Users, BarChart3, Plus
+  Kanban, Clock, Calendar, Users, BarChart3, Plus, ClipboardList
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { Button } from '@/components/ui'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusApplicationsWizard } from '@/components/focus/pages/FocusApplicationsWizard'
 
 // Import application components
 import { ApplicationsPipeline } from '@/components/applications/ApplicationsPipeline'
@@ -51,6 +54,25 @@ function PipelineWrapper({
 }
 
 export default function Applications() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('applications.title', 'Ansökningar')}
+        icon={ClipboardList}
+        domain="activity"
+      >
+        <FocusApplicationsWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <ApplicationsInner />
+}
+
+function ApplicationsInner() {
   const location = useLocation()
   const { t } = useTranslation()
 

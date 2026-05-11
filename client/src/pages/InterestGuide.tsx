@@ -7,6 +7,10 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { LoadingState } from '@/components/ui'
 import { interestGuideTabDefs } from '@/data/interestGuideTabs'
+import { Compass } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusInterestGuideWizard } from '@/components/focus/pages/FocusInterestGuideWizard'
 
 // Lazy load tab components
 const TestTab = lazy(() => import('./interest-guide/TestTab'))
@@ -26,6 +30,19 @@ function TabLoading() {
 
 export default function InterestGuide() {
   const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('interestGuide.title', 'Intresseguide')}
+        icon={Compass}
+        domain="coaching"
+      >
+        <FocusInterestGuideWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   // Build tabs with translated labels
   const interestGuideTabs = interestGuideTabDefs.map((tab) => ({
