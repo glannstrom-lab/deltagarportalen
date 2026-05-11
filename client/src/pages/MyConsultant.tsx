@@ -34,7 +34,11 @@ import {
   EyeOff,
   Sparkles,
   AlertCircle,
+  UserCheck,
 } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusMyConsultantWizard } from '@/components/focus/pages/FocusMyConsultantWizard'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { Card } from '@/components/ui/Card'
@@ -651,6 +655,25 @@ function QuickActions({ consultant, onBookMeeting }: { consultant: ConsultantInf
 
 // Main Page Component
 export default function MyConsultant() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('myConsultant.title', 'Min konsulent')}
+        icon={UserCheck}
+        domain="wellbeing"
+      >
+        <FocusMyConsultantWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <MyConsultantInner />
+}
+
+function MyConsultantInner() {
   const { t, i18n } = useTranslation()
   const { user, profile } = useAuthStore()
   const [loading, setLoading] = useState(true)

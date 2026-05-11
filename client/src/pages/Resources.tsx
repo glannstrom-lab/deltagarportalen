@@ -47,6 +47,9 @@ import { coverLetterApi } from '@/services/coverLetterApi'
 import { interestApi } from '@/services/interestApi'
 import { PageLayout } from '@/components/layout/index'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusResourcesWizard } from '@/components/focus/pages/FocusResourcesWizard'
 // NOTE: jsPDF and docx are dynamically imported in export functions to reduce bundle size
 
 // Types
@@ -457,6 +460,25 @@ async function generateCVWord(cvData: CVData) {
 
 // Main Component
 export default function Resources() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('resources.title', 'Resurser')}
+        icon={Bookmark}
+        domain="info"
+      >
+        <FocusResourcesWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <ResourcesInner />
+}
+
+function ResourcesInner() {
   const { t, i18n } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'all'

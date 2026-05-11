@@ -14,6 +14,9 @@ import {
   Compass,
   LucideIcon
 } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusHelpWizard } from '@/components/focus/pages/FocusHelpWizard'
 
 interface FaqItem {
   qKey: string
@@ -82,6 +85,19 @@ const quickLinkDefs: QuickLink[] = [
 
 export default function Help() {
   const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('help.title', 'Hjälp')}
+        icon={HelpCircle}
+        domain="info"
+      >
+        <FocusHelpWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   return (
     <PageLayout

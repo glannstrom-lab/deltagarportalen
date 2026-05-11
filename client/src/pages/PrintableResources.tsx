@@ -24,6 +24,9 @@ import {
   type ExerciseForPDF
 } from '@/services/pdfExportService'
 import { cn } from '@/lib/utils'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusPrintWizard } from '@/components/focus/pages/FocusPrintWizard'
 
 type ResourceType = 'articles' | 'exercises'
 type ViewMode = 'select' | 'preview'
@@ -38,6 +41,25 @@ const localizeCategory = (slug: string): string =>
   articleCategoryLabel.get(slug) ?? slug
 
 export default function PrintableResources() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('printableResources.title', 'Skriv ut')}
+        icon={Printer}
+        domain="info"
+      >
+        <FocusPrintWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <PrintableResourcesInner />
+}
+
+function PrintableResourcesInner() {
   const { t } = useTranslation()
   const { data: articles = [], isLoading: articlesLoading } = useArticles()
 

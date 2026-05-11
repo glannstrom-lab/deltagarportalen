@@ -3,8 +3,12 @@
  * Arbetsförmedlingen Play, SACO, TCO, etc.
  */
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { ExternalLink, Play, BookOpen, FileText, Users, Building2, GraduationCap, Globe, Briefcase, Scale, Heart, Headphones, Search, Laptop, Rocket, Wrench, Coffee, MessageCircle, Lightbulb, Award, Accessibility, Handshake, MapPin, Clock, Palette, Code, Stethoscope, Baby, UserPlus, Calendar, Languages, Leaf, Shield, Home, RefreshCw, Brain, Sparkles, Target, Landmark, Camera, Gavel, Newspaper, Database, PenTool, Zap, Video, BookMarked, Megaphone, Lock, Coins, Hammer, Train, ShoppingCart, Network } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusExternalResourcesWizard } from '@/components/focus/pages/FocusExternalResourcesWizard'
 
 interface ExternalResource {
   id: string
@@ -3379,6 +3383,25 @@ function CollapsibleCategory({
 }
 
 export default function ExternalResources() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('externalResources.title', 'Externa resurser')}
+        icon={ExternalLink}
+        domain="info"
+      >
+        <FocusExternalResourcesWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <ExternalResourcesInner />
+}
+
+function ExternalResourcesInner() {
   const [searchQuery, setSearchQuery] = React.useState('')
   const [activeTab, setActiveTab] = React.useState<string | null>(null)
   const [expandedCategories, setExpandedCategories] = React.useState<Set<string>>(new Set())

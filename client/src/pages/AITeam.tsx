@@ -14,11 +14,33 @@ import { ResponseModeSelector } from '@/components/ai-team/ResponseModeSelector'
 import { InlineTip } from '@/components/ui/InlineTip'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { agentColorClasses } from '@/components/ai-team/types'
-import { Users, Lightbulb } from '@/components/ui/icons'
+import { Users, Lightbulb, Bot } from '@/components/ui/icons'
 import { useSuggestedAgent } from '@/hooks/useSuggestedAgent'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusAITeamWizard } from '@/components/focus/pages/FocusAITeamWizard'
 
 export default function AITeam() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('aiTeam.title', 'AI-team')}
+        icon={Bot}
+        domain="action"
+      >
+        <FocusAITeamWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <AITeamInner />
+}
+
+function AITeamInner() {
   const { t } = useTranslation()
   const { selectedAgent, setAgent } = useAITeamStore()
   const agent = getAgentById(selectedAgent)

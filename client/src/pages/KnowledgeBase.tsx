@@ -10,6 +10,10 @@ import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
 import { useAuthStore } from '@/stores/authStore'
 import { PageLayout } from '@/components/layout/index'
 import { knowledgeTabDefs, type KnowledgeTabId } from '@/data/knowledgeTabs'
+import { BookOpen } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusKnowledgeBaseWizard } from '@/components/focus/pages/FocusKnowledgeBaseWizard'
 
 // Lazy load tab components for better performance
 const ForYouTab = lazy(() => import('@/components/knowledge-base/tabs/ForYouTab'))
@@ -35,6 +39,25 @@ function TabLoader({ message }: { message?: string }) {
 }
 
 export default function KnowledgeBase() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('knowledgeBase.title', 'Kunskapsbas')}
+        icon={BookOpen}
+        domain="info"
+      >
+        <FocusKnowledgeBaseWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <KnowledgeBaseInner />
+}
+
+function KnowledgeBaseInner() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
