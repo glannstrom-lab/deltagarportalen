@@ -7720,6 +7720,17 @@
       "disclaimerText": "Data is based on industry reports, SCB statistics and salary surveys. Figures are estimates and may vary depending on specific role, company size and individual factors. Last updated: Q1 2026."
     }
   },
+  "focus": {
+    "exit": "Exit focus mode",
+    "exitShort": "Exit focus",
+    "stepOf": "Step {{current}} of {{total}}",
+    "next": "Next",
+    "back": "Back",
+    "skip": "Skip",
+    "finish": "Done",
+    "saving": "Saving...",
+    "saved": "Saved"
+  },
   "focusGuide": {
     "steps": {
       "welcome": "Welcome",

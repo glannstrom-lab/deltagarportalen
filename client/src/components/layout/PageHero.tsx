@@ -264,35 +264,39 @@ function PageHeroTool({
 
           {(hasStats || actions) && (
             <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
-              {hasStats && stats!.map((stat) => {
-                const StatIcon = stat.icon
-                const chipClass = 'inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-[var(--header-border)] bg-white/80 hover:bg-white transition-colors'
-                const inner = (
-                  <>
-                    <div className="w-7 h-7 rounded-md bg-[var(--c-bg)] flex items-center justify-center flex-shrink-0">
-                      {StatIcon && <StatIcon className="w-3.5 h-3.5 text-[var(--c-solid)]" />}
-                    </div>
-                    <div className="text-left leading-tight">
-                      <div className="text-sm font-bold text-[var(--header-text)] tabular-nums">{stat.value}</div>
-                      <div className="text-[11px] text-[var(--header-muted)]">{stat.label}</div>
-                    </div>
-                  </>
-                )
-                return stat.to ? (
-                  <Link key={stat.label} to={stat.to} className={chipClass}>{inner}</Link>
-                ) : (
-                  <div key={stat.label} className={chipClass}>{inner}</div>
-                )
-              })}
+              {hasStats && (
+                <div className="flex items-center gap-2 flex-wrap" data-focus-chrome="stats">
+                  {stats!.map((stat) => {
+                    const StatIcon = stat.icon
+                    const chipClass = 'inline-flex items-center gap-2 px-2.5 py-1.5 rounded-lg border border-[var(--header-border)] bg-white/80 hover:bg-white transition-colors'
+                    const inner = (
+                      <>
+                        <div className="w-7 h-7 rounded-md bg-[var(--c-bg)] flex items-center justify-center flex-shrink-0">
+                          {StatIcon && <StatIcon className="w-3.5 h-3.5 text-[var(--c-solid)]" />}
+                        </div>
+                        <div className="text-left leading-tight">
+                          <div className="text-sm font-bold text-[var(--header-text)] tabular-nums">{stat.value}</div>
+                          <div className="text-[11px] text-[var(--header-muted)]">{stat.label}</div>
+                        </div>
+                      </>
+                    )
+                    return stat.to ? (
+                      <Link key={stat.label} to={stat.to} className={chipClass}>{inner}</Link>
+                    ) : (
+                      <div key={stat.label} className={chipClass}>{inner}</div>
+                    )
+                  })}
+                </div>
+              )}
               {actions}
             </div>
           )}
         </div>
       </div>
 
-      {/* Tabs i underyta */}
+      {/* Tabs i underyta — döljs i fokusläge (sekundär navigation) */}
       {hasTabs && (
-        <div className="px-5 py-2.5 border-t border-[var(--header-border)] bg-white/30 dark:bg-stone-900/20">
+        <div className="px-5 py-2.5 border-t border-[var(--header-border)] bg-white/30 dark:bg-stone-900/20" data-focus-chrome="tabs">
           <PageTabs tabs={tabs} variant={tabVariant} />
         </div>
       )}

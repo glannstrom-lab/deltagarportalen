@@ -278,7 +278,9 @@
   }
   
   /* === FOCUS MODE (NPF-anpassat) === */
-  /* For users with ADHD, autism, etc. - reduces cognitive load */
+  /* For users with ADHD, autism, etc. - reduces cognitive load.
+     Two layers: (1) hide layout chrome via [data-focus-chrome],
+     (2) hide page-specific clutter via .hide-in-focus. */
   .focus-mode {
     /* Disable all animations and transitions */
     * {
@@ -288,9 +290,22 @@
     }
   }
 
-  /* Hide elements that add visual noise in focus mode */
+  /* Hide layout chrome marked with data-focus-chrome
+     (sidebar, hub bottom nav, topbar non-essentials, page tabs/stats). */
+  .focus-mode [data-focus-chrome] {
+    display: none !important;
+  }
+
+  /* Hide page-level elements explicitly marked .hide-in-focus */
   .focus-mode .hide-in-focus {
     display: none !important;
+  }
+
+  /* Narrower content column for a calmer reading width.
+     Main content wrapper in Layout.tsx is max-w-7xl (1280px) on desktop —
+     compress to max-w-4xl (~896px) in focus mode for less eye travel. */
+  .focus-mode main#main-content > div {
+    max-width: 56rem !important;
   }
 
   /* Larger touch targets in focus mode */

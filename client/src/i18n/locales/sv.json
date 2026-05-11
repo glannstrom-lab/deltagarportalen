@@ -7727,6 +7727,17 @@
       "disclaimerText": "Data baseras på branschrapporter, SCB-statistik och löneundersökningar. Siffror är uppskattningar och kan variera beroende på specifik roll, företagsstorlek och individuella faktorer. Senast uppdaterad: Q1 2026."
     }
   },
+  "focus": {
+    "exit": "Avsluta fokusläge",
+    "exitShort": "Avsluta fokus",
+    "stepOf": "Steg {{current}} av {{total}}",
+    "next": "Nästa",
+    "back": "Tillbaka",
+    "skip": "Hoppa över",
+    "finish": "Klar",
+    "saving": "Sparar...",
+    "saved": "Sparat"
+  },
   "focusGuide": {
     "steps": {
       "welcome": "Välkommen",

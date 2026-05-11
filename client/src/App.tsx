@@ -29,6 +29,7 @@ import AiPolicy from './pages/AiPolicy'
 import CookieConsent from './components/CookieConsent'
 import { EnergySaveMode } from './components/EnergySaveMode'
 import { FocusModeProvider } from './components/FocusModeProvider'
+import { FocusExitButton } from './components/focus/shell/FocusExitButton'
 
 // Lazy-loaded sidor
 const Dashboard = lazy(() => import('./pages/Dashboard'))
@@ -302,6 +303,7 @@ function App() {
       </Routes>
       <EnergySaveMode />
       <FocusModeProvider />
+      <FocusExitButton />
       <CookieConsent />
     </>
   )

@@ -70,8 +70,8 @@ export default function Layout() {
 
         {/* Main area with sidebar and content */}
         <div className="flex-1 flex">
-          {/* Desktop Sidebar */}
-          <div className="hidden lg:block relative">
+          {/* Desktop Sidebar — döljs i fokusläge via [data-focus-chrome] */}
+          <div className="hidden lg:block relative" data-focus-chrome="sidebar">
             <Sidebar
               isCollapsed={sidebarCollapsed}
               onToggleCollapse={toggleSidebarCollapse}
@@ -107,8 +107,13 @@ export default function Layout() {
         {showBackButton && <MobileBackButton />}
 
         {/* Hub bottom nav (mobile + flag on) — hub-level navigation only.
-            FAQ + Crisis Support live in TopBar. */}
-        {showHubBottomNav && <HubBottomNav />}
+            FAQ + Crisis Support live in TopBar.
+            data-focus-chrome döljer denna i fokusläge (en sak i taget). */}
+        {showHubBottomNav && (
+          <div data-focus-chrome="bottom-nav">
+            <HubBottomNav />
+          </div>
+        )}
 
         {/* Övriga komponenter */}
         <BreakReminder workDuration={15} />
@@ -161,10 +166,14 @@ function MobileTopBar() {
             </span>
           </Link>
 
-          {/* Höger: Krishjälp + Notifikationer + Profil + Meny */}
+          {/* Höger: Krishjälp + Notifikationer + Profil + Meny.
+              Notifikationer + Meny döljs i fokusläge (en sak i taget);
+              CrisisSupport och Profil behålls för tillgänglighet. */}
           <div className="flex items-center gap-0.5">
             <CrisisSupport variant="inline" />
-            <NotificationBell variant="compact" />
+            <div data-focus-chrome="topbar-extras">
+              <NotificationBell variant="compact" />
+            </div>
             <button
               onClick={() => setIsProfileOpen(true)}
               className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"

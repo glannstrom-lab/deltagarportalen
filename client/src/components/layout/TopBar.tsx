@@ -105,17 +105,17 @@ export function TopBar() {
 
         {/* Actions */}
         <div className="flex items-center gap-0.5 sm:gap-1">
-          {/* Language Switcher - hidden on mobile */}
-          <div className="hidden sm:block">
+          {/* Language Switcher - hidden on mobile, döljs i fokusläge */}
+          <div className="hidden sm:block" data-focus-chrome="topbar-extras">
             <LanguageSwitcher />
           </div>
 
-          {/* Google Translate - hidden on mobile */}
-          <div className="hidden md:block">
+          {/* Google Translate - hidden on mobile, döljs i fokusläge */}
+          <div className="hidden md:block" data-focus-chrome="topbar-extras">
             <GoogleTranslate />
           </div>
 
-          {/* Focus Mode Toggle */}
+          {/* Focus Mode Toggle — alltid synlig så användaren kan slå av */}
           <button
             onClick={toggleFocusMode}
             className={cn(
@@ -139,9 +139,10 @@ export function TopBar() {
             {isDark ? <Sun size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Moon size={16} className="sm:w-[18px] sm:h-[18px]" />}
           </button>
 
-          {/* Vanliga frågor — icon-only link to /help */}
+          {/* Vanliga frågor — döljs i fokusläge */}
           <Link
             to="/help"
+            data-focus-chrome="topbar-extras"
             className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg text-stone-500 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-800 active:bg-stone-200 dark:active:bg-stone-700 transition-colors"
             title={t('topbar.faq', 'Vanliga frågor')}
             aria-label={t('topbar.faq', 'Vanliga frågor')}
@@ -149,14 +150,16 @@ export function TopBar() {
             <HelpCircle size={18} />
           </Link>
 
-          {/* Behöver du prata? — Crisis Support inline (BottomBar replacement) */}
+          {/* Behöver du prata? — Crisis Support behålls i fokusläge */}
           <CrisisSupport variant="inline" />
 
-          {/* Notifications */}
-          <NotificationBell variant="compact" />
+          {/* Notifications — distraktion, döljs i fokusläge */}
+          <div data-focus-chrome="topbar-extras">
+            <NotificationBell variant="compact" />
+          </div>
 
-          {/* Divider - hidden on mobile */}
-          <div className="hidden sm:block h-5 w-px bg-stone-200 dark:bg-stone-700/50 mx-1" />
+          {/* Divider - hidden on mobile, döljs i fokusläge */}
+          <div className="hidden sm:block h-5 w-px bg-stone-200 dark:bg-stone-700/50 mx-1" data-focus-chrome="topbar-extras" />
 
           {/* User Menu */}
           <div className="relative" ref={menuRef}>
