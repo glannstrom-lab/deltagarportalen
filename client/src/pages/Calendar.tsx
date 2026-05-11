@@ -9,8 +9,31 @@ import { calendarApi } from '@/services/cloudStorage'
 import type { CalendarEvent, CalendarView } from '@/services/calendarData'
 import { eventTypeConfig, formatTime } from '@/services/calendarData'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { Calendar as CalendarIcon } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusCalendarWizard } from '@/components/focus/pages/FocusCalendarWizard'
 
 export default function Calendar() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('calendar.title', 'Kalender')}
+        icon={CalendarIcon}
+        domain="wellbeing"
+      >
+        <FocusCalendarWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <CalendarInner />
+}
+
+function CalendarInner() {
   const { t, i18n } = useTranslation()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [view, setView] = useState<CalendarView>('month')

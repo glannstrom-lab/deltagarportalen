@@ -25,6 +25,10 @@ import { AIAssistant } from '@/components/ai'
 import { supabase } from '@/lib/supabase'
 import { Link } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
+import { Dumbbell } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusExercisesWizard } from '@/components/focus/pages/FocusExercisesWizard'
 
 // Extended category colors for all 38 categories
 const categoryColors: { [key: string]: string } = {
@@ -63,6 +67,25 @@ interface ExerciseAnswer {
 }
 
 export default function Exercises() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('exercises.title', 'Övningar')}
+        icon={Dumbbell}
+        domain="wellbeing"
+      >
+        <FocusExercisesWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <ExercisesInner />
+}
+
+function ExercisesInner() {
   const { t } = useTranslation()
   const [exercises, setExercises] = useState<Exercise[]>([])
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null)

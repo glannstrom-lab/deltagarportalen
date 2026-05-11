@@ -15,6 +15,10 @@ import { useDiaryStreaks } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui'
 import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
+import { NotebookPen } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusDiaryWizard } from '@/components/focus/pages/FocusDiaryWizard'
 
 // Tab configuration - coaching domain uses purple
 const TAB_DEFS = [
@@ -142,6 +146,25 @@ function AchievementBanner() {
 }
 
 export default function Diary() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('diary.title', 'Dagbok')}
+        icon={NotebookPen}
+        domain="wellbeing"
+      >
+        <FocusDiaryWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <DiaryInner />
+}
+
+function DiaryInner() {
   const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()

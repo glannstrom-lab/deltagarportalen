@@ -6,6 +6,10 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { wellnessTabDefs } from '../data/wellnessTabs'
+import { Smile } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusWellnessWizard } from '@/components/focus/pages/FocusWellnessWizard'
 
 // Tab components
 import HealthTab from './wellness/HealthTab'
@@ -15,6 +19,19 @@ import CrisisTab from './wellness/CrisisTab'
 
 export default function WellnessPage() {
   const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('wellness.title', 'Mående')}
+        icon={Smile}
+        domain="wellbeing"
+      >
+        <FocusWellnessWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   // Build tabs with translated labels
   const wellnessTabs = wellnessTabDefs.map((tab) => ({
