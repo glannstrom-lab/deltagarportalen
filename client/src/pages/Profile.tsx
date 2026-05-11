@@ -6,10 +6,13 @@
 import { Suspense, lazy, useEffect, Component, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18n from '@/i18n/config'
-import { Loader2 } from '@/components/ui/icons'
+import { Loader2, User } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { Toaster } from 'react-hot-toast'
 import type { TabId } from '@/components/profile/constants'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusProfileWizard } from '@/components/focus/pages/FocusProfileWizard'
 
 // Eager load critical components
 import { ProfileHeader } from '@/components/profile/ProfileHeader'
@@ -126,13 +129,26 @@ function InitialLoader() {
 // ============== MAIN COMPONENT ==============
 
 export default function Profile() {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const { activeTab, initialLoading, loadAll } = useProfileStore()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
 
   // Load all profile data on mount
   useEffect(() => {
     loadAll()
   }, [loadAll])
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('profile.title', 'Din profil')}
+        icon={User}
+        domain="action"
+      >
+        <FocusProfileWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   // Show loading state
   if (initialLoading) {
