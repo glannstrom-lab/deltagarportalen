@@ -29,6 +29,9 @@ import {
   type ActionPlanItem, type FavoriteOccupation
 } from '@/services/careerApi'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusSkillsGapWizard } from '@/components/focus/pages/FocusSkillsGapWizard'
 
 // Skill categories with colors
 const skillColors: Record<string, string> = {
@@ -112,6 +115,19 @@ function formatProfileSummary(cvData: CVData | null, profile: { first_name?: str
 export default function SkillsGapAnalysis() {
   const { t, i18n } = useTranslation()
   const { profile } = useAuthStore()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('skillsGap.title', 'Kompetensgap')}
+        icon={TrendingUp}
+        domain="coaching"
+      >
+        <FocusSkillsGapWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   // Profile data
   const [cvData, setCvData] = useState<CVData | null>(null)
