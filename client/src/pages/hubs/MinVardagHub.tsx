@@ -12,6 +12,10 @@ import { useMinVardagHubSummary } from '@/hooks/useMinVardagHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { streakDays } from '@/utils/streakDays'
 import { useAuthStore } from '@/stores/authStore'
+import { useTranslation } from 'react-i18next'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 
 function relativeShort(iso: string | null | undefined): string | null {
   if (!iso) return null
@@ -26,6 +30,36 @@ function relativeShort(iso: string | null | undefined): string | null {
 }
 
 export default function MinVardagHub() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('minVardagHub.title', 'Min vardag')}
+        icon={Heart}
+        domain="wellbeing"
+      >
+        <FocusHubWizard
+          onExit={toggleFocusMode}
+          pageKey="minVardagHub"
+          question={t('focus.minVardagHub.question', 'Vad känns viktigt i din vardag just nu?')}
+          tools={[
+            { id: 'wellness', path: '/wellness', label: t('nav.wellness', 'Mående'), icon: Smile },
+            { id: 'diary', path: '/diary', label: t('nav.diary', 'Dagbok'), icon: NotebookPen },
+            { id: 'calendar', path: '/calendar', label: t('nav.calendar', 'Kalender'), icon: Calendar },
+            { id: 'exercises', path: '/exercises', label: t('nav.exercises', 'Övningar'), icon: Dumbbell },
+            { id: 'consultant', path: '/my-consultant', label: t('nav.myConsultant', 'Min konsulent'), icon: UserCheck },
+          ]}
+        />
+      </PageFocusShell>
+    )
+  }
+
+  return <MinVardagHubInner />
+}
+
+function MinVardagHubInner() {
   useOnboardedHubsTracking('min-vardag')
   const { data } = useMinVardagHubSummary()
   const firstName = useAuthStore(s => s.profile?.first_name)

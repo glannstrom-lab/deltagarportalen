@@ -8,12 +8,17 @@ import {
   Compass,
   GraduationCap,
   User,
+  LayoutDashboard,
+  BookOpen,
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useOversiktHubSummary } from '@/hooks/useOversiktHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { careerGoalLabel } from '@/utils/careerGoalLabel'
 import { streakDays } from '@/utils/streakDays'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 
 /**
  * Översikt — minimal launchpad.
@@ -72,6 +77,35 @@ const heroVariants = {
 }
 
 export default function HubOverview() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('hubOverview.title', 'Översikt')}
+        icon={LayoutDashboard}
+        domain="action"
+      >
+        <FocusHubWizard
+          onExit={toggleFocusMode}
+          pageKey="hubOverview"
+          question={t('focus.hubOverview.question', 'Vad vill du fokusera på idag?')}
+          tools={[
+            { id: 'jobs', path: '/job-search', label: t('nav.jobSearch', 'Söka jobb'), icon: Briefcase },
+            { id: 'career', path: '/career', label: t('nav.career', 'Karriär'), icon: Compass },
+            { id: 'resources', path: '/knowledge-base', label: t('nav.knowledgeBase', 'Kunskapsbas'), icon: BookOpen },
+            { id: 'wellbeing', path: '/wellness', label: t('nav.wellness', 'Mående'), icon: Heart },
+          ]}
+        />
+      </PageFocusShell>
+    )
+  }
+
+  return <HubOverviewInner />
+}
+
+function HubOverviewInner() {
   const { t } = useTranslation()
   useOnboardedHubsTracking(HUB_ID)
   const { data: summary } = useOversiktHubSummary()

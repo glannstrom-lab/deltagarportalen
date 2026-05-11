@@ -15,6 +15,10 @@ import HubPage, { type HubFeature } from './HubPage'
 import { useJobsokHubSummary } from '@/hooks/useJobsokHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { useAuthStore } from '@/stores/authStore'
+import { useTranslation } from 'react-i18next'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 
 const SWEDISH_MONTHS = [
   'januari', 'februari', 'mars', 'april', 'maj', 'juni',
@@ -28,6 +32,37 @@ function shortDate(iso: string | null | undefined): string | null {
 }
 
 export default function JobsokHub() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('jobsokHub.title', 'Söka jobb')}
+        icon={Briefcase}
+        domain="activity"
+      >
+        <FocusHubWizard
+          onExit={toggleFocusMode}
+          pageKey="jobsokHub"
+          question={t('focus.jobsokHub.question', 'Vad i jobbsökandet vill du göra?')}
+          tools={[
+            { id: 'search', path: '/job-search', label: t('nav.jobSearch', 'Hitta jobb'), icon: Search },
+            { id: 'apps', path: '/applications', label: t('nav.applications', 'Mina ansökningar'), icon: ClipboardList },
+            { id: 'spon', path: '/spontanansökan', label: t('nav.spontaneous', 'Spontanansökan'), icon: Building2 },
+            { id: 'cv', path: '/cv', label: t('nav.cv', 'CV'), icon: FileUser },
+            { id: 'letter', path: '/cover-letter', label: t('nav.coverLetter', 'Personligt brev'), icon: Mail },
+            { id: 'interview', path: '/interview-simulator', label: t('nav.interview', 'Intervju'), icon: Mic },
+          ]}
+        />
+      </PageFocusShell>
+    )
+  }
+
+  return <JobsokHubInner />
+}
+
+function JobsokHubInner() {
   useOnboardedHubsTracking('jobb')
   const { data } = useJobsokHubSummary()
   const firstName = useAuthStore(s => s.profile?.first_name)

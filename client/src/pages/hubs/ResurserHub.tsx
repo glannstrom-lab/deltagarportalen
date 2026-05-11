@@ -11,6 +11,10 @@ import HubPage, { type HubFeature } from './HubPage'
 import { useResurserHubSummary } from '@/hooks/useResurserHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { useAuthStore } from '@/stores/authStore'
+import { useTranslation } from 'react-i18next'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 
 function relativeShort(iso: string | null | undefined): string | null {
   if (!iso) return null
@@ -25,6 +29,37 @@ function relativeShort(iso: string | null | undefined): string | null {
 }
 
 export default function ResurserHub() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('resurserHub.title', 'Resurser')}
+        icon={BookOpen}
+        domain="info"
+      >
+        <FocusHubWizard
+          onExit={toggleFocusMode}
+          pageKey="resurserHub"
+          question={t('focus.resurserHub.question', 'Vad behöver du läsa eller hitta?')}
+          tools={[
+            { id: 'kb', path: '/knowledge-base', label: t('nav.knowledgeBase', 'Kunskapsbas'), icon: BookOpen },
+            { id: 'res', path: '/resources', label: t('nav.resources', 'Sparade resurser'), icon: Bookmark },
+            { id: 'print', path: '/print-resources', label: t('nav.printResources', 'Skriv ut'), icon: Printer },
+            { id: 'ext', path: '/externa-resurser', label: t('nav.externalResources', 'Externa länkar'), icon: ExternalLink },
+            { id: 'ai', path: '/ai-team', label: t('nav.aiTeam', 'AI-team'), icon: Bot },
+            { id: 'network', path: '/nätverk', label: t('nav.network', 'Nätverk'), icon: Users },
+          ]}
+        />
+      </PageFocusShell>
+    )
+  }
+
+  return <ResurserHubInner />
+}
+
+function ResurserHubInner() {
   useOnboardedHubsTracking('resurser')
   const { data } = useResurserHubSummary()
   const firstName = useAuthStore(s => s.profile?.first_name)

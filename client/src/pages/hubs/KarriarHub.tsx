@@ -11,6 +11,10 @@ import { useKarriarHubSummary } from '@/hooks/useKarriarHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { careerGoalLabel } from '@/utils/careerGoalLabel'
 import { useAuthStore } from '@/stores/authStore'
+import { useTranslation } from 'react-i18next'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 
 function relativeShort(iso: string | null | undefined): string | null {
   if (!iso) return null
@@ -26,6 +30,36 @@ function relativeShort(iso: string | null | undefined): string | null {
 }
 
 export default function KarriarHub() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('karriarHub.title', 'Karriär')}
+        icon={Target}
+        domain="coaching"
+      >
+        <FocusHubWizard
+          onExit={toggleFocusMode}
+          pageKey="karriarHub"
+          question={t('focus.karriarHub.question', 'Vad i karriären vill du jobba med?')}
+          tools={[
+            { id: 'career', path: '/career', label: t('nav.career', 'Karriärplan'), icon: Target },
+            { id: 'interest', path: '/interest-guide', label: t('nav.interestGuide', 'Intresseguide'), icon: Compass },
+            { id: 'skills', path: '/skills-gap-analysis', label: t('nav.skills', 'Kompetensgap'), icon: TrendingUp },
+            { id: 'brand', path: '/personal-brand', label: t('nav.brand', 'Personligt varumärke'), icon: Star },
+            { id: 'education', path: '/education', label: t('nav.education', 'Utbildning'), icon: GraduationCap },
+          ]}
+        />
+      </PageFocusShell>
+    )
+  }
+
+  return <KarriarHubInner />
+}
+
+function KarriarHubInner() {
   useOnboardedHubsTracking('karriar')
   const { data } = useKarriarHubSummary()
   const firstName = useAuthStore(s => s.profile?.first_name)

@@ -23,6 +23,10 @@ import {
   LoadingState, InfoCard
 } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { Settings as SettingsIcon } from '@/components/ui/icons'
+import { useFocusMode as useFocusModeProvider } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
+import { FocusSettingsWizard } from '@/components/focus/pages/FocusSettingsWizard'
 
 interface SettingSection {
   id: string
@@ -41,6 +45,25 @@ const sectionDefs: SettingSection[] = [
 ]
 
 export default function Settings() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusModeProvider()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('settings.title', 'Inställningar')}
+        icon={SettingsIcon}
+        domain="action"
+      >
+        <FocusSettingsWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <SettingsInner />
+}
+
+function SettingsInner() {
   const { t } = useTranslation()
   const [activeSection, setActiveSection] = useState('profile')
   const [showMobileMenu, setShowMobileMenu] = useState(false)

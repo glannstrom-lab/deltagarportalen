@@ -27,8 +27,53 @@ import type { Exercise } from '../data/exercises'
 import { articleBookmarksApi } from '../services/cloudStorage'
 import { useAchievementTracker } from '../hooks/useAchievementTracker'
 import type { EnhancedArticle } from '../services/articleData'
+import { BookOpen } from '@/components/ui/icons'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 
 export default function Article() {
+  const { t, i18n } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('article.title', 'Artikel')}
+        icon={BookOpen}
+        domain="info"
+      >
+        <ArticleFocusReader onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <ArticleInner />
+}
+
+function ArticleFocusReader({ onExit }: { onExit: () => void }) {
+  const { t } = useTranslation()
+  return (
+    <div className="max-w-lg mx-auto text-center space-y-6 pt-8">
+      <div className="w-16 h-16 rounded-full bg-[var(--c-accent)]/40 flex items-center justify-center mx-auto">
+        <BookOpen className="w-8 h-8 text-[var(--c-solid)]" />
+      </div>
+      <p className="text-stone-600 dark:text-stone-300">
+        {t(
+          'focus.article.intro',
+          'I fokusläge läser vi artikeln i lugn takt. Öppna artikeln i normalläge för att läsa den med full layout.'
+        )}
+      </p>
+      <button
+        onClick={onExit}
+        className="w-full py-4 rounded-xl bg-[var(--c-solid)] text-white font-semibold text-lg"
+      >
+        {t('focus.article.openNormal', 'Läs i normalläge')}
+      </button>
+    </div>
+  )
+}
+
+function ArticleInner() {
   const { t, i18n } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()

@@ -15,6 +15,8 @@ import {
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useOversiktHubSummary } from '@/hooks/useOversiktHubSummary'
 import { careerGoalLabel } from '@/utils/careerGoalLabel'
+import { useFocusMode } from '@/components/FocusModeProvider'
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 
 /**
  * Översikt-historik — full lista över aktiviteter (ingen 5-cap som på Översikt).
@@ -62,6 +64,48 @@ function domainBgClass(d: Domain): string {
 }
 
 export default function HubOverviewHistory() {
+  const { t } = useTranslation()
+  const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('hubOverviewHistory.title', 'Aktivitet')}
+        icon={CalendarDays}
+        domain="action"
+      >
+        <HubHistoryFocus onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
+
+  return <HubOverviewHistoryInner />
+}
+
+function HubHistoryFocus({ onExit }: { onExit: () => void }) {
+  const { t } = useTranslation()
+  return (
+    <div className="max-w-lg mx-auto text-center space-y-6 pt-8">
+      <div className="w-16 h-16 rounded-full bg-[var(--c-accent)]/40 flex items-center justify-center mx-auto">
+        <CalendarDays className="w-8 h-8 text-[var(--c-solid)]" />
+      </div>
+      <p className="text-stone-600 dark:text-stone-300">
+        {t(
+          'focus.hubHistory.intro',
+          'Historik är en stor lista. I fokusläge tittar vi på den i normalvyn för bättre översikt.'
+        )}
+      </p>
+      <button
+        onClick={onExit}
+        className="w-full py-4 rounded-xl bg-[var(--c-solid)] text-white font-semibold text-lg"
+      >
+        {t('focus.hubHistory.openNormal', 'Visa i normalläge')}
+      </button>
+    </div>
+  )
+}
+
+function HubOverviewHistoryInner() {
   const { t } = useTranslation()
   const { data: summary } = useOversiktHubSummary()
 
