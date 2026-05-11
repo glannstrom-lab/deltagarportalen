@@ -16,6 +16,9 @@ import { sanitizeHTMLWithLineBreaks } from '@/utils/sanitize';
 import { useJobSearchFilters } from '@/hooks/useJobSearchFilters';
 
 import { PageLayout } from '@/components/layout/index';
+import { useFocusMode } from '@/components/FocusModeProvider';
+import { PageFocusShell } from '@/components/focus/shell/PageFocusShell';
+import { FocusJobSearchWizard } from '@/components/focus/pages/FocusJobSearchWizard';
 import {
   LoadingState,
   ErrorState,
@@ -951,6 +954,19 @@ export default function JobSearch() {
   const location = useLocation();
   const { t } = useTranslation();
   const { savedJobs } = useSavedJobs();
+  const { isFocusMode, toggleFocusMode } = useFocusMode();
+
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('jobSearch.title', 'Hitta jobb')}
+        icon={Search}
+        domain="activity"
+      >
+        <FocusJobSearchWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    );
+  }
 
   // Build tabs with translated labels
   const jobSearchTabs = jobSearchTabDefs.map((tab) => ({
