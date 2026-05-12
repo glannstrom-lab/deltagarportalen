@@ -4851,5 +4851,222 @@ export const exercises: Exercise[] = [
         ]
       }
     ]
+  },
+
+  // === STA-KOMPLEMENT (referenseras från Steg till arbete-sidan) ===
+  // Fyra övningar som motsvarar STA-material som idag bara finns i PDF.
+
+  {
+    id: 'somndagbok',
+    title: 'Sömndagbok',
+    description: 'En tvåveckors-dagbok där du loggar din sömn — när du la dig, när du vaknade, hur du sov, och hur du mår. Efter två veckor ser du mönster.',
+    icon: HeartPulse,
+    category: 'Välmående',
+    duration: '5 min/dag i 2 veckor',
+    difficulty: 'Lätt',
+    steps: [
+      {
+        id: 1,
+        title: 'Förbered',
+        description: 'Innan du börjar — sätt en intention.',
+        questions: [
+          { id: 'somn1-q1', text: 'Varför vill du föra sömndagbok? Vad hoppas du upptäcka?', placeholder: 'Jag vill förstå varför jag är trött varje morgon trots att jag sover 8 timmar...' },
+          { id: 'somn1-q2', text: 'Hur ser din sömn ut just nu — i ord?', placeholder: 'Jag somnar runt midnatt, vaknar 2-3 ggr per natt, vaknar uppgiven kl 7...' },
+        ],
+      },
+      {
+        id: 2,
+        title: 'Logga varje morgon',
+        description: 'Skriv ner några rader så snart du vaknat — innan du gör något annat.',
+        questions: [
+          { id: 'somn2-q1', text: 'När la jag mig igår kväll? När vaknade jag idag?', placeholder: 'La mig 23:30, vaknade 06:45' },
+          { id: 'somn2-q2', text: 'Hur lång tid tog det att somna? Vaknade jag på natten?', placeholder: 'Somnade på ca 20 min. Vaknade en gång kring 03 men somnade om' },
+          { id: 'somn2-q3', text: 'Hur sov jag — på en skala 1-5?', placeholder: '3 - okej men inte djup sömn' },
+          { id: 'somn2-q4', text: 'Hur känner jag mig nu i morgon — på en skala 1-5?', placeholder: '3 - trött men funktionell' },
+          { id: 'somn2-q5', text: 'Något särskilt från gårdagen jag tror påverkade? (mat, alkohol, stress, träning, skärmtid)', placeholder: 'Drack kaffe sent. Kollade nyheter i sängen...' },
+        ],
+      },
+      {
+        id: 3,
+        title: 'Veckosammanfattning',
+        description: 'Efter en vecka — titta tillbaka och sök mönster.',
+        questions: [
+          { id: 'somn3-q1', text: 'Vilka dagar sov jag bäst? Vad var gemensamt för dem?', placeholder: 'Onsdag och fredag. Båda hade promenad på eftermiddagen och inget skärmtid efter 21' },
+          { id: 'somn3-q2', text: 'Vilka dagar sov jag sämst? Vad var gemensamt?', placeholder: 'Måndag och torsdag. Båda hade jag tittat på nyheter i sängen' },
+          { id: 'somn3-q3', text: 'En sak jag vill prova nästa vecka:', placeholder: 'Lägg mobilen i annan rum från kl 22' },
+        ],
+      },
+      {
+        id: 4,
+        title: 'Slutreflektion efter 2 veckor',
+        description: 'Vad har du upptäckt?',
+        questions: [
+          { id: 'somn4-q1', text: 'Vilket mönster är tydligast?', placeholder: 'Mina dåliga nätter har alltid alkohol eller sen koffein i sig' },
+          { id: 'somn4-q2', text: 'Vad har överraskat dig?', placeholder: 'Att skärmar påverkar mer än jag trodde' },
+          { id: 'somn4-q3', text: 'Vad ska du fortsätta med? Vad ska du sluta med?', placeholder: 'Fortsätta: morgonpromenad. Sluta: kaffe efter kl 15' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'saga-nej',
+    title: 'Träna på att säga nej',
+    description: 'En guidad övning där du formulerar nej för konkreta situationer i ditt liv — för att ha orden redo innan situationen uppstår.',
+    icon: Shield,
+    category: 'Välmående',
+    duration: '20-30 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Vad behöver du säga nej till?',
+        description: 'Identifiera tre konkreta situationer där du har sagt ja men borde sagt nej.',
+        questions: [
+          { id: 'nej1-q1', text: 'Situation 1 — vem ber om vad, och varför är det svårt att säga nej?', placeholder: 'Min syster ringer ofta för att prata om sina problem i en timme. Jag är trött och har inte energin men säger ja för att hon blir ledsen annars.' },
+          { id: 'nej1-q2', text: 'Situation 2', placeholder: 'På jobbet får jag uppgifter som inte hör till min roll men jag säger ja för att inte verka oduglig...' },
+          { id: 'nej1-q3', text: 'Situation 3', placeholder: 'Vänner som vill ses på krogen — jag säger ja och åker hem utmattad' },
+        ],
+      },
+      {
+        id: 2,
+        title: 'Formulera dina nej',
+        description: 'Skriv ner exakta meningar du kan säga. Inte ungefär — exakt.',
+        questions: [
+          { id: 'nej2-q1', text: 'Nej till situation 1 — skriv tre versioner: enkelt nej, nej med alternativ, vänligt nej', placeholder: 'Enkelt: "Idag orkar jag inte prata om det här."\nMed alternativ: "Jag kan inte idag, men ring imorgon mellan 14-15."\nVänligt: "Jag vill vara där för dig men jag är slut nu — kan vi pratas vid imorgon?"' },
+          { id: 'nej2-q2', text: 'Nej till situation 2 — tre versioner', placeholder: '"Det ligger utanför mitt ansvarsområde."\n"Om jag tar det här — vad ska bort istället?"\n"Jag säger nej. Ledsen."' },
+          { id: 'nej2-q3', text: 'Nej till situation 3 — tre versioner', placeholder: '"Jag är trött, jag kommer inte ikväll."\n"Jag kommer en timme men åker hem 21."\n"Tack för inbjudan, jag säger nej den här gången."' },
+        ],
+      },
+      {
+        id: 3,
+        title: 'Förbered känslan',
+        description: 'Det kommer kännas obekvämt. Bra. Det betyder att du gör något nytt.',
+        questions: [
+          { id: 'nej3-q1', text: 'Vad är värsta scenariot om du säger nej? Hur skulle du hantera det?', placeholder: 'Att min syster blir ledsen. Då skickar jag ett meddelande dagen efter och säger att jag bryr mig om henne men behöver vila.' },
+          { id: 'nej3-q2', text: 'Vad är bästa scenariot?', placeholder: 'Hon respekterar det. Vi pratar mer äkta. Min energi räcker längre.' },
+          { id: 'nej3-q3', text: 'Vilket nej tränar du på den här veckan?', placeholder: 'Situation 3 — jag säger ja max en kväll i veckan.' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'fem-faktorer-energi',
+    title: 'Fem faktorer — bygg en hållbar vana',
+    description: 'En övning där du går igenom de fem faktorerna för hållbar vana, och bygger upp en konkret vana steg för steg.',
+    icon: Activity,
+    category: 'Välmående',
+    duration: '25-35 min',
+    difficulty: 'Lätt',
+    steps: [
+      {
+        id: 1,
+        title: 'Välj en vana',
+        description: 'Bara en. Den viktigaste just nu.',
+        questions: [
+          { id: 'fem1-q1', text: 'Vilken vana skulle göra störst skillnad om du fick den att hålla?', placeholder: 'Promenera 20 min per dag / Lägg mig 23 varje kväll / Äta lunch klockan 12 istället för att hoppa över' },
+          { id: 'fem1-q2', text: 'Varför har den inte hållit hittills?', placeholder: 'För stor — jag försökte börja med 1 timmes träning' },
+          { id: 'fem1-q3', text: 'Vad händer i ditt liv om vanan håller i ett halvår?', placeholder: 'Jag sover bättre, känner mig piggare, klarar mer på dagen' },
+        ],
+      },
+      {
+        id: 2,
+        title: 'Faktor 1: Liten storlek',
+        description: 'Krymp vanan tills det är pinsamt litet.',
+        questions: [
+          { id: 'fem2-q1', text: 'Vad är den minsta versionen av vanan? Något du kan göra på 2 minuter eller mindre.', placeholder: 'Promenera till brevlådan och tillbaka. Inte 20 min. Bara brevlådan.' },
+          { id: 'fem2-q2', text: 'Vad är så litet att det vore omöjligt att misslyckas?', placeholder: 'Sätta på mig skorna och gå ut på trappavsatsen. Vänd om och gå in. Räknas.' },
+        ],
+      },
+      {
+        id: 3,
+        title: 'Faktor 2: Trigger',
+        description: 'Häng vanan på något du redan gör.',
+        questions: [
+          { id: 'fem3-q1', text: 'Vad gör du varje dag som kan bli triggern?', placeholder: 'Borstar tänderna på morgonen / Kokar kaffe / Tar emot tidningen' },
+          { id: 'fem3-q2', text: 'Formulera meningen "När jag [X], då gör jag [vanan]"', placeholder: 'När jag har kokat kaffet, går jag ut på trappavsatsen och tillbaka.' },
+        ],
+      },
+      {
+        id: 4,
+        title: 'Faktor 3: Belöning',
+        description: 'Hjärnan behöver återkoppling direkt.',
+        questions: [
+          { id: 'fem4-q1', text: 'Vad är din omedelbara belöning? (Något du faktiskt gillar)', placeholder: 'Bocka av i en lista på kylskåpet. En "yes" till mig själv. 30 sek vid fönstret.' },
+        ],
+      },
+      {
+        id: 5,
+        title: 'Faktor 4: Tolerans + Faktor 5: Synlighet',
+        description: 'Förbered för missar och gör vanan synlig.',
+        questions: [
+          { id: 'fem5-q1', text: 'Vad är din regel för missar?', placeholder: 'Två missade dagar = okej. Tredje dagen måste jag in igen, även om det bara är minimi-versionen.' },
+          { id: 'fem5-q2', text: 'Vad gör du för att göra vanan synlig?', placeholder: 'Skorna vid dörren. Lista på kylskåpet. Telefon-påminnelse 08:30.' },
+          { id: 'fem5-q3', text: 'Veckoplan för nästa 14 dagar — vad ska du justera om något inte funkar?', placeholder: 'Om jag misslyckas 4 dagar i rad — då krymper jag vanan ännu mer.' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'forbereda-svart-samtal',
+    title: 'Förbered ett svårt samtal',
+    description: 'Strukturerad förberedelse för ett samtal du har skjutit upp — med chef, kollega, familj eller någon annan viktig.',
+    icon: MessageCircle,
+    category: 'Välmående',
+    duration: '20-30 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Vad är samtalet?',
+        description: 'Bli konkret om vad du faktiskt behöver säga.',
+        questions: [
+          { id: 'svart1-q1', text: 'Vem ska du prata med?', placeholder: 'Min chef Lena' },
+          { id: 'svart1-q2', text: 'Vad är det du behöver säga — i en mening?', placeholder: 'Att jag inte hinner med tre projekt samtidigt utan att bli sjuk.' },
+          { id: 'svart1-q3', text: 'Vad har gjort att du skjutit upp samtalet?', placeholder: 'Jag är rädd att hon blir besviken / tycker jag är svag / inte tar mig på allvar' },
+        ],
+      },
+      {
+        id: 2,
+        title: 'Vad vill du ska hända?',
+        description: 'Konkret resultat — inte abstrakt känsla.',
+        questions: [
+          { id: 'svart2-q1', text: 'Konkret — vad vill du ska hända efter samtalet?', placeholder: 'Att vi prioriterar bort ett av projekten. Inte: "Att hon förstår mig."' },
+          { id: 'svart2-q2', text: 'Vad är minimum-resultatet du kan leva med?', placeholder: 'Att hon vet hur jag mår, även om vi inte kommer fram till lösning idag.' },
+          { id: 'svart2-q3', text: 'Vad är du villig att kompromissa om — och vad är icke-förhandlingsbart?', placeholder: 'Kompromiss: vilket projekt som tas bort. Inte förhandlingsbart: att det blir tre.' },
+        ],
+      },
+      {
+        id: 3,
+        title: 'Formulera meddelandet',
+        description: 'Tre delar: observation, känsla, behov.',
+        questions: [
+          { id: 'svart3-q1', text: 'Vad har du observerat — utan tolkning? (Konkreta händelser och fakta)', placeholder: 'De senaste två veckorna har jag fått tre nya uppgifter utöver det vi kom överens om i augusti.' },
+          { id: 'svart3-q2', text: 'Hur påverkar det dig? (Känslor, fysiska reaktioner, konkreta konsekvenser)', placeholder: 'Jag har svårt att sova. Jag känner mig stressad och har börjat missa småsaker.' },
+          { id: 'svart3-q3', text: 'Vad behöver du? (Konkret, inte abstrakt)', placeholder: 'Jag behöver att vi tittar på listan tillsammans och bestämmer vad som ska tas bort eller flyttas.' },
+        ],
+      },
+      {
+        id: 4,
+        title: 'Förbered för deras reaktion',
+        description: 'Du kan inte styra deras svar, men du kan vara förberedd.',
+        questions: [
+          { id: 'svart4-q1', text: 'Vad är värsta tänkbara reaktionen? Hur skulle du hantera den?', placeholder: 'Att hon säger att alla har det tufft. Då säger jag: "Jag förstår, men jag pratar om min situation just nu."' },
+          { id: 'svart4-q2', text: 'Vad är troligaste reaktionen?', placeholder: 'Hon blir överraskad men lyssnar. Vi börjar prata om prioriteringar.' },
+          { id: 'svart4-q3', text: 'Behöver du en paus-mening om det blir för jobbigt?', placeholder: '"Jag behöver några minuter att tänka." eller "Kan vi pausa och fortsätta imorgon?"' },
+        ],
+      },
+      {
+        id: 5,
+        title: 'När och var?',
+        description: 'Sätt en konkret tid. Annars händer det inte.',
+        questions: [
+          { id: 'svart5-q1', text: 'När ska samtalet ske? Var?', placeholder: 'Imorgon kl 10, på Lenas kontor (boka i kalendern nu).' },
+          { id: 'svart5-q2', text: 'Vad gör du efter samtalet för att landa?', placeholder: 'Promenad i 20 min. Ringa en vän och berätta hur det gick.' },
+        ],
+      },
+    ],
   }
 ]

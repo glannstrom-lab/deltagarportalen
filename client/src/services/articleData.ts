@@ -24437,6 +24437,403 @@ Du klarar det!`,
     relatedTools: ['/cv-builder'],
     author: 'Maria Lindqvist',
     authorTitle: 'Arbetskonsulent',
+  },
+
+  // === STA-KOMPLEMENT (referenseras från Steg till arbete-sidan) ===
+  // Dessa fyller luckor i KB där befintliga artiklar främst är ramade som
+  // jobbsökar-stöd. STA-deltagare i Del 1-2 är ofta i rehabilitering, inte
+  // aktiv jobbsökning — perspektivet behöver vara bredare livskunskap.
+
+  {
+    id: 'sta-hard-talk',
+    title: 'Hard Talk — så för du svåra samtal',
+    summary: 'En struktur för att förbereda och genomföra samtal som är obekväma men nödvändiga — med chef, kollegor eller hemma.',
+    content: `Vissa samtal skjuter vi upp i veckor. Vi vet att vi måste prata med chefen om arbetsbelastning, säga ifrån till en kollega som är otrevlig, eller berätta för någon nära att vi inte mår bra. Och så går tiden, och det blir bara värre.
+
+Den här texten ger dig en enkel struktur för att förbereda och genomföra ett svårt samtal — utan att det behöver bli en konflikt.
+
+## Varför är vissa samtal svåra?
+
+Det handlar nästan alltid om en av tre saker:
+
+- **Rädsla för reaktionen.** "Vad händer om de blir arga? Om de ledsna? Om de avvisar mig?"
+- **Rädsla för att tappa relationen.** "Vad händer om vi inte är vänner efteråt?"
+- **Osäkerhet om sin egen position.** "Har jag rätt att tycka det här? Är jag orättvis?"
+
+Du kan inte ta bort dessa känslor — men du kan minska deras grepp genom förberedelse.
+
+## Före samtalet — fyra frågor till dig själv
+
+1. **Vad är det jag faktiskt vill ha sagt?** Skriv ner det i en mening. Inte tre. Inte ett stycke. En mening.
+2. **Vad vill jag ska hända efter samtalet?** Konkret. "Att chefen vet att jag inte hinner med tre projekt samtidigt." Inte "att hen ska förstå mig".
+3. **Vad är jag villig att kompromissa om?** Och vad är jag inte villig att kompromissa om?
+4. **Vad är värsta scenariot — och hur skulle jag hantera det?** Tänk igenom det. Ofta är värsta scenariot mindre skrämmande än vad fantasin gör det till.
+
+## Under samtalet — en enkel modell
+
+**Säg vad du observerat, inte vad du tolkat.**
+
+Hellre: *"De senaste två veckorna har jag fått tre nya arbetsuppgifter utöver det vi kom överens om."*
+
+Än: *"Du tar inte hänsyn till mig."*
+
+**Säg hur det påverkar dig.**
+
+*"Jag känner mig stressad och har svårt att sova."*
+
+**Säg vad du behöver.**
+
+*"Jag behöver att vi tittar på vilka uppgifter som måste prioriteras bort."*
+
+**Lyssna sedan. Verkligen.**
+
+Du kommer få ett svar du inte har förutspått. Det är ofta i det svaret som det viktiga ligger.
+
+## Vad om det blir jobbigt?
+
+Det kommer bli jobbigt. Räkna med det. Förbered en paus-mening: *"Jag behöver några minuter att tänka."* eller *"Kan vi pausa och fortsätta imorgon?"*
+
+Att be om paus är inte att förlora — det är att skydda samtalet från att gå överstyr.
+
+## Efter samtalet
+
+Skriv ner vad som faktiskt hände — inte vad du var rädd för. Det är ofta mindre dramatiskt än du föreställde dig. Det blir hjälp nästa gång du står inför ett svårt samtal.
+
+## När du behöver mer stöd
+
+Om det handlar om en chef som inte respekterar dig, en kollega som mobbar, eller någon hemma som du är rädd för — då handlar det inte om kommunikationsteknik längre. Då behöver du stöd. Prata med din konsulent.`,
+    category: 'wellness',
+    subcategory: 'mental-health',
+    tags: ['svåra samtal', 'kommunikation', 'gränssättning', 'konflikt', 'STA'],
+    createdAt: '2026-05-12T10:00:00Z',
+    updatedAt: '2026-05-12T10:00:00Z',
+    readingTime: 7,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['sta-saga-nej', 'sta-utmattning-recovery'],
+    relatedExercises: ['forbereda-svart-samtal', 'saga-nej'],
+    author: 'Morgan Andersson',
+    authorTitle: 'Kursledare Steg till arbete',
+  },
+
+  {
+    id: 'sta-saga-nej',
+    title: 'Att säga nej — gränssättning utan dåligt samvete',
+    summary: 'Varför vi har svårt att säga nej, och konkreta sätt att börja sätta gränser utan att skada relationer.',
+    content: `Många av oss har lärt oss tidigt att säga ja. Ja till extra uppgifter, ja till krav som inte är våra, ja till saker vi egentligen inte vill. Och så blir vi utmattade — för att vi inte vågat säga nej.
+
+Att säga nej är en kompetens. Den går att träna.
+
+## Varför är det svårt att säga nej?
+
+Vanliga skäl:
+
+- **Du vill vara behjälplig.** Det är en fin egenskap. Men inte gränslös.
+- **Du är rädd att bli ogillad.** Människor som respekterar dig kommer respektera ditt nej.
+- **Du tror att andras behov går före dina.** Det gör de inte alltid. Och om du är utmattad kan du inte hjälpa någon.
+- **Du saknar orden.** Det är det vi kan träna på här.
+
+## Sex sätt att säga nej
+
+### 1. Det enkla nejet
+*"Nej tack, det går inte den här veckan."*
+
+Ingen ursäkt. Ingen lång förklaring. Bara ett nej.
+
+### 2. Nej med alternativ
+*"Jag kan inte göra det imorgon, men jag kan på fredag."*
+
+Visar att du vill hjälpa men har egna gränser.
+
+### 3. Nej med fråga
+*"Om jag tar det här — vad ska jag ta bort istället?"*
+
+Bra på jobbet. Tvingar fram en prioriteringsdiskussion.
+
+### 4. Nej med tid
+*"Låt mig tänka över det till imorgon."*
+
+Köper dig tid att inte säga ja i reflex.
+
+### 5. Det vänliga nejet
+*"Tack för att du tänkte på mig. Jag säger nej den här gången."*
+
+För när du vill behålla relationen utan att binda upp dig.
+
+### 6. Det tydliga nejet
+*"Nej. Det går inte att lösa."*
+
+För när någon trycker på trots tidigare nej. Du behöver inte motivera.
+
+## Vad händer i kroppen när du säger nej?
+
+Den första gången känns det som att du gjort något fel. Magont, ångest, repris av samtalet om och om igen. Det går över. Andra gången är det lite lättare. Femte gången är det normalt.
+
+## Tre frågor innan du säger ja
+
+1. **Vill jag det här?** (Inte: "borde jag?")
+2. **Har jag tid och energi för det?** (Inte: "kan jag pressa in det?")
+3. **Vad blir konsekvensen om jag säger ja?** (Vad måste bort?)
+
+Om svaret är nej på någon av dem — säg nej.
+
+## Vanliga ursäkter — och varför du inte behöver dem
+
+- "Jag måste säga ja, annars blir hen sur." Nej. Du måste inte.
+- "Det är min plikt." Plikten är inte att tömma dig själv. Det är att vara en hel människa.
+- "Bara den här gången." Det är det aldrig.
+
+## Träna
+
+Säg nej till en liten sak idag. En enda. Det kan vara att tacka nej till en kaffe när du inte är sugen. Eller säga "jag tar inte den uppgiften". Bara för att träna känslan.
+
+Det är så det börjar.`,
+    category: 'wellness',
+    subcategory: 'stress',
+    tags: ['gränssättning', 'säga nej', 'stresshantering', 'kommunikation', 'STA'],
+    createdAt: '2026-05-12T10:00:00Z',
+    updatedAt: '2026-05-12T10:00:00Z',
+    readingTime: 6,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    relatedArticles: ['sta-hard-talk', 'sta-utmattning-recovery'],
+    relatedExercises: ['saga-nej', 'forbereda-svart-samtal'],
+    author: 'Morgan Andersson',
+    authorTitle: 'Kursledare Steg till arbete',
+  },
+
+  {
+    id: 'sta-utmattning-recovery',
+    title: 'Återhämtning från utmattning — vägen tillbaka',
+    summary: 'Vad utmattning faktiskt är, varför återhämtning tar tid, och vad som hjälper dig komma tillbaka i din egen takt.',
+    content: `Utmattning är inte trötthet. Det är inte att man behöver en semester. Det är ett tillstånd där kroppen och hjärnan inte längre kan ladda om utan ordentlig återhämtning — och det tar tid. Mycket tid.
+
+Den här texten är för dig som är på väg tillbaka. Inte för dig som vill förebygga. För det finns redan mycket annat material.
+
+## Vad är utmattning?
+
+Kortfattat: din kropp har varit i högt påslag så länge att den inte längre kan komma ner. Stresshormoner är konstant höga. Sömnen är bruten. Koncentrationen är gone. Du gråter över ingenting eller känner ingenting alls.
+
+Det är inte en svaghet. Det är en biologisk konsekvens av att ha pressat sig för länge.
+
+## Varför tar det så lång tid?
+
+Du har förmodligen hört "ge dig själv tid". Och du tänker: hur lång tid? Sex månader? Ett år?
+
+Sanningen är att det varierar enormt. Vissa är tillbaka inom månader. Andra behöver år. Mediantiden för fullständig återhämtning från utmattningssyndrom är i forskning runt 12-18 månader — och det är *medianen*. Du är inte fel om det tar längre.
+
+## Faserna du går igenom
+
+### Fas 1: Hänga sig
+Du är i ett mörker. Du orkar knappt borsta tänderna. Du är arg på dig själv för att du inte orkar. Det viktigaste i den här fasen är att överleva dagen — inte att producera något.
+
+### Fas 2: Återupptäcka det enkla
+Du börjar orka korta promenader. Du läser en sida i en bok. Du somnar utan att gråta. Det här är guld. Du gör framsteg även om det inte syns för någon annan.
+
+### Fas 3: Försiktig återbyggnad
+Du börjar känna nyfikenhet på saker. Du orkar en social aktivitet. Du börjar fundera på framtid. Risken här är att du går för fort fram. Lyssna på kroppen.
+
+### Fas 4: Återhämtning
+Du är inte den du var innan — och det är inte målet. Du är en ny version. En som vet sina gränser bättre. Det här är inte slutpunkten utan en ny startpunkt.
+
+## Vad som hjälper
+
+**Rutiner — inte planer.** Vakna ungefär samma tid. Ät ungefär samma tider. Lägg dig ungefär samma tid. Småkrav, inte stora mål.
+
+**Rörelse på din nivå.** Promenad räknas. Trappa upp och ner i hallen räknas. Kroppen behöver mikro-rörelse oftare än träningspass.
+
+**Korta sociala kontakter.** En 20-minuters kaffe med någon trygg. Inte middagar med åtta personer.
+
+**Säga nej.** Det är nu du tränar [att säga nej](/knowledge-base/article/sta-saga-nej). Du har inte råd med uppgifter som inte är dina.
+
+**Acceptera bakslag.** Tre bra dagar följt av en dålig dag är inte en katastrof. Det är så återhämtning ser ut.
+
+## Vad som inte hjälper
+
+- Att jämföra dig med någon annan som "blev frisk på tre månader"
+- Att försöka prestera dig tillbaka. Du blir inte fortare frisk av att kämpa.
+- Att hålla det hemligt för alla. Du behöver folk som vet och respekterar var du är.
+
+## Var är jobbet i allt det här?
+
+Steg till arbete är designat för att du ska få komma tillbaka i din egen takt. Det är därför Del 1 är så lugn och kartläggande. Det är därför Del 2 har korta arbetspass och pauser. Det är inte snälla extras — det är hela poängen.
+
+Du behöver inte vara redo idag. Du behöver bara vara här.`,
+    category: 'wellness',
+    subcategory: 'mental-health',
+    tags: ['utmattning', 'rehabilitering', 'återhämtning', 'mental hälsa', 'STA'],
+    createdAt: '2026-05-12T10:00:00Z',
+    updatedAt: '2026-05-12T10:00:00Z',
+    readingTime: 8,
+    difficulty: 'medium',
+    energyLevel: 'low',
+    relatedArticles: ['sta-saga-nej', 'sta-somn-ostrukturerad', 'sta-fem-faktorer'],
+    relatedExercises: ['somndagbok', 'fem-faktorer-energi'],
+    author: 'Morgan Andersson',
+    authorTitle: 'Kursledare Steg till arbete',
+  },
+
+  {
+    id: 'sta-fem-faktorer',
+    title: 'Fem faktorer för hållbar aktivitet',
+    summary: 'Fem konkreta saker som bestämmer om en vana håller över tid — eller smiter iväg efter två veckor.',
+    content: `De flesta vet att rörelse, sömn och kost spelar roll. Problemet är inte kunskapen — det är att vanorna inte håller. Vi peppar oss första veckan, börjar tappa andra veckan, och tredje veckan har vi gett upp.
+
+Den här texten handlar om varför det är så, och vad som krävs för att en vana ska *faktiskt* hålla över tid.
+
+## De fem faktorerna
+
+### 1. Liten storlek
+Den vanligaste misstaget är att börja för stort. *"Nu ska jag träna 5 dagar i veckan."* Efter två veckor är man slut.
+
+Bättre: börja så litet att det är pinsamt. Två minuters stretching. Tio knäböjningar. En åtta-minuters promenad. När det blir vana — då ökar du.
+
+### 2. Tydlig trigger
+Vanan ska hängas på något du redan gör. *"När jag har borstat tänderna, gör jag tio knäböj."* Inte: *"Någon gång under dagen, ska jag göra knäböj."*
+
+Triggern är hur hjärnan minns när det är dags.
+
+### 3. Omedelbar belöning
+Hjärnan vill ha återkoppling nu. Inte om sex månader. En vana håller bara om du kan känna något bra direkt efter — även om det bara är ett bock i ett papper.
+
+Konkreta belöningar som funkar:
+- Bocka av på en lista
+- Stryka i kalender
+- 30 sekunder att vara nöjd med dig själv
+
+### 4. Tolerans för avbrott
+Du kommer missa en dag. Två dagar. En vecka. Det är inte misslyckande — det är data. Frågan är inte *"hur perfekt var jag?"* utan *"hur snabbt kommer jag tillbaka?"*
+
+Regel: två missade dagar är okej. Den tredje dagen måste du in igen, även om det är minimalt.
+
+### 5. Synlighet
+Det du inte ser, glömmer du. Lägg löparskorna vid sängen. Sätt vattenflaskan vid skrivbordet. Sätt påminnelser. Det är inte fusk att göra det lätt för sig själv — det är smart.
+
+## Tre saker att inte göra
+
+- **Inte börja flera vanor samtidigt.** En i taget. När den är fast — då tar du nästa.
+- **Inte räkna ut "perfekt regim".** Du kommer inte få det rätt direkt. Du justerar efter två veckor.
+- **Inte använda viljekraft som strategi.** Viljekraft tar slut. Struktur håller.
+
+## Exempel: bygga sömnvana
+
+- **Liten storlek:** Lägg dig 10 minuter tidigare. Inte två timmar.
+- **Trigger:** När klockan slår 22:30, sätt mobilen i ett annat rum.
+- **Belöning:** Tänd ett ljus. Läs två sidor i en bok du gillar. Säg "bra jobbat" till dig själv.
+- **Tolerans:** Två sena kvällar är okej. Tredje kvällen — tillbaka i rutinen.
+- **Synlighet:** Lägg boken på kudden så du ser den när du kommer in i sovrummet.
+
+Efter två veckor: justera. Efter en månad: lägg till nästa vana.
+
+## När vanan inte håller — varför?
+
+Kolla mot de fem faktorerna. En av dem är nästan alltid det som krånglar.
+
+- Misslyckas hela tiden? *För stort.*
+- Glömmer det? *Saknas trigger.*
+- Känns meningslöst? *Saknas belöning.*
+- Ger upp efter en miss? *Saknas tolerans.*
+- Tappar bort dig? *Saknas synlighet.*
+
+Det är som ett pussel — en bit i taget.`,
+    category: 'wellness',
+    subcategory: 'stress',
+    tags: ['vanor', 'hållbarhet', 'rutiner', 'hälsa', 'STA'],
+    createdAt: '2026-05-12T10:00:00Z',
+    updatedAt: '2026-05-12T10:00:00Z',
+    readingTime: 6,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    relatedArticles: ['sta-utmattning-recovery', 'sta-somn-ostrukturerad', 'sta-hard-talk'],
+    relatedExercises: ['fem-faktorer-energi', 'somndagbok'],
+    author: 'Morgan Andersson',
+    authorTitle: 'Kursledare Steg till arbete',
+  },
+
+  {
+    id: 'sta-somn-ostrukturerad',
+    title: 'Sömn när livet är ostrukturerat',
+    summary: 'Varför sömnen blir sämre när dagarna saknar form — och konkreta steg som hjälper även när du inte har ett jobb att gå till.',
+    content: `Alla sömntips utgår från en arbetsdag. *"Lägg dig samma tid varje natt. Stig upp samma tid. Få morgonljus."* Det är bra råd — om du har en yttre struktur som tvingar fram det.
+
+För dig som är arbetssökande, sjukskriven eller i rehabilitering är det inte så enkelt. Det finns ingen klocka som ringer 6:45. Inget möte som tvingar dig upp. Och så glider tiderna. Du somnar 02:00. Vaknar 11:00. Och mår sämre för varje vecka.
+
+Den här texten är skriven för dig.
+
+## Varför sömnen är extra svår utan struktur
+
+Sömnen styrs av tre saker:
+
+- **Trötthet** — som byggs upp under dagen
+- **Dygnsrytm** — hjärnans inre klocka som vill att vi ska sova på natten
+- **Vanan att lägga sig vid en viss tid**
+
+När du inte har en yttre struktur tappar du två av dem direkt. Dygnsrytmen blir slapp. Vanan försvinner. Och då blir tröttheten oförutsägbar.
+
+Plus: när du inte rör på dig så mycket, blir du mindre trött fysiskt. Och när dagarna blandas ihop blir hjärnan rastlös på kvällen — den har inte fått slå av.
+
+## Det första du bör göra (inte det andra)
+
+**Det första: bygg en uppvakningstid.** Inte en sovtid.
+
+Det låter konstigt. Men hjärnan svarar bättre på vakentid än på sovtid. Om du vaknar samma tid varje dag — även när du gått sent — kommer kroppen efter några veckor börja vilja sova samma tid.
+
+Försök: vakna 08:00 varje dag, även på helgen. Stig upp ur sängen även om du inte vill. Drick vatten. Öppna persienner.
+
+Det här är jobbigt första veckan. Det blir lättare.
+
+## Sex saker som hjälper
+
+### 1. Morgonljus innan kaffe
+Tio minuter vid ett fönster eller utomhus innan du gör något annat. Ljus i ögonen är den starkaste signalen till hjärnan om vilken tid på dygnet det är.
+
+### 2. Något ljust att göra på morgonen
+Ett minne av meningsfullhet på morgonen. Det kan vara en kort promenad. En kopp te i lugn. Inget måste vara stort.
+
+### 3. Rörelse innan klockan 18
+Inte hård träning. En promenad räcker. Senare rörelse än så håller hjärnan vaken på kvällen.
+
+### 4. Mörker och svalka 1,5 h innan sömn
+Dimma ljuset i hela bostaden. Stäng skärmar. Ha det svalt i sovrummet (16-18 grader är optimalt).
+
+### 5. Ett kvällsritual som signalerar slut
+Borsta tänderna. Tända ett ljus. Läsa två sidor. Tre saker i samma ordning varje kväll. Hjärnan lär sig: nu är dagen över.
+
+### 6. Vad om jag inte kan somna?
+20-minuters-regeln: ligger du vaken längre än 20 minuter, gå upp. Sätt dig i ett annat rum. Läs något lugnt i dämpat ljus. Gå tillbaka till sängen när du är trött. Att ligga och tvinga sömnen gör det värre.
+
+## Saker att undvika på morgonen
+
+- **Kolla mobilen i sängen.** Du tappar 20 minuter och hamnar direkt i stress.
+- **Räkna timmarna du sovit.** Det gör inget bra. Igår är igår.
+
+## Saker att undvika på kvällen
+
+- **Stora nyheter eller sociala medier efter 20.** Hjärnan får inget att stilla sig på.
+- **Alkohol som "sömnhjälp".** Du somnar fortare men sover sämre.
+- **Att lägga dig "för att försöka".** Lägg dig när du är trött. Inte när klockan säger.
+
+## När det är ett medicinskt problem
+
+Om du inte sover trots att du följer det här i två-tre veckor — eller om du sover tio timmar och fortfarande är utmattad — då handlar det inte bara om vanor. Då behöver du prata med vården. Säg till din konsulent.
+
+## Sovdagbok — varför det hjälper
+
+Att skriva ner när du gick och la dig, när du vaknade, hur du kände dig — ger dig data du inte hade förut. Efter två veckor ser du mönster. Det är ofta i mönstret som lösningen ligger.
+
+Det finns en sömndagbok i Övningar-sidan. Använd den.`,
+    category: 'wellness',
+    subcategory: 'stress',
+    tags: ['sömn', 'rutiner', 'rehabilitering', 'STA', 'hälsa'],
+    createdAt: '2026-05-12T10:00:00Z',
+    updatedAt: '2026-05-12T10:00:00Z',
+    readingTime: 7,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    relatedArticles: ['sta-utmattning-recovery', 'sta-fem-faktorer'],
+    relatedExercises: ['somndagbok', 'fem-faktorer-energi'],
+    author: 'Morgan Andersson',
+    authorTitle: 'Kursledare Steg till arbete',
   }
 ]
 

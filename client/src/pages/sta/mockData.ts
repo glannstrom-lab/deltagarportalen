@@ -146,6 +146,7 @@ export const PARTICIPANT_MOCK = {
   ] as DailyExercise[],
 
   // Del 2 mock (work stations) — visas som lokalvy när Anna är där
+  // Notera: dagResources nedan används också (rendreras separat)
   workStations: [
     { id: 'admin', name: 'Administration', desc: 'Sortera, registrera, hantera dokument', tried: false, icon: '📋' },
     { id: 'kundmottagning', name: 'Kundmottagning', desc: 'Möta människor, hjälpa med frågor', tried: false, icon: '👋' },
@@ -156,6 +157,97 @@ export const PARTICIPANT_MOCK = {
   // Placeholder för del 3 och 4
   workplace: null as null | { name: string; role: string; startedAt: string; weeksIn: number; weeksTotal: number; supervisor: string },
   jobReadiness: null as null | { cvUpdated: boolean; interviewTraining: number; applications: number },
+}
+
+// ============================================================================
+// MAPPNING — STA-dagar till befintliga KB-artiklar och övningar
+// ============================================================================
+//
+// Per DESIGN.md A1 (sta-improvements-and-jobin-integration.md): korsreferens till
+// befintligt material istället för att duplicera. Vi pekar på artikel-IDn i
+// `client/src/services/articleData.ts` och övning-IDn i `client/src/data/exercises.ts`.
+
+export interface DayResource {
+  kind: 'article' | 'exercise'
+  id: string
+  label: string
+  /** Kort kontextualisering — hur passar resursen ihop med dagen? */
+  context?: string
+  /** Estimat lästid / övningstid */
+  estimate?: string
+}
+
+/**
+ * Mappning från dag-nummer (1-14) i Del 1 till relevant material.
+ * - article-IDn refererar till `mockArticlesData[].id`
+ * - exercise-IDn refererar till `exercises[].id`
+ *
+ * Principer:
+ * - Existerande KB-artiklar förekommer först (de är allmänna)
+ * - Nya STA-komplement-artiklar (sta-*) kommer in där befintliga saknar rätt vinkel
+ * - Övningar visas som handling deltagaren kan göra
+ */
+export const DAY_RESOURCES: Record<number, DayResource[]> = {
+  1: [
+    { kind: 'article', id: 'sta-fem-faktorer', label: 'Fem faktorer för hållbar aktivitet', context: 'Bygg en rörelsevana som faktiskt håller — utan att slå ut sig.', estimate: '6 min läsning' },
+    { kind: 'exercise', id: 'fem-faktorer-energi', label: 'Fem faktorer — bygg en hållbar vana', context: 'Konkret övning som följer dagens tema.', estimate: '25–35 min' },
+  ],
+  2: [
+    { kind: 'article', id: 'styrkor-svagheter', label: 'Identifiera och kommunicera dina styrkor', context: 'Bra grund för dagens KVL-övning ("Vem är jag").', estimate: '7 min läsning' },
+    { kind: 'exercise', id: 'jobb-jag', label: 'Hitta ditt jobb-jag', context: 'Strukturerad reflektion om vem du är i arbete.', estimate: '25 min' },
+    { kind: 'exercise', id: 'strengths', label: 'Dina starkaste egenskaper', context: 'Djupare övning om dina styrkor.', estimate: '20–30 min' },
+  ],
+  3: [
+    { kind: 'article', id: 'stresshantering', label: 'Stresshantering för arbetssökande', context: 'Skriven för jobbsökare men principerna gäller dig redan idag.', estimate: '8 min läsning' },
+    { kind: 'article', id: 'sta-utmattning-recovery', label: 'Återhämtning från utmattning — vägen tillbaka', context: 'Om du är i rehabilitering snarare än aktiv stress.', estimate: '8 min läsning' },
+    { kind: 'exercise', id: 'wellbeing', label: 'Hantera stress i jobbsökning', context: 'Praktiska verktyg du kan börja använda idag.', estimate: '20 min' },
+  ],
+  4: [
+    { kind: 'article', id: 'jobbsokning-funktionsnedsattning', label: 'Jobbsökning med funktionsnedsättning – rättigheter och stöd', context: 'Vilka stöd och anpassningar du kan be om.', estimate: '10 min läsning' },
+    { kind: 'article', id: 'anpassningar-arbetsplats', label: 'Anpassningar på arbetsplatsen — dina möjligheter', context: 'Konkreta exempel på anpassningar och hur man frågar.', estimate: '7 min läsning' },
+  ],
+  5: [
+    { kind: 'article', id: 'karriarplanering-guide', label: 'Karriärplanering — från vision till verklighet', context: 'Sätter karriärvägledningen i ett strukturerat sammanhang.', estimate: '10 min läsning' },
+    { kind: 'exercise', id: 'dromjobb', label: 'Drömjobbsanalys', context: 'Konkret övning som matchar Karriärvägledning del 1.', estimate: '30 min' },
+  ],
+  6: [
+    { kind: 'article', id: 'varderingar-karriarval', label: 'Hitta dina värderingar — nyckeln till rätt jobb', context: 'Karriärvägledning del 2 handlar om vad som är viktigt för dig.', estimate: '8 min läsning' },
+    { kind: 'exercise', id: 'careerpath', label: 'Planera din karriärväg', context: 'Strukturerad övning för dina karriärval.', estimate: '30 min' },
+  ],
+  7: [
+    { kind: 'article', id: 'sta-somn-ostrukturerad', label: 'Sömn när livet är ostrukturerat', context: 'Sömntips för dig som inte har ett 8-till-5-jobb just nu.', estimate: '7 min läsning' },
+    { kind: 'exercise', id: 'somndagbok', label: 'Sömndagbok', context: 'Logga din sömn i 2 veckor och hitta dina mönster.', estimate: '5 min/dag i 2 veckor' },
+  ],
+  8: [
+    { kind: 'article', id: 'sta-fem-faktorer', label: 'Fem faktorer för hållbar aktivitet', context: 'Bra grund för att bygga mat- och rörelsevanor som håller.', estimate: '6 min läsning' },
+    { kind: 'exercise', id: 'fem-faktorer-energi', label: 'Fem faktorer — bygg en hållbar vana', context: 'Använd metoden för en kost- eller rörelsevana.', estimate: '25–35 min' },
+  ],
+  9: [
+    { kind: 'article', id: 'sta-fem-faktorer', label: 'Fem faktorer för hållbar aktivitet', context: 'Direkt koppling till dagens tema — de fem faktorerna.', estimate: '6 min läsning' },
+    { kind: 'exercise', id: 'fem-faktorer-energi', label: 'Fem faktorer — bygg en hållbar vana', context: 'Tillämpa dagens metod på en konkret vana.', estimate: '25–35 min' },
+  ],
+  10: [
+    { kind: 'article', id: 'struktur-jobbsokning', label: 'Skapa struktur i jobbsökningen', context: 'Skriven för jobbsökare men strukturprinciperna är universella.', estimate: '8 min läsning' },
+    { kind: 'exercise', id: 'tidsplanering', label: 'Strukturera din jobbsökarvecka', context: 'Praktisk veckostrukturering du kan anpassa.', estimate: '25 min' },
+  ],
+  11: [
+    { kind: 'article', id: 'motivation-langsiktig', label: 'Behåll motivationen under långtidssökande', context: 'Långsiktiga strategier som funkar även i kartläggningsfas.', estimate: '8 min läsning' },
+    { kind: 'exercise', id: 'motivationsboost', label: 'Motivationsboost för jobbsökaren', context: 'Praktiska verktyg när motivationen sjunker.', estimate: '20 min' },
+  ],
+  12: [
+    { kind: 'article', id: 'styrkor-svagheter', label: 'Identifiera och kommunicera dina styrkor', context: 'Självkänsla börjar med att se vad du faktiskt kan.', estimate: '7 min läsning' },
+    { kind: 'exercise', id: 'strengths', label: 'Dina starkaste egenskaper', context: 'Djup övning som passar dagens tema självförtroende.', estimate: '20–30 min' },
+  ],
+  13: [
+    { kind: 'article', id: 'karriarplanering-guide', label: 'Karriärplanering — från vision till verklighet', context: 'Mål blir realistiska när de hängs på en konkret plan.', estimate: '10 min läsning' },
+    { kind: 'exercise', id: 'dromjobb', label: 'Drömjobbsanalys', context: 'Konkretisera vad du vill — och vad nästa steg är.', estimate: '30 min' },
+  ],
+  14: [
+    { kind: 'article', id: 'stresshantering', label: 'Stresshantering för arbetssökande', context: 'Genomgång av stresshanteringsverktyg.', estimate: '8 min läsning' },
+    { kind: 'article', id: 'sta-saga-nej', label: 'Att säga nej — gränssättning utan dåligt samvete', context: 'Mest effektiva stressminskaren — att inte ta på sig mer än du orkar.', estimate: '6 min läsning' },
+    { kind: 'exercise', id: 'saga-nej', label: 'Träna på att säga nej', context: 'Konkret övning där du formulerar dina nej.', estimate: '20–30 min' },
+    { kind: 'exercise', id: 'wellbeing', label: 'Hantera stress i jobbsökning', context: 'Sammanställning av verktyg du kan använda löpande.', estimate: '20 min' },
+  ],
 }
 
 // ============================================================================

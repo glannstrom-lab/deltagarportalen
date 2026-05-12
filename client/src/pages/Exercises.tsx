@@ -23,7 +23,7 @@ import { contentExerciseApi, contentArticleApi } from '@/services/contentApi'
 import { exerciseToArticleCategoryMap } from '@/services/articleData'
 import { AIAssistant } from '@/components/ai'
 import { supabase } from '@/lib/supabase'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
 import { Dumbbell } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
@@ -87,6 +87,8 @@ export default function Exercises() {
 
 function ExercisesInner() {
   const { t } = useTranslation()
+  const [searchParams] = useSearchParams()
+  const deepLinkId = searchParams.get('id')
   const [exercises, setExercises] = useState<Exercise[]>([])
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null)
   const [currentStep, setCurrentStep] = useState(0)
@@ -110,6 +112,11 @@ function ExercisesInner() {
       try {
         const exercisesData = await contentExerciseApi.getAll()
         setExercises(exercisesData)
+        // Deep-link: ?id=X öppnar specifik övning direkt (används av STA-sidan).
+        if (deepLinkId && !selectedExercise) {
+          const match = exercisesData.find((e) => e.id === deepLinkId)
+          if (match) setSelectedExercise(match)
+        }
       } catch (err) {
         console.error('Error loading exercises:', err)
         setError(t('exercises.errorLoadingExercises'))

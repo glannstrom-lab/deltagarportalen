@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { PageLayout } from '@/components/layout/index'
 import { Card } from '@/components/ui/Card'
@@ -30,8 +31,10 @@ import { cn } from '@/lib/utils'
 import {
   STA_PARTS,
   PARTICIPANT_MOCK,
+  DAY_RESOURCES,
   type StaPart,
   type DailyExercise,
+  type DayResource,
 } from './mockData'
 
 type TabId = 'oversikt' | 'del-1' | 'del-2' | 'del-3' | 'del-4'
@@ -412,6 +415,10 @@ function WeekPlanRow({ item }: { item: typeof PARTICIPANT_MOCK.weekPlan[number] 
 // ===========================================================================
 
 function STaDel1({ mock }: { mock: typeof PARTICIPANT_MOCK }) {
+  // Default: visa idag som vald dag, om den finns
+  const initialDay = mock.dailyExercises.find((d) => d.status === 'today')?.day ?? null
+  const [selectedDay, setSelectedDay] = useState<number | null>(initialDay)
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="lg:col-span-2 space-y-5">
@@ -484,12 +491,24 @@ function STaDel1({ mock }: { mock: typeof PARTICIPANT_MOCK }) {
         >
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
             {mock.dailyExercises.map((d) => (
-              <DayCell key={d.day} exercise={d} />
+              <DayCell
+                key={d.day}
+                exercise={d}
+                isSelected={selectedDay === d.day}
+                onSelect={() => setSelectedDay(d.day)}
+              />
             ))}
           </div>
           <p className="text-xs text-stone-500 mt-4">
-            Klicka på en dag för att öppna övningen och arbetsbladet. Du kan alltid gå tillbaka till äldre dagar.
+            Klicka på en dag för att se dagens tema, läsmaterial och övningar. Du kan alltid gå tillbaka.
           </p>
+
+          {selectedDay !== null && (
+            <DayResourcePanel
+              day={selectedDay}
+              exercise={mock.dailyExercises.find((d) => d.day === selectedDay)}
+            />
+          )}
         </ActivitySection>
 
         {/* Hälsoaktiviteter */}
@@ -517,21 +536,36 @@ function STaDel1({ mock }: { mock: typeof PARTICIPANT_MOCK }) {
   )
 }
 
-function DayCell({ exercise }: { exercise: DailyExercise }) {
+function DayCell({
+  exercise,
+  isSelected,
+  onSelect,
+}: {
+  exercise: DailyExercise
+  isSelected: boolean
+  onSelect: () => void
+}) {
   const isCompleted = exercise.status === 'completed'
   const isToday = exercise.status === 'today'
   const isTomorrow = exercise.status === 'tomorrow'
 
   return (
-    <a
-      href="#"
+    <button
+      type="button"
+      onClick={onSelect}
+      aria-pressed={isSelected}
       className={cn(
-        'block text-center p-3 rounded-lg border transition-all hover:shadow-sm',
-        isCompleted && 'bg-emerald-50 border-emerald-200',
+        'block w-full text-center p-3 rounded-lg border transition-all hover:shadow-sm',
+        isCompleted && !isSelected && 'bg-emerald-50 border-emerald-200',
         isToday && 'border-2',
-        !isCompleted && !isToday && 'bg-white border-stone-200',
+        !isCompleted && !isToday && !isSelected && 'bg-white border-stone-200',
+        isSelected && 'ring-2 ring-offset-1',
       )}
-      style={isToday ? { background: 'var(--c-bg)', borderColor: 'var(--c-solid)' } : undefined}
+      style={{
+        background: isToday ? 'var(--c-bg)' : undefined,
+        borderColor: isToday ? 'var(--c-solid)' : undefined,
+        ...(isSelected ? { ['--tw-ring-color' as string]: 'var(--c-solid)' } : {}),
+      }}
     >
       <div
         className={cn(
@@ -564,7 +598,114 @@ function DayCell({ exercise }: { exercise: DailyExercise }) {
         </div>
       )}
       {isTomorrow && <div className="text-[10px] text-stone-500 mt-1">Imorgon</div>}
-    </a>
+    </button>
+  )
+}
+
+function DayResourcePanel({
+  day,
+  exercise,
+}: {
+  day: number
+  exercise?: DailyExercise
+}) {
+  const resources = DAY_RESOURCES[day] ?? []
+  const articles = resources.filter((r) => r.kind === 'article')
+  const exercises = resources.filter((r) => r.kind === 'exercise')
+
+  if (!exercise) return null
+
+  return (
+    <div
+      className="mt-5 p-5 rounded-xl border"
+      style={{ background: 'var(--c-bg)', borderColor: 'var(--c-accent)' }}
+    >
+      <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
+        <div>
+          <div className="text-[11px] uppercase tracking-wide font-medium" style={{ color: 'var(--c-text)' }}>
+            Dag {day}
+          </div>
+          <h4 className="text-lg font-semibold text-stone-900 mt-0.5">{exercise.title}</h4>
+          {exercise.scheduledFor && (
+            <p className="text-sm text-stone-700 mt-1 flex items-center gap-1">
+              <Clock size={12} />
+              {exercise.scheduledFor} · ca {exercise.durationMin} min
+            </p>
+          )}
+          {exercise.reflection && (
+            <p className="text-sm text-stone-600 italic mt-2">
+              Din reflektion: <span className="text-stone-700">"{exercise.reflection}"</span>
+            </p>
+          )}
+        </div>
+      </div>
+
+      {articles.length > 0 && (
+        <div className="mt-4">
+          <h5 className="text-xs uppercase tracking-wide font-medium text-stone-500 mb-2 flex items-center gap-1">
+            <BookOpen size={12} />
+            Läs om dagens tema
+          </h5>
+          <div className="space-y-2">
+            {articles.map((r) => (
+              <ResourceLink key={r.id} resource={r} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {exercises.length > 0 && (
+        <div className="mt-4">
+          <h5 className="text-xs uppercase tracking-wide font-medium text-stone-500 mb-2 flex items-center gap-1">
+            <Activity size={12} />
+            Övning för dagen
+          </h5>
+          <div className="space-y-2">
+            {exercises.map((r) => (
+              <ResourceLink key={r.id} resource={r} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {resources.length === 0 && (
+        <p className="text-sm text-stone-600 mt-2">
+          Mer material för den här dagen kommer snart. Prata med {' '}
+          {PARTICIPANT_MOCK.consultant.name.split(' ')[0]} om du vill ha tips.
+        </p>
+      )}
+    </div>
+  )
+}
+
+function ResourceLink({ resource }: { resource: DayResource }) {
+  const href =
+    resource.kind === 'article'
+      ? `/knowledge-base/article/${resource.id}`
+      : `/exercises?id=${resource.id}`
+
+  return (
+    <Link
+      to={href}
+      className="flex items-start gap-3 p-3 rounded-lg bg-white border border-stone-200 hover:border-stone-300 hover:shadow-sm transition-all"
+    >
+      <div
+        className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0"
+        style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
+      >
+        {resource.kind === 'article' ? <BookOpen size={16} /> : <Activity size={16} />}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="font-medium text-stone-900 text-sm">{resource.label}</div>
+        {resource.context && <div className="text-xs text-stone-600 mt-0.5">{resource.context}</div>}
+        <div className="text-[11px] text-stone-500 mt-1 flex items-center gap-1">
+          <Clock size={10} />
+          {resource.estimate}
+          {resource.kind === 'article' ? ' · läsning' : ' · övning'}
+        </div>
+      </div>
+      <ChevronRight size={16} className="text-stone-400 flex-shrink-0 mt-1" />
+    </Link>
   )
 }
 
