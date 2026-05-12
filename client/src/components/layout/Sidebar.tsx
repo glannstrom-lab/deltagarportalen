@@ -24,7 +24,8 @@ import {
 } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { ChevronLeft, ChevronRight, LogOut, Settings } from '@/components/ui/icons'
+import { getProgram } from '@/lib/programs'
+import { ChevronLeft, ChevronRight, LogOut, Settings, Briefcase, UserCheck } from '@/components/ui/icons'
 
 interface SidebarProps {
   onClose?: () => void
@@ -230,6 +231,57 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
             ))}
           </>
         )}
+
+        {/* Project Section — visas bara när profile.program är satt (Steg till arbete / Rusta och Matcha) */}
+        {profile?.program && (() => {
+          const program = getProgram(profile.program)
+          if (!program) return null
+          // Vilka länkar visas? Deltagar-vy alltid; konsulent-vy om man har konsulent-roll.
+          const showConsultantLink = isConsultant
+          // STA-paths är hårdkodade för nu eftersom det är enda projektet med sidor.
+          // När fler projekt får sidor flyttas detta till programs.ts.
+          const participantPath = profile.program === 'steg_till_arbete' ? '/steg-till-arbete' : null
+          const consultantPath = profile.program === 'steg_till_arbete' ? '/konsulent/steg-till-arbete' : null
+          if (!participantPath) return null
+
+          return (
+            <div
+              data-domain="action"
+              className="mt-4 pt-3 border-t border-stone-100 dark:border-stone-800"
+            >
+              {!isCollapsed && (
+                <div className="px-2 mb-1 flex items-center gap-1.5">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]"
+                    aria-hidden="true"
+                  />
+                  <span className="text-xs font-semibold text-[var(--c-text)] uppercase tracking-wide">
+                    {program.label}
+                  </span>
+                </div>
+              )}
+              {isCollapsed && (
+                <div className="mx-2 mb-2 border-t border-stone-100 dark:border-stone-800" />
+              )}
+              <div className="space-y-0.5">
+                <NavLink
+                  to={participantPath}
+                  icon={Briefcase}
+                  label="Min resa"
+                  isActive={location.pathname === participantPath || location.pathname.startsWith(participantPath + '/')}
+                />
+                {showConsultantLink && consultantPath && (
+                  <NavLink
+                    to={consultantPath}
+                    icon={UserCheck}
+                    label="Konsulent-vy"
+                    isActive={location.pathname === consultantPath || location.pathname.startsWith(consultantPath + '/')}
+                  />
+                )}
+              </div>
+            </div>
+          )
+        })()}
 
         {/* Consultant Section — använder Reflection-domän (lila) */}
         {isConsultant && !isUser && (
