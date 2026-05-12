@@ -1,8 +1,15 @@
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { useConsultantStats, useEnrollmentBundle, useStaQuickNotes } from '@/hooks/useSta'
+import { useAuthStore } from '@/stores/authStore'
+import { staEnrollmentsApi, staActivitiesApi, type StaPart as ApiStaPart } from '@/services/staApi'
+import { DOC_TYPE_META } from '@/services/staAiApi'
+import { toParticipantRow, computeKpi, type EnrollmentStats } from './enrollmentDisplay'
+import { QuickNoteForm, formatTag } from './components/QuickNoteForm'
 import {
   Briefcase,
   Users,
@@ -59,47 +66,75 @@ export default function StaConsultant() {
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null)
   const [addParticipantOpen, setAddParticipantOpen] = useState(false)
   const [linkParticipantId, setLinkParticipantId] = useState<string | null>(null)
+  const { stats, isMock, loading, reload } = useConsultantStats()
 
-  const selectedParticipant = selectedParticipantId
-    ? CONSULTANT_PARTICIPANTS.find((p) => p.id === selectedParticipantId)
+  // Bygg dynamisk participant-lista från riktig data, falla tillbaka till mock
+  const realRows = useMemo(() => stats.map(toParticipantRow), [stats])
+  const kpi = useMemo(() => {
+    if (stats.length === 0) {
+      return { active: 0, perPart: { 1: 0, 2: 0, 3: 0, 4: 0 }, draftsToReview: 0, assessmentsInProgress: 0 }
+    }
+    return computeKpi(stats)
+  }, [stats])
+
+  // Vald deltagare — först letar vi i riktig data
+  const selectedStats = selectedParticipantId
+    ? stats.find((s) => s.enrollment.id === selectedParticipantId)
     : null
+  // Fallback för mock-rader om vi visar dem
+  const selectedMock =
+    !selectedStats && selectedParticipantId
+      ? CONSULTANT_PARTICIPANTS.find((p) => p.id === selectedParticipantId)
+      : null
 
   return (
     <PageLayout title="Steg till arbete — konsulent" showTabs={false} domain="action" showHeader={false}>
       <ConsultantHero onAdd={() => setAddParticipantOpen(true)} />
-      <KpiRow />
+      <KpiRow kpi={kpi} isMock={isMock} />
       <ConsultantTabs current={tab} onChange={setTab} />
 
       <div className="mt-6">
         {tab === 'oversikt' && (
           <OverviewTab
+            realRows={realRows}
+            isMock={isMock}
+            loading={loading}
             onOpenParticipant={setSelectedParticipantId}
             onLink={setLinkParticipantId}
+            onAdd={() => setAddParticipantOpen(true)}
           />
         )}
         {tab === 'deltagare' && (
           <ParticipantsTab
+            realRows={realRows}
+            isMock={isMock}
+            loading={loading}
             onOpen={setSelectedParticipantId}
             onLink={setLinkParticipantId}
             onAdd={() => setAddParticipantOpen(true)}
           />
         )}
-        {tab === 'skattningar' && <AssessmentsTab />}
+        {tab === 'skattningar' && <AssessmentsTab stats={stats} isMock={isMock} />}
         {tab === 'arbetsplatser' && <WorkplacesTab />}
-        {tab === 'dokument' && <DocumentsTab />}
+        {tab === 'dokument' && <DocumentsTab stats={stats} isMock={isMock} />}
       </div>
 
-      {selectedParticipant && (
+      {(selectedStats || selectedMock) && (
         <ParticipantDetailDrawer
-          participant={selectedParticipant}
+          stats={selectedStats}
+          mockParticipant={selectedMock ?? undefined}
           onClose={() => setSelectedParticipantId(null)}
           onLink={() => {
-            setLinkParticipantId(selectedParticipant.id)
+            const id = selectedStats?.enrollment.id ?? selectedMock?.id
+            if (id) setLinkParticipantId(id)
           }}
+          onChange={reload}
         />
       )}
 
-      {addParticipantOpen && <AddParticipantModal onClose={() => setAddParticipantOpen(false)} />}
+      {addParticipantOpen && (
+        <AddParticipantModal onClose={() => setAddParticipantOpen(false)} onCreated={reload} />
+      )}
 
       {linkParticipantId && (
         <LinkParticipantModal
@@ -151,29 +186,44 @@ function ConsultantHero({ onAdd }: { onAdd: () => void }) {
   )
 }
 
-function KpiRow() {
+function KpiRow({
+  kpi,
+  isMock,
+}: {
+  kpi: { active: number; perPart: Record<1 | 2 | 3 | 4, number>; draftsToReview: number; assessmentsInProgress: number }
+  isMock: boolean
+}) {
+  // Om vi inte har riktig data, visa mock-värdena så sidan känns levande
+  const data = isMock
+    ? {
+        active: CONSULTANT_KPI.active,
+        perPart: CONSULTANT_KPI.perPart,
+        draftsToReview: CONSULTANT_KPI.draftsToReview,
+        assessmentsInProgress: CONSULTANT_KPI.assessmentsInProgress,
+      }
+    : kpi
   return (
     <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
       <KpiCard
         label="Aktiva deltagare"
-        value={CONSULTANT_KPI.active}
-        subtext={`${CONSULTANT_KPI.perPart[1]} i Del 1 · ${CONSULTANT_KPI.perPart[2]} i Del 2 · ${CONSULTANT_KPI.perPart[3]} i Del 3 · ${CONSULTANT_KPI.perPart[4]} i Del 4`}
+        value={data.active}
+        subtext={`${data.perPart[1]} i Del 1 · ${data.perPart[2]} i Del 2 · ${data.perPart[3]} i Del 3 · ${data.perPart[4]} i Del 4`}
       />
       <KpiCard
         label="Deadlines denna vecka"
-        value={CONSULTANT_KPI.deadlinesThisWeek}
-        subtext={`${CONSULTANT_KPI.deadlinesToday} förfaller idag`}
-        subtextClass="text-red-700"
+        value={isMock ? CONSULTANT_KPI.deadlinesThisWeek : 0}
+        subtext={isMock ? `${CONSULTANT_KPI.deadlinesToday} förfaller idag` : 'Inga ännu'}
+        subtextClass={isMock ? 'text-red-700' : undefined}
       />
       <KpiCard
         label="Utkast att granska"
-        value={CONSULTANT_KPI.draftsToReview}
-        subtext="Delredovisning · 2 nya + 1 reviderad"
+        value={data.draftsToReview}
+        subtext={data.draftsToReview > 0 ? 'Granska och skicka' : 'Allt klart'}
       />
       <KpiCard
         label="Skattningar pågående"
-        value={CONSULTANT_KPI.assessmentsInProgress}
-        subtext="4 MOHOST · 2 AWP · 1 DOA"
+        value={data.assessmentsInProgress}
+        subtext={data.assessmentsInProgress > 0 ? 'Slutför i drawer' : 'Inga pågående'}
       />
     </section>
   )
@@ -224,14 +274,28 @@ function ConsultantTabs({ current, onChange }: { current: TabId; onChange: (t: T
 // ===========================================================================
 
 function OverviewTab({
+  realRows,
+  isMock,
+  loading,
   onOpenParticipant,
   onLink,
+  onAdd,
 }: {
+  realRows: StaParticipantRow[]
+  isMock: boolean
+  loading: boolean
   onOpenParticipant: (id: string) => void
   onLink: (id: string) => void
+  onAdd: () => void
 }) {
+  const rows = isMock ? CONSULTANT_PARTICIPANTS : realRows
+
   return (
     <div className="space-y-5">
+      {isMock && !loading && (
+        <EmptyDataBanner onAdd={onAdd} />
+      )}
+
       <DeadlinesCard />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -245,20 +309,43 @@ function OverviewTab({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-base font-semibold text-stone-900">Senaste deltagare</h3>
-            <p className="text-xs text-stone-500">Aktivitet de senaste 24 timmarna</p>
+            <p className="text-xs text-stone-500">
+              {isMock ? 'Demo-data — riktiga deltagare visas här när du lägger till dem' : 'Aktivitet de senaste 24 timmarna'}
+            </p>
           </div>
           <Button variant="ghost" size="sm" rightIcon={<ChevronRight size={14} />}>
             Se alla
           </Button>
         </div>
         <ParticipantsTable
-          rows={CONSULTANT_PARTICIPANTS.slice(0, 3)}
+          rows={rows.slice(0, 3)}
           onOpen={onOpenParticipant}
           onLink={onLink}
           showAddButton={false}
         />
       </Card>
     </div>
+  )
+}
+
+function EmptyDataBanner({ onAdd }: { onAdd: () => void }) {
+  return (
+    <Card variant="flat" padding="lg" style={{ background: 'var(--c-bg)' }}>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h3 className="text-base font-semibold text-stone-900 flex items-center gap-2">
+            <Sparkles size={16} style={{ color: 'var(--c-solid)' }} />
+            Inga deltagare än
+          </h3>
+          <p className="text-sm text-stone-700 mt-1 max-w-xl">
+            Sidan visar demo-data så du ser hur den är tänkt att fungera. Lägg till din första deltagare — antingen manuellt eller via en Jobin-inbjudan.
+          </p>
+        </div>
+        <Button variant="primary" leftIcon={<UserPlus size={14} />} onClick={onAdd}>
+          Lägg till första deltagaren
+        </Button>
+      </div>
+    </Card>
   )
 }
 
@@ -446,10 +533,16 @@ function BulkAttendanceCard() {
 // ===========================================================================
 
 function ParticipantsTab({
+  realRows,
+  isMock,
+  loading,
   onOpen,
   onLink,
   onAdd,
 }: {
+  realRows: StaParticipantRow[]
+  isMock: boolean
+  loading: boolean
   onOpen: (id: string) => void
   onLink: (id: string) => void
   onAdd: () => void
@@ -457,16 +550,24 @@ function ParticipantsTab({
   const [filterPart, setFilterPart] = useState<'all' | StaPart>('all')
   const [search, setSearch] = useState('')
 
+  const allRows = isMock ? CONSULTANT_PARTICIPANTS : realRows
+
   const rows = useMemo(() => {
-    return CONSULTANT_PARTICIPANTS.filter((p) => {
+    return allRows.filter((p) => {
       if (filterPart !== 'all' && p.currentPart !== filterPart) return false
       if (search && !p.fullName.toLowerCase().includes(search.toLowerCase())) return false
       return true
     })
-  }, [filterPart, search])
+  }, [allRows, filterPart, search])
 
   return (
     <Card variant="flat" padding="none" className="overflow-hidden">
+      {isMock && !loading && (
+        <div className="px-5 py-3 bg-stone-50 border-b border-stone-100 text-xs text-stone-600 flex items-center gap-2">
+          <Sparkles size={12} style={{ color: 'var(--c-solid)' }} />
+          Demo-data — riktiga deltagare visas här när du lägger till dem
+        </div>
+      )}
       <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between flex-wrap gap-3">
         <div>
           <h3 className="text-base font-semibold text-stone-900">Alla deltagare</h3>
@@ -667,15 +768,22 @@ function AssessmentChip({
 // ===========================================================================
 
 function ParticipantDetailDrawer({
-  participant,
+  stats,
+  mockParticipant,
   onClose,
   onLink,
+  onChange,
 }: {
-  participant: StaParticipantRow
+  stats?: EnrollmentStats | null
+  mockParticipant?: StaParticipantRow
   onClose: () => void
   onLink: () => void
+  onChange?: () => void
 }) {
   const [subTab, setSubTab] = useState<'oversikt' | 'aktivitet' | 'skattningar' | 'dokument' | 'anteckningar'>('oversikt')
+  // Härled participant från real data om vi har det, annars använd mock
+  const participant: StaParticipantRow = stats ? toParticipantRow(stats) : mockParticipant!
+  const realEnrollmentId = stats?.enrollment.id ?? null
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -783,10 +891,24 @@ function ParticipantDetailDrawer({
 
         <div className="px-6 py-5">
           {subTab === 'oversikt' && <DetailOverview participant={participant} />}
-          {subTab === 'aktivitet' && <DetailActivityLog />}
-          {subTab === 'skattningar' && <DetailAssessments />}
-          {subTab === 'dokument' && <DetailDocuments participantName={participant.fullName} />}
-          {subTab === 'anteckningar' && <DetailNotes />}
+          {subTab === 'aktivitet' && <DetailActivityLog stats={stats ?? undefined} />}
+          {subTab === 'skattningar' && (
+            <DetailAssessments enrollmentId={realEnrollmentId} stats={stats ?? undefined} />
+          )}
+          {subTab === 'dokument' && (
+            <DetailDocuments
+              participantName={participant.fullName}
+              enrollmentId={realEnrollmentId}
+              stats={stats ?? undefined}
+            />
+          )}
+          {subTab === 'anteckningar' && (
+            <DetailNotes
+              enrollmentId={realEnrollmentId}
+              consultantName={participant.fullName}
+              onChange={onChange}
+            />
+          )}
         </div>
       </aside>
     </div>
@@ -875,7 +997,57 @@ function QuickAction({ icon, label }: { icon: React.ReactNode; label: string }) 
   )
 }
 
-function DetailActivityLog() {
+function DetailActivityLog({ stats }: { stats?: EnrollmentStats }) {
+  // Använd riktig aktivitetslogg om vi har den
+  if (stats) {
+    const recent = [...stats.activities]
+      .filter((a) => a.completed_at || a.scheduled_for)
+      .sort((a, b) => {
+        const aT = a.completed_at ?? a.scheduled_for ?? ''
+        const bT = b.completed_at ?? b.scheduled_for ?? ''
+        return bT.localeCompare(aT)
+      })
+      .slice(0, 20)
+
+    return (
+      <div>
+        <h4 className="text-sm font-semibold text-stone-900 mb-3">Aktivitetslogg</h4>
+        {recent.length === 0 ? (
+          <p className="text-sm text-stone-500">Ingen aktivitet ännu — väntar på första genomförda dag eller samtal.</p>
+        ) : (
+          <ol className="border-l-2 border-stone-200 ml-3 space-y-3">
+            {recent.map((entry) => {
+              const dateStr = entry.completed_at ?? entry.scheduled_for ?? ''
+              const displayDate = dateStr ? new Date(dateStr).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : ''
+              const highlight = !!entry.completed_at
+              return (
+                <li key={entry.id} className="pl-4 relative">
+                  <span
+                    className={cn(
+                      'absolute -left-[7px] top-1.5 w-3 h-3 rounded-full',
+                      highlight ? '' : 'bg-stone-300',
+                    )}
+                    style={highlight ? { background: 'var(--c-solid)' } : undefined}
+                  />
+                  <div className="text-sm font-medium text-stone-900">
+                    {entry.activity_key ?? entry.activity_type}
+                  </div>
+                  <div className="text-xs text-stone-500">
+                    {displayDate} · {entry.activity_type}{entry.attendance ? ` · ${entry.attendance}` : ''}
+                  </div>
+                  {entry.participant_reflection && (
+                    <p className="text-xs text-stone-600 italic mt-1">"{entry.participant_reflection.slice(0, 150)}"</p>
+                  )}
+                </li>
+              )
+            })}
+          </ol>
+        )}
+      </div>
+    )
+  }
+
+  // Fallback för mock
   return (
     <div>
       <h4 className="text-sm font-semibold text-stone-900 mb-3">Aktivitet den senaste veckan</h4>
@@ -900,15 +1072,58 @@ function DetailActivityLog() {
   )
 }
 
-function DetailAssessments() {
+function DetailAssessments({
+  enrollmentId,
+  stats,
+}: {
+  enrollmentId: string | null
+  stats?: EnrollmentStats
+}) {
+  if (!enrollmentId || !stats) {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-stone-600">
+          Demo-data — riktiga skattningar visas här när du startat en.
+        </p>
+        {CONSULTANT_ASSESSMENTS.filter((a) => a.participantInitials === 'AK').map((a) => (
+          <AssessmentDetailRow key={a.id} row={a} />
+        ))}
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-3">
       <p className="text-sm text-stone-600">
-        Här ser du alla instrumentskattningar för denna deltagare. Klicka på en för att öppna formuläret.
+        Alla instrumentskattningar för Del {stats.enrollment.current_part}. Skattningarna sparas mot enrollment-id <code className="text-[10px]">{enrollmentId.slice(0, 8)}</code>.
       </p>
-      {CONSULTANT_ASSESSMENTS.filter((a) => a.participantInitials === 'AK').map((a) => (
-        <AssessmentDetailRow key={a.id} row={a} />
-      ))}
+      {stats.assessments.length === 0 ? (
+        <Card variant="flat" padding="md" className="bg-stone-50">
+          <p className="text-sm text-stone-600 mb-2">
+            Inga skattningar startade än. Per del rekommenderas:
+          </p>
+          <ul className="text-xs text-stone-600 list-disc list-inside">
+            <li>Del 1: DOA, WRI, MOHOST</li>
+            <li>Del 2: AWP × 3, MOHOST</li>
+            <li>Del 3-4: AWC, AWP, DOA, MOHOST</li>
+          </ul>
+        </Card>
+      ) : (
+        stats.assessments.map((a) => (
+          <AssessmentDetailRow
+            key={a.id}
+            row={{
+              id: a.id,
+              participantName: stats.enrollment.external_name ?? '',
+              participantInitials: '',
+              instrument: a.instrument,
+              part: a.part,
+              progress: a.scores ? Math.round((Object.keys(a.scores as object).length / 13) * 100) : 0,
+              status: a.status === 'complete' ? 'complete' : a.scores && Object.keys(a.scores).length > 0 ? 'in_progress' : 'pending',
+            }}
+          />
+        ))
+      )}
     </div>
   )
 }
@@ -938,58 +1153,222 @@ function AssessmentDetailRow({ row }: { row: typeof CONSULTANT_ASSESSMENTS[numbe
   )
 }
 
-function DetailDocuments({ participantName }: { participantName: string }) {
+function DetailDocuments({
+  participantName,
+  enrollmentId,
+  stats,
+}: {
+  participantName: string
+  enrollmentId: string | null
+  stats?: EnrollmentStats
+}) {
+  const navigate = useNavigate()
+  const goTo = (docType: keyof typeof DOC_TYPE_META) => {
+    if (!enrollmentId) {
+      // För demo: navigera till en placeholder
+      return
+    }
+    navigate(`/konsulent/steg-till-arbete/dokument/${enrollmentId}/${docType}`)
+  }
+
+  // Tillgängliga dokumenttyper för aktuell del
+  const docTypesForPart: Array<{ key: keyof typeof DOC_TYPE_META; label: string }> = stats
+    ? (() => {
+        const part = stats.enrollment.current_part
+        const list: Array<{ key: keyof typeof DOC_TYPE_META; label: string }> = []
+        if (part === 1) list.push({ key: 'initial_planering', label: 'Initial planering' })
+        list.push({ key: `delredovisning_${part}` as keyof typeof DOC_TYPE_META, label: `Delredovisning Del ${part}` })
+        if (part >= 3) list.push({ key: 'anmalan_arbetsprovning', label: 'Anmälan arbetsprövning' })
+        if (part >= 3) list.push({ key: 'information_arbetsprovning', label: 'Information från arbetsprövningsplats' })
+        return list
+      })()
+    : [
+        { key: 'initial_planering', label: 'Initial planering' },
+        { key: 'delredovisning_1', label: 'Delredovisning Del 1' },
+      ]
+
+  const existing = stats?.documents ?? []
+
   return (
     <div className="space-y-3">
-      <p className="text-sm text-stone-600">Dokument kopplade till {participantName}.</p>
-      {[
-        { type: 'Initial planering', status: 'Inskickad', date: '2 maj' },
-        { type: 'Delredovisning Del 1', status: 'AI-utkast', date: 'Påbörjat idag', aiDrafted: true },
-      ].map((d) => (
-        <div key={d.type} className="p-3 rounded-lg border border-stone-200 flex items-center justify-between gap-3 flex-wrap">
-          <div>
-            <div className="font-medium text-stone-900 text-sm flex items-center gap-2">
-              {d.type}
-              {d.aiDrafted && (
-                <span
-                  className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
-                  style={{ background: 'var(--c-solid)' }}
-                >
-                  AI
-                </span>
-              )}
-            </div>
-            <div className="text-xs text-stone-500">
-              {d.status} · {d.date}
-            </div>
-          </div>
-          <Button variant="secondary" size="sm">Öppna</Button>
+      <p className="text-sm text-stone-600">
+        Dokument för {participantName}. Klicka för att öppna AI-utkast-arbetsytan och ladda ner PDF.
+      </p>
+
+      {existing.length > 0 && (
+        <div className="space-y-2">
+          <div className="text-xs uppercase tracking-wide font-medium text-stone-500">Påbörjade</div>
+          {existing.map((d) => {
+            const meta = DOC_TYPE_META[d.doc_type]
+            const status =
+              d.status === 'submitted'
+                ? 'Inskickad'
+                : d.status === 'approved'
+                ? 'Godkänd'
+                : d.ai_drafted
+                ? 'AI-utkast pågående'
+                : 'Utkast'
+            return (
+              <div
+                key={d.id}
+                className="p-3 rounded-lg border border-stone-200 flex items-center justify-between gap-3 flex-wrap"
+              >
+                <div>
+                  <div className="font-medium text-stone-900 text-sm flex items-center gap-2">
+                    {meta.title}
+                    {d.ai_drafted && (
+                      <span
+                        className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
+                        style={{ background: 'var(--c-solid)' }}
+                      >
+                        <Bot size={10} />
+                        AI
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-stone-500">{status}</div>
+                </div>
+                <Button variant="secondary" size="sm" onClick={() => goTo(d.doc_type)}>
+                  Öppna
+                </Button>
+              </div>
+            )
+          })}
         </div>
-      ))}
-      <Button variant="primary" leftIcon={<Plus size={14} />}>Nytt dokument</Button>
+      )}
+
+      <div className="space-y-2">
+        <div className="text-xs uppercase tracking-wide font-medium text-stone-500">Skapa nytt</div>
+        {docTypesForPart.map((d) => (
+          <div
+            key={d.key}
+            className="p-3 rounded-lg border border-stone-200 flex items-center justify-between gap-3 flex-wrap"
+          >
+            <div>
+              <div className="font-medium text-stone-900 text-sm">{d.label}</div>
+              <div className="text-xs text-stone-500">
+                Generera AI-utkast → ladda ner PDF
+              </div>
+            </div>
+            <Button
+              variant="primary"
+              size="sm"
+              disabled={!enrollmentId}
+              leftIcon={<Bot size={14} />}
+              onClick={() => goTo(d.key)}
+            >
+              Öppna arbetsyta
+            </Button>
+          </div>
+        ))}
+      </div>
+
+      {!enrollmentId && (
+        <p className="text-xs text-stone-500">
+          Demo-data — dokument-arbetsytan öppnas för riktiga deltagare.
+        </p>
+      )}
     </div>
   )
 }
 
-function DetailNotes() {
+function DetailNotes({
+  enrollmentId,
+  consultantName,
+  onChange,
+}: {
+  enrollmentId: string | null
+  consultantName?: string
+  onChange?: () => void
+}) {
+  const { notes, createNote, deleteNote, loading } = useStaQuickNotes(enrollmentId)
+
+  // Mock-fallback om vi inte har riktig enrollment
+  if (!enrollmentId) {
+    return (
+      <div className="space-y-4">
+        <QuickNoteForm
+          onSubmit={async () => {
+            // Demo: bara visa feedback
+            return null
+          }}
+        />
+        <div className="border-t border-stone-100 pt-4 space-y-3">
+          <NoteEntry author="Erik Lindgren" date="12 maj 14:20" text="Demo: riktiga anteckningar sparas till deltagarens enrollment när du lagt till hen." />
+          <NoteEntry author="Erik Lindgren" date="8 maj 09:30" text="Stress över ekonomi noterad i reflektion. Föreslå hälsoskola-modul nästa vecka." shared />
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4">
-      <textarea
-        rows={3}
-        placeholder="Skriv en anteckning. Du kan välja om den ska delas med deltagaren."
-        className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm"
+      <QuickNoteForm
+        onSubmit={async (input) => {
+          const created = await createNote(input)
+          onChange?.()
+          return created
+        }}
       />
-      <div className="flex items-center gap-3 flex-wrap">
-        <label className="flex items-center gap-2 text-sm text-stone-700">
-          <input type="checkbox" className="w-4 h-4 rounded" />
-          Dela med deltagaren
-        </label>
-        <Button variant="primary" size="sm" leftIcon={<Send size={14} />}>Spara</Button>
-      </div>
 
       <div className="border-t border-stone-100 pt-4 space-y-3">
-        <NoteEntry author="Erik Lindgren" date="12 maj 14:20" text="Anna verkar mer pigg idag. Föreslog att vi flyttar Dag 7 (sömn) tidigare i veckan." />
-        <NoteEntry author="Erik Lindgren" date="8 maj 09:30" text="Stress över ekonomi noterad i reflektion. Föreslå hälsoskola-modul nästa vecka." shared />
+        <div className="text-xs uppercase tracking-wide font-medium text-stone-500 mb-1">
+          Senaste anteckningar ({notes.length})
+        </div>
+        {loading && <p className="text-xs text-stone-500">Laddar...</p>}
+        {!loading && notes.length === 0 && (
+          <p className="text-sm text-stone-600">Inga anteckningar än. Skriv en ovan eller spela in med röst.</p>
+        )}
+        {notes.map((n) => (
+          <div key={n.id} className="p-3 rounded-lg bg-stone-50">
+            <div className="flex items-center justify-between gap-2 mb-1">
+              <div className="text-xs font-medium text-stone-700">{consultantName ?? 'Konsulent'}</div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-stone-500">
+                  {new Date(n.created_at).toLocaleString('sv-SE', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}
+                </span>
+                {n.visibility === 'shared_with_participant' && (
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-700">
+                    Delad
+                  </span>
+                )}
+                {n.visibility === 'shared_in_report' && (
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] bg-stone-200 text-stone-700">
+                    I rapport
+                  </span>
+                )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (confirm('Radera anteckningen?')) {
+                      void deleteNote(n.id)
+                    }
+                  }}
+                  className="text-xs text-stone-400 hover:text-rose-700"
+                  aria-label="Radera"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+            {n.body && <p className="text-sm text-stone-800">{n.body}</p>}
+            {n.voice_transcript && (
+              <p className="text-sm text-stone-700 italic mt-1">🎙 {n.voice_transcript}</p>
+            )}
+            {n.tags && n.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {n.tags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] bg-white border border-stone-200 text-stone-700"
+                  >
+                    {formatTag(tag)}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   )
@@ -1018,7 +1397,44 @@ function NoteEntry({ author, date, text, shared }: { author: string; date: strin
 // ASSESSMENTS TAB
 // ===========================================================================
 
-function AssessmentsTab() {
+function AssessmentsTab({
+  stats,
+  isMock,
+}: {
+  stats: EnrollmentStats[]
+  isMock: boolean
+}) {
+  // Bygg en flat lista av alla skattningar (med deltagaren) — om vi har riktig data
+  const realAssessmentRows = useMemo(() => {
+    if (isMock) return null
+    return stats.flatMap((s) =>
+      s.assessments.map((a) => ({
+        id: a.id,
+        participantName: s.enrollment.external_name ?? 'Jobin-deltagare',
+        participantInitials: (s.enrollment.external_name ?? 'JD')
+          .split(' ')
+          .map((p) => p[0])
+          .slice(0, 2)
+          .join('')
+          .toUpperCase(),
+        instrument: a.instrument,
+        part: a.part,
+        progress:
+          a.status === 'complete'
+            ? 100
+            : a.scores
+            ? Math.round((Object.keys(a.scores as object).length / 13) * 100)
+            : 0,
+        status: a.status === 'complete' ? ('complete' as const) : a.status === 'draft' && a.scores && Object.keys(a.scores).length > 0 ? ('in_progress' as const) : ('pending' as const),
+        dueLabel: undefined as string | undefined,
+        dueLevel: undefined as 'red' | 'amber' | 'green' | undefined,
+      })),
+    )
+  }, [stats, isMock])
+
+  const rows = realAssessmentRows && realAssessmentRows.length > 0 ? realAssessmentRows : CONSULTANT_ASSESSMENTS
+  void rows // existing JSX uses CONSULTANT_ASSESSMENTS still — wire below
+
   return (
     <Card variant="flat" padding="none" className="overflow-hidden">
       <div className="px-5 py-4 border-b border-stone-100">
@@ -1162,7 +1578,33 @@ function WorkplaceCard({ workplace }: { workplace: typeof CONSULTANT_WORKPLACES[
 // DOCUMENTS TAB
 // ===========================================================================
 
-function DocumentsTab() {
+function DocumentsTab({
+  stats,
+  isMock,
+}: {
+  stats: EnrollmentStats[]
+  isMock: boolean
+}) {
+  const navigate = useNavigate()
+
+  // Riktiga dokument-utkast — flata listan per deltagare
+  const realDrafts = useMemo(
+    () =>
+      stats.flatMap((s) =>
+        s.documents
+          .filter((d) => d.status === 'draft' || d.status === 'consultant_review')
+          .map((d) => ({
+            id: d.id,
+            doc_type: d.doc_type,
+            title: DOC_TYPE_META[d.doc_type].title,
+            participantName: s.enrollment.external_name ?? 'Jobin-deltagare',
+            enrollmentId: s.enrollment.id,
+            aiDrafted: d.ai_drafted,
+          })),
+      ),
+    [stats],
+  )
+
   return (
     <div className="space-y-5">
       <Card variant="flat" padding="lg">
@@ -1171,52 +1613,99 @@ function DocumentsTab() {
           Initial planering, delredovisning, slutredovisning och information från arbetsprövningsplats. AI-utkast genereras från
           deltagarens loggade aktiviteter och skattningar — granska alltid innan inskick.
         </p>
-        <ul className="space-y-2">
-          {CONSULTANT_DRAFTS.map((d) => (
-            <li key={d.id} className="p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <div>
-                  <div className="text-sm font-medium text-stone-900 flex items-center gap-2">
-                    {d.title} — {d.participantName}
-                    {d.aiDrafted && (
-                      <span
-                        className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
-                        style={{ background: 'var(--c-solid)' }}
-                      >
-                        <Bot size={10} />
-                        AI
-                      </span>
-                    )}
+
+        {!isMock && realDrafts.length === 0 && (
+          <Card variant="flat" padding="md" className="bg-stone-50">
+            <p className="text-sm text-stone-600">
+              Inga utkast än. Öppna en deltagare och klicka på &quot;Skapa Delredovisning Del 1&quot; för att starta.
+            </p>
+          </Card>
+        )}
+
+        {!isMock && realDrafts.length > 0 && (
+          <ul className="space-y-2">
+            {realDrafts.map((d) => (
+              <li key={d.id} className="p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div>
+                    <div className="text-sm font-medium text-stone-900 flex items-center gap-2">
+                      {d.title} — {d.participantName}
+                      {d.aiDrafted && (
+                        <span
+                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
+                          style={{ background: 'var(--c-solid)' }}
+                        >
+                          <Bot size={10} />
+                          AI
+                        </span>
+                      )}
+                    </div>
                   </div>
-                  <div className="text-xs text-stone-500">{d.subtext}</div>
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => navigate(`/konsulent/steg-till-arbete/dokument/${d.enrollmentId}/${d.doc_type}`)}
+                  >
+                    Öppna
+                  </Button>
                 </div>
-                <div className="flex gap-2 items-center">
-                  <DueChip level={d.dueLevel} label={d.due} />
-                  <Button variant="primary" size="sm">Öppna</Button>
+              </li>
+            ))}
+          </ul>
+        )}
+
+        {isMock && (
+          <ul className="space-y-2">
+            {CONSULTANT_DRAFTS.map((d) => (
+              <li key={d.id} className="p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div>
+                    <div className="text-sm font-medium text-stone-900 flex items-center gap-2">
+                      {d.title} — {d.participantName}
+                      {d.aiDrafted && (
+                        <span
+                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
+                          style={{ background: 'var(--c-solid)' }}
+                        >
+                          <Bot size={10} />
+                          AI
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-stone-500">{d.subtext}</div>
+                  </div>
+                  <div className="flex gap-2 items-center">
+                    <DueChip level={d.dueLevel} label={d.due} />
+                    <Button variant="primary" size="sm">Öppna</Button>
+                  </div>
                 </div>
-              </div>
-            </li>
-          ))}
-        </ul>
+              </li>
+            ))}
+          </ul>
+        )}
       </Card>
 
       <Card variant="flat" padding="lg">
         <h3 className="text-base font-semibold text-stone-900 mb-3">Mallar</h3>
+        <p className="text-xs text-stone-500 mb-3">
+          Tillgängliga dokumenttyper. Öppna en deltagare och klicka &quot;Skapa&quot; för att starta från en av dessa.
+        </p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {[
-            { title: 'Initial planering', subtitle: 'Genereras från startsamtal + DOA' },
-            { title: 'Delredovisning', subtitle: 'Per del — sammanställer aktiviteter + skattningar' },
-            { title: 'Slutredovisning', subtitle: 'Efter Del 3 — fullständig dokumentation' },
+            { title: 'Initial planering', subtitle: 'Genereras från startsamtal + DOA · Del 1' },
+            { title: 'Delredovisning Del 1', subtitle: 'Aktiviteter + DOA/WRI/MOHOST → AF Af 00825' },
+            { title: 'Delredovisning Del 2', subtitle: 'Arbetsstationer + AWP/MOHOST → AF Af 00826' },
+            { title: 'Delredovisning Del 3', subtitle: 'Arbetsprövning + skattningar → AF Af 00827' },
+            { title: 'Slutredovisning Del 4', subtitle: 'Slutbedömning → AF Af 00828' },
             { title: 'Information från arbetsprövningsplats', subtitle: 'Bilaga med AWC/AWP' },
           ].map((t) => (
-            <button
+            <div
               key={t.title}
-              type="button"
-              className="text-left p-3 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors"
+              className="p-3 rounded-lg border border-stone-200"
             >
               <div className="font-medium text-stone-900 text-sm">{t.title}</div>
               <div className="text-xs text-stone-500">{t.subtitle}</div>
-            </button>
+            </div>
           ))}
         </div>
       </Card>
@@ -1228,13 +1717,52 @@ function DocumentsTab() {
 // ADD PARTICIPANT MODAL
 // ===========================================================================
 
-function AddParticipantModal({ onClose }: { onClose: () => void }) {
+function AddParticipantModal({ onClose, onCreated }: { onClose: () => void; onCreated?: () => void }) {
+  const { profile } = useAuthStore()
   const [mode, setMode] = useState<'manual' | 'invite'>('manual')
   const [fullName, setFullName] = useState('')
   const [personalId, setPersonalId] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [startPart, setStartPart] = useState<StaPart>(1)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSave = async () => {
+    if (!profile?.id) {
+      setError('Du måste vara inloggad.')
+      return
+    }
+    if (!fullName.trim()) {
+      setError('Namn krävs.')
+      return
+    }
+    setSaving(true)
+    setError(null)
+    try {
+      const today = new Date().toISOString().slice(0, 10)
+      await staEnrollmentsApi.create({
+        consultant_id: profile.id,
+        started_at: today,
+        part_started_at: today,
+        current_part: startPart as ApiStaPart,
+        external_name: fullName.trim(),
+        external_email: email.trim() || undefined,
+        external_phone: phone.trim() || undefined,
+        external_personal_id: mode === 'manual' ? personalId.trim() || undefined : undefined,
+        link_status: mode === 'invite' ? 'invited' : 'unlinked',
+        status: 'active',
+        language_support: [],
+        communication_support: [],
+      })
+      onCreated?.()
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Kunde inte spara deltagare')
+    } finally {
+      setSaving(false)
+    }
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -1360,9 +1888,22 @@ function AddParticipantModal({ onClose }: { onClose: () => void }) {
           </details>
         </div>
 
+        {error && (
+          <div className="px-6 py-2 bg-rose-50 text-sm text-rose-800 flex items-center gap-2">
+            <AlertTriangle size={14} />
+            {error}
+          </div>
+        )}
+
         <div className="px-6 py-4 border-t border-stone-100 flex items-center justify-end gap-2 bg-stone-50">
-          <Button variant="ghost" onClick={onClose}>Avbryt</Button>
-          <Button variant="primary" leftIcon={mode === 'invite' ? <Send size={14} /> : <UserPlus size={14} />}>
+          <Button variant="ghost" onClick={onClose} disabled={saving}>Avbryt</Button>
+          <Button
+            variant="primary"
+            leftIcon={mode === 'invite' ? <Send size={14} /> : <UserPlus size={14} />}
+            onClick={handleSave}
+            isLoading={saving}
+            disabled={!fullName.trim()}
+          >
             {mode === 'invite' ? 'Skicka inbjudan' : 'Lägg till manuellt'}
           </Button>
         </div>

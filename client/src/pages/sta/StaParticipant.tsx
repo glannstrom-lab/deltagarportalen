@@ -1,9 +1,18 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { PageLayout } from '@/components/layout/index'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import {
+  useParticipantEnrollment,
+  useStaPulseChecks,
+  useStaWeeklyCheckin,
+  useStaActivities,
+  getCurrentWeekMonday,
+} from '@/hooks/useSta'
+import { PulseCheckWidget } from './components/PulseCheckWidget'
+import { WeeklyCheckinForm } from './components/WeeklyCheckinForm'
 import {
   Briefcase,
   Calendar,
@@ -55,7 +64,45 @@ export default function StaParticipant() {
   const firstName = profile?.first_name || PARTICIPANT_MOCK.firstName
   const [tab, setTab] = useState<TabId>('oversikt')
 
-  const mock = { ...PARTICIPANT_MOCK, firstName }
+  // Försök hämta riktig enrollment
+  const { enrollment } = useParticipantEnrollment()
+
+  // För nu: räkna ut antal klara dagar från riktig aktivitetslogg om vi har den,
+  // annars använd mock. Andra fält (week plan, today activity, strengths)
+  // genereras härefter — i en senare iteration kommer dessa också från DB.
+  const { activities, markDayComplete } = useStaActivities(enrollment?.id ?? null, 1)
+  const completedKeys = useMemo(
+    () => new Set(activities.filter((a) => a.completed_at).map((a) => a.activity_key)),
+    [activities],
+  )
+
+  // Bygg viewModel: om enrollment finns, härled current_day från completed-count;
+  // annars använd mock (Anna är på dag 8 av 21).
+  const viewModel = useMemo(() => {
+    if (!enrollment) {
+      return { ...PARTICIPANT_MOCK, firstName }
+    }
+    const completedDays = activities.filter(
+      (a) => a.completed_at && a.activity_key?.startsWith('dag-'),
+    ).length
+    return {
+      ...PARTICIPANT_MOCK,
+      firstName,
+      currentPart: enrollment.current_part,
+      currentDay: Math.min(completedDays + 1, 21),
+      focusOccupation: enrollment.focus_occupation,
+      // Uppdatera dagsslingan-statusar baserat på vad som är klart i DB
+      dailyExercises: PARTICIPANT_MOCK.dailyExercises.map((d) => {
+        const key = `dag-${d.day}`
+        if (completedKeys.has(key)) return { ...d, status: 'completed' as const }
+        if (d.day === completedDays + 1) return { ...d, status: 'today' as const }
+        if (d.day === completedDays + 2) return { ...d, status: 'tomorrow' as const }
+        return { ...d, status: 'upcoming' as const }
+      }),
+    }
+  }, [enrollment, activities, completedKeys, firstName])
+
+  const mock = viewModel
 
   return (
     <PageLayout title="Steg till arbete" showTabs={false} domain="action" showHeader={false}>
@@ -63,8 +110,16 @@ export default function StaParticipant() {
       <STaTabs current={tab} onChange={setTab} currentPart={mock.currentPart} />
 
       <div className="mt-6">
-        {tab === 'oversikt' && <STaOverview mock={mock} onJumpToTab={setTab} />}
-        {tab === 'del-1' && <STaDel1 mock={mock} />}
+        {tab === 'oversikt' && (
+          <STaOverview mock={mock} onJumpToTab={setTab} enrollmentId={enrollment?.id ?? null} />
+        )}
+        {tab === 'del-1' && (
+          <STaDel1
+            mock={mock}
+            enrollmentId={enrollment?.id ?? null}
+            onMarkDayComplete={markDayComplete}
+          />
+        )}
         {tab === 'del-2' && <STaDel2 mock={mock} />}
         {tab === 'del-3' && <STaDel3 mock={mock} />}
         {tab === 'del-4' && <STaDel4 mock={mock} />}
@@ -210,10 +265,22 @@ function STaTabs({
 function STaOverview({
   mock,
   onJumpToTab,
+  enrollmentId,
 }: {
   mock: typeof PARTICIPANT_MOCK
   onJumpToTab: (tab: TabId) => void
+  enrollmentId: string | null
 }) {
+  const { hasToday, submitToday } = useStaPulseChecks(enrollmentId)
+  const { checkins, submitForWeek } = useStaWeeklyCheckin(enrollmentId)
+  const currentMonday = getCurrentWeekMonday()
+  const existingThisWeek = checkins.find((c) => c.week_starts === currentMonday)
+
+  // Visa veckoavslutning från och med torsdag eftermiddag
+  const now = new Date()
+  const dayOfWeek = now.getDay() // 0=sön 1=mån ... 4=tor 5=fre 6=lör
+  const showWeeklyCheckin = dayOfWeek >= 4 || dayOfWeek === 0
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       {/* Today */}
@@ -356,6 +423,24 @@ function STaOverview({
           ))}
         </ul>
       </Card>
+
+      {/* Pulse-check (daglig) — endast om vi har riktig enrollment */}
+      {enrollmentId && (
+        <div className="lg:col-span-2">
+          <PulseCheckWidget hasToday={hasToday} onSubmit={submitToday} />
+        </div>
+      )}
+
+      {/* Veckoavslutning — torsdag-söndag, riktig enrollment */}
+      {enrollmentId && showWeeklyCheckin && (
+        <div className="lg:col-span-3">
+          <WeeklyCheckinForm
+            existingForThisWeek={existingThisWeek}
+            onSubmit={submitForWeek}
+            consultantFirstName={mock.consultant.name.split(' ')[0]}
+          />
+        </div>
+      )}
     </div>
   )
 }
@@ -417,7 +502,15 @@ function WeekPlanRow({ item }: { item: typeof PARTICIPANT_MOCK.weekPlan[number] 
 // DEL 1 — Lära känna dig
 // ===========================================================================
 
-function STaDel1({ mock }: { mock: typeof PARTICIPANT_MOCK }) {
+function STaDel1({
+  mock,
+  enrollmentId,
+  onMarkDayComplete,
+}: {
+  mock: typeof PARTICIPANT_MOCK
+  enrollmentId?: string | null
+  onMarkDayComplete?: (activityKey: string, reflection?: string) => Promise<unknown>
+}) {
   // Default: visa idag som vald dag, om den finns
   const initialDay = mock.dailyExercises.find((d) => d.status === 'today')?.day ?? null
   const [selectedDay, setSelectedDay] = useState<number | null>(initialDay)
@@ -513,6 +606,8 @@ function STaDel1({ mock }: { mock: typeof PARTICIPANT_MOCK }) {
             <DayResourcePanel
               day={selectedDay}
               exercise={mock.dailyExercises.find((d) => d.day === selectedDay)}
+              enrollmentId={enrollmentId ?? null}
+              onMarkDayComplete={onMarkDayComplete}
             />
           )}
         </ActivitySection>
@@ -731,15 +826,34 @@ function DayCell({
 function DayResourcePanel({
   day,
   exercise,
+  enrollmentId,
+  onMarkDayComplete,
 }: {
   day: number
   exercise?: DailyExercise
+  enrollmentId?: string | null
+  onMarkDayComplete?: (activityKey: string, reflection?: string) => Promise<unknown>
 }) {
+  const [marking, setMarking] = useState(false)
+  const [reflection, setReflection] = useState('')
   const resources = DAY_RESOURCES[day] ?? []
   const articles = resources.filter((r) => r.kind === 'article')
   const exercises = resources.filter((r) => r.kind === 'exercise')
 
   if (!exercise) return null
+
+  const isDone = exercise.status === 'completed'
+
+  const handleMarkDone = async () => {
+    if (!enrollmentId || !onMarkDayComplete) return
+    setMarking(true)
+    try {
+      await onMarkDayComplete(`dag-${day}`, reflection.trim() || undefined)
+      setReflection('')
+    } finally {
+      setMarking(false)
+    }
+  }
 
   return (
     <div
@@ -799,6 +913,32 @@ function DayResourcePanel({
           Mer material för den här dagen kommer snart. Prata med {' '}
           {PARTICIPANT_MOCK.consultant.name.split(' ')[0]} om du vill ha tips.
         </p>
+      )}
+
+      {/* Markera-klar-knapp + reflektion (endast om vi har riktig enrollment och dagen ej redan klar) */}
+      {enrollmentId && !isDone && (
+        <div className="mt-4 p-3 rounded-lg bg-white border border-stone-200">
+          <h5 className="text-xs uppercase tracking-wide font-medium text-stone-500 mb-2">
+            När du är klar
+          </h5>
+          <textarea
+            value={reflection}
+            onChange={(e) => setReflection(e.target.value)}
+            placeholder="En kort reflektion (frivilligt) — vad tar du med dig från dagen?"
+            rows={2}
+            className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm mb-2 focus:outline-none focus:ring-2 focus:ring-stone-200"
+          />
+          <Button variant="primary" size="sm" onClick={handleMarkDone} isLoading={marking} leftIcon={<CheckCircle2 size={14} />}>
+            Markera Dag {day} som klar
+          </Button>
+        </div>
+      )}
+
+      {enrollmentId && isDone && (
+        <div className="mt-4 p-3 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center gap-2 text-sm text-emerald-800">
+          <CheckCircle2 size={14} />
+          Klart — fortsätt i din egen takt.
+        </div>
       )}
     </div>
   )

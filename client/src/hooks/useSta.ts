@@ -93,6 +93,58 @@ export function useConsultantEnrollments() {
 }
 
 // =============================================================================
+// useConsultantStats — alla konsulentens deltagare med beräknade stats
+// (används för listan + KPI-rad — undviker N+1-queries genom batch-fetch)
+// =============================================================================
+export interface EnrollmentStatsRecord {
+  enrollment: StaEnrollment
+  activities: import('@/services/staApi').StaActivity[]
+  assessments: import('@/services/staApi').StaAssessment[]
+  documents: import('@/services/staApi').StaDocument[]
+  quickNotes: import('@/services/staApi').StaQuickNote[]
+}
+
+export function useConsultantStats() {
+  const [stats, setStats] = useState<EnrollmentStatsRecord[]>([])
+  const [state, setState] = useState<StaDataState>({ loading: true, error: null, isMock: false })
+
+  const reload = useCallback(async () => {
+    setState({ loading: true, error: null, isMock: false })
+    try {
+      const enrollments = await staEnrollmentsApi.listForConsultant()
+      if (enrollments.length === 0) {
+        setStats([])
+        setState({ loading: false, error: null, isMock: true })
+        return
+      }
+      // Hämta alla relaterade tabeller parallellt per enrollment
+      const results = await Promise.all(
+        enrollments.map(async (enrollment) => {
+          const [activities, assessments, documents, quickNotes] = await Promise.all([
+            staActivitiesApi.list(enrollment.id),
+            staAssessmentsApi.list(enrollment.id),
+            staDocumentsApi.list(enrollment.id),
+            staQuickNotesApi.list(enrollment.id, 20),
+          ])
+          return { enrollment, activities, assessments, documents, quickNotes }
+        }),
+      )
+      setStats(results)
+      setState({ loading: false, error: null, isMock: false })
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Okänt fel'
+      setState({ loading: false, error: message, isMock: true })
+    }
+  }, [])
+
+  useEffect(() => {
+    reload()
+  }, [reload])
+
+  return { stats, reload, ...state }
+}
+
+// =============================================================================
 // useEnrollmentBundle — full data om en deltagare (för konsulent-drawer)
 // =============================================================================
 export function useEnrollmentBundle(enrollmentId: string | null) {
