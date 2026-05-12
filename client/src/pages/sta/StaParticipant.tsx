@@ -32,9 +32,12 @@ import {
   STA_PARTS,
   PARTICIPANT_MOCK,
   DAY_RESOURCES,
+  WEEK_THEMES,
+  getWeekForDay,
   type StaPart,
   type DailyExercise,
   type DayResource,
+  type WeekTheme,
 } from './mockData'
 
 type TabId = 'oversikt' | 'del-1' | 'del-2' | 'del-3' | 'del-4'
@@ -419,10 +422,14 @@ function STaDel1({ mock }: { mock: typeof PARTICIPANT_MOCK }) {
   const initialDay = mock.dailyExercises.find((d) => d.status === 'today')?.day ?? null
   const [selectedDay, setSelectedDay] = useState<number | null>(initialDay)
 
+  const currentWeek = getWeekForDay(mock.currentDay)
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="lg:col-span-2 space-y-5">
         <PartIntro part={1} day={mock.currentDay} totalDays={mock.totalDays} />
+
+        {currentWeek && <CurrentWeekCard week={currentWeek} currentDay={mock.currentDay} />}
 
         {/* Startsamtal */}
         <ActivitySection
@@ -480,28 +487,27 @@ function STaDel1({ mock }: { mock: typeof PARTICIPANT_MOCK }) {
           </Button>
         </ActivitySection>
 
-        {/* Dagsslinga */}
+        {/* Dagsslinga — grupperad veckovis */}
         <ActivitySection
           icon={<Calendar size={18} style={{ color: 'var(--c-text)' }} />}
-          title="Dagsslinga — 14 dagar"
-          subtitle={`${mock.dailyExercises.filter((d) => d.status === 'completed').length} av 14 dagar avklarade`}
+          title="Resan i tre veckor"
+          subtitle={`${mock.dailyExercises.filter((d) => d.status === 'completed').length} av 14 dagar avklarade · klicka på en dag för material`}
           iconBg=""
           iconBgStyle={{ background: 'var(--c-accent)' }}
           defaultOpen
         >
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-2">
-            {mock.dailyExercises.map((d) => (
-              <DayCell
-                key={d.day}
-                exercise={d}
-                isSelected={selectedDay === d.day}
-                onSelect={() => setSelectedDay(d.day)}
+          <div className="space-y-5">
+            {WEEK_THEMES.map((week) => (
+              <WeekGroup
+                key={week.weekNumber}
+                week={week}
+                exercises={mock.dailyExercises.filter((d) => week.days.includes(d.day))}
+                selectedDay={selectedDay}
+                onSelectDay={setSelectedDay}
+                isCurrentWeek={currentWeek?.weekNumber === week.weekNumber}
               />
             ))}
           </div>
-          <p className="text-xs text-stone-500 mt-4">
-            Klicka på en dag för att se dagens tema, läsmaterial och övningar. Du kan alltid gå tillbaka.
-          </p>
 
           {selectedDay !== null && (
             <DayResourcePanel
@@ -532,6 +538,126 @@ function STaDel1({ mock }: { mock: typeof PARTICIPANT_MOCK }) {
         consultantFirstName={mock.consultant.name.split(' ')[0]}
         showLanguageSupport
       />
+    </div>
+  )
+}
+
+function CurrentWeekCard({ week, currentDay }: { week: WeekTheme; currentDay: number }) {
+  const daysIntoWeek = week.days.indexOf(currentDay) + 1
+  const totalDaysInWeek = week.days.length
+
+  return (
+    <Card variant="flat" padding="lg" className="border-l-4" style={{ borderLeftColor: 'var(--c-solid)' }}>
+      <div className="flex items-start justify-between gap-3 flex-wrap mb-3">
+        <div>
+          <div className="text-[11px] uppercase tracking-wide text-stone-500 font-medium flex items-center gap-2">
+            <span>Vecka {week.weekNumber} av 3</span>
+            <span className="text-stone-400">•</span>
+            <span>Dag {daysIntoWeek} av {totalDaysInWeek}</span>
+          </div>
+          <h3 className="text-xl font-semibold text-stone-900 mt-1">{week.title}</h3>
+          <p className="text-sm text-stone-600 mt-0.5">{week.subtitle}</p>
+        </div>
+        <span
+          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium flex-shrink-0"
+          style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
+        >
+          <Target size={12} />
+          Veckans fokus
+        </span>
+      </div>
+
+      <p className="text-sm text-stone-700 leading-relaxed">{week.arbetsmarknadKoppling}</p>
+
+      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="p-3 rounded-lg bg-stone-50">
+          <div className="text-[11px] uppercase tracking-wide font-medium text-stone-500 mb-1">
+            Reflektera över
+          </div>
+          <ul className="text-sm text-stone-700 space-y-1">
+            {week.reflektionsfragor.map((q) => (
+              <li key={q} className="flex items-start gap-1.5">
+                <span
+                  className="mt-1.5 w-1 h-1 rounded-full flex-shrink-0"
+                  style={{ background: 'var(--c-solid)' }}
+                />
+                <span>{q}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className="p-3 rounded-lg" style={{ background: 'var(--c-bg)' }}>
+          <div className="text-[11px] uppercase tracking-wide font-medium mb-1" style={{ color: 'var(--c-text)' }}>
+            När veckan är slut
+          </div>
+          <p className="text-sm text-stone-700">{week.veckansResultat}</p>
+        </div>
+      </div>
+    </Card>
+  )
+}
+
+function WeekGroup({
+  week,
+  exercises,
+  selectedDay,
+  onSelectDay,
+  isCurrentWeek,
+}: {
+  week: WeekTheme
+  exercises: DailyExercise[]
+  selectedDay: number | null
+  onSelectDay: (day: number) => void
+  isCurrentWeek: boolean
+}) {
+  const completedCount = exercises.filter((e) => e.status === 'completed').length
+  const totalCount = exercises.length
+
+  return (
+    <div>
+      <div className="flex items-center justify-between gap-3 mb-2 flex-wrap">
+        <div className="flex items-center gap-2 flex-wrap">
+          <span
+            className="inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-semibold"
+            style={{
+              background: isCurrentWeek ? 'var(--c-solid)' : '#ECEAE3',
+              color: isCurrentWeek ? 'white' : '#6A6864',
+            }}
+          >
+            {week.weekNumber}
+          </span>
+          <div>
+            <div className="font-semibold text-stone-900 text-sm">
+              Vecka {week.weekNumber} — {week.title}
+            </div>
+            <div className="text-xs text-stone-500">{week.subtitle}</div>
+          </div>
+        </div>
+        <div className="text-xs text-stone-500 flex items-center gap-2">
+          <span>{completedCount}/{totalCount} klara</span>
+          <div className="h-1.5 w-16 rounded-full overflow-hidden bg-stone-100">
+            <div
+              className="h-full"
+              style={{
+                width: `${(completedCount / totalCount) * 100}%`,
+                background: 'var(--c-solid)',
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+        {exercises.map((d) => (
+          <DayCell
+            key={d.day}
+            exercise={d}
+            isSelected={selectedDay === d.day}
+            onSelect={() => onSelectDay(d.day)}
+          />
+        ))}
+      </div>
     </div>
   )
 }

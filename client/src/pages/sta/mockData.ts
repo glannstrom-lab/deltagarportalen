@@ -160,6 +160,81 @@ export const PARTICIPANT_MOCK = {
 }
 
 // ============================================================================
+// VECKOSTRUKTUR — Del 1 kartläggningsperioden
+// ============================================================================
+//
+// Del 1 är 3 veckor och 14 schemalagda dagar. Vi ger varje vecka ett tydligt
+// fokus så att deltagaren förstår vart resan tar vägen — och hur dagens övning
+// passar in i en större bild. Varje vecka kopplar till nästa steg mot arbete.
+
+export interface WeekTheme {
+  weekNumber: 1 | 2 | 3
+  title: string
+  subtitle: string
+  /** En kort förklaring som lägger fokus på stegförflyttning mot arbete */
+  arbetsmarknadKoppling: string
+  /** Två-tre nyckelfrågor som deltagaren reflekterar över under veckan */
+  reflektionsfragor: string[]
+  /** Vilka av de 14 dagarna som ingår i veckan */
+  days: number[]
+  /** Vad veckan landar i — vad har vi sett när veckan är slut? */
+  veckansResultat: string
+}
+
+export const WEEK_THEMES: WeekTheme[] = [
+  {
+    weekNumber: 1,
+    title: 'Vem är du, varför är du här?',
+    subtitle: 'Lär känna dig själv och din situation',
+    arbetsmarknadKoppling:
+      'Innan vi pratar om jobb behöver vi förstå dig — din historia, dina förutsättningar och varför du är i Steg till arbete just nu. Det blir grunden för allt vi gör härnäst.',
+    reflektionsfragor: [
+      'Vem är jag idag — och vem har jag varit?',
+      'Vad har lett mig hit?',
+      'Vad fungerar bra och vad är jobbigt just nu?',
+    ],
+    days: [1, 2, 3, 4, 5],
+    veckansResultat:
+      'En tydligare bild av vem du är, din situation och vilka anpassningar du behöver för att kunna ta nästa steg.',
+  },
+  {
+    weekNumber: 2,
+    title: 'Vad kan du, vad vill du?',
+    subtitle: 'Utforska dina kompetenser, intressen och drivkrafter',
+    arbetsmarknadKoppling:
+      'Nu vänder vi blicken framåt. Vad har du med dig som kan användas på arbetsmarknaden? Vilka yrken eller områden lockar? Vi bygger underlag för ditt fokusyrke.',
+    reflektionsfragor: [
+      'Vad är jag bra på — även sådant jag tar för givet?',
+      'Vad gör mig nyfiken eller engagerad?',
+      'Vilka miljöer och uppgifter passar mig?',
+    ],
+    days: [6, 7, 8, 9, 10],
+    veckansResultat:
+      'Början på en kompetenskarta och en första riktning för vilket yrkesområde som kan passa dig.',
+  },
+  {
+    weekNumber: 3,
+    title: 'Planering — hur ska du komma framåt?',
+    subtitle: 'Sätt mål och förbered nästa steg',
+    arbetsmarknadKoppling:
+      'Vi tar det vi har lärt oss om dig och gör en konkret plan. Vad är ditt nästa steg? Är det Del 2 där du provar arbetsuppgifter, eller direkt till arbetsprövning i Del 3? Vi förbereder dig för det.',
+    reflektionsfragor: [
+      'Vad är ett rimligt nästa steg för mig — inte om ett år, utan om en månad?',
+      'Vad behöver jag för att klara det?',
+      'Vem och vad ska finnas runt mig när jag tar steget?',
+    ],
+    days: [11, 12, 13, 14],
+    veckansResultat:
+      'En personlig plan med ett tydligt nästa steg, samt en sammanställning som blir grunden för Initial planering och Delredovisning till AF.',
+  },
+]
+
+/** Hjälpfunktion: vilken vecka tillhör en dag? */
+export function getWeekForDay(day: number): WeekTheme | null {
+  return WEEK_THEMES.find((w) => w.days.includes(day)) ?? null
+}
+
+// ============================================================================
 // MAPPNING — STA-dagar till befintliga KB-artiklar och övningar
 // ============================================================================
 //
