@@ -62,6 +62,7 @@ export type Tables = {
     phone: string | null
     avatar_url: string | null
     consultant_id: string | null
+    program: string | null
     created_at: string
     updated_at: string
   }

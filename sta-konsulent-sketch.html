@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<title>Steg till arbete — konsulent-skiss</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --action-bg: #ECF7F1;
+    --action-accent: #C5E5D4;
+    --action-solid: #1F8A66;
+    --action-text: #155F47;
+    --info-bg: #ECF4FA;
+    --info-text: #1F5985;
+    --activity-bg: #FCF1E6;
+    --activity-text: #8B5418;
+    --header-bg: #F5F4F0;
+    --canvas: #FBFAF6;
+    --surface: #FFFFFF;
+  }
+  body { background: var(--canvas); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color: #2C2C2A; }
+  .domain-action { --c-bg: var(--action-bg); --c-accent: var(--action-accent); --c-solid: var(--action-solid); --c-text: var(--action-text); }
+  .card { background: var(--surface); border: 1px solid #DDD9D0; border-radius: 16px; }
+  .header-edge { border-left: 4px solid var(--c-solid); }
+  .pill { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.125rem 0.625rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+  .tab-active { background: var(--c-bg); color: var(--c-text); border-color: var(--c-solid); }
+  .progress-track { background: #ECEAE3; }
+  .progress-fill { background: var(--c-solid); }
+  .legend-note { font-size: 0.7rem; letter-spacing: 0.02em; color: #6A6864; text-transform: uppercase; }
+  table { border-collapse: separate; border-spacing: 0; }
+  thead th { font-weight: 500; color: #6A6864; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #ECEAE3; }
+  tbody td { padding: 0.85rem 1rem; border-bottom: 1px solid #ECEAE3; vertical-align: middle; }
+  tbody tr:hover { background: #FBFAF6; }
+  .deadline-red { color: #B91C1C; background: #FEE2E2; }
+  .deadline-amber { color: #B45309; background: #FEF3C7; }
+  .deadline-green { color: #047857; background: #D1FAE5; }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  .ai-card { background: linear-gradient(135deg, #FFFFFF 0%, #ECF7F1 100%); }
+</style>
+</head>
+<body class="domain-action">
+
+<div class="bg-amber-50 border-b border-amber-200 text-amber-900 text-xs px-4 py-1.5 text-center">
+  Statisk skiss — mockad data. Visar layouten och innehållet för konsulent-sidan.
+</div>
+
+<div class="max-w-[1400px] mx-auto px-4 lg:px-6 py-6">
+
+  <!-- HERO -->
+  <header class="card header-edge mb-6" style="background: var(--header-bg);">
+    <div class="px-6 lg:px-8 py-6 flex flex-wrap items-start justify-between gap-4">
+      <div>
+        <div class="flex items-center gap-2 mb-2">
+          <span class="legend-note">Konsulent • Projekt</span>
+          <span class="pill bg-white border border-stone-200 text-stone-700">Steg till arbete</span>
+        </div>
+        <h1 class="text-2xl lg:text-3xl font-semibold text-stone-900">Dina deltagare</h1>
+        <p class="text-stone-700 mt-1 max-w-2xl">Här ser du status, deadlines och utkast som väntar på din granskning. Snabbåtgärder ligger till höger på varje rad.</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="px-4 py-2 rounded-lg bg-white border border-stone-200 text-sm font-medium text-stone-700">Veckosammanställning</button>
+        <button class="px-4 py-2 rounded-lg text-white text-sm font-medium" style="background: var(--c-solid);">+ Ny deltagare</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- KPI ROW -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <div class="card p-4">
+      <div class="text-xs uppercase tracking-wide text-stone-500">Aktiva deltagare</div>
+      <div class="text-2xl font-semibold text-stone-900 mt-1">14</div>
+      <div class="text-xs text-stone-600 mt-1">4 i Del 1 · 5 i Del 2 · 3 i Del 3 · 2 i Del 4</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-xs uppercase tracking-wide text-stone-500">Deadlines denna vecka</div>
+      <div class="text-2xl font-semibold text-stone-900 mt-1">6</div>
+      <div class="text-xs text-red-700 mt-1">2 förfaller idag</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-xs uppercase tracking-wide text-stone-500">Utkast att granska</div>
+      <div class="text-2xl font-semibold text-stone-900 mt-1">3</div>
+      <div class="text-xs text-stone-600 mt-1">Delredovisning · 2 ny + 1 reviderad</div>
+    </div>
+    <div class="card p-4">
+      <div class="text-xs uppercase tracking-wide text-stone-500">Skattningar pågående</div>
+      <div class="text-2xl font-semibold text-stone-900 mt-1">7</div>
+      <div class="text-xs text-stone-600 mt-1">4 MOHOST · 2 AWP · 1 DOA</div>
+    </div>
+  </section>
+
+  <!-- TABS -->
+  <nav class="flex flex-wrap gap-2 mb-6">
+    <button class="tab-active px-4 py-2 rounded-full text-sm font-medium border-2">Översikt</button>
+    <button class="px-4 py-2 rounded-full text-sm font-medium border-2 border-stone-200 text-stone-700 bg-white">Deltagare</button>
+    <button class="px-4 py-2 rounded-full text-sm font-medium border-2 border-stone-200 text-stone-700 bg-white">Skattningar</button>
+    <button class="px-4 py-2 rounded-full text-sm font-medium border-2 border-stone-200 text-stone-700 bg-white">Arbetsplatser</button>
+    <button class="px-4 py-2 rounded-full text-sm font-medium border-2 border-stone-200 text-stone-700 bg-white">Dokument</button>
+  </nav>
+
+  <!-- DEADLINE STRIP -->
+  <section class="card mb-6 overflow-hidden">
+    <div class="px-5 py-4 border-b border-stone-100 flex items-center justify-between">
+      <div>
+        <h3 class="text-base font-semibold text-stone-900">Akuta deadlines</h3>
+        <p class="text-xs text-stone-500">Sortering: tid kvar</p>
+      </div>
+      <button class="text-sm text-stone-600 hover:underline">Visa alla 11 →</button>
+    </div>
+    <ul>
+      <li class="px-5 py-3 flex flex-wrap items-center gap-3 border-b border-stone-100">
+        <span class="pill deadline-red">Idag 17:00</span>
+        <span class="text-sm font-medium text-stone-900">Delredovisning Del 1</span>
+        <span class="text-sm text-stone-600">Anna Karlsson</span>
+        <div class="flex-1"></div>
+        <button class="px-3 py-1.5 rounded-lg text-white text-xs font-medium" style="background: var(--c-solid);">Öppna AI-utkast</button>
+      </li>
+      <li class="px-5 py-3 flex flex-wrap items-center gap-3 border-b border-stone-100">
+        <span class="pill deadline-red">Idag 17:00</span>
+        <span class="text-sm font-medium text-stone-900">Skattning AWP — station kundmottagning</span>
+        <span class="text-sm text-stone-600">Mahmoud Ali (Del 2)</span>
+        <div class="flex-1"></div>
+        <button class="px-3 py-1.5 rounded-lg text-white text-xs font-medium" style="background: var(--c-solid);">Öppna formulär</button>
+      </li>
+      <li class="px-5 py-3 flex flex-wrap items-center gap-3 border-b border-stone-100">
+        <span class="pill deadline-amber">Om 2 dagar</span>
+        <span class="text-sm font-medium text-stone-900">Initial planering</span>
+        <span class="text-sm text-stone-600">Sofia Berg (start 15 maj)</span>
+        <div class="flex-1"></div>
+        <button class="px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-stone-700 text-xs font-medium">Generera utkast</button>
+      </li>
+      <li class="px-5 py-3 flex flex-wrap items-center gap-3 border-b border-stone-100">
+        <span class="pill deadline-amber">Om 3 dagar</span>
+        <span class="text-sm font-medium text-stone-900">Anmäl arbetsprövningsplats</span>
+        <span class="text-sm text-stone-600">Johan Lindqvist · Företag: Lidl Sundsvall</span>
+        <div class="flex-1"></div>
+        <button class="px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-stone-700 text-xs font-medium">Skicka till AF</button>
+      </li>
+      <li class="px-5 py-3 flex flex-wrap items-center gap-3">
+        <span class="pill deadline-green">Om 6 dagar</span>
+        <span class="text-sm font-medium text-stone-900">Slutredovisning Del 3</span>
+        <span class="text-sm text-stone-600">Kerstin Olofsson</span>
+        <div class="flex-1"></div>
+        <button class="px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-stone-700 text-xs font-medium">Förbered</button>
+      </li>
+    </ul>
+  </section>
+
+  <!-- DELTAGAR-LISTA -->
+  <section class="card mb-6 overflow-hidden">
+    <div class="px-5 py-4 border-b border-stone-100 flex items-center justify-between">
+      <div>
+        <h3 class="text-base font-semibold text-stone-900">Deltagare</h3>
+        <p class="text-xs text-stone-500">14 aktiva · sorterade efter senaste aktivitet</p>
+      </div>
+      <div class="flex gap-2">
+        <select class="px-3 py-1.5 rounded-lg bg-stone-100 border-0 text-sm">
+          <option>Alla delar</option>
+          <option>Del 1</option>
+          <option>Del 2</option>
+          <option>Del 3</option>
+          <option>Del 4</option>
+        </select>
+        <input placeholder="Sök deltagare…" class="px-3 py-1.5 rounded-lg border border-stone-200 text-sm w-48">
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr>
+            <th>Deltagare</th>
+            <th>Del</th>
+            <th>Tid kvar</th>
+            <th>Aktivitet</th>
+            <th>Skattningar</th>
+            <th>Anpassning</th>
+            <th>Snabbåtgärder</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-xs font-medium text-stone-700">AK</div>
+                <div>
+                  <div class="font-medium text-stone-900">Anna Karlsson</div>
+                  <div class="text-xs text-stone-500">Fokusyrke: ej fastställt</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="pill" style="background: var(--c-bg); color: var(--c-text);">Del 1</span></td>
+            <td><div class="text-stone-900 font-medium">13 dagar</div><div class="text-xs text-stone-500">Slut 27 maj</div></td>
+            <td>
+              <div class="text-stone-700">Dag 7/14 · sömn</div>
+              <div class="progress-track h-1.5 rounded-full mt-1 w-24 overflow-hidden"><div class="progress-fill h-full" style="width: 50%"></div></div>
+            </td>
+            <td><span class="pill bg-stone-100 text-stone-600">DOA pågående</span></td>
+            <td><span class="text-xs text-stone-600">Kortare pass · tysta rum</span></td>
+            <td>
+              <div class="flex gap-1">
+                <button class="px-2 py-1 rounded-md bg-white border border-stone-200 text-xs">Öppna</button>
+                <button class="px-2 py-1 rounded-md text-white text-xs" style="background: var(--c-solid);">Granska utkast (1)</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-xs font-medium text-stone-700">MA</div>
+                <div>
+                  <div class="font-medium text-stone-900">Mahmoud Ali</div>
+                  <div class="text-xs text-stone-500">Fokusyrke: lager</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="pill" style="background: var(--c-bg); color: var(--c-text);">Del 2</span></td>
+            <td><div class="text-stone-900 font-medium">12 dagar</div><div class="text-xs text-stone-500">Slut 28 maj</div></td>
+            <td>
+              <div class="text-stone-700">Station: kundmottagning</div>
+              <div class="text-xs text-stone-500">3/4 stationer testade</div>
+            </td>
+            <td>
+              <span class="pill bg-emerald-50 text-emerald-700">AWP × 2 ✓</span>
+              <span class="pill deadline-amber">AWP idag</span>
+            </td>
+            <td><span class="text-xs text-stone-600">Språkstöd: arabiska · bildstöd</span></td>
+            <td>
+              <div class="flex gap-1">
+                <button class="px-2 py-1 rounded-md bg-white border border-stone-200 text-xs">Öppna</button>
+                <button class="px-2 py-1 rounded-md text-white text-xs" style="background: var(--c-solid);">AWP-formulär</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-xs font-medium text-stone-700">JL</div>
+                <div>
+                  <div class="font-medium text-stone-900">Johan Lindqvist</div>
+                  <div class="text-xs text-stone-500">Fokusyrke: butik/service</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="pill" style="background: var(--c-bg); color: var(--c-text);">Del 3</span></td>
+            <td><div class="text-stone-900 font-medium">4 mån kvar</div><div class="text-xs text-stone-500">Slut 12 sep</div></td>
+            <td>
+              <div class="text-stone-700">Arbetsprövning · Lidl Sundsvall</div>
+              <div class="text-xs text-stone-500">Vecka 1 av 12</div>
+            </td>
+            <td><span class="pill bg-stone-100 text-stone-600">AWC/AWP v.1</span></td>
+            <td><span class="text-xs text-stone-600">Inga särskilda</span></td>
+            <td>
+              <div class="flex gap-1">
+                <button class="px-2 py-1 rounded-md bg-white border border-stone-200 text-xs">Öppna</button>
+                <button class="px-2 py-1 rounded-md bg-white border border-stone-200 text-xs">Uppföljning</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-xs font-medium text-stone-700">KO</div>
+                <div>
+                  <div class="font-medium text-stone-900">Kerstin Olofsson</div>
+                  <div class="text-xs text-stone-500">Fokusyrke: administration</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="pill" style="background: var(--c-bg); color: var(--c-text);">Del 3</span></td>
+            <td><div class="text-stone-900 font-medium">6 dagar</div><div class="text-xs text-stone-500">Slut 18 maj</div></td>
+            <td>
+              <div class="text-stone-700">Arbetsprövning · Region Västernorrland</div>
+              <div class="text-xs text-emerald-700">Anställningssamtal v.21</div>
+            </td>
+            <td>
+              <span class="pill bg-emerald-50 text-emerald-700">Alla ✓</span>
+            </td>
+            <td><span class="text-xs text-stone-600">Inga särskilda</span></td>
+            <td>
+              <div class="flex gap-1">
+                <button class="px-2 py-1 rounded-md text-white text-xs" style="background: var(--c-solid);">Slutredovisning</button>
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td>
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-xs font-medium text-stone-700">SB</div>
+                <div>
+                  <div class="font-medium text-stone-900">Sofia Berg</div>
+                  <div class="text-xs text-stone-500">Start 15 maj</div>
+                </div>
+              </div>
+            </td>
+            <td><span class="pill bg-amber-50 text-amber-700">Startar Del 1</span></td>
+            <td><div class="text-stone-500 text-xs">Påbörjas om 3 dgr</div></td>
+            <td>
+              <div class="text-stone-700">Startsamtal bokat</div>
+              <div class="text-xs text-stone-500">15 maj kl 9:00</div>
+            </td>
+            <td><span class="pill bg-stone-100 text-stone-500">Ej startat</span></td>
+            <td><span class="text-xs text-stone-600">Inkommer i startsamtal</span></td>
+            <td>
+              <div class="flex gap-1">
+                <button class="px-2 py-1 rounded-md bg-white border border-stone-200 text-xs">Förbered</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TWO-COL: AI-summary + Document drafts -->
+  <section class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+
+    <!-- AI summary -->
+    <div class="card ai-card p-5">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="pill" style="background: var(--c-solid); color: white;">AI-utkast</span>
+          <h3 class="text-base font-semibold text-stone-900">Veckosammanställning — Anna Karlsson</h3>
+        </div>
+        <span class="text-xs text-stone-500">Genererat just nu · gpt-oss-120b</span>
+      </div>
+      <div class="bg-white rounded-lg p-4 border border-stone-200 text-sm text-stone-800 leading-relaxed">
+        <p>Anna har genomfört dag 1–6 i den dagliga slingan utan frånvaro. Reflektionerna pekar på att hon har god dag-till-dag-rutin men kämpar med kvällsstress. Hon nämnde i Dag 3 att hon ofta vaknar tidigt; vi flyttar fokus till Dag 7 (sömn) idag.</p>
+        <p class="mt-2">DOA-självskattningen är 62% klar. Hon har angett höga värden för "noggrannhet" och "tålamod" och låga värden för "uthållighet vid lång tids stillasittande". Det matchar hennes önskemål om kortare pass.</p>
+        <p class="mt-2">Fokusyrke ej fastställt — vi har två alternativ aktuella: administration och bibliotek/arkiv. Förslag: använd Dag 13 (Mål) för att låta henne reflektera kring båda.</p>
+      </div>
+      <div class="flex gap-2 mt-3">
+        <button class="px-3 py-1.5 rounded-lg text-white text-sm font-medium" style="background: var(--c-solid);">Kopiera till delredovisning</button>
+        <button class="px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-sm">Spara som anteckning</button>
+        <button class="px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-sm">Generera nytt utkast</button>
+      </div>
+    </div>
+
+    <!-- Document drafts -->
+    <div class="card p-5">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="text-base font-semibold text-stone-900">Dokumentutkast att granska</h3>
+        <button class="text-sm text-stone-600 hover:underline">Alla dokument →</button>
+      </div>
+      <ul class="space-y-2">
+        <li class="p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-sm font-medium text-stone-900">Delredovisning Del 1 — Anna Karlsson</div>
+              <div class="text-xs text-stone-500">AI-utkast · 4 sektioner ifyllda</div>
+            </div>
+            <span class="pill deadline-red">Inskick idag</span>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button class="px-3 py-1 rounded-md text-white text-xs" style="background: var(--c-solid);">Öppna</button>
+            <button class="px-3 py-1 rounded-md bg-white border border-stone-200 text-xs">Förhandsvisa PDF</button>
+          </div>
+        </li>
+        <li class="p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-sm font-medium text-stone-900">Initial planering — Sofia Berg</div>
+              <div class="text-xs text-stone-500">Genereras automatiskt efter startsamtal</div>
+            </div>
+            <span class="pill deadline-amber">Om 2 dgr</span>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button class="px-3 py-1 rounded-md bg-white border border-stone-200 text-xs">Generera nu</button>
+          </div>
+        </li>
+        <li class="p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-sm font-medium text-stone-900">Information från arbetsprövningsplats — Johan</div>
+              <div class="text-xs text-stone-500">Lidl Sundsvall · skickas till AF</div>
+            </div>
+            <span class="pill deadline-amber">Om 3 dgr</span>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button class="px-3 py-1 rounded-md bg-white border border-stone-200 text-xs">Skicka till AF</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- BULK ATTENDANCE -->
+  <section class="card mb-6">
+    <div class="px-5 py-4 border-b border-stone-100 flex items-center justify-between">
+      <div>
+        <h3 class="text-base font-semibold text-stone-900">Närvaro idag — tisdag 13 maj</h3>
+        <p class="text-xs text-stone-500">Bocka av i bulk · 30 sekunder</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="px-3 py-1.5 rounded-lg bg-stone-100 text-stone-700 text-sm">Markera alla närvarande</button>
+        <button class="px-3 py-1.5 rounded-lg text-white text-sm font-medium" style="background: var(--c-solid);">Spara</button>
+      </div>
+    </div>
+    <div class="px-5 py-3 grid grid-cols-1 md:grid-cols-2 gap-2">
+      <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50">
+        <input type="checkbox" checked class="w-4 h-4 rounded" />
+        <span class="text-sm text-stone-900 flex-1">Anna Karlsson <span class="text-xs text-stone-500">Del 1 · på plats</span></span>
+        <select class="text-xs bg-stone-100 rounded px-2 py-1 border-0">
+          <option>Närvarande</option>
+          <option>Frånvarande</option>
+          <option>Sjuk</option>
+          <option>Tillåten frånvaro</option>
+        </select>
+      </label>
+      <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50">
+        <input type="checkbox" checked class="w-4 h-4 rounded" />
+        <span class="text-sm text-stone-900 flex-1">Mahmoud Ali <span class="text-xs text-stone-500">Del 2 · station kundmottagning</span></span>
+        <select class="text-xs bg-stone-100 rounded px-2 py-1 border-0"><option>Närvarande</option></select>
+      </label>
+      <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50">
+        <input type="checkbox" class="w-4 h-4 rounded" />
+        <span class="text-sm text-stone-900 flex-1">Lars Persson <span class="text-xs text-stone-500">Del 1 · ej anmäld</span></span>
+        <select class="text-xs bg-stone-100 rounded px-2 py-1 border-0">
+          <option>Ej registrerad</option>
+          <option>Närvarande</option>
+          <option>Sjuk</option>
+        </select>
+      </label>
+      <label class="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50">
+        <input type="checkbox" checked class="w-4 h-4 rounded" />
+        <span class="text-sm text-stone-900 flex-1">Kerstin Olofsson <span class="text-xs text-stone-500">Del 3 · ute på arbetsplats</span></span>
+        <select class="text-xs bg-stone-100 rounded px-2 py-1 border-0"><option>Närvarande (extern)</option></select>
+      </label>
+    </div>
+  </section>
+
+  <!-- =========================================== -->
+  <!-- DETAIL: Per-deltagar-vy (öppnas från lista) -->
+  <!-- =========================================== -->
+  <hr class="my-12 border-stone-200" />
+  <div class="legend-note mb-2">Förhandsvisning: per-deltagar-vy (öppnas från listan)</div>
+
+  <section class="card mb-6">
+    <!-- Sub-hero -->
+    <div class="px-6 py-5 border-b border-stone-100 flex flex-wrap items-start justify-between gap-4">
+      <div class="flex items-start gap-4">
+        <div class="w-14 h-14 rounded-full bg-stone-200 flex items-center justify-center text-stone-700 font-semibold">AK</div>
+        <div>
+          <h2 class="text-xl font-semibold text-stone-900">Anna Karlsson</h2>
+          <div class="text-sm text-stone-600">Del 1 · dag 8 av 21 · startade 30 april</div>
+          <div class="flex gap-2 mt-2">
+            <span class="pill bg-stone-100 text-stone-700">Fokusyrke: ej fastställt</span>
+            <span class="pill bg-stone-100 text-stone-700">Anpassning: kortare pass</span>
+            <span class="pill bg-stone-100 text-stone-700">Språk: svenska</span>
+          </div>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button class="px-3 py-2 rounded-lg bg-white border border-stone-200 text-sm">Meddelande</button>
+        <button class="px-3 py-2 rounded-lg bg-white border border-stone-200 text-sm">Boka möte</button>
+        <button class="px-3 py-2 rounded-lg text-white text-sm font-medium" style="background: var(--c-solid);">Generera delredovisning</button>
+      </div>
+    </div>
+
+    <!-- Sub-tabs -->
+    <div class="px-6 pt-4 flex flex-wrap gap-2 border-b border-stone-100">
+      <button class="px-3 py-2 rounded-t-lg text-sm font-medium border-b-2 -mb-px" style="border-color: var(--c-solid); color: var(--c-text);">Översikt</button>
+      <button class="px-3 py-2 text-sm text-stone-600 hover:text-stone-900">Aktivitetslogg</button>
+      <button class="px-3 py-2 text-sm text-stone-600 hover:text-stone-900">Skattningar</button>
+      <button class="px-3 py-2 text-sm text-stone-600 hover:text-stone-900">Dokument</button>
+      <button class="px-3 py-2 text-sm text-stone-600 hover:text-stone-900">Arbetsprövning</button>
+      <button class="px-3 py-2 text-sm text-stone-600 hover:text-stone-900">Anteckningar</button>
+    </div>
+
+    <div class="px-6 py-5 grid grid-cols-1 lg:grid-cols-3 gap-5">
+      <div class="lg:col-span-2 space-y-5">
+        <!-- Activity log -->
+        <div>
+          <h4 class="text-sm font-semibold text-stone-900 mb-3">Aktivitet den senaste veckan</h4>
+          <ol class="border-l-2 border-stone-200 ml-3 space-y-3">
+            <li class="pl-4 relative">
+              <span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full" style="background: var(--c-solid);"></span>
+              <div class="text-sm font-medium text-stone-900">Dag 6 · Karriärvägledning del 2</div>
+              <div class="text-xs text-stone-500">Mån 12 maj · 60 min · reflektion sparad</div>
+            </li>
+            <li class="pl-4 relative">
+              <span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-stone-300"></span>
+              <div class="text-sm font-medium text-stone-900">DOA-självskattning · 12/24 frågor</div>
+              <div class="text-xs text-stone-500">Sön 11 maj · pågående</div>
+            </li>
+            <li class="pl-4 relative">
+              <span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-stone-300"></span>
+              <div class="text-sm font-medium text-stone-900">Dag 5 · Karriärvägledning del 1</div>
+              <div class="text-xs text-stone-500">Fre 9 maj · 60 min</div>
+            </li>
+            <li class="pl-4 relative">
+              <span class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-stone-300"></span>
+              <div class="text-sm font-medium text-stone-900">Reflektion · "Stressig kväll, dåligt med sömn"</div>
+              <div class="text-xs text-stone-500">Tor 8 maj · 19:42</div>
+            </li>
+          </ol>
+        </div>
+
+        <!-- Skattningar status -->
+        <div>
+          <h4 class="text-sm font-semibold text-stone-900 mb-3">Skattningar i Del 1</h4>
+          <div class="grid grid-cols-3 gap-3">
+            <div class="card p-3 text-center">
+              <div class="text-xs font-medium text-stone-500">DOA</div>
+              <div class="text-sm font-semibold text-stone-900 mt-1">Pågående</div>
+              <div class="progress-track h-1 rounded-full mt-2 overflow-hidden"><div class="progress-fill h-full" style="width: 62%"></div></div>
+            </div>
+            <div class="card p-3 text-center">
+              <div class="text-xs font-medium text-stone-500">WRI</div>
+              <div class="text-sm font-semibold text-stone-900 mt-1">Ej påbörjad</div>
+              <button class="mt-2 text-xs px-2 py-1 rounded bg-stone-100">Starta</button>
+            </div>
+            <div class="card p-3 text-center">
+              <div class="text-xs font-medium text-stone-500">MOHOST</div>
+              <div class="text-sm font-semibold text-stone-900 mt-1">Ej påbörjad</div>
+              <button class="mt-2 text-xs px-2 py-1 rounded bg-stone-100">Starta</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="space-y-4">
+        <div class="card ai-card p-4">
+          <div class="text-xs uppercase tracking-wide" style="color: var(--c-text);">AI · veckosumma</div>
+          <p class="text-sm text-stone-800 mt-2">Bra rutin i daglig slinga. Kvällsstress + tidig uppvaknande nämnt — Dag 7 (sömn) idag passar bra. Fokusyrke ej fastställt — använd Dag 13 (Mål) för reflektion.</p>
+          <button class="mt-3 px-3 py-1.5 rounded-lg text-white text-xs font-medium w-full" style="background: var(--c-solid);">Kopiera till delredovisning</button>
+        </div>
+
+        <div class="card p-4">
+          <div class="text-xs uppercase tracking-wide text-stone-500">Snabbåtgärder</div>
+          <ul class="mt-2 space-y-1.5">
+            <li><button class="text-sm text-stone-700 hover:text-stone-900 hover:underline w-full text-left">+ Skapa anteckning</button></li>
+            <li><button class="text-sm text-stone-700 hover:text-stone-900 hover:underline w-full text-left">+ Boka möte</button></li>
+            <li><button class="text-sm text-stone-700 hover:text-stone-900 hover:underline w-full text-left">+ Tilldela dagsuppgift</button></li>
+            <li><button class="text-sm text-stone-700 hover:text-stone-900 hover:underline w-full text-left">+ Rapportera frånvaro</button></li>
+            <li><button class="text-sm text-stone-700 hover:text-stone-900 hover:underline w-full text-left">Exportera all data (GDPR)</button></li>
+          </ul>
+        </div>
+
+        <div class="card p-4 bg-stone-50">
+          <div class="text-xs uppercase tracking-wide text-stone-500">Senaste reflektion</div>
+          <p class="text-sm text-stone-800 italic mt-2">"Stressig kväll. Jag tänker mycket på pengar. Hoppas sömnen blir bättre."</p>
+          <div class="text-xs text-stone-500 mt-2">Tor 8 maj 19:42</div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- LEGEND -->
+  <div class="mt-12 p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-900">
+    <strong>Designanteckningar:</strong>
+    <ul class="list-disc ml-5 mt-2 space-y-1">
+      <li>Konsulent-vyn är databastung och funktionell — antalsmått, deadlines och utkast prioriteras högst upp.</li>
+      <li>Auto-utkast (AI) markeras alltid med pillen &laquo;AI-utkast&raquo; så konsulenten vet att hen måste granska innan inskick till AF.</li>
+      <li>Bulk-närvaro tar bort den största manuella tidstjuven (idag rapporteras per deltagare).</li>
+      <li>Per-deltagar-vyn har alla relevanta kontroller i en sub-flikvy så konsulenten slipper hoppa mellan sidor.</li>
+      <li>Skattningar visas alltid med procent klart och &laquo;Starta&raquo;-knapp för instrument som inte påbörjats.</li>
+      <li>Modell-låsning på openai/gpt-oss-120b respekteras (visas i metadata på AI-utkasten).</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

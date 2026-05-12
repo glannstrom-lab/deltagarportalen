@@ -77,6 +77,9 @@ export interface Profile {
   // GDPR Art. 9 - Sensitive data consent
   health_consent_at: string | null
   wellness_consent_at: string | null
+  // Arbetsmarknadsprojekt (Steg till arbete / Rusta och Matcha). NULL = inget valt.
+  // Slug-värden definieras i client/src/lib/programs.ts.
+  program: string | null
 }
 
 interface AuthState {

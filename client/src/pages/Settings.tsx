@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { RoleSelector } from '@/components/settings/RoleSelector'
+import { ProgramSelector } from '@/components/settings/ProgramSelector'
 import { DeleteAccountSection } from '@/components/settings/DeleteAccountSection'
 import { DataSharingSettings } from '@/components/consent/DataSharingSettings'
 import { HelpButton } from '@/components/HelpButton'
@@ -282,6 +283,8 @@ function SettingsInner() {
                 </CardSection>
 
                 <RoleSelector />
+
+                <ProgramSelector />
 
                 <div className="flex justify-end pt-4 border-t border-stone-100 dark:border-stone-800">
                   <Button

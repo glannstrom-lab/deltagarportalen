@@ -81,6 +81,10 @@ const KarriarHub = lazy(() => import('./pages/hubs/KarriarHub'))
 const ResurserHub = lazy(() => import('./pages/hubs/ResurserHub'))
 const MinVardagHub = lazy(() => import('./pages/hubs/MinVardagHub'))
 
+// STA (Steg till arbete) — visas när profile.program === 'steg_till_arbete'
+const StaParticipant = lazy(() => import('./pages/sta/StaParticipant'))
+const StaConsultant = lazy(() => import('./pages/sta/StaConsultant'))
+
 /**
  * Lazy route wrapper with error boundary
  * Handles chunk loading failures with retry and user-friendly error messages
@@ -285,6 +289,13 @@ function App() {
           <Route path="consultant/*" element={
             <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
               <LazyRoute><RouteErrorBoundary><Consultant /></RouteErrorBoundary></LazyRoute>
+            </PrivateRoute>
+          } />
+          {/* STA — Steg till arbete (visas när profile.program === 'steg_till_arbete') */}
+          <Route path="steg-till-arbete" element={<LazyRoute><RouteErrorBoundary><StaParticipant /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="konsulent/steg-till-arbete" element={
+            <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
+              <LazyRoute><RouteErrorBoundary><StaConsultant /></RouteErrorBoundary></LazyRoute>
             </PrivateRoute>
           } />
           <Route path="admin" element={

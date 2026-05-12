@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8" />
+<title>Steg till arbete — deltagar-skiss</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  :root {
+    --action-bg: #ECF7F1;
+    --action-accent: #C5E5D4;
+    --action-solid: #1F8A66;
+    --action-text: #155F47;
+    --coaching-bg: #FBEEEF;
+    --coaching-accent: #F2C8CD;
+    --coaching-solid: #B85363;
+    --coaching-text: #843845;
+    --wellbeing-bg: #F2EDF8;
+    --wellbeing-text: #4F3D7C;
+    --header-bg: #F5F4F0;
+    --header-border: #DDD9D0;
+    --canvas: #FBFAF6;
+    --surface: #FFFFFF;
+  }
+  body { background: var(--canvas); font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; color: #2C2C2A; }
+  .domain-action { --c-bg: var(--action-bg); --c-accent: var(--action-accent); --c-solid: var(--action-solid); --c-text: var(--action-text); }
+  .card { background: var(--surface); border: 1px solid #DDD9D0; border-radius: 16px; }
+  .header-edge { border-left: 4px solid var(--c-solid); }
+  .pill { display: inline-flex; align-items: center; gap: 0.25rem; padding: 0.125rem 0.625rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 500; }
+  .tab-active { background: var(--c-bg); color: var(--c-text); border-color: var(--c-solid); }
+  .progress-track { background: #ECEAE3; }
+  .progress-fill { background: var(--c-solid); }
+  .timeline-dot { background: var(--c-solid); }
+  .timeline-dot-future { background: #DDD9D0; }
+  .timeline-line { background: #ECEAE3; }
+  .timeline-line-done { background: var(--c-solid); }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  .legend-note { font-size: 0.7rem; letter-spacing: 0.02em; color: #6A6864; text-transform: uppercase; }
+</style>
+</head>
+<body class="domain-action">
+
+<!-- Notice banner so reviewer remembers this is a mockup -->
+<div class="bg-amber-50 border-b border-amber-200 text-amber-900 text-xs px-4 py-1.5 text-center">
+  Statisk skiss — mockad data. Visar tonen, layouten och innehållet för deltagar-sidan.
+</div>
+
+<!-- App shell — minimalist representation -->
+<div class="max-w-[1280px] mx-auto px-4 lg:px-6 py-6">
+
+  <!-- HERO (neutral grå med 4px domänkant — följer DESIGN.md §3 verktygssida) -->
+  <header class="card header-edge mb-6" style="background: var(--header-bg);">
+    <div class="px-6 lg:px-8 py-6">
+      <div class="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="legend-note">Projekt</span>
+            <span class="pill bg-white border border-stone-200 text-stone-700">Steg till arbete</span>
+          </div>
+          <h1 class="text-2xl lg:text-3xl font-semibold text-stone-900">Din resa, Anna</h1>
+          <p class="text-stone-700 mt-1 max-w-xl">Det är okej att gå i din egen takt. Här ser du var du är just nu och vad som väntar — utan tidspress.</p>
+        </div>
+
+        <div class="card !bg-white px-4 py-3 min-w-[260px]">
+          <div class="text-xs uppercase tracking-wide text-stone-500 mb-1">Just nu</div>
+          <div class="font-semibold text-stone-900">Del 1 — Lära känna dig</div>
+          <div class="text-sm text-stone-600">Dag 8 av 21</div>
+          <div class="progress-track h-1.5 rounded-full mt-2 overflow-hidden">
+            <div class="progress-fill h-full" style="width: 38%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIMELINE: 4 delar -->
+      <div class="mt-6">
+        <div class="flex items-center">
+          <!-- Del 1 — aktiv -->
+          <div class="flex flex-col items-center flex-shrink-0">
+            <div class="w-10 h-10 rounded-full timeline-dot text-white flex items-center justify-center font-semibold ring-4 ring-white">1</div>
+            <div class="text-xs mt-2 font-medium text-stone-900">Lära känna dig</div>
+            <div class="text-[11px] text-stone-500">3 veckor</div>
+          </div>
+          <div class="flex-1 h-1 timeline-line-done mx-1"></div>
+          <!-- Del 2 -->
+          <div class="flex flex-col items-center flex-shrink-0 opacity-50">
+            <div class="w-10 h-10 rounded-full timeline-dot-future text-stone-600 flex items-center justify-center font-semibold ring-4 ring-white">2</div>
+            <div class="text-xs mt-2 font-medium text-stone-700">Prova på</div>
+            <div class="text-[11px] text-stone-500">5 veckor</div>
+          </div>
+          <div class="flex-1 h-1 timeline-line mx-1"></div>
+          <!-- Del 3 -->
+          <div class="flex flex-col items-center flex-shrink-0 opacity-50">
+            <div class="w-10 h-10 rounded-full timeline-dot-future text-stone-600 flex items-center justify-center font-semibold ring-4 ring-white">3</div>
+            <div class="text-xs mt-2 font-medium text-stone-700">Stärka och utveckla</div>
+            <div class="text-[11px] text-stone-500">upp till 6 mån</div>
+          </div>
+          <div class="flex-1 h-1 timeline-line mx-1"></div>
+          <!-- Del 4 -->
+          <div class="flex flex-col items-center flex-shrink-0 opacity-50">
+            <div class="w-10 h-10 rounded-full timeline-dot-future text-stone-600 flex items-center justify-center font-semibold ring-4 ring-white">4</div>
+            <div class="text-xs mt-2 font-medium text-stone-700">Hitta arbetsplats</div>
+            <div class="text-[11px] text-stone-500">upp till 6 mån</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TABS -->
+  <nav class="flex flex-wrap gap-2 mb-6" role="tablist">
+    <button class="tab-active px-4 py-2 rounded-full text-sm font-medium border-2">Översikt</button>
+    <button class="px-4 py-2 rounded-full text-sm font-medium border-2 border-stone-200 text-stone-700 bg-white">Del 1 — Lära känna dig</button>
+    <button class="px-4 py-2 rounded-full text-sm font-medium border-2 border-stone-200 text-stone-500 bg-white opacity-60">Del 2 — Prova på</button>
+    <button class="px-4 py-2 rounded-full text-sm font-medium border-2 border-stone-200 text-stone-500 bg-white opacity-60">Del 3 — Stärka och utveckla</button>
+    <button class="px-4 py-2 rounded-full text-sm font-medium border-2 border-stone-200 text-stone-500 bg-white opacity-60">Del 4 — Hitta arbetsplats</button>
+  </nav>
+
+  <!-- OVERVIEW TAB CONTENT -->
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+    <!-- Today / Next activity -->
+    <div class="card p-5 lg:col-span-2" style="background: var(--c-bg);">
+      <div class="flex items-start justify-between gap-3 mb-3">
+        <div>
+          <div class="text-xs uppercase tracking-wide" style="color: var(--c-text);">Idag</div>
+          <h2 class="text-lg font-semibold text-stone-900 mt-1">Dag 7 — Sömn och återhämtning</h2>
+          <p class="text-sm text-stone-700 mt-1">En kort genomgång och en övning. Tar runt 45 minuter. Du kan göra den i din egen takt.</p>
+        </div>
+        <span class="pill" style="background: var(--c-accent); color: var(--c-text);">13:00–13:45</span>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <button class="px-4 py-2 rounded-lg text-white font-medium text-sm" style="background: var(--c-solid);">Öppna dagens övning</button>
+        <button class="px-4 py-2 rounded-lg bg-white border border-stone-200 text-stone-700 font-medium text-sm">Skjut upp till imorgon</button>
+      </div>
+    </div>
+
+    <!-- Min konsulent -->
+    <div class="card p-5">
+      <div class="text-xs uppercase tracking-wide text-stone-500 mb-2">Din konsulent</div>
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-full bg-stone-200 flex items-center justify-center text-stone-700 font-semibold">EL</div>
+        <div>
+          <div class="font-medium text-stone-900">Erik Lindgren</div>
+          <div class="text-xs text-stone-500">Träffas tisdag 14 maj, 10:00</div>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-4">
+        <button class="flex-1 px-3 py-2 rounded-lg bg-white border border-stone-200 text-stone-700 text-sm font-medium">Skicka meddelande</button>
+        <button class="px-3 py-2 rounded-lg bg-white border border-stone-200 text-stone-700 text-sm font-medium">Ring</button>
+      </div>
+    </div>
+
+    <!-- Veckans plan -->
+    <div class="card p-5 lg:col-span-2">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-semibold text-stone-900">Veckans plan</h3>
+        <span class="text-xs text-stone-500">v.20 • 12–16 maj</span>
+      </div>
+      <ul class="space-y-2">
+        <li class="flex items-center gap-3 p-3 rounded-lg bg-stone-50">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold" style="background: var(--c-accent); color: var(--c-text);">MÅN</div>
+          <div class="flex-1">
+            <div class="font-medium text-stone-900 text-sm">Dag 6 — Karriärvägledning del 1</div>
+            <div class="text-xs text-stone-500">Övning + reflektion • 1 timme</div>
+          </div>
+          <span class="pill bg-emerald-50 text-emerald-700">Klar</span>
+        </li>
+        <li class="flex items-center gap-3 p-3 rounded-lg" style="background: var(--c-bg);">
+          <div class="w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold bg-white" style="color: var(--c-text);">TIS</div>
+          <div class="flex-1">
+            <div class="font-medium text-stone-900 text-sm">Dag 7 — Sömn och återhämtning</div>
+            <div class="text-xs text-stone-700">Idag, 13:00 • 45 min</div>
+          </div>
+          <span class="pill" style="background: var(--c-solid); color: white;">Idag</span>
+        </li>
+        <li class="flex items-center gap-3 p-3 rounded-lg bg-stone-50">
+          <div class="w-9 h-9 rounded-lg bg-stone-200 flex items-center justify-center text-xs font-semibold text-stone-600">ONS</div>
+          <div class="flex-1">
+            <div class="font-medium text-stone-900 text-sm">Dag 8 — Nutrition och träning</div>
+            <div class="text-xs text-stone-500">Övning + reflektion • 1 timme</div>
+          </div>
+          <span class="pill bg-white border border-stone-200 text-stone-600">Imorgon</span>
+        </li>
+        <li class="flex items-center gap-3 p-3 rounded-lg bg-stone-50">
+          <div class="w-9 h-9 rounded-lg bg-stone-200 flex items-center justify-center text-xs font-semibold text-stone-600">TOR</div>
+          <div class="flex-1">
+            <div class="font-medium text-stone-900 text-sm">Möte med Erik (din konsulent)</div>
+            <div class="text-xs text-stone-500">Kontoret, 10:00 • 30 min</div>
+          </div>
+          <span class="pill bg-white border border-stone-200 text-stone-600">Tor 14 maj</span>
+        </li>
+        <li class="flex items-center gap-3 p-3 rounded-lg bg-stone-50">
+          <div class="w-9 h-9 rounded-lg bg-stone-200 flex items-center justify-center text-xs font-semibold text-stone-600">FRE</div>
+          <div class="flex-1">
+            <div class="font-medium text-stone-900 text-sm">Dag 9 — Fem faktorer för fysisk aktivitet</div>
+            <div class="text-xs text-stone-500">Övning + reflektion • 1 timme</div>
+          </div>
+          <span class="pill bg-white border border-stone-200 text-stone-600">Fre 16 maj</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Dina styrkor som växer fram -->
+    <div class="card p-5">
+      <div class="text-xs uppercase tracking-wide text-stone-500 mb-2">Det här ser vi hos dig</div>
+      <h3 class="text-base font-semibold text-stone-900 mb-3">Styrkor som växer fram</h3>
+      <ul class="space-y-2 text-sm">
+        <li class="flex items-start gap-2">
+          <span class="mt-1 w-1.5 h-1.5 rounded-full" style="background: var(--c-solid);"></span>
+          <span class="text-stone-700">Du är noggrann med detaljer — du märker saker andra missar.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="mt-1 w-1.5 h-1.5 rounded-full" style="background: var(--c-solid);"></span>
+          <span class="text-stone-700">Du gillar att lära nytt och frågar smart.</span>
+        </li>
+        <li class="flex items-start gap-2">
+          <span class="mt-1 w-1.5 h-1.5 rounded-full" style="background: var(--c-solid);"></span>
+          <span class="text-stone-700">Du är lugn i pressade situationer.</span>
+        </li>
+      </ul>
+      <p class="text-xs text-stone-500 mt-3">Erik fyller på listan när ni pratas vid.</p>
+    </div>
+
+    <!-- Reflektion -->
+    <div class="card p-5 lg:col-span-2" style="background: var(--wellbeing-bg);">
+      <div class="text-xs uppercase tracking-wide mb-2" style="color: var(--wellbeing-text);">Dagens reflektion</div>
+      <h3 class="text-base font-semibold text-stone-900 mb-3">Hur har dagen känts?</h3>
+      <div class="flex flex-wrap gap-2 mb-3">
+        <button class="px-3 py-2 rounded-full bg-white border-2 border-stone-200 text-sm">🌤️ Riktigt bra</button>
+        <button class="px-3 py-2 rounded-full bg-white border-2 border-stone-200 text-sm">🙂 Okej</button>
+        <button class="px-3 py-2 rounded-full bg-white border-2 border-stone-200 text-sm">😐 Sådär</button>
+        <button class="px-3 py-2 rounded-full bg-white border-2 border-stone-200 text-sm">😞 Tungt</button>
+      </div>
+      <textarea rows="2" placeholder="Vad har varit roligt eller jobbigt idag? Kan vara så kort eller långt du vill." class="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm"></textarea>
+      <p class="text-xs text-stone-600 mt-2">Bara du och din konsulent ser detta. Du bestämmer själv när du vill skriva.</p>
+    </div>
+
+    <!-- Resources -->
+    <div class="card p-5">
+      <div class="text-xs uppercase tracking-wide text-stone-500 mb-2">Läs när du vill</div>
+      <h3 class="text-base font-semibold text-stone-900 mb-3">Resurser</h3>
+      <ul class="space-y-2">
+        <li><a href="#" class="text-sm text-stone-700 hover:underline">📘 Kompendium 1 — Steg till arbete</a></li>
+        <li><a href="#" class="text-sm text-stone-700 hover:underline">🌿 Hälsoskola (kompendium 2)</a></li>
+        <li><a href="#" class="text-sm text-stone-700 hover:underline">🎯 Karriärvägledningshäfte 1</a></li>
+        <li><a href="#" class="text-sm text-stone-700 hover:underline">😴 Sovboken — guide till bättre sömn</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- =========================================== -->
+  <!-- DETAIL: DEL 1 (visas när fliken är vald) -->
+  <!-- =========================================== -->
+  <hr class="my-12 border-stone-200" />
+  <div class="legend-note mb-2">Förhandsvisning: innehåll i fliken &laquo;Del 1 — Lära känna dig&raquo;</div>
+
+  <section class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div class="lg:col-span-2 space-y-5">
+
+      <!-- Del intro -->
+      <div class="card p-6" style="background: var(--c-bg);">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="pill" style="background: var(--c-solid); color: white;">Del 1</span>
+          <span class="text-xs text-stone-600">3 veckor • du är dag 8</span>
+        </div>
+        <h2 class="text-xl font-semibold text-stone-900">Just nu lär vi känna varandra</h2>
+        <p class="text-stone-700 mt-2 max-w-2xl">Du behöver inte prestera under den här tiden. Vi tittar tillsammans på vad du har med dig, vad du gillar, och hur en bra arbetsdag ser ut för just dig. Det blir grunden för resten av resan.</p>
+      </div>
+
+      <!-- Startsamtal -->
+      <details open class="card p-5">
+        <summary class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">✓</div>
+            <div>
+              <div class="font-semibold text-stone-900">Startsamtal</div>
+              <div class="text-xs text-stone-500">Klart • 30 april</div>
+            </div>
+          </div>
+          <span class="text-stone-400">▾</span>
+        </summary>
+        <div class="mt-4 pl-13 text-sm text-stone-700">
+          <p>Du och Erik gick igenom hur tjänsten fungerar, ditt schema och vad du behöver för att det ska kännas bra. Du nämnde att du vill ha lugna miljöer och korta pauser oftare.</p>
+          <p class="mt-2"><strong class="text-stone-900">Anpassningar vi planerat:</strong> kortare aktivitetspass (45 min), tysta rum vid behov, möjlighet att gå utomhus mellan övningar.</p>
+        </div>
+      </details>
+
+      <!-- Kartläggning -->
+      <details class="card p-5">
+        <summary class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">✓</div>
+            <div>
+              <div class="font-semibold text-stone-900">Vi pratar om dig och arbete</div>
+              <div class="text-xs text-stone-500">Klart • 6 maj • Två samtal à 1 timme</div>
+            </div>
+          </div>
+          <span class="text-stone-400">▾</span>
+        </summary>
+      </details>
+
+      <!-- Kompetenskartläggning -->
+      <details open class="card p-5">
+        <summary class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: var(--c-accent); color: var(--c-text);">⏱</div>
+            <div>
+              <div class="font-semibold text-stone-900">Dina kompetenser och intressen</div>
+              <div class="text-xs text-stone-500">Pågående • 5 av 8 frågor klara</div>
+            </div>
+          </div>
+          <span class="text-stone-400">▾</span>
+        </summary>
+        <div class="mt-4 text-sm text-stone-700">
+          <p>Vi sammanställer vad du redan kan och vad du tycker om att göra. Du fyller på i din egen takt — det är ingen brådska.</p>
+          <div class="progress-track h-2 rounded-full mt-3 overflow-hidden">
+            <div class="progress-fill h-full" style="width: 62%"></div>
+          </div>
+          <button class="mt-3 px-4 py-2 rounded-lg text-white text-sm font-medium" style="background: var(--c-solid);">Fortsätt där du var</button>
+        </div>
+      </details>
+
+      <!-- Dagsslinga -->
+      <details open class="card p-5">
+        <summary class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: var(--c-accent); color: var(--c-text);">📅</div>
+            <div>
+              <div class="font-semibold text-stone-900">Dagsslinga — 14 dagar</div>
+              <div class="text-xs text-stone-500">7 av 14 dagar avklarade</div>
+            </div>
+          </div>
+          <span class="text-stone-400">▾</span>
+        </summary>
+        <div class="mt-4 grid grid-cols-2 md:grid-cols-7 gap-2">
+          <!-- 14 day boxes -->
+          <a class="text-center p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+            <div class="text-[10px] text-emerald-700 font-medium uppercase">Dag 1</div>
+            <div class="text-xs text-stone-700 mt-1">Fysisk aktivitet</div>
+            <div class="text-[10px] text-emerald-700 mt-1">✓ Klar</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+            <div class="text-[10px] text-emerald-700 font-medium uppercase">Dag 2</div>
+            <div class="text-xs text-stone-700 mt-1">Vem är jag?</div>
+            <div class="text-[10px] text-emerald-700 mt-1">✓ Klar</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+            <div class="text-[10px] text-emerald-700 font-medium uppercase">Dag 3</div>
+            <div class="text-xs text-stone-700 mt-1">Stress</div>
+            <div class="text-[10px] text-emerald-700 mt-1">✓ Klar</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+            <div class="text-[10px] text-emerald-700 font-medium uppercase">Dag 4</div>
+            <div class="text-xs text-stone-700 mt-1">Funktionsnedsättning</div>
+            <div class="text-[10px] text-emerald-700 mt-1">✓ Klar</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+            <div class="text-[10px] text-emerald-700 font-medium uppercase">Dag 5</div>
+            <div class="text-xs text-stone-700 mt-1">Karriärvägledning 1</div>
+            <div class="text-[10px] text-emerald-700 mt-1">✓ Klar</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+            <div class="text-[10px] text-emerald-700 font-medium uppercase">Dag 6</div>
+            <div class="text-xs text-stone-700 mt-1">Karriärvägledning 2</div>
+            <div class="text-[10px] text-emerald-700 mt-1">✓ Klar</div>
+          </a>
+          <a class="text-center p-3 rounded-lg border-2" style="background: var(--c-bg); border-color: var(--c-solid);">
+            <div class="text-[10px] font-medium uppercase" style="color: var(--c-text);">Dag 7</div>
+            <div class="text-xs text-stone-900 mt-1 font-medium">Sömn</div>
+            <div class="text-[10px] mt-1" style="color: var(--c-text);">Idag</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-white border border-stone-200">
+            <div class="text-[10px] text-stone-500 font-medium uppercase">Dag 8</div>
+            <div class="text-xs text-stone-600 mt-1">Nutrition</div>
+            <div class="text-[10px] text-stone-500 mt-1">Imorgon</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-white border border-stone-200">
+            <div class="text-[10px] text-stone-500 font-medium uppercase">Dag 9</div>
+            <div class="text-xs text-stone-600 mt-1">5 faktorer</div>
+            <div class="text-[10px] text-stone-500 mt-1">Fre</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-white border border-stone-200">
+            <div class="text-[10px] text-stone-500 font-medium uppercase">Dag 10</div>
+            <div class="text-xs text-stone-600 mt-1">Timeboxing</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-white border border-stone-200">
+            <div class="text-[10px] text-stone-500 font-medium uppercase">Dag 11</div>
+            <div class="text-xs text-stone-600 mt-1">Motivation</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-white border border-stone-200">
+            <div class="text-[10px] text-stone-500 font-medium uppercase">Dag 12</div>
+            <div class="text-xs text-stone-600 mt-1">Självkänsla</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-white border border-stone-200">
+            <div class="text-[10px] text-stone-500 font-medium uppercase">Dag 13</div>
+            <div class="text-xs text-stone-600 mt-1">Mål</div>
+          </a>
+          <a class="text-center p-3 rounded-lg bg-white border border-stone-200">
+            <div class="text-[10px] text-stone-500 font-medium uppercase">Dag 14</div>
+            <div class="text-xs text-stone-600 mt-1">Hantera stress</div>
+          </a>
+        </div>
+        <p class="text-xs text-stone-500 mt-3">Klicka på en dag för att öppna övningen och arbetsbladet. Du kan alltid gå tillbaka till äldre dagar.</p>
+      </details>
+
+      <!-- Hälsoaktiviteter -->
+      <details class="card p-5">
+        <summary class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: var(--wellbeing-bg); color: var(--wellbeing-text);">🌿</div>
+            <div>
+              <div class="font-semibold text-stone-900">Frivilliga hälsoaktiviteter</div>
+              <div class="text-xs text-stone-500">Sömn, stress, motivation — när du vill</div>
+            </div>
+          </div>
+          <span class="text-stone-400">▸</span>
+        </summary>
+      </details>
+    </div>
+
+    <!-- Sidebar — vad väntar härnäst -->
+    <aside class="space-y-5">
+      <div class="card p-5">
+        <div class="text-xs uppercase tracking-wide text-stone-500 mb-2">Härnäst</div>
+        <h3 class="text-base font-semibold text-stone-900">Del 2 — Prova på</h3>
+        <p class="text-sm text-stone-700 mt-2">När du är klar med Del 1 går vi vidare till att prova olika arbetsuppgifter i en lugn miljö. Du provar — inget måste sitta perfekt.</p>
+        <ul class="text-sm text-stone-700 mt-3 space-y-1">
+          <li>• 5 veckor</li>
+          <li>• 4 olika stationer att prova</li>
+          <li>• Erik finns med hela tiden</li>
+        </ul>
+      </div>
+
+      <div class="card p-5" style="background: var(--wellbeing-bg);">
+        <div class="text-xs uppercase tracking-wide mb-2" style="color: var(--wellbeing-text);">Påminnelse</div>
+        <p class="text-sm text-stone-800">Det är okej att ha jobbiga dagar. Säg till Erik — han hjälper dig anpassa.</p>
+      </div>
+
+      <div class="card p-5">
+        <div class="text-xs uppercase tracking-wide text-stone-500 mb-2">Behöver du språkstöd?</div>
+        <p class="text-sm text-stone-700">Vi kan översätta material eller ge stöd på arabiska, somaliska, tigrinja, dari eller pashtu.</p>
+        <button class="mt-3 px-3 py-1.5 rounded-lg bg-white border border-stone-200 text-sm">Be om språkstöd</button>
+      </div>
+    </aside>
+  </section>
+
+  <!-- LEGEND for the reviewer -->
+  <div class="mt-12 p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-900">
+    <strong>Designanteckningar:</strong>
+    <ul class="list-disc ml-5 mt-2 space-y-1">
+      <li>Hero följer DESIGN.md §3 verktygssida (neutral grå + 4 px domänkant).</li>
+      <li>Mint/action är hub-färg eftersom STA är en huvuddashboard, inte coachning. Wellbeing (lavendel) används som accent för reflektion och påminnelser.</li>
+      <li>Tonen är coachande: &laquo;Just nu lär vi känna varandra&raquo;, inte &laquo;Kartläggningsfas pågående&raquo;.</li>
+      <li>Instrumentnamn (DOA, WRI, MOHOST) syns aldrig för deltagaren — dolda bakom &laquo;Vi pratar om dig och arbete&raquo;.</li>
+      <li>Dagsslinga visar samtliga 14 dagar för att ge tydlig översikt; klick öppnar artikelvy (samma mönster som befintliga KnowledgeBase-artiklar).</li>
+      <li>Påminnelser om språkstöd och anpassningar finns alltid synliga.</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

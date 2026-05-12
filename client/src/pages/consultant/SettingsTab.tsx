@@ -27,6 +27,7 @@ import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
+import { ProgramSelector } from '@/components/settings/ProgramSelector'
 import { cn } from '@/lib/utils'
 
 interface NotificationSetting {
@@ -342,6 +343,9 @@ export function SettingsTab() {
           </div>
         </Card>
       )}
+
+      {/* Project / Program */}
+      <ProgramSelector />
 
       {/* Notification Settings */}
       <Card className="p-5">
