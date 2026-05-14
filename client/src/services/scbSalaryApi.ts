@@ -260,7 +260,7 @@ class SCBSalaryService {
       percentile = 'Lead/Principal'
     } else {
       multiplier = 1.45
-      percentile: 'Expert/Executive'
+      percentile = 'Expert/Executive'
     }
 
     return {

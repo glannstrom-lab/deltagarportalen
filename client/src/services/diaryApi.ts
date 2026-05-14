@@ -585,7 +585,7 @@ export const diaryStreaksApi = {
     const today = new Date().toISOString().split('T')[0]
 
     // Get current streaks
-    let streaks = await this.get()
+    const streaks = await this.get()
 
     if (!streaks) {
       // Create new streaks record

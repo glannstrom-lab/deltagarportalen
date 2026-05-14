@@ -143,7 +143,7 @@ export function generateRecurringEvents(
   
   const events: CalendarEvent[] = []
   const config = baseEvent.recurringConfig
-  let currentDate = new Date(startDate)
+  const currentDate = new Date(startDate)
   let occurrenceCount = 0
   
   while (currentDate <= endDate) {

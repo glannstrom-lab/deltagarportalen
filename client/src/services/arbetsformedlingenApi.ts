@@ -250,7 +250,7 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
     
     // Publiceringsdatum
     if (params.publishedWithin && params.publishedWithin !== 'all') {
-      let date = new Date();
+      const date = new Date();
       if (params.publishedWithin === 'today') {
         // Idag
       } else if (params.publishedWithin === 'week') {
