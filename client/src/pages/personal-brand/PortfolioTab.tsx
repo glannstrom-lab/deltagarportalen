@@ -3,15 +3,12 @@
  * Features: Cloud sync, better visuals, sharing
  */
 import { useState, useEffect } from 'react'
-import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
 import {
   FolderOpen,
   Plus,
   ExternalLink,
   Trash2,
   Edit2,
-  Image,
   Link as LinkIcon,
   Github,
   Briefcase,
@@ -19,18 +16,15 @@ import {
   X,
   Star,
   Calendar,
-  Copy,
   Check,
   Award,
   Loader2,
-  ArrowUpDown,
-  GripVertical,
   Share2
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { personalBrandApi, type PortfolioItem } from '@/services/cloudStorage'
-import { motion, AnimatePresence, Reorder } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const ITEM_TYPES = {
   project: { label: 'Projekt', icon: Github, color: 'teal', description: 'Personliga eller arbetsrelaterade projekt' },
@@ -40,14 +34,13 @@ const ITEM_TYPES = {
 }
 
 export default function PortfolioTab() {
-  const { t } = useTranslation()
   const [items, setItems] = useState<PortfolioItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isEditing, setIsEditing] = useState(false)
   const [editingItem, setEditingItem] = useState<PortfolioItem | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [copied, setCopied] = useState(false)
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
+  const [viewMode] = useState<'grid' | 'list'>('grid')
 
   // Form state
   const [formData, setFormData] = useState({

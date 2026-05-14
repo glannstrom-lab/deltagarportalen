@@ -2,17 +2,13 @@
  * Visibility Tab - Increase your digital presence
  * Features: Strategy tracking, content calendar, progress sync
  */
-import { useState, useEffect, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import {
   Eye,
   Linkedin,
-  Globe,
-  MessageSquare,
   TrendingUp,
   CheckCircle,
-  ExternalLink,
   Lightbulb,
   Calendar,
   Plus,
@@ -20,13 +16,10 @@ import {
   Pause,
   SkipForward,
   Clock,
-  Target,
   Loader2,
   RefreshCw,
   ChevronRight,
   Edit2,
-  Trash2,
-  X,
   Save
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
@@ -144,7 +137,6 @@ const CATEGORIES = {
 }
 
 export default function VisibilityTab() {
-  const { t } = useTranslation()
   const [progress, setProgress] = useState<VisibilityProgressItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
@@ -200,7 +192,6 @@ export default function VisibilityTab() {
     : VISIBILITY_STRATEGIES
 
   const completedCount = progress.filter(p => p.status === 'completed').length
-  const inProgressCount = progress.filter(p => p.status === 'in_progress').length
 
   const refreshIdea = () => {
     let newIdea = contentIdea
@@ -229,11 +220,8 @@ export default function VisibilityTab() {
     await loadData()
   }
 
-  const deleteCalendarItem = async (id: string) => {
-    if (!confirm('Ta bort detta inlägg?')) return
-    await personalBrandApi.deleteContentItem(id)
-    await loadData()
-  }
+  // deleteCalendarItem är inte ansluten i UI än (ingen knapp anropar).
+  // Återinför när delete-flow för content-kalender byggs.
 
   // Generate week view for calendar
   const weekStart = startOfWeek(new Date(), { weekStartsOn: 1 })

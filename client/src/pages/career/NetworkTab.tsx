@@ -4,9 +4,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Users, Plus, MessageCircle, Mail, Phone, Linkedin,
-  ChevronRight, Star, Clock, CheckCircle2, Send, AlertCircle,
-  Calendar, BookOpen, Copy, X, TrendingUp, Zap, Trash2, Edit2, Loader2
+  Users, Plus, MessageCircle, Mail, Linkedin,
+  ChevronRight, Star, Clock, CheckCircle2,
+  Calendar, BookOpen, Copy, Zap, Trash2, Loader2
 } from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
 import { EmptyState } from '@/components/ui/EmptyState'
@@ -52,7 +52,6 @@ export default function NetworkTab() {
   const [isSaving, setIsSaving] = useState(false)
   const [isAdding, setIsAdding] = useState(false)
   const [isAddingEvent, setIsAddingEvent] = useState(false)
-  const [editingContact, setEditingContact] = useState<NetworkContact | null>(null)
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null)
   const [newContact, setNewContact] = useState({
     name: '',
@@ -138,18 +137,9 @@ export default function NetworkTab() {
     }
   }
 
-  const updateContact = async (id: string, updates: Partial<NetworkContact>) => {
-    setIsSaving(true)
-    try {
-      const updated = await networkApi.update(id, updates)
-      setContacts(prev => prev.map(c => c.id === id ? updated : c))
-      setEditingContact(null)
-    } catch (err) {
-      console.error('Failed to update contact:', err)
-    } finally {
-      setIsSaving(false)
-    }
-  }
+  // Edit-flödet är inte aktivt anslutet i UI (ingen knapp anropar
+  // updateContact). Behåller bara delete + add. Återinför detta när
+  // edit-modal byggs.
 
   const deleteContact = async (id: string) => {
     if (!confirm(t('career.networkTab.confirmDeleteContact'))) return
