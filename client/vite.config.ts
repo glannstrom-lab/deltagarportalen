@@ -114,32 +114,76 @@ export default defineConfig(({ mode }) => ({
   build: {
     // Optimize chunk size
     chunkSizeWarningLimit: 500,
+    // Stäng av automatisk modulepreload helt. Anledning: Vite skulle annars
+    // injicera <link rel="modulepreload"> för chunken som innehåller
+    // __vitePreload-helpern — och Rollup placerar helpern i en av
+    // manualChunks (i vårt fall vendor-jspdf på 411 KB). Resultatet blev
+    // att en stor vendor-chunk preloadades på varje sidladdning trots att
+    // koden själv är lazy-importerad. Browsers laddar fortfarande
+    // dependencies normalt, bara utan den preload-hinten.
+    modulePreload: false,
     rollupOptions: {
       output: {
-        // Manual chunk splitting for better caching
-        manualChunks: {
-          // Core vendor chunks - most stable
-          'vendor-react': ['react', 'react-dom'],
-          'vendor-router': ['react-router-dom'],
+        // Manual chunk splitting för bättre cache + LCP.
+        // OBS: Function-form används istället för object-form. Object-form
+        // gör att Rollup placerar Vites `__vitePreload`-helper i den största
+        // chunken som behöver den — vilket tidigare hamnade i vendor-pdf.
+        // Resultatet: vendor-pdf (2.1 MB) blev statisk dependency av entry
+        // och modulepreloadades på varje sidladdning trots att PDF-koden är
+        // lazy-importerad. Function-form undviker detta.
+        manualChunks(id) {
+          if (!id.includes('node_modules')) return undefined
 
-          // Data fetching and state management
-          'vendor-query': ['@tanstack/react-query'],
-          'vendor-state': ['zustand'],
+          // PDF-libs — split per lib så cache kan stabiliseras separat
+          if (id.includes('/node_modules/jspdf/') || id.includes('/node_modules/jspdf-autotable/')) {
+            return 'vendor-jspdf'
+          }
+          if (id.includes('/node_modules/@react-pdf/')) {
+            return 'vendor-react-pdf'
+          }
+          if (id.includes('/node_modules/html2canvas/')) {
+            return 'vendor-html2canvas'
+          }
 
-          // Backend integration - split to reduce main bundle
-          'vendor-supabase': ['@supabase/supabase-js'],
+          // Animation library — tung, kan lazy-loadas
+          if (id.includes('/node_modules/framer-motion/')) {
+            return 'vendor-animation'
+          }
+
+          // Core React
+          if (id.includes('/node_modules/react/') ||
+              id.includes('/node_modules/react-dom/') ||
+              id.includes('/node_modules/scheduler/')) {
+            return 'vendor-react'
+          }
+
+          // Routing
+          if (id.includes('/node_modules/react-router') ||
+              id.includes('/node_modules/@remix-run/')) {
+            return 'vendor-router'
+          }
+
+          // State & data fetching
+          if (id.includes('/node_modules/@tanstack/react-query')) {
+            return 'vendor-query'
+          }
+          if (id.includes('/node_modules/zustand/')) {
+            return 'vendor-state'
+          }
+
+          // Backend
+          if (id.includes('/node_modules/@supabase/')) {
+            return 'vendor-supabase'
+          }
 
           // Form validation
-          'vendor-forms': ['zod'],
+          if (id.includes('/node_modules/zod/')) {
+            return 'vendor-forms'
+          }
 
-          // PDF generation - heavy, only needed for CV export (dynamiskt laddad)
-          'vendor-pdf': ['jspdf', 'jspdf-autotable', 'html2canvas', '@react-pdf/renderer'],
-
-          // Animation library - heavy, kan lazy-loadas
-          'vendor-animation': ['framer-motion'],
-
-          // NOTE: lucide-react is NOT in manualChunks to enable proper tree-shaking
-          // Only the icons imported in icons.ts barrel will be included
+          // lucide-react INTE i manualChunks — låt tree-shaking köra via icons.ts-barrel.
+          // Övriga node_modules: låt Rollup besluta automatiskt.
+          return undefined
         },
         // Asset naming for better caching
         assetFileNames: (assetInfo) => {
