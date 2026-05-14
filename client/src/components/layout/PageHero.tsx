@@ -159,7 +159,6 @@ function PageHeroHub({
           aria-hidden="true"
           className="absolute -top-[100px] -right-[100px] w-[260px] h-[260px] sm:w-[320px] sm:h-[320px] rounded-full pointer-events-none"
           style={{
-            // eslint-disable-next-line no-restricted-syntax -- DESIGN.md §3 tillåter dekorativ glow i hub-hero
             background: 'radial-gradient(circle, var(--c-accent) 0%, transparent 70%)',
             opacity: 0.4,
           }}

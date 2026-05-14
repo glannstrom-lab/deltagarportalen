@@ -1,8 +1,9 @@
 # Designskuld — kända överträdelser mot DESIGN.md v3.0
 
-> **Senast uppdaterad:** 2026-05-14 (efter intensiv 90-min designskuld-session)
+> **Senast uppdaterad:** 2026-05-14 (90-min designskuld-loop avslutad)
 > **Källa:** ESLint-regler från Fas 0 (`client/eslint.config.js`) + i18n-detektor (`scripts/i18n-leak-detector.cjs`).
-> **Status nu:** ✅ ESLint-reglerna på `error`-nivå. 0 design-errors i kodbasen.
+> **Status nu:** ✅ ESLint-reglerna på `error`-nivå. **0 design-errors, 0 design-warnings** i kodbasen.
+> Stale `eslint-disable next-line no-restricted-syntax`-kommentarer rensade — fil-nivå whitelist i `eslint.config.js` täcker dem redan.
 
 ### Framsteg
 

@@ -444,7 +444,6 @@ export default function Landing() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
             {/* Arbetssökande — activity-färg (persika) */}
-            {/* eslint-disable-next-line no-restricted-syntax -- DESIGN.md §4 Landing visar 3 målgrupper sida-vid-sida med distinkta hub-färger */}
             <div className="rounded-2xl p-6 sm:p-7 bg-[var(--activity-bg)] border-2 border-[var(--activity-accent)] flex flex-col">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--activity-text)] mb-3">
                 {t('landing.audience.jobseeker.tag', 'Arbetssökande')}
@@ -479,7 +478,6 @@ export default function Landing() {
             </div>
 
             {/* Konsulent — coaching-färg (rosa) */}
-            {/* eslint-disable-next-line no-restricted-syntax -- DESIGN.md §4 Landing-undantag */}
             <div className="rounded-2xl p-6 sm:p-7 bg-[var(--coaching-bg)] border-2 border-[var(--coaching-accent)] flex flex-col">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--coaching-text)] mb-3">
                 {t('landing.audience.consultant.tag', 'Arbetskonsulent')}
@@ -514,7 +512,6 @@ export default function Landing() {
             </div>
 
             {/* VD — info-färg (sky) */}
-            {/* eslint-disable-next-line no-restricted-syntax -- DESIGN.md §4 Landing-undantag */}
             <div className="rounded-2xl p-6 sm:p-7 bg-[var(--info-bg)] border-2 border-[var(--info-accent)] flex flex-col">
               <span className="text-xs font-bold uppercase tracking-wider text-[var(--info-text)] mb-3">
                 {t('landing.audience.executive.tag', 'VD / Inköp')}
@@ -566,7 +563,6 @@ export default function Landing() {
             </p>
           </div>
 
-          {/* eslint-disable-next-line no-restricted-syntax -- DESIGN.md §4 Översikt-mönstret: 5 hub-färger samtidigt på Landing */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <HubLandingCard
               icon={LayoutDashboard}
