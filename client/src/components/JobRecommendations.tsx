@@ -73,7 +73,7 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
   return (
     <div className="space-y-4">
       {/* Suggestions */}
-      <div className="bg-gradient-to-r from-[var(--c-bg)] to-emerald-50 p-4 rounded-xl border border-[var(--c-accent)]/40">
+      <div className="bg-[var(--c-bg)] p-4 rounded-xl border border-[var(--c-accent)]/40">
         <div className="flex items-center gap-2 mb-3">
           <Lightbulb className="w-5 h-5 text-[var(--c-text)]" />
           <h3 className="font-semibold text-[var(--c-text)]">

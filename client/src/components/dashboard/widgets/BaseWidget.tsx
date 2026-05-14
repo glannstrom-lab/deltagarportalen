@@ -155,7 +155,7 @@ export const BaseWidget = memo(function BaseWidget({
         colors.hover,
         `focus:ring-${color}-500`,
         isComplete
-          ? "border-emerald-200 dark:border-emerald-700 bg-gradient-to-br from-emerald-50/50 dark:from-emerald-900/20 to-white dark:to-stone-800"
+          ? "border-emerald-200 dark:border-emerald-700 bg-emerald-50/50 dark:bg-emerald-900/20"
           : "border-stone-200 dark:border-stone-700",
         isSmall ? "p-4" : "p-5",
         className

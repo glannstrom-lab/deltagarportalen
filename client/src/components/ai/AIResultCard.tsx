@@ -294,7 +294,7 @@ export function AIResultCard({
       {/* Gradient Header */}
       <div
         className={cn(
-          'bg-gradient-to-r from-[var(--c-solid)] to-sky-600',
+          'bg-[var(--c-solid)]',
           'px-4 sm:px-6',
           variant === 'compact' ? 'py-3' : 'py-4'
         )}

@@ -224,7 +224,7 @@ function QuickAction({
       className={cn(
         'flex items-center gap-3 w-full p-3 rounded-lg transition-all duration-200',
         variant === 'primary'
-          ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white hover:from-amber-600 hover:to-orange-600'
+          ? 'bg-amber-500 dark:from-amber-600 dark:to-orange-600 text-white hover:from-amber-600 hover:to-orange-600'
           : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
       )}
     >

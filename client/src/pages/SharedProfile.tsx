@@ -93,7 +93,7 @@ export default function SharedProfile() {
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 overflow-hidden mb-6">
-          <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-500 h-24" />
+          <div className="bg-[var(--c-solid)] h-24" />
           <div className="px-6 pb-6 -mt-12">
             <div className="flex items-end gap-4">
               <div className="w-24 h-24 rounded-2xl bg-white dark:bg-stone-700 border-4 border-white dark:border-stone-700 shadow-lg overflow-hidden flex items-center justify-center">

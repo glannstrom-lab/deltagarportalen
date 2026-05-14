@@ -99,7 +99,7 @@ export function CalendarStats({ events, goals, moodEntries }: CalendarStatsProps
       </div>
 
       {/* Monthly Stats */}
-      <div className="bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)] p-4 rounded-xl text-white">
+      <div className="bg-[var(--c-solid)] p-4 rounded-xl text-white">
         <h3 className="font-semibold mb-4 flex items-center gap-2">
           <TrendingUp className="w-5 h-5" />
           Denna månad

@@ -224,7 +224,7 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
 
                   <button
                     onClick={handleConfirm}
-                    className="w-full py-4 rounded-xl bg-gradient-to-r from-[var(--c-solid)] to-sky-600 text-white font-semibold active:scale-[0.98] transition-transform"
+                    className="w-full py-4 rounded-xl bg-[var(--c-solid)] text-white font-semibold active:scale-[0.98] transition-transform"
                   >
                     Bekräfta
                   </button>

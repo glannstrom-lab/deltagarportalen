@@ -80,7 +80,7 @@ export const UserLevel: React.FC = () => {
   const progressPercent = (currentLevelPoints / pointsForNextLevel) * 100;
 
   return (
-    <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-xl p-4 text-white">
+    <div className="bg-[var(--c-solid)] rounded-xl p-4 text-white">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">

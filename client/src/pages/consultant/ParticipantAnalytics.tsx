@@ -130,7 +130,7 @@ export default function ParticipantAnalytics() {
             onClick={() => setSelectedParticipant(p)}
           >
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 flex items-center justify-center text-white font-semibold">
+              <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center text-white font-semibold">
                 {p.name.split(' ').map(n => n[0]).join('')}
               </div>
               <div className="flex-1">

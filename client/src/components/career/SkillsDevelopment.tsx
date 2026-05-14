@@ -167,7 +167,7 @@ export default function SkillsDevelopment() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-emerald-500 to-[var(--c-solid)] rounded-2xl p-8 text-white">
+      <div className="bg-[var(--c-solid)] rounded-2xl p-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
             <Wrench size={24} />

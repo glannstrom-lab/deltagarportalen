@@ -51,7 +51,7 @@ export function JourneyPhaseDetail({
       {/* Modal */}
       <div className="relative bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-indigo-500 to-purple-600 text-white p-6">
+        <div className="relative bg-purple-600 text-white p-6">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors"

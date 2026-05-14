@@ -37,9 +37,9 @@ export function JobCard({
   }
 
   const getMatchBarColor = (pct: number) => {
-    if (pct >= 80) return 'from-green-500 to-emerald-500'
-    if (pct >= 60) return 'from-amber-500 to-yellow-500'
-    return 'from-red-500 to-orange-500'
+    if (pct >= 80) return 'bg-emerald-500'
+    if (pct >= 60) return 'bg-amber-500'
+    return 'bg-red-500'
   }
 
   const getPrognosisIcon = (prognosis: string) => {
@@ -105,7 +105,7 @@ export function JobCard({
             {/* Match-bar */}
             <div className="mt-2 h-2 bg-gray-200 rounded-full overflow-hidden">
               <div
-                className={`h-full bg-gradient-to-r ${getMatchBarColor(matchPercentage)} rounded-full transition-all duration-500`}
+                className={`h-full ${getMatchBarColor(matchPercentage)} rounded-full transition-all duration-500`}
                 style={{ width: `${matchPercentage}%` }}
               />
             </div>

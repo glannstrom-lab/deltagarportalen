@@ -322,7 +322,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
               </div>
 
               {/* Uppmuntrande avslutning */}
-              <div className="bg-gradient-to-r from-[var(--c-bg)] to-rose-50 border border-[var(--c-accent)]/40 rounded-xl p-4 text-center">
+              <div className="bg-[var(--c-bg)] border border-[var(--c-accent)]/40 rounded-xl p-4 text-center">
                 <p className="text-sm text-stone-700">
                   <strong>{t('crisis.youMatter')}</strong> {t('crisis.alwaysHope')}
                 </p>

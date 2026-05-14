@@ -45,7 +45,7 @@ export function MobileProfileButton({ onClick }: { onClick: () => void }) {
       className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
       aria-label={t('layout.mobileNav.openProfile')}
     >
-      <div className="w-8 h-8 bg-gradient-to-br from-[var(--c-solid)] to-sky-500 rounded-full flex items-center justify-center">
+      <div className="w-8 h-8 bg-[var(--c-solid)] rounded-full flex items-center justify-center">
         <User className="w-4 h-4 text-white" />
       </div>
     </button>

@@ -68,7 +68,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
       energyLevel: 'medium',
       priority: 100,
       color: 'text-[var(--c-text)]',
-      gradient: 'from-[var(--c-solid)] to-sky-600'
+      gradient: 'bg-[var(--c-solid)]'
     },
     {
       id: 'complete-cv',
@@ -81,7 +81,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
       energyLevel: 'medium',
       priority: 90,
       color: 'text-[var(--c-text)]',
-      gradient: 'from-[var(--c-solid)] to-sky-600',
+      gradient: 'bg-[var(--c-solid)]',
       interpolation: { progress: data.cv.progress }
     },
     {
@@ -95,7 +95,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
       energyLevel: 'low',
       priority: 80,
       color: 'text-[var(--c-text)]',
-      gradient: 'from-[var(--c-solid)] to-emerald-600'
+      gradient: 'bg-[var(--c-solid)]'
     },
     {
       id: 'save-job',
@@ -108,7 +108,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
       energyLevel: 'low',
       priority: 70,
       color: 'text-blue-700',
-      gradient: 'from-blue-500 to-sky-600'
+      gradient: 'bg-sky-500'
     },
     {
       id: 'create-cover-letter',
@@ -121,7 +121,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
       energyLevel: 'medium',
       priority: 60,
       color: 'text-rose-700',
-      gradient: 'from-rose-500 to-pink-600'
+      gradient: 'bg-rose-500'
     },
     {
       id: 'apply-job',
@@ -134,7 +134,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
       energyLevel: 'high',
       priority: 50,
       color: 'text-amber-700',
-      gradient: 'from-amber-500 to-orange-600',
+      gradient: 'bg-amber-500',
       interpolation: { count: data.jobs?.savedCount ?? 0 }
     },
     {
@@ -148,7 +148,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
       energyLevel: 'low',
       priority: 40,
       color: 'text-yellow-700',
-      gradient: 'from-yellow-500 to-amber-600'
+      gradient: 'bg-yellow-500'
     }
   ]
 
@@ -201,7 +201,7 @@ export const NextStepWidget = memo(function NextStepWidget() {
     >
       <Link to={nextStep.link} className="block group">
         <div className={cn(
-          "relative overflow-hidden rounded-2xl bg-gradient-to-br p-6 transition-all",
+          "relative overflow-hidden rounded-2xl p-6 transition-all",
           "hover:shadow-lg hover: hover:-translate-y-0.5",
           nextStep.gradient
         )}>

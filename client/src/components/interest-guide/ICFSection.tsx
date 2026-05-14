@@ -46,9 +46,9 @@ export function ICFSection({ scores }: ICFSectionProps) {
         }
 
         const getBarColor = (s: number) => {
-          if (s >= 4) return 'from-green-500 to-emerald-500'
-          if (s >= 3) return 'from-amber-500 to-yellow-500'
-          return 'from-red-500 to-orange-500'
+          if (s >= 4) return 'bg-emerald-500'
+          if (s >= 3) return 'bg-amber-500'
+          return 'bg-red-500'
         }
 
         return (
@@ -70,7 +70,7 @@ export function ICFSection({ scores }: ICFSectionProps) {
                 <p className="text-xs mt-0.5 opacity-80">{getLevelText(score)}</p>
                 <div className="h-2 bg-white/50 rounded-full mt-1.5 overflow-hidden">
                   <div
-                    className={`h-full bg-gradient-to-r ${getBarColor(score)} rounded-full transition-all duration-500`}
+                    className={`h-full ${getBarColor(score)} rounded-full transition-all duration-500`}
                     style={{ width: `${(score / 5) * 100}%` }}
                   />
                 </div>

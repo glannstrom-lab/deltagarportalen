@@ -132,7 +132,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
         {/* Icon */}
-        <div className="w-16 h-16 bg-gradient-to-br from-[var(--c-accent)]/40 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-16 h-16 bg-[var(--c-accent)]/40 rounded-full flex items-center justify-center mx-auto mb-4">
           <Coffee className="w-8 h-8 text-[var(--c-text)]" />
         </div>
 

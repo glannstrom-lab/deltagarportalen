@@ -193,7 +193,7 @@ export function SalaryInsightsPanel({
             >
               <div className="flex items-end justify-between gap-4 py-4">
                 <div className="text-center">
-                  <div className="h-16 w-12 bg-gradient-to-t from-[var(--c-solid)] to-[var(--c-solid)]/80 rounded-t-lg flex items-end justify-center">
+                  <div className="h-16 w-12 bg-[var(--c-solid)] rounded-t-lg flex items-end justify-center">
                     <span className="text-white text-xs font-medium pb-1">1 år</span>
                   </div>
                   <p className="text-xs text-stone-600 dark:text-stone-600 mt-2">
@@ -202,7 +202,7 @@ export function SalaryInsightsPanel({
                 </div>
                 <ChevronRight className="w-4 h-4 text-stone-600 mb-8" />
                 <div className="text-center">
-                  <div className="h-24 w-12 bg-gradient-to-t from-sky-500 to-sky-400 rounded-t-lg flex items-end justify-center">
+                  <div className="h-24 w-12 bg-sky-500 rounded-t-lg flex items-end justify-center">
                     <span className="text-white text-xs font-medium pb-1">3 år</span>
                   </div>
                   <p className="text-xs text-stone-600 dark:text-stone-600 mt-2">
@@ -211,7 +211,7 @@ export function SalaryInsightsPanel({
                 </div>
                 <ChevronRight className="w-4 h-4 text-stone-600 mb-8" />
                 <div className="text-center">
-                  <div className="h-32 w-12 bg-gradient-to-t from-emerald-500 to-emerald-400 rounded-t-lg flex items-end justify-center">
+                  <div className="h-32 w-12 bg-emerald-500 rounded-t-lg flex items-end justify-center">
                     <span className="text-white text-xs font-medium pb-1">5 år</span>
                   </div>
                   <p className="text-xs text-stone-600 dark:text-stone-600 mt-2">

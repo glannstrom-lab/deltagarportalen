@@ -83,7 +83,7 @@ export function ProfileImageUpload({ currentImage, onImageChange, size = 'md', c
       {/* Image */}
       <div
         className={cn(
-          'relative rounded-2xl overflow-hidden bg-gradient-to-br from-[var(--c-solid)]/80 to-sky-400 dark:from-[var(--c-solid)] dark:to-sky-500 flex items-center justify-center shadow-lg flex-shrink-0',
+          'relative rounded-2xl overflow-hidden bg-[var(--c-solid)] flex items-center justify-center shadow-lg flex-shrink-0',
           sizeClasses[size]
         )}
       >

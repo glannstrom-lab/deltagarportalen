@@ -134,7 +134,7 @@ export function OnboardingModal() {
         )}
       >
         {/* Header */}
-        <div className="relative bg-gradient-to-r from-[var(--c-solid)] to-sky-500 px-6 py-8 text-white">
+        <div className="relative bg-[var(--c-solid)] px-6 py-8 text-white">
           <button
             onClick={handleClose}
             className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/20 transition-colors"

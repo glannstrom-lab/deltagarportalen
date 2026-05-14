@@ -8,9 +8,9 @@ export function BigFiveChart({ scores }: BigFiveChartProps) {
   const entries = Object.entries(scores) as [keyof BigFiveScores, number][]
   
   const getBarColor = (score: number) => {
-    if (score >= 70) return 'from-green-500 to-emerald-500'
-    if (score >= 40) return 'from-amber-500 to-yellow-500'
-    return 'from-red-500 to-orange-500'
+    if (score >= 70) return 'bg-emerald-500'
+    if (score >= 40) return 'bg-amber-500'
+    return 'bg-red-500'
   }
 
   return (
@@ -40,7 +40,7 @@ export function BigFiveChart({ scores }: BigFiveChartProps) {
               aria-valuetext={`${info.name}: ${score} procent, ${levelLabel} nivå`}
             >
               <div
-                className={`h-full bg-gradient-to-r ${barColor} rounded-full transition-all duration-1000 ease-out group-hover:opacity-90`}
+                className={`h-full ${barColor} rounded-full transition-all duration-1000 ease-out group-hover:opacity-90`}
                 style={{ width: `${score}%` }}
                 aria-hidden="true"
               />

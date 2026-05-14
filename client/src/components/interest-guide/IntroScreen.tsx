@@ -47,7 +47,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
     <div className="max-w-2xl mx-auto">
       {/* Header */}
       <div className="text-center mb-10">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-200 mb-5">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-purple-500 shadow-lg shadow-indigo-200 mb-5">
           <Sparkles className="w-8 h-8 text-white" />
         </div>
         <h1 className="text-3xl font-bold text-gray-900 mb-2">

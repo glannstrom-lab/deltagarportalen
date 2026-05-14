@@ -371,7 +371,7 @@ export default function TestTab() {
         </div>
         <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-400 dark:to-orange-400 transition-all duration-500 ease-out"
+            className="h-full bg-amber-500 dark:from-amber-400 dark:to-orange-400 transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>

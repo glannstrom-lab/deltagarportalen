@@ -35,7 +35,7 @@ export function AIToolsPanel({ cvData, onApplyToSummary }: AIToolsPanelProps) {
   const activeToolConfig = tools.find(t => t.id === activeTool)
 
   return (
-    <Card className="p-4 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 bg-gradient-to-br from-[var(--c-bg)]/50 to-sky-50/30 dark:from-[var(--c-bg)]/30 dark:to-sky-900/10">
+    <Card className="p-4 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)]/50 dark:bg-[var(--c-bg)]/30">
       <div className="space-y-4">
         {/* Header */}
         <div 

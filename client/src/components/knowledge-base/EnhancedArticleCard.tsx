@@ -71,7 +71,7 @@ export default function EnhancedArticleCard({
     return (
       <Link
         to={articleUrl}
-        className="group block bg-gradient-to-br from-[var(--c-bg)] to-blue-50 rounded-xl p-6 hover:shadow-md transition-all"
+        className="group block bg-[var(--c-bg)] rounded-xl p-6 hover:shadow-md transition-all"
       >
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">

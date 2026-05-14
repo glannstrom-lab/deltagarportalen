@@ -98,17 +98,17 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
   const getBackgroundColor = () => {
     switch (nextStep.type) {
       case 'CREATE_CV':
-        return 'from-[var(--c-solid)] to-sky-600'
+        return 'bg-[var(--c-solid)]'
       case 'SEARCH_JOBS':
-        return 'from-blue-500 to-cyan-600'
+        return 'bg-sky-500'
       case 'CREATE_APPLICATION':
-        return 'from-[var(--c-solid)] to-emerald-600'
+        return 'bg-[var(--c-solid)]'
       case 'CONTINUE_SEARCH':
-        return 'from-green-500 to-emerald-600'
+        return 'bg-emerald-500'
       case 'COMPLETE_PROFILE':
-        return 'from-amber-500 to-orange-600'
+        return 'bg-amber-500'
       default:
-        return 'from-[var(--c-solid)] to-sky-600'
+        return 'bg-[var(--c-solid)]'
     }
   }
 
@@ -119,7 +119,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
     )}>
       {/* Header med gradient */}
       <div className={cn(
-        "bg-gradient-to-r px-6 py-4 text-white",
+        "px-6 py-4 text-white",
         getBackgroundColor()
       )}>
         <div className="flex items-center gap-3">

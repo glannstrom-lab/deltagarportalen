@@ -126,7 +126,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
                     <div className={`
                       absolute -left-4 w-4 h-4 rounded-full border-2 border-white
                       ${isMilestone || isBadge
-                        ? 'bg-gradient-to-br from-yellow-400 to-amber-500'
+                        ? 'bg-amber-500'
                         : 'bg-indigo-500'
                       }
                     `} />

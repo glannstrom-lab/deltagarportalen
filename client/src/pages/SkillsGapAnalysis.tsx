@@ -35,13 +35,13 @@ import { FocusSkillsGapWizard } from '@/components/focus/pages/FocusSkillsGapWiz
 
 // Skill categories with colors
 const skillColors: Record<string, string> = {
-  teknisk: 'from-blue-500 to-cyan-500',
-  technical: 'from-blue-500 to-cyan-500',
-  ledarskap: 'from-purple-500 to-pink-500',
-  leadership: 'from-purple-500 to-pink-500',
-  mjuk: 'from-amber-500 to-orange-500',
-  soft: 'from-amber-500 to-orange-500',
-  default: 'from-purple-500 to-purple-600'
+  teknisk: 'bg-sky-500',
+  technical: 'bg-sky-500',
+  ledarskap: 'bg-purple-500',
+  leadership: 'bg-purple-500',
+  mjuk: 'bg-amber-500',
+  soft: 'bg-amber-500',
+  default: 'bg-purple-500'
 }
 
 // Helper to format CV data into a text summary for AI analysis
@@ -577,7 +577,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                       </div>
                       <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
                         <div
-                          className={`h-full bg-gradient-to-r ${skillColors.default} rounded-full transition-all`}
+                          className={`h-full ${skillColors.default} rounded-full transition-all`}
                           style={{ width: `${(skill.current / 5) * 100}%` }}
                         />
                       </div>

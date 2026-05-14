@@ -347,7 +347,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
 
         {activeTab === 'improvements' && (
           <div className="space-y-6">
-            <div className="bg-gradient-to-br from-[var(--c-bg)] to-blue-50 rounded-xl p-6">
+            <div className="bg-[var(--c-bg)] rounded-xl p-6">
               <h4 className="font-semibold text-stone-800 mb-4 flex items-center gap-2">
                 <TrendingUp size={20} className="text-[var(--c-text)]" />
                 Så här ökar du dina chanser

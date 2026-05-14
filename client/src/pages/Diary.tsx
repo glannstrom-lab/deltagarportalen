@@ -100,35 +100,35 @@ function AchievementBanner() {
       emoji: '🔥',
       title: t('diary.achievements.weekStreak.title'),
       description: t('diary.achievements.weekStreak.description', { count: currentStreak }),
-      color: 'from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 border-orange-200 dark:border-orange-800'
+      color: 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800'
     }
   } else if (totalEntries >= 10 && totalEntries < 11) {
     achievement = {
       emoji: '📚',
       title: t('diary.achievements.tenEntries.title'),
       description: t('diary.achievements.tenEntries.description'),
-      color: 'from-sky-50 to-sky-100 dark:from-sky-900/30 dark:to-sky-800/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50'
+      color: 'bg-sky-50 dark:bg-sky-900/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50'
     }
   } else if (totalWords >= 1000 && totalWords < 1100) {
     achievement = {
       emoji: '✍️',
       title: t('diary.achievements.thousandWords.title'),
       description: t('diary.achievements.thousandWords.description'),
-      color: 'from-sky-50 to-[var(--c-bg)] dark:from-sky-900/30 dark:to-[var(--c-bg)]/40 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50'
+      color: 'bg-sky-50 dark:bg-sky-900/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50'
     }
   } else if (longestStreak >= 14) {
     achievement = {
       emoji: '🏆',
       title: t('diary.achievements.twoWeekRecord.title'),
       description: t('diary.achievements.twoWeekRecord.description', { count: longestStreak }),
-      color: 'from-yellow-50 to-amber-50 dark:from-yellow-900/30 dark:to-amber-900/30 border-yellow-200 dark:border-yellow-800'
+      color: 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-800'
     }
   }
 
   if (!achievement) return null
 
   return (
-    <Card className={cn("p-4 bg-gradient-to-r border", achievement.color)}>
+    <Card className={cn("p-4 border", achievement.color)}>
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 bg-white dark:bg-stone-700 rounded-lg flex items-center justify-center text-xl shadow-sm flex-shrink-0">
           {achievement.emoji}

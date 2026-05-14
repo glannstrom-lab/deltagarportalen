@@ -111,7 +111,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
         <div className="p-6">
           {/* Match score */}
           {matchResult && (
-            <div className="mb-6 p-4 bg-gradient-to-r from-[#4f46e5]/10 to-purple-50 rounded-xl border border-[#4f46e5]/20">
+            <div className="mb-6 p-4 bg-purple-50 dark:bg-purple-900/20 rounded-xl border border-[#4f46e5]/20">
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-[#4f46e5]">{matchResult.matchPercentage}%</div>

@@ -213,7 +213,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
 
   return (
     <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-      <div className="bg-gradient-to-r from-[var(--c-solid)] to-blue-600 p-6 text-white">
+      <div className="bg-[var(--c-solid)] p-6 text-white">
         <h3 className="text-xl font-bold flex items-center gap-2">
           <MapPin size={24} />
           Din karriärväg
