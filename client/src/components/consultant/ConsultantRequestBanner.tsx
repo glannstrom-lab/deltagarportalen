@@ -112,7 +112,7 @@ export const ConsultantRequestBanner: React.FC = () => {
         return (
           <div
             key={request.id}
-            className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 rounded-xl p-4 shadow-sm"
+            className="bg-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 rounded-xl p-4 shadow-sm"
           >
             <div className="flex items-start gap-4">
               <div className="flex-shrink-0 w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-solid)] rounded-full flex items-center justify-center">

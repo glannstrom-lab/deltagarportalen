@@ -137,7 +137,7 @@ export const CalendarWidget = memo(function CalendarWidget({
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/40 dark:to-pink-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-900/20 dark:from-rose-900/40 dark:to-pink-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center">
             <Calendar size={24} />
           </div>
           <div>

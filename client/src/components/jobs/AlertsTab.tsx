@@ -234,7 +234,7 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6 border border-indigo-100">
+    <div className="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-6 mb-6 border border-indigo-100">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">

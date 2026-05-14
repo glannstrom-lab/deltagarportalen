@@ -234,7 +234,7 @@ export default function OccupationsTab() {
             </div>
           </div>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+        <Card className="p-4 bg-purple-50 dark:bg-purple-900/20 dark:from-purple-900/20 dark:to-purple-800/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-purple-200 dark:bg-purple-800/50 rounded-lg flex items-center justify-center">
               <BarChart3 className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />

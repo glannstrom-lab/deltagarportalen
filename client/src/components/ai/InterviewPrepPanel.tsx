@@ -78,7 +78,7 @@ export function InterviewPrepPanel({
   if (!result && !isLoading && !error) {
     return (
       <AiConsentGate compact featureName="Intervjuförberedelse">
-        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20', className)}>
+        <div className={cn('p-4 rounded-xl bg-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-sky-900/20', className)}>
           <div className="flex items-start gap-3">
             <div className="p-2 rounded-lg bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50">
               <MessageSquare className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />

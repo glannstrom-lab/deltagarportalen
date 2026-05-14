@@ -129,7 +129,7 @@ export function HealthConsentGate({
   return (
     <div className={cn(
       "p-6 rounded-2xl border-2 border-dashed border-indigo-200 dark:border-indigo-800",
-      "bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20",
+      "bg-sky-50 dark:bg-sky-900/20 dark:from-indigo-900/20 dark:to-blue-900/20",
       className
     )}>
       <div className="text-center max-w-md mx-auto">

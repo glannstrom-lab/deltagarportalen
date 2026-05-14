@@ -194,7 +194,7 @@ export function ContinueWhereYouLeft() {
   if (!isVisible || activities.length === 0) return null
 
   return (
-    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 p-5 animate-in fade-in slide-in-from-bottom-4">
+    <div className="bg-purple-50 dark:bg-purple-900/20 rounded-2xl border border-indigo-100 p-5 animate-in fade-in slide-in-from-bottom-4">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-indigo-500 rounded-xl flex items-center justify-center">

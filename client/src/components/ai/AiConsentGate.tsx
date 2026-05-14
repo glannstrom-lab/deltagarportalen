@@ -132,7 +132,7 @@ export function AiConsentGate({
   return (
     <div className={cn(
       "p-6 rounded-2xl border-2 border-dashed border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50",
-      "bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20",
+      "bg-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-sky-900/20",
       className
     )}>
       <div className="text-center max-w-md mx-auto">

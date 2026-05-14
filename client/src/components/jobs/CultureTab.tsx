@@ -86,7 +86,7 @@ export function CultureTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-100">
+      <Card className="bg-rose-50 dark:bg-rose-900/20 border-rose-100">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
             <Heart className="w-6 h-6 text-rose-600" />

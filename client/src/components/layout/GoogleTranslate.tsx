@@ -218,7 +218,7 @@ export function GoogleTranslate() {
             className="absolute right-0 top-full mt-2 w-64 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-200/50 dark:border-stone-700 overflow-hidden z-50"
           >
             {/* Header */}
-            <div className="px-4 py-2.5 bg-gradient-to-r from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/20 dark:to-[var(--c-bg)]/30 border-b border-stone-100 dark:border-stone-700">
+            <div className="px-4 py-2.5 bg-emerald-50 dark:bg-emerald-900/20 dark:from-emerald-900/20 dark:to-[var(--c-bg)]/30 border-b border-stone-100 dark:border-stone-700">
               <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-200 flex items-center gap-2">
                 <Globe size={16} className="text-emerald-500" />
                 {t('language.translatePage', 'Översätt sidan')}

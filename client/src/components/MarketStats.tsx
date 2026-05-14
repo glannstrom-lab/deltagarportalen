@@ -84,7 +84,7 @@ export default function MarketStats() {
       </div>
 
       {/* Trending Jobs */}
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-200">
+      <div className="bg-amber-50 dark:bg-amber-900/20 p-6 rounded-xl border border-amber-200">
         <div className="flex items-center gap-2 mb-4">
           <TrendingUp className="w-5 h-5 text-amber-600" />
           <h3 className="font-semibold text-amber-900">Heta yrken just nu</h3>

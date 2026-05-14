@@ -172,7 +172,7 @@ export function AISummary({ className }: Props) {
           </div>
         </div>
       ) : summary ? (
-        <div className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border border-amber-200 dark:border-amber-800/50">
+        <div className="p-4 bg-amber-50 dark:bg-amber-900/20 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border border-amber-200 dark:border-amber-800/50">
           <p className="text-sm text-stone-700 dark:text-stone-300 leading-relaxed whitespace-pre-wrap">
             {summary}
           </p>

@@ -322,7 +322,7 @@ export function ContextualKnowledgeWidget({
   if (variant === 'compact') {
     return (
       <div className={cn(
-        "bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-200 p-4",
+        "bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 p-4",
         className
       )}>
         <div className="flex items-center gap-2 mb-3">

@@ -410,7 +410,7 @@ export function GoalCreationDialog({
               )}
 
               {/* AI Suggestions */}
-              <div className="p-4 bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-xl">
+              <div className="p-4 bg-[var(--c-bg)] dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-xl">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-[var(--c-text)]" />

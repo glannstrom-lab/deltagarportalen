@@ -55,7 +55,7 @@ export function CompetenceSection() {
       </SectionCard>
 
       {/* LinkedIn Import */}
-      <div className="bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 rounded-xl p-5 border border-sky-200 dark:border-sky-800/50">
+      <div className="bg-sky-50 dark:bg-sky-900/20 dark:from-sky-900/20 dark:to-blue-900/20 rounded-xl p-5 border border-sky-200 dark:border-sky-800/50">
         <div className="flex items-start gap-4">
           <div className="w-10 h-10 rounded-lg bg-[#0077b5] flex items-center justify-center flex-shrink-0">
             <Linkedin className="w-5 h-5 text-white" aria-hidden="true" />

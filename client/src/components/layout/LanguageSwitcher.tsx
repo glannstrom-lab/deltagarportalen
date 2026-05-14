@@ -94,7 +94,7 @@ export function LanguageSwitcher() {
             aria-label={t('language.select', 'Välj språk')}
           >
             {/* Header */}
-            <div className="px-4 py-2.5 bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-900/20 dark:to-blue-900/20 border-b border-stone-100 dark:border-stone-700">
+            <div className="px-4 py-2.5 bg-sky-50 dark:bg-sky-900/20 dark:from-sky-900/20 dark:to-blue-900/20 border-b border-stone-100 dark:border-stone-700">
               <h3 className="text-sm font-semibold text-stone-700 dark:text-stone-200">
                 {t('language.label', 'Språk')}
               </h3>

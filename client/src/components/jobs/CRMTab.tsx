@@ -161,7 +161,7 @@ export function CRMTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 border-[var(--c-accent)]/40">
+      <Card className="bg-[var(--c-bg)] border-[var(--c-accent)]/40">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-[var(--c-accent)]/40 rounded-xl flex items-center justify-center shrink-0">
             <ClipboardList className="w-6 h-6 text-[var(--c-text)]" />

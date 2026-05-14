@@ -77,7 +77,7 @@ export default function LinkedInCallback() {
   }, [searchParams, navigate])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:from-stone-900 dark:to-stone-950 p-4">
       <Card className="max-w-md w-full p-8 text-center">
         {status === 'loading' && (
           <>

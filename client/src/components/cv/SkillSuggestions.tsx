@@ -95,7 +95,7 @@ export default function SkillSuggestions({
   const availableSuggestions = suggestions.filter(s => !s.isAdded);
 
   return (
-    <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200">
+    <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl p-6 border border-amber-200">
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">

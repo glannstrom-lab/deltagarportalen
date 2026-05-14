@@ -276,7 +276,7 @@ function WeekProgress({
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-[var(--c-bg)] to-sky-50 border-[var(--c-accent)]/40">
+    <Card className="p-5 bg-[var(--c-bg)] border-[var(--c-accent)]/40">
       <div className="flex items-center justify-between mb-4">
         <div>
           <h3 className="font-semibold text-[var(--c-text)]">Veckans framsteg</h3>

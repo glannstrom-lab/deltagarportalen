@@ -140,7 +140,7 @@ export default function HistoryTab() {
 
       {/* Current Profile Summary */}
       {currentProfile && (
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800 mb-8">
+        <div className="bg-amber-50 dark:bg-amber-900/20 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800 mb-8">
           <div className="flex items-start gap-4">
             <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center flex-shrink-0">
               <Target className="w-6 h-6 text-white" />

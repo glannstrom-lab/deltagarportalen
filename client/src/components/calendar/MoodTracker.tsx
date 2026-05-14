@@ -42,7 +42,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
     : 0
 
   return (
-    <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-100 overflow-hidden">
+    <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 overflow-hidden">
       {!isExpanded ? (
         <button
           onClick={() => setIsExpanded(true)}

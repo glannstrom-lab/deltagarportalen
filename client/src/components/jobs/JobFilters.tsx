@@ -392,7 +392,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
 
       {/* Match percentage */}
       <FilterSection title={t('jobs.filters.cvMatch')} section="match" icon={Sliders}>
-        <div className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 p-4 rounded-xl">
+        <div className="bg-[var(--c-bg)] p-4 rounded-xl">
           <label className="text-sm font-medium text-[var(--c-text)] mb-3 block">
             {t('jobs.filters.minMatch', { percent: filters.minMatchPercentage })}
           </label>

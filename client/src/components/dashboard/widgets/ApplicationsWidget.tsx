@@ -310,7 +310,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
 
         {/* Empty state */}
         {total === 0 && (
-          <div className="p-6 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border border-orange-100">
+          <div className="p-6 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-orange-100">
             <div className="flex items-start gap-4">
               <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
                 <Send size={28} className="text-orange-600" />

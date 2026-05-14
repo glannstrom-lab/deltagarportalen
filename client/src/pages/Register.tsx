@@ -105,7 +105,7 @@ export default function Register() {
   const isPasswordValid = passwordStrength.isValid && !errors.password
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-stone-50 dark:from-stone-900 dark:to-stone-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo — samma logo som Login och topbar för enhetlighet */}
         <div className="text-center mb-8">

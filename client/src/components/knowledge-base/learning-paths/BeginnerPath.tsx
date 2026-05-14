@@ -112,7 +112,7 @@ export function BeginnerPath() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-emerald-50 to-[var(--c-bg)] border-emerald-100">
+      <Card className="bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
             <Trophy className="w-6 h-6 text-emerald-600" />
@@ -231,7 +231,7 @@ export function BeginnerPath() {
       
       {/* Completion message */}
       {completedCount === steps.length && (
-        <Card className="bg-gradient-to-r from-amber-50 to-yellow-50 border-amber-100 text-center py-8">
+        <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-100 text-center py-8">
           <Trophy className="w-16 h-16 text-amber-500 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-stone-900">Grattis! 🎉</h3>
           <p className="text-stone-600 mt-2 max-w-md mx-auto">

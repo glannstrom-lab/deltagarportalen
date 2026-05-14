@@ -63,7 +63,7 @@ export function SkillGapAnalysis({
   return (
     <div className={cn('bg-white rounded-2xl border border-stone-200 overflow-hidden', className)}>
       {/* Header */}
-      <div className="p-6 border-b border-stone-100 bg-gradient-to-r from-indigo-50 to-purple-50">
+      <div className="p-6 border-b border-stone-100 bg-purple-50 dark:bg-purple-900/20">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-indigo-500 rounded-xl flex items-center justify-center">
             <Target className="w-6 h-6 text-white" />

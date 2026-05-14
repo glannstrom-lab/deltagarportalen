@@ -129,7 +129,7 @@ export function WellnessConsentGate({
   return (
     <div className={cn(
       "p-6 rounded-2xl border-2 border-dashed border-pink-200 dark:border-pink-800",
-      "bg-gradient-to-br from-pink-50 to-rose-50 dark:from-pink-900/20 dark:to-rose-900/20",
+      "bg-rose-50 dark:bg-rose-900/20 dark:from-pink-900/20 dark:to-rose-900/20",
       className
     )}>
       <div className="text-center max-w-md mx-auto">

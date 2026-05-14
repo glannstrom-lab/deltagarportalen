@@ -35,7 +35,7 @@ function ContactCard({
   return (
     <Card className="p-4 hover:shadow-md transition-shadow group">
       <div className="flex items-start gap-3">
-        <div className="w-12 h-12 bg-gradient-to-br from-stone-100 to-stone-200 rounded-xl flex items-center justify-center flex-shrink-0">
+        <div className="w-12 h-12 bg-stone-100 dark:bg-stone-700 rounded-xl flex items-center justify-center flex-shrink-0">
           <User className="w-6 h-6 text-stone-600" />
         </div>
 

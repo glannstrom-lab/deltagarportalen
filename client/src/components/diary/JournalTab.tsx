@@ -284,7 +284,7 @@ export function JournalTab() {
     <div className="space-y-5">
       {/* Writing Prompt */}
       {prompt && (
-        <Card className="p-5 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
+        <Card className="p-5 bg-amber-50 dark:bg-amber-900/20 border-amber-200">
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">

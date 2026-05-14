@@ -173,7 +173,7 @@ export function InsightsPanel({
   return (
     <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 overflow-hidden">
       {/* Header */}
-      <div className="px-5 py-4 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 border-b border-violet-100 dark:border-violet-800/50">
+      <div className="px-5 py-4 bg-purple-50 dark:bg-purple-900/20 dark:from-violet-900/20 dark:to-purple-900/20 border-b border-violet-100 dark:border-violet-800/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
