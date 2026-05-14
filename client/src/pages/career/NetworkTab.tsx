@@ -9,6 +9,7 @@ import {
   Calendar, BookOpen, Copy, X, TrendingUp, Zap, Trash2, Edit2, Loader2
 } from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { NetworkingAssistant } from '@/components/ai'
 import { cn } from '@/lib/utils'
 import { networkApi, networkingEventsApi, type NetworkContact, type NetworkingEvent } from '@/services/careerApi'
@@ -376,35 +377,55 @@ export default function NetworkTab() {
       {/* AI Networking Assistant */}
       <NetworkingAssistant />
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <Users className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
-          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{contacts.length}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.network.contacts')}</p>
-        </Card>
-        <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <MessageCircle className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
-          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            {contacts.filter(c => c.last_contact_date && getDaysSinceContact(c.last_contact_date)! < 30).length}
-          </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.network.activeThisMonth')}</p>
-        </Card>
-        <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <Star className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
-            {contacts.filter(c => c.status === 'reconnect').length}
-          </p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.networkTab.toReconnect')}</p>
-        </Card>
-        <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <Calendar className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
-          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{needsFollowUp}</p>
-          <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.networkTab.followUpThisWeek')}</p>
-        </Card>
-      </div>
+      {/* Stats — visas bara när det finns kontakter (annars 4 stora "0" = staplad tomtillstånd) */}
+      {contacts.length > 0 && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <Users className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
+            <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{contacts.length}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.network.contacts')}</p>
+          </Card>
+          <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <MessageCircle className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
+            <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              {contacts.filter(c => c.last_contact_date && getDaysSinceContact(c.last_contact_date)! < 30).length}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.network.activeThisMonth')}</p>
+          </Card>
+          <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <Star className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
+            <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
+              {contacts.filter(c => c.status === 'reconnect').length}
+            </p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.networkTab.toReconnect')}</p>
+          </Card>
+          <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <Calendar className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)] mx-auto mb-2" />
+            <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{needsFollowUp}</p>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{t('career.networkTab.followUpThisWeek')}</p>
+          </Card>
+        </div>
+      )}
 
-      {/* Add Contact */}
+      {/* Tomtillstånd för helt nya användare — EN tydlig CTA istället för 3 staplade tomma element */}
+      {!isAdding && !isAddingEvent && contacts.length === 0 && events.length === 0 && (
+        <EmptyState
+          icon={Users}
+          title={t('career.networkTab.welcomeTitle', 'Här bygger du ditt nätverk')}
+          description={t('career.networkTab.welcomeDescription', 'Människor du har jobbat med, träffat eller känner kan ofta öppna dörrar du inte vet finns. Lägg till en första kontakt eller utforska mallarna nedan när du är redo.')}
+          action={{
+            label: t('career.networkTab.addFirstContact', 'Lägg till första kontakten'),
+            onClick: () => setIsAdding(true),
+          }}
+          secondaryAction={{
+            label: t('career.networkTab.addEvent', 'Lägg till event'),
+            onClick: () => setIsAddingEvent(true),
+          }}
+        />
+      )}
+
+      {/* Add Contact — visas när det finns kontakter eller formulär är öppet */}
+      {(contacts.length > 0 || isAdding) && (
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('career.network.myNetwork')}</h3>
@@ -572,8 +593,10 @@ export default function NetworkTab() {
           })}
         </div>
       </Card>
+      )}
 
-      {/* Networking Events */}
+      {/* Networking Events — visas när det finns events eller formulär är öppet */}
+      {(events.length > 0 || isAddingEvent) && (
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
@@ -667,6 +690,7 @@ export default function NetworkTab() {
           ))}
         </div>
       </Card>
+      )}
 
       {/* Message Templates */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
