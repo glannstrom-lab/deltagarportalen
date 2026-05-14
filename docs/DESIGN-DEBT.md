@@ -159,18 +159,18 @@ Dessa fångas inte av ESLint utan av visuell audit (`audit-2026-05-10/RAPPORT.md
 
 ### En-färg-per-sida-regeln (DESIGN.md §4)
 
-| Sida | Avvikelse | Fas |
-|------|-----------|-----|
+| Sida | Avvikelse | Status |
+|------|-----------|--------|
 | `/career` | 4 olika pastellfärger på KPI-kort på samma vy (mint, grön, persika, lavendel). | Fas 4.B / 5.1 |
-| `/help` | Solid mörkblå sektionsbanderoller — bryter mot "pasteller bor i innehållet, inte i banners". | Fas 4 (Resurser-domänen) |
-| `/wellness` | "Spara reflektion"-knapp är pastell istället för solid `--c-solid` — knappt synlig. | Fas 4.D |
+| `/help` | ✅ Verifierat 2026-05-14 — använder redan `var(--c-bg)` konsekvent, inga mörkblå banderoller kvar |
+| `/wellness` | ✅ Verifierat 2026-05-14 — "Spara reflektion" är `rgb(112,88,168)` (wellbeing-solid) med vit text |
 
 ### Tomtillstånd (DESIGN.md §7)
 
 | Sida | Avvikelse | Status |
 |------|-----------|--------|
 | `/applications` | Dubbla tomtillstånd (pipeline-skelett + empty-state) | ✅ Fixad 2026-05-10 (B13) |
-| `/nätverk` | Tre staplade tomtillstånd (KPI med "0", tom kontakt-lista, tom event-lista) | Fas 4.C |
+| `/nätverk` | Tre staplade tomtillstånd (KPI med "0", tom kontakt-lista, tom event-lista) | ✅ Fixad 2026-05-14 (commit 00ecf2f) — EmptyState med EN tydlig CTA |
 | `/oversikt/historik` | Stor blank yta med en enda rad — ingen kontextualiserad förslagslista | Fas 5.6 |
 
 ### Onboarding (DESIGN.md §12)
