@@ -93,8 +93,10 @@ export default function PlanTab() {
       parts.push(isEn ? `Based in ${location}` : `Bor i ${location}`)
     }
 
-    // Desired jobs from preferences
-    const desiredJobs = preferences?.desired_jobs || []
+    // Desired jobs from preferences (sortera på priority + extrahera labels)
+    const desiredJobs = [...(preferences?.desired_jobs || [])]
+      .sort((a, b) => a.priority - b.priority)
+      .map((j) => j.label)
     if (desiredJobs.length > 0) {
       parts.push(isEn
         ? `Interested in: ${desiredJobs.join(', ')}`

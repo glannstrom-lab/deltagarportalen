@@ -369,9 +369,25 @@ export interface OnboardingProgress {
   coverLetter?: boolean
 }
 
+/**
+ * Önskat yrke — strukturerat så vi kan matcha exakt över hela sajten.
+ * Skapas via AF-taxonomi-pickern; conceptId är AF concept_id för yrket.
+ * Äldre poster som saknar conceptId är fritext-fallback (visas grått i UI).
+ */
+export interface DesiredOccupation {
+  /** AF taxonomy concept_id (om yrket valts från picker) */
+  conceptId?: string
+  /** SSYK-kod om vi har den */
+  ssyk?: string
+  /** Yrkestitel som visas för användaren — alltid satt */
+  label: string
+  /** 1 = högsta prioritet, 10 = lägst */
+  priority: number
+}
+
 // Profile preferences interface
 export interface ProfilePreferences {
-  desired_jobs?: string[]
+  desired_jobs?: DesiredOccupation[]
   interests?: string[]
   onboarding_progress?: OnboardingProgress
   // Tillgänglighet & Jobbsökningsstatus

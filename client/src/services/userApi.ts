@@ -10,7 +10,39 @@
 import { supabase } from '../lib/supabase'
 import type { Tables } from '../lib/supabase'
 import { APIError, handleError } from './apiError'
-import type { OnboardingProgress, ProfilePreferences } from './supabaseApi'
+import type { OnboardingProgress, ProfilePreferences, DesiredOccupation } from './supabaseApi'
+
+/**
+ * Normaliserar desired_jobs från DB. Stödjer både legacy-format (string[])
+ * och nytt strukturerat format (DesiredOccupation[]). Säkerställer alltid
+ * att priority är satt och unik.
+ */
+function normalizeDesiredJobs(raw: unknown): DesiredOccupation[] {
+  if (!Array.isArray(raw)) return []
+  const result: DesiredOccupation[] = []
+  let nextPriority = 1
+  for (const item of raw) {
+    if (typeof item === 'string') {
+      const label = item.trim()
+      if (label) result.push({ label, priority: nextPriority++ })
+    } else if (item && typeof item === 'object' && 'label' in item) {
+      const obj = item as Record<string, unknown>
+      const label = typeof obj.label === 'string' ? obj.label.trim() : ''
+      if (!label) continue
+      const priority = typeof obj.priority === 'number' ? obj.priority : nextPriority
+      nextPriority = Math.max(nextPriority, priority + 1)
+      result.push({
+        label,
+        priority,
+        conceptId: typeof obj.conceptId === 'string' ? obj.conceptId : undefined,
+        ssyk: typeof obj.ssyk === 'string' ? obj.ssyk : undefined,
+      })
+    }
+  }
+  // Sortera efter priority + tilldela 1..n om något saknas
+  result.sort((a, b) => a.priority - b.priority)
+  return result.map((j, i) => ({ ...j, priority: i + 1 }))
+}
 
 export const userApi = {
   async getProfile() {
@@ -88,7 +120,7 @@ export const userApi = {
     }
 
     return {
-      desired_jobs: data?.desired_jobs || [],
+      desired_jobs: normalizeDesiredJobs(data?.desired_jobs),
       interests: data?.interests || [],
       onboarding_progress: data?.onboarding_progress || {},
       availability: data?.availability || {},

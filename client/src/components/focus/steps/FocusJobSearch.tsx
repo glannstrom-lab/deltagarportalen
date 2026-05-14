@@ -85,11 +85,12 @@ export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchPro
     enabled: step.id === 'browse' && searchQuery.length > 0
   })
 
-  // Save preferences mutation
+  // Save preferences mutation — konvertera string[] till DesiredOccupation[]
+  // (focus-flow är fritext-baserad; AF-koppling sker senare i full profil-UI)
   const saveMutation = useMutation({
     mutationFn: async () => {
       await userApi.updatePreferences({
-        desired_jobs: desiredJobs
+        desired_jobs: desiredJobs.map((label, idx) => ({ label, priority: idx + 1 }))
       })
     }
   })

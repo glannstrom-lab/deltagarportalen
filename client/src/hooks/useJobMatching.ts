@@ -8,8 +8,10 @@ import { useMemo } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { cvApi } from '@/services/cvApi'
 import { interestApi } from '@/services/interestApi'
+import { userApi } from '@/services/userApi'
 import { matchJobsToInterests, type JobInterestMatch, type RiasecScores } from '@/services/interestJobMatching'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
+import type { DesiredOccupation } from '@/services/supabaseApi'
 
 // ============================================
 // TYPES
@@ -30,6 +32,8 @@ export interface JobMatchResult {
   missingSkills: string[]
   matchReasons: string[]
   category: 'excellent' | 'good' | 'potential' | 'low'
+  /** Sant om jobbets occupation.concept_id matchar något av deltagarens önskade yrken. */
+  matchedDesiredOccupation?: { conceptId: string; label: string; priority: number }
 }
 
 export interface CVSkillsData {
@@ -225,12 +229,26 @@ function categorizeMatch(overallScore: number): JobMatchResult['category'] {
 // ============================================
 
 /**
- * Match jobs against user's CV and RIASEC profile
+ * Bonus-poäng för exakt match mot deltagarens önskade yrke (AF concept_id).
+ * Vikten beror på prioritet i profilen.
+ */
+function desiredOccupationBonus(priority: number): number {
+  if (priority === 1) return 25
+  if (priority <= 3) return 18
+  if (priority <= 5) return 12
+  return 8
+}
+
+/**
+ * Match jobs against user's CV, RIASEC profile and desired occupations.
+ * Önskade yrken med conceptId ger exakt SSYK-baserad bonus; fritext-yrken
+ * får svagare label-substring-match.
  */
 export function matchJobsWithCV(
   jobs: PlatsbankenJob[],
   cvData: CVSkillsData | null,
-  riasecScores: RiasecScores | null
+  riasecScores: RiasecScores | null,
+  desiredOccupations: DesiredOccupation[] = []
 ): JobMatchResult[] {
   const cvSkills = cvData?.skills || []
 
@@ -246,6 +264,14 @@ export function matchJobsWithCV(
     riasecMap.set(match.jobId, match)
   }
 
+  // Bygg lookup-strukturer för önskade yrken
+  const desiredByConceptId = new Map<string, DesiredOccupation>()
+  const desiredFreeText: DesiredOccupation[] = []
+  for (const desired of desiredOccupations) {
+    if (desired.conceptId) desiredByConceptId.set(desired.conceptId, desired)
+    else desiredFreeText.push(desired)
+  }
+
   // Match each job
   const results: JobMatchResult[] = jobs.map(job => {
     // Extract skills from job
@@ -259,6 +285,27 @@ export function matchJobsWithCV(
     const riasecMatch = riasecMap.get(job.id)
     const riasecScore = riasecMatch?.overallMatch || 0
     const riasecTypes = riasecMatch?.riasecMatch.matchedTypes || []
+
+    // Önskat yrke — exakt match via AF concept_id, fallback label-substring
+    let matchedDesiredOccupation: JobMatchResult['matchedDesiredOccupation'] | undefined
+    let desiredBonus = 0
+    const jobOccConceptId = job.occupation?.concept_id
+    if (jobOccConceptId && desiredByConceptId.has(jobOccConceptId)) {
+      const hit = desiredByConceptId.get(jobOccConceptId)!
+      matchedDesiredOccupation = {
+        conceptId: hit.conceptId!,
+        label: hit.label,
+        priority: hit.priority,
+      }
+      desiredBonus = desiredOccupationBonus(hit.priority)
+    } else if (desiredFreeText.length > 0 && job.headline) {
+      const headlineLower = job.headline.toLowerCase()
+      const hit = desiredFreeText.find((d) => headlineLower.includes(d.label.toLowerCase()))
+      if (hit) {
+        // Fritext-match — halv bonus jämfört med strukturerat
+        desiredBonus = Math.round(desiredOccupationBonus(hit.priority) / 2)
+      }
+    }
 
     // Calculate overall score (weighted average)
     // Skills: 50%, RIASEC: 30%, Title match: 20%
@@ -282,10 +329,15 @@ export function matchJobsWithCV(
     } else if (riasecScores) {
       // Only RIASEC available
       overallScore = riasecScore * 0.8
+    } else if (desiredBonus > 0) {
+      // Inga CV/RIASEC men önskat yrke matchar — ge basscore + bonus
+      overallScore = 50
     } else {
-      // Neither available - can't calculate meaningful match
       overallScore = 0
     }
+
+    // Lägg på önskat-yrke-bonus
+    overallScore += desiredBonus
 
     // Cap at 100
     overallScore = Math.min(100, Math.round(overallScore))
@@ -297,6 +349,11 @@ export function matchJobsWithCV(
       skillMatch.matched,
       riasecTypes
     )
+    if (matchedDesiredOccupation) {
+      matchReasons.unshift(
+        `Önskat yrke #${matchedDesiredOccupation.priority}: ${matchedDesiredOccupation.label}`
+      )
+    }
 
     return {
       job,
@@ -307,6 +364,7 @@ export function matchJobsWithCV(
       missingSkills: skillMatch.missing,
       matchReasons,
       category: categorizeMatch(overallScore),
+      matchedDesiredOccupation,
     }
   })
 
@@ -331,6 +389,13 @@ export function useJobMatching(jobs: PlatsbankenJob[]) {
     queryKey: ['riasecForMatching'],
     queryFn: () => interestApi.getResult(),
     staleTime: 10 * 60 * 1000,
+  })
+
+  // Fetch profile preferences för desired_jobs
+  const { data: preferences } = useQuery({
+    queryKey: ['preferencesForMatching'],
+    queryFn: () => userApi.getPreferences(),
+    staleTime: 5 * 60 * 1000,
   })
 
   // Extract CV skills data
@@ -371,10 +436,11 @@ export function useJobMatching(jobs: PlatsbankenJob[]) {
   }, [riasecResult])
 
   // Match jobs
+  const desiredOccupations = preferences?.desired_jobs ?? []
   const matchedJobs = useMemo(() => {
     if (!jobs || jobs.length === 0) return []
-    return matchJobsWithCV(jobs, cvData, riasecScores)
-  }, [jobs, cvData, riasecScores])
+    return matchJobsWithCV(jobs, cvData, riasecScores, desiredOccupations)
+  }, [jobs, cvData, riasecScores, desiredOccupations])
 
   // Filter helpers
   const excellentMatches = matchedJobs.filter(j => j.category === 'excellent')
@@ -388,7 +454,9 @@ export function useJobMatching(jobs: PlatsbankenJob[]) {
     potentialMatches,
     hasCV: !!cvData && cvData.skills.length > 0,
     hasRiasec: !!riasecScores,
+    hasDesiredJobs: desiredOccupations.length > 0,
     cvSkillsCount: cvData?.skills.length || 0,
+    desiredOccupationCount: desiredOccupations.length,
   }
 }
 

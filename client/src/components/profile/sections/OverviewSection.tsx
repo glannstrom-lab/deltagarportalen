@@ -13,10 +13,9 @@ import { cn } from '@/lib/utils'
 import { useProfileStore } from '@/stores/profileStore'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import { SectionCard, CompactInput, TagInput } from '../forms'
-import {
-  SUGGESTED_JOBS,
-  SUGGESTED_INTERESTS
-} from '../constants'
+import { DesiredJobsList } from '@/components/occupation/DesiredJobsList'
+import type { DesiredOccupation } from '@/services/supabaseApi'
+import { SUGGESTED_INTERESTS } from '../constants'
 
 export function OverviewSection() {
   const { t } = useTranslation()
@@ -34,16 +33,8 @@ export function OverviewSection() {
     updateProfile({ [field]: value })
   }
 
-  const addJob = (job: string) => {
-    const currentJobs = preferences.desired_jobs || []
-    if (currentJobs.length < 5) {
-      updatePreferences({ desired_jobs: [...currentJobs, job] })
-    }
-  }
-
-  const removeJob = (index: number) => {
-    const currentJobs = preferences.desired_jobs || []
-    updatePreferences({ desired_jobs: currentJobs.filter((_, i) => i !== index) })
+  const handleDesiredJobsChange = (jobs: DesiredOccupation[]) => {
+    updatePreferences({ desired_jobs: jobs })
   }
 
   const addInterest = (interest: string) => {
@@ -113,17 +104,12 @@ export function OverviewSection() {
         </div>
       </SectionCard>
 
-      {/* Desired jobs - improved */}
+      {/* Desired jobs — numrerad prio-lista mot AF-taxonomi */}
       <SectionCard title={t('profile.overview.desiredJobs')} icon={<Briefcase className="w-4 h-4" />} colorScheme="sky">
-        <TagInput
-          tags={preferences.desired_jobs || []}
-          onAdd={addJob}
-          onRemove={removeJob}
-          suggestions={SUGGESTED_JOBS}
-          placeholder={t('profile.overview.desiredJobsPlaceholder')}
-          maxTags={5}
-          colorScheme="sky"
-          hint={t('profile.overview.desiredJobsHint')}
+        <DesiredJobsList
+          jobs={preferences.desired_jobs || []}
+          onChange={handleDesiredJobsChange}
+          maxJobs={10}
         />
       </SectionCard>
 

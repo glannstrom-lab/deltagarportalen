@@ -194,6 +194,12 @@ export interface SearchParams {
   offset?: number;
   /** AF sort-param. Default 'pubdate-desc' (senaste jobben överst). */
   sort?: 'relevance' | 'pubdate-desc' | 'pubdate-asc' | 'applydate-desc' | 'applydate-asc' | 'updated';
+  /**
+   * Yrken (AF taxonomy concept_id) som filter. När detta är satt skickas
+   * varje id som separat `occupation-name`-parameter till AF — vilket ger
+   * strukturerad matchning istället för fritext-sökning.
+   */
+  occupationConceptIds?: string[];
 }
 
 export async function searchJobs(params: SearchParams): Promise<JobSearchResponse> {
@@ -223,6 +229,13 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
     }
     // Sortering — default 'pubdate-desc' så nyaste jobben kommer först
     searchParams.set('sort', params.sort ?? 'pubdate-desc');
+
+    // Strukturerat yrkesfilter — AF stöder flera occupation-name samtidigt (OR)
+    if (params.occupationConceptIds && params.occupationConceptIds.length > 0) {
+      for (const conceptId of params.occupationConceptIds) {
+        searchParams.append('occupation-name', conceptId);
+      }
+    }
 
     // Anställningstyp (denna parameter fungerar bra i AF API)
     if (params.employmentType) {

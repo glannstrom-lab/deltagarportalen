@@ -118,14 +118,12 @@ export function useAITeamContext() {
       ctx.location = profile.location || undefined
       ctx.employmentStatus = profile.employment_status || undefined
 
-      // Career goals
-      if (profile.desired_jobs) {
-        ctx.desiredJobs = profile.desired_jobs.titles || []
-        if (profile.desired_jobs.industries?.[0]) {
-          ctx.targetIndustry = profile.desired_jobs.industries[0]
-        }
-        if (profile.desired_jobs.titles?.[0]) {
-          ctx.targetRole = profile.desired_jobs.titles[0]
+      // Career goals — desired_jobs är DesiredOccupation[], sorterad efter prio
+      if (Array.isArray(profile.desired_jobs) && profile.desired_jobs.length > 0) {
+        const sorted = [...profile.desired_jobs].sort((a, b) => a.priority - b.priority)
+        ctx.desiredJobs = sorted.map((j) => j.label)
+        if (sorted[0]) {
+          ctx.targetRole = sorted[0].label
         }
       }
 

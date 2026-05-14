@@ -774,7 +774,9 @@ export const aiSummaryApi = {
         school: edu.school
       })),
       skills: skills?.map(s => ({ name: s.name, level: s.level })),
-      desiredJobs: prefs?.desired_jobs,
+      desiredJobs: [...(prefs?.desired_jobs || [])]
+        .sort((a, b) => a.priority - b.priority)
+        .map((j) => j.label),
       interests: prefs?.interests
     }
 

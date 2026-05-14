@@ -26,11 +26,17 @@ export interface Profile {
   bio: string | null
   location: string | null
   employment_status: string | null
-  desired_jobs: {
-    titles?: string[]
-    industries?: string[]
-    keywords?: string[]
-  } | null
+  /**
+   * Önskade yrken — strukturerad lista (DesiredOccupation[]).
+   * Hanteras i sin helhet via useProfileStore.preferences.desired_jobs;
+   * fältet exponeras här för läsning från andra context (t.ex. AI-team).
+   */
+  desired_jobs: Array<{
+    conceptId?: string
+    ssyk?: string
+    label: string
+    priority: number
+  }> | null
   career_goals: {
     shortTerm?: string
     longTerm?: string

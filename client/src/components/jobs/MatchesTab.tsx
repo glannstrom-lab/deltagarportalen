@@ -1160,8 +1160,12 @@ export function MatchesTab() {
       careerKeywords.push(...careerGoals.longTerm.split(/\s+/).filter((w: string) => w.length > 4))
     }
 
-    // Get desired_jobs from profile preferences (set in focus mode)
-    const desiredJobs = profilePrefs?.desired_jobs || []
+    // Get desired_jobs from profile preferences (DesiredOccupation[]).
+    // För legacy-konsumenter mappar vi till labels (strängar) sorterade på prio.
+    const desiredJobsRaw = profilePrefs?.desired_jobs || []
+    const desiredJobs = [...desiredJobsRaw]
+      .sort((a, b) => a.priority - b.priority)
+      .map((j) => j.label)
 
     // === PROFILE PREFERENCES (for filtering/boosting) ===
     const preferences: SourceData['preferences'] = {

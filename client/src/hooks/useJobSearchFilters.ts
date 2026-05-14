@@ -11,12 +11,20 @@ import { useState, useEffect, useRef } from 'react'
 import { z } from 'zod'
 import { supabase } from '@/lib/supabase'
 
+/** Strukturerat yrkesfilter — AF concept_id + label för visning */
+export const occupationFilterSchema = z.object({
+  conceptId: z.string().min(1),
+  label: z.string().min(1),
+})
+export type OccupationFilter = z.infer<typeof occupationFilterSchema>
+
 export const jobSearchFiltersSchema = z.object({
   query: z.string().max(200).default(''),
   municipality: z.string().max(100).default(''),
   region: z.string().max(20).default(''),
   employmentType: z.string().max(100).default(''),
   publishedWithin: z.enum(['today', 'week', 'month', 'all']).default('all'),
+  occupations: z.array(occupationFilterSchema).max(10).default([]),
 })
 
 export type JobSearchFilters = z.infer<typeof jobSearchFiltersSchema>
@@ -27,6 +35,7 @@ export const DEFAULT_JOB_SEARCH_FILTERS: JobSearchFilters = {
   region: '',
   employmentType: '',
   publishedWithin: 'all',
+  occupations: [],
 }
 
 const SAVE_DEBOUNCE_MS = 500
@@ -37,13 +46,15 @@ export function isDefaultFilters(f: JobSearchFilters): boolean {
     !f.municipality &&
     !f.region &&
     !f.employmentType &&
-    f.publishedWithin === 'all'
+    f.publishedWithin === 'all' &&
+    (!f.occupations || f.occupations.length === 0)
   )
 }
 
 /** Compact deterministic key — used for cache invalidation when filter changes. */
 export function jobSearchFiltersKey(f: JobSearchFilters): string {
-  return `${f.query}|${f.municipality}|${f.region}|${f.employmentType}|${f.publishedWithin}`
+  const occKey = (f.occupations || []).map((o) => o.conceptId).sort().join(',')
+  return `${f.query}|${f.municipality}|${f.region}|${f.employmentType}|${f.publishedWithin}|${occKey}`
 }
 
 export function useJobSearchFilters(defaultFilters: JobSearchFilters) {

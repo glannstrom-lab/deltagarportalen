@@ -14,6 +14,8 @@ import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, typ
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
 import { sanitizeHTMLWithLineBreaks } from '@/utils/sanitize';
 import { useJobSearchFilters } from '@/hooks/useJobSearchFilters';
+import { useProfileStore } from '@/stores/profileStore';
+import { OccupationPicker, type OccupationSelection } from '@/components/occupation/OccupationPicker';
 
 import { PageLayout } from '@/components/layout/index';
 import { useFocusMode } from '@/components/FocusModeProvider';
@@ -44,12 +46,18 @@ const jobSearchTabDefs = [
   { id: 'matches', labelKey: 'jobSearch.tabs.matches', path: '/job-search/matches', icon: Sparkles },
 ];
 
+interface OccupationFilterItem {
+  conceptId: string;
+  label: string;
+}
+
 interface SearchFilters {
   query: string;
   municipality: string;
   region: string;
   employmentType: string;
   publishedWithin: 'today' | 'week' | 'month' | 'all';
+  occupations: OccupationFilterItem[];
 }
 
 const defaultFilters: SearchFilters = {
@@ -58,6 +66,7 @@ const defaultFilters: SearchFilters = {
   region: '',
   employmentType: '',
   publishedWithin: 'all',
+  occupations: [],
 };
 
 const REGIONS = [
@@ -158,6 +167,7 @@ function SearchTab() {
         region: filters.region,
         employmentType: filters.employmentType,
         publishedWithin: filters.publishedWithin,
+        occupationConceptIds: filters.occupations.map((o) => o.conceptId),
         limit: JOBS_PER_PAGE,
         offset: 0,
         sort: 'pubdate-desc',
@@ -186,6 +196,7 @@ function SearchTab() {
         region: filters.region,
         employmentType: filters.employmentType,
         publishedWithin: filters.publishedWithin,
+        occupationConceptIds: filters.occupations.map((o) => o.conceptId),
         limit: JOBS_PER_PAGE,
         offset: jobs.length,
         sort: 'pubdate-desc',
@@ -242,15 +253,62 @@ function SearchTab() {
     recognition.start();
   };
 
-  const hasActiveFilters = filters.municipality || filters.region || filters.employmentType || filters.publishedWithin !== 'all';
+  const hasActiveFilters = filters.municipality || filters.region || filters.employmentType || filters.publishedWithin !== 'all' || filters.occupations.length > 0;
 
   // Filter count for badge
   const activeFilterCount = [
     filters.municipality,
     filters.region,
     filters.employmentType,
-    filters.publishedWithin !== 'all' ? '1' : ''
+    filters.publishedWithin !== 'all' ? '1' : '',
+    ...filters.occupations.map(() => '1'),
   ].filter(Boolean).length;
+
+  // Profilens önskade yrken — för "Hämta från profil"-knappen
+  const profilePreferences = useProfileStore((s) => s.preferences);
+  const profileOccupations = useMemo(() => {
+    const list = profilePreferences?.desired_jobs ?? [];
+    return [...list]
+      .filter((j) => j.conceptId)
+      .sort((a, b) => a.priority - b.priority);
+  }, [profilePreferences?.desired_jobs]);
+
+  const hasProfileOccupations = profileOccupations.length > 0;
+
+  const addOccupationFilter = useCallback(
+    (sel: OccupationSelection) => {
+      if (filters.occupations.some((o) => o.conceptId === sel.conceptId)) return;
+      if (filters.occupations.length >= 10) return;
+      setFilters({
+        ...filters,
+        occupations: [...filters.occupations, { conceptId: sel.conceptId, label: sel.label }],
+      });
+    },
+    [filters, setFilters],
+  );
+
+  const removeOccupationFilter = useCallback(
+    (conceptId: string) => {
+      setFilters({
+        ...filters,
+        occupations: filters.occupations.filter((o) => o.conceptId !== conceptId),
+      });
+    },
+    [filters, setFilters],
+  );
+
+  const importFromProfile = useCallback(() => {
+    const existing = new Set(filters.occupations.map((o) => o.conceptId));
+    const additions = profileOccupations
+      .filter((j) => j.conceptId && !existing.has(j.conceptId))
+      .map((j) => ({ conceptId: j.conceptId!, label: j.label }))
+      .slice(0, 10 - filters.occupations.length);
+    if (additions.length === 0) return;
+    setFilters({
+      ...filters,
+      occupations: [...filters.occupations, ...additions],
+    });
+  }, [filters, setFilters, profileOccupations]);
 
   return (
     <div className="space-y-4">
@@ -382,6 +440,63 @@ function SearchTab() {
                   </select>
                 </div>
               </div>
+            </fieldset>
+
+            {/* Yrken — strukturerat filter mot AF-taxonomi */}
+            <fieldset>
+              <div className="flex items-center justify-between mb-2">
+                <legend className="text-xs font-semibold text-stone-700 dark:text-stone-300 uppercase tracking-wide flex items-center gap-1">
+                  <Briefcase className="w-3 h-3" aria-hidden="true" />
+                  Yrken
+                  {filters.occupations.length > 0 && (
+                    <span className="text-stone-500 normal-case font-normal">
+                      ({filters.occupations.length}/10)
+                    </span>
+                  )}
+                </legend>
+                {hasProfileOccupations && (
+                  <button
+                    type="button"
+                    onClick={importFromProfile}
+                    className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium border border-[var(--c-solid)]/40 bg-[var(--c-bg)] text-[var(--c-text)] hover:bg-[var(--c-accent)]/40"
+                  >
+                    <Sparkles className="w-3 h-3" aria-hidden="true" />
+                    Hämta från profil ({profileOccupations.length})
+                  </button>
+                )}
+              </div>
+
+              {filters.occupations.length > 0 && (
+                <ul className="flex flex-wrap gap-1.5 mb-2">
+                  {filters.occupations.map((occ) => (
+                    <li
+                      key={occ.conceptId}
+                      className="inline-flex items-center gap-1 pl-2.5 pr-1 py-1 rounded-full text-xs font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] border border-[var(--c-accent)]/60"
+                    >
+                      {occ.label}
+                      <button
+                        type="button"
+                        onClick={() => removeOccupationFilter(occ.conceptId)}
+                        aria-label={`Ta bort yrke ${occ.label}`}
+                        className="w-4 h-4 flex items-center justify-center rounded-full hover:bg-[var(--c-accent)]/60"
+                      >
+                        <X className="w-3 h-3" aria-hidden="true" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              {filters.occupations.length < 10 && (
+                <OccupationPicker
+                  onSelect={addOccupationFilter}
+                  excludeConceptIds={filters.occupations.map((o) => o.conceptId)}
+                  placeholder="Lägg till yrke — t.ex. lagerarbetare, sjuksköterska"
+                />
+              )}
+              <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                Strukturerad matchning mot Arbetsförmedlingens taxonomi — bredare än fritext.
+              </p>
             </fieldset>
 
             {/* Job Type Filters */}
