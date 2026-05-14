@@ -1,22 +1,26 @@
 /**
- * Shared Rate Limiting for Edge Functions
- * In-memory rate limiting with configurable limits per endpoint
+ * Shared Rate Limiting for Edge Functions — DISTRIBUTED via Supabase
+ *
+ * 2026-05-15 (C3): Migrerad från in-memory Map till Supabase RPC
+ * `check_rate_limit`. In-memory är trasig på serverless eftersom
+ * räknaren nollas vid cold start och olika instanser inte delar state.
+ *
+ * In-memory fallback bevaras för fall där RPC failar (Supabase
+ * själv-DDoS-skydd).
  */
 
+import { createClient, type SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
 interface RateLimitEntry {
-  count: number;
-  resetTime: number;
+  count: number
+  resetTime: number
 }
 
-// In-memory storage (per function instance)
-// Note: In production with multiple instances, consider Redis
-const rateLimits = new Map<string, RateLimitEntry>();
+const fallbackStore = new Map<string, RateLimitEntry>()
 
-// Default limits
-const DEFAULT_LIMIT = 10;
-const DEFAULT_WINDOW_MS = 60 * 1000; // 1 minute
+const DEFAULT_LIMIT = 10
+const DEFAULT_WINDOW_MS = 60 * 1000
 
-// Endpoint-specific limits
 const ENDPOINT_LIMITS: Record<string, { limit: number; windowMs: number }> = {
   'ai-cover-letter': { limit: 5, windowMs: 60 * 1000 },
   'ai-cv-writing': { limit: 10, windowMs: 60 * 1000 },
@@ -26,46 +30,100 @@ const ENDPOINT_LIMITS: Record<string, { limit: number; windowMs: number }> = {
   'learning-recommend': { limit: 30, windowMs: 60 * 1000 },
   'learning-progress': { limit: 50, windowMs: 60 * 1000 },
   'af-jobsearch': { limit: 60, windowMs: 60 * 1000 },
-  // AI Career Assistant endpoints
   'ai-career-assistant': { limit: 20, windowMs: 60 * 1000 },
   'ai-company-analysis': { limit: 5, windowMs: 60 * 1000 },
   'ai-industry-radar': { limit: 10, windowMs: 60 * 1000 },
   'ai-commute-planner': { limit: 10, windowMs: 60 * 1000 },
-};
+}
+
+let supabaseClient: SupabaseClient | null = null
+
+function getSupabase(): SupabaseClient | null {
+  if (supabaseClient) return supabaseClient
+  const url = Deno.env.get('SUPABASE_URL')
+  const key = Deno.env.get('SUPABASE_ANON_KEY')
+  if (!url || !key) return null
+  supabaseClient = createClient(url, key)
+  return supabaseClient
+}
 
 /**
- * Check if request should be rate limited
- * @param userId User ID to rate limit
- * @param endpoint Endpoint name for specific limits
- * @returns Object with allowed status and retry-after info
+ * Check rate limit (distributed via Supabase, in-memory fallback).
+ *
+ * BREAKING CHANGE (C3): Returns Promise — alla callers måste använda await.
+ *
+ * @param userId User ID (eller IP) att rate-limita
+ * @param endpoint Endpoint-namn för specifika limits
+ * @returns Promise<{ allowed, retryAfter?, remaining? }>
  */
-export function checkRateLimit(
+export async function checkRateLimit(
   userId: string,
   endpoint?: string
-): { allowed: boolean; retryAfter?: number; remaining?: number } {
+): Promise<{ allowed: boolean; retryAfter?: number; remaining?: number }> {
   const config = endpoint && ENDPOINT_LIMITS[endpoint]
     ? ENDPOINT_LIMITS[endpoint]
-    : { limit: DEFAULT_LIMIT, windowMs: DEFAULT_WINDOW_MS };
+    : { limit: DEFAULT_LIMIT, windowMs: DEFAULT_WINDOW_MS }
 
-  const key = endpoint ? `${userId}:${endpoint}` : userId;
-  const now = Date.now();
-  const entry = rateLimits.get(key);
+  const supabase = getSupabase()
 
-  // No entry or window expired - allow and start new window
+  if (supabase) {
+    try {
+      const windowMinutes = Math.max(1, Math.ceil(config.windowMs / 60000))
+      const { data, error } = await supabase.rpc('check_rate_limit', {
+        p_identifier: userId,
+        p_endpoint: endpoint || 'default',
+        p_max_requests: config.limit,
+        p_window_minutes: windowMinutes,
+      })
+
+      if (error) {
+        console.error('[RateLimit] Supabase error, using fallback:', error.message)
+        return checkRateLimitFallback(userId, endpoint, config)
+      }
+
+      if (data && data.length > 0) {
+        const r = data[0]
+        const resetIn = r.reset_at
+          ? Math.max(0, new Date(r.reset_at).getTime() - Date.now())
+          : config.windowMs
+        return {
+          allowed: r.allowed,
+          retryAfter: r.allowed ? undefined : Math.ceil(resetIn / 1000),
+          remaining: r.remaining || 0,
+        }
+      }
+
+      return checkRateLimitFallback(userId, endpoint, config)
+    } catch (err) {
+      console.error('[RateLimit] RPC threw, using fallback:', err)
+      return checkRateLimitFallback(userId, endpoint, config)
+    }
+  }
+
+  return checkRateLimitFallback(userId, endpoint, config)
+}
+
+function checkRateLimitFallback(
+  userId: string,
+  endpoint: string | undefined,
+  config: { limit: number; windowMs: number }
+): { allowed: boolean; retryAfter?: number; remaining?: number } {
+  const key = endpoint ? `${userId}:${endpoint}` : userId
+  const now = Date.now()
+  const entry = fallbackStore.get(key)
+
   if (!entry || now > entry.resetTime) {
-    rateLimits.set(key, { count: 1, resetTime: now + config.windowMs });
-    return { allowed: true, remaining: config.limit - 1 };
+    fallbackStore.set(key, { count: 1, resetTime: now + config.windowMs })
+    return { allowed: true, remaining: config.limit - 1 }
   }
 
-  // Within window - check limit
   if (entry.count >= config.limit) {
-    const retryAfter = Math.ceil((entry.resetTime - now) / 1000);
-    return { allowed: false, retryAfter, remaining: 0 };
+    const retryAfter = Math.ceil((entry.resetTime - now) / 1000)
+    return { allowed: false, retryAfter, remaining: 0 }
   }
 
-  // Allow and increment
-  entry.count++;
-  return { allowed: true, remaining: config.limit - entry.count };
+  entry.count++
+  return { allowed: true, remaining: config.limit - entry.count }
 }
 
 /**
@@ -93,39 +151,34 @@ export function createRateLimitResponse(
         }),
       },
     }
-  );
+  )
 }
 
-/**
- * Add rate limit headers to response
- */
 export function addRateLimitHeaders(
   headers: Headers,
   remaining: number,
   limit: number = DEFAULT_LIMIT
 ): void {
-  headers.set('X-RateLimit-Limit', String(limit));
-  headers.set('X-RateLimit-Remaining', String(remaining));
+  headers.set('X-RateLimit-Limit', String(limit))
+  headers.set('X-RateLimit-Remaining', String(remaining))
 }
 
 /**
- * Cleanup old entries (call periodically to prevent memory leaks)
+ * Cleanup old fallback-store entries (kallas inte aktivt nu — Supabase
+ * RPC har egen rensning. Behålls för bakåtkompatibilitet).
  */
 export function cleanupRateLimits(): void {
-  const now = Date.now();
-  for (const [key, entry] of rateLimits.entries()) {
+  const now = Date.now()
+  for (const [key, entry] of fallbackStore.entries()) {
     if (now > entry.resetTime) {
-      rateLimits.delete(key);
+      fallbackStore.delete(key)
     }
   }
 }
-
-// Run cleanup every 5 minutes
-setInterval(cleanupRateLimits, 5 * 60 * 1000);
 
 export default {
   checkRateLimit,
   createRateLimitResponse,
   addRateLimitHeaders,
   cleanupRateLimits,
-};
+}

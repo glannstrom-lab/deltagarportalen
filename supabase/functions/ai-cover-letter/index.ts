@@ -50,7 +50,7 @@ serve(async (req) => {
     }
 
     // 3. Rate limiting
-    const rateLimitResult = checkRateLimit(user.id, 'ai-cover-letter')
+    const rateLimitResult = await checkRateLimit(user.id, 'ai-cover-letter')
     if (!rateLimitResult.allowed) {
       return createRateLimitResponse(rateLimitResult.retryAfter!, origin)
     }

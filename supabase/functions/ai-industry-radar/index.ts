@@ -146,7 +146,7 @@ Deno.serve(async (req) => {
     }
 
     // Rate limiting
-    const rateCheck = checkRateLimit(user.id, 'ai-industry-radar')
+    const rateCheck = await checkRateLimit(user.id, 'ai-industry-radar')
     if (!rateCheck.allowed) {
       return createRateLimitResponse(rateCheck.retryAfter!, origin)
     }
