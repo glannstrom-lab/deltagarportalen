@@ -183,17 +183,17 @@ Dessa fångas inte av ESLint utan av visuell audit (`audit-2026-05-10/RAPPORT.md
 
 ### Två-läges-systemet (DESIGN.md §3)
 
-| Sida | Avvikelse | Fas |
-|------|-----------|-----|
+| Sida | Avvikelse | Status |
+|------|-----------|--------|
 | `/jobb`, `/karriar`, `/resurser`, `/min-vardag` | Hub-landningar har full pastell-hero — *konformt med v3.0, men tidigare DESIGN.md krävde neutral grå*. Verifiera att de följer §3 exakt efter Fas 3. | Fas 3 |
-| `/skills-gap-analysis` | Saknar PageHeader helt — bara centrerad hero utan border. Inkonsistent med övriga verktygssidor. | Fas 4.B |
+| `/skills-gap-analysis` | Saknar PageHeader helt — bara centrerad hero utan border. Inkonsistent med övriga verktygssidor. | ✅ Fixad 2026-05-14 (commit 0a0ba16) — alla 4 return-paths wrappar nu PageLayout med coaching-domain |
 | Verktygssidor under hubbarna | Många sidor har inte 4 px hub-vänsterkant på sin neutral-header. | Fas 4 (alla) |
 
 ### En-färg-per-sida-regeln (DESIGN.md §4)
 
 | Sida | Avvikelse | Status |
 |------|-----------|--------|
-| `/career` | 4 olika pastellfärger på KPI-kort på samma vy (mint, grön, persika, lavendel). | Fas 4.B / 5.1 |
+| `/career` | 4 olika pastellfärger på KPI-kort på samma vy (mint, grön, persika, lavendel). | ✅ Delvis fixad 2026-05-14 (commit e1d432e) — RelocationTab + PlanTab använder coaching-tokens, behåller röd/amber/stone för semantisk urgens |
 | `/help` | ✅ Verifierat 2026-05-14 — använder redan `var(--c-bg)` konsekvent, inga mörkblå banderoller kvar |
 | `/wellness` | ✅ Verifierat 2026-05-14 — "Spara reflektion" är `rgb(112,88,168)` (wellbeing-solid) med vit text |
 
