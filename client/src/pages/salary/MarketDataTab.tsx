@@ -82,7 +82,7 @@ export default function MarketDataTab() {
   }
 
   const filteredAndSortedIndustries = useMemo(() => {
-    let filtered = INDUSTRY_DATA.filter(ind =>
+    const filtered = INDUSTRY_DATA.filter(ind =>
       ind.name.toLowerCase().includes(searchTerm.toLowerCase())
     )
 

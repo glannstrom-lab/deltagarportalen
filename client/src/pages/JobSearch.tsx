@@ -920,7 +920,7 @@ function SavedJobsTab() {
   );
 
   const filteredJobs = useMemo(() => {
-    let jobs = filter === 'all' ? onlySaved : onlySaved.filter(j => j.status === filter);
+    const jobs = filter === 'all' ? onlySaved : onlySaved.filter(j => j.status === filter);
 
     // Sort
     return jobs.sort((a, b) => {
