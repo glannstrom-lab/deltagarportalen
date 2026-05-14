@@ -14,7 +14,7 @@ function isUuid(s: string): boolean {
 }
 import { mockArticlesData, articleCategories, type EnhancedArticle, type ArticleChecklistItem, type ArticleAction } from './articleData'
 import { exercises as mockExercises, type Exercise, type ExerciseStep, type ExerciseQuestion } from '@/data/exercises'
-import * as LucideIcons from 'lucide-react'
+import { getIcon } from '@/lib/dynamicIconMap'
 
 // ============================================
 // TYPES
@@ -141,9 +141,8 @@ function dbArticleToEnhanced(article: ArticleFromDB): EnhancedArticle {
 /**
  * Get Lucide icon component by name
  */
-function getIconComponent(iconName: string): React.ComponentType<any> {
-  const icons = LucideIcons as Record<string, React.ComponentType<any>>
-  return icons[iconName] || icons.HelpCircle
+function getIconComponent(iconName: string): React.ComponentType<{ className?: string }> {
+  return getIcon(iconName) as React.ComponentType<{ className?: string }>
 }
 
 /**

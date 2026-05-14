@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react';
 import { Award, Lock } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
-import * as LucideIcons from 'lucide-react';
+import { getIcon } from '@/lib/dynamicIconMap';
 
 interface Achievement {
   id: string;
@@ -66,10 +66,7 @@ export const Achievements: React.FC = () => {
     }
   };
 
-  const getIconComponent = (iconName: string) => {
-    const Icon = (LucideIcons as any)[iconName] || LucideIcons.Award;
-    return Icon;
-  };
+  const getIconComponent = (iconName: string) => getIcon(iconName);
 
   const getCategoryColor = (category: string) => {
     const colors: Record<string, string> = {
