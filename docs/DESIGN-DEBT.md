@@ -213,14 +213,51 @@ Dessa fångas inte av ESLint utan av visuell audit (`audit-2026-05-10/RAPPORT.md
 
 ### Voice & Tone (DESIGN.md §2)
 
-| Sträng | Plats | Förslag | Fas |
-|--------|-------|---------|-----|
-| "Hantera resurser" | Resurser-hub-titel | "Dina sparade resurser" | Fas 1.5 |
-| "Mina vardagliga rutiner" | Min vardag-hub-titel | "Din vardag" | Fas 1.5 |
-| "Sök företag" | Spontanansökan-tab | "Hitta företag att kontakta" | Fas 1.5 |
-| "0 aktiva ansökningar" | Mina ansökningar | "Du har inte börjat söka jobb än" | Fas 1.5 / 5.4 |
-| "Aktivera notiser" | Settings | "Slå på notiser" | Fas 1.5 |
-| (uppskattat 30+ till) | sv.json | Genomgång enligt §2-tabellen | Fas 1.5 |
+✅ **Fixad 2026-05-14** — Voice & Tone-pass över sv.json + en.json (~55 strängar):
+
+**Regel 1 (Rubriker är inviter):**
+- ✅ "Sök företag" → "Hitta företag att kontakta"
+- ✅ "Mina ansökningar" (nav) → "Dina jobbansökningar"
+- ✅ "Min vardag" (hub) → "Din vardag"
+- ✅ "Mina resurser" → "Dina sparade resurser"
+- ✅ "Mitt CV" (6×) → "Ditt CV"
+- ✅ "Mina CV" / "Mina sparade CV" → "Dina CV" / "Dina sparade CV"
+- ✅ "Mina brev" → "Dina brev"
+- ✅ "Mitt nätverk" → "Ditt nätverk"
+- ✅ "Mina Credentials" / "Mina credentials" → "Dina meriter"
+- ✅ "Mina kompetenser" → "Dina kompetenser"
+- ✅ "Mina Intressen (RIASEC)" → "Dina intressen (RIASEC)"
+- ✅ "Mina Quests" → "Dina utmaningar"
+- ✅ "Mitt AI Team" / "Mitt AI-team" → "Ditt AI-team"
+- ✅ "Min konsulent" (nav) → "Din konsulent"
+- ✅ "Mina dokument" (nav) → "Dina dokument"
+- ✅ "Mina företag" (spontanansökan) → "Dina sparade företag"
+
+**Regel 2 (Aldrig administrationsspråk):**
+- ✅ "Hantera dina inställningar..." (Settings desc) → "Dina inställningar..."
+- ✅ "Hantera dina personuppgifter" → "Dina personuppgifter"
+- ✅ "Hantera dina sekretessinställningar" → "Dina sekretessinställningar"
+- ✅ "Hantera lösenord..." → "Lösenord och säkerhetsinställningar"
+- ✅ "Hantera i inställningar" (3×) → "Ändra i inställningar"
+- ✅ "Anpassa portalens utseende" → "Hur portalen ser ut"
+- ✅ "Generera" (8×) → "Skapa"
+- ✅ "Genererar..." → "Skapar..."
+- ✅ "Generera ny" → "Skapa ny"
+- ✅ "Validera kunskaper" → "Kolla dina kunskaper"
+- ✅ "Vänligen korrigera följande" → "Det här behöver justeras"
+
+**Regel 3 (Aldrig prestationsspråk):**
+- ✅ "Inga aktiva ansökningar" → "Du har inte börjat söka jobb än"
+- ✅ "X aktiva ansökningar" → "X ansökningar pågår" (subtilare än siffer-fokuserat)
+- ✅ "Hantera" / "Spåra ansökningar" → "Öppna" / "Följ upp"
+
+**Lämnat avsiktligt:**
+- Konsulent-vyer behåller "Hantera" / "Generera PDF-rapport" — DESIGN.md §2
+  tillåter mer effektiv ton för konsulent/admin.
+- "Validera" i interest-guide-context där det är psykometrisk term, inte UI-action.
+- Streak-strängar visas bara när streak > 0 (inte 0-prestationsspråk).
+
+Inga obesvarade strängar i sv.json som matchar admin-språk-mönstret kvar.
 
 ---
 

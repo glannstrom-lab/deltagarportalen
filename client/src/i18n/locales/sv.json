@@ -192,28 +192,28 @@
     "knowledgeBase": "Kunskapsbank",
     "printResources": "Skriv ut resurser",
     "resources": "Resurser",
-    "myDocuments": "Mina dokument",
+    "myDocuments": "Dina dokument",
     "settings": "Inställningar",
     "logout": "Logga ut",
     "adminPanel": "Admin Panel",
     "myParticipants": "Mina Deltagare",
     "consultantPortal": "Konsultportal",
-    "applications": "Mina ansökningar",
+    "applications": "Dina jobbansökningar",
     "spontaneous": "Spontanansökan",
     "network": "Nätverk",
-    "myConsultant": "Min konsulent",
+    "myConsultant": "Din konsulent",
     "calendar": "Kalender",
     "linkedinOptimizer": "LinkedIn-optimering",
     "skillsGap": "Kompetensanalys",
     "interviewSimulator": "Intervjuträning",
-    "aiTeam": "Mitt AI Team",
+    "aiTeam": "Ditt AI-team",
     "help": "Hjälp",
     "hubs": {
       "oversikt": "Översikt",
       "jobb": "Söka jobb",
       "karriar": "Karriär",
       "resurser": "Resurser",
-      "min-vardag": "Min vardag"
+      "min-vardag": "Din vardag"
     },
     "groups": {
       "overview": "Översikt",
@@ -289,7 +289,7 @@
       "community": "Community",
       "insights": "Insikter",
       "learning": "Lärande",
-      "quests": "Mina Quests",
+      "quests": "Dina utmaningar",
       "questsDesc": "Dagliga utmaningar och belöningar"
     },
     "greeting": "Hej, {{name}}! 👋",
@@ -406,7 +406,7 @@
     },
     "widgets": {
       "cv": {
-        "title": "Mitt CV",
+        "title": "Ditt CV",
         "score": "CV-score: {{score}}/100",
         "noCV": "Inget CV skapat än",
         "looksGood": "Ditt CV ser bra ut!",
@@ -439,11 +439,11 @@
       },
       "applications": {
         "title": "Ansökningar",
-        "activeCount": "{{count}} aktiva ansökningar",
-        "noActive": "Inga aktiva ansökningar",
+        "activeCount": "{{count}} ansökningar pågår",
+        "noActive": "Du har inte börjat söka jobb än",
         "waitingForResponse": "Väntar på svar",
-        "manage": "Hantera",
-        "track": "Spåra ansökningar"
+        "manage": "Öppna",
+        "track": "Följ upp"
       },
       "coverLetters": {
         "title": "Personliga brev",
@@ -756,14 +756,14 @@
     "saveManually": "Spara manuellt (auto-save är aktivt)",
     "tabs": {
       "create": "Skapa CV",
-      "myCvs": "Mina CV",
+      "myCvs": "Dina CV",
       "adapt": "Anpassa",
       "templates": "Mallar",
       "ats": "ATS-analys",
       "tips": "CV-tips"
     },
     "myCvs": {
-      "title": "Mina sparade CV",
+      "title": "Dina sparade CV",
       "loading": "Laddar dina CV:n...",
       "savedCount": "Du har {{count}} CV sparade",
       "createNew": "Skapa nytt CV",
@@ -1263,7 +1263,7 @@
         "quantifyDesc": "Lägg till mätbara resultat och siffror",
         "translate": "Översätt",
         "translateDesc": "Översätt till engelska",
-        "generate": "Generera",
+        "generate": "Skapa",
         "generateDesc": "Skapa ny text baserat på din input"
       },
       "errors": {
@@ -1482,7 +1482,7 @@
       "coverLetter": "Skriv ett personligt brev"
     },
     "actions": {
-      "cv": "Mitt CV",
+      "cv": "Ditt CV",
       "cvComplete": "Komplett",
       "cvIncomplete": "Börja här",
       "jobs": "Sök jobb",
@@ -1513,7 +1513,7 @@
     "writePersonalLetter": "Skriv personligt brev",
     "tabs": {
       "write": "Skriv brev",
-      "myLetters": "Mina brev",
+      "myLetters": "Dina brev",
       "applications": "Dina ansökningar",
       "templates": "Färdiga mallar",
       "statistics": "Din statistik"
@@ -1567,7 +1567,7 @@
       "title": "Smarta jobbmatchningar",
       "subtitle": "Välj vilka datakällor som ska användas för matchning",
       "sources": {
-        "cv": "Mitt CV",
+        "cv": "Ditt CV",
         "interest": "Intresseguiden",
         "career": "Karriärmål"
       },
@@ -1758,7 +1758,7 @@
       "setCareerGoals": "Sätt karriärmål",
       "noJobsFound": "Inga jobb hittades. Prova att välja en annan källa eller ändra ortsfilter.",
       "sources": {
-        "myCV": "Mitt CV",
+        "myCV": "Ditt CV",
         "cv": "CV",
         "interestGuide": "Intresseguiden",
         "interest": "Intressen",
@@ -1858,9 +1858,9 @@
     "title": "Spontanansökan",
     "description": "Hitta och kontakta företag som passar dig",
     "tabs": {
-      "search": "Sök företag",
+      "search": "Hitta företag att kontakta",
       "searchDesc": "Sök efter företag med organisationsnummer",
-      "companies": "Mina företag",
+      "companies": "Dina sparade företag",
       "companiesDesc": "Företag du sparat",
       "stats": "Statistik",
       "statsDesc": "Följ din framgång"
@@ -1881,7 +1881,7 @@
       "low": "Låg"
     },
     "search": {
-      "title": "Sök företag",
+      "title": "Hitta företag att kontakta",
       "placeholder": "Organisationsnummer (t.ex. 556074-7551)",
       "button": "Sök",
       "invalidFormat": "Ogiltigt format. Ange 10 siffror (t.ex. 5560747551 eller 556074-7551)",
@@ -2140,7 +2140,7 @@
       "contacts": "Kontakter",
       "activeThisMonth": "Aktiva denna månad",
       "highPriority": "Hög prioritet",
-      "myNetwork": "Mitt nätverk",
+      "myNetwork": "Ditt nätverk",
       "addContact": "Lägg till kontakt",
       "name": "Namn",
       "relationPlaceholder": "Relation (t.ex. Tidigare kollega)",
@@ -2172,7 +2172,7 @@
       "identifyNeeds": "Identifiera dina behov",
       "selectHelpful": "Markera de anpassningar som skulle hjälpa dig. Du kan välja flera i varje kategori.",
       "youSelected": "Du har valt {{count}} anpassningar",
-      "generateDoc": "Generera ett dokument att dela med din arbetsgivare",
+      "generateDoc": "Skapa ett dokument att dela med din arbetsgivare",
       "createDocument": "Skapa dokument",
       "categories": {
         "physical": {
@@ -2289,7 +2289,7 @@
       "currentPlaceholder": "Beskriv din nuvarande situation (t.ex. 'Arbetar som butikssäljare, vill byta till kontorsjobb')",
       "whereWantToGo": "Vart vill du?",
       "goalPlaceholder": "Beskriv ditt mål (t.ex. 'Bli projektledare inom IT med fokus på agila metoder')",
-      "generatePlan": "Generera karriärplan",
+      "generatePlan": "Skapa karriärplan",
       "whyCareerPlan": "Varför en karriärplan?",
       "reason1": "Ger struktur och riktning i ditt jobbsökande",
       "reason2": "Hjälper dig att bryta ner stora mål till hanterbara steg",
@@ -2322,10 +2322,10 @@
       "newAnalysis": "Gör ny analys"
     },
     "credentials": {
-      "title": "Mina Credentials",
+      "title": "Dina meriter",
       "description": "Håll koll på certifieringar, utbildningar och licenser du har eller planerar att ta.",
-      "addCredential": "Lägg till credential",
-      "myCredentials": "Mina credentials",
+      "addCredential": "Lägg till merit",
+      "myCredentials": "Dina meriter",
       "popularCredentials": "Populära certifieringar",
       "confirmDelete": "Är du säker på att du vill ta bort denna credential?",
       "targetDateLabel": "Mål",
@@ -3132,7 +3132,7 @@
       "withdrawDetail2": "All din hälsodata kan raderas på begäran",
       "withdrawDetail3": "Återkallat samtycke påverkar inte tidigare lagrad data",
       "grantConsent": "Jag samtycker",
-      "goToSettings": "Hantera i inställningar",
+      "goToSettings": "Ändra i inställningar",
       "privacyLink": "Läs mer i vår ",
       "privacyPolicy": "integritetspolicy"
     }
@@ -3342,7 +3342,7 @@
       },
       "coverLetter": {
         "title": "Personligt brev",
-        "description": "Generera anpassade personliga brev med AI-hjälp."
+        "description": "Skapa anpassade personliga brev med AI-hjälp."
       },
       "jobSearch": {
         "title": "Jobbsök",
@@ -3358,7 +3358,7 @@
       },
       "profile": {
         "title": "Min profil",
-        "description": "Hantera dina inställningar och personuppgifter."
+        "description": "Dina inställningar och personuppgifter."
       }
     },
     "myJourney": {
@@ -3393,7 +3393,7 @@
     }
   },
   "resources": {
-    "title": "Mina resurser",
+    "title": "Dina sparade resurser",
     "subtitle": "Användbara verktyg och länkar",
     "description": "Alla dina sparade dokument, jobb och resurser på ett ställe",
     "stats": {
@@ -3409,7 +3409,7 @@
       "articles": "Artiklar"
     },
     "search": "Sök...",
-    "myCV": "Mitt CV",
+    "myCV": "Ditt CV",
     "experiences": "erfarenheter",
     "educations": "utbildningar",
     "skills": "kompetenser",
@@ -3457,21 +3457,21 @@
     "description": "Anpassa portalen efter dina behov",
     "sections": {
       "profile": "Profil",
-      "profileDesc": "Hantera dina personuppgifter",
+      "profileDesc": "Dina personuppgifter",
       "accessibility": "Tillgänglighet",
       "accessibilityDesc": "Anpassa efter dina behov",
       "notifications": "Notifikationer",
       "notificationsDesc": "Välj hur du vill bli kontaktad",
       "appearance": "Utseende",
-      "appearanceDesc": "Anpassa portalens utseende",
+      "appearanceDesc": "Hur portalen ser ut",
       "privacy": "Integritet",
-      "privacyDesc": "Hantera dina sekretessinställningar",
+      "privacyDesc": "Dina sekretessinställningar",
       "security": "Säkerhet",
       "securityDesc": "Ändra lösenord och tvåfaktorsauth"
     },
     "profile": {
       "title": "Profilinställningar",
-      "description": "Hantera dina personuppgifter och profilbild",
+      "description": "Dina personuppgifter och profilbild",
       "changePhoto": "Byt profilbild",
       "photoHint": "JPG, PNG eller GIF. Max 2MB.",
       "personalInfo": "Personlig information",
@@ -3531,7 +3531,7 @@
     },
     "privacy": {
       "title": "Integritet",
-      "description": "Hantera dina sekretessinställningar och samtycken",
+      "description": "Dina sekretessinställningar och samtycken",
       "shareActivity": "Dela aktivitet",
       "shareActivityDesc": "Tillåt delning av anonymiserad användningsstatistik för att förbättra tjänsten.",
       "learnMore": "Läs mer om dataintegritet",
@@ -3603,7 +3603,7 @@
     },
     "security": {
       "title": "Säkerhet",
-      "description": "Hantera lösenord och säkerhetsinställningar",
+      "description": "Lösenord och säkerhetsinställningar",
       "changePassword": "Ändra lösenord",
       "currentPassword": "Nuvarande lösenord",
       "currentPasswordPlaceholder": "Ange ditt nuvarande lösenord",
@@ -3656,7 +3656,7 @@
     "passwordNeeds": "Ditt lösenord behöver",
     "passwordSecure": "Perfekt! Ditt lösenord är säkert.",
     "passwordsMatch": "Lösenorden matchar",
-    "pleaseCorrect": "Vänligen korrigera följande",
+    "pleaseCorrect": "Det här behöver justeras",
     "passwordRules": {
       "minLength": "Minst 12 tecken",
       "uppercase": "En stor bokstav (A-Z)",
@@ -3684,7 +3684,7 @@
       "requiredDesc": "För att använda AI-funktioner behöver du ge samtycke till AI-behandling av dina uppgifter.",
       "requiredForFeature": "För att använda {{feature}} behöver du ge samtycke till AI-behandling.",
       "grantNow": "Ge samtycke",
-      "manageInSettings": "Hantera i inställningar",
+      "manageInSettings": "Ändra i inställningar",
       "grantError": "Kunde inte ge samtycke. Försök igen.",
       "fullTitle": "Slå på AI-funktioner",
       "fullDesc": "AI-funktionerna hjälper dig skriva bättre CV och personliga brev. För att använda dem behöver du ge samtycke.",
@@ -3708,7 +3708,7 @@
       "title": "AI-verktyg",
       "subtitle": "Få hjälp med CV, brev och intervjuer",
       "cvGenerate": {
-        "title": "Generera CV-sammanfattning",
+        "title": "Skapa CV-sammanfattning",
         "description": "Låt AI skriva en professionell sammanfattning"
       },
       "cvOptimization": {
@@ -3717,7 +3717,7 @@
       },
       "coverLetter": {
         "title": "Skriv personligt brev",
-        "description": "Generera personligt brev från jobbannons"
+        "description": "Skapa personligt brev från jobbannons"
       },
       "interviewPrep": {
         "title": "Förbered intervju",
@@ -4564,7 +4564,7 @@
         "description": "Kunskapsbank, dokument, AI-team, externa länkar — allt på ett ställe."
       },
       "vardag": {
-        "title": "Min vardag",
+        "title": "Din vardag",
         "description": "Mående, dagbok, kalender, övningar och dialog med din konsulent."
       }
     },
@@ -5298,7 +5298,7 @@
   },
   "profile": {
     "title": "Din profil",
-    "description": "Hantera dina kontouppgifter och personliga information.",
+    "description": "Dina kontouppgifter och personliga information.",
     "loading": "Laddar profil...",
     "loadingMessage": "Hämtar dina uppgifter",
     "errorLoading": "Kunde inte ladda profilen. Försök igen.",
@@ -5338,9 +5338,9 @@
     "aiSummary": {
       "copy": "Kopiera sammanfattning",
       "edit": "Redigera sammanfattning",
-      "generating": "Genererar...",
-      "generate": "Generera",
-      "regenerate": "Generera ny"
+      "generating": "Skapar...",
+      "generate": "Skapa",
+      "regenerate": "Skapa ny"
     },
     "careerTimeline": {
       "current": "Nuvarande",
@@ -5364,7 +5364,7 @@
       "visibility": "Synlighet"
     },
     "competenceSection": {
-      "mySkills": "Mina kompetenser",
+      "mySkills": "Dina kompetenser",
       "profileSummary": "Profilsammanfattning",
       "certificatesDocuments": "Certifikat & dokument",
       "importFromLinkedIn": "Importera från LinkedIn",
@@ -5410,7 +5410,7 @@
         },
         "aiSummary": {
           "label": "AI-sammanfattning",
-          "description": "Generera en professionell sammanfattning"
+          "description": "Skapa en professionell sammanfattning"
         },
         "documents": {
           "label": "Dokument",
@@ -6201,7 +6201,7 @@
       "rolePlaceholder": "Personens roll (t.ex. HR-chef på Volvo)",
       "purposePlaceholder": "Varför vill du connecta? (t.ex. 'Jag beundrar ditt arbete inom...')"
     },
-    "generate": "Generera med AI",
+    "generate": "Skapa med AI",
     "result": {
       "title": "Din LinkedIn-text",
       "copy": "Kopiera",
@@ -6421,7 +6421,7 @@
       "skills": "Kompetenser",
       "experience": "Arbetslivserfarenhet",
       "education": "Utbildning",
-      "interests": "Mina Intressen (RIASEC)",
+      "interests": "Dina intressen (RIASEC)",
       "recommendedJobs": "Rekommenderade Yrken",
       "careerGoals": "Karriärmål",
       "preferredRoles": "Föredragna Roller",
@@ -7354,7 +7354,7 @@
         "exploreInterestDesc": "Hitta din riktning",
         "searchJobs": "Sök lediga jobb",
         "searchJobsDesc": "Se vad som finns",
-        "generateCoverLetter": "Generera personligt brev",
+        "generateCoverLetter": "Skapa personligt brev",
         "generateCoverLetterDesc": "Matcha ditt CV",
         "optimizeLinkedIn": "Optimera LinkedIn",
         "optimizeLinkedInDesc": "Synas för rekryterare",
@@ -7422,7 +7422,7 @@
     }
   },
   "aiTeam": {
-    "title": "Mitt AI Team",
+    "title": "Ditt AI-team",
     "description": "Ditt personliga supportteam för jobbsökning. Välj en agent och börja chatta!",
     "selectAgent": "Välj din agent",
     "skipToChat": "Hoppa till chatten",
@@ -7527,7 +7527,7 @@
       "careerPaths": "Karriärvägar",
       "skillGaps": "Kompetensgap",
       "findEducation": "Hitta utbildningar",
-      "validateSkills": "Validera kunskaper",
+      "validateSkills": "Kolla dina kunskaper",
       "setGoals": "Sätt upp mål",
       "overcomeSetbacks": "Övervinn motgångar",
       "buildConfidence": "Bygg självförtroende",

@@ -3351,7 +3351,7 @@
       },
       "profile": {
         "title": "My Profile",
-        "description": "Manage your settings and personal information."
+        "description": "Your settings and personal information."
       }
     },
     "myJourney": {
@@ -3450,21 +3450,21 @@
     "description": "Customize the portal to your needs",
     "sections": {
       "profile": "Profile",
-      "profileDesc": "Manage your personal information",
+      "profileDesc": "Your personal information",
       "accessibility": "Accessibility",
       "accessibilityDesc": "Customize to your needs",
       "notifications": "Notifications",
       "notificationsDesc": "Choose how you want to be contacted",
       "appearance": "Appearance",
-      "appearanceDesc": "Customize the portal's appearance",
+      "appearanceDesc": "How the portal looks",
       "privacy": "Privacy",
-      "privacyDesc": "Manage your privacy settings",
+      "privacyDesc": "Your privacy settings",
       "security": "Security",
       "securityDesc": "Change password and two-factor auth"
     },
     "profile": {
       "title": "Profile Settings",
-      "description": "Manage your personal information and profile picture",
+      "description": "Your personal information and profile picture",
       "changePhoto": "Change profile picture",
       "photoHint": "JPG, PNG or GIF. Max 2MB.",
       "personalInfo": "Personal information",
