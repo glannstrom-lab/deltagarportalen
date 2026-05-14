@@ -1,9 +1,12 @@
 /**
  * Hook for uploading images to Vercel Blob Storage
  * Simpler and more reliable than Supabase Storage
+ *
+ * 2026-05-15: /api/upload-image kräver Bearer-token (säkerhetsfix).
  */
 
 import { useState, useCallback } from 'react'
+import { supabase } from '@/lib/supabase'
 
 interface UploadResult {
   url: string | null
@@ -40,16 +43,23 @@ export function useVercelImageUpload(): UseVercelImageUploadReturn {
     try {
       // Generate unique filename
       const filename = generateUniqueFilename(file)
-      
-      setProgress(30)
 
-      // Upload directly to Vercel Blob
-      // Note: This requires a Vercel Blob token set in environment variables
+      setProgress(20)
+
+      // Hämta auth-token — /api/upload-image kräver Bearer (2026-05-15)
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.access_token) {
+        return { url: null, error: 'Du måste vara inloggad för att ladda upp bilder' }
+      }
+
+      setProgress(40)
+
       const response = await fetch(`/api/upload-image?filename=${encodeURIComponent(filename)}`, {
         method: 'POST',
         body: file,
         headers: {
           'Content-Type': file.type,
+          'Authorization': `Bearer ${session.access_token}`,
         },
       })
 

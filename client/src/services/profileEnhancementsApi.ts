@@ -125,8 +125,9 @@ function generateProfileFilename(userId: string, file: File): string {
 
 export const profileImageApi = {
   async upload(file: File): Promise<string> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Not authenticated')
+    const { data: { session } } = await supabase.auth.getSession()
+    const user = session?.user
+    if (!session?.access_token || !user) throw new Error('Not authenticated')
 
     // Validate file
     if (!file.type.startsWith('image/')) {
@@ -139,12 +140,13 @@ export const profileImageApi = {
     // Generate unique filename
     const filename = generateProfileFilename(user.id, file)
 
-    // Upload to Vercel Blob via API
+    // Upload to Vercel Blob via API (kräver Bearer-token efter 2026-05-15)
     const response = await fetch(`/api/upload-image?filename=${encodeURIComponent(filename)}`, {
       method: 'POST',
       body: file,
       headers: {
         'Content-Type': file.type,
+        'Authorization': `Bearer ${session.access_token}`,
       },
     })
 
