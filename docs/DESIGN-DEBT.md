@@ -145,6 +145,37 @@ Veckovis sweep i Fas 8 — Polish.
 
 ---
 
+## 3.5. WCAG 2.1 AA color-contrast
+
+✅ **Fixad 2026-05-14** — färsk axe-core-audit på 9 huvudsidor.
+
+**Status:** 24 → 0 violations.
+
+**Fix tredelat:**
+
+1. **Hub-token-färger för svaga mot vit text** (systemiskt):
+   - `--action-solid` #1F8A66 → #1A7757 (4.29 → 5.61)
+   - `--info-solid` #2F7DB5 → #266DA0 (4.44 → 5.77)
+   - `--activity-solid` #C97A2E → #A85D24 (3.32 → 4.91)
+   - `--wellbeing-solid` #7058A8 redan OK (5.9)
+   - `--coaching-solid` #B85363 redan OK (4.65)
+
+2. **Text-färger på vit/pastell-bakgrund** (lokala):
+   - HubOverview activity-feed `var(--stone-500)` → `var(--stone-700)`
+   - Sidebar roll-tagg `text-stone-400` → `text-stone-600`
+   - ProfileHeader sync `text-emerald-600` → `text-emerald-700`
+   - CVBuilder stepper `text-emerald-600` → `text-emerald-700`
+   - OverviewSection tip `text-amber-600` → `text-amber-800`
+   - JobSearch "Rensa alla" `text-red-500` → `text-red-700`
+   - ContextualKnowledgeWidget level-taggar `-600` → `-700`
+
+3. **Mörk bakgrund** (Landing-footer):
+   - `text-stone-400` → `text-stone-300` (3.64 → 6.06)
+
+Verifierat via `e2e/axe-contrast.cjs` på Landing, Login, Översikt, Profil, CV, JobSearch, Karriär, Min vardag, Wellness.
+
+---
+
 ## 4. Övriga kända designöverträdelser från audit 2026-05-10
 
 Dessa fångas inte av ESLint utan av visuell audit (`audit-2026-05-10/RAPPORT.md` + `DESIGN-GRANSKNING.md`). Listas här för spårbarhet.

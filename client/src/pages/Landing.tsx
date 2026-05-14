@@ -913,7 +913,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-stone-900 text-stone-400">
+      <footer className="bg-stone-900 text-stone-300">
         <div className="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12 sm:py-16">
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-12 sm:mb-12">
             {/* Brand */}

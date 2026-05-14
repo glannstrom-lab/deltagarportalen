@@ -116,13 +116,13 @@ export function ProfileHeader() {
                 </>
               ) : cloudSynced ? (
                 <>
-                  <Cloud className="w-3.5 h-3.5 text-emerald-500" />
-                  <span className="text-emerald-600 dark:text-emerald-400">Sparad</span>
+                  <Cloud className="w-3.5 h-3.5 text-emerald-600" />
+                  <span className="text-emerald-700 dark:text-emerald-400">Sparad</span>
                 </>
               ) : (
                 <>
-                  <CloudOff className="w-3.5 h-3.5 text-amber-500" />
-                  <span className="text-amber-600 dark:text-amber-400">Ej sparad</span>
+                  <CloudOff className="w-3.5 h-3.5 text-amber-600" />
+                  <span className="text-amber-700 dark:text-amber-400">Ej sparad</span>
                 </>
               )}
             </div>

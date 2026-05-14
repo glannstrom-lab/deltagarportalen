@@ -410,13 +410,13 @@ function HubCard({ to, domain, icon: Icon, title, description, activity }: HubCa
               </span>
             </span>
             {activity.when && (
-              <span className="text-[11px] sm:text-[12px] text-[var(--stone-500)] flex-shrink-0 mt-px whitespace-nowrap">
+              <span className="text-[11px] sm:text-[12px] text-[var(--stone-700)] flex-shrink-0 mt-px whitespace-nowrap">
                 {activity.when}
               </span>
             )}
           </div>
         ) : (
-          <div className="mt-auto pt-3 sm:pt-3.5 border-t border-[var(--stone-100)] text-[12px] sm:text-[13px] text-[var(--stone-500)] italic">
+          <div className="mt-auto pt-3 sm:pt-3.5 border-t border-[var(--stone-100)] text-[12px] sm:text-[13px] text-[var(--stone-700)] italic">
             Inga händelser än — börja utforska
           </div>
         )}

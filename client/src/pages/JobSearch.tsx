@@ -591,7 +591,7 @@ function SearchTab() {
                 </div>
                 <button
                   onClick={() => setFilters(defaultFilters)}
-                  className="text-sm text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 font-medium"
+                  className="text-sm text-red-700 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300 font-medium"
                 >
                   {t('common.clearAll')}
                 </button>

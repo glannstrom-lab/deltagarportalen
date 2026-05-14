@@ -219,7 +219,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 </div>
                 <span className={cn(
                   "text-xs font-medium hidden sm:block",
-                  isActive ? "text-[var(--c-text)] dark:text-[var(--c-text)]" : isCompleted ? "text-emerald-600 dark:text-emerald-400" : "text-stone-600 dark:text-stone-400"
+                  isActive ? "text-[var(--c-text)] dark:text-[var(--c-text)]" : isCompleted ? "text-emerald-700 dark:text-emerald-400" : "text-stone-600 dark:text-stone-400"
                 )}>
                   {step.title}
                 </span>

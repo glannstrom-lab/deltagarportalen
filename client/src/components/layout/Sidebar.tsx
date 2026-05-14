@@ -375,7 +375,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
               <p className="text-[13px] font-medium text-stone-700 dark:text-stone-200 truncate">
                 {user?.first_name || user?.email?.split('@')[0]}
               </p>
-              <p className="text-[11px] text-stone-400 dark:text-stone-500 truncate">
+              <p className="text-[11px] text-stone-600 dark:text-stone-400 truncate">
                 {activeRole === 'SUPERADMIN' ? 'Superadmin' :
                  activeRole === 'ADMIN' ? 'Admin' :
                  activeRole === 'CONSULTANT' ? 'Konsulent' : 'Deltagare'}

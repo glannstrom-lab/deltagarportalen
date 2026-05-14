@@ -14,19 +14,19 @@
   /* === ACTION (Mint/Turkos) — Dashboard, AI, Settings, Help (system) === */
   --action-bg:     #ECF7F1;  /* mjuk mint-bakgrund */
   --action-accent: #C5E5D4;  /* border / accent */
-  --action-solid:  #1F8A66;  /* CTA-fyllning */
+  --action-solid:  #1A7757;  /* WCAG AA 5.61 vs vit (var #1F8A66 4.29 — fail) */
   --action-text:   #155F47;  /* text på ljus bg */
 
   /* === INFO (Sky/Blå) — Help, Resources, KnowledgeBase, Nätverk === */
   --info-bg:     #ECF4FA;
   --info-accent: #C8DEEF;
-  --info-solid:  #2F7DB5;
+  --info-solid:  #266DA0;  /* WCAG AA 5.77 vs vit (var #2F7DB5 4.44 — fail) */
   --info-text:   #1F5985;
 
   /* === ACTIVITY (Persika) — JobSearch, Applications, LinkedIn, Salary === */
   --activity-bg:     #FCF1E6;
   --activity-accent: #F5D3B5;
-  --activity-solid:  #C97A2E;
+  --activity-solid:  #A85D24;  /* WCAG AA 4.91 vs vit (var #C97A2E 3.32 — fail) */
   --activity-text:   #8B5418;
 
   /* === WELLBEING (Lavendel/Lila) — Wellness, Diary, Calendar === */

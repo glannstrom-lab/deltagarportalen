@@ -204,11 +204,11 @@ export function OverviewSection() {
           </div>
           <div className="flex-1">
             <p className="font-bold text-amber-800 dark:text-amber-300">{t('profile.overview.discoverStrengths')}</p>
-            <p className="text-sm text-amber-600 dark:text-amber-400">
+            <p className="text-sm text-amber-800 dark:text-amber-300">
               {t('profile.overview.takeInterestGuide')}
             </p>
           </div>
-          <ChevronRight className="w-5 h-5 text-amber-400 dark:text-amber-500 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+          <ChevronRight className="w-5 h-5 text-amber-700 dark:text-amber-400 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
         </Link>
       )}
     </div>

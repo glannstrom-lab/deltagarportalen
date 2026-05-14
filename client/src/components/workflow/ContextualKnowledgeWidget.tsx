@@ -352,9 +352,9 @@ export function ContextualKnowledgeWidget({
                     <span>{article.readTime} min läsning</span>
                     <span>•</span>
                     <span className={cn(
-                      article.difficulty === 'beginner' ? "text-green-600" :
-                      article.difficulty === 'intermediate' ? "text-amber-600" :
-                      "text-rose-600"
+                      article.difficulty === 'beginner' ? "text-green-700" :
+                      article.difficulty === 'intermediate' ? "text-amber-700" :
+                      "text-rose-700"
                     )}>
                       {article.difficulty === 'beginner' ? 'Nybörjare' :
                        article.difficulty === 'intermediate' ? 'Medel' : 'Avancerad'}
@@ -414,9 +414,9 @@ export function ContextualKnowledgeWidget({
               <div className="flex items-center gap-3 mt-2 text-xs text-stone-600">
                 <span>{article.readTime} min läsning</span>
                 <span className={cn(
-                  article.difficulty === 'beginner' ? "text-green-600" :
-                  article.difficulty === 'intermediate' ? "text-amber-600" :
-                  "text-rose-600"
+                  article.difficulty === 'beginner' ? "text-green-700" :
+                  article.difficulty === 'intermediate' ? "text-amber-700" :
+                  "text-rose-700"
                 )}>
                   {article.difficulty === 'beginner' ? 'Nybörjare' :
                    article.difficulty === 'intermediate' ? 'Medel' : 'Avancerad'}
