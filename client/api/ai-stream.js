@@ -126,6 +126,22 @@ function getCorsHeaders(requestOrigin) {
   };
 }
 
+// ============================================
+// PROMPTS — STREAMING-VARIANTER
+// ============================================
+// Dessa prompts skiljer sig MEDVETET från ai.js PROMPTS:
+// - ai.js → strukturerad JSON-output (parseJson: true) för pre-rendering
+// - ai-stream.js → flytande text för progressiv rendering
+//
+// Audit-fyndet "karriarplan saknar JSON-instruktion i stream" var alltså
+// inte en bug — JSON är inte rätt output-format för en streamad upplevelse.
+// Användaren ser texten växa fram och förväntar sig läsbar text, inte
+// `{"steps":[...]}`.
+//
+// Konsolidering av PROMPTS till en delad fil (audit C1) är en större
+// refaktor som kräver beslut om hur stream/non-stream-varianter ska
+// representeras — antingen som två fält per funktion eller som två
+// separata exports. Lämnas som FLAG för senare initiativ.
 const PROMPTS = {
   'personligt-brev': (data) => {
     const ton = data.ton || data.tone || 'professionell';
