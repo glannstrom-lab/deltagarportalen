@@ -11,6 +11,13 @@
  */
 
 import { createCorsResponse, handleCorsPreflightOrNull, createErrorResponse, getCorsHeaders } from '../_shared/cors.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+// Per-user rate-limit: 30 anrop / 15 min. Bolagsverket-quota delas
+// projekt-globalt — utan per-user-limit kan en användare bränna alla
+// projektets requests för dagen (alla deltagare drabbas).
+const RATE_LIMIT_PER_USER_PER_WINDOW = 30;
+const RATE_LIMIT_WINDOW_MINUTES = 15;
 
 const BOLAGSVERKET_TOKEN_URL = 'https://portal.api.bolagsverket.se/oauth2/token';
 const BOLAGSVERKET_API_BASE = 'https://gw.api.bolagsverket.se/vardefulla-datamangder/v1';
@@ -278,6 +285,52 @@ Deno.serve(async (req) => {
 
   const origin = req.headers.get('Origin');
 
+  // ---------- AUTH + per-user rate-limit ----------
+  // Audit M7 (2026-05-14): Tidigare ingen explicit user-JWT-check och
+  // ingen per-user rate-limit → omöjligt att spåra missbruk + delad
+  // Bolagsverket-quota förbrukas projekt-globalt.
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader?.startsWith('Bearer ')) {
+    return createCorsResponse({ error: 'Unauthorized' }, 401, origin);
+  }
+  const token = authHeader.substring(7);
+
+  const supabaseUrl = Deno.env.get('SUPABASE_URL');
+  const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
+  if (!supabaseUrl || !anonKey) {
+    return createCorsResponse({ error: 'Server misconfigured' }, 500, origin);
+  }
+  const supabase = createClient(supabaseUrl, anonKey);
+  const { data: { user }, error: authErr } = await supabase.auth.getUser(token);
+  if (authErr || !user) {
+    return createCorsResponse({ error: 'Invalid token' }, 401, origin);
+  }
+
+  // Distribuerad rate-limit (samma RPC som Vercel-vägen)
+  try {
+    const { data: rlData, error: rlErr } = await supabase.rpc('check_rate_limit', {
+      p_identifier: user.id,
+      p_endpoint: 'bolagsverket',
+      p_max_requests: RATE_LIMIT_PER_USER_PER_WINDOW,
+      p_window_minutes: RATE_LIMIT_WINDOW_MINUTES,
+    });
+    if (!rlErr && rlData && rlData.length > 0 && !rlData[0].allowed) {
+      const resetIn = rlData[0].reset_at
+        ? Math.max(0, new Date(rlData[0].reset_at).getTime() - Date.now())
+        : RATE_LIMIT_WINDOW_MINUTES * 60 * 1000;
+      const headers = getCorsHeaders(origin) || {};
+      return new Response(JSON.stringify({
+        error: 'För många Bolagsverket-anrop. Försök igen om en stund.',
+        retryAfter: Math.ceil(resetIn / 1000),
+      }), {
+        status: 429,
+        headers: { ...headers, 'Content-Type': 'application/json', 'Retry-After': String(Math.ceil(resetIn / 1000)) },
+      });
+    }
+  } catch (e) {
+    console.error('[bolagsverket] rate-limit-check failed (allowing):', e);
+  }
+
   try {
     const url = new URL(req.url);
     let path = url.pathname;
@@ -287,7 +340,7 @@ Deno.serve(async (req) => {
       path = path.substring('/bolagsverket'.length);
     }
 
-    console.log(`[bolagsverket] ${req.method} ${path}`);
+    console.log(`[bolagsverket] ${req.method} ${path} user=${user.id}`);
 
     // Route: GET /company/{orgNumber}/documents - List annual reports
     if (req.method === 'GET' && path.match(/^\/company\/[^/]+\/documents$/)) {
