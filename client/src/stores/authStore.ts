@@ -150,17 +150,26 @@ export const useAuthStore = create<AuthState>()(
           }
 
           if (session) {
-            const { data: { user }, error: userError } = await supabase.auth.getUser()
-            
+            // E7 (2026-05-15): parallellisera getUser + select profile.
+            // getSession() läser localStorage så är snabb. getUser() är ett
+            // nätverkscall (verifierar token mot Supabase) och profile-select
+            // är ett till — vi kan göra dem samtidigt eftersom select bara
+            // behöver session.user.id (finns redan från getSession).
+            // Sparar ~150-300ms TTI.
+            const userId = session.user?.id
+            const [userResult, profileResult] = await Promise.all([
+              supabase.auth.getUser(),
+              userId
+                ? supabase.from('profiles').select('*').eq('id', userId).single()
+                : Promise.resolve({ data: null, error: null }),
+            ])
+
+            const { data: { user }, error: userError } = userResult
             if (userError) {
               throw userError
             }
 
-            const { data: profile, error: profileError } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', user?.id)
-              .single()
+            const { data: profile, error: profileError } = profileResult
 
             if (profileError && profileError.code !== 'PGRST116') {
               console.warn('Could not fetch profile:', profileError)
