@@ -25,6 +25,37 @@
 const { createClient } = require('@supabase/supabase-js');
 const puppeteer = require('puppeteer-core');
 
+// Rate-limit: 5 PDF-genereringar per 15 min/user. Puppeteer är resurstung —
+// utan limit är det en lätt DoS-vektor.
+const RATE_LIMIT_PER_USER_PER_WINDOW = 5;
+const RATE_LIMIT_WINDOW_MINUTES = 15;
+
+async function checkRateLimit(supabase, userId) {
+  try {
+    const { data, error } = await supabase.rpc('check_rate_limit', {
+      p_identifier: userId,
+      p_endpoint: 'cv-pdf',
+      p_max_requests: RATE_LIMIT_PER_USER_PER_WINDOW,
+      p_window_minutes: RATE_LIMIT_WINDOW_MINUTES,
+    });
+    if (error) {
+      console.error('[cv-pdf] Rate-limit RPC error:', error.message);
+      return { allowed: true, remaining: RATE_LIMIT_PER_USER_PER_WINDOW, resetIn: 0 };
+    }
+    if (data && data.length > 0) {
+      const r = data[0];
+      const resetIn = r.reset_at
+        ? Math.max(0, new Date(r.reset_at).getTime() - Date.now())
+        : RATE_LIMIT_WINDOW_MINUTES * 60 * 1000;
+      return { allowed: r.allowed, remaining: r.remaining || 0, resetIn };
+    }
+    return { allowed: true, remaining: RATE_LIMIT_PER_USER_PER_WINDOW, resetIn: 0 };
+  } catch (err) {
+    console.error('[cv-pdf] Rate-limit check failed:', err);
+    return { allowed: true, remaining: RATE_LIMIT_PER_USER_PER_WINDOW, resetIn: 0 };
+  }
+}
+
 // Lazy-importera @sparticuz/chromium endast i prod — den drar in en stor
 // binär som inte behövs lokalt (där dev har riktig Chrome installerad).
 async function getChromium() {
@@ -146,6 +177,27 @@ module.exports = async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized' });
   }
   const token = authHeader.substring(7);
+
+  // Rate-limit-check (kräver verifierad user).
+  const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const anonKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+  if (!supabaseUrl || !anonKey) {
+    return res.status(500).json({ error: 'Supabase env saknas' });
+  }
+  const rlSupabase = createClient(supabaseUrl, anonKey);
+  const { data: { user: rlUser }, error: rlAuthErr } = await rlSupabase.auth.getUser(token);
+  if (rlAuthErr || !rlUser) {
+    return res.status(401).json({ error: 'Invalid token' });
+  }
+  const rl = await checkRateLimit(rlSupabase, rlUser.id);
+  if (!rl.allowed) {
+    const retryAfter = Math.ceil(rl.resetIn / 1000);
+    res.setHeader('Retry-After', String(retryAfter));
+    return res.status(429).json({
+      error: 'För många PDF-genereringar. Försök igen om en stund.',
+      retryAfter,
+    });
+  }
 
   // Klienten skickar template + en print-host (för att stödja preview-deploys).
   const template = String(req.body?.template || 'sidebar').slice(0, 50);
