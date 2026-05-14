@@ -17,6 +17,7 @@ import {
   staWeeklyCheckinsApi,
   staDocumentsApi,
   staWorkplacesApi,
+  staProfileApi,
   fetchEnrollmentBundle,
   type StaEnrollment,
   type StaActivity,
@@ -26,6 +27,7 @@ import {
   type StaWeeklyCheckin,
   type StaWorkplace,
   type StaDocument,
+  type StaConsultantProfile,
   type EnrollmentBundle,
   type StaPart,
   type Mood,
@@ -63,7 +65,52 @@ export function useParticipantEnrollment() {
     reload()
   }, [reload])
 
-  return { enrollment, reload, ...state }
+  const updateStartDate = useCallback(
+    async (startedAt: string) => {
+      if (!enrollment) return null
+      const updated = await staEnrollmentsApi.participantUpdateStartDate(enrollment.id, startedAt)
+      setEnrollment(updated)
+      return updated
+    },
+    [enrollment],
+  )
+
+  return { enrollment, reload, updateStartDate, ...state }
+}
+
+// =============================================================================
+// useStaConsultantProfile — konsulentens profil för deltagar-vyn
+// =============================================================================
+// Använder RPC sta_get_consultant_for_participant så deltagaren får läsa
+// konsulentens namn/kontakt trots att profiles-RLS bara tillåter egen profil.
+export function useStaConsultantProfile(enrollmentId: string | null | undefined) {
+  const [profile, setProfile] = useState<StaConsultantProfile | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  useEffect(() => {
+    if (!enrollmentId) {
+      setProfile(null)
+      return
+    }
+    let cancelled = false
+    setLoading(true)
+    staProfileApi
+      .getConsultantForParticipant(enrollmentId)
+      .then((p) => {
+        if (!cancelled) setProfile(p)
+      })
+      .catch(() => {
+        if (!cancelled) setProfile(null)
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [enrollmentId])
+
+  return { profile, loading }
 }
 
 // =============================================================================

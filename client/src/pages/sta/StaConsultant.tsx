@@ -1725,6 +1725,7 @@ function AddParticipantModal({ onClose, onCreated }: { onClose: () => void; onCr
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [startPart, setStartPart] = useState<StaPart>(1)
+  const [startedAt, setStartedAt] = useState<string>(() => new Date().toISOString().slice(0, 10))
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -1737,14 +1738,17 @@ function AddParticipantModal({ onClose, onCreated }: { onClose: () => void; onCr
       setError('Namn krävs.')
       return
     }
+    if (!startedAt) {
+      setError('Startdatum krävs.')
+      return
+    }
     setSaving(true)
     setError(null)
     try {
-      const today = new Date().toISOString().slice(0, 10)
       await staEnrollmentsApi.create({
         consultant_id: profile.id,
-        started_at: today,
-        part_started_at: today,
+        started_at: startedAt,
+        part_started_at: startedAt,
         current_part: startPart as ApiStaPart,
         external_name: fullName.trim(),
         external_email: email.trim() || undefined,
@@ -1844,6 +1848,22 @@ function AddParticipantModal({ onClose, onCreated }: { onClose: () => void; onCr
               onChange={(e) => setEmail(e.target.value)}
             />
             <Input label="Telefon" type="tel" placeholder="070-123 45 67" value={phone} onChange={(e) => setPhone(e.target.value)} />
+          </div>
+
+          <div>
+            <label htmlFor="sta-start-date" className="block text-sm font-medium text-stone-700 mb-1">
+              Startdatum
+            </label>
+            <input
+              id="sta-start-date"
+              type="date"
+              value={startedAt}
+              onChange={(e) => setStartedAt(e.target.value)}
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+            />
+            <p className="text-xs text-stone-500 mt-1">
+              När insatsen faktiskt börjar. Deltagaren kan justera datumet om hen startar senare.
+            </p>
           </div>
 
           <div>

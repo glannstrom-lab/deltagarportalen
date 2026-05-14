@@ -251,6 +251,61 @@ export const staEnrollmentsApi = {
       part_started_at: new Date().toISOString().slice(0, 10),
     })
   },
+
+  /**
+   * Deltagaren själv uppdaterar startdatum (started_at + part_started_at) via RPC.
+   * Konsulenten ska använda update() istället. Datum måste vara ISO YYYY-MM-DD.
+   */
+  async participantUpdateStartDate(id: string, startedAt: string): Promise<StaEnrollment> {
+    const { data, error } = await supabase.rpc('sta_participant_update_start_date', {
+      p_enrollment_id: id,
+      p_started_at: startedAt,
+    })
+    if (error) handleError(error)
+    return data as StaEnrollment
+  },
+}
+
+// =============================================================================
+// PROFILE LOOKUP (för konsulent-info till deltagaren)
+// =============================================================================
+
+export interface StaConsultantProfile {
+  id: string
+  first_name: string | null
+  last_name: string | null
+  email: string | null
+  phone: string | null
+  avatar_url: string | null
+}
+
+export const staProfileApi = {
+  /**
+   * Direktläsning av profile (kräver att caller är admin eller samma user).
+   * Används av konsulent-vyn.
+   */
+  async getConsultant(consultantId: string): Promise<StaConsultantProfile | null> {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('id, first_name, last_name, email, phone, avatar_url')
+      .eq('id', consultantId)
+      .maybeSingle()
+    if (error && error.code !== 'PGRST116') handleError(error)
+    return (data as StaConsultantProfile) ?? null
+  },
+
+  /**
+   * Deltagar-vy: hämtar konsulentens profil via RPC som bypassar RLS efter
+   * ägar-koll. Anropas med enrollment_id istället för consultant_id.
+   */
+  async getConsultantForParticipant(enrollmentId: string): Promise<StaConsultantProfile | null> {
+    const { data, error } = await supabase.rpc('sta_get_consultant_for_participant', {
+      p_enrollment_id: enrollmentId,
+    })
+    if (error) handleError(error)
+    const rows = (data ?? []) as StaConsultantProfile[]
+    return rows[0] ?? null
+  },
 }
 
 // =============================================================================
