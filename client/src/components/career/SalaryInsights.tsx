@@ -232,7 +232,7 @@ export default function SalaryInsights() {
         <>
           {/* Huvudstatistik */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-emerald-500 dark:bg-emerald-600 rounded-2xl p-6 text-white">
+            <div className="bg-[var(--c-solid)] rounded-2xl p-6 text-white">
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign size={20} className="opacity-80" />
                 <span className="text-sm opacity-80">Medianlön</span>
@@ -243,7 +243,7 @@ export default function SalaryInsights() {
 
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
               <div className="flex items-center gap-2 mb-2">
-                <TrendingUp size={20} className="text-blue-500" />
+                <TrendingUp size={20} className="text-[var(--c-text)]" />
                 <span className="text-sm text-stone-700">Lönepåverkan</span>
               </div>
               <div className="space-y-2">
@@ -268,7 +268,7 @@ export default function SalaryInsights() {
 
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-stone-200">
               <div className="flex items-center gap-2 mb-2">
-                <Briefcase size={20} className="text-purple-500" />
+                <Briefcase size={20} className="text-[var(--c-text)]" />
                 <span className="text-sm text-stone-700">Marknadsläge</span>
               </div>
               <div className="space-y-2">

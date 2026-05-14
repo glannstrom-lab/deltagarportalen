@@ -697,27 +697,27 @@ Varmt tack igen!`
         )}
       </div>
 
-      {/* Quick Stats */}
+      {/* Quick Stats — en-färg-per-sida enligt DESIGN.md §4 (alla i coaching-hub) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl p-5 border border-stone-200">
-          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
-            <Linkedin className="text-blue-600" size={20} />
+          <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center mb-3">
+            <Linkedin className="text-[var(--c-text)]" size={20} />
           </div>
           <h3 className="font-semibold text-stone-800 mb-1">Optimera LinkedIn</h3>
           <p className="text-sm text-stone-600">
             Se till att din profil är uppdaterad och professionell.
           </p>
-          <a 
-            href="#/cv" 
-            className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 mt-3"
+          <a
+            href="#/cv"
+            className="inline-flex items-center gap-1 text-sm text-[var(--c-text)] hover:text-[var(--c-solid)] mt-3"
           >
             Gå till CV-byggaren <ChevronDown size={14} className="-rotate-90" />
           </a>
         </div>
 
         <div className="bg-white rounded-xl p-5 border border-stone-200">
-          <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center mb-3">
-            <Coffee className="text-emerald-600" size={20} />
+          <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center mb-3">
+            <Coffee className="text-[var(--c-text)]" size={20} />
           </div>
           <h3 className="font-semibold text-stone-800 mb-1">Informationsmöte</h3>
           <p className="text-sm text-stone-600">
@@ -729,7 +729,7 @@ Varmt tack igen!`
         </div>
 
         <div className="bg-white rounded-xl p-5 border border-stone-200">
-          <div className="w-10 h-10 bg-[var(--c-accent)]/40 rounded-lg flex items-center justify-center mb-3">
+          <div className="w-10 h-10 bg-[var(--c-bg)] rounded-lg flex items-center justify-center mb-3">
             <MessageCircle className="text-[var(--c-text)]" size={20} />
           </div>
           <h3 className="font-semibold text-stone-800 mb-1">Följ upp</h3>
