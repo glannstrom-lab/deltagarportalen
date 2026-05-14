@@ -578,16 +578,20 @@ function ResourcesInner() {
 
   if (loading) {
     return (
-      <PageLayout title={t('resources.title')} description={t('resources.description')} showTabs={false}
-      className="max-w-7xl mx-auto"
->
+      <PageLayout
+        title={t('resources.title')}
+        description={t('resources.description')}
+        showTabs={false}
+        domain="info"
+        className="max-w-7xl mx-auto"
+      >
         <div
           className="flex items-center justify-center py-20"
           role="status"
           aria-live="polite"
           aria-busy="true"
         >
-          <Loader2 className="animate-spin text-blue-600" size={48} aria-hidden="true" />
+          <Loader2 className="animate-spin text-[var(--c-solid)]" size={48} aria-hidden="true" />
           <span className="sr-only">{t('common.loading')}</span>
         </div>
       </PageLayout>
