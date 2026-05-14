@@ -282,7 +282,7 @@ export function DailyJobTab() {
 
     const scoredJobs = jobs.map((job) => {
       let score = 0;
-      let reasons: string[] = [];
+      const reasons: string[] = [];
       const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase();
       const jobLocation = (job.workplace_address?.municipality || job.workplace_address?.city || '').toLowerCase();
 

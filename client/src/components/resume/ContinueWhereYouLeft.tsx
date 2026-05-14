@@ -188,7 +188,7 @@ export function ContinueWhereYouLeft() {
     loadActivities()
     // calculateCVProgress är en stabil funktion definierad i komponenten;
     // useEffect kör bara vid mount så ingen dependency behövs här.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [])
 
   if (!isVisible || activities.length === 0) return null

@@ -591,7 +591,7 @@ export function DailyStep({
 
   // Filtrera uppgifter baserat på energinivå och svårighetsgrad
   const getFilteredTasks = useCallback((level: EnergyLevel) => {
-    let tasks = taskSuggestions.filter(task => {
+    const tasks = taskSuggestions.filter(task => {
       // Filtrera bort avvisade uppgifter
       if (dismissedTasks.includes(task.id)) return false
       
