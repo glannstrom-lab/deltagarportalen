@@ -17,7 +17,7 @@ export function FocusComplete({ onExit, onRestart }: FocusCompleteProps) {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
       {/* Celebration icon */}
-      <div className="w-24 h-24 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center mb-8 animate-bounce">
+      <div className="w-24 h-24 bg-amber-500 rounded-full flex items-center justify-center mb-8 animate-bounce">
         <PartyPopper className="w-12 h-12 text-white" />
       </div>
 
@@ -31,7 +31,7 @@ export function FocusComplete({ onExit, onRestart }: FocusCompleteProps) {
       </p>
 
       {/* Summary card */}
-      <div className="bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 rounded-2xl p-6 mb-8 max-w-md w-full border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
+      <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-2xl p-6 mb-8 max-w-md w-full border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <h2 className="font-semibold text-stone-800 dark:text-stone-100 mb-4">
           {t('focusGuide.complete.whatYouDid', 'Det här har du gjort:')}
         </h2>

@@ -454,7 +454,7 @@ export default function Onboarding() {
           {/* Step 3: First Win - Based on selected path */}
           {currentStep === 2 && (
             <div className="space-y-6">
-              <div className="bg-gradient-to-br from-[var(--c-bg)] to-emerald-50 rounded-2xl p-6 border border-[var(--c-accent)]/40">
+              <div className="bg-[var(--c-bg)] rounded-2xl p-6 border border-[var(--c-accent)]/40">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-[var(--c-accent)]/40 rounded-xl">
                     <PartyPopper className="w-6 h-6 text-[var(--c-text)]" />
@@ -608,7 +608,7 @@ export function OnboardingReminder() {
   if (!isVisible) return null
 
   return (
-    <div className="bg-gradient-to-r from-[var(--c-bg)]/80 to-emerald-50/80 border border-[var(--c-accent)]/40 rounded-xl p-4 mb-4 animate-fade-in backdrop-blur-sm">
+    <div className="bg-[var(--c-bg)]/80 border border-[var(--c-accent)]/40 rounded-xl p-4 mb-4 animate-fade-in backdrop-blur-sm">
       <div className="flex items-center gap-4">
         <div className="p-2 bg-[var(--c-accent)]/40/50 rounded-lg">
           <Sparkles className="w-5 h-5 text-[var(--c-text)]" />

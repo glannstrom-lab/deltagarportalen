@@ -87,7 +87,7 @@ export function CommutePlannerPanel({
   if (!result && !isLoading && !error) {
     return (
       <AiConsentGate compact featureName="Pendlingsplaneraren">
-        <div className={cn('p-5 rounded-xl bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border border-cyan-200 dark:border-cyan-800', className)}>
+        <div className={cn('p-5 rounded-xl bg-cyan-50 dark:bg-cyan-900/20 border border-cyan-200 dark:border-cyan-800', className)}>
           <div className="flex items-start gap-3 mb-4">
             <div className="p-2 rounded-lg bg-cyan-100 dark:bg-cyan-900/50">
               <MapPin className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
@@ -283,7 +283,7 @@ export function CommutePlannerPanel({
 
             {/* Recommendation */}
             {result.recommendation && (
-              <div className="p-4 rounded-xl bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+              <div className="p-4 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
                 <div className="flex items-start gap-3">
                   <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
                   <div>

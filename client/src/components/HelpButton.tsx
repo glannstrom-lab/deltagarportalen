@@ -83,7 +83,7 @@ export function HelpButton({ content }: HelpButtonProps) {
         onClick={() => setIsOpen(true)}
         className={cn(
           'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 w-14 h-14 rounded-full',
-          'bg-gradient-to-br from-[var(--c-solid)] to-sky-600 text-white',
+          'bg-[var(--c-solid)] text-white',
           'shadow-lg hover:shadow-xl ',
           'flex items-center justify-center',
           'transition-all duration-300 hover:scale-110 active:scale-95',
@@ -119,7 +119,7 @@ export function HelpButton({ content }: HelpButtonProps) {
             'animate-in slide-in-from-bottom-4 fade-in duration-300'
           )}>
             {/* Header */}
-            <div className="bg-gradient-to-br from-[var(--c-solid)] to-sky-600 text-white p-5">
+            <div className="bg-[var(--c-solid)] text-white p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">

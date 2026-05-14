@@ -181,7 +181,7 @@ export function AIChatbot({ className }: AIChatbotProps) {
         <button
           onClick={() => setIsOpen(true)}
           className={cn(
-            'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 bg-gradient-to-r from-[var(--c-solid)] to-sky-500 rounded-full shadow-lg shadow-[var(--c-accent)]/60 flex items-center justify-center text-white hover:scale-110 transition-transform',
+            'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-14 h-14 bg-[var(--c-solid)] rounded-full shadow-lg shadow-[var(--c-accent)]/60 flex items-center justify-center text-white hover:scale-110 transition-transform',
             className
           )}
         >
@@ -193,7 +193,7 @@ export function AIChatbot({ className }: AIChatbotProps) {
       {isOpen && (
         <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-w-96 h-[70vh] sm:h-[600px] max-h-[600px] bg-white rounded-2xl shadow-2xl border border-stone-200 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-4">
           {/* Header */}
-          <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-500 p-4 flex items-center justify-between">
+          <div className="bg-[var(--c-solid)] p-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
                 <Bot className="w-6 h-6 text-white" />

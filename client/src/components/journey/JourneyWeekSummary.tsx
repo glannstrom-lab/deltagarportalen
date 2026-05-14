@@ -27,7 +27,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
   }
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-stone-50 to-indigo-50/50">
+    <Card className="p-6 bg-stone-50 dark:bg-stone-800">
       <div className="flex items-center gap-2 mb-4">
         <Calendar className="w-5 h-5 text-indigo-600" />
         <h3 className="text-lg font-semibold text-stone-900">Denna vecka</h3>
@@ -84,7 +84,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
         </div>
         <div className="h-3 bg-stone-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+            className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
             style={{ width: `${activityPercentage}%` }}
           />
         </div>

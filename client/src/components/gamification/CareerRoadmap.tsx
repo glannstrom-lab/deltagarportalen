@@ -146,7 +146,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       {/* Progress bar */}
       <div className="h-2 bg-stone-100 rounded-full mb-6 overflow-hidden">
         <div 
-          className="h-full bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] rounded-full transition-all duration-1000 ease-out"
+          className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-1000 ease-out"
           style={{ width: `${progressPercent}%` }}
         />
       </div>
@@ -234,7 +234,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       </div>
 
       {/* Motivational message */}
-      <div className="mt-6 p-4 bg-gradient-to-r from-amber-50 to-[var(--c-bg)] rounded-xl border border-amber-100">
+      <div className="mt-6 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
         <p className="text-sm text-stone-700">
           {progressPercent === 0 ? (
             'Varje resa börjar med ett första steg. Du kan göra det! 💪'

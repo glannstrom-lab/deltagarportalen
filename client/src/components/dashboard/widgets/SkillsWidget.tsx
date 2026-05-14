@@ -99,7 +99,7 @@ export const SkillsWidget = memo(function SkillsWidget({
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 to-[var(--c-accent)]/40 dark:from-cyan-900/40 dark:to-[var(--c-bg)]/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-cyan-100 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-400 flex items-center justify-center">
             <BarChart3 size={24} />
           </div>
           <div>
@@ -127,7 +127,7 @@ export const SkillsWidget = memo(function SkillsWidget({
                 "h-full rounded-full transition-all duration-500",
                 isGood
                   ? "bg-[var(--c-solid)]"
-                  : "bg-gradient-to-r from-cyan-400 to-[var(--c-solid)]"
+                  : "bg-cyan-500"
               )}
               style={{ width: `${matchScore}%` }}
             />

@@ -320,7 +320,7 @@ export default function CareerCoach() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-br from-[#4f46e5] to-purple-600 rounded-2xl p-8 text-white">
+      <div className="bg-[var(--c-solid)] rounded-2xl p-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
             <Target size={24} />
@@ -579,7 +579,7 @@ export default function CareerCoach() {
 
           {/* AI Analys */}
           {careerPath.analysis && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+            <div className="bg-sky-50 dark:bg-sky-900/20 rounded-2xl p-6 border border-sky-200 dark:border-sky-800">
               <h3 className="font-semibold text-stone-800 mb-3 flex items-center gap-2">
                 <Briefcase className="text-blue-600" size={20} />
                 AI:s analys av din karriärövergång

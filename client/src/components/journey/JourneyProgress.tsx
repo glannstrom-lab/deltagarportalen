@@ -17,7 +17,7 @@ export function JourneyProgress({ progress, currentPhase }: JourneyProgressProps
     : 100
 
   return (
-    <Card className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white border-0">
+    <Card className="bg-[var(--c-solid)] text-white border-0">
       <div className="flex flex-col md:flex-row md:items-center gap-6">
         {/* Avatar and Level */}
         <div className="flex items-center gap-4">
@@ -50,7 +50,7 @@ export function JourneyProgress({ progress, currentPhase }: JourneyProgressProps
           </div>
           <div className="h-3 bg-white/20 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-yellow-300 to-yellow-500 rounded-full transition-all duration-500"
+              className="h-full bg-yellow-400 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(100, levelProgress)}%` }}
             />
           </div>

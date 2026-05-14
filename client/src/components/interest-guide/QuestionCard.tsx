@@ -89,10 +89,10 @@ export function QuestionCard({
 
   const getGradientColor = () => {
     const percentage = ((value || 1) - 1) / 4
-    if (percentage < 0.25) return 'from-red-400 to-orange-400'
-    if (percentage < 0.5) return 'from-orange-400 to-yellow-400'
-    if (percentage < 0.75) return 'from-yellow-400 to-emerald-400'
-    return 'from-emerald-400 to-green-500'
+    if (percentage < 0.25) return 'bg-red-400'
+    if (percentage < 0.5) return 'bg-orange-400'
+    if (percentage < 0.75) return 'bg-yellow-400'
+    return 'bg-emerald-500'
   }
 
   // Beräkna progress
@@ -166,7 +166,7 @@ export function QuestionCard({
         <div className="relative">
           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+              className="h-full bg-[var(--c-solid)] rounded-full transition-all duration-500"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -212,7 +212,7 @@ export function QuestionCard({
 
           {/* Active gradient track */}
           <div
-            className={`absolute left-0 h-3 bg-gradient-to-r ${getGradientColor()} rounded-full transition-all duration-300 ease-out`}
+            className={`absolute left-0 h-3 ${getGradientColor()} rounded-full transition-all duration-300 ease-out`}
             style={{ width: `${getThumbPosition()}%` }}
             aria-hidden="true"
           />

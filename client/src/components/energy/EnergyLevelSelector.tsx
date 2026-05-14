@@ -278,7 +278,7 @@ export function EnergyLevelSelector({
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-[var(--c-solid)] flex items-center justify-center mb-4"
+          className="w-20 h-20 rounded-full bg-[var(--c-solid)] flex items-center justify-center mb-4"
         >
           <Sparkles className="w-10 h-10 text-white" />
         </motion.div>
@@ -374,7 +374,7 @@ export function EnergyLevelSelector({
           className={cn(
             "flex-1 transition-all",
             selectedLevel
-              ? 'bg-gradient-to-r from-[var(--c-solid)] to-sky-600 hover:from-[var(--c-solid)] hover:to-sky-700'
+              ? 'bg-[var(--c-solid)] hover:opacity-90'
               : ''
           )}
         >

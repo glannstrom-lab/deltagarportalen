@@ -275,7 +275,7 @@ function DiaryWidgetLarge({
       <div className="space-y-4">
         {/* Stats cards */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl border border-rose-100 text-center">
+          <div className="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-xl border border-rose-100 text-center">
             <p className="text-2xl font-bold text-rose-600">{upcomingEvents.length}</p>
             <p className="text-xs text-rose-700">{t('diaryWidget.upcoming')}</p>
           </div>
@@ -335,7 +335,7 @@ function DiaryWidgetLarge({
           </div>
         ) : (
           /* Empty state */
-          <div className="p-6 bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl border border-rose-100 text-center">
+          <div className="p-6 bg-rose-50 dark:bg-rose-900/20 rounded-2xl border border-rose-100 text-center">
             <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
               <Calendar size={28} className="text-rose-400" />
             </div>

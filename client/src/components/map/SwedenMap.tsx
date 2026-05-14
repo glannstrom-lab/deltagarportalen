@@ -208,7 +208,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
             {/* Karta */}
             <div className="relative aspect-[3/4] max-h-[400px]">
               {/* Bakgrund */}
-              <div className="absolute inset-0 bg-gradient-to-b from-blue-50/50 to-white rounded-xl" />
+              <div className="absolute inset-0 bg-sky-50/50 rounded-xl" />
               
               {/* Sverige SVG */}
               <svg
@@ -437,7 +437,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
 
       {/* Selected region info */}
       {selectedRegion && (
-        <div className="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-t border-blue-100">
+        <div className="p-4 bg-sky-50 dark:bg-sky-900/20 border-t border-sky-100 dark:border-sky-800">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center text-white">

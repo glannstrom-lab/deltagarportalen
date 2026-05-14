@@ -125,8 +125,8 @@ export const InterestWidget = memo(function InterestWidget({
           <div className={cn(
             "w-12 h-12 rounded-xl flex items-center justify-center",
             hasResult
-              ? "bg-gradient-to-br from-[var(--c-accent)]/40 to-[var(--c-accent)]/40 dark:from-[var(--c-bg)]/40 dark:to-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]"
-              : "bg-gradient-to-br from-[var(--c-accent)]/40 to-cyan-100 dark:from-[var(--c-bg)]/40 dark:to-cyan-900/40 text-[var(--c-text)] dark:text-[var(--c-text)]"
+              ? "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]"
+              : "bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)]"
           )}>
             {hasResult ? <Star size={24} /> : <Compass size={24} />}
           </div>

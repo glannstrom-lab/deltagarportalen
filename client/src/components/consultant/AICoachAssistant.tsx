@@ -338,7 +338,7 @@ export function AICoachAssistant({
         className={cn(
           'fixed bottom-6 right-6 z-50',
           'w-14 h-14 rounded-full',
-          'bg-gradient-to-br from-[var(--c-solid)] to-sky-700',
+          'bg-[var(--c-solid)]',
           'shadow-lg ',
           'flex items-center justify-center',
           'hover:scale-105 active:scale-95 transition-transform',
@@ -364,7 +364,7 @@ export function AICoachAssistant({
       )}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 bg-gradient-to-r from-[var(--c-solid)] to-sky-700">
+      <div className="flex items-center justify-between p-4 bg-[var(--c-solid)]">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
             <Bot className="w-5 h-5 text-white" />

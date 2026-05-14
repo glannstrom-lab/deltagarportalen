@@ -95,7 +95,7 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
     >
       <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-300">
         {/* Header */}
-        <div className="bg-gradient-to-br from-[var(--c-solid)] to-[var(--c-solid)] text-white p-6 rounded-t-3xl">
+        <div className="bg-[var(--c-solid)] text-white p-6 rounded-t-3xl">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Calendar className="w-5 h-5" />
@@ -141,7 +141,7 @@ export function WeeklySummary({ stats, isVisible, onClose }: WeeklySummaryProps)
           </div>
 
           {/* Achievement Badge */}
-          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl p-4 mb-6">
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-6">
             <div className="flex items-center gap-3">
               <div className="w-12 h-12 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
                 <Award className="w-6 h-6 text-amber-600" />
