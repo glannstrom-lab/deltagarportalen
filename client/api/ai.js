@@ -144,6 +144,39 @@ async function checkRateLimit(supabase, userId, functionName) {
 }
 
 // ============================================
+// Daily Token Cap (C4) — kostnadsskydd per användare
+// ============================================
+// Räkna tokens_used per dygn från ai_usage_logs. Block om > N.
+// Default 50k tokens/dygn räcker för normal användning men stoppar
+// abuse där en user kunde bränna 16M tokens/dygn inom rate-limit.
+const DAILY_TOKEN_CAP = parseInt(process.env.AI_DAILY_TOKEN_CAP || '50000', 10);
+
+async function checkDailyTokenCap(serviceClient, userId) {
+  if (!serviceClient || !userId) return { allowed: true, used: 0 };
+  try {
+    const { data, error } = await serviceClient
+      .from('ai_usage_logs')
+      .select('tokens_used')
+      .eq('user_id', userId)
+      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+    if (error) {
+      console.warn('[TokenCap] query failed (allowing):', error.message);
+      return { allowed: true, used: 0 };
+    }
+    const used = (data || []).reduce((sum, row) => sum + (row.tokens_used || 0), 0);
+    return {
+      allowed: used < DAILY_TOKEN_CAP,
+      used,
+      limit: DAILY_TOKEN_CAP,
+      remaining: Math.max(0, DAILY_TOKEN_CAP - used),
+    };
+  } catch (err) {
+    console.warn('[TokenCap] threw (allowing):', err.message);
+    return { allowed: true, used: 0 };
+  }
+}
+
+// ============================================
 // Security: Allowed origins for CORS
 // ============================================
 const ALLOWED_ORIGINS = [
@@ -734,6 +767,25 @@ module.exports = async (req, res) => {
 
     // Add rate limit headers
     res.setHeader('X-RateLimit-Remaining', String(rateLimit.remaining));
+
+    // C4: Daily token cap — kostnadsskydd. Skipas om service-key saknas
+    // (loggning är best-effort, vi blockerar inte AI om vi inte kan räkna).
+    const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+    const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+    if (SUPABASE_URL && SERVICE_KEY) {
+      const serviceClient = createClient(SUPABASE_URL, SERVICE_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      const tokenCap = await checkDailyTokenCap(serviceClient, user.id);
+      if (!tokenCap.allowed) {
+        return res.status(429).json({
+          error: `Du har nått dagens AI-gräns (${tokenCap.limit} tokens). Försök igen i morgon.`,
+          dailyTokensUsed: tokenCap.used,
+          dailyTokenLimit: tokenCap.limit,
+        });
+      }
+      res.setHeader('X-Daily-Tokens-Remaining', String(tokenCap.remaining));
+    }
     const stream = req.body.stream === true;
 
     if (!fn || !PROMPTS[fn]) return res.status(400).json({ error: 'Invalid function: ' + fn });
