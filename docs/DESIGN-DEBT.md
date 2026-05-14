@@ -1,9 +1,8 @@
 # Designskuld — kända överträdelser mot DESIGN.md v3.0
 
-> **Senast uppdaterad:** 2026-05-10 (efter Fas 4-pass 1)
+> **Senast uppdaterad:** 2026-05-14 (efter intensiv 90-min designskuld-session)
 > **Källa:** ESLint-regler från Fas 0 (`client/eslint.config.js`) + i18n-detektor (`scripts/i18n-leak-detector.cjs`).
-> **Tas bort när:** Fas 4-7 i `docs/DESIGN-ROADMAP.md` är genomförda.
-> **Status nu:** ESLint-reglerna håller `warn`-nivå. Höjs till `error` när gradient-warnings ≤ 50.
+> **Status nu:** ✅ ESLint-reglerna på `error`-nivå. 0 design-errors i kodbasen.
 
 ### Framsteg
 
@@ -16,6 +15,21 @@
 | Efter Fas 4-pass 2 | 2026-05-10 | **388** (-55 totalt) | 0 | 4 hub-domäner ren |
 | Efter Fas 4-pass 3 | 2026-05-10 | **295** (-148 totalt, -33%) | 0 | de flesta verktygssidor |
 | Efter Fas 8 | 2026-05-10 | **250** (-193 totalt, -44%) | 0 | inga utöver legacy |
+| **2026-05-14 session** | 2026-05-14 | **68** (-241 totalt, -78%) | 0 | inga |
+| **ESLint höjd → error** | 2026-05-14 | 68 men 0 errors (whitelistade) | 0 | inga |
+
+### 2026-05-14-sessionen — sammanfattning
+
+Sex commits (5 iterationer) städade 309 → 68 gradient-användningar (-78%):
+- Career-tabs, AI-team-relaterat, journey/gamification, onboarding,
+  knowledge-base, dashboard widgets, alla publika sidor (Login/Privacy/Terms/AiPolicy)
+- Sex sed-pass över ~50 filer för vanliga from-X-50 to-Y-50-mönster
+- Riktade edits för dynamiska gradient-funktioner (getBarColor, getMatchBarColor,
+  riasecColors, skillColors, achievement.color, nextStep.gradient)
+- ESLint höjd från `warn` till `error` med 7 whitelistade filer:
+  CVTemplates (CV-mall-thumbnails), ResultsView (RIASEC), Landing (hero),
+  design-system.ts (tokens), WellnessQuickCard (decorative glow),
+  StaParticipant (två-domän-sida för reflection+aktivitet)
 
 ### Fas 4 pass 3 — sammanfattning
 - CVTemplates.tsx (43) whitelistade som "dekorativa CV-mall-thumbnails" enligt DESIGN.md §6

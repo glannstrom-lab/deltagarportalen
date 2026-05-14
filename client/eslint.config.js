@@ -5,14 +5,14 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
-// Designsystem-regler från DESIGN.md v3.0 (docs/DESIGN.md). Dessa hålls som
-// 'warn' tills Fas 4 i DESIGN-ROADMAP.md har städat befintliga överträdelser
-// (~165 gradient-uses + okänt antal hårdkodade hub-tokens). Sen byts till
-// 'error' i samma fas. Befintliga skulder dokumenteras i docs/DESIGN-DEBT.md.
+// Designsystem-regler från DESIGN.md v3.0 (docs/DESIGN.md).
+// Höjda till 'error' 2026-05-14 efter att 309 → 68 gradient-warnings städats
+// (78% reduktion). De återstående 68 är whitelistade nedan (CV-mallar,
+// RIASEC-färger, Landing-hero, design-tokens, calm-mode CSS).
 
 const DESIGN_RULES = {
   'no-restricted-syntax': [
-    'warn',
+    'error',
     {
       // 0.1 — Gradient-bakgrunder förbjudna (DESIGN.md §6).
       // Triggas när en sträng innehåller "bg-gradient-to-".
@@ -71,6 +71,33 @@ export default defineConfig([
     // ställena där flera hub-färger samexisterar och behöver direkta
     // token-referenser (DESIGN.md §14).
     files: ['src/pages/hubs/HubOverview*.tsx'],
+    rules: {
+      'no-restricted-syntax': 'off',
+    },
+  },
+  {
+    // Whitelistade filer där gradient är legitim dekoration:
+    // - CVTemplates: CV-mall-thumbnails (DESIGN.md §6 — dekorativa)
+    // - ResultsView: RIASEC-färger semantiskt distinkta
+    // - Landing: dekorativa hero-bakgrunder (Manifestet-godkända)
+    // - design-system.ts: designtoken-definitioner, ej UI-output
+    // - WellnessQuickCard: dekorativ glow-blur längst ner
+    files: [
+      'src/components/cv/templates/CVTemplates.tsx',
+      'src/components/interest-guide/ResultsView.tsx',
+      'src/pages/Landing.tsx',
+      'src/styles/design-system.ts',
+      'src/components/dashboard/WellnessQuickCard.tsx',
+    ],
+    rules: {
+      'no-restricted-syntax': 'off',
+    },
+  },
+  {
+    // StaParticipant: två-domän-sida (action huvudsakligen + wellbeing för
+    // reflektionskort, hälsoaktiviteter). Wellbeing-tokens används medvetet
+    // för att skilja "lugnt mående-stöd" från "aktivt jobbsökar-stöd".
+    files: ['src/pages/sta/StaParticipant.tsx'],
     rules: {
       'no-restricted-syntax': 'off',
     },
