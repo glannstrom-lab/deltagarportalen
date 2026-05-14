@@ -117,17 +117,9 @@ export default function SkillsGapAnalysis() {
   const { profile } = useAuthStore()
   const { isFocusMode, toggleFocusMode } = useFocusMode()
 
-  if (isFocusMode) {
-    return (
-      <PageFocusShell
-        title={t('skillsGap.title', 'Kompetensgap')}
-        icon={TrendingUp}
-        domain="coaching"
-      >
-        <FocusSkillsGapWizard onExit={toggleFocusMode} />
-      </PageFocusShell>
-    )
-  }
+  // Hooks MÅSTE deklareras före conditional returns (rules-of-hooks).
+  // Tidigare låg useState efter `if (isFocusMode) return` vilket gav 13
+  // conditional hook calls — kunde krascha vid focus-mode-toggle.
 
   // Profile data
   const [cvData, setCvData] = useState<CVData | null>(null)
@@ -458,6 +450,19 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
   }
 
   const hasProfileData = profileSummary.trim().length > 50
+
+  // Focus-mode tas efter alla hooks deklarerats (rules-of-hooks).
+  if (isFocusMode) {
+    return (
+      <PageFocusShell
+        title={t('skillsGap.title', 'Kompetensgap')}
+        icon={TrendingUp}
+        domain="coaching"
+      >
+        <FocusSkillsGapWizard onExit={toggleFocusMode} />
+      </PageFocusShell>
+    )
+  }
 
   // Loading state — wrap i PageLayout för konsistent 4 px coaching-kant
   if (isLoading || isLoadingProfile) {
