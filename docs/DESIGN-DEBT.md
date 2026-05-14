@@ -171,7 +171,7 @@ Dessa fångas inte av ESLint utan av visuell audit (`audit-2026-05-10/RAPPORT.md
 |------|-----------|--------|
 | `/applications` | Dubbla tomtillstånd (pipeline-skelett + empty-state) | ✅ Fixad 2026-05-10 (B13) |
 | `/nätverk` | Tre staplade tomtillstånd (KPI med "0", tom kontakt-lista, tom event-lista) | ✅ Fixad 2026-05-14 (commit 00ecf2f) — EmptyState med EN tydlig CTA |
-| `/oversikt/historik` | Stor blank yta med en enda rad — ingen kontextualiserad förslagslista | Fas 5.6 |
+| `/oversikt/historik` | Stor blank yta med en enda rad — ingen kontextualiserad förslagslista | ✅ Verifierat 2026-05-14 — items.length < 3 → 3 launch-cards (Sök jobb / Karriärmål / Logga mående) |
 
 ### Onboarding (DESIGN.md §12)
 
@@ -204,12 +204,12 @@ Dessa fångas inte av ESLint utan av visuell audit (`audit-2026-05-10/RAPPORT.md
 
 ### Personalisering (DESIGN.md §2)
 
-| Plats | Status | Fas |
-|-------|--------|-----|
-| Översikt-hero ("Hej {namn}") | ⏳ Saknas — visar bara "Välkommen tillbaka" | Fas 1.3 |
-| Övriga hub-headers | ⏳ Saknas | Fas 1.4 |
-| Notiser | ⏳ Generiska — använder inte namn | Fas 1 (löpande) |
-| Empty-state-copy | ⏳ Inkonsistent — vissa använder "Du", inga använder namn | Fas 1.6 |
+| Plats | Status |
+|-------|--------|
+| Översikt-hero ("Hej {namn}") | ✅ "God morgon/kväll, {firstName}" via timeOfDayGreeting() |
+| Hub-headers (Jobb/Karriär/Resurser/Min vardag) | ✅ Verifierat 2026-05-14 — alla 4 hubbar passar firstName-prop till HubPage som visar "Hej {firstName}" som greeting-rad |
+| Notiser | ⏳ Generiska — använder inte namn |
+| Empty-state-copy | ⏳ Inkonsistent — vissa använder "Du", inga använder namn |
 
 ### Voice & Tone (DESIGN.md §2)
 
