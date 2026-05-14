@@ -2,19 +2,19 @@
  * Adaptation Tab - Comprehensive workplace adaptation and support
  * Features: 7 categories, status tracking, AI recommendations, templates, export
  */
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Accessibility, FileText, Building2, CheckCircle2,
-  ChevronRight, Download, AlertCircle, HelpCircle, X, Info,
-  Zap, Users, Clock, Layout, Loader2, Save, Cloud, CloudOff,
-  Monitor, MessageSquare, Thermometer, Star, Bell, Calendar,
-  ExternalLink, Sparkles, Copy, FileDown, Mail, Phone, Stethoscope,
-  Scale, ChevronDown, Check, AlertTriangle
+  Accessibility, FileText, Building2,
+  ChevronRight, HelpCircle, X,
+  Zap, Users, Clock, Layout, Loader2, Cloud, CloudOff,
+  Monitor, MessageSquare, Thermometer, Star, Calendar,
+  ExternalLink, Sparkles, Copy, Mail, Stethoscope,
+  Scale, ChevronDown
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
-import { adaptationsApi, type UserAdaptations, type AdaptationItem } from '@/services/careerApi'
+import { adaptationsApi, type AdaptationItem } from '@/services/careerApi'
 import { showToast } from '@/components/Toast'
 
 // ===== CATEGORY DEFINITIONS =====
@@ -303,16 +303,6 @@ export default function AdaptationTab() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null)
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
 
-  // Build translated categories
-  const adaptationCategories = useMemo(() => categoryDefs.map(cat => ({
-    ...cat,
-    title: isEn ? cat.titleKey.replace('career.adaptation.categories.', '').split('.')[0] : cat.titleKey,
-    options: cat.options.map(opt => ({
-      key: opt.key,
-      label: isEn ? opt.labelEn : opt.labelSv
-    }))
-  })), [isEn])
-
   // Category titles (hardcoded for simplicity since translations may not exist yet)
   const categoryTitles: Record<string, { sv: string; en: string; desc: { sv: string; en: string } }> = {
     physical: { sv: 'Fysiska anpassningar', en: 'Physical Adaptations', desc: { sv: 'Hjälpmedel och ergonomi för kroppen', en: 'Aids and ergonomics for the body' } },
@@ -501,7 +491,7 @@ export default function AdaptationTab() {
 
   const generateDefaultConversation = () => {
     const selected = Object.entries(selectedNeeds)
-      .filter(([_, opts]) => opts.length > 0)
+      .filter(([, opts]) => opts.length > 0)
       .map(([catId, opts]) => {
         const cat = categoryDefs.find(c => c.id === catId)
         return opts.map(o => {
@@ -926,7 +916,6 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                         {selectedOptions.map((optKey) => {
                           const option = category.options.find(o => o.key === optKey)
                           const detail = adaptationDetails[`${category.id}-${optKey}`] || { status: 'identified' }
-                          const statusInfo = statusOptions.find(s => s.value === detail.status)
 
                           return (
                             <div key={optKey} className="flex flex-col sm:flex-row sm:items-center gap-3 p-3 bg-stone-50 dark:bg-stone-700 rounded-lg">
