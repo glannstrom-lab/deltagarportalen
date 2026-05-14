@@ -793,10 +793,10 @@
         "nordic": "Nordisk"
       },
       "empty": {
-        "noCVs": "Inga CV hittades",
+        "noCVs": "Du har inte skapat något CV än",
         "noSearchResults": "Inga CV matchade sökningen",
-        "createFirst": "Skapa ditt första CV för att komma igång. Du kan spara flera versioner för olika typer av jobb.",
-        "tryOtherSearch": "Prova att söka efter något annat eller ändra kategori"
+        "createFirst": "Börja med ditt första CV. Du kan spara flera versioner för olika typer av jobb.",
+        "tryOtherSearch": "Prova en annan sökning eller ändra kategori"
       },
       "errors": {
         "loadFailed": "Kunde inte ladda dina CV:n",
@@ -1613,14 +1613,14 @@
     "createApplication": "Skapa ansökan",
     "applyDirectlyAtAF": "Ansök direkt på Arbetsförmedlingen",
     "couldNotSearch": "Kunde inte söka jobb. Försök igen.",
-    "noSavedJobsTitle": "Inga sparade jobb",
-    "noSavedJobsDesc": "Spara jobb du är intresserad av för att enkelt hitta dem senare.",
+    "noSavedJobsTitle": "Här samlas jobben du sparar",
+    "noSavedJobsDesc": "Klicka på bokmärket på ett jobb du är intresserad av — då hittar du tillbaka enkelt.",
     "youHaveXSavedJobs": "Du har {{count}} sparade jobb",
-    "noApplicationsTitle": "Inga ansökningar ännu",
-    "noApplicationsDesc": "Håll koll på dina jobbansökningar här.",
+    "noApplicationsTitle": "Här samlas dina ansökningar",
+    "noApplicationsDesc": "När du skickar in en jobbansökan sparas den här — så har du koll på vilka jobb du sökt.",
     "searchJobsToApply": "Sök jobb att ansöka till",
-    "noAlertsTitle": "Inga bevakningar",
-    "noAlertsDesc": "Spara sökningar för att få notiser om nya jobb.",
+    "noAlertsTitle": "Få mejl när nya jobb dyker upp",
+    "noAlertsDesc": "Spara en sökning så får du notis direkt när matchande jobb publiceras.",
     "createAlert": "Skapa en bevakning",
     "noMatchesTitle": "Inga matchningar ännu",
     "noMatchesDesc": "Slutför din profil för att få personliga jobbförslag.",
@@ -1751,12 +1751,12 @@
       "showMatchDetails": "Visa matchningsdetaljer",
       "matchesOn": "Matchar på",
       "refresh": "Uppdatera",
-      "createProfileFirst": "Skapa din profil först",
-      "createProfileDesc": "För att hitta matchningar behöver du skapa ditt CV, ta intresseguiden eller sätta karriärmål.",
+      "createProfileFirst": "Vi behöver veta mer om dig först",
+      "createProfileDesc": "När vi vet vad du kan och vill kan vi hitta jobb som passar. Börja med någon av dessa:",
       "createCV": "Skapa CV",
-      "takeInterestGuide": "Ta intresseguiden",
+      "takeInterestGuide": "Gör intresseguiden",
       "setCareerGoals": "Sätt karriärmål",
-      "noJobsFound": "Inga jobb hittades. Prova att välja en annan källa eller ändra ortsfilter.",
+      "noJobsFound": "Inga jobb matchade just nu. Prova en annan källa eller bredda din sökning.",
       "sources": {
         "myCV": "Ditt CV",
         "cv": "CV",
@@ -1789,8 +1789,8 @@
         "response": "Svar"
       },
       "empty": {
-        "title": "Inga ansökningar än",
-        "description": "När du sparar ett jobb och ändrar status till \"Ansökt\" kommer det visas här. Spåra dina ansökningar och håll koll på din jobbsökning."
+        "title": "Här hamnar dina ansökningar",
+        "description": "När du sparar ett jobb och markerar det som \"Ansökt\" syns det här — så har du koll på vilka du sökt."
       }
     }
   },
@@ -1824,8 +1824,8 @@
       "low": "Låg"
     },
     "empty": {
-      "title": "Inga ansökningar än",
-      "description": "Börja spåra dina jobbansökningar genom att spara jobb från jobbsökningen eller lägg till en ansökan manuellt."
+      "title": "Du har inte börjat söka jobb än",
+      "description": "Spara jobb från jobbsökningen så hamnar de här — eller lägg till en ansökan manuellt om du redan sökt något."
     },
     "stale": {
       "title": "Behöver uppföljning",

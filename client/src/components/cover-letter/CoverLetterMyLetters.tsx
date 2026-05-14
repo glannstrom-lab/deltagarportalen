@@ -287,9 +287,9 @@ export function CoverLetterMyLetters() {
       <EmptyState
         icon={FileText}
         title="Dina personliga brev samlas här"
-        description="Ett personligt brev är din chans att visa vem du är – bortom vad som står i CV:t. Här kan du skriva, spara och återanvända dina brev för olika ansökningar."
+        description="Ett personligt brev är din chans att visa vem du är – bortom vad som står i CV:t. Skriv, spara och återanvänd brev för olika ansökningar."
         action={{
-          label: 'Skriv mitt första brev',
+          label: 'Skriv ditt första brev',
           onClick: () => navigate('/dashboard/cover-letter'),
         }}
         secondaryAction={{

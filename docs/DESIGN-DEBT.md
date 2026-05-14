@@ -227,11 +227,11 @@ Dessa fångas inte av ESLint utan av visuell audit (`audit-2026-05-10/RAPPORT.md
 
 ### Mobil (DESIGN.md §9)
 
-| Sida | Avvikelse | Fas |
-|------|-----------|-----|
-| `/cv` mobil | 6356 px lång scroll med 11 mall-kort vertikalt staplade | Fas 7.2 |
-| Verktygssidor mobil | Sub-tabs är gömda i meny — inte synliga som horisontell scroll-bar | Fas 7.4 |
-| Hub-landningar mobil | Saknar kort intro-mening överst | Fas 7.1 |
+| Sida | Avvikelse | Status |
+|------|-----------|--------|
+| `/cv` mobil | 6356 px lång scroll med 11 mall-kort vertikalt staplade | ✅ Fixad 2026-05-14 (commit 727caf1) — grid-cols-2 + h-40 = ~3200 px |
+| Verktygssidor mobil | Sub-tabs är gömda i meny — inte synliga som horisontell scroll-bar | ✅ Fixad i Fas 7 (audit 2026-05-11 bekräftar) |
+| Hub-landningar mobil | Saknar kort intro-mening överst | ✅ Verifierat 2026-05-14 — alla 4 hubbar har hubDescription som visas via PageHero |
 
 ### Personalisering (DESIGN.md §2)
 
