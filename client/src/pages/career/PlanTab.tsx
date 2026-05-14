@@ -322,7 +322,7 @@ export default function PlanTab() {
                         size="sm"
                         variant="outline"
                         onClick={autoFillCurrentSituation}
-                        className="border-sky-300 dark:border-sky-600 text-[var(--c-text)] dark:text-sky-300 hover:bg-sky-100 dark:hover:bg-sky-800/30"
+                        className="border-[var(--c-accent)] dark:border-[var(--c-solid)] text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/20"
                       >
                         <FileText className="w-3 h-3 mr-1" />
                         {i18n.language === 'en' ? 'Use this information' : 'Använd denna information'}
@@ -415,15 +415,15 @@ export default function PlanTab() {
         </Card>
 
         {showSMARTHelper && (
-          <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-700">
+          <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-2 border-[var(--c-accent)] dark:border-[var(--c-accent)]/40">
             <div className="flex items-start gap-3 mb-4">
-              <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)] flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">SMART-mål hjälpare</h4>
-                <p className="text-sm text-amber-800 dark:text-amber-200 mb-3">
+                <h4 className="font-semibold text-[var(--c-text)] dark:text-[var(--c-solid)] mb-2">SMART-mål hjälpare</h4>
+                <p className="text-sm text-stone-700 dark:text-stone-300 mb-3">
                   Se till att ditt mål är Specifikt, Mätbart, Uppnåeligt, Relevant och Tidsbundet:
                 </p>
-                <ul className="space-y-2 text-sm text-amber-700 dark:text-amber-300">
+                <ul className="space-y-2 text-sm text-stone-700 dark:text-stone-300">
                   <li><strong>S</strong> - Specifikt: Vad exakt vill du uppnå?</li>
                   <li><strong>M</strong> - Mätbart: Hur vet du när du har nått målet?</li>
                   <li><strong>A</strong> - Uppnåeligt: Är det realistiskt under din tidsram?</li>

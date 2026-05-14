@@ -381,7 +381,7 @@ export default function RelocationTab() {
                       <span className={cn(
                         "text-xs px-2 py-0.5 rounded-full",
                         region.jobMarket.includes('stark') || region.jobMarket.includes('Mycket') ? "bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-text)]" :
-                        region.jobMarket.includes('Växande') ? "bg-blue-100 text-[var(--c-text)] dark:bg-blue-900/30 dark:text-blue-300" :
+                        region.jobMarket.includes('Växande') ? "bg-[var(--c-bg)] text-[var(--c-text)] dark:bg-[var(--c-bg)]/20 dark:text-[var(--c-solid)]" :
                         "bg-stone-100 text-stone-600 dark:bg-stone-700 dark:text-stone-300"
                       )}>
                         {region.jobMarket}
@@ -500,14 +500,14 @@ export default function RelocationTab() {
       </Card>
 
       {/* Tips */}
-      <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-700">
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)] shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-amber-900 dark:text-amber-100">
+            <p className="font-medium text-[var(--c-text)] dark:text-[var(--c-solid)]">
               {isEn ? 'Tips for Moving' : 'Tips för flytt'}
             </p>
-            <ul className="text-sm text-amber-700 dark:text-amber-300 mt-2 space-y-1">
+            <ul className="text-sm text-stone-700 dark:text-stone-300 mt-2 space-y-1">
               <li>• {isEn ? 'Register for housing queues as early as possible - some have 10+ year waits' : 'Ställ dig i bostadskö så tidigt som möjligt - vissa har 10+ års väntetid'}</li>
               <li>• {isEn ? 'Consider subletting or renting privately while waiting for queue' : 'Överväg att hyra i andra hand medan du väntar på förstahandskontrakt'}</li>
               <li>• {isEn ? 'Secure a job before moving if possible - easier to get housing' : 'Säkra ett jobb innan flytt om möjligt - lättare att få bostad'}</li>
