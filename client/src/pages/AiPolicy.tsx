@@ -1,3 +1,4 @@
+import type { ComponentType, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -15,19 +16,9 @@ import {
   Database
 } from '@/components/ui/icons'
 
-export default function AiPolicy() {
-  const { t, i18n } = useTranslation()
-
-  const formatDate = () => {
-    const locale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
-    return new Date('2026-03-27').toLocaleDateString(locale, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    })
-  }
-
-  const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
+// Lift ut subkomponenter ur AiPolicy() — react-hooks/static-components.
+function Section({ icon: Icon, title, children }: { icon: ComponentType<{ className?: string }>; title: string; children: ReactNode }) {
+  return (
     <section className="scroll-mt-8">
       <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-3">
         <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
@@ -36,8 +27,10 @@ export default function AiPolicy() {
       {children}
     </section>
   )
+}
 
-  const ListItem = ({ icon: Icon, title, desc, positive = true }: { icon?: any; title?: string; desc: string; positive?: boolean }) => (
+function ListItem({ icon: Icon, title, desc, positive = true }: { icon?: ComponentType<{ className?: string }>; title?: string; desc: string; positive?: boolean }) {
+  return (
     <li className="flex items-start gap-3 text-gray-600 dark:text-gray-300">
       {Icon ? (
         <Icon className={`w-5 h-5 mt-0.5 flex-shrink-0 ${positive ? 'text-green-500 dark:text-green-400' : 'text-red-500 dark:text-red-400'}`} />
@@ -49,6 +42,19 @@ export default function AiPolicy() {
       </span>
     </li>
   )
+}
+
+export default function AiPolicy() {
+  const { t, i18n } = useTranslation()
+
+  const formatDate = () => {
+    const locale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
+    return new Date('2026-03-27').toLocaleDateString(locale, {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
 
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-stone-900 page-transition">

@@ -1,3 +1,4 @@
+import type { ComponentType, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -20,6 +21,31 @@ import {
   ExternalLink
 } from '@/components/ui/icons'
 
+// Lift ut subkomponenter ur Privacy() för att undvika att de skapas nya vid
+// varje render (react-hooks/static-components). Tidigare: 60 errors.
+function Section({ icon: Icon, title, children }: { icon: ComponentType<{ className?: string }>; title: string; children: ReactNode }) {
+  return (
+    <section className="scroll-mt-8" id={title.toLowerCase().replace(/\s+/g, '-')}>
+      <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-3">
+        <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
+        {title}
+      </h2>
+      {children}
+    </section>
+  )
+}
+
+function ListItem({ title, desc }: { title?: string; desc: string }) {
+  return (
+    <li className="flex items-start gap-3 text-gray-600 dark:text-gray-300">
+      <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
+      <span>
+        {title && <strong className="text-gray-800 dark:text-gray-100">{title}</strong>} {desc}
+      </span>
+    </li>
+  )
+}
+
 export default function Privacy() {
   const { t, i18n } = useTranslation()
 
@@ -31,25 +57,6 @@ export default function Privacy() {
       day: 'numeric'
     })
   }
-
-  const Section = ({ icon: Icon, title, children }: { icon: any; title: string; children: React.ReactNode }) => (
-    <section className="scroll-mt-8" id={title.toLowerCase().replace(/\s+/g, '-')}>
-      <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-3">
-        <Icon className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-        {title}
-      </h2>
-      {children}
-    </section>
-  )
-
-  const ListItem = ({ title, desc }: { title?: string; desc: string }) => (
-    <li className="flex items-start gap-3 text-gray-600 dark:text-gray-300">
-      <span className="w-1.5 h-1.5 bg-[var(--c-solid)] dark:bg-[var(--c-solid)] rounded-full mt-2 flex-shrink-0" />
-      <span>
-        {title && <strong className="text-gray-800 dark:text-gray-100">{title}</strong>} {desc}
-      </span>
-    </li>
-  )
 
   return (
     <div className="min-h-screen bg-stone-50 dark:bg-stone-900 page-transition">
