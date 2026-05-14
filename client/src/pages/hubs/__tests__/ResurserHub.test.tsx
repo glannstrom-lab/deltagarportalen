@@ -42,9 +42,9 @@ describe('ResurserHub — feature-page', () => {
     expect(trackingSpy).toHaveBeenCalledWith('resurser')
   })
 
-  it('renders hero title "Hantera resurser"', () => {
+  it('renders hero title "Dina sparade resurser"', () => {
     renderHub()
-    expect(screen.getByRole('heading', { name: 'Hantera resurser' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Dina sparade resurser' })).toBeInTheDocument()
   })
 
   it('renders feature-card links to sub-pages', () => {

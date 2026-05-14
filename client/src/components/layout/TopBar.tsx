@@ -122,8 +122,8 @@ export function TopBar() {
               iconButtonClass,
               isFocusMode && 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 text-[var(--c-text)] dark:text-[var(--c-solid)]'
             )}
-            title={isFocusMode ? t('topbar.focusModeOff', 'Stäng av fokusläge') : t('topbar.focusModeOn', 'Aktivera fokusläge')}
-            aria-label={isFocusMode ? t('topbar.focusModeOff', 'Stäng av fokusläge') : t('topbar.focusModeOn', 'Aktivera fokusläge')}
+            title={isFocusMode ? t('topbar.focusModeOff', 'Stäng av fokusläge') : t('topbar.focusModeOn', 'Slå på fokusläge')}
+            aria-label={isFocusMode ? t('topbar.focusModeOff', 'Stäng av fokusläge') : t('topbar.focusModeOn', 'Slå på fokusläge')}
             aria-pressed={isFocusMode}
           >
             <Focus size={16} className="sm:w-[18px] sm:h-[18px]" />

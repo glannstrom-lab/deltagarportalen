@@ -356,7 +356,7 @@ export const helpContent: Record<string, HelpContent> = {
     title: 'Hjälp - Inställningar',
     description: 'Anpassa din upplevelse',
     tips: [
-      'Aktivera mörkt läge för att minska ögonbelastning',
+      'Slå på mörkt läge för att minska ögonbelastning',
       'Använd tillgänglighetsalternativen om du behöver',
       'Välj vilka notiser du vill få'
     ],

@@ -52,7 +52,7 @@ describe('Hub mode (isHubNavEnabled = true)', () => {
     expect(within(nav).getByRole('link', { name: /söka jobb/i })).toBeInTheDocument()
     expect(within(nav).getByRole('link', { name: /karriär/i })).toBeInTheDocument()
     expect(within(nav).getByRole('link', { name: /resurser/i })).toBeInTheDocument()
-    expect(within(nav).getByRole('link', { name: /min vardag/i })).toBeInTheDocument()
+    expect(within(nav).getByRole('link', { name: /din vardag/i })).toBeInTheDocument()
   })
 
   it('Test 2: When on /cv (Söka jobb member), Söka jobb is active and its sub-items are rendered', () => {

@@ -222,7 +222,7 @@ export function CalendarSync({
                 className="ml-auto"
               >
                 <Bell className="w-4 h-4 mr-1" />
-                Aktivera notiser
+                Slå på notiser
               </Button>
             )}
           </div>

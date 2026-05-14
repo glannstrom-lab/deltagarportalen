@@ -54,13 +54,14 @@ describe('HubOverview — minimal launchpad', () => {
   it('renders firstName from profile.full_name', () => {
     mockSummary.mockReturnValue({ data: emptySummary('Mikael Andersson'), isLoading: false })
     renderHub()
-    expect(screen.getByRole('heading', { name: 'Hej Mikael' })).toBeInTheDocument()
+    // Greeting is time-of-day prefixed: "God morgon, Mikael" / "God kväll, Mikael" / "Hej, Mikael"
+    expect(screen.getByRole('heading', { name: /(God morgon|God kväll|Hej), Mikael/ })).toBeInTheDocument()
   })
 
-  it('falls back to "Välkommen tillbaka" when full_name is null', () => {
+  it('falls back to time-of-day greeting when full_name is null', () => {
     mockSummary.mockReturnValue({ data: emptySummary(null), isLoading: false })
     renderHub()
-    expect(screen.getByRole('heading', { name: 'Välkommen tillbaka' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: /(God morgon|God kväll|Hej) 👋/ })).toBeInTheDocument()
   })
 
   it('calls useOnboardedHubsTracking with hub id "oversikt"', () => {
@@ -80,8 +81,8 @@ describe('HubOverview — minimal launchpad', () => {
     renderHub()
     expect(screen.getByRole('link', { name: /Hitta och söka jobb/ })).toHaveAttribute('href', '/jobb')
     expect(screen.getByRole('link', { name: /Planera min karriär/ })).toHaveAttribute('href', '/karriar')
-    expect(screen.getByRole('link', { name: /Hantera resurser/ })).toHaveAttribute('href', '/resurser')
-    expect(screen.getByRole('link', { name: /Mina vardagliga rutiner/ })).toHaveAttribute('href', '/min-vardag')
+    expect(screen.getByRole('link', { name: /Dina sparade resurser/ })).toHaveAttribute('href', '/resurser')
+    expect(screen.getByRole('link', { name: /Din vardag/ })).toHaveAttribute('href', '/min-vardag')
   })
 
   it('renders profile avatar + "Besök din profil" link', () => {

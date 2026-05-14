@@ -210,7 +210,7 @@ export function DataSharingSettings() {
                   ? 'bg-green-500 justify-end'
                   : 'bg-stone-300 dark:bg-stone-600 justify-start'
               )}
-              title={preferences.share_health_data_with_consultant ? 'Aktiverad' : 'Inaktiverad'}
+              title={preferences.share_health_data_with_consultant ? 'På' : 'Av'}
             >
               <div className="w-5 h-5 bg-white rounded-full shadow" />
             </button>

@@ -42,9 +42,9 @@ describe('MinVardagHub — feature-page', () => {
     expect(trackingSpy).toHaveBeenCalledWith('min-vardag')
   })
 
-  it('renders hero title "Mina vardagliga rutiner"', () => {
+  it('renders hero title "Din vardag"', () => {
     renderHub()
-    expect(screen.getByRole('heading', { name: 'Mina vardagliga rutiner' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Din vardag' })).toBeInTheDocument()
   })
 
   it('renders feature-card links to sub-pages', () => {
@@ -54,7 +54,7 @@ describe('MinVardagHub — feature-page', () => {
     expect(screen.getByRole('link', { name: /Kalender/ })).toHaveAttribute('href', '/calendar')
     expect(screen.getByRole('link', { name: /Övningar/ })).toHaveAttribute('href', '/exercises')
     expect(screen.getByRole('link', { name: /Min konsulent/ })).toHaveAttribute('href', '/my-consultant')
-    expect(screen.getByRole('link', { name: /Nätverk/ })).toHaveAttribute('href', '/nätverk')
+    // Nätverk flyttat till Resurser-hubben (DESIGN.md §3 — en sida = en hub)
   })
 
   it('renders mood streak when data is present', () => {
