@@ -50,7 +50,8 @@ async function analyzeWithAI(cvData: CVData, targetRole?: string, jobRequirement
   }
 
   const prompt = buildAnalysisPrompt(cvData, targetRole, jobRequirements);
-  const model = Deno.env.get('AI_MODEL') || 'anthropic/claude-3.5-sonnet';
+  // 2026-05-15: matchar Vercel modell-låsning. Rollback: AI_MODEL=anthropic/claude-3.5-sonnet
+  const model = Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b';
 
   console.log(`Analyzing skill gaps using model: ${model}`);
 

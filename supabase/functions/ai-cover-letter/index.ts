@@ -114,7 +114,10 @@ serve(async (req) => {
     const contactInfo = [candidateEmail, candidatePhone].filter(Boolean).join(' | ')
 
     // 5. Get model from env or use default
-    const model = Deno.env.get('AI_MODEL') || 'anthropic/claude-3.5-sonnet'
+    // 2026-05-15: matchar Vercel-vägens modell-låsning (kostnadsskäl).
+    // Mikael har låst gpt-oss-120b — uppgradera ALDRIG utan explicit beslut.
+    // Rollback: sätt AI_MODEL=anthropic/claude-3.5-sonnet i Supabase env.
+    const model = Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'
     console.log(`Using model: ${model}`)
 
     // 6. Call OpenRouter with timeout

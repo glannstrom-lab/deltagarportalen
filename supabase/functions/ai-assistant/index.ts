@@ -76,8 +76,9 @@ serve(async (req) => {
       return createCorsResponse({ error: 'Invalid token' }, 401, origin)
     }
 
-    // Default model
-    const defaultModel = Deno.env.get('AI_MODEL') || 'anthropic/claude-3.5-sonnet'
+    // Default model — 2026-05-15: matchar Vercel modell-låsning (gpt-oss-120b).
+    // Rollback: sätt AI_MODEL=anthropic/claude-3.5-sonnet i Supabase env.
+    const defaultModel = Deno.env.get('AI_MODEL') || 'openai/gpt-oss-120b'
     const model = overrideModel || defaultModel
 
     // Build prompt based on function with sanitized inputs
