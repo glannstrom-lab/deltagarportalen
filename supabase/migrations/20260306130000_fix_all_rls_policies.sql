@@ -2,6 +2,44 @@
 -- FIX ALL RLS POLICIES & TABLES
 -- ============================================
 -- Kör denna i Supabase SQL Editor för att fixa alla RLS-problem
+--
+-- ⚠️  VARNING — DESTRUKTIV MIGRATION ⚠️
+-- Denna fil DROP:ar 10 tabeller (dashboard_preferences, user_preferences,
+-- article_bookmarks, job_applications, interview_sessions, daily_tasks,
+-- notifications, job_alerts, application_templates, ai_usage_logs) med
+-- CASCADE. Vid återkörning mot databas MED DATA → all data raderas.
+--
+-- Filen har redan körts på prod 2026-03-06. För nya/fresh databaser är
+-- DROP:arna oskadliga (tabellerna är tomma eller saknas). Guarden nedan
+-- aborterar migrationen om någon av tabellerna har data — säkrar mot
+-- oavsiktlig återkörning.
+
+DO $$
+DECLARE
+  has_data BOOLEAN := false;
+  tbl TEXT;
+  cnt BIGINT;
+BEGIN
+  FOREACH tbl IN ARRAY ARRAY[
+    'dashboard_preferences', 'user_preferences', 'article_bookmarks',
+    'job_applications', 'interview_sessions', 'daily_tasks',
+    'notifications', 'job_alerts', 'application_templates', 'ai_usage_logs'
+  ] LOOP
+    IF EXISTS (
+      SELECT 1 FROM information_schema.tables
+      WHERE table_schema = 'public' AND table_name = tbl
+    ) THEN
+      EXECUTE format('SELECT COUNT(*) FROM public.%I', tbl) INTO cnt;
+      IF cnt > 0 THEN
+        RAISE EXCEPTION
+          'ABORT: Tabell "%" innehåller % rader. Återkörning av '
+          'denna destruktiva migration skulle radera datan. Använd '
+          'en icke-destruktiv följdmigration istället (CREATE TABLE '
+          'IF NOT EXISTS + ALTER TABLE).', tbl, cnt;
+      END IF;
+    END IF;
+  END LOOP;
+END $$;
 
 -- ============================================
 -- 1. PROFILES TABELL - Lägg till saknade kolumner
