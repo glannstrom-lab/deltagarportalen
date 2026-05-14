@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Briefcase, CheckCircle, Clock, XCircle, Send, Star, ChevronDown, MessageSquare, Trash2 } from '@/components/ui/icons'
-import type { JobApplication, Job } from '@/services/mockApi'
+import type { JobApplication, Job } from '@/types/jobs'
 
 interface ApplicationsTrackerProps {
   applications: (JobApplication & { job?: Job })[]

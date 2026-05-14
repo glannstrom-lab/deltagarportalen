@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MapPin, Briefcase, Clock, Heart, ChevronRight, CheckCircle, XCircle, Bot, ExternalLink } from '@/components/ui/icons'
-import type { Job } from '@/services/mockApi'
+import type { Job } from '@/types/jobs'
 import type { JobAd } from '@/services/arbetsformedlingenApi'
 
 // Typ som stödjer både interna Job och externa JobAd
