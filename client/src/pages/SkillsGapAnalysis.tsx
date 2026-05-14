@@ -459,24 +459,40 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
 
   const hasProfileData = profileSummary.trim().length > 50
 
-  // Loading state
+  // Loading state — wrap i PageLayout för konsistent 4 px coaching-kant
   if (isLoading || isLoadingProfile) {
     return (
-      <div className="max-w-7xl mx-auto flex items-center justify-center py-20" data-domain="coaching">
-        <div className="text-center" role="status" aria-live="polite">
-          <Loader2 className="w-8 h-8 text-[var(--c-solid)] animate-spin mx-auto mb-3" aria-hidden="true" />
-          <p className="text-stone-600 dark:text-stone-400">
-            {t('skillsGapAnalysis.loadingProfile')}
-          </p>
+      <PageLayout
+        title={t('skillsGapAnalysis.title')}
+        subtitle={t('skillsGapAnalysis.description')}
+        domain="coaching"
+        showTabs={false}
+        className="max-w-7xl mx-auto"
+        contentClassName="pb-20"
+      >
+        <div className="flex items-center justify-center py-20">
+          <div className="text-center" role="status" aria-live="polite">
+            <Loader2 className="w-8 h-8 text-[var(--c-solid)] animate-spin mx-auto mb-3" aria-hidden="true" />
+            <p className="text-stone-600 dark:text-stone-400">
+              {t('skillsGapAnalysis.loadingProfile')}
+            </p>
+          </div>
         </div>
-      </div>
+      </PageLayout>
     )
   }
 
   // Streaming state
   if (isStreaming) {
     return (
-      <div className="max-w-7xl mx-auto space-y-6 pb-20" data-domain="coaching">
+      <PageLayout
+        title={t('skillsGapAnalysis.title')}
+        subtitle={t('skillsGapAnalysis.description')}
+        domain="coaching"
+        showTabs={false}
+        className="max-w-7xl mx-auto"
+        contentClassName="space-y-6 pb-20"
+      >
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="status" aria-live="polite" aria-busy="true">
           <div className="flex items-center gap-3 mb-4">
             <Loader2 className="w-6 h-6 animate-spin text-[var(--c-solid)]" aria-hidden="true" />
@@ -490,7 +506,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
             </pre>
           </div>
         </Card>
-      </div>
+      </PageLayout>
     )
   }
 
@@ -501,7 +517,14 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
     const actionPlan = currentAnalysis.action_plan || []
 
     return (
-      <div className="max-w-7xl mx-auto space-y-6 pb-20" data-domain="coaching">
+      <PageLayout
+        title={t('skillsGapAnalysis.title')}
+        subtitle={t('skillsGapAnalysis.description')}
+        domain="coaching"
+        showTabs={false}
+        className="max-w-7xl mx-auto"
+        contentClassName="space-y-6 pb-20"
+      >
         {/* Results Header */}
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">
@@ -725,7 +748,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
             )}
           </Card>
         )}
-      </div>
+      </PageLayout>
     )
   }
 
