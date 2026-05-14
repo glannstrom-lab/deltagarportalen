@@ -46,12 +46,11 @@ export { useVercelImageUpload } from './useVercelImageUpload'
 export { useServiceWorker } from './useServiceWorker'
 export { useZodForm } from './useZodForm'
 
-// Accessibility
+// Accessibility (useFocusTrap-duplikat borttagen 2026-05-15 D7)
 export {
   useReducedMotion,
   useAnnounce,
   useKeyboardNavigation,
-  useFocusTrap as useAccessibilityFocusTrap,
   SkipLinks,
   ScreenReaderOnly,
 } from './useAccessibility'

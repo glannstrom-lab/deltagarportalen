@@ -44,74 +44,10 @@ export function useAccessibleTransition(
   }
 }
 
-/**
- * Hook för focus trap (för modaler och menyer)
- * Håller fokus inom en container tills den stängs
- */
-export function useFocusTrap(
-  isActive: boolean,
-  containerRef: RefObject<HTMLElement>
-): void {
-  const previousFocusRef = useRef<HTMLElement | null>(null)
-
-  useEffect(() => {
-    if (!isActive) return
-
-    // Spara nuvarande fokus
-    previousFocusRef.current = document.activeElement as HTMLElement
-
-    // Hitta fokuserbara element
-    const container = containerRef.current
-    if (!container) return
-
-    const focusableElements = container.querySelectorAll<HTMLElement>(
-      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
-    )
-
-    const firstElement = focusableElements[0]
-    const lastElement = focusableElements[focusableElements.length - 1]
-
-    // Sätt fokus på första elementet
-    firstElement?.focus()
-
-    // Hantera Tab-tangenten
-    const handleTabKey = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return
-
-      if (e.shiftKey) {
-        // Shift + Tab
-        if (document.activeElement === firstElement) {
-          e.preventDefault()
-          lastElement?.focus()
-        }
-      } else {
-        // Tab
-        if (document.activeElement === lastElement) {
-          e.preventDefault()
-          firstElement?.focus()
-        }
-      }
-    }
-
-    // Hantera Escape-tangenten
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        // Trigga ett custom event som komponenten kan lyssna på
-        container.dispatchEvent(new CustomEvent('focusTrapEscape', { bubbles: true }))
-      }
-    }
-
-    container.addEventListener('keydown', handleTabKey)
-    container.addEventListener('keydown', handleEscape)
-
-    return () => {
-      container.removeEventListener('keydown', handleTabKey)
-      container.removeEventListener('keydown', handleEscape)
-      // Återställ fokus
-      previousFocusRef.current?.focus()
-    }
-  }, [isActive, containerRef])
-}
+// useFocusTrap borttagen 2026-05-15 (D7) — duplikat av hooks/useFocusTrap.ts
+// som användes av 7 modaler. Detta var en parallell implementation utan
+// callers (förutom self-referens i hooks/index.ts som tas bort i samma commit).
+// Använd `import { useFocusTrap } from '@/hooks/useFocusTrap'` istället.
 
 /**
  * Hook för tangentbordsnavigering i listor (radio buttons, flikar, etc)
