@@ -7,6 +7,12 @@
     "api/cv-pdf.js": {
       "memory": 1024,
       "maxDuration": 60
+    },
+    "api/ai.js": {
+      "maxDuration": 60
+    },
+    "api/ai-stream.js": {
+      "maxDuration": 60
     }
   },
   "headers": [
