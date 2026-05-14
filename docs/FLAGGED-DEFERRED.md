@@ -84,6 +84,29 @@ Risk för data-förlust om seed-script har bugg. Ska göras dagtid med backup-ve
 
 ---
 
+## E3, E4, E5 — Bryt upp god-objects (cloudStorage, careerApi, pdfExportService)
+
+**Varför FLAGGED:** Mass-edits på 5000+ rader kod med många callers per
+namespace. Risk för silent regression utan testtäckning. cloudStorage.ts
+har 21 namespaces, careerApi 13, pdfExportService 4. Varje namespace-
+extraktion kräver:
+1. Skapa ny fil i `services/storage/<domain>Api.ts`
+2. Migrera kod + behåll re-export i original under övergångsperiod
+3. Migrera callers (15-50 per namespace)
+4. Verifiera build + e2e
+
+Estimerad tid: 1 vecka för alla tre. Föreslår dedikerad sprint med
+tester först (D2 utökad till alla 4 services).
+
+## E6 — Radera services/api.ts shim
+
+**Varför FLAGGED:** 14 callers använder `@/services/api`-shimmen istället
+för domän-direktimport. Migration är mekanisk men kräver verifiering att
+varje caller fortfarande får rätt typ + funktion. Tree-shaking-vinsten
+är liten (re-exports raderas av Rollup ändå om alla callers migrerar).
+
+Kombinera med E3-E5-sprinten för bästa flow.
+
 ## A1 — Manuell ESLint-rensning
 
 **Status:** Delvis. ~129 errors borta (1147 → 1019). Återstående 1019 är mest no-unused-vars i komponentfiler. Multi-dag-uppgift som du valde att göra "manuellt över flera dagar" i Fas A.
