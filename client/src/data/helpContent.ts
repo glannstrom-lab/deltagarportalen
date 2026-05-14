@@ -4,7 +4,17 @@
  * Updated to reflect actual implemented features
  */
 
-import type { HelpContent } from '@/components/HelpButton'
+export interface HelpItem {
+  question: string
+  answer: string
+}
+
+export interface HelpContent {
+  title: string
+  description?: string
+  tips?: string[]
+  faqs?: HelpItem[]
+}
 
 export const helpContent: Record<string, HelpContent> = {
   dashboard: {
