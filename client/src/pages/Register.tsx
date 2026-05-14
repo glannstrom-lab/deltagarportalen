@@ -492,7 +492,7 @@ export default function Register() {
               {t('auth.hasAccount')}{' '}
               <Link
                 to="/login"
-                className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-semibold"
+                className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-semibold inline-flex items-center min-h-[44px] px-2"
               >
                 {t('auth.loginHere')}
               </Link>
@@ -504,7 +504,7 @@ export default function Register() {
         <div className="mt-6 text-center">
           <Link
             to="/"
-            className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] text-sm"
+            className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] text-sm inline-flex items-center min-h-[44px] px-2"
           >
             ← {t('auth.backToHome')}
           </Link>

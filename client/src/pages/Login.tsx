@@ -241,7 +241,7 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-gray-600 dark:text-gray-300">
               {t('auth.noAccount')}{' '}
-              <Link to="/register" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-semibold">
+              <Link to="/register" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] font-semibold inline-flex items-center min-h-[44px] px-2">
                 {t('auth.createAccountLink')}
               </Link>
             </p>
@@ -250,7 +250,7 @@ export default function Login() {
 
         {/* Back Link */}
         <div className="mt-6 text-center">
-          <Link to="/" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] text-sm">
+          <Link to="/" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:text-[var(--c-text)] dark:hover:text-[var(--c-text)] text-sm inline-flex items-center min-h-[44px] px-2">
             ← {t('auth.backToJobin')}
           </Link>
         </div>

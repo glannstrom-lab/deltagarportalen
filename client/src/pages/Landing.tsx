@@ -935,26 +935,26 @@ export default function Landing() {
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">{t('landing.footer.featuresTitle')}</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link to="/register" className="hover:text-white transition-colors inline-block">{t('landing.footer.cvGenerator')}</Link></li>
-                <li><Link to="/register" className="hover:text-white transition-colors inline-block">{t('landing.footer.interestGuide')}</Link></li>
-                <li><Link to="/register" className="hover:text-white transition-colors inline-block">{t('landing.footer.jobSearch')}</Link></li>
+                <li><Link to="/register" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.cvGenerator')}</Link></li>
+                <li><Link to="/register" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.interestGuide')}</Link></li>
+                <li><Link to="/register" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.jobSearch')}</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">{t('landing.footer.aboutTitle')}</h4>
               <ul className="space-y-3 text-sm">
-                <li><a href="mailto:support@jobin.se" className="hover:text-white transition-colors inline-block">{t('landing.footer.contact')}</a></li>
-                <li><Link to="/privacy" className="hover:text-white transition-colors inline-block">{t('landing.footer.privacyPolicy')}</Link></li>
-                <li><Link to="/terms" className="hover:text-white transition-colors inline-block">{t('landing.footer.termsOfUse')}</Link></li>
+                <li><a href="mailto:support@jobin.se" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.contact')}</a></li>
+                <li><Link to="/privacy" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.privacyPolicy')}</Link></li>
+                <li><Link to="/terms" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.termsOfUse')}</Link></li>
               </ul>
             </div>
 
             <div>
               <h4 className="text-white font-semibold mb-4 text-sm">{t('landing.footer.accountTitle')}</h4>
               <ul className="space-y-3 text-sm">
-                <li><Link to="/login" className="hover:text-white transition-colors inline-block">{t('landing.footer.login')}</Link></li>
-                <li><Link to="/register" className="hover:text-white transition-colors inline-block">{t('landing.footer.createAccount')}</Link></li>
+                <li><Link to="/login" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.login')}</Link></li>
+                <li><Link to="/register" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.createAccount')}</Link></li>
               </ul>
             </div>
           </div>
