@@ -19,6 +19,22 @@ import { OptimizedImage } from './ui/OptimizedImage'
 import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge, isHubNavEnabled } from './layout/navigation'
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
+import { CoachWidget } from './CoachWidget'
+import { getPageKeyForPath } from '@/data/coaches'
+import { useSettingsStore } from '@/stores/settingsStore'
+
+/**
+ * Wrapper som läser route + toggle-state och renderar CoachWidget om passande.
+ * Lyder under Layout.tsx så widgeten finns oavsett om sidan använder PageLayout.
+ */
+function GlobalCoachWidget() {
+  const location = useLocation()
+  const show = useSettingsStore((s) => s.showCoachWidget)
+  if (!show) return null
+  const pageKey = getPageKeyForPath(location.pathname)
+  if (!pageKey) return null
+  return <CoachWidget pageKey={pageKey} />
+}
 
 const SIDEBAR_COLLAPSED_KEY = 'sidebar-collapsed'
 
@@ -118,6 +134,9 @@ export default function Layout() {
         {/* Övriga komponenter */}
         <BreakReminder workDuration={15} />
         <ToastContainer />
+
+        {/* Coach-widget — sidkontextuella tips (kan slås av i Inställningar) */}
+        <GlobalCoachWidget />
 
         {/* Global welkomstmodal — visas bara om profile.onboarding_completed === false */}
         <OnboardingFlow />

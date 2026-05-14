@@ -34,6 +34,10 @@ interface SettingsState {
   toggleHighContrast: () => void
   toggleLargeText: () => void
 
+  // Coach-widget — sidkontextuella tips längst ner till höger
+  showCoachWidget: boolean
+  toggleCoachWidget: () => void
+
   // Språk
   language: Language
   setLanguage: (lang: Language) => void
@@ -66,6 +70,7 @@ interface ServerSettings {
   large_text: boolean
   language: string
   has_completed_onboarding: boolean
+  show_coach_widget: boolean
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -117,6 +122,14 @@ export const useSettingsStore = create<SettingsState>()(
         const newValue = !get().largeText
         set({ largeText: newValue })
         get()._saveToServer({ large_text: newValue })
+      },
+
+      // Coach-widget — default på, sparas i molnet
+      showCoachWidget: true,
+      toggleCoachWidget: () => {
+        const newValue = !get().showCoachWidget
+        set({ showCoachWidget: newValue })
+        get()._saveToServer({ show_coach_widget: newValue })
       },
 
       // Språk - synka med i18next
@@ -181,7 +194,7 @@ export const useSettingsStore = create<SettingsState>()(
 
           const { data, error } = await supabase
             .from('user_preferences')
-            .select('calm_mode, focus_mode, email_notifications, push_notifications, weekly_summary, high_contrast, large_text, language, has_completed_onboarding, updated_at')
+            .select('calm_mode, focus_mode, email_notifications, push_notifications, weekly_summary, high_contrast, large_text, language, has_completed_onboarding, show_coach_widget, updated_at')
             .eq('user_id', user.id)
             .maybeSingle()
 
@@ -203,6 +216,9 @@ export const useSettingsStore = create<SettingsState>()(
             if (data.high_contrast !== null) updates.highContrast = data.high_contrast
             if (data.large_text !== null) updates.largeText = data.large_text
             if (data.has_completed_onboarding !== null) updates.hasCompletedOnboarding = data.has_completed_onboarding
+            if (data.show_coach_widget !== null && data.show_coach_widget !== undefined) {
+              updates.showCoachWidget = data.show_coach_widget
+            }
 
             if (data.language && (data.language === 'sv' || data.language === 'en')) {
               updates.language = data.language as Language
@@ -226,7 +242,8 @@ export const useSettingsStore = create<SettingsState>()(
               high_contrast: state.highContrast,
               large_text: state.largeText,
               language: state.language,
-              has_completed_onboarding: state.hasCompletedOnboarding
+              has_completed_onboarding: state.hasCompletedOnboarding,
+              show_coach_widget: state.showCoachWidget
             })
             set({ isLoading: false })
           }
@@ -250,6 +267,7 @@ export const useSettingsStore = create<SettingsState>()(
           language: state.language,
           energyLevel: state.energyLevel,
           hasCompletedOnboarding: state.hasCompletedOnboarding,
+          showCoachWidget: state.showCoachWidget,
           lastSynced: state.lastSynced
         })
       }

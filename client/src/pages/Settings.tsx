@@ -16,8 +16,6 @@ import { RoleSelector } from '@/components/settings/RoleSelector'
 import { ProgramSelector } from '@/components/settings/ProgramSelector'
 import { DeleteAccountSection } from '@/components/settings/DeleteAccountSection'
 import { DataSharingSettings } from '@/components/consent/DataSharingSettings'
-import { HelpButton } from '@/components/HelpButton'
-import { helpContent } from '@/data/helpContent'
 import {
   Card, CardHeader, CardSection,
   Input, Button, Toggle,
@@ -806,7 +804,6 @@ function SettingsInner() {
           </Card>
         </div>
       </div>
-      <HelpButton content={helpContent.settings} />
     </PageLayout>
   )
 }
@@ -815,6 +812,7 @@ function SettingsInner() {
 function AppearanceSettings() {
   const { t } = useTranslation()
   const { theme, setTheme, isDark, systemPreference } = useTheme()
+  const { showCoachWidget, toggleCoachWidget } = useSettingsStore()
 
   const themes = [
     {
@@ -909,6 +907,18 @@ function AppearanceSettings() {
             <Button variant="secondary" size="sm">{t('settings.appearance.secondaryButton')}</Button>
           </div>
         </div>
+      </CardSection>
+
+      {/* Coach-widget toggle */}
+      <CardSection title="Coach-tips på varje sida">
+        <Card variant="flat" padding="sm">
+          <Toggle
+            label="Visa coach-tips"
+            description="En cirkel längst ner till höger där relevanta coacher (jobbcoach, mental coach, arbetsterapeut, m.fl.) ger sidkontextuella tips och vanliga frågor. Stäng av om du vill ha en renare vy."
+            checked={showCoachWidget}
+            onChange={toggleCoachWidget}
+          />
+        </Card>
       </CardSection>
 
       {/* Info */}

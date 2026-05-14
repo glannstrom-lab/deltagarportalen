@@ -8,7 +8,6 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { spontaneousTabDefs } from '@/data/spontaneousTabs'
 import { userApi } from '@/services/api'
-import { HelpButton } from '@/components/HelpButton'
 import { Building2 } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
@@ -50,44 +49,21 @@ export default function SpontaneousPage() {
     )
   }
 
-  // Help content for this page
-  const helpContent = {
-    title: 'Om Spontanansökan',
-    description: 'Här kan du hitta och hålla koll på företag du vill skicka spontanansökningar till.',
-    sections: [
-      {
-        title: 'Sök företag',
-        content: 'Ange ett organisationsnummer för att hämta information om ett företag från Bolagsverket.',
-      },
-      {
-        title: 'Spara intressanta företag',
-        content: 'Spara företag du vill kontakta och håll koll på din jobbsökning.',
-      },
-      {
-        title: 'Spåra din kontakt',
-        content: 'Uppdatera status när du kontaktar företag och får svar.',
-      },
-    ],
-  }
-
   return (
-    <>
-      <PageLayout
-        title={t('spontaneous.title', 'Spontanansökan')}
-        description={t('spontaneous.description', 'Hitta och kontakta företag som passar dig')}
-        customTabs={tabs}
-        tabVariant="glass"
-        showTabs={true}
-        className="max-w-7xl mx-auto space-y-6"
-      >
-        <Routes>
-          <Route path="/" element={<SearchTab />} />
-          <Route path="/mina-foretag" element={<MyCompaniesTab />} />
-          <Route path="/statistik" element={<StatsTab />} />
-          <Route path="*" element={<Navigate to="/spontanansökan" replace />} />
-        </Routes>
-      </PageLayout>
-      <HelpButton content={helpContent} />
-    </>
+    <PageLayout
+      title={t('spontaneous.title', 'Spontanansökan')}
+      description={t('spontaneous.description', 'Hitta och kontakta företag som passar dig')}
+      customTabs={tabs}
+      tabVariant="glass"
+      showTabs={true}
+      className="max-w-7xl mx-auto space-y-6"
+    >
+      <Routes>
+        <Route path="/" element={<SearchTab />} />
+        <Route path="/mina-foretag" element={<MyCompaniesTab />} />
+        <Route path="/statistik" element={<StatsTab />} />
+        <Route path="*" element={<Navigate to="/spontanansökan" replace />} />
+      </Routes>
+    </PageLayout>
   )
 }
