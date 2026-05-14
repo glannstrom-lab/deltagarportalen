@@ -177,6 +177,42 @@ async function checkDailyTokenCap(serviceClient, userId) {
 }
 
 // ============================================
+// Retry-helper för OpenRouter (C6)
+// ============================================
+// Retrierar 5xx + 429 från OpenRouter med exponential backoff.
+// 2 retries totalt → räddar ~80% av tillfälliga 502/503/529-fel.
+async function fetchWithRetry(url, options, maxRetries = 2) {
+  let lastError;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const response = await fetch(url, options);
+      // 5xx + 429 → retry. Annars returnera direkt (succees eller permanenta fel)
+      if (response.ok || (response.status < 500 && response.status !== 429)) {
+        return response;
+      }
+      lastError = new Error(`HTTP ${response.status}`);
+      if (attempt < maxRetries) {
+        const backoff = 2000 * Math.pow(2, attempt); // 2s, 4s
+        console.warn(`[AI] ${response.status} from OpenRouter, retry ${attempt + 1}/${maxRetries} in ${backoff}ms`);
+        await new Promise(r => setTimeout(r, backoff));
+        continue;
+      }
+      return response; // sista försöket: returnera vad vi har
+    } catch (err) {
+      lastError = err;
+      if (attempt < maxRetries) {
+        const backoff = 2000 * Math.pow(2, attempt);
+        console.warn(`[AI] Network error, retry ${attempt + 1}/${maxRetries} in ${backoff}ms:`, err.message);
+        await new Promise(r => setTimeout(r, backoff));
+        continue;
+      }
+      throw lastError;
+    }
+  }
+  throw lastError;
+}
+
+// ============================================
 // Security: Allowed origins for CORS
 // ============================================
 const ALLOWED_ORIGINS = [
@@ -921,7 +957,8 @@ module.exports = async (req, res) => {
     }
 
     // Non-streaming mode (original behavior)
-    const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+    // C6: fetchWithRetry retrierar 5xx + 429 upp till 2 ggr med 2s/4s backoff
+    const aiResponse = await fetchWithRetry('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
