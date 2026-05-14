@@ -196,7 +196,7 @@ function ArticleInner() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
+      <div className="flex items-center justify-center h-64 bg-stone-50 dark:bg-stone-900">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--c-solid)] dark:border-[var(--c-solid)]/60"></div>
       </div>
     )
@@ -205,7 +205,7 @@ function ArticleInner() {
   // Handle invalid ID (e.g., literal ":id" in URL)
   if (!id || id === ':id' || !id.match(/^[a-z0-9-]+$/)) {
     return (
-      <div className="text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 rounded-xl">
+      <div className="text-center py-12 bg-stone-50 dark:bg-stone-900 rounded-xl">
         <p className="text-gray-800 dark:text-gray-100 mb-2">{t('article.invalidLink')}</p>
         <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
           {!id || id === ':id'
@@ -222,7 +222,7 @@ function ArticleInner() {
 
   if (!article) {
     return (
-      <div className="text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 rounded-xl">
+      <div className="text-center py-12 bg-stone-50 dark:bg-stone-900 rounded-xl">
         <p className="text-gray-800 dark:text-gray-100">{t('article.notFound')}</p>
         <p className="text-gray-600 dark:text-gray-300 text-sm mt-1 mb-4">
           ID: {id}
@@ -291,7 +291,7 @@ function ArticleInner() {
 
         {/* Summary */}
         {article.summary && (
-          <div className="p-4 bg-gradient-to-r from-[var(--c-bg)] to-cyan-50 dark:from-[var(--c-bg)]/30 dark:to-cyan-900/20 rounded-lg mb-6 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+          <div className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-lg mb-6 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
             <p className="text-gray-700 dark:text-gray-200 font-medium italic">
               {article.summary}
             </p>
@@ -557,9 +557,9 @@ function ArticleInner() {
       )}
 
       {/* Help section */}
-      <section className="bg-gradient-to-br from-[var(--c-bg)] to-cyan-50 dark:from-[var(--c-bg)]/30 dark:to-cyan-900/20 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 rounded-xl p-6">
+      <section className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 rounded-xl p-6">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-text)] rounded-xl flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center flex-shrink-0">
             <Lightbulb size={24} className="text-white" />
           </div>
           <div>

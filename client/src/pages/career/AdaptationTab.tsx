@@ -702,7 +702,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
 
       {/* Progress Summary */}
       {totalSelected > 0 && (
-        <Card className="p-4 bg-gradient-to-r from-[var(--c-bg)] to-violet-50 dark:from-[var(--c-bg)]/30 dark:to-violet-900/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+        <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
           <div className="flex items-center justify-between">
             <div>
               <h4 className="font-semibold text-gray-800 dark:text-gray-100">
@@ -737,7 +737,7 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
 
       {/* AI Panel */}
       {showAIPanel && (
-        <Card className="p-6 bg-gradient-to-r from-violet-50 to-pink-50 dark:from-violet-900/20 dark:to-pink-900/20 border border-violet-200 dark:border-violet-700">
+        <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-violet-600" />
             <h3 className="font-semibold text-gray-800 dark:text-gray-100">

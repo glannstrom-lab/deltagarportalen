@@ -67,7 +67,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
   if (!hasMatches && !hasSimilarRoles) {
     return (
       <div className={cn(
-        "bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 rounded-2xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 p-6",
+        "bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-2xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 p-6",
         className
       )}>
         <div className="flex items-center gap-3 mb-3">
@@ -98,7 +98,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
       className
     )}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-600 px-6 py-4">
+      <div className="bg-[var(--c-solid)] px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
             <Sparkles size={20} className="text-white" />
@@ -358,7 +358,7 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
   if (gaps.length === 0) {
     return (
       <div className={cn(
-        "bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl border border-green-200 p-6",
+        "bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl border border-emerald-200 dark:border-emerald-800 p-6",
         className
       )}>
         <div className="flex items-center gap-3 mb-3">
@@ -383,7 +383,7 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
       className
     )}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-4">
+      <div className="bg-amber-500 dark:bg-amber-600 px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
             <TrendingUp size={20} className="text-white" />

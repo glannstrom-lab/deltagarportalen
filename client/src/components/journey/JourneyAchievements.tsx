@@ -61,7 +61,7 @@ const rarityColors: Record<string, { bg: string; border: string; text: string; g
     glow: 'shadow-purple-200'
   },
   legendary: {
-    bg: 'bg-gradient-to-br from-amber-50 to-orange-50',
+    bg: 'bg-amber-50 dark:bg-amber-900/20',
     border: 'border-amber-300',
     text: 'text-amber-600',
     glow: 'shadow-amber-200 shadow-lg'
@@ -141,7 +141,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg shadow-amber-200">
+          <div className="w-12 h-12 rounded-xl bg-amber-500 flex items-center justify-center shadow-lg shadow-amber-200">
             <Trophy className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -278,14 +278,14 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
             <div className={`
               p-6 text-center
               ${selectedAchievement.rarity === 'legendary'
-                ? 'bg-gradient-to-br from-amber-400 to-orange-500'
+                ? 'bg-amber-500'
                 : selectedAchievement.rarity === 'epic'
-                  ? 'bg-gradient-to-br from-purple-500 to-pink-500'
+                  ? 'bg-purple-500'
                   : selectedAchievement.rarity === 'rare'
-                    ? 'bg-gradient-to-br from-blue-500 to-cyan-500'
+                    ? 'bg-blue-500'
                     : selectedAchievement.rarity === 'uncommon'
-                      ? 'bg-gradient-to-br from-emerald-500 to-[var(--c-solid)]'
-                      : 'bg-gradient-to-br from-stone-500 to-stone-600'
+                      ? 'bg-[var(--c-solid)]'
+                      : 'bg-stone-500'
               }
             `}>
               <div className={`

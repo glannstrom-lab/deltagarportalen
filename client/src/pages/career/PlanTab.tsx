@@ -479,7 +479,7 @@ export default function PlanTab() {
 
         {/* Overall Progress */}
         <div
-          className="mb-6 p-4 bg-gradient-to-r from-[var(--c-bg)] to-[var(--c-accent)]/40 dark:from-[var(--c-bg)]/30 dark:to-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
+          className="mb-6 p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50"
           role="region"
           aria-label="Övergripande framsteg för karriärplan"
         >
@@ -499,7 +499,7 @@ export default function PlanTab() {
             aria-label={`Karriärplan framsteg: ${totalProgress}%`}
           >
             <div
-              className="h-full bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] dark:from-[var(--c-solid)] dark:to-[var(--c-solid)] transition-all duration-500"
+              className="h-full bg-[var(--c-solid)] transition-all duration-500"
               style={{ width: `${totalProgress}%` }}
             />
           </div>

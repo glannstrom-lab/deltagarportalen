@@ -185,7 +185,7 @@ export function AIAssistant() {
         whileTap={{ scale: 0.95 }}
         className={cn(
           "fixed bottom-24 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
-          "bg-gradient-to-r from-[var(--c-solid)] to-sky-500 text-white font-medium",
+          "bg-[var(--c-solid)] text-white font-medium",
           "hover:shadow-xl transition-shadow"
         )}
       >
@@ -212,7 +212,7 @@ export function AIAssistant() {
               className="bg-white dark:bg-stone-900 rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-[var(--c-solid)] to-sky-500 p-6 text-white">
+              <div className="bg-[var(--c-solid)] p-6 text-white">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
@@ -280,7 +280,7 @@ function OverviewTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: str
   return (
     <div className="space-y-6">
       {/* Prediction Card */}
-      <div className="p-5 bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 rounded-2xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+      <div className="p-5 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 rounded-2xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex items-center gap-3 mb-3">
           <div className="w-10 h-10 rounded-xl bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/50 flex items-center justify-center">
             <Target size={20} className="text-[var(--c-text)] dark:text-[var(--c-text)]" />
@@ -309,7 +309,7 @@ function OverviewTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: str
             initial={{ width: 0 }}
             animate={{ width: `${analysis.predictedInterviewChance}%` }}
             transition={{ duration: 1 }}
-            className="h-full bg-gradient-to-r from-[var(--c-solid)] to-sky-500 rounded-full"
+            className="h-full bg-[var(--c-solid)] rounded-full"
           />
         </div>
       </div>

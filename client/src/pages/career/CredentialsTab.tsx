@@ -137,7 +137,7 @@ export default function CredentialsTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-violet-50 dark:from-[var(--c-bg)]/30 dark:to-violet-900/20 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-xl flex items-center justify-center shrink-0">
             <GraduationCap className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />

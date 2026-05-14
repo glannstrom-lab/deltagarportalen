@@ -513,7 +513,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
               <p className="text-sm text-gray-500">{new Date(currentAnalysis.created_at).toLocaleDateString('sv-SE')}</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 dark:from-purple-400 dark:to-purple-500 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-full bg-purple-500 dark:bg-purple-400 flex items-center justify-center">
                 <span className="text-2xl font-bold text-white">{currentAnalysis.match_percentage}%</span>
               </div>
               <div className="flex flex-col gap-1">
@@ -536,7 +536,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
             aria-label={`${i18n.language === 'en' ? 'Match against dream job' : 'Matchning mot drömjobb'}: ${currentAnalysis.match_percentage}%`}
           >
             <div
-              className="h-full bg-gradient-to-r from-purple-500 to-purple-600 dark:from-purple-400 dark:to-purple-500 transition-all duration-500"
+              className="h-full bg-purple-500 dark:bg-purple-400 transition-all duration-500"
               style={{ width: `${currentAnalysis.match_percentage}%` }}
             />
           </div>
@@ -829,7 +829,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
       {/* Dream Job Input */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-sky-500 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center">
             <Search className="w-5 h-5 text-white" />
           </div>
           <div>

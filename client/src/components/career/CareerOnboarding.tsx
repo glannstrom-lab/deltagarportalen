@@ -339,7 +339,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
           className="w-full max-w-2xl"
         >
           <Card className="p-8 text-center">
-            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-[var(--c-solid)] to-sky-500 flex items-center justify-center">
+            <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-[var(--c-solid)] flex items-center justify-center">
               <User className="w-10 h-10 text-white" />
             </div>
 
@@ -479,7 +479,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
           {/* Situation Step */}
           {currentStepType === 'situation' && (
             <Card className="p-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[var(--c-solid)] to-sky-500 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-[var(--c-solid)] flex items-center justify-center">
                 <Compass className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
@@ -525,7 +525,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
           {/* Interests Step (only shown if no RIASEC profile) */}
           {currentStepType === 'interests' && (
             <Card className="p-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-violet-500 to-purple-500 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-violet-500 flex items-center justify-center">
                 <Heart className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
@@ -563,7 +563,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
           {/* Goals Step */}
           {currentStepType === 'goals' && (
             <Card className="p-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-amber-500 flex items-center justify-center">
                 <Target className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">
@@ -609,7 +609,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
           {/* Experience Step (only shown if no work history) */}
           {currentStepType === 'experience' && (
             <Card className="p-8 text-center">
-              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-sky-500 to-blue-500 flex items-center justify-center">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-sky-500 flex items-center justify-center">
                 <Briefcase className="w-8 h-8 text-white" />
               </div>
               <h2 className="text-2xl font-bold text-stone-900 dark:text-stone-100 mb-3">

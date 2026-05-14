@@ -152,13 +152,13 @@ export function SuccessProvider({ children }: { children: ReactNode }) {
   const getToastStyles = (type: ToastType) => {
     switch (type) {
       case 'achievement':
-        return 'bg-gradient-to-r from-amber-100 to-yellow-100 border-amber-300 text-amber-900'
+        return 'bg-amber-100 border-amber-300 text-amber-900'
       case 'streak':
-        return 'bg-gradient-to-r from-orange-100 to-red-100 border-orange-300 text-orange-900'
+        return 'bg-orange-100 border-orange-300 text-orange-900'
       case 'milestone':
-        return 'bg-gradient-to-r from-[var(--c-accent)]/40 to-sky-100 border-[var(--c-accent)] text-[var(--c-text)]'
+        return 'bg-[var(--c-accent)]/40 border-[var(--c-accent)] text-[var(--c-text)]'
       default:
-        return 'bg-gradient-to-r from-emerald-100 to-[var(--c-accent)]/40 border-emerald-300 text-emerald-900'
+        return 'bg-emerald-100 border-emerald-300 text-emerald-900'
     }
   }
 
@@ -298,7 +298,7 @@ export function CelebrationOverlay({
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-              className="w-24 h-24 rounded-full bg-gradient-to-br from-[var(--c-solid)]/80 to-pink-400 flex items-center justify-center mx-auto mb-6"
+              className="w-24 h-24 rounded-full bg-[var(--c-solid)] flex items-center justify-center mx-auto mb-6"
             >
               <span className="text-5xl">{emoji}</span>
             </motion.div>
@@ -306,7 +306,7 @@ export function CelebrationOverlay({
             <p className="text-stone-600 mb-6">{message}</p>
             <button
               onClick={onClose}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-[var(--c-solid)] to-sky-600 text-white font-semibold hover:shadow-lg transition-shadow"
+              className="w-full py-3 rounded-xl bg-[var(--c-solid)] text-white font-semibold hover:shadow-lg transition-shadow"
             >
               Fortsätt! 🚀
             </button>
@@ -323,7 +323,7 @@ export function StreakFlame({ days }: { days: number }) {
     <motion.div
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
-      className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-gradient-to-r from-orange-100 to-red-100 text-orange-700 text-sm font-medium"
+      className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-orange-100 text-orange-700 text-sm font-medium"
     >
       <motion.div
         animate={{ 

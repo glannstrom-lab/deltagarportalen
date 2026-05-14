@@ -221,7 +221,7 @@ export default function RelocationTab() {
       </div>
 
       {/* Header with profile location */}
-      <Card className="p-6 bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-xl flex items-center justify-center shrink-0">
             <Home className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
@@ -247,7 +247,7 @@ export default function RelocationTab() {
 
       {/* Summary Card */}
       {(targetRegions.length > 0 || checkedItems.length > 0) && (
-        <Card className="p-4 bg-gradient-to-r from-violet-50 to-pink-50 dark:from-violet-900/20 dark:to-pink-900/20 border border-violet-200 dark:border-violet-700">
+        <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
               <h4 className="font-semibold text-gray-800 dark:text-gray-100">
@@ -452,7 +452,7 @@ export default function RelocationTab() {
         {/* Progress bar */}
         <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden mb-4">
           <div
-            className="h-full bg-gradient-to-r from-[var(--c-solid)] to-[var(--c-solid)] transition-all duration-300"
+            className="h-full bg-[var(--c-solid)] transition-all duration-300"
             style={{ width: `${checklistProgress}%` }}
           />
         </div>

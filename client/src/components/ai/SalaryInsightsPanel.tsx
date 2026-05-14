@@ -89,7 +89,7 @@ export function SalaryInsightsPanel({
   if (!result && !isLoading && !error) {
     return (
       <AiConsentGate compact featureName="Lönekompass">
-        <div className={cn('p-5 rounded-xl bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/20 dark:to-[var(--c-bg)]/30 border border-emerald-200 dark:border-emerald-800', className)}>
+        <div className={cn('p-5 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50', className)}>
           <div className="flex items-start gap-3 mb-4">
             <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/50">
               <TrendingUp className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />

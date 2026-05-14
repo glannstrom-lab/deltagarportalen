@@ -789,7 +789,7 @@ export function DailyStep({
 
       {/* Motivationsbooster - visas vid första besöket */}
       {showMotivationBooster && currentBooster && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-[var(--c-bg)] to-emerald-50 border border-[var(--c-accent)]/60 rounded-xl animate-in fade-in slide-in-from-top-2">
+        <div className="mb-6 p-4 bg-[var(--c-bg)] border border-[var(--c-accent)]/60 rounded-xl animate-in fade-in slide-in-from-top-2">
           <div className="flex items-start gap-3">
             <span className="text-2xl">{currentBooster.icon}</span>
             <div className="flex-1">
@@ -812,7 +812,7 @@ export function DailyStep({
 
       {/* Vänlig påminnelse vid inaktivitet */}
       {showGentleReminder && (
-        <div className="mb-6 p-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-xl animate-in fade-in slide-in-from-top-2">
+        <div className="mb-6 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl animate-in fade-in slide-in-from-top-2">
           <p className="text-sm text-amber-800">
             <span className="font-medium">Hej där! 👋</span> Vi har inte sett dig på ett tag. 
             Det är helt okej att ta pauser - det finns inget krav här. När du är redo, 
@@ -839,7 +839,7 @@ export function DailyStep({
         {/* Progress bar för dagen */}
         <div className="relative h-3 bg-stone-200 rounded-full overflow-hidden">
           <div 
-            className="absolute h-full bg-gradient-to-r from-[var(--c-solid)]/80 via-emerald-400 to-[var(--c-solid)] rounded-full transition-all duration-700 ease-out"
+            className="absolute h-full bg-[var(--c-solid)] rounded-full transition-all duration-700 ease-out"
             style={{ width: `${dailyProgress}%` }}
           />
           
@@ -916,7 +916,7 @@ export function DailyStep({
         {/* Progress bar */}
         <div className="relative h-2 bg-stone-100 rounded-full overflow-hidden">
           <div 
-            className="absolute h-full bg-gradient-to-r from-[var(--c-solid)]/80 to-[var(--c-solid)] rounded-full transition-all duration-1000 ease-out"
+            className="absolute h-full bg-[var(--c-solid)] rounded-full transition-all duration-1000 ease-out"
             style={{ width: `${weekProgress}%` }}
           />
         </div>
@@ -1096,7 +1096,7 @@ export function DailyStep({
       )}
 
       {/* Long-term goal reminder */}
-      <div className="mt-4 p-3 bg-gradient-to-r from-stone-50 to-stone-100 rounded-lg">
+      <div className="mt-4 p-3 bg-stone-50 dark:bg-stone-800 rounded-lg">
         <div className="flex items-start gap-2">
           <ThumbsUp className="w-4 h-4 text-stone-600 mt-0.5" />
           <div>

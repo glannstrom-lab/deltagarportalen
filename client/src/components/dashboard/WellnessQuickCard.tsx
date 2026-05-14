@@ -56,12 +56,12 @@ export function WellnessQuickCard({
   }
 
   return (
-    <div className="relative overflow-hidden rounded-2xl border border-rose-200/60 dark:border-rose-800/40 bg-gradient-to-br from-rose-50 via-pink-50/50 to-white dark:from-rose-900/20 dark:via-pink-900/10 dark:to-stone-900/50 shadow-bento transition-shadow duration-300 hover:shadow-bento-hover">
+    <div className="relative overflow-hidden rounded-2xl border border-rose-200/60 dark:border-rose-800/40 bg-rose-50 dark:bg-rose-900/20 shadow-bento transition-shadow duration-300 hover:shadow-bento-hover">
       {/* Header */}
       <div className="px-4 sm:px-5 pt-4 sm:pt-5 pb-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-rose-500 to-pink-500 flex items-center justify-center shadow-lg shadow-rose-200 dark:shadow-rose-900/30">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-rose-500 flex items-center justify-center shadow-lg shadow-rose-200 dark:shadow-rose-900/30">
               <Heart className="w-5 h-5 text-white" aria-hidden="true" />
             </div>
             <div>
@@ -76,7 +76,7 @@ export function WellnessQuickCard({
 
           {/* Streak badge */}
           {streakDays > 0 && (
-            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-gradient-to-r from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-full">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 bg-amber-100 dark:bg-amber-900/30 rounded-full">
               <Flame className="w-4 h-4 text-amber-500" aria-hidden="true" />
               <span className="text-xs font-bold text-amber-700 dark:text-amber-300">
                 {streakDays}

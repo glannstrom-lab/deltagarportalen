@@ -79,7 +79,7 @@ export function AICareerChatbot() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-[var(--c-solid)] to-emerald-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 flex items-center gap-2 px-4 py-3 bg-[var(--c-solid)] text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
       >
         <Sparkles className="w-5 h-5" />
         <span className="font-medium">Fråga AI-coachen</span>
@@ -90,7 +90,7 @@ export function AICareerChatbot() {
   return (
     <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-w-96 bg-white rounded-2xl shadow-2xl border border-stone-200 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-[var(--c-solid)] to-emerald-600 text-white">
+      <div className="flex items-center justify-between px-4 py-3 bg-[var(--c-solid)] text-white">
         <div className="flex items-center gap-2">
           <Bot className="w-5 h-5" />
           <span className="font-semibold">Karriär-AI</span>
@@ -113,7 +113,7 @@ export function AICareerChatbot() {
             <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
               message.roll === 'user' 
                 ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)]' 
-                : 'bg-gradient-to-br from-[var(--c-solid)] to-emerald-500 text-white'
+                : 'bg-[var(--c-solid)] text-white'
             }`}>
               {message.roll === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
             </div>
@@ -133,7 +133,7 @@ export function AICareerChatbot() {
         ))}
         {isLoading && (
           <div className="flex gap-2">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[var(--c-solid)] to-emerald-500 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-[var(--c-solid)] flex items-center justify-center">
               <Bot className="w-4 h-4 text-white" />
             </div>
             <div className="bg-white px-4 py-2 rounded-2xl rounded-bl-none shadow-sm border border-stone-100">
