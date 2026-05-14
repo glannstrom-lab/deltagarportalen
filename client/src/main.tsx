@@ -9,14 +9,20 @@ import { FontProvider } from './components/FontProvider'
 import { UpdateNotification } from './components/UpdateNotification'
 import { ThemeProvider } from './contexts/ThemeContext'
 import { ConfirmDialogProvider } from './components/ui/ConfirmDialog'
-import { initSentry } from './lib/sentry'
 import './i18n/config'
 import './index.css'
 import './styles/mobile.css'
 import { swLogger } from './lib/logger'
 
-// Initialize Sentry error monitoring
-initSentry()
+// E9 (2026-05-15): Lazy-load Sentry — den interna consent-gaten räddar
+// runtime, men STATISK import drog ändå in hela @sentry/react SDK (~80KB)
+// i index.js för alla användare. Med dynamisk import hamnar SDK:n i en
+// egen chunk som bara laddas om consent finns.
+const COOKIE_CONSENT_KEY = 'jobin_cookie_consent'
+if (typeof window !== 'undefined' && localStorage.getItem(COOKIE_CONSENT_KEY) === 'true') {
+  import('./lib/sentry').then(({ initSentry }) => initSentry())
+    .catch(err => console.warn('[Sentry] Lazy-load failed:', err))
+}
 
 // Global error handler for chunk load errors
 window.addEventListener('error', (event) => {

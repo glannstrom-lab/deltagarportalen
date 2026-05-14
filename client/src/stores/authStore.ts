@@ -2,7 +2,17 @@ import { create } from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import type { User, Session } from '@supabase/supabase-js'
-import { setUser as setSentryUser } from '@/lib/sentry'
+
+// E9: lazy-import Sentry istället för statisk — håller @sentry/react SDK
+// (~80KB) ute ur entry-bundlen tills cookie-consent finns.
+async function setSentryUser(user: { id: string; email?: string } | null) {
+  try {
+    const { setUser } = await import('@/lib/sentry')
+    setUser(user)
+  } catch {
+    // Sentry-modulen kan inte laddas — tyst skip (telemetri är best-effort)
+  }
+}
 
 // NOTE: Cross-store syncing (settings, energy, preferences) is now handled
 // in useAuthInit hook to avoid circular dependencies between stores
