@@ -211,7 +211,7 @@ export function IndustryRadarSection({
         {/* Collapsible Header */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full p-4 flex items-center justify-between bg-gradient-to-r from-sky-600 to-[var(--c-solid)] text-white"
+          className="w-full p-4 flex items-center justify-between bg-[var(--c-solid)] text-white"
           aria-expanded={isExpanded}
         >
           <div className="flex items-center gap-3">
@@ -328,7 +328,7 @@ export function IndustryRadarSection({
                       {result.emergingSkills.map((skill, i) => (
                         <div
                           key={i}
-                          className="p-3 rounded-lg bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-200 dark:border-amber-800"
+                          className="p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800"
                         >
                           <div className="flex items-center justify-between mb-1">
                             <span className="font-medium text-sm text-stone-800 dark:text-stone-200">
@@ -387,7 +387,7 @@ export function IndustryRadarSection({
 
                 {/* Personalized Recommendations */}
                 {result.personalizedRecommendations.length > 0 && (
-                  <div className="p-4 rounded-xl bg-gradient-to-br from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/30 dark:to-sky-900/20 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+                  <div className="p-4 rounded-xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
                     <h4 className="text-sm font-semibold text-[var(--c-text)] dark:text-[var(--c-text)] mb-3">
                       {t('career.industryRadar.recommendations')}
                     </h4>

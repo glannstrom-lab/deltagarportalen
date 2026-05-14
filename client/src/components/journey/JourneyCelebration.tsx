@@ -117,9 +117,7 @@ export function JourneyCelebration({
 
           {/* Header */}
           <div className={`p-8 text-center ${
-            hasAchievements
-              ? 'bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500'
-              : 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500'
+            hasAchievements ? 'bg-amber-500' : 'bg-purple-500'
           }`}>
             <motion.div
               initial={{ scale: 0 }}
@@ -178,7 +176,7 @@ export function JourneyCelebration({
                     transition={{ delay: 0.6 + index * 0.1 }}
                     className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl border border-amber-100"
                   >
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center">
                       <Trophy className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
@@ -208,7 +206,7 @@ export function JourneyCelebration({
                     transition={{ delay: 0.6 + (hasAchievements ? unlockedAchievements.length : 0) * 0.1 + index * 0.1 }}
                     className="flex items-center gap-3 p-3 bg-stone-50 rounded-xl"
                   >
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center">
                       <Award className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">

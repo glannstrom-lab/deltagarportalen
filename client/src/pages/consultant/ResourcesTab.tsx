@@ -919,7 +919,7 @@ export function ResourcesTab() {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors whitespace-nowrap',
             activeSection === 'templates'
-              ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+              ? 'bg-amber-500 dark:bg-amber-600 text-white'
               : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
           )}
         >
@@ -931,7 +931,7 @@ export function ResourcesTab() {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors whitespace-nowrap',
             activeSection === 'collections'
-              ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+              ? 'bg-amber-500 dark:bg-amber-600 text-white'
               : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
           )}
         >
@@ -943,7 +943,7 @@ export function ResourcesTab() {
           className={cn(
             'flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors whitespace-nowrap',
             activeSection === 'practices'
-              ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+              ? 'bg-amber-500 dark:bg-amber-600 text-white'
               : 'bg-stone-100 dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700'
           )}
         >

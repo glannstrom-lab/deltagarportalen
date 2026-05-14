@@ -1788,21 +1788,21 @@ export function MatchesTab() {
 
       {/* Stats */}
       <div className="grid grid-cols-3 gap-3">
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
+        <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-xl p-4 border border-green-100">
           <div className="flex items-center gap-2 mb-1">
             <Award className="w-4 h-4 text-green-600" />
             <span className="text-sm font-medium text-green-700">{t('jobs.matches.stats.goodMatch')}</span>
           </div>
           <p className="text-2xl font-bold text-green-700">{stats.high}</p>
         </div>
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100">
+        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-4 border border-amber-100">
           <div className="flex items-center gap-2 mb-1">
             <TrendingUp className="w-4 h-4 text-amber-600" />
             <span className="text-sm font-medium text-amber-700">{t('jobs.matches.stats.possible')}</span>
           </div>
           <p className="text-2xl font-bold text-amber-700">{stats.medium}</p>
         </div>
-        <div className="bg-gradient-to-br from-stone-50 to-gray-50 dark:from-stone-800 dark:to-stone-800 rounded-xl p-4 border border-stone-100 dark:border-stone-700">
+        <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-4 border border-stone-100 dark:border-stone-700">
           <div className="flex items-center gap-2 mb-1">
             <Briefcase className="w-4 h-4 text-stone-600 dark:text-stone-400" />
             <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{t('jobs.matches.stats.total')}</span>

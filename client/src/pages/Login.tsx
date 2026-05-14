@@ -69,7 +69,7 @@ export default function Login() {
   if (authLoading) {
     return (
       <div
-        className="min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 flex items-center justify-center"
+        className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center"
         role="status"
         aria-live="polite"
         aria-busy="true"
@@ -81,7 +81,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-stone-50 dark:bg-stone-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">

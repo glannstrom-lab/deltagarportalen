@@ -39,7 +39,7 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
           {/* Connection Line */}
           <div className="absolute top-8 left-8 right-8 h-1 bg-stone-200 rounded-full" />
           <div
-            className="absolute top-8 left-8 h-1 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+            className="absolute top-8 left-8 h-1 bg-[var(--c-solid)] rounded-full transition-all duration-500"
             style={{
               width: `${((currentPhaseId - 1) / (phases.length - 1)) * 100}%`,
               maxWidth: 'calc(100% - 4rem)'
@@ -69,12 +69,12 @@ export function JourneyMap({ phases, currentPhaseId, phaseProgress, onPhaseClick
                       relative w-16 h-16 rounded-full flex items-center justify-center
                       transition-all duration-300 transform
                       ${isCompleted
-                        ? 'bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-lg shadow-emerald-200'
+                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-200'
                         : isCurrent
-                          ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-lg shadow-indigo-200 scale-110'
+                          ? 'bg-[var(--c-solid)] text-white shadow-lg scale-110'
                           : isLocked
                             ? 'bg-stone-100 text-stone-600 cursor-not-allowed'
-                            : 'bg-white border-2 border-stone-200 text-stone-600 hover:border-indigo-300 hover:shadow-md'
+                            : 'bg-white border-2 border-stone-200 text-stone-600 hover:border-[var(--c-solid)] hover:shadow-md'
                       }
                     `}
                   >

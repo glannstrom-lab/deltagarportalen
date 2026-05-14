@@ -53,7 +53,7 @@ function TodayGratitude() {
   }
 
   return (
-    <Card className="p-6 bg-gradient-to-br from-rose-50 to-pink-50 border-rose-100">
+    <Card className="p-6 bg-rose-50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-800">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center">
@@ -289,7 +289,7 @@ function GratitudeStats() {
 
   return (
     <div className="grid grid-cols-3 gap-4">
-      <Card className="p-4 text-center bg-gradient-to-br from-amber-50 to-orange-50 border-amber-100">
+      <Card className="p-4 text-center bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800">
         <Sun className="w-6 h-6 text-amber-600 mx-auto mb-2" />
         <p className="text-2xl font-bold text-amber-700">{streak}</p>
         <p className="text-sm text-amber-600">dagar i rad</p>
@@ -324,7 +324,7 @@ export function GratitudeTab() {
   return (
     <div className="space-y-6">
       {/* Introduction */}
-      <Card className="p-5 bg-gradient-to-r from-amber-50 to-rose-50 border-amber-200">
+      <Card className="p-5 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-6 h-6 text-amber-600" />

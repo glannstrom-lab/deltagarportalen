@@ -25,7 +25,7 @@ export function RiasecPersonalizationBanner({ className, compact = false }: Rias
     if (compact) {
       return (
         <div className={cn(
-          "flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-amber-50 to-orange-50 rounded-full border border-amber-200",
+          "flex items-center gap-2 px-3 py-1.5 bg-amber-50 dark:bg-amber-900/20 rounded-full border border-amber-200",
           className
         )}>
           <Compass className="w-4 h-4 text-amber-600" />
@@ -39,7 +39,7 @@ export function RiasecPersonalizationBanner({ className, compact = false }: Rias
 
     return (
       <div className={cn(
-        "bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl border border-amber-200 p-4",
+        "bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-200 p-4",
         className
       )}>
         <div className="flex items-center gap-3">
@@ -65,7 +65,7 @@ export function RiasecPersonalizationBanner({ className, compact = false }: Rias
     <Link
       to="/interest-guide"
       className={cn(
-        "block bg-gradient-to-r from-[var(--c-bg)] to-sky-50 rounded-xl border border-[var(--c-accent)]/60 p-4 hover:border-[var(--c-accent)] transition-colors",
+        "block bg-[var(--c-bg)] rounded-xl border border-[var(--c-accent)]/60 p-4 hover:border-[var(--c-accent)] transition-colors",
         className
       )}
     >

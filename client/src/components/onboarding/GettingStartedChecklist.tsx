@@ -260,7 +260,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
   if (isAllComplete) {
     return (
       <div className={cn(
-        'bg-gradient-to-r from-emerald-50 via-[var(--c-bg)] to-cyan-50 rounded-2xl shadow-sm border border-emerald-200 p-6 animate-in fade-in slide-in-from-bottom-4',
+        'bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl shadow-sm border border-emerald-200 dark:border-emerald-800 p-6 animate-in fade-in slide-in-from-bottom-4',
         className
       )}>
         <div className="flex items-center gap-4">
@@ -314,7 +314,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
       {/* Header */}
       <button
         onClick={onToggle}
-        className="w-full p-5 bg-gradient-to-r from-[var(--c-bg)] to-sky-50 border-b border-stone-100 text-left hover:from-[var(--c-accent)]/40 hover:to-sky-100 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--c-solid)] min-h-[44px]"
+        className="w-full p-5 bg-[var(--c-bg)] border-b border-stone-100 text-left hover:bg-[var(--c-accent)]/40 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-[var(--c-solid)] min-h-[44px]"
       >
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
@@ -333,7 +333,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
             {/* Progress Bar */}
             <div className="h-2 bg-stone-200 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[var(--c-solid)] to-sky-500 transition-all duration-500 rounded-full"
+                className="h-full bg-[var(--c-solid)] transition-all duration-500 rounded-full"
                 style={{ width: `${progress}%` }}
                 role="progressbar"
                 aria-valuenow={Math.round(progress)}

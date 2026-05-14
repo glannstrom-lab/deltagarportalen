@@ -240,9 +240,9 @@ export default function PitchTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[var(--c-solid)] to-sky-500 dark:from-[var(--c-solid)] dark:to-sky-600 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
             <Mic className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
@@ -599,7 +599,7 @@ export default function PitchTab() {
                     </div>
                   )}
 
-                  <div className="bg-gradient-to-br from-stone-50 to-stone-100 dark:from-stone-700 dark:to-stone-600 rounded-xl p-6 mb-4">
+                  <div className="bg-stone-50 dark:bg-stone-700 rounded-xl p-6 mb-4">
                     <p className="text-gray-800 dark:text-gray-100 whitespace-pre-wrap leading-relaxed">
                       {selectedPitch.content}
                     </p>

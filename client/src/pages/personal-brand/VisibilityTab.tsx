@@ -256,9 +256,9 @@ export default function VisibilityTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[var(--c-solid)] to-sky-500 dark:from-[var(--c-solid)] dark:to-sky-600 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
             <Eye className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
@@ -275,7 +275,7 @@ export default function VisibilityTab() {
       </Card>
 
       {/* Content idea generator */}
-      <Card className="border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-gradient-to-br from-[var(--c-bg)]/50 to-sky-50/50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30">
+      <Card className="border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40">
         <div className="flex items-start gap-3">
           <Lightbulb className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] shrink-0 mt-0.5" />
           <div className="flex-1">

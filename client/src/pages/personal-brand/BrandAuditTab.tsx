@@ -274,9 +274,9 @@ export default function BrandAuditTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+      <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[var(--c-solid)] to-sky-500 dark:from-[var(--c-solid)] dark:to-sky-600 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-xl flex items-center justify-center shrink-0">
             <ClipboardCheck className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
@@ -403,7 +403,7 @@ export default function BrandAuditTab() {
 
       {/* Recommended Actions */}
       {recommendedActions.length > 0 && totalScore < 80 && (
-        <Card className="bg-gradient-to-r from-[var(--c-bg)] to-sky-50 dark:from-[var(--c-bg)]/40 dark:to-sky-900/30 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+        <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
           <h3 className="font-semibold text-[var(--c-text)] dark:text-white mb-3 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             Rekommenderade nästa steg
