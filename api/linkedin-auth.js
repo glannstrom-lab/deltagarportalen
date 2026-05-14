@@ -114,11 +114,12 @@ export default async function handler(req) {
     return secureErrorResponse('Method not allowed', 405, requestOrigin)
   }
 
-  // Apply rate limiting
-  const rateLimit = checkRateLimit(
+  // Apply rate limiting (distributed via Supabase, in-memory fallback)
+  const rateLimit = await checkRateLimit(
     `linkedin:${clientIP}`,
     RATE_LIMIT_MAX,
-    RATE_LIMIT_WINDOW
+    RATE_LIMIT_WINDOW,
+    'linkedin-oauth'
   )
 
   if (!rateLimit.allowed) {

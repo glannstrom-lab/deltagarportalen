@@ -123,12 +123,13 @@ export default async function handler(req) {
     const body = await req.json()
     const { action } = body
 
-    // Apply rate limiting based on action type
+    // Apply rate limiting based on action type (distributed via Supabase)
     const isAuthAction = action === 'exchange' || action === 'refresh'
-    const rateLimit = checkRateLimit(
+    const rateLimit = await checkRateLimit(
       `gcal:${clientIP}:${action}`,
       isAuthAction ? AUTH_RATE_LIMIT_MAX : RATE_LIMIT_MAX,
-      isAuthAction ? AUTH_RATE_LIMIT_WINDOW : RATE_LIMIT_WINDOW
+      isAuthAction ? AUTH_RATE_LIMIT_WINDOW : RATE_LIMIT_WINDOW,
+      `gcal-${action}`
     )
 
     if (!rateLimit.allowed) {
