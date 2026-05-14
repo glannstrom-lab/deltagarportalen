@@ -20,17 +20,16 @@ export default defineConfig({
         'src/types/**',
         'src/i18n/locales/**',
       ],
-      // Inga thresholds aktiva än — vi har 20 pre-existing testfel i
-      // Dashboard.test.tsx + andra som måste fixas innan thresholds kan
-      // sättas meningsfullt. CI rapporterar coverage som artifact +
-      // PR-kommentar så trender är synliga, men blockerar inte än.
-      //
-      // PLAN för aktivering:
-      //   1. Fixa de 20 failing testerna (Dashboard.test.tsx m.fl.)
-      //   2. Mät baseline coverage (förmodligen 20-25% efter Fas 2)
-      //   3. Sätt thresholds 5% under baseline → höj 1-2% per sprint
-      //   4. Använd thresholdAutoUpdate: true för automatisk drift
-      // thresholds: { lines: 20, functions: 20, branches: 15, statements: 20 },
+      // 2026-05-15 (D5): aktiverade thresholds satta 3-5pp under nuvarande
+      // baseline. Skyddar mot regression — coverage får inte sjunka.
+      // Baseline (vitest run 2026-05-14): lines 20.09%, functions 34.75%,
+      // branches 64.27%. Thresholds nedan höjs gradvis när nya tester läggs till.
+      thresholds: {
+        lines: 18,
+        functions: 30,
+        branches: 60,
+        statements: 18,
+      },
     },
     include: ['src/**/*.{test,spec}.{ts,tsx}'],
   },
