@@ -16,6 +16,9 @@ import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
 import { useInterestProfile, RIASEC_TYPES, type RiasecScores } from '@/hooks/useInterestProfile'
 import { unifiedProfileApi, type UnifiedProfileData, type EmploymentStatus } from '@/services/unifiedProfileApi'
+import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
+
+const ONBOARDING_OWNER_ID = 'career-onboarding' as const
 
 interface CareerOnboardingProps {
   onComplete: (preferences: CareerPreferences) => void
@@ -143,6 +146,18 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
   const [unifiedProfile, setUnifiedProfile] = useState<Partial<UnifiedProfileData> | null>(null)
   const [step, setStep] = useState(0)
   const [showProfileSummary, setShowProfileSummary] = useState(false)
+  const [hasSessionClaim, setHasSessionClaim] = useState(false)
+
+  // Frequency-cap: max 1 onboarding per session (DESIGN.md §12)
+  useEffect(() => {
+    if (claimOnboardingSession(ONBOARDING_OWNER_ID)) {
+      setHasSessionClaim(true)
+      return () => releaseOnboardingSession(ONBOARDING_OWNER_ID)
+    }
+    // En annan onboarding kör redan — hoppa över direkt
+    onSkip()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const [preferences, setPreferences] = useState<CareerPreferences>({
     currentSituation: '',
@@ -154,6 +169,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
 
   // Load unified profile on mount
   useEffect(() => {
+    if (!hasSessionClaim) return
     const loadProfile = async () => {
       try {
         const profile = await unifiedProfileApi.getProfile()
@@ -165,7 +181,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
       }
     }
     loadProfile()
-  }, [])
+  }, [hasSessionClaim])
 
   // Pre-fill data from existing sources once loaded
   useEffect(() => {
@@ -311,6 +327,9 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
         : [...prev.goals, id]
     }))
   }
+
+  // Annan onboarding har redan claim — visa inget
+  if (!hasSessionClaim) return null
 
   // Loading state
   if (loadingInterests || isLoadingProfile) {
