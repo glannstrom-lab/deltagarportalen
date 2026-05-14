@@ -1244,16 +1244,17 @@ CV skapat med mallen "${template.name}" från Jobin
         ))}
       </div>
 
-      {/* Templates Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Templates Grid — 2 kolumner på mobil halverar scroll från 6356 px → ~3200 px.
+          DESIGN.md §9 (mobil) krav på rimlig scroll-höjd. */}
+      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
         {filteredTemplates.map(template => (
-          <div 
+          <div
             key={template.id}
             className="group bg-white rounded-2xl border border-stone-200 overflow-hidden hover:shadow-xl transition-all duration-300"
           >
             {/* Preview - Enhanced Realistic CV Mockup */}
             <div className={cn(
-              'h-64 bg-gradient-to-br relative overflow-hidden',
+              'h-40 sm:h-56 md:h-64 bg-gradient-to-br relative overflow-hidden',
               template.preview
             )}>
               {/* Background Pattern */}
