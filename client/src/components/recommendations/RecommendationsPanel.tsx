@@ -116,7 +116,7 @@ export function RecommendationsPanel({
 
   if (recommendations.length === 0) {
     return (
-      <Card className="p-6 bg-gradient-to-br from-[var(--c-bg)] to-emerald-50 dark:from-[var(--c-bg)]/30 dark:to-emerald-900/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+      <Card className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
         <div className="text-center py-4">
           <div className="w-12 h-12 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center mx-auto mb-3">
             <Sparkles className="w-6 h-6 text-[var(--c-text)] dark:text-[var(--c-text)]" />
@@ -137,7 +137,7 @@ export function RecommendationsPanel({
       aria-label="Personliga rekommendationer"
     >
       {showTitle && (
-        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 border-b border-violet-100 dark:border-violet-800/50">
+        <div className="flex items-center justify-between px-6 py-4 bg-violet-50 dark:bg-violet-900/20 border-b border-violet-100 dark:border-violet-800/50">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
               <Sparkles className="w-4 h-4 text-violet-600 dark:text-violet-400" />

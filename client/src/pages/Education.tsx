@@ -208,7 +208,7 @@ function QuickSearchCard({
       onClick={onClick}
       className={cn(
         'flex items-start gap-3 p-4 rounded-xl text-left w-full',
-        'bg-gradient-to-br from-white to-stone-50 dark:from-stone-800 dark:to-stone-900',
+        'bg-white dark:bg-stone-800',
         'border-2 border-stone-200 dark:border-stone-700',
         'hover:border-purple-300 dark:hover:border-purple-600 hover:shadow-md',
         'transition-all duration-200'
@@ -488,7 +488,7 @@ function EducationInner() {
       {!hasSearched && (
         <div className="mt-6 space-y-6">
           {/* Info Banner */}
-          <Card className="bg-gradient-to-r from-purple-50 to-sky-50 dark:from-purple-900/20 dark:to-sky-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+          <Card className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
             <div className="p-4 sm:p-5 flex items-start gap-4">
               <div className="p-2 rounded-lg bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40">
                 <Info className="w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />

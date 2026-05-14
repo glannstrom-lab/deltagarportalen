@@ -831,7 +831,7 @@ function ExercisesInner() {
       </Card>
 
       {/* AI Coach Card */}
-      <Card className="p-4 bg-gradient-to-br from-emerald-50 to-[var(--c-bg)] dark:from-emerald-900/20 dark:to-[var(--c-bg)]/30 border-emerald-200 dark:border-emerald-800">
+      <Card className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800">
         <div className="flex items-start gap-3">
           <Lightbulb className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5" />
           <div className="flex-1">
@@ -869,7 +869,7 @@ function ExercisesInner() {
 
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
-        <Card className="p-4 bg-gradient-to-br from-[var(--c-bg)] to-emerald-50 dark:from-[var(--c-bg)]/30 dark:to-emerald-900/20 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
+        <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50">
           <div className="flex items-start gap-3">
             <BookOpen className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)] mt-0.5" />
             <div className="flex-1">

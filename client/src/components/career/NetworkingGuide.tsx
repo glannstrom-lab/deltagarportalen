@@ -499,7 +499,7 @@ Varmt tack igen!`
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-8 text-white">
+      <div className="bg-amber-500 rounded-2xl p-8 text-white">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
             <Users size={24} />
@@ -513,7 +513,7 @@ Varmt tack igen!`
       </div>
 
       {/* AI Strategy Generator */}
-      <div className="bg-gradient-to-br from-[var(--c-bg)] to-sky-50 rounded-2xl p-6 border border-[var(--c-accent)]/60">
+      <div className="bg-[var(--c-bg)] rounded-2xl p-6 border border-[var(--c-accent)]/60">
         <div className="flex items-center gap-3 mb-4">
           <div className="w-10 h-10 bg-[var(--c-solid)] rounded-xl flex items-center justify-center">
             <Wand2 size={20} className="text-white" />
@@ -1261,7 +1261,7 @@ Varmt tack igen!`
       </div>
 
       {/* CTA */}
-      <div className="bg-gradient-to-r from-[var(--c-solid)] to-emerald-500 rounded-2xl p-6 text-white">
+      <div className="bg-[var(--c-solid)] rounded-2xl p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="font-semibold mb-1">Redo att nätverka?</h3>

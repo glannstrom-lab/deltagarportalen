@@ -232,7 +232,7 @@ export default function SalaryInsights() {
         <>
           {/* Huvudstatistik */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl p-6 text-white">
+            <div className="bg-emerald-500 dark:bg-emerald-600 rounded-2xl p-6 text-white">
               <div className="flex items-center gap-2 mb-2">
                 <DollarSign size={20} className="opacity-80" />
                 <span className="text-sm opacity-80">Medianlön</span>
@@ -296,7 +296,7 @@ export default function SalaryInsights() {
               {/* Löneskala */}
               <div className="relative h-4 bg-stone-200 rounded-full">
                 <div 
-                  className="absolute h-full bg-gradient-to-r from-blue-400 via-[#4f46e5] to-purple-500 rounded-full"
+                  className="absolute h-full bg-[var(--c-solid)] rounded-full"
                   style={{
                     left: '0%',
                     width: '100%',
@@ -432,7 +432,7 @@ export default function SalaryInsights() {
           </div>
 
           {/* Tips för löneökning */}
-          <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200">
+          <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800">
             <div className="flex items-start gap-3">
               <Info className="text-amber-600 shrink-0 mt-0.5" size={20} />
               <div>

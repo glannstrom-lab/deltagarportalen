@@ -69,11 +69,11 @@ export default function GoogleCalendarCallback() {
   }, [searchParams, navigate])
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 dark:bg-stone-900 p-4">
       <Card className="max-w-md w-full p-8 text-center">
         {status === 'loading' && (
           <>
-            <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-green-500 rounded-xl flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-[var(--c-solid)] rounded-xl flex items-center justify-center mx-auto mb-6">
               <CalendarDays className="w-10 h-10 text-white" />
             </div>
             <LoadingState

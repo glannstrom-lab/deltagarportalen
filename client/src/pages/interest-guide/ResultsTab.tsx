@@ -203,7 +203,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         animate={{ opacity: 1, y: 0 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-4"
       >
-        <Card className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-amber-200 dark:border-amber-800">
+        <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-amber-600 dark:text-amber-400 font-medium mb-2">Din RIASEC-typ</p>
@@ -230,7 +230,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+        <Card className="p-6 bg-purple-50 dark:bg-purple-900/20 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
           <div className="flex items-start justify-between">
             <div>
               <p className="text-sm text-[var(--c-solid)] dark:text-[var(--c-solid)] font-medium mb-2">Totalt yrken</p>

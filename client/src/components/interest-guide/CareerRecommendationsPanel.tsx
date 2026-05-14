@@ -131,9 +131,9 @@ export function CareerRecommendationsPanel({
   return (
     <Card className={cn('overflow-hidden', className)}>
       {/* Header */}
-      <div className="p-6 bg-gradient-to-r from-[var(--c-bg)] to-emerald-50 dark:from-[var(--c-bg)]/30 dark:to-emerald-900/20 border-b border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
+      <div className="p-6 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-b border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-[var(--c-solid)] to-emerald-500 rounded-2xl flex items-center justify-center">
+          <div className="w-12 h-12 bg-[var(--c-solid)] rounded-2xl flex items-center justify-center">
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -325,7 +325,7 @@ export function CareerRecommendationsPanel({
         ))}
 
         {/* Career Insights */}
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
+        <div className="bg-amber-50 dark:bg-amber-900/20 rounded-xl p-5 border border-amber-200 dark:border-amber-800">
           <div className="flex items-start gap-3">
             <Lightbulb className="w-6 h-6 text-amber-600 dark:text-amber-400 flex-shrink-0" />
             <div>
