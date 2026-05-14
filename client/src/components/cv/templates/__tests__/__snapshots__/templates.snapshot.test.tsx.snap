@@ -1,0 +1,3603 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`CV-mallar — snapshot regression > AtelierTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="min-height: 297mm; background: rgb(250, 248, 244); font-family: "Source Sans 3", "Helvetica Neue", Arial, sans-serif; color: rgb(26, 26, 26);"
+>
+  <header
+    style="padding: 64px 72px 32px; text-align: center; border-bottom: 1px solid rgb(30, 58, 58);"
+  >
+    <h1
+      style="font-size: 38px; font-weight: 300; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(30, 58, 58); margin-bottom: 12px; font-family: "Crimson Pro", "Georgia", serif;"
+    >
+      Anna Andersson
+    </h1>
+    <p
+      style="font-size: 11px; font-weight: 500; letter-spacing: 0.32em; text-transform: uppercase; color: rgb(122, 140, 140); margin-bottom: 20px;"
+    >
+      Frontend Developer
+    </p>
+    <div
+      style="display: flex; justify-content: center; gap: 24px; font-size: 11px; letter-spacing: 0.04em; color: rgb(102, 102, 102);"
+    >
+      <span>
+        anna@example.com
+      </span>
+      <span>
+        +46 70 123 45 67
+      </span>
+      <span>
+        Stockholm
+      </span>
+    </div>
+  </header>
+  <div
+    style="display: flex; padding: 40px 72px 64px; gap: 48px;"
+  >
+    <aside
+      style="width: 180px; flex-shrink: 0;"
+    >
+      <div
+        class="cv-keep"
+        style="margin-bottom: 32px; display: flex; justify-content: center;"
+      >
+        <div
+          style="width: 120px; height: 120px; border-radius: 50%; border: 1px solid rgb(30, 58, 58); display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 300; color: rgb(30, 58, 58); font-family: "Crimson Pro", serif; letter-spacing: 0.1em;"
+        >
+          AA
+        </div>
+      </div>
+      <section
+        class="cv-keep"
+        style="margin-bottom: 32px;"
+      >
+        <h3
+          style="font-size: 10px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(30, 58, 58); margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+        >
+          Kompetenser
+        </h3>
+        <ul
+          style="list-style: none; padding: 0px; margin: 0px;"
+        >
+          <li
+            style="font-size: 12px; font-weight: 400; line-height: 1.7; color: rgb(26, 26, 26);"
+          >
+            React
+          </li>
+          <li
+            style="font-size: 12px; font-weight: 400; line-height: 1.7; color: rgb(26, 26, 26);"
+          >
+            TypeScript
+          </li>
+          <li
+            style="font-size: 12px; font-weight: 400; line-height: 1.7; color: rgb(26, 26, 26);"
+          >
+            CSS
+          </li>
+          <li
+            style="font-size: 12px; font-weight: 400; line-height: 1.7; color: rgb(26, 26, 26);"
+          >
+            Accessibility
+          </li>
+        </ul>
+      </section>
+      <section
+        class="cv-keep"
+        style="margin-bottom: 32px;"
+      >
+        <h3
+          style="font-size: 10px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(30, 58, 58); margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+        >
+          Språk
+        </h3>
+        <div
+          style="margin-bottom: 8px; font-size: 12px;"
+        >
+          <div
+            style="font-weight: 500; color: rgb(26, 26, 26);"
+          >
+            Svenska
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(102, 102, 102); margin-top: 1px; font-style: italic;"
+          >
+            Modersmål
+          </div>
+        </div>
+        <div
+          style="margin-bottom: 8px; font-size: 12px;"
+        >
+          <div
+            style="font-weight: 500; color: rgb(26, 26, 26);"
+          >
+            Engelska
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(102, 102, 102); margin-top: 1px; font-style: italic;"
+          >
+            Flytande
+          </div>
+        </div>
+      </section>
+      <section
+        class="cv-keep"
+      >
+        <h3
+          style="font-size: 10px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(30, 58, 58); margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+        >
+          Länkar
+        </h3>
+        <div
+          style="margin-bottom: 8px; font-size: 11px;"
+        >
+          <div
+            style="font-weight: 500; color: rgb(26, 26, 26); font-size: 12px;"
+          >
+            LinkedIn
+          </div>
+          <div
+            style="color: rgb(102, 102, 102); word-break: break-all;"
+          >
+            https://linkedin.com/in/anna
+          </div>
+        </div>
+      </section>
+    </aside>
+    <main
+      style="flex: 1 1 0%;"
+    >
+      <section
+        style="margin-bottom: 32px;"
+      >
+        <h2
+          style="font-size: 11px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(30, 58, 58); margin-bottom: 14px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+        >
+          Profil
+        </h2>
+        <p
+          style="font-size: 13px; line-height: 1.75; color: rgb(26, 26, 26); font-weight: 400;"
+        >
+          Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+        </p>
+      </section>
+      <section
+        style="margin-bottom: 32px;"
+      >
+        <h2
+          style="font-size: 11px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(30, 58, 58); margin-bottom: 20px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+        >
+          Erfarenhet
+        </h2>
+        <div>
+          <div
+            class="cv-entry"
+            style="margin-bottom: 24px;"
+          >
+            <div
+              style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+            >
+              <h3
+                style="font-size: 14px; font-weight: 700; color: rgb(26, 26, 26); letter-spacing: 0.01em;"
+              >
+                Senior Frontend Developer
+              </h3>
+              <span
+                style="font-size: 11px; color: rgb(122, 140, 140); font-style: italic; letter-spacing: 0.02em; white-space: nowrap; margin-left: 12px;"
+              >
+                2022-01
+                 — 
+                Nuvarande
+              </span>
+            </div>
+            <div
+              style="font-size: 12px; font-weight: 500; color: rgb(30, 58, 58); margin-bottom: 8px; letter-spacing: 0.04em;"
+            >
+              Tech AB
+            </div>
+            <p
+              style="font-size: 12px; line-height: 1.7; color: rgb(63, 63, 63);"
+            >
+              Leder frontend-team. Migrerade legacy Angular till React.
+            </p>
+          </div>
+          <div
+            class="cv-entry"
+            style="margin-bottom: 24px;"
+          >
+            <div
+              style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+            >
+              <h3
+                style="font-size: 14px; font-weight: 700; color: rgb(26, 26, 26); letter-spacing: 0.01em;"
+              >
+                Frontend Developer
+              </h3>
+              <span
+                style="font-size: 11px; color: rgb(122, 140, 140); font-style: italic; letter-spacing: 0.02em; white-space: nowrap; margin-left: 12px;"
+              >
+                2019-06
+                 — 
+                2021-12
+              </span>
+            </div>
+            <div
+              style="font-size: 12px; font-weight: 500; color: rgb(30, 58, 58); margin-bottom: 8px; letter-spacing: 0.04em;"
+            >
+              Webb-byrån
+            </div>
+            <p
+              style="font-size: 12px; line-height: 1.7; color: rgb(63, 63, 63);"
+            >
+              Byggde komponentbibliotek och e-handelslösningar.
+            </p>
+          </div>
+        </div>
+      </section>
+      <section>
+        <h2
+          style="font-size: 11px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(30, 58, 58); margin-bottom: 20px; padding-bottom: 6px; border-bottom: 1px solid rgb(30, 58, 58);"
+        >
+          Utbildning
+        </h2>
+        <div>
+          <div
+            class="cv-entry"
+            style="margin-bottom: 20px;"
+          >
+            <div
+              style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;"
+            >
+              <h3
+                style="font-size: 13px; font-weight: 700; color: rgb(26, 26, 26);"
+              >
+                Civilingenjör
+              </h3>
+              <span
+                style="font-size: 11px; color: rgb(122, 140, 140); font-style: italic; white-space: nowrap; margin-left: 12px;"
+              >
+                2014
+                 — 
+                2019
+              </span>
+            </div>
+            <div
+              style="font-size: 12px; color: rgb(30, 58, 58); font-weight: 500; letter-spacing: 0.02em;"
+            >
+              KTH
+            </div>
+            <div
+              style="font-size: 11px; color: rgb(102, 102, 102); font-style: italic; margin-top: 2px;"
+            >
+              Datateknik
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > BerlinTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="display: flex; min-height: 297mm; background: rgb(244, 237, 224); font-family: "Inter", "Helvetica Neue", Arial, sans-serif; color: rgb(26, 26, 26);"
+>
+  <aside
+    style="width: 60px; background: rgb(26, 26, 26); color: rgb(244, 237, 224); padding: 32px 0px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center;"
+  >
+    <div
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <div
+        style="width: 36px; height: 36px; border: 1.5px solid rgb(244, 237, 224); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; letter-spacing: 0.04em;"
+      >
+        AA
+      </div>
+    </div>
+    <div
+      aria-hidden="true"
+      style="writing-mode: vertical-rl; transform: rotate(180deg); font-size: 10px; letter-spacing: 0.5em; text-transform: uppercase; font-weight: 700; color: rgb(244, 237, 224); opacity: 0.85;"
+    >
+      Curriculum Vitae · Berlin
+    </div>
+    <div
+      style="flex: 1 1 0%;"
+    />
+    <div
+      aria-hidden="true"
+      style="width: 24px; height: 24px; background: rgb(200, 57, 46); margin-top: 32px;"
+    />
+  </aside>
+  <main
+    style="flex: 1 1 0%; padding: 40px 56px 48px; position: relative;"
+  >
+    <header
+      style="margin-bottom: 32px;"
+    >
+      <div
+        style="font-size: 10px; font-weight: 700; letter-spacing: 0.32em; text-transform: uppercase; color: rgb(200, 57, 46); margin-bottom: 14px;"
+      >
+        ◼ 
+        Frontend Developer
+      </div>
+      <h1
+        style="font-size: 56px; font-weight: 900; color: rgb(26, 26, 26); letter-spacing: -0.025em; line-height: 0.95; text-transform: uppercase; margin-bottom: 20px;"
+      >
+        Anna Andersson
+      </h1>
+      <div
+        style="display: flex; flex-wrap: wrap; gap: 20px; font-size: 12px; color: rgb(90, 90, 90); border-top: 1px solid rgb(26, 26, 26); padding-top: 12px;"
+      >
+        <span>
+          anna@example.com
+        </span>
+        <span>
+          +46 70 123 45 67
+        </span>
+        <span>
+          Stockholm
+        </span>
+      </div>
+    </header>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <div
+        style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid rgb(26, 26, 26);"
+      >
+        <span
+          style="font-size: 14px; font-weight: 800; color: rgb(200, 57, 46); font-family: "Playfair Display", "Georgia", serif; letter-spacing: 0.04em; min-width: 32px;"
+        >
+          I
+        </span>
+        <h2
+          style="font-size: 18px; font-weight: 900; color: rgb(26, 26, 26); letter-spacing: 0.04em; text-transform: uppercase; flex: 1 1 0%;"
+        >
+          Profil
+        </h2>
+      </div>
+      <p
+        style="font-size: 14px; line-height: 1.7; color: rgb(26, 26, 26); max-width: 640px;"
+      >
+        Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <div
+        style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid rgb(26, 26, 26);"
+      >
+        <span
+          style="font-size: 14px; font-weight: 800; color: rgb(200, 57, 46); font-family: "Playfair Display", "Georgia", serif; letter-spacing: 0.04em; min-width: 32px;"
+        >
+          II
+        </span>
+        <h2
+          style="font-size: 18px; font-weight: 900; color: rgb(26, 26, 26); letter-spacing: 0.04em; text-transform: uppercase; flex: 1 1 0%;"
+        >
+          Erfarenhet
+        </h2>
+      </div>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid rgba(26, 26, 26, 0.2); display: grid; grid-template-columns: 110px 1fr; gap: 24px;"
+        >
+          <div
+            style="font-size: 11px; font-weight: 700; color: rgb(200, 57, 46); letter-spacing: 0.08em; text-transform: uppercase; padding-top: 4px;"
+          >
+            2022-01
+            <br />
+            <span
+              style="color: rgb(90, 90, 90); font-weight: 600;"
+            >
+              —
+            </span>
+            <br />
+            Nu
+          </div>
+          <div>
+            <h3
+              style="font-size: 17px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em; margin-bottom: 4px;"
+            >
+              Senior Frontend Developer
+            </h3>
+            <div
+              style="font-size: 12px; font-weight: 600; color: rgb(90, 90, 90); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;"
+            >
+              Tech AB
+            </div>
+            <p
+              style="font-size: 13px; line-height: 1.7; color: rgb(63, 63, 63);"
+            >
+              Leder frontend-team. Migrerade legacy Angular till React.
+            </p>
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px; padding-bottom: 18px; border-bottom: 1px solid rgba(26, 26, 26, 0.2); display: grid; grid-template-columns: 110px 1fr; gap: 24px;"
+        >
+          <div
+            style="font-size: 11px; font-weight: 700; color: rgb(200, 57, 46); letter-spacing: 0.08em; text-transform: uppercase; padding-top: 4px;"
+          >
+            2019-06
+            <br />
+            <span
+              style="color: rgb(90, 90, 90); font-weight: 600;"
+            >
+              —
+            </span>
+            <br />
+            2021-12
+          </div>
+          <div>
+            <h3
+              style="font-size: 17px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em; margin-bottom: 4px;"
+            >
+              Frontend Developer
+            </h3>
+            <div
+              style="font-size: 12px; font-weight: 600; color: rgb(90, 90, 90); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px;"
+            >
+              Webb-byrån
+            </div>
+            <p
+              style="font-size: 13px; line-height: 1.7; color: rgb(63, 63, 63);"
+            >
+              Byggde komponentbibliotek och e-handelslösningar.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <div
+        style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid rgb(26, 26, 26);"
+      >
+        <span
+          style="font-size: 14px; font-weight: 800; color: rgb(200, 57, 46); font-family: "Playfair Display", "Georgia", serif; letter-spacing: 0.04em; min-width: 32px;"
+        >
+          III
+        </span>
+        <h2
+          style="font-size: 18px; font-weight: 900; color: rgb(26, 26, 26); letter-spacing: 0.04em; text-transform: uppercase; flex: 1 1 0%;"
+        >
+          Utbildning
+        </h2>
+      </div>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(26, 26, 26, 0.2); display: grid; grid-template-columns: 110px 1fr; gap: 24px;"
+        >
+          <div
+            style="font-size: 11px; font-weight: 700; color: rgb(200, 57, 46); letter-spacing: 0.08em; text-transform: uppercase; padding-top: 4px;"
+          >
+            2014
+            <br />
+            <span
+              style="color: rgb(90, 90, 90); font-weight: 600;"
+            >
+              —
+            </span>
+            <br />
+            2019
+          </div>
+          <div>
+            <h3
+              style="font-size: 16px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em; margin-bottom: 2px;"
+            >
+              Civilingenjör
+            </h3>
+            <div
+              style="font-size: 12px; font-weight: 600; color: rgb(90, 90, 90); text-transform: uppercase; letter-spacing: 0.08em;"
+            >
+              KTH
+            </div>
+            <div
+              style="font-size: 12px; color: rgb(90, 90, 90); margin-top: 4px;"
+            >
+              Datateknik
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <div
+        style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid rgb(26, 26, 26);"
+      >
+        <span
+          style="font-size: 14px; font-weight: 800; color: rgb(200, 57, 46); font-family: "Playfair Display", "Georgia", serif; letter-spacing: 0.04em; min-width: 32px;"
+        >
+          IV
+        </span>
+        <h2
+          style="font-size: 18px; font-weight: 900; color: rgb(26, 26, 26); letter-spacing: 0.04em; text-transform: uppercase; flex: 1 1 0%;"
+        >
+          Kompetenser
+        </h2>
+      </div>
+      <div
+        style="display: flex; flex-wrap: wrap; gap: 8px;"
+      >
+        <span
+          class="cv-keep"
+          style="font-size: 12px; font-weight: 600; color: rgb(26, 26, 26); background: transparent; border: 1px solid rgb(26, 26, 26); padding: 6px 12px; letter-spacing: 0.04em; text-transform: uppercase;"
+        >
+          React
+        </span>
+        <span
+          class="cv-keep"
+          style="font-size: 12px; font-weight: 600; color: rgb(26, 26, 26); background: transparent; border: 1px solid rgb(26, 26, 26); padding: 6px 12px; letter-spacing: 0.04em; text-transform: uppercase;"
+        >
+          TypeScript
+        </span>
+        <span
+          class="cv-keep"
+          style="font-size: 12px; font-weight: 600; color: rgb(26, 26, 26); background: transparent; border: 1px solid rgb(26, 26, 26); padding: 6px 12px; letter-spacing: 0.04em; text-transform: uppercase;"
+        >
+          CSS
+        </span>
+        <span
+          class="cv-keep"
+          style="font-size: 12px; font-weight: 600; color: rgb(26, 26, 26); background: transparent; border: 1px solid rgb(26, 26, 26); padding: 6px 12px; letter-spacing: 0.04em; text-transform: uppercase;"
+        >
+          Accessibility
+        </span>
+      </div>
+    </section>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <div
+        style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid rgb(26, 26, 26);"
+      >
+        <span
+          style="font-size: 14px; font-weight: 800; color: rgb(200, 57, 46); font-family: "Playfair Display", "Georgia", serif; letter-spacing: 0.04em; min-width: 32px;"
+        >
+          V
+        </span>
+        <h2
+          style="font-size: 18px; font-weight: 900; color: rgb(26, 26, 26); letter-spacing: 0.04em; text-transform: uppercase; flex: 1 1 0%;"
+        >
+          Språk
+        </h2>
+      </div>
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px;"
+      >
+        <div
+          class="cv-keep"
+        >
+          <div
+            style="font-size: 13px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em;"
+          >
+            Svenska
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(200, 57, 46); margin-top: 2px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;"
+          >
+            Modersmål
+          </div>
+        </div>
+        <div
+          class="cv-keep"
+        >
+          <div
+            style="font-size: 13px; font-weight: 800; color: rgb(26, 26, 26); letter-spacing: -0.01em;"
+          >
+            Engelska
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(200, 57, 46); margin-top: 2px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700;"
+          >
+            Flytande
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <div
+        style="display: flex; align-items: baseline; gap: 16px; margin-bottom: 18px; padding-bottom: 8px; border-bottom: 2px solid rgb(26, 26, 26);"
+      >
+        <span
+          style="font-size: 14px; font-weight: 800; color: rgb(200, 57, 46); font-family: "Playfair Display", "Georgia", serif; letter-spacing: 0.04em; min-width: 32px;"
+        >
+          VI
+        </span>
+        <h2
+          style="font-size: 18px; font-weight: 900; color: rgb(26, 26, 26); letter-spacing: 0.04em; text-transform: uppercase; flex: 1 1 0%;"
+        >
+          Länkar
+        </h2>
+      </div>
+      <div
+        style="display: flex; flex-direction: column; gap: 6px;"
+      >
+        <div
+          class="cv-keep"
+          style="font-size: 12px;"
+        >
+          <span
+            style="font-weight: 700; color: rgb(26, 26, 26); margin-right: 8px;"
+          >
+            LinkedIn
+          </span>
+          <span
+            style="color: rgb(200, 57, 46); word-break: break-all;"
+          >
+            https://linkedin.com/in/anna
+          </span>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > BudapestTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="display: flex; min-height: 297mm; font-family: "Inter", -apple-system, sans-serif; background: rgb(255, 255, 255);"
+>
+  <aside
+    style="width: 34%; background: rgb(44, 62, 80); color: rgb(255, 255, 255); padding: 48px 32px;"
+  >
+    <div
+      style="display: flex; justify-content: center; margin-bottom: 40px;"
+    >
+      <div
+        style="width: 160px; height: 160px; border-radius: 50%; background: rgba(255, 255, 255, 0.06); border: 4px solid rgb(230, 126, 34); display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: 300; color: rgba(255, 255, 255, 0.6); letter-spacing: 0.02em;"
+      >
+        AA
+      </div>
+    </div>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 12px; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 12px; color: rgb(255, 255, 255);"
+      >
+        OM MIG
+      </h3>
+      <p
+        style="font-size: 12px; line-height: 1.7; color: rgba(255, 255, 255, 0.85);"
+      >
+        Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <div
+      style="height: 1px; background: rgba(255, 255, 255, 0.12); margin-bottom: 32px;"
+    />
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 12px; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 14px; color: rgb(255, 255, 255);"
+      >
+        LÄNKAR
+      </h3>
+      <div
+        style="margin-bottom: 12px;"
+      >
+        <div
+          style="font-size: 12px; font-weight: 600; color: rgb(255, 255, 255);"
+        >
+          LinkedIn
+        </div>
+        <div
+          style="font-size: 11px; color: rgba(255, 255, 255, 0.7); word-break: break-all;"
+        >
+          https://linkedin.com/in/anna
+        </div>
+      </div>
+    </section>
+    <div
+      style="height: 1px; background: rgba(255, 255, 255, 0.12); margin-bottom: 32px;"
+    />
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 12px; font-weight: 700; letter-spacing: 0.15em; margin-bottom: 14px; color: rgb(255, 255, 255);"
+      >
+        SPRÅK
+      </h3>
+      <div
+        class="cv-entry"
+        style="margin-bottom: 8px; font-size: 12px;"
+      >
+        <span
+          style="color: rgb(255, 255, 255); font-weight: 600;"
+        >
+          Svenska
+        </span>
+        <span
+          style="color: rgba(255, 255, 255, 0.7); margin-left: 6px;"
+        >
+          — 
+          Modersmål
+        </span>
+      </div>
+      <div
+        class="cv-entry"
+        style="margin-bottom: 8px; font-size: 12px;"
+      >
+        <span
+          style="color: rgb(255, 255, 255); font-weight: 600;"
+        >
+          Engelska
+        </span>
+        <span
+          style="color: rgba(255, 255, 255, 0.7); margin-left: 6px;"
+        >
+          — 
+          Flytande
+        </span>
+      </div>
+    </section>
+  </aside>
+  <main
+    style="flex: 1 1 0%; padding: 48px 56px; background: rgb(255, 255, 255);"
+  >
+    <header
+      style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px;"
+    >
+      <div>
+        <h1
+          style="font-size: 36px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase; color: rgb(44, 62, 80); line-height: 1.1; margin-bottom: 6px;"
+        >
+          Anna Andersson
+        </h1>
+        <p
+          style="font-size: 12px; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(136, 136, 136);"
+        >
+          Frontend Developer
+        </p>
+      </div>
+      <div
+        style="text-align: right; font-size: 12px; color: rgb(85, 85, 85);"
+      >
+        <div
+          style="margin-bottom: 4px;"
+        >
+          Stockholm
+        </div>
+        <div
+          style="margin-bottom: 4px;"
+        >
+          +46 70 123 45 67
+        </div>
+        <div>
+          anna@example.com
+        </div>
+      </div>
+    </header>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <h2
+        style="font-size: 13px; font-weight: 700; letter-spacing: 0.15em; color: rgb(44, 62, 80); margin-bottom: 6px;"
+      >
+        ARBETSLIVSERFARENHET
+      </h2>
+      <div
+        style="height: 1px; background: rgb(229, 231, 235); margin-bottom: 20px;"
+      />
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px;"
+        >
+          <div
+            style="display: grid; grid-template-columns: 120px 24px 1fr; gap: 12px;"
+          >
+            <div>
+              <div
+                style="font-size: 12px; font-weight: 700; color: rgb(44, 62, 80);"
+              >
+                Tech AB
+              </div>
+              <div
+                style="font-size: 11px; color: rgb(136, 136, 136); margin-top: 2px;"
+              >
+                2022-01
+                 - 
+                Nu
+              </div>
+            </div>
+            <div
+              style="display: flex; flex-direction: column; align-items: center; padding-top: 6px;"
+            >
+              <div
+                style="width: 10px; height: 10px; border-radius: 50%; background: rgb(44, 62, 80);"
+              />
+              <div
+                style="width: 1px; flex: 1 1 0%; background: rgb(209, 213, 219); margin-top: 4px;"
+              />
+            </div>
+            <div>
+              <h3
+                style="font-size: 13px; font-weight: 700; color: rgb(44, 62, 80); margin-bottom: 4px;"
+              >
+                Senior Frontend Developer
+              </h3>
+              <p
+                style="font-size: 12px; line-height: 1.6; color: rgb(85, 85, 85);"
+              >
+                Leder frontend-team. Migrerade legacy Angular till React.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px;"
+        >
+          <div
+            style="display: grid; grid-template-columns: 120px 24px 1fr; gap: 12px;"
+          >
+            <div>
+              <div
+                style="font-size: 12px; font-weight: 700; color: rgb(44, 62, 80);"
+              >
+                Webb-byrån
+              </div>
+              <div
+                style="font-size: 11px; color: rgb(136, 136, 136); margin-top: 2px;"
+              >
+                2019-06
+                 - 
+                2021-12
+              </div>
+            </div>
+            <div
+              style="display: flex; flex-direction: column; align-items: center; padding-top: 6px;"
+            >
+              <div
+                style="width: 10px; height: 10px; border-radius: 50%; background: rgb(44, 62, 80);"
+              />
+              <div
+                style="width: 1px; flex: 1 1 0%; background: rgb(209, 213, 219); margin-top: 4px;"
+              />
+            </div>
+            <div>
+              <h3
+                style="font-size: 13px; font-weight: 700; color: rgb(44, 62, 80); margin-bottom: 4px;"
+              >
+                Frontend Developer
+              </h3>
+              <p
+                style="font-size: 12px; line-height: 1.6; color: rgb(85, 85, 85);"
+              >
+                Byggde komponentbibliotek och e-handelslösningar.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <h2
+        style="font-size: 13px; font-weight: 700; letter-spacing: 0.15em; color: rgb(44, 62, 80); margin-bottom: 6px;"
+      >
+        UTBILDNING
+      </h2>
+      <div
+        style="height: 1px; background: rgb(229, 231, 235); margin-bottom: 20px;"
+      />
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px;"
+        >
+          <div
+            style="display: grid; grid-template-columns: 120px 24px 1fr; gap: 12px;"
+          >
+            <div>
+              <div
+                style="font-size: 12px; font-weight: 700; color: rgb(44, 62, 80);"
+              >
+                KTH
+              </div>
+              <div
+                style="font-size: 11px; color: rgb(136, 136, 136); margin-top: 2px;"
+              >
+                2014
+                 - 
+                2019
+              </div>
+            </div>
+            <div
+              style="display: flex; flex-direction: column; align-items: center; padding-top: 6px;"
+            >
+              <div
+                style="width: 10px; height: 10px; border-radius: 50%; background: rgb(44, 62, 80);"
+              />
+            </div>
+            <div>
+              <h3
+                style="font-size: 13px; font-weight: 700; color: rgb(44, 62, 80); margin-bottom: 4px;"
+              >
+                Civilingenjör
+              </h3>
+              <div
+                style="font-size: 12px; color: rgb(85, 85, 85);"
+              >
+                Datateknik
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-entry"
+    >
+      <h2
+        style="font-size: 13px; font-weight: 700; letter-spacing: 0.15em; color: rgb(44, 62, 80); margin-bottom: 6px;"
+      >
+        KOMPETENSER
+      </h2>
+      <div
+        style="height: 1px; background: rgb(229, 231, 235); margin-bottom: 16px;"
+      />
+      <div
+        style="display: flex; flex-wrap: wrap; gap: 6px;"
+      >
+        <span
+          style="font-size: 11px; padding: 5px 12px; background: rgb(243, 244, 246); color: rgb(44, 62, 80); border-radius: 3px; font-weight: 500;"
+        >
+          React
+        </span>
+        <span
+          style="font-size: 11px; padding: 5px 12px; background: rgb(243, 244, 246); color: rgb(44, 62, 80); border-radius: 3px; font-weight: 500;"
+        >
+          TypeScript
+        </span>
+        <span
+          style="font-size: 11px; padding: 5px 12px; background: rgb(243, 244, 246); color: rgb(44, 62, 80); border-radius: 3px; font-weight: 500;"
+        >
+          CSS
+        </span>
+        <span
+          style="font-size: 11px; padding: 5px 12px; background: rgb(243, 244, 246); color: rgb(44, 62, 80); border-radius: 3px; font-weight: 500;"
+        >
+          Accessibility
+        </span>
+      </div>
+    </section>
+  </main>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > CenteredTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="min-height: 297mm; background: rgb(255, 255, 255); font-family: "Inter", -apple-system, sans-serif;"
+>
+  <header
+    class="cv-keep"
+    style="background: rgb(30, 58, 95); padding: 36px 64px 28px; text-align: center; color: rgb(255, 255, 255); border-bottom: 3px solid rgb(201, 166, 107);"
+  >
+    <h1
+      style="font-size: 36px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 6px;"
+    >
+      Anna Andersson
+    </h1>
+    <p
+      style="font-size: 14px; font-weight: 400; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(201, 166, 107); margin-bottom: 16px;"
+    >
+      Frontend Developer
+    </p>
+    <div
+      style="display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255, 255, 255, 0.85);"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-mail"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="width: 12px; height: 12px;"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"
+          />
+          <rect
+            height="16"
+            rx="2"
+            width="20"
+            x="2"
+            y="4"
+          />
+        </svg>
+        anna@example.com
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255, 255, 255, 0.85);"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-phone"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="width: 12px; height: 12px;"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"
+          />
+        </svg>
+        +46 70 123 45 67
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgba(255, 255, 255, 0.85);"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-map-pin"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="width: 12px; height: 12px;"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"
+          />
+          <circle
+            cx="12"
+            cy="10"
+            r="3"
+          />
+        </svg>
+        Stockholm
+      </span>
+    </div>
+  </header>
+  <main
+    style="padding: 36px 64px 48px;"
+  >
+    <section
+      style="text-align: center; margin-bottom: 56px;"
+    >
+      <p
+        style="font-size: 18px; line-height: 1.8; color: rgb(75, 85, 99); max-width: 680px; margin: 0px auto;"
+      >
+        Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <section
+      style="margin-bottom: 56px; text-align: center;"
+    >
+      <div
+        style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"
+      >
+        <span
+          style="font-size: 13px; font-weight: 500; padding: 8px 18px; background: rgb(244, 241, 236); color: rgb(30, 58, 95); border-radius: 4px; letter-spacing: 0.01em;"
+        >
+          React
+        </span>
+        <span
+          style="font-size: 13px; font-weight: 500; padding: 8px 18px; background: rgb(244, 241, 236); color: rgb(30, 58, 95); border-radius: 4px; letter-spacing: 0.01em;"
+        >
+          TypeScript
+        </span>
+        <span
+          style="font-size: 13px; font-weight: 500; padding: 8px 18px; background: rgb(244, 241, 236); color: rgb(30, 58, 95); border-radius: 4px; letter-spacing: 0.01em;"
+        >
+          CSS
+        </span>
+        <span
+          style="font-size: 13px; font-weight: 500; padding: 8px 18px; background: rgb(244, 241, 236); color: rgb(30, 58, 95); border-radius: 4px; letter-spacing: 0.01em;"
+        >
+          Accessibility
+        </span>
+      </div>
+    </section>
+    <section
+      style="margin-bottom: 40px;"
+    >
+      <h2
+        style="font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(30, 58, 95); margin-bottom: 24px; padding-bottom: 8px; border-bottom: 1px solid rgba(30, 58, 95, 0.145);"
+      >
+        Erfarenhet
+      </h2>
+      <div>
+        <div
+          class="cv-entry"
+          style="padding-left: 20px; border-left: 2px solid rgba(30, 58, 95, 0.19); margin-bottom: 24px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+          >
+            <h3
+              style="font-size: 17px; font-weight: 600; color: rgb(17, 24, 39); word-break: break-word;"
+            >
+              Senior Frontend Developer
+            </h3>
+            <span
+              style="font-size: 12px; color: rgb(156, 163, 175); white-space: nowrap; margin-left: 12px;"
+            >
+              2022-01
+               — 
+              Nu
+            </span>
+          </div>
+          <div
+            style="font-size: 14px; color: rgb(30, 58, 95); margin-bottom: 8px;"
+          >
+            Tech AB
+          </div>
+          <p
+            style="font-size: 14px; line-height: 1.7; color: rgb(107, 114, 128);"
+          >
+            Leder frontend-team. Migrerade legacy Angular till React.
+          </p>
+        </div>
+        <div
+          class="cv-entry"
+          style="padding-left: 20px; border-left: 2px solid rgba(30, 58, 95, 0.19); margin-bottom: 24px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+          >
+            <h3
+              style="font-size: 17px; font-weight: 600; color: rgb(17, 24, 39); word-break: break-word;"
+            >
+              Frontend Developer
+            </h3>
+            <span
+              style="font-size: 12px; color: rgb(156, 163, 175); white-space: nowrap; margin-left: 12px;"
+            >
+              2019-06
+               — 
+              2021-12
+            </span>
+          </div>
+          <div
+            style="font-size: 14px; color: rgb(30, 58, 95); margin-bottom: 8px;"
+          >
+            Webb-byrån
+          </div>
+          <p
+            style="font-size: 14px; line-height: 1.7; color: rgb(107, 114, 128);"
+          >
+            Byggde komponentbibliotek och e-handelslösningar.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section
+      style="margin-bottom: 40px;"
+    >
+      <h2
+        style="font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(30, 58, 95); margin-bottom: 24px; padding-bottom: 8px; border-bottom: 1px solid rgba(30, 58, 95, 0.145);"
+      >
+        Utbildning
+      </h2>
+      <div>
+        <div
+          class="cv-entry"
+          style="padding-left: 20px; border-left: 2px solid rgba(30, 58, 95, 0.19); margin-bottom: 20px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;"
+          >
+            <h3
+              style="font-size: 16px; font-weight: 600; color: rgb(17, 24, 39);"
+            >
+              Civilingenjör
+            </h3>
+            <span
+              style="font-size: 12px; color: rgb(156, 163, 175); white-space: nowrap; margin-left: 12px;"
+            >
+              2014
+               — 
+              2019
+            </span>
+          </div>
+          <div
+            style="font-size: 14px; color: rgb(30, 58, 95);"
+          >
+            KTH
+            <span
+              style="color: rgb(156, 163, 175);"
+            >
+               · 
+              Datateknik
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+    >
+      <h2
+        style="font-size: 12px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(30, 58, 95); margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid rgba(30, 58, 95, 0.145);"
+      >
+        Språk
+      </h2>
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;"
+      >
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="font-size: 14px; color: rgb(55, 65, 81); font-weight: 500;"
+          >
+            Svenska
+          </div>
+          <div
+            style="font-size: 12px; color: rgb(156, 163, 175); font-style: italic; margin-top: 2px;"
+          >
+            Modersmål
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="font-size: 14px; color: rgb(55, 65, 81); font-weight: 500;"
+          >
+            Engelska
+          </div>
+          <div
+            style="font-size: 12px; color: rgb(156, 163, 175); font-style: italic; margin-top: 2px;"
+          >
+            Flytande
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > ChicagoTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="display: flex; min-height: 297mm; background: rgb(255, 255, 255); font-family: "Inter", -apple-system, sans-serif;"
+>
+  <aside
+    style="width: 200px; flex-shrink: 0; padding: 64px 24px 64px 56px; border-right: 1px solid rgb(229, 231, 235); background: rgb(255, 255, 255);"
+  >
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: rgb(17, 24, 39); margin-bottom: 14px;"
+      >
+        KONTAKT
+      </h3>
+      <div
+        style="font-size: 11px; line-height: 1.7; color: rgb(55, 65, 81);"
+      >
+        <div
+          style="margin-bottom: 6px;"
+        >
+          +46 70 123 45 67
+        </div>
+        <div
+          style="margin-bottom: 6px; word-break: break-all;"
+        >
+          anna@example.com
+        </div>
+        <div>
+          Stockholm
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: rgb(17, 24, 39); margin-bottom: 14px;"
+      >
+        LÄNKAR
+      </h3>
+      <div>
+        <div
+          style="margin-bottom: 10px;"
+        >
+          <div
+            style="font-size: 11px; font-weight: 600; color: rgb(17, 24, 39);"
+          >
+            LinkedIn
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(107, 114, 128); word-break: break-all;"
+          >
+            https://linkedin.com/in/anna
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: rgb(17, 24, 39); margin-bottom: 14px;"
+      >
+        KOMPETENSER
+      </h3>
+      <div
+        style="font-size: 11px; line-height: 1.8; color: rgb(55, 65, 81);"
+      >
+        <div>
+          React
+        </div>
+        <div>
+          TypeScript
+        </div>
+        <div>
+          CSS
+        </div>
+        <div>
+          Accessibility
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: rgb(17, 24, 39); margin-bottom: 14px;"
+      >
+        SPRÅK
+      </h3>
+      <div
+        style="font-size: 11px; line-height: 1.6; color: rgb(55, 65, 81);"
+      >
+        <div
+          class="cv-entry"
+          style="margin-bottom: 6px;"
+        >
+          <div
+            style="font-weight: 600;"
+          >
+            Svenska
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(107, 114, 128); font-style: italic;"
+          >
+            Modersmål
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 6px;"
+        >
+          <div
+            style="font-weight: 600;"
+          >
+            Engelska
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(107, 114, 128); font-style: italic;"
+          >
+            Flytande
+          </div>
+        </div>
+      </div>
+    </section>
+  </aside>
+  <main
+    style="flex: 1 1 0%; padding: 64px 56px 64px 32px;"
+  >
+    <header
+      class="cv-keep"
+      style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgb(209, 213, 219);"
+    >
+      <div>
+        <h1
+          style="font-size: 36px; font-weight: 400; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(17, 24, 39); line-height: 1.1; word-break: break-word;"
+        >
+          Anna Andersson
+        </h1>
+        <p
+          style="font-size: 12px; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(107, 114, 128); margin-top: 8px;"
+        >
+          Frontend Developer
+        </p>
+      </div>
+      <div
+        style="width: 90px; height: 90px; border-radius: 50%; border: 1px solid rgb(17, 24, 39); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 16px;"
+      >
+        <span
+          style="font-size: 24px; font-weight: 300; color: rgb(17, 24, 39); letter-spacing: 0.1em;"
+        >
+          AA
+        </span>
+      </div>
+    </header>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: rgb(17, 24, 39); margin-bottom: 14px;"
+      >
+        OM MIG
+      </h3>
+      <p
+        style="font-size: 12px; line-height: 1.7; color: rgb(55, 65, 81);"
+      >
+        Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: rgb(17, 24, 39); margin-bottom: 18px;"
+      >
+        ARBETSLIVSERFARENHET
+      </h3>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+          >
+            <h4
+              style="font-size: 13px; font-weight: 700; color: rgb(17, 24, 39); word-break: break-word;"
+            >
+              Senior Frontend Developer
+              <span
+                style="font-weight: 500; color: rgb(75, 85, 99);"
+              >
+                , 
+                Tech AB
+              </span>
+            </h4>
+            <span
+              style="font-size: 11px; color: rgb(107, 114, 128); white-space: nowrap; margin-left: 12px;"
+            >
+              2022-01
+               - 
+              Nu
+            </span>
+          </div>
+          <p
+            style="font-size: 12px; line-height: 1.6; color: rgb(75, 85, 99);"
+          >
+            Leder frontend-team. Migrerade legacy Angular till React.
+          </p>
+        </div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+          >
+            <h4
+              style="font-size: 13px; font-weight: 700; color: rgb(17, 24, 39); word-break: break-word;"
+            >
+              Frontend Developer
+              <span
+                style="font-weight: 500; color: rgb(75, 85, 99);"
+              >
+                , 
+                Webb-byrån
+              </span>
+            </h4>
+            <span
+              style="font-size: 11px; color: rgb(107, 114, 128); white-space: nowrap; margin-left: 12px;"
+            >
+              2019-06
+               - 
+              2021-12
+            </span>
+          </div>
+          <p
+            style="font-size: 12px; line-height: 1.6; color: rgb(75, 85, 99);"
+          >
+            Byggde komponentbibliotek och e-handelslösningar.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-entry"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.2em; color: rgb(17, 24, 39); margin-bottom: 18px;"
+      >
+        UTBILDNING
+      </h3>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 14px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline;"
+          >
+            <h4
+              style="font-size: 13px; font-weight: 700; color: rgb(17, 24, 39); word-break: break-word;"
+            >
+              Civilingenjör
+              <span
+                style="font-weight: 500; color: rgb(75, 85, 99);"
+              >
+                , 
+                KTH
+              </span>
+            </h4>
+            <span
+              style="font-size: 11px; color: rgb(107, 114, 128); white-space: nowrap; margin-left: 12px;"
+            >
+              2014
+               - 
+              2019
+            </span>
+          </div>
+          <div
+            style="font-size: 12px; color: rgb(107, 114, 128); margin-top: 2px;"
+          >
+            Datateknik
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > CreativeTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="min-height: 297mm; background: rgb(250, 250, 250); font-family: "Inter", -apple-system, sans-serif; position: relative; overflow: hidden;"
+>
+  <header
+    style="padding: 40px 56px 24px; position: relative;"
+  >
+    <div
+      style="display: flex; gap: 40px; align-items: center;"
+    >
+      <div
+        style="flex: 1 1 0%;"
+      >
+        <h1
+          style="font-size: 64px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: rgb(162, 20, 100); margin-bottom: 12px;"
+        >
+          Anna Andersson
+        </h1>
+        <p
+          style="font-size: 20px; font-weight: 500; color: rgb(51, 51, 51); letter-spacing: 0.02em;"
+        >
+          Frontend Developer
+        </p>
+      </div>
+    </div>
+    <div
+      style="display: flex; gap: 12px; margin-top: 32px; flex-wrap: wrap;"
+    >
+      <span
+        style="display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgb(255, 255, 255); border-radius: 100px; font-size: 14px; color: rgb(51, 51, 51); box-shadow: 0 2px 8px rgba(0,0,0,0.06);"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-mail"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="width: 16px; height: 16px; color: rgb(162, 20, 100);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"
+          />
+          <rect
+            height="16"
+            rx="2"
+            width="20"
+            x="2"
+            y="4"
+          />
+        </svg>
+        anna@example.com
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgb(255, 255, 255); border-radius: 100px; font-size: 14px; color: rgb(51, 51, 51); box-shadow: 0 2px 8px rgba(0,0,0,0.06);"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-phone"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="width: 16px; height: 16px; color: rgb(162, 20, 100);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"
+          />
+        </svg>
+        +46 70 123 45 67
+      </span>
+      <span
+        style="display: flex; align-items: center; gap: 8px; padding: 10px 20px; background: rgb(255, 255, 255); border-radius: 100px; font-size: 14px; color: rgb(51, 51, 51); box-shadow: 0 2px 8px rgba(0,0,0,0.06);"
+      >
+        <svg
+          aria-hidden="true"
+          class="lucide lucide-map-pin"
+          fill="none"
+          height="24"
+          stroke="currentColor"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          style="width: 16px; height: 16px; color: rgb(162, 20, 100);"
+          viewBox="0 0 24 24"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"
+          />
+          <circle
+            cx="12"
+            cy="10"
+            r="3"
+          />
+        </svg>
+        Stockholm
+      </span>
+    </div>
+  </header>
+  <main
+    style="padding: 0px 56px 40px;"
+  >
+    <section
+      style="background: rgb(255, 255, 255); padding: 24px 28px; border-radius: 20px; margin-bottom: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);"
+    >
+      <p
+        style="font-size: 14px; line-height: 1.7; color: rgb(68, 68, 68);"
+      >
+        Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <section
+      class="cv-keep"
+      style="background: rgb(162, 20, 100); padding: 24px 32px; border-radius: 20px; color: rgb(255, 255, 255); margin-bottom: 32px;"
+    >
+      <h2
+        style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8; margin-bottom: 16px;"
+      >
+        Kompetenser
+      </h2>
+      <div
+        style="display: flex; flex-wrap: wrap; gap: 10px;"
+      >
+        <span
+          style="font-size: 13px; font-weight: 500; padding: 8px 16px; background: rgba(255, 255, 255, 0.2); border-radius: 100px;"
+        >
+          React
+        </span>
+        <span
+          style="font-size: 13px; font-weight: 500; padding: 8px 16px; background: rgba(255, 255, 255, 0.2); border-radius: 100px;"
+        >
+          TypeScript
+        </span>
+        <span
+          style="font-size: 13px; font-weight: 500; padding: 8px 16px; background: rgba(255, 255, 255, 0.2); border-radius: 100px;"
+        >
+          CSS
+        </span>
+        <span
+          style="font-size: 13px; font-weight: 500; padding: 8px 16px; background: rgba(255, 255, 255, 0.2); border-radius: 100px;"
+        >
+          Accessibility
+        </span>
+      </div>
+    </section>
+    <section
+      style="background: rgb(255, 255, 255); padding: 24px 28px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 32px;"
+    >
+      <h2
+        style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(162, 20, 100); margin-bottom: 24px;"
+      >
+        Erfarenhet
+      </h2>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 24px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;"
+          >
+            <h3
+              style="font-size: 17px; font-weight: 700; color: rgb(26, 26, 26); word-break: break-word;"
+            >
+              Senior Frontend Developer
+            </h3>
+            <span
+              style="font-size: 11px; font-weight: 600; padding: 4px 12px; background: rgba(162, 20, 100, 0.082); color: rgb(162, 20, 100); border-radius: 100px; white-space: nowrap; margin-left: 12px;"
+            >
+              2022-01
+               — 
+              Nu
+            </span>
+          </div>
+          <div
+            style="font-size: 14px; color: rgb(162, 20, 100); margin-bottom: 8px;"
+          >
+            Tech AB
+          </div>
+          <p
+            style="font-size: 14px; line-height: 1.6; color: rgb(102, 102, 102);"
+          >
+            Leder frontend-team. Migrerade legacy Angular till React.
+          </p>
+        </div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 24px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px;"
+          >
+            <h3
+              style="font-size: 17px; font-weight: 700; color: rgb(26, 26, 26); word-break: break-word;"
+            >
+              Frontend Developer
+            </h3>
+            <span
+              style="font-size: 11px; font-weight: 600; padding: 4px 12px; background: rgba(162, 20, 100, 0.082); color: rgb(162, 20, 100); border-radius: 100px; white-space: nowrap; margin-left: 12px;"
+            >
+              2019-06
+               — 
+              2021-12
+            </span>
+          </div>
+          <div
+            style="font-size: 14px; color: rgb(162, 20, 100); margin-bottom: 8px;"
+          >
+            Webb-byrån
+          </div>
+          <p
+            style="font-size: 14px; line-height: 1.6; color: rgb(102, 102, 102);"
+          >
+            Byggde komponentbibliotek och e-handelslösningar.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section
+      style="background: rgb(255, 255, 255); padding: 24px 28px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); margin-bottom: 32px;"
+    >
+      <h2
+        style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(162, 20, 100); margin-bottom: 20px;"
+      >
+        Utbildning
+      </h2>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 16px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline;"
+          >
+            <h3
+              style="font-size: 16px; font-weight: 600; color: rgb(26, 26, 26);"
+            >
+              Civilingenjör
+            </h3>
+            <span
+              style="font-size: 12px; color: rgb(136, 136, 136); white-space: nowrap; margin-left: 12px;"
+            >
+              2014
+               — 
+              2019
+            </span>
+          </div>
+          <div
+            style="font-size: 14px; color: rgb(162, 20, 100);"
+          >
+            KTH
+            <span
+              style="color: rgb(136, 136, 136);"
+            >
+               · 
+              Datateknik
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+      style="background: rgb(255, 255, 255); padding: 24px 28px; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);"
+    >
+      <h2
+        style="font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(162, 20, 100); margin-bottom: 16px;"
+      >
+        Språk
+      </h2>
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;"
+      >
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: flex; justify-content: space-between;"
+          >
+            <span
+              style="font-size: 14px; color: rgb(51, 51, 51);"
+            >
+              Svenska
+            </span>
+            <span
+              style="font-size: 14px; color: rgb(136, 136, 136);"
+            >
+              Modersmål
+            </span>
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: flex; justify-content: space-between;"
+          >
+            <span
+              style="font-size: 14px; color: rgb(51, 51, 51);"
+            >
+              Engelska
+            </span>
+            <span
+              style="font-size: 14px; color: rgb(136, 136, 136);"
+            >
+              Flytande
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > ExecutiveTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="min-height: 297mm; background: rgb(253, 252, 250); font-family: "Georgia", "Times New Roman", serif; color: rgb(26, 26, 26);"
+>
+  <header
+    class="cv-keep"
+    style="padding: 56px 72px 28px; border-bottom: 2px solid rgb(184, 134, 11); background: rgb(255, 255, 255);"
+  >
+    <div
+      style="display: flex; align-items: center; gap: 32px;"
+    >
+      <div
+        style="flex: 1 1 0%; min-width: 0;"
+      >
+        <h1
+          style="font-size: 42px; font-weight: 400; letter-spacing: 0.02em; color: rgb(26, 26, 26); margin-bottom: 6px; line-height: 1.1;"
+        >
+          Anna Andersson
+        </h1>
+        <p
+          style="font-size: 18px; font-style: italic; color: rgb(184, 134, 11); margin-bottom: 14px;"
+        >
+          Frontend Developer
+        </p>
+        <div
+          style="display: flex; flex-wrap: wrap; gap: 20px; font-size: 13px; color: rgb(102, 102, 102);"
+        >
+          <span>
+            anna@example.com
+          </span>
+          <span>
+            +46 70 123 45 67
+          </span>
+          <span>
+            Stockholm
+          </span>
+        </div>
+      </div>
+    </div>
+  </header>
+  <main
+    style="padding: 40px 72px 56px;"
+  >
+    <section
+      style="margin-bottom: 36px;"
+    >
+      <p
+        style="font-size: 15px; line-height: 1.8; color: rgb(51, 51, 51);"
+      >
+        <span
+          style="float: left; font-size: 52px; line-height: 0.9; margin-right: 10px; margin-top: 6px; margin-bottom: -4px; color: rgb(184, 134, 11); font-weight: 400;"
+        >
+          P
+        </span>
+        assionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <section
+      style="margin-bottom: 36px;"
+    >
+      <h2
+        style="font-size: 14px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(184, 134, 11); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgb(245, 230, 200);"
+      >
+        Erfarenhet
+      </h2>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;"
+          >
+            <h3
+              style="font-size: 17px; font-weight: 400; color: rgb(26, 26, 26); word-break: break-word;"
+            >
+              Senior Frontend Developer
+            </h3>
+            <span
+              style="font-size: 13px; color: rgb(102, 102, 102); font-style: italic; white-space: nowrap; margin-left: 12px;"
+            >
+              2022-01
+               — 
+              Nuvarande
+            </span>
+          </div>
+          <div
+            style="font-size: 14px; color: rgb(184, 134, 11); margin-bottom: 8px;"
+          >
+            Tech AB
+          </div>
+          <p
+            style="font-size: 14px; line-height: 1.7; color: rgb(68, 68, 68);"
+          >
+            Leder frontend-team. Migrerade legacy Angular till React.
+          </p>
+        </div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;"
+          >
+            <h3
+              style="font-size: 17px; font-weight: 400; color: rgb(26, 26, 26); word-break: break-word;"
+            >
+              Frontend Developer
+            </h3>
+            <span
+              style="font-size: 13px; color: rgb(102, 102, 102); font-style: italic; white-space: nowrap; margin-left: 12px;"
+            >
+              2019-06
+               — 
+              2021-12
+            </span>
+          </div>
+          <div
+            style="font-size: 14px; color: rgb(184, 134, 11); margin-bottom: 8px;"
+          >
+            Webb-byrån
+          </div>
+          <p
+            style="font-size: 14px; line-height: 1.7; color: rgb(68, 68, 68);"
+          >
+            Byggde komponentbibliotek och e-handelslösningar.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section
+      style="margin-bottom: 36px;"
+    >
+      <h2
+        style="font-size: 14px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(184, 134, 11); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgb(245, 230, 200);"
+      >
+        Utbildning
+      </h2>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 16px;"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;"
+          >
+            <h3
+              style="font-size: 16px; font-weight: 400; color: rgb(26, 26, 26); word-break: break-word;"
+            >
+              Civilingenjör
+            </h3>
+            <span
+              style="font-size: 13px; color: rgb(102, 102, 102); font-style: italic; white-space: nowrap; margin-left: 12px;"
+            >
+              2014
+               — 
+              2019
+            </span>
+          </div>
+          <div
+            style="font-size: 14px; color: rgb(184, 134, 11);"
+          >
+            KTH
+            <span
+              style="color: rgb(102, 102, 102); font-style: italic;"
+            >
+               · 
+              Datateknik
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 36px;"
+    >
+      <h2
+        style="font-size: 14px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(184, 134, 11); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgb(245, 230, 200);"
+      >
+        Expertis
+      </h2>
+      <div
+        style="display: flex; flex-wrap: wrap; gap: 8px;"
+      >
+        <span
+          style="font-size: 13px; padding: 6px 14px; border: 1px solid rgb(229, 212, 168); color: rgb(85, 85, 85); border-radius: 2px;"
+        >
+          React
+        </span>
+        <span
+          style="font-size: 13px; padding: 6px 14px; border: 1px solid rgb(229, 212, 168); color: rgb(85, 85, 85); border-radius: 2px;"
+        >
+          TypeScript
+        </span>
+        <span
+          style="font-size: 13px; padding: 6px 14px; border: 1px solid rgb(229, 212, 168); color: rgb(85, 85, 85); border-radius: 2px;"
+        >
+          CSS
+        </span>
+        <span
+          style="font-size: 13px; padding: 6px 14px; border: 1px solid rgb(229, 212, 168); color: rgb(85, 85, 85); border-radius: 2px;"
+        >
+          Accessibility
+        </span>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 36px;"
+    >
+      <h2
+        style="font-size: 14px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(184, 134, 11); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgb(245, 230, 200);"
+      >
+        Språk
+      </h2>
+      <div
+        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;"
+      >
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: flex; justify-content: space-between;"
+          >
+            <span
+              style="font-size: 14px; color: rgb(51, 51, 51);"
+            >
+              Svenska
+            </span>
+            <span
+              style="font-size: 14px; font-style: italic; color: rgb(102, 102, 102);"
+            >
+              Modersmål
+            </span>
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: flex; justify-content: space-between;"
+          >
+            <span
+              style="font-size: 14px; color: rgb(51, 51, 51);"
+            >
+              Engelska
+            </span>
+            <span
+              style="font-size: 14px; font-style: italic; color: rgb(102, 102, 102);"
+            >
+              Flytande
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+    >
+      <h2
+        style="font-size: 14px; font-weight: 400; letter-spacing: 0.25em; text-transform: uppercase; color: rgb(184, 134, 11); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid rgb(245, 230, 200);"
+      >
+        Länkar
+      </h2>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 6px; font-size: 13px;"
+        >
+          <span
+            style="color: rgb(26, 26, 26);"
+          >
+            LinkedIn
+             · 
+          </span>
+          <span
+            style="color: rgb(184, 134, 11); word-break: break-all;"
+          >
+            https://linkedin.com/in/anna
+          </span>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > ManhattanTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="display: flex; min-height: 297mm; background: rgb(255, 255, 255); font-family: "Source Sans 3", "Helvetica Neue", Arial, sans-serif; color: rgb(26, 26, 26);"
+>
+  <aside
+    style="width: 220px; background: rgb(15, 27, 45); color: rgb(255, 255, 255); padding: 48px 28px; flex-shrink: 0;"
+  >
+    <div
+      class="cv-keep"
+      style="margin-bottom: 36px; display: flex; justify-content: center;"
+    >
+      <div
+        style="width: 140px; height: 140px; border-radius: 50%; border: 2px solid rgb(176, 122, 76); background: rgb(26, 42, 66); display: flex; align-items: center; justify-content: center; font-size: 38px; font-weight: 400; color: rgb(212, 165, 116); font-family: "Playfair Display", "Georgia", serif; letter-spacing: 0.05em;"
+      >
+        AA
+      </div>
+    </div>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(176, 122, 76); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgb(176, 122, 76);"
+      >
+        Kontakt
+      </h3>
+      <div
+        style="display: flex; flex-direction: column; gap: 10px; font-size: 12px;"
+      >
+        <div
+          style="color: rgb(229, 231, 235); word-break: break-all; line-height: 1.5;"
+        >
+          anna@example.com
+        </div>
+        <div
+          style="color: rgb(229, 231, 235);"
+        >
+          +46 70 123 45 67
+        </div>
+        <div
+          style="color: rgb(229, 231, 235);"
+        >
+          Stockholm
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(176, 122, 76); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgb(176, 122, 76);"
+      >
+        Kompetenser
+      </h3>
+      <ul
+        style="list-style: none; padding: 0px; margin: 0px;"
+      >
+        <li
+          style="font-size: 12px; color: rgb(229, 231, 235); line-height: 1.8;"
+        >
+          React
+        </li>
+        <li
+          style="font-size: 12px; color: rgb(229, 231, 235); line-height: 1.8;"
+        >
+          TypeScript
+        </li>
+        <li
+          style="font-size: 12px; color: rgb(229, 231, 235); line-height: 1.8;"
+        >
+          CSS
+        </li>
+        <li
+          style="font-size: 12px; color: rgb(229, 231, 235); line-height: 1.8;"
+        >
+          Accessibility
+        </li>
+      </ul>
+    </section>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(176, 122, 76); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgb(176, 122, 76);"
+      >
+        Språk
+      </h3>
+      <div
+        style="margin-bottom: 10px; font-size: 12px;"
+      >
+        <div
+          style="font-weight: 600; color: rgb(255, 255, 255);"
+        >
+          Svenska
+        </div>
+        <div
+          style="font-size: 10px; color: rgb(212, 165, 116); margin-top: 2px; font-style: italic;"
+        >
+          Modersmål
+        </div>
+      </div>
+      <div
+        style="margin-bottom: 10px; font-size: 12px;"
+      >
+        <div
+          style="font-weight: 600; color: rgb(255, 255, 255);"
+        >
+          Engelska
+        </div>
+        <div
+          style="font-size: 10px; color: rgb(212, 165, 116); margin-top: 2px; font-style: italic;"
+        >
+          Flytande
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(176, 122, 76); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid rgb(176, 122, 76);"
+      >
+        Länkar
+      </h3>
+      <div
+        style="margin-bottom: 10px; font-size: 11px;"
+      >
+        <div
+          style="font-weight: 600; color: rgb(255, 255, 255); font-size: 12px;"
+        >
+          LinkedIn
+        </div>
+        <div
+          style="color: rgb(212, 165, 116); word-break: break-all;"
+        >
+          https://linkedin.com/in/anna
+        </div>
+      </div>
+    </section>
+  </aside>
+  <main
+    style="flex: 1 1 0%; padding: 40px 48px 48px;"
+  >
+    <header
+      style="margin-bottom: 28px; padding-bottom: 18px; border-bottom: 2px solid rgb(176, 122, 76);"
+    >
+      <h1
+        style="font-size: 46px; font-weight: 700; color: rgb(15, 27, 45); font-family: "Playfair Display", "Georgia", serif; letter-spacing: -0.01em; line-height: 1.1; margin-bottom: 8px;"
+      >
+        Anna Andersson
+      </h1>
+      <p
+        style="font-size: 15px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: rgb(176, 122, 76); margin-top: 12px;"
+      >
+        Frontend Developer
+      </p>
+    </header>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <h2
+        style="font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(15, 27, 45); margin-bottom: 14px;"
+      >
+        Profil
+      </h2>
+      <p
+        style="font-size: 13px; line-height: 1.8; color: rgb(26, 26, 26);"
+      >
+        Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <h2
+        style="font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(15, 27, 45); margin-bottom: 20px;"
+      >
+        Erfarenhet
+      </h2>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 24px; padding-left: 16px; border-left: 2px solid rgb(212, 165, 116);"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+          >
+            <h3
+              style="font-size: 16px; font-weight: 700; color: rgb(15, 27, 45); font-family: "Playfair Display", "Georgia", serif;"
+            >
+              Senior Frontend Developer
+            </h3>
+            <span
+              style="font-size: 11px; color: rgb(176, 122, 76); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; margin-left: 12px;"
+            >
+              2022-01
+               — 
+              Nuvarande
+            </span>
+          </div>
+          <div
+            style="font-size: 13px; font-weight: 500; color: rgb(90, 90, 90); margin-bottom: 8px; font-style: italic;"
+          >
+            Tech AB
+          </div>
+          <p
+            style="font-size: 12px; line-height: 1.7; color: rgb(63, 63, 63);"
+          >
+            Leder frontend-team. Migrerade legacy Angular till React.
+          </p>
+        </div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 24px; padding-left: 16px; border-left: 2px solid rgb(212, 165, 116);"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+          >
+            <h3
+              style="font-size: 16px; font-weight: 700; color: rgb(15, 27, 45); font-family: "Playfair Display", "Georgia", serif;"
+            >
+              Frontend Developer
+            </h3>
+            <span
+              style="font-size: 11px; color: rgb(176, 122, 76); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; margin-left: 12px;"
+            >
+              2019-06
+               — 
+              2021-12
+            </span>
+          </div>
+          <div
+            style="font-size: 13px; font-weight: 500; color: rgb(90, 90, 90); margin-bottom: 8px; font-style: italic;"
+          >
+            Webb-byrån
+          </div>
+          <p
+            style="font-size: 12px; line-height: 1.7; color: rgb(63, 63, 63);"
+          >
+            Byggde komponentbibliotek och e-handelslösningar.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2
+        style="font-size: 13px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: rgb(15, 27, 45); margin-bottom: 20px;"
+      >
+        Utbildning
+      </h2>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 20px; padding-left: 16px; border-left: 2px solid rgb(212, 165, 116);"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 2px;"
+          >
+            <h3
+              style="font-size: 15px; font-weight: 700; color: rgb(15, 27, 45); font-family: "Playfair Display", "Georgia", serif;"
+            >
+              Civilingenjör
+            </h3>
+            <span
+              style="font-size: 11px; color: rgb(176, 122, 76); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; white-space: nowrap; margin-left: 12px;"
+            >
+              2014
+               — 
+              2019
+            </span>
+          </div>
+          <div
+            style="font-size: 13px; color: rgb(90, 90, 90); font-style: italic;"
+          >
+            KTH
+          </div>
+          <div
+            style="font-size: 12px; color: rgb(90, 90, 90); margin-top: 2px;"
+          >
+            Datateknik
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > MinimalTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="min-height: 297mm; background: rgb(255, 255, 255); padding: 80px; font-family: "Inter", -apple-system, sans-serif;"
+>
+  <header
+    style="margin-bottom: 64px;"
+  >
+    <h1
+      style="font-size: 64px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; color: rgb(0, 0, 0); margin-bottom: 16px;"
+    >
+      Anna Andersson
+    </h1>
+    <p
+      style="font-size: 20px; font-weight: 400; color: rgb(102, 102, 102); letter-spacing: 0.02em;"
+    >
+      Frontend Developer
+    </p>
+    <div
+      style="display: flex; gap: 32px; margin-top: 32px; padding-top: 32px; border-top: 1px solid rgb(229, 229, 229);"
+    >
+      <span
+        style="font-size: 14px; color: rgb(102, 102, 102);"
+      >
+        anna@example.com
+      </span>
+      <span
+        style="font-size: 14px; color: rgb(102, 102, 102);"
+      >
+        +46 70 123 45 67
+      </span>
+      <span
+        style="font-size: 14px; color: rgb(102, 102, 102);"
+      >
+        Stockholm
+      </span>
+    </div>
+  </header>
+  <section
+    style="margin-bottom: 64px; max-width: 640px;"
+  >
+    <p
+      style="font-size: 18px; line-height: 1.7; color: rgb(51, 51, 51);"
+    >
+      Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+    </p>
+  </section>
+  <section
+    style="margin-bottom: 48px;"
+  >
+    <h2
+      style="font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(153, 153, 153); margin-bottom: 24px;"
+    >
+      Erfarenhet
+    </h2>
+    <div>
+      <div
+        class="cv-entry"
+        style="margin-bottom: 28px;"
+      >
+        <div
+          style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+        >
+          <h3
+            style="font-size: 18px; font-weight: 600; color: rgb(0, 0, 0); word-break: break-word;"
+          >
+            Senior Frontend Developer
+          </h3>
+          <span
+            style="font-size: 12px; color: rgb(153, 153, 153); font-feature-settings: "tnum"; white-space: nowrap; margin-left: 12px;"
+          >
+            2022-01
+             — 
+            Nu
+          </span>
+        </div>
+        <div
+          style="font-size: 14px; color: rgb(102, 102, 102); margin-bottom: 8px;"
+        >
+          Tech AB
+        </div>
+        <p
+          style="font-size: 14px; line-height: 1.6; color: rgb(102, 102, 102);"
+        >
+          Leder frontend-team. Migrerade legacy Angular till React.
+        </p>
+      </div>
+      <div
+        class="cv-entry"
+        style="margin-bottom: 28px;"
+      >
+        <div
+          style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px;"
+        >
+          <h3
+            style="font-size: 18px; font-weight: 600; color: rgb(0, 0, 0); word-break: break-word;"
+          >
+            Frontend Developer
+          </h3>
+          <span
+            style="font-size: 12px; color: rgb(153, 153, 153); font-feature-settings: "tnum"; white-space: nowrap; margin-left: 12px;"
+          >
+            2019-06
+             — 
+            2021-12
+          </span>
+        </div>
+        <div
+          style="font-size: 14px; color: rgb(102, 102, 102); margin-bottom: 8px;"
+        >
+          Webb-byrån
+        </div>
+        <p
+          style="font-size: 14px; line-height: 1.6; color: rgb(102, 102, 102);"
+        >
+          Byggde komponentbibliotek och e-handelslösningar.
+        </p>
+      </div>
+    </div>
+  </section>
+  <section
+    style="margin-bottom: 48px;"
+  >
+    <h2
+      style="font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(153, 153, 153); margin-bottom: 24px;"
+    >
+      Utbildning
+    </h2>
+    <div>
+      <div
+        class="cv-entry"
+        style="margin-bottom: 20px;"
+      >
+        <div
+          style="display: flex; justify-content: space-between; align-items: baseline;"
+        >
+          <h3
+            style="font-size: 16px; font-weight: 600; color: rgb(0, 0, 0);"
+          >
+            Civilingenjör
+          </h3>
+          <span
+            style="font-size: 12px; color: rgb(153, 153, 153); white-space: nowrap; margin-left: 12px;"
+          >
+            2014
+             — 
+            2019
+          </span>
+        </div>
+        <div
+          style="font-size: 14px; color: rgb(102, 102, 102);"
+        >
+          KTH
+          <span>
+             · 
+            Datateknik
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section
+    class="cv-keep"
+    style="margin-bottom: 48px;"
+  >
+    <h2
+      style="font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(153, 153, 153); margin-bottom: 20px;"
+    >
+      Kompetenser
+    </h2>
+    <div
+      style="display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 14px; color: rgb(51, 51, 51);"
+    >
+      <span>
+        React
+      </span>
+      <span>
+        TypeScript
+      </span>
+      <span>
+        CSS
+      </span>
+      <span>
+        Accessibility
+      </span>
+    </div>
+  </section>
+  <section
+    class="cv-keep"
+    style="margin-bottom: 48px;"
+  >
+    <h2
+      style="font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(153, 153, 153); margin-bottom: 20px;"
+    >
+      Språk
+    </h2>
+    <div
+      style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;"
+    >
+      <div
+        class="cv-entry"
+      >
+        <div
+          style="display: flex; justify-content: space-between;"
+        >
+          <span
+            style="font-size: 14px; color: rgb(51, 51, 51);"
+          >
+            Svenska
+          </span>
+          <span
+            style="font-size: 14px; color: rgb(153, 153, 153);"
+          >
+            Modersmål
+          </span>
+        </div>
+      </div>
+      <div
+        class="cv-entry"
+      >
+        <div
+          style="display: flex; justify-content: space-between;"
+        >
+          <span
+            style="font-size: 14px; color: rgb(51, 51, 51);"
+          >
+            Engelska
+          </span>
+          <span
+            style="font-size: 14px; color: rgb(153, 153, 153);"
+          >
+            Flytande
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > ModernTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="display: flex; min-height: 297mm; font-family: "Inter", -apple-system, sans-serif;"
+>
+  <aside
+    style="width: 320px; background: linear-gradient(180deg, #0F0F0F 0%, #1A1A1A 100%); color: rgb(255, 255, 255); padding: 48px 32px; display: flex; flex-direction: column;"
+  >
+    <div
+      style="width: 100%; aspect-ratio: 1; background: rgba(255, 255, 255, 0.05); border-radius: 16px; margin-bottom: 32px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255, 255, 255, 0.08);"
+    >
+      <span
+        style="font-size: 56px; font-weight: 300; color: rgba(255, 255, 255, 0.5); letter-spacing: 0.02em;"
+      >
+        AA
+      </span>
+    </div>
+    <div
+      style="margin-bottom: 40px;"
+    >
+      <h3
+        style="font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(99, 102, 241); margin-bottom: 20px;"
+      >
+        Kontakt
+      </h3>
+      <div
+        style="display: flex; flex-direction: column; gap: 16px;"
+      >
+        <div
+          style="display: flex; align-items: center; gap: 12px;"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-mail"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            style="width: 16px; height: 16px; color: rgb(99, 102, 241);"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"
+            />
+            <rect
+              height="16"
+              rx="2"
+              width="20"
+              x="2"
+              y="4"
+            />
+          </svg>
+          <span
+            style="font-size: 13px; color: rgba(255, 255, 255, 0.8);"
+          >
+            anna@example.com
+          </span>
+        </div>
+        <div
+          style="display: flex; align-items: center; gap: 12px;"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-phone"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            style="width: 16px; height: 16px; color: rgb(99, 102, 241);"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"
+            />
+          </svg>
+          <span
+            style="font-size: 13px; color: rgba(255, 255, 255, 0.8);"
+          >
+            +46 70 123 45 67
+          </span>
+        </div>
+        <div
+          style="display: flex; align-items: center; gap: 12px;"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-map-pin"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            style="width: 16px; height: 16px; color: rgb(99, 102, 241);"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"
+            />
+            <circle
+              cx="12"
+              cy="10"
+              r="3"
+            />
+          </svg>
+          <span
+            style="font-size: 13px; color: rgba(255, 255, 255, 0.8);"
+          >
+            Stockholm
+          </span>
+        </div>
+      </div>
+    </div>
+    <div
+      style="margin-bottom: 40px;"
+    >
+      <h3
+        style="font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(99, 102, 241); margin-bottom: 20px;"
+      >
+        Kompetenser
+      </h3>
+      <div
+        style="display: flex; flex-wrap: wrap; gap: 8px;"
+      >
+        <span
+          style="font-size: 12px; padding: 6px 12px; background: rgba(99, 102, 241, 0.15); border-radius: 6px; color: rgb(255, 255, 255); border: 1px solid rgba(99, 102, 241, 0.3);"
+        >
+          React
+        </span>
+        <span
+          style="font-size: 12px; padding: 6px 12px; background: rgba(99, 102, 241, 0.15); border-radius: 6px; color: rgb(255, 255, 255); border: 1px solid rgba(99, 102, 241, 0.3);"
+        >
+          TypeScript
+        </span>
+        <span
+          style="font-size: 12px; padding: 6px 12px; background: rgba(99, 102, 241, 0.15); border-radius: 6px; color: rgb(255, 255, 255); border: 1px solid rgba(99, 102, 241, 0.3);"
+        >
+          CSS
+        </span>
+        <span
+          style="font-size: 12px; padding: 6px 12px; background: rgba(99, 102, 241, 0.15); border-radius: 6px; color: rgb(255, 255, 255); border: 1px solid rgba(99, 102, 241, 0.3);"
+        >
+          Accessibility
+        </span>
+      </div>
+    </div>
+    <div
+      class="cv-keep"
+      style="margin-top: auto;"
+    >
+      <h3
+        style="font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: rgb(99, 102, 241); margin-bottom: 20px;"
+      >
+        Språk
+      </h3>
+      <div
+        style="display: flex; flex-direction: column; gap: 10px;"
+      >
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="font-size: 13px; font-weight: 500;"
+          >
+            Svenska
+          </div>
+          <div
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.5); font-style: italic; margin-top: 2px;"
+          >
+            Modersmål
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="font-size: 13px; font-weight: 500;"
+          >
+            Engelska
+          </div>
+          <div
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.5); font-style: italic; margin-top: 2px;"
+          >
+            Flytande
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <main
+    style="flex: 1 1 0%; padding: 48px 56px; background: rgb(255, 255, 255);"
+  >
+    <header
+      style="margin-bottom: 48px;"
+    >
+      <h1
+        style="font-size: 56px; font-weight: 700; letter-spacing: -0.03em; color: rgb(15, 15, 15); line-height: 1.1; margin-bottom: 12px;"
+      >
+        Anna Andersson
+      </h1>
+      <p
+        style="font-size: 20px; color: rgb(99, 102, 241); font-weight: 500;"
+      >
+        Frontend Developer
+      </p>
+    </header>
+    <section
+      style="margin-bottom: 48px;"
+    >
+      <p
+        style="font-size: 16px; line-height: 1.8; color: rgb(68, 68, 68); max-width: 600px;"
+      >
+        Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <section
+      style="margin-bottom: 48px;"
+    >
+      <h2
+        style="font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(153, 153, 153); margin-bottom: 28px;"
+      >
+        Erfarenhet
+      </h2>
+      <div
+        style="display: flex; flex-direction: column; gap: 32px;"
+      >
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: grid; grid-template-columns: 140px 1fr; gap: 32px;"
+          >
+            <div>
+              <span
+                style="font-size: 12px; color: rgb(136, 136, 136); font-feature-settings: "tnum";"
+              >
+                2022-01
+                <br />
+                — 
+                Nu
+              </span>
+            </div>
+            <div>
+              <h3
+                style="font-size: 18px; font-weight: 600; color: rgb(15, 15, 15); margin-bottom: 4px;"
+              >
+                Senior Frontend Developer
+              </h3>
+              <div
+                style="font-size: 14px; color: rgb(99, 102, 241); margin-bottom: 12px;"
+              >
+                Tech AB
+              </div>
+              <p
+                style="font-size: 14px; line-height: 1.7; color: rgb(102, 102, 102);"
+              >
+                Leder frontend-team. Migrerade legacy Angular till React.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: grid; grid-template-columns: 140px 1fr; gap: 32px;"
+          >
+            <div>
+              <span
+                style="font-size: 12px; color: rgb(136, 136, 136); font-feature-settings: "tnum";"
+              >
+                2019-06
+                <br />
+                — 
+                2021-12
+              </span>
+            </div>
+            <div>
+              <h3
+                style="font-size: 18px; font-weight: 600; color: rgb(15, 15, 15); margin-bottom: 4px;"
+              >
+                Frontend Developer
+              </h3>
+              <div
+                style="font-size: 14px; color: rgb(99, 102, 241); margin-bottom: 12px;"
+              >
+                Webb-byrån
+              </div>
+              <p
+                style="font-size: 14px; line-height: 1.7; color: rgb(102, 102, 102);"
+              >
+                Byggde komponentbibliotek och e-handelslösningar.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2
+        style="font-size: 11px; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(153, 153, 153); margin-bottom: 28px;"
+      >
+        Utbildning
+      </h2>
+      <div
+        style="display: flex; flex-direction: column; gap: 20px;"
+      >
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: grid; grid-template-columns: 140px 1fr; gap: 32px;"
+          >
+            <span
+              style="font-size: 12px; color: rgb(136, 136, 136);"
+            >
+              2014
+               — 
+              2019
+            </span>
+            <div>
+              <h3
+                style="font-size: 16px; font-weight: 600; color: rgb(15, 15, 15);"
+              >
+                Civilingenjör
+              </h3>
+              <div
+                style="font-size: 14px; color: rgb(102, 102, 102);"
+              >
+                KTH
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > NordicTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="display: flex; min-height: 297mm; font-family: "Inter", -apple-system, sans-serif; background: rgb(255, 255, 255);"
+>
+  <aside
+    style="width: 280px; background: rgb(248, 250, 252); padding: 56px 32px; border-right: 1px solid rgb(226, 232, 240);"
+  >
+    <div
+      style="width: 100%; aspect-ratio: 1; background: rgb(255, 255, 255); border: 1px solid rgb(226, 232, 240); border-radius: 20px; margin-bottom: 32px; display: flex; align-items: center; justify-content: center;"
+    >
+      <span
+        style="font-size: 52px; font-weight: 300; color: rgb(148, 163, 184); letter-spacing: 0.02em;"
+      >
+        AA
+      </span>
+    </div>
+    <div
+      style="margin-bottom: 40px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(148, 163, 184); margin-bottom: 20px;"
+      >
+        Kontakt
+      </h3>
+      <div
+        style="display: flex; flex-direction: column; gap: 12px;"
+      >
+        <a
+          href="mailto:anna@example.com"
+          style="font-size: 13px; color: rgb(51, 65, 85); text-decoration: none; word-break: break-all;"
+        >
+          anna@example.com
+        </a>
+        <span
+          style="font-size: 13px; color: rgb(51, 65, 85);"
+        >
+          +46 70 123 45 67
+        </span>
+        <span
+          style="font-size: 13px; color: rgb(51, 65, 85);"
+        >
+          Stockholm
+        </span>
+      </div>
+    </div>
+    <div
+      style="margin-bottom: 40px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(148, 163, 184); margin-bottom: 16px;"
+      >
+        Kompetenser
+      </h3>
+      <div
+        style="display: flex; flex-direction: column; gap: 8px;"
+      >
+        <span
+          style="font-size: 13px; color: rgb(51, 65, 85);"
+        >
+          React
+        </span>
+        <span
+          style="font-size: 13px; color: rgb(51, 65, 85);"
+        >
+          TypeScript
+        </span>
+        <span
+          style="font-size: 13px; color: rgb(51, 65, 85);"
+        >
+          CSS
+        </span>
+        <span
+          style="font-size: 13px; color: rgb(51, 65, 85);"
+        >
+          Accessibility
+        </span>
+      </div>
+    </div>
+    <div
+      class="cv-keep"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(148, 163, 184); margin-bottom: 16px;"
+      >
+        Språk
+      </h3>
+      <div
+        style="display: flex; flex-direction: column; gap: 10px;"
+      >
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="font-size: 13px; color: rgb(51, 65, 85); font-weight: 500;"
+          >
+            Svenska
+          </div>
+          <div
+            style="font-size: 11px; color: rgb(148, 163, 184); font-style: italic; margin-top: 2px;"
+          >
+            Modersmål
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="font-size: 13px; color: rgb(51, 65, 85); font-weight: 500;"
+          >
+            Engelska
+          </div>
+          <div
+            style="font-size: 11px; color: rgb(148, 163, 184); font-style: italic; margin-top: 2px;"
+          >
+            Flytande
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <main
+    style="flex: 1 1 0%; padding: 56px 48px;"
+  >
+    <header
+      style="margin-bottom: 48px;"
+    >
+      <h1
+        style="font-size: 48px; font-weight: 600; letter-spacing: -0.02em; color: rgb(15, 23, 42); margin-bottom: 8px;"
+      >
+        Anna Andersson
+      </h1>
+      <p
+        style="font-size: 20px; color: rgb(14, 165, 233);"
+      >
+        Frontend Developer
+      </p>
+    </header>
+    <section
+      style="margin-bottom: 48px;"
+    >
+      <p
+        style="font-size: 16px; line-height: 1.8; color: rgb(71, 85, 105); max-width: 560px;"
+      >
+        Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <section
+      style="margin-bottom: 48px;"
+    >
+      <h2
+        style="font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(148, 163, 184); margin-bottom: 28px; padding-bottom: 12px; border-bottom: 1px solid rgb(226, 232, 240);"
+      >
+        Erfarenhet
+      </h2>
+      <div
+        style="display: flex; flex-direction: column; gap: 32px;"
+      >
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;"
+          >
+            <div>
+              <h3
+                style="font-size: 18px; font-weight: 600; color: rgb(15, 23, 42);"
+              >
+                Senior Frontend Developer
+              </h3>
+              <div
+                style="font-size: 14px; color: rgb(14, 165, 233);"
+              >
+                Tech AB
+              </div>
+            </div>
+            <span
+              style="font-size: 12px; color: rgb(148, 163, 184); white-space: nowrap;"
+            >
+              2022-01
+               — 
+              Nu
+            </span>
+          </div>
+          <p
+            style="font-size: 14px; line-height: 1.7; color: rgb(100, 116, 139); margin-top: 12px;"
+          >
+            Leder frontend-team. Migrerade legacy Angular till React.
+          </p>
+        </div>
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;"
+          >
+            <div>
+              <h3
+                style="font-size: 18px; font-weight: 600; color: rgb(15, 23, 42);"
+              >
+                Frontend Developer
+              </h3>
+              <div
+                style="font-size: 14px; color: rgb(14, 165, 233);"
+              >
+                Webb-byrån
+              </div>
+            </div>
+            <span
+              style="font-size: 12px; color: rgb(148, 163, 184); white-space: nowrap;"
+            >
+              2019-06
+               — 
+              2021-12
+            </span>
+          </div>
+          <p
+            style="font-size: 14px; line-height: 1.7; color: rgb(100, 116, 139); margin-top: 12px;"
+          >
+            Byggde komponentbibliotek och e-handelslösningar.
+          </p>
+        </div>
+      </div>
+    </section>
+    <section>
+      <h2
+        style="font-size: 11px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(148, 163, 184); margin-bottom: 28px; padding-bottom: 12px; border-bottom: 1px solid rgb(226, 232, 240);"
+      >
+        Utbildning
+      </h2>
+      <div
+        style="display: flex; flex-direction: column; gap: 24px;"
+      >
+        <div
+          class="cv-entry"
+        >
+          <div
+            style="display: flex; justify-content: space-between;"
+          >
+            <div>
+              <h3
+                style="font-size: 16px; font-weight: 600; color: rgb(15, 23, 42);"
+              >
+                Civilingenjör
+              </h3>
+              <div
+                style="font-size: 14px; color: rgb(100, 116, 139);"
+              >
+                KTH
+              </div>
+            </div>
+            <span
+              style="font-size: 12px; color: rgb(148, 163, 184);"
+            >
+              2014
+               — 
+              2019
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+`;
+
+exports[`CV-mallar — snapshot regression > RotterdamTemplate 1`] = `
+<div
+  class="cv-preview"
+  style="display: flex; min-height: 297mm; background: rgb(255, 255, 255); font-family: "Inter", -apple-system, sans-serif;"
+>
+  <aside
+    style="width: 220px; flex-shrink: 0; padding: 64px 28px 64px 56px; background: rgb(255, 255, 255);"
+  >
+    <div
+      class="cv-keep"
+      style="margin-bottom: 32px; display: flex; justify-content: center;"
+    >
+      <div
+        style="width: 110px; height: 110px; border-radius: 50%; border: 1px solid rgb(209, 213, 219); display: flex; align-items: center; justify-content: center; font-size: 34px; font-weight: 300; color: rgb(107, 114, 128); letter-spacing: 0.05em;"
+      >
+        AA
+      </div>
+    </div>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.25em; color: rgb(31, 41, 55); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+      >
+        KONTAKT
+      </h3>
+      <div
+        style="font-size: 11px; line-height: 1.7; color: rgb(55, 65, 81);"
+      >
+        <div>
+          Stockholm
+        </div>
+        <div>
+          +46 70 123 45 67
+        </div>
+        <div
+          style="word-break: break-all;"
+        >
+          anna@example.com
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.25em; color: rgb(31, 41, 55); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+      >
+        KOMPETENSER
+      </h3>
+      <div
+        style="font-size: 11px; line-height: 1.8; color: rgb(55, 65, 81);"
+      >
+        <div>
+          React
+        </div>
+        <div>
+          TypeScript
+        </div>
+        <div>
+          CSS
+        </div>
+        <div>
+          Accessibility
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.25em; color: rgb(31, 41, 55); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+      >
+        UTBILDNING
+      </h3>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 14px;"
+        >
+          <div
+            style="font-size: 11px; font-weight: 700; color: rgb(31, 41, 55);"
+          >
+            Civilingenjör
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(107, 114, 128);"
+          >
+            KTH
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(107, 114, 128);"
+          >
+            2014
+             - 
+            2019
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="cv-keep"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.25em; color: rgb(31, 41, 55); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+      >
+        SPRÅK
+      </h3>
+      <div
+        style="font-size: 11px; line-height: 1.7; color: rgb(55, 65, 81);"
+      >
+        <div
+          class="cv-entry"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            style="font-weight: 600;"
+          >
+            Svenska
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(107, 114, 128); font-style: italic;"
+          >
+            Modersmål
+          </div>
+        </div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 4px;"
+        >
+          <div
+            style="font-weight: 600;"
+          >
+            Engelska
+          </div>
+          <div
+            style="font-size: 10px; color: rgb(107, 114, 128); font-style: italic;"
+          >
+            Flytande
+          </div>
+        </div>
+      </div>
+    </section>
+  </aside>
+  <main
+    style="flex: 1 1 0%; padding: 64px 56px 64px 32px;"
+  >
+    <header
+      class="cv-keep"
+      style="margin-bottom: 36px;"
+    >
+      <p
+        style="font-size: 20px; font-weight: 300; letter-spacing: 0.45em; color: rgb(31, 41, 55); margin-bottom: 0px;"
+      >
+        ANNA
+      </p>
+      <h1
+        style="font-size: 56px; font-weight: 700; letter-spacing: 0.12em; line-height: 0.95; color: rgb(31, 41, 55); margin-top: 6px; word-break: break-word;"
+      >
+        ANDERSSON
+      </h1>
+      <p
+        style="font-size: 12px; font-weight: 500; letter-spacing: 0.3em; text-transform: uppercase; color: rgb(107, 114, 128); margin-top: 12px;"
+      >
+        Frontend Developer
+      </p>
+      <div
+        style="height: 1px; background: rgb(229, 231, 235); margin-top: 20px;"
+      />
+    </header>
+    <section
+      style="margin-bottom: 32px;"
+    >
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.25em; color: rgb(31, 41, 55); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+      >
+        PROFIL
+      </h3>
+      <p
+        style="font-size: 12px; line-height: 1.7; color: rgb(55, 65, 81);"
+      >
+        Passionerad frontend-utvecklare med 5 års erfarenhet av React och TypeScript. Bygger användarvänliga gränssnitt med fokus på tillgänglighet.
+      </p>
+    </section>
+    <section>
+      <h3
+        style="font-size: 11px; font-weight: 700; letter-spacing: 0.25em; color: rgb(31, 41, 55); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid rgb(31, 41, 55);"
+      >
+        ERFARENHET
+      </h3>
+      <div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 24px;"
+        >
+          <h4
+            style="font-size: 14px; font-weight: 700; color: rgb(31, 41, 55); margin-bottom: 2px; word-break: break-word;"
+          >
+            Senior Frontend Developer
+          </h4>
+          <div
+            style="font-size: 11px; font-weight: 500; color: rgb(107, 114, 128); margin-bottom: 6px; letter-spacing: 0.04em;"
+          >
+            Tech AB
+            <span>
+               · 
+              2022-01
+               – 
+              Nuvarande
+            </span>
+          </div>
+          <p
+            style="font-size: 12px; line-height: 1.6; color: rgb(75, 85, 99);"
+          >
+            Leder frontend-team. Migrerade legacy Angular till React.
+          </p>
+        </div>
+        <div
+          class="cv-entry"
+          style="margin-bottom: 24px;"
+        >
+          <h4
+            style="font-size: 14px; font-weight: 700; color: rgb(31, 41, 55); margin-bottom: 2px; word-break: break-word;"
+          >
+            Frontend Developer
+          </h4>
+          <div
+            style="font-size: 11px; font-weight: 500; color: rgb(107, 114, 128); margin-bottom: 6px; letter-spacing: 0.04em;"
+          >
+            Webb-byrån
+            <span>
+               · 
+              2019-06
+               – 
+              2021-12
+            </span>
+          </div>
+          <p
+            style="font-size: 12px; line-height: 1.6; color: rgb(75, 85, 99);"
+          >
+            Byggde komponentbibliotek och e-handelslösningar.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+`;
