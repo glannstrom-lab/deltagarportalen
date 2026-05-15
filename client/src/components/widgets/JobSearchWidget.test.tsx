@@ -37,7 +37,6 @@ describe('JobSearchWidget — data wiring', () => {
       spontaneousCount: 0,
     })
     // No raw percentage labels should appear as match quality indicators
-    const percentageCells = screen.queryAllByText(/\d+%/)
     // Percentages may appear elsewhere (e.g. ring), but match labels must be qualitative
     // Verify no element with text like "94%" appears as a match label
     expect(screen.queryByText(/^\d+%$/)).toBeNull()

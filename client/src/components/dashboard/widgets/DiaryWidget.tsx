@@ -123,7 +123,6 @@ function DiaryWidgetMedium({
   upcomingEvents = [],
   eventsThisWeek = 0,
   hasConsultantMeeting = false,
-  streakDays = 0,
   loading,
   error,
   onRetry

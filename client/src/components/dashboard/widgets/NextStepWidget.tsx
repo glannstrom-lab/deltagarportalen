@@ -257,7 +257,6 @@ export const NextStepWidget = memo(function NextStepWidget() {
 export const NextStepWidgetCompact = memo(function NextStepWidgetCompact() {
   const { t } = useTranslation()
   const { data } = useDashboardData()
-  const { level: userEnergy } = useEnergyStore()
 
   if (!data) return null
 

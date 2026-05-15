@@ -137,7 +137,6 @@ export const BaseWidget = memo(function BaseWidget({
   progress,
   stat,
   isComplete = false,
-  isEmpty = false,
   children,
   className,
 }: BaseWidgetProps) {

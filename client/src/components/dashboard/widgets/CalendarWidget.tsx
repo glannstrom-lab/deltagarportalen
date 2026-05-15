@@ -56,7 +56,6 @@ const useRelativeDate = () => {
 export const CalendarWidget = memo(function CalendarWidget({
   upcomingEvents = 0,
   nextEvent = null,
-  events = [],
   eventsThisWeek = 0,
   size = 'medium'
 }: CalendarWidgetProps) {

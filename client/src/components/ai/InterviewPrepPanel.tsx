@@ -18,7 +18,6 @@ import { Button } from '@/components/ui/Button'
 import { AiConsentGate } from './AiConsentGate'
 import {
   AIResultCard,
-  AILoadingIndicator,
   CollapsibleSection,
   AIList,
   CopyButton,

@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Award, Lock } from '@/components/ui/icons';
+import { Lock } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import { getIcon } from '@/lib/dynamicIconMap';

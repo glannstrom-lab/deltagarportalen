@@ -54,7 +54,6 @@ export function PageLayout({
   className,
   contentClassName,
   domain,
-  icon,
   stats,
 }: PageLayoutProps) {
   const location = useLocation()

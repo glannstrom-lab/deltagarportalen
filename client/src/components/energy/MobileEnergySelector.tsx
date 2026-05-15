@@ -240,7 +240,7 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
 
 // Kompakt inline variant för header
 export function MobileEnergyBadge() {
-  const { level, setLevel } = useEnergyStore()
+  const { level } = useEnergyStore()
   const [showSelector, setShowSelector] = useState(false)
 
   const config = {

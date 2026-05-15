@@ -5,7 +5,7 @@
 
 import { FileText, Sparkles, Minus, Briefcase, Check } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { COVER_LETTER_TEMPLATES, type CoverLetterTemplateConfig } from './templates'
+import { COVER_LETTER_TEMPLATES } from './templates'
 
 // Map icon names to components
 const ICON_MAP: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {

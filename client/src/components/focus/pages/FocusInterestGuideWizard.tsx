@@ -7,7 +7,7 @@
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Compass, Heart, Star, Smile } from '@/components/ui/icons'
+import { Heart, Star, Smile } from '@/components/ui/icons'
 import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {

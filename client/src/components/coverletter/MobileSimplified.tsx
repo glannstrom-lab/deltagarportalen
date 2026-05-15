@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/Button'
 import { PromptButtons } from './PromptButtons'
 import { WordCounter } from './WordCounter'
 import { coverLetterTemplates } from './CoverLetterTemplates'
-import type { CoverLetterTemplate } from './CoverLetterTemplates'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 
 type Step = 'company' | 'job' | 'details' | 'review'

@@ -51,7 +51,7 @@ const PROFILE_STEPS = [
   }
 ] as const
 
-export function FocusProfile({ onComplete, onSkip, onBack }: FocusProfileProps) {
+export function FocusProfile({ onComplete, onSkip }: FocusProfileProps) {
   const { t } = useTranslation()
   const { profile, refreshProfile } = useAuthStore()
   const [currentStep, setCurrentStep] = useState(0)

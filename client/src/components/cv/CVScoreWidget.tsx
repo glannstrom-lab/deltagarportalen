@@ -12,7 +12,6 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
   const [expanded, setExpanded] = useState(!isCollapsed)
   const { percentage, sections, total, max } = useCVScore(data)
   
-  const scoreColor = getScoreColor(percentage)
   const scoreBgColor = getScoreBgColor(percentage)
   const overallTip = getOverallTips(percentage)
 

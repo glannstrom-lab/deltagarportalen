@@ -3,7 +3,7 @@
  */
 
 import { useTranslation } from 'react-i18next'
-import { PartyPopper, RefreshCw, Home, ArrowRight } from '@/components/ui/icons'
+import { PartyPopper, RefreshCw, Home } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface FocusCompleteProps {

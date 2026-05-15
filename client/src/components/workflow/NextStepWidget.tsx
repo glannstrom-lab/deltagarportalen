@@ -5,9 +5,9 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
+import {
   ArrowRight, Sparkles, Loader2, RefreshCw,
-  FileText, Search, Send, TrendingUp, User
+  FileText, Search, Send, TrendingUp
 } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'

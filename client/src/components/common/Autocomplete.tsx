@@ -211,7 +211,7 @@ export function Autocomplete({
                 </div>
               )}
               
-              {items.map((suggestion, index) => {
+              {items.map((suggestion) => {
                 const globalIndex = suggestions.findIndex(s => s.id === suggestion.id);
                 const isHighlighted = globalIndex === highlightedIndex;
                 

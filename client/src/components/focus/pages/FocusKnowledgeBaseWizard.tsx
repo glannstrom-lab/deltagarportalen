@@ -6,7 +6,7 @@
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BookOpen, ListChecks, Smile } from '@/components/ui/icons'
+import { ListChecks, Smile } from '@/components/ui/icons'
 import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {

@@ -22,7 +22,6 @@ export const InterestWidget = memo(function InterestWidget({
   const { t } = useTranslation()
   const progress = Math.round((answeredQuestions / totalQuestions) * 100)
   const isInProgress = answeredQuestions > 0 && !hasResult
-  const firstRecommendation = topRecommendations[0]
 
   // MINI
   if (size === 'mini') {
