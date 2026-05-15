@@ -107,6 +107,46 @@ varje caller fortfarande får rätt typ + funktion. Tree-shaking-vinsten
 
 Kombinera med E3-E5-sprinten för bästa flow.
 
+## F1 — EmptyState-migration på 50 sidor
+
+**Varför FLAGGED:** ~50 sidor har handskrivna `<Card>...</Card>`-tomtillstånd
+istället för den kontraktualiserade `<EmptyState>`-komponenten. Migrering
+kräver:
+1. Skanna varje sida för `text-center.*Inga|tom`-mönster
+2. Konvertera till `<EmptyState icon={...} title={...} cta={...} />`
+3. Verifiera visuellt + uppdatera ev. snapshot-tester
+
+Estimerad tid: 1-2 dagar fokus.
+
+## F2 — localStorage → cloud-sync (NegotiationTab + 6 OverviewTab-flaggor)
+
+**Varför FLAGGED:** Kräver:
+1. Skapa Supabase-tabell `user_negotiation_checklists` (eller utöka
+   `profile_preferences` JSONB-kolumn) — migration mot prod-DB
+2. RLS-policies (`auth.uid() = user_id`)
+3. Skapa service: `services/negotiationApi.ts` med get/save
+4. Migrera 3 platser i `pages/salary/NegotiationTab.tsx`
+5. Test mot live-DB
+
+OverviewTab.tsx — 6 hybrid-flaggor — kräver beslut om vilka som är
+legacy vs avsiktlig fallback. (Anmärkning: `pages/dashboard/`-mappen
+raderades i B4 så OverviewTab.tsx finns inte längre — F2 reduceras
+nu bara till NegotiationTab.)
+
+Estimerad tid: 1-2 dagar med backup-verifiering.
+
+## F7 — Hard-coded svenska tabb-labels
+
+**Varför FLAGGED:** 4 sidor har inline-strängar istället för `t()`:
+- `Salary.tsx` 3 tabbar
+- `International.tsx` 3 tabbar
+- `PersonalBrand.tsx` 4 tabbar
+- `JobsokHub.tsx` features-arrays
+
+Kräver lägga till nya keys i `sv.json` + `en.json`, sedan migrera. Mekanisk
+men ~30 strängar att översätta. Bör göras tillsammans med en mer omfattande
+i18n-audit (Fas G eller liknande).
+
 ## A1 — Manuell ESLint-rensning
 
 **Status:** Delvis. ~129 errors borta (1147 → 1019). Återstående 1019 är mest no-unused-vars i komponentfiler. Multi-dag-uppgift som du valde att göra "manuellt över flera dagar" i Fas A.
