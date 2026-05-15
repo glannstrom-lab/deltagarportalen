@@ -11,6 +11,10 @@
 import { useEffect, useState, useCallback } from 'react'
 import { swLogger } from '@/lib/logger'
 
+interface NavigatorWithConnection extends Navigator {
+  connection?: { effectiveType?: string; addEventListener?: (event: string, listener: () => void) => void; removeEventListener?: (event: string, listener: () => void) => void }
+}
+
 interface ServiceWorkerState {
   isSupported: boolean
   isRegistered: boolean
@@ -199,7 +203,7 @@ export function useNetworkStatus(): {
   const [status, setStatus] = useState({
     isOnline: navigator.onLine,
     isOffline: !navigator.onLine,
-    effectiveType: (navigator as any).connection?.effectiveType || null,
+    effectiveType: (navigator as NavigatorWithConnection).connection?.effectiveType || null,
   })
 
   useEffect(() => {
@@ -212,7 +216,7 @@ export function useNetworkStatus(): {
     }
 
     const handleConnectionChange = () => {
-      const connection = (navigator as any).connection
+      const connection = (navigator as NavigatorWithConnection).connection
       setStatus((prev) => ({
         ...prev,
         effectiveType: connection?.effectiveType || null,
@@ -222,7 +226,7 @@ export function useNetworkStatus(): {
     window.addEventListener('online', handleOnline)
     window.addEventListener('offline', handleOffline)
 
-    const connection = (navigator as any).connection
+    const connection = (navigator as NavigatorWithConnection).connection
     if (connection) {
       connection.addEventListener('change', handleConnectionChange)
     }
@@ -245,14 +249,14 @@ export function useNetworkStatus(): {
  */
 export function useBackgroundSync() {
   const sync = useCallback(async (tag: string): Promise<boolean> => {
-    if (!('serviceWorker' in navigator) || !('sync' in (navigator as any).serviceWorker)) {
+    if (!('serviceWorker' in navigator) || !('sync' in (navigator as Navigator).serviceWorker)) {
       swLogger.debug('[SW] Background sync not supported')
       return false
     }
 
     try {
       const registration = await navigator.serviceWorker.ready
-      await (registration as any).sync.register(tag)
+      await (registration as ServiceWorkerRegistration & { sync: { register: (tag: string) => Promise<void> } }).sync.register(tag)
       swLogger.debug('[SW] Background sync registered:', tag)
       return true
     } catch (error) {

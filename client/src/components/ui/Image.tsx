@@ -83,7 +83,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
     blurDataURL,
     loading = 'lazy',
     priority = false,
-    quality = 75,
+    quality: _quality = 75,
     sizes,
     objectFit = 'cover',
     className,

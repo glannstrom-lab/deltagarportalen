@@ -76,7 +76,7 @@ export function validateCVData(data: unknown): { valid: true; data: CVData } | {
       const repaired = repairCVData(parsed)
       return { valid: true, data: repaired }
     }
-  } catch (error) {
+  } catch {
     return { valid: false, error: 'Oväntat valideringsfel' }
   }
 }
@@ -164,8 +164,8 @@ export function validateEmail(email: string): boolean {
 
 // Validera telefonnummer (svenskt format)
 export function validatePhone(phone: string): boolean {
-  const cleaned = phone.replace(/[\s\-\(\)]/g, '')
-  return /^[\+]?[0-9]{8,15}$/.test(cleaned)
+  const cleaned = phone.replace(/[\s\-()]/g, '')
+  return /^[+]?[0-9]{8,15}$/.test(cleaned)
 }
 
 // Sanera text för att förhindra XSS
@@ -180,7 +180,7 @@ export function sanitizeText(input: string): string {
 
 // Validera att ett objekt har alla obligatoriska fält
 export function validateRequiredFields(
-  data: Record<string, any>,
+  data: Record<string, unknown>,
   requiredFields: string[]
 ): { valid: true } | { valid: false; missing: string[] } {
   const missing = requiredFields.filter(field => {

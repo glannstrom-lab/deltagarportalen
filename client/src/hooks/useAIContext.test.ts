@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- test mocks for store selectors require any-cast */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
 import { useAIContext, getStaticAIContext, formatContextForPrompt, type AIUserContext } from './useAIContext'

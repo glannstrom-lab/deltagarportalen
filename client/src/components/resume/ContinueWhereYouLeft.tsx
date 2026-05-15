@@ -11,13 +11,10 @@ import {
   FileText,
   Sparkles,
   BookHeart,
-  Briefcase,
-  ChevronRight,
   Clock,
   X,
   Play
 } from '@/components/ui/icons'
-import { cn } from '@/lib/utils'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { cvApi } from '@/services/cvApi'
 

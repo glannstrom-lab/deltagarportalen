@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react'
 import {
   X, ChevronRight, ChevronLeft, Sparkles, CheckCircle,
-  FileText, User, Briefcase, Award, Eye, Download
+  FileText, User, Briefcase, Award, Eye
 } from '@/components/ui/icons'
 import { claimOnboardingSession, releaseOnboardingSession } from '@/lib/onboardingCoordinator'
 

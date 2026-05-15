@@ -2,7 +2,7 @@
  * EnergyLevelSelector - Låter användaren välja sin energinivå
  * Visas vid inloggning och kan visas igen via header
  */
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   type EnergyLevel,
@@ -11,7 +11,7 @@ import {
   useEnergyStore
 } from '@/stores/energyStoreWithSync'
 import { Button } from '@/components/ui/Button'
-import { Sparkles, Battery, BatteryLow, BatteryMedium, BatteryFull } from '@/components/ui/icons'
+import { Sparkles, BatteryLow, BatteryMedium, BatteryFull } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface EnergyLevelSelectorProps {
@@ -395,7 +395,7 @@ export function EnergyLevelBadge({
 }: { 
   onClick?: () => void 
 }) {
-  const { level, lastUpdated } = useEnergyStore()
+  const { level } = useEnergyStore()
   
   const colors = {
     low: 'bg-rose-100 text-rose-700 border-rose-200',

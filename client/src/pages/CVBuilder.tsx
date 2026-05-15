@@ -1004,7 +1004,6 @@ export default function CVBuilder() {
     }
   }
 
-  const currentStep = STEPS.find(s => s.id === step)!
 
   // Visa laddningsindikator medan CV laddas
   if (!hasLoadedCV) {

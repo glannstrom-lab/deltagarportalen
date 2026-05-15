@@ -153,7 +153,7 @@ export const personalInfoSchema = z.object({
   phone: z
     .string()
     .optional()
-    .refine((val) => !val || /^[\d\s\-\+\(\)]{8,}$/.test(val), {
+    .refine((val) => !val || /^[\d\s\-+()]{8,}$/.test(val), {
       message: 'Ogiltigt telefonnummer',
     }),
   location: z
@@ -268,7 +268,7 @@ export const profileSchema = z.object({
   phone: z
     .string()
     .optional()
-    .refine((val) => !val || /^[\d\s\-\+\(\)]{8,}$/.test(val), {
+    .refine((val) => !val || /^[\d\s\-+()]{8,}$/.test(val), {
       message: 'Ogiltigt telefonnummer',
     }),
   bio: z

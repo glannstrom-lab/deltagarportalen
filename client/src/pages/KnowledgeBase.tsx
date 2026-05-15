@@ -3,10 +3,10 @@
  */
 
 import { useState, useEffect, useCallback, Suspense, lazy, useMemo } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Card, LoadingState } from '@/components/ui'
-import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
+import { useArticles } from '@/hooks/knowledge-base/useArticles'
 import { useAuthStore } from '@/stores/authStore'
 import { PageLayout } from '@/components/layout/index'
 import { knowledgeTabDefs, type KnowledgeTabId } from '@/data/knowledgeTabs'
@@ -59,11 +59,9 @@ export default function KnowledgeBase() {
 
 function KnowledgeBaseInner() {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const location = useLocation()
   const { profile } = useAuthStore()
   const { data: articles, isLoading: articlesLoading } = useArticles()
-  const { data: bookmarks = [] } = useBookmarks()
 
   // Get user's first name from profile
   const userName = profile?.first_name || t('knowledgeBase.defaultUser')
@@ -94,29 +92,6 @@ function KnowledgeBaseInner() {
       setActiveTabId(newTabId)
     }
   }, [location.search, getTabFromQuery, activeTabId])
-  
-  // Note: Tab navigation is handled by PageTabs via Link components
-  // This function is kept for potential programmatic navigation
-  const handleTabClick = (tab: typeof tabDefs[number]) => {
-    if (tab.id === activeTabId) return
-
-    // Update URL query param
-    const params = new URLSearchParams(location.search)
-    if (tab.id !== 'for-you') {
-      params.set('tab', tab.id)
-    } else {
-      params.delete('tab')
-    }
-
-    navigate({
-      pathname: location.pathname,
-      search: params.toString(),
-    }, { replace: true })
-
-    setActiveTabId(tab.id)
-  }
-
-  const activeTab = tabs.find(t => t.id === activeTabId) || tabs[0]
   
   // Render content based on active tab
   const renderContent = () => {

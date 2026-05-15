@@ -160,7 +160,7 @@ function resurserFixture(): ResurserSummary {
   }
 }
 
-function renderWidget(W: React.ComponentType<any>, widgetId: string) {
+function renderWidget(W: React.ComponentType<Record<string, unknown>>, widgetId: string) {
   const data = fixture()
   return render(
     <MemoryRouter>
@@ -171,7 +171,7 @@ function renderWidget(W: React.ComponentType<any>, widgetId: string) {
   )
 }
 
-function renderKarriarWidget(W: React.ComponentType<any>, widgetId: string) {
+function renderKarriarWidget(W: React.ComponentType<Record<string, unknown>>, widgetId: string) {
   const data = karriarFixture()
   return render(
     <MemoryRouter>
@@ -182,7 +182,7 @@ function renderKarriarWidget(W: React.ComponentType<any>, widgetId: string) {
   )
 }
 
-function renderResurserWidget(W: React.ComponentType<any>, widgetId: string) {
+function renderResurserWidget(W: React.ComponentType<Record<string, unknown>>, widgetId: string) {
   const data = resurserFixture()
   return render(
     <MemoryRouter>
@@ -193,7 +193,7 @@ function renderResurserWidget(W: React.ComponentType<any>, widgetId: string) {
   )
 }
 
-function renderMinVardagWidget(W: React.ComponentType<any>, widgetId: string) {
+function renderMinVardagWidget(W: React.ComponentType<Record<string, unknown>>, widgetId: string) {
   const data = minVardagFixture()
   return render(
     <MemoryRouter>
@@ -213,7 +213,7 @@ void karriarFixture
 void fixture
 void minVardagFixture
 
-const cases: [string, React.ComponentType<any>, string][] = [
+const cases: [string, React.ComponentType<Record<string, unknown>>, string][] = [
   ['CvWidget', CvWidget, 'cv'],
   ['CoverLetterWidget', CoverLetterWidget, 'cover-letter'],
   ['InterviewWidget', InterviewWidget, 'interview'],
@@ -224,14 +224,14 @@ const cases: [string, React.ComponentType<any>, string][] = [
   ['InternationalWidget', InternationalWidget, 'international'],
 ]
 
-const karriarCases: [string, React.ComponentType<any>, string][] = [
+const karriarCases: [string, React.ComponentType<Record<string, unknown>>, string][] = [
   ['CareerGoalWidget', CareerGoalWidget, 'karriar-mal'],
   ['InterestGuideWidget', InterestGuideWidget, 'intresseguide'],
   ['SkillGapWidget', SkillGapWidget, 'kompetensgap'],
   ['PersonalBrandWidget', PersonalBrandWidget, 'personligt-varumarke'],
 ]
 
-const resurserCases: [string, React.ComponentType<any>, string][] = [
+const resurserCases: [string, React.ComponentType<Record<string, unknown>>, string][] = [
   ['MyDocumentsWidget',        MyDocumentsWidget,        'mina-dokument'],
   ['KnowledgeBaseWidget',      KnowledgeBaseWidget,      'kunskapsbanken'],
   ['ExternalResourcesWidget',  ExternalResourcesWidget,  'externa-resurser'],
@@ -240,7 +240,7 @@ const resurserCases: [string, React.ComponentType<any>, string][] = [
   ['ExercisesWidget',          ExercisesWidget,          'ovningar'],
 ]
 
-const minVardagCases: [string, React.ComponentType<any>, string][] = [
+const minVardagCases: [string, React.ComponentType<Record<string, unknown>>, string][] = [
   ['HealthWidget',     HealthWidget,     'halsa'],
   ['DiaryWidget',      DiaryWidget,      'dagbok'],
   ['CalendarWidget',   CalendarWidget,   'kalender'],

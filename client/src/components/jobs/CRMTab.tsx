@@ -4,8 +4,8 @@
 import { useState, useEffect, useMemo } from 'react'
 import {
   ClipboardList, Plus, Clock, CheckCircle, XCircle, Calendar,
-  MessageSquare, Building2, ExternalLink, ChevronRight, Bell,
-  MoreVertical, Trash2, Edit2, Mail
+  MessageSquare, Building2, ExternalLink, Bell,
+  Trash2, Edit2
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
