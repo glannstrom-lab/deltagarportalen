@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { articleApi, exerciseApi } from '../services/api'
+import { articleApi } from '../services/api'
 import { logger } from '../lib/logger'
 import {
   ReadingProgress,
@@ -32,7 +32,7 @@ import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 
 export default function Article() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const { isFocusMode, toggleFocusMode } = useFocusMode()
 
   if (isFocusMode) {

@@ -6,9 +6,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import gamificationService, {
   type UserMilestone,
-  type Achievement,
-  type UserAchievement,
-  type ActivityLogItem
 } from '@/services/gamificationService'
 
 const QUERY_KEYS = {

@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import {
-  storageSchemas,
   cvProgressSchema,
   userPreferencesSchema,
   onboardingStateSchema,
@@ -12,7 +11,6 @@ import {
   energyLevelHistorySchema,
   calendarPreferencesSchema,
   ValidatedStorage,
-  type StorageKey,
 } from './validatedStorage'
 
 const STORAGE_PREFIX = 'dp_validated_'

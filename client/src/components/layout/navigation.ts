@@ -1,7 +1,6 @@
 import type { LegacyColorDomain } from '@/lib/domains'
 import {
   LayoutDashboard,
-  FileText,
   Briefcase,
   Compass,
   BookOpen,
@@ -12,11 +11,9 @@ import {
   Users,
   Heart,
   Bookmark,
-  Sparkles,
   Wallet,
   Globe,
   Star,
-  Map,
   FileUser,
   ClipboardList,
   NotebookPen,

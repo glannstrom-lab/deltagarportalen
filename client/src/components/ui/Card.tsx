@@ -5,7 +5,7 @@
  */
 
 import { cn } from '@/lib/utils'
-import { cardVariants, animations, radius, shadows, spacing } from '@/styles/design-system'
+import { cardVariants, animations } from '@/styles/design-system'
 
 // ============================================
 // BASE CARD

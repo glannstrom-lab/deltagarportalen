@@ -38,7 +38,7 @@ export function CreateApplicationModal({
 }: CreateApplicationModalProps) {
   const navigate = useNavigate()
   
-  const [currentStep, setCurrentStep] = useState<Step>(1)
+  const [currentStep] = useState<Step>(1)
   const [loading, setLoading] = useState(false)
   const [cvMatchScore, setCvMatchScore] = useState<number | null>(null)
   const [cvAnalysis, setCvAnalysis] = useState<CVOptimizationResult | null>(null)
@@ -130,7 +130,7 @@ export function CreateApplicationModal({
       
       onSuccess?.()
       onClose()
-    } catch (error) {
+    } catch {
       showToast.error(
         'Något gick fel',
         'Kunde inte spara ansökan. Försök igen.'

@@ -542,7 +542,7 @@ Varmt tack igen!`
             <label className="block text-sm font-medium text-stone-700 mb-1">Erfarenhetsnivå</label>
             <select
               value={experienceLevel}
-              onChange={(e) => setExperienceLevel(e.target.value as any)}
+              onChange={(e) => setExperienceLevel(e.target.value as 'entry' | 'mid' | 'senior')}
               className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
             >
               <option value="entry">Junior (0-2 år)</option>
@@ -799,7 +799,7 @@ Varmt tack igen!`
                 <label className="block text-sm font-medium text-stone-700 mb-1">Typ av meddelande</label>
                 <select
                   value={messageType}
-                  onChange={(e) => setMessageType(e.target.value as any)}
+                  onChange={(e) => setMessageType(e.target.value as 'initial' | 'followup' | 'thankyou')}
                   className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                 >
                   <option value="initial">Första kontakten</option>
@@ -943,7 +943,7 @@ Varmt tack igen!`
                 <label className="block text-sm font-medium text-stone-700 mb-1">Relation</label>
                 <select
                   value={newContact.relationship}
-                  onChange={(e) => setNewContact({...newContact, relationship: e.target.value as any})}
+                  onChange={(e) => setNewContact({...newContact, relationship: e.target.value})}
                   className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
                 >
                   <option value="colleague">Kollega</option>

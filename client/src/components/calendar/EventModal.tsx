@@ -146,7 +146,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'details' | 'tasks' | 'prep' | 'travel')}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
                   ? 'border-[var(--c-solid)] text-[var(--c-text)] dark:text-[var(--c-solid)]'
@@ -186,7 +186,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   {eventTypes.map((type) => (
                     <button
                       key={type.value}
-                      onClick={() => setFormData({ ...formData, type: type.value as any })}
+                      onClick={() => setFormData({ ...formData, type: type.value as CalendarEvent['type'] })}
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                         formData.type === type.value
                           ? type.color
