@@ -6,22 +6,19 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
-import { 
-  FileText, 
-  Download, 
-  Edit2, 
-  Trash2, 
+import {
+  FileText,
+  Edit2,
+  Trash2,
   Copy,
   MoreVertical,
   Calendar,
-  Check,
   Star,
   Folder,
   Plus,
   Search,
   Eye,
   Loader2,
-  AlertCircle,
   Sparkles,
   TrendingUp,
   Briefcase,

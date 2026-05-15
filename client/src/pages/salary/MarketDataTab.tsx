@@ -4,8 +4,8 @@
  */
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BarChart3, TrendingUp, MapPin, Building2, Users, ArrowUp, ArrowDown, Search, Filter, ChevronDown, ChevronUp } from '@/components/ui/icons'
-import { Card, Button } from '@/components/ui'
+import { BarChart3, TrendingUp, MapPin, Building2, ArrowUp, ArrowDown, Search, ChevronDown } from '@/components/ui/icons'
+import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 

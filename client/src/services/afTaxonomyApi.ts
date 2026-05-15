@@ -129,7 +129,7 @@ export async function getOccupationBySSYK(ssykCode: string): Promise<Occupation 
       };
     }
     return null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
@@ -176,7 +176,7 @@ export async function getSkillsForOccupation(occupationId: string): Promise<Skil
         definition: r.to_concept!.definition,
         type: 'skill' as const
       }));
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -250,7 +250,7 @@ export async function autocompleteOccupations(query: string): Promise<Autocomple
       label: o.preferred_label,
       type: 'occupation'
     }));
-  } catch (error) {
+  } catch {
     jobLogger.debug('Taxonomy API failed, using mock suggestions');
     // Fallback till mock-data filtrerat på query
     return POPULAR_OCCUPATIONS
@@ -273,7 +273,7 @@ export async function autocompleteSkills(query: string): Promise<AutocompleteSug
       label: s.preferred_label,
       type: 'skill'
     }));
-  } catch (error) {
+  } catch {
     return [];
   }
 }

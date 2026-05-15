@@ -7,8 +7,8 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   TrendingUp, TrendingDown, BarChart3, PieChart,
-  Clock, CheckCircle, XCircle, Send, Users, Trophy,
-  Calendar, Target, Briefcase, ArrowRight
+  Clock, CheckCircle, Send, Users, Trophy,
+  Target, Briefcase, ArrowRight
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -101,7 +101,7 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
 
       {/* Legend */}
       <div className="grid grid-cols-2 gap-2">
-        {statusCounts.slice(0, 6).map(({ status, count, percentage }) => {
+        {statusCounts.slice(0, 6).map(({ status, count }) => {
           const config = APPLICATION_STATUS_CONFIG[status]
           return (
             <div key={status} className="flex items-center gap-2 text-sm">
@@ -218,7 +218,7 @@ function RecentActivity({ applications }: { applications: any[] }) {
 }
 
 export function ApplicationsAnalytics() {
-  const { t } = useTranslation()
+  useTranslation()
   const { applications, applicationsByStatus, stats, staleApplications, isLoading } = useApplications()
 
   // Calculate additional metrics

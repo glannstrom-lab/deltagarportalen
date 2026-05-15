@@ -22,7 +22,7 @@ import { Card } from '@/components/ui/Card'
 import { AiConsentGate } from './AiConsentGate'
 import { AILoadingIndicator } from './AIResultCard'
 import type { IndustryRadarResult } from '@/services/aiCareerAssistantApi'
-import { trendsApi, type MarketStats, type TrendingSkill, type PopularSearch, type DataWithSource } from '@/services/afTrendsApi'
+import { trendsApi, type TrendingSkill, type PopularSearch } from '@/services/afTrendsApi'
 import { AI_FEATURES } from '@/config/features'
 import { cn } from '@/lib/utils'
 
@@ -43,7 +43,7 @@ export function IndustryRadarSection({
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<IndustryRadarResult | null>(null)
   const [error, setError] = useState<string | null>(null)
-  const [dataSource, setDataSource] = useState<'api' | 'cache'>('api')
+  const [_dataSource, setDataSource] = useState<'api' | 'cache'>('api')
 
   if (!AI_FEATURES.INDUSTRY_RADAR) {
     return null

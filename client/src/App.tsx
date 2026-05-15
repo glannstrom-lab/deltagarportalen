@@ -1,22 +1,10 @@
 import { useEffect, lazy, Suspense } from 'react'
-import { Routes, Route, Navigate, useParams } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import { isHubNavEnabled } from './components/layout/navigation'
-import { ErrorBoundary } from './components/ErrorBoundary'
 import { RouteErrorBoundary, RouteLoadingFallback } from './components/RouteErrorBoundary'
 import { swLogger } from './lib/logger'
 import { Loader2 } from '@/components/ui/icons'
-
-// Wrapper komponent för att hantera redirects med params
-function ArticleRedirect() {
-  const { id } = useParams()
-  return <Navigate to={`/knowledge-base/article/${id}`} replace />
-}
-
-// Legacy article redirects
-function LegacyArticleRedirect() {
-  return <Navigate to="/knowledge-base" replace />
-}
 
 // Eager-loaded kritiska komponenter
 import Layout from './components/Layout'

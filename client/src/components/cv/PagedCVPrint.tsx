@@ -140,10 +140,6 @@ function usePaginatedCV(data: CVData): CVData[] {
 
       // Mät offset från main-topp för varje entry
       const mainRect = main.getBoundingClientRect()
-      const entryOffsets = entries.map(el => {
-        const rect = el.getBoundingClientRect()
-        return { el, top: rect.top - mainRect.top, bottom: rect.bottom - mainRect.top, height: rect.height }
-      })
 
       // Total main height i px
       const totalHeight = main.scrollHeight
@@ -164,7 +160,6 @@ function usePaginatedCV(data: CVData): CVData[] {
       // de första `workExperience.length` cv-entry är jobs, resten är edus.
 
       const jobCount = data.workExperience?.length || 0
-      const eduCount = data.education?.length || 0
       const allItemEntries = entries.filter(el => el.classList.contains('cv-entry'))
 
       // Splitta items i pages baserat på offset
@@ -192,7 +187,6 @@ function usePaginatedCV(data: CVData): CVData[] {
       const pageData: CVData[] = []
       let cursor = 0
       for (let p = 0; p < pageBreaks.length; p++) {
-        const pageStart = pageBreaks[p]
         const pageEnd = p < pageBreaks.length - 1 ? pageBreaks[p + 1] : Infinity
 
         const pageJobs: number[] = []

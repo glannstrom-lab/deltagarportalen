@@ -5,8 +5,8 @@
 
 import { useState, useCallback } from 'react'
 import {
-  GripVertical, Trash2, Plus, Sparkles, Star,
-  Code, Users, Wrench, Palette, BarChart3, Globe,
+  Trash2, Plus, Sparkles, Star,
+  Code, Users, Wrench, Palette, Globe,
   CheckCircle, ChevronUp, ChevronDown
 } from '@/components/ui/icons'
 
@@ -124,11 +124,6 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
 
   const getSkillsByCategory = (category: SkillCategory) => {
     return skills.filter(s => s.category === category)
-  }
-
-  const getCategoryIcon = (category: SkillCategory) => {
-    const cat = categories.find(c => c.value === category)
-    return cat ? <cat.icon className="w-4 h-4" /> : null
   }
 
   const getCategoryLabel = (category: SkillCategory) => {

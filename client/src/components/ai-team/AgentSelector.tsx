@@ -6,8 +6,7 @@
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { useAITeamStore } from '@/stores/aiTeamStore'
-import { AgentAvatar } from './AgentAvatar'
-import type { Agent, AgentId, AgentColor, QuickAction } from './types'
+import type { Agent, AgentId } from './types'
 import { agentColorClasses } from './types'
 import { Briefcase, Heart, GraduationCap, Sparkles, Monitor } from '@/components/ui/icons'
 

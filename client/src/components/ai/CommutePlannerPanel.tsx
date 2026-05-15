@@ -9,8 +9,6 @@ import {
   Train,
   Car,
   Bike,
-  Clock,
-  DollarSign,
   Lightbulb,
   Home,
   Building2,
@@ -21,7 +19,6 @@ import { AiConsentGate } from './AiConsentGate'
 import {
   AIResultCard,
   CollapsibleSection,
-  AIStatBlock,
 } from './AIResultCard'
 import {
   getCommutePlan,
