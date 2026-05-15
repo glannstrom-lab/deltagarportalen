@@ -58,6 +58,7 @@ function makeWrapper() {
 
 type ChangeListener = (e: MediaQueryListEvent) => void
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- behållen för framtida media-query-tests
 function mockMatchMedia(matches: boolean) {
   const listeners: ChangeListener[] = []
   const mq = {

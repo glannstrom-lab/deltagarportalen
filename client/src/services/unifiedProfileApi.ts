@@ -441,11 +441,6 @@ export const unifiedProfileApi = {
    */
   calculateCompleteness(profile: Partial<UnifiedProfileData>): number {
     let score = 0
-    const weights = {
-      core: 40,
-      professional: 35,
-      career: 25
-    }
 
     // Core profile (max 40%)
     if (profile.core) {

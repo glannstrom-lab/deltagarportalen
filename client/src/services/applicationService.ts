@@ -370,7 +370,7 @@ Med vänliga hälsningar,
     }
 
     for (const [placeholder, value] of Object.entries(replacements)) {
-      letter = letter.replace(new RegExp(placeholder.replace(/[\[\]]/g, '\\$&'), 'g'), value)
+      letter = letter.replace(new RegExp(placeholder.replace(/[[\]]/g, '\\$&'), 'g'), value)
     }
 
     return letter

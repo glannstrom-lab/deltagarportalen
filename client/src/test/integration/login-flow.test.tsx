@@ -147,7 +147,6 @@ describe('Login Flow Integration', () => {
   })
 
   it('should display error message on failed login', async () => {
-    const user = userEvent.setup()
     const queryClient = createTestQueryClient()
     
     // Update mock to return authenticated state with error

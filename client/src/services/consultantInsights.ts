@@ -212,14 +212,11 @@ export async function generateParticipantInsights(
  */
 export async function calculateTrends(
   consultantId: string,
-  periodDays: number = 30
+  _periodDays: number = 30
 ): Promise<TrendData[]> {
   const trends: TrendData[] = []
 
   try {
-    const now = new Date()
-    const currentPeriodStart = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000)
-
     // Fetch all participants
     const { data: participants } = await supabase
       .from('consultant_dashboard_participants')

@@ -4,7 +4,6 @@ import userEvent from '@testing-library/user-event'
 import { BrowserRouter } from 'react-router-dom'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Register from '../../pages/Register'
-import { useAuthStore } from '../../stores/authStore'
 
 // Mock auth store
 const mockSignUp = vi.fn()

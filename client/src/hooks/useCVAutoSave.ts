@@ -206,7 +206,9 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
           ...currentData,
           _timestamp: Date.now(),
         }))
-      } catch { }
+      } catch {
+        // sessionStorage may be unavailable
+      }
     }
 
     window.addEventListener('beforeunload', handleBeforeUnload)

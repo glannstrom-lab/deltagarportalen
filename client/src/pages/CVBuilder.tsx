@@ -433,7 +433,9 @@ export default function CVBuilder() {
             if (Date.now() - (parsed._timestamp || 0) > 5 * 5 * 1000) {
               sessionStorage.removeItem('cv-draft')
             }
-          } catch { }
+          } catch {
+            // sessionStorage parse failure — ignore
+          }
         }
         // Kolla om vi ska visa quick mode (ingen befintlig CV-data)
         const hasExistingData = !!(cv.firstName || cv.lastName || cv.title || cv.summary)

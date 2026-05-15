@@ -1231,7 +1231,7 @@ export async function generateExercisePDF(exercise: ExerciseForPDF): Promise<Blo
   y += 12
 
   // Steg
-  exercise.steps.forEach((step, stepIndex) => {
+  exercise.steps.forEach((step) => {
     if (y > 240) {
       doc.addPage()
       y = margin

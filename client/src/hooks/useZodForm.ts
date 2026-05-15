@@ -69,7 +69,7 @@ export function useZodForm<T extends Record<string, unknown>>({
 
     if (schema instanceof z.ZodObject) {
       try {
-        // @ts-ignore - shape finns på ZodObject
+        // @ts-expect-error - shape finns på ZodObject
         const shape = schema.shape || schema._def?.shape?.()
         if (shape && field in shape) {
           fieldSchema = shape[field as string] as z.ZodType<unknown>

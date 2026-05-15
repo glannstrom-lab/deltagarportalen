@@ -4,7 +4,6 @@ import { useCVStore } from './cvStore'
 describe('cvStore', () => {
   beforeEach(() => {
     // Reset store state before each test
-    const store = useCVStore.getState()
     useCVStore.setState({
       currentStep: 1,
       isPreviewOpen: false,

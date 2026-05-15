@@ -10,7 +10,7 @@ import type { AITeamState, AgentId, PersonalityId, ResponseMode, ChatMessage } f
 export const useAITeamStore = create<AITeamState>()(
   devtools(
     persist(
-      (set, get) => ({
+      (set) => ({
         // Initial state
         selectedAgent: 'arbetskonsulent',
         selectedPersonality: 'professional',

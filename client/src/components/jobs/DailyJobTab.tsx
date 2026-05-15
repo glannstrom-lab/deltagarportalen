@@ -351,7 +351,7 @@ export function DailyJobTab() {
         // Match interest guide occupations (up to 35 points)
         let bestOccMatch = 0;
         userProfile.occupationMatches.forEach(occ => {
-          const occWords = occ.name.toLowerCase().split(/[\s\/]+/).filter(w => w.length > 3);
+          const occWords = occ.name.toLowerCase().split(/[\s/]+/).filter(w => w.length > 3);
           const matchedWords = occWords.filter(w => jobText.includes(w));
           if (matchedWords.length > 0) {
             const matchQuality = (matchedWords.length / occWords.length) * occ.matchPercentage;

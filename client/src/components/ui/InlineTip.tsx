@@ -74,7 +74,9 @@ export function InlineTip({
   const handleDismiss = () => {
     try {
       localStorage.setItem(STORAGE_PREFIX + storageKey, 'true')
-    } catch {}
+    } catch {
+      // localStorage may be unavailable in private mode — ignore
+    }
     setIsDismissed(true)
   }
 

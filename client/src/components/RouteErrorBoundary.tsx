@@ -110,7 +110,7 @@ export class RouteErrorBoundary extends Component<Props, State> {
 
     // Report to error tracking in production
     if (import.meta.env.PROD && typeof window !== 'undefined') {
-      // @ts-ignore - Sentry may be available globally
+      // @ts-expect-error - Sentry may be available globally
       window.Sentry?.captureException(error, {
         extra: {
           componentStack: errorInfo.componentStack,

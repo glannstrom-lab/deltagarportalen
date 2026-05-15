@@ -231,7 +231,6 @@ export const profileDocumentsApi = {
       throw new Error('File must be less than 10MB')
     }
 
-    const fileExt = file.name.split('.').pop()
     const fileName = `${user.id}/${Date.now()}_${file.name}`
 
     // Upload to storage

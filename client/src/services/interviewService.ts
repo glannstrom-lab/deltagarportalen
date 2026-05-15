@@ -218,7 +218,7 @@ export const MOCK_INTERVIEWS: MockInterview[] = [
 /**
  * Hämta intervjufrågor baserat på yrke
  */
-export function getQuestionsForOccupation(occupation: string): InterviewQuestion[] {
+export function getQuestionsForOccupation(_occupation: string): InterviewQuestion[] {
   // I en full implementation skulle detta hämta yrkesspecifika frågor
   // För nu, returnera vanliga frågor
   return COMMON_INTERVIEW_QUESTIONS;

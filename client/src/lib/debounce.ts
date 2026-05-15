@@ -85,6 +85,7 @@ export function debounce<T extends (...args: unknown[]) => unknown>(
     const isInvoking = shouldInvoke(time)
 
     lastArgs = args
+    // eslint-disable-next-line @typescript-eslint/no-this-alias -- behövs för korrekt this-binding i debounced funktion
     lastThis = this
     lastCallTime = time
 
@@ -140,6 +141,7 @@ export function throttle<T extends (...args: unknown[]) => unknown>(
     const remaining = lastCallTime ? wait - (now - lastCallTime) : 0
 
     lastArgs = args
+    // eslint-disable-next-line @typescript-eslint/no-this-alias -- behövs för korrekt this-binding i throttled funktion
     lastThis = this
 
     if (remaining <= 0 || remaining > wait) {

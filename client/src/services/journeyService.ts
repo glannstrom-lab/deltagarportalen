@@ -43,7 +43,7 @@ export async function getJourneyProgress(): Promise<UserJourneyProgress | null> 
     const completedMilestoneIds = (userMilestones || []).map(m => m.milestone_id)
 
     // Fetch user achievements for additional milestone tracking
-    const { data: achievements } = await supabase
+    await supabase
       .from('user_achievements')
       .select('achievement_id')
       .eq('user_id', user.id)

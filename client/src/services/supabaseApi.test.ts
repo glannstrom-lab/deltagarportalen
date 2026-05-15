@@ -10,7 +10,6 @@ const mockGetSession = vi.fn()
 // Database operation mocks
 const mockSingle = vi.fn()
 const mockMaybeSingle = vi.fn()
-const mockOrder = vi.fn()
 const mockLimit = vi.fn()
 
 // Create a proper chainable mock object
