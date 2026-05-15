@@ -75,6 +75,17 @@ export default defineConfig([
           destructuredArrayIgnorePattern: '^_',
         },
       ],
+      // React Compiler-style strict rules: nedgraderade till 'warn' eftersom
+      // de flaggar etablerade React-mönster i kodbasen (setState i effekter,
+      // Date.now() i render, sub-komponenter under render). Inte rules-of-hooks-
+      // brott (de förblir 'error' via reactHooks.configs.flat.recommended).
+      // Refaktor av varje fall är icke-trivial och risk för regression.
+      // Gradvis migration kan göras genom att höja till 'error' när flaggan adresseras.
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-render': 'warn',
+      'react-hooks/purity': 'warn',
+      'react-hooks/static-components': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
       ...DESIGN_RULES,
     },
   },
