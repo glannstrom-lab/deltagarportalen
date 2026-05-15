@@ -3,13 +3,13 @@
  * Hjälper användaren identifiera önskade jobb och börja söka
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery, useMutation } from '@tanstack/react-query'
 import { jobsApi } from '@/services/jobsApi'
 import { userApi } from '@/services/userApi'
 import {
-  Search, MapPin, Briefcase, Heart, ExternalLink,
+  Search, MapPin, Briefcase, Heart,
   ArrowRight, Check, Loader2, SkipForward, Star
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -48,9 +48,8 @@ const POPULAR_JOBS = [
   'Chaufför'
 ]
 
-export function FocusJobSearch({ onComplete, onSkip, onBack }: FocusJobSearchProps) {
+export function FocusJobSearch({ onComplete, onSkip, onBack: _onBack }: FocusJobSearchProps) {
   const { t } = useTranslation()
-  const queryClient = useQueryClient()
   const [currentStep, setCurrentStep] = useState(0)
 
   // Form state

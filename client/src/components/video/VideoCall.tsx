@@ -1,11 +1,10 @@
 /**
  * Video Call - Inbäddade videosamtal
  */
-import { useState, useRef, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Video, Phone, PhoneOff, Mic, MicOff, VideoOff, X } from '@/components/ui/icons'
+import { Video, PhoneOff, Mic, MicOff, VideoOff, X } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/Button'
 
 interface VideoCallProps {
   isOpen: boolean
@@ -15,7 +14,7 @@ interface VideoCallProps {
 }
 
 export function VideoCall({ isOpen, onClose, participantName, isIncoming = false }: VideoCallProps) {
-  const [isConnected, setIsConnected] = useState(false)
+  const [isConnected] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [isVideoOff, setIsVideoOff] = useState(false)
   const [callDuration, setCallDuration] = useState(0)

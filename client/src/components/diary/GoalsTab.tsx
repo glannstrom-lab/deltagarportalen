@@ -3,10 +3,9 @@
  */
 
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
-  Target, Plus, Check, Circle, Trash2, MessageSquare,
-  ChevronRight, Award, TrendingUp, Calendar, Sparkles
+  Target, Plus, Check, Trash2, MessageSquare,
+  Award, Calendar, Sparkles
 } from '@/components/ui/icons'
 import { useWeeklyGoals } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'

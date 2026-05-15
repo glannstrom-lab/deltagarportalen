@@ -6,12 +6,12 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  FileDown, Printer, BookOpen, ClipboardList, Check, X,
-  ChevronDown, ChevronUp, Loader2, Search, Filter
+  FileDown, Printer, BookOpen, ClipboardList, Check,
+  ChevronDown, ChevronUp, Loader2, Search
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { useArticles } from '@/hooks/knowledge-base/useArticles'
-import { exercises, type Exercise } from '@/data/exercises'
+import { exercises } from '@/data/exercises'
 import { articleCategories } from '@/services/articleData'
 import {
   generateArticlePDF,
@@ -29,7 +29,6 @@ import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusPrintWizard } from '@/components/focus/pages/FocusPrintWizard'
 
 type ResourceType = 'articles' | 'exercises'
-type ViewMode = 'select' | 'preview'
 
 // Mappa artikel-kategori-slug ('getting-started', 'easy-swedish' osv.) till
 // svenskt visningsnamn. Övningskategorier är redan på svenska och returneras

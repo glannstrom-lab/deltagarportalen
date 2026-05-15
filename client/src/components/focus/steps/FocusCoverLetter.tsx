@@ -3,13 +3,12 @@
  * Guidad steg-för-steg process för att skapa och spara personligt brev
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query'
 import { useAuthStore } from '@/stores/authStore'
 import { coverLetterApi } from '@/services/coverLetterApi'
 import { userApi } from '@/services/userApi'
-import type { ProfilePreferences } from '@/services/supabaseApi'
 import { coverLetterTemplates, type CoverLetterTemplate } from '@/data/coverLetterTemplates'
 import {
   Mail, Briefcase, Heart, Sparkles, FileText, Save, Download,
@@ -46,7 +45,7 @@ const SIMPLE_TEMPLATES = [
   { id: 'formal', name: 'Formell', description: 'Traditionell ton', icon: FileText },
 ]
 
-export function FocusCoverLetter({ onComplete, onSkip, onBack }: FocusCoverLetterProps) {
+export function FocusCoverLetter({ onComplete, onSkip, onBack: _onBack }: FocusCoverLetterProps) {
   const { t } = useTranslation()
   const { profile } = useAuthStore()
   const queryClient = useQueryClient()
@@ -236,7 +235,6 @@ ${name} ${lastName}`.trim()
       const name = profile?.first_name || ''
       const lastName = profile?.last_name || ''
       const fullName = `${name} ${lastName}`.trim()
-      const title = letterTitle || `${jobTitle}${companyName ? ` - ${companyName}` : ''}`
 
       // Header with name and contact info
       doc.setFontSize(14)
