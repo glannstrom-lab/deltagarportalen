@@ -17,6 +17,7 @@ import { useQuery } from '@tanstack/react-query'
 import {
   getStatusLabel,
   type ApplicationHistoryEntry,
+  type ApplicationStatus,
   type HistoryEventType
 } from '@/types/application.types'
 
@@ -46,8 +47,8 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
 
   const formatStatusChange = () => {
     if (entry.eventType !== 'status_change') return null
-    const oldLabel = entry.oldValue ? getStatusLabel(entry.oldValue.toLowerCase() as any) : null
-    const newLabel = entry.newValue ? getStatusLabel(entry.newValue.toLowerCase() as any) : null
+    const oldLabel = entry.oldValue ? getStatusLabel(entry.oldValue.toLowerCase() as ApplicationStatus) : null
+    const newLabel = entry.newValue ? getStatusLabel(entry.newValue.toLowerCase() as ApplicationStatus) : null
     return (
       <span>
         {oldLabel && <span className="text-stone-700">{oldLabel}</span>}
@@ -131,7 +132,7 @@ export function ApplicationsTimeline() {
   const getApplicationName = (appId: string) => {
     const app = applications.find(a => a.id === appId)
     if (!app) return undefined
-    return app.jobTitle || (app.jobData as any)?.headline || 'Okänd tjänst'
+    return app.jobTitle || (app.jobData as { headline?: string } | undefined)?.headline || 'Okänd tjänst'
   }
 
   if (isLoading) {

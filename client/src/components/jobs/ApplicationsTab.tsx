@@ -7,8 +7,8 @@ import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Send, Calendar, CheckCircle, XCircle, MoreVertical,
-  MessageSquare, Clock, ExternalLink, ChevronDown, Briefcase,
-  TrendingUp, AlertCircle, Trash2, Edit2
+  MessageSquare, Clock, ExternalLink, Briefcase,
+  TrendingUp, Trash2
 } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs'

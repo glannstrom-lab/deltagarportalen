@@ -3,13 +3,11 @@
  */
 
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
-  Heart, Plus, Check, Calendar, Sparkles,
+  Heart, Check, Calendar, Sparkles,
   ChevronLeft, ChevronRight, Sun, Star
 } from '@/components/ui/icons'
 import { useGratitude } from '@/hooks/useDiary'
-import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
 
 function TodayGratitude() {

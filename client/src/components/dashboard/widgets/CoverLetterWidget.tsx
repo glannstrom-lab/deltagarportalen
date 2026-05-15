@@ -16,9 +16,6 @@ import {
   Briefcase,
   Zap,
   ChevronRight,
-  ExternalLink,
-  MoreHorizontal,
-  Trash2
 } from '@/components/ui/icons'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'

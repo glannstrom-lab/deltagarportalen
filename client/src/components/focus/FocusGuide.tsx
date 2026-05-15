@@ -5,13 +5,13 @@
  * Allt händer i samma fönster med inbäddade formulär och innehåll.
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { cn } from '@/lib/utils'
 import {
-  Heart, ArrowRight, ArrowLeft, Check, Sparkles,
+  Heart, ArrowLeft, Check,
   User, FileText, Search, Mail, PartyPopper
 } from '@/components/ui/icons'
 

@@ -171,14 +171,13 @@ function NotificationItem({
 // ============================================
 
 interface CategoryTabProps {
-  category: CategoryFilter
   label: string
   count: number
   active: boolean
   onClick: () => void
 }
 
-function CategoryTab({ category, label, count, active, onClick }: CategoryTabProps) {
+function CategoryTab({ label, count, active, onClick }: CategoryTabProps) {
   return (
     <button
       onClick={onClick}
@@ -211,8 +210,8 @@ function CategoryTab({ category, label, count, active, onClick }: CategoryTabPro
 // MAIN COMPONENT
 // ============================================
 
-export function NotificationBell({ className, variant = 'default' }: NotificationBellProps) {
-  const { t, i18n } = useTranslation()
+export function NotificationBell({ className }: NotificationBellProps) {
+  const { i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [activeFilter, setActiveFilter] = useState<CategoryFilter>('all')
   const dropdownRef = useRef<HTMLDivElement>(null)
@@ -351,35 +350,30 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
             {/* Category Tabs */}
             <div className="flex items-center gap-1 px-3 py-2 border-b border-stone-100 dark:border-stone-700 overflow-x-auto scrollbar-hide">
               <CategoryTab
-                category="all"
                 label="Alla"
                 count={unreadByCategory.total}
                 active={activeFilter === 'all'}
                 onClick={() => setActiveFilter('all')}
               />
               <CategoryTab
-                category="message"
                 label="Meddelanden"
                 count={unreadByCategory.message}
                 active={activeFilter === 'message'}
                 onClick={() => setActiveFilter('message')}
               />
               <CategoryTab
-                category="job_match"
                 label="Jobb"
                 count={unreadByCategory.job_match}
                 active={activeFilter === 'job_match'}
                 onClick={() => setActiveFilter('job_match')}
               />
               <CategoryTab
-                category="discussion"
                 label="Diskussioner"
                 count={unreadByCategory.discussion}
                 active={activeFilter === 'discussion'}
                 onClick={() => setActiveFilter('discussion')}
               />
               <CategoryTab
-                category="friend_request"
                 label="Vänner"
                 count={unreadByCategory.friend_request}
                 active={activeFilter === 'friend_request'}

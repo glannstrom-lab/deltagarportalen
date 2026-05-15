@@ -6,7 +6,6 @@
 import { useState } from 'react'
 import { Heart, Clock, Bookmark, ChevronRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui'
 import { getSupportiveMessage } from '@/utils/supportiveMessages'
 
 interface CantReadButtonProps {
@@ -17,8 +16,8 @@ interface CantReadButtonProps {
 }
 
 export function CantReadButton({
-  articleId,
-  articleTitle,
+  articleId: _articleId,
+  articleTitle: _articleTitle,
   onSaveForLater,
   onShowShorterAlternative,
 }: CantReadButtonProps) {

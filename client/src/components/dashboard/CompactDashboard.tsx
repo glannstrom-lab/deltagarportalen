@@ -17,7 +17,6 @@ import {
   BookOpen,
   TrendingUp,
   Award,
-  ArrowRight,
   ChevronRight,
 } from '@/components/ui/icons'
 
@@ -142,7 +141,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
 export function CompactDashboard() {
   const { t } = useTranslation()
   const { user } = useAuthStore()
-  const { data, loading, error, refetch } = useDashboardData()
+  const { data, loading } = useDashboardData()
   const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(defaultVisibleWidgets)
   const [prefsLoading, setPrefsLoading] = useState(true)
 

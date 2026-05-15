@@ -11,7 +11,6 @@ import {
   RefreshCw,
   Heart,
   FileText,
-  ExternalLink,
   Building2,
   MapPin,
   Calendar,
@@ -57,7 +56,7 @@ interface UserProfileData {
 }
 
 export function DailyJobTab() {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation();
   const lang = i18n.language;
   const { saveJob, isSaved, removeJob } = useSavedJobs();
   const [filters, , filtersLoaded] = useJobSearchFilters(DEFAULT_JOB_SEARCH_FILTERS);

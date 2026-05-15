@@ -7,7 +7,7 @@
  *  - Legacy mode (default): existing 3-group navGroups flat list
  */
 
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -20,7 +20,6 @@ import {
   markFeatureVisited,
   shouldShowBadge,
   type NavItem,
-  type NavHub,
 } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
