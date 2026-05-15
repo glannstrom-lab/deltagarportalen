@@ -204,49 +204,44 @@ export const mockArticlesData: EnhancedArticle[] = [
   // === KOMMA IGÅNG ===
   {
     id: 'komma-igang-intro',
-    title: 'Välkommen – så funkar portalen',
-    summary: 'En lugn introduktion till vad du kan göra här och hur du börjar i din egen takt.',
-    content: `Att söka jobb kan kännas mycket på en gång. Det är helt okej. Portalen finns för att gå bredvid dig – från första utkastet till första arbetsdagen – i den takt som funkar för dig idag.
+    title: 'Komma igång – så funkar portalen',
+    summary: 'En orientering över portalens sex verktyg och kunskapsbas, och en rimlig ordning att börja i.',
+    content: `Första gången man loggar in i en jobbportal vet man sällan vart man ska börja. Det finns sex sidor i menyn, alla har ikoner, och knapparna leder till knappar som leder till andra knappar. Den här artikeln är en kort orientering, så du slipper söka dig fram själv.
 
-## Vad finns här för dig?
+Portalen består av sex verktyg och en kunskapsbas — den du läser ur just nu.
 
-**Ett CV du faktiskt vågar visa**
-CV-byggaren hjälper dig formulera dina erfarenheter, även de du själv inte tycker "räknas". Du kan börja, spara, och fortsätta när du orkar.
+**CV-byggaren** har tolv mallar. De spänner från strama, klassiska upplägg lämpade för förvaltning och bank, till mer formgivningstunga för kreativa branscher. Du fyller i avsnitten i den ordning du vill, byter mall mellan första och sista utkastet om du ångrar dig, och exporterar till PDF eller Word när det är klart. Det går att skriva in perioder av sjukskrivning, vård av barn eller eget företagande som egna poster — alltså inte luckor att gömma utan rader du fyller i som vad de är.
 
-**En guide till vad du tycker om**
-Om du är osäker på vilken riktning du vill ta, finns intresseguiden. Den ställer enkla frågor och föreslår yrken som matchar – inte för att låsa dig, utan för att ge dig idéer.
+**Intresseguiden** är 34 frågor uppdelade i fyra delar: arbetsintressen, personlighet, intresseområden och förutsättningar. Det tar ungefär tjugo minuter att gå igenom allt, men svaren sparas automatiskt så du kan pausa och fortsätta senare. När du är klar får du yrkesförslag som matchar svaren. Förslag, inte facit — ingen algoritm kan säga säkert vad du borde bli. Men som startpunkt när riktningen är oklar fungerar guiden utmärkt.
 
-**Jobb och ansökningar samlat**
-Du kan söka bland tusentals annonser och spara de som intresserar dig. Allt du gör – sparade jobb, ansökningar, anteckningar – samlas på ett ställe.
+**Jobbsöket** hämtar annonser från Arbetsförmedlingens databas, den största samlade jobbdatabasen i Sverige med annonser från både offentliga och privata arbetsgivare. Du söker på roll, ort, anställningsform och bransch, sparar de annonser som är intressanta och lägger till egna anteckningar.
 
-**Artiklar och stöd när du behöver det**
-Kunskapsbanken (där du är nu) har artiklar om CV-skrivning, intervjuer, avslag och välmående. Du behöver inte läsa allt – plocka det som känns relevant just idag.
+**Ansökningstrackern** är en lista över allt du sökt. Varje ansökan kan ha en av elva statusar — från "intresserad" och "sparad" via "skickad", "intervju" och "erbjudande" till "tackat ja" eller "avslag". Du ser direkt vilka som väntar på svar, vilka som behöver en uppföljning, och vilka som är avslutade.
 
-Har du en arbetskonsulent kopplad till dig kan ni jobba tillsammans i portalen. Annars funkar allt lika bra på egen hand.
+**Brevgeneratorn** använder din profil och en jobbannons för att föreslå ett första utkast till personligt brev. Du redigerar därifrån — formuleringarna är gjorda för att bytas ut, inte skickas in som de står.
 
-## Tre steg när du orkar
+**AI-teamet** är fem chatt-agenter med olika inriktning: en arbetskonsulent (CV-feedback, jobbstrategi), en arbetsterapeut (energi, stresshantering), en studievägledare (karriärvägar, utbildningar), en motivationscoach (mål och motgångar) och en digitalcoach (LinkedIn, online-närvaro). Du skriver in en fråga och får svar som utgår från din profil och vad du gjort i portalen tidigare.
 
-**1. Skapa en bild av dig själv**
-Fyll i din profil och prova intresseguiden. Inget är låst – du kan ändra senare. Det här ger portalen underlag att anpassa förslag åt dig.
+**Kunskapsbasen** har 282 artiklar om jobbsökning, intervjuer, lön, rättigheter, välmående och liknande. Sökbar, kan filtreras på kategori och svårighetsgrad.
 
-**2. Bygg ditt CV**
-Öppna CV-byggaren när du har lite ork. Du behöver inte göra klart på en gång. Spara och fortsätt en annan dag om det är vad som funkar.
+## I vilken ordning
 
-**3. Börja titta på jobb**
-Sök, spara intressanta annonser. Du behöver inte söka direkt – många använder portalen i veckor innan de skickar in första ansökan, och det är helt rimligt.
+Det finns ingen tvingande ordning, men ungefär så här rör sig de flesta första gången:
 
-## Något att ta med dig
+1. **Profil.** Namn, ort, kontaktuppgifter, ett par meningar om vad du gjort senast. Tio minuter.
+2. **Intresseguide** om du är osäker på riktning. Annars hoppa över.
+3. **CV.** Börja med utbildning och tidigare jobb. Kompetenser, språk och övriga avsnitt får komma senare — det är lättare när det grova står på plats.
+4. **Sök ett jobb** för att se hur flödet fungerar. Du behöver inte söka direkt; det räcker som introduktion till resten av portalen.
+5. **Spara två-tre annonser** och börja på ett personligt brev till en av dem.
 
-Jobbsökning är ingen rak väg. Vissa dagar går det framåt, andra dagar är det tungt – båda är normalt och båda räknas som arbete.
+Det är inte ett schema. Vissa sveper igenom på en eftermiddag, andra tar veckor. Båda är rimliga.
 
-> Att vara här, läsa det här, det är redan ett steg framåt.
-
-Om något är otydligt, eller om du fastnar, finns hjälpknappen längst ner till höger. Och har du en arbetskonsulent: hen kan se vad du jobbar med och hjälpa till.`,
+Har du en arbetskonsulent kopplad till dig ser hen vad du jobbar med och kan kommentera. Saknar du konsulent finns AI-teamet, och kunskapsbasens 282 artiklar täcker det allra mesta.`,
     category: 'getting-started',
     subcategory: 'first-week',
-    tags: ['introduktion', 'komma igång', 'steg-för-steg', 'för-nybörjare'],
+    tags: ['introduktion', 'komma igång', 'orientering', 'för-nybörjare'],
     createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2026-05-15T10:00:00Z',
+    updatedAt: '2026-05-15T16:00:00Z',
     readingTime: 5,
     difficulty: 'easy',
     energyLevel: 'low',
@@ -270,84 +265,64 @@ Om något är otydligt, eller om du fastnar, finns hjälpknappen längst ner til
 
   {
     id: 'forsta-veckan-checklista',
-    title: 'En lugn väg in – sju steg, ingen klocka',
-    summary: 'Sju steg som tar dig från första inloggningen till första utkastet av en ansökan. Du bestämmer själv tempot.',
-    content: `Det här är en checklista, inte ett schema. Det står "steg", inte "dag" – för det är inte sju dagar, det är sju steg du kan ta när orken finns. Vissa gör allt på en vecka, andra på en månad. Båda är rätt.
+    title: 'Komma igång – checklista i sju steg',
+    summary: 'En arbetsgång från första inloggningen till första ansökan. Ingen tidsplan – du tar stegen när du orkar.',
+    content: `En checklista, inte ett schema. Sju steg, ingen tidsplan. Vissa gör allt på några dagar, andra på en månad — båda fungerar.
 
-## Steg 1 – Landa i portalen
+## 1. Profil
 
-- Logga in
-- Fyll i grundläggande profilinformation (namn, ort räcker att börja med)
-- Ladda upp en profilbild om du vill (inget krav)
-- Bläddra runt i menyn så du vet ungefär var saker finns
+Logga in. Fyll i namn, ort, kontaktuppgifter. Skriv ett par meningar om vad du gjort senast: jobb, studier, period av sjukskrivning, vård av barn — vad det än är. Profilbild om du vill. Tio minuter, kanske femton.
 
-Tar oftast 10–20 minuter. Behöver inte göras klart på ett bett.
+## 2. Intresseguide
 
-## Steg 2 – Hitta riktning
+Hoppa över om du redan vet vilket yrke du söker. Annars: 34 frågor över fyra teman — arbetsintressen, personlighet, intresseområden, förutsättningar. Svaren sparas automatiskt, så du kan pausa och fortsätta senare. Räkna med tjugo minuter om du gör allt på en gång.
 
-- Gör intresseguiden – ungefär 15 frågor som ger förslag på yrken som kan passa
-- Läs "Välkommen – så funkar portalen" om du inte redan gjort det
-- Bläddra runt i kunskapsbanken och bokmärk det som verkar intressant (du behöver inte läsa allt)
+## 3. Underlag till CV
 
-## Steg 3 – Samla underlag till CV:t
+Innan du öppnar CV-byggaren, sätt dig ned och samla:
 
-Innan du öppnar CV-byggaren, försök samla:
+- **Utbildningar** — även påbörjade, även enstaka kurser, även folkhögskola
+- **Jobb** — även korta vikariat, även sommarjobb från gymnasiet, även det där säsongsjobbet du nästan glömt
+- **Det utanför arbetet** — volontär, vård av närstående, eget projekt, föreningsuppdrag, period av sjukskrivning, vad det än varit
+- **Kompetenser** du faktiskt använder och vill fortsätta använda
 
-- Vilka utbildningar du har gått (även påbörjade, även enstaka kurser)
-- Vilka jobb du haft – även korta, även sådana du själv tycker var "ingenting"
-- Vad du gjort utanför arbete (volontär, vård av närstående, eget projekt)
-- Kompetenser du tycker om att använda
+Lista mycket först. Skala ner senare. Det är lättare att ta bort än att tillägga.
 
-Det är okej att lista mycket först och skala ner sedan.
+## 4. Utkast av CV
 
-## Steg 4 – Bygg utkast 1
+Öppna CV-byggaren. Välj en av de tolv mallarna — den kan bytas. Fyll i avsnitten i den ordning som känns enklast; du måste inte börja med "Personliga egenskaper" bara för att den ligger överst. Spara.
 
-- Öppna CV-byggaren
-- Välj en mall som känns rätt visuellt (du kan byta senare)
-- Fyll i avsnitten i den ordning som känns enklast – inget måste göras uppifrån och ner
-- Spara
+Ett utkast räcker just nu. Att putsa kommer i nästa steg.
 
-Du behöver inte vara klar. Ett utkast räcker.
+## 5. Få ögon på CV:t
 
-## Steg 5 – Få ögon på det
+Är du kopplad till en arbetskonsulent — dela CV:t via portalen och be om kommentarer.
 
-- Har du en arbetskonsulent: dela CV:t med hen via portalen och be om kommentarer
-- Har du ingen konsulent: be en vän eller anhörig läsa, eller använd AI-coachen som finns i portalen
-- Gör justeringar du faktiskt håller med om – allt feedback behöver inte följas
+Saknar du konsulent — fråga en vän eller anhörig om de kan läsa, eller gå till AI-teamet, välj Arbetskonsulent-agenten, och be om CV-feedback.
 
-## Steg 6 – Börja titta på jobb
+Behåll det du håller med om. Strunta i resten.
 
-- Sök efter jobb som matchar din riktning
-- Spara annonser du tycker verkar intressanta – behöver inte vara perfekt match
-- Många upptäcker yrken de inte tänkt på här
+## 6. Sök efter jobb
 
-Det är värdefullt även om du inte söker ännu. Att se vilka roller som finns och vad de kräver är förberedelse i sig.
+Sök på roll och ort. Spara annonser som verkar intressanta. Spara också annonser för roller du undrar över men aldrig sökt — det är ofta där man hittar yrken man inte tänkt på.
 
-## Steg 7 – Första utkastet av en ansökan
+Att läsa vad rekryterare faktiskt skriver är värdefullt även om du inte söker än. Du lär dig vilka ord och kompetenser de letar efter, och det smyger sig in i hur du formulerar din egen profil.
 
-När det känns rätt, inte innan:
+## 7. Första ansökan
 
-- Välj en av dina sparade annonser
-- Skriv ett personligt brev – mallar finns i portalen
-- Spara ansökan som utkast
+När det känns rätt:
 
-Att skicka in är ett separat steg. Många låter utkastet ligga några dagar, läser om, justerar, och skickar sedan. Det är klokt – inte att skjuta upp.
+- Välj en av de sparade annonserna
+- Generera ett brevutkast med Brevgeneratorn
+- Redigera så det låter som du, inte som en mall
+- Läs igenom en gång till
 
-## Att ta med sig
-
-**Tempo är personligt**
-Det finns ingen "rätt" hastighet. Att vila är inte att stå still.
-
-**Stöd finns**
-Har du en arbetskonsulent: hen ser vad du jobbar med i portalen och kan hjälpa till. Har du ingen: AI-coachen och kunskapsbanken är dina följeslagare.
-
-**Det är inte en linje**
-Du kommer att gå tillbaka till tidigare steg. Justera CV:t en månad in. Göra om intresseguiden när din riktning klarnar. Det är inte misslyckande – det är hur det ska fungera.`,
+Vänta gärna en dag innan du skickar. Då hittar du stavfel och meningar som låter konstigt — sådant som är osynligt direkt efter att man skrivit det.`,
     category: 'getting-started',
     subcategory: 'first-week',
     tags: ['checklista', 'komma igång', 'steg-för-steg', 'praktiskt'],
     createdAt: '2024-01-15T12:00:00Z',
-    updatedAt: '2026-05-15T10:00:00Z',
+    updatedAt: '2026-05-15T16:00:00Z',
     readingTime: 6,
     difficulty: 'easy',
     energyLevel: 'low',
