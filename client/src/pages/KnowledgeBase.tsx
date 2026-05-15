@@ -187,7 +187,9 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
             type="text"
             value={searchValue}
             onChange={(e) => setSearchValue(e.target.value)}
-            placeholder={`Sök bland ${totalArticles} artiklar — t.ex. "personligt brev", "avslag", "lön"…`}
+            placeholder={totalArticles > 0
+              ? `Sök bland ${totalArticles} artiklar — t.ex. "personligt brev", "avslag", "lön"…`
+              : `Sök artiklar — t.ex. "personligt brev", "avslag", "lön"…`}
             className="flex-1 bg-transparent border-0 outline-none py-2.5 text-base text-gray-800 dark:text-gray-100 placeholder:text-stone-400 dark:placeholder:text-stone-500"
             aria-label="Sök i kunskapsbanken"
           />
