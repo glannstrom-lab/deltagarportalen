@@ -134,12 +134,9 @@ function KnowledgeBaseInner() {
     )
   }
 
+  // Ingen title — landing-vyn har egen H1 i hero
   return (
-    <PageLayout
-      title={t('knowledgeBase.title', 'Kunskapsbank')}
-      domain="info"
-      className="max-w-5xl mx-auto"
-    >
+    <PageLayout title="" domain="info" className="max-w-5xl mx-auto">
       <KnowledgeBaseLanding articles={articles || []} />
     </PageLayout>
   )

@@ -135,7 +135,9 @@ export function getTabsForPath(path: string): Tab[] {
   if (path.startsWith('/skills-gap')) return careerTabs
   if (path.startsWith('/career-plan')) return careerTabs
   if (path.startsWith('/wellness')) return wellnessTabs
-  if (path.startsWith('/knowledge-base')) return knowledgeTabs
+  // Knowledge base sidan har egen sökning + kategori-grid (2026-05-15
+  // redesign), inga flikar längre.
+  if (path.startsWith('/knowledge-base')) return []
   if (path.startsWith('/resources')) return resourcesTabs
   if (path.startsWith('/profile') || path.startsWith('/settings')) return profileTabs
   if (path.startsWith('/dashboard')) return dashboardTabs
