@@ -24,6 +24,7 @@ import { useVoiceOutput } from '@/hooks/useVoiceOutput'
 import { MessageBubble } from './MessageBubble'
 import { ChatInput } from './ChatInput'
 import { MarkdownRenderer } from './MarkdownRenderer'
+import { AIBadge } from '@/components/ai/AIBadge'
 
 export interface AgentChatHandle {
   sendMessage: (message: string) => Promise<void>
@@ -491,8 +492,9 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           <div className="flex items-center gap-3">
             <AgentAvatar agentId={selectedAgent} color={agent.color} size="md" />
             <div>
-              <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100">
+              <h3 className="text-sm font-semibold text-stone-900 dark:text-stone-100 flex items-center gap-2">
                 {t(agent.nameKey)}
+                <AIBadge variant="inline" label={t('aiTeam.aiBadge', 'AI-coach')} />
               </h3>
               <p className="text-xs text-stone-500 dark:text-stone-400">
                 {t(personality.nameKey)}

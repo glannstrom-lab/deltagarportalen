@@ -164,6 +164,20 @@ export default function Privacy() {
               <ListItem title={t('privacy.sharing.ai')} desc={t('privacy.sharing.aiDesc')} />
               <ListItem title={t('privacy.sharing.analytics')} desc={t('privacy.sharing.analyticsDesc')} />
             </ul>
+
+            <div className="mt-4 p-4 bg-stone-50 dark:bg-stone-700/30 rounded-lg border border-stone-200 dark:border-stone-700">
+              <p className="font-medium text-stone-800 dark:text-stone-100 mb-2">{t('privacy.sharing.dpasTitle', 'Personuppgiftsbiträdesavtal (Art 28 GDPR)')}</p>
+              <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">{t('privacy.sharing.dpasIntro', 'Vi har skriftliga avtal med alla biträden som följer GDPR Art 28. Här kan du läsa deras avtal:')}</p>
+              <ul className="space-y-1 text-sm">
+                <li><a href="https://supabase.com/legal/dpa" target="_blank" rel="noopener noreferrer" className="text-[var(--c-text)] hover:underline inline-flex items-center gap-1">Supabase DPA <ExternalLink className="w-3 h-3" /></a> <span className="text-stone-500">— DB, Auth, lagring (Irland)</span></li>
+                <li><a href="https://vercel.com/legal/dpa" target="_blank" rel="noopener noreferrer" className="text-[var(--c-text)] hover:underline inline-flex items-center gap-1">Vercel DPA <ExternalLink className="w-3 h-3" /></a> <span className="text-stone-500">— hosting, serverless functions (Frankfurt)</span></li>
+                <li><a href="https://openrouter.ai/terms" target="_blank" rel="noopener noreferrer" className="text-[var(--c-text)] hover:underline inline-flex items-center gap-1">OpenRouter Terms <ExternalLink className="w-3 h-3" /></a> <span className="text-stone-500">— AI-leverantör (USA, SCC + TIA)</span></li>
+                <li><a href="https://sentry.io/legal/dpa/" target="_blank" rel="noopener noreferrer" className="text-[var(--c-text)] hover:underline inline-flex items-center gap-1">Sentry DPA <ExternalLink className="w-3 h-3" /></a> <span className="text-stone-500">— felövervakning (efter consent)</span></li>
+                <li><a href="https://www.linkedin.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[var(--c-text)] hover:underline inline-flex items-center gap-1">LinkedIn <ExternalLink className="w-3 h-3" /></a> <span className="text-stone-500">— opt-in OAuth</span></li>
+                <li><a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[var(--c-text)] hover:underline inline-flex items-center gap-1">Google <ExternalLink className="w-3 h-3" /></a> <span className="text-stone-500">— opt-in Calendar-integration</span></li>
+              </ul>
+            </div>
+
             <p className="mt-4 font-medium text-[var(--c-text)] dark:text-[var(--c-text)] bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-3 rounded-lg border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50">
               {t('privacy.sharing.none')}
             </p>
@@ -276,6 +290,19 @@ export default function Privacy() {
                 dpo@jobin.se
               </a>
             </p>
+            <div className="mt-4 flex flex-wrap gap-2 text-sm">
+              <Link to="/tillganglighet" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline inline-flex items-center gap-1">
+                {t('privacy.contact.accessibility', 'Tillgänglighetsredogörelse')} <ExternalLink className="w-3 h-3" />
+              </Link>
+              <span className="text-stone-400">·</span>
+              <Link to="/ai-policy" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline inline-flex items-center gap-1">
+                {t('privacy.contact.aiPolicy', 'AI-policy')} <ExternalLink className="w-3 h-3" />
+              </Link>
+              <span className="text-stone-400">·</span>
+              <Link to="/terms" className="text-[var(--c-text)] dark:text-[var(--c-text)] hover:underline inline-flex items-center gap-1">
+                {t('privacy.contact.terms', 'Användarvillkor')} <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           </Section>
 
           <div className="border-t border-stone-200 dark:border-stone-700 pt-8">

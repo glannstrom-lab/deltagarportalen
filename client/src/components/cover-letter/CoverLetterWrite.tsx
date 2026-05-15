@@ -43,6 +43,7 @@ import { useProfileStore } from '@/stores/profileStore'
 import { showToast } from '@/components/Toast'
 import { callAI } from '@/services/aiApi'
 import { coverLetterApi } from '@/services/coverLetterApi'
+import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import { userApi } from '@/services/userApi'
 import { generateCoverLetterPDFViaReactPdf, downloadPDF } from '@/services/pdfExportService'
 import { useAutoSave } from '@/hooks/useAutoSave'
@@ -1107,7 +1108,9 @@ function Step3ReviewSave({
           value={editedLetter}
           onChange={(e) => setEditedLetter(e.target.value)}
           className="w-full px-4 py-3 min-h-[250px] rounded-lg border border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-800 text-stone-800 dark:text-stone-100 focus:border-[var(--c-solid)] focus:ring-2 focus:ring-[var(--c-solid)]/20 outline-none resize-y"
+          data-ai-generated="true"
         />
+        <AIGeneratedWatermark contentType="brev" />
       </div>
 
       {/* Actions */}

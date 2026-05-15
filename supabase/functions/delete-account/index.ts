@@ -67,6 +67,45 @@ serve(async (req) => {
       }, 400, origin)
     }
 
+    // GDPR Art 17 — cascade radering till Vercel Blob för uppladdade filer.
+    // Filer som hör till användaren är prefixade med `user-${userId}/`.
+    let blobCleanupStatus = 'skipped'
+    const blobToken = Deno.env.get('BLOB_READ_WRITE_TOKEN')
+    if (blobToken) {
+      try {
+        // Lista alla blobs med användarens prefix
+        const listResponse = await fetch(
+          `https://blob.vercel-storage.com?prefix=user-${userId}/`,
+          { headers: { 'Authorization': `Bearer ${blobToken}` } }
+        )
+        if (listResponse.ok) {
+          const { blobs } = await listResponse.json()
+          if (Array.isArray(blobs) && blobs.length > 0) {
+            // Radera varje blob
+            const urls = blobs.map((b: { url: string }) => b.url)
+            const deleteResponse = await fetch('https://blob.vercel-storage.com/delete', {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${blobToken}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ urls })
+            })
+            blobCleanupStatus = deleteResponse.ok ? `deleted ${urls.length}` : `failed (${deleteResponse.status})`
+          } else {
+            blobCleanupStatus = 'no blobs found'
+          }
+        } else {
+          blobCleanupStatus = `list failed (${listResponse.status})`
+        }
+      } catch (err) {
+        console.error(`[delete-account] Blob cleanup error:`, err)
+        blobCleanupStatus = 'error'
+        // Fortsätt ändå — auth-radering är viktigare för GDPR-compliance
+      }
+    }
+    console.log(`[delete-account] Vercel Blob cleanup: ${blobCleanupStatus}`)
+
     // Delete from auth.users
     const { error: deleteError } = await supabaseAdmin.auth.admin.deleteUser(userId)
 
@@ -83,7 +122,8 @@ serve(async (req) => {
     return createCorsResponse({
       success: true,
       message: 'Account completely deleted',
-      deletedAt: new Date().toISOString()
+      deletedAt: new Date().toISOString(),
+      blobCleanup: blobCleanupStatus
     }, 200, origin)
 
   } catch (error) {
