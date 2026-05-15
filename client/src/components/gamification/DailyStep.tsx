@@ -1,21 +1,19 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { 
-  Check, 
-  Sparkles, 
-  Target, 
-  BookOpen, 
-  FileText, 
-  Briefcase, 
-  Heart, 
-  Zap, 
-  Moon, 
-  RotateCcw, 
+import {
+  Check,
+  Sparkles,
+  Target,
+  BookOpen,
+  FileText,
+  Briefcase,
+  Heart,
+  Moon,
+  RotateCcw,
   Trophy,
   TrendingUp,
   Users,
   Lightbulb,
-  ChevronRight,
   X,
   Bookmark,
   Award,
@@ -358,8 +356,6 @@ function ProgressRing({
 
 // Step Counter Badge
 function StepBadge({ count, total = 3 }: { count: number; total?: number }) {
-  const percentage = Math.min((count / total) * 100, 100)
-  
   return (
     <div className="flex items-center gap-2">
       <div className="flex -space-x-1">

@@ -55,12 +55,3 @@ export {
   ScreenReaderOnly,
 } from './useAccessibility'
 
-// Performance
-export {
-  useMemoizedCallback,
-  useMemoizedValue,
-  useDeepMemo,
-  useStableCallback,
-  propsAreEqual,
-  MemoizedList,
-} from './useMemoized'

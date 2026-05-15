@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import type { Question } from '@/services/interestGuideData'
-import { Pause, Coffee, Save, RotateCcw } from '@/components/ui/icons'
+import { Pause, Save, RotateCcw } from '@/components/ui/icons'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 
@@ -41,14 +41,13 @@ export async function clearProgress() {
   await interestGuideApi.reset()
 }
 
-export function QuestionCard({ 
-  question, 
-  value, 
+export function QuestionCard({
+  question,
+  value,
   onChange,
   questionNumber,
   totalQuestions,
   onPause,
-  onResume
 }: QuestionCardProps) {
   const [isAnimating, setIsAnimating] = useState(false)
   const [showPauseConfirm, setShowPauseConfirm] = useState(false)

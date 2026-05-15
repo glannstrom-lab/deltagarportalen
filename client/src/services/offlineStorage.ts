@@ -187,38 +187,38 @@ export const offlineStorage = new OfflineStorage()
 
 // Career-specific helpers
 export const careerOfflineCache = {
-  async cacheCareerPlan(plan: any): Promise<void> {
+  async cacheCareerPlan(plan: unknown): Promise<void> {
     if (!plan) return
     await offlineStorage.set(STORES.careerPlan, 'active', plan, 7 * 24 * 60 * 60 * 1000) // 7 days
   },
 
-  async getCachedCareerPlan(): Promise<any | null> {
+  async getCachedCareerPlan(): Promise<unknown | null> {
     return offlineStorage.get(STORES.careerPlan, 'active')
   },
 
-  async cacheSkillsAnalysis(analysis: any): Promise<void> {
+  async cacheSkillsAnalysis(analysis: { id?: string } & Record<string, unknown>): Promise<void> {
     if (!analysis) return
     await offlineStorage.set(STORES.skillsAnalysis, analysis.id || 'latest', analysis, 7 * 24 * 60 * 60 * 1000)
   },
 
-  async getCachedSkillsAnalysis(): Promise<any | null> {
+  async getCachedSkillsAnalysis(): Promise<unknown | null> {
     return offlineStorage.get(STORES.skillsAnalysis, 'latest')
   },
 
-  async cacheNetworkContacts(contacts: any[]): Promise<void> {
+  async cacheNetworkContacts(contacts: unknown[]): Promise<void> {
     await offlineStorage.set(STORES.networkContacts, 'all', contacts, 24 * 60 * 60 * 1000) // 24 hours
   },
 
-  async getCachedNetworkContacts(): Promise<any[]> {
-    return await offlineStorage.get(STORES.networkContacts, 'all') || []
+  async getCachedNetworkContacts(): Promise<unknown[]> {
+    return (await offlineStorage.get<unknown[]>(STORES.networkContacts, 'all')) || []
   },
 
-  async cacheMilestones(milestones: any[]): Promise<void> {
+  async cacheMilestones(milestones: unknown[]): Promise<void> {
     await offlineStorage.set(STORES.milestones, 'all', milestones, 7 * 24 * 60 * 60 * 1000)
   },
 
-  async getCachedMilestones(): Promise<any[]> {
-    return await offlineStorage.get(STORES.milestones, 'all') || []
+  async getCachedMilestones(): Promise<unknown[]> {
+    return (await offlineStorage.get<unknown[]>(STORES.milestones, 'all')) || []
   },
 
   // Set last sync timestamp
