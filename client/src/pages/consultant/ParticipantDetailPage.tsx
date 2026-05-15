@@ -17,17 +17,13 @@ import {
   Target,
   MessageSquare,
   Clock,
-  TrendingUp,
   Edit2,
   MoreVertical,
   Plus,
-  Star,
   AlertTriangle,
   CheckCircle,
   Activity,
   Send,
-  Trash2,
-  ChevronRight,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
@@ -130,7 +126,7 @@ function QuickStat({
 // Goal Card Component
 function GoalCard({
   goal,
-  onEdit,
+  onEdit: _onEdit,
   onComplete,
   t,
 }: {

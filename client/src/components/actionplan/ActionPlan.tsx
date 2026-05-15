@@ -3,9 +3,8 @@
  */
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Target, Calendar, CheckCircle2, Clock, ChevronRight } from '@/components/ui/icons'
+import { Target, CheckCircle2, ChevronRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/Button'
 
 interface Plan {
   id: string
@@ -42,7 +41,7 @@ const plans: Plan[] = [
 
 export function ActionPlan() {
   const [selectedPlan, setSelectedPlan] = useState<Plan | null>(null)
-  const [activeWeek, setActiveWeek] = useState(2)
+  const [activeWeek] = useState(2)
 
   if (selectedPlan) {
     return (

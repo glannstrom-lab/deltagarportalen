@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, AlertCircle, CheckCircle, Loader2, Eye, EyeOff } from '@/components/ui/icons';
+import { Mail, Lock, User, AlertCircle, CheckCircle, Loader2 } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { inviteRegisterSchema } from '@/lib/validations';
 
@@ -26,7 +26,7 @@ interface InviteData {
   }
 }
 
-  const [loading, setLoading] = useState(true);
+  const [, setLoading] = useState(true);
   const [validating, setValidating] = useState(true);
   const [inviteData, setInviteData] = useState<InviteData | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -93,7 +93,7 @@ interface InviteData {
       }
 
       // Skapa användare - role sätts av trigger baserat på invitation
-      const { data: authData, error: authError } = await supabase.auth.signUp({
+      const { error: authError } = await supabase.auth.signUp({
         email: inviteData!.email,
         password: formData.password,
         options: {

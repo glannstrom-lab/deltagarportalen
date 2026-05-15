@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { motion, MotionConfig } from 'framer-motion'
 import {
   Siren, Phone, MessageCircle, Heart, Wind, Eye, Ear, Hand,
-  ExternalLink, AlertTriangle, ChevronRight, X, Activity
+  ExternalLink, AlertTriangle, ChevronRight
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -37,7 +37,7 @@ const groundingTechniqueDefs = [
 // Breathing Exercise with Circle Animation
 function BreathingExercise({ onStop }: { onStop: () => void }) {
   const [phase, setPhase] = useState<'breathe-in' | 'hold' | 'breathe-out' | 'rest'>('breathe-in')
-  const [scale, setScale] = useState(1)
+  const [, setScale] = useState(1)
   const [cycleCount, setCycleCount] = useState(0)
 
   useEffect(() => {
@@ -165,7 +165,7 @@ export default function CrisisTab() {
   const { t } = useTranslation()
   const [activeExercise, setActiveExercise] = useState<'breathing' | 'grounding' | null>(null)
   const [selectedGroundingTechnique, setSelectedGroundingTechnique] = useState<number | null>(null)
-  const [showChat, setShowChat] = useState(false)
+  const [, setShowChat] = useState(false)
 
   // Build translated arrays
   const emergencyContacts = useMemo(() => emergencyContactDefs.map(c => ({
@@ -176,11 +176,8 @@ export default function CrisisTab() {
     color: c.color,
   })), [t])
 
-  const breathingSteps = useMemo(() => breathingStepDefs.map(s => ({
-    text: t(s.textKey),
-    duration: s.duration,
-    icon: s.icon,
-  })), [t])
+  // breathingSteps borttagen 2026-05-15 — 0 callers. Återinför när
+  // andningsövning rendrar steg-för-steg.
 
   const groundingTechniques = useMemo(() => groundingTechniqueDefs.map(g => ({
     title: t(g.titleKey),

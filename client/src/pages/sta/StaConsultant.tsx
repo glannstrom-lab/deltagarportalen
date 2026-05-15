@@ -4,16 +4,15 @@ import { PageLayout } from '@/components/layout/index'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { useConsultantStats, useEnrollmentBundle, useStaQuickNotes } from '@/hooks/useSta'
+import { useConsultantStats, useStaQuickNotes } from '@/hooks/useSta'
 import { useAuthStore } from '@/stores/authStore'
-import { staEnrollmentsApi, staActivitiesApi, type StaPart as ApiStaPart } from '@/services/staApi'
+import { staEnrollmentsApi, type StaPart as ApiStaPart } from '@/services/staApi'
 import { DOC_TYPE_META } from '@/services/staAiApi'
 import { toParticipantRow, computeKpi, type EnrollmentStats } from './enrollmentDisplay'
 import { QuickNoteForm, formatTag } from './components/QuickNoteForm'
 import {
   Briefcase,
   Users,
-  Clock,
   FileText,
   Sparkles,
   Plus,
@@ -26,7 +25,6 @@ import {
   Bot,
   Calendar,
   Building2,
-  Phone,
   Mail,
   X,
   ChevronRight,
@@ -608,7 +606,7 @@ function ParticipantsTable({
   rows,
   onOpen,
   onLink,
-  showAddButton = true,
+  showAddButton: _showAddButton = true,
 }: {
   rows: StaParticipantRow[]
   onOpen: (id: string) => void

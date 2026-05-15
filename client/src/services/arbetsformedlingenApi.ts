@@ -95,6 +95,8 @@ export const POPULAR_QUERIES = [
 ];
 
 // Kommun till län mapping (för att veta vilket län en kommun tillhör)
+// Behålls trots 0 callers — kan användas av framtida region-aggregering.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const MUNICIPALITY_TO_REGION: Record<string, string> = {
   'stockholm': 'Stockholms län',
   'göteborg': 'Västra Götalands län',
@@ -319,7 +321,7 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
       hits: hits,
     };
     
-  } catch (error) {
+  } catch {
     jobLogger.error('Search error:', error);
     return { total: { value: 0 }, hits: [] };
   }
@@ -379,7 +381,7 @@ export async function getJobDetails(id: string): Promise<PlatsbankenJob | null> 
   try {
     const url = `${AF_JOBSEARCH_BASE}/ad/${id}`;
     return await fetchFromAF(url);
-  } catch (error) {
+  } catch {
     jobLogger.error('Get job details error:', error);
     return null;
   }
@@ -400,7 +402,7 @@ export async function getAutocomplete(query: string): Promise<string[]> {
       if (typeof item === 'string') return item;
       return item.value || item.found_phrase || '';
     }).filter(Boolean);
-  } catch (error) {
+  } catch {
     return [];
   }
 }
@@ -429,7 +431,7 @@ export async function getMarketInsights() {
       ],
       lastUpdated: new Date().toISOString(),
     };
-  } catch (error) {
+  } catch {
     return {
       totalJobs: 0,
       topOccupations: [],
@@ -439,8 +441,10 @@ export async function getMarketInsights() {
   }
 }
 
-// Förenklad analys
-export function analyzeSkillGap(userSkills: string[], jobRequirements: string[]) {
+// Förenklad analys (parametrarna används inte ännu — placeholder för
+// framtida AI-analys; Math.random är temporär simulering).
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function analyzeSkillGap(_userSkills: string[], _jobRequirements: string[]) {
   const matchPercentage = Math.floor(Math.random() * 40) + 60; // Simulerad för nu
   
   return {
@@ -854,7 +858,7 @@ export async function searchJobsSafe(filters: SearchFilters): Promise<SafeSearch
       fromCache: false,
       isMockData: false,
     };
-  } catch (error) {
+  } catch {
     jobLogger.error('Safe search error:', error);
     return {
       success: false,
