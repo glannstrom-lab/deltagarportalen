@@ -98,3 +98,6 @@ cv-prints/
 
 # CV PDF endpoint verification output (e2e/cv-pdf-endpoint-verify.cjs)
 pdf-verify/
+
+# Blob migration reports (URL-mappningar — kan innehålla user-paths)
+blob-migration-report-*.json

@@ -121,24 +121,35 @@ async function updateSupabaseUrls(urlMap) {
 
   log(`Uppdaterar Supabase: ${Object.keys(urlMap).length} URL-mappningar`)
 
-  // profiles.profile_image_url
-  for (const [oldUrl, newUrl] of Object.entries(urlMap)) {
-    if (DRY_RUN) {
-      logVerbose(`  [DRY] UPDATE profiles SET profile_image_url='${newUrl}' WHERE profile_image_url='${oldUrl}'`)
-      continue
-    }
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/profiles?profile_image_url=eq.${encodeURIComponent(oldUrl)}`, {
-      method: 'PATCH',
-      headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        Prefer: 'return=minimal',
-      },
-      body: JSON.stringify({ profile_image_url: newUrl }),
-    })
-    if (!res.ok) {
-      log(`  Failed to update profiles for ${oldUrl}: ${res.status}`, 'warn')
+  // Alla tabeller/kolumner som kan referera Vercel Blob-URL:er
+  const targets = [
+    { table: 'profiles', column: 'profile_image_url' },
+    { table: 'profiles', column: 'avatar_url' },
+    { table: 'unified_profiles', column: 'profile_image_url' },
+    { table: 'cvs', column: 'profile_image' },
+    { table: 'portfolio_items', column: 'image_url' },
+    { table: 'profile_documents', column: 'file_url' },
+  ]
+
+  for (const { table, column } of targets) {
+    for (const [oldUrl, newUrl] of Object.entries(urlMap)) {
+      if (DRY_RUN) {
+        logVerbose(`  [DRY] UPDATE ${table} SET ${column}='${newUrl}' WHERE ${column}='${oldUrl}'`)
+        continue
+      }
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${column}=eq.${encodeURIComponent(oldUrl)}`, {
+        method: 'PATCH',
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal',
+        },
+        body: JSON.stringify({ [column]: newUrl }),
+      })
+      if (!res.ok) {
+        log(`  Failed to update ${table}.${column} for ${oldUrl}: ${res.status}`, 'warn')
+      }
     }
   }
 
