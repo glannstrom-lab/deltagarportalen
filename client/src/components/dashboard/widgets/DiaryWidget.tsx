@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import {
   Calendar,
   Clock,
-  MapPin,
   Briefcase,
   Video,
   FileText,
@@ -69,8 +68,8 @@ const useRelativeDate = () => {
 // SMALL - Ultra kompakt kalender-widget
 function DiaryWidgetSmall({
   upcomingEvents = [],
-  eventsThisWeek = 0,
-  streakDays = 0,
+  eventsThisWeek: _eventsThisWeek = 0,
+  streakDays: _streakDays = 0,
   loading,
   error,
   onRetry
@@ -82,7 +81,7 @@ function DiaryWidgetSmall({
   }
 
   const status = getStatus()
-  const nextEvent = upcomingEvents[0]
+  // nextEvent borttagen (oanvänd)
 
   return (
     <DashboardWidget
@@ -137,7 +136,7 @@ function DiaryWidgetMedium({
   }
 
   const status = getStatus()
-  const nextEvent = upcomingEvents[0]
+  // nextEvent borttagen (oanvänd)
 
   return (
     <DashboardWidget
@@ -250,13 +249,7 @@ function DiaryWidgetLarge({
 
   const status = getStatus()
 
-  // Gruppera events per dag
-  const eventsByDay = upcomingEvents.slice(0, 5).reduce((acc, event) => {
-    const date = getRelativeDate(event.date)
-    if (!acc[date]) acc[date] = []
-    acc[date].push(event)
-    return acc
-  }, {} as Record<string, typeof upcomingEvents>)
+  // eventsByDay-gruppering borttagen 2026-05-15 — användes inte i renderingen.
 
   return (
     <DashboardWidget
@@ -300,7 +293,7 @@ function DiaryWidgetLarge({
               {t('diaryWidget.upcomingEventsHeader')}
             </p>
             <div className="space-y-2">
-              {upcomingEvents.slice(0, 4).map((event, index) => {
+              {upcomingEvents.slice(0, 4).map((event) => {
                 const config = eventTypeConfig[event.type] || eventTypeConfig.default
                 const Icon = config.icon
                 return (

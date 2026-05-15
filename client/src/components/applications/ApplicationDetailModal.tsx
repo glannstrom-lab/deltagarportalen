@@ -3,13 +3,12 @@
  * Full detail view of a single application with history, contacts, and reminders
  */
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Link } from 'react-router-dom'
 import {
   X, Building2, MapPin, ExternalLink, Calendar, Clock,
-  Edit2, Trash2, Archive, Bell, User, MessageSquare,
-  ChevronRight, Plus, FileText, Send, CheckCircle, Save
+  Edit2, Trash2, Archive, Bell, User,
+  ChevronRight, Plus, FileText, CheckCircle, Save
 } from '@/components/ui/icons'
 import { Button, Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -36,7 +35,7 @@ export function ApplicationDetailModal({
   onClose,
   onEdit
 }: ApplicationDetailModalProps) {
-  const { t } = useTranslation()
+  useTranslation() // i18n initialiseras
   const { updateStatus, updateApplication, archiveApplication, deleteApplication } = useApplications()
   const {
     contacts,

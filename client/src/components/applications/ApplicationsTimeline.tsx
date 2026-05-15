@@ -6,8 +6,8 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Clock, Send, Phone, Users, Trophy, XCircle, CheckCircle,
-  MessageSquare, Bell, User, FileText, Archive, Sparkles, Eye
+  Clock, Send, Users, Trophy, CheckCircle,
+  MessageSquare, Bell, User, FileText, Archive, Sparkles
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -15,7 +15,6 @@ import { useApplications } from '@/hooks/useApplications'
 import { applicationHistoryApi } from '@/services/applicationsApi'
 import { useQuery } from '@tanstack/react-query'
 import {
-  APPLICATION_STATUS_CONFIG,
   getStatusLabel,
   type ApplicationHistoryEntry,
   type HistoryEventType
@@ -101,7 +100,7 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
 }
 
 export function ApplicationsTimeline() {
-  const { t } = useTranslation()
+  useTranslation()
   const { applications } = useApplications()
 
   const { data: recentHistory = [], isLoading } = useQuery({

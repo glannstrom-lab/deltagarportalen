@@ -4,19 +4,14 @@
  */
 
 import { useState, useRef, useEffect } from 'react'
-import { 
-  MessageCircle, 
-  Send, 
-  X, 
-  Bot, 
-  User, 
+import {
+  MessageCircle,
+  Send,
+  X,
+  Bot,
+  User,
   Sparkles,
   Loader2,
-  ChevronDown,
-  HelpCircle,
-  Briefcase,
-  FileText,
-  BookOpen
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 

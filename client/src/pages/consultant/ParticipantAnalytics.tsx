@@ -2,30 +2,24 @@
  * ParticipantAnalytics - Dashboard för arbetskonsulenter
  * Översikt över deltagares aktivitet, riskindikatorer och framsteg
  */
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { 
-  Users, 
-  TrendingUp, 
-  AlertTriangle, 
-  CheckCircle2,
-  Clock,
-  Search,
+import {
+  Users,
+  TrendingUp,
+  AlertTriangle,
   ChevronRight,
   Mail,
   Calendar,
   Activity,
   FileText,
-  Zap,
   Heart,
   Briefcase
 } from '@/components/ui/icons'
-import { Link } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
-import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/utils'
 
 // Mock-data för demo

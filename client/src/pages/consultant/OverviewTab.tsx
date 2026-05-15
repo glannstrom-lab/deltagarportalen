@@ -28,14 +28,12 @@ import {
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
-import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 
 interface DashboardStats {
   totalParticipants: number
@@ -249,7 +247,7 @@ export function OverviewTab() {
     goalsCompleted: 0,
     goalsOverdue: 0,
   })
-  const [participants, setParticipants] = useState<Participant[]>([])
+  const [, setParticipants] = useState<Participant[]>([])
   const [attentionList, setAttentionList] = useState<Array<{ participant: Participant; type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' }>>([])
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
 
@@ -258,7 +256,7 @@ export function OverviewTab() {
   const [showMeetingDialog, setShowMeetingDialog] = useState(false)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
   const [showReportDialog, setShowReportDialog] = useState(false)
-  const [showMessageDialog, setShowMessageDialog] = useState(false)
+  // showMessageDialog-state borttagen 2026-05-15 — message-dialog inte ansluten
 
   // Goal categories for overview
   const [goalCategories, setGoalCategories] = useState<Array<{ category: string; count: number; percentage: number }>>([])
