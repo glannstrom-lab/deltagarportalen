@@ -9,7 +9,7 @@ import {
   Bell, Lock, User, Palette, Shield,
   ChevronRight, Save,
   Accessibility, X, Menu,
-  Monitor, FileText, Brain, Mail, AlertTriangle, Check, ExternalLink
+  Monitor, FileText, Brain, Mail, AlertTriangle, Check, ExternalLink, Bot
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { RoleSelector } from '@/components/settings/RoleSelector'
@@ -84,8 +84,10 @@ function SettingsInner() {
     privacyAcceptedAt: null as string | null,
     aiConsentAt: null as string | null,
     marketingConsentAt: null as string | null,
+    aiEnabled: true,
   })
   const [isUpdatingConsent, setIsUpdatingConsent] = useState<string | null>(null)
+  const [isTogglingAi, setIsTogglingAi] = useState(false)
 
   const { user } = useAuthStore()
 
@@ -133,6 +135,7 @@ function SettingsInner() {
             privacyAcceptedAt: profileData.privacy_accepted_at || null,
             aiConsentAt: profileData.ai_consent_at || null,
             marketingConsentAt: profileData.marketing_consent_at || null,
+            aiEnabled: profileData.ai_enabled !== false,
           })
         }
       } catch (error) {
@@ -187,6 +190,20 @@ function SettingsInner() {
       console.error('Error updating consent:', error)
     } finally {
       setIsUpdatingConsent(null)
+    }
+  }
+
+  // GDPR Art 21 — växla "AI-funktioner PÅ/AV" utan att återkalla samtycke
+  const handleAiToggle = async () => {
+    try {
+      setIsTogglingAi(true)
+      const newValue = !consentData.aiEnabled
+      await userApi.updateProfile({ ai_enabled: newValue })
+      setConsentData(prev => ({ ...prev, aiEnabled: newValue }))
+    } catch (error) {
+      console.error('Error toggling AI:', error)
+    } finally {
+      setIsTogglingAi(false)
     }
   }
 
@@ -523,6 +540,54 @@ function SettingsInner() {
                     </Button>
                   </div>
                 </Card>
+
+                {/* AI On/Off Toggle (GDPR Art 21 — invändning mot profilering) */}
+                {consentData.aiConsentAt && (
+                  <Card variant="flat" padding="sm">
+                    <div className="flex items-start gap-4">
+                      <div className={cn(
+                        "p-2 rounded-lg flex-shrink-0",
+                        consentData.aiEnabled
+                          ? "bg-emerald-100 dark:bg-emerald-900/30"
+                          : "bg-amber-100 dark:bg-amber-900/30"
+                      )}>
+                        <Bot size={20} className={consentData.aiEnabled ? "text-emerald-600" : "text-amber-600"} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-medium text-stone-900 dark:text-stone-100">
+                            {t('settings.privacy.aiToggle.title', 'Aktiv AI-användning')}
+                          </h4>
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-400">
+                            {t('settings.privacy.aiToggle.gdpr', 'GDPR Art 21')}
+                          </span>
+                        </div>
+                        <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                          {t('settings.privacy.aiToggle.desc', 'Pausa AI-funktioner utan att återkalla samtycket. Din rätt att invända mot profilering enligt GDPR Art 21 — du kan när som helst slå på igen.')}
+                        </p>
+                        <p className={cn(
+                          "text-xs mt-2 flex items-center gap-1",
+                          consentData.aiEnabled ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
+                        )}>
+                          {consentData.aiEnabled
+                            ? t('settings.privacy.aiToggle.statusOn', 'AI-funktioner är aktiva')
+                            : t('settings.privacy.aiToggle.statusOff', 'AI-funktioner är pausade')}
+                        </p>
+                      </div>
+                      <Button
+                        variant={consentData.aiEnabled ? "secondary" : "primary"}
+                        size="sm"
+                        onClick={handleAiToggle}
+                        isLoading={isTogglingAi}
+                        className="flex-shrink-0"
+                      >
+                        {consentData.aiEnabled
+                          ? t('settings.privacy.aiToggle.pause', 'Pausa AI')
+                          : t('settings.privacy.aiToggle.resume', 'Slå på AI')}
+                      </Button>
+                    </div>
+                  </Card>
+                )}
 
                 {/* Marketing - Toggleable */}
                 <Card variant="flat" padding="sm">

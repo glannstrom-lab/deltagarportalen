@@ -1,9 +1,16 @@
 /**
  * AI API Client - Centralized client for all AI API calls
- * Automatically includes authentication headers
+ * Automatically includes authentication headers.
+ *
+ * GDPR-säkerhet (2026-05-15): PII-sanitering körs på all data innan
+ * det skickas till backend (som sedan vidarebefordrar till OpenRouter USA).
+ * Personnummer, kreditkort, bankkonton stryks helt. Email/telefon flaggas.
+ * Se client/src/lib/piiSanitizer.ts.
  */
 
 import { supabase } from '@/lib/supabase'
+import { sanitizeObjectForAi } from '@/lib/piiSanitizer'
+import { apiLogger } from '@/lib/logger'
 
 interface AIApiResponse<T = unknown> {
   success: boolean
@@ -32,13 +39,23 @@ export async function callAI<T = unknown>(
     throw new Error('Du måste vara inloggad för att använda AI-funktioner.')
   }
 
+  // GDPR: sanitera prompten innan vi skickar persondata till AI-leverantören.
+  const { sanitized, stripped, warnings } = sanitizeObjectForAi(data)
+  const strippedCount = Object.values(stripped).reduce((a, b) => a + b, 0)
+  if (strippedCount > 0) {
+    apiLogger.warn('[callAI] PII strippad innan AI-anrop:', { functionName, stripped })
+  }
+  if (warnings.length > 0) {
+    apiLogger.debug('[callAI] PII-warning (behållen, krävs för AI-output):', { functionName, warnings })
+  }
+
   const response = await fetch('/api/ai', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({ function: functionName, data })
+    body: JSON.stringify({ function: functionName, data: sanitized })
   })
 
   if (!response.ok) {

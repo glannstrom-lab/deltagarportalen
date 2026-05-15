@@ -942,6 +942,8 @@ export default function Landing() {
                 <li><a href="mailto:support@jobin.se" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.contact')}</a></li>
                 <li><Link to="/privacy" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.privacyPolicy')}</Link></li>
                 <li><Link to="/terms" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.termsOfUse')}</Link></li>
+                <li><Link to="/ai-policy" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.aiPolicy', 'AI-policy')}</Link></li>
+                <li><Link to="/tillganglighet" className="hover:text-white transition-colors inline-flex items-center min-h-[44px] py-2">{t('landing.footer.accessibility', 'Tillgänglighet')}</Link></li>
               </ul>
             </div>
 
