@@ -3,7 +3,8 @@
  * Simplified version without energy filter and zen mode
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { BookOpen, Grid, List, SlidersHorizontal, Search } from '@/components/ui/icons'
 import EnhancedArticleCard from '../EnhancedArticleCard'
@@ -32,10 +33,26 @@ const VISIBLE_BATCH = 12
 
 export default function TopicsTab({ articles }: TopicsTabProps) {
   const { t } = useTranslation()
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
+  const location = useLocation()
+
+  // Läs initial filter från URL: ?category=<key> eller ?q=<query>
+  // KnowledgeBase landing skickar dessa när användaren klickar på kategori-kort
+  // eller submitar sökning.
+  const initialQuery = new URLSearchParams(location.search).get('q') || ''
+  const initialCategory = new URLSearchParams(location.search).get('category') || ''
+
+  const [searchQuery, setSearchQuery] = useState(initialQuery)
+  const [selectedCategory, setSelectedCategory] = useState(initialCategory)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [visibleCount, setVisibleCount] = useState(VISIBLE_BATCH)
+
+  // Sync filtren med URL när användaren navigerar mellan kategorier utan
+  // remount (t.ex. via populära ämnen-länkar eller webbläsarens bakåtknapp)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    setSearchQuery(params.get('q') || '')
+    setSelectedCategory(params.get('category') || '')
+  }, [location.search])
 
   // Get unique categories from articles
   const categories = useMemo(() => {
