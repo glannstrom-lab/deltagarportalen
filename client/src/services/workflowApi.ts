@@ -5,8 +5,7 @@
 
 import { supabase } from '@/lib/supabase'
 import { savedJobsApi, jobApplicationsApi } from './cloudStorage'
-import { applicationService, type ApplicationData } from './applicationService'
-import type { PlatsbankenJob } from './arbetsformedlingenApi'
+import { applicationService } from './applicationService'
 
 // ============================================
 // TYPES

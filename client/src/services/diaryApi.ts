@@ -673,7 +673,7 @@ export const writingPromptsApi = {
 
       // Return random prompt
       return data[Math.floor(Math.random() * data.length)]
-    } catch (err) {
+    } catch {
       // Return default prompt on any error
       return DEFAULT_PROMPTS[Math.floor(Math.random() * DEFAULT_PROMPTS.length)]
     }
@@ -690,7 +690,7 @@ export const writingPromptsApi = {
         return DEFAULT_PROMPTS
       }
       return data
-    } catch (err) {
+    } catch {
       return DEFAULT_PROMPTS
     }
   }

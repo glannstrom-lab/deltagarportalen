@@ -28,12 +28,10 @@ import {
   Video,
   MapPin,
   Heart,
-  Briefcase,
   TrendingUp,
   Eye,
   EyeOff,
   Sparkles,
-  AlertCircle,
   UserCheck,
 } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'

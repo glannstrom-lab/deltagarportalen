@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor, within } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
@@ -101,13 +101,12 @@ vi.mock('@/components/consultant/ConsultantRequestBanner', () => ({
 }))
 
 import Dashboard from './Dashboard'
-import { useDashboardData, useDashboardDataQuery } from '@/hooks/useDashboardData'
+import { useDashboardDataQuery } from '@/hooks/useDashboardData'
 import { useInterestProfile } from '@/hooks/useInterestProfile'
 
 // Dashboard.tsx använder useDashboardDataQuery (React Query). Den gamla
 // useDashboardData-mocken behålls för bakåtkompatibilitet men testen ska
 // asserta mot Query-versionen.
-const mockUseDashboardData = useDashboardData as ReturnType<typeof vi.fn>
 const mockUseDashboardDataQuery = useDashboardDataQuery as ReturnType<typeof vi.fn>
 const mockUseInterestProfile = useInterestProfile as ReturnType<typeof vi.fn>
 

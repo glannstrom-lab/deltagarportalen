@@ -38,7 +38,7 @@ export interface ValidationResult {
 export function validatePhone(phone: string): ValidationResult {
   if (!phone) return { valid: true } // Optional field
 
-  const cleaned = phone.replace(/[\s\-\(\)]/g, '')
+  const cleaned = phone.replace(/[\s\-()]/g, '')
 
   if (!/^[+]?[0-9]+$/.test(cleaned)) {
     return { valid: false, error: 'Endast siffror och + tillåtet' }

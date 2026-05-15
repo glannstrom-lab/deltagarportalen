@@ -5,8 +5,8 @@ import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Target, MapPin, Flag, Calendar, CheckCircle, Clock,
-  Sparkles, ChevronRight, Plus, Award, TrendingUp, AlertCircle,
-  Zap, X, Trash2, Loader2, Heart, FileText
+  Sparkles, Plus, Award, TrendingUp, AlertCircle,
+  Zap, Trash2, Loader2, Heart, FileText
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'

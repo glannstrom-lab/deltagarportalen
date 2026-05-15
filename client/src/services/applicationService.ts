@@ -311,7 +311,7 @@ Med vänliga hälsningar,
         )
       
       if (error) throw error
-    } catch (error) {
+    } catch {
       // Fallback till localStorage
       localStorage.setItem(this.TEMPLATES_KEY, JSON.stringify(templates))
     }

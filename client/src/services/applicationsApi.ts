@@ -18,8 +18,6 @@ import type {
   CreateReminderInput,
   ApplicationFilters,
   ApplicationSort,
-  statusToUppercase,
-  statusFromUppercase
 } from '@/types/application.types'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 

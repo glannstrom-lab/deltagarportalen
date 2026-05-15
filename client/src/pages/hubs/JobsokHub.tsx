@@ -8,8 +8,6 @@ import {
   Mail,
   Mic,
   Wallet,
-  Globe,
-  Linkedin,
 } from 'lucide-react'
 import HubPage, { type HubFeature } from './HubPage'
 import { useJobsokHubSummary } from '@/hooks/useJobsokHubSummary'

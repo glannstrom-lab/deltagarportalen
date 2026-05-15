@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MessageCircle, Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp, Mic, MicOff, Pause, Play, HelpCircle, Circle, Save } from '@/components/ui/icons'
+import { Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp, Mic, MicOff, Pause, Play, HelpCircle, Circle, Save } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { PageLayout } from '@/components/layout/PageLayout'
@@ -169,7 +169,6 @@ function InterviewSimulatorInner() {
     pauseRecording: pauseAudioRecording,
     resumeRecording: resumeAudioRecording,
     downloadRecording: downloadAudioRecording,
-    clearRecording: clearAudioRecording
   } = useAudioRecorder()
 
   // Ref for speech recognition cleanup

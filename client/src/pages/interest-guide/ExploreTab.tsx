@@ -15,7 +15,6 @@ import {
   Minus,
   ChevronDown,
   ChevronUp,
-  Building2,
   Users,
   Compass,
 } from '@/components/ui/icons'
@@ -82,17 +81,6 @@ export default function ExploreTab() {
       return true
     })
   }, [searchQuery, selectedField, filterUni, filterPrognosis])
-
-  // Group by field for display
-  const groupedOccupations = useMemo(() => {
-    const groups: Record<string, Occupation[]> = {}
-    filteredOccupations.forEach(occ => {
-      const field = getOccupationField(occ)
-      if (!groups[field]) groups[field] = []
-      groups[field].push(occ)
-    })
-    return groups
-  }, [filteredOccupations])
 
   const getPrognosisIcon = (prognosis: string) => {
     switch (prognosis) {

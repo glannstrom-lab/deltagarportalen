@@ -46,8 +46,8 @@ export default function RoutinesTab() {
   const [isAdding, setIsAdding] = useState(false)
   const [newRoutine, setNewRoutine] = useState({ title: '', time: '09:00' })
   const [activeTimer, setActiveTimer] = useState<string | null>(null)
-  const [timerSeconds, setTimerSeconds] = useState(0)
-  const [routineStreaks, setRoutineStreaks] = useState<Record<string, number>>({
+  const [, setTimerSeconds] = useState(0)
+  const [routineStreaks] = useState<Record<string, number>>({
     '1': 5,
     '2': 8,
     '3': 3,

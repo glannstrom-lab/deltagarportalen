@@ -5,8 +5,6 @@
 
 import { supabase } from '../lib/supabase'
 import { contentArticleApi, contentExerciseApi } from './contentApi'
-import type { Tables } from '../lib/supabase'
-import { apiLogger } from '../lib/logger'
 import { APIError, handleError } from './apiError'
 
 // Re-export shared error helpers så callers fortsätter importera från
