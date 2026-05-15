@@ -2,6 +2,7 @@
  * Tester för userApi — verifierar profile-CRUD, preferences,
  * onboarding-progress + desired_jobs-normalisering. Mockar Supabase.
  */
+/* eslint-disable @typescript-eslint/no-explicit-any -- supabase-builder-mock kräver any-typad chainable */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { userApi } from './userApi'
 

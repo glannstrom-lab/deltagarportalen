@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useQuery } from '@tanstack/react-query'
 import { ClipboardList, CheckCircle2, ArrowRight, Smile, Loader2 } from '@/components/ui/icons'
 import { applicationsApi } from '@/services/applicationsApi'
+import type { Application } from '@/types/application.types'
 import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
@@ -35,7 +36,7 @@ export function FocusApplicationsWizard({ onExit }: Props) {
   })
 
   // Show up to 3 most recent for focus
-  const focusApps = (applications as any[]).slice(0, 3)
+  const focusApps = (applications as Application[] | undefined ?? []).slice(0, 3)
 
   if (isLoading) {
     return (

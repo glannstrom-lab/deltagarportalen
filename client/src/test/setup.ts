@@ -79,10 +79,10 @@ const originalCreateElement = document.createElement.bind(document)
 // Mock document.createElement for canvas
 document.createElement = vi.fn((tagName: string) => {
   if (tagName === 'canvas') {
-    return new MockCanvas() as any
+    return new MockCanvas() as unknown as HTMLCanvasElement
   }
   return originalCreateElement(tagName)
-}) as any
+}) as typeof document.createElement
 
 // Supabase mock helpers
 export const createMockSupabaseClient = () => ({

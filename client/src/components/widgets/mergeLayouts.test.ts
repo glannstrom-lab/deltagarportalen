@@ -53,7 +53,7 @@ describe('mergeLayouts', () => {
 
   it('appended default widgets get visible: true even if default item omits visible', () => {
     const persisted: WidgetLayoutItem[] = []
-    const defaultLayout = [{ id: 'cv', size: 'L', order: 0 } as any]
+    const defaultLayout = [{ id: 'cv', size: 'L', order: 0 } as WidgetLayoutItem]
     const result = mergeLayouts(persisted, defaultLayout)
     expect(result).toHaveLength(1)
     expect(result[0].visible).toBe(true)

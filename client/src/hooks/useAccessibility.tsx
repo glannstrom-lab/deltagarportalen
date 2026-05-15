@@ -108,6 +108,7 @@ export function useKeyboardNavigation(
 export function useAnnounce(): {
   announce: (message: string, priority?: 'polite' | 'assertive') => void
   clearAnnouncement: () => void
+  AnnouncementRegion: () => JSX.Element
 } {
   const [announcement, setAnnouncement] = useState('')
   const [priority, setPriority] = useState<'polite' | 'assertive'>('polite')
@@ -135,7 +136,7 @@ export function useAnnounce(): {
     </div>
   )
 
-  return { announce, clearAnnouncement, AnnouncementRegion } as any
+  return { announce, clearAnnouncement, AnnouncementRegion }
 }
 
 /**
@@ -187,7 +188,7 @@ export function useClickOutside(
  * Användbart i formulär vid valideringsfel
  */
 export function useFocusFirstError(
-  errors: Record<string, any>,
+  errors: Record<string, unknown>,
   formRef: RefObject<HTMLFormElement>
 ): void {
   useEffect(() => {

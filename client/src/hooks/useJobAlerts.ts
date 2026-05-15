@@ -95,7 +95,7 @@ export function useJobAlerts() {
         municipality: alert.municipality,
         region: alert.region,
         employmentType: alert.employment_type,
-        publishedWithin: (alert.published_within as any) || 'week',
+        publishedWithin: (alert.published_within as 'today' | 'week' | 'month' | 'all' | undefined) || 'week',
         limit: 50
       })
 
@@ -119,7 +119,7 @@ export function useJobAlerts() {
         municipality: alert.municipality,
         region: alert.region,
         employmentType: alert.employment_type,
-        publishedWithin: (alert.published_within as any) || 'week',
+        publishedWithin: (alert.published_within as 'today' | 'week' | 'month' | 'all' | undefined) || 'week',
         limit: 100
       })
       return result

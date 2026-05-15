@@ -12,6 +12,7 @@
  * Runs in BOTH flag states to verify NAV-04 + NAV-05 in combination.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- vi.mock importOriginal + partial-state mocks */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, waitFor } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'

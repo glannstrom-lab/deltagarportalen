@@ -30,7 +30,7 @@ interface AddApplicationModalProps {
     jobTitle?: string
     location?: string
     jobUrl?: string
-    jobData?: any
+    jobData?: unknown
   }
 }
 

@@ -288,7 +288,7 @@ export default function MyJourneyTab() {
             </Link>
           </div>
           <div className="space-y-3">
-            {savedJobsData.jobs.slice(0, 3).map((job: any) => (
+            {savedJobsData.jobs.slice(0, 3).map((job: { id: string; status?: string; job_data?: { headline?: string; title?: string; employer?: { name?: string }; company?: string } }) => (
               <Card key={job.id} className="hover:shadow-sm transition-shadow">
                 <div className="flex items-center justify-between">
                   <div>

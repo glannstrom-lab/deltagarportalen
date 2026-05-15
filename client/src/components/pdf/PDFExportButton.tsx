@@ -50,7 +50,7 @@ async function generateServerCV(template: string): Promise<Blob> {
 
 interface PDFExportButtonProps {
   type: 'cv' | 'job' | 'applications';
-  data: CVData | JobData | any;
+  data: CVData | JobData | unknown;
   filename?: string;
   variant?: 'primary' | 'secondary' | 'outline' | 'light';
   size?: 'sm' | 'md' | 'lg';

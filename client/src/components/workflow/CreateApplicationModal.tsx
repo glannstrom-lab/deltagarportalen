@@ -366,7 +366,7 @@ export function CreateApplicationModal({
                   value={workflow.step3_tracker.status}
                   onChange={(e) => setWorkflow(prev => ({
                     ...prev,
-                    step3_tracker: { ...prev.step3_tracker, status: e.target.value as any }
+                    step3_tracker: { ...prev.step3_tracker, status: e.target.value as 'SAVED' | 'APPLIED' | 'INTERVIEW' }
                   }))}
                   className="w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] text-sm"
                 >

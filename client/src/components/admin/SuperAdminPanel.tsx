@@ -54,7 +54,7 @@ export const SuperAdminPanel: React.FC = () => {
     }
   };
 
-  const handleRoleChange = async (userId: string, newRole: string) => {
+  const handleRoleChange = async (userId: string, newRole: User['role']) => {
     try {
       const { error } = await supabase
         .from('profiles')
@@ -62,7 +62,7 @@ export const SuperAdminPanel: React.FC = () => {
         .eq('id', userId);
 
       if (error) throw error;
-      setUsers(users.map(u => u.id === userId ? { ...u, role: newRole as any } : u));
+      setUsers(users.map(u => u.id === userId ? { ...u, role: newRole } : u));
     } catch (error) {
       console.error('Error changing role:', error);
       alert('Kunde inte ändra roll');
@@ -104,7 +104,7 @@ export const SuperAdminPanel: React.FC = () => {
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
+                onClick={() => setActiveTab(tab.id as 'users' | 'stats' | 'settings')}
                 className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? 'border-primary-600 text-primary-600'
@@ -180,7 +180,7 @@ export const SuperAdminPanel: React.FC = () => {
                       <td className="px-6 py-4">
                         <select
                           value={user.role}
-                          onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                          onChange={(e) => handleRoleChange(user.id, e.target.value as User['role'])}
                           className="text-sm border border-gray-300 rounded-lg px-3 py-1"
                         >
                           <option value="USER">Deltagare</option>

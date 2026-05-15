@@ -159,7 +159,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => setActiveTab(tab.id as 'overview' | 'skills' | 'improvements')}
             className={`flex-1 flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium transition-colors ${
               activeTab === tab.id
                 ? 'text-[var(--c-text)] border-b-2 border-[var(--c-solid)] bg-[var(--c-bg)]/50'

@@ -11,7 +11,7 @@ export interface CVVersion {
   id: string
   name: string
   created_at: string
-  data?: any
+  data?: unknown
 }
 
 export interface CoverLetter {

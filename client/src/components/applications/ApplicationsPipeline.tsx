@@ -301,7 +301,7 @@ export function ApplicationsPipeline({
                     onClick={() => onViewApplication?.(app)}
                     className="px-2 py-1 bg-white rounded-lg text-xs font-medium text-amber-800 border border-amber-200 hover:bg-amber-100"
                   >
-                    {app.companyName || (app.jobData as any)?.employer?.name}
+                    {app.companyName || (app.jobData as { employer?: { name?: string } } | undefined)?.employer?.name}
                   </button>
                 ))}
                 {staleApplications.length > 3 && (

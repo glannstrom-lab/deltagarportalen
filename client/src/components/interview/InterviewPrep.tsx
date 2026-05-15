@@ -161,7 +161,7 @@ export const InterviewPrep: React.FC<InterviewPrepProps> = ({ jobTitle }) => {
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => setActiveTab(tab.id as 'overview' | 'practice' | 'star' | 'tips')}
             className={`
               flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
               ${activeTab === tab.id 

@@ -356,7 +356,7 @@ describe('validatedStorage', () => {
       it('should reject invalid data', () => {
         const invalidData = {
           completedSections: 'not an array',
-        } as any
+        } as unknown as { completedSections: string[] }
 
         const result = testStorage.set('cvProgress', invalidData)
 

@@ -138,9 +138,9 @@ export function DeleteAccountSection() {
       } else {
         throw new Error(data?.error || 'Unknown error')
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error requesting deletion:', err)
-      setError(err.message || t('settings.deleteAccount.requestError'))
+      setError(err instanceof Error ? err.message : t('settings.deleteAccount.requestError'))
     } finally {
       setIsDeleting(false)
     }

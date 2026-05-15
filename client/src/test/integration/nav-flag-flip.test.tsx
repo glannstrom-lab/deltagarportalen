@@ -7,6 +7,7 @@
  * nav with a 27-item sidebar (or vice versa), which is broken.
  */
 
+/* eslint-disable @typescript-eslint/no-explicit-any -- vi.mock importOriginal + partial-state mocks */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
