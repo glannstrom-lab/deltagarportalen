@@ -2702,6 +2702,46 @@
     "visa": {
       "title": "Visa & Work Permits",
       "description": "Guide to different types of work permits in Sweden. Click on each type to see requirements and process information."
+    },
+    "pageTitle": "International Guide",
+    "pageDescription": "Everything you need to know about working in Sweden",
+    "tabs": {
+      "visa": {
+        "label": "Visa & Work Permits",
+        "description": "Guide for work permits"
+      },
+      "integration": {
+        "label": "Integration",
+        "description": "Checklist for getting established"
+      },
+      "language": {
+        "label": "Language",
+        "description": "Swedish for work life"
+      },
+      "newBadge": "New!"
+    }
+  },
+  "personalBrand": {
+    "pageTitle": "Personal Brand",
+    "pageDescription": "Build and strengthen your professional brand",
+    "tabs": {
+      "audit": {
+        "label": "Brand Audit",
+        "description": "Analyze your personal brand"
+      },
+      "pitch": {
+        "label": "Personal Pitch",
+        "description": "Create and practice your elevator pitch"
+      },
+      "portfolio": {
+        "label": "Portfolio",
+        "description": "Showcase your projects"
+      },
+      "visibility": {
+        "label": "Visibility",
+        "description": "Increase your digital presence"
+      },
+      "newBadge": "New!"
     }
   },
   "exercises": {
@@ -7721,6 +7761,23 @@
       "demand": "Demand",
       "disclaimerTitle": "About the statistics:",
       "disclaimerText": "Data is based on industry reports, SCB statistics and salary surveys. Figures are estimates and may vary depending on specific role, company size and individual factors. Last updated: Q1 2026."
+    },
+    "pageTitle": "Salary & Negotiation",
+    "pageDescription": "Get a grip on the salary landscape and negotiate smarter",
+    "tabs": {
+      "calculator": {
+        "label": "Salary Calculator",
+        "description": "Calculate market salary for your role"
+      },
+      "negotiation": {
+        "label": "Negotiation",
+        "description": "Tips for salary negotiation"
+      },
+      "market": {
+        "label": "Market Data",
+        "description": "Salary statistics by industry"
+      },
+      "newBadge": "New!"
     }
   },
   "focus": {

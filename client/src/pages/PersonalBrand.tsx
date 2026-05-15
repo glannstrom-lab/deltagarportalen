@@ -17,16 +17,16 @@ import PitchTab from './personal-brand/PitchTab'
 import PortfolioTab from './personal-brand/PortfolioTab'
 import VisibilityTab from './personal-brand/VisibilityTab'
 
-const brandTabs: Tab[] = [
-  { id: 'audit', label: 'Varumärkesaudit', path: '/personal-brand', icon: ClipboardCheck, description: 'Analysera ditt personliga varumärke' },
-  { id: 'pitch', label: 'Personlig Pitch', path: '/personal-brand/pitch', icon: Mic, description: 'Skapa och öva din hiss-pitch', badge: 'Ny!' },
-  { id: 'portfolio', label: 'Portfolio', path: '/personal-brand/portfolio', icon: FolderOpen, description: 'Visa upp dina projekt' },
-  { id: 'visibility', label: 'Synlighet', path: '/personal-brand/visibility', icon: Eye, description: 'Öka din digitala närvaro' },
-]
-
 export default function PersonalBrandPage() {
   const { t } = useTranslation()
   const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  const brandTabs: Tab[] = [
+    { id: 'audit', label: t('personalBrand.tabs.audit.label'), path: '/personal-brand', icon: ClipboardCheck, description: t('personalBrand.tabs.audit.description') },
+    { id: 'pitch', label: t('personalBrand.tabs.pitch.label'), path: '/personal-brand/pitch', icon: Mic, description: t('personalBrand.tabs.pitch.description'), badge: t('personalBrand.tabs.newBadge') },
+    { id: 'portfolio', label: t('personalBrand.tabs.portfolio.label'), path: '/personal-brand/portfolio', icon: FolderOpen, description: t('personalBrand.tabs.portfolio.description') },
+    { id: 'visibility', label: t('personalBrand.tabs.visibility.label'), path: '/personal-brand/visibility', icon: Eye, description: t('personalBrand.tabs.visibility.description') },
+  ]
 
   if (isFocusMode) {
     return (
@@ -42,8 +42,8 @@ export default function PersonalBrandPage() {
 
   return (
     <PageLayout
-      title="Personligt Varumärke"
-      description="Bygg och stärk ditt professionella varumärke"
+      title={t('personalBrand.pageTitle')}
+      description={t('personalBrand.pageDescription')}
       icon={Star}
       customTabs={brandTabs}
       tabVariant="glass"

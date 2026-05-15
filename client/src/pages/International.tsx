@@ -16,15 +16,15 @@ import VisaGuideTab from './international/VisaGuideTab'
 import IntegrationTab from './international/IntegrationTab'
 import LanguageTab from './international/LanguageTab'
 
-const internationalTabs: Tab[] = [
-  { id: 'visa', label: 'Visum & Arbetstillstånd', path: '/international', icon: FileCheck, description: 'Guide för arbetstillstånd' },
-  { id: 'integration', label: 'Integration', path: '/international/integration', icon: Users, description: 'Checklista för etablering', badge: 'Ny!' },
-  { id: 'language', label: 'Språk', path: '/international/language', icon: Languages, description: 'Svenska för arbetslivet' },
-]
-
 export default function InternationalPage() {
   const { t } = useTranslation()
   const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  const internationalTabs: Tab[] = [
+    { id: 'visa', label: t('international.tabs.visa.label'), path: '/international', icon: FileCheck, description: t('international.tabs.visa.description') },
+    { id: 'integration', label: t('international.tabs.integration.label'), path: '/international/integration', icon: Users, description: t('international.tabs.integration.description'), badge: t('international.tabs.newBadge') },
+    { id: 'language', label: t('international.tabs.language.label'), path: '/international/language', icon: Languages, description: t('international.tabs.language.description') },
+  ]
 
   if (isFocusMode) {
     return (
@@ -40,8 +40,8 @@ export default function InternationalPage() {
 
   return (
     <PageLayout
-      title="Internationell Guide"
-      description="Allt du behöver veta om att arbeta i Sverige"
+      title={t('international.pageTitle')}
+      description={t('international.pageDescription')}
       icon={Globe}
       customTabs={internationalTabs}
       tabVariant="glass"

@@ -16,15 +16,15 @@ import SalaryCalculatorTab from './salary/SalaryCalculatorTab'
 import NegotiationTab from './salary/NegotiationTab'
 import MarketDataTab from './salary/MarketDataTab'
 
-const salaryTabs: Tab[] = [
-  { id: 'calculator', label: 'Lönekalkylator', path: '/salary', icon: Calculator, description: 'Beräkna marknadslön för ditt yrke' },
-  { id: 'negotiation', label: 'Förhandling', path: '/salary/negotiation', icon: TrendingUp, description: 'Tips för löneförhandling', badge: 'Ny!' },
-  { id: 'market', label: 'Marknadsdata', path: '/salary/market', icon: BarChart3, description: 'Lönestatistik per bransch' },
-]
-
 export default function SalaryPage() {
   const { t } = useTranslation()
   const { isFocusMode, toggleFocusMode } = useFocusMode()
+
+  const salaryTabs: Tab[] = [
+    { id: 'calculator', label: t('salary.tabs.calculator.label'), path: '/salary', icon: Calculator, description: t('salary.tabs.calculator.description') },
+    { id: 'negotiation', label: t('salary.tabs.negotiation.label'), path: '/salary/negotiation', icon: TrendingUp, description: t('salary.tabs.negotiation.description'), badge: t('salary.tabs.newBadge') },
+    { id: 'market', label: t('salary.tabs.market.label'), path: '/salary/market', icon: BarChart3, description: t('salary.tabs.market.description') },
+  ]
 
   if (isFocusMode) {
     return (
@@ -40,8 +40,8 @@ export default function SalaryPage() {
 
   return (
     <PageLayout
-      title="Lön & Förhandling"
-      description="Få koll på löneläget och förhandla smartare"
+      title={t('salary.pageTitle')}
+      description={t('salary.pageDescription')}
       icon={Wallet}
       customTabs={salaryTabs}
       tabVariant="glass"

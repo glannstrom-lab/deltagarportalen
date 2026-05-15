@@ -2709,6 +2709,46 @@
     "visa": {
       "title": "Visum & Arbetstillstånd",
       "description": "Guide till olika typer av arbetstillstånd i Sverige. Klicka på varje typ för att se krav och processinformation."
+    },
+    "pageTitle": "Internationell Guide",
+    "pageDescription": "Allt du behöver veta om att arbeta i Sverige",
+    "tabs": {
+      "visa": {
+        "label": "Visum & Arbetstillstånd",
+        "description": "Guide för arbetstillstånd"
+      },
+      "integration": {
+        "label": "Integration",
+        "description": "Checklista för etablering"
+      },
+      "language": {
+        "label": "Språk",
+        "description": "Svenska för arbetslivet"
+      },
+      "newBadge": "Ny!"
+    }
+  },
+  "personalBrand": {
+    "pageTitle": "Personligt Varumärke",
+    "pageDescription": "Bygg och stärk ditt professionella varumärke",
+    "tabs": {
+      "audit": {
+        "label": "Varumärkesaudit",
+        "description": "Analysera ditt personliga varumärke"
+      },
+      "pitch": {
+        "label": "Personlig Pitch",
+        "description": "Skapa och öva din hiss-pitch"
+      },
+      "portfolio": {
+        "label": "Portfolio",
+        "description": "Visa upp dina projekt"
+      },
+      "visibility": {
+        "label": "Synlighet",
+        "description": "Öka din digitala närvaro"
+      },
+      "newBadge": "Ny!"
     }
   },
   "exercises": {
@@ -7728,6 +7768,23 @@
       "demand": "Efterfrågan",
       "disclaimerTitle": "Om statistiken:",
       "disclaimerText": "Data baseras på branschrapporter, SCB-statistik och löneundersökningar. Siffror är uppskattningar och kan variera beroende på specifik roll, företagsstorlek och individuella faktorer. Senast uppdaterad: Q1 2026."
+    },
+    "pageTitle": "Lön & Förhandling",
+    "pageDescription": "Få koll på löneläget och förhandla smartare",
+    "tabs": {
+      "calculator": {
+        "label": "Lönekalkylator",
+        "description": "Beräkna marknadslön för ditt yrke"
+      },
+      "negotiation": {
+        "label": "Förhandling",
+        "description": "Tips för löneförhandling"
+      },
+      "market": {
+        "label": "Marknadsdata",
+        "description": "Lönestatistik per bransch"
+      },
+      "newBadge": "Ny!"
     }
   },
   "focus": {
