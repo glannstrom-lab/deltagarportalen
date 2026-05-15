@@ -6,11 +6,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  FileText, Check, Plus, ChevronDown, ExternalLink, X
+  FileText, Plus, ChevronDown, X
 } from '@/components/ui/icons'
-import { Button, Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
-import { useDocuments, type CVVersion, type CoverLetter } from '@/hooks/useDocuments'
+import { useDocuments } from '@/hooks/useDocuments'
 
 interface DocumentSelectorProps {
   selectedCVId?: string | null

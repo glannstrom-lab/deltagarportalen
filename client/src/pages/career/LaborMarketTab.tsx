@@ -13,16 +13,13 @@ import {
   Zap,
   RefreshCw,
   AlertCircle,
-  Users,
-  Building2,
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { IndustryRadarSection } from '@/components/ai'
-import { cn } from '@/lib/utils'
 import { trendsApi, type MarketStats, type TrendingSkill, type PopularSearch } from '@/services/afTrendsApi'
 
 export default function LaborMarketTab() {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const lang = i18n.language
 
   const [isLoading, setIsLoading] = useState(true)
@@ -62,27 +59,8 @@ export default function LaborMarketTab() {
     fetchData()
   }, [])
 
-  const getTrendIcon = (trend: 'up' | 'down' | 'stable') => {
-    switch (trend) {
-      case 'up':
-        return <TrendingUp className="w-4 h-4 text-[var(--c-solid)]" />
-      case 'down':
-        return <TrendingDown className="w-4 h-4 text-red-500" />
-      default:
-        return <Minus className="w-4 h-4 text-stone-400" />
-    }
-  }
-
-  const getTrendColor = (trend: 'up' | 'down' | 'stable') => {
-    switch (trend) {
-      case 'up':
-        return 'text-[var(--c-text)] dark:text-[var(--c-text)]'
-      case 'down':
-        return 'text-red-600 dark:text-red-400'
-      default:
-        return 'text-stone-600 dark:text-stone-400'
-    }
-  }
+  // getTrendIcon + getTrendColor borttagna 2026-05-15 — 0 callers.
+  // Återinför när trending-display behöver visuell indikering.
 
   if (isLoading) {
     return (

@@ -9,18 +9,12 @@ import { useTranslation } from 'react-i18next'
 import {
   Users,
   Search,
-  Filter,
   Grid3X3,
   List,
   ChevronRight,
   FileText,
   Briefcase,
   MessageSquare,
-  Calendar,
-  Clock,
-  AlertTriangle,
-  CheckCircle,
-  MoreVertical,
   Mail,
   Download,
   Tag,
@@ -34,7 +28,6 @@ import {
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'

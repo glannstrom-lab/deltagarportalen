@@ -1,9 +1,9 @@
 /**
  * Voice Assistant - Röststöd och tillgänglighet
  */
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mic, MicOff, Volume2, X, Command } from '@/components/ui/icons'
+import { Mic, MicOff, X } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 const commands = [
@@ -16,7 +16,6 @@ const commands = [
 export function VoiceAssistant() {
   const [isListening, setIsListening] = useState(false)
   const [transcript, setTranscript] = useState('')
-  const [showCommands, setShowCommands] = useState(false)
 
   // Simulerad röstigenkänning
   const toggleListening = () => {

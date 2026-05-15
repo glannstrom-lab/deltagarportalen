@@ -7,10 +7,9 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   X, Building2, Briefcase, MapPin, Link2, Calendar,
-  FileText, AlertCircle, ChevronDown
+  AlertCircle
 } from '@/components/ui/icons'
-import { Button, Card } from '@/components/ui'
-import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui'
 import { useApplications } from '@/hooks/useApplications'
 import {
   APPLICATION_STATUS_CONFIG,
@@ -54,7 +53,7 @@ export function AddApplicationModal({
   editApplication,
   prefillJob
 }: AddApplicationModalProps) {
-  const { t } = useTranslation()
+  useTranslation()
   const { createApplication, updateApplication } = useApplications()
 
   const [formData, setFormData] = useState({

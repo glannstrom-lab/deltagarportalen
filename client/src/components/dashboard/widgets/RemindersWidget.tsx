@@ -3,11 +3,10 @@
  * "Don't let users forget what they started"
  */
 import { memo, useMemo, useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
   Bell,
-  Clock,
   Flame,
   AlertTriangle,
   ChevronRight,
@@ -22,8 +21,7 @@ import { Link } from 'react-router-dom'
 import { DashboardWidget } from '../DashboardWidget'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { cn } from '@/lib/utils'
-import { differenceInDays, parseISO, format } from 'date-fns'
-import { sv } from 'date-fns/locale'
+import { differenceInDays, parseISO } from 'date-fns'
 import { userPreferencesApi } from '@/services/cloudStorage'
 
 interface Reminder {
@@ -43,7 +41,7 @@ interface Reminder {
 
 export const RemindersWidget = memo(function RemindersWidget({
   size = 'medium',
-  loading
+  loading: _loading
 }: {
   size?: 'small' | 'medium' | 'large'
   loading?: boolean
@@ -87,7 +85,6 @@ export const RemindersWidget = memo(function RemindersWidget({
     }
 
     // 2. Streak-risk
-    const today = new Date().toDateString()
     const yesterday = new Date(Date.now() - 86400000).toDateString()
 
     if (lastLoginDate === yesterday && data.activity?.streakDays && data.activity.streakDays > 0) {
