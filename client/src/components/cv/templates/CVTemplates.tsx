@@ -9,20 +9,14 @@
  */
 
 import { useState } from 'react'
-import { 
-  Download, 
-  FileText, 
-  Eye, 
-  Check, 
+import {
+  Download,
+  FileText,
+  Eye,
+  Check,
   Sparkles,
-  Palette,
-  Briefcase,
-  GraduationCap,
-  Award,
   Lightbulb,
-  Heart,
   Star,
-  Zap
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
@@ -235,7 +229,7 @@ export function CVTemplates() {
   }
 
   // SIDEBAR LAYOUT - Two column with colored sidebar (Word-compatible)
-  const generateSidebarTemplate = (template: CVTemplate, primaryColor: string, secondaryColor: string) => `
+  const generateSidebarTemplate = (template: CVTemplate, primaryColor: string, _secondaryColor: string) => `
 <!DOCTYPE html>
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>
@@ -517,7 +511,7 @@ table { border-collapse: collapse; }
 </html>`
 
   // EXECUTIVE/ELEGANT LAYOUT - Sophisticated, classic (Word-compatible)
-  const generateExecutiveTemplate = (template: CVTemplate, primaryColor: string) => `
+  const generateExecutiveTemplate = (template: CVTemplate, _primaryColor: string) => `
 <!DOCTYPE html>
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>
@@ -683,7 +677,7 @@ CV skapat med mallen "${template.name}"
 </html>`
 
   // MINIMAL/SCANDINAVIAN LAYOUT - Clean, airy, focused (Word-compatible)
-  const generateMinimalTemplate = (template: CVTemplate, primaryColor: string) => `
+  const generateMinimalTemplate = (template: CVTemplate, _primaryColor: string) => `
 <!DOCTYPE html>
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>

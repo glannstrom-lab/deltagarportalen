@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2, Brain, GraduationCap } from '@/components/ui/icons';
+import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2 } from '@/components/ui/icons';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { skillsApi, type UserSkill } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
@@ -31,9 +31,9 @@ export default function SkillsDevelopment() {
   const [technicalSkills, setTechnicalSkills] = useState<AISkill[]>([]);
   const [softSkills, setSoftSkills] = useState<AISkill[]>([]);
   const [certifications, setCertifications] = useState<AICertification[]>([]);
-  const [priority, setPriority] = useState<Array<{rank: number; skill: string; reason: string}>>([]);
-  const [gapAnalysis, setGapAnalysis] = useState<string>('');
-  const [learningPath, setLearningPath] = useState<Array<{step: number; action: string; timeframe: string}>>([]);
+  const [, setPriority] = useState<Array<{rank: number; skill: string; reason: string}>>([]);
+  const [, setGapAnalysis] = useState<string>('');
+  const [, setLearningPath] = useState<Array<{step: number; action: string; timeframe: string}>>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [savedSkills, setSavedSkills] = useState<UserSkill[]>([]);
 
@@ -46,8 +46,8 @@ export default function SkillsDevelopment() {
     try {
       const skills = await skillsApi.getAll();
       setSavedSkills(skills);
-    } catch (error) {
-      console.error('Failed to load saved skills:', error);
+    } catch (err) {
+      console.error('Failed to load saved skills:', err);
     }
   };
 
@@ -63,7 +63,7 @@ export default function SkillsDevelopment() {
       });
       showToast.success('Kompetensen sparad!');
       await loadSavedSkills();
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte spara kompetensen');
     }
   };
@@ -73,7 +73,7 @@ export default function SkillsDevelopment() {
       await skillsApi.delete(id);
       showToast.success('Kompetensen borttagen');
       await loadSavedSkills();
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte ta bort kompetensen');
     }
   };
@@ -111,8 +111,8 @@ export default function SkillsDevelopment() {
         setGapAnalysis(aiResult.skillsData.gapAnalysis || '');
         setLearningPath(aiResult.skillsData.learningPath || []);
       }
-    } catch (error) {
-      console.error('Fel vid kompetensanalys:', error);
+    } catch (err) {
+      console.error('Fel vid kompetensanalys:', err);
       showToast.error('Kunde inte hämta kompetenser från AI');
     } finally {
       setLoading(false);

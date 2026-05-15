@@ -16,18 +16,12 @@ import {
   Target,
   MessageSquare,
   Calendar,
-  ChevronDown,
-  ChevronUp,
   User,
   Loader2,
   RefreshCw,
-  ThumbsUp,
-  ThumbsDown,
   Maximize2,
   Minimize2,
 } from '@/components/ui/icons'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
 
 // Types
@@ -133,8 +127,8 @@ const getContextualInsights = (context: string, participantName?: string): Insig
 // Mock AI chat response
 const generateAIResponse = async (
   message: string,
-  context: string,
-  participantName?: string
+  _context: string,
+  _participantName?: string
 ): Promise<{ content: string; suggestions: string[] }> => {
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 500))

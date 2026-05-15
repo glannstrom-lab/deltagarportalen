@@ -63,6 +63,18 @@ export default defineConfig([
     },
     rules: {
       'no-console': ['warn', { allow: ['error', 'warn'] }],
+      // Underscore-prefix-konvention för avsiktligt unused params/vars.
+      // Standard ts-eslint praxis. Tystar t.ex. (_event, value) => ... där
+      // event-param krävs av callbacksignatur men vi bara använder value.
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
+        },
+      ],
       ...DESIGN_RULES,
     },
   },

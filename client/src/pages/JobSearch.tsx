@@ -1,15 +1,15 @@
-import { useState, useEffect, useMemo, useRef, useId, useCallback } from 'react';
+import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useTranslation } from 'react-i18next';
 import {
   Search, MapPin, Briefcase, X, Building2,
   ExternalLink, Filter, ChevronDown,
-  ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
-  Bookmark, Send, Bell, MoreVertical,
+  Sparkles, Heart, FileText,
+  Bookmark, Send,
   Trash2, CheckCircle, Clock, MessageSquare,
   Star, Mic, Train
 } from '@/components/ui/icons';
-import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { Link, Routes, Route, Navigate } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
 import { sanitizeHTMLWithLineBreaks } from '@/utils/sanitize';
@@ -112,8 +112,8 @@ function SearchTab() {
   const sentinelRef = useRef<HTMLDivElement>(null);
   const [isListening, setIsListening] = useState(false);
 
-  // Saved jobs hook
-  const { savedJobs, saveJob, removeJob, isSaved, getStats } = useSavedJobs()
+  // Saved jobs hook (savedJobs läses inte direkt — bara via getStats/isSaved)
+  const { saveJob, removeJob, isSaved, getStats } = useSavedJobs()
 
   // Create Application Modal state
   const [applicationModalJob, setApplicationModalJob] = useState<PlatsbankenJob | null>(null)
@@ -910,7 +910,7 @@ function SearchTab() {
 function SavedJobsTab() {
   const { t } = useTranslation();
   const { savedJobs, removeJob, updateJobStatus, isLoaded } = useSavedJobs();
-  const [filter, setFilter] = useState<'all' | SavedJob['status']>('all');
+  const [filter] = useState<'all' | SavedJob['status']>('all');
   const [sortBy, setSortBy] = useState<'date' | 'company' | 'status'>('date');
 
   // Filter to only show saved jobs (not applications)
@@ -1066,7 +1066,6 @@ function SavedJobsTab() {
 
 // Main component with routing
 export default function JobSearch() {
-  const location = useLocation();
   const { t } = useTranslation();
   const { savedJobs } = useSavedJobs();
   const { isFocusMode, toggleFocusMode } = useFocusMode();

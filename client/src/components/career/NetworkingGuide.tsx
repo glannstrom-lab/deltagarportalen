@@ -14,16 +14,10 @@ import {
   Sparkles,
   Plus,
   Trash2,
-  Calendar,
-  Building2,
-  Tag,
-  Search,
-  Filter,
   Check,
   X,
   Send,
   Wand2,
-  Briefcase,
   RefreshCw
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -239,7 +233,7 @@ export default function NetworkingGuide() {
       setLoading(true)
       const data = await networkApi.getAll()
       setContacts(data)
-    } catch (error) {
+    } catch {
       console.error('Failed to load contacts:', error)
     } finally {
       setLoading(false)
@@ -276,7 +270,7 @@ export default function NetworkingGuide() {
       })
       setShowAddForm(false)
       await loadContacts()
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte lägga till kontakten')
     }
   }
@@ -286,7 +280,7 @@ export default function NetworkingGuide() {
       await networkApi.delete(id)
       showToast.success('Kontakten borttagen')
       await loadContacts()
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte ta bort kontakten')
     }
   }
@@ -296,7 +290,7 @@ export default function NetworkingGuide() {
       await networkApi.markContacted(id)
       showToast.success('Kontakten markerad som kontaktad')
       await loadContacts()
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte uppdatera kontakten')
     }
   }
@@ -348,7 +342,7 @@ export default function NetworkingGuide() {
       setAiStrategy(result)
       setShowAIStrategy(true)
       showToast.success('Nätverksstrategi genererad!')
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte generera strategi')
       // Fallback strategy
       setAiStrategy(getFallbackStrategy())
@@ -376,7 +370,7 @@ export default function NetworkingGuide() {
         relationship: selectedContactForMessage.relationship || 'colleague'
       })
       setGeneratedMessage(result.message || result.customMessage || '')
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte generera meddelande')
       setGeneratedMessage(getFallbackMessage(selectedContactForMessage, messageType))
     } finally {
@@ -466,16 +460,8 @@ Varmt tack igen!`
     ? contacts 
     : contacts.filter(c => c.status === filterStatus)
 
-  const getRelationshipLabel = (rel: string) => {
-    const labels: Record<string, string> = {
-      colleague: 'Kollega',
-      friend: 'Vän',
-      mentor: 'Mentor',
-      recruiter: 'Rekryterare',
-      other: 'Annat'
-    }
-    return labels[rel] || rel
-  }
+  // getRelationshipLabel borttagen — deklarerad men oanvänd. Återinför
+  // när relationship-display behöver svenska labels.
 
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
