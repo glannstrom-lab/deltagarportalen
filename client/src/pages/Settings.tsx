@@ -677,6 +677,7 @@ function SettingsInner() {
     <PageLayout
       title={t('settings.title')}
       description={t('settings.description')}
+      domain="action"
       showTabs={false}
     >
       {/* Mobile: Dropdown menu */}

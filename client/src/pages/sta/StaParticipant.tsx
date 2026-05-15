@@ -1314,8 +1314,8 @@ function DayResourcePanel({
 
       {resources.length === 0 && (
         <p className="text-sm text-stone-600 mt-2">
-          Mer material för den här dagen kommer snart. Prata med {' '}
-          {PARTICIPANT_MOCK.consultant.name.split(' ')[0]} om du vill ha tips.
+          Inget extra material för den här dagen.
+          Prata med {PARTICIPANT_MOCK.consultant.name.split(' ')[0]} om du vill ha tips.
         </p>
       )}
 

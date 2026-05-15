@@ -32,6 +32,7 @@ export default function Consultant() {
         subtitle={t('consultant.subtitle', 'Hantera och följ upp dina deltagare')}
         tabs={consultantTabs}
         tabVariant="glass"
+        domain="info"
       >
         <Suspense fallback={<LoadingState />}>
           <Routes>

@@ -56,6 +56,7 @@ export default function SpontaneousPage() {
       customTabs={tabs}
       tabVariant="glass"
       showTabs={true}
+      domain="activity"
       className="max-w-7xl mx-auto space-y-6"
     >
       <Routes>

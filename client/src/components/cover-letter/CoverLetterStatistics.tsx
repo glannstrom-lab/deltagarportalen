@@ -4,20 +4,18 @@
  */
 
 import { useState } from 'react'
-import { 
-  FileText, 
-  Send, 
-  MessageCircle, 
+import {
+  FileText,
+  Send,
+  MessageCircle,
   Users,
   TrendingUp,
   TrendingDown,
   Calendar,
   Lightbulb,
   Award,
-  ArrowRight
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
-import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 
 // Mock data - ska ersättas med riktig data
@@ -293,14 +291,8 @@ export function CoverLetterStatistics() {
                 description="De flesta rekryterare läser brev mitt i veckan"
               />
             </div>
-            <Button
-              variant="outline"
-              className="w-full mt-4 gap-2"
-              onClick={() => {}}
-            >
-              Se alla tips
-              <ArrowRight size={16} />
-            </Button>
+            {/* "Se alla tips"-knappen var no-op (onClick={() => {}}). Borttagen
+                2026-05-15 (F3) — bygg om när vi har en faktisk tips-route. */}
           </Card>
         </div>
       </div>

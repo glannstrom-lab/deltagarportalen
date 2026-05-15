@@ -64,13 +64,25 @@ function LinkedInOptimizerInner() {
       })
       setResultat((data as { text?: string }).text || '')
     } catch (error) {
-      const fallbacks: Record<string, string> = {
+      // F6 (2026-05-15): AI-fel maskerades tidigare som "AI-svar" via fallback-
+      // strängar (audit M18). Användaren såg en mall som låtsades vara AI-output.
+      // Nu visar vi ett ärligt felmeddelande + en mall som tydligt märks som
+      // grundmall (inte AI-svar).
+      console.error('[LinkedInOptimizer] AI call failed:', error)
+      const templates: Record<string, string> = {
         headline: `${formData.headline.yrke} | Erfaren specialist inom ${formData.headline.erfarenhet || 'branschen'}`,
         about: `Jag är en driven ${formData.about.bakgrund} med passion för ${formData.about.styrkor}. ${formData.about.mal}`,
         post: `Idag vill jag dela med mig av mina tankar om ${formData.post.amne}. Vad tycker ni?`,
         connection: `Hej ${formData.connection.namn}! Jag såg att du arbetar som ${formData.connection.roll} och skulle gärna vilja connecta. ${formData.connection.syfte}`
       }
-      setResultat(fallbacks[aktivTab] || t('linkedInOptimizer.errors.generateFailed'))
+      const template = templates[aktivTab]
+      if (template) {
+        setResultat(
+          `⚠️ AI-tjänsten är inte tillgänglig just nu. Här är en grundmall du kan utgå från och anpassa själv:\n\n${template}`
+        )
+      } else {
+        setResultat(t('linkedInOptimizer.errors.generateFailed'))
+      }
     } finally {
       setIsLoading(false)
     }

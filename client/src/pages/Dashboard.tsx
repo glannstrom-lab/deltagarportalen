@@ -232,7 +232,7 @@ export default function DashboardPage() {
                     <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-100 dark:bg-purple-900/40 rounded-lg flex items-center justify-center">
                       <Compass className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600 dark:text-purple-400" />
                     </div>
-                    <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-100">{t('dashboard.findYourInterests')}</h3>
+                    <h2 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-100">{t('dashboard.findYourInterests')}</h2>
                   </div>
                   <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400 mb-2 sm:mb-3">
                     {t('dashboard.discoverCareers')}
