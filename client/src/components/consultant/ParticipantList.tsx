@@ -8,13 +8,11 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import {
   User,
-  Mail,
   FileText,
   Briefcase,
   MessageSquare,
   Calendar,
-  MoreVertical,
-  AlertCircle
+  MoreVertical
 } from '@/components/ui/icons';
 
 interface Participant {

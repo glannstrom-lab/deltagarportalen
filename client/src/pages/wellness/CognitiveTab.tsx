@@ -11,16 +11,6 @@ import {
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 
-interface Exercise {
-  id: string
-  title: string
-  description: string
-  duration: number
-  difficulty: 'easy' | 'medium' | 'hard'
-  category: 'memory' | 'concentration' | 'problem-solving'
-  completed: boolean
-}
-
 // Exercise definitions with i18n keys
 const exerciseDefs = [
   { id: '1', titleKey: 'wellness.cognitive.exercises.namememory.title', descKey: 'wellness.cognitive.exercises.namememory.description', duration: 5, difficulty: 'easy' as const, category: 'memory' as const },

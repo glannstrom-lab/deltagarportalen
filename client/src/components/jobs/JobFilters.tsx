@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Search, MapPin, Sliders, X, Building2, Briefcase,
@@ -86,7 +86,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
     const updated = current.includes(value)
       ? current.filter(item => item !== value)
       : [...current, value]
-    updateFilter(key, updated as any)
+    updateFilter(key, updated as JobFilterState[typeof key])
   }
 
   const toggleSection = (section: string) => {
@@ -253,7 +253,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           ].map((option) => (
             <button
               key={option.value}
-              onClick={() => updateFilter('publishedWithin', option.value as any)}
+              onClick={() => updateFilter('publishedWithin', option.value as JobFilterState['publishedWithin'])}
               className={`px-3 py-2.5 text-sm rounded-xl transition-colors text-left ${
                 filters.publishedWithin === option.value
                   ? 'bg-[var(--c-accent)]/40 text-[var(--c-text)] font-medium border-2 border-[var(--c-accent)]/60'

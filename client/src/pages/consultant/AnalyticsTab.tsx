@@ -384,13 +384,13 @@ export function AnalyticsTab() {
   }
 
   // Helper function to calculate cohorts from participant data
-  const calculateCohorts = (participants: any[], placements: any[]): CohortData[] => {
+  const calculateCohorts = (participants: Array<Record<string, unknown>>, placements: Array<Record<string, unknown>>): CohortData[] => {
     if (!participants || participants.length === 0) return []
 
     // Group participants by quarter based on created_at (start date)
     const quarters: Record<string, {
-      participants: any[]
-      placements: any[]
+      participants: Array<Record<string, unknown>>
+      placements: Array<Record<string, unknown>>
     }> = {}
 
     participants.forEach(p => {
@@ -466,10 +466,10 @@ export function AnalyticsTab() {
 
   // Helper function to calculate trends (compare current period to previous)
   const calculateTrends = (
-    currentParticipants: any[],
-    previousParticipants: any[],
-    currentGoals: any[],
-    previousGoals: any[]
+    currentParticipants: Array<Record<string, unknown>>,
+    previousParticipants: Array<Record<string, unknown>>,
+    currentGoals: Array<Record<string, unknown>>,
+    previousGoals: Array<Record<string, unknown>>
   ): TrendData => {
     const calcPercentChange = (current: number, previous: number): { value: number; isPositive: boolean } => {
       if (previous === 0) return { value: current > 0 ? 100 : 0, isPositive: current >= 0 }
@@ -521,7 +521,7 @@ export function AnalyticsTab() {
   }
 
   // Helper function to calculate goal categories
-  const calculateGoalCategories = (goals: any[]) => {
+  const calculateGoalCategories = (goals: Array<Record<string, unknown>>) => {
     if (goals.length === 0) {
       return [
         { category: t('consultant.analytics.goalCategories.cvImprovement'), count: 0 },

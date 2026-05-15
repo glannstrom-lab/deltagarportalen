@@ -7,9 +7,8 @@
  */
 
 import { useState } from 'react'
-import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
-import { Save, MessageSquare, Send } from '@/components/ui/icons'
+import { Save, MessageSquare } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { VoiceInput } from './VoiceInput'
 import type { StaQuickNote, NoteVisibility } from '@/services/staApi'
@@ -106,7 +105,7 @@ export function QuickNoteForm({ onSubmit, compact = false }: QuickNoteFormProps)
       setSelectedTags([])
       setSavedMsg('Sparat')
       setTimeout(() => setSavedMsg(null), 2500)
-    } catch (err) {
+    } catch {
       setSavedMsg('Kunde inte spara')
       setTimeout(() => setSavedMsg(null), 3000)
     } finally {

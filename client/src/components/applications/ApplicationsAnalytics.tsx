@@ -16,6 +16,7 @@ import { useApplications } from '@/hooks/useApplications'
 import {
   APPLICATION_STATUS_CONFIG,
   getStatusLabel,
+  type Application,
   type ApplicationStatus
 } from '@/types/application.types'
 
@@ -55,7 +56,7 @@ function StatCard({ title, value, subtitle, icon: Icon, trend, color = 'text-sto
   )
 }
 
-function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Record<ApplicationStatus, any[]> }) {
+function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Record<ApplicationStatus, Application[]> }) {
   const statusCounts = useMemo(() => {
     const counts: { status: ApplicationStatus; count: number; percentage: number }[] = []
     const total = Object.values(applicationsByStatus).flat().length
@@ -116,7 +117,7 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
   )
 }
 
-function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Record<ApplicationStatus, any[]> }) {
+function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Record<ApplicationStatus, Application[]> }) {
   const stages = useMemo(() => {
     const applied = applicationsByStatus.applied?.length || 0
     const screening = applicationsByStatus.screening?.length || 0
@@ -177,7 +178,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
   )
 }
 
-function RecentActivity({ applications }: { applications: any[] }) {
+function RecentActivity({ applications }: { applications: Application[] }) {
   const recentApps = useMemo(() => {
     return [...applications]
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
@@ -196,8 +197,9 @@ function RecentActivity({ applications }: { applications: any[] }) {
       <div className="space-y-3">
         {recentApps.map((app) => {
           const config = APPLICATION_STATUS_CONFIG[app.status as ApplicationStatus]
-          const companyName = app.companyName || (app.jobData as any)?.employer?.name || 'Okänt företag'
-          const jobTitle = app.jobTitle || (app.jobData as any)?.headline || 'Okänd tjänst'
+          const jobData = app.jobData as { employer?: { name?: string }; headline?: string } | undefined
+          const companyName = app.companyName || jobData?.employer?.name || 'Okänt företag'
+          const jobTitle = app.jobTitle || jobData?.headline || 'Okänd tjänst'
 
           return (
             <div key={app.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50">

@@ -24,13 +24,6 @@ const SYSTEM_FONTS = [
   'sans-serif',
 ].join(', ')
 
-// Font loading states
-const FONT_STATES = {
-  LOADING: 'loading',
-  LOADED: 'loaded',
-  ERROR: 'error',
-} as const
-
 export function FontProvider({ children }: FontProviderProps) {
   const [fontLoaded, setFontLoaded] = useState(false)
 

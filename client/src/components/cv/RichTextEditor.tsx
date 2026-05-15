@@ -6,7 +6,7 @@
 import { useState, useRef, useCallback, useId } from 'react'
 import {
   Bold, Italic, List, ListOrdered, Quote,
-  AlignLeft, AlignCenter, Link, Undo, Redo,
+  Link, Undo, Redo,
   Type, Heading
 } from '@/components/ui/icons'
 
