@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/Card'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { AlertCircle, ArrowRight } from '@/components/ui/icons'
-import type { DashboardWidgetProps, WidgetStat, WidgetStatus, WidgetColor } from '@/types/dashboard'
+import type { DashboardWidgetProps, WidgetStatus, WidgetColor } from '@/types/dashboard'
 
 const SIDEBAR_COLOR = '#4f46e5'
 

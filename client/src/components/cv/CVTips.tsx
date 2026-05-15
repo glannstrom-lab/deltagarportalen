@@ -19,7 +19,6 @@ import {
   Target,
   Award
 } from '@/components/ui/icons'
-import { cn } from '@/lib/utils'
 
 interface TipSection {
   id: string

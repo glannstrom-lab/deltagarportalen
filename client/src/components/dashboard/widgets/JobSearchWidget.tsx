@@ -2,7 +2,6 @@ import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Briefcase, Search, ChevronRight, Bookmark, MapPin, ExternalLink } from '@/components/ui/icons'
-import { cn } from '@/lib/utils'
 
 interface JobSearchWidgetProps {
   savedCount?: number

@@ -7,7 +7,7 @@ interface VoiceInputProps {
   className?: string
 }
 
-export function VoiceInput({ onTranscript, placeholder, className = '' }: VoiceInputProps) {
+export function VoiceInput({ onTranscript, className = '' }: VoiceInputProps) {
   const [isRecording, setIsRecording] = useState(false)
   const [showPrivacyNotice, setShowPrivacyNotice] = useState(false)
   const [error, setError] = useState<string | null>(null)

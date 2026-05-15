@@ -1,5 +1,3 @@
-import { cn } from '@/lib/utils'
-
 interface SkeletonWidgetProps {
   variant?: 'stat' | 'widget' | 'card' | 'list'
   count?: number

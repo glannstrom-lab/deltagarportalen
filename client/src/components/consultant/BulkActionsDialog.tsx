@@ -20,7 +20,6 @@ import {
   AlertCircle,
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 

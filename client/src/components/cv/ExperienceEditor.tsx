@@ -6,7 +6,7 @@
 import { useState } from 'react'
 import {
   Briefcase, Building2, MapPin, Calendar,
-  ChevronDown, ChevronUp, GripVertical, Trash2,
+  ChevronDown, ChevronUp, Trash2,
   Sparkles, CheckCircle, AlertCircle, ArrowUp, ArrowDown
 } from '@/components/ui/icons'
 import { RichTextEditor } from './RichTextEditor'

@@ -10,7 +10,7 @@
  * - Centered: Elegant gradient, balanced, professional
  */
 
-import { useEffect, useLayoutEffect } from 'react'
+import { useLayoutEffect } from 'react'
 import { Sparkles } from '@/components/ui/icons'
 import type { CVData } from '@/services/supabaseApi'
 import {

@@ -1,13 +1,12 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { 
-  ArrowRight, 
-  FileText, 
-  Compass, 
-  Briefcase, 
-  Mail, 
-  Target, 
+import {
+  FileText,
+  Compass,
+  Briefcase,
+  Mail,
+  Target,
   Clock, 
   ChevronDown,
   ChevronUp,

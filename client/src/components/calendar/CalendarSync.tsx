@@ -9,7 +9,6 @@ import {
   Calendar,
   RefreshCw,
   Check,
-  AlertCircle,
   Bell,
   Target,
   Users,

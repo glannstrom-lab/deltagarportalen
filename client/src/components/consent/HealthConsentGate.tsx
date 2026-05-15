@@ -7,7 +7,7 @@
 import { ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Brain, Shield, Settings, ExternalLink, Loader2, AlertCircle } from '@/components/ui/icons'
+import { Brain, Shield, Settings, Loader2, AlertCircle } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { userApi } from '@/services/userApi'
 import { cn } from '@/lib/utils'

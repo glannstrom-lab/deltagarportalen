@@ -3,7 +3,7 @@
  * Visar om allt är OK eller vad som behöver fixas
  */
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { cvApi } from '@/services/cvApi'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'

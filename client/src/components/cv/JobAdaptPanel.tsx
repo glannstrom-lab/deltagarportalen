@@ -6,7 +6,7 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Target, Check, X, Plus, Sparkles, Loader2,
+  Target, Check, Plus, Sparkles, Loader2,
   ChevronDown, ChevronUp, Briefcase, AlertCircle,
   Bookmark, ClipboardPaste
 } from '@/components/ui/icons'

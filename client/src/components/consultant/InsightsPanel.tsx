@@ -17,7 +17,6 @@ import {
   FileText,
   Briefcase,
   Award,
-  Clock,
   AlertTriangle,
   Loader2
 } from '@/components/ui/icons'
