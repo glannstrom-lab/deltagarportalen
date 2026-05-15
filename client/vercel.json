@@ -3,16 +3,26 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "regions": ["fra1"],
   "functions": {
     "api/cv-pdf.js": {
       "memory": 1024,
-      "maxDuration": 60
+      "maxDuration": 60,
+      "regions": ["fra1"]
     },
     "api/ai.js": {
-      "maxDuration": 60
+      "maxDuration": 60,
+      "regions": ["fra1"]
     },
     "api/ai-stream.js": {
-      "maxDuration": 60
+      "maxDuration": 60,
+      "regions": ["fra1"]
+    },
+    "api/upload-image.js": {
+      "regions": ["fra1"]
+    },
+    "api/job-alerts.js": {
+      "regions": ["fra1"]
     }
   },
   "headers": [

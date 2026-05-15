@@ -12,6 +12,14 @@
  * - Magic-byte-validering på buffer (Content-Type kan spoofas)
  * - Rate-limit via Supabase RPC check_rate_limit (5/15 min per user)
  * - Filnamn saniteras mot path-traversal
+ *
+ * GDPR / Region (2026-05-15):
+ * - Funktionen körs i `fra1` (Frankfurt) — se vercel.json regions.
+ * - Vercel Blob-storage REGION måste vara EU. Kontrollera i Vercel-dashboarden:
+ *   Project → Storage → Blob → store-namn → Settings → Region: "Europe (Frankfurt)"
+ *   eller "Europe (Ireland)". Default vid skapande är USA — måste ändras manuellt.
+ *   Om store ligger i USA: skapa ny EU-store, migrera filer, byt BLOB_READ_WRITE_TOKEN.
+ * - Se docs/HOSTING-REGIONS.md för fullständig regions-policy.
  */
 
 const { put } = require('@vercel/blob');
