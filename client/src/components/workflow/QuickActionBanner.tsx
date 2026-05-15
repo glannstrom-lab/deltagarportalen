@@ -4,9 +4,9 @@
  * Visas på olika sidor för att förenkla vanliga arbetsflöden
  */
 
-import { 
-  X, ArrowRight, Sparkles, Search, FileText, 
-  Briefcase, CheckCircle2, ExternalLink
+import {
+  X, ArrowRight, Sparkles, Search, FileText,
+  Briefcase, CheckCircle2
 } from '@/components/ui/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'

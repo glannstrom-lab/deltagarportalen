@@ -11,7 +11,6 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { supabase } from '@/lib/supabase'
-import type { RealtimePayload } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { apiLogger } from '@/lib/logger'
 

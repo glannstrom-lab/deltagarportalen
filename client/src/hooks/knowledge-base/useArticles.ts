@@ -200,8 +200,7 @@ export function useSearchArticles() {
 // Get personalized recommendations
 export function usePersonalizedArticles() {
   const { data: articles } = useArticles()
-  const { data: bookmarks = [] } = useBookmarks()
-  
+
   const getRecommendations = (userProfile: {
     readArticles: string[]
     interests: string[]

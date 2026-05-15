@@ -8,7 +8,6 @@ import {
   educationApi,
   type Education,
   type EducationType,
-  type SearchResult,
 } from '@/services/educationApi'
 
 interface UseEducationSearchOptions {

@@ -6,7 +6,7 @@
 import { useTranslation } from 'react-i18next'
 import {
   Clock, FileText, Building2, Car, AlertCircle, Wallet,
-  Briefcase, MapPin
+  Briefcase
 } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { SectionCard, CompactInput, CompactSelect, CompactTextarea, ChipSelect } from '../forms'

@@ -44,7 +44,7 @@ export const LinkedInImport: React.FC<LinkedInImportProps> = ({
         const mockProfile = getMockLinkedInProfile();
         setPreviewProfile(mockProfile);
       }
-    } catch (err) {
+    } catch {
       setError('Kunde inte ansluta till LinkedIn. Försök igen.');
     } finally {
       setIsConnecting(false);

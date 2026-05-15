@@ -3,7 +3,7 @@
  * Visar jobbfördelning per region med färgkodning
  */
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import { MapPin, Briefcase, X, Navigation, Map as MapIcon, List, Grid3X3 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 

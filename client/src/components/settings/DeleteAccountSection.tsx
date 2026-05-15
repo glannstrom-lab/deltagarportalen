@@ -34,7 +34,7 @@ interface DeletionStatus {
 export function DeleteAccountSection() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { signOut, profile } = useAuthStore()
+  const { signOut } = useAuthStore()
 
   const [deletionStatus, setDeletionStatus] = useState<DeletionStatus | null>(null)
   const [isLoading, setIsLoading] = useState(true)

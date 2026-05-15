@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Globe, ChevronDown } from '@/components/ui/icons'
+import { Globe } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 const languages = [

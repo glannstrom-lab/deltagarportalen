@@ -63,7 +63,7 @@ export function AISummary({ className }: Props) {
       setCopied(true)
       notifications.success('Kopierat till urklipp')
       setTimeout(() => setCopied(false), 2000)
-    } catch (err) {
+    } catch {
       notifications.error('Kunde inte kopiera')
     }
   }

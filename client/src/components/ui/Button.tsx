@@ -28,7 +28,7 @@ export function Button({
   leftIcon,
   rightIcon,
   fullWidth = false,
-  touchOptimized = false,
+  touchOptimized: _touchOptimized = false,
   disabled,
   className,
   ...props

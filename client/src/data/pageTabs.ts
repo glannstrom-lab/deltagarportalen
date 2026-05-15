@@ -15,7 +15,6 @@ import {
   Dumbbell,
   Bookmark,
   Mail,
-  Calendar,
   Settings,
   User,
   Sparkles,

@@ -3,8 +3,6 @@
  * Serves WebP images with PNG fallback for older browsers
  */
 
-import { cn } from '@/lib/utils'
-
 interface OptimizedImageProps {
   src: string
   alt: string

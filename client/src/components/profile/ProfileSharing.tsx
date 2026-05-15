@@ -112,7 +112,7 @@ export function ProfileSharing({ className }: Props) {
       setCopied(shareCode)
       notifications.success(t('profile.sharing.linkCopied'))
       setTimeout(() => setCopied(null), 2000)
-    } catch (err) {
+    } catch {
       notifications.error(t('profile.sharing.copyError'))
     }
   }

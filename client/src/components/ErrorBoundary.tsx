@@ -148,11 +148,10 @@ export function useErrorHandler() {
 }
 
 // Smaller error fallback for section-level error boundaries
-export function SectionErrorFallback({ 
-  error, 
-  reset 
-}: { 
-  error: Error; 
+export function SectionErrorFallback({
+  reset
+}: {
+  error: Error;
   reset: () => void;
 }) {
   return (

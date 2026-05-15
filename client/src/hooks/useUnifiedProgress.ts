@@ -10,7 +10,7 @@ import { cvApi } from '@/services/cvApi'
 import { interestApi } from '@/services/interestApi'
 import { savedJobsApi } from '@/services/jobsApi'
 import { coverLetterApi } from '@/services/coverLetterApi'
-import { useInterestProfile, RIASEC_TYPES, type RiasecScores } from './useInterestProfile'
+import { RIASEC_TYPES, type RiasecScores } from './useInterestProfile'
 
 // ============================================
 // TYPES

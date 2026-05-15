@@ -3,7 +3,7 @@
  * Handles CRUD operations and state management
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import {
   spontaneousCompaniesApi,
   type SpontaneousCompany,
