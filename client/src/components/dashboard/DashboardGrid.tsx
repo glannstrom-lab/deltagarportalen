@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 import { cn } from '@/lib/utils'
 import type { WidgetSize } from './WidgetSizeSelector'
 

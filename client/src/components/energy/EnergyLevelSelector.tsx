@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * EnergyLevelSelector - Låter användaren välja sin energinivå
  * Visas vid inloggning och kan visas igen via header

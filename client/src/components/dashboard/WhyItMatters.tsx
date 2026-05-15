@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * WhyItMatters - Förklarar VARFÖR användaren ska göra något
  * "Show the value, not just the task"

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * Personality Dropdown Component - Clean Design
  * Allows users to select the AI agent's personality

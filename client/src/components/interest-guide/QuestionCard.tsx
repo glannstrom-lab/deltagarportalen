@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 import { useState, useCallback, useEffect } from 'react'
 import type { Question } from '@/services/interestGuideData'
 import { Pause, Save, RotateCcw } from '@/components/ui/icons'

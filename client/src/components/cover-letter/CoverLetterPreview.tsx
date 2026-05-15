@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * Cover Letter Preview Component
  * Routes to the appropriate visual template based on template ID

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * Badge System - Gamification 2.0
  * Märken för achievements och framsteg

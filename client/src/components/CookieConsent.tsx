@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * Cookie Consent Banner
  * GDPR-compliant cookie consent with granular control

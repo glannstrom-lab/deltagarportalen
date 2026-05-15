@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 import { createContext, useContext, type ReactNode } from 'react'
 
 /** Shape of the data the loader emits. Each field maps to a widget's slice. */

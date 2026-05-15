@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * Agent Selector Component - Clean Modern Design
  * Displays the 5 AI agents as selectable cards

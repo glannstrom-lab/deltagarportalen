@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 import { Check, Layout, Palette, Sparkles, Type, Briefcase, GraduationCap, Code, Building2 } from '@/components/ui/icons'
 
 export interface Template {

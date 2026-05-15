@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 import { createContext, useContext, type ReactNode } from 'react'
 import type { WidgetLayoutItem, WidgetSize } from './types'
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * CV Builder Onboarding / Walkthrough
  * Guides first-time users through the CV creation process

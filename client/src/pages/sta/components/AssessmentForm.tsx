@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * AssessmentForm — generisk skattningsformulär för DOA, MOHOST (Del 1) m.fl.
  *

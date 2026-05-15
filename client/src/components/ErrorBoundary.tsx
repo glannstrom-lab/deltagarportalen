@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * Error Boundary Component
  * Catches JavaScript errors anywhere in the child component tree

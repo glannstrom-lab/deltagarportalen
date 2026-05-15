@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 /**
  * ConfirmDialog - Consistent confirmation dialog to replace native confirm()
  * Provides better UX with custom styling and animations
