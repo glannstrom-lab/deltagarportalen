@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- vi.mock-fabriker tar emot variadic args och behöver any */
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { useAuthStore, type Profile } from './authStore'
 

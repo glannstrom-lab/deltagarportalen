@@ -132,7 +132,7 @@ function NumberSequenceGame({ onComplete }: { onComplete: () => void }) {
 
   const playSequence = async (seq: number[]) => {
     setIsPlaying(true)
-    for (const num of seq) {
+    for (let i = 0; i < seq.length; i++) {
       await new Promise(resolve => setTimeout(resolve, 400))
     }
     setIsPlaying(false)
@@ -414,7 +414,7 @@ export default function CognitiveTab() {
                   size="sm"
                   variant={isCompleted ? "ghost" : "default"}
                   disabled={isCompleted}
-                  onClick={() => startExercise(exercise.id, gameType as any)}
+                  onClick={() => startExercise(exercise.id, gameType ?? undefined)}
                 >
                   {isCompleted ? t('wellness.cognitive.completed') : t('wellness.cognitive.start')}
                   {!isCompleted && <ChevronRight className="w-4 h-4 ml-1" />}

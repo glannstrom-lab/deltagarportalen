@@ -190,7 +190,7 @@ export function SettingsTab() {
       if (settingsData) {
         // Apply saved notifications
         if (settingsData.notifications) {
-          const savedNotifs = settingsData.notifications as Record<string, any>
+          const savedNotifs = settingsData.notifications as Record<string, { enabled?: boolean; channel?: string } | undefined>
           setNotifications(defaultNotifications.map(n => ({
             ...n,
             enabled: savedNotifs[n.id]?.enabled ?? n.enabled,
@@ -200,7 +200,7 @@ export function SettingsTab() {
 
         // Apply saved preferences
         if (settingsData.preferences) {
-          const savedPrefs = settingsData.preferences as Record<string, any>
+          const savedPrefs = settingsData.preferences as Record<string, unknown>
           setPreferences(prev => ({
             ...prev,
             ...savedPrefs,
@@ -222,7 +222,7 @@ export function SettingsTab() {
     }
   }
 
-  const updateNotification = (id: string, field: keyof NotificationSetting, value: any) => {
+  const updateNotification = (id: string, field: keyof NotificationSetting, value: NotificationSetting[keyof NotificationSetting]) => {
     setNotifications(prev => prev.map(n =>
       n.id === id ? { ...n, [field]: value } : n
     ))
@@ -230,7 +230,7 @@ export function SettingsTab() {
     setSaved(false)
   }
 
-  const updatePreference = (key: string, value: any) => {
+  const updatePreference = (key: string, value: unknown) => {
     setPreferences(prev => ({ ...prev, [key]: value }))
     setHasChanges(true)
     setSaved(false)

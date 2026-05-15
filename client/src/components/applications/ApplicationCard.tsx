@@ -46,9 +46,10 @@ export function ApplicationCard({
   const [showStatusMenu, setShowStatusMenu] = useState(false)
 
   const statusConfig = APPLICATION_STATUS_CONFIG[application.status]
-  const companyName = application.companyName || (application.jobData as any)?.employer?.name || 'Okänt företag'
-  const jobTitle = application.jobTitle || (application.jobData as any)?.headline || 'Okänd tjänst'
-  const location = application.location || (application.jobData as any)?.workplace_address?.municipality
+  const jobData = application.jobData as { employer?: { name?: string }; headline?: string; workplace_address?: { municipality?: string } } | undefined
+  const companyName = application.companyName || jobData?.employer?.name || 'Okänt företag'
+  const jobTitle = application.jobTitle || jobData?.headline || 'Okänd tjänst'
+  const location = application.location || jobData?.workplace_address?.municipality
 
   // Calculate days since last update
   const daysSinceUpdate = Math.floor(
