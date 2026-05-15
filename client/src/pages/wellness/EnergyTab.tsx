@@ -146,7 +146,7 @@ export default function EnergyTab() {
               key={key}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              onClick={() => setSelectedTime(key as any)}
+              onClick={() => setSelectedTime(key as 'morning' | 'afternoon' | 'evening')}
               className={cn(
                 'flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border-2 transition-all',
                 selectedTime === key
@@ -321,7 +321,7 @@ export default function EnergyTab() {
   )
 }
 
-const Moon = (props: any) => (
+const Moon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
   </svg>

@@ -22,7 +22,7 @@ const DEFAULT_CONFIG: CacheConfig = {
 };
 
 class CacheService {
-  private cache: Map<string, CacheEntry<any>> = new Map();
+  private cache: Map<string, CacheEntry<unknown>> = new Map();
   private config: CacheConfig;
   // Hit-rate tracking — separata counters för korrekt rate-beräkning
   private hits: number = 0;

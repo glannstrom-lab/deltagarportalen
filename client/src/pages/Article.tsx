@@ -82,7 +82,7 @@ function ArticleInner() {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [showCopied, setShowCopied] = useState(false)
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal')
-  const [relatedArticles, setRelatedArticles] = useState<any[]>([])
+  const [relatedArticles, setRelatedArticles] = useState<EnhancedArticle[]>([])
   const [relatedExercises, setRelatedExercises] = useState<Exercise[]>([])
   const { trackArticleRead, trackArticleSaved } = useAchievementTracker()
   const hasTrackedRead = useRef(false)

@@ -855,7 +855,7 @@ export function CommunicationTab() {
     }
   }
 
-  const handleScheduleMeeting = async (meetingData: any) => {
+  const handleScheduleMeeting = async (meetingData: { participantId: string; dateTime: string; duration: number; type: string; meetingLink?: string; location?: string; notes?: string }) => {
     try {
       const {
         data: { user },

@@ -87,15 +87,15 @@ export default function MarketDataTab() {
     )
 
     filtered.sort((a, b) => {
-      let aVal = a[sortKey] as any
-      let bVal = b[sortKey] as any
+      let aVal: string | number = a[sortKey]
+      let bVal: string | number = b[sortKey]
 
       if (sortKey === 'median') {
-        aVal = parseInt(aVal)
-        bVal = parseInt(bVal)
+        aVal = parseInt(String(aVal))
+        bVal = parseInt(String(bVal))
       } else if (sortKey === 'change') {
-        aVal = parseFloat(aVal)
-        bVal = parseFloat(bVal)
+        aVal = parseFloat(String(aVal))
+        bVal = parseFloat(String(bVal))
       }
 
       if (sortOrder === 'asc') {

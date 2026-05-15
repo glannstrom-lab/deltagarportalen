@@ -95,7 +95,7 @@ export interface OccupationEducationMatch {
 async function fetchFromEducationApi<T>(
   endpoint: string,
   params?: Record<string, string>,
-  options?: { method?: string; body?: any }
+  options?: { method?: string; body?: unknown }
 ): Promise<T> {
   const queryString = params ? '?' + new URLSearchParams(params).toString() : '';
   const url = `${SUPABASE_URL}/functions/v1/education-search${endpoint}${queryString}`;

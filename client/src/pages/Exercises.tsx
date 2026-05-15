@@ -98,8 +98,8 @@ function ExercisesInner() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [user, setUser] = useState<any>(null)
-  const [relatedArticles, setRelatedArticles] = useState<any[]>([])
+  const [user, setUser] = useState<{ id: string; email?: string } | null>(null)
+  const [relatedArticles, setRelatedArticles] = useState<Array<{ id: string; title: string; readingTime?: number }>>([])
 
   // Check authentication and load user + exercises
   useEffect(() => {

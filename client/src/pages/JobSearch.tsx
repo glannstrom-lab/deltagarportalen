@@ -245,7 +245,7 @@ function SearchTab() {
     recognition.onstart = () => setIsListening(true);
     recognition.onend = () => setIsListening(false);
     recognition.onerror = () => setIsListening(false);
-    recognition.onresult = (event: any) => {
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
       const transcript = event.results[0][0].transcript;
       setFilters({ ...filters, query: transcript });
     };
@@ -524,7 +524,7 @@ function SearchTab() {
                   <select
                     id="filter-published"
                     value={filters.publishedWithin}
-                    onChange={(e) => setFilters({ ...filters, publishedWithin: e.target.value as any })}
+                    onChange={(e) => setFilters({ ...filters, publishedWithin: e.target.value as 'today' | 'week' | 'month' | 'all' })}
                     className="w-full px-3 py-2 border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
                   >
                     <option value="all">{t('jobSearch.publishedAnytime')}</option>
@@ -974,7 +974,7 @@ function SavedJobsTab() {
         <div className="flex items-center gap-2">
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
+            onChange={(e) => setSortBy(e.target.value as 'date' | 'company' | 'status')}
             className="px-3 py-2 text-sm border border-stone-200 dark:border-stone-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] dark:focus:ring-[var(--c-solid)] bg-white dark:bg-stone-700 text-stone-900 dark:text-stone-100"
           >
             <option value="date">Senast sparade</option>

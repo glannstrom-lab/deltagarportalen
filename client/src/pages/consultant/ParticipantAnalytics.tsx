@@ -175,7 +175,7 @@ function StatCard({ icon, label, value, color }: {
   )
 }
 
-function DetailModal({ participant, onClose, t }: { participant: Participant, onClose: () => void, t: (key: string, options?: any) => string }) {
+function DetailModal({ participant, onClose, t }: { participant: Participant, onClose: () => void, t: (key: string, options?: Record<string, unknown>) => string }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}

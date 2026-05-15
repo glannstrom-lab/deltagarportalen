@@ -103,7 +103,7 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
 }
 
 // Grounding Technique Guide
-function GroundingGuide({ technique, onClose }: { technique: any; onClose: () => void }) {
+function GroundingGuide({ technique, onClose }: { technique: { id: number; title: string }; onClose: () => void }) {
   const steps = technique.id === 0
     ? ['Identifiera 5 saker du ser', 'Identifiera 4 saker du kan röra vid', 'Identifiera 3 saker du hör', 'Identifiera 2 saker du luktar', 'Identifiera 1 sak du smäcker']
     : technique.id === 1

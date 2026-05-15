@@ -48,7 +48,7 @@ export { supabase } from '../lib/supabase'
  * Denna funktion finns kvar för bakåtkompatibilitet under övergångsperioden
  * men kommer tas bort i nästa version.
  */
-export async function apiRequest(endpoint: string, options: RequestInit = {}): Promise<any> {
+export async function apiRequest(endpoint: string, options: RequestInit = {}): Promise<unknown> {
   console.warn('apiRequest är föråldrad. Använd specifika API-funktioner från supabaseApi.ts')
   
   const method = options.method || 'GET'

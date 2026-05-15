@@ -262,7 +262,7 @@ export function OverviewTab() {
   const [goalCategories, setGoalCategories] = useState<Array<{ category: string; count: number; percentage: number }>>([])
 
   // Report data for PDF export
-  const [reportData, setReportData] = useState<any>(null)
+  const [reportData, setReportData] = useState<Record<string, unknown> | null>(null)
 
   useEffect(() => {
     fetchDashboardData()
@@ -386,7 +386,7 @@ export function OverviewTab() {
           GOAL: t('consultant.overview.activity.goalRelated'),
         }
 
-        const activities: RecentActivity[] = (journalData || []).map((entry: any) => ({
+        const activities: RecentActivity[] = (journalData || []).map((entry: { id: string; category: string; participant_id: string; created_at: string; profiles?: { first_name?: string; last_name?: string } }) => ({
           id: entry.id,
           type: activityTypes[entry.category] || 'message',
           participantName: entry.profiles ? `${entry.profiles.first_name} ${entry.profiles.last_name}` : t('common.unknown'),
@@ -417,7 +417,7 @@ export function OverviewTab() {
         // Calculate goal categories
         if (goalsData && goalsData.length > 0) {
           const categories: Record<string, number> = {}
-          goalsData.forEach((g: any) => {
+          goalsData.forEach((g: { title?: string }) => {
             // Extract category from title or use a default categorization
             let category = t('consultant.overview.goalCategories.other')
             const title = g.title?.toLowerCase() || ''

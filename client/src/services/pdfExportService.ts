@@ -24,7 +24,7 @@ async function loadPDFLibraries(): Promise<typeof jsPDF> {
     jsPDFModule = jspdfLib
     autoTableModule = autoTableLib
     // Attach autoTable to jsPDF prototype
-    ;(jsPDFModule.default as any).autoTable = autoTableModule.default
+    ;(jsPDFModule.default as { autoTable: unknown }).autoTable = autoTableModule.default
   }
   return jsPDFModule.default
 }
