@@ -36,7 +36,8 @@ function hasAnalyticsCookieConsent(): boolean {
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
 const IS_PRODUCTION = import.meta.env.PROD;
 const HAS_COOKIE_CONSENT = hasAnalyticsCookieConsent();
-const ENABLE_SENTRY = SENTRY_DSN && (IS_PRODUCTION || import.meta.env.VITE_SENTRY_DEBUG === 'true') && HAS_COOKIE_CONSENT;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- kept for documentation
+const _ENABLE_SENTRY = SENTRY_DSN && (IS_PRODUCTION || import.meta.env.VITE_SENTRY_DEBUG === 'true') && HAS_COOKIE_CONSENT;
 
 let sentryInitialized = false;
 

@@ -45,7 +45,6 @@ export default function Register() {
     handleChange,
     handleBlur,
     handleSubmit,
-    setValue,
   } = useZodForm({
     schema: registerSchema,
     initialValues: {

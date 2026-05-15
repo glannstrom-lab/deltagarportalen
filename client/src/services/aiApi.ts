@@ -5,11 +5,6 @@
 
 import { supabase } from '@/lib/supabase'
 
-interface AIApiOptions {
-  function: string
-  data: Record<string, unknown>
-}
-
 interface AIApiResponse<T = unknown> {
   success: boolean
   error?: string

@@ -7,7 +7,6 @@ import {
   Mail,
   MessageCircle,
   ChevronRight,
-  Search,
   FileText,
   Briefcase,
   Target,

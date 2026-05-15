@@ -13,7 +13,7 @@ function isUuid(s: string): boolean {
   return UUID_REGEX.test(s)
 }
 import { mockArticlesData, articleCategories, type EnhancedArticle, type ArticleChecklistItem, type ArticleAction } from './articleData'
-import { exercises as mockExercises, type Exercise, type ExerciseStep, type ExerciseQuestion } from '@/data/exercises'
+import { exercises as mockExercises, type Exercise, type ExerciseStep } from '@/data/exercises'
 import { getIcon } from '@/lib/dynamicIconMap'
 
 // ============================================

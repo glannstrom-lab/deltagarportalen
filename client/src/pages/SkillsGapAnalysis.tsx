@@ -122,7 +122,7 @@ export default function SkillsGapAnalysis() {
   // conditional hook calls — kunde krascha vid focus-mode-toggle.
 
   // Profile data
-  const [cvData, setCvData] = useState<CVData | null>(null)
+  const [, setCvData] = useState<CVData | null>(null)
   const [profileSummary, setProfileSummary] = useState('')
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
 

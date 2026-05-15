@@ -37,7 +37,7 @@ export default function DashboardPage() {
   const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError, refetch } = useDashboardDataQuery()
   const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
   const [showCompletedSteps, setShowCompletedSteps] = useState(false)
-  const { isFocusMode, toggleFocusMode } = useFocusMode()
+  const { isFocusMode } = useFocusMode()
 
   // Calculate onboarding progress
   const onboardingProgress = useMemo(() => {

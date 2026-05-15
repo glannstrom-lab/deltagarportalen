@@ -15,7 +15,6 @@ import { LoadingState, Button, InfoCard } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'
 import {
   History,
-  ClipboardList,
   Sparkles,
   Calendar,
   Target,

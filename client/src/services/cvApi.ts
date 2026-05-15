@@ -193,7 +193,7 @@ export const cvApi = {
     const expiresAt = new Date()
     expiresAt.setDate(expiresAt.getDate() + 30)
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('cv_shares')
       .insert({
         user_id: user.id,

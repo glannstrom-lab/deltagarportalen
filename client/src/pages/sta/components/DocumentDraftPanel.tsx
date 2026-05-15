@@ -16,7 +16,6 @@ import {
   AlertTriangle,
   RefreshCw,
 } from '@/components/ui/icons'
-import { cn } from '@/lib/utils'
 import { VoiceInput } from './VoiceInput'
 import { generateDocumentDraft, type DocumentDraftSections, DOC_TYPE_META } from '@/services/staAiApi'
 import { downloadStaDocumentPdf } from '@/services/staPdfExport'

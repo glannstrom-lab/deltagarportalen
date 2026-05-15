@@ -19,14 +19,6 @@ const emergencyContactDefs = [
   { nameKey: 'wellness.crisis.contacts.112.name', number: '112', descKey: 'wellness.crisis.contacts.112.description', color: 'bg-red-600' },
 ]
 
-// Breathing step definitions with i18n keys
-const breathingStepDefs = [
-  { textKey: 'wellness.crisis.breatheIn', duration: 4000, icon: Wind },
-  { textKey: 'wellness.crisis.holdBreath', duration: 4000, icon: Hand },
-  { textKey: 'wellness.crisis.breatheOut', duration: 6000, icon: Wind },
-  { textKey: 'wellness.crisis.rest', duration: 2000, icon: Heart },
-]
-
 // Grounding technique definitions with i18n keys
 const groundingTechniqueDefs = [
   { titleKey: 'wellness.crisis.technique54321.title', descKey: 'wellness.crisis.technique54321.description', icon: Eye },

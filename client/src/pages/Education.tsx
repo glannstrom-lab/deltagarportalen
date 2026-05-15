@@ -39,7 +39,6 @@ import {
   educationApi,
   type Education,
   type EducationType,
-  type SearchResult,
   type EducationTypeOption,
   type RegionOption,
 } from '@/services/educationApi';

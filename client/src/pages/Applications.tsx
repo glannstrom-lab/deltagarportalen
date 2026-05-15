@@ -73,7 +73,7 @@ export default function Applications() {
 }
 
 function ApplicationsInner() {
-  const location = useLocation()
+  useLocation()
   const { t } = useTranslation()
 
   // Modal states

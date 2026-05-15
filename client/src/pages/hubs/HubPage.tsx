@@ -76,7 +76,7 @@ const heroVariants = {
 }
 
 export default function HubPage({
-  titleKey,
+  titleKey: _titleKey,
   title,
   hubLabel: _hubLabel, // deprecated, ignoreras enligt DESIGN.md §3
   hubTitle,

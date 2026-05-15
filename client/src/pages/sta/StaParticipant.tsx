@@ -34,7 +34,6 @@ import {
   Phone,
   Mic,
   FileUser,
-  GraduationCap,
   Building2,
   Target,
   Award,

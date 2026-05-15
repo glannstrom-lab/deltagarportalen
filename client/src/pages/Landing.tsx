@@ -10,7 +10,6 @@ import {
   Heart,
   Menu,
   ChevronDown,
-  Target,
   ChevronRight,
   Mail,
   Search,

@@ -105,11 +105,9 @@ export async function getInsights(): Promise<InsightData> {
     const [
       allActivities,
       moodHistory,
-      activityCounts
     ] = await Promise.all([
       getAllActivities(user.id),
       moodApi.getHistory(30),
-      activityApi.getActivityCounts(30)
     ])
 
     // Calculate activity summary

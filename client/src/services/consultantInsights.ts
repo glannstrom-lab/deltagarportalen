@@ -219,7 +219,6 @@ export async function calculateTrends(
   try {
     const now = new Date()
     const currentPeriodStart = new Date(now.getTime() - periodDays * 24 * 60 * 60 * 1000)
-    const previousPeriodStart = new Date(currentPeriodStart.getTime() - periodDays * 24 * 60 * 60 * 1000)
 
     // Fetch all participants
     const { data: participants } = await supabase

@@ -384,7 +384,7 @@ export async function uploadProfileImage(userId: string, file: File) {
   const fileExt = file.name.split('.').pop()
   const fileName = `${userId}-${Date.now()}.${fileExt}`
   
-  const { data, error } = await supabase.storage
+  const { error } = await supabase.storage
     .from('profile_images')
     .upload(fileName, file, {
       cacheControl: '3600',

@@ -67,7 +67,7 @@ export const jobsApi = {
     if (!dataToSave) {
       try {
         dataToSave = await this.getById(jobId)
-      } catch (e) {
+      } catch {
         dataToSave = { id: jobId }
       }
     }

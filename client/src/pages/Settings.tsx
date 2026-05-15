@@ -87,7 +87,7 @@ function SettingsInner() {
   })
   const [isUpdatingConsent, setIsUpdatingConsent] = useState<string | null>(null)
 
-  const { user, profile } = useAuthStore()
+  const { user } = useAuthStore()
 
   const {
     calmMode, toggleCalmMode,

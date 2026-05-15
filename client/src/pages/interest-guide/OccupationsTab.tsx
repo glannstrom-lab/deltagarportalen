@@ -9,7 +9,6 @@ import {
   calculateUserProfile,
   calculateJobMatches,
   type UserProfile,
-  type JobMatch,
 } from '@/services/interestGuideData'
 import { LoadingState, InfoCard, Button, Card, Progress } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'

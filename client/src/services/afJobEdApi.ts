@@ -134,7 +134,7 @@ export async function searchEducations(query: string): Promise<Education[]> {
   try {
     const result = await fetchFromJobEd('/search-educations', { q: query });
     return result.educations || [];
-  } catch (error) {
+  } catch {
     return [];
   }
 }
