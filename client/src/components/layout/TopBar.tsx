@@ -7,7 +7,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
   Moon,
   Sun,
-  User,
   LogOut,
   Settings,
   HelpCircle,

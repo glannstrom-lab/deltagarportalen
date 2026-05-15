@@ -7,7 +7,7 @@ import {
   User, FileText, Search, TrendingUp, Settings, Trophy,
   Check, Lock, ChevronRight
 } from '@/components/ui/icons'
-import { Card, Button } from '@/components/ui'
+import { Card } from '@/components/ui'
 import type { JourneyPhase, PhaseProgress } from '@/types/journey.types'
 
 interface JourneyMapProps {

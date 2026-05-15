@@ -2,7 +2,7 @@
  * Culture Tab - Company culture matching
  */
 import { useState, useEffect } from 'react'
-import { Building2, Heart, CheckCircle, Circle, Sparkles, TrendingUp, AlertCircle } from '@/components/ui/icons'
+import { Heart, CheckCircle, Circle, Sparkles, TrendingUp, AlertCircle } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

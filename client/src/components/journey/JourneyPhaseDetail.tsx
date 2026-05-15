@@ -4,7 +4,7 @@
 
 import { useNavigate } from 'react-router-dom'
 import {
-  X, Check, Lock, ChevronRight, Sparkles,
+  X, Check, ChevronRight, Sparkles,
   User, FileText, Search, TrendingUp, Settings, Trophy
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui'

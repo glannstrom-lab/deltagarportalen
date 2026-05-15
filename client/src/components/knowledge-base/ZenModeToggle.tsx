@@ -6,7 +6,6 @@
 import { useState, useEffect } from 'react'
 import { Leaf, X, Info } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui'
 
 interface ZenModeToggleProps {
   isZenMode: boolean

@@ -7,7 +7,6 @@ import { ChevronRight, Tag, Dumbbell } from '@/components/ui/icons'
 import ReadingTime from './ReadingTime'
 import DifficultyBadge from './DifficultyBadge'
 import { articleCategories } from '@/services/articleData'
-import { cn } from '@/lib/utils'
 
 // Create a map from category ID to Swedish name
 const categoryNameMap: Record<string, string> = {}

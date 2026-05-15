@@ -47,7 +47,7 @@ const CV_STEPS = [
   { id: 'skills', icon: Star, titleKey: 'focusGuide.cv.skillsStep', titleDefault: 'Kompetenser' },
 ] as const
 
-export function FocusCV({ onComplete, onSkip, onBack }: FocusCVProps) {
+export function FocusCV({ onComplete, onSkip }: FocusCVProps) {
   const { t } = useTranslation()
   const { profile } = useAuthStore()
   const queryClient = useQueryClient()

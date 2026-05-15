@@ -143,7 +143,7 @@ export function CoverLetterStatistics() {
 
             {/* Enkel barchart */}
             <div className="flex items-end gap-3 h-48">
-              {mockStats.monthlyTrend.map((month, index) => {
+              {mockStats.monthlyTrend.map((month) => {
                 const maxSent = Math.max(...mockStats.monthlyTrend.map(m => m.sent))
                 const heightPercent = maxSent > 0 ? (month.sent / maxSent) * 100 : 0
 

@@ -6,7 +6,7 @@
 
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { AlertCircle, Clock, ChevronRight, Phone, Calendar, FileText, Briefcase, Compass, PenTool } from '@/components/ui/icons'
+import { AlertCircle, Clock, ChevronRight, Phone, FileText, Briefcase, Compass, PenTool } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import type { Article } from '@/types/knowledge'
 

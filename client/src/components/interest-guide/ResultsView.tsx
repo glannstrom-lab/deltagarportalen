@@ -1,9 +1,8 @@
 import { useState } from 'react'
-import { 
-  calculateJobMatches, 
+import {
+  calculateJobMatches,
   type UserProfile,
   riasecNames,
-  bigFiveNames,
   type RiasecScores,
   type BigFiveScores
 } from '@/services/interestGuideData'

@@ -11,7 +11,6 @@ import {
   BookOpen,
   LayoutGrid,
   ChevronDown,
-  Eye,
   Sparkles,
   Send,
   Zap,

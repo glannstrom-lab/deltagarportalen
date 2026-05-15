@@ -59,7 +59,7 @@ export const ShareJobDialog: React.FC<ShareJobDialogProps> = ({
       }
 
       setConsultantId(profile.consultant_id);
-    } catch (err) {
+    } catch {
       setError('Kunde inte hämta konsulentinformation');
     } finally {
       setIsFetchingConsultant(false);

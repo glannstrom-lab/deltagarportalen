@@ -89,7 +89,7 @@ export function IntroScreen({ onStart, onContinue, hasSavedProgress }: IntroScre
         <h2 className="font-semibold text-gray-900 mb-4">4 delar att besvara</h2>
         
         <div className="space-y-3">
-          {sections.map((section, index) => {
+          {sections.map((section) => {
             const Icon = section.icon
             return (
               <div 

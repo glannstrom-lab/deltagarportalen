@@ -125,7 +125,7 @@ export function ApplicationsPipeline({
   onViewApplication,
   onEditApplication
 }: ApplicationsPipelineProps) {
-  const { t } = useTranslation()
+  useTranslation()
   const {
     applicationsByStatus,
     staleApplications,

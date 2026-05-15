@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useCVScore, getOverallTips, getScoreColor, getScoreBgColor } from '@/hooks/useCVScore'
+import { useCVScore, getOverallTips, getScoreBgColor } from '@/hooks/useCVScore'
 import type { CVData } from '@/services/supabaseApi'
 import { ChevronDown, ChevronUp, Award, CheckCircle, AlertCircle } from '@/components/ui/icons'
 

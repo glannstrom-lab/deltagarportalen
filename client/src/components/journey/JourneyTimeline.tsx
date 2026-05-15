@@ -115,7 +115,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
               {/* Vertical Line */}
               <div className="absolute left-2 top-2 bottom-2 w-0.5 bg-stone-200" />
 
-              {dateActivities.map((activity, index) => {
+              {dateActivities.map((activity) => {
                 const Icon = iconMap[activity.icon || 'activity'] || Activity
                 const isMilestone = activity.type === 'milestone_completed'
                 const isBadge = activity.type === 'badge_unlocked'

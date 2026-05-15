@@ -10,16 +10,6 @@ import { Rocket, CheckCircle2, ArrowRight, Sparkles, FileText, Compass, Briefcas
 import { Card, LoadingState } from '@/components/ui'
 import { cvApi, interestApi, coverLetterApi, savedJobsApi } from '@/services/api'
 
-interface ProgressStep {
-  id: string
-  title: string
-  description: string
-  icon: React.ElementType
-  checkFn: () => Promise<boolean>
-  action: string
-  actionLink: string
-  category: 'profile' | 'career' | 'job-search'
-}
 
 export default function GettingStartedTab() {
   const { t } = useTranslation()

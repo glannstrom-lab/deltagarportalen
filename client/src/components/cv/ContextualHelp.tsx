@@ -106,7 +106,7 @@ const helpDatabase: Record<string, HelpTip[]> = {
   ]
 }
 
-export function ContextualHelp({ context, data, onApplySuggestion }: ContextualHelpProps) {
+export function ContextualHelp({ context, data }: ContextualHelpProps) {
   const [visibleTips, setVisibleTips] = useState<Set<string>>(new Set())
   const [dismissedTips, setDismissedTips] = useState<Set<string>>(() => {
     const saved = localStorage.getItem('dismissed-help-tips')

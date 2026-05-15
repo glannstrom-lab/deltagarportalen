@@ -32,8 +32,7 @@ export function SectionDots({
         const Icon = sectionIcons[section.id]
         const isCurrent = section.id === currentSection
         const isCompleted = completedSections.includes(section.id)
-        const isUpcoming = !isCurrent && !isCompleted
-        
+
         return (
           <div key={section.id} className="flex items-center">
             <button
