@@ -11,13 +11,12 @@ import {
   Sparkles, Target, CheckCircle, AlertCircle, FileText,
   Briefcase, MapPin, Heart, ExternalLink, ChevronDown,
   Loader2, RefreshCw, TrendingUp, Award, Compass,
-  Settings2, X, Car, Clock, Building2
+  Settings2, X, Car
 } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { searchJobs, type PlatsbankenJob, SWEDISH_MUNICIPALITIES } from '@/services/arbetsformedlingenApi'
 import { cvApi } from '@/services/cvApi'
 import { userApi } from '@/services/userApi'
-import type { ProfilePreferences } from '@/services/supabaseApi'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { calculateUserProfile, calculateJobMatches } from '@/services/interestGuideData'
 import { unifiedProfileApi } from '@/services/unifiedProfileApi'
@@ -189,26 +188,9 @@ const JOB_TITLE_SYNONYMS: Record<string, string[]> = {
   'chaufför': ['driver', 'förare', 'lastbilschaufför', 'budbilsförare'],
 }
 
-const SENIORITY_LEVELS = {
-  junior: ['junior', 'entry', 'trainee', 'praktikant', 'nybörjar', 'graduate'],
-  mid: ['mid', 'mellan', 'erfaren', 'experienced'],
-  senior: ['senior', 'sr', 'lead', 'principal', 'expert', 'specialist'],
-  manager: ['manager', 'chef', 'head', 'director', 'ansvarig', 'ledare']
-}
-
-const INDUSTRIES: Record<string, string[]> = {
-  'tech': ['it', 'software', 'tech', 'digital', 'data', 'ai', 'startup'],
-  'finance': ['bank', 'finans', 'försäkring', 'insurance', 'ekonomi', 'revision'],
-  'healthcare': ['vård', 'hälsa', 'sjukvård', 'medicin', 'apotek', 'omsorg'],
-  'retail': ['butik', 'retail', 'handel', 'e-handel', 'detaljhandel'],
-  'manufacturing': ['industri', 'tillverkning', 'produktion', 'fabrik'],
-  'construction': ['bygg', 'fastighet', 'construction', 'arkitektur'],
-  'education': ['utbildning', 'skola', 'universitet', 'förskola'],
-  'hospitality': ['hotell', 'restaurang', 'turism', 'event', 'catering'],
-  'logistics': ['logistik', 'transport', 'lager', 'spedition', 'frakt'],
-  'consulting': ['konsult', 'rådgivning', 'management', 'strategi'],
-  'government': ['kommun', 'stat', 'myndighet', 'offentlig', 'region'],
-}
+// SENIORITY_LEVELS + INDUSTRIES borttagna 2026-05-15 — användes endast
+// av detect-funktionerna ovan (också borttagna). Återinför med tester när
+// matching-logiken behöver granulär klassificering.
 
 /**
  * Generic skills that should NOT be used for job searching
@@ -281,7 +263,7 @@ function matchSkill(skill: string, jobText: string): boolean {
 
   // Partial word match for compound words
   if (skillLower.length > 4) {
-    const words = skillLower.split(/[\s\-\/]+/).filter(w => w.length > 3)
+    const words = skillLower.split(/[\s\-/]+/).filter(w => w.length > 3)
     for (const word of words) {
       if (jobText.includes(word)) return true
     }
@@ -316,7 +298,7 @@ function matchJobTitle(userTitle: string, jobTitle: string, jobOccupation: strin
   }
 
   // Partial word match
-  const titleWords = titleLower.split(/[\s\-\/,]+/).filter(w => w.length > 3)
+  const titleWords = titleLower.split(/[\s\-/,]+/).filter(w => w.length > 3)
   const matchedWords = titleWords.filter(word => combined.includes(word))
   if (matchedWords.length > 0) {
     return { match: 'partial' }
@@ -325,50 +307,9 @@ function matchJobTitle(userTitle: string, jobTitle: string, jobOccupation: strin
   return { match: 'none' }
 }
 
-/**
- * Detect seniority level from job text
- */
-function detectSeniority(text: string): string | null {
-  const textLower = text.toLowerCase()
-  for (const [level, keywords] of Object.entries(SENIORITY_LEVELS)) {
-    if (keywords.some(kw => textLower.includes(kw))) {
-      return level
-    }
-  }
-  return null
-}
-
-/**
- * Detect industry from job/employer text
- */
-function detectIndustry(text: string): string[] {
-  const textLower = text.toLowerCase()
-  const matched: string[] = []
-  for (const [industry, keywords] of Object.entries(INDUSTRIES)) {
-    if (keywords.some(kw => textLower.includes(kw))) {
-      matched.push(industry)
-    }
-  }
-  return matched
-}
-
-/**
- * Extract years of experience required from job text
- */
-function extractRequiredExperience(text: string): number | null {
-  const patterns = [
-    /(\d+)\+?\s*års?\s*erfarenhet/i,
-    /minst\s*(\d+)\s*års?/i,
-    /(\d+)\+?\s*years?\s*experience/i,
-    /erfarenhet\s*av\s*minst\s*(\d+)/i,
-  ]
-
-  for (const pattern of patterns) {
-    const match = text.match(pattern)
-    if (match) return parseInt(match[1])
-  }
-  return null
-}
+// 3 detect-/extract-funktioner (detectSeniority, detectIndustry,
+// extractRequiredExperience) borttagna 2026-05-15 — 0 callers. Återinför
+// med tester när matching-logiken behöver granulär klassificering.
 
 // ============================================
 // PROFESSIONAL LICENSE/CERTIFICATION REQUIREMENTS
@@ -524,7 +465,7 @@ function checkRequiredLicense(
   const textLower = jobText.toLowerCase()
   const userBackground = [...userEducation, ...userWorkTitles].map(s => s.toLowerCase()).join(' ')
 
-  for (const [licenseKey, license] of Object.entries(REQUIRED_LICENSES)) {
+  for (const [, license] of Object.entries(REQUIRED_LICENSES)) {
     // Check if job title matches a licensed profession
     const titleMatch = license.titlePatterns.some(pattern => {
       const patternLower = pattern.toLowerCase()

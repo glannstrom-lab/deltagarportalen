@@ -4,13 +4,12 @@
  */
 
 import { useState } from 'react'
-import { useTranslation } from 'react-i18next'
 import {
   Building2, MapPin, ExternalLink, MoreVertical,
   Clock, Calendar, AlertCircle, ChevronRight,
-  Trash2, Archive, Edit2, Bell, User, FileText
+  Trash2, Archive, Edit2, FileText
 } from '@/components/ui/icons'
-import { Card, Button } from '@/components/ui'
+import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import {
   APPLICATION_STATUS_CONFIG,
@@ -43,7 +42,6 @@ export function ApplicationCard({
   isDragging = false,
   showActions = true
 }: ApplicationCardProps) {
-  const { t, i18n } = useTranslation()
   const [showMenu, setShowMenu] = useState(false)
   const [showStatusMenu, setShowStatusMenu] = useState(false)
 

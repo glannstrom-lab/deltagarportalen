@@ -2,27 +2,24 @@
  * AI Assistant - Personlig jobbassistent
  * Analyserar beteende, ger prediktioner och personliga insikter
  */
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Sparkles, 
-  Brain, 
-  TrendingUp, 
-  Target, 
+import {
+  Sparkles,
+  Brain,
+  TrendingUp,
+  Target,
   Clock,
-  Calendar,
   AlertTriangle,
   Lightbulb,
   ChevronRight,
   X,
-  MessageCircle,
   Zap,
   BarChart3,
   Heart
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/Button'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { useAuthStore } from '@/stores/authStore'
 
@@ -64,7 +61,6 @@ interface Activity {
 function analyzeBehavior(userData: UserData | undefined, activities: Activity[], t: (key: string, options?: Record<string, unknown>) => string): BehaviorAnalysis {
   // Simulated analysis based on data
   const now = new Date()
-  const hour = now.getHours()
 
   // Calculate trend
   const recentActivities = activities.filter((a) => {
@@ -384,7 +380,7 @@ function InsightsTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: str
   )
 }
 
-function ActionsTab({ analysis, onClose, t }: { analysis: BehaviorAnalysis; onClose: () => void; t: (key: string) => string }) {
+function ActionsTab({ analysis, onClose: _onClose, t }: { analysis: BehaviorAnalysis; onClose: () => void; t: (key: string) => string }) {
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-stone-800 dark:text-stone-100 flex items-center gap-2">

@@ -46,24 +46,24 @@ export function isValidPersonalNumber(pnr: string): boolean {
 
 // Validate phone number (Swedish format)
 export function isValidPhoneNumber(phone: string): boolean {
-  const phoneRegex = /^(\+46|0)[\s\-]?[\d\s\-]{7,12}$/;
+  const phoneRegex = /^(\+46|0)[\s-]?[\d\s-]{7,12}$/;
   return phoneRegex.test(phone);
 }
 
 // Prevent SQL injection patterns
 export function containsSQLInjection(input: string): boolean {
   const sqlPatterns = [
-    /(\%27)|(\')|(\-\-)|(\%23)|(#)/i,
-    /((\%3D)|(=))[^\n]*((\%27)|(\')|(\-\-)|(\%3B)|(;))/i,
-    /\w*((\%27)|(\'))((\%6F)|o|(\%4F))((\%72)|r|(\%52))/i,
-    /((\%27)|(\'))union/i,
+    /(%27)|(')|(--)|(%23)|(#)/i,
+    /((%3D)|(=))[^\n]*((%27)|(')|(--)|(%3B)|(;))/i,
+    /\w*((%27)|('))((%6F)|o|(%4F))((%72)|r|(%52))/i,
+    /((%27)|('))union/i,
     /exec(\s|\+)+(s|x)p\w+/i,
     /UNION\s+SELECT/i,
     /INSERT\s+INTO/i,
     /DELETE\s+FROM/i,
     /DROP\s+TABLE/i,
   ];
-  
+
   return sqlPatterns.some(pattern => pattern.test(input));
 }
 
