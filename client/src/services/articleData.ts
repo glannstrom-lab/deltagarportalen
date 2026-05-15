@@ -204,56 +204,49 @@ export const mockArticlesData: EnhancedArticle[] = [
   // === KOMMA IGÅNG ===
   {
     id: 'komma-igang-intro',
-    title: 'Välkommen till din jobbsökarresa',
-    summary: 'En introduktion till portalen och hur du kommer igång med jobbsökningen på bästa sätt.',
-    content: `Att söka jobb kan kännas överväldigande, men du är inte ensam. Denna portal är skapad för att stötta dig genom hela processen – från ditt första CV till din första anställningsdag.
+    title: 'Välkommen – så funkar portalen',
+    summary: 'En lugn introduktion till vad du kan göra här och hur du börjar i din egen takt.',
+    content: `Att söka jobb kan kännas mycket på en gång. Det är helt okej. Portalen finns för att gå bredvid dig – från första utkastet till första arbetsdagen – i den takt som funkar för dig idag.
 
-## Vad kan du göra här?
+## Vad finns här för dig?
 
-**Skapa ett professionellt CV**
-Använd vår CV-generator för att bygga ett CV som sticker ut. Du får hjälp med allt från formuleringar till layout.
+**Ett CV du faktiskt vågar visa**
+CV-byggaren hjälper dig formulera dina erfarenheter, även de du själv inte tycker "räknas". Du kan börja, spara, och fortsätta när du orkar.
 
-**Gör intresseguiden**
-Osäker på vilket yrke som passar dig? Vår intresseguide hjälper dig att hitta rätt baserat på dina intressen och förutsättningar.
+**En guide till vad du tycker om**
+Om du är osäker på vilken riktning du vill ta, finns intresseguiden. Den ställer enkla frågor och föreslår yrken som matchar – inte för att låsa dig, utan för att ge dig idéer.
 
-**Sök och spara jobb**
-Sök bland tusentals jobb och spara de som intresserar dig. Du kan även följa dina ansökningar i vår jobbtracker.
+**Jobb och ansökningar samlat**
+Du kan söka bland tusentals annonser och spara de som intresserar dig. Allt du gör – sparade jobb, ansökningar, anteckningar – samlas på ett ställe.
 
-**Få stöd och vägledning**
-I kunskapsbanken hittar du artiklar om allt från CV-skrivning till att hantera avslag. Och kom ihåg – din arbetskonsulent finns alltid där för dig.
+**Artiklar och stöd när du behöver det**
+Kunskapsbanken (där du är nu) har artiklar om CV-skrivning, intervjuer, avslag och välmående. Du behöver inte läsa allt – plocka det som känns relevant just idag.
 
-## Din första vecka – steg för steg
+Har du en arbetskonsulent kopplad till dig kan ni jobba tillsammans i portalen. Annars funkar allt lika bra på egen hand.
 
-### Dag 1-2: Kom igång med portalen
-- Skapa ditt konto (om du inte redan gjort det)
-- Fyll i din profil
-- Gör intresseguiden för att hitta yrkesriktning
-- Utforska kunskapsbanken
+## Tre steg när du orkar
 
-### Dag 3-4: Bygg ditt CV
-- Samla information om din utbildning och erfarenhet
-- Använd CV-generatorn
-- Be om feedback från din konsulent
-- Gör nödvändiga justeringar
+**1. Skapa en bild av dig själv**
+Fyll i din profil och prova intresseguiden. Inget är låst – du kan ändra senare. Det här ger portalen underlag att anpassa förslag åt dig.
 
-### Dag 5-7: Börja söka jobb
-- Sök efter relevanta jobb
-- Spara intressanta annonser
-- Skriv ditt första personliga brev
-- Skicka din första ansökan!
+**2. Bygg ditt CV**
+Öppna CV-byggaren när du har lite ork. Du behöver inte göra klart på en gång. Spara och fortsätt en annan dag om det är vad som funkar.
 
-## Kom ihåg
+**3. Börja titta på jobb**
+Sök, spara intressanta annonser. Du behöver inte söka direkt – många använder portalen i veckor innan de skickar in första ansökan, och det är helt rimligt.
 
-Jobbsökning är en process. Det är okej att ta det i din egen takt. Vissa dagar orkar du mer än andra – och det är helt normalt. Det viktigaste är att du tar ett steg i taget.
+## Något att ta med dig
 
-> "Varje ansökan är ett steg närmare ditt nya jobb. Även avslag är framsteg – du lär dig och blir bättre för varje gång."
+Jobbsökning är ingen rak väg. Vissa dagar går det framåt, andra dagar är det tungt – båda är normalt och båda räknas som arbete.
 
-Behöver du hjälp? Tveka inte att kontakta din arbetskonsulent. Vi finns här för dig!`,
+> Att vara här, läsa det här, det är redan ett steg framåt.
+
+Om något är otydligt, eller om du fastnar, finns hjälpknappen längst ner till höger. Och har du en arbetskonsulent: hen kan se vad du jobbar med och hjälpa till.`,
     category: 'getting-started',
     subcategory: 'first-week',
     tags: ['introduktion', 'komma igång', 'steg-för-steg', 'för-nybörjare'],
     createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2024-02-20T10:00:00Z',
+    updatedAt: '2026-05-15T10:00:00Z',
     readingTime: 5,
     difficulty: 'easy',
     energyLevel: 'low',
@@ -277,64 +270,84 @@ Behöver du hjälp? Tveka inte att kontakta din arbetskonsulent. Vi finns här f
 
   {
     id: 'forsta-veckan-checklista',
-    title: 'Din första vecka – Checklista',
-    summary: 'En praktisk checklista för att komma igång under din första vecka i portalen.',
-    content: `Att komma igång med jobbsökning kan kännas som mycket. Denna checklista hjälper dig att ta det steg för steg.
+    title: 'En lugn väg in – sju steg, ingen klocka',
+    summary: 'Sju steg som tar dig från första inloggningen till första utkastet av en ansökan. Du bestämmer själv tempot.',
+    content: `Det här är en checklista, inte ett schema. Det står "steg", inte "dag" – för det är inte sju dagar, det är sju steg du kan ta när orken finns. Vissa gör allt på en vecka, andra på en månad. Båda är rätt.
 
-## Dag 1: Utforska och skapa konto
+## Steg 1 – Landa i portalen
 
-- Logga in på portalen
-- Fyll i din profil med grundinformation
-- Ladda upp en profilbild (valfritt men rekommenderat)
-- Ställ in dina preferenser (notiser, tema, etc.)
+- Logga in
+- Fyll i grundläggande profilinformation (namn, ort räcker att börja med)
+- Ladda upp en profilbild om du vill (inget krav)
+- Bläddra runt i menyn så du vet ungefär var saker finns
 
-## Dag 2: Upptäck möjligheter
+Tar oftast 10–20 minuter. Behöver inte göras klart på ett bett.
 
-- Gör intresseguiden för att hitta yrkesriktning
-- Läs artikeln "Välkommen till din jobbsökarresa"
-- Utforska kunskapsbanken och bokmärk intressanta artiklar
-- Titta på vilka jobb som finns tillgängliga
+## Steg 2 – Hitta riktning
 
-## Dag 3-4: Bygg ditt CV
+- Gör intresseguiden – ungefär 15 frågor som ger förslag på yrken som kan passa
+- Läs "Välkommen – så funkar portalen" om du inte redan gjort det
+- Bläddra runt i kunskapsbanken och bokmärk det som verkar intressant (du behöver inte läsa allt)
 
-- Samla information: utbildning, jobb, kompetenser
-- Öppna CV-generatorn
-- Välj en mall som passar dig
-- Fyll i alla avsnitt
-- Spara och förhandsgranska
+## Steg 3 – Samla underlag till CV:t
 
-## Dag 5: Få feedback
+Innan du öppnar CV-byggaren, försök samla:
 
-- Dela ditt CV med din arbetskonsulent
-- Boka ett möte för att gå igenom det tillsammans
-- Gör justeringar baserat på feedback
+- Vilka utbildningar du har gått (även påbörjade, även enstaka kurser)
+- Vilka jobb du haft – även korta, även sådana du själv tycker var "ingenting"
+- Vad du gjort utanför arbete (volontär, vård av närstående, eget projekt)
+- Kompetenser du tycker om att använda
 
-## Dag 6-7: Dags att söka!
+Det är okej att lista mycket först och skala ner sedan.
 
-- Sök efter jobb som matchar din profil
-- Spara minst 3 intressanta annonser
-- Skriv ett personligt brev till ett av jobben
-- Skicka in din första ansökan
-- Fira! 🎉 Du har tagit ett stort steg!
+## Steg 4 – Bygg utkast 1
 
-## Tips för att lyckas
+- Öppna CV-byggaren
+- Välj en mall som känns rätt visuellt (du kan byta senare)
+- Fyll i avsnitten i den ordning som känns enklast – inget måste göras uppifrån och ner
+- Spara
 
-**Ta pauser när du behöver**
-Det är okej att dela upp arbetet över flera dagar. Din hjärna behöver vila för att prestera som bäst.
+Du behöver inte vara klar. Ett utkast räcker.
 
-**Be om hjälp**
-Din arbetskonsulent finns där för dig. Ingen fråga är för liten!
+## Steg 5 – Få ögon på det
 
-**Var snäll mot dig själv**
-Jobbsökning är en inlärningsprocess. Det är normalt att det känns nytt i början.
+- Har du en arbetskonsulent: dela CV:t med hen via portalen och be om kommentarer
+- Har du ingen konsulent: be en vän eller anhörig läsa, eller använd AI-coachen som finns i portalen
+- Gör justeringar du faktiskt håller med om – allt feedback behöver inte följas
 
-**Fira små framsteg**
-Avslutade du ett avsnitt i CV:t? Sökte du ett jobb? Det är värt att firas!`,
+## Steg 6 – Börja titta på jobb
+
+- Sök efter jobb som matchar din riktning
+- Spara annonser du tycker verkar intressanta – behöver inte vara perfekt match
+- Många upptäcker yrken de inte tänkt på här
+
+Det är värdefullt även om du inte söker ännu. Att se vilka roller som finns och vad de kräver är förberedelse i sig.
+
+## Steg 7 – Första utkastet av en ansökan
+
+När det känns rätt, inte innan:
+
+- Välj en av dina sparade annonser
+- Skriv ett personligt brev – mallar finns i portalen
+- Spara ansökan som utkast
+
+Att skicka in är ett separat steg. Många låter utkastet ligga några dagar, läser om, justerar, och skickar sedan. Det är klokt – inte att skjuta upp.
+
+## Att ta med sig
+
+**Tempo är personligt**
+Det finns ingen "rätt" hastighet. Att vila är inte att stå still.
+
+**Stöd finns**
+Har du en arbetskonsulent: hen ser vad du jobbar med i portalen och kan hjälpa till. Har du ingen: AI-coachen och kunskapsbanken är dina följeslagare.
+
+**Det är inte en linje**
+Du kommer att gå tillbaka till tidigare steg. Justera CV:t en månad in. Göra om intresseguiden när din riktning klarnar. Det är inte misslyckande – det är hur det ska fungera.`,
     category: 'getting-started',
     subcategory: 'first-week',
     tags: ['checklista', 'komma igång', 'steg-för-steg', 'praktiskt'],
     createdAt: '2024-01-15T12:00:00Z',
-    updatedAt: '2024-02-18T10:00:00Z',
+    updatedAt: '2026-05-15T10:00:00Z',
     readingTime: 6,
     difficulty: 'easy',
     energyLevel: 'low',
