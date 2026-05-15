@@ -14,6 +14,7 @@ import Landing from './pages/Landing'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import AiPolicy from './pages/AiPolicy'
+import Accessibility from './pages/Accessibility'
 import CookieConsent from './components/CookieConsent'
 import { EnergySaveMode } from './components/EnergySaveMode'
 import { FocusModeProvider } from './components/FocusModeProvider'
@@ -216,6 +217,8 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/ai-policy" element={<AiPolicy />} />
+        <Route path="/tillganglighet" element={<Accessibility />} />
+        <Route path="/accessibility" element={<Accessibility />} />
         <Route path="/template-snapshot/:templateId" element={<LazyRoute><TemplateSnapshot /></LazyRoute>} />
         <Route path="/print/cv" element={<LazyRoute><PrintCV /></LazyRoute>} />
         <Route path="/linkedin/callback" element={<LazyRoute><LinkedInCallback /></LazyRoute>} />

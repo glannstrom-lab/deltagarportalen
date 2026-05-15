@@ -5001,12 +5001,12 @@
       "howToDesc": "You can exercise most rights directly in the app under Settings. For access and portability, use the \"Export data\" feature. For deletion, use \"Delete account\"."
     },
     "automated": {
-      "title": "Automated decision-making and AI",
-      "intro": "About AI processing:",
-      "noDecisions": "We do not make legally binding decisions based solely on automated processing.",
-      "aiAssist": "AI is only used to provide suggestions that you review and edit yourself.",
-      "consent": "AI features require your explicit consent and you can use the service without them.",
-      "transparency": "You can always see when content has been generated with AI assistance.",
+      "title": "Profiling and AI recommendations",
+      "intro": "We use AI to guide you, but:",
+      "noDecisions": "No AI decision is binding — you always make the final call about jobs, education and career.",
+      "aiAssist": "AI recommends occupations, skills and jobs based on your profile. This is profiling under GDPR Art 4(4) — you have the right to object (Art 21) or turn off AI features in Settings without deleting your account.",
+      "consent": "AI features require your explicit consent and you can use the core portal without them.",
+      "transparency": "AI-generated content is clearly marked in the app. You can always see when AI has been involved.",
       "moreInfo": "Learn more about how we use AI"
     },
     "cookies": {

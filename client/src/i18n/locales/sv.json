@@ -5008,12 +5008,12 @@
       "howToDesc": "Du kan utöva de flesta rättigheter direkt i appen under Inställningar. För tillgång och portabilitet, använd \"Exportera data\"-funktionen. För radering, använd \"Radera konto\"."
     },
     "automated": {
-      "title": "Automatiserat beslutsfattande och AI",
-      "intro": "Om AI-behandling:",
-      "noDecisions": "Vi fattar inga juridiskt bindande beslut baserat enbart på automatiserad behandling.",
-      "aiAssist": "AI används endast för att ge förslag som du själv granskar och redigerar.",
-      "consent": "AI-funktioner kräver ditt uttryckliga samtycke och du kan använda tjänsten utan dem.",
-      "transparency": "Du kan alltid se när innehåll har genererats med AI-hjälp.",
+      "title": "Profilering och AI-rekommendationer",
+      "intro": "Vi använder AI för att ge dig vägledning, men:",
+      "noDecisions": "Inga AI-beslut är bindande — du fattar alltid själv beslutet om jobb, utbildning och karriär.",
+      "aiAssist": "AI rekommenderar yrken, kompetenser och jobb baserat på din profil. Detta är profilering enligt GDPR Art 4(4) — du har rätt att invända (Art 21) eller stänga av AI-funktioner i Inställningar utan att radera kontot.",
+      "consent": "AI-funktioner kräver ditt uttryckliga samtycke och du kan använda kärnportalen utan dem.",
+      "transparency": "AI-genererat innehåll märks tydligt i appen. Du kan alltid se när AI har varit inblandad.",
       "moreInfo": "Läs mer om hur vi använder AI"
     },
     "cookies": {
