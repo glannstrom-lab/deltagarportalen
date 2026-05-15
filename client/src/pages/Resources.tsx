@@ -147,48 +147,8 @@ interface UploadedFile {
   uploaded_at: string
 }
 
-const statusLabels: Record<string, { label: string; color: string; bg: string; icon: React.ComponentType<{ size?: number; className?: string }> }> = {
-  'SAVED': { label: 'Sparad', color: 'text-stone-600 dark:text-stone-400', bg: 'bg-stone-100 dark:bg-stone-800', icon: Bookmark },
-  'APPLIED': { label: 'Ansökt', color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/30', icon: CheckCircle2 },
-  'INTERVIEW': { label: 'Intervju', color: 'text-sky-600 dark:text-sky-400', bg: 'bg-sky-100 dark:bg-sky-900/30', icon: Sparkles },
-  'REJECTED': { label: 'Avslag', color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/30', icon: X },
-  'ACCEPTED': { label: 'Erbjudande', color: 'text-green-600 dark:text-green-400', bg: 'bg-green-100 dark:bg-green-900/30', icon: Award },
-}
-
-// Compact Stats Card Component
-function StatCard({
-  label,
-  value,
-  icon: Icon,
-  color,
-  link
-}: {
-  label: string
-  value: string | number
-  icon: React.ComponentType<{ size?: number; className?: string }>
-  color: string
-  link?: string
-}) {
-  const content = (
-    <div className={`bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700 hover:shadow-md transition-all group ${link ? 'cursor-pointer' : ''}`}>
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 ${color} rounded-lg flex items-center justify-center flex-shrink-0`}>
-          <Icon className="w-5 h-5 text-white" />
-        </div>
-        <div className="flex-1 min-w-0">
-          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{value}</p>
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">{label}</p>
-        </div>
-        {link && <ChevronRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300" />}
-      </div>
-    </div>
-  )
-
-  if (link) {
-    return <Link to={link}>{content}</Link>
-  }
-  return content
-}
+// statusLabels (unused) + StatCard (unused) borttagna 2026-05-15.
+// Återinför när status-display + stats-kort används aktivt i UI.
 
 // Compact Document Card Component
 function DocumentCard({
@@ -317,7 +277,7 @@ async function generateCoverLetterWord(letter: CoverLetter) {
 
 // CV Word Export - Professional styled document
 async function generateCVWord(cvData: CVData) {
-  const { Document, Packer, Paragraph, TextRun, HeadingLevel, BorderStyle, AlignmentType, TableCell, TableRow, Table, WidthType } = await import('docx')
+  const { Document, Packer, Paragraph, TextRun, BorderStyle, AlignmentType } = await import('docx')
   const { saveAs } = await import('file-saver')
 
   const children: Paragraph[] = []

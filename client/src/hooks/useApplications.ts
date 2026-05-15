@@ -4,7 +4,7 @@
  * Replaces and extends useSavedJobs
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   applicationsApi,
@@ -16,17 +16,12 @@ import { useAchievementTracker } from './useAchievementTracker'
 import type {
   Application,
   ApplicationStatus,
-  ApplicationContact,
-  ApplicationReminder,
-  ApplicationHistoryEntry,
-  ApplicationStats,
   ApplicationFilters,
   ApplicationSort,
   CreateApplicationInput,
   UpdateApplicationInput,
   CreateContactInput,
   CreateReminderInput,
-  PIPELINE_COLUMNS
 } from '@/types/application.types'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 

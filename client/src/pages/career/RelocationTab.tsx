@@ -5,12 +5,12 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Home, MapPin, Calculator, TrendingUp, ExternalLink, CheckCircle,
-  AlertCircle, Car, Loader2, Cloud, CloudOff, Star, Heart, X
+  Home, MapPin, Calculator, ExternalLink, CheckCircle,
+  AlertCircle, Loader2, Cloud, CloudOff, Heart
 } from '@/components/ui/icons'
-import { Card, Button } from '@/components/ui'
+import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
-import { relocationApi, type RelocationPreferences } from '@/services/careerApi'
+import { relocationApi } from '@/services/careerApi'
 import { unifiedProfileApi } from '@/services/unifiedProfileApi'
 import { showToast } from '@/components/Toast'
 
@@ -57,7 +57,7 @@ const MOVING_CHECKLIST = [
 ]
 
 export default function RelocationTab() {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const isEn = i18n.language === 'en'
 
   // State

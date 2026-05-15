@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Search,
   MapPin,
-  Briefcase,
   Filter,
   ExternalLink,
   Heart,
@@ -10,12 +9,8 @@ import {
   AlertCircle,
   Loader2,
   X,
-  ChevronDown,
-  Building2,
   Calendar,
-  TrendingUp,
   Bookmark,
-  Share2,
   Check
 } from '@/components/ui/icons';
 import { afApi, type JobAd, type SearchFilters } from '@/services/arbetsformedlingenApi';
@@ -201,7 +196,7 @@ export default function PlatsbankenIntegration() {
         setError(result.error || 'Kunde inte hämta jobb');
         setJobs([]);
       }
-    } catch (err) {
+    } catch {
       setError('Ett fel inträffade vid sökning');
       setJobs([]);
     } finally {
@@ -234,7 +229,7 @@ export default function PlatsbankenIntegration() {
           }).slice(0, 5));
           setShowSuggestions(true);
         }
-      } catch (e) {
+      } catch {
         setSuggestions([]);
       }
     } else {

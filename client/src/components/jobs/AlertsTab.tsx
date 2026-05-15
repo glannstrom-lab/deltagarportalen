@@ -8,10 +8,10 @@ import { useTranslation } from 'react-i18next'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import {
   Bell, Plus, Search, Trash2, ToggleLeft, ToggleRight,
-  MapPin, Briefcase, Clock, ExternalLink, AlertCircle,
-  CheckCircle, RefreshCw, X, Mail, Settings
+  MapPin, Clock,
+  RefreshCw, X, Mail, Settings
 } from '@/components/ui/icons'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useJobAlerts } from '@/hooks/useJobAlerts'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
@@ -437,9 +437,9 @@ function AlertCard({
 }
 
 export function AlertsTab() {
-  const { t } = useTranslation()
+  useTranslation()
   const navigate = useNavigate()
-  const { alerts, isLoading, createAlert, deleteAlert, toggleAlert, runAlertSearch, checkForNewJobs } = useJobAlerts()
+  const { alerts, isLoading, createAlert, deleteAlert, toggleAlert, checkForNewJobs } = useJobAlerts()
   const [showCreateModal, setShowCreateModal] = useState(false)
   const [showEmailSettings, setShowEmailSettings] = useState(false)
   const [unreadCount, setUnreadCount] = useState(0)
