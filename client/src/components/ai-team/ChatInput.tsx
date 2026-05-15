@@ -3,7 +3,7 @@
  * Input field with voice recording and send button
  */
 
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
@@ -55,10 +55,12 @@ export function ChatInput({
     }
   }, [])
 
-  // Expose reset function via callback when value becomes empty
-  if (value === '' && inputRef.current && inputRef.current.style.height !== 'auto') {
-    resetHeight()
-  }
+  // Reset height när value blir tomt (efter send)
+  useEffect(() => {
+    if (value === '' && inputRef.current && inputRef.current.style.height !== 'auto') {
+      resetHeight()
+    }
+  }, [value, resetHeight])
 
   return (
     <div className={cn(

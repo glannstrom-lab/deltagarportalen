@@ -514,5 +514,14 @@ export const useHasRole = (role: UserRole) => {
 }
 
 export const useIsSuperAdmin = () => useHasRole('SUPERADMIN')
-export const useIsAdmin = () => useHasRole('ADMIN') || useHasRole('SUPERADMIN')
-export const useIsConsultant = () => useHasRole('CONSULTANT') || useIsAdmin()
+export const useIsAdmin = () => {
+  const isAdmin = useHasRole('ADMIN')
+  const isSuperAdmin = useHasRole('SUPERADMIN')
+  return isAdmin || isSuperAdmin
+}
+export const useIsConsultant = () => {
+  const isConsultant = useHasRole('CONSULTANT')
+  const isAdmin = useHasRole('ADMIN')
+  const isSuperAdmin = useHasRole('SUPERADMIN')
+  return isConsultant || isAdmin || isSuperAdmin
+}

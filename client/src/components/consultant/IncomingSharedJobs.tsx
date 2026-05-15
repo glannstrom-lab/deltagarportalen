@@ -3,7 +3,7 @@
  * Vy för konsulenter att se jobb som delats av deltagare
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Inbox, CheckCircle, XCircle, Eye, MessageSquare, ExternalLink, X } from '@/components/ui/icons';
 import {
   getIncomingSharedJobs,
@@ -36,11 +36,7 @@ export const IncomingSharedJobs: React.FC<IncomingSharedJobsProps> = ({
   const [notes, setNotes] = useState('');
   const [isUpdating, setIsUpdating] = useState(false);
 
-  useEffect(() => {
-    fetchData();
-  }, [consultantId]);
-
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setIsLoading(true);
     const [jobsData, statsData] = await Promise.all([
       getIncomingSharedJobs(consultantId),
@@ -49,7 +45,11 @@ export const IncomingSharedJobs: React.FC<IncomingSharedJobsProps> = ({
     setJobs(jobsData);
     setStats(statsData);
     setIsLoading(false);
-  };
+  }, [consultantId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleStatusUpdate = async (status: SharedJob['status']) => {
     if (!selectedJob) return;

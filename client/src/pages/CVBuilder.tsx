@@ -393,6 +393,7 @@ export default function CVBuilder() {
     hasValidSkills && 5,
   ].filter(Boolean) as number[]
 
+  // eslint-disable-next-line react-hooks/immutability, react-hooks/exhaustive-deps -- mount-bara, loadCV/loadVersions deklareras direkt under
   useEffect(() => { loadCV(); loadVersions() }, [])
 
   const loadCV = async () => {

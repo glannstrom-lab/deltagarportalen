@@ -14,7 +14,7 @@ import {
   Globe,
   Focus,
 } from '@/components/ui/icons'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -43,9 +43,19 @@ export function TopBar() {
   const { signOut, user } = useAuthStore()
   const menuRef = useRef<HTMLDivElement>(null)
 
+  const loadProfile = useCallback(async () => {
+    if (!user) return
+    const { data } = await supabase
+      .from('profiles')
+      .select('first_name, last_name, profile_image_url')
+      .eq('id', user.id)
+      .single()
+    if (data) setProfile(data)
+  }, [user])
+
   useEffect(() => {
     loadProfile()
-  }, [user])
+  }, [loadProfile])
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -56,16 +66,6 @@ export function TopBar() {
     if (showUserMenu) document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showUserMenu])
-
-  const loadProfile = async () => {
-    if (!user) return
-    const { data } = await supabase
-      .from('profiles')
-      .select('first_name, last_name, profile_image_url')
-      .eq('id', user.id)
-      .single()
-    if (data) setProfile(data)
-  }
 
   const handleLogout = async () => {
     await signOut()

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/refs -- toolbarButtons-array refererar textareaRef i sina action-callbacks (inte under render) */
 /**
  * Rich Text Editor for CV sections
  * Simple formatting without heavy dependencies

@@ -166,6 +166,7 @@ export function AIChatbot({ className }: AIChatbotProps) {
   }
 
   const handleAction = (url: string) => {
+    // eslint-disable-next-line react-hooks/immutability -- ren navigation, körs i event-handler inte under render
     window.location.href = url
   }
 

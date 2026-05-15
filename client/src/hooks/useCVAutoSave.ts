@@ -240,7 +240,9 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
         ...dataToSave,
         _timestamp: Date.now(),
       }))
-    } catch { }
+    } catch {
+      // sessionStorage may be unavailable
+    }
 
     // Debounced server save (800ms, kortare än tidigare 2000ms)
     debounceTimer.current = setTimeout(() => {

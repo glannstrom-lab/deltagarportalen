@@ -1,7 +1,7 @@
 /**
  * Cognitive Training Tab - Exercise memory and concentration
  */
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { motion, MotionConfig } from 'framer-motion'
 import {
@@ -118,25 +118,26 @@ function NumberSequenceGame({ onComplete }: { onComplete: () => void }) {
   const [round, setRound] = useState(1)
   const [isPlaying, setIsPlaying] = useState(false)
 
-  useEffect(() => {
-    startRound()
-  }, [])
-
-  const startRound = () => {
-    const newNum = Math.floor(Math.random() * 9) + 1
-    const newSequence = [...sequence, newNum]
-    setSequence(newSequence)
-    setPlayerSequence([])
-    playSequence(newSequence)
-  }
-
-  const playSequence = async (seq: number[]) => {
+  const playSequence = useCallback(async (seq: number[]) => {
     setIsPlaying(true)
     for (let i = 0; i < seq.length; i++) {
       await new Promise(resolve => setTimeout(resolve, 400))
     }
     setIsPlaying(false)
-  }
+  }, [])
+
+  const startRound = useCallback(() => {
+    const newNum = Math.floor(Math.random() * 9) + 1
+    const newSequence = [...sequence, newNum]
+    setSequence(newSequence)
+    setPlayerSequence([])
+    playSequence(newSequence)
+  }, [sequence, playSequence])
+
+  useEffect(() => {
+    startRound()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- körs bara vid mount
+  }, [])
 
   const handleNumberClick = (num: number) => {
     if (isPlaying) return

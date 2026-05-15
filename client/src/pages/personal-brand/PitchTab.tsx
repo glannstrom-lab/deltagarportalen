@@ -213,7 +213,7 @@ export default function PitchTab() {
     }))
   }
 
-  const useTemplate = (template: typeof PITCH_TEMPLATES[0]) => {
+  const applyTemplate = (template: typeof PITCH_TEMPLATES[0]) => {
     setFormData(prev => ({
       ...prev,
       content: template.example,
@@ -419,7 +419,7 @@ export default function PitchTab() {
                         {PITCH_TEMPLATES.map((template) => (
                           <button
                             key={template.id}
-                            onClick={() => useTemplate(template)}
+                            onClick={() => applyTemplate(template)}
                             className="p-3 rounded-lg border border-stone-200 dark:border-stone-600 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:bg-[var(--c-bg)] dark:hover:bg-[var(--c-bg)]/40 transition-all text-left"
                           >
                             <h4 className="font-medium text-gray-800 dark:text-gray-100 text-sm">{template.name}</h4>

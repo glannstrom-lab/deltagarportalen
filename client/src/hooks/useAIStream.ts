@@ -5,7 +5,7 @@
  * Perfect for long-running AI tasks like cover letter generation.
  */
 
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { streamAI, type AIStreamFunction } from '@/services/aiStreamService';
 
 export interface UseAIStreamOptions {
@@ -72,9 +72,11 @@ export function useAIStream(options: UseAIStreamOptions = {}): UseAIStreamReturn
   const onErrorRef = useRef(options.onError);
 
   // Keep refs updated with latest callbacks
-  onTokenRef.current = options.onToken;
-  onCompleteRef.current = options.onComplete;
-  onErrorRef.current = options.onError;
+  useEffect(() => {
+    onTokenRef.current = options.onToken;
+    onCompleteRef.current = options.onComplete;
+    onErrorRef.current = options.onError;
+  }, [options.onToken, options.onComplete, options.onError]);
 
   const startStream = useCallback(
     async (functionName: AIStreamFunction, data: Record<string, unknown>) => {

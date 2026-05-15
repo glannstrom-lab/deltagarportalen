@@ -45,10 +45,6 @@ export function IndustryRadarSection({
   const [error, setError] = useState<string | null>(null)
   const [_dataSource, setDataSource] = useState<'api' | 'cache'>('api')
 
-  if (!AI_FEATURES.INDUSTRY_RADAR) {
-    return null
-  }
-
   const fetchData = async () => {
     setIsLoading(true)
     setError(null)
@@ -130,6 +126,10 @@ export function IndustryRadarSection({
       fetchData()
     }
   }, [isExpanded, result, isLoading])
+
+  if (!AI_FEATURES.INDUSTRY_RADAR) {
+    return null
+  }
 
   // Helper: Map skills to likely industries
   function getIndustriesForSkill(skill: string): string[] {
