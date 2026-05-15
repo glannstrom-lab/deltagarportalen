@@ -131,6 +131,7 @@ export {
   Info,
   Italic,
   Kanban,
+  Keyboard,
   Landmark,
   Languages,
   Laptop,
