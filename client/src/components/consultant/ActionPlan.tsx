@@ -6,15 +6,13 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
-import { 
-  Target, 
-  Plus, 
-  Calendar, 
+import {
+  Target,
+  Plus,
   Clock,
   CheckCircle2,
   AlertCircle,
   TrendingUp,
-  X,
   Save,
   Edit2,
   Trash2,

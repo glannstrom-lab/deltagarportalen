@@ -3,14 +3,13 @@
  * Interaktiv mock-intervju med feedback
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ArrowRight, ArrowLeft, RotateCcw, X, CheckCircle, AlertCircle } from '@/components/ui/icons';
 import {
   MOCK_INTERVIEWS,
   analyzeStarAnswer,
   saveInterviewSession,
 } from '@/services/interviewService';
-import type { InterviewQuestion } from '@/services/interviewService';
 
 interface MockInterviewSessionProps {
   interviewId: string;

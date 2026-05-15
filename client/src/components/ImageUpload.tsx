@@ -80,7 +80,7 @@ export function ImageUpload({
         } else {
           throw new Error('Uppladdning misslyckades')
         }
-      } catch (err) {
+      } catch {
         setError('Kunde inte ladda upp bilden. Försök igen.')
         setPreviewUrl(value || null)
       } finally {
@@ -339,7 +339,7 @@ export function CompactImageUpload({
           // Upload failed, keep local preview but show error
           setError('Uppladdning misslyckades')
         }
-      } catch (err) {
+      } catch {
         setError('Uppladdning misslyckades')
       } finally {
         setIsUploading(false)

@@ -112,7 +112,7 @@ export default function CareerCoach() {
       });
       showToast.success('Karriärvägen sparad!');
       await loadSavedPaths();
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte spara karriärvägen');
     } finally {
       setSaving(false);
@@ -125,7 +125,7 @@ export default function CareerCoach() {
       await careerPathApi.delete(id);
       showToast.success('Karriärvägen borttagen');
       await loadSavedPaths();
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte ta bort karriärvägen');
     }
   };

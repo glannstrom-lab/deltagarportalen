@@ -14,21 +14,18 @@ interface WordCounterProps {
   compact?: boolean
 }
 
-export function WordCounter({ 
-  text, 
-  minWords = 150, 
+export function WordCounter({
+  text,
+  minWords = 150,
   maxWords = 400,
-  minChars = 800,
-  maxChars = 2500,
   showProgress = true,
   compact = false
 }: WordCounterProps) {
   const words = text.trim() ? text.trim().split(/\s+/).length : 0
   const chars = text.length
-  
+
   // Calculate percentages
   const wordPercent = Math.min(100, (words / maxWords) * 100)
-  const charPercent = Math.min(100, (chars / maxChars) * 100)
   
   // Determine status
   const isTooShort = words < minWords / 2

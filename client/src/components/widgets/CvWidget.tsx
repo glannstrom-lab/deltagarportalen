@@ -1,4 +1,4 @@
-import { FileUser, Check, AlertTriangle } from 'lucide-react'
+import { FileUser } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Widget } from './Widget'
 import { ProgressRing } from './ProgressRing'

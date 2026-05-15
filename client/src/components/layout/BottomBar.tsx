@@ -7,7 +7,7 @@
 import { useState } from 'react'
 import { useLocation, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ChevronDown, HelpCircle, MessageCircle, Heart } from '@/components/ui/icons'
+import { ChevronDown, HelpCircle, MessageCircle } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import CrisisSupport from '@/components/CrisisSupport'
 
@@ -156,7 +156,7 @@ function FAQItemComponent({ item, isOpen, onToggle }: { item: FAQItem; isOpen: b
 
 export function BottomBar() {
   const location = useLocation()
-  const { t } = useTranslation()
+  useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const [openItems, setOpenItems] = useState<number[]>([])
 

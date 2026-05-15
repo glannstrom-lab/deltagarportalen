@@ -7,14 +7,12 @@ import { useState } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { 
-  BookOpen, 
-  Plus, 
-  Calendar, 
-  User, 
-  Target, 
-  AlertCircle, 
+  BookOpen,
+  Plus,
+  Calendar,
+  Target,
+  AlertCircle,
   TrendingUp,
-  X,
   Save,
   Edit2,
   Trash2,

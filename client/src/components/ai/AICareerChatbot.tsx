@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { MessageCircle, X, Send, Bot, User, Sparkles } from '@/components/ui/icons'
+import { X, Send, Bot, User, Sparkles } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { chatWithAI } from '@/services/aiApi'
 
@@ -56,7 +56,7 @@ export function AICareerChatbot() {
       }
 
       setMessages(prev => [...prev, aiMessage])
-    } catch (error) {
+    } catch {
       const fallbackMessage: Message = {
         roll: 'assistant',
         innehall: 'Ursäkta, jag har lite tekniska problem just nu. Försök igen om en stund! 🤖',

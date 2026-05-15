@@ -94,7 +94,7 @@ const STORAGE_KEY_VISIBLE = 'dashboard_visible_widgets'
 export function MobileDashboard() {
   const { t } = useTranslation()
   const { user } = useAuthStore()
-  const { data, loading, error, refetch } = useDashboardData()
+  const { data, loading } = useDashboardData()
   const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(defaultVisibleWidgets)
   const [prefsLoading, setPrefsLoading] = useState(true)
 

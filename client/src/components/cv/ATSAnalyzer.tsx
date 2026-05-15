@@ -7,7 +7,7 @@ import { useState, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
-  FileSearch, CheckCircle, AlertCircle, TrendingUp, BookOpen, Info, Eye, Sparkles,
+  FileSearch, CheckCircle, TrendingUp, BookOpen, Eye, Sparkles,
   FileText, Download, Briefcase, Building, HeartPulse,
   Hammer, ShoppingCart, GraduationCap, Code, Wrench, FileCheck, AlertTriangle,
   ArrowRight, Lightbulb

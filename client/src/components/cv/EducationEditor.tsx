@@ -7,7 +7,7 @@ import { useState } from 'react'
 import {
   GraduationCap, School, MapPin, Calendar,
   ChevronDown, ChevronUp, GripVertical, Trash2,
-  Award, CheckCircle, AlertCircle, Sparkles, ArrowUp, ArrowDown
+  Award, CheckCircle, Sparkles, ArrowUp, ArrowDown
 } from '@/components/ui/icons'
 import { RichTextEditor } from './RichTextEditor'
 import type { Education } from '@/services/supabaseApi'
@@ -110,10 +110,6 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
       count: filled.length,
       total: required.length
     }
-  }
-
-  const getEducationLabel = (degree: string) => {
-    return educationLevels.find(l => l.value === degree)?.label || degree
   }
 
   return (

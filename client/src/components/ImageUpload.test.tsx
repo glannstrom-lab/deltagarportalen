@@ -121,7 +121,6 @@ describe('ImageUpload', () => {
 
 describe('CompactImageUpload', () => {
   const mockOnChange = vi.fn()
-  const mockOnUpload = vi.fn()
 
   beforeEach(() => {
     vi.clearAllMocks()

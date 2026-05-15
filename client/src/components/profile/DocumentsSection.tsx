@@ -3,9 +3,9 @@
  * Updated with ARIA attributes and toast notifications
  */
 
-import { useState, useEffect, useRef, useId } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, X, FileText, Upload, Loader2, ExternalLink, Calendar, Building2 } from '@/components/ui/icons'
+import { X, FileText, Upload, Loader2, ExternalLink, Calendar, Building2 } from '@/components/ui/icons'
 import { profileDocumentsApi, type ProfileDocument } from '@/services/profileEnhancementsApi'
 import { cn } from '@/lib/utils'
 import { notifications } from '@/lib/toast'

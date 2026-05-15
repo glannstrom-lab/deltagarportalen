@@ -48,7 +48,7 @@ interface WriteModalProps {
 }
 
 function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps) {
-  const { t } = useTranslation()
+  useTranslation()
   const [title, setTitle] = useState('')
   const [content, setContent] = useState(initialPrompt ? `${initialPrompt}\n\n` : '')
   const [mood, setMood] = useState(3)
@@ -228,7 +228,7 @@ interface DiaryEntry {
 }
 
 export function JournalTab() {
-  const { t } = useTranslation()
+  useTranslation()
   const { entries, isLoading, createEntry, deleteEntry, toggleFavorite } = useDiaryEntries()
   const { prompt, getNewPrompt, isLoading: promptLoading } = useWritingPrompts()
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false)

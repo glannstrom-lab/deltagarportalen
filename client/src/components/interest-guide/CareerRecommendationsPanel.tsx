@@ -17,12 +17,10 @@ import { scbSalaryService, type SalaryData } from '@/services/scbSalaryApi'
 import {
   GraduationCap,
   Briefcase,
-  TrendingUp,
   Target,
   Sparkles,
   ArrowRight,
   DollarSign,
-  MapPin,
   Clock,
   ExternalLink,
   ChevronDown,

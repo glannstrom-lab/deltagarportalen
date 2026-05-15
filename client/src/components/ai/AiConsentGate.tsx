@@ -6,7 +6,7 @@
 import { ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Brain, Shield, Settings, ExternalLink, Loader2 } from '@/components/ui/icons'
+import { Brain, Shield, Settings, Loader2 } from '@/components/ui/icons'
 import { useAiConsent } from '@/hooks/useAiConsent'
 import { useAuthStore } from '@/stores/authStore'
 import { userApi } from '@/services/userApi'
@@ -34,7 +34,7 @@ export function AiConsentGate({
 }: AiConsentGateProps) {
   const { t } = useTranslation()
   const { hasConsent, isLoading } = useAiConsent()
-  const { profile } = useAuthStore()
+  useAuthStore()
   const [isGranting, setIsGranting] = useState(false)
   const [grantError, setGrantError] = useState<string | null>(null)
 

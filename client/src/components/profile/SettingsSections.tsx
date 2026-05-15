@@ -5,8 +5,8 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Bell, Mail, Phone, MessageSquare, Globe,
-  Lock, Eye, EyeOff, Users, Building2, Loader2
+  Bell, Mail, Phone, Globe,
+  Lock, Eye, Users, Building2, Loader2
 } from '@/components/ui/icons'
 import {
   notificationSettingsApi,
