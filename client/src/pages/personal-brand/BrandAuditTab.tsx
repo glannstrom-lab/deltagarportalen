@@ -9,8 +9,6 @@ import {
   ClipboardCheck,
   CheckCircle,
   Circle,
-  Star,
-  TrendingUp,
   Sparkles,
   Linkedin,
   FileText,
@@ -162,7 +160,7 @@ const CATEGORIES = {
 }
 
 export default function BrandAuditTab() {
-  const { t } = useTranslation()
+  useTranslation()
   const [answers, setAnswers] = useState<Record<string, boolean>>({})
   const [showResults, setShowResults] = useState(false)
   const [isLoading, setIsLoading] = useState(true)

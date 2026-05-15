@@ -35,22 +35,6 @@ export interface IndustryTrend {
   forecast: 'increasing' | 'stable' | 'decreasing'
 }
 
-// SCB occupation codes to Swedish names mapping
-const OCCUPATION_CODES: Record<string, string> = {
-  '2512': 'Systemutvecklare',
-  '2514': 'Mjukvaruutvecklare',
-  '2149': 'Ingenjörer',
-  '2411': 'Revisorer och redovisningsekonomer',
-  '3322': 'Säljare',
-  '2611': 'Jurister',
-  '2221': 'Sjuksköterskor',
-  '2320': 'Gymnasielärare',
-  '2310': 'Högskolelärare',
-  '1211': 'Ekonomichefer',
-  '1213': 'HR-chefer',
-  '2431': 'Marknadsförare',
-}
-
 // Latest curated salary data (updated 2026-Q1)
 const SALARY_DATA_2026: SalaryData[] = [
   { occupation: 'Systemutvecklare', occupationCode: '2512', median: 52000, p10: 38000, p90: 72000, mean: 54000, year: 2026, sector: 'all' },
@@ -87,10 +71,6 @@ const REGIONAL_SALARY_DATA: RegionalSalaryData[] = [
   { region: 'Luleå', regionCode: '25', medianSalary: 41000, salaryIndex: 99, costOfLivingIndex: 90 },
   { region: 'Jönköping', regionCode: '06', medianSalary: 39500, salaryIndex: 95, costOfLivingIndex: 90 },
 ]
-
-// Cache for API responses
-const cache = new Map<string, { data: unknown; timestamp: number }>()
-const CACHE_TTL = 3600000 // 1 hour
 
 class SCBSalaryService {
   /**

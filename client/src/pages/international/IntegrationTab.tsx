@@ -11,13 +11,11 @@ import {
   Clock,
   AlertCircle,
   ExternalLink,
-  ChevronRight,
   ChevronDown,
   ChevronUp,
   MessageSquare,
   Calendar,
   Download,
-  Trash2,
   Save,
 } from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
@@ -185,7 +183,7 @@ export default function IntegrationTab() {
   const [editingNotes, setEditingNotes] = useState<string | null>(null)
   const [tempNotes, setTempNotes] = useState('')
   const [isSaving, setIsSaving] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [, setIsLoading] = useState(true)
 
   // Load from cloud storage
   useEffect(() => {

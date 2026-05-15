@@ -70,7 +70,6 @@ export default function SalaryCalculatorTab() {
   const [region, setRegion] = useState('')
   const [experience, setExperience] = useState('')
   const [showResult, setShowResult] = useState(false)
-  const [comparisonMode, setComparisonMode] = useState(false)
   const [comparisons, setComparisons] = useState<SalaryComparison[]>([])
   const [showTaxDetail, setShowTaxDetail] = useState(false)
 
@@ -418,7 +417,7 @@ export default function SalaryCalculatorTab() {
           </div>
 
           <div className="space-y-3">
-            {comparisons.map((comp, idx) => (
+            {comparisons.map((comp) => (
               <div key={comp.id} className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
                 <div className="flex items-start justify-between mb-3">
                   <div>

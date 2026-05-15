@@ -7,8 +7,6 @@ import {
   Send,
   Clock,
   CheckCircle,
-  XCircle,
-  AlertCircle,
   TrendingUp,
   Calendar,
   Target,
@@ -16,7 +14,6 @@ import {
 import { Card } from '@/components/ui/Card'
 import { useSpontaneousCompanies } from '@/hooks/useSpontaneousCompanies'
 import { formatOrgNumber } from '@/services/bolagsverketApi'
-import type { SpontaneousStatus } from '@/services/supabaseApi'
 
 // Stat card component
 function StatCard({
