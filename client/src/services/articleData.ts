@@ -205,47 +205,43 @@ export const mockArticlesData: EnhancedArticle[] = [
   {
     id: 'komma-igang-intro',
     title: 'Komma igång – så funkar portalen',
-    summary: 'En orientering över portalens sex verktyg och kunskapsbas, och en rimlig ordning att börja i.',
-    content: `Första gången man loggar in i en jobbportal vet man sällan vart man ska börja. Den här artikeln är en orientering över portalens funktioner och en rimlig ordning att börja i.
+    summary: 'En kort orientering över portalens verktyg och en rimlig ordning att börja i.',
+    content: `Här är en orientering över portalens verktyg och en rimlig ordning att börja i. Du behöver inte göra allt på en gång.
 
-Portalen är uppdelad i fem områden i navigeringen: **Översikt** (startsidan), **Söka jobb**, **Karriär**, **Resurser** och **Min vardag**. Verktygen är spridda mellan dem efter vad de används till. Här är de centrala funktionerna.
+Portalen är uppdelad i fem områden i navigeringen: **Översikt**, **Söka jobb**, **Karriär**, **Resurser** och **Min vardag**.
 
-**CV-byggaren** (Söka jobb → CV) har tolv mallar. De spänner från strama, klassiska upplägg lämpade för förvaltning och bank, till mer formgivningstunga för kreativa branscher. Du fyller i avsnitten i den ordning du vill, byter mall mellan första och sista utkastet om du ångrar dig, och exporterar till PDF eller Word när det är klart. Det går att skriva in perioder av sjukskrivning, vård av barn eller eget företagande som egna poster — alltså inte luckor att gömma utan rader du fyller i som vad de är.
+## Verktygen i korthet
 
-**Personligt brev** (Söka jobb → Personligt brev) använder din profil och en jobbannons för att föreslå ett första utkast. Du redigerar därifrån — formuleringarna är gjorda för att bytas ut, inte skickas in som de står.
+- **CV-byggaren** — tolv mallar, export till PDF eller Word. *Söka jobb → CV*.
+- **Personligt brev** — AI föreslår ett första utkast utifrån din profil och en jobbannons. *Söka jobb → Personligt brev*.
+- **Hitta jobb** — söker i Arbetsförmedlingens databas. *Söka jobb → Hitta jobb*.
+- **Mina ansökningar** — lista över sökta jobb med elva statussteg. *Söka jobb → Mina ansökningar*.
+- **Intresseguiden** — 34 frågor som ger förslag på yrken. *Karriär → Intresseguide*.
+- **AI-teamet** — fem chatt-agenter för CV-feedback, energi, karriärval, motivation och LinkedIn. *Resurser → AI-team*.
+- **Kunskapsbasen** — knappt 300 artiklar om jobbsökning, intervjuer, lön, välmående. *Resurser → Kunskapsbank*.
 
-**Intresseguiden** (Karriär → Intresseguide) är 34 frågor uppdelade i fyra delar: arbetsintressen, personlighet, intresseområden och förutsättningar. Det tar ungefär tjugo minuter att gå igenom allt, men svaren sparas automatiskt så du kan pausa och fortsätta senare. När du är klar får du yrkesförslag som matchar svaren. Förslag, inte facit — ingen algoritm kan säga säkert vad du borde bli. Men som startpunkt när riktningen är oklar fungerar guiden utmärkt.
+## En rimlig ordning att börja i
 
-**Hitta jobb** (Söka jobb → Hitta jobb) hämtar annonser från Arbetsförmedlingens databas, den största samlade jobbdatabasen i Sverige med annonser från både offentliga och privata arbetsgivare. Du söker på roll, ort, anställningsform och bransch, sparar de annonser som är intressanta och lägger till egna anteckningar.
-
-**Mina ansökningar** (Söka jobb → Mina ansökningar) är en lista över allt du sökt. Varje ansökan kan ha en av elva statusar — från "intresserad" och "sparad" via "skickad", "intervju" och "erbjudande" till "tackat ja" eller "avslag". Du ser direkt vilka som väntar på svar, vilka som behöver en uppföljning, och vilka som är avslutade.
-
-**AI-teamet** (Resurser → AI-team) är fem chatt-agenter med olika inriktning: en arbetskonsulent (CV-feedback, jobbstrategi), en arbetsterapeut (energi, stresshantering), en studievägledare (karriärvägar, utbildningar), en motivationscoach (mål och motgångar) och en digitalcoach (LinkedIn, online-närvaro). Du skriver in en fråga och får svar som utgår från din profil och vad du gjort i portalen tidigare.
-
-**Kunskapsbasen** (Resurser → Kunskapsbank) är där du läser detta. Knappt 300 artiklar om jobbsökning, intervjuer, lön, rättigheter och välmående. Sökbar, kan filtreras på kategori och svårighetsgrad.
-
-## I vilken ordning
-
-Det finns ingen tvingande ordning, men ungefär så här rör sig de flesta första gången:
-
-1. **Profil.** Namn, ort, kontaktuppgifter, ett par meningar om vad du gjort senast. Tio minuter.
-2. **Intresseguide** om du är osäker på riktning. Annars hoppa över.
-3. **CV.** Börja med utbildning och tidigare jobb. Kompetenser, språk och övriga avsnitt får komma senare — det är lättare när det grova står på plats.
-4. **Hitta jobb** för att se hur flödet fungerar. Du behöver inte söka direkt; det räcker som introduktion till resten av portalen.
+1. **Profil.** Namn, ort, kontakt, ett par meningar om vad du gjort senast. Tio minuter.
+2. **Intresseguide** om du är osäker på yrkesriktning. Annars hoppa över.
+3. **CV.** Börja med utbildning och tidigare jobb.
+4. **Hitta jobb** för att bekanta dig med flödet. Du behöver inte söka direkt.
 5. **Spara två-tre annonser** och börja på ett personligt brev till en av dem.
 
-Det är inte ett schema. Vissa sveper igenom på en eftermiddag, andra tar veckor. Båda är rimliga.
+> Det är inte ett schema. Vissa sveper igenom på en eftermiddag, andra tar veckor. Båda är rimliga.
 
-Har du en arbetskonsulent kopplad till dig ser hen vad du jobbar med och kan kommentera. Saknar du konsulent finns AI-teamet, och kunskapsbasens artiklar täcker det allra mesta.`,
+---
+
+Har du en arbetskonsulent kopplad till dig ser hen vad du jobbar med och kan kommentera. Saknar du konsulent finns AI-teamet, och artiklarna i kunskapsbasen täcker det allra mesta.`,
     category: 'getting-started',
     subcategory: 'first-week',
     tags: ['introduktion', 'komma igång', 'orientering', 'för-nybörjare'],
     createdAt: '2024-01-15T10:00:00Z',
-    updatedAt: '2026-05-15T16:00:00Z',
-    readingTime: 5,
+    updatedAt: '2026-05-15T17:00:00Z',
+    readingTime: 3,
     difficulty: 'easy',
     energyLevel: 'low',
-    relatedArticles: ['cv-grunder', 'intresseguide-intro', 'hantera-avslag'],
+    relatedArticles: ['cv-grunder', 'upptack-dina-styrkor', 'hantera-avslag'],
     relatedTools: ['/cv-builder', '/interest-guide'],
     relatedExercises: ['jobb-jag', 'cv-masterclass', 'jobbsokarstrategier'],
     checklist: [

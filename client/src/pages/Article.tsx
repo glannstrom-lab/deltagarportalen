@@ -31,6 +31,25 @@ import { BookOpen } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 
+/**
+ * Render inline markdown — **fet**, *kursiv*.
+ * Hanterar nästlade segment genom regex-split som behåller delimiters.
+ */
+function renderInline(text: string): React.ReactNode {
+  if (!text) return text
+  // Split på **fet** och *kursiv* (icke-girig, behåller delimiters)
+  const parts = text.split(/(\*\*[^*\n]+\*\*|\*[^*\n]+\*)/g)
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+      return <strong key={i} className="font-semibold text-gray-900 dark:text-gray-50">{part.slice(2, -2)}</strong>
+    }
+    if (part.startsWith('*') && part.endsWith('*') && part.length > 2) {
+      return <em key={i}>{part.slice(1, -1)}</em>
+    }
+    return part
+  })
+}
+
 export default function Article() {
   const { t } = useTranslation()
   const { isFocusMode, toggleFocusMode } = useFocusMode()
@@ -369,6 +388,10 @@ function ArticleInner() {
         {/* Article content */}
         <div className={`prose prose-slate dark:prose-invert max-w-none ${getFontSizeClass()}`}>
           {contentParagraphs.map((paragraph: string, index: number) => {
+            // Separator
+            if (paragraph.trim() === '---') {
+              return <hr key={index} className="my-8 border-stone-200 dark:border-stone-700" />
+            }
             // Check if it's a heading (starts with ##)
             if (paragraph.startsWith('## ')) {
               return (
@@ -378,7 +401,7 @@ function ArticleInner() {
                     fontSize === 'large' ? 'text-2xl' : fontSize === 'xlarge' ? 'text-3xl' : ''
                   }`}
                 >
-                  {paragraph.replace('## ', '')}
+                  {renderInline(paragraph.replace('## ', ''))}
                 </h2>
               )
             }
@@ -391,18 +414,31 @@ function ArticleInner() {
                     fontSize === 'large' ? 'text-xl' : fontSize === 'xlarge' ? 'text-2xl' : ''
                   }`}
                 >
-                  {paragraph.replace('### ', '')}
+                  {renderInline(paragraph.replace('### ', ''))}
                 </h3>
               )
             }
-            // Check if it's a list
+            // Numbered list
+            if (/^\d+\.\s/.test(paragraph) || /\n\d+\.\s/.test(paragraph)) {
+              const items = paragraph.split('\n').filter((line: string) => /^\d+\.\s/.test(line.trim()))
+              return (
+                <ol key={index} className="list-decimal pl-6 space-y-2 my-4 marker:font-semibold marker:text-[var(--c-solid)]">
+                  {items.map((item: string, i: number) => (
+                    <li key={i} className="text-gray-700 dark:text-gray-200 pl-1">
+                      {renderInline(item.replace(/^\d+\.\s/, ''))}
+                    </li>
+                  ))}
+                </ol>
+              )
+            }
+            // Bullet list
             if (paragraph.includes('\n- ') || paragraph.startsWith('- ')) {
               const items = paragraph.split('\n').filter((line: string) => line.trim().startsWith('-'))
               return (
-                <ul key={index} className="list-disc pl-6 space-y-2 my-4">
+                <ul key={index} className="list-disc pl-6 space-y-2 my-4 marker:text-[var(--c-solid)]">
                   {items.map((item: string, i: number) => (
                     <li key={i} className="text-gray-700 dark:text-gray-200">
-                      {item.replace('- ', '').replace('- [ ] ', '').replace('- [x] ', '')}
+                      {renderInline(item.replace(/^-\s+/, '').replace('- [ ] ', '').replace('- [x] ', ''))}
                     </li>
                   ))}
                 </ul>
@@ -415,14 +451,14 @@ function ArticleInner() {
                   key={index}
                   className="border-l-4 border-[var(--c-solid)] dark:border-[var(--c-solid)]/60 pl-4 italic text-gray-600 dark:text-gray-300 my-6"
                 >
-                  {paragraph.replace('> ', '')}
+                  {renderInline(paragraph.replace('> ', ''))}
                 </blockquote>
               )
             }
             // Regular paragraph
             return (
               <p key={index} className="mb-4 text-gray-700 dark:text-gray-200">
-                {paragraph}
+                {renderInline(paragraph)}
               </p>
             )
           })}
