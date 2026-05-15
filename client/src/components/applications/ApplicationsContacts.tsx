@@ -6,11 +6,10 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  User, Mail, Phone, Linkedin, Building2, MoreVertical,
-  Plus, Edit2, Trash2, MessageSquare, Clock
+  User, Mail, Phone, Linkedin, MoreVertical,
+  Edit2, Trash2, MessageSquare, Clock
 } from '@/components/ui/icons'
-import { Card, Button } from '@/components/ui'
-import { cn } from '@/lib/utils'
+import { Card } from '@/components/ui'
 import { applicationContactsApi } from '@/services/applicationsApi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { ApplicationContact } from '@/types/application.types'
@@ -149,7 +148,7 @@ function ContactCard({
 }
 
 export function ApplicationsContacts() {
-  const { t } = useTranslation()
+  useTranslation()
   const queryClient = useQueryClient()
 
   const { data: contacts = [], isLoading } = useQuery({

@@ -29,14 +29,13 @@ import {
   Award,
   Heart,
   User,
-  MapPin,
   Eye,
   EyeOff
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { CoverLetterTemplateSelector } from './CoverLetterTemplateSelector'
-import { CoverLetterPreview, getTemplateById } from './CoverLetterPreview'
+import { CoverLetterPreview } from './CoverLetterPreview'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
@@ -187,12 +186,11 @@ async function generateCoverLetterWithAI(data: {
 }
 
 export function CoverLetterWrite() {
-  const { t } = useTranslation()
+  useTranslation()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const { user } = useAuthStore()
   const { profile, loadProfile } = useProfileStore()
-  const editId = searchParams.get('edit')
   const templateId = searchParams.get('template')
   const initialJobId = searchParams.get('jobId')
 
@@ -209,7 +207,7 @@ export function CoverLetterWrite() {
   const [profileData, setProfileData] = useState<ProfilePreferences | null>(null)
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([])
   const [loadingCV, setLoadingCV] = useState(true)
-  const [loadingProfile, setLoadingProfile] = useState(true)
+  const [, setLoadingProfile] = useState(true)
   const [loadingJobs, setLoadingJobs] = useState(true)
 
   // Form data

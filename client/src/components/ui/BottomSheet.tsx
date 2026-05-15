@@ -3,10 +3,10 @@
  * Mobil-optimized bottom sheet för filter, val och modaler
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect } from 'react'
 import { cn } from '@/lib/utils'
 import { CloseButton } from './Button'
-import { animations, radius } from '@/styles/design-system'
+import { animations } from '@/styles/design-system'
 
 // ============================================
 // BOTTOM SHEET
@@ -31,13 +31,12 @@ export function BottomSheet({
   description,
   children,
   showHandle = true,
-  snapPoints,
+  snapPoints: _snapPoints,
   initialSnap = '75%',
   showCloseButton = true,
   className,
 }: BottomSheetProps) {
   const [isVisible, setIsVisible] = useState(false)
-  const [isDragging, setIsDragging] = useState(false)
   
   // Animate in/out
   useEffect(() => {

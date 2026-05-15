@@ -3,13 +3,12 @@
  * Shows reminders and upcoming interviews
  */
 
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Calendar, Bell, Plus, CheckCircle, Clock, Trash2,
+  Calendar, Bell, CheckCircle, Clock,
   Phone, Users, FileCheck, AlertCircle
 } from '@/components/ui/icons'
-import { Card, Button } from '@/components/ui'
+import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { useApplicationReminders } from '@/hooks/useApplications'
 import type { ApplicationReminder, ReminderType } from '@/types/application.types'
@@ -98,7 +97,7 @@ function ReminderCard({
 }
 
 export function ApplicationsCalendar() {
-  const { t } = useTranslation()
+  useTranslation()
   const { todayReminders, upcomingReminders, isLoading, completeReminder } = useApplicationReminders()
 
   const handleComplete = async (id: string) => {

@@ -2,10 +2,9 @@
  * MoodTab - Mood tracking and analytics
  */
 
-import { useState, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
 import {
-  Smile, Frown, Meh, Sun, Moon, Battery, Brain,
+  Smile, Sun, Moon, Battery, Brain,
   TrendingUp, TrendingDown, Minus, Calendar, Check,
   ChevronLeft, ChevronRight, Activity
 } from '@/components/ui/icons'
@@ -114,7 +113,7 @@ function LevelSlider({
 }
 
 function TodayLogger() {
-  const { todayMood, logMood, isLoading } = useMoodLogs()
+  const { todayMood, logMood } = useMoodLogs()
   const [mood, setMood] = useState(todayMood?.mood_level || 3)
   const [energy, setEnergy] = useState(todayMood?.energy_level || 3)
   const [stress, setStress] = useState(todayMood?.stress_level || 3)

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DollarSign, TrendingUp, MapPin, Briefcase, Award, BarChart3, Search, Info, Save, Star, Trash2, Loader2, Brain } from '@/components/ui/icons';
+import { DollarSign, TrendingUp, MapPin, Briefcase, Award, Search, Info, Save, Star, Trash2, Loader2 } from '@/components/ui/icons';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { salaryApi, type SavedSalarySearch } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
@@ -35,18 +35,8 @@ interface SalaryData {
   sampleSize?: number;
 }
 
-const SWEDISH_REGIONS = [
-  'Stockholms län',
-  'Västra Götalands län',
-  'Skåne län',
-  'Uppsala län',
-  'Östergötlands län',
-  'Jönköpings län',
-  'Hallands län',
-  'Dalarnas län',
-  'Gävleborgs län',
-  'Västernorrlands län',
-];
+// SWEDISH_REGIONS borttagen 2026-05-15 — 0 callers. Återinför när
+// region-filter byggs i UI.
 
 export default function SalaryInsights() {
   const [selectedOccupation, setSelectedOccupation] = useState<AutocompleteOption | null>(null);
@@ -64,8 +54,8 @@ export default function SalaryInsights() {
     try {
       const searches = await salaryApi.getAll();
       setSavedSearches(searches);
-    } catch (error) {
-      console.error('Failed to load saved searches:', error);
+    } catch (err) {
+      console.error('Failed to load saved searches:', err);
     }
   };
 
@@ -85,7 +75,7 @@ export default function SalaryInsights() {
       });
       showToast.success('Lönejämförelsen sparad!');
       await loadSavedSearches();
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte spara lönejämförelsen');
     } finally {
       setSaving(false);
@@ -97,7 +87,7 @@ export default function SalaryInsights() {
       await salaryApi.delete(id);
       showToast.success('Sparad lönejämförelse borttagen');
       await loadSavedSearches();
-    } catch (error) {
+    } catch {
       showToast.error('Kunde inte ta bort lönejämförelsen');
     }
   };
@@ -147,8 +137,8 @@ export default function SalaryInsights() {
       } else {
         setSalaryData(null);
       }
-    } catch (error) {
-      console.error('Fel vid hämtning av lönedata:', error);
+    } catch (err) {
+      console.error('Fel vid hämtning av lönedata:', err);
       showToast.error('Kunde inte hämta lönedata från AI');
       setSalaryData(null);
     } finally {
