@@ -21,23 +21,23 @@ INSERT INTO articles (
   'komma-igang-intro',
   'Komma igång – så funkar portalen',
   'En orientering över portalens sex verktyg och kunskapsbas, och en rimlig ordning att börja i.',
-  $body$Första gången man loggar in i en jobbportal vet man sällan vart man ska börja. Det finns sex sidor i menyn, alla har ikoner, och knapparna leder till knappar som leder till andra knappar. Den här artikeln är en kort orientering, så du slipper söka dig fram själv.
+  $body$Första gången man loggar in i en jobbportal vet man sällan vart man ska börja. Den här artikeln är en orientering över portalens funktioner och en rimlig ordning att börja i.
 
-Portalen består av sex verktyg och en kunskapsbas — den du läser ur just nu.
+Portalen är uppdelad i fem områden i navigeringen: **Översikt** (startsidan), **Söka jobb**, **Karriär**, **Resurser** och **Min vardag**. Verktygen är spridda mellan dem efter vad de används till. Här är de centrala funktionerna.
 
-**CV-byggaren** har tolv mallar. De spänner från strama, klassiska upplägg lämpade för förvaltning och bank, till mer formgivningstunga för kreativa branscher. Du fyller i avsnitten i den ordning du vill, byter mall mellan första och sista utkastet om du ångrar dig, och exporterar till PDF eller Word när det är klart. Det går att skriva in perioder av sjukskrivning, vård av barn eller eget företagande som egna poster — alltså inte luckor att gömma utan rader du fyller i som vad de är.
+**CV-byggaren** (Söka jobb → CV) har tolv mallar. De spänner från strama, klassiska upplägg lämpade för förvaltning och bank, till mer formgivningstunga för kreativa branscher. Du fyller i avsnitten i den ordning du vill, byter mall mellan första och sista utkastet om du ångrar dig, och exporterar till PDF eller Word när det är klart. Det går att skriva in perioder av sjukskrivning, vård av barn eller eget företagande som egna poster — alltså inte luckor att gömma utan rader du fyller i som vad de är.
 
-**Intresseguiden** är 34 frågor uppdelade i fyra delar: arbetsintressen, personlighet, intresseområden och förutsättningar. Det tar ungefär tjugo minuter att gå igenom allt, men svaren sparas automatiskt så du kan pausa och fortsätta senare. När du är klar får du yrkesförslag som matchar svaren. Förslag, inte facit — ingen algoritm kan säga säkert vad du borde bli. Men som startpunkt när riktningen är oklar fungerar guiden utmärkt.
+**Personligt brev** (Söka jobb → Personligt brev) använder din profil och en jobbannons för att föreslå ett första utkast. Du redigerar därifrån — formuleringarna är gjorda för att bytas ut, inte skickas in som de står.
 
-**Jobbsöket** hämtar annonser från Arbetsförmedlingens databas, den största samlade jobbdatabasen i Sverige med annonser från både offentliga och privata arbetsgivare. Du söker på roll, ort, anställningsform och bransch, sparar de annonser som är intressanta och lägger till egna anteckningar.
+**Intresseguiden** (Karriär → Intresseguide) är 34 frågor uppdelade i fyra delar: arbetsintressen, personlighet, intresseområden och förutsättningar. Det tar ungefär tjugo minuter att gå igenom allt, men svaren sparas automatiskt så du kan pausa och fortsätta senare. När du är klar får du yrkesförslag som matchar svaren. Förslag, inte facit — ingen algoritm kan säga säkert vad du borde bli. Men som startpunkt när riktningen är oklar fungerar guiden utmärkt.
 
-**Ansökningstrackern** är en lista över allt du sökt. Varje ansökan kan ha en av elva statusar — från "intresserad" och "sparad" via "skickad", "intervju" och "erbjudande" till "tackat ja" eller "avslag". Du ser direkt vilka som väntar på svar, vilka som behöver en uppföljning, och vilka som är avslutade.
+**Hitta jobb** (Söka jobb → Hitta jobb) hämtar annonser från Arbetsförmedlingens databas, den största samlade jobbdatabasen i Sverige med annonser från både offentliga och privata arbetsgivare. Du söker på roll, ort, anställningsform och bransch, sparar de annonser som är intressanta och lägger till egna anteckningar.
 
-**Brevgeneratorn** använder din profil och en jobbannons för att föreslå ett första utkast till personligt brev. Du redigerar därifrån — formuleringarna är gjorda för att bytas ut, inte skickas in som de står.
+**Mina ansökningar** (Söka jobb → Mina ansökningar) är en lista över allt du sökt. Varje ansökan kan ha en av elva statusar — från "intresserad" och "sparad" via "skickad", "intervju" och "erbjudande" till "tackat ja" eller "avslag". Du ser direkt vilka som väntar på svar, vilka som behöver en uppföljning, och vilka som är avslutade.
 
-**AI-teamet** är fem chatt-agenter med olika inriktning: en arbetskonsulent (CV-feedback, jobbstrategi), en arbetsterapeut (energi, stresshantering), en studievägledare (karriärvägar, utbildningar), en motivationscoach (mål och motgångar) och en digitalcoach (LinkedIn, online-närvaro). Du skriver in en fråga och får svar som utgår från din profil och vad du gjort i portalen tidigare.
+**AI-teamet** (Resurser → AI-team) är fem chatt-agenter med olika inriktning: en arbetskonsulent (CV-feedback, jobbstrategi), en arbetsterapeut (energi, stresshantering), en studievägledare (karriärvägar, utbildningar), en motivationscoach (mål och motgångar) och en digitalcoach (LinkedIn, online-närvaro). Du skriver in en fråga och får svar som utgår från din profil och vad du gjort i portalen tidigare.
 
-**Kunskapsbasen** har 282 artiklar om jobbsökning, intervjuer, lön, rättigheter, välmående och liknande. Sökbar, kan filtreras på kategori och svårighetsgrad.
+**Kunskapsbasen** (Resurser → Kunskapsbank) är där du läser detta. Knappt 300 artiklar om jobbsökning, intervjuer, lön, rättigheter och välmående. Sökbar, kan filtreras på kategori och svårighetsgrad.
 
 ## I vilken ordning
 
@@ -46,12 +46,12 @@ Det finns ingen tvingande ordning, men ungefär så här rör sig de flesta för
 1. **Profil.** Namn, ort, kontaktuppgifter, ett par meningar om vad du gjort senast. Tio minuter.
 2. **Intresseguide** om du är osäker på riktning. Annars hoppa över.
 3. **CV.** Börja med utbildning och tidigare jobb. Kompetenser, språk och övriga avsnitt får komma senare — det är lättare när det grova står på plats.
-4. **Sök ett jobb** för att se hur flödet fungerar. Du behöver inte söka direkt; det räcker som introduktion till resten av portalen.
+4. **Hitta jobb** för att se hur flödet fungerar. Du behöver inte söka direkt; det räcker som introduktion till resten av portalen.
 5. **Spara två-tre annonser** och börja på ett personligt brev till en av dem.
 
 Det är inte ett schema. Vissa sveper igenom på en eftermiddag, andra tar veckor. Båda är rimliga.
 
-Har du en arbetskonsulent kopplad till dig ser hen vad du jobbar med och kan kommentera. Saknar du konsulent finns AI-teamet, och kunskapsbasens 282 artiklar täcker det allra mesta.$body$,
+Har du en arbetskonsulent kopplad till dig ser hen vad du jobbar med och kan kommentera. Saknar du konsulent finns AI-teamet, och kunskapsbasens artiklar täcker det allra mesta.$body$,
   'getting-started',
   'first-week',
   ARRAY['introduktion', 'komma igång', 'orientering', 'för-nybörjare'],
@@ -127,7 +127,7 @@ Att läsa vad rekryterare faktiskt skriver är värdefullt även om du inte sök
 När det känns rätt:
 
 - Välj en av de sparade annonserna
-- Generera ett brevutkast med Brevgeneratorn
+- Öppna **Personligt brev** och låt AI:n föreslå ett första utkast utifrån din profil och annonsen
 - Redigera så det låter som du, inte som en mall
 - Läs igenom en gång till
 
