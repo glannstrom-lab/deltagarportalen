@@ -1,7 +1,25 @@
 # Compliance — vad DU behöver göra
 
-**Datum:** 2026-05-15
-**Bakgrund:** Se `docs/COMPLIANCE-AUDIT-2026-05-15.md` för full audit. Detta är konkret att-göra-lista för dig som inte är beroende av kod-ändringar.
+**Datum:** 2026-05-15 (uppdaterad efter implementation)
+**Bakgrund:** Se `docs/COMPLIANCE-AUDIT-2026-05-15.md` för full audit.
+
+## Status — vad är klart i kod
+
+✅ **Implementerat 2026-05-15 (commits fbb49c9..489d633):**
+- Vercel functions flyttade till `fra1` (Frankfurt)
+- AI Act Art 50-märkning: AIBadge + AIGeneratedWatermark, på AI-coach + brev
+- Retention cron-SQL (`supabase/migrations/20260515_retention_cron.sql`) — kräver pg_cron-extension aktiverad i Supabase
+- Cascade Vercel Blob i `delete-account` edge function
+- DPA-länkar i Privacy.tsx (Supabase, Vercel, OpenRouter, Sentry, LinkedIn, Google)
+- ToS uppdaterad: AI som vägledning, screening-förbud, wellness ej vård
+- Settings AI-consent-text uppdaterad för Art 21 GDPR + korrekt OpenRouter-referens
+- Privacy.tsx "automated"-sektion korrigerad (tidigare felaktigt "inga automatiska beslut")
+- Tillgänglighetsredogörelse på `/tillganglighet`
+- 7 compliance-dokument i `docs/` (audit, DPIA, Art 30, AI Act-klassificering, retention, IR, hosting)
+
+🟡 **Implementerat men kräver manuell aktivering:**
+- pg_cron extension i Supabase dashboard (Database → Extensions → pg_cron)
+- Sedan körs migrationen automatiskt och cron-jobben aktiveras
 
 ---
 
