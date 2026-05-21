@@ -14,12 +14,13 @@ import {
   useStaAbsences,
   getCurrentWeekMonday,
 } from '@/hooks/useSta'
-import type { StaPulseCheck } from '@/services/staApi'
+import type { StaPulseCheck, StaActivity } from '@/services/staApi'
 import { PulseCheckWidget } from './components/PulseCheckWidget'
 import { WeeklyCheckinForm } from './components/WeeklyCheckinForm'
 import { WeeklyHoursEditor, activeDaysForHours, hoursToDays } from './components/WeeklyHoursEditor'
 import { AbsenceForm } from './components/AbsenceForm'
 import { StaOnboardingTrigger, StaOnboardingModal } from './components/StaOnboarding'
+import { KompetenskartlaggningForm } from './components/KompetenskartlaggningForm'
 import {
   Briefcase,
   Calendar,
@@ -43,6 +44,7 @@ import {
   Award,
   PencilLine,
   Info,
+  Stethoscope,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import {
@@ -74,6 +76,14 @@ const SWEDISH_MONTHS = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 
 // Uppdraget förbjuder fysiska aktiviteter pga försäkringsfrågan — vi måste
 // tydliggöra för deltagaren att övningen är kunskapsbaserad.
 const KNOWLEDGE_ONLY_DAYS = new Set<number>([1, 8])
+
+/** Räkna frånvaroanmälningar senaste 30 dagarna. */
+function countAbsencesLast30Days(absences: import('@/services/staApi').StaAbsence[]): number {
+  const since = new Date()
+  since.setDate(since.getDate() - 30)
+  const sinceIso = since.toISOString().slice(0, 10)
+  return absences.filter((a) => a.absence_date >= sinceIso).length
+}
 
 function isoDate(d: Date): string {
   // Använd lokal tid — toISOString() ger UTC, vilket flyttar datumet vid CEST.
@@ -165,6 +175,7 @@ export default function StaParticipant() {
   } = useParticipantEnrollment()
   const enrollmentId = enrollment?.id ?? null
   const { activities, markDayComplete } = useStaActivities(enrollmentId, 1)
+  const { activities: activitiesPart2, reload: reloadPart2 } = useStaActivities(enrollmentId, 2)
   const { profile: consultantProfile } = useStaConsultantProfile(enrollmentId)
   const { pulses } = useStaPulseChecks(enrollmentId)
   const { notes: sharedNotes } = useStaQuickNotes(enrollmentId)
@@ -422,6 +433,7 @@ export default function StaParticipant() {
         enrollmentStartedAt={enrollment?.started_at ?? viewModel.startedAt}
         onUpdateStartDate={enrollment ? updateStartDate : undefined}
         onUpdateWeeklyHours={enrollment ? updateWeeklyHours : undefined}
+        absences30d={countAbsencesLast30Days(absences)}
       />
       <STaTabs current={tab} onChange={setTab} currentPart={viewModel.currentPart} />
 
@@ -443,10 +455,18 @@ export default function StaParticipant() {
           <STaDel1
             mock={viewModel}
             enrollmentId={enrollmentId}
+            activities={activities}
             onMarkDayComplete={markDayComplete}
           />
         )}
-        {tab === 'del-2' && <STaDel2 mock={viewModel} />}
+        {tab === 'del-2' && (
+          <STaDel2
+            mock={viewModel}
+            enrollmentId={enrollmentId}
+            activities={activitiesPart2}
+            onActivityChanged={reloadPart2}
+          />
+        )}
         {tab === 'del-3' && <STaDel3 mock={viewModel} />}
         {tab === 'del-4' && <STaDel4 mock={viewModel} />}
       </div>
@@ -581,6 +601,7 @@ function STaHero({
   enrollmentStartedAt,
   onUpdateStartDate,
   onUpdateWeeklyHours,
+  absences30d,
 }: {
   mock: ParticipantViewModel
   enrollmentStartedAt: string
@@ -588,6 +609,8 @@ function STaHero({
   onUpdateStartDate?: (startedAt: string) => Promise<unknown>
   /** Saknas i förhandsvisning — då sparar inte WeeklyHoursEditor. */
   onUpdateWeeklyHours?: (hours: number) => Promise<unknown>
+  /** Antal frånvarodagar senaste 30 dgr — visas som chip om > 0. */
+  absences30d: number
 }) {
   const partLabel = STA_PARTS.find((p) => p.id === mock.currentPart)?.shortLabel ?? ''
   const progressPct = Math.round((mock.currentDay / mock.totalDays) * 100)
@@ -727,6 +750,15 @@ function STaHero({
                 title="Förstärkt språkstöd"
               >
                 🌐 {mock.languageSupport.join(', ')}
+              </span>
+            )}
+            {absences30d > 0 && (
+              <span
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 border border-amber-200 text-amber-800"
+                title="Frånvaroanmälningar senaste 30 dagarna"
+              >
+                <Stethoscope size={12} />
+                {absences30d} frånvaro senaste 30 dgr
               </span>
             )}
           </div>
@@ -1146,17 +1178,25 @@ function WeekPlanRow({ item }: { item: ParticipantViewModel['weekPlan'][number] 
 function STaDel1({
   mock,
   enrollmentId,
+  activities,
   onMarkDayComplete,
 }: {
   mock: ParticipantViewModel
   enrollmentId?: string | null
+  activities: StaActivity[]
   onMarkDayComplete?: (activityKey: string, reflection?: string) => Promise<unknown>
 }) {
   // Default: visa idag som vald dag, om den finns
   const initialDay = mock.dailyExercises.find((d) => d.status === 'today')?.day ?? null
   const [selectedDay, setSelectedDay] = useState<number | null>(initialDay)
+  const [kompFormOpen, setKompFormOpen] = useState(false)
 
   const currentWeek = getWeekForDay(mock.currentDay)
+
+  // Tre obligatoriska Del 1-aktiviteter — status från sta_activities
+  const startsamtalAct = activities.find((a) => a.activity_key === 'startsamtal') ?? null
+  const kartlaggningAct = activities.find((a) => a.activity_key === 'kartlaggningssamtal') ?? null
+  const kompAct = activities.find((a) => a.activity_key === 'kompetenskartlaggning') ?? null
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -1165,61 +1205,15 @@ function STaDel1({
 
         {currentWeek && <CurrentWeekCard week={currentWeek} currentDay={mock.currentDay} />}
 
-        {/* Startsamtal */}
-        <ActivitySection
-          icon={<CheckCircle2 size={18} className="text-emerald-700" />}
-          title="Startsamtal"
-          subtitle="Klart · 30 april"
-          iconBg="bg-emerald-100"
-          defaultOpen
-        >
-          <p>
-            Du och {mock.consultant.name.split(' ')[0]} gick igenom hur tjänsten fungerar, ditt schema och vad du behöver
-            för att det ska kännas bra. Du nämnde att du vill ha lugna miljöer och korta pauser oftare.
-          </p>
-          <div className="mt-3 p-3 rounded-lg bg-stone-50">
-            <div className="text-xs uppercase tracking-wide text-stone-500 font-medium mb-1">Anpassningar vi planerat</div>
-            <ul className="text-sm text-stone-700 space-y-0.5">
-              {mock.adaptations.map((a) => (
-                <li key={a}>• {a}</li>
-              ))}
-            </ul>
-          </div>
-        </ActivitySection>
-
-        {/* Kartläggning */}
-        <ActivitySection
-          icon={<CheckCircle2 size={18} className="text-emerald-700" />}
-          title="Vi pratar om dig och arbete"
-          subtitle="Klart · 6 maj · två samtal à 1 timme"
-          iconBg="bg-emerald-100"
-        >
-          <p>
-            Vi pratade om vad som har funkat bra för dig tidigare, vad du tycker är meningsfullt, och hur du
-            mår just nu. {mock.consultant.name.split(' ')[0]} skrev ner det som var viktigast för dig.
-          </p>
-        </ActivitySection>
-
-        {/* Kompetenskartläggning */}
-        <ActivitySection
-          icon={<Clock size={18} style={{ color: 'var(--c-text)' }} />}
-          title="Dina kompetenser och intressen"
-          subtitle="Pågående · 5 av 8 frågor klara"
-          iconBg=""
-          iconBgStyle={{ background: 'var(--c-accent)' }}
-          defaultOpen
-        >
-          <p>
-            Vi sammanställer vad du redan kan och vad du tycker om att göra. Du fyller på i din egen takt — det är
-            ingen brådska.
-          </p>
-          <div className="h-2 rounded-full mt-3 overflow-hidden bg-stone-100">
-            <div className="h-full" style={{ width: '62%', background: 'var(--c-solid)' }} />
-          </div>
-          <Button variant="primary" className="mt-3">
-            Fortsätt där du var
-          </Button>
-        </ActivitySection>
+        {/* De tre obligatoriska aktiviteterna enligt AF-uppdraget */}
+        <ObligatoryActivitiesSection
+          consultantFirstName={mock.consultant.name.split(' ')[0]}
+          adaptations={mock.adaptations}
+          startsamtalAct={startsamtalAct}
+          kartlaggningAct={kartlaggningAct}
+          kompAct={kompAct}
+          onStartKomp={() => setKompFormOpen(true)}
+        />
 
         {/* Dagsslinga — grupperad veckovis */}
         <ActivitySection
@@ -1274,6 +1268,187 @@ function STaDel1({
         consultantFirstName={mock.consultant.name.split(' ')[0]}
         showLanguageSupport
       />
+
+      {/* Kompetenskartläggning-modal — öppnas från ObligatoryActivitiesSection */}
+      {kompFormOpen && (
+        <KompetenskartlaggningForm
+          enrollmentId={enrollmentId ?? null}
+          existing={kompAct}
+          onClose={() => setKompFormOpen(false)}
+          readOnly={!enrollmentId}
+        />
+      )}
+    </div>
+  )
+}
+
+// =============================================================================
+// Tre obligatoriska aktiviteter enligt AF-uppdraget Del 1
+// =============================================================================
+
+function ObligatoryActivitiesSection({
+  consultantFirstName,
+  adaptations,
+  startsamtalAct,
+  kartlaggningAct,
+  kompAct,
+  onStartKomp,
+}: {
+  consultantFirstName: string
+  adaptations: string[]
+  startsamtalAct: StaActivity | null
+  kartlaggningAct: StaActivity | null
+  kompAct: StaActivity | null
+  onStartKomp: () => void
+}) {
+  return (
+    <Card variant="flat" padding="lg">
+      <div className="flex items-center gap-2 mb-3">
+        <span
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium"
+          style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
+        >
+          3 obligatoriska
+        </span>
+        <h3 className="text-base font-semibold text-stone-900">
+          Det här gör vi tillsammans i Del 1
+        </h3>
+      </div>
+
+      <div className="space-y-3">
+        <ObligatoryActivityRow
+          title="Startsamtal"
+          description={`Du och ${consultantFirstName} går igenom hur tjänsten fungerar, ditt schema, frånvarorutiner och vad du behöver för att det ska kännas bra.`}
+          activity={startsamtalAct}
+          extra={
+            startsamtalAct?.completed_at && adaptations.length > 0 ? (
+              <div className="mt-2 p-2.5 rounded-lg bg-stone-50">
+                <div className="text-[11px] uppercase tracking-wide text-stone-500 font-medium mb-0.5">
+                  Anpassningar som planerades
+                </div>
+                <ul className="text-xs text-stone-700 space-y-0.5">
+                  {adaptations.map((a) => (
+                    <li key={a}>• {a}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null
+          }
+        />
+
+        <ObligatoryActivityRow
+          title="Kartläggningssamtal"
+          description={`Två samtal med ${consultantFirstName} (eller med en arbetsterapeut) där vi pratar om dina resurser, motivation och vad som funkat tidigare. Här används DOA, WRI och MOHOST som stöd.`}
+          activity={kartlaggningAct}
+        />
+
+        <ObligatoryActivityRow
+          title="Kompetenskartläggning"
+          description="Du svarar på frågor om dig själv i din egen takt. Det blir grunden för vad vi gör härnäst — och underlag för delredovisning till Arbetsförmedlingen."
+          activity={kompAct}
+          actionLabel={
+            kompAct?.completed_at
+              ? 'Se eller justera svaren'
+              : kompAct
+                ? 'Fortsätt där du var'
+                : 'Starta kartläggning'
+          }
+          onAction={onStartKomp}
+          progress={
+            kompAct?.metadata && typeof (kompAct.metadata as { completionPct?: unknown }).completionPct === 'number'
+              ? ((kompAct.metadata as { completionPct: number }).completionPct as number)
+              : undefined
+          }
+        />
+      </div>
+    </Card>
+  )
+}
+
+function ObligatoryActivityRow({
+  title,
+  description,
+  activity,
+  actionLabel,
+  onAction,
+  progress,
+  extra,
+}: {
+  title: string
+  description: string
+  activity: StaActivity | null
+  actionLabel?: string
+  onAction?: () => void
+  progress?: number
+  extra?: React.ReactNode
+}) {
+  const isComplete = !!activity?.completed_at
+  const isScheduled = !!activity?.scheduled_for && !isComplete
+  const isInProgress = !!activity && !isComplete && !isScheduled
+
+  const status: 'complete' | 'scheduled' | 'in_progress' | 'pending' = isComplete
+    ? 'complete'
+    : isScheduled
+      ? 'scheduled'
+      : isInProgress
+        ? 'in_progress'
+        : 'pending'
+
+  const statusLabel = {
+    complete: activity?.completed_at
+      ? `Klart · ${formatShortSv(new Date(activity.completed_at))}`
+      : 'Klart',
+    scheduled: activity?.scheduled_for
+      ? `Bokat · ${formatShortSv(new Date(activity.scheduled_for + 'T00:00:00'))}`
+      : 'Bokat',
+    in_progress: 'Pågående',
+    pending: 'Inte startat ännu',
+  }[status]
+
+  const Icon = isComplete ? CheckCircle2 : status === 'pending' ? Clock : Activity
+
+  return (
+    <div className="p-3.5 rounded-xl border border-stone-200 bg-white">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="flex items-start gap-3 min-w-0">
+          <div
+            className={cn(
+              'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
+              isComplete ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-stone-600',
+            )}
+          >
+            <Icon size={16} />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-semibold text-stone-900 text-sm">{title}</span>
+              <span
+                className={cn(
+                  'inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium',
+                  isComplete && 'bg-emerald-50 text-emerald-700',
+                  isScheduled && 'bg-amber-50 text-amber-700',
+                  isInProgress && 'bg-sky-50 text-sky-700',
+                  status === 'pending' && 'bg-stone-100 text-stone-600',
+                )}
+              >
+                {statusLabel}
+              </span>
+            </div>
+            <p className="text-sm text-stone-700 mt-1">{description}</p>
+            {typeof progress === 'number' && (
+              <div className="h-1.5 rounded-full mt-2 overflow-hidden bg-stone-100">
+                <div className="h-full" style={{ width: `${progress}%`, background: 'var(--c-solid)' }} />
+              </div>
+            )}
+          </div>
+        </div>
+        {actionLabel && onAction && (
+          <Button size="sm" variant={isComplete ? 'ghost' : 'primary'} onClick={onAction}>
+            {actionLabel}
+          </Button>
+        )}
+      </div>
+      {extra}
     </div>
   )
 }
@@ -1651,7 +1826,26 @@ function HealthCard({ icon, title, subtitle }: { icon: React.ReactNode; title: s
 // DEL 2 — Prova på
 // ===========================================================================
 
-function STaDel2({ mock }: { mock: ParticipantViewModel }) {
+function STaDel2({
+  mock,
+  enrollmentId,
+  activities,
+  onActivityChanged,
+}: {
+  mock: ParticipantViewModel
+  enrollmentId?: string | null
+  activities: StaActivity[]
+  onActivityChanged: () => void
+}) {
+  // Mappa varje arbetsstation till en aktivitet (om finns)
+  const stationActivities = new Map<string, StaActivity>()
+  for (const a of activities) {
+    if (a.activity_type === 'arbetsstation' && a.activity_key) {
+      stationActivities.set(a.activity_key, a)
+    }
+  }
+  const triedCount = Array.from(stationActivities.values()).filter((a) => a.completed_at).length
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="lg:col-span-2 space-y-5">
@@ -1664,47 +1858,165 @@ function STaDel2({ mock }: { mock: ParticipantViewModel }) {
         <ActivitySection
           icon={<Activity size={18} style={{ color: 'var(--c-text)' }} />}
           title="Mina arbetsstationer"
-          subtitle="Du kommer prova fyra olika typer av arbete"
+          subtitle={`${triedCount} av 4 stationer prövade · prova alla för att hitta vad som passar`}
           iconBgStyle={{ background: 'var(--c-accent)' }}
           defaultOpen
         >
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-2">
             {mock.workStations.map((s) => (
-              <div key={s.id} className="p-4 rounded-lg border border-stone-200 bg-white">
-                <div className="flex items-center gap-3">
-                  <div
-                    className="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0"
-                    style={{ background: 'var(--c-bg)' }}
-                  >
-                    {s.icon}
-                  </div>
-                  <div className="min-w-0">
-                    <div className="font-medium text-stone-900">{s.name}</div>
-                    <div className="text-xs text-stone-500">{s.desc}</div>
-                  </div>
-                </div>
-                <div className="mt-3 text-xs text-stone-500">
-                  {s.tried ? '✓ Du har provat den här stationen' : 'Du har inte provat än'}
-                </div>
-              </div>
+              <ArbetsstationCard
+                key={s.id}
+                station={s}
+                activity={stationActivities.get(`station-${s.id}`) ?? null}
+                enrollmentId={enrollmentId ?? null}
+                onChange={onActivityChanged}
+              />
             ))}
           </div>
         </ActivitySection>
 
-        {/* Mina reflektioner */}
-        <ActivitySection
-          icon={<MessageSquare size={18} style={{ color: 'var(--c-text)' }} />}
-          title="Mina reflektioner"
-          subtitle="Vad var roligt? Svårt? Överraskande?"
-          iconBgStyle={{ background: 'var(--c-accent)' }}
-        >
-          <p className="text-sm text-stone-600">
-            Här samlar vi det du har upptäckt om dig själv när du provar olika arbetsuppgifter.
-          </p>
-        </ActivitySection>
+        {/* Mina reflektioner — sammanställning av station-reflektioner */}
+        {triedCount > 0 && (
+          <ActivitySection
+            icon={<MessageSquare size={18} style={{ color: 'var(--c-text)' }} />}
+            title="Mina reflektioner"
+            subtitle="Vad du har upptäckt när du provat olika arbetsuppgifter"
+            iconBgStyle={{ background: 'var(--c-accent)' }}
+            defaultOpen
+          >
+            <div className="space-y-2">
+              {Array.from(stationActivities.values())
+                .filter((a) => a.participant_reflection && a.completed_at)
+                .map((a) => {
+                  const station = mock.workStations.find((s) => `station-${s.id}` === a.activity_key)
+                  if (!station) return null
+                  return (
+                    <div key={a.id} className="p-3 rounded-lg bg-stone-50">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-base">{station.icon}</span>
+                        <span className="text-sm font-medium text-stone-900">{station.name}</span>
+                      </div>
+                      <p className="text-sm text-stone-700 italic">"{a.participant_reflection}"</p>
+                    </div>
+                  )
+                })}
+            </div>
+          </ActivitySection>
+        )}
       </div>
 
       <PartSidebar nextPart={STA_PARTS[2]} consultantFirstName={mock.consultant.name.split(' ')[0]} />
+    </div>
+  )
+}
+
+function ArbetsstationCard({
+  station,
+  activity,
+  enrollmentId,
+  onChange,
+}: {
+  station: typeof PARTICIPANT_MOCK.workStations[number]
+  activity: StaActivity | null
+  enrollmentId: string | null
+  onChange: () => void
+}) {
+  const [editing, setEditing] = useState(false)
+  const [reflection, setReflection] = useState(activity?.participant_reflection ?? '')
+  const [saving, setSaving] = useState(false)
+  const isTried = !!activity?.completed_at
+
+  const handleSave = async (markComplete: boolean) => {
+    if (!enrollmentId) {
+      setEditing(false)
+      return
+    }
+    setSaving(true)
+    try {
+      const { staActivitiesApi } = await import('@/services/staApi')
+      await staActivitiesApi.upsertByKey({
+        enrollment_id: enrollmentId,
+        part: 2,
+        activity_type: 'arbetsstation',
+        activity_key: `station-${station.id}`,
+        participant_reflection: reflection.trim() || null,
+        markComplete,
+      })
+      onChange()
+      setEditing(false)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="p-4 rounded-lg border border-stone-200 bg-white">
+      <div className="flex items-center gap-3">
+        <div
+          className="w-10 h-10 rounded-lg flex items-center justify-center text-xl flex-shrink-0"
+          style={{ background: 'var(--c-bg)' }}
+        >
+          {station.icon}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="font-medium text-stone-900">{station.name}</div>
+          <div className="text-xs text-stone-500">{station.desc}</div>
+        </div>
+        {isTried && (
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 text-emerald-700">
+            <CheckCircle2 size={11} />
+            Prövad
+          </span>
+        )}
+      </div>
+
+      {!editing && activity?.participant_reflection && (
+        <p className="mt-3 text-sm text-stone-600 italic">
+          "{activity.participant_reflection}"
+        </p>
+      )}
+
+      {editing && (
+        <div className="mt-3 space-y-2">
+          <textarea
+            rows={2}
+            value={reflection}
+            onChange={(e) => setReflection(e.target.value)}
+            placeholder="Vad var roligt eller svårt? (Frivilligt)"
+            className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+            disabled={saving}
+          />
+          <div className="flex flex-wrap gap-2">
+            {!isTried && (
+              <Button size="sm" variant="primary" onClick={() => handleSave(true)} isLoading={saving}>
+                Markera prövad
+              </Button>
+            )}
+            {isTried && (
+              <Button size="sm" variant="primary" onClick={() => handleSave(false)} isLoading={saving}>
+                Spara reflektion
+              </Button>
+            )}
+            <Button size="sm" variant="ghost" onClick={() => setEditing(false)} disabled={saving}>
+              Avbryt
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {!editing && (
+        <Button
+          size="sm"
+          variant={isTried ? 'ghost' : 'secondary'}
+          className="mt-3"
+          onClick={() => {
+            setReflection(activity?.participant_reflection ?? '')
+            setEditing(true)
+          }}
+        >
+          {isTried ? 'Ändra reflektion' : 'Jag har provat'}
+        </Button>
+      )}
     </div>
   )
 }

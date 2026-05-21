@@ -401,6 +401,48 @@ export const staActivitiesApi = {
       participant_reflection: reflection ?? null,
     })
   },
+
+  /**
+   * Skapa eller uppdatera en aktivitet identifierad av (enrollment_id, activity_key).
+   * Mergar metadata istället för att skriva över. Användbart för formulär som
+   * sparar partiella svar (kompetenskartläggning, arbetsstationer m.fl.).
+   */
+  async upsertByKey(input: {
+    enrollment_id: string
+    part: StaPart
+    activity_type: ActivityType
+    activity_key: string
+    metadata?: Record<string, unknown>
+    participant_reflection?: string | null
+    markComplete?: boolean
+  }): Promise<StaActivity> {
+    const { data: existing } = await supabase
+      .from('sta_activities')
+      .select('*')
+      .eq('enrollment_id', input.enrollment_id)
+      .eq('activity_key', input.activity_key)
+      .maybeSingle()
+    if (existing) {
+      const mergedMetadata = { ...(existing.metadata ?? {}), ...(input.metadata ?? {}) }
+      return this.upsert({
+        ...existing,
+        metadata: mergedMetadata,
+        participant_reflection: input.participant_reflection ?? existing.participant_reflection,
+        completed_at: input.markComplete
+          ? (existing.completed_at ?? new Date().toISOString())
+          : existing.completed_at,
+      })
+    }
+    return this.upsert({
+      enrollment_id: input.enrollment_id,
+      part: input.part,
+      activity_type: input.activity_type,
+      activity_key: input.activity_key,
+      metadata: input.metadata ?? {},
+      participant_reflection: input.participant_reflection ?? null,
+      completed_at: input.markComplete ? new Date().toISOString() : null,
+    })
+  },
 }
 
 // =============================================================================

@@ -123,6 +123,7 @@ export const PARTICIPANT_MOCK = {
   },
 
   resources: [
+    { icon: '📄', title: 'Informationsblad — Steg till arbete', href: '/sta/informationsblad-2024.pdf' },
     { icon: '📘', title: 'Kompendium 1 — Steg till arbete', href: '/knowledge-base' },
     { icon: '🌿', title: 'Hälsoskola (kompendium 2)', href: '/knowledge-base' },
     { icon: '🎯', title: 'Karriärvägledningshäfte 1', href: '/knowledge-base' },
