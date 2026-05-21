@@ -154,6 +154,8 @@ export function toParticipantRow(stats: EnrollmentStats): StaParticipantRow {
     hasDraft: countDraftsToReview(documents),
     hasMessage: quickNotes.filter((n) => n.visibility === 'shared_with_participant').length,
     linkStatus: enrollment.link_status,
+    weeklyHours: enrollment.weekly_hours,
+    enrollmentStatus: enrollment.status,
     manualContact: {
       email: enrollment.external_email ?? undefined,
       phone: enrollment.external_phone ?? undefined,

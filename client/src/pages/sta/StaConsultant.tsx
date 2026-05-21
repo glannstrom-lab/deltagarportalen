@@ -4,9 +4,9 @@ import { PageLayout } from '@/components/layout/index'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { useConsultantStats, useStaQuickNotes } from '@/hooks/useSta'
+import { useConsultantStats, useStaQuickNotes, useStaAbsences } from '@/hooks/useSta'
 import { useAuthStore } from '@/stores/authStore'
-import { staEnrollmentsApi, type StaPart as ApiStaPart } from '@/services/staApi'
+import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
 import { DOC_TYPE_META } from '@/services/staAiApi'
 import { toParticipantRow, computeKpi, type EnrollmentStats } from './enrollmentDisplay'
 import { QuickNoteForm, formatTag } from './components/QuickNoteForm'
@@ -32,6 +32,8 @@ import {
   Activity,
   ClipboardList,
   UserPlus,
+  Pause,
+  Play,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import {
@@ -765,6 +767,41 @@ function AssessmentChip({
 // PARTICIPANT DETAIL DRAWER (slides over)
 // ===========================================================================
 
+function PauseResumeButton({
+  enrollmentId,
+  status,
+  onChange,
+}: {
+  enrollmentId: string
+  status: 'active' | 'paused' | 'completed' | 'cancelled'
+  onChange?: () => void
+}) {
+  const [saving, setSaving] = useState(false)
+  if (status === 'completed' || status === 'cancelled') return null
+  const isPaused = status === 'paused'
+  const handle = async () => {
+    setSaving(true)
+    try {
+      await staEnrollmentsApi.update(enrollmentId, { status: isPaused ? 'active' : 'paused' })
+      onChange?.()
+    } finally {
+      setSaving(false)
+    }
+  }
+  return (
+    <Button
+      variant="ghost"
+      size="sm"
+      onClick={handle}
+      isLoading={saving}
+      leftIcon={isPaused ? <Play size={14} /> : <Pause size={14} />}
+      aria-label={isPaused ? 'Återuppta insatsen' : 'Pausa insatsen (max 14 dagar)'}
+    >
+      {isPaused ? 'Återuppta' : 'Pausa'}
+    </Button>
+  )
+}
+
 function ParticipantDetailDrawer({
   stats,
   mockParticipant,
@@ -812,18 +849,53 @@ function ParticipantDetailDrawer({
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-stone-100 text-stone-700">
                   Anpassning: {participant.adaptations}
                 </span>
+                <span
+                  className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium"
+                  style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
+                >
+                  {participant.weeklyHours} h/vecka
+                </span>
+                {participant.enrollmentStatus === 'paused' && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-amber-100 text-amber-800 font-medium">
+                    Pausad
+                  </span>
+                )}
+                {participant.enrollmentStatus === 'completed' && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-emerald-100 text-emerald-800 font-medium">
+                    Avslutad
+                  </span>
+                )}
               </div>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-stone-100"
-            aria-label="Stäng"
-          >
-            <X size={18} className="text-stone-500" />
-          </button>
+          <div className="flex items-center gap-2">
+            {realEnrollmentId && (
+              <PauseResumeButton
+                enrollmentId={realEnrollmentId}
+                status={participant.enrollmentStatus}
+                onChange={onChange}
+              />
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-2 rounded-lg hover:bg-stone-100"
+              aria-label="Stäng"
+            >
+              <X size={18} className="text-stone-500" />
+            </button>
+          </div>
         </div>
+
+        {participant.enrollmentStatus === 'paused' && (
+          <div className="px-6 py-3 bg-amber-50 border-b border-amber-200 flex items-center gap-3">
+            <AlertTriangle size={16} className="text-amber-700 flex-shrink-0" />
+            <div className="text-sm text-amber-900">
+              <strong>Insatsen är pausad.</strong> Tidsräknaren står still — deltagaren ser en
+              pause-banner på sin sida. Max 14 dagars uppehåll enligt AF.
+            </div>
+          </div>
+        )}
 
         {/* Unlinked banner */}
         {participant.linkStatus !== 'linked' && (
@@ -888,7 +960,9 @@ function ParticipantDetailDrawer({
         </div>
 
         <div className="px-6 py-5">
-          {subTab === 'oversikt' && <DetailOverview participant={participant} />}
+          {subTab === 'oversikt' && (
+            <DetailOverview participant={participant} enrollmentId={realEnrollmentId} />
+          )}
           {subTab === 'aktivitet' && <DetailActivityLog stats={stats ?? undefined} />}
           {subTab === 'skattningar' && (
             <DetailAssessments enrollmentId={realEnrollmentId} stats={stats ?? undefined} />
@@ -913,10 +987,42 @@ function ParticipantDetailDrawer({
   )
 }
 
-function DetailOverview({ participant }: { participant: StaParticipantRow }) {
+function DetailOverview({
+  participant,
+  enrollmentId,
+}: {
+  participant: StaParticipantRow
+  enrollmentId: string | null
+}) {
+  const { absences } = useStaAbsences(enrollmentId)
+  const recentAbsences = absences.slice(0, 4)
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="lg:col-span-2 space-y-4">
+        {recentAbsences.length > 0 && (
+          <Card variant="flat" padding="md">
+            <div className="flex items-center justify-between mb-2">
+              <h4 className="text-sm font-semibold text-stone-900">Senaste frånvaroanmälningar</h4>
+              <span className="text-[11px] text-stone-500">{absences.length} totalt senaste 60 dgr</span>
+            </div>
+            <ul className="space-y-1.5">
+              {recentAbsences.map((a) => (
+                <li
+                  key={a.id}
+                  className="flex items-center justify-between gap-2 text-sm py-1.5 px-2 rounded-lg bg-stone-50"
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium text-stone-900">{formatAbsenceDate(a.absence_date)}</span>
+                    <span className="text-stone-400">·</span>
+                    <span className="text-stone-700">{labelForAbsenceKind(a.kind)}</span>
+                  </div>
+                  {a.reason && <span className="text-xs text-stone-500 truncate max-w-[180px]">{a.reason}</span>}
+                </li>
+              ))}
+            </ul>
+          </Card>
+        )}
+
         <Card variant="flat" padding="md" style={{ background: 'linear-gradient(135deg, #FFFFFF 0%, var(--c-bg) 100%)' }}>
           <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
             <span
@@ -2041,4 +2147,23 @@ function LinkParticipantModal({
       </div>
     </div>
   )
+}
+
+// ===========================================================================
+// HELPERS — frånvaro-formatering
+// ===========================================================================
+
+function formatAbsenceDate(iso: string): string {
+  const months = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
+  const d = new Date(iso + 'T00:00:00')
+  return `${d.getDate()} ${months[d.getMonth()]}`
+}
+
+function labelForAbsenceKind(kind: AbsenceKind): string {
+  switch (kind) {
+    case 'sick': return 'Sjuk'
+    case 'vab': return 'VAB'
+    case 'allowed': return 'Beviljad frånvaro'
+    case 'other': return 'Annan orsak'
+  }
 }

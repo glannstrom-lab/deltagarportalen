@@ -11,11 +11,15 @@ import {
   useStaActivities,
   useStaConsultantProfile,
   useStaQuickNotes,
+  useStaAbsences,
   getCurrentWeekMonday,
 } from '@/hooks/useSta'
 import type { StaPulseCheck } from '@/services/staApi'
 import { PulseCheckWidget } from './components/PulseCheckWidget'
 import { WeeklyCheckinForm } from './components/WeeklyCheckinForm'
+import { WeeklyHoursEditor, activeDaysForHours, hoursToDays } from './components/WeeklyHoursEditor'
+import { AbsenceForm } from './components/AbsenceForm'
+import { StaOnboardingTrigger, StaOnboardingModal } from './components/StaOnboarding'
 import {
   Briefcase,
   Calendar,
@@ -38,6 +42,7 @@ import {
   Target,
   Award,
   PencilLine,
+  Info,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import {
@@ -64,6 +69,11 @@ const DAGSSLINGA_DEL1 = PARTICIPANT_MOCK.dailyExercises.map((d) => ({
 
 const WEEKDAY_LABELS: Array<'MÅN' | 'TIS' | 'ONS' | 'TOR' | 'FRE'> = ['MÅN', 'TIS', 'ONS', 'TOR', 'FRE']
 const SWEDISH_MONTHS = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
+
+// Dagar i dagsslingan som handlar om kropp/hälsa men inte är fysisk träning.
+// Uppdraget förbjuder fysiska aktiviteter pga försäkringsfrågan — vi måste
+// tydliggöra för deltagaren att övningen är kunskapsbaserad.
+const KNOWLEDGE_ONLY_DAYS = new Set<number>([1, 8])
 
 function isoDate(d: Date): string {
   // Använd lokal tid — toISOString() ger UTC, vilket flyttar datumet vid CEST.
@@ -146,12 +156,20 @@ export default function StaParticipant() {
   const programSelected = profile?.program === 'steg_till_arbete'
   const [tab, setTab] = useState<TabId>('oversikt')
 
-  const { enrollment, loading: enrollmentLoading, updateStartDate } = useParticipantEnrollment()
+  const {
+    enrollment,
+    loading: enrollmentLoading,
+    updateStartDate,
+    updateWeeklyHours,
+    markOnboardingDone,
+  } = useParticipantEnrollment()
   const enrollmentId = enrollment?.id ?? null
   const { activities, markDayComplete } = useStaActivities(enrollmentId, 1)
   const { profile: consultantProfile } = useStaConsultantProfile(enrollmentId)
   const { pulses } = useStaPulseChecks(enrollmentId)
   const { notes: sharedNotes } = useStaQuickNotes(enrollmentId)
+  const { absences, report: reportAbsence, remove: removeAbsence } = useStaAbsences(enrollmentId)
+  const [onboardingOpen, setOnboardingOpen] = useState(false)
 
   const completedKeys = useMemo(
     () => new Set(activities.filter((a) => a.completed_at).map((a) => a.activity_key)),
@@ -175,6 +193,8 @@ export default function StaParticipant() {
         totalDays: PARTICIPANT_MOCK.totalDays,
         startedAt: PARTICIPANT_MOCK.startedAt,
         partStartedAt: PARTICIPANT_MOCK.partStartedAt,
+        weeklyHours: PARTICIPANT_MOCK.weeklyHours,
+        onboardingCompleted: false,
         focusOccupation: PARTICIPANT_MOCK.focusOccupation,
         adaptations: PARTICIPANT_MOCK.adaptations,
         languageSupport: PARTICIPANT_MOCK.languageSupport,
@@ -231,13 +251,15 @@ export default function StaParticipant() {
     })
 
     // Veckans plan: dagar mån–fre av nuvarande vecka
+    // Aktivitetsomfattning styr vilka dagar deltagaren faktiskt är på plats.
     const monday = mondayOfWeek(new Date())
+    const activeDays = activeDaysForHours(enrollment.weekly_hours)
     const weekPlan: Array<{
       weekday: 'MÅN' | 'TIS' | 'ONS' | 'TOR' | 'FRE'
       date: string
       title: string
       meta: string
-      status: 'done' | 'today' | 'upcoming'
+      status: 'done' | 'today' | 'upcoming' | 'rest'
     }> = WEEKDAY_LABELS.map((label, idx) => {
       const dayDate = new Date(monday)
       dayDate.setDate(monday.getDate() + idx)
@@ -245,18 +267,28 @@ export default function StaParticipant() {
       const dayDef = dagsslingaDay ? DAGSSLINGA_DEL1.find((d) => d.day === dagsslingaDay) : null
       const isToday = isoDate(dayDate) === todayIso()
       const isCompleted = dagsslingaDay ? completedKeys.has(`dag-${dagsslingaDay}`) : false
+      const isActive = activeDays.has(idx)
 
       let title: string
       let meta: string
-      if (dayDef) {
+      let status: 'done' | 'today' | 'upcoming' | 'rest'
+
+      if (!isActive) {
+        title = 'Ledig dag'
+        meta = `Du är inte på plats — ${enrollment.weekly_hours} h/vecka`
+        status = 'rest'
+      } else if (dayDef) {
         title = `Dag ${dayDef.day} — ${dayDef.title}`
         meta = `${isToday ? 'Idag' : 'Övning'} · ${dayDef.durationMin} min`
+        status = isCompleted ? 'done' : isToday ? 'today' : 'upcoming'
       } else if (dagsslingaDay && dagsslingaDay > DAGSSLINGA_DEL1.length) {
         title = 'Klar med Del 1'
         meta = 'Vänta på Del 2'
+        status = isCompleted ? 'done' : isToday ? 'today' : 'upcoming'
       } else {
         title = 'Innan start'
         meta = `Insatsen börjar ${formatShortSv(new Date(enrollment.started_at + 'T00:00:00'))}`
+        status = 'upcoming'
       }
 
       return {
@@ -264,7 +296,7 @@ export default function StaParticipant() {
         date: isToday ? 'Idag' : formatShortSv(dayDate),
         title,
         meta,
-        status: isCompleted ? 'done' : isToday ? 'today' : 'upcoming',
+        status,
       }
     })
 
@@ -322,6 +354,8 @@ export default function StaParticipant() {
       totalDays,
       startedAt: enrollment.started_at,
       partStartedAt: enrollment.part_started_at,
+      weeklyHours: enrollment.weekly_hours,
+      onboardingCompleted: !!enrollment.onboarding_completed_at,
       focusOccupation: enrollment.focus_occupation,
       adaptations: enrollment.adaptations
         ? enrollment.adaptations.split(/[,\n]/).map((s) => s.trim()).filter(Boolean)
@@ -360,6 +394,26 @@ export default function StaParticipant() {
     )
   }
 
+  // Onboarding: visa trigger när enrollment finns och onboarding inte är klart,
+  // eller alltid i preview (då går flödet att utforska men sparar inget).
+  const showOnboardingTrigger = isPreview || (!!enrollment && !viewModel.onboardingCompleted)
+
+  const handleOnboardingComplete = async ({
+    weeklyHours,
+    startedAt,
+  }: {
+    weeklyHours: number
+    startedAt: string
+  }) => {
+    if (!enrollment) return
+    // Spara båda + markera onboarding klart i en RPC-anrop
+    const startedChanged = startedAt !== enrollment.started_at
+    const hoursChanged = weeklyHours !== enrollment.weekly_hours
+    if (startedChanged) await updateStartDate(startedAt)
+    if (hoursChanged) await updateWeeklyHours(weeklyHours)
+    await markOnboardingDone()
+  }
+
   return (
     <PageLayout title="Steg till arbete" showTabs={false} domain="action" showHeader={false}>
       {isPreview && <PreviewBanner />}
@@ -367,12 +421,23 @@ export default function StaParticipant() {
         mock={viewModel}
         enrollmentStartedAt={enrollment?.started_at ?? viewModel.startedAt}
         onUpdateStartDate={enrollment ? updateStartDate : undefined}
+        onUpdateWeeklyHours={enrollment ? updateWeeklyHours : undefined}
       />
       <STaTabs current={tab} onChange={setTab} currentPart={viewModel.currentPart} />
 
       <div className="mt-6">
         {tab === 'oversikt' && (
-          <STaOverview mock={viewModel} onJumpToTab={setTab} enrollmentId={enrollmentId} />
+          <STaOverview
+            mock={viewModel}
+            onJumpToTab={setTab}
+            enrollmentId={enrollmentId}
+            absences={absences}
+            onReportAbsence={enrollment ? reportAbsence : undefined}
+            onRemoveAbsence={enrollment ? removeAbsence : undefined}
+            showOnboarding={showOnboardingTrigger}
+            onStartOnboarding={() => setOnboardingOpen(true)}
+            isPreview={isPreview}
+          />
         )}
         {tab === 'del-1' && (
           <STaDel1
@@ -385,6 +450,16 @@ export default function StaParticipant() {
         {tab === 'del-3' && <STaDel3 mock={viewModel} />}
         {tab === 'del-4' && <STaDel4 mock={viewModel} />}
       </div>
+
+      <StaOnboardingModal
+        open={onboardingOpen}
+        firstName={firstName}
+        initialWeeklyHours={viewModel.weeklyHours}
+        initialStartedAt={viewModel.startedAt}
+        onClose={() => setOnboardingOpen(false)}
+        onComplete={handleOnboardingComplete}
+        readOnly={isPreview}
+      />
     </PageLayout>
   )
 }
@@ -476,6 +551,8 @@ interface ParticipantViewModel {
   totalDays: number
   startedAt: string
   partStartedAt: string
+  weeklyHours: number
+  onboardingCompleted: boolean
   focusOccupation: string | null
   adaptations: string[]
   languageSupport: string[]
@@ -486,7 +563,7 @@ interface ParticipantViewModel {
     date: string
     title: string
     meta: string
-    status: 'done' | 'today' | 'upcoming'
+    status: 'done' | 'today' | 'upcoming' | 'rest'
   }>
   strengths: Array<{ text: string }>
   recentReflection: { mood: string; text: string; at: string } | null
@@ -503,11 +580,14 @@ function STaHero({
   mock,
   enrollmentStartedAt,
   onUpdateStartDate,
+  onUpdateWeeklyHours,
 }: {
   mock: ParticipantViewModel
   enrollmentStartedAt: string
   /** Saknas i förhandsvisning — då döljs "Justera startdatum"-knappen. */
   onUpdateStartDate?: (startedAt: string) => Promise<unknown>
+  /** Saknas i förhandsvisning — då sparar inte WeeklyHoursEditor. */
+  onUpdateWeeklyHours?: (hours: number) => Promise<unknown>
 }) {
   const partLabel = STA_PARTS.find((p) => p.id === mock.currentPart)?.shortLabel ?? ''
   const progressPct = Math.round((mock.currentDay / mock.totalDays) * 100)
@@ -608,6 +688,46 @@ function STaHero({
                 </Button>
                 {error && <span className="text-xs text-rose-700">{error}</span>}
               </div>
+            )}
+          </div>
+
+          {/* Chip-rad: omfattning, fokusyrke, anpassningar, språkstöd */}
+          <div className="mt-3 flex items-center gap-2 flex-wrap">
+            <WeeklyHoursEditor
+              currentHours={mock.weeklyHours}
+              onSave={async (h) => {
+                if (onUpdateWeeklyHours) await onUpdateWeeklyHours(h)
+              }}
+              readOnly={!onUpdateWeeklyHours}
+            />
+            {mock.focusOccupation && (
+              <span
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700"
+                title="Fokusyrke från Arbetsförmedlingen"
+              >
+                <Target size={12} />
+                {mock.focusOccupation}
+              </span>
+            )}
+            {mock.adaptations.slice(0, 3).map((a) => (
+              <span
+                key={a}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700"
+              >
+                <Heart size={12} className="text-rose-500" />
+                {a}
+              </span>
+            ))}
+            {mock.adaptations.length > 3 && (
+              <span className="text-xs text-stone-500">+{mock.adaptations.length - 3} fler</span>
+            )}
+            {mock.languageSupport.length > 0 && (
+              <span
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700"
+                title="Förstärkt språkstöd"
+              >
+                🌐 {mock.languageSupport.join(', ')}
+              </span>
             )}
           </div>
         </div>
@@ -717,10 +837,22 @@ function STaOverview({
   mock,
   onJumpToTab,
   enrollmentId,
+  absences,
+  onReportAbsence,
+  onRemoveAbsence,
+  showOnboarding,
+  onStartOnboarding,
+  isPreview,
 }: {
   mock: ParticipantViewModel
   onJumpToTab: (tab: TabId) => void
   enrollmentId: string | null
+  absences: import('@/services/staApi').StaAbsence[]
+  onReportAbsence?: (input: { date: string; kind: import('@/services/staApi').AbsenceKind; reason?: string }) => Promise<unknown>
+  onRemoveAbsence?: (id: string) => Promise<void>
+  showOnboarding: boolean
+  onStartOnboarding: () => void
+  isPreview: boolean
 }) {
   const { hasToday, submitToday } = useStaPulseChecks(enrollmentId)
   const { checkins, submitForWeek } = useStaWeeklyCheckin(enrollmentId)
@@ -748,6 +880,13 @@ function STaOverview({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {/* Onboarding-trigger — visas tills introduktionen är klar */}
+      {showOnboarding && (
+        <div className="lg:col-span-3">
+          <StaOnboardingTrigger firstName={mock.firstName} onStart={onStartOnboarding} />
+        </div>
+      )}
+
       {/* Today */}
       <Card variant="flat" padding="lg" className="lg:col-span-2" style={{ background: 'var(--c-bg)' }}>
         {mock.todayActivity ? (
@@ -915,6 +1054,16 @@ function STaOverview({
         </div>
       )}
 
+      {/* Frånvaroanmälan — alltid synlig (preview = read-only) */}
+      <div className={enrollmentId ? '' : 'lg:col-span-2'}>
+        <AbsenceForm
+          recentAbsences={absences}
+          onReport={onReportAbsence ?? (async () => undefined)}
+          onRemove={onRemoveAbsence}
+          readOnly={isPreview || !onReportAbsence}
+        />
+      </div>
+
       {/* Veckoavslutning — torsdag-söndag, riktig enrollment */}
       {enrollmentId && showWeeklyCheckin && (
         <div className="lg:col-span-3">
@@ -932,12 +1081,14 @@ function STaOverview({
 function WeekPlanRow({ item }: { item: ParticipantViewModel['weekPlan'][number] }) {
   const isToday = item.status === 'today'
   const isDone = item.status === 'done'
+  const isRest = item.status === 'rest'
   return (
     <li
       className={cn(
         'flex items-center gap-3 p-3 rounded-lg',
         isToday && '',
-        !isToday && 'bg-stone-50',
+        !isToday && !isRest && 'bg-stone-50',
+        isRest && 'bg-stone-50/50 opacity-70',
       )}
       style={isToday ? { background: 'var(--c-bg)' } : undefined}
     >
@@ -945,7 +1096,8 @@ function WeekPlanRow({ item }: { item: ParticipantViewModel['weekPlan'][number] 
         className={cn(
           'w-9 h-9 rounded-lg flex items-center justify-center text-xs font-semibold flex-shrink-0',
           isToday && 'bg-white',
-          !isToday && !isDone && 'bg-stone-200 text-stone-600',
+          !isToday && !isDone && !isRest && 'bg-stone-200 text-stone-600',
+          isRest && 'bg-stone-100 text-stone-400',
           isDone && '',
         )}
         style={{
@@ -973,9 +1125,14 @@ function WeekPlanRow({ item }: { item: ParticipantViewModel['weekPlan'][number] 
           Idag
         </span>
       )}
-      {!isToday && !isDone && (
+      {!isToday && !isDone && !isRest && (
         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-600 flex-shrink-0">
           {item.date}
+        </span>
+      )}
+      {isRest && (
+        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-stone-100 text-stone-500 flex-shrink-0">
+          Ledig
         </span>
       )}
     </li>
@@ -1355,6 +1512,19 @@ function DayResourcePanel({
               <Clock size={12} />
               {exercise.scheduledFor} · ca {exercise.durationMin} min
             </p>
+          )}
+          {KNOWLEDGE_ONLY_DAYS.has(day) && (
+            <div
+              className="mt-2 inline-flex items-start gap-2 px-2.5 py-1.5 rounded-lg text-xs"
+              style={{ background: 'var(--header-bg)', color: 'var(--c-text)' }}
+              role="note"
+            >
+              <Info size={14} className="mt-0.5 flex-shrink-0" />
+              <span className="text-stone-700">
+                <strong>Kunskapsövning, inte fysisk träning.</strong> Du sitter och läser/reflekterar
+                — ingen kroppsövning ingår. Insatsen har inte försäkring för det.
+              </span>
+            </div>
           )}
           {exercise.reflection && (
             <p className="text-sm text-stone-600 italic mt-2">

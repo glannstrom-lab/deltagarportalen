@@ -82,6 +82,8 @@ export const PARTICIPANT_MOCK = {
   totalDays: 21,
   startedAt: '2026-04-30',
   partStartedAt: '2026-04-30',
+  weeklyHours: 25,
+  onboardingCompletedAt: null as string | null,
   focusOccupation: null as string | null,
   adaptations: ['Kortare aktivitetspass (45 min)', 'Tysta rum vid behov', 'Möjlighet att gå utomhus'],
   languageSupport: [] as string[],
@@ -351,6 +353,10 @@ export interface StaParticipantRow {
   hasMessage: number
   /** Är deltagaren kopplad till ett Jobin-konto? Manuellt tillagda är "unlinked". */
   linkStatus: ParticipantLinkStatus
+  /** Aktivitetsomfattning i timmar/vecka (10-40) */
+  weeklyHours: number
+  /** Insats-status — active visas neutralt, paused/cancelled visas tydligt */
+  enrollmentStatus: 'active' | 'paused' | 'completed' | 'cancelled'
   /** Telefon/e-post för manuellt tillagda — används för inbjudan eller bara som konsulentens egen kontaktbok */
   manualContact?: { email?: string; phone?: string }
   /** Personnummer (för manuella deltagare som inte är på Jobin — krävs av AF) */
@@ -376,6 +382,8 @@ export const CONSULTANT_PARTICIPANTS: StaParticipantRow[] = [
     hasDraft: 1,
     hasMessage: 0,
     linkStatus: 'linked',
+    weeklyHours: 20,
+    enrollmentStatus: 'active',
   },
   {
     id: 'mahmoud-ali',
@@ -395,6 +403,8 @@ export const CONSULTANT_PARTICIPANTS: StaParticipantRow[] = [
     hasDraft: 0,
     hasMessage: 2,
     linkStatus: 'linked',
+    weeklyHours: 32,
+    enrollmentStatus: 'active',
   },
   {
     id: 'johan-lindqvist',
@@ -413,6 +423,8 @@ export const CONSULTANT_PARTICIPANTS: StaParticipantRow[] = [
     hasDraft: 0,
     hasMessage: 0,
     linkStatus: 'linked',
+    weeklyHours: 40,
+    enrollmentStatus: 'active',
   },
   {
     id: 'kerstin-olofsson',
@@ -432,6 +444,8 @@ export const CONSULTANT_PARTICIPANTS: StaParticipantRow[] = [
     linkStatus: 'unlinked',
     manualContact: { phone: '070-123 45 67' },
     manualPersonalId: '19580412-XXXX',
+    weeklyHours: 30,
+    enrollmentStatus: 'active',
   },
   {
     id: 'sofia-berg',
@@ -450,6 +464,8 @@ export const CONSULTANT_PARTICIPANTS: StaParticipantRow[] = [
     // Inbjudan skickad efter startsamtalsbokning, väntar på att Sofia ska registrera sig
     linkStatus: 'invited',
     manualContact: { email: 'sofia.berg@gmail.com' },
+    weeklyHours: 25,
+    enrollmentStatus: 'active',
   },
   {
     id: 'lars-persson',
@@ -467,6 +483,8 @@ export const CONSULTANT_PARTICIPANTS: StaParticipantRow[] = [
     hasDraft: 0,
     hasMessage: 0,
     linkStatus: 'linked',
+    weeklyHours: 15,
+    enrollmentStatus: 'paused',
   },
 ]
 

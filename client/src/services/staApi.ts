@@ -66,10 +66,28 @@ export interface StaEnrollment {
   adaptations: string | null
   language_support: string[]
   communication_support: string[]
+  /** Aktivitetsomfattning i timmar/vecka (10-40). Styr schemavyn. */
+  weekly_hours: number
+  /** Tidpunkt då deltagaren slutfört intro-flödet. NULL = ej genomfört. */
+  onboarding_completed_at: string | null
   link_status: ParticipantLinkStatus
   status: EnrollmentStatus
   created_at: string
   updated_at: string
+}
+
+export type AbsenceKind = 'sick' | 'vab' | 'allowed' | 'other'
+
+export interface StaAbsence {
+  id: string
+  enrollment_id: string
+  absence_date: string
+  kind: AbsenceKind
+  reason: string | null
+  reported_by: string
+  reported_at: string
+  consultant_note: string | null
+  created_at: string
 }
 
 export interface StaActivity {
@@ -221,6 +239,7 @@ export const staEnrollmentsApi = {
       current_part: 1 as StaPart,
       language_support: [],
       communication_support: [],
+      weekly_hours: 25,
       link_status: input.participant_id ? 'linked' : 'unlinked',
       status: 'active' as EnrollmentStatus,
       ...input,
@@ -257,9 +276,23 @@ export const staEnrollmentsApi = {
    * Konsulenten ska använda update() istället. Datum måste vara ISO YYYY-MM-DD.
    */
   async participantUpdateStartDate(id: string, startedAt: string): Promise<StaEnrollment> {
-    const { data, error } = await supabase.rpc('sta_participant_update_start_date', {
+    return this.participantUpdateSelf(id, { startedAt })
+  },
+
+  /**
+   * Deltagaren själv uppdaterar något av sina egna fält
+   * (startdatum / aktivitetsomfattning / markera onboarding klart) via RPC.
+   * Bara icke-undefined parametrar uppdateras.
+   */
+  async participantUpdateSelf(
+    id: string,
+    input: { startedAt?: string; weeklyHours?: number; markOnboardingDone?: boolean },
+  ): Promise<StaEnrollment> {
+    const { data, error } = await supabase.rpc('sta_participant_update_self', {
       p_enrollment_id: id,
-      p_started_at: startedAt,
+      p_started_at: input.startedAt ?? null,
+      p_weekly_hours: input.weeklyHours ?? null,
+      p_mark_onboarding_done: input.markOnboardingDone ?? false,
     })
     if (error) handleError(error)
     return data as StaEnrollment
@@ -678,6 +711,70 @@ export const staWeeklyCheckinsApi = {
       .single()
     if (error) handleError(error)
     return data as StaWeeklyCheckin
+  },
+}
+
+// =============================================================================
+// ABSENCES — frånvaroanmälan
+// =============================================================================
+
+export const staAbsencesApi = {
+  async list(enrollmentId: string, sinceDays = 60): Promise<StaAbsence[]> {
+    const since = new Date()
+    since.setDate(since.getDate() - sinceDays)
+    const { data, error } = await supabase
+      .from('sta_absences')
+      .select('*')
+      .eq('enrollment_id', enrollmentId)
+      .gte('absence_date', since.toISOString().slice(0, 10))
+      .order('absence_date', { ascending: false })
+    if (error) handleError(error)
+    return (data ?? []) as StaAbsence[]
+  },
+
+  async upsert(input: {
+    enrollment_id: string
+    absence_date: string  // YYYY-MM-DD
+    kind: AbsenceKind
+    reason?: string | null
+  }): Promise<StaAbsence> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    const { data, error } = await supabase
+      .from('sta_absences')
+      .upsert(
+        {
+          enrollment_id: input.enrollment_id,
+          absence_date: input.absence_date,
+          kind: input.kind,
+          reason: input.reason ?? null,
+          reported_by: user.id,
+        },
+        { onConflict: 'enrollment_id,absence_date' },
+      )
+      .select()
+      .single()
+    if (error) handleError(error)
+    return data as StaAbsence
+  },
+
+  async addConsultantNote(id: string, note: string): Promise<StaAbsence> {
+    const { data, error } = await supabase
+      .from('sta_absences')
+      .update({ consultant_note: note })
+      .eq('id', id)
+      .select()
+      .single()
+    if (error) handleError(error)
+    return data as StaAbsence
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('sta_absences')
+      .delete()
+      .eq('id', id)
+    if (error) handleError(error)
   },
 }
 

@@ -16,6 +16,7 @@ import {
   staPulseChecksApi,
   staWeeklyCheckinsApi,
   staDocumentsApi,
+  staAbsencesApi,
   staProfileApi,
   fetchEnrollmentBundle,
   type StaEnrollment,
@@ -24,6 +25,8 @@ import {
   type StaQuickNote,
   type StaPulseCheck,
   type StaWeeklyCheckin,
+  type StaAbsence,
+  type AbsenceKind,
   type StaConsultantProfile,
   type EnrollmentBundle,
   type StaPart,
@@ -72,7 +75,26 @@ export function useParticipantEnrollment() {
     [enrollment],
   )
 
-  return { enrollment, reload, updateStartDate, ...state }
+  const updateWeeklyHours = useCallback(
+    async (weeklyHours: number) => {
+      if (!enrollment) return null
+      const updated = await staEnrollmentsApi.participantUpdateSelf(enrollment.id, { weeklyHours })
+      setEnrollment(updated)
+      return updated
+    },
+    [enrollment],
+  )
+
+  const markOnboardingDone = useCallback(async () => {
+    if (!enrollment) return null
+    const updated = await staEnrollmentsApi.participantUpdateSelf(enrollment.id, {
+      markOnboardingDone: true,
+    })
+    setEnrollment(updated)
+    return updated
+  }, [enrollment])
+
+  return { enrollment, reload, updateStartDate, updateWeeklyHours, markOnboardingDone, ...state }
 }
 
 // =============================================================================
@@ -445,6 +467,59 @@ export function useStaWeeklyCheckin(enrollmentId: string | null) {
   )
 
   return { checkins, loading, reload, submitForWeek }
+}
+
+// =============================================================================
+// useStaAbsences — frånvaroanmälan
+// =============================================================================
+export function useStaAbsences(enrollmentId: string | null) {
+  const [absences, setAbsences] = useState<StaAbsence[]>([])
+  const [loading, setLoading] = useState(false)
+
+  const reload = useCallback(async () => {
+    if (!enrollmentId) {
+      setAbsences([])
+      return
+    }
+    setLoading(true)
+    try {
+      const list = await staAbsencesApi.list(enrollmentId)
+      setAbsences(list)
+    } catch {
+      setAbsences([])
+    } finally {
+      setLoading(false)
+    }
+  }, [enrollmentId])
+
+  useEffect(() => {
+    reload()
+  }, [reload])
+
+  const report = useCallback(
+    async (input: { date: string; kind: AbsenceKind; reason?: string }) => {
+      if (!enrollmentId) return null
+      const created = await staAbsencesApi.upsert({
+        enrollment_id: enrollmentId,
+        absence_date: input.date,
+        kind: input.kind,
+        reason: input.reason,
+      })
+      await reload()
+      return created
+    },
+    [enrollmentId, reload],
+  )
+
+  const remove = useCallback(
+    async (id: string) => {
+      await staAbsencesApi.delete(id)
+      await reload()
+    },
+    [reload],
+  )
+
+  return { absences, loading, reload, report, remove }
 }
 
 // =============================================================================
