@@ -12,6 +12,7 @@ import type {
   StaAssessment,
   StaDocument,
   StaQuickNote,
+  StaWorkplace,
 } from '@/services/staApi'
 import type { StaParticipantRow } from './mockData'
 
@@ -21,6 +22,7 @@ export interface EnrollmentStats {
   assessments: StaAssessment[]
   documents: StaDocument[]
   quickNotes: StaQuickNote[]
+  workplaces: StaWorkplace[]
 }
 
 /**

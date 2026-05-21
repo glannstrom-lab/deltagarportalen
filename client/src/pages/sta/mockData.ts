@@ -378,19 +378,8 @@ export interface ActivityLogEntry {
   highlight?: boolean
 }
 
-export interface StaWorkplace {
-  id: string
-  companyName: string
-  orgNumber?: string
-  contactName: string
-  contactPhone?: string
-  participantName: string
-  startedAt: string
-  weeksInfo: string
-  inriktning: 'aktiverande' | 'introducerande'
-  afStatus: 'approved' | 'pending' | 'submitted'
-  assessments: string
-}
+// Tidigare fanns en legacy StaWorkplace här (för UI-mocken). DB-typen finns
+// nu i services/staApi.ts. Använd den istället.
 
 export interface StaAssessmentRow {
   id: string

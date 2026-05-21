@@ -5,6 +5,11 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useConsultantStats, useStaQuickNotes, useStaAbsences } from '@/hooks/useSta'
+import { KompetenskartlaggningSummary } from './components/KompetenskartlaggningSummary'
+import { AssessmentSignature } from './components/AssessmentSignature'
+import { WorkplaceCard } from './components/WorkplaceCard'
+import { WorkplaceFormModal } from './components/WorkplaceFormModal'
+import { staWorkplacesApi, type StaWorkplace } from '@/services/staApi'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
 import { DOC_TYPE_META } from '@/services/staAiApi'
@@ -100,7 +105,7 @@ export default function StaConsultant() {
           />
         )}
         {tab === 'skattningar' && <AssessmentsTab stats={stats} />}
-        {tab === 'arbetsplatser' && <WorkplacesTab />}
+        {tab === 'arbetsplatser' && <WorkplacesTab stats={stats} onReload={reload} />}
         {tab === 'dokument' && <DocumentsTab stats={stats} />}
       </div>
 
@@ -894,13 +899,16 @@ function ParticipantDetailDrawer({
             <DetailOverview
               participant={participant}
               enrollmentId={realEnrollmentId}
+              enrollment={stats.enrollment}
               assessments={stats.assessments}
+              activities={stats.activities}
               recentReflection={
                 stats.quickNotes
                   .filter((n) => n.body && n.visibility !== 'consultant_only')
                   .slice(0, 1)
                   .map((n) => ({ text: n.body!, at: new Date(n.created_at).toLocaleDateString('sv-SE') }))[0] ?? null
               }
+              onChange={onChange}
             />
           )}
           {subTab === 'aktivitet' && <DetailActivityLog stats={stats} />}
@@ -930,16 +938,48 @@ function ParticipantDetailDrawer({
 function DetailOverview({
   participant,
   enrollmentId,
+  enrollment,
   assessments,
+  activities,
   recentReflection,
+  onChange,
 }: {
   participant: StaParticipantRow
   enrollmentId: string | null
+  enrollment: import('@/services/staApi').StaEnrollment
   assessments: import('@/services/staApi').StaAssessment[]
+  activities: import('@/services/staApi').StaActivity[]
   recentReflection: { text: string; at: string } | null
+  onChange?: () => void
 }) {
   const { absences } = useStaAbsences(enrollmentId)
   const recentAbsences = absences.slice(0, 4)
+  const kompAct = activities.find((a) => a.activity_key === 'kompetenskartlaggning') ?? null
+
+  const [summary, setSummary] = useState<string | null>(enrollment.ai_week_summary)
+  const [summaryAt, setSummaryAt] = useState<string | null>(enrollment.ai_week_summary_generated_at)
+  const [generating, setGenerating] = useState(false)
+  const [generationError, setGenerationError] = useState<string | null>(null)
+
+  const handleGenerateSummary = async () => {
+    if (!enrollmentId) return
+    setGenerating(true)
+    setGenerationError(null)
+    try {
+      const { generateWeekSummary } = await import('@/services/staAiApi')
+      const text = await generateWeekSummary(enrollmentId)
+      if (text) {
+        await staEnrollmentsApi.setAiWeekSummary(enrollmentId, text)
+        setSummary(text)
+        setSummaryAt(new Date().toISOString())
+        onChange?.()
+      }
+    } catch (err) {
+      setGenerationError(err instanceof Error ? err.message : 'Kunde inte generera summa')
+    } finally {
+      setGenerating(false)
+    }
+  }
 
   // Hitta del-specifika skattningar för aktuell del — fall tillbaka på alla
   const partAssessments = assessments.filter((a) => a.part === participant.currentPart)
@@ -951,6 +991,8 @@ function DetailOverview({
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="lg:col-span-2 space-y-4">
+        <KompetenskartlaggningSummary activity={kompAct} />
+
         {recentAbsences.length > 0 && (
           <Card variant="flat" padding="md">
             <div className="flex items-center justify-between mb-2">
@@ -984,12 +1026,47 @@ function DetailOverview({
               <Bot size={10} />
               AI · veckosumma
             </span>
+            {summaryAt && (
+              <span className="text-[11px] text-stone-500">
+                Senast genererad {new Date(summaryAt).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' })}
+              </span>
+            )}
           </div>
-          <p className="text-sm text-stone-700 leading-relaxed">
-            AI-veckosumma byggs i nästa version från deltagarens aktiviteter, reflektioner
-            och pulse-checks. Just nu finns underlaget i tabbarna "Aktivitetslogg" och
-            "Skattningar".
-          </p>
+          {summary ? (
+            <p className="text-sm text-stone-800 leading-relaxed whitespace-pre-line">{summary}</p>
+          ) : (
+            <p className="text-sm text-stone-600">
+              Generera en sammanfattning av deltagarens senaste vecka — aktiviteter, reflektioner
+              och pulse-checks. Drivs av openai/gpt-oss-120b.
+            </p>
+          )}
+          {generationError && (
+            <p className="text-sm text-rose-700 mt-2">{generationError}</p>
+          )}
+          <div className="flex gap-2 mt-3 flex-wrap">
+            <Button
+              variant={summary ? 'secondary' : 'primary'}
+              size="sm"
+              onClick={handleGenerateSummary}
+              isLoading={generating}
+              leftIcon={<Bot size={12} />}
+            >
+              {summary ? 'Generera nytt' : 'Generera veckosumma'}
+            </Button>
+            {summary && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  if (summary) {
+                    navigator.clipboard?.writeText(summary).catch(() => {})
+                  }
+                }}
+              >
+                Kopiera
+              </Button>
+            )}
+          </div>
         </Card>
 
         <div>
@@ -1146,15 +1223,7 @@ function DetailAssessments({
               : progress > 0
                 ? 'in_progress'
                 : 'pending'
-          return (
-            <AssessmentDetailRow
-              key={a.id}
-              instrument={a.instrument}
-              part={a.part}
-              progress={progress}
-              status={status}
-            />
-          )
+          return <AssessmentDetailRow key={a.id} assessment={a} progress={progress} status={status} />
         })
       )}
     </div>
@@ -1162,21 +1231,19 @@ function DetailAssessments({
 }
 
 function AssessmentDetailRow({
-  instrument,
-  part,
+  assessment,
   progress,
   status,
 }: {
-  instrument: string
-  part: StaPart
+  assessment: import('@/services/staApi').StaAssessment
   progress: number
   status: 'pending' | 'in_progress' | 'complete'
 }) {
   return (
-    <div className="p-3 rounded-lg border border-stone-200 flex items-center gap-4">
+    <div className="p-3 rounded-lg border border-stone-200 flex items-center gap-4 flex-wrap">
       <div className="flex-1 min-w-0">
         <div className="font-medium text-stone-900 text-sm">
-          {instrument} · Del {part}
+          {assessment.instrument} · Del {assessment.part}
         </div>
         <div className="text-xs text-stone-500">
           {status === 'pending' && 'Ej påbörjad'}
@@ -1189,6 +1256,7 @@ function AssessmentDetailRow({
           <div className="h-full" style={{ width: `${progress}%`, background: 'var(--c-solid)' }} />
         </div>
       )}
+      {status === 'complete' && <AssessmentSignature assessment={assessment} compact />}
       <Button variant={status === 'pending' ? 'primary' : 'secondary'} size="sm">
         {status === 'pending' ? 'Starta' : status === 'in_progress' ? 'Fortsätt' : 'Visa'}
       </Button>
@@ -1461,6 +1529,7 @@ function AssessmentsTab({
               : 'pending'
         return {
           id: a.id,
+          assessment: a,
           participantName: fullName,
           participantInitials: initials,
           instrument: a.instrument,
@@ -1491,6 +1560,7 @@ function AssessmentsTab({
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Instrument</th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Del</th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">AT-signatur</th>
                 <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100"></th>
               </tr>
             </thead>
@@ -1521,6 +1591,9 @@ function AssessmentsTab({
                     )}
                     {a.status === 'complete' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-emerald-50 text-emerald-700">Klar</span>}
                   </td>
+                  <td className="px-4 py-3 align-middle">
+                    {a.status === 'complete' && <AssessmentSignature assessment={a.assessment} compact />}
+                  </td>
                   <td className="px-4 py-3 align-middle text-right">
                     <Button variant={a.status === 'pending' ? 'primary' : 'secondary'} size="sm">
                       {a.status === 'pending' ? 'Starta' : a.status === 'in_progress' ? 'Fortsätt' : 'Visa'}
@@ -1540,26 +1613,102 @@ function AssessmentsTab({
 // WORKPLACES TAB
 // ===========================================================================
 
-function WorkplacesTab() {
+function WorkplacesTab({
+  stats,
+  onReload,
+}: {
+  stats: EnrollmentStats[]
+  onReload: () => void
+}) {
+  const [editing, setEditing] = useState<{ workplace: StaWorkplace | null; enrollmentId: string } | null>(null)
+
+  const withWorkplaces = stats.filter((s) => s.enrollment.current_part >= 3)
+
+  const handleSave = async (input: Partial<StaWorkplace> & { company_name: string }) => {
+    if (!editing) return
+    if (editing.workplace) {
+      await staWorkplacesApi.update(editing.workplace.id, input)
+    } else {
+      await staWorkplacesApi.create({
+        ...input,
+        enrollment_id: editing.enrollmentId,
+      })
+    }
+    onReload()
+  }
+
+  const handleSubmitToAf = async (workplaceId: string) => {
+    await staWorkplacesApi.update(workplaceId, {
+      af_submission_status: 'submitted',
+      af_submitted_at: new Date().toISOString(),
+    })
+    onReload()
+  }
+
+  const handleDelete = async (workplaceId: string) => {
+    if (!confirm('Ta bort arbetsplatsen? Alla uppföljningar raderas också.')) return
+    await staWorkplacesApi.delete(workplaceId)
+    onReload()
+  }
+
   return (
     <div className="space-y-5">
-      <Card variant="flat" padding="lg">
-        <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
-          <div>
-            <h3 className="text-base font-semibold text-stone-900">Arbetsprövningsplatser</h3>
-            <p className="text-xs text-stone-500">Företag där dina deltagare arbetsprövar (Del 3 & 4)</p>
-          </div>
-          <Button variant="primary" size="sm" leftIcon={<Plus size={14} />}>
-            Lägg till företag
-          </Button>
-        </div>
-        <Card variant="flat" padding="md" className="bg-stone-50">
-          <p className="text-sm text-stone-600">
-            Arbetsplats-vyn drivs ännu inte av <code>sta_workplaces</code>-tabellen. När
-            första deltagaren når Del 3 byggs CRUD och AF-anmälningsflöde här.
+      {withWorkplaces.length === 0 ? (
+        <Card variant="flat" padding="lg">
+          <h3 className="text-base font-semibold text-stone-900">Arbetsprövningsplatser</h3>
+          <p className="text-sm text-stone-600 mt-2">
+            Inga deltagare i Del 3 eller Del 4 ännu — arbetsplatser visas här när någon flyttar dit.
           </p>
         </Card>
-      </Card>
+      ) : (
+        withWorkplaces.map((s) => (
+          <Card key={s.enrollment.id} variant="flat" padding="lg">
+            <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+              <div>
+                <h3 className="text-base font-semibold text-stone-900">
+                  {s.enrollment.external_name ?? 'Jobin-deltagare'}
+                </h3>
+                <p className="text-xs text-stone-500">
+                  Del {s.enrollment.current_part} · {s.workplaces.length} arbetsplats
+                  {s.workplaces.length === 1 ? '' : 'er'}
+                </p>
+              </div>
+              <Button
+                variant="primary"
+                size="sm"
+                leftIcon={<Plus size={14} />}
+                onClick={() => setEditing({ workplace: null, enrollmentId: s.enrollment.id })}
+              >
+                Lägg till arbetsplats
+              </Button>
+            </div>
+
+            {s.workplaces.length === 0 ? (
+              <p className="text-sm text-stone-500">Inga arbetsplatser registrerade än.</p>
+            ) : (
+              <div className="space-y-3">
+                {s.workplaces.map((w) => (
+                  <WorkplaceCard
+                    key={w.id}
+                    workplace={w}
+                    consultantView
+                    onEdit={() => setEditing({ workplace: w, enrollmentId: s.enrollment.id })}
+                    onDelete={() => handleDelete(w.id)}
+                    onSubmitToAf={() => handleSubmitToAf(w.id)}
+                  />
+                ))}
+              </div>
+            )}
+          </Card>
+        ))
+      )}
+
+      <WorkplaceFormModal
+        open={!!editing}
+        existing={editing?.workplace ?? null}
+        onSave={handleSave}
+        onClose={() => setEditing(null)}
+      />
     </div>
   )
 }

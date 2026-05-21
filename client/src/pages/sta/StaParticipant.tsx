@@ -12,6 +12,7 @@ import {
   useStaConsultantProfile,
   useStaQuickNotes,
   useStaAbsences,
+  useStaWorkplaces,
   getCurrentWeekMonday,
 } from '@/hooks/useSta'
 import type { StaPulseCheck, StaActivity } from '@/services/staApi'
@@ -21,6 +22,7 @@ import { WeeklyHoursEditor, activeDaysForHours } from './components/WeeklyHoursE
 import { AbsenceForm } from './components/AbsenceForm'
 import { StaOnboardingTrigger, StaOnboardingModal } from './components/StaOnboarding'
 import { KompetenskartlaggningForm } from './components/KompetenskartlaggningForm'
+import { WorkplaceCard } from './components/WorkplaceCard'
 import {
   Briefcase,
   Calendar,
@@ -424,8 +426,10 @@ export default function StaParticipant() {
             onActivityChanged={reloadPart2}
           />
         )}
-        {tab === 'del-3' && <STaDel3 mock={viewModel} />}
-        {tab === 'del-4' && <STaDel4 mock={viewModel} />}
+        {tab === 'del-3' && (
+          <STaDel3 mock={viewModel} enrollmentId={enrollmentId} focusOccupation={viewModel.focusOccupation} />
+        )}
+        {tab === 'del-4' && <STaDel4 mock={viewModel} enrollmentId={enrollmentId} />}
       </div>
 
       <StaOnboardingModal
@@ -1934,7 +1938,16 @@ function ArbetsstationCard({
 // DEL 3 — Stärka och utveckla
 // ===========================================================================
 
-function STaDel3({ mock }: { mock: ParticipantViewModel }) {
+function STaDel3({
+  mock,
+  enrollmentId,
+  focusOccupation,
+}: {
+  mock: ParticipantViewModel
+  enrollmentId: string | null
+  focusOccupation: string | null
+}) {
+  const { workplaces, loading } = useStaWorkplaces(enrollmentId)
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="lg:col-span-2 space-y-5">
@@ -1950,18 +1963,44 @@ function STaDel3({ mock }: { mock: ParticipantViewModel }) {
           iconBgStyle={{ background: 'var(--c-accent)' }}
           defaultOpen
         >
-          <p className="text-sm text-stone-600">
-            Här kommer det yrkesområde du och {mock.consultant.name.split(' ')[0]} kommer fram till tillsammans.
-          </p>
+          {focusOccupation ? (
+            <div>
+              <p className="text-sm text-stone-700">
+                Du och {mock.consultant.name.split(' ')[0]} har valt:
+              </p>
+              <div
+                className="mt-2 inline-flex items-center gap-2 px-3 py-2 rounded-lg"
+                style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
+              >
+                <Target size={14} />
+                <span className="text-sm font-semibold">{focusOccupation}</span>
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-stone-600">
+              Här kommer det yrkesområde du och {mock.consultant.name.split(' ')[0]} kommer fram till tillsammans.
+            </p>
+          )}
         </ActivitySection>
 
         <ActivitySection
           icon={<Building2 size={18} style={{ color: 'var(--c-text)' }} />}
           title="Min arbetsprövning"
-          subtitle="Företag, kontaktperson, mål"
+          subtitle={`${workplaces.length} arbetsplats${workplaces.length === 1 ? '' : 'er'} ${loading ? '· laddar…' : 'aktuella'}`}
           iconBgStyle={{ background: 'var(--c-accent)' }}
+          defaultOpen
         >
-          <p className="text-sm text-stone-600">När du har en arbetsplats syns företaget och din kontaktperson här.</p>
+          {workplaces.length === 0 ? (
+            <p className="text-sm text-stone-600">
+              När din konsulent registrerar en arbetsplats syns företaget, kontaktpersonen och veckans uppföljningar här.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {workplaces.map((w) => (
+                <WorkplaceCard key={w.id} workplace={w} consultantView={false} />
+              ))}
+            </div>
+          )}
         </ActivitySection>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -1980,7 +2019,18 @@ function STaDel3({ mock }: { mock: ParticipantViewModel }) {
 // DEL 4 — Hitta arbetsplats
 // ===========================================================================
 
-function STaDel4({ mock }: { mock: ParticipantViewModel }) {
+function STaDel4({
+  mock,
+  enrollmentId,
+}: {
+  mock: ParticipantViewModel
+  enrollmentId: string | null
+}) {
+  const { workplaces, loading } = useStaWorkplaces(enrollmentId)
+  // I Del 4 är vanligtvis fokus på "introducerande" arbetsprövning
+  const introducerande = workplaces.filter((w) => w.inriktning === 'introducerande')
+  const shownWorkplaces = introducerande.length > 0 ? introducerande : workplaces
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="lg:col-span-2 space-y-5">
@@ -1992,13 +2042,21 @@ function STaDel4({ mock }: { mock: ParticipantViewModel }) {
         <ActivitySection
           icon={<MapPin size={18} style={{ color: 'var(--c-text)' }} />}
           title="Min arbetsplats"
-          subtitle="Introducerande arbetsprövning inför anställning"
+          subtitle={loading ? 'Laddar…' : `${shownWorkplaces.length} introducerande arbetsprövning${shownWorkplaces.length === 1 ? '' : 'ar'}`}
           iconBgStyle={{ background: 'var(--c-accent)' }}
           defaultOpen
         >
-          <p className="text-sm text-stone-600">
-            Här syns företaget, din kontaktperson och planen för uppföljningarna när det är dags.
-          </p>
+          {shownWorkplaces.length === 0 ? (
+            <p className="text-sm text-stone-600">
+              Här syns företaget, din kontaktperson och planen för uppföljningarna när det är dags.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {shownWorkplaces.map((w) => (
+                <WorkplaceCard key={w.id} workplace={w} consultantView={false} />
+              ))}
+            </div>
+          )}
         </ActivitySection>
 
         <ActivitySection

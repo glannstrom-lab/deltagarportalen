@@ -17,7 +17,7 @@ async function setSentryUser(user: { id: string; email?: string } | null) {
 // NOTE: Cross-store syncing (settings, energy, preferences) is now handled
 // in useAuthInit hook to avoid circular dependencies between stores
 
-export type UserRole = 'USER' | 'CONSULTANT' | 'ADMIN' | 'SUPERADMIN'
+export type UserRole = 'USER' | 'CONSULTANT' | 'ADMIN' | 'SUPERADMIN' | 'ARBETSTERAPEUT'
 
 export interface Profile {
   id: string
@@ -526,4 +526,12 @@ export const useIsConsultant = () => {
   const isAdmin = useHasRole('ADMIN')
   const isSuperAdmin = useHasRole('SUPERADMIN')
   return isConsultant || isAdmin || isSuperAdmin
+}
+
+/** Får signera DOA/WRI/MOHOST/AWP/AWC enligt AF-uppdraget. */
+export const useIsArbetsterapeut = () => {
+  const isAt = useHasRole('ARBETSTERAPEUT')
+  const isAdmin = useHasRole('ADMIN')
+  const isSuperAdmin = useHasRole('SUPERADMIN')
+  return isAt || isAdmin || isSuperAdmin
 }

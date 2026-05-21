@@ -70,6 +70,9 @@ export interface StaEnrollment {
   weekly_hours: number
   /** Tidpunkt då deltagaren slutfört intro-flödet. NULL = ej genomfört. */
   onboarding_completed_at: string | null
+  /** Cachad AI-veckosumma — regenereras manuellt av konsulent. */
+  ai_week_summary: string | null
+  ai_week_summary_generated_at: string | null
   link_status: ParticipantLinkStatus
   status: EnrollmentStatus
   created_at: string
@@ -119,6 +122,23 @@ export interface StaAssessment {
   summary: string | null
   workplace_id: string | null
   activity_id: string | null
+  /** Arbetsterapeut som signerat. NULL = inte signerad ännu. */
+  signed_by_at_id: string | null
+  signed_at: string | null
+  created_at: string
+  updated_at: string
+}
+
+export interface StaWorkplaceFollowup {
+  id: string
+  workplace_id: string
+  week_number: number
+  followup_date: string
+  consultant_id: string
+  notes: string | null
+  attendance_pct: number | null
+  status: 'good' | 'concerns' | 'critical'
+  next_step: string | null
   created_at: string
   updated_at: string
 }
@@ -262,6 +282,13 @@ export const staEnrollmentsApi = {
       .single()
     if (error) handleError(error)
     return data as StaEnrollment
+  },
+
+  async setAiWeekSummary(id: string, summary: string): Promise<StaEnrollment> {
+    return this.update(id, {
+      ai_week_summary: summary,
+      ai_week_summary_generated_at: new Date().toISOString(),
+    })
   },
 
   async advanceToPart(id: string, nextPart: StaPart): Promise<StaEnrollment> {
@@ -509,6 +536,18 @@ export const staAssessmentsApi = {
   async markComplete(id: string): Promise<StaAssessment> {
     return this.update(id, { status: 'complete' })
   },
+
+  /**
+   * AT-signering — endast användare med roll ARBETSTERAPEUT/ADMIN/SUPERADMIN.
+   * Sätter signed_by_at_id, signed_at och status=complete via RPC.
+   */
+  async signByArbetsterapeut(id: string): Promise<StaAssessment> {
+    const { data, error } = await supabase.rpc('sta_sign_assessment', {
+      p_assessment_id: id,
+    })
+    if (error) handleError(error)
+    return data as StaAssessment
+  },
 }
 
 // =============================================================================
@@ -545,6 +584,92 @@ export const staWorkplacesApi = {
       .single()
     if (error) handleError(error)
     return data as StaWorkplace
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('sta_workplaces')
+      .delete()
+      .eq('id', id)
+    if (error) handleError(error)
+  },
+
+  async listForConsultant(): Promise<StaWorkplace[]> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    const { data, error } = await supabase
+      .from('sta_workplaces')
+      .select('*, sta_enrollments!inner(consultant_id, participant_id, external_name)')
+      .eq('sta_enrollments.consultant_id', user.id)
+      .order('created_at', { ascending: false })
+    if (error) handleError(error)
+    return (data ?? []) as StaWorkplace[]
+  },
+}
+
+// =============================================================================
+// WORKPLACE FOLLOWUPS — veckovis uppföljning av arbetsprövning (Del 3-4)
+// =============================================================================
+
+export const staWorkplaceFollowupsApi = {
+  async list(workplaceId: string): Promise<StaWorkplaceFollowup[]> {
+    const { data, error } = await supabase
+      .from('sta_workplace_followups')
+      .select('*')
+      .eq('workplace_id', workplaceId)
+      .order('week_number', { ascending: false })
+    if (error) handleError(error)
+    return (data ?? []) as StaWorkplaceFollowup[]
+  },
+
+  async upsert(input: {
+    id?: string
+    workplace_id: string
+    week_number: number
+    followup_date: string
+    notes?: string | null
+    attendance_pct?: number | null
+    status: 'good' | 'concerns' | 'critical'
+    next_step?: string | null
+  }): Promise<StaWorkplaceFollowup> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    const payload = {
+      workplace_id: input.workplace_id,
+      week_number: input.week_number,
+      followup_date: input.followup_date,
+      consultant_id: user.id,
+      notes: input.notes ?? null,
+      attendance_pct: input.attendance_pct ?? null,
+      status: input.status,
+      next_step: input.next_step ?? null,
+      updated_at: new Date().toISOString(),
+    }
+    if (input.id) {
+      const { data, error } = await supabase
+        .from('sta_workplace_followups')
+        .update(payload)
+        .eq('id', input.id)
+        .select()
+        .single()
+      if (error) handleError(error)
+      return data as StaWorkplaceFollowup
+    }
+    const { data, error } = await supabase
+      .from('sta_workplace_followups')
+      .upsert(payload, { onConflict: 'workplace_id,week_number' })
+      .select()
+      .single()
+    if (error) handleError(error)
+    return data as StaWorkplaceFollowup
+  },
+
+  async delete(id: string): Promise<void> {
+    const { error } = await supabase
+      .from('sta_workplace_followups')
+      .delete()
+      .eq('id', id)
+    if (error) handleError(error)
   },
 }
 
