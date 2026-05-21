@@ -231,17 +231,21 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
           </>
         )}
 
-        {/* Project Section — visas bara när profile.program är satt (Steg till arbete / Rusta och Matcha) */}
-        {profile?.program && (() => {
-          const program = getProgram(profile.program)
+        {/* Project Section — Steg till arbete (STA)
+         *
+         * Konsulenter ser alltid Konsulent-vy-länken (de behöver inte aktivera
+         * något i settings).
+         * Deltagare ser Min resa-länken endast om de aktiverat programmet i
+         * settings (profile.program === 'steg_till_arbete'). */}
+        {(() => {
+          const programSelected = profile?.program === 'steg_till_arbete'
+          const program = getProgram(profile?.program ?? null) ?? getProgram('steg_till_arbete')
           if (!program) return null
-          // Vilka länkar visas? Deltagar-vy alltid; konsulent-vy om man har konsulent-roll.
-          const showConsultantLink = isConsultant
           // STA-paths är hårdkodade för nu eftersom det är enda projektet med sidor.
           // När fler projekt får sidor flyttas detta till programs.ts.
-          const participantPath = profile.program === 'steg_till_arbete' ? '/steg-till-arbete' : null
-          const consultantPath = profile.program === 'steg_till_arbete' ? '/konsulent/steg-till-arbete' : null
-          if (!participantPath) return null
+          const participantPath = programSelected ? '/steg-till-arbete' : null
+          const consultantPath = isConsultant ? '/konsulent/steg-till-arbete' : null
+          if (!participantPath && !consultantPath) return null
 
           return (
             <div
@@ -263,13 +267,15 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
                 <div className="mx-2 mb-2 border-t border-stone-100 dark:border-stone-800" />
               )}
               <div className="space-y-0.5">
-                <NavLink
-                  to={participantPath}
-                  icon={Briefcase}
-                  label="Min resa"
-                  isActive={location.pathname === participantPath || location.pathname.startsWith(participantPath + '/')}
-                />
-                {showConsultantLink && consultantPath && (
+                {participantPath && (
+                  <NavLink
+                    to={participantPath}
+                    icon={Briefcase}
+                    label="Min resa"
+                    isActive={location.pathname === participantPath || location.pathname.startsWith(participantPath + '/')}
+                  />
+                )}
+                {consultantPath && (
                   <NavLink
                     to={consultantPath}
                     icon={UserCheck}

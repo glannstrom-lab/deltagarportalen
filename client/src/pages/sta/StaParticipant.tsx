@@ -143,6 +143,7 @@ const TABS: Array<{ id: TabId; label: string; partIndex?: StaPart }> = [
 export default function StaParticipant() {
   const { profile } = useAuthStore()
   const firstName = profile?.first_name || ''
+  const programSelected = profile?.program === 'steg_till_arbete'
   const [tab, setTab] = useState<TabId>('oversikt')
 
   const { enrollment, loading: enrollmentLoading, updateStartDate } = useParticipantEnrollment()
@@ -157,9 +158,40 @@ export default function StaParticipant() {
     [activities],
   )
 
-  // Härled vyn helt från riktig data när enrollment finns.
-  const viewModel = useMemo(() => {
-    if (!enrollment) return null
+  // I "preview"-läge har deltagaren valt programmet i settings men ingen
+  // konsulent har kopplat dem ännu (sta_enrollments-raden saknas). Då visar vi
+  // hela vyn med mock-data så att de kan utforska — DB-skrivåtgärder döljs.
+  const isPreview = !enrollment && programSelected
+
+  // Härled vyn från riktig data om enrollment finns, annars mock vid preview.
+  const viewModel = useMemo((): ParticipantViewModel | null => {
+    if (!enrollment) {
+      if (!programSelected) return null
+      // Preview från PARTICIPANT_MOCK — använd användarens riktiga förnamn.
+      return {
+        firstName: firstName || '',
+        currentPart: PARTICIPANT_MOCK.currentPart,
+        currentDay: PARTICIPANT_MOCK.currentDay,
+        totalDays: PARTICIPANT_MOCK.totalDays,
+        startedAt: PARTICIPANT_MOCK.startedAt,
+        partStartedAt: PARTICIPANT_MOCK.partStartedAt,
+        focusOccupation: PARTICIPANT_MOCK.focusOccupation,
+        adaptations: PARTICIPANT_MOCK.adaptations,
+        languageSupport: PARTICIPANT_MOCK.languageSupport,
+        consultant: {
+          name: 'Din kommande konsulent',
+          initials: '–',
+          nextMeeting: 'Ingen tid bokad än',
+        },
+        todayActivity: PARTICIPANT_MOCK.todayActivity,
+        weekPlan: PARTICIPANT_MOCK.weekPlan,
+        strengths: PARTICIPANT_MOCK.strengths,
+        recentReflection: PARTICIPANT_MOCK.recentReflection,
+        resources: PARTICIPANT_MOCK.resources,
+        dailyExercises: PARTICIPANT_MOCK.dailyExercises,
+        workStations: PARTICIPANT_MOCK.workStations,
+      }
+    }
 
     const completedDays = activities.filter(
       (a) => a.completed_at && a.activity_key?.startsWith('dag-'),
@@ -308,7 +340,7 @@ export default function StaParticipant() {
       dailyExercises,
       workStations: PARTICIPANT_MOCK.workStations,
     }
-  }, [enrollment, activities, completedKeys, consultantProfile, sharedNotes, pulses, firstName])
+  }, [enrollment, activities, completedKeys, consultantProfile, sharedNotes, pulses, firstName, programSelected])
 
   if (enrollmentLoading) {
     return (
@@ -320,7 +352,7 @@ export default function StaParticipant() {
     )
   }
 
-  if (!enrollment || !viewModel) {
+  if (!viewModel) {
     return (
       <PageLayout title="Steg till arbete" showTabs={false} domain="action" showHeader={false}>
         <NoEnrollmentEmptyState firstName={firstName} />
@@ -330,10 +362,11 @@ export default function StaParticipant() {
 
   return (
     <PageLayout title="Steg till arbete" showTabs={false} domain="action" showHeader={false}>
+      {isPreview && <PreviewBanner />}
       <STaHero
         mock={viewModel}
-        enrollmentStartedAt={enrollment.started_at}
-        onUpdateStartDate={updateStartDate}
+        enrollmentStartedAt={enrollment?.started_at ?? viewModel.startedAt}
+        onUpdateStartDate={enrollment ? updateStartDate : undefined}
       />
       <STaTabs current={tab} onChange={setTab} currentPart={viewModel.currentPart} />
 
@@ -353,6 +386,39 @@ export default function StaParticipant() {
         {tab === 'del-4' && <STaDel4 mock={viewModel} />}
       </div>
     </PageLayout>
+  )
+}
+
+// ===========================================================================
+// PREVIEW BANNER — visas när deltagaren aktiverat programmet men ingen
+// konsulent har kopplat dem ännu. Innehållet visas som exempel; svar sparas
+// inte förrän konsulenten kopplat på dig.
+// ===========================================================================
+
+function PreviewBanner() {
+  return (
+    <Card
+      variant="flat"
+      padding="md"
+      className="mb-4 border-l-4"
+      style={{ background: 'var(--header-bg)', borderLeftColor: 'var(--c-solid)' }}
+    >
+      <div className="flex items-start gap-3">
+        <div
+          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0"
+          style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
+        >
+          <Sparkles size={16} />
+        </div>
+        <div className="min-w-0">
+          <div className="font-semibold text-stone-900 text-sm">Förhandsvisning av Steg till arbete</div>
+          <p className="text-sm text-stone-700 mt-0.5">
+            Så här ser sidan ut när du är igång. När din konsulent har kopplat dig till tjänsten sparas
+            dina svar och du ser din egen plan här.
+          </p>
+        </div>
+      </div>
+    </Card>
   )
 }
 
@@ -382,11 +448,21 @@ function NoEnrollmentEmptyState({ firstName }: { firstName: string }) {
         {firstName ? `Hej ${firstName}!` : 'Välkommen!'}
       </h1>
       <p className="text-stone-700 mt-2 max-w-2xl">
-        Du är inte tilldelad Steg till arbete än. När din arbetskonsulent kopplar dig till tjänsten
-        ser du din veckoplan, dagliga övningar och kontakt med din konsulent här.
+        För att se innehållet i Steg till arbete behöver du först välja programmet under
+        Inställningar → Projekt. Då öppnas en förhandsvisning av sidan här.
       </p>
-      <p className="text-stone-700 mt-3 max-w-2xl">
-        Om du tror att du borde vara med — kontakta din konsulent eller arbetsförmedlare.
+      <div className="mt-4">
+        <Link
+          to="/settings"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium bg-white border border-stone-200 text-stone-700 hover:border-stone-300"
+        >
+          Öppna inställningar
+          <ChevronRight size={14} />
+        </Link>
+      </div>
+      <p className="text-stone-700 mt-4 max-w-2xl text-sm">
+        När din arbetskonsulent kopplar dig till tjänsten byts förhandsvisningen ut mot din egen
+        plan med veckoschema, dagliga övningar och kontakt med din konsulent.
       </p>
     </Card>
   )
@@ -430,10 +506,12 @@ function STaHero({
 }: {
   mock: ParticipantViewModel
   enrollmentStartedAt: string
-  onUpdateStartDate: (startedAt: string) => Promise<unknown>
+  /** Saknas i förhandsvisning — då döljs "Justera startdatum"-knappen. */
+  onUpdateStartDate?: (startedAt: string) => Promise<unknown>
 }) {
   const partLabel = STA_PARTS.find((p) => p.id === mock.currentPart)?.shortLabel ?? ''
   const progressPct = Math.round((mock.currentDay / mock.totalDays) * 100)
+  const canEditDate = !!onUpdateStartDate
   const [editing, setEditing] = useState(false)
   const [draftDate, setDraftDate] = useState(enrollmentStartedAt)
   const [saving, setSaving] = useState(false)
@@ -442,6 +520,7 @@ function STaHero({
   const startDateDisplay = formatShortSv(new Date(enrollmentStartedAt + 'T00:00:00'))
 
   const handleSave = async () => {
+    if (!onUpdateStartDate) return
     if (!draftDate) {
       setError('Välj ett datum')
       return
@@ -489,18 +568,20 @@ function STaHero({
             {!editing ? (
               <>
                 <span className="text-sm font-medium text-stone-900">{startDateDisplay}</span>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setDraftDate(enrollmentStartedAt)
-                    setEditing(true)
-                  }}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700 hover:border-stone-300"
-                  aria-label="Justera startdatum"
-                >
-                  <PencilLine size={11} />
-                  Justera
-                </button>
+                {canEditDate && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setDraftDate(enrollmentStartedAt)
+                      setEditing(true)
+                    }}
+                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700 hover:border-stone-300"
+                    aria-label="Justera startdatum"
+                  >
+                    <PencilLine size={11} />
+                    Justera
+                  </button>
+                )}
               </>
             ) : (
               <div className="flex items-center gap-2 flex-wrap">
