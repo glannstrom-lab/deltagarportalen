@@ -38,7 +38,7 @@ const KIND_OPTIONS: Array<{
   kind: AbsenceKind
   label: string
   description: string
-  icon: React.ComponentType<{ size?: number; className?: string }>
+  icon: React.ComponentType<{ size?: number; className?: string; style?: React.CSSProperties }>
 }> = [
   { kind: 'sick', label: 'Sjuk', description: 'Jag är sjuk idag', icon: Stethoscope },
   { kind: 'vab', label: 'VAB', description: 'Vård av barn', icon: Baby },

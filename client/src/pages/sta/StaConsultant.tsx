@@ -20,7 +20,6 @@ import {
   Send,
   Link as LinkIcon,
   Unlink,
-  CheckCircle2,
   AlertTriangle,
   Bot,
   Calendar,
@@ -37,18 +36,10 @@ import {
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import {
-  CONSULTANT_PARTICIPANTS,
-  CONSULTANT_KPI,
-  CONSULTANT_DEADLINES,
-  CONSULTANT_DRAFTS,
-  CONSULTANT_ASSESSMENTS,
-  CONSULTANT_WORKPLACES,
-  LINK_SUGGESTIONS_FOR_KERSTIN,
-  AI_SUMMARY_ANNA,
-  ACTIVITY_LOG_ANNA,
   type StaParticipantRow,
   type StaPart,
   type ParticipantLinkStatus,
+  type JobinLinkSuggestion,
 } from './mockData'
 
 type TabId = 'oversikt' | 'deltagare' | 'skattningar' | 'arbetsplatser' | 'dokument'
@@ -66,10 +57,10 @@ export default function StaConsultant() {
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null)
   const [addParticipantOpen, setAddParticipantOpen] = useState(false)
   const [linkParticipantId, setLinkParticipantId] = useState<string | null>(null)
-  const { stats, isMock, loading, reload } = useConsultantStats()
+  const { stats, loading, reload } = useConsultantStats()
 
-  // Bygg dynamisk participant-lista från riktig data, falla tillbaka till mock
-  const realRows = useMemo(() => stats.map(toParticipantRow), [stats])
+  // Bygg deltagar-lista från riktig DB-data
+  const rows = useMemo(() => stats.map(toParticipantRow), [stats])
   const kpi = useMemo(() => {
     if (stats.length === 0) {
       return { active: 0, perPart: { 1: 0, 2: 0, 3: 0, 4: 0 }, draftsToReview: 0, assessmentsInProgress: 0 }
@@ -77,27 +68,22 @@ export default function StaConsultant() {
     return computeKpi(stats)
   }, [stats])
 
-  // Vald deltagare — först letar vi i riktig data
+  // Vald deltagare — endast från riktig data
   const selectedStats = selectedParticipantId
-    ? stats.find((s) => s.enrollment.id === selectedParticipantId)
+    ? stats.find((s) => s.enrollment.id === selectedParticipantId) ?? null
     : null
-  // Fallback för mock-rader om vi visar dem
-  const selectedMock =
-    !selectedStats && selectedParticipantId
-      ? CONSULTANT_PARTICIPANTS.find((p) => p.id === selectedParticipantId)
-      : null
 
   return (
     <PageLayout title="Steg till arbete — konsulent" showTabs={false} domain="action" showHeader={false}>
       <ConsultantHero onAdd={() => setAddParticipantOpen(true)} />
-      <KpiRow kpi={kpi} isMock={isMock} />
+      <KpiRow kpi={kpi} />
       <ConsultantTabs current={tab} onChange={setTab} />
 
       <div className="mt-6">
         {tab === 'oversikt' && (
           <OverviewTab
-            realRows={realRows}
-            isMock={isMock}
+            rows={rows}
+            stats={stats}
             loading={loading}
             onOpenParticipant={setSelectedParticipantId}
             onLink={setLinkParticipantId}
@@ -106,26 +92,24 @@ export default function StaConsultant() {
         )}
         {tab === 'deltagare' && (
           <ParticipantsTab
-            realRows={realRows}
-            isMock={isMock}
+            rows={rows}
             loading={loading}
             onOpen={setSelectedParticipantId}
             onLink={setLinkParticipantId}
             onAdd={() => setAddParticipantOpen(true)}
           />
         )}
-        {tab === 'skattningar' && <AssessmentsTab stats={stats} isMock={isMock} />}
+        {tab === 'skattningar' && <AssessmentsTab stats={stats} />}
         {tab === 'arbetsplatser' && <WorkplacesTab />}
-        {tab === 'dokument' && <DocumentsTab stats={stats} isMock={isMock} />}
+        {tab === 'dokument' && <DocumentsTab stats={stats} />}
       </div>
 
-      {(selectedStats || selectedMock) && (
+      {selectedStats && (
         <ParticipantDetailDrawer
           stats={selectedStats}
-          mockParticipant={selectedMock ?? undefined}
           onClose={() => setSelectedParticipantId(null)}
           onLink={() => {
-            const id = selectedStats?.enrollment.id ?? selectedMock?.id
+            const id = selectedStats?.enrollment.id
             if (id) setLinkParticipantId(id)
           }}
           onChange={reload}
@@ -136,12 +120,16 @@ export default function StaConsultant() {
         <AddParticipantModal onClose={() => setAddParticipantOpen(false)} onCreated={reload} />
       )}
 
-      {linkParticipantId && (
-        <LinkParticipantModal
-          participantId={linkParticipantId}
-          onClose={() => setLinkParticipantId(null)}
-        />
-      )}
+      {linkParticipantId && (() => {
+        const participant = rows.find((r) => r.id === linkParticipantId)
+        if (!participant) return null
+        return (
+          <LinkParticipantModal
+            participant={participant}
+            onClose={() => setLinkParticipantId(null)}
+          />
+        )
+      })()}
     </PageLayout>
   )
 }
@@ -188,42 +176,30 @@ function ConsultantHero({ onAdd }: { onAdd: () => void }) {
 
 function KpiRow({
   kpi,
-  isMock,
 }: {
   kpi: { active: number; perPart: Record<1 | 2 | 3 | 4, number>; draftsToReview: number; assessmentsInProgress: number }
-  isMock: boolean
 }) {
-  // Om vi inte har riktig data, visa mock-värdena så sidan känns levande
-  const data = isMock
-    ? {
-        active: CONSULTANT_KPI.active,
-        perPart: CONSULTANT_KPI.perPart,
-        draftsToReview: CONSULTANT_KPI.draftsToReview,
-        assessmentsInProgress: CONSULTANT_KPI.assessmentsInProgress,
-      }
-    : kpi
   return (
     <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
       <KpiCard
         label="Aktiva deltagare"
-        value={data.active}
-        subtext={`${data.perPart[1]} i Del 1 · ${data.perPart[2]} i Del 2 · ${data.perPart[3]} i Del 3 · ${data.perPart[4]} i Del 4`}
+        value={kpi.active}
+        subtext={`${kpi.perPart[1]} i Del 1 · ${kpi.perPart[2]} i Del 2 · ${kpi.perPart[3]} i Del 3 · ${kpi.perPart[4]} i Del 4`}
       />
       <KpiCard
         label="Deadlines denna vecka"
-        value={isMock ? CONSULTANT_KPI.deadlinesThisWeek : 0}
-        subtext={isMock ? `${CONSULTANT_KPI.deadlinesToday} förfaller idag` : 'Inga ännu'}
-        subtextClass={isMock ? 'text-red-700' : undefined}
+        value={0}
+        subtext="Inga registrerade ännu"
       />
       <KpiCard
         label="Utkast att granska"
-        value={data.draftsToReview}
-        subtext={data.draftsToReview > 0 ? 'Granska och skicka' : 'Allt klart'}
+        value={kpi.draftsToReview}
+        subtext={kpi.draftsToReview > 0 ? 'Granska och skicka' : 'Allt klart'}
       />
       <KpiCard
         label="Skattningar pågående"
-        value={data.assessmentsInProgress}
-        subtext={data.assessmentsInProgress > 0 ? 'Slutför i drawer' : 'Inga pågående'}
+        value={kpi.assessmentsInProgress}
+        subtext={kpi.assessmentsInProgress > 0 ? 'Slutför i drawer' : 'Inga pågående'}
       />
     </section>
   )
@@ -274,56 +250,78 @@ function ConsultantTabs({ current, onChange }: { current: TabId; onChange: (t: T
 // ===========================================================================
 
 function OverviewTab({
-  realRows,
-  isMock,
+  rows,
+  stats,
   loading,
   onOpenParticipant,
   onLink,
   onAdd,
 }: {
-  realRows: StaParticipantRow[]
-  isMock: boolean
+  rows: StaParticipantRow[]
+  stats: EnrollmentStats[]
   loading: boolean
   onOpenParticipant: (id: string) => void
   onLink: (id: string) => void
   onAdd: () => void
 }) {
-  const rows = isMock ? CONSULTANT_PARTICIPANTS : realRows
+  const draftDocuments = useMemo(() => {
+    const result: Array<{
+      id: string
+      title: string
+      participantName: string
+      subtext: string
+      docType: string
+      aiDrafted: boolean
+    }> = []
+    for (const s of stats) {
+      for (const d of s.documents) {
+        if (d.status === 'draft' || d.status === 'consultant_review') {
+          result.push({
+            id: d.id,
+            title: documentTypeLabel(d.doc_type),
+            participantName: s.enrollment.external_name ?? 'Jobin-deltagare',
+            subtext: d.ai_drafted ? 'AI-utkast' : 'Utkast',
+            docType: d.doc_type,
+            aiDrafted: d.ai_drafted,
+          })
+        }
+      }
+    }
+    return result.slice(0, 5)
+  }, [stats])
 
   return (
     <div className="space-y-5">
-      {isMock && !loading && (
+      {rows.length === 0 && !loading && (
         <EmptyDataBanner onAdd={onAdd} />
       )}
 
       <DeadlinesCard />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <AiSummaryCard />
-        <DraftsCard />
+        <AiSummaryCard hasAnyParticipant={rows.length > 0} />
+        <DraftsCard drafts={draftDocuments} />
       </div>
 
-      <BulkAttendanceCard />
-
-      <Card variant="flat" padding="lg">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <h3 className="text-base font-semibold text-stone-900">Senaste deltagare</h3>
-            <p className="text-xs text-stone-500">
-              {isMock ? 'Demo-data — riktiga deltagare visas här när du lägger till dem' : 'Aktivitet de senaste 24 timmarna'}
-            </p>
+      {rows.length > 0 && (
+        <Card variant="flat" padding="lg">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-base font-semibold text-stone-900">Senaste deltagare</h3>
+              <p className="text-xs text-stone-500">Aktivitet de senaste 24 timmarna</p>
+            </div>
+            <Button variant="ghost" size="sm" rightIcon={<ChevronRight size={14} />}>
+              Se alla
+            </Button>
           </div>
-          <Button variant="ghost" size="sm" rightIcon={<ChevronRight size={14} />}>
-            Se alla
-          </Button>
-        </div>
-        <ParticipantsTable
-          rows={rows.slice(0, 3)}
-          onOpen={onOpenParticipant}
-          onLink={onLink}
-          showAddButton={false}
-        />
-      </Card>
+          <ParticipantsTable
+            rows={rows.slice(0, 3)}
+            onOpen={onOpenParticipant}
+            onLink={onLink}
+            showAddButton={false}
+          />
+        </Card>
+      )}
     </div>
   )
 }
@@ -338,7 +336,7 @@ function EmptyDataBanner({ onAdd }: { onAdd: () => void }) {
             Inga deltagare än
           </h3>
           <p className="text-sm text-stone-700 mt-1 max-w-xl">
-            Sidan visar demo-data så du ser hur den är tänkt att fungera. Lägg till din första deltagare — antingen manuellt eller via en Jobin-inbjudan.
+            Lägg till din första deltagare — antingen manuellt eller via en Jobin-inbjudan.
           </p>
         </div>
         <Button variant="primary" leftIcon={<UserPlus size={14} />} onClick={onAdd}>
@@ -351,53 +349,25 @@ function EmptyDataBanner({ onAdd }: { onAdd: () => void }) {
 
 function DeadlinesCard() {
   return (
-    <Card variant="flat" padding="none" className="overflow-hidden">
-      <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between">
+    <Card variant="flat" padding="lg">
+      <div className="flex items-center justify-between mb-2">
         <div>
           <h3 className="text-base font-semibold text-stone-900 flex items-center gap-2">
-            <AlertTriangle size={16} className="text-red-600" />
+            <AlertTriangle size={16} className="text-stone-400" />
             Akuta deadlines
           </h3>
-          <p className="text-xs text-stone-500">Sorterat: tid kvar</p>
+          <p className="text-xs text-stone-500">AF-tidsfrister inom 7 dagar</p>
         </div>
-        <Button variant="ghost" size="sm" rightIcon={<ChevronRight size={14} />}>
-          Visa alla
-        </Button>
       </div>
-      <ul>
-        {CONSULTANT_DEADLINES.map((d) => (
-          <li key={d.id} className="px-5 py-3 flex flex-wrap items-center gap-3 border-b border-stone-100 last:border-0">
-            <DueChip level={d.level} label={d.due} />
-            <span className="text-sm font-medium text-stone-900">{d.title}</span>
-            <span className="text-sm text-stone-600">
-              {d.participantName}
-              {d.partInfo && ` · ${d.partInfo}`}
-            </span>
-            <div className="flex-1" />
-            <Button variant={d.cta.primary ? 'primary' : 'secondary'} size="sm">
-              {d.cta.label}
-            </Button>
-          </li>
-        ))}
-      </ul>
+      <p className="text-sm text-stone-600 mt-3">
+        Deadline-spårning kommer i nästa version. Just nu syns deadlines per deltagare
+        i drawerns "Dokument"-flik och under "Skattningar".
+      </p>
     </Card>
   )
 }
 
-function DueChip({ level, label }: { level: 'red' | 'amber' | 'green'; label: string }) {
-  const classes = {
-    red: 'bg-red-100 text-red-800',
-    amber: 'bg-amber-100 text-amber-800',
-    green: 'bg-emerald-100 text-emerald-800',
-  }[level]
-  return (
-    <span className={cn('inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium', classes)}>
-      {label}
-    </span>
-  )
-}
-
-function AiSummaryCard() {
+function AiSummaryCard({ hasAnyParticipant }: { hasAnyParticipant: boolean }) {
   return (
     <Card
       variant="flat"
@@ -411,25 +381,36 @@ function AiSummaryCard() {
             style={{ background: 'var(--c-solid)' }}
           >
             <Bot size={12} />
-            AI-utkast
+            AI-veckosumma
           </span>
-          <h3 className="text-base font-semibold text-stone-900">Veckosammanställning — Anna Karlsson</h3>
         </div>
-        <span className="text-xs text-stone-500">Genererat just nu · gpt-oss-120b</span>
       </div>
-      <div className="bg-white rounded-lg p-4 border border-stone-200 text-sm text-stone-800 leading-relaxed whitespace-pre-line">
-        {AI_SUMMARY_ANNA}
-      </div>
-      <div className="flex gap-2 mt-3 flex-wrap">
-        <Button variant="primary" size="sm">Kopiera till delredovisning</Button>
-        <Button variant="secondary" size="sm">Spara som anteckning</Button>
-        <Button variant="ghost" size="sm">Generera nytt utkast</Button>
-      </div>
+      <p className="text-sm text-stone-700 leading-relaxed">
+        AI-genererad veckosumma per deltagare kommer i nästa version. Den ska bygga
+        på aktiviteter, reflektioner och pulse-checks från Supabase och kunna kopieras
+        till delredovisningen.
+      </p>
+      {!hasAnyParticipant && (
+        <p className="text-xs text-stone-500 mt-2">
+          När du har deltagare visas en sumarkort per deltagare i drawerns "Översikt".
+        </p>
+      )}
     </Card>
   )
 }
 
-function DraftsCard() {
+function DraftsCard({
+  drafts,
+}: {
+  drafts: Array<{
+    id: string
+    title: string
+    participantName: string
+    subtext: string
+    docType: string
+    aiDrafted: boolean
+  }>
+}) {
   return (
     <Card variant="flat" padding="lg">
       <div className="flex items-center justify-between mb-3">
@@ -438,94 +419,51 @@ function DraftsCard() {
           Alla
         </Button>
       </div>
-      <ul className="space-y-2">
-        {CONSULTANT_DRAFTS.map((d) => (
-          <li key={d.id} className="p-3 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors">
-            <div className="flex items-center justify-between gap-3 flex-wrap">
-              <div>
-                <div className="text-sm font-medium text-stone-900 flex items-center gap-2">
-                  {d.title} — {d.participantName}
-                  {d.aiDrafted && (
-                    <span
-                      className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
-                      style={{ background: 'var(--c-solid)' }}
-                    >
-                      AI
-                    </span>
-                  )}
+      {drafts.length === 0 ? (
+        <p className="text-sm text-stone-600">
+          Inga utkast att granska just nu. Utkast skapas i drawerns "Dokument"-flik.
+        </p>
+      ) : (
+        <ul className="space-y-2">
+          {drafts.map((d) => (
+            <li key={d.id} className="p-3 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors">
+              <div className="flex items-center justify-between gap-3 flex-wrap">
+                <div>
+                  <div className="text-sm font-medium text-stone-900 flex items-center gap-2">
+                    {d.title} — {d.participantName}
+                    {d.aiDrafted && (
+                      <span
+                        className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
+                        style={{ background: 'var(--c-solid)' }}
+                      >
+                        AI
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-stone-500">{d.subtext}</div>
                 </div>
-                <div className="text-xs text-stone-500">{d.subtext}</div>
               </div>
-              <DueChip level={d.dueLevel} label={d.due} />
-            </div>
-            <div className="flex gap-2 mt-2">
-              <Button variant="primary" size="sm">Öppna</Button>
-              <Button variant="ghost" size="sm">Förhandsvisa PDF</Button>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      )}
     </Card>
   )
 }
 
-function BulkAttendanceCard() {
-  const [marks, setMarks] = useState<Record<string, boolean>>({
-    'anna-karlsson': true,
-    'mahmoud-ali': true,
-    'lars-persson': false,
-    'kerstin-olofsson': true,
-  })
-  const toggle = (id: string) => setMarks((m) => ({ ...m, [id]: !m[id] }))
-
-  return (
-    <Card variant="flat" padding="none" className="overflow-hidden">
-      <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between flex-wrap gap-2">
-        <div>
-          <h3 className="text-base font-semibold text-stone-900">Närvaro idag — tisdag 13 maj</h3>
-          <p className="text-xs text-stone-500">Bocka av i bulk · 30 sekunder</p>
-        </div>
-        <div className="flex gap-2">
-          <Button variant="secondary" size="sm">
-            Markera alla närvarande
-          </Button>
-          <Button variant="primary" size="sm" leftIcon={<CheckCircle2 size={14} />}>
-            Spara
-          </Button>
-        </div>
-      </div>
-      <div className="px-5 py-3 grid grid-cols-1 md:grid-cols-2 gap-2">
-        {[
-          { id: 'anna-karlsson', name: 'Anna Karlsson', subtext: 'Del 1 · på plats' },
-          { id: 'mahmoud-ali', name: 'Mahmoud Ali', subtext: 'Del 2 · station kundmottagning' },
-          { id: 'lars-persson', name: 'Lars Persson', subtext: 'Del 1 · ej anmäld' },
-          { id: 'kerstin-olofsson', name: 'Kerstin Olofsson', subtext: 'Del 3 · ute på arbetsplats' },
-        ].map((p) => (
-          <label
-            key={p.id}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50 cursor-pointer"
-          >
-            <input
-              type="checkbox"
-              checked={!!marks[p.id]}
-              onChange={() => toggle(p.id)}
-              className="w-4 h-4 rounded"
-            />
-            <span className="text-sm flex-1">
-              <span className="text-stone-900 font-medium">{p.name}</span>
-              <span className="text-xs text-stone-500"> · {p.subtext}</span>
-            </span>
-            <select className="text-xs bg-stone-100 rounded px-2 py-1 border-0">
-              <option>Närvarande</option>
-              <option>Frånvarande</option>
-              <option>Sjuk</option>
-              <option>Tillåten frånvaro</option>
-            </select>
-          </label>
-        ))}
-      </div>
-    </Card>
-  )
+function documentTypeLabel(docType: string): string {
+  switch (docType) {
+    case 'initial_planering': return 'Initial planering'
+    case 'delredovisning_1': return 'Delredovisning Del 1'
+    case 'delredovisning_2': return 'Delredovisning Del 2'
+    case 'delredovisning_3': return 'Delredovisning Del 3'
+    case 'delredovisning_4': return 'Delredovisning Del 4'
+    case 'anmalan_arbetsprovning': return 'Anmälan arbetsprövning'
+    case 'information_arbetsprovning': return 'Information från arbetsprövning'
+    case 'atgardsplan_utebliven_ap': return 'Åtgärdsplan'
+    case 'informativ_rapport_hjalpmedel': return 'Informativ rapport (hjälpmedel)'
+    default: return docType
+  }
 }
 
 // ===========================================================================
@@ -533,15 +471,13 @@ function BulkAttendanceCard() {
 // ===========================================================================
 
 function ParticipantsTab({
-  realRows,
-  isMock,
+  rows: allRows,
   loading,
   onOpen,
   onLink,
   onAdd,
 }: {
-  realRows: StaParticipantRow[]
-  isMock: boolean
+  rows: StaParticipantRow[]
   loading: boolean
   onOpen: (id: string) => void
   onLink: (id: string) => void
@@ -549,8 +485,6 @@ function ParticipantsTab({
 }) {
   const [filterPart, setFilterPart] = useState<'all' | StaPart>('all')
   const [search, setSearch] = useState('')
-
-  const allRows = isMock ? CONSULTANT_PARTICIPANTS : realRows
 
   const rows = useMemo(() => {
     return allRows.filter((p) => {
@@ -562,10 +496,9 @@ function ParticipantsTab({
 
   return (
     <Card variant="flat" padding="none" className="overflow-hidden">
-      {isMock && !loading && (
-        <div className="px-5 py-3 bg-stone-50 border-b border-stone-100 text-xs text-stone-600 flex items-center gap-2">
-          <Sparkles size={12} style={{ color: 'var(--c-solid)' }} />
-          Demo-data — riktiga deltagare visas här när du lägger till dem
+      {allRows.length === 0 && !loading && (
+        <div className="px-5 py-6 text-sm text-stone-600 text-center">
+          Inga deltagare än — klicka <strong>Lägg till</strong> för att börja.
         </div>
       )}
       <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between flex-wrap gap-3">
@@ -804,21 +737,18 @@ function PauseResumeButton({
 
 function ParticipantDetailDrawer({
   stats,
-  mockParticipant,
   onClose,
   onLink,
   onChange,
 }: {
-  stats?: EnrollmentStats | null
-  mockParticipant?: StaParticipantRow
+  stats: EnrollmentStats
   onClose: () => void
   onLink: () => void
   onChange?: () => void
 }) {
   const [subTab, setSubTab] = useState<'oversikt' | 'aktivitet' | 'skattningar' | 'dokument' | 'anteckningar'>('oversikt')
-  // Härled participant från real data om vi har det, annars använd mock
-  const participant: StaParticipantRow = stats ? toParticipantRow(stats) : mockParticipant!
-  const realEnrollmentId = stats?.enrollment.id ?? null
+  const participant: StaParticipantRow = toParticipantRow(stats)
+  const realEnrollmentId = stats.enrollment.id
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -961,17 +891,27 @@ function ParticipantDetailDrawer({
 
         <div className="px-6 py-5">
           {subTab === 'oversikt' && (
-            <DetailOverview participant={participant} enrollmentId={realEnrollmentId} />
+            <DetailOverview
+              participant={participant}
+              enrollmentId={realEnrollmentId}
+              assessments={stats.assessments}
+              recentReflection={
+                stats.quickNotes
+                  .filter((n) => n.body && n.visibility !== 'consultant_only')
+                  .slice(0, 1)
+                  .map((n) => ({ text: n.body!, at: new Date(n.created_at).toLocaleDateString('sv-SE') }))[0] ?? null
+              }
+            />
           )}
-          {subTab === 'aktivitet' && <DetailActivityLog stats={stats ?? undefined} />}
+          {subTab === 'aktivitet' && <DetailActivityLog stats={stats} />}
           {subTab === 'skattningar' && (
-            <DetailAssessments enrollmentId={realEnrollmentId} stats={stats ?? undefined} />
+            <DetailAssessments enrollmentId={realEnrollmentId} stats={stats} />
           )}
           {subTab === 'dokument' && (
             <DetailDocuments
               participantName={participant.fullName}
               enrollmentId={realEnrollmentId}
-              stats={stats ?? undefined}
+              stats={stats}
             />
           )}
           {subTab === 'anteckningar' && (
@@ -990,12 +930,24 @@ function ParticipantDetailDrawer({
 function DetailOverview({
   participant,
   enrollmentId,
+  assessments,
+  recentReflection,
 }: {
   participant: StaParticipantRow
   enrollmentId: string | null
+  assessments: import('@/services/staApi').StaAssessment[]
+  recentReflection: { text: string; at: string } | null
 }) {
   const { absences } = useStaAbsences(enrollmentId)
   const recentAbsences = absences.slice(0, 4)
+
+  // Hitta del-specifika skattningar för aktuell del — fall tillbaka på alla
+  const partAssessments = assessments.filter((a) => a.part === participant.currentPart)
+  const visibleInstruments = ((): Array<'DOA' | 'WRI' | 'MOHOST' | 'AWP' | 'AWC'> => {
+    if (participant.currentPart === 1) return ['DOA', 'WRI', 'MOHOST']
+    if (participant.currentPart === 2) return ['AWP', 'AWC', 'MOHOST']
+    return ['AWP', 'AWC', 'DOA']
+  })()
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       <div className="lg:col-span-2 space-y-4">
@@ -1032,35 +984,41 @@ function DetailOverview({
               <Bot size={10} />
               AI · veckosumma
             </span>
-            <span className="text-[11px] text-stone-500">gpt-oss-120b</span>
           </div>
-          <p className="text-sm text-stone-800 leading-relaxed whitespace-pre-line">{AI_SUMMARY_ANNA}</p>
-          <div className="flex gap-2 mt-3 flex-wrap">
-            <Button variant="primary" size="sm">Kopiera till delredovisning</Button>
-            <Button variant="ghost" size="sm">Generera nytt</Button>
-          </div>
+          <p className="text-sm text-stone-700 leading-relaxed">
+            AI-veckosumma byggs i nästa version från deltagarens aktiviteter, reflektioner
+            och pulse-checks. Just nu finns underlaget i tabbarna "Aktivitetslogg" och
+            "Skattningar".
+          </p>
         </Card>
 
         <div>
           <h4 className="text-sm font-semibold text-stone-900 mb-3">Skattningar i Del {participant.currentPart}</h4>
           <div className="grid grid-cols-3 gap-3">
-            {[
-              { instrument: 'DOA', status: 'Pågående', progress: 62 },
-              { instrument: 'WRI', status: 'Ej påbörjad', progress: 0 },
-              { instrument: 'MOHOST', status: 'Ej påbörjad', progress: 0 },
-            ].map((a) => (
-              <Card key={a.instrument} variant="flat" padding="sm" className="text-center">
-                <div className="text-xs font-medium text-stone-500">{a.instrument}</div>
-                <div className="text-sm font-semibold text-stone-900 mt-1">{a.status}</div>
-                {a.progress > 0 ? (
-                  <div className="h-1.5 rounded-full mt-2 overflow-hidden bg-stone-100">
-                    <div className="h-full" style={{ width: `${a.progress}%`, background: 'var(--c-solid)' }} />
-                  </div>
-                ) : (
-                  <Button variant="ghost" size="sm" className="mt-2 !text-xs">Starta</Button>
-                )}
-              </Card>
-            ))}
+            {visibleInstruments.map((instrument) => {
+              const a = partAssessments.find((x) => x.instrument === instrument)
+              const status = !a
+                ? 'Ej påbörjad'
+                : a.status === 'complete' || a.status === 'submitted_to_af'
+                  ? 'Klar'
+                  : 'Pågående'
+              const progress = a && a.scores && Object.keys(a.scores).length > 0
+                ? Math.min(100, Object.keys(a.scores).length * 10)
+                : 0
+              return (
+                <Card key={instrument} variant="flat" padding="sm" className="text-center">
+                  <div className="text-xs font-medium text-stone-500">{instrument}</div>
+                  <div className="text-sm font-semibold text-stone-900 mt-1">{status}</div>
+                  {progress > 0 ? (
+                    <div className="h-1.5 rounded-full mt-2 overflow-hidden bg-stone-100">
+                      <div className="h-full" style={{ width: `${progress}%`, background: 'var(--c-solid)' }} />
+                    </div>
+                  ) : (
+                    <Button variant="ghost" size="sm" className="mt-2 !text-xs">Starta</Button>
+                  )}
+                </Card>
+              )
+            })}
           </div>
         </div>
       </div>
@@ -1072,18 +1030,22 @@ function DetailOverview({
             <QuickAction icon={<FileText size={14} />} label="Skapa anteckning" />
             <QuickAction icon={<Calendar size={14} />} label="Boka möte" />
             <QuickAction icon={<ClipboardList size={14} />} label="Tilldela dagsuppgift" />
-            <QuickAction icon={<AlertTriangle size={14} />} label="Rapportera frånvaro" />
             <QuickAction icon={<MessageSquare size={14} />} label="Skicka meddelande" />
           </div>
         </Card>
 
-        <Card variant="flat" padding="md" className="bg-stone-50">
-          <div className="text-xs uppercase tracking-wide text-stone-500 font-medium">Senaste reflektion</div>
-          <p className="text-sm text-stone-800 italic mt-2">
-            "Stressig kväll. Jag tänker mycket på pengar. Hoppas sömnen blir bättre."
-          </p>
-          <div className="text-xs text-stone-500 mt-2">Tor 8 maj 19:42</div>
-        </Card>
+        {recentReflection ? (
+          <Card variant="flat" padding="md" className="bg-stone-50">
+            <div className="text-xs uppercase tracking-wide text-stone-500 font-medium">Senaste reflektion</div>
+            <p className="text-sm text-stone-800 italic mt-2">"{recentReflection.text}"</p>
+            <div className="text-xs text-stone-500 mt-2">{recentReflection.at}</div>
+          </Card>
+        ) : (
+          <Card variant="flat" padding="md" className="bg-stone-50">
+            <div className="text-xs uppercase tracking-wide text-stone-500 font-medium">Senaste reflektion</div>
+            <p className="text-sm text-stone-600 mt-2">Inga reflektioner sparade än.</p>
+          </Card>
+        )}
       </aside>
     </div>
   )
@@ -1101,77 +1063,50 @@ function QuickAction({ icon, label }: { icon: React.ReactNode; label: string }) 
   )
 }
 
-function DetailActivityLog({ stats }: { stats?: EnrollmentStats }) {
-  // Använd riktig aktivitetslogg om vi har den
-  if (stats) {
-    const recent = [...stats.activities]
-      .filter((a) => a.completed_at || a.scheduled_for)
-      .sort((a, b) => {
-        const aT = a.completed_at ?? a.scheduled_for ?? ''
-        const bT = b.completed_at ?? b.scheduled_for ?? ''
-        return bT.localeCompare(aT)
-      })
-      .slice(0, 20)
+function DetailActivityLog({ stats }: { stats: EnrollmentStats }) {
+  const recent = [...stats.activities]
+    .filter((a) => a.completed_at || a.scheduled_for)
+    .sort((a, b) => {
+      const aT = a.completed_at ?? a.scheduled_for ?? ''
+      const bT = b.completed_at ?? b.scheduled_for ?? ''
+      return bT.localeCompare(aT)
+    })
+    .slice(0, 20)
 
-    return (
-      <div>
-        <h4 className="text-sm font-semibold text-stone-900 mb-3">Aktivitetslogg</h4>
-        {recent.length === 0 ? (
-          <p className="text-sm text-stone-500">Ingen aktivitet ännu — väntar på första genomförda dag eller samtal.</p>
-        ) : (
-          <ol className="border-l-2 border-stone-200 ml-3 space-y-3">
-            {recent.map((entry) => {
-              const dateStr = entry.completed_at ?? entry.scheduled_for ?? ''
-              const displayDate = dateStr ? new Date(dateStr).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : ''
-              const highlight = !!entry.completed_at
-              return (
-                <li key={entry.id} className="pl-4 relative">
-                  <span
-                    className={cn(
-                      'absolute -left-[7px] top-1.5 w-3 h-3 rounded-full',
-                      highlight ? '' : 'bg-stone-300',
-                    )}
-                    style={highlight ? { background: 'var(--c-solid)' } : undefined}
-                  />
-                  <div className="text-sm font-medium text-stone-900">
-                    {entry.activity_key ?? entry.activity_type}
-                  </div>
-                  <div className="text-xs text-stone-500">
-                    {displayDate} · {entry.activity_type}{entry.attendance ? ` · ${entry.attendance}` : ''}
-                  </div>
-                  {entry.participant_reflection && (
-                    <p className="text-xs text-stone-600 italic mt-1">"{entry.participant_reflection.slice(0, 150)}"</p>
-                  )}
-                </li>
-              )
-            })}
-          </ol>
-        )}
-      </div>
-    )
-  }
-
-  // Fallback för mock
   return (
     <div>
-      <h4 className="text-sm font-semibold text-stone-900 mb-3">Aktivitet den senaste veckan</h4>
-      <ol className="border-l-2 border-stone-200 ml-3 space-y-3">
-        {ACTIVITY_LOG_ANNA.map((entry) => (
-          <li key={entry.id} className="pl-4 relative">
-            <span
-              className={cn(
-                'absolute -left-[7px] top-1.5 w-3 h-3 rounded-full',
-                entry.highlight ? '' : 'bg-stone-300',
-              )}
-              style={entry.highlight ? { background: 'var(--c-solid)' } : undefined}
-            />
-            <div className="text-sm font-medium text-stone-900">{entry.title}</div>
-            <div className="text-xs text-stone-500">
-              {entry.date} · {entry.subtext}
-            </div>
-          </li>
-        ))}
-      </ol>
+      <h4 className="text-sm font-semibold text-stone-900 mb-3">Aktivitetslogg</h4>
+      {recent.length === 0 ? (
+        <p className="text-sm text-stone-500">Ingen aktivitet ännu — väntar på första genomförda dag eller samtal.</p>
+      ) : (
+        <ol className="border-l-2 border-stone-200 ml-3 space-y-3">
+          {recent.map((entry) => {
+            const dateStr = entry.completed_at ?? entry.scheduled_for ?? ''
+            const displayDate = dateStr ? new Date(dateStr).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' }) : ''
+            const highlight = !!entry.completed_at
+            return (
+              <li key={entry.id} className="pl-4 relative">
+                <span
+                  className={cn(
+                    'absolute -left-[7px] top-1.5 w-3 h-3 rounded-full',
+                    highlight ? '' : 'bg-stone-300',
+                  )}
+                  style={highlight ? { background: 'var(--c-solid)' } : undefined}
+                />
+                <div className="text-sm font-medium text-stone-900">
+                  {entry.activity_key ?? entry.activity_type}
+                </div>
+                <div className="text-xs text-stone-500">
+                  {displayDate} · {entry.activity_type}{entry.attendance ? ` · ${entry.attendance}` : ''}
+                </div>
+                {entry.participant_reflection && (
+                  <p className="text-xs text-stone-600 italic mt-1">"{entry.participant_reflection.slice(0, 150)}"</p>
+                )}
+              </li>
+            )
+          })}
+        </ol>
+      )}
     </div>
   )
 }
@@ -1181,25 +1116,15 @@ function DetailAssessments({
   stats,
 }: {
   enrollmentId: string | null
-  stats?: EnrollmentStats
+  stats: EnrollmentStats
 }) {
-  if (!enrollmentId || !stats) {
-    return (
-      <div className="space-y-3">
-        <p className="text-sm text-stone-600">
-          Demo-data — riktiga skattningar visas här när du startat en.
-        </p>
-        {CONSULTANT_ASSESSMENTS.filter((a) => a.participantInitials === 'AK').map((a) => (
-          <AssessmentDetailRow key={a.id} row={a} />
-        ))}
-      </div>
-    )
-  }
-
   return (
     <div className="space-y-3">
       <p className="text-sm text-stone-600">
-        Alla instrumentskattningar för Del {stats.enrollment.current_part}. Skattningarna sparas mot enrollment-id <code className="text-[10px]">{enrollmentId.slice(0, 8)}</code>.
+        Alla instrumentskattningar för Del {stats.enrollment.current_part}.
+        {enrollmentId && (
+          <> Skattningarna sparas mot enrollment-id <code className="text-[10px]">{enrollmentId.slice(0, 8)}</code>.</>
+        )}
       </p>
       {stats.assessments.length === 0 ? (
         <Card variant="flat" padding="md" className="bg-stone-50">
@@ -1213,45 +1138,59 @@ function DetailAssessments({
           </ul>
         </Card>
       ) : (
-        stats.assessments.map((a) => (
-          <AssessmentDetailRow
-            key={a.id}
-            row={{
-              id: a.id,
-              participantName: stats.enrollment.external_name ?? '',
-              participantInitials: '',
-              instrument: a.instrument,
-              part: a.part,
-              progress: a.scores ? Math.round((Object.keys(a.scores as object).length / 13) * 100) : 0,
-              status: a.status === 'complete' ? 'complete' : a.scores && Object.keys(a.scores).length > 0 ? 'in_progress' : 'pending',
-            }}
-          />
-        ))
+        stats.assessments.map((a) => {
+          const progress = a.scores ? Math.round((Object.keys(a.scores as object).length / 13) * 100) : 0
+          const status: 'pending' | 'in_progress' | 'complete' =
+            a.status === 'complete' || a.status === 'submitted_to_af'
+              ? 'complete'
+              : progress > 0
+                ? 'in_progress'
+                : 'pending'
+          return (
+            <AssessmentDetailRow
+              key={a.id}
+              instrument={a.instrument}
+              part={a.part}
+              progress={progress}
+              status={status}
+            />
+          )
+        })
       )}
     </div>
   )
 }
 
-function AssessmentDetailRow({ row }: { row: typeof CONSULTANT_ASSESSMENTS[number] }) {
+function AssessmentDetailRow({
+  instrument,
+  part,
+  progress,
+  status,
+}: {
+  instrument: string
+  part: StaPart
+  progress: number
+  status: 'pending' | 'in_progress' | 'complete'
+}) {
   return (
     <div className="p-3 rounded-lg border border-stone-200 flex items-center gap-4">
       <div className="flex-1 min-w-0">
         <div className="font-medium text-stone-900 text-sm">
-          {row.instrument} · Del {row.part}
+          {instrument} · Del {part}
         </div>
         <div className="text-xs text-stone-500">
-          {row.status === 'pending' && 'Ej påbörjad'}
-          {row.status === 'in_progress' && `Pågående · ${row.progress}%`}
-          {row.status === 'complete' && 'Klar'}
+          {status === 'pending' && 'Ej påbörjad'}
+          {status === 'in_progress' && `Pågående · ${progress}%`}
+          {status === 'complete' && 'Klar'}
         </div>
       </div>
-      {row.status === 'in_progress' && (
+      {status === 'in_progress' && (
         <div className="h-1.5 rounded-full overflow-hidden bg-stone-100 w-32">
-          <div className="h-full" style={{ width: `${row.progress}%`, background: 'var(--c-solid)' }} />
+          <div className="h-full" style={{ width: `${progress}%`, background: 'var(--c-solid)' }} />
         </div>
       )}
-      <Button variant={row.status === 'pending' ? 'primary' : 'secondary'} size="sm">
-        {row.status === 'pending' ? 'Starta' : row.status === 'in_progress' ? 'Fortsätt' : 'Visa'}
+      <Button variant={status === 'pending' ? 'primary' : 'secondary'} size="sm">
+        {status === 'pending' ? 'Starta' : status === 'in_progress' ? 'Fortsätt' : 'Visa'}
       </Button>
     </div>
   )
@@ -1264,34 +1203,26 @@ function DetailDocuments({
 }: {
   participantName: string
   enrollmentId: string | null
-  stats?: EnrollmentStats
+  stats: EnrollmentStats
 }) {
   const navigate = useNavigate()
   const goTo = (docType: keyof typeof DOC_TYPE_META) => {
-    if (!enrollmentId) {
-      // För demo: navigera till en placeholder
-      return
-    }
+    if (!enrollmentId) return
     navigate(`/konsulent/steg-till-arbete/dokument/${enrollmentId}/${docType}`)
   }
 
   // Tillgängliga dokumenttyper för aktuell del
-  const docTypesForPart: Array<{ key: keyof typeof DOC_TYPE_META; label: string }> = stats
-    ? (() => {
-        const part = stats.enrollment.current_part
-        const list: Array<{ key: keyof typeof DOC_TYPE_META; label: string }> = []
-        if (part === 1) list.push({ key: 'initial_planering', label: 'Initial planering' })
-        list.push({ key: `delredovisning_${part}` as keyof typeof DOC_TYPE_META, label: `Delredovisning Del ${part}` })
-        if (part >= 3) list.push({ key: 'anmalan_arbetsprovning', label: 'Anmälan arbetsprövning' })
-        if (part >= 3) list.push({ key: 'information_arbetsprovning', label: 'Information från arbetsprövningsplats' })
-        return list
-      })()
-    : [
-        { key: 'initial_planering', label: 'Initial planering' },
-        { key: 'delredovisning_1', label: 'Delredovisning Del 1' },
-      ]
+  const docTypesForPart: Array<{ key: keyof typeof DOC_TYPE_META; label: string }> = (() => {
+    const part = stats.enrollment.current_part
+    const list: Array<{ key: keyof typeof DOC_TYPE_META; label: string }> = []
+    if (part === 1) list.push({ key: 'initial_planering', label: 'Initial planering' })
+    list.push({ key: `delredovisning_${part}` as keyof typeof DOC_TYPE_META, label: `Delredovisning Del ${part}` })
+    if (part >= 3) list.push({ key: 'anmalan_arbetsprovning', label: 'Anmälan arbetsprövning' })
+    if (part >= 3) list.push({ key: 'information_arbetsprovning', label: 'Information från arbetsprövningsplats' })
+    return list
+  })()
 
-  const existing = stats?.documents ?? []
+  const existing = stats.documents
 
   return (
     <div className="space-y-3">
@@ -1503,41 +1434,43 @@ function NoteEntry({ author, date, text, shared }: { author: string; date: strin
 
 function AssessmentsTab({
   stats,
-  isMock,
 }: {
   stats: EnrollmentStats[]
-  isMock: boolean
 }) {
-  // Bygg en flat lista av alla skattningar (med deltagaren) — om vi har riktig data
-  const realAssessmentRows = useMemo(() => {
-    if (isMock) return null
+  const rows = useMemo(() => {
     return stats.flatMap((s) =>
-      s.assessments.map((a) => ({
-        id: a.id,
-        participantName: s.enrollment.external_name ?? 'Jobin-deltagare',
-        participantInitials: (s.enrollment.external_name ?? 'JD')
+      s.assessments.map((a) => {
+        const fullName = s.enrollment.external_name ?? 'Jobin-deltagare'
+        const initials = fullName
           .split(' ')
           .map((p) => p[0])
           .slice(0, 2)
           .join('')
-          .toUpperCase(),
-        instrument: a.instrument,
-        part: a.part,
-        progress:
-          a.status === 'complete'
+          .toUpperCase()
+        const progress =
+          a.status === 'complete' || a.status === 'submitted_to_af'
             ? 100
             : a.scores
-            ? Math.round((Object.keys(a.scores as object).length / 13) * 100)
-            : 0,
-        status: a.status === 'complete' ? ('complete' as const) : a.status === 'draft' && a.scores && Object.keys(a.scores).length > 0 ? ('in_progress' as const) : ('pending' as const),
-        dueLabel: undefined as string | undefined,
-        dueLevel: undefined as 'red' | 'amber' | 'green' | undefined,
-      })),
+              ? Math.round((Object.keys(a.scores as object).length / 13) * 100)
+              : 0
+        const status: 'pending' | 'in_progress' | 'complete' =
+          a.status === 'complete' || a.status === 'submitted_to_af'
+            ? 'complete'
+            : progress > 0
+              ? 'in_progress'
+              : 'pending'
+        return {
+          id: a.id,
+          participantName: fullName,
+          participantInitials: initials,
+          instrument: a.instrument,
+          part: a.part,
+          progress,
+          status,
+        }
+      }),
     )
-  }, [stats, isMock])
-
-  const rows = realAssessmentRows && realAssessmentRows.length > 0 ? realAssessmentRows : CONSULTANT_ASSESSMENTS
-  void rows // existing JSX uses CONSULTANT_ASSESSMENTS still — wire below
+  }, [stats])
 
   return (
     <Card variant="flat" padding="none" className="overflow-hidden">
@@ -1545,58 +1478,60 @@ function AssessmentsTab({
         <h3 className="text-base font-semibold text-stone-900">Alla skattningar</h3>
         <p className="text-xs text-stone-500">DOA · WRI · MOHOST · AWP · AWC</p>
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Deltagare</th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Instrument</th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Del</th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Status</th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Deadline</th>
-              <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100"></th>
-            </tr>
-          </thead>
-          <tbody>
-            {CONSULTANT_ASSESSMENTS.map((a) => (
-              <tr key={a.id} className="border-b border-stone-100 last:border-0 hover:bg-stone-50">
-                <td className="px-4 py-3 align-middle">
-                  <div className="flex items-center gap-2">
-                    <div className="w-7 h-7 rounded-full bg-stone-200 flex items-center justify-center text-[10px] font-medium text-stone-700">
-                      {a.participantInitials}
-                    </div>
-                    <span className="text-sm text-stone-900">{a.participantName}</span>
-                  </div>
-                </td>
-                <td className="px-4 py-3 align-middle">
-                  <span className="text-sm font-medium text-stone-900">{a.instrument}</span>
-                </td>
-                <td className="px-4 py-3 align-middle text-sm text-stone-700">Del {a.part}</td>
-                <td className="px-4 py-3 align-middle">
-                  {a.status === 'pending' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-stone-100 text-stone-500">Ej påbörjad</span>}
-                  {a.status === 'in_progress' && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-stone-700">{a.progress}%</span>
-                      <div className="h-1.5 rounded-full overflow-hidden bg-stone-100 w-20">
-                        <div className="h-full" style={{ width: `${a.progress}%`, background: 'var(--c-solid)' }} />
-                      </div>
-                    </div>
-                  )}
-                  {a.status === 'complete' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-emerald-50 text-emerald-700">Klar</span>}
-                </td>
-                <td className="px-4 py-3 align-middle">
-                  {a.dueLabel ? <DueChip level={a.dueLevel ?? 'green'} label={a.dueLabel} /> : <span className="text-xs text-stone-400">—</span>}
-                </td>
-                <td className="px-4 py-3 align-middle text-right">
-                  <Button variant={a.status === 'pending' ? 'primary' : 'secondary'} size="sm">
-                    {a.status === 'pending' ? 'Starta' : a.status === 'in_progress' ? 'Fortsätt' : 'Visa'}
-                  </Button>
-                </td>
+      {rows.length === 0 ? (
+        <div className="px-5 py-8 text-sm text-stone-600 text-center">
+          Inga skattningar startade än. Öppna en deltagare och starta från drawerns "Skattningar"-flik.
+        </div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Deltagare</th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Instrument</th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Del</th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Status</th>
+                <th className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100"></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {rows.map((a) => (
+                <tr key={a.id} className="border-b border-stone-100 last:border-0 hover:bg-stone-50">
+                  <td className="px-4 py-3 align-middle">
+                    <div className="flex items-center gap-2">
+                      <div className="w-7 h-7 rounded-full bg-stone-200 flex items-center justify-center text-[10px] font-medium text-stone-700">
+                        {a.participantInitials}
+                      </div>
+                      <span className="text-sm text-stone-900">{a.participantName}</span>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 align-middle">
+                    <span className="text-sm font-medium text-stone-900">{a.instrument}</span>
+                  </td>
+                  <td className="px-4 py-3 align-middle text-sm text-stone-700">Del {a.part}</td>
+                  <td className="px-4 py-3 align-middle">
+                    {a.status === 'pending' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-stone-100 text-stone-500">Ej påbörjad</span>}
+                    {a.status === 'in_progress' && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-stone-700">{a.progress}%</span>
+                        <div className="h-1.5 rounded-full overflow-hidden bg-stone-100 w-20">
+                          <div className="h-full" style={{ width: `${a.progress}%`, background: 'var(--c-solid)' }} />
+                        </div>
+                      </div>
+                    )}
+                    {a.status === 'complete' && <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-emerald-50 text-emerald-700">Klar</span>}
+                  </td>
+                  <td className="px-4 py-3 align-middle text-right">
+                    <Button variant={a.status === 'pending' ? 'primary' : 'secondary'} size="sm">
+                      {a.status === 'pending' ? 'Starta' : a.status === 'in_progress' ? 'Fortsätt' : 'Visa'}
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </Card>
   )
 }
@@ -1618,62 +1553,13 @@ function WorkplacesTab() {
             Lägg till företag
           </Button>
         </div>
-        <div className="space-y-3">
-          {CONSULTANT_WORKPLACES.map((w) => (
-            <WorkplaceCard key={w.id} workplace={w} />
-          ))}
-        </div>
+        <Card variant="flat" padding="md" className="bg-stone-50">
+          <p className="text-sm text-stone-600">
+            Arbetsplats-vyn drivs ännu inte av <code>sta_workplaces</code>-tabellen. När
+            första deltagaren når Del 3 byggs CRUD och AF-anmälningsflöde här.
+          </p>
+        </Card>
       </Card>
-    </div>
-  )
-}
-
-function WorkplaceCard({ workplace }: { workplace: typeof CONSULTANT_WORKPLACES[number] }) {
-  const afStatusLabel = {
-    pending: 'Förbereds',
-    submitted: 'Inskickad till AF · väntar',
-    approved: 'Godkänd av AF',
-  }[workplace.afStatus]
-  const afStatusClass = {
-    pending: 'bg-stone-100 text-stone-600',
-    submitted: 'bg-amber-100 text-amber-700',
-    approved: 'bg-emerald-50 text-emerald-700',
-  }[workplace.afStatus]
-
-  return (
-    <div className="p-4 rounded-lg border border-stone-200">
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div className="flex items-start gap-3">
-          <div
-            className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
-            style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
-          >
-            <Building2 size={18} />
-          </div>
-          <div>
-            <div className="font-semibold text-stone-900">{workplace.companyName}</div>
-            <div className="text-xs text-stone-500">
-              {workplace.orgNumber && `Org. ${workplace.orgNumber} · `}
-              Kontakt: {workplace.contactName}
-            </div>
-            <div className="text-xs text-stone-600 mt-1">
-              Deltagare: <span className="font-medium">{workplace.participantName}</span> · {workplace.weeksInfo} · inriktning {workplace.inriktning}
-            </div>
-          </div>
-        </div>
-        <span className={cn('inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium', afStatusClass)}>
-          {afStatusLabel}
-        </span>
-      </div>
-      <div className="mt-3 flex items-center justify-between gap-3 flex-wrap">
-        <div className="text-xs text-stone-500">{workplace.assessments}</div>
-        <div className="flex gap-2">
-          {workplace.afStatus !== 'approved' && (
-            <Button variant="primary" size="sm" leftIcon={<Send size={12} />}>Skicka till AF</Button>
-          )}
-          <Button variant="secondary" size="sm">Öppna</Button>
-        </div>
-      </div>
     </div>
   )
 }
@@ -1684,15 +1570,13 @@ function WorkplaceCard({ workplace }: { workplace: typeof CONSULTANT_WORKPLACES[
 
 function DocumentsTab({
   stats,
-  isMock,
 }: {
   stats: EnrollmentStats[]
-  isMock: boolean
 }) {
   const navigate = useNavigate()
 
   // Riktiga dokument-utkast — flata listan per deltagare
-  const realDrafts = useMemo(
+  const drafts = useMemo(
     () =>
       stats.flatMap((s) =>
         s.documents
@@ -1718,17 +1602,15 @@ function DocumentsTab({
           deltagarens loggade aktiviteter och skattningar — granska alltid innan inskick.
         </p>
 
-        {!isMock && realDrafts.length === 0 && (
+        {drafts.length === 0 ? (
           <Card variant="flat" padding="md" className="bg-stone-50">
             <p className="text-sm text-stone-600">
               Inga utkast än. Öppna en deltagare och klicka på &quot;Skapa Delredovisning Del 1&quot; för att starta.
             </p>
           </Card>
-        )}
-
-        {!isMock && realDrafts.length > 0 && (
+        ) : (
           <ul className="space-y-2">
-            {realDrafts.map((d) => (
+            {drafts.map((d) => (
               <li key={d.id} className="p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
                 <div className="flex items-center justify-between gap-3 flex-wrap">
                   <div>
@@ -1752,36 +1634,6 @@ function DocumentsTab({
                   >
                     Öppna
                   </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {isMock && (
-          <ul className="space-y-2">
-            {CONSULTANT_DRAFTS.map((d) => (
-              <li key={d.id} className="p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <div>
-                    <div className="text-sm font-medium text-stone-900 flex items-center gap-2">
-                      {d.title} — {d.participantName}
-                      {d.aiDrafted && (
-                        <span
-                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
-                          style={{ background: 'var(--c-solid)' }}
-                        >
-                          <Bot size={10} />
-                          AI
-                        </span>
-                      )}
-                    </div>
-                    <div className="text-xs text-stone-500">{d.subtext}</div>
-                  </div>
-                  <div className="flex gap-2 items-center">
-                    <DueChip level={d.dueLevel} label={d.due} />
-                    <Button variant="primary" size="sm">Öppna</Button>
-                  </div>
                 </div>
               </li>
             ))}
@@ -2041,16 +1893,15 @@ function AddParticipantModal({ onClose, onCreated }: { onClose: () => void; onCr
 // ===========================================================================
 
 function LinkParticipantModal({
-  participantId,
+  participant,
   onClose,
 }: {
-  participantId: string
+  participant: StaParticipantRow
   onClose: () => void
 }) {
-  const participant = CONSULTANT_PARTICIPANTS.find((p) => p.id === participantId)
-  if (!participant) return null
-
-  const suggestions = participant.id === 'kerstin-olofsson' ? LINK_SUGGESTIONS_FOR_KERSTIN : []
+  // Förslag på Jobin-konton att koppla till — i nästa version ska detta läsas
+  // från en match-RPC som söker på namn + e-post + program.
+  const suggestions: JobinLinkSuggestion[] = []
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
