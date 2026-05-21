@@ -9,6 +9,7 @@ import { KompetenskartlaggningSummary } from './components/Kompetenskartlaggning
 import { AssessmentSignature } from './components/AssessmentSignature'
 import { WorkplaceCard } from './components/WorkplaceCard'
 import { WorkplaceFormModal } from './components/WorkplaceFormModal'
+import { SelfTestEnrollmentButton } from './components/SelfTestEnrollmentButton'
 import { staWorkplacesApi, type StaWorkplace } from '@/services/staApi'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
@@ -93,6 +94,7 @@ export default function StaConsultant() {
             onOpenParticipant={setSelectedParticipantId}
             onLink={setLinkParticipantId}
             onAdd={() => setAddParticipantOpen(true)}
+            onReload={reload}
           />
         )}
         {tab === 'deltagare' && (
@@ -261,6 +263,7 @@ function OverviewTab({
   onOpenParticipant,
   onLink,
   onAdd,
+  onReload,
 }: {
   rows: StaParticipantRow[]
   stats: EnrollmentStats[]
@@ -268,6 +271,7 @@ function OverviewTab({
   onOpenParticipant: (id: string) => void
   onLink: (id: string) => void
   onAdd: () => void
+  onReload: () => void
 }) {
   const draftDocuments = useMemo(() => {
     const result: Array<{
@@ -298,7 +302,7 @@ function OverviewTab({
   return (
     <div className="space-y-5">
       {rows.length === 0 && !loading && (
-        <EmptyDataBanner onAdd={onAdd} />
+        <EmptyDataBanner onAdd={onAdd} onSelfTestCreated={onReload} />
       )}
 
       <DeadlinesCard />
@@ -331,7 +335,7 @@ function OverviewTab({
   )
 }
 
-function EmptyDataBanner({ onAdd }: { onAdd: () => void }) {
+function EmptyDataBanner({ onAdd, onSelfTestCreated }: { onAdd: () => void; onSelfTestCreated: () => void }) {
   return (
     <Card variant="flat" padding="lg" style={{ background: 'var(--c-bg)' }}>
       <div className="flex items-start justify-between gap-3 flex-wrap">
@@ -347,6 +351,10 @@ function EmptyDataBanner({ onAdd }: { onAdd: () => void }) {
         <Button variant="primary" leftIcon={<UserPlus size={14} />} onClick={onAdd}>
           Lägg till första deltagaren
         </Button>
+      </div>
+      {/* Admin-genväg: lägg till mig själv som testdeltagare */}
+      <div className="mt-4">
+        <SelfTestEnrollmentButton onCreated={onSelfTestCreated} variant="compact" />
       </div>
     </Card>
   )

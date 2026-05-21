@@ -299,6 +299,39 @@ export const staEnrollmentsApi = {
   },
 
   /**
+   * Skapa en testenrollment där användaren är både deltagare och konsulent.
+   * Endast för admin/superadmin/AT-testning — så att man kan utforska
+   * STA-sidan utan att ha en separat konsulent.
+   */
+  async createSelfTest(): Promise<StaEnrollment> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    // Hämta profilens namn för external_name (en visuell hjälp i konsulentvyn)
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('first_name, last_name')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    const fullName =
+      [profile?.first_name, profile?.last_name].filter(Boolean).join(' ').trim() ||
+      'Testdeltagare (jag själv)'
+
+    const today = new Date().toISOString().slice(0, 10)
+    return this.create({
+      participant_id: user.id,
+      consultant_id: user.id,
+      external_name: fullName,
+      started_at: today,
+      current_part: 1,
+      weekly_hours: 25,
+      status: 'active',
+      link_status: 'linked',
+    })
+  },
+
+  /**
    * Deltagaren själv uppdaterar startdatum (started_at + part_started_at) via RPC.
    * Konsulenten ska använda update() istället. Datum måste vara ISO YYYY-MM-DD.
    */

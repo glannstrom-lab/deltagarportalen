@@ -26,6 +26,7 @@ import { WorkplaceCard } from './components/WorkplaceCard'
 import { WorkDiary } from './components/WorkDiary'
 import { Del3PortalIntegration } from './components/Del3PortalIntegration'
 import { Del4PortalIntegration } from './components/Del4PortalIntegration'
+import { SelfTestEnrollmentButton } from './components/SelfTestEnrollmentButton'
 import {
   Briefcase,
   Calendar,
@@ -369,7 +370,12 @@ export default function StaParticipant() {
   if (!viewModel || !enrollment) {
     return (
       <PageLayout title="Steg till arbete" showTabs={false} domain="action" showHeader={false}>
-        <NoEnrollmentEmptyState firstName={firstName} />
+        <NoEnrollmentEmptyState
+          firstName={firstName}
+          onSelfTestCreated={() => {
+            void reloadEnrollment()
+          }}
+        />
       </PageLayout>
     )
   }
@@ -459,7 +465,13 @@ export default function StaParticipant() {
 // TOMTILLSTÅND — ingen aktiv enrollment
 // ===========================================================================
 
-function NoEnrollmentEmptyState({ firstName }: { firstName: string }) {
+function NoEnrollmentEmptyState({
+  firstName,
+  onSelfTestCreated,
+}: {
+  firstName: string
+  onSelfTestCreated: () => void
+}) {
   return (
     <Card
       variant="flat"
@@ -487,6 +499,11 @@ function NoEnrollmentEmptyState({ firstName }: { firstName: string }) {
       <p className="text-stone-700 mt-3 max-w-2xl text-sm">
         Tror du att du borde vara med? Kontakta din konsulent eller arbetsförmedlare.
       </p>
+
+      {/* Admin/AT-genväg: skapa koppling till sig själv för att kunna testa sidan */}
+      <div className="mt-5">
+        <SelfTestEnrollmentButton onCreated={onSelfTestCreated} variant="full" />
+      </div>
     </Card>
   )
 }
