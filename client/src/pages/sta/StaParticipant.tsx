@@ -23,6 +23,9 @@ import { AbsenceForm } from './components/AbsenceForm'
 import { StaOnboardingTrigger, StaOnboardingModal } from './components/StaOnboarding'
 import { KompetenskartlaggningForm } from './components/KompetenskartlaggningForm'
 import { WorkplaceCard } from './components/WorkplaceCard'
+import { WorkDiary } from './components/WorkDiary'
+import { Del3PortalIntegration } from './components/Del3PortalIntegration'
+import { Del4PortalIntegration } from './components/Del4PortalIntegration'
 import {
   Briefcase,
   Calendar,
@@ -167,6 +170,7 @@ export default function StaParticipant() {
   const {
     enrollment,
     loading: enrollmentLoading,
+    reload: reloadEnrollment,
     updateStartDate,
     updateWeeklyHours,
     markOnboardingDone,
@@ -427,9 +431,16 @@ export default function StaParticipant() {
           />
         )}
         {tab === 'del-3' && (
-          <STaDel3 mock={viewModel} enrollmentId={enrollmentId} focusOccupation={viewModel.focusOccupation} />
+          <STaDel3
+            mock={viewModel}
+            enrollmentId={enrollmentId}
+            focusOccupation={viewModel.focusOccupation}
+            onReloadEnrollment={reloadEnrollment}
+          />
         )}
-        {tab === 'del-4' && <STaDel4 mock={viewModel} enrollmentId={enrollmentId} />}
+        {tab === 'del-4' && (
+          <STaDel4 mock={viewModel} enrollmentId={enrollmentId} focusOccupation={viewModel.focusOccupation} />
+        )}
       </div>
 
       <StaOnboardingModal
@@ -895,6 +906,15 @@ function STaOverview({
             Ring
           </Button>
         </div>
+        {/* AI-coach-länk — extra stöd när konsulenten inte är på plats */}
+        <Link
+          to={`/ai-team?prompt=${encodeURIComponent(`Jag är i Del ${mock.currentPart} av Steg till arbete. Kan vi reflektera ihop?`)}`}
+          className="mt-3 flex items-center gap-2 px-3 py-2 rounded-lg border border-stone-200 text-sm text-stone-700 hover:border-stone-300 hover:bg-stone-50"
+        >
+          <Sparkles size={14} style={{ color: 'var(--c-text)' }} />
+          <span className="flex-1">Prata med din AI-coach</span>
+          <ChevronRight size={14} className="text-stone-400" />
+        </Link>
       </Card>
 
       {/* Week plan */}
@@ -1942,10 +1962,12 @@ function STaDel3({
   mock,
   enrollmentId,
   focusOccupation,
+  onReloadEnrollment,
 }: {
   mock: ParticipantViewModel
   enrollmentId: string | null
   focusOccupation: string | null
+  onReloadEnrollment: () => Promise<void> | void
 }) {
   const { workplaces, loading } = useStaWorkplaces(enrollmentId)
   return (
@@ -1954,6 +1976,14 @@ function STaDel3({
         <PartIntro
           part={3}
           customText="Nu vet vi mer om vad som passar dig. Vi hittar ett yrkesområde att prova och du får testa på en riktig arbetsplats. Vi finns med hela tiden."
+        />
+
+        <Del3PortalIntegration
+          enrollmentId={enrollmentId}
+          currentFocusOccupation={focusOccupation}
+          onFocusUpdated={() => {
+            void onReloadEnrollment()
+          }}
         />
 
         <ActivitySection
@@ -2003,10 +2033,15 @@ function STaDel3({
           )}
         </ActivitySection>
 
+        {/* Arbetsdagbok per arbetsplats — strukturerad daglig logg */}
+        {workplaces.map((w) => (
+          <WorkDiary key={`diary-${w.id}`} enrollmentId={enrollmentId} workplace={w} part={3} />
+        ))}
+
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <ToolShortcut icon={<FileUser size={18} />} title="CV-byggare" href="/cv" />
           <ToolShortcut icon={<Mic size={18} />} title="Intervjuträning" href="/interview-simulator" />
-          <ToolShortcut icon={<BookOpen size={18} />} title="Arbetsdagbok" href="/diary" />
+          <ToolShortcut icon={<BookOpen size={18} />} title="Allmän dagbok" href="/diary" />
         </div>
       </div>
 
@@ -2022,9 +2057,11 @@ function STaDel3({
 function STaDel4({
   mock,
   enrollmentId,
+  focusOccupation,
 }: {
   mock: ParticipantViewModel
   enrollmentId: string | null
+  focusOccupation: string | null
 }) {
   const { workplaces, loading } = useStaWorkplaces(enrollmentId)
   // I Del 4 är vanligtvis fokus på "introducerande" arbetsprövning
@@ -2058,6 +2095,12 @@ function STaDel4({
             </div>
           )}
         </ActivitySection>
+
+        {shownWorkplaces.map((w) => (
+          <WorkDiary key={`diary-${w.id}`} enrollmentId={enrollmentId} workplace={w} part={4} />
+        ))}
+
+        <Del4PortalIntegration focusOccupation={focusOccupation} />
 
         <ActivitySection
           icon={<Award size={18} style={{ color: 'var(--c-text)' }} />}

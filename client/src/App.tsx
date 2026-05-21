@@ -114,7 +114,7 @@ function PrivateRoute({
   // Check both activeRole (current) and roles array for multi-role users
   if (allowedRoles && profile) {
     const hasAccess = allowedRoles.some(role =>
-      profile.activeRole === role || profile.roles?.includes(role)
+      profile.activeRole === role || profile.roles?.includes(role as typeof profile.activeRole)
     )
     if (!hasAccess) {
       return <Navigate to="/" replace />
@@ -286,12 +286,12 @@ function App() {
           {/* STA — Steg till arbete (visas när profile.program === 'steg_till_arbete') */}
           <Route path="steg-till-arbete" element={<LazyRoute><RouteErrorBoundary><StaParticipant /></RouteErrorBoundary></LazyRoute>} />
           <Route path="konsulent/steg-till-arbete" element={
-            <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
+            <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN', 'ARBETSTERAPEUT']}>
               <LazyRoute><RouteErrorBoundary><StaConsultant /></RouteErrorBoundary></LazyRoute>
             </PrivateRoute>
           } />
           <Route path="konsulent/steg-till-arbete/dokument/:enrollmentId/:docType" element={
-            <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
+            <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN', 'ARBETSTERAPEUT']}>
               <LazyRoute><RouteErrorBoundary><StaDocumentWorkspace /></RouteErrorBoundary></LazyRoute>
             </PrivateRoute>
           } />

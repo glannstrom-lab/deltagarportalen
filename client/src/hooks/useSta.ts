@@ -324,6 +324,26 @@ export function useStaPulseChecks(enrollmentId: string | null) {
         mood,
         comment,
       })
+      // Spegla till diary_entries så STA-reflektioner syns i deltagarens
+      // generella dagbok. Tyst fel om diary inte är tillgängligt (RLS etc.).
+      if (comment && comment.trim().length > 0) {
+        try {
+          const { diaryEntriesApi } = await import('@/services/diaryApi')
+          await diaryEntriesApi.create({
+            title: null,
+            content: comment.trim(),
+            mood: moodToNumber(mood),
+            energy_level: energy,
+            tags: ['steg-till-arbete', 'pulse-check'],
+            word_count: 0,
+            entry_date: new Date().toISOString().slice(0, 10),
+            entry_type: 'reflection',
+            is_favorite: false,
+          })
+        } catch {
+          // ignore — diary-spegling är best-effort
+        }
+      }
       await reload()
       return created
     },
@@ -331,6 +351,17 @@ export function useStaPulseChecks(enrollmentId: string | null) {
   )
 
   return { pulses, hasToday, loading, reload, submitToday }
+}
+
+function moodToNumber(mood: Mood | undefined): number | null {
+  switch (mood) {
+    case 'great': return 5
+    case 'okay': return 4
+    case 'soso': return 3
+    case 'tough': return 2
+    case 'bad': return 1
+    default: return null
+  }
 }
 
 // =============================================================================

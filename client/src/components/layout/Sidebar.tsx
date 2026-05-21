@@ -44,7 +44,9 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
   const activeRole = profile?.activeRole || profile?.role || 'USER'
   const isSuperAdmin = activeRole === 'SUPERADMIN'
   const isAdmin = activeRole === 'ADMIN' || isSuperAdmin
-  const isConsultant = activeRole === 'CONSULTANT' || isAdmin
+  const isArbetsterapeut = activeRole === 'ARBETSTERAPEUT'
+  // Konsulent-vyn ska även vara nåbar för arbetsterapeut (för signering av skattningar)
+  const isConsultant = activeRole === 'CONSULTANT' || isAdmin || isArbetsterapeut
   const isUser = activeRole === 'USER'
 
   // Hub mode: computed once per render based on env flag + current location
