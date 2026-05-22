@@ -35,7 +35,7 @@ interface CVPreviewProps {
 // Sidobars-bredd per template. Bredden måste matcha template-koden så att
 // preview och print ser likadana ut. Mallar utan sidobar listas inte.
 const SIDEBAR_WIDTHS: Record<string, string> = {
-  sidebar: '320px',
+  sidebar: '240px',
   nordic: '280px',
   budapest: '34%',
   manhattan: '220px',
