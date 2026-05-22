@@ -1,30 +1,22 @@
 /**
- * Page-by-page CV print rendering — full edge-to-edge sidobar på ALLA
- * sidor + 12mm content topp-luft på alla sidor utan @page margin.
+ * @deprecated Använd `CVPrintLayout` istället (sedan 2026-05-22).
  *
- * Roten till problemet med vanlig flex-rendering över page-breaks:
- *  - @page margin: 0 → edge-to-edge bg men content mot kanten på sida 2+
- *  - @page margin: 12mm → content-luft men vit topp ovanför sidobar
- *  - JS-mätt aside.minHeight → löser bara vita band mitt-i-sidan, inte
- *    @page-margin-bandet
+ * Denna komponent var V1 av PDF-export-pipelinen. Den splittade CV-data i
+ * N delmängder per sida och renderade varje delmängd i en egen 297mm-
+ * container. Problem som ledde till deprecation:
  *
- * Lösning som Resume.io/Kickresume använder och som vi implementerar här:
- *  - Splitta CV-data i N "page-data-subset"
- *  - Rendera varje subset i en separat 210×297mm container
- *  - @page margin: 0 (container ger sin egen safe-zone via template-padding)
- *  - page-break-after: always mellan containers
+ *  - Splittar bara workExperience + education, inte summary/skills/lang
+ *  - withEmptyAside() rensar bara delar av aside → innehåll förloras
+ *  - Header (namn, kontakt) upprepas inkonsekvent på sida 2+
+ *  - Berlin:s romerska sektionsnumrering reset:as på sida 2
+ *  - PAGE_CONTENT_PX = 1080 är hårdkodat — funkar inte universellt
+ *  - overflow: hidden klipper innehåll vid felmätning
  *
- * Resultat per sida:
- *  - Sidobar går EDGE-TO-EDGE från topp till botten
- *  - Main har 12mm topp-luft via template-internal padding (existing)
- *  - Inga vita band någonstans
+ * Se `docs/cv-pdf-export-lessons.md` för fullständig analys av vad som
+ * funkar och inte i HTML→PDF för CV-mallar.
  *
- * Splittingstrategi:
- *  - Sida 1 har full aside-data (kontakt, kompetenser, språk) + första
- *    chunk av main-content
- *  - Sida 2+ har TOM aside-content (bara bg + initialer från template-
- *    design) + remaining main-content
- *  - Antal items per sida bestäms av measurement (useLayoutEffect)
+ * Filen kvarstår tills vi är säkra på att inget annat refererar till
+ * exporten. Sökväg: ingen aktiv import efter 2026-05-22.
  */
 
 import { useEffect, useState } from 'react'

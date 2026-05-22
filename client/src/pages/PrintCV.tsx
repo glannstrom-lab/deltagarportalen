@@ -19,7 +19,7 @@
 
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { PagedCVPrint } from '@/components/cv/PagedCVPrint'
+import { CVPrintLayout } from '@/components/cv/CVPrintLayout'
 import { cvApi } from '@/services/cvApi'
 import type { CVData } from '@/services/supabaseApi'
 
@@ -119,6 +119,28 @@ export default function PrintCV() {
     return () => { cancelled = true }
   }, [demo, templateOverride, dataParam])
 
+  // Demo-overrides för testing av många-jobb-CV (?demo=mikael&jobs=12).
+  // Används av e2e/cv-pdf-3pages.cjs för att verifiera 3-sidors-pagination
+  // utan att modifiera produktionsdata. Re-run när cv eller params ändras.
+  // Idempotent via id-check: applicerar bara om antal workExperience inte
+  // redan matchar requested count.
+  useEffect(() => {
+    if (!cv || demo !== 'mikael') return
+    const jobsParam = params.get('jobs')
+    if (!jobsParam) return
+    const n = parseInt(jobsParam, 10)
+    if (Number.isNaN(n) || n < 1 || n > 20) return
+    if (cv.workExperience?.length === n) return  // redan applicerad
+    const base = cv.workExperience?.[0]
+    if (!base) return
+    const expanded = Array.from({ length: n }, (_, i) => ({
+      ...base,
+      id: `demo-${i + 1}`,
+      title: `${base.title} #${i + 1}`,
+    }))
+    setCv((prev) => prev ? { ...prev, workExperience: expanded } : prev)
+  }, [cv, demo, params])
+
   // Trigga print när content är renderat (om inte manual-flag)
   useEffect(() => {
     if (!cv || manual) return
@@ -144,10 +166,11 @@ export default function PrintCV() {
 
   return (
     <div style={{ background: '#FFFFFF', minHeight: '100vh' }}>
-      {/* PagedCVPrint splittar content i flera 210×297mm-pages för att
-          ge edge-to-edge sidobar OCH content-luft på alla sidor utan
-          @page-margin band. */}
-      <PagedCVPrint data={cv} />
+      {/* CVPrintLayout renderar CV som EN sammanhängande sida. Chrome:s
+          print-engine paginerar naturligt via break-inside-hints. Sidobar-
+          mallar får sin bakgrund via position:fixed som upprepas på alla
+          sidor — mycket robustare än JS-pre-paginering. */}
+      <CVPrintLayout data={cv} />
     </div>
   )
 }
