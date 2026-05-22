@@ -24,8 +24,11 @@ import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 
 const WHEEL_SIZE = 520 // px (svg viewBox is normalized -1..1 so storlek styrs här)
-const TARGET_JOBS = 50 // sikta på 50 jobb i hjulet
+const TARGET_JOBS = 30 // sikta på 30 jobb i hjulet (12° per segment — läsbar text)
 const SPIN_DURATION_MS = 5500
+// Hård gräns för profil-hämtning — om Supabase hänger ska vi inte fastna
+// i loading. Efter 2.5s fallback:ar vi till en generisk sökning.
+const PROFILE_TIMEOUT_MS = 2500
 
 // Färgpalett för segmenten — varma activity-hub-toner (persika/orange/amber)
 // + lila/teal för kontrast. 10 färger som roterar.
@@ -275,23 +278,28 @@ export function SlumpjobbetTab() {
 
   // Bygg ett initialt sökord från användarens profil — drömjobb först,
   // fallback till första work-experience-titel, sedan första skill.
+  // Race mot en timeout så vi aldrig fastnar om Supabase-anropen hänger.
   const buildInitialSearch = useCallback(async (): Promise<string> => {
-    try {
-      const [profilePrefs, cv] = await Promise.all([
-        userApi.getPreferences().catch(() => null),
-        cvApi.getCV().catch(() => null),
-      ])
-      const desired = profilePrefs?.desired_jobs?.[0]?.label
-      if (desired) return desired
-      const workExp = cv?.workExperience || cv?.work_experience
-      const firstTitle = workExp?.[0]?.title || workExp?.[0]?.position
-      if (firstTitle) return firstTitle
-      const firstSkill = cv?.skills?.[0]
-      if (firstSkill) return typeof firstSkill === 'string' ? firstSkill : firstSkill.name
-      return ''
-    } catch {
-      return ''
-    }
+    const fetchProfile = (async () => {
+      try {
+        const [profilePrefs, cv] = await Promise.all([
+          userApi.getPreferences().catch(() => null),
+          cvApi.getCV().catch(() => null),
+        ])
+        const desired = profilePrefs?.desired_jobs?.[0]?.label
+        if (desired) return desired
+        const workExp = cv?.workExperience || cv?.work_experience
+        const firstTitle = workExp?.[0]?.title || workExp?.[0]?.position
+        if (firstTitle) return firstTitle
+        const firstSkill = cv?.skills?.[0]
+        if (firstSkill) return typeof firstSkill === 'string' ? firstSkill : firstSkill.name
+        return ''
+      } catch {
+        return ''
+      }
+    })()
+    const timeout = new Promise<string>((resolve) => setTimeout(() => resolve(''), PROFILE_TIMEOUT_MS))
+    return Promise.race([fetchProfile, timeout])
   }, [])
 
   const loadJobs = useCallback(async (query: string) => {
@@ -299,16 +307,24 @@ export function SlumpjobbetTab() {
     setError(null)
     setWinner(null)
     try {
-      const result = await searchJobs({
-        query: query || 'jobb',
-        limit: TARGET_JOBS,
-        publishedWithin: 'month',
-      })
+      // 10s timeout — om Platsbanken API hänger ska vi inte vänta för evigt
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Tidsgränsen för sökning överskreds')), 10000),
+      )
+      const result = await Promise.race([
+        searchJobs({
+          query: query || 'jobb',
+          limit: TARGET_JOBS,
+          publishedWithin: 'month',
+        }),
+        timeoutPromise,
+      ])
       // Slumpa ordning så hjulet inte alltid har samma topp-jobb först
       const shuffled = [...result.hits].sort(() => Math.random() - 0.5).slice(0, TARGET_JOBS)
       setJobs(shuffled)
-      setActiveSearchTerm(query)
+      setActiveSearchTerm(query || 'jobb')
     } catch (e) {
+      console.error('[Slumpjobbet] searchJobs failed:', e)
       setError(e instanceof Error ? e.message : 'Kunde inte hämta jobb')
       setJobs([])
     } finally {
