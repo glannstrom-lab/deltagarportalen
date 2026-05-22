@@ -357,6 +357,99 @@ export const staEnrollmentsApi = {
     if (error) handleError(error)
     return data as StaEnrollment
   },
+
+  /**
+   * Bulk-bjuder in flera STA-deltagare i en transaktion via RPC.
+   * Skapar invitations + förskapade sta_enrollments per rad.
+   * Anropa send-invite-email edge function efteråt för att skicka utskick.
+   */
+  async bulkInvite(input: {
+    invites: Array<{ email: string; first_name?: string; last_name?: string; phone?: string }>
+    startedAt?: string
+    consentText: string
+    consentScope: Record<string, unknown>
+  }): Promise<Array<{
+    email: string
+    invitation_id: string | null
+    sta_enrollment_id: string | null
+    status: 'created' | 'error'
+    error: string | null
+  }>> {
+    const { data, error } = await supabase.rpc('sta_bulk_invite', {
+      p_invites: input.invites,
+      p_started_at: input.startedAt ?? new Date().toISOString().slice(0, 10),
+      p_consent_text: input.consentText,
+      p_consent_scope: input.consentScope,
+    })
+    if (error) handleError(error)
+    return (data ?? []) as Array<{
+      email: string
+      invitation_id: string | null
+      sta_enrollment_id: string | null
+      status: 'created' | 'error'
+      error: string | null
+    }>
+  },
+
+  /**
+   * Deltagaren säger upp sin koppling till konsulenten.
+   * Mjuk uppsägning — inskickade dokument bevaras för AF-arkiv.
+   */
+  async revokeConsultantLink(consultantId: string, reason?: string): Promise<{
+    success: boolean
+    cancelled_enrollments: number
+    drafts_deleted: number
+    consents_revoked: number
+  }> {
+    const { data, error } = await supabase.rpc('revoke_consultant_link', {
+      p_consultant_id: consultantId,
+      p_reason: reason ?? null,
+    })
+    if (error) handleError(error)
+    return data as {
+      success: boolean
+      cancelled_enrollments: number
+      drafts_deleted: number
+      consents_revoked: number
+    }
+  },
+}
+
+// =============================================================================
+// CONSULTANT CONSENTS
+// =============================================================================
+
+export interface ConsultantConsent {
+  id: string
+  participant_id: string
+  consultant_id: string
+  program: string | null
+  scope: Record<string, unknown>
+  granted_text: string | null
+  granted_at: string
+  granted_via: 'invitation' | 'consultant_request' | 'manual_link'
+  revoked_at: string | null
+  revoked_reason: string | null
+  created_at: string
+}
+
+export const consultantConsentsApi = {
+  /** Aktivt samtycke (revoked_at IS NULL) för inloggad deltagare och given konsulent. */
+  async getActive(consultantId: string): Promise<ConsultantConsent | null> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
+    const { data, error } = await supabase
+      .from('consultant_consents')
+      .select('*')
+      .eq('participant_id', user.id)
+      .eq('consultant_id', consultantId)
+      .is('revoked_at', null)
+      .order('granted_at', { ascending: false })
+      .limit(1)
+      .maybeSingle()
+    if (error && error.code !== 'PGRST116') handleError(error)
+    return (data as ConsultantConsent) ?? null
+  },
 }
 
 // =============================================================================

@@ -10,6 +10,7 @@ import { AssessmentSignature } from './components/AssessmentSignature'
 import { WorkplaceCard } from './components/WorkplaceCard'
 import { WorkplaceFormModal } from './components/WorkplaceFormModal'
 import { SelfTestEnrollmentButton } from './components/SelfTestEnrollmentButton'
+import { BulkInviteParticipantsModal } from './components/BulkInviteParticipantsModal'
 import { staWorkplacesApi, type StaWorkplace } from '@/services/staApi'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
@@ -62,6 +63,7 @@ export default function StaConsultant() {
   const [tab, setTab] = useState<TabId>('oversikt')
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null)
   const [addParticipantOpen, setAddParticipantOpen] = useState(false)
+  const [bulkInviteOpen, setBulkInviteOpen] = useState(false)
   const [linkParticipantId, setLinkParticipantId] = useState<string | null>(null)
   const { stats, loading, reload } = useConsultantStats()
 
@@ -81,7 +83,10 @@ export default function StaConsultant() {
 
   return (
     <PageLayout title="Steg till arbete — konsulent" showTabs={false} domain="action" showHeader={false}>
-      <ConsultantHero onAdd={() => setAddParticipantOpen(true)} />
+      <ConsultantHero
+        onAdd={() => setAddParticipantOpen(true)}
+        onBulkInvite={() => setBulkInviteOpen(true)}
+      />
       <KpiRow kpi={kpi} />
       <ConsultantTabs current={tab} onChange={setTab} />
 
@@ -127,6 +132,13 @@ export default function StaConsultant() {
         <AddParticipantModal onClose={() => setAddParticipantOpen(false)} onCreated={reload} />
       )}
 
+      {bulkInviteOpen && (
+        <BulkInviteParticipantsModal
+          onClose={() => setBulkInviteOpen(false)}
+          onCreated={() => reload()}
+        />
+      )}
+
       {linkParticipantId && (() => {
         const participant = rows.find((r) => r.id === linkParticipantId)
         if (!participant) return null
@@ -145,7 +157,7 @@ export default function StaConsultant() {
 // HERO + KPI + TABS
 // ===========================================================================
 
-function ConsultantHero({ onAdd }: { onAdd: () => void }) {
+function ConsultantHero({ onAdd, onBulkInvite }: { onAdd: () => void; onBulkInvite: () => void }) {
   return (
     <Card
       variant="flat"
@@ -172,6 +184,9 @@ function ConsultantHero({ onAdd }: { onAdd: () => void }) {
         </div>
         <div className="flex gap-2 flex-wrap">
           <Button variant="secondary">Veckosammanställning</Button>
+          <Button variant="secondary" leftIcon={<Users size={16} />} onClick={onBulkInvite}>
+            Bjud in flera
+          </Button>
           <Button variant="primary" leftIcon={<Plus size={16} />} onClick={onAdd}>
             Lägg till deltagare
           </Button>

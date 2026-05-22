@@ -44,6 +44,7 @@ import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { RevokeConsultantLinkSection } from '@/components/consultant/RevokeConsultantLinkSection'
 
 // Types
 interface ConsultantInfo {
@@ -904,6 +905,19 @@ function MyConsultantInner() {
     }
   }
 
+  const handleConsultantRevoked = () => {
+    // Uppsägning lyckades — rensa lokal state och uppdatera profilen i store
+    // så att resten av appen direkt ser att kopplingen försvunnit.
+    setConsultant(null)
+    setNextMeeting(null)
+    setMessages([])
+    setGoals([])
+    setSharedInfo([])
+    useAuthStore.setState((state) => ({
+      profile: state.profile ? { ...state.profile, consultant_id: null } : null,
+    }))
+  }
+
   if (loading) {
     return (
       <PageLayout
@@ -973,6 +987,17 @@ function MyConsultantInner() {
       {consultant && (
         <div className="mt-6">
           <QuickActions consultant={consultant} onBookMeeting={handleBookMeeting} />
+        </div>
+      )}
+
+      {/* Säg upp kopplingen - längst ner, dämpad */}
+      {consultant && (
+        <div className="mt-8 max-w-3xl mx-auto">
+          <RevokeConsultantLinkSection
+            consultantId={consultant.id}
+            consultantName={`${consultant.first_name} ${consultant.last_name}`.trim()}
+            onRevoked={handleConsultantRevoked}
+          />
         </div>
       )}
     </PageLayout>
