@@ -21,14 +21,12 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
         fontFamily: "'Inter', -apple-system, sans-serif",
       }}
     >
-      {/* Solid header — kompakt så Erfarenhet får plats på sida 1 även för
-          typiska CV:n. Tidigare 72/56px padding gav 350px header som
-          tryckte ut innehåll. Nu 32/24px → ~180px header. */}
+      {/* Kompakt navy-header — tar ~130px så main får ~990px på 1 A4. */}
       <header
         className="cv-keep"
         style={{
           background: primary,
-          padding: '36px 64px 28px',
+          padding: '20px 56px 16px',
           textAlign: 'center',
           color: '#FFFFFF',
           borderBottom: `3px solid ${accent}`,
@@ -39,22 +37,22 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
             src={data.profileImage}
             alt=""
             style={{
-              width: '90px',
-              height: '90px',
+              width: '66px',
+              height: '66px',
               objectFit: 'cover',
               borderRadius: '50%',
               border: '3px solid rgba(255,255,255,0.25)',
-              marginBottom: '14px',
+              marginBottom: '8px',
             }}
           />
         )}
 
         <h1
           style={{
-            fontSize: '36px',
+            fontSize: '28px',
             fontWeight: '600',
             letterSpacing: '-0.01em',
-            marginBottom: '6px',
+            marginBottom: '3px',
           }}
         >
           {fullName}
@@ -62,12 +60,12 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
         {data.title && (
           <p
             style={{
-              fontSize: '14px',
+              fontSize: '11.5px',
               fontWeight: 400,
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
               color: accent,
-              marginBottom: '16px',
+              marginBottom: '10px',
             }}
           >
             {data.title}
@@ -79,24 +77,24 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: '24px',
+            gap: '20px',
             flexWrap: 'wrap',
           }}
         >
           {data.email && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'rgba(255,255,255,0.85)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'rgba(255,255,255,0.85)' }}>
               <Mail style={{ width: '12px', height: '12px' }} />
               {data.email}
             </span>
           )}
           {data.phone && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'rgba(255,255,255,0.85)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'rgba(255,255,255,0.85)' }}>
               <Phone style={{ width: '12px', height: '12px' }} />
               {data.phone}
             </span>
           )}
           {data.location && (
-            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'rgba(255,255,255,0.85)' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', color: 'rgba(255,255,255,0.85)' }}>
               <MapPin style={{ width: '12px', height: '12px' }} />
               {data.location}
             </span>
@@ -104,16 +102,16 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
         </div>
       </header>
 
-      <main style={{ padding: '36px 64px 48px' }}>
-        {/* Summary - centered */}
+      <main style={{ padding: '20px 56px 24px' }}>
+        {/* Summary - centered, tighter line-height */}
         {data.summary && (
-          <section style={{ textAlign: 'center', marginBottom: '56px' }}>
+          <section style={{ textAlign: 'center', marginBottom: '16px' }}>
             <p
               style={{
-                fontSize: '18px',
-                lineHeight: '1.8',
+                fontSize: '13px',
+                lineHeight: '1.55',
                 color: '#4B5563',
-                maxWidth: '680px',
+                maxWidth: '640px',
                 margin: '0 auto',
               }}
             >
@@ -124,15 +122,15 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
 
         {/* Skills */}
         {data.skills?.length > 0 && (
-          <section style={{ marginBottom: '56px', textAlign: 'center' }}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
+          <section style={{ marginBottom: '18px', textAlign: 'center' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '7px', justifyContent: 'center' }}>
               {data.skills.map((skill, i) => (
                 <span
                   key={i}
                   style={{
-                    fontSize: '13px',
+                    fontSize: '12px',
                     fontWeight: '500',
-                    padding: '8px 18px',
+                    padding: '5px 13px',
                     background: '#F4F1EC',
                     color: primary,
                     borderRadius: '4px',
@@ -146,21 +144,19 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
           </section>
         )}
 
-        {/* Linjär 1-kolumns layout — 2-kolumns body kraschar i multi-page
-            (kolumnerna fortsätter oberoende vilket lämnar massa whitespace).
-            Linjärt flöde fungerar för alla data-mängder. */}
+        {/* Linjär 1-kolumns layout — fungerar för alla data-mängder. */}
 
         {data.workExperience?.length > 0 && (
-          <section style={{ marginBottom: '40px' }}>
+          <section style={{ marginBottom: '16px' }}>
             <h2
               style={{
-                fontSize: '12px',
+                fontSize: '11px',
                 fontWeight: '600',
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
                 color: primary,
-                marginBottom: '24px',
-                paddingBottom: '8px',
+                marginBottom: '10px',
+                paddingBottom: '5px',
                 borderBottom: `1px solid ${primary}25`,
               }}
             >
@@ -172,18 +168,18 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
                   key={job.id}
                   className="cv-entry"
                   style={{
-                    paddingLeft: '20px',
+                    paddingLeft: '14px',
                     borderLeft: `2px solid ${primary}30`,
-                    marginBottom: '24px',
+                    marginBottom: '10px',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                    <h3 style={{ fontSize: '17px', fontWeight: '600', color: '#111827', wordBreak: 'break-word' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1px' }}>
+                    <h3 style={{ fontSize: '14px', fontWeight: '600', color: '#111827', wordBreak: 'break-word' }}>
                       {job.title}
                     </h3>
                     <span
                       style={{
-                        fontSize: '12px',
+                        fontSize: '11.5px',
                         color: '#9CA3AF',
                         whiteSpace: 'nowrap',
                         marginLeft: '12px',
@@ -192,12 +188,12 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
                       {job.startDate} — {job.current ? 'Nu' : job.endDate}
                     </span>
                   </div>
-                  <div style={{ fontSize: '14px', color: primary, marginBottom: '8px' }}>
+                  <div style={{ fontSize: '12.5px', color: primary, marginBottom: '3px' }}>
                     {job.company}
                     {job.location && <span style={{ color: '#9CA3AF' }}> · {job.location}</span>}
                   </div>
                   {job.description && (
-                    <p style={{ fontSize: '14px', lineHeight: '1.7', color: '#6B7280' }}>{job.description}</p>
+                    <p style={{ fontSize: '12.5px', lineHeight: '1.5', color: '#6B7280' }}>{job.description}</p>
                   )}
                 </div>
               ))}
@@ -206,16 +202,16 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.education?.length > 0 && (
-          <section style={{ marginBottom: '40px' }}>
+          <section className="cv-keep" style={{ marginBottom: '16px' }}>
             <h2
               style={{
-                fontSize: '12px',
+                fontSize: '11px',
                 fontWeight: '600',
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
                 color: primary,
-                marginBottom: '24px',
-                paddingBottom: '8px',
+                marginBottom: '10px',
+                paddingBottom: '5px',
                 borderBottom: `1px solid ${primary}25`,
               }}
             >
@@ -227,18 +223,18 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
                   key={edu.id}
                   className="cv-entry"
                   style={{
-                    paddingLeft: '20px',
+                    paddingLeft: '14px',
                     borderLeft: `2px solid ${primary}30`,
-                    marginBottom: '20px',
+                    marginBottom: '8px',
                   }}
                 >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '2px' }}>
-                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#111827' }}>{edu.degree}</h3>
-                    <span style={{ fontSize: '12px', color: '#9CA3AF', whiteSpace: 'nowrap', marginLeft: '12px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1px' }}>
+                    <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: '#111827' }}>{edu.degree}</h3>
+                    <span style={{ fontSize: '11.5px', color: '#9CA3AF', whiteSpace: 'nowrap', marginLeft: '12px' }}>
                       {edu.startDate} — {edu.endDate}
                     </span>
                   </div>
-                  <div style={{ fontSize: '14px', color: primary }}>
+                  <div style={{ fontSize: '12.5px', color: primary }}>
                     {edu.school}
                     {edu.field && <span style={{ color: '#9CA3AF' }}> · {edu.field}</span>}
                   </div>
@@ -252,25 +248,25 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
           <section className="cv-keep">
             <h2
               style={{
-                fontSize: '12px',
+                fontSize: '11px',
                 fontWeight: '600',
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
                 color: primary,
-                marginBottom: '20px',
-                paddingBottom: '8px',
+                marginBottom: '10px',
+                paddingBottom: '5px',
                 borderBottom: `1px solid ${primary}25`,
               }}
             >
               Språk
             </h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '6px' }}>
               {data.languages.map(lang => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
                   <div key={lang.id} className="cv-entry">
-                    <div style={{ fontSize: '14px', color: '#374151', fontWeight: 500 }}>{name}</div>
-                    <div style={{ fontSize: '12px', color: '#9CA3AF', fontStyle: 'italic', marginTop: '2px' }}>
+                    <div style={{ fontSize: '13px', color: '#374151', fontWeight: 500 }}>{name}</div>
+                    <div style={{ fontSize: '11.5px', color: '#9CA3AF', fontStyle: 'italic', marginTop: '1px' }}>
                       {getLanguageLevelDisplay(lang.level)}
                     </div>
                   </div>

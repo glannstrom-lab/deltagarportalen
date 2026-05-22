@@ -61,9 +61,11 @@ async function main() {
   const page = await context.newPage()
   page.on('pageerror', e => console.log(`[pageerror] ${e.message}`))
 
-  const dataParam = encodeBase64Url(JSON.stringify(CV))
-  const url = `${BASE_URL}/#/print/cv?data=${dataParam}&template=sidebar&manual=1`
-  console.log('URL length:', url.length)
+  const tpl = process.env.TEMPLATE || 'sidebar'
+  const cv = { ...CV, template: tpl }
+  const dataParam = encodeBase64Url(JSON.stringify(cv))
+  const url = `${BASE_URL}/#/print/cv?data=${dataParam}&template=${tpl}&manual=1`
+  console.log('URL length:', url.length, 'template:', tpl)
 
   await page.goto(url, { waitUntil: 'networkidle' })
   try {
@@ -93,7 +95,7 @@ async function main() {
   })
   console.log('Dims:', JSON.stringify(dims, null, 2))
 
-  const pdfOut = path.join(outDir, 'sidebar-real.pdf')
+  const pdfOut = path.join(outDir, `${tpl}-real.pdf`)
   await page.pdf({ path: pdfOut, printBackground: true, preferCSSPageSize: true })
   console.log('PDF:', pdfOut, fs.statSync(pdfOut).size, 'bytes')
 
