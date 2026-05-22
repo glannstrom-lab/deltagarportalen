@@ -44,7 +44,12 @@ const CV = {
     { id: '1', language: 'Svenska', level: 'native' },
     { id: '2', language: 'Engelska', level: 'fluent' },
   ],
-  certificates: [], links: [],
+  certificates: [
+    { id: '1', name: 'Diplomerad samtalsterapeut', issuer: 'Svenska Terapiinstitutet', date: '2018-05' },
+  ],
+  links: [
+    { id: '1', type: 'website', url: 'https://www.glannstrom.se', label: 'Hemsida' },
+  ],
   colorScheme: 'indigo', font: 'inter',
   profileImage: 'https://api.dicebear.com/7.x/personas/png?seed=Mikael&size=300',
 }

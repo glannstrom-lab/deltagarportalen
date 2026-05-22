@@ -202,7 +202,7 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.skills?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '18px' }}>
+          <section className="cv-keep" style={{ marginBottom: '12px' }}>
             <h2 style={sectionHeader}>Expertis</h2>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {data.skills.map((skill, i) => (
@@ -224,7 +224,7 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.languages?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '18px' }}>
+          <section className="cv-keep" style={{ marginBottom: '8px' }}>
             <h2 style={sectionHeader}>Språk</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px' }}>
               {data.languages.map((lang) => {
@@ -244,33 +244,37 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
           </section>
         )}
 
-        {data.certificates?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '36px' }}>
-            <h2 style={sectionHeader}>Certifikat</h2>
-            <div>
-              {data.certificates.map((cert) => (
-                <div key={cert.id} className="cv-entry" style={{ marginBottom: '10px' }}>
-                  <span style={{ fontSize: '14px', color: ink, fontWeight: 400 }}>{cert.name}</span>
-                  {cert.issuer && (
-                    <span style={{ fontSize: '13px', color: muted, fontStyle: 'italic' }}> · {cert.issuer}</span>
-                  )}
+        {/* Certifikat + Länkar i 2-col layout för att spara vertikal plats. */}
+        {(data.certificates?.length > 0 || data.links?.length > 0) && (
+          <section className="cv-keep" style={{ display: 'grid', gridTemplateColumns: data.certificates?.length && data.links?.length ? '1fr 1fr' : '1fr', gap: '16px', marginTop: '4px' }}>
+            {data.certificates?.length > 0 && (
+              <div>
+                <h2 style={sectionHeader}>Certifikat</h2>
+                <div>
+                  {data.certificates.map((cert) => (
+                    <div key={cert.id} className="cv-entry" style={{ marginBottom: '4px' }}>
+                      <span style={{ fontSize: '12.5px', color: ink, fontWeight: 400 }}>{cert.name}</span>
+                      {cert.issuer && (
+                        <span style={{ fontSize: '11.5px', color: muted, fontStyle: 'italic' }}> · {cert.issuer}</span>
+                      )}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {data.links?.length > 0 && (
-          <section className="cv-keep">
-            <h2 style={sectionHeader}>Länkar</h2>
-            <div>
-              {data.links.map((link) => (
-                <div key={link.id} className="cv-entry" style={{ marginBottom: '6px', fontSize: '13px' }}>
-                  {link.label && <span style={{ color: ink }}>{link.label} · </span>}
-                  <span style={{ color: gold, wordBreak: 'break-all' }}>{link.url}</span>
+              </div>
+            )}
+            {data.links?.length > 0 && (
+              <div>
+                <h2 style={sectionHeader}>Länkar</h2>
+                <div>
+                  {data.links.map((link) => (
+                    <div key={link.id} className="cv-entry" style={{ marginBottom: '3px', fontSize: '11.5px' }}>
+                      {link.label && <span style={{ color: ink }}>{link.label} · </span>}
+                      <span style={{ color: gold, wordBreak: 'break-all' }}>{link.url}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </section>
         )}
       </main>

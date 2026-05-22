@@ -85,28 +85,28 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
           </section>
         )}
 
-        <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', marginBottom: '32px' }} />
+        <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', marginBottom: '18px' }} />
 
         {/* Links */}
         {data.links?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '32px' }}>
+          <section className="cv-keep" style={{ marginBottom: '18px' }}>
             <h3
               style={{
-                fontSize: '12px',
+                fontSize: '11px',
                 fontWeight: 700,
                 letterSpacing: '0.15em',
-                marginBottom: '14px',
+                marginBottom: '8px',
                 color: '#FFFFFF',
               }}
             >
               LÄNKAR
             </h3>
             {data.links.map((link) => (
-              <div key={link.id} style={{ marginBottom: '12px' }}>
+              <div key={link.id} style={{ marginBottom: '6px' }}>
                 {link.label && (
-                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFFFFF' }}>{link.label}</div>
+                  <div style={{ fontSize: '11.5px', fontWeight: 600, color: '#FFFFFF' }}>{link.label}</div>
                 )}
-                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', wordBreak: 'break-all' }}>
+                <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.7)', wordBreak: 'break-all' }}>
                   {link.url}
                 </div>
               </div>
@@ -116,14 +116,14 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
 
         {data.languages?.length > 0 && (
           <>
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', marginBottom: '32px' }} />
-            <section style={{ marginBottom: '32px' }}>
+            <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', marginBottom: '14px' }} />
+            <section style={{ marginBottom: '18px' }}>
               <h3
                 style={{
-                  fontSize: '12px',
+                  fontSize: '11px',
                   fontWeight: 700,
                   letterSpacing: '0.15em',
-                  marginBottom: '14px',
+                  marginBottom: '8px',
                   color: '#FFFFFF',
                 }}
               >
@@ -132,7 +132,7 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
               {data.languages.map((lang) => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
-                  <div key={lang.id} className="cv-entry" style={{ marginBottom: '8px', fontSize: '12px' }}>
+                  <div key={lang.id} className="cv-entry" style={{ marginBottom: '4px', fontSize: '11.5px' }}>
                     <span style={{ color: '#FFFFFF', fontWeight: 600 }}>{name}</span>
                     <span style={{ color: 'rgba(255,255,255,0.7)', marginLeft: '6px' }}>
                       — {getLanguageLevelDisplay(lang.level)}
@@ -146,24 +146,24 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
 
         {data.certificates?.length > 0 && (
           <>
-            <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', marginBottom: '32px' }} />
+            <div style={{ height: '1px', background: 'rgba(255,255,255,0.12)', marginBottom: '14px' }} />
             <section>
               <h3
                 style={{
-                  fontSize: '12px',
+                  fontSize: '11px',
                   fontWeight: 700,
                   letterSpacing: '0.15em',
-                  marginBottom: '14px',
+                  marginBottom: '8px',
                   color: '#FFFFFF',
                 }}
               >
                 CERTIFIKAT
               </h3>
               {data.certificates.map((cert) => (
-                <div key={cert.id} className="cv-entry" style={{ marginBottom: '12px' }}>
-                  <div style={{ fontSize: '12px', fontWeight: 600, color: '#FFFFFF' }}>{cert.name}</div>
+                <div key={cert.id} className="cv-entry" style={{ marginBottom: '6px' }}>
+                  <div style={{ fontSize: '11.5px', fontWeight: 600, color: '#FFFFFF' }}>{cert.name}</div>
                   {cert.issuer && (
-                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)' }}>{cert.issuer}</div>
+                    <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.7)' }}>{cert.issuer}</div>
                   )}
                 </div>
               ))}

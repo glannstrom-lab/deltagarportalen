@@ -127,12 +127,22 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
   const bgImage = hasSidebar && cfg ? buildBgImage(cfg) : 'none'
 
   const rootRef = useRef<HTMLDivElement>(null)
+  const fillerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     document.documentElement.style.background = '#FFFFFF'
+    document.documentElement.style.margin = '0'
+    document.documentElement.style.padding = '0'
     document.body.style.background = '#FFFFFF'
     document.body.style.margin = '0'
     document.body.style.padding = '0'
+    // React-app:s root-div har ofta default-styling som kan adda subpixel-
+    // offset. Hitta första div under body och nollställ.
+    const root = document.getElementById('root')
+    if (root) {
+      root.style.margin = '0'
+      root.style.padding = '0'
+    }
   }, [])
 
   // Avrunda cv-print-root:s höjd till nästa hela A4-sida så sidobar-bg
@@ -148,16 +158,22 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
     if (!root) return
     const sync = () => {
       if (!root) return
-      // Mät naturlig höjd (utan vår tidigare minHeight-override)
-      root.style.minHeight = ''
-      void root.offsetHeight // force-reflow innan scrollHeight läses
+      const filler = fillerRef.current
+      if (filler) filler.style.height = '0'
+      void root.offsetHeight
       const natural = root.scrollHeight
-      // Tolerans (4px) hanterar pixel-rounding där en mall som är EXAKT
-      // en A4 (t.ex. minHeight: 297mm = 1122.5px) ibland mäts som 1123px
-      // och tippar över till 2 sidor. Utan toleransen får vi 1-sidors-CV
-      // (Budapest) renderat som 2 sidor med mestadels tom sida 2.
       const pages = Math.max(1, Math.ceil(Math.max(0, natural - 4) / A4_PX))
-      root.style.minHeight = `${pages * A4_PX}px`
+      // Fyll cv-print-root till slutet av sidan FÖRE natural-page-end så
+      // sidobar-bg paintar till botten av varje sida. Chrome:s print-
+      // engine renderar ofta tomma sidor om elementet är nästan exakt N*A4
+      // — så vi siktar på en sida UNDER (pages-1)*A4 + 285mm = N*A4 - 12mm,
+      // som ger sidobar-bg på alla sidor utom de sista 12mm av sista sidan.
+      const targetMm = pages * 297 - 30
+      const naturalMm = natural / (96 / 25.4)
+      if (filler) {
+        const fillerMm = Math.max(0, targetMm - naturalMm)
+        filler.style.height = `${fillerMm}mm`
+      }
       root.setAttribute('data-pages', String(pages))
       root.setAttribute('data-natural', String(natural))
     }
@@ -191,23 +207,38 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
             margin: 0 !important;
             padding: 0 !important;
             background: #FFFFFF !important;
+            height: auto !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+          }
+          /* React-root och PrintCV-wrapper får 0 margin/padding så html-
+             höjden matchar cv-print-root exakt — annars adderas ~32px från
+             default-styling vilket triggar extra blank tryck-sida. */
+          #root, #root > div {
+            margin: 0 !important;
+            padding: 0 !important;
+            min-height: 0 !important;
           }
           /* Dölj allt utom print-root (App.tsx kan ha andra root-element) */
           body * { visibility: hidden; }
           .cv-print-root, .cv-print-root * { visibility: visible; }
 
           .cv-print-root {
-            position: absolute !important;
-            left: 0 !important;
-            top: 0 !important;
+            position: relative !important;
             width: 210mm !important;
             margin: 0 !important;
             box-shadow: none !important;
             border: none !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
+          }
+          /* Override cv-preview:s min-height: 297mm i print — så att 1-sidors-
+             CV:n vars content är nästan exakt A4 inte tippar över till 2 sidor
+             pga cv-preview tvingas vara minst A4 (1122.5px) + Chrome:s print-
+             safe-zone på ~30mm. Vi vill att cv-preview ska anpassa höjd till
+             content. Sidobar-bg på cv-print-root täcker resterande utrymme. */
+          .cv-print-root .cv-preview {
+            min-height: 0 !important;
           }
 
           /* Mallens cv-preview ska INTE sätta egen bakgrund som täcker
@@ -267,13 +298,13 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
         style={{
           backgroundImage: bgImage,
           backgroundColor: '#FFFFFF',
-          // background spans hela elementets höjd (som vi avrundar till
-          // nästa A4-page via useLayoutEffect ovan)
-          backgroundRepeat: 'no-repeat',
-          backgroundSize: '100% 100%',
+          backgroundRepeat: 'repeat-y',
+          backgroundSize: '100% 297mm',
+          backgroundPosition: '0 0',
         }}
       >
         {renderTemplate(data, fullName)}
+        <div ref={fillerRef} aria-hidden="true" style={{ width: '100%', height: 0 }} />
       </div>
     </>
   )

@@ -165,12 +165,14 @@ export default function PrintCV() {
   }
 
   return (
-    <div style={{ background: '#FFFFFF', minHeight: '100vh' }}>
+    <>
       {/* CVPrintLayout renderar CV som EN sammanhängande sida. Chrome:s
           print-engine paginerar naturligt via break-inside-hints. Sidobar-
-          mallar får sin bakgrund via position:fixed som upprepas på alla
-          sidor — mycket robustare än JS-pre-paginering. */}
+          mallar får sin bakgrund via background-image repeat-y med 297mm
+          tile-höjd så bg upprepas per A4-sida. Wrappern undviks helt så
+          html-elementets höjd matchar cv-print-root exakt (annars 32px
+          subpixel-offset → en extra blank sida i Chrome:s print-engine). */}
       <CVPrintLayout data={cv} />
-    </div>
+    </>
   )
 }

@@ -158,7 +158,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.workExperience?.length > 0 && (
-          <section style={{ marginBottom: '14px' }}>
+          <section style={{ marginBottom: '12px' }}>
             <SectionHeader roman={nextRoman()} title="Erfarenhet" />
             <div>
               {data.workExperience.map((job) => (
@@ -166,17 +166,17 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
                   key={job.id}
                   className="cv-entry"
                   style={{
-                    marginBottom: '10px',
-                    paddingBottom: '10px',
+                    marginBottom: '8px',
+                    paddingBottom: '8px',
                     borderBottom: `1px solid ${ink}33`,
                     display: 'grid',
-                    gridTemplateColumns: '90px 1fr',
-                    gap: '18px',
+                    gridTemplateColumns: '80px 1fr',
+                    gap: '14px',
                   }}
                 >
                   <div
                     style={{
-                      fontSize: '10.5px',
+                      fontSize: '10px',
                       fontWeight: 700,
                       color: accent,
                       letterSpacing: '0.08em',
@@ -194,7 +194,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
                   <div>
                     <h3
                       style={{
-                        fontSize: '14px',
+                        fontSize: '13.5px',
                         fontWeight: 800,
                         color: ink,
                         letterSpacing: '-0.01em',
@@ -265,7 +265,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
                   <div>
                     <h3
                       style={{
-                        fontSize: '13.5px',
+                        fontSize: '13px',
                         fontWeight: 800,
                         color: ink,
                         letterSpacing: '-0.01em',
@@ -296,7 +296,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.skills?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '16px' }}>
+          <section className="cv-keep" style={{ marginBottom: '12px' }}>
             <SectionHeader roman={nextRoman()} title="Kompetenser" />
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {data.skills.map((skill, i) => (
@@ -321,7 +321,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.languages?.length > 0 && (
-          <section className="cv-keep" style={{ marginBottom: '16px' }}>
+          <section className="cv-keep" style={{ marginBottom: '12px' }}>
             <SectionHeader roman={nextRoman()} title="Språk" />
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '8px' }}>
               {data.languages.map((lang) => {
@@ -350,53 +350,41 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
           </section>
         )}
 
-        {data.certificates?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
-            <SectionHeader roman={nextRoman()} title="Certifikat" />
-            <div>
-              {data.certificates.map((cert) => (
-                <div
-                  key={cert.id}
-                  className="cv-entry"
-                  style={{
-                    marginBottom: '10px',
-                    paddingBottom: '8px',
-                    borderBottom: `1px solid ${ink}22`,
-                  }}
-                >
-                  <div style={{ fontSize: '13px', fontWeight: 700, color: ink }}>{cert.name}</div>
-                  {cert.issuer && (
-                    <div
-                      style={{
-                        fontSize: '11px',
-                        color: muted,
-                        marginTop: '2px',
-                        letterSpacing: '0.06em',
-                        textTransform: 'uppercase',
-                      }}
-                    >
-                      {cert.issuer}
+        {/* Certifikat + Länkar i 2-col layout för att spara vertikal plats */}
+        {(data.certificates?.length > 0 || data.links?.length > 0) && (
+          <section className="cv-keep" style={{ display: 'grid', gridTemplateColumns: data.certificates?.length && data.links?.length ? '1fr 1fr' : '1fr', gap: '20px' }}>
+            {data.certificates?.length > 0 && (
+              <div>
+                <SectionHeader roman={nextRoman()} title="Certifikat" />
+                <div>
+                  {data.certificates.map((cert) => (
+                    <div key={cert.id} className="cv-entry" style={{ marginBottom: '4px' }}>
+                      <div style={{ fontSize: '12.5px', fontWeight: 700, color: ink }}>{cert.name}</div>
+                      {cert.issuer && (
+                        <div style={{ fontSize: '10.5px', color: muted, marginTop: '1px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+                          {cert.issuer}
+                        </div>
+                      )}
                     </div>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {data.links?.length > 0 && (
-          <section>
-            <SectionHeader roman={nextRoman()} title="Länkar" />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              {data.links.map((link) => (
-                <div key={link.id} style={{ fontSize: '12px' }} className="cv-keep">
-                  {link.label && (
-                    <span style={{ fontWeight: 700, color: ink, marginRight: '8px' }}>{link.label}</span>
-                  )}
-                  <span style={{ color: accent, wordBreak: 'break-all' }}>{link.url}</span>
+              </div>
+            )}
+            {data.links?.length > 0 && (
+              <div>
+                <SectionHeader roman={nextRoman()} title="Länkar" />
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                  {data.links.map((link) => (
+                    <div key={link.id} style={{ fontSize: '11.5px' }}>
+                      {link.label && (
+                        <span style={{ fontWeight: 700, color: ink, marginRight: '6px' }}>{link.label}</span>
+                      )}
+                      <span style={{ color: accent, wordBreak: 'break-all' }}>{link.url}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </section>
         )}
       </main>
@@ -410,27 +398,27 @@ function SectionHeader({ roman, title }: { roman: string; title: string }) {
       style={{
         display: 'flex',
         alignItems: 'baseline',
-        gap: '14px',
-        marginBottom: '10px',
-        paddingBottom: '5px',
+        gap: '12px',
+        marginBottom: '6px',
+        paddingBottom: '3px',
         borderBottom: `2px solid ${ink}`,
       }}
     >
       <span
         style={{
-          fontSize: '12px',
+          fontSize: '11.5px',
           fontWeight: 800,
           color: accent,
           fontFamily: "'Playfair Display', 'Georgia', serif",
           letterSpacing: '0.04em',
-          minWidth: '28px',
+          minWidth: '24px',
         }}
       >
         {roman}
       </span>
       <h2
         style={{
-          fontSize: '15px',
+          fontSize: '13.5px',
           fontWeight: 900,
           color: ink,
           letterSpacing: '0.04em',
