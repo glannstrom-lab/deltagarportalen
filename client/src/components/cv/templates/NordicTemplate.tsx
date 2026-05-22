@@ -19,99 +19,101 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
         background: '#FFFFFF',
       }}
     >
-      {/* Light sidebar */}
+      {/* Light sidebar — narrower (240px) + tighter padding för bättre A4-balans */}
       <aside
         style={{
-          width: '280px',
+          width: '240px',
           background: '#F8FAFC',
-          padding: '56px 32px',
+          padding: '32px 24px',
           borderRight: '1px solid #E2E8F0',
+          flexShrink: 0,
         }}
       >
-        {/* Photo */}
-        {data.profileImage ? (
-          <img
-            src={data.profileImage}
-            alt=""
-            style={{
-              width: '100%',
-              aspectRatio: '1',
-              objectFit: 'cover',
-              borderRadius: '20px',
-              marginBottom: '32px',
-            }}
-          />
-        ) : (
-          <div
-            style={{
-              width: '100%',
-              aspectRatio: '1',
-              background: '#FFFFFF',
-              border: '1px solid #E2E8F0',
-              borderRadius: '20px',
-              marginBottom: '32px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <span style={{ fontSize: '52px', fontWeight: 300, color: '#94A3B8', letterSpacing: '0.02em' }}>
-              {getInitials(data.firstName, data.lastName)}
-            </span>
-          </div>
-        )}
+        {/* Photo — fast storlek 140px så den inte tar 240px höjd */}
+        <div className="cv-keep" style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          {data.profileImage ? (
+            <img
+              src={data.profileImage}
+              alt=""
+              style={{
+                width: '140px',
+                height: '140px',
+                objectFit: 'cover',
+                borderRadius: '18px',
+              }}
+            />
+          ) : (
+            <div
+              style={{
+                width: '140px',
+                height: '140px',
+                background: '#FFFFFF',
+                border: '1px solid #E2E8F0',
+                borderRadius: '18px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <span style={{ fontSize: '40px', fontWeight: 300, color: '#94A3B8', letterSpacing: '0.02em' }}>
+                {getInitials(data.firstName, data.lastName)}
+              </span>
+            </div>
+          )}
+        </div>
 
         {/* Contact */}
-        <div style={{ marginBottom: '40px' }}>
+        <div style={{ marginBottom: '22px' }}>
           <h3
             style={{
-              fontSize: '11px',
+              fontSize: '10.5px',
               fontWeight: '500',
               letterSpacing: '0.1em',
               textTransform: 'uppercase',
               color: '#94A3B8',
-              marginBottom: '20px',
+              marginBottom: '10px',
             }}
           >
             Kontakt
           </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             {data.email && (
               <a
                 href={`mailto:${data.email}`}
                 style={{
-                  fontSize: '13px',
+                  fontSize: '11.5px',
                   color: '#334155',
                   textDecoration: 'none',
                   wordBreak: 'break-all',
+                  lineHeight: 1.4,
                 }}
               >
                 {data.email}
               </a>
             )}
-            {data.phone && <span style={{ fontSize: '13px', color: '#334155' }}>{data.phone}</span>}
-            {data.location && <span style={{ fontSize: '13px', color: '#334155' }}>{data.location}</span>}
+            {data.phone && <span style={{ fontSize: '12px', color: '#334155' }}>{data.phone}</span>}
+            {data.location && <span style={{ fontSize: '12px', color: '#334155' }}>{data.location}</span>}
           </div>
         </div>
 
         {/* Skills */}
         {data.skills?.length > 0 && (
-          <div style={{ marginBottom: '40px' }}>
+          <div style={{ marginBottom: '22px' }}>
             <h3
               style={{
-                fontSize: '11px',
+                fontSize: '10.5px',
                 fontWeight: '500',
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 color: '#94A3B8',
-                marginBottom: '16px',
+                marginBottom: '8px',
               }}
             >
               Kompetenser
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
               {data.skills.map((skill, i) => (
-                <span key={i} style={{ fontSize: '13px', color: '#334155' }}>
+                <span key={i} style={{ fontSize: '12px', color: '#334155' }}>
                   {getSkillName(skill)}
                 </span>
               ))}
@@ -124,23 +126,23 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
           <div className="cv-keep">
             <h3
               style={{
-                fontSize: '11px',
+                fontSize: '10.5px',
                 fontWeight: '500',
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 color: '#94A3B8',
-                marginBottom: '16px',
+                marginBottom: '8px',
               }}
             >
               Språk
             </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
               {data.languages.map(lang => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
                   <div key={lang.id} className="cv-entry">
-                    <div style={{ fontSize: '13px', color: '#334155', fontWeight: 500 }}>{name}</div>
-                    <div style={{ fontSize: '11px', color: '#94A3B8', fontStyle: 'italic', marginTop: '2px' }}>
+                    <div style={{ fontSize: '12px', color: '#334155', fontWeight: 500 }}>{name}</div>
+                    <div style={{ fontSize: '10.5px', color: '#94A3B8', fontStyle: 'italic', marginTop: '0' }}>
                       {getLanguageLevelDisplay(lang.level)}
                     </div>
                   </div>
@@ -152,31 +154,31 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
       </aside>
 
       {/* Main content */}
-      <main style={{ flex: 1, padding: '56px 48px' }}>
-        <header style={{ marginBottom: '48px' }}>
+      <main style={{ flex: 1, padding: '32px 40px' }}>
+        <header style={{ marginBottom: '20px' }}>
           <h1
             style={{
-              fontSize: '48px',
+              fontSize: '34px',
               fontWeight: '600',
               letterSpacing: '-0.02em',
               color: '#0F172A',
-              marginBottom: '8px',
+              marginBottom: '4px',
+              lineHeight: 1.05,
             }}
           >
             {fullName}
           </h1>
-          {data.title && <p style={{ fontSize: '20px', color: accent }}>{data.title}</p>}
+          {data.title && <p style={{ fontSize: '16px', color: accent }}>{data.title}</p>}
         </header>
 
         {/* Summary */}
         {data.summary && (
-          <section style={{ marginBottom: '48px' }}>
+          <section style={{ marginBottom: '20px' }}>
             <p
               style={{
-                fontSize: '16px',
-                lineHeight: '1.8',
+                fontSize: '13px',
+                lineHeight: '1.55',
                 color: '#475569',
-                maxWidth: '560px',
               }}
             >
               {data.summary}
@@ -186,7 +188,7 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
 
         {/* Experience */}
         {data.workExperience?.length > 0 && (
-          <section style={{ marginBottom: '48px' }}>
+          <section style={{ marginBottom: '20px' }}>
             <h2
               style={{
                 fontSize: '11px',
@@ -194,14 +196,14 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 color: '#94A3B8',
-                marginBottom: '28px',
-                paddingBottom: '12px',
+                marginBottom: '12px',
+                paddingBottom: '6px',
                 borderBottom: '1px solid #E2E8F0',
               }}
             >
               Erfarenhet
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {data.workExperience.map(job => (
                 <div key={job.id} className="cv-entry">
                   <div
@@ -209,19 +211,19 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
                       display: 'flex',
                       justifyContent: 'space-between',
                       alignItems: 'flex-start',
-                      marginBottom: '8px',
+                      marginBottom: '2px',
                     }}
                   >
                     <div>
-                      <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#0F172A' }}>{job.title}</h3>
-                      <div style={{ fontSize: '14px', color: accent }}>{job.company}</div>
+                      <h3 style={{ fontSize: '14.5px', fontWeight: '600', color: '#0F172A' }}>{job.title}</h3>
+                      <div style={{ fontSize: '12.5px', color: accent }}>{job.company}</div>
                     </div>
-                    <span style={{ fontSize: '12px', color: '#94A3B8', whiteSpace: 'nowrap' }}>
+                    <span style={{ fontSize: '11px', color: '#94A3B8', whiteSpace: 'nowrap', marginLeft: '12px' }}>
                       {job.startDate} — {job.current ? 'Nu' : job.endDate}
                     </span>
                   </div>
                   {job.description && (
-                    <p style={{ fontSize: '14px', lineHeight: '1.7', color: '#64748B', marginTop: '12px' }}>
+                    <p style={{ fontSize: '12.5px', lineHeight: '1.5', color: '#64748B', marginTop: '4px' }}>
                       {job.description}
                     </p>
                   )}
@@ -233,7 +235,7 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
 
         {/* Education */}
         {data.education?.length > 0 && (
-          <section>
+          <section className="cv-keep">
             <h2
               style={{
                 fontSize: '11px',
@@ -241,22 +243,22 @@ export function NordicTemplate({ data, fullName }: TemplateProps) {
                 letterSpacing: '0.1em',
                 textTransform: 'uppercase',
                 color: '#94A3B8',
-                marginBottom: '28px',
-                paddingBottom: '12px',
+                marginBottom: '12px',
+                paddingBottom: '6px',
                 borderBottom: '1px solid #E2E8F0',
               }}
             >
               Utbildning
             </h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {data.education.map(edu => (
                 <div key={edu.id} className="cv-entry">
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
-                      <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F172A' }}>{edu.degree}</h3>
-                      <div style={{ fontSize: '14px', color: '#64748B' }}>{edu.school}</div>
+                      <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: '#0F172A' }}>{edu.degree}</h3>
+                      <div style={{ fontSize: '12.5px', color: '#64748B' }}>{edu.school}</div>
                     </div>
-                    <span style={{ fontSize: '12px', color: '#94A3B8' }}>
+                    <span style={{ fontSize: '11px', color: '#94A3B8', marginLeft: '12px' }}>
                       {edu.startDate} — {edu.endDate}
                     </span>
                   </div>

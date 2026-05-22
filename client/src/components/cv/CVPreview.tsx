@@ -36,7 +36,7 @@ interface CVPreviewProps {
 // preview och print ser likadana ut. Mallar utan sidobar listas inte.
 const SIDEBAR_WIDTHS: Record<string, string> = {
   sidebar: '240px',
-  nordic: '280px',
+  nordic: '240px',
   budapest: '34%',
   manhattan: '220px',
   rotterdam: '220px',

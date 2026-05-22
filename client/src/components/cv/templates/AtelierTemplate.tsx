@@ -34,22 +34,22 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
         color: ink,
       }}
     >
-      {/* Header — generös, centrerad */}
+      {/* Header — kompaktare centrerad */}
       <header
         style={{
-          padding: '64px 72px 32px',
+          padding: '36px 60px 20px',
           textAlign: 'center',
           borderBottom: `1px solid ${accent}`,
         }}
       >
         <h1
           style={{
-            fontSize: '38px',
+            fontSize: '30px',
             fontWeight: 300,
             letterSpacing: '0.18em',
             textTransform: 'uppercase',
             color: accent,
-            marginBottom: '12px',
+            marginBottom: '8px',
             fontFamily: "'Crimson Pro', 'Georgia', serif",
           }}
         >
@@ -58,12 +58,12 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
         {data.title && (
           <p
             style={{
-              fontSize: '11px',
+              fontSize: '10.5px',
               fontWeight: 500,
               letterSpacing: '0.32em',
               textTransform: 'uppercase',
               color: accentSoft,
-              marginBottom: '20px',
+              marginBottom: '14px',
             }}
           >
             {data.title}
@@ -73,7 +73,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
           style={{
             display: 'flex',
             justifyContent: 'center',
-            gap: '24px',
+            gap: '20px',
             fontSize: '11px',
             letterSpacing: '0.04em',
             color: muted,
@@ -86,18 +86,18 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
       </header>
 
       {/* Body — 2-kolumns */}
-      <div style={{ display: 'flex', padding: '40px 72px 64px', gap: '48px' }}>
+      <div style={{ display: 'flex', padding: '24px 60px 32px', gap: '36px' }}>
         {/* Vänster meta-kolumn */}
-        <aside style={{ width: '180px', flexShrink: 0 }}>
+        <aside style={{ width: '170px', flexShrink: 0 }}>
           {/* Profilfoto — cirkulär */}
-          <div className="cv-keep" style={{ marginBottom: '32px', display: 'flex', justifyContent: 'center' }}>
+          <div className="cv-keep" style={{ marginBottom: '18px', display: 'flex', justifyContent: 'center' }}>
             {data.profileImage ? (
               <img
                 src={data.profileImage}
                 alt=""
                 style={{
-                  width: '120px',
-                  height: '120px',
+                  width: '96px',
+                  height: '96px',
                   objectFit: 'cover',
                   borderRadius: '50%',
                   border: `1px solid ${accent}`,
@@ -106,14 +106,14 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
             ) : (
               <div
                 style={{
-                  width: '120px',
-                  height: '120px',
+                  width: '96px',
+                  height: '96px',
                   borderRadius: '50%',
                   border: `1px solid ${accent}`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '32px',
+                  fontSize: '26px',
                   fontWeight: 300,
                   color: accent,
                   fontFamily: "'Crimson Pro', serif",
@@ -126,7 +126,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
           </div>
 
           {data.skills?.length > 0 && (
-            <section className="cv-keep" style={{ marginBottom: '32px' }}>
+            <section className="cv-keep" style={{ marginBottom: '18px' }}>
               <h3
                 style={{
                   fontSize: '10px',
@@ -160,7 +160,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
           )}
 
           {data.languages?.length > 0 && (
-            <section className="cv-keep" style={{ marginBottom: '32px' }}>
+            <section className="cv-keep" style={{ marginBottom: '18px' }}>
               <h3
                 style={{
                   fontSize: '10px',
@@ -190,7 +190,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
           )}
 
           {data.certificates?.length > 0 && (
-            <section className="cv-keep" style={{ marginBottom: '32px' }}>
+            <section className="cv-keep" style={{ marginBottom: '18px' }}>
               <h3
                 style={{
                   fontSize: '10px',
@@ -247,7 +247,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
         {/* Höger content-kolumn */}
         <main style={{ flex: 1 }}>
           {data.summary && (
-            <section style={{ marginBottom: '32px' }}>
+            <section style={{ marginBottom: '16px' }}>
               <h2
                 style={{
                   fontSize: '11px',
@@ -255,8 +255,8 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
                   letterSpacing: '0.25em',
                   textTransform: 'uppercase',
                   color: accent,
-                  marginBottom: '14px',
-                  paddingBottom: '6px',
+                  marginBottom: '8px',
+                  paddingBottom: '5px',
                   borderBottom: `1px solid ${accent}`,
                 }}
               >
@@ -264,8 +264,8 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
               </h2>
               <p
                 style={{
-                  fontSize: '13px',
-                  lineHeight: 1.75,
+                  fontSize: '12.5px',
+                  lineHeight: 1.55,
                   color: ink,
                   fontWeight: 400,
                 }}
@@ -276,7 +276,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
           )}
 
           {data.workExperience?.length > 0 && (
-            <section style={{ marginBottom: '32px' }}>
+            <section style={{ marginBottom: '16px' }}>
               <h2
                 style={{
                   fontSize: '11px',
@@ -284,8 +284,8 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
                   letterSpacing: '0.25em',
                   textTransform: 'uppercase',
                   color: accent,
-                  marginBottom: '20px',
-                  paddingBottom: '6px',
+                  marginBottom: '10px',
+                  paddingBottom: '5px',
                   borderBottom: `1px solid ${accent}`,
                 }}
               >
@@ -293,18 +293,18 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
               </h2>
               <div>
                 {data.workExperience.map((job) => (
-                  <div key={job.id} className="cv-entry" style={{ marginBottom: '24px' }}>
+                  <div key={job.id} className="cv-entry" style={{ marginBottom: '10px' }}>
                     <div
                       style={{
                         display: 'flex',
                         justifyContent: 'space-between',
                         alignItems: 'baseline',
-                        marginBottom: '4px',
+                        marginBottom: '2px',
                       }}
                     >
                       <h3
                         style={{
-                          fontSize: '14px',
+                          fontSize: '13px',
                           fontWeight: 700,
                           color: ink,
                           letterSpacing: '0.01em',
@@ -314,7 +314,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
                       </h3>
                       <span
                         style={{
-                          fontSize: '11px',
+                          fontSize: '10.5px',
                           color: accentSoft,
                           fontStyle: 'italic',
                           letterSpacing: '0.02em',
@@ -327,10 +327,10 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
                     </div>
                     <div
                       style={{
-                        fontSize: '12px',
+                        fontSize: '11.5px',
                         fontWeight: 500,
                         color: accent,
-                        marginBottom: '8px',
+                        marginBottom: '3px',
                         letterSpacing: '0.04em',
                       }}
                     >
@@ -340,7 +340,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
                       )}
                     </div>
                     {job.description && (
-                      <p style={{ fontSize: '12px', lineHeight: 1.7, color: '#3F3F3F' }}>{job.description}</p>
+                      <p style={{ fontSize: '11.5px', lineHeight: 1.5, color: '#3F3F3F' }}>{job.description}</p>
                     )}
                   </div>
                 ))}
@@ -349,7 +349,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
           )}
 
           {data.education?.length > 0 && (
-            <section>
+            <section className="cv-keep">
               <h2
                 style={{
                   fontSize: '11px',
@@ -357,8 +357,8 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
                   letterSpacing: '0.25em',
                   textTransform: 'uppercase',
                   color: accent,
-                  marginBottom: '20px',
-                  paddingBottom: '6px',
+                  marginBottom: '10px',
+                  paddingBottom: '5px',
                   borderBottom: `1px solid ${accent}`,
                 }}
               >
@@ -366,7 +366,7 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
               </h2>
               <div>
                 {data.education.map((edu) => (
-                  <div key={edu.id} className="cv-entry" style={{ marginBottom: '20px' }}>
+                  <div key={edu.id} className="cv-entry" style={{ marginBottom: '8px' }}>
                     <div
                       style={{
                         display: 'flex',

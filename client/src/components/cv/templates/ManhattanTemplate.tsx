@@ -228,20 +228,19 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
         )}
       </aside>
 
-      {/* Höger huvudkolumn — tightare padding så typisk CV (4 jobb + 2 utb)
-          får plats på 1 sida. Tidigare 56/64px → 40/48px. */}
-      <main style={{ flex: 1, padding: '40px 48px 48px' }}>
-        {/* Header — stort namn i serif */}
-        <header style={{ marginBottom: '28px', paddingBottom: '18px', borderBottom: `2px solid ${copper}` }}>
+      {/* Höger huvudkolumn */}
+      <main style={{ flex: 1, padding: '32px 44px 36px' }}>
+        {/* Header */}
+        <header style={{ marginBottom: '18px', paddingBottom: '12px', borderBottom: `2px solid ${copper}` }}>
           <h1
             style={{
-              fontSize: '46px',
+              fontSize: '36px',
               fontWeight: 700,
               color: navy,
               fontFamily: "'Playfair Display', 'Georgia', serif",
               letterSpacing: '-0.01em',
-              lineHeight: 1.1,
-              marginBottom: '8px',
+              lineHeight: 1.05,
+              marginBottom: '4px',
             }}
           >
             {fullName}
@@ -249,12 +248,12 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
           {data.title && (
             <p
               style={{
-                fontSize: '15px',
+                fontSize: '13px',
                 fontWeight: 500,
                 letterSpacing: '0.18em',
                 textTransform: 'uppercase',
                 color: copper,
-                marginTop: '12px',
+                marginTop: '8px',
               }}
             >
               {data.title}
@@ -263,23 +262,23 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
         </header>
 
         {data.summary && (
-          <section style={{ marginBottom: '32px' }}>
+          <section style={{ marginBottom: '18px' }}>
             <h2
               style={{
-                fontSize: '13px',
+                fontSize: '12px',
                 fontWeight: 700,
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
                 color: navy,
-                marginBottom: '14px',
+                marginBottom: '8px',
               }}
             >
               Profil
             </h2>
             <p
               style={{
-                fontSize: '13px',
-                lineHeight: 1.8,
+                fontSize: '12.5px',
+                lineHeight: 1.55,
                 color: ink,
               }}
             >
@@ -289,22 +288,22 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.workExperience?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
+          <section style={{ marginBottom: '18px' }}>
             <h2
               style={{
-                fontSize: '13px',
+                fontSize: '12px',
                 fontWeight: 700,
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
                 color: navy,
-                marginBottom: '20px',
+                marginBottom: '12px',
               }}
             >
               Erfarenhet
             </h2>
             <div>
               {data.workExperience.map((job) => (
-                <div key={job.id} className="cv-entry" style={{ marginBottom: '24px', paddingLeft: '16px', borderLeft: `2px solid ${copperSoft}` }}>
+                <div key={job.id} className="cv-entry" style={{ marginBottom: '12px', paddingLeft: '14px', borderLeft: `2px solid ${copperSoft}` }}>
                   <div
                     style={{
                       display: 'flex',
@@ -315,7 +314,7 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
                   >
                     <h3
                       style={{
-                        fontSize: '16px',
+                        fontSize: '14.5px',
                         fontWeight: 700,
                         color: navy,
                         fontFamily: "'Playfair Display', 'Georgia', serif",
@@ -325,7 +324,7 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
                     </h3>
                     <span
                       style={{
-                        fontSize: '11px',
+                        fontSize: '10.5px',
                         color: copper,
                         fontWeight: 600,
                         letterSpacing: '0.05em',
@@ -339,10 +338,10 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
                   </div>
                   <div
                     style={{
-                      fontSize: '13px',
+                      fontSize: '12px',
                       fontWeight: 500,
                       color: muted,
-                      marginBottom: '8px',
+                      marginBottom: '4px',
                       fontStyle: 'italic',
                     }}
                   >
@@ -350,7 +349,7 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
                     {job.location && <span> · {job.location}</span>}
                   </div>
                   {job.description && (
-                    <p style={{ fontSize: '12px', lineHeight: 1.7, color: '#3F3F3F' }}>{job.description}</p>
+                    <p style={{ fontSize: '12px', lineHeight: 1.5, color: '#3F3F3F' }}>{job.description}</p>
                   )}
                 </div>
               ))}
@@ -359,25 +358,22 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.education?.length > 0 && (
-          // Inget cv-keep här — då skulle hela utbildning-sektionen page-breaka
-          // som ett block och lämna tomt utrymme på föregående sida. Enskilda
-          // entries skyddas av .cv-entry; h2 + * håller rubriken vid första entry.
-          <section>
+          <section className="cv-keep">
             <h2
               style={{
-                fontSize: '13px',
+                fontSize: '12px',
                 fontWeight: 700,
                 letterSpacing: '0.22em',
                 textTransform: 'uppercase',
                 color: navy,
-                marginBottom: '20px',
+                marginBottom: '12px',
               }}
             >
               Utbildning
             </h2>
             <div>
               {data.education.map((edu) => (
-                <div key={edu.id} className="cv-entry" style={{ marginBottom: '20px', paddingLeft: '16px', borderLeft: `2px solid ${copperSoft}` }}>
+                <div key={edu.id} className="cv-entry" style={{ marginBottom: '10px', paddingLeft: '14px', borderLeft: `2px solid ${copperSoft}` }}>
                   <div
                     style={{
                       display: 'flex',
@@ -388,7 +384,7 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
                   >
                     <h3
                       style={{
-                        fontSize: '15px',
+                        fontSize: '13.5px',
                         fontWeight: 700,
                         color: navy,
                         fontFamily: "'Playfair Display', 'Georgia', serif",
@@ -398,7 +394,7 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
                     </h3>
                     <span
                       style={{
-                        fontSize: '11px',
+                        fontSize: '10.5px',
                         color: copper,
                         fontWeight: 600,
                         letterSpacing: '0.05em',
@@ -412,7 +408,7 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
                   </div>
                   <div
                     style={{
-                      fontSize: '13px',
+                      fontSize: '12px',
                       color: muted,
                       fontStyle: 'italic',
                     }}
@@ -420,7 +416,7 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
                     {edu.school}
                   </div>
                   {edu.field && (
-                    <div style={{ fontSize: '12px', color: muted, marginTop: '2px' }}>{edu.field}</div>
+                    <div style={{ fontSize: '11.5px', color: muted, marginTop: '1px' }}>{edu.field}</div>
                   )}
                 </div>
               ))}

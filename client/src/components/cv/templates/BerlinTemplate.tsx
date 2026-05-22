@@ -96,31 +96,31 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
         />
       </aside>
 
-      {/* Huvudkolumn */}
-      <main style={{ flex: 1, padding: '40px 56px 48px', position: 'relative' }}>
+      {/* Huvudkolumn — tightad så typisk CV ryms på 1 sida */}
+      <main style={{ flex: 1, padding: '22px 40px 24px', position: 'relative' }}>
         {/* Header med massiv typografi */}
-        <header style={{ marginBottom: '32px' }}>
+        <header style={{ marginBottom: '14px' }}>
           <div
             style={{
-              fontSize: '10px',
+              fontSize: '9.5px',
               fontWeight: 700,
               letterSpacing: '0.32em',
               textTransform: 'uppercase',
               color: accent,
-              marginBottom: '14px',
+              marginBottom: '6px',
             }}
           >
             ◼ {data.title || 'Curriculum Vitae'}
           </div>
           <h1
             style={{
-              fontSize: '56px',
+              fontSize: '34px',
               fontWeight: 900,
               color: ink,
               letterSpacing: '-0.025em',
               lineHeight: 0.95,
               textTransform: 'uppercase',
-              marginBottom: '20px',
+              marginBottom: '8px',
             }}
           >
             {fullName}
@@ -129,11 +129,11 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
             style={{
               display: 'flex',
               flexWrap: 'wrap',
-              gap: '20px',
-              fontSize: '12px',
+              gap: '18px',
+              fontSize: '11px',
               color: muted,
               borderTop: `1px solid ${ink}`,
-              paddingTop: '12px',
+              paddingTop: '8px',
             }}
           >
             {data.email && <span>{data.email}</span>}
@@ -143,14 +143,13 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
         </header>
 
         {data.summary && (
-          <section style={{ marginBottom: '32px' }}>
+          <section style={{ marginBottom: '14px' }}>
             <SectionHeader roman={nextRoman()} title="Profil" />
             <p
               style={{
-                fontSize: '14px',
-                lineHeight: 1.7,
+                fontSize: '12.5px',
+                lineHeight: 1.5,
                 color: ink,
-                maxWidth: '640px',
               }}
             >
               {data.summary}
@@ -159,7 +158,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.workExperience?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
+          <section style={{ marginBottom: '14px' }}>
             <SectionHeader roman={nextRoman()} title="Erfarenhet" />
             <div>
               {data.workExperience.map((job) => (
@@ -167,22 +166,23 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
                   key={job.id}
                   className="cv-entry"
                   style={{
-                    marginBottom: '20px',
-                    paddingBottom: '18px',
+                    marginBottom: '10px',
+                    paddingBottom: '10px',
                     borderBottom: `1px solid ${ink}33`,
                     display: 'grid',
-                    gridTemplateColumns: '110px 1fr',
-                    gap: '24px',
+                    gridTemplateColumns: '90px 1fr',
+                    gap: '18px',
                   }}
                 >
                   <div
                     style={{
-                      fontSize: '11px',
+                      fontSize: '10.5px',
                       fontWeight: 700,
                       color: accent,
                       letterSpacing: '0.08em',
                       textTransform: 'uppercase',
-                      paddingTop: '4px',
+                      paddingTop: '2px',
+                      lineHeight: 1.3,
                     }}
                   >
                     {job.startDate}
@@ -194,30 +194,30 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
                   <div>
                     <h3
                       style={{
-                        fontSize: '17px',
+                        fontSize: '14px',
                         fontWeight: 800,
                         color: ink,
                         letterSpacing: '-0.01em',
-                        marginBottom: '4px',
+                        marginBottom: '2px',
                       }}
                     >
                       {job.title}
                     </h3>
                     <div
                       style={{
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: 600,
                         color: muted,
                         textTransform: 'uppercase',
                         letterSpacing: '0.08em',
-                        marginBottom: '8px',
+                        marginBottom: '4px',
                       }}
                     >
                       {job.company}
                       {job.location && <span> · {job.location}</span>}
                     </div>
                     {job.description && (
-                      <p style={{ fontSize: '13px', lineHeight: 1.7, color: '#3F3F3F' }}>
+                      <p style={{ fontSize: '12px', lineHeight: 1.5, color: '#3F3F3F' }}>
                         {job.description}
                       </p>
                     )}
@@ -229,7 +229,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.education?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
+          <section className="cv-keep" style={{ marginBottom: '14px' }}>
             <SectionHeader roman={nextRoman()} title="Utbildning" />
             <div>
               {data.education.map((edu) => (
@@ -237,22 +237,23 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
                   key={edu.id}
                   className="cv-entry"
                   style={{
-                    marginBottom: '16px',
-                    paddingBottom: '14px',
+                    marginBottom: '8px',
+                    paddingBottom: '8px',
                     borderBottom: `1px solid ${ink}33`,
                     display: 'grid',
-                    gridTemplateColumns: '110px 1fr',
-                    gap: '24px',
+                    gridTemplateColumns: '90px 1fr',
+                    gap: '18px',
                   }}
                 >
                   <div
                     style={{
-                      fontSize: '11px',
+                      fontSize: '10.5px',
                       fontWeight: 700,
                       color: accent,
                       letterSpacing: '0.08em',
                       textTransform: 'uppercase',
-                      paddingTop: '4px',
+                      paddingTop: '2px',
+                      lineHeight: 1.3,
                     }}
                   >
                     {edu.startDate}
@@ -264,18 +265,18 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
                   <div>
                     <h3
                       style={{
-                        fontSize: '16px',
+                        fontSize: '13.5px',
                         fontWeight: 800,
                         color: ink,
                         letterSpacing: '-0.01em',
-                        marginBottom: '2px',
+                        marginBottom: '1px',
                       }}
                     >
                       {edu.degree}
                     </h3>
                     <div
                       style={{
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: 600,
                         color: muted,
                         textTransform: 'uppercase',
@@ -285,7 +286,7 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
                       {edu.school}
                     </div>
                     {edu.field && (
-                      <div style={{ fontSize: '12px', color: muted, marginTop: '4px' }}>{edu.field}</div>
+                      <div style={{ fontSize: '11px', color: muted, marginTop: '2px' }}>{edu.field}</div>
                     )}
                   </div>
                 </div>
@@ -295,20 +296,19 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.skills?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
+          <section className="cv-keep" style={{ marginBottom: '16px' }}>
             <SectionHeader roman={nextRoman()} title="Kompetenser" />
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {data.skills.map((skill, i) => (
                 <span
                   key={i}
-                  className="cv-keep"
                   style={{
-                    fontSize: '12px',
+                    fontSize: '11px',
                     fontWeight: 600,
                     color: ink,
                     background: 'transparent',
                     border: `1px solid ${ink}`,
-                    padding: '6px 12px',
+                    padding: '4px 10px',
                     letterSpacing: '0.04em',
                     textTransform: 'uppercase',
                   }}
@@ -321,21 +321,21 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
         )}
 
         {data.languages?.length > 0 && (
-          <section style={{ marginBottom: '32px' }}>
+          <section className="cv-keep" style={{ marginBottom: '16px' }}>
             <SectionHeader roman={nextRoman()} title="Språk" />
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '8px' }}>
               {data.languages.map((lang) => {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
-                  <div key={lang.id} className="cv-keep">
-                    <div style={{ fontSize: '13px', fontWeight: 800, color: ink, letterSpacing: '-0.01em' }}>
+                  <div key={lang.id}>
+                    <div style={{ fontSize: '12.5px', fontWeight: 800, color: ink, letterSpacing: '-0.01em' }}>
                       {name}
                     </div>
                     <div
                       style={{
-                        fontSize: '10px',
+                        fontSize: '9.5px',
                         color: accent,
-                        marginTop: '2px',
+                        marginTop: '1px',
                         letterSpacing: '0.12em',
                         textTransform: 'uppercase',
                         fontWeight: 700,
@@ -410,27 +410,27 @@ function SectionHeader({ roman, title }: { roman: string; title: string }) {
       style={{
         display: 'flex',
         alignItems: 'baseline',
-        gap: '16px',
-        marginBottom: '18px',
-        paddingBottom: '8px',
+        gap: '14px',
+        marginBottom: '10px',
+        paddingBottom: '5px',
         borderBottom: `2px solid ${ink}`,
       }}
     >
       <span
         style={{
-          fontSize: '14px',
+          fontSize: '12px',
           fontWeight: 800,
           color: accent,
           fontFamily: "'Playfair Display', 'Georgia', serif",
           letterSpacing: '0.04em',
-          minWidth: '32px',
+          minWidth: '28px',
         }}
       >
         {roman}
       </span>
       <h2
         style={{
-          fontSize: '18px',
+          fontSize: '15px',
           fontWeight: 900,
           color: ink,
           letterSpacing: '0.04em',

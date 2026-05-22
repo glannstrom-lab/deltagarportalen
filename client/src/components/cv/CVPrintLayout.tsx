@@ -54,7 +54,7 @@ interface PrintLayoutProps {
 type SidebarConfig = { width: string; bg: string; divider?: string } | null
 const SIDEBAR_CONFIG: Record<string, SidebarConfig> = {
   sidebar:   { width: '240px', bg: '#141414' },                                  // ModernTemplate (mörk gradient → solid medel) — 30% av A4-bredd
-  nordic:    { width: '280px', bg: '#F8FAFC', divider: '#E2E8F0' },              // NordicTemplate
+  nordic:    { width: '240px', bg: '#F8FAFC', divider: '#E2E8F0' },              // NordicTemplate
   budapest:  { width: '34%',   bg: '#2C3E50' },                                  // BudapestTemplate
   manhattan: { width: '220px', bg: '#0F1B2D' },                                  // ManhattanTemplate
   rotterdam: { width: '220px', bg: '#FFFFFF', divider: '#E5E7EB' },              // RotterdamTemplate

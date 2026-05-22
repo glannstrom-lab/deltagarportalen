@@ -13,20 +13,20 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
       style={{
         minHeight: '297mm',
         background: '#FFFFFF',
-        padding: '80px',
+        padding: '40px 48px',
         fontFamily: "'Inter', -apple-system, sans-serif",
       }}
     >
       {/* Header */}
-      <header style={{ marginBottom: '64px' }}>
+      <header style={{ marginBottom: '24px' }}>
         <h1
           style={{
-            fontSize: '64px',
+            fontSize: '40px',
             fontWeight: '700',
             letterSpacing: '-0.03em',
             lineHeight: '1',
             color: '#000000',
-            marginBottom: '16px',
+            marginBottom: '8px',
           }}
         >
           {fullName}
@@ -34,7 +34,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
         {data.title && (
           <p
             style={{
-              fontSize: '20px',
+              fontSize: '15px',
               fontWeight: '400',
               color: '#666666',
               letterSpacing: '0.02em',
@@ -48,31 +48,31 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
         <div
           style={{
             display: 'flex',
-            gap: '32px',
-            marginTop: '32px',
-            paddingTop: '32px',
+            gap: '24px',
+            marginTop: '16px',
+            paddingTop: '14px',
             borderTop: '1px solid #E5E5E5',
           }}
         >
-          {data.email && <span style={{ fontSize: '14px', color: '#666666' }}>{data.email}</span>}
-          {data.phone && <span style={{ fontSize: '14px', color: '#666666' }}>{data.phone}</span>}
-          {data.location && <span style={{ fontSize: '14px', color: '#666666' }}>{data.location}</span>}
+          {data.email && <span style={{ fontSize: '12px', color: '#666666' }}>{data.email}</span>}
+          {data.phone && <span style={{ fontSize: '12px', color: '#666666' }}>{data.phone}</span>}
+          {data.location && <span style={{ fontSize: '12px', color: '#666666' }}>{data.location}</span>}
         </div>
       </header>
 
       {/* Summary */}
       {data.summary && (
-        <section style={{ marginBottom: '64px', maxWidth: '640px' }}>
-          <p style={{ fontSize: '18px', lineHeight: '1.7', color: '#333333' }}>
+        <section style={{ marginBottom: '22px' }}>
+          <p style={{ fontSize: '13px', lineHeight: '1.55', color: '#333333' }}>
             {data.summary}
           </p>
         </section>
       )}
 
-      {/* Linjär 1-kolumns layout — 2-kol kraschar i multi-page. */}
+      {/* Linjär 1-kolumns layout. */}
 
       {data.workExperience?.length > 0 && (
-        <section style={{ marginBottom: '48px' }}>
+        <section style={{ marginBottom: '20px' }}>
           <h2
             style={{
               fontSize: '11px',
@@ -80,28 +80,28 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
               letterSpacing: '0.15em',
               textTransform: 'uppercase',
               color: '#999999',
-              marginBottom: '24px',
+              marginBottom: '12px',
             }}
           >
             Erfarenhet
           </h2>
           <div>
             {data.workExperience.map(job => (
-              <div key={job.id} className="cv-entry" style={{ marginBottom: '28px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '4px' }}>
-                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#000000', wordBreak: 'break-word' }}>
+              <div key={job.id} className="cv-entry" style={{ marginBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '1px' }}>
+                  <h3 style={{ fontSize: '14.5px', fontWeight: '600', color: '#000000', wordBreak: 'break-word' }}>
                     {job.title}
                   </h3>
-                  <span style={{ fontSize: '12px', color: '#999999', fontFeatureSettings: '"tnum"', whiteSpace: 'nowrap', marginLeft: '12px' }}>
+                  <span style={{ fontSize: '11px', color: '#999999', fontFeatureSettings: '"tnum"', whiteSpace: 'nowrap', marginLeft: '12px' }}>
                     {job.startDate} — {job.current ? 'Nu' : job.endDate}
                   </span>
                 </div>
-                <div style={{ fontSize: '14px', color: '#666666', marginBottom: '8px' }}>
+                <div style={{ fontSize: '12.5px', color: '#666666', marginBottom: '4px' }}>
                   {job.company}
                   {job.location && <span> · {job.location}</span>}
                 </div>
                 {job.description && (
-                  <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#666666' }}>
+                  <p style={{ fontSize: '12.5px', lineHeight: '1.5', color: '#666666' }}>
                     {job.description}
                   </p>
                 )}
@@ -112,7 +112,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
       )}
 
       {data.education?.length > 0 && (
-        <section style={{ marginBottom: '48px' }}>
+        <section className="cv-keep" style={{ marginBottom: '20px' }}>
           <h2
             style={{
               fontSize: '11px',
@@ -120,21 +120,21 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
               letterSpacing: '0.15em',
               textTransform: 'uppercase',
               color: '#999999',
-              marginBottom: '24px',
+              marginBottom: '12px',
             }}
           >
             Utbildning
           </h2>
           <div>
             {data.education.map(edu => (
-              <div key={edu.id} className="cv-entry" style={{ marginBottom: '20px' }}>
+              <div key={edu.id} className="cv-entry" style={{ marginBottom: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#000000' }}>{edu.degree}</h3>
-                  <span style={{ fontSize: '12px', color: '#999999', whiteSpace: 'nowrap', marginLeft: '12px' }}>
+                  <h3 style={{ fontSize: '13.5px', fontWeight: '600', color: '#000000' }}>{edu.degree}</h3>
+                  <span style={{ fontSize: '11px', color: '#999999', whiteSpace: 'nowrap', marginLeft: '12px' }}>
                     {edu.startDate} — {edu.endDate}
                   </span>
                 </div>
-                <div style={{ fontSize: '14px', color: '#666666' }}>
+                <div style={{ fontSize: '12.5px', color: '#666666' }}>
                   {edu.school}
                   {edu.field && <span> · {edu.field}</span>}
                 </div>
@@ -145,7 +145,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
       )}
 
       {data.skills?.length > 0 && (
-        <section className="cv-keep" style={{ marginBottom: '48px' }}>
+        <section className="cv-keep" style={{ marginBottom: '20px' }}>
           <h2
             style={{
               fontSize: '11px',
@@ -153,12 +153,12 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
               letterSpacing: '0.15em',
               textTransform: 'uppercase',
               color: '#999999',
-              marginBottom: '20px',
+              marginBottom: '10px',
             }}
           >
             Kompetenser
           </h2>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px 24px', fontSize: '14px', color: '#333333' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 20px', fontSize: '12.5px', color: '#333333' }}>
             {data.skills.map((skill, i) => (
               <span key={i}>{getSkillName(skill)}</span>
             ))}
@@ -167,7 +167,7 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
       )}
 
       {data.languages?.length > 0 && (
-        <section className="cv-keep" style={{ marginBottom: '48px' }}>
+        <section className="cv-keep" style={{ marginBottom: '20px' }}>
           <h2
             style={{
               fontSize: '11px',
@@ -175,19 +175,19 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
               letterSpacing: '0.15em',
               textTransform: 'uppercase',
               color: '#999999',
-              marginBottom: '20px',
+              marginBottom: '10px',
             }}
           >
             Språk
           </h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '8px' }}>
             {data.languages.map(lang => {
               const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
               return (
                 <div key={lang.id} className="cv-entry">
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontSize: '14px', color: '#333333' }}>{name}</span>
-                    <span style={{ fontSize: '14px', color: '#999999' }}>
+                    <span style={{ fontSize: '12.5px', color: '#333333' }}>{name}</span>
+                    <span style={{ fontSize: '12.5px', color: '#999999' }}>
                       {getLanguageLevelDisplay(lang.level)}
                     </span>
                   </div>
