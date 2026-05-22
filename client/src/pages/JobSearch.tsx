@@ -36,12 +36,14 @@ import { CreateApplicationModal } from '@/components/workflow';
 import { AlertsTab } from '@/components/jobs/AlertsTab';
 import { MatchesTab } from '@/components/jobs/MatchesTab';
 import { DailyJobTab } from '@/components/jobs/DailyJobTab';
+import { SlumpjobbetTab } from '@/components/jobs/SlumpjobbetTab';
 
 // Tab definitions with i18n keys
 // Note: CRM, Culture, and Applications tabs moved to dedicated /applications page
 const jobSearchTabDefs = [
   { id: 'search', labelKey: 'jobSearch.tabs.search', path: '/job-search', icon: Search },
   { id: 'daily', labelKey: 'jobSearch.tabs.daily', path: '/job-search/daily', icon: Star },
+  { id: 'slumpjobbet', label: 'Slumpjobbet', path: '/job-search/slumpjobbet', icon: Sparkles },
   { id: 'saved', labelKey: 'jobSearch.tabs.saved', path: '/job-search/saved', icon: Bookmark },
   { id: 'matches', labelKey: 'jobSearch.tabs.matches', path: '/job-search/matches', icon: Sparkles },
 ];
@@ -1082,10 +1084,12 @@ export default function JobSearch() {
     );
   }
 
-  // Build tabs with translated labels
+  // Build tabs with translated labels (Slumpjobbet har en hårdkodad label
+  // utan i18n-nyckel — namnet är "Slumpjobbet" på svenska, ingen översättning
+  // fastställd för andra språk än).
   const jobSearchTabs = jobSearchTabDefs.map((tab) => ({
     ...tab,
-    label: t(tab.labelKey),
+    label: tab.labelKey ? t(tab.labelKey) : tab.label!,
   }));
 
   // Live header stats — derived from saved jobs (no extra fetch)
@@ -1124,6 +1128,7 @@ export default function JobSearch() {
         <Routes>
           <Route index element={<SearchTab />} />
           <Route path="daily" element={<DailyJobTab />} />
+          <Route path="slumpjobbet" element={<SlumpjobbetTab />} />
           <Route path="saved" element={<SavedJobsTab />} />
           <Route path="alerts" element={<AlertsTab />} />
           <Route path="matches" element={<MatchesTab />} />
