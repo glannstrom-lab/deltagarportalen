@@ -11,6 +11,7 @@ import { WorkplaceCard } from './components/WorkplaceCard'
 import { WorkplaceFormModal } from './components/WorkplaceFormModal'
 import { SelfTestEnrollmentButton } from './components/SelfTestEnrollmentButton'
 import { BulkInviteParticipantsModal } from './components/BulkInviteParticipantsModal'
+import { BulkImportParticipantsModal } from './components/BulkImportParticipantsModal'
 import { staWorkplacesApi, type StaWorkplace } from '@/services/staApi'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
@@ -40,6 +41,7 @@ import {
   UserPlus,
   Pause,
   Play,
+  FileSpreadsheet,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import {
@@ -64,6 +66,7 @@ export default function StaConsultant() {
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null)
   const [addParticipantOpen, setAddParticipantOpen] = useState(false)
   const [bulkInviteOpen, setBulkInviteOpen] = useState(false)
+  const [bulkImportOpen, setBulkImportOpen] = useState(false)
   const [linkParticipantId, setLinkParticipantId] = useState<string | null>(null)
   const { stats, loading, reload } = useConsultantStats()
 
@@ -86,6 +89,7 @@ export default function StaConsultant() {
       <ConsultantHero
         onAdd={() => setAddParticipantOpen(true)}
         onBulkInvite={() => setBulkInviteOpen(true)}
+        onBulkImport={() => setBulkImportOpen(true)}
       />
       <KpiRow kpi={kpi} />
       <ConsultantTabs current={tab} onChange={setTab} />
@@ -139,6 +143,13 @@ export default function StaConsultant() {
         />
       )}
 
+      {bulkImportOpen && (
+        <BulkImportParticipantsModal
+          onClose={() => setBulkImportOpen(false)}
+          onCreated={() => reload()}
+        />
+      )}
+
       {linkParticipantId && (() => {
         const participant = rows.find((r) => r.id === linkParticipantId)
         if (!participant) return null
@@ -157,7 +168,15 @@ export default function StaConsultant() {
 // HERO + KPI + TABS
 // ===========================================================================
 
-function ConsultantHero({ onAdd, onBulkInvite }: { onAdd: () => void; onBulkInvite: () => void }) {
+function ConsultantHero({
+  onAdd,
+  onBulkInvite,
+  onBulkImport,
+}: {
+  onAdd: () => void
+  onBulkInvite: () => void
+  onBulkImport: () => void
+}) {
   return (
     <Card
       variant="flat"
@@ -184,6 +203,9 @@ function ConsultantHero({ onAdd, onBulkInvite }: { onAdd: () => void; onBulkInvi
         </div>
         <div className="flex gap-2 flex-wrap">
           <Button variant="secondary">Veckosammanställning</Button>
+          <Button variant="secondary" leftIcon={<FileSpreadsheet size={16} />} onClick={onBulkImport}>
+            Importera CSV/Excel
+          </Button>
           <Button variant="secondary" leftIcon={<Users size={16} />} onClick={onBulkInvite}>
             Bjud in flera
           </Button>

@@ -392,6 +392,43 @@ export const staEnrollmentsApi = {
   },
 
   /**
+   * Smart-add: CSV/Excel-import. Per rad — om en Jobin-användare finns med
+   * matchande email kopplas de direkt (status=linked, ingen invitation).
+   * Om inte → samma som bulkInvite (placeholder + invitation).
+   * Konsulenten måste skicka invite-mail för 'invited' rader efteråt
+   * och få deltagarens samtycke separat för 'linked' rader.
+   */
+  async bulkSmartAdd(input: {
+    rows: Array<{ email: string; first_name?: string; last_name?: string; started_at?: string }>
+    defaultStartedAt?: string
+    consentText: string
+    consentScope: Record<string, unknown>
+  }): Promise<Array<{
+    email: string
+    invitation_id: string | null
+    sta_enrollment_id: string | null
+    linked_participant_id: string | null
+    status: 'linked' | 'invited' | 'error'
+    error: string | null
+  }>> {
+    const { data, error } = await supabase.rpc('sta_bulk_smart_add', {
+      p_rows: input.rows,
+      p_default_started_at: input.defaultStartedAt ?? new Date().toISOString().slice(0, 10),
+      p_consent_text: input.consentText,
+      p_consent_scope: input.consentScope,
+    })
+    if (error) handleError(error)
+    return (data ?? []) as Array<{
+      email: string
+      invitation_id: string | null
+      sta_enrollment_id: string | null
+      participant_id: string | null
+      status: 'linked' | 'invited' | 'error'
+      error: string | null
+    }>
+  },
+
+  /**
    * Deltagaren säger upp sin koppling till konsulenten.
    * Mjuk uppsägning — inskickade dokument bevaras för AF-arkiv.
    */
