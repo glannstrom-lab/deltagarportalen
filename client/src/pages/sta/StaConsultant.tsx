@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
 import { Card } from '@/components/ui/Card'
@@ -49,6 +49,7 @@ import {
   Pause,
   Play,
   FileSpreadsheet,
+  CheckCircle,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import {
@@ -133,6 +134,7 @@ export default function StaConsultant() {
             onAdd={() => setAddParticipantOpen(true)}
             onBulkInvite={() => setBulkInviteOpen(true)}
             onBulkImport={() => setBulkImportOpen(true)}
+            onReload={reload}
           />
         )}
         {tab === 'skattningar' && <AssessmentsTab stats={stats} />}
@@ -841,6 +843,7 @@ type SortKey = 'name' | 'part' | 'daysLeft' | 'activity'
 type SortDir = 'asc' | 'desc'
 type EnrollmentStatusFilter = 'all' | 'active' | 'paused' | 'cancelled' | 'completed'
 type LinkStatusFilter = 'all' | 'linked' | 'invited' | 'not_on_jobin'
+type BulkAction = 'pause' | 'resume' | 'complete'
 
 function ParticipantsTab({
   rows: allRows,
@@ -851,6 +854,7 @@ function ParticipantsTab({
   onAdd,
   onBulkInvite,
   onBulkImport,
+  onReload,
 }: {
   rows: StaParticipantRow[]
   loading: boolean
@@ -860,6 +864,7 @@ function ParticipantsTab({
   onAdd: () => void
   onBulkInvite: () => void
   onBulkImport: () => void
+  onReload?: () => void
 }) {
   const [filterPart, setFilterPart] = useState<'all' | StaPart>('all')
   const [filterStatus, setFilterStatus] = useState<EnrollmentStatusFilter>('active')
@@ -867,6 +872,22 @@ function ParticipantsTab({
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState<SortKey>('daysLeft')
   const [sortDir, setSortDir] = useState<SortDir>('asc')
+  const [page, setPage] = useState(0)
+  const PAGE_SIZE = 25
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set())
+  const [bulkPending, setBulkPending] = useState<BulkAction | null>(null)
+  const [bulkResult, setBulkResult] = useState<{
+    action: BulkAction
+    success: number
+    failed: number
+    errors: Array<{ id: string; name: string; error: string }>
+  } | null>(null)
+  const [confirmAction, setConfirmAction] = useState<BulkAction | null>(null)
+
+  // Reset page when filters/search change
+  useEffect(() => {
+    setPage(0)
+  }, [filterPart, filterStatus, filterLink, search])
 
   const rows = useMemo(() => {
     const filtered = allRows.filter((p) => {
@@ -910,6 +931,73 @@ function ParticipantsTab({
 
   const totalCount = allRows.length
   const visibleCount = rows.length
+  const totalPages = Math.max(1, Math.ceil(visibleCount / PAGE_SIZE))
+  const safePage = Math.min(page, totalPages - 1)
+  const pageStart = safePage * PAGE_SIZE
+  const pageEnd = Math.min(pageStart + PAGE_SIZE, visibleCount)
+  const pageRows = useMemo(() => rows.slice(pageStart, pageEnd), [rows, pageStart, pageEnd])
+
+  // selection-räckvidden = synlig sida; "Välj alla" markerar sidans rader.
+  const visibleIds = useMemo(() => pageRows.map((r) => r.id), [pageRows])
+  const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedIds.has(id))
+  const someVisibleSelected = visibleIds.some((id) => selectedIds.has(id))
+
+  const toggleOne = (id: string) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
+
+  const toggleAllVisible = () => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (allVisibleSelected) {
+        visibleIds.forEach((id) => next.delete(id))
+      } else {
+        visibleIds.forEach((id) => next.add(id))
+      }
+      return next
+    })
+  }
+
+  const clearSelection = () => setSelectedIds(new Set())
+
+  const runBulkAction = async (action: BulkAction) => {
+    setConfirmAction(null)
+    setBulkPending(action)
+    setBulkResult(null)
+
+    const newStatus = action === 'pause' ? 'paused' : action === 'resume' ? 'active' : 'completed'
+    const targets = rows.filter((r) => selectedIds.has(r.id))
+
+    const errors: Array<{ id: string; name: string; error: string }> = []
+    let success = 0
+    await Promise.all(
+      targets.map(async (target) => {
+        try {
+          await staEnrollmentsApi.update(target.id, { status: newStatus })
+          success += 1
+        } catch (err) {
+          errors.push({
+            id: target.id,
+            name: target.fullName,
+            error: err instanceof Error ? err.message : 'Okänt fel',
+          })
+        }
+      }),
+    )
+
+    setBulkResult({ action, success, failed: errors.length, errors })
+    setBulkPending(null)
+    if (success > 0) {
+      clearSelection()
+      onReload?.()
+    }
+  }
+
   const sortLabel: Record<SortKey, string> = {
     name: 'namn',
     part: 'del',
@@ -942,6 +1030,96 @@ function ParticipantsTab({
 
       {totalCount > 0 && (
         <>
+          {selectedIds.size > 0 && (
+            <div
+              className="px-5 py-3 border-b border-stone-100 flex items-center justify-between flex-wrap gap-3 bg-stone-50"
+              role="region"
+              aria-label="Massåtgärder"
+            >
+              <div className="text-sm text-stone-800">
+                <strong>{selectedIds.size}</strong>{' '}
+                {selectedIds.size === 1 ? 'deltagare vald' : 'deltagare valda'}
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<Pause size={14} />}
+                  onClick={() => setConfirmAction('pause')}
+                  disabled={!!bulkPending}
+                >
+                  Pausa
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<Play size={14} />}
+                  onClick={() => setConfirmAction('resume')}
+                  disabled={!!bulkPending}
+                >
+                  Återuppta
+                </Button>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  leftIcon={<CheckCircle size={14} />}
+                  onClick={() => setConfirmAction('complete')}
+                  disabled={!!bulkPending}
+                >
+                  Markera avslutade
+                </Button>
+                <Button variant="ghost" size="sm" onClick={clearSelection} disabled={!!bulkPending}>
+                  Avbryt urval
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {bulkResult && (
+            <div
+              className={cn(
+                'px-5 py-3 border-b text-sm flex items-start gap-2',
+                bulkResult.failed === 0
+                  ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                  : 'bg-amber-50 border-amber-200 text-amber-900',
+              )}
+            >
+              <div className="flex-1">
+                {bulkResult.failed === 0 ? (
+                  <span>
+                    {bulkResult.success}{' '}
+                    {bulkResult.success === 1 ? 'deltagare uppdaterad' : 'deltagare uppdaterade'} —{' '}
+                    {bulkResult.action === 'pause' && 'pausade'}
+                    {bulkResult.action === 'resume' && 'återupptagna'}
+                    {bulkResult.action === 'complete' && 'markerade som avslutade'}
+                    .
+                  </span>
+                ) : (
+                  <>
+                    <span>
+                      {bulkResult.success} uppdaterad, {bulkResult.failed} misslyckades:
+                    </span>
+                    <ul className="mt-1 text-xs list-disc list-inside">
+                      {bulkResult.errors.slice(0, 5).map((e) => (
+                        <li key={e.id}>
+                          {e.name}: {e.error}
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                )}
+              </div>
+              <button
+                type="button"
+                onClick={() => setBulkResult(null)}
+                className="text-stone-500 hover:text-stone-700 flex-shrink-0"
+                aria-label="Stäng meddelande"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
+
           <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between flex-wrap gap-3">
             <div>
               <h3 className="text-base font-semibold text-stone-900">Alla deltagare</h3>
@@ -1018,19 +1196,199 @@ function ParticipantsTab({
               .
             </div>
           ) : (
-            <ParticipantsTable
-              rows={rows}
-              onOpen={onOpen}
-              onOpenDocuments={onOpenDocuments}
-              onLink={onLink}
-              sortBy={sortBy}
-              sortDir={sortDir}
-              onSort={handleSort}
+            <>
+              <div className="hidden md:block">
+                <ParticipantsTable
+                  rows={pageRows}
+                  onOpen={onOpen}
+                  onOpenDocuments={onOpenDocuments}
+                  onLink={onLink}
+                  sortBy={sortBy}
+                  sortDir={sortDir}
+                  onSort={handleSort}
+                  selectedIds={selectedIds}
+                  onToggle={toggleOne}
+                  allVisibleSelected={allVisibleSelected}
+                  someVisibleSelected={someVisibleSelected}
+                  onToggleAll={toggleAllVisible}
+                />
+              </div>
+              <div className="md:hidden">
+                <ParticipantsCardList
+                  rows={pageRows}
+                  onOpen={onOpen}
+                  onOpenDocuments={onOpenDocuments}
+                  onLink={onLink}
+                  selectedIds={selectedIds}
+                  onToggle={toggleOne}
+                />
+              </div>
+              {visibleCount > PAGE_SIZE && (
+                <PaginationBar
+                  page={safePage}
+                  totalPages={totalPages}
+                  pageStart={pageStart}
+                  pageEnd={pageEnd}
+                  total={visibleCount}
+                  onPage={setPage}
+                />
+              )}
+            </>
+          )}
+
+          {confirmAction && (
+            <BulkActionConfirm
+              action={confirmAction}
+              count={selectedIds.size}
+              onConfirm={() => runBulkAction(confirmAction)}
+              onCancel={() => setConfirmAction(null)}
             />
           )}
+
+          {bulkPending && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-stone-900/30">
+              <div className="bg-white rounded-xl shadow-xl px-6 py-5 flex items-center gap-3">
+                <div className="w-5 h-5 border-2 border-stone-300 border-t-stone-700 rounded-full animate-spin" />
+                <span className="text-sm text-stone-800">
+                  Uppdaterar {selectedIds.size} {selectedIds.size === 1 ? 'deltagare' : 'deltagare'}…
+                </span>
+              </div>
+            </div>
+          )}
+
         </>
       )}
     </Card>
+  )
+}
+
+function PaginationBar({
+  page,
+  totalPages,
+  pageStart,
+  pageEnd,
+  total,
+  onPage,
+}: {
+  page: number
+  totalPages: number
+  pageStart: number
+  pageEnd: number
+  total: number
+  onPage: (p: number) => void
+}) {
+  // Visa max 5 sidnummer kring nuvarande
+  const windowStart = Math.max(0, Math.min(page - 2, totalPages - 5))
+  const windowEnd = Math.min(totalPages, windowStart + 5)
+  const pages: number[] = []
+  for (let i = windowStart; i < windowEnd; i++) pages.push(i)
+
+  return (
+    <div className="px-5 py-3 border-t border-stone-100 flex items-center justify-between flex-wrap gap-3 text-sm">
+      <div className="text-stone-600">
+        Visar {pageStart + 1}–{pageEnd} av {total}
+      </div>
+      <div className="flex items-center gap-1">
+        <button
+          type="button"
+          onClick={() => onPage(page - 1)}
+          disabled={page === 0}
+          className={cn(
+            'px-2 py-1 rounded text-xs',
+            page === 0
+              ? 'text-stone-400 cursor-not-allowed'
+              : 'text-stone-700 hover:bg-stone-100',
+          )}
+        >
+          ← Föregående
+        </button>
+        {pages.map((p) => (
+          <button
+            key={p}
+            type="button"
+            onClick={() => onPage(p)}
+            className={cn(
+              'w-8 h-8 rounded text-xs font-medium',
+              p === page
+                ? 'text-white'
+                : 'text-stone-700 hover:bg-stone-100',
+            )}
+            style={p === page ? { background: 'var(--c-solid)' } : undefined}
+            aria-current={p === page ? 'page' : undefined}
+          >
+            {p + 1}
+          </button>
+        ))}
+        <button
+          type="button"
+          onClick={() => onPage(page + 1)}
+          disabled={page >= totalPages - 1}
+          className={cn(
+            'px-2 py-1 rounded text-xs',
+            page >= totalPages - 1
+              ? 'text-stone-400 cursor-not-allowed'
+              : 'text-stone-700 hover:bg-stone-100',
+          )}
+        >
+          Nästa →
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function BulkActionConfirm({
+  action,
+  count,
+  onConfirm,
+  onCancel,
+}: {
+  action: BulkAction
+  count: number
+  onConfirm: () => void
+  onCancel: () => void
+}) {
+  const labels: Record<BulkAction, { title: string; body: string; confirmLabel: string }> = {
+    pause: {
+      title: 'Pausa deltagare',
+      body: `Pausa ${count} ${count === 1 ? 'deltagare' : 'deltagare'}? Deltagaren stannar i listan men markeras som pausad. Du kan återuppta när som helst.`,
+      confirmLabel: 'Pausa',
+    },
+    resume: {
+      title: 'Återuppta deltagare',
+      body: `Återuppta ${count} ${count === 1 ? 'deltagare' : 'deltagare'}? Status sätts tillbaka till aktiv.`,
+      confirmLabel: 'Återuppta',
+    },
+    complete: {
+      title: 'Markera som avslutade',
+      body: `Markera ${count} ${count === 1 ? 'deltagare' : 'deltagare'} som avslutade? Inskickade dokument bevaras men programmet räknas som klart.`,
+      confirmLabel: 'Markera avslutade',
+    },
+  }
+  const { title, body, confirmLabel } = labels[action]
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <button
+        type="button"
+        className="absolute inset-0 bg-stone-900/40"
+        onClick={onCancel}
+        aria-label="Stäng"
+      />
+      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="px-6 py-5">
+          <h3 className="text-base font-semibold text-stone-900 mb-2">{title}</h3>
+          <p className="text-sm text-stone-700">{body}</p>
+        </div>
+        <div className="px-6 py-4 border-t border-stone-100 flex items-center justify-end gap-2 bg-stone-50">
+          <Button variant="ghost" onClick={onCancel}>
+            Avbryt
+          </Button>
+          <Button variant="primary" onClick={onConfirm}>
+            {confirmLabel}
+          </Button>
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -1042,6 +1400,11 @@ function ParticipantsTable({
   sortBy,
   sortDir,
   onSort,
+  selectedIds,
+  onToggle,
+  allVisibleSelected,
+  someVisibleSelected,
+  onToggleAll,
   showAddButton: _showAddButton = true,
 }: {
   rows: StaParticipantRow[]
@@ -1051,8 +1414,14 @@ function ParticipantsTable({
   sortBy?: SortKey
   sortDir?: SortDir
   onSort?: (key: SortKey) => void
+  selectedIds?: Set<string>
+  onToggle?: (id: string) => void
+  allVisibleSelected?: boolean
+  someVisibleSelected?: boolean
+  onToggleAll?: () => void
   showAddButton?: boolean
 }) {
+  const selectable = !!onToggle && !!selectedIds
   const renderSortableTh = (key: SortKey, label: string) => {
     if (!onSort) {
       return (
@@ -1087,6 +1456,20 @@ function ParticipantsTable({
       <table className="w-full text-sm">
         <thead>
           <tr className="text-left">
+            {selectable && (
+              <th className="px-3 py-3 border-b border-stone-100 w-10">
+                <input
+                  type="checkbox"
+                  aria-label="Välj alla synliga deltagare"
+                  checked={allVisibleSelected}
+                  ref={(el) => {
+                    if (el) el.indeterminate = !!someVisibleSelected && !allVisibleSelected
+                  }}
+                  onChange={onToggleAll}
+                  className="w-4 h-4 rounded border-stone-300 text-[var(--c-solid)] focus:ring-[var(--c-solid)]"
+                />
+              </th>
+            )}
             {renderSortableTh('name', 'Deltagare')}
             {renderSortableTh('part', 'Del')}
             {renderSortableTh('daysLeft', 'Tid kvar')}
@@ -1104,10 +1487,166 @@ function ParticipantsTable({
               onOpen={onOpen}
               onOpenDocuments={onOpenDocuments}
               onLink={onLink}
+              selected={selectedIds?.has(p.id)}
+              onToggle={onToggle}
             />
           ))}
         </tbody>
       </table>
+    </div>
+  )
+}
+
+function ParticipantsCardList({
+  rows,
+  onOpen,
+  onOpenDocuments,
+  onLink,
+  selectedIds,
+  onToggle,
+}: {
+  rows: StaParticipantRow[]
+  onOpen: (id: string) => void
+  onOpenDocuments?: (id: string) => void
+  onLink: (id: string) => void
+  selectedIds?: Set<string>
+  onToggle?: (id: string) => void
+}) {
+  return (
+    <ul className="divide-y divide-stone-100">
+      {rows.map((p) => (
+        <li key={p.id}>
+          <ParticipantCard
+            row={p}
+            onOpen={onOpen}
+            onOpenDocuments={onOpenDocuments}
+            onLink={onLink}
+            selected={selectedIds?.has(p.id)}
+            onToggle={onToggle}
+          />
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+function ParticipantCard({
+  row,
+  onOpen,
+  onOpenDocuments,
+  onLink,
+  selected,
+  onToggle,
+}: {
+  row: StaParticipantRow
+  onOpen: (id: string) => void
+  onOpenDocuments?: (id: string) => void
+  onLink: (id: string) => void
+  selected?: boolean
+  onToggle?: (id: string) => void
+}) {
+  return (
+    <div className={cn(
+      'px-4 py-4 hover:bg-stone-50 transition-colors',
+      selected && 'bg-stone-50',
+    )}>
+      {/* Identifierare + link-status */}
+      <div className="flex items-start gap-3 mb-3">
+        {onToggle && (
+          <input
+            type="checkbox"
+            aria-label={`Välj ${row.fullName}`}
+            checked={!!selected}
+            onChange={() => onToggle(row.id)}
+            className="mt-1 w-4 h-4 rounded border-stone-300 text-[var(--c-solid)] focus:ring-[var(--c-solid)] flex-shrink-0"
+          />
+        )}
+        <div className="w-10 h-10 rounded-full bg-stone-200 flex items-center justify-center text-sm font-medium text-stone-700 flex-shrink-0">
+          {row.initials}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="font-medium text-stone-900 flex items-center gap-2 flex-wrap">
+            {row.fullName}
+            <LinkStatusBadge status={row.linkStatus} />
+          </div>
+          <div className="text-xs text-stone-500">
+            {row.focusOccupation ? `Fokusyrke: ${row.focusOccupation}` : 'Fokusyrke: ej fastställt'}
+          </div>
+        </div>
+      </div>
+
+      {/* Tre-radig metadata-rad */}
+      <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
+        <div>
+          <div className="text-stone-500 uppercase tracking-wide text-[10px] mb-0.5">Del</div>
+          <span
+            className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
+            style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
+          >
+            Del {row.currentPart}
+          </span>
+        </div>
+        <div>
+          <div className="text-stone-500 uppercase tracking-wide text-[10px] mb-0.5">Tid kvar</div>
+          <div className="text-stone-900 font-medium text-sm">
+            {row.daysLeftInPart > 30 ? `${Math.round(row.daysLeftInPart / 30)} mån` : `${row.daysLeftInPart} dagar`}
+          </div>
+          <div className="text-[11px] text-stone-500">Slut {row.partEndsAt}</div>
+        </div>
+      </div>
+
+      {/* Aktivitet */}
+      <div className="mb-3">
+        <div className="text-stone-500 uppercase tracking-wide text-[10px] mb-0.5">Aktivitet</div>
+        <div className="text-sm text-stone-700">{row.currentActivity}</div>
+        <div className="text-[11px] text-stone-500">{row.activitySubtext}</div>
+        {row.activityProgress !== undefined && (
+          <div className="mt-1 h-1.5 rounded-full overflow-hidden bg-stone-100 w-full max-w-[200px]">
+            <div className="h-full" style={{ width: `${row.activityProgress}%`, background: 'var(--c-solid)' }} />
+          </div>
+        )}
+      </div>
+
+      {/* Skattningar */}
+      {row.assessments.length > 0 && (
+        <div className="mb-3">
+          <div className="text-stone-500 uppercase tracking-wide text-[10px] mb-1">Skattningar</div>
+          <div className="flex flex-wrap gap-1">
+            {row.assessments.map((a, i) => (
+              <AssessmentChip key={i} label={a.label} status={a.status} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Anpassning — visa bara om något särskilt */}
+      {row.adaptations && row.adaptations !== 'Inga särskilda' && (
+        <div className="mb-3">
+          <div className="text-stone-500 uppercase tracking-wide text-[10px] mb-0.5">Anpassning</div>
+          <div className="text-xs text-stone-700">{row.adaptations}</div>
+        </div>
+      )}
+
+      {/* Snabbåtgärder */}
+      <div className="flex gap-1.5 flex-wrap pt-2 border-t border-stone-100">
+        <Button variant="ghost" size="sm" onClick={() => onOpen(row.id)}>
+          Öppna
+        </Button>
+        {row.hasDraft > 0 && (
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={() => (onOpenDocuments ?? onOpen)(row.id)}
+          >
+            Granska ({row.hasDraft})
+          </Button>
+        )}
+        {row.linkStatus !== 'linked' && (
+          <Button variant="secondary" size="sm" leftIcon={<LinkIcon size={12} />} onClick={() => onLink(row.id)}>
+            Koppla
+          </Button>
+        )}
+      </div>
     </div>
   )
 }
@@ -1142,14 +1681,32 @@ function ParticipantRow({
   onOpen,
   onOpenDocuments,
   onLink,
+  selected,
+  onToggle,
 }: {
   row: StaParticipantRow
   onOpen: (id: string) => void
   onOpenDocuments?: (id: string) => void
   onLink: (id: string) => void
+  selected?: boolean
+  onToggle?: (id: string) => void
 }) {
   return (
-    <tr className="hover:bg-stone-50 border-b border-stone-100 last:border-0">
+    <tr className={cn(
+      'hover:bg-stone-50 border-b border-stone-100 last:border-0',
+      selected && 'bg-stone-50',
+    )}>
+      {onToggle && (
+        <td className="px-3 py-3 align-middle">
+          <input
+            type="checkbox"
+            aria-label={`Välj ${row.fullName}`}
+            checked={!!selected}
+            onChange={() => onToggle(row.id)}
+            className="w-4 h-4 rounded border-stone-300 text-[var(--c-solid)] focus:ring-[var(--c-solid)]"
+          />
+        </td>
+      )}
       <td className="px-4 py-3 align-middle">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-stone-200 flex items-center justify-center text-xs font-medium text-stone-700">
