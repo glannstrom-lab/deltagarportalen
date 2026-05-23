@@ -128,8 +128,11 @@ export default function StaConsultant() {
             rows={rows}
             loading={loading}
             onOpen={(id) => openParticipant(id)}
+            onOpenDocuments={(id) => openParticipant(id, 'dokument')}
             onLink={setLinkParticipantId}
             onAdd={() => setAddParticipantOpen(true)}
+            onBulkInvite={() => setBulkInviteOpen(true)}
+            onBulkImport={() => setBulkImportOpen(true)}
           />
         )}
         {tab === 'skattningar' && <AssessmentsTab stats={stats} />}
@@ -834,69 +837,199 @@ function documentTypeLabel(docType: string): string {
 // PARTICIPANTS TAB
 // ===========================================================================
 
+type SortKey = 'name' | 'part' | 'daysLeft' | 'activity'
+type SortDir = 'asc' | 'desc'
+type EnrollmentStatusFilter = 'all' | 'active' | 'paused' | 'cancelled' | 'completed'
+type LinkStatusFilter = 'all' | 'linked' | 'invited' | 'not_on_jobin'
+
 function ParticipantsTab({
   rows: allRows,
   loading,
   onOpen,
+  onOpenDocuments,
   onLink,
   onAdd,
+  onBulkInvite,
+  onBulkImport,
 }: {
   rows: StaParticipantRow[]
   loading: boolean
   onOpen: (id: string) => void
+  onOpenDocuments: (id: string) => void
   onLink: (id: string) => void
   onAdd: () => void
+  onBulkInvite: () => void
+  onBulkImport: () => void
 }) {
   const [filterPart, setFilterPart] = useState<'all' | StaPart>('all')
+  const [filterStatus, setFilterStatus] = useState<EnrollmentStatusFilter>('active')
+  const [filterLink, setFilterLink] = useState<LinkStatusFilter>('all')
   const [search, setSearch] = useState('')
+  const [sortBy, setSortBy] = useState<SortKey>('daysLeft')
+  const [sortDir, setSortDir] = useState<SortDir>('asc')
 
   const rows = useMemo(() => {
-    return allRows.filter((p) => {
+    const filtered = allRows.filter((p) => {
       if (filterPart !== 'all' && p.currentPart !== filterPart) return false
+      if (filterStatus !== 'all' && p.enrollmentStatus !== filterStatus) return false
+      if (filterLink !== 'all') {
+        if (filterLink === 'not_on_jobin' && p.linkStatus === 'linked') return false
+        if (filterLink === 'linked' && p.linkStatus !== 'linked') return false
+        if (filterLink === 'invited' && p.linkStatus !== 'invited') return false
+      }
       if (search && !p.fullName.toLowerCase().includes(search.toLowerCase())) return false
       return true
     })
-  }, [allRows, filterPart, search])
+
+    const dir = sortDir === 'asc' ? 1 : -1
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return dir * a.fullName.localeCompare(b.fullName, 'sv-SE')
+        case 'part':
+          return dir * (a.currentPart - b.currentPart)
+        case 'daysLeft':
+          return dir * (a.daysLeftInPart - b.daysLeftInPart)
+        case 'activity':
+          return dir * a.currentActivity.localeCompare(b.currentActivity, 'sv-SE')
+        default:
+          return 0
+      }
+    })
+    return filtered
+  }, [allRows, filterPart, filterStatus, filterLink, search, sortBy, sortDir])
+
+  const handleSort = (key: SortKey) => {
+    if (sortBy === key) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+    } else {
+      setSortBy(key)
+      setSortDir(key === 'daysLeft' || key === 'part' ? 'asc' : 'asc')
+    }
+  }
+
+  const totalCount = allRows.length
+  const visibleCount = rows.length
+  const sortLabel: Record<SortKey, string> = {
+    name: 'namn',
+    part: 'del',
+    daysLeft: 'tid kvar',
+    activity: 'aktivitet',
+  }
 
   return (
     <Card variant="flat" padding="none" className="overflow-hidden">
-      {allRows.length === 0 && !loading && (
-        <div className="px-5 py-6 text-sm text-stone-600 text-center">
-          Inga deltagare än — klicka <strong>Lägg till</strong> för att börja.
+      {totalCount === 0 && !loading && (
+        <div className="px-5 py-10 text-center">
+          <h3 className="text-base font-semibold text-stone-900 mb-1">Inga deltagare än</h3>
+          <p className="text-sm text-stone-600 mb-4 max-w-md mx-auto">
+            Lägg till en deltagare manuellt, bjud in flera samtidigt, eller importera
+            en CSV/Excel-fil med dina deltagare.
+          </p>
+          <div className="flex gap-2 justify-center flex-wrap">
+            <Button variant="primary" size="sm" leftIcon={<UserPlus size={14} />} onClick={onAdd}>
+              Lägg till deltagare
+            </Button>
+            <Button variant="secondary" size="sm" leftIcon={<Users size={14} />} onClick={onBulkInvite}>
+              Bjud in flera
+            </Button>
+            <Button variant="secondary" size="sm" leftIcon={<FileSpreadsheet size={14} />} onClick={onBulkImport}>
+              Importera CSV/Excel
+            </Button>
+          </div>
         </div>
       )}
-      <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h3 className="text-base font-semibold text-stone-900">Alla deltagare</h3>
-          <p className="text-xs text-stone-500">{rows.length} aktiva · sorterade efter deadline</p>
-        </div>
-        <div className="flex gap-2 flex-wrap items-center">
-          <select
-            value={filterPart}
-            onChange={(e) => setFilterPart(e.target.value === 'all' ? 'all' : (Number(e.target.value) as StaPart))}
-            className="px-3 py-1.5 rounded-lg bg-stone-100 border-0 text-sm"
-          >
-            <option value="all">Alla delar</option>
-            <option value="1">Del 1</option>
-            <option value="2">Del 2</option>
-            <option value="3">Del 3</option>
-            <option value="4">Del 4</option>
-          </select>
-          <div className="relative">
-            <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-400" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Sök deltagare…"
-              className="pl-8 pr-3 py-1.5 rounded-lg border border-stone-200 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-stone-200"
-            />
+
+      {totalCount > 0 && (
+        <>
+          <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <h3 className="text-base font-semibold text-stone-900">Alla deltagare</h3>
+              <p className="text-xs text-stone-500">
+                Visar {visibleCount} av {totalCount} · sorterat på {sortLabel[sortBy]} ({sortDir === 'asc' ? 'stigande' : 'fallande'})
+              </p>
+            </div>
+            <div className="flex gap-2 flex-wrap items-center">
+              <select
+                value={filterPart}
+                onChange={(e) => setFilterPart(e.target.value === 'all' ? 'all' : (Number(e.target.value) as StaPart))}
+                className="px-3 py-1.5 rounded-lg bg-stone-100 border-0 text-sm"
+                aria-label="Filtrera på del"
+              >
+                <option value="all">Alla delar</option>
+                <option value="1">Del 1</option>
+                <option value="2">Del 2</option>
+                <option value="3">Del 3</option>
+                <option value="4">Del 4</option>
+              </select>
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value as EnrollmentStatusFilter)}
+                className="px-3 py-1.5 rounded-lg bg-stone-100 border-0 text-sm"
+                aria-label="Filtrera på status"
+              >
+                <option value="active">Aktiva</option>
+                <option value="paused">Pausade</option>
+                <option value="completed">Avslutade</option>
+                <option value="cancelled">Avbrutna</option>
+                <option value="all">Alla statusar</option>
+              </select>
+              <select
+                value={filterLink}
+                onChange={(e) => setFilterLink(e.target.value as LinkStatusFilter)}
+                className="px-3 py-1.5 rounded-lg bg-stone-100 border-0 text-sm"
+                aria-label="Filtrera på koppling"
+              >
+                <option value="all">Alla kopplingar</option>
+                <option value="linked">På Jobin</option>
+                <option value="invited">Inbjudna</option>
+                <option value="not_on_jobin">Inte på Jobin</option>
+              </select>
+              <div className="relative">
+                <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-stone-400" />
+                <input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Sök deltagare…"
+                  className="pl-8 pr-3 py-1.5 rounded-lg border border-stone-200 text-sm w-56 focus:outline-none focus:ring-2 focus:ring-stone-200"
+                />
+              </div>
+              <Button variant="primary" size="sm" leftIcon={<UserPlus size={14} />} onClick={onAdd}>
+                Lägg till
+              </Button>
+            </div>
           </div>
-          <Button variant="primary" size="sm" leftIcon={<UserPlus size={14} />} onClick={onAdd}>
-            Lägg till
-          </Button>
-        </div>
-      </div>
-      <ParticipantsTable rows={rows} onOpen={onOpen} onLink={onLink} />
+
+          {visibleCount === 0 ? (
+            <div className="px-5 py-10 text-center text-sm text-stone-600">
+              Inga deltagare matchar dina filter. Justera filter eller{' '}
+              <button
+                type="button"
+                onClick={() => {
+                  setFilterPart('all')
+                  setFilterStatus('all')
+                  setFilterLink('all')
+                  setSearch('')
+                }}
+                className="underline text-stone-700 hover:text-stone-900"
+              >
+                rensa alla filter
+              </button>
+              .
+            </div>
+          ) : (
+            <ParticipantsTable
+              rows={rows}
+              onOpen={onOpen}
+              onOpenDocuments={onOpenDocuments}
+              onLink={onLink}
+              sortBy={sortBy}
+              sortDir={sortDir}
+              onSort={handleSort}
+            />
+          )}
+        </>
+      )}
     </Card>
   )
 }
@@ -904,23 +1037,60 @@ function ParticipantsTab({
 function ParticipantsTable({
   rows,
   onOpen,
+  onOpenDocuments,
   onLink,
+  sortBy,
+  sortDir,
+  onSort,
   showAddButton: _showAddButton = true,
 }: {
   rows: StaParticipantRow[]
   onOpen: (id: string) => void
+  onOpenDocuments?: (id: string) => void
   onLink: (id: string) => void
+  sortBy?: SortKey
+  sortDir?: SortDir
+  onSort?: (key: SortKey) => void
   showAddButton?: boolean
 }) {
+  const renderSortableTh = (key: SortKey, label: string) => {
+    if (!onSort) {
+      return (
+        <th className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">
+          {label}
+        </th>
+      )
+    }
+    const isActive = sortBy === key
+    return (
+      <th className="border-b border-stone-100 p-0">
+        <button
+          type="button"
+          onClick={() => onSort(key)}
+          className={cn(
+            'w-full px-4 py-3 text-xs font-medium uppercase tracking-wide text-left',
+            'flex items-center gap-1 transition-colors',
+            isActive ? 'text-stone-900' : 'text-stone-500 hover:text-stone-700',
+          )}
+        >
+          {label}
+          <span aria-hidden="true" className={cn('text-[10px]', !isActive && 'opacity-30')}>
+            {isActive ? (sortDir === 'asc' ? '▲' : '▼') : '↕'}
+          </span>
+        </button>
+      </th>
+    )
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
         <thead>
           <tr className="text-left">
-            <th className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Deltagare</th>
-            <th className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Del</th>
-            <th className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Tid kvar</th>
-            <th className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Aktivitet</th>
+            {renderSortableTh('name', 'Deltagare')}
+            {renderSortableTh('part', 'Del')}
+            {renderSortableTh('daysLeft', 'Tid kvar')}
+            {renderSortableTh('activity', 'Aktivitet')}
             <th className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Skattningar</th>
             <th className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Anpassning</th>
             <th className="px-4 py-3 text-xs font-medium uppercase tracking-wide text-stone-500 border-b border-stone-100">Snabbåtgärder</th>
@@ -928,7 +1098,13 @@ function ParticipantsTable({
         </thead>
         <tbody>
           {rows.map((p) => (
-            <ParticipantRow key={p.id} row={p} onOpen={onOpen} onLink={onLink} />
+            <ParticipantRow
+              key={p.id}
+              row={p}
+              onOpen={onOpen}
+              onOpenDocuments={onOpenDocuments}
+              onLink={onLink}
+            />
           ))}
         </tbody>
       </table>
@@ -964,10 +1140,12 @@ function LinkStatusBadge({ status }: { status: ParticipantLinkStatus }) {
 function ParticipantRow({
   row,
   onOpen,
+  onOpenDocuments,
   onLink,
 }: {
   row: StaParticipantRow
   onOpen: (id: string) => void
+  onOpenDocuments?: (id: string) => void
   onLink: (id: string) => void
 }) {
   return (
@@ -1025,7 +1203,11 @@ function ParticipantRow({
             Öppna
           </Button>
           {row.hasDraft > 0 && (
-            <Button variant="primary" size="sm">
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => (onOpenDocuments ?? onOpen)(row.id)}
+            >
               Granska utkast ({row.hasDraft})
             </Button>
           )}
