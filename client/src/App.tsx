@@ -54,8 +54,6 @@ const Calendar = lazy(() => import('./pages/Calendar'))
 const Education = lazy(() => import('./pages/Education'))
 const Applications = lazy(() => import('./pages/Applications'))
 const Spontaneous = lazy(() => import('./pages/Spontaneous'))
-const LinkedInCallback = lazy(() => import('./pages/LinkedInCallback'))
-const GoogleCalendarCallback = lazy(() => import('./pages/GoogleCalendarCallback'))
 const MyConsultant = lazy(() => import('./pages/MyConsultant'))
 const AITeam = lazy(() => import('./pages/AITeam'))
 const Network = lazy(() => import('./pages/Network'))
@@ -221,8 +219,6 @@ function App() {
         <Route path="/accessibility" element={<Accessibility />} />
         <Route path="/template-snapshot/:templateId" element={<LazyRoute><TemplateSnapshot /></LazyRoute>} />
         <Route path="/print/cv" element={<LazyRoute><PrintCV /></LazyRoute>} />
-        <Route path="/linkedin/callback" element={<LazyRoute><LinkedInCallback /></LazyRoute>} />
-        <Route path="/calendar/google-callback" element={<LazyRoute><GoogleCalendarCallback /></LazyRoute>} />
 
         {/* Public profile sharing */}
         <Route path="/profile/shared/:shareCode" element={<LazyRoute><SharedProfile /></LazyRoute>} />
