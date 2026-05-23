@@ -29,6 +29,7 @@ import {
 import {
   fillAwpPdf,
   fillAwcPdf,
+  fillMohostPdf,
   downloadPdf,
   suggestPdfFilename,
 } from '../assessmentPdfExport'
@@ -204,7 +205,11 @@ export function AssessmentEditor({
     onClose()
   }
 
-  const canExportPdf = !!enrollment && (assessment.instrument === 'AWP' || assessment.instrument === 'AWC')
+  const canExportPdf =
+    !!enrollment &&
+    (assessment.instrument === 'AWP' ||
+      assessment.instrument === 'AWC' ||
+      assessment.instrument === 'MOHOST')
 
   const handleDownloadPdf = async () => {
     if (!enrollment) return
@@ -212,9 +217,11 @@ export function AssessmentEditor({
     setDownloadingPdf(true)
     try {
       const ctx = { assessment, enrollment, consultantName }
-      const blob = assessment.instrument === 'AWP'
-        ? await fillAwpPdf(ctx)
-        : await fillAwcPdf(ctx)
+      let blob: Blob
+      if (assessment.instrument === 'AWP') blob = await fillAwpPdf(ctx)
+      else if (assessment.instrument === 'AWC') blob = await fillAwcPdf(ctx)
+      else if (assessment.instrument === 'MOHOST') blob = await fillMohostPdf(ctx)
+      else throw new Error(`PDF-export ej tillgänglig för ${assessment.instrument}`)
       downloadPdf(blob, suggestPdfFilename(assessment, enrollment))
     } catch (err) {
       setPdfError(err instanceof Error ? err.message : 'Kunde inte generera PDF')
