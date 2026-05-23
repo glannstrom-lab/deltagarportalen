@@ -12,6 +12,7 @@ import { WorkplaceFormModal } from './components/WorkplaceFormModal'
 import { SelfTestEnrollmentButton } from './components/SelfTestEnrollmentButton'
 import { BulkInviteParticipantsModal } from './components/BulkInviteParticipantsModal'
 import { BulkImportParticipantsModal } from './components/BulkImportParticipantsModal'
+import { AssessmentEditor } from './components/AssessmentEditor'
 import { staWorkplacesApi, type StaWorkplace } from '@/services/staApi'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
@@ -2019,7 +2020,11 @@ function ParticipantDetailDrawer({
           )}
           {subTab === 'aktivitet' && <DetailActivityLog stats={stats} />}
           {subTab === 'skattningar' && (
-            <DetailAssessments enrollmentId={realEnrollmentId} stats={stats} />
+            <DetailAssessments
+              enrollmentId={realEnrollmentId}
+              stats={stats}
+              onChange={onChange}
+            />
           )}
           {subTab === 'dokument' && (
             <DetailDocuments
@@ -2297,10 +2302,13 @@ function DetailActivityLog({ stats }: { stats: EnrollmentStats }) {
 function DetailAssessments({
   enrollmentId,
   stats,
+  onChange,
 }: {
   enrollmentId: string | null
   stats: EnrollmentStats
+  onChange?: () => void
 }) {
+  const [editingAssessment, setEditingAssessment] = useState<import('@/services/staApi').StaAssessment | null>(null)
   return (
     <div className="space-y-3">
       <p className="text-sm text-stone-600">
@@ -2322,15 +2330,37 @@ function DetailAssessments({
         </Card>
       ) : (
         stats.assessments.map((a) => {
-          const progress = a.scores ? Math.round((Object.keys(a.scores as object).length / 13) * 100) : 0
+          const itemCount = ASSESSMENT_ITEM_COUNT[a.instrument as Instrument] ?? 13
+          const progress = a.scores
+            ? Math.min(100, Math.round((Object.keys(a.scores as object).length / itemCount) * 100))
+            : 0
           const status: 'pending' | 'in_progress' | 'complete' =
             a.status === 'complete' || a.status === 'submitted_to_af'
               ? 'complete'
               : progress > 0
                 ? 'in_progress'
                 : 'pending'
-          return <AssessmentDetailRow key={a.id} assessment={a} progress={progress} status={status} />
+          return (
+            <AssessmentDetailRow
+              key={a.id}
+              assessment={a}
+              progress={progress}
+              status={status}
+              onOpen={() => setEditingAssessment(a)}
+            />
+          )
         })
+      )}
+
+      {editingAssessment && (
+        <AssessmentEditor
+          assessment={editingAssessment}
+          onClose={() => setEditingAssessment(null)}
+          onSaved={() => {
+            setEditingAssessment(null)
+            onChange?.()
+          }}
+        />
       )}
     </div>
   )
@@ -2340,10 +2370,12 @@ function AssessmentDetailRow({
   assessment,
   progress,
   status,
+  onOpen,
 }: {
   assessment: import('@/services/staApi').StaAssessment
   progress: number
   status: 'pending' | 'in_progress' | 'complete'
+  onOpen: () => void
 }) {
   return (
     <div className="p-3 rounded-lg border border-stone-200 flex items-center gap-4 flex-wrap">
@@ -2363,7 +2395,11 @@ function AssessmentDetailRow({
         </div>
       )}
       {status === 'complete' && <AssessmentSignature assessment={assessment} compact />}
-      <Button variant={status === 'pending' ? 'primary' : 'secondary'} size="sm">
+      <Button
+        variant={status === 'pending' ? 'primary' : 'secondary'}
+        size="sm"
+        onClick={onOpen}
+      >
         {status === 'pending' ? 'Starta' : status === 'in_progress' ? 'Fortsätt' : 'Visa'}
       </Button>
     </div>
