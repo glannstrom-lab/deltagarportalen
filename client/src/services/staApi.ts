@@ -409,6 +409,7 @@ export const staEnrollmentsApi = {
   async bulkSmartAdd(input: {
     rows: Array<{ email: string; first_name?: string; last_name?: string; started_at?: string }>
     defaultStartedAt?: string
+    currentPart?: 1 | 2 | 3 | 4
     consentText: string
     consentScope: Record<string, unknown>
   }): Promise<Array<{
@@ -422,6 +423,7 @@ export const staEnrollmentsApi = {
     const { data, error } = await supabase.rpc('sta_bulk_smart_add', {
       p_rows: input.rows,
       p_default_started_at: input.defaultStartedAt ?? new Date().toISOString().slice(0, 10),
+      p_current_part: input.currentPart ?? 1,
       p_consent_text: input.consentText,
       p_consent_scope: input.consentScope,
     })

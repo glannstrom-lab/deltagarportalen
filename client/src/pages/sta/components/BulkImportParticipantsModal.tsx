@@ -45,6 +45,7 @@ export function BulkImportParticipantsModal({ onClose, onCreated }: BulkImportPa
   const [fileName, setFileName] = useState<string>('')
   const [rows, setRows] = useState<ParsedRow[]>([])
   const [globalStartedAt, setGlobalStartedAt] = useState(() => new Date().toISOString().slice(0, 10))
+  const [currentPart, setCurrentPart] = useState<1 | 2 | 3 | 4>(1)
   const [parseError, setParseError] = useState<string | null>(null)
   const [results, setResults] = useState<ResultRow[] | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -140,6 +141,7 @@ export function BulkImportParticipantsModal({ onClose, onCreated }: BulkImportPa
           started_at: r.started_at,
         })),
         defaultStartedAt: globalStartedAt,
+        currentPart,
         consentText: STA_CONSENT_TEXT,
         consentScope: STA_CONSENT_SCOPE as unknown as Record<string, unknown>,
       })
@@ -363,17 +365,38 @@ export function BulkImportParticipantsModal({ onClose, onCreated }: BulkImportPa
                 </div>
               </div>
 
-              <div>
-                <label htmlFor="bulk-import-start-date" className="block text-sm font-medium text-stone-700 mb-1">
-                  Startdatum (om saknas i filen)
-                </label>
-                <input
-                  id="bulk-import-start-date"
-                  type="date"
-                  value={globalStartedAt}
-                  onChange={(e) => setGlobalStartedAt(e.target.value)}
-                  className="px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label htmlFor="bulk-import-start-date" className="block text-sm font-medium text-stone-700 mb-1">
+                    Startdatum (om saknas i filen)
+                  </label>
+                  <input
+                    id="bulk-import-start-date"
+                    type="date"
+                    value={globalStartedAt}
+                    onChange={(e) => setGlobalStartedAt(e.target.value)}
+                    className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="bulk-import-current-part" className="block text-sm font-medium text-stone-700 mb-1">
+                    Nuvarande del
+                  </label>
+                  <select
+                    id="bulk-import-current-part"
+                    value={currentPart}
+                    onChange={(e) => setCurrentPart(Number(e.target.value) as 1 | 2 | 3 | 4)}
+                    className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+                  >
+                    <option value={1}>Del 1 (3 veckor) — default för nya</option>
+                    <option value={2}>Del 2 (5 veckor)</option>
+                    <option value={3}>Del 3 (max 6 mån)</option>
+                    <option value={4}>Del 4 (max 6 mån)</option>
+                  </select>
+                  <p className="text-[11px] text-stone-500 mt-1">
+                    Välj rätt del om deltagaren redan är längre fram i programmet.
+                  </p>
+                </div>
               </div>
 
               <div className="rounded-xl border border-stone-200 overflow-hidden">
