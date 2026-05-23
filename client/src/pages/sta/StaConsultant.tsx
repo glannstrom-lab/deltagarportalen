@@ -16,7 +16,14 @@ import { staWorkplacesApi, type StaWorkplace } from '@/services/staApi'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
 import { DOC_TYPE_META } from '@/services/staAiApi'
-import { toParticipantRow, computeKpi, type EnrollmentStats } from './enrollmentDisplay'
+import { toParticipantRow, computeKpi, formatShortDate, type EnrollmentStats } from './enrollmentDisplay'
+import {
+  collectActiveDeadlines,
+  countDeadlinesWithinDays,
+  deadlineSeverity,
+  formatDocType,
+  formatDaysLeft,
+} from './staDeadlines'
 import { QuickNoteForm, formatTag } from './components/QuickNoteForm'
 import {
   Briefcase,
@@ -61,12 +68,20 @@ const TABS: Array<{ id: TabId; label: string; icon: React.ComponentType<{ size?:
   { id: 'dokument', label: 'Dokument', icon: FileText },
 ]
 
+type DrawerSubTab = 'oversikt' | 'aktivitet' | 'skattningar' | 'dokument' | 'anteckningar'
+
 export default function StaConsultant() {
   const [tab, setTab] = useState<TabId>('oversikt')
   const [selectedParticipantId, setSelectedParticipantId] = useState<string | null>(null)
+  const [drawerInitialSubTab, setDrawerInitialSubTab] = useState<DrawerSubTab>('oversikt')
   const [addParticipantOpen, setAddParticipantOpen] = useState(false)
   const [bulkInviteOpen, setBulkInviteOpen] = useState(false)
   const [bulkImportOpen, setBulkImportOpen] = useState(false)
+
+  const openParticipant = (id: string, subTab: DrawerSubTab = 'oversikt') => {
+    setDrawerInitialSubTab(subTab)
+    setSelectedParticipantId(id)
+  }
   const [linkParticipantId, setLinkParticipantId] = useState<string | null>(null)
   const { stats, loading, reload } = useConsultantStats()
 
@@ -91,7 +106,7 @@ export default function StaConsultant() {
         onBulkInvite={() => setBulkInviteOpen(true)}
         onBulkImport={() => setBulkImportOpen(true)}
       />
-      <KpiRow kpi={kpi} />
+      <KpiRow kpi={kpi} stats={stats} onChangeTab={setTab} />
       <ConsultantTabs current={tab} onChange={setTab} />
 
       <div className="mt-6">
@@ -100,9 +115,11 @@ export default function StaConsultant() {
             rows={rows}
             stats={stats}
             loading={loading}
-            onOpenParticipant={setSelectedParticipantId}
+            onOpenParticipant={(id) => openParticipant(id)}
+            onOpenParticipantDocuments={(id) => openParticipant(id, 'dokument')}
             onLink={setLinkParticipantId}
             onAdd={() => setAddParticipantOpen(true)}
+            onChangeTab={setTab}
             onReload={reload}
           />
         )}
@@ -110,7 +127,7 @@ export default function StaConsultant() {
           <ParticipantsTab
             rows={rows}
             loading={loading}
-            onOpen={setSelectedParticipantId}
+            onOpen={(id) => openParticipant(id)}
             onLink={setLinkParticipantId}
             onAdd={() => setAddParticipantOpen(true)}
           />
@@ -123,6 +140,7 @@ export default function StaConsultant() {
       {selectedStats && (
         <ParticipantDetailDrawer
           stats={selectedStats}
+          initialSubTab={drawerInitialSubTab}
           onClose={() => setSelectedParticipantId(null)}
           onLink={() => {
             const id = selectedStats?.enrollment.id
@@ -202,7 +220,6 @@ function ConsultantHero({
           </p>
         </div>
         <div className="flex gap-2 flex-wrap">
-          <Button variant="secondary">Veckosammanställning</Button>
           <Button variant="secondary" leftIcon={<FileSpreadsheet size={16} />} onClick={onBulkImport}>
             Importera CSV/Excel
           </Button>
@@ -220,42 +237,76 @@ function ConsultantHero({
 
 function KpiRow({
   kpi,
+  stats,
+  onChangeTab,
 }: {
   kpi: { active: number; perPart: Record<1 | 2 | 3 | 4, number>; draftsToReview: number; assessmentsInProgress: number }
+  stats: EnrollmentStats[]
+  onChangeTab: (tab: TabId) => void
 }) {
+  const deadlinesThisWeek = useMemo(() => countDeadlinesWithinDays(stats, 7), [stats])
+
   return (
     <section className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
       <KpiCard
         label="Aktiva deltagare"
         value={kpi.active}
         subtext={`${kpi.perPart[1]} i Del 1 · ${kpi.perPart[2]} i Del 2 · ${kpi.perPart[3]} i Del 3 · ${kpi.perPart[4]} i Del 4`}
+        onClick={kpi.active > 0 ? () => onChangeTab('deltagare') : undefined}
       />
       <KpiCard
         label="Deadlines denna vecka"
-        value={0}
-        subtext="Inga registrerade ännu"
+        value={deadlinesThisWeek}
+        subtext={deadlinesThisWeek > 0 ? 'AF-tidsfrister inom 7 dagar' : 'Inga inom 7 dagar'}
+        subtextClass={deadlinesThisWeek > 0 ? 'text-rose-700 font-medium' : undefined}
       />
       <KpiCard
         label="Utkast att granska"
         value={kpi.draftsToReview}
         subtext={kpi.draftsToReview > 0 ? 'Granska och skicka' : 'Allt klart'}
+        onClick={kpi.draftsToReview > 0 ? () => onChangeTab('dokument') : undefined}
       />
       <KpiCard
         label="Skattningar pågående"
         value={kpi.assessmentsInProgress}
         subtext={kpi.assessmentsInProgress > 0 ? 'Slutför i drawer' : 'Inga pågående'}
+        onClick={kpi.assessmentsInProgress > 0 ? () => onChangeTab('skattningar') : undefined}
       />
     </section>
   )
 }
 
-function KpiCard({ label, value, subtext, subtextClass }: { label: string; value: number; subtext: string; subtextClass?: string }) {
+function KpiCard({
+  label,
+  value,
+  subtext,
+  subtextClass,
+  onClick,
+}: {
+  label: string
+  value: number
+  subtext: string
+  subtextClass?: string
+  onClick?: () => void
+}) {
+  const interactive = !!onClick
+  const Wrapper: 'button' | 'div' = interactive ? 'button' : 'div'
   return (
-    <Card variant="flat" padding="md">
-      <div className="text-xs uppercase tracking-wide text-stone-500 font-medium">{label}</div>
-      <div className="text-2xl font-semibold text-stone-900 mt-1">{value}</div>
-      <div className={cn('text-xs text-stone-600 mt-1', subtextClass)}>{subtext}</div>
-    </Card>
+    <Wrapper
+      type={interactive ? 'button' : undefined}
+      onClick={onClick}
+      className={cn(
+        'block text-left w-full',
+        interactive && 'cursor-pointer hover:scale-[1.01] transition-transform',
+        interactive && 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-solid)] rounded-xl',
+      )}
+    >
+      <Card variant="flat" padding="md" className={interactive ? 'hover:shadow-md transition-shadow' : undefined}>
+        <div className="text-xs uppercase tracking-wide text-stone-500 font-medium">{label}</div>
+        <div className="text-2xl font-semibold text-stone-900 mt-1">{value}</div>
+        <div className={cn('text-xs text-stone-600 mt-1', subtextClass)}>{subtext}</div>
+      </Card>
+    </Wrapper>
   )
 }
 
@@ -298,21 +349,26 @@ function OverviewTab({
   stats,
   loading,
   onOpenParticipant,
+  onOpenParticipantDocuments,
   onLink,
   onAdd,
+  onChangeTab,
   onReload,
 }: {
   rows: StaParticipantRow[]
   stats: EnrollmentStats[]
   loading: boolean
   onOpenParticipant: (id: string) => void
+  onOpenParticipantDocuments: (id: string) => void
   onLink: (id: string) => void
   onAdd: () => void
+  onChangeTab: (tab: TabId) => void
   onReload: () => void
 }) {
   const draftDocuments = useMemo(() => {
     const result: Array<{
       id: string
+      enrollmentId: string
       title: string
       participantName: string
       subtext: string
@@ -324,6 +380,7 @@ function OverviewTab({
         if (d.status === 'draft' || d.status === 'consultant_review') {
           result.push({
             id: d.id,
+            enrollmentId: s.enrollment.id,
             title: documentTypeLabel(d.doc_type),
             participantName: s.enrollment.external_name ?? 'Jobin-deltagare',
             subtext: d.ai_drafted ? 'AI-utkast' : 'Utkast',
@@ -342,11 +399,15 @@ function OverviewTab({
         <EmptyDataBanner onAdd={onAdd} onSelfTestCreated={onReload} />
       )}
 
-      <DeadlinesCard />
+      <DeadlinesCard stats={stats} onOpenParticipantDocuments={onOpenParticipantDocuments} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <AiSummaryCard hasAnyParticipant={rows.length > 0} />
-        <DraftsCard drafts={draftDocuments} />
+        <DraftsCard
+          drafts={draftDocuments}
+          onSelect={onOpenParticipantDocuments}
+          onSeeAll={() => onChangeTab('dokument')}
+        />
       </div>
 
       {rows.length > 0 && (
@@ -356,7 +417,12 @@ function OverviewTab({
               <h3 className="text-base font-semibold text-stone-900">Senaste deltagare</h3>
               <p className="text-xs text-stone-500">Aktivitet de senaste 24 timmarna</p>
             </div>
-            <Button variant="ghost" size="sm" rightIcon={<ChevronRight size={14} />}>
+            <Button
+              variant="ghost"
+              size="sm"
+              rightIcon={<ChevronRight size={14} />}
+              onClick={() => onChangeTab('deltagare')}
+            >
               Se alla
             </Button>
           </div>
@@ -397,22 +463,80 @@ function EmptyDataBanner({ onAdd, onSelfTestCreated }: { onAdd: () => void; onSe
   )
 }
 
-function DeadlinesCard() {
+function DeadlinesCard({
+  stats,
+  onOpenParticipantDocuments,
+}: {
+  stats: EnrollmentStats[]
+  onOpenParticipantDocuments: (enrollmentId: string) => void
+}) {
+  const deadlines = useMemo(() => collectActiveDeadlines(stats).slice(0, 5), [stats])
+  const within7 = deadlines.filter((d) => d.daysLeft <= 7).length
+
   return (
     <Card variant="flat" padding="lg">
       <div className="flex items-center justify-between mb-2">
         <div>
           <h3 className="text-base font-semibold text-stone-900 flex items-center gap-2">
-            <AlertTriangle size={16} className="text-stone-400" />
+            <AlertTriangle
+              size={16}
+              className={within7 > 0 ? 'text-rose-500' : 'text-stone-400'}
+            />
             Akuta deadlines
           </h3>
           <p className="text-xs text-stone-500">AF-tidsfrister inom 7 dagar</p>
         </div>
       </div>
-      <p className="text-sm text-stone-600 mt-3">
-        Deadline-spårning kommer i nästa version. Just nu syns deadlines per deltagare
-        i drawerns "Dokument"-flik och under "Skattningar".
-      </p>
+      {deadlines.length === 0 ? (
+        <p className="text-sm text-stone-600 mt-3">
+          Inga aktiva deadlines just nu. När en deltagares delredovisning närmar sig sin frist
+          dyker den upp här.
+        </p>
+      ) : (
+        <ul className="space-y-1.5 mt-3">
+          {deadlines.map((d) => {
+            const severity = deadlineSeverity(d.daysLeft)
+            return (
+              <li key={d.enrollmentId}>
+                <button
+                  type="button"
+                  onClick={() => onOpenParticipantDocuments(d.enrollmentId)}
+                  className={cn(
+                    'w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg text-sm text-left',
+                    'border transition-colors',
+                    'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-solid)]',
+                    severity === 'critical' && 'bg-rose-50 border-rose-200 hover:bg-rose-100',
+                    severity === 'warning' && 'bg-amber-50 border-amber-200 hover:bg-amber-100',
+                    severity === 'normal' && 'bg-stone-50 border-stone-200 hover:bg-stone-100',
+                  )}
+                >
+                  <div className="min-w-0">
+                    <div className="font-medium text-stone-900 truncate">
+                      {d.participantName}
+                    </div>
+                    <div className="text-xs text-stone-600">{formatDocType(d.docType)}</div>
+                  </div>
+                  <div className="flex flex-col items-end flex-shrink-0">
+                    <span
+                      className={cn(
+                        'text-xs font-semibold',
+                        severity === 'critical' && 'text-rose-700',
+                        severity === 'warning' && 'text-amber-800',
+                        severity === 'normal' && 'text-stone-700',
+                      )}
+                    >
+                      {formatDaysLeft(d.daysLeft)}
+                    </span>
+                    <span className="text-[11px] text-stone-500">
+                      {formatShortDate(d.dueAt)}
+                    </span>
+                  </div>
+                </button>
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </Card>
   )
 }
@@ -422,7 +546,7 @@ function AiSummaryCard({ hasAnyParticipant }: { hasAnyParticipant: boolean }) {
     <Card
       variant="flat"
       padding="lg"
-      style={{ background: 'linear-gradient(135deg, #FFFFFF 0%, var(--c-bg) 100%)' }}
+      style={{ background: 'var(--c-bg)' }}
     >
       <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
         <div className="flex items-center gap-2">
@@ -451,21 +575,31 @@ function AiSummaryCard({ hasAnyParticipant }: { hasAnyParticipant: boolean }) {
 
 function DraftsCard({
   drafts,
+  onSelect,
+  onSeeAll,
 }: {
   drafts: Array<{
     id: string
+    enrollmentId: string
     title: string
     participantName: string
     subtext: string
     docType: string
     aiDrafted: boolean
   }>
+  onSelect: (enrollmentId: string) => void
+  onSeeAll: () => void
 }) {
   return (
     <Card variant="flat" padding="lg">
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-base font-semibold text-stone-900">Dokumentutkast att granska</h3>
-        <Button variant="ghost" size="sm" rightIcon={<ChevronRight size={14} />}>
+        <Button
+          variant="ghost"
+          size="sm"
+          rightIcon={<ChevronRight size={14} />}
+          onClick={onSeeAll}
+        >
           Alla
         </Button>
       </div>
@@ -476,23 +610,34 @@ function DraftsCard({
       ) : (
         <ul className="space-y-2">
           {drafts.map((d) => (
-            <li key={d.id} className="p-3 rounded-lg border border-stone-200 hover:bg-stone-50 transition-colors">
-              <div className="flex items-center justify-between gap-3 flex-wrap">
-                <div>
-                  <div className="text-sm font-medium text-stone-900 flex items-center gap-2">
-                    {d.title} — {d.participantName}
-                    {d.aiDrafted && (
-                      <span
-                        className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
-                        style={{ background: 'var(--c-solid)' }}
-                      >
-                        AI
-                      </span>
-                    )}
+            <li key={d.id}>
+              <button
+                type="button"
+                onClick={() => onSelect(d.enrollmentId)}
+                className={cn(
+                  'w-full text-left p-3 rounded-lg border border-stone-200',
+                  'hover:bg-stone-50 transition-colors',
+                  'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--c-solid)]',
+                )}
+              >
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div>
+                    <div className="text-sm font-medium text-stone-900 flex items-center gap-2">
+                      {d.title} — {d.participantName}
+                      {d.aiDrafted && (
+                        <span
+                          className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded text-[10px] font-medium text-white"
+                          style={{ background: 'var(--c-solid)' }}
+                        >
+                          AI
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-stone-500">{d.subtext}</div>
                   </div>
-                  <div className="text-xs text-stone-500">{d.subtext}</div>
+                  <ChevronRight size={14} className="text-stone-400 flex-shrink-0" />
                 </div>
-              </div>
+              </button>
             </li>
           ))}
         </ul>
@@ -787,16 +932,18 @@ function PauseResumeButton({
 
 function ParticipantDetailDrawer({
   stats,
+  initialSubTab = 'oversikt',
   onClose,
   onLink,
   onChange,
 }: {
   stats: EnrollmentStats
+  initialSubTab?: DrawerSubTab
   onClose: () => void
   onLink: () => void
   onChange?: () => void
 }) {
-  const [subTab, setSubTab] = useState<'oversikt' | 'aktivitet' | 'skattningar' | 'dokument' | 'anteckningar'>('oversikt')
+  const [subTab, setSubTab] = useState<DrawerSubTab>(initialSubTab)
   const participant: StaParticipantRow = toParticipantRow(stats)
   const realEnrollmentId = stats.enrollment.id
 
