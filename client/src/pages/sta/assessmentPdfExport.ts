@@ -22,12 +22,54 @@ import type { StaAssessment, StaEnrollment } from '@/services/staApi'
 import { INSTRUMENTS, type InstrumentCode } from './assessmentInstruments'
 import { resolveParticipantName } from './enrollmentDisplay'
 
-type ScoresJsonb = Record<string, { value?: number | string; person?: number | string; bedomare?: number | string; comment?: string }>
+interface ItemEntry {
+  value?: number | string
+  person?: number | string
+  bedomare?: number | string
+  comment?: string
+}
+
+interface BedomningMeta {
+  id: string
+  datum?: string
+  arbetsuppgift?: string
+}
+
+type ScoresJsonb = Record<string, ItemEntry | BedomningMeta[] | undefined> & {
+  _bedomningar?: BedomningMeta[]
+}
 
 interface PdfContext {
   assessment: StaAssessment
   enrollment: StaEnrollment
   consultantName?: string
+}
+
+/**
+ * Returnerar bedömningarna i en assessment.scores. Hanterar bakåtkompat:
+ * om scores är flat (utan _bedomningar) returneras en single 'b1'.
+ */
+function getBedomningar(scores: ScoresJsonb): BedomningMeta[] {
+  if (Array.isArray(scores._bedomningar) && scores._bedomningar.length > 0) {
+    return scores._bedomningar
+  }
+  return [{ id: 'b1' }]
+}
+
+function readItem(scores: ScoresJsonb, bedomningId: string, catIdx: number, itemIdx: number): ItemEntry | undefined {
+  // Försök nytt format först
+  const prefixed = scores[`${bedomningId}_c${catIdx}_i${itemIdx}`]
+  if (prefixed && typeof prefixed === 'object' && !Array.isArray(prefixed)) {
+    return prefixed as ItemEntry
+  }
+  // Bakåtkompat: om bedomningId === 'b1' och vi har flat-format
+  if (bedomningId === 'b1') {
+    const flat = scores[`c${catIdx}_i${itemIdx}`]
+    if (flat && typeof flat === 'object' && !Array.isArray(flat)) {
+      return flat as ItemEntry
+    }
+  }
+  return undefined
 }
 
 const TEMPLATE_URLS: Partial<Record<InstrumentCode, string>> = {
@@ -112,8 +154,8 @@ export async function fillMohostPdf(ctx: PdfContext): Promise<Blob> {
   for (let catIdx = 0; catIdx < instrument.categories.length; catIdx++) {
     const category = instrument.categories[catIdx]
     for (let itemIdx = 0; itemIdx < category.items.length; itemIdx++) {
-      const scoreKey = `c${catIdx}_i${itemIdx}`
-      const entry = scores[scoreKey]
+      // MOHOST är single-bedömning; läs alltid från b1 (eller flat-format för bakåtkompat)
+      const entry = readItem(scores, 'b1', catIdx, itemIdx)
       const value = entry?.value
       const comment = entry?.comment ?? ''
       const radNr = linearIndex + 1
@@ -202,6 +244,7 @@ async function fillAwpAwcPdf(ctx: PdfContext, code: 'AWP' | 'AWC'): Promise<Blob
   const doc = await PDFDocument.load(templateBytes)
   const form = doc.getForm()
   const scores = (assessment.scores as ScoresJsonb) ?? {}
+  const bedomningar = getBedomningar(scores)
 
   // ---------- Metadata ----------
   trySetText(form, 'Namn', resolveParticipantName(enrollment, ''))
@@ -210,61 +253,99 @@ async function fillAwpAwcPdf(ctx: PdfContext, code: 'AWP' | 'AWC'): Promise<Blob
   trySetText(form, 'Hjälpmedel/anpassningar', enrollment.adaptations ?? '')
   trySetText(form, 'Sammanfattande kommentarer', assessment.summary ?? '')
 
-  // Datum / period
-  const dateStr = (assessment.signed_at ?? assessment.created_at ?? new Date().toISOString()).slice(0, 10)
+  // Datum / period: använd bedömning 1:s datum om satt, annars assessment.signed_at
+  const firstBedDatum = bedomningar[0]?.datum
+  const dateStr = firstBedDatum ?? (assessment.signed_at ?? assessment.created_at ?? new Date().toISOString()).slice(0, 10)
   trySetText(form, 'Datum för bedömning', dateStr) // AWC
   trySetText(form, 'Observationstillfälle/period', dateStr) // AWP
   trySetText(form, 'Bedömning', dateStr) // AWP
 
-  // Bedömningsnummer (multi-bedömning kommer senare, MVP = 1)
-  trySetText(form, 'Bedömning nr', '1')
+  // Bedömningsnummer: antal bedömningar i denna assessment
+  trySetText(form, 'Bedömning nr', String(bedomningar.length))
 
-  // AWP-specifik klientdata
+  // AWP-specifik klientdata: sätt 'Bedömningssituation' till första bedömningens arbetsuppgift
   if (code === 'AWP') {
-    trySetText(form, 'Bedömningssituation', '')
+    const situation = bedomningar
+      .map((b, i) => b.arbetsuppgift && `${i + 1}. ${b.arbetsuppgift}`)
+      .filter(Boolean)
+      .join('\n')
+    trySetText(form, 'Bedömningssituation', situation)
     trySetText(form, 'Arbetsrelaterad problematik', '')
   }
   // AWC-specifik
   if (code === 'AWC') {
-    trySetText(form, 'Arbetsuppgift', '')
+    const arbetsuppgifter = bedomningar.map((b) => b.arbetsuppgift).filter(Boolean).join(', ')
+    trySetText(form, 'Arbetsuppgift', arbetsuppgifter)
     trySetText(form, 'Anpassning', '')
   }
 
-  // ---------- Skattningar (Skattning 1-4 → Färdighet 1-14) ----------
-  // Items i scores är c{catIdx}_i{itemIdx} och ordnade enligt INSTRUMENTS[code].categories.
-  // Mappa till linjär 1-14 enligt AWP_AWC_FIELD_ORDER.
+  // ---------- Skattningar — iterera över alla bedömningar ----------
+  // För varje bedömning N (1-4) markeras Skattning N - Färdighet M.
+  // Kommentaren från första bedömningen vinner (om flera har egen) — eller
+  // sammansätt om flera.
   const instrument = INSTRUMENTS[code]
-  let linearIndex = 0
-  for (let catIdx = 0; catIdx < instrument.categories.length; catIdx++) {
-    const category = instrument.categories[catIdx]
-    for (let itemIdx = 0; itemIdx < category.items.length; itemIdx++) {
-      const scoreKey = `c${catIdx}_i${itemIdx}`
-      const entry = scores[scoreKey]
-      const value = entry?.value
-      const comment = entry?.comment ?? ''
-      const fieldCandidates = AWP_AWC_FIELD_ORDER[linearIndex] ?? []
-      const primaryName = fieldCandidates[0] ?? ''
-      const skattningNr = linearIndex + 1
+  const maxBedomningar = Math.min(bedomningar.length, 4)
+  for (let bedIdx = 0; bedIdx < maxBedomningar; bedIdx++) {
+    const bedomning = bedomningar[bedIdx]
+    const skattningNr = bedIdx + 1 // PDF-mallen: Skattning 1-4
 
-      // För AWC: använd fält-format "Skattning N - <färdighetsnamn>"
-      // För AWP: använd fält-format "Skattning N - Färdighet M"
-      if (typeof value === 'number' && value >= 1 && value <= 4) {
-        if (code === 'AWC') {
-          tryCheckAny(form, fieldCandidates.map((n) => `Skattning ${value} - ${n}`))
-        } else {
-          tryCheck(form, `Skattning ${value} - Färdighet ${skattningNr}`)
+    let linearIndex = 0
+    for (let catIdx = 0; catIdx < instrument.categories.length; catIdx++) {
+      const category = instrument.categories[catIdx]
+      for (let itemIdx = 0; itemIdx < category.items.length; itemIdx++) {
+        const entry = readItem(scores, bedomning.id, catIdx, itemIdx)
+        const value = entry?.value
+        const fieldCandidates = AWP_AWC_FIELD_ORDER[linearIndex] ?? []
+        const fardighetNr = linearIndex + 1
+
+        // För AWC: 'Skattning N - <färdighetsnamn>'
+        // För AWP: 'Skattning N - Färdighet M'
+        if (typeof value === 'number' && value >= 1 && value <= 4) {
+          if (code === 'AWC') {
+            tryCheckAny(form, fieldCandidates.map((n) => `Skattning ${value} - ${n}`))
+          } else {
+            // AWP: 'Skattning {value}' är checkbox för värdet — men vi behöver
+            // mappa per bedömnings-position i blanketten. AWP-mallen har ett
+            // Skattning-1-fält per färdighet (inte N=position). Vi använder
+            // bedIdx 0 för värdet, övriga bedömningar visas tyvärr inte
+            // visuellt utan multi-radio-support i AWP-mallen.
+            if (bedIdx === 0) {
+              tryCheck(form, `Skattning ${value} - Färdighet ${fardighetNr}`)
+            }
+          }
+        } else if (value === 'EB' && code === 'AWC') {
+          tryCheckAny(form, fieldCandidates.map((n) => `EB - ${n}`))
         }
-      } else if (value === 'EB' && code === 'AWC') {
-        tryCheckAny(form, fieldCandidates.map((n) => `EB - ${n}`))
+        linearIndex++
       }
-      // Kommentar i textareaen som heter samma som färdigheten
-      if (comment && primaryName) {
-        trySetTextAny(form, fieldCandidates, comment)
-      }
-      linearIndex++
     }
   }
 
+  // ---------- Kommentarer (textareas) per färdighet ----------
+  // Kombinera kommentarer från alla bedömningar (om flera har samma färdighet
+  // med kommentar). Format: 'Bed 1 (Lager): ...\nBed 2 (Admin): ...'.
+  {
+    const instrument = INSTRUMENTS[code]
+    let linearIndex = 0
+    for (let catIdx = 0; catIdx < instrument.categories.length; catIdx++) {
+      const category = instrument.categories[catIdx]
+      for (let itemIdx = 0; itemIdx < category.items.length; itemIdx++) {
+        const fieldCandidates = AWP_AWC_FIELD_ORDER[linearIndex] ?? []
+        const comments: string[] = []
+        for (let bedIdx = 0; bedIdx < bedomningar.length; bedIdx++) {
+          const entry = readItem(scores, bedomningar[bedIdx].id, catIdx, itemIdx)
+          if (entry?.comment) {
+            const label = bedomningar[bedIdx].arbetsuppgift ?? `Bed ${bedIdx + 1}`
+            comments.push(bedomningar.length > 1 ? `${label}: ${entry.comment}` : entry.comment)
+          }
+        }
+        if (comments.length > 0) {
+          trySetTextAny(form, fieldCandidates, comments.join('\n'))
+        }
+        linearIndex++
+      }
+    }
+  }
   // Save and return Blob
   const pdfBytes = await doc.save()
   return new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })

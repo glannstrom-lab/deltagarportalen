@@ -58,14 +58,95 @@ interface SingleItemEntry {
   comment?: string
 }
 
-type Scores = Record<string, HybridItemEntry | SingleItemEntry>
+type ItemEntry = HybridItemEntry | SingleItemEntry
+
+interface BedomningMeta {
+  id: string // 'b1', 'b2', ..
+  datum?: string // ISO YYYY-MM-DD
+  arbetsuppgift?: string
+}
+
+// JSONB-format i sta_assessments.scores:
+//   {
+//     _bedomningar: [{ id: 'b1', datum, arbetsuppgift }, ...],
+//     b1_c0_i0: { value, comment },
+//     b1_c0_i1: { value, ... },
+//     b2_c0_i0: { ... },
+//     ...
+//   }
+// För instrument utan multi-bedömning (DOA, WRI, MOHOST) används bara 'b1'.
+// Bakåtkompatibilitet: gammal flat-format ({ c0_i0: {...} }) tolkas som 'b1'.
+interface ScoresJsonb {
+  _bedomningar?: BedomningMeta[]
+  [key: string]: ItemEntry | BedomningMeta[] | undefined
+}
+
+const MULTI_INSTRUMENTS = new Set(['AWP', 'AWC'])
+const MAX_BEDOMNINGAR = 4
 
 function isHybridInstrument(instrument: InstrumentDefinition): boolean {
   return instrument.hasSelfRating
 }
 
-function itemKey(catIndex: number, itemIndex: number): string {
+function isMultiInstrument(code: string): boolean {
+  return MULTI_INSTRUMENTS.has(code)
+}
+
+function itemKey(bedomningId: string, catIndex: number, itemIndex: number): string {
+  return `${bedomningId}_c${catIndex}_i${itemIndex}`
+}
+
+function legacyItemKey(catIndex: number, itemIndex: number): string {
   return `c${catIndex}_i${itemIndex}`
+}
+
+/**
+ * Normaliserar scores-JSONB till multi-bedömning-format.
+ * - Om _bedomningar finns: returnera som-är
+ * - Om flat (c0_i0-keys utan prefix): wrappa i b1
+ */
+/**
+ * Tar bort items för en bedömning och renumrerar resterande:
+ * b1 b2 b3 → ta bort b2 → b1 b2 (gamla b3 blir nya b2).
+ * Behåller _bedomningar oförändrat — anroparen ansvarar för det.
+ */
+function _renumberAfterRemove(scores: ScoresJsonb, removedId: string): ScoresJsonb {
+  const out: ScoresJsonb = { _bedomningar: scores._bedomningar }
+  const removedIdx = parseInt(removedId.slice(1), 10)
+  for (const [key, value] of Object.entries(scores)) {
+    if (key === '_bedomningar') continue
+    const match = key.match(/^b(\d+)_(.+)$/)
+    if (!match) {
+      out[key] = value as ItemEntry
+      continue
+    }
+    const bedIdx = parseInt(match[1], 10)
+    if (bedIdx === removedIdx) continue // skippa removed
+    if (bedIdx > removedIdx) {
+      out[`b${bedIdx - 1}_${match[2]}`] = value as ItemEntry
+    } else {
+      out[key] = value as ItemEntry
+    }
+  }
+  return out
+}
+
+function normalizeScores(raw: unknown): ScoresJsonb {
+  const src = (raw as Record<string, unknown>) ?? {}
+  if (Array.isArray(src._bedomningar)) {
+    return src as ScoresJsonb
+  }
+  // Migrate flat → b1
+  const out: ScoresJsonb = { _bedomningar: [{ id: 'b1' }] }
+  for (const [key, value] of Object.entries(src)) {
+    if (key === '_bedomningar') continue
+    if (key.match(/^c\d+_i\d+$/)) {
+      out[`b1_${key}`] = value as ItemEntry
+    } else {
+      out[key] = value as ItemEntry
+    }
+  }
+  return out
 }
 
 export function AssessmentEditor({
@@ -77,9 +158,11 @@ export function AssessmentEditor({
   onSaved,
 }: AssessmentEditorProps) {
   const instrument = getInstrument(assessment.instrument)
+  const isMulti = !!instrument && isMultiInstrument(instrument.code)
 
   const [mode, setMode] = useState<'at' | 'deltagare'>(initialMode)
-  const [scores, setScores] = useState<Scores>(() => (assessment.scores as Scores) ?? {})
+  const [scores, setScores] = useState<ScoresJsonb>(() => normalizeScores(assessment.scores))
+  const [bedomningIndex, setBedomningIndex] = useState(0)
   const [summary, setSummary] = useState(assessment.summary ?? '')
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
@@ -89,10 +172,15 @@ export function AssessmentEditor({
 
   // Reset state om assessment ändras
   useEffect(() => {
-    setScores((assessment.scores as Scores) ?? {})
+    setScores(normalizeScores(assessment.scores))
     setSummary(assessment.summary ?? '')
+    setBedomningIndex(0)
     setDirty(false)
   }, [assessment.id])
+
+  const bedomningar: BedomningMeta[] = scores._bedomningar ?? [{ id: 'b1' }]
+  const currentBedomning = bedomningar[bedomningIndex] ?? bedomningar[0]
+  const currentBedomningId = currentBedomning?.id ?? 'b1'
 
   if (!instrument) {
     return (
@@ -108,10 +196,15 @@ export function AssessmentEditor({
 
   const hybrid = isHybridInstrument(instrument)
   const totalItems = instrument.itemCount
+  // Räkna ifyllda items för current bedömning (multi-instrument)
+  // eller totalt (single-instrument — bara b1)
   const completedItems = useMemo(() => {
     let n = 0
-    for (const key of Object.keys(scores)) {
-      const entry = scores[key]
+    const prefix = `${currentBedomningId}_`
+    for (const [key, raw] of Object.entries(scores)) {
+      if (key === '_bedomningar') continue
+      if (!key.startsWith(prefix)) continue
+      const entry = raw as ItemEntry
       if (hybrid) {
         const e = entry as HybridItemEntry
         if (mode === 'deltagare') {
@@ -125,13 +218,14 @@ export function AssessmentEditor({
       }
     }
     return n
-  }, [scores, hybrid, mode])
+  }, [scores, hybrid, mode, currentBedomningId])
   const progress = Math.round((completedItems / totalItems) * 100)
 
-  const handleItemValue = (key: string, value: ItemValue) => {
+  const handleItemValue = (catIdx: number, itemIdx: number, value: ItemValue) => {
+    const key = itemKey(currentBedomningId, catIdx, itemIdx)
     setScores((prev) => {
-      const entry = prev[key] ?? {}
-      const updated: HybridItemEntry | SingleItemEntry = hybrid
+      const entry = (prev[key] as ItemEntry | undefined) ?? {}
+      const updated: ItemEntry = hybrid
         ? {
             ...(entry as HybridItemEntry),
             [mode === 'deltagare' ? 'person' : 'bedomare']: value,
@@ -142,11 +236,47 @@ export function AssessmentEditor({
     setDirty(true)
   }
 
-  const handleItemComment = (key: string, comment: string) => {
+  const handleItemComment = (catIdx: number, itemIdx: number, comment: string) => {
+    const key = itemKey(currentBedomningId, catIdx, itemIdx)
     setScores((prev) => ({
       ...prev,
-      [key]: { ...(prev[key] ?? {}), comment },
+      [key]: { ...((prev[key] as ItemEntry | undefined) ?? {}), comment },
     }))
+    setDirty(true)
+  }
+
+  const handleBedomningMetaChange = (field: 'datum' | 'arbetsuppgift', value: string) => {
+    setScores((prev) => {
+      const updated: BedomningMeta[] = (prev._bedomningar ?? [{ id: 'b1' }]).map((b, i) =>
+        i === bedomningIndex ? { ...b, [field]: value } : b,
+      )
+      return { ...prev, _bedomningar: updated }
+    })
+    setDirty(true)
+  }
+
+  const handleAddBedomning = () => {
+    if (bedomningar.length >= MAX_BEDOMNINGAR) return
+    const nextId = `b${bedomningar.length + 1}`
+    setScores((prev) => ({
+      ...prev,
+      _bedomningar: [...(prev._bedomningar ?? [{ id: 'b1' }]), { id: nextId }],
+    }))
+    setBedomningIndex(bedomningar.length) // växla till nya bedömningen
+    setDirty(true)
+  }
+
+  const handleRemoveBedomning = (index: number) => {
+    if (bedomningar.length <= 1) return
+    if (!confirm(`Ta bort Bedömning ${index + 1}? Alla skattningar och kommentarer för den raderas.`)) return
+    const removedId = bedomningar[index].id
+    setScores((prev) => {
+      const next: ScoresJsonb = { ..._renumberAfterRemove(prev, removedId) }
+      next._bedomningar = (prev._bedomningar ?? []).filter((_, i) => i !== index)
+        .map((b, i) => ({ ...b, id: `b${i + 1}` }))
+      return next
+    })
+    setBedomningIndex(Math.min(index, bedomningar.length - 2))
     setDirty(true)
   }
 
@@ -297,11 +427,30 @@ export function AssessmentEditor({
           </Card>
         )}
 
+        {isMulti && (
+          <BedomningTabs
+            bedomningar={bedomningar}
+            currentIndex={bedomningIndex}
+            onSelect={setBedomningIndex}
+            onAdd={handleAddBedomning}
+            onRemove={handleRemoveBedomning}
+            canAdd={bedomningar.length < MAX_BEDOMNINGAR}
+          />
+        )}
+
+        {isMulti && currentBedomning && (
+          <BedomningMetaForm
+            bedomning={currentBedomning}
+            onChange={handleBedomningMetaChange}
+          />
+        )}
+
         {instrument.categories.map((category, catIndex) => (
           <CategorySection
-            key={catIndex}
+            key={`${currentBedomningId}-${catIndex}`}
             category={category}
             catIndex={catIndex}
+            bedomningId={currentBedomningId}
             instrument={instrument}
             scores={scores}
             mode={mode}
@@ -490,6 +639,7 @@ function ScaleExplainer({ scale }: { scale: InstrumentScale[] }) {
 function CategorySection({
   category,
   catIndex,
+  bedomningId,
   instrument,
   scores,
   mode,
@@ -499,12 +649,13 @@ function CategorySection({
 }: {
   category: { title: string; items: string[] }
   catIndex: number
+  bedomningId: string
   instrument: InstrumentDefinition
-  scores: Scores
+  scores: ScoresJsonb
   mode: 'at' | 'deltagare'
   hybrid: boolean
-  onItemValue: (key: string, value: ItemValue) => void
-  onItemComment: (key: string, comment: string) => void
+  onItemValue: (catIdx: number, itemIdx: number, value: ItemValue) => void
+  onItemComment: (catIdx: number, itemIdx: number, comment: string) => void
 }) {
   return (
     <section>
@@ -513,8 +664,8 @@ function CategorySection({
       </h3>
       <ul className="space-y-3">
         {category.items.map((label, itemIndex) => {
-          const key = itemKey(catIndex, itemIndex)
-          const entry = scores[key] ?? {}
+          const key = itemKey(bedomningId, catIndex, itemIndex)
+          const entry = (scores[key] as ItemEntry | undefined) ?? {}
           return (
             <ItemRow
               key={key}
@@ -524,13 +675,114 @@ function CategorySection({
               entry={entry}
               mode={mode}
               hybrid={hybrid}
-              onValue={(v) => onItemValue(key, v)}
-              onComment={(c) => onItemComment(key, c)}
+              onValue={(v) => onItemValue(catIndex, itemIndex, v)}
+              onComment={(c) => onItemComment(catIndex, itemIndex, c)}
             />
           )
         })}
       </ul>
     </section>
+  )
+}
+
+function BedomningTabs({
+  bedomningar,
+  currentIndex,
+  onSelect,
+  onAdd,
+  onRemove,
+  canAdd,
+}: {
+  bedomningar: BedomningMeta[]
+  currentIndex: number
+  onSelect: (i: number) => void
+  onAdd: () => void
+  onRemove: (i: number) => void
+  canAdd: boolean
+}) {
+  return (
+    <div className="flex flex-wrap items-center gap-1.5 pb-1 border-b border-stone-100">
+      {bedomningar.map((b, i) => {
+        const isActive = i === currentIndex
+        return (
+          <button
+            key={b.id}
+            type="button"
+            onClick={() => onSelect(i)}
+            className={cn(
+              'px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors',
+              isActive
+                ? 'text-white border-transparent shadow-sm'
+                : 'bg-white text-stone-700 border-stone-200 hover:bg-stone-50',
+            )}
+            style={isActive ? { background: 'var(--c-solid)' } : undefined}
+            aria-pressed={isActive}
+          >
+            Bedömning {i + 1}
+            {b.arbetsuppgift && <span className="ml-1 opacity-75">— {b.arbetsuppgift}</span>}
+          </button>
+        )
+      })}
+      {bedomningar.length > 1 && (
+        <button
+          type="button"
+          onClick={() => onRemove(currentIndex)}
+          className="px-2 py-1.5 rounded-lg text-xs text-stone-500 hover:text-rose-700 hover:bg-rose-50 transition-colors"
+          title={`Ta bort Bedömning ${currentIndex + 1}`}
+        >
+          ✕
+        </button>
+      )}
+      {canAdd && (
+        <button
+          type="button"
+          onClick={onAdd}
+          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-stone-100 text-stone-700 hover:bg-stone-200 transition-colors"
+        >
+          + Lägg till bedömning
+        </button>
+      )}
+    </div>
+  )
+}
+
+function BedomningMetaForm({
+  bedomning,
+  onChange,
+}: {
+  bedomning: BedomningMeta
+  onChange: (field: 'datum' | 'arbetsuppgift', value: string) => void
+}) {
+  return (
+    <Card variant="flat" padding="md" className="border border-stone-200">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label htmlFor={`bed-datum-${bedomning.id}`} className="block text-xs uppercase tracking-wide text-stone-500 font-medium mb-1">
+            Datum för bedömningen
+          </label>
+          <input
+            id={`bed-datum-${bedomning.id}`}
+            type="date"
+            value={bedomning.datum ?? ''}
+            onChange={(e) => onChange('datum', e.target.value)}
+            className="w-full px-3 py-1.5 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+          />
+        </div>
+        <div>
+          <label htmlFor={`bed-arbete-${bedomning.id}`} className="block text-xs uppercase tracking-wide text-stone-500 font-medium mb-1">
+            Arbetsuppgift / situation
+          </label>
+          <input
+            id={`bed-arbete-${bedomning.id}`}
+            type="text"
+            value={bedomning.arbetsuppgift ?? ''}
+            onChange={(e) => onChange('arbetsuppgift', e.target.value)}
+            placeholder="t.ex. Lager, Kundmottagning"
+            className="w-full px-3 py-1.5 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+          />
+        </div>
+      </div>
+    </Card>
   )
 }
 
