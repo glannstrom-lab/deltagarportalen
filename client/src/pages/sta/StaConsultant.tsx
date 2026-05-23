@@ -402,7 +402,7 @@ function OverviewTab({
       <DeadlinesCard stats={stats} onOpenParticipantDocuments={onOpenParticipantDocuments} />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <AiSummaryCard hasAnyParticipant={rows.length > 0} />
+        <AiSummaryCard stats={stats} onChange={onReload} />
         <DraftsCard
           drafts={draftDocuments}
           onSelect={onOpenParticipantDocuments}
@@ -541,15 +541,23 @@ function DeadlinesCard({
   )
 }
 
-function AiSummaryCard({ hasAnyParticipant }: { hasAnyParticipant: boolean }) {
-  return (
-    <Card
-      variant="flat"
-      padding="lg"
-      style={{ background: 'var(--c-bg)' }}
-    >
-      <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
-        <div className="flex items-center gap-2">
+function AiSummaryCard({
+  stats,
+  onChange,
+}: {
+  stats: EnrollmentStats[]
+  onChange: () => void
+}) {
+  const activeEnrollments = useMemo(
+    () => stats.filter((s) => s.enrollment.status === 'active').slice(0, 5),
+    [stats],
+  )
+  const hasAnyParticipant = stats.length > 0
+
+  if (!hasAnyParticipant || activeEnrollments.length === 0) {
+    return (
+      <Card variant="flat" padding="lg" style={{ background: 'var(--c-bg)' }}>
+        <div className="flex items-start justify-between gap-3 mb-3 flex-wrap">
           <span
             className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
             style={{ background: 'var(--c-solid)' }}
@@ -558,18 +566,179 @@ function AiSummaryCard({ hasAnyParticipant }: { hasAnyParticipant: boolean }) {
             AI-veckosumma
           </span>
         </div>
+        <p className="text-sm text-stone-700 leading-relaxed">
+          När du har aktiva deltagare visas en AI-genererad veckosumma per deltagare här,
+          baserad på aktiviteter, pulse-checks och anteckningar från senaste 7 dagarna.
+        </p>
+      </Card>
+    )
+  }
+
+  return (
+    <Card variant="flat" padding="lg" style={{ background: 'var(--c-bg)' }}>
+      <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+        <span
+          className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium text-white"
+          style={{ background: 'var(--c-solid)' }}
+        >
+          <Bot size={12} />
+          AI-veckosumma
+        </span>
+        <span className="text-[11px] text-stone-500">
+          {activeEnrollments.length === 1
+            ? '1 aktiv deltagare'
+            : `${activeEnrollments.length} aktiva deltagare`}
+        </span>
       </div>
-      <p className="text-sm text-stone-700 leading-relaxed">
-        AI-genererad veckosumma per deltagare kommer i nästa version. Den ska bygga
-        på aktiviteter, reflektioner och pulse-checks från Supabase och kunna kopieras
-        till delredovisningen.
-      </p>
-      {!hasAnyParticipant && (
-        <p className="text-xs text-stone-500 mt-2">
-          När du har deltagare visas en sumarkort per deltagare i drawerns "Översikt".
+      <ul className="space-y-2">
+        {activeEnrollments.map((s) => (
+          <AiSummaryItem key={s.enrollment.id} stats={s} onChange={onChange} />
+        ))}
+      </ul>
+      {stats.filter((s) => s.enrollment.status === 'active').length > 5 && (
+        <p className="text-[11px] text-stone-500 mt-3">
+          Visar 5 mest aktuella. Öppna en deltagare för fullständig summa.
         </p>
       )}
     </Card>
+  )
+}
+
+function AiSummaryItem({
+  stats,
+  onChange,
+}: {
+  stats: EnrollmentStats
+  onChange: () => void
+}) {
+  const { enrollment } = stats
+  const [summary, setSummary] = useState<string | null>(enrollment.ai_week_summary)
+  const [summaryAt, setSummaryAt] = useState<string | null>(enrollment.ai_week_summary_generated_at)
+  const [generating, setGenerating] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
+  const [expanded, setExpanded] = useState(false)
+
+  const participantName = enrollment.external_name ?? 'Jobin-deltagare'
+  const ageMs = summaryAt ? Date.now() - new Date(summaryAt).getTime() : Infinity
+  const ageDays = Math.floor(ageMs / (1000 * 60 * 60 * 24))
+  const isStale = summary && ageDays >= 7
+  const ageLabel = !summaryAt
+    ? null
+    : ageDays === 0
+      ? 'idag'
+      : ageDays === 1
+        ? 'igår'
+        : `${ageDays} dagar sedan`
+
+  const handleGenerate = async () => {
+    setGenerating(true)
+    setError(null)
+    try {
+      const { generateWeekSummary } = await import('@/services/staAiApi')
+      const text = await generateWeekSummary(enrollment.id)
+      if (text) {
+        await staEnrollmentsApi.setAiWeekSummary(enrollment.id, text)
+        setSummary(text)
+        setSummaryAt(new Date().toISOString())
+        setExpanded(true)
+        onChange()
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Kunde inte generera summa')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  const handleCopy = async () => {
+    if (!summary) return
+    try {
+      await navigator.clipboard.writeText(summary)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // clipboard kan misslyckas i vissa miljöer — tyst miss
+    }
+  }
+
+  return (
+    <li className="bg-white rounded-lg border border-stone-200 p-3">
+      <div className="flex items-center justify-between gap-2 flex-wrap">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
+          <span className="text-sm font-semibold text-stone-900 truncate">{participantName}</span>
+          <span className="text-[11px] text-stone-500 flex-shrink-0">
+            Del {enrollment.current_part}
+          </span>
+          {ageLabel && (
+            <span
+              className={cn(
+                'text-[11px] flex-shrink-0',
+                isStale ? 'text-amber-700' : 'text-stone-500',
+              )}
+            >
+              · {ageLabel}
+            </span>
+          )}
+        </div>
+        <div className="flex items-center gap-1">
+          {summary && (
+            <button
+              type="button"
+              onClick={handleCopy}
+              className="px-2 py-1 rounded text-[11px] text-stone-600 hover:bg-stone-100 transition-colors"
+              title="Kopiera till urklipp"
+            >
+              {copied ? 'Kopierad ✓' : 'Kopiera'}
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={handleGenerate}
+            disabled={generating}
+            className={cn(
+              'px-2 py-1 rounded text-[11px] font-medium transition-colors',
+              'text-white disabled:opacity-50',
+            )}
+            style={{ background: 'var(--c-solid)' }}
+          >
+            {generating ? 'Genererar…' : summary ? 'Uppdatera' : 'Generera'}
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <p className="text-xs text-rose-700 mt-2">{error}</p>
+      )}
+
+      {summary && (
+        <>
+          <p
+            className={cn(
+              'text-sm text-stone-700 leading-relaxed mt-2',
+              !expanded && 'line-clamp-3',
+            )}
+          >
+            {summary}
+          </p>
+          {summary.length > 200 && (
+            <button
+              type="button"
+              onClick={() => setExpanded((x) => !x)}
+              className="text-[11px] text-stone-500 underline hover:text-stone-700 mt-1"
+            >
+              {expanded ? 'Visa mindre' : 'Visa mer'}
+            </button>
+          )}
+        </>
+      )}
+
+      {!summary && !generating && !error && (
+        <p className="text-xs text-stone-500 mt-2">
+          Ingen summa genererad än — bygger på senaste 7 dagars aktiviteter, pulse-checks och anteckningar.
+        </p>
+      )}
+    </li>
   )
 }
 
