@@ -20,6 +20,7 @@ import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge, isHubNav
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
 import { CoachWidget } from './CoachWidget'
+import { SamlingarFab } from './SamlingarFab'
 import { getPageKeyForPath } from '@/data/coaches'
 import { useSettingsStore } from '@/stores/settingsStore'
 
@@ -137,6 +138,9 @@ export default function Layout() {
 
         {/* Coach-widget — sidkontextuella tips (kan slås av i Inställningar) */}
         <GlobalCoachWidget />
+
+        {/* Mina samlingar — global snabbväg till sparade resurser, stackad ovanför Coach */}
+        <SamlingarFab />
 
         {/* Global welkomstmodal — visas bara om profile.onboarding_completed === false */}
         <OnboardingFlow />
