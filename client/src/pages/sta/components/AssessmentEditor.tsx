@@ -72,12 +72,13 @@ export function AssessmentEditor({
   assessment,
   enrollment,
   consultantName,
-  mode = 'at',
+  mode: initialMode = 'at',
   onClose,
   onSaved,
 }: AssessmentEditorProps) {
   const instrument = getInstrument(assessment.instrument)
 
+  const [mode, setMode] = useState<'at' | 'deltagare'>(initialMode)
   const [scores, setScores] = useState<Scores>(() => (assessment.scores as Scores) ?? {})
   const [summary, setSummary] = useState(assessment.summary ?? '')
   const [saving, setSaving] = useState(false)
@@ -246,19 +247,51 @@ export function AssessmentEditor({
 
         {hybrid && (
           <Card variant="flat" padding="md" style={{ background: 'var(--c-bg)' }}>
-            <div className="flex items-start gap-2 text-sm">
-              <Info size={14} className="mt-0.5 flex-shrink-0" style={{ color: 'var(--c-text)' }} />
-              <div>
-                <p className="font-medium text-stone-900 mb-1">
-                  {mode === 'deltagare'
-                    ? 'Personens egen skattning'
-                    : 'Hybridinstrument — både deltagaren och du skattar'}
-                </p>
-                <p className="text-xs text-stone-700">
-                  {mode === 'deltagare'
-                    ? 'Du fyller i din egen syn på varje fråga. Din arbetsterapeut kompletterar med sin bedömning.'
-                    : 'Deltagarens kolumn visas till vänster (skriv- och läsbar om du fyller i å deras vägnar), din bedömarkolumn till höger.'}
-                </p>
+            <div className="flex items-start justify-between gap-3 flex-wrap">
+              <div className="flex items-start gap-2 text-sm flex-1 min-w-0">
+                <Info size={14} className="mt-0.5 flex-shrink-0" style={{ color: 'var(--c-text)' }} />
+                <div>
+                  <p className="font-medium text-stone-900 mb-1">
+                    {mode === 'deltagare'
+                      ? 'Du fyller i personens skattning'
+                      : 'Hybridinstrument — både deltagaren och du skattar'}
+                  </p>
+                  <p className="text-xs text-stone-700">
+                    {mode === 'deltagare'
+                      ? 'Du skattar nu utifrån deltagarens perspektiv (när deltagaren inte själv kan logga in i Jobin). Växla tillbaka för att skriva din egen bedömning.'
+                      : 'Deltagarens skattning visas som referens. Växla till "Personens skattning" om du behöver fylla i den å deltagarens vägnar.'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-1 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setMode('at')}
+                  className={cn(
+                    'px-2.5 py-1 rounded text-xs font-medium transition-colors',
+                    mode === 'at'
+                      ? 'text-white shadow-sm'
+                      : 'bg-white text-stone-700 hover:bg-stone-100',
+                  )}
+                  style={mode === 'at' ? { background: 'var(--c-solid)' } : undefined}
+                  aria-pressed={mode === 'at'}
+                >
+                  AT-bedömning
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setMode('deltagare')}
+                  className={cn(
+                    'px-2.5 py-1 rounded text-xs font-medium transition-colors',
+                    mode === 'deltagare'
+                      ? 'text-white shadow-sm'
+                      : 'bg-white text-stone-700 hover:bg-stone-100',
+                  )}
+                  style={mode === 'deltagare' ? { background: 'var(--c-solid)' } : undefined}
+                  aria-pressed={mode === 'deltagare'}
+                >
+                  Personens skattning
+                </button>
               </div>
             </div>
           </Card>
@@ -402,7 +435,7 @@ function Header({
     >
       <div className="flex-1 min-w-0">
         <div className="text-[11px] uppercase tracking-wider text-stone-500 font-medium">
-          {mode === 'deltagare' ? 'Självskattning' : 'Bedömning'} · v{instrument.version}
+          {mode === 'deltagare' ? 'Personens skattning' : 'Bedömning'} · v{instrument.version}
         </div>
         <h2 className="text-xl font-semibold text-stone-900">
           {instrument.title} ({instrument.code})

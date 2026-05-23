@@ -24,6 +24,7 @@ import {
   deadlineSeverity,
   formatDocType,
   formatDaysLeft,
+  nextDeadlineFor,
 } from './staDeadlines'
 import { QuickNoteForm, formatTag } from './components/QuickNoteForm'
 import {
@@ -1973,6 +1974,8 @@ function ParticipantDetailDrawer({
           </div>
         )}
 
+        <DrawerDeadlineBanner stats={stats} onOpenDocuments={() => setSubTab('dokument')} />
+
         <div className="px-6 pt-4 flex flex-wrap gap-1 border-b border-stone-100">
           {([
             ['oversikt', 'Översikt'],
@@ -2042,6 +2045,51 @@ function ParticipantDetailDrawer({
           )}
         </div>
       </aside>
+    </div>
+  )
+}
+
+function DrawerDeadlineBanner({
+  stats,
+  onOpenDocuments,
+}: {
+  stats: EnrollmentStats
+  onOpenDocuments: () => void
+}) {
+  const deadline = useMemo(() => nextDeadlineFor(stats), [stats])
+  if (!deadline || deadline.alreadySubmitted) return null
+
+  const severity = deadlineSeverity(deadline.daysLeft)
+  if (severity === 'normal' && deadline.daysLeft > 14) return null // bara visa när det är inom 14 dagar
+
+  const toneClass: Record<typeof severity, string> = {
+    critical: 'bg-rose-50 border-rose-200 text-rose-900',
+    warning: 'bg-amber-50 border-amber-200 text-amber-900',
+    normal: 'bg-stone-50 border-stone-200 text-stone-800',
+  }
+  const iconColor: Record<typeof severity, string> = {
+    critical: 'text-rose-600',
+    warning: 'text-amber-600',
+    normal: 'text-stone-500',
+  }
+
+  return (
+    <div className={cn('mx-6 mt-4 p-3 rounded-lg border flex items-start gap-3 flex-wrap', toneClass[severity])}>
+      <AlertTriangle size={18} className={cn('flex-shrink-0 mt-0.5', iconColor[severity])} />
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-semibold">
+          {formatDocType(deadline.docType)} — {formatDaysLeft(deadline.daysLeft)}
+        </div>
+        <div className="text-xs">
+          AF-tidsfrist {formatShortDate(deadline.dueAt)}.{' '}
+          {severity === 'critical' && 'Kritiskt — granska och skicka in idag.'}
+          {severity === 'warning' && 'Snart deadline — påbörja granskning.'}
+          {severity === 'normal' && 'Inom 2 veckor.'}
+        </div>
+      </div>
+      <Button variant="secondary" size="sm" onClick={onOpenDocuments}>
+        Öppna dokument
+      </Button>
     </div>
   )
 }
