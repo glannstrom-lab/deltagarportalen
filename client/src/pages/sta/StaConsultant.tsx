@@ -52,6 +52,7 @@ import {
   Play,
   FileSpreadsheet,
   CheckCircle,
+  PencilLine,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import {
@@ -1345,6 +1346,181 @@ function PaginationBar({
   )
 }
 
+function EditEnrollmentModal({
+  enrollment,
+  onClose,
+  onSaved,
+}: {
+  enrollment: import('@/services/staApi').StaEnrollment
+  onClose: () => void
+  onSaved: () => void
+}) {
+  const [currentPart, setCurrentPart] = useState<1 | 2 | 3 | 4>(enrollment.current_part as 1 | 2 | 3 | 4)
+  const [startedAt, setStartedAt] = useState(enrollment.started_at)
+  const [partStartedAt, setPartStartedAt] = useState(enrollment.part_started_at)
+  const [weeklyHours, setWeeklyHours] = useState(enrollment.weekly_hours)
+  const [focusOccupation, setFocusOccupation] = useState(enrollment.focus_occupation ?? '')
+  const [adaptations, setAdaptations] = useState(enrollment.adaptations ?? '')
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // När konsulenten ändrar del → föreslå part_started_at = idag om det inte var ändrat
+  const partChanged = currentPart !== enrollment.current_part
+  const handleChangePart = (next: 1 | 2 | 3 | 4) => {
+    setCurrentPart(next)
+    // Auto-uppdatera part_started_at till idag när del byts (kan ändras manuellt)
+    if (partStartedAt === enrollment.part_started_at) {
+      setPartStartedAt(new Date().toISOString().slice(0, 10))
+    }
+  }
+
+  const handleSave = async () => {
+    setError(null)
+    setSaving(true)
+    try {
+      await staEnrollmentsApi.update(enrollment.id, {
+        current_part: currentPart,
+        started_at: startedAt,
+        part_started_at: partStartedAt,
+        weekly_hours: weeklyHours,
+        focus_occupation: focusOccupation || null,
+        adaptations: adaptations || null,
+      })
+      onSaved()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Kunde inte spara')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <button type="button" className="absolute inset-0 bg-stone-900/40" onClick={onClose} aria-label="Stäng" />
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden" data-domain="action">
+        <div className="px-6 py-5 border-b border-stone-100">
+          <h2 className="text-lg font-semibold text-stone-900">Ändra deltagare</h2>
+          <p className="text-xs text-stone-500 mt-1">
+            Justera del, datum och programparametrar. Ändringar sparas direkt till molnet.
+          </p>
+        </div>
+
+        <div className="px-6 py-5 space-y-4 max-h-[60vh] overflow-y-auto">
+          <div>
+            <label htmlFor="edit-current-part" className="block text-sm font-medium text-stone-800 mb-1">
+              Nuvarande del
+            </label>
+            <select
+              id="edit-current-part"
+              value={currentPart}
+              onChange={(e) => handleChangePart(Number(e.target.value) as 1 | 2 | 3 | 4)}
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+            >
+              <option value={1}>Del 1 — Lär känna (3 v)</option>
+              <option value={2}>Del 2 — Prova på (5 v)</option>
+              <option value={3}>Del 3 — Arbetsprövning (max 6 mån)</option>
+              <option value={4}>Del 4 — Hitta arbetsplats (max 6 mån)</option>
+            </select>
+            {partChanged && (
+              <p className="text-[11px] text-amber-700 mt-1">
+                Del ändrad — part_started_at uppdateras till idag om du inte själv väljer annat datum nedan.
+              </p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="edit-started-at" className="block text-sm font-medium text-stone-800 mb-1">
+                Programstart
+              </label>
+              <input
+                id="edit-started-at"
+                type="date"
+                value={startedAt}
+                onChange={(e) => setStartedAt(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+              />
+              <p className="text-[11px] text-stone-500 mt-1">När hen började på STA totalt.</p>
+            </div>
+            <div>
+              <label htmlFor="edit-part-started-at" className="block text-sm font-medium text-stone-800 mb-1">
+                Nuvarande del började
+              </label>
+              <input
+                id="edit-part-started-at"
+                type="date"
+                value={partStartedAt}
+                onChange={(e) => setPartStartedAt(e.target.value)}
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+              />
+              <p className="text-[11px] text-stone-500 mt-1">Styr deadline-räknaren.</p>
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="edit-weekly-hours" className="block text-sm font-medium text-stone-800 mb-1">
+              Veckotimmar
+            </label>
+            <input
+              id="edit-weekly-hours"
+              type="number"
+              min={1}
+              max={40}
+              value={weeklyHours}
+              onChange={(e) => setWeeklyHours(Number(e.target.value))}
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="edit-focus-occupation" className="block text-sm font-medium text-stone-800 mb-1">
+              Fokusyrke
+            </label>
+            <input
+              id="edit-focus-occupation"
+              type="text"
+              value={focusOccupation}
+              onChange={(e) => setFocusOccupation(e.target.value)}
+              placeholder="t.ex. lagerarbetare"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="edit-adaptations" className="block text-sm font-medium text-stone-800 mb-1">
+              Anpassningar
+            </label>
+            <textarea
+              id="edit-adaptations"
+              value={adaptations}
+              onChange={(e) => setAdaptations(e.target.value)}
+              rows={2}
+              placeholder="t.ex. längre tid, bildstöd, lugn miljö"
+              className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200 resize-y"
+            />
+          </div>
+
+          {error && (
+            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-sm text-rose-900 flex items-start gap-2">
+              <AlertTriangle size={14} className="mt-0.5 flex-shrink-0" />
+              {error}
+            </div>
+          )}
+        </div>
+
+        <div className="px-6 py-4 border-t border-stone-100 flex items-center justify-end gap-2 bg-stone-50">
+          <Button variant="ghost" onClick={onClose} disabled={saving}>
+            Avbryt
+          </Button>
+          <Button variant="primary" leftIcon={<CheckCircle size={14} />} onClick={handleSave} disabled={saving}>
+            {saving ? 'Sparar…' : 'Spara'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function BulkActionConfirm({
   action,
   count,
@@ -1860,6 +2036,7 @@ function ParticipantDetailDrawer({
   onChange?: () => void
 }) {
   const [subTab, setSubTab] = useState<DrawerSubTab>(initialSubTab)
+  const [editingEnrollment, setEditingEnrollment] = useState(false)
   const participant: StaParticipantRow = toParticipantRow(stats)
   const realEnrollmentId = stats.enrollment.id
 
@@ -1913,6 +2090,16 @@ function ParticipantDetailDrawer({
           </div>
           <div className="flex items-center gap-2">
             {realEnrollmentId && (
+              <Button
+                variant="secondary"
+                size="sm"
+                leftIcon={<PencilLine size={14} />}
+                onClick={() => setEditingEnrollment(true)}
+              >
+                Ändra
+              </Button>
+            )}
+            {realEnrollmentId && (
               <PauseResumeButton
                 enrollmentId={realEnrollmentId}
                 status={participant.enrollmentStatus}
@@ -1929,6 +2116,17 @@ function ParticipantDetailDrawer({
             </button>
           </div>
         </div>
+
+        {editingEnrollment && realEnrollmentId && (
+          <EditEnrollmentModal
+            enrollment={stats.enrollment}
+            onClose={() => setEditingEnrollment(false)}
+            onSaved={() => {
+              setEditingEnrollment(false)
+              onChange?.()
+            }}
+          />
+        )}
 
         {participant.enrollmentStatus === 'paused' && (
           <div className="px-6 py-3 bg-amber-50 border-b border-amber-200 flex items-center gap-3">
