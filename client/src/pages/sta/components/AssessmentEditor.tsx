@@ -16,19 +16,28 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
-import { X, Save, Info, CheckCircle, AlertTriangle } from '@/components/ui/icons'
+import { X, Save, Info, CheckCircle, AlertTriangle, Download } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
-import { staAssessmentsApi, type StaAssessment } from '@/services/staApi'
+import { staAssessmentsApi, type StaAssessment, type StaEnrollment } from '@/services/staApi'
 import {
   getInstrument,
   type InstrumentDefinition,
   type InstrumentScale,
 } from '../assessmentInstruments'
+import {
+  fillAwpPdf,
+  fillAwcPdf,
+  downloadPdf,
+  suggestPdfFilename,
+} from '../assessmentPdfExport'
 
 interface AssessmentEditorProps {
   assessment: StaAssessment
+  enrollment?: StaEnrollment
+  /** Konsulent-namn för PDF-export (Bedömare-fältet) */
+  consultantName?: string
   /** Föreslagen läge: 'at' (default) eller 'deltagare' för självskattning */
   mode?: 'at' | 'deltagare'
   onClose: () => void
@@ -60,6 +69,8 @@ function itemKey(catIndex: number, itemIndex: number): string {
 
 export function AssessmentEditor({
   assessment,
+  enrollment,
+  consultantName,
   mode = 'at',
   onClose,
   onSaved,
@@ -71,6 +82,8 @@ export function AssessmentEditor({
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
   const [dirty, setDirty] = useState(false)
+  const [downloadingPdf, setDownloadingPdf] = useState(false)
+  const [pdfError, setPdfError] = useState<string | null>(null)
 
   // Reset state om assessment ändras
   useEffect(() => {
@@ -191,6 +204,25 @@ export function AssessmentEditor({
     onClose()
   }
 
+  const canExportPdf = !!enrollment && (assessment.instrument === 'AWP' || assessment.instrument === 'AWC')
+
+  const handleDownloadPdf = async () => {
+    if (!enrollment) return
+    setPdfError(null)
+    setDownloadingPdf(true)
+    try {
+      const ctx = { assessment, enrollment, consultantName }
+      const blob = assessment.instrument === 'AWP'
+        ? await fillAwpPdf(ctx)
+        : await fillAwcPdf(ctx)
+      downloadPdf(blob, suggestPdfFilename(assessment, enrollment))
+    } catch (err) {
+      setPdfError(err instanceof Error ? err.message : 'Kunde inte generera PDF')
+    } finally {
+      setDownloadingPdf(false)
+    }
+  }
+
   return (
     <ModalShell onClose={handleClose}>
       <Header
@@ -262,13 +294,31 @@ export function AssessmentEditor({
             {saveError}
           </div>
         )}
+
+        {pdfError && (
+          <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-sm text-rose-900 flex items-start gap-2">
+            <AlertTriangle size={14} className="mt-0.5 flex-shrink-0" />
+            PDF-export misslyckades: {pdfError}
+          </div>
+        )}
       </div>
 
       <div className="px-6 py-4 border-t border-stone-100 flex items-center justify-between gap-2 bg-stone-50 flex-wrap">
         <div className="text-xs text-stone-600">
           {dirty ? 'Osparade ändringar' : 'Allt sparat'}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          {canExportPdf && (
+            <Button
+              variant="secondary"
+              leftIcon={<Download size={14} />}
+              onClick={handleDownloadPdf}
+              disabled={downloadingPdf || dirty}
+              title={dirty ? 'Spara först innan PDF kan genereras' : 'Ladda ner AF-blankett'}
+            >
+              {downloadingPdf ? 'Genererar PDF…' : 'AF-blankett (PDF)'}
+            </Button>
+          )}
           <Button variant="ghost" onClick={handleClose} disabled={saving}>
             Avbryt
           </Button>

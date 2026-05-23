@@ -2308,6 +2308,10 @@ function DetailAssessments({
   stats: EnrollmentStats
   onChange?: () => void
 }) {
+  const { profile } = useAuthStore()
+  const consultantName = profile
+    ? [profile.first_name, profile.last_name].filter(Boolean).join(' ') || (profile.email ?? '')
+    : ''
   const [editingAssessment, setEditingAssessment] = useState<import('@/services/staApi').StaAssessment | null>(null)
   return (
     <div className="space-y-3">
@@ -2355,6 +2359,8 @@ function DetailAssessments({
       {editingAssessment && (
         <AssessmentEditor
           assessment={editingAssessment}
+          enrollment={stats.enrollment}
+          consultantName={consultantName}
           onClose={() => setEditingAssessment(null)}
           onSaved={() => {
             setEditingAssessment(null)
