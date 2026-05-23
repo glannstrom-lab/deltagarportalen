@@ -9,7 +9,7 @@
  * räknas den inte som aktiv (man har redan lämnat in).
  */
 
-import { daysLeftInPart } from './enrollmentDisplay'
+import { daysLeftInPart, resolveParticipantName } from './enrollmentDisplay'
 import type { EnrollmentStats } from './enrollmentDisplay'
 
 export interface StaDeadline {
@@ -51,7 +51,7 @@ export function nextDeadlineFor(stats: EnrollmentStats): StaDeadline | null {
 
   return {
     enrollmentId: enrollment.id,
-    participantName: enrollment.external_name ?? 'Jobin-deltagare',
+    participantName: resolveParticipantName(enrollment),
     part,
     docType,
     daysLeft,

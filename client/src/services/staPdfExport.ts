@@ -11,6 +11,7 @@
 
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
+import { resolveParticipantName } from '@/pages/sta/enrollmentDisplay'
 import {
   fetchEnrollmentBundle,
   type DocumentType,
@@ -202,7 +203,7 @@ function buildDelredovisningDel1(b: PdfBuilder, opts: PdfOptions) {
 
   // ===== Deltagaruppgifter =====
   b.sectionTitle('Deltagaruppgifter')
-  const namn = e.external_name ?? '[Hämta från Jobin-profil]'
+  const namn = resolveParticipantName(e, '[Hämta från Jobin-profil]')
   const pnr = e.external_personal_id ?? '[Hämta från Jobin-profil]'
   b.keyValueTable([
     ['Namn:', namn],
@@ -294,7 +295,7 @@ function buildGeneric(b: PdfBuilder, opts: PdfOptions) {
 
   b.sectionTitle('Deltagaruppgifter')
   b.keyValueTable([
-    ['Namn:', e.external_name ?? '[Hämta från Jobin-profil]'],
+    ['Namn:', resolveParticipantName(e, '[Hämta från Jobin-profil]')],
     ['Personnummer:', e.external_personal_id ?? '[Hämta från Jobin-profil]'],
     ['Aktuell del:', `Del ${e.current_part}`],
     ['Fokusyrke:', e.focus_occupation ?? 'Ej fastställt'],

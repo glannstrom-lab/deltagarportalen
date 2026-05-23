@@ -85,6 +85,34 @@ export function countDraftsToReview(documents: StaDocument[]): number {
 }
 
 /**
+ * Resolver namn för en enrollment.
+ *
+ * Prioritet:
+ *   1. external_name — sätts vid bulk-invite/manuellt-tillagd. Bevaras
+ *      även om deltagaren senare registrerar sig på Jobin.
+ *   2. participant_profile.first_name + last_name — joinas från profiles
+ *      när deltagaren är linked till Jobin-konto.
+ *   3. participant_profile.email — sista utväg innan generisk fallback.
+ *   4. Generisk fallback (default: 'Deltagare utan namn').
+ *
+ * Använd överallt i konsulent-vyn för att inte få "Jobin-deltagare"
+ * på linked-rader.
+ */
+export function resolveParticipantName(
+  enrollment: Pick<StaEnrollment, 'external_name' | 'participant_profile'>,
+  fallback: string = 'Deltagare utan namn',
+): string {
+  if (enrollment.external_name?.trim()) return enrollment.external_name.trim()
+  const profile = enrollment.participant_profile
+  if (profile) {
+    const composed = [profile.first_name, profile.last_name].filter(Boolean).join(' ').trim()
+    if (composed) return composed
+    if (profile.email) return profile.email
+  }
+  return fallback
+}
+
+/**
  * Snabb-beskrivning av aktuell aktivitet (för listvyer).
  */
 export function describeCurrentActivity(activities: StaActivity[], currentPart: 1 | 2 | 3 | 4): {
@@ -94,8 +122,12 @@ export function describeCurrentActivity(activities: StaActivity[], currentPart: 
 } {
   const partActivities = activities.filter((a) => a.part === currentPart)
   const completed = countCompletedDays(partActivities)
+  const totalActivities = partActivities.length
 
   if (currentPart === 1) {
+    if (totalActivities === 0) {
+      return { primary: 'Ej startat', subtext: 'Del 1 dagsslinga', progress: 0 }
+    }
     return {
       primary: `Dag ${Math.min(completed + 1, 14)}/14 · pågående`,
       subtext: 'Del 1 dagsslinga',
@@ -104,16 +136,25 @@ export function describeCurrentActivity(activities: StaActivity[], currentPart: 
   }
   if (currentPart === 2) {
     const stations = partActivities.filter((a) => a.activity_type === 'arbetsstation').length
+    if (stations === 0 && totalActivities === 0) {
+      return { primary: 'Ej startat', subtext: 'Del 2 arbetsstationer' }
+    }
     return {
       primary: `Station ${stations} av 4`,
       subtext: 'Del 2 arbetsstationer',
     }
   }
   if (currentPart === 3) {
+    if (totalActivities === 0) {
+      return { primary: 'Ej startat', subtext: 'Del 3 — väntar på arbetsprövning' }
+    }
     return {
       primary: 'Arbetsprövning',
       subtext: 'Del 3 — pågående',
     }
+  }
+  if (totalActivities === 0) {
+    return { primary: 'Ej startat', subtext: 'Del 4 — väntar på arbetsplats' }
   }
   return {
     primary: 'Arbetsplats',
@@ -126,7 +167,7 @@ export function describeCurrentActivity(activities: StaActivity[], currentPart: 
  */
 export function toParticipantRow(stats: EnrollmentStats): StaParticipantRow {
   const { enrollment, activities, assessments, documents, quickNotes } = stats
-  const fullName = enrollment.external_name ?? 'Jobin-deltagare'
+  const fullName = resolveParticipantName(enrollment)
   const { daysLeft, endDate } = daysLeftInPart(enrollment)
   const activityInfo = describeCurrentActivity(activities, enrollment.current_part)
 

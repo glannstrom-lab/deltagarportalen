@@ -17,7 +17,7 @@ import { staWorkplacesApi, type StaWorkplace } from '@/services/staApi'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
 import { DOC_TYPE_META } from '@/services/staAiApi'
-import { toParticipantRow, computeKpi, formatShortDate, type EnrollmentStats } from './enrollmentDisplay'
+import { toParticipantRow, computeKpi, formatShortDate, resolveParticipantName, type EnrollmentStats } from './enrollmentDisplay'
 import {
   collectActiveDeadlines,
   countDeadlinesWithinDays,
@@ -395,7 +395,7 @@ function OverviewTab({
             id: d.id,
             enrollmentId: s.enrollment.id,
             title: documentTypeLabel(d.doc_type),
-            participantName: s.enrollment.external_name ?? 'Jobin-deltagare',
+            participantName: resolveParticipantName(s.enrollment),
             subtext: d.ai_drafted ? 'AI-utkast' : 'Utkast',
             docType: d.doc_type,
             aiDrafted: d.ai_drafted,
@@ -632,7 +632,7 @@ function AiSummaryItem({
   const [copied, setCopied] = useState(false)
   const [expanded, setExpanded] = useState(false)
 
-  const participantName = enrollment.external_name ?? 'Jobin-deltagare'
+  const participantName = resolveParticipantName(enrollment)
   const ageMs = summaryAt ? Date.now() - new Date(summaryAt).getTime() : Infinity
   const ageDays = Math.floor(ageMs / (1000 * 60 * 60 * 24))
   const isStale = summary && ageDays >= 7
@@ -2725,7 +2725,7 @@ interface AssessmentRow {
 function buildAssessmentRows(stats: EnrollmentStats[]): AssessmentRow[] {
   return stats.flatMap((s) =>
     s.assessments.map((a) => {
-      const fullName = s.enrollment.external_name ?? 'Jobin-deltagare'
+      const fullName = resolveParticipantName(s.enrollment)
       const initials = fullName
         .split(' ')
         .map((p) => p[0])
@@ -3148,7 +3148,7 @@ function WorkplacesTab({
       // Sök på deltagar-namn ELLER företagsnamn
       if (search) {
         const q = search.toLowerCase()
-        const matchesName = (s.enrollment.external_name ?? '').toLowerCase().includes(q)
+        const matchesName = resolveParticipantName(s.enrollment, '').toLowerCase().includes(q)
         const matchesCompany = s.workplaces.some((w) => (w.company_name ?? '').toLowerCase().includes(q))
         if (!matchesName && !matchesCompany) continue
       }
@@ -3299,7 +3299,7 @@ function WorkplacesTab({
             <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
               <div>
                 <h3 className="text-base font-semibold text-stone-900">
-                  {s.enrollment.external_name ?? 'Jobin-deltagare'}
+                  {resolveParticipantName(s.enrollment)}
                 </h3>
                 <p className="text-xs text-stone-500">
                   Del {s.enrollment.current_part} · {s.workplaces.length} arbetsplats
@@ -3384,7 +3384,7 @@ interface DocumentRow {
 function buildDocumentRows(stats: EnrollmentStats[]): DocumentRow[] {
   return stats.flatMap((s) =>
     s.documents.map((d) => {
-      const name = s.enrollment.external_name ?? 'Jobin-deltagare'
+      const name = resolveParticipantName(s.enrollment)
       const initials = name
         .split(' ')
         .map((p) => p[0])

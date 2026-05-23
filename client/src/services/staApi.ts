@@ -77,6 +77,12 @@ export interface StaEnrollment {
   status: EnrollmentStatus
   created_at: string
   updated_at: string
+  /** Resolverat namn för linked-deltagare (joinad från profiles). NULL om unlinked/invited. */
+  participant_profile?: {
+    first_name: string | null
+    last_name: string | null
+    email: string | null
+  } | null
 }
 
 export type AbsenceKind = 'sick' | 'vab' | 'allowed' | 'other'
@@ -234,9 +240,11 @@ export const staEnrollmentsApi = {
   async listForConsultant(): Promise<StaEnrollment[]> {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    // JOIN med profiles så vi kan visa riktiga namn för linked-deltagare
+    // (de har external_name=NULL eftersom deras namn finns i profiles)
     const { data, error } = await supabase
       .from('sta_enrollments')
-      .select('*')
+      .select('*, participant_profile:profiles!sta_enrollments_participant_id_fkey(first_name, last_name, email)')
       .eq('consultant_id', user.id)
       .order('started_at', { ascending: false })
     if (error) handleError(error)
@@ -246,7 +254,7 @@ export const staEnrollmentsApi = {
   async get(id: string): Promise<StaEnrollment | null> {
     const { data, error } = await supabase
       .from('sta_enrollments')
-      .select('*')
+      .select('*, participant_profile:profiles!sta_enrollments_participant_id_fkey(first_name, last_name, email)')
       .eq('id', id)
       .maybeSingle()
     if (error) handleError(error)

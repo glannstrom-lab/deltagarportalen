@@ -20,6 +20,7 @@
 
 import type { StaAssessment, StaEnrollment } from '@/services/staApi'
 import { INSTRUMENTS, type InstrumentCode } from './assessmentInstruments'
+import { resolveParticipantName } from './enrollmentDisplay'
 
 type ScoresJsonb = Record<string, { value?: number | string; person?: number | string; bedomare?: number | string; comment?: string }>
 
@@ -90,7 +91,7 @@ export async function fillMohostPdf(ctx: PdfContext): Promise<Blob> {
   const scores = (assessment.scores as ScoresJsonb) ?? {}
 
   // Metadata
-  trySetText(form, 'Namn', enrollment.external_name ?? '')
+  trySetText(form, 'Namn', resolveParticipantName(enrollment, ''))
   trySetText(form, 'Arbetsterapeutens namn', consultantName ?? '')
   trySetText(form, 'Datum ÅÅMMDD', formatDateShort(assessment.signed_at ?? assessment.created_at))
   trySetText(form, 'Födelsedata ÅÅMMDD', extractBirthDateFromPersonnummer(enrollment.external_personal_id))
@@ -178,7 +179,7 @@ export function downloadPdf(blob: Blob, filename: string) {
 
 /** Bygger föreslaget filnamn för en assessment-PDF. */
 export function suggestPdfFilename(assessment: StaAssessment, enrollment: StaEnrollment): string {
-  const name = (enrollment.external_name ?? 'deltagare').replace(/\s+/g, '-').toLowerCase()
+  const name = resolveParticipantName(enrollment, 'deltagare').replace(/\s+/g, '-').toLowerCase()
   const date = (assessment.signed_at ?? assessment.created_at ?? new Date().toISOString()).slice(0, 10)
   return `${assessment.instrument.toLowerCase()}-${name}-${date}.pdf`
 }
@@ -203,7 +204,7 @@ async function fillAwpAwcPdf(ctx: PdfContext, code: 'AWP' | 'AWC'): Promise<Blob
   const scores = (assessment.scores as ScoresJsonb) ?? {}
 
   // ---------- Metadata ----------
-  trySetText(form, 'Namn', enrollment.external_name ?? '')
+  trySetText(form, 'Namn', resolveParticipantName(enrollment, ''))
   trySetText(form, 'Personnummer', (enrollment.external_personal_id ?? '') as string)
   trySetText(form, 'Bedömare', consultantName ?? '')
   trySetText(form, 'Hjälpmedel/anpassningar', enrollment.adaptations ?? '')
