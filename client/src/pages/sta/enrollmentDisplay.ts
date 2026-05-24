@@ -367,9 +367,19 @@ export function describeCurrentActivity(enrollment: StaEnrollment): {
 export function toParticipantRow(stats: EnrollmentStats): StaParticipantRow {
   const { enrollment, assessments, documents, quickNotes } = stats
   const fullName = resolveParticipantName(enrollment)
-  const currentPart = deriveCurrentPart(enrollment)
-  const { daysLeft, endDate } = daysLeftInPart(enrollment)
+  const timeline = derivePartTimeline(enrollment.started_at, enrollment.includes_part_2 ?? true)
+  const currentPart = timeline.currentPart
+  const daysLeft = timeline.daysLeft
+  const endDate = timeline.partEndsAt
   const activityInfo = describeCurrentActivity(enrollment)
+  const partTimeline = timeline.segments.map((seg) => ({
+    part: seg.part,
+    startLabel: formatShortDate(seg.startDate),
+    endLabel: formatShortDate(seg.endDate),
+    isCurrent: seg.isCurrent,
+    isPast: seg.isPast,
+    isOverdue: seg.isOverdue,
+  }))
 
   const partAssessments = assessments.filter((a) => a.part === currentPart)
   const assessmentChips = partAssessments.slice(0, 3).map((a) => {
@@ -389,6 +399,7 @@ export function toParticipantRow(stats: EnrollmentStats): StaParticipantRow {
     currentPart,
     daysLeftInPart: daysLeft,
     partEndsAt: formatShortDate(endDate),
+    partTimeline,
     currentActivity: activityInfo.primary,
     activitySubtext: activityInfo.subtext,
     activityProgress: activityInfo.progress,

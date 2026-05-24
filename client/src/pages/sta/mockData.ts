@@ -317,6 +317,17 @@ export type ParticipantLinkStatus =
   | 'invited'     // Inbjudan skickad, väntar
   | 'unlinked'    // Endast manuellt registrerad
 
+export interface PartTimelineEntry {
+  part: 1 | 2 | 3 | 4
+  /** "12 jan" */
+  startLabel: string
+  /** "2 feb" */
+  endLabel: string
+  isCurrent: boolean
+  isPast: boolean
+  isOverdue: boolean
+}
+
 export interface StaParticipantRow {
   id: string
   initials: string
@@ -325,6 +336,8 @@ export interface StaParticipantRow {
   currentPart: StaPart
   daysLeftInPart: number
   partEndsAt: string
+  /** Datum per del — för översiktskortets tidslinje. */
+  partTimeline: PartTimelineEntry[]
   currentActivity: string
   activitySubtext: string
   activityProgress?: number

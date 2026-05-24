@@ -1346,6 +1346,41 @@ function PaginationBar({
 }
 
 /**
+ * Kompakt datum-strip för alla delar i en deltagares schema.
+ * Visar Del 1–4 (eller 1, 3, 4 om Del 2 hoppas) med start→slut-datum per del.
+ * Aktuell del är färgad och fet, övriga grå. Förfallna delar har röd ring.
+ */
+function PartTimelineStrip({ entries }: { entries: import('./mockData').PartTimelineEntry[] }) {
+  return (
+    <div className="flex flex-wrap gap-x-2.5 gap-y-1 text-[11px] leading-tight">
+      {entries.map((seg) => {
+        const c = PART_COLORS[seg.part]
+        return (
+          <span
+            key={seg.part}
+            className={cn(
+              'whitespace-nowrap inline-flex items-center gap-1',
+              seg.isCurrent ? cn(c.text, 'font-semibold') : 'text-stone-500',
+              seg.isPast && 'opacity-50 line-through',
+            )}
+          >
+            <span
+              className={cn(
+                'inline-block w-2 h-2 rounded-full flex-shrink-0',
+                c.bgSolid,
+                seg.isCurrent && seg.isOverdue ? 'ring-2 ring-rose-400' : '',
+                seg.isCurrent && !seg.isOverdue ? `ring-2 ${c.ring}` : '',
+              )}
+            />
+            Del {seg.part}: {seg.startLabel}–{seg.endLabel}
+          </span>
+        )
+      })}
+    </div>
+  )
+}
+
+/**
  * Färgkodad chip per del — sky/amber/emerald/violet enligt PART_COLORS.
  * `xs` används i kompakta listrader, `sm` är default för drawer/tabell.
  */
@@ -1355,7 +1390,7 @@ function PartChip({ part, size = 'sm' }: { part: 1 | 2 | 3 | 4; size?: 'xs' | 's
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1 rounded-full font-medium border flex-shrink-0',
+        'inline-flex items-center gap-1 rounded-full font-medium border flex-shrink-0 whitespace-nowrap',
         isXs ? 'px-1.5 py-0.5 text-[10px]' : 'px-2 py-0.5 text-xs',
         c.bgSolid, c.text, c.border,
       )}
@@ -1826,6 +1861,12 @@ function ParticipantCard({
         </div>
       </div>
 
+      {/* Tidslinje — datum per del */}
+      <div className="mb-3">
+        <div className="text-stone-500 uppercase tracking-wide text-[10px] mb-1">Tidslinje</div>
+        <PartTimelineStrip entries={row.partTimeline} />
+      </div>
+
       {/* Aktivitet */}
       <div className="mb-3">
         <div className="text-stone-500 uppercase tracking-wide text-[10px] mb-0.5">Aktivitet</div>
@@ -1950,6 +1991,9 @@ function ParticipantRow({
             </div>
             <div className="text-xs text-stone-500">
               {row.focusOccupation ? `Fokusyrke: ${row.focusOccupation}` : 'Fokusyrke: ej fastställt'}
+            </div>
+            <div className="mt-1.5">
+              <PartTimelineStrip entries={row.partTimeline} />
             </div>
           </div>
         </div>
