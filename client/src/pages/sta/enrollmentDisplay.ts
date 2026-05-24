@@ -65,6 +65,53 @@ export const PART_DURATION_LABELS: Record<1 | 2 | 3 | 4, string> = {
   4: '6 mån',
 }
 
+/**
+ * Färgkodning per del. Använd via PartChip nedan eller direkt i klassnamn.
+ * Värdena är klassiska Tailwind-utilities (whitelist-säkra) och håller sig
+ * inom DESIGN.md:s neutrala bas + 4 distinkta accentnyanser.
+ *   Del 1 — sky      (intro, lugn kartläggning)
+ *   Del 2 — amber    (prova på, aktivt utforska)
+ *   Del 3 — emerald  (arbetsprövning, riktigt arbete)
+ *   Del 4 — violet   (matchning mot anställning)
+ */
+export const PART_COLORS: Record<
+  1 | 2 | 3 | 4,
+  { bg: string; text: string; border: string; bgSolid: string; ring: string; name: string }
+> = {
+  1: {
+    bg: 'bg-sky-50',
+    text: 'text-sky-800',
+    border: 'border-sky-200',
+    bgSolid: 'bg-sky-100',
+    ring: 'ring-sky-300',
+    name: 'Lär känna',
+  },
+  2: {
+    bg: 'bg-amber-50',
+    text: 'text-amber-900',
+    border: 'border-amber-200',
+    bgSolid: 'bg-amber-100',
+    ring: 'ring-amber-300',
+    name: 'Prova på',
+  },
+  3: {
+    bg: 'bg-emerald-50',
+    text: 'text-emerald-800',
+    border: 'border-emerald-200',
+    bgSolid: 'bg-emerald-100',
+    ring: 'ring-emerald-300',
+    name: 'Arbetsprövning',
+  },
+  4: {
+    bg: 'bg-violet-50',
+    text: 'text-violet-800',
+    border: 'border-violet-200',
+    bgSolid: 'bg-violet-100',
+    ring: 'ring-violet-300',
+    name: 'Hitta arbetsplats',
+  },
+}
+
 function addPartDuration(date: Date, part: 1 | 2 | 3 | 4): Date {
   const d = new Date(date)
   const config = PART_DURATIONS[part]
@@ -254,51 +301,63 @@ export function resolveParticipantName(
 
 /**
  * Snabb-beskrivning av aktuell aktivitet (för listvyer).
+ *
+ * Räknar "vilken dag/vecka är vi inne på" direkt från part-tidslinjen istället
+ * för att titta i sta_activities-tabellen. Tidigare visade vi "Ej startat" så
+ * fort tabellen var tom — men deltagaren kan ha varit igång i veckor utan att
+ * konsulenten hunnit logga aktiviteter. Nu visar vi schema-positionen alltid.
  */
-export function describeCurrentActivity(activities: StaActivity[], currentPart: 1 | 2 | 3 | 4): {
+export function describeCurrentActivity(enrollment: StaEnrollment): {
   primary: string
   subtext: string
   progress?: number
 } {
-  const partActivities = activities.filter((a) => a.part === currentPart)
-  const completed = countCompletedDays(partActivities)
-  const totalActivities = partActivities.length
+  const timeline = derivePartTimeline(enrollment.started_at, enrollment.includes_part_2 ?? true)
+  const seg = timeline.segments.find((s) => s.part === timeline.currentPart)!
+  const today = new Date()
+  const totalDays = Math.max(1, Math.round((seg.endDate.getTime() - seg.startDate.getTime()) / 86400000))
+  const elapsedDays = Math.max(0, Math.round((today.getTime() - seg.startDate.getTime()) / 86400000))
+  const currentDay = Math.min(elapsedDays + 1, totalDays)
+  const progress = Math.min(100, Math.round((elapsedDays / totalDays) * 100))
 
-  if (currentPart === 1) {
-    if (totalActivities === 0) {
-      return { primary: 'Ej startat', subtext: 'Del 1 dagsslinga', progress: 0 }
-    }
+  // Förfallen — visa hur mycket över tiden
+  if (seg.isOverdue) {
+    const daysOver = Math.round((today.getTime() - seg.endDate.getTime()) / 86400000)
     return {
-      primary: `Dag ${Math.min(completed + 1, 14)}/14 · pågående`,
-      subtext: 'Del 1 dagsslinga',
-      progress: Math.round((completed / 14) * 100),
+      primary: `${daysOver} dagar över`,
+      subtext: `Del ${seg.part} — ${PART_COLORS[seg.part].name}`,
+      progress: 100,
     }
   }
-  if (currentPart === 2) {
-    const stations = partActivities.filter((a) => a.activity_type === 'arbetsstation').length
-    if (stations === 0 && totalActivities === 0) {
-      return { primary: 'Ej startat', subtext: 'Del 2 arbetsstationer' }
-    }
+
+  if (timeline.currentPart === 1) {
     return {
-      primary: `Station ${stations} av 4`,
-      subtext: 'Del 2 arbetsstationer',
+      primary: `Dag ${currentDay} av 21`,
+      subtext: 'Del 1 — Lär känna',
+      progress,
     }
   }
-  if (currentPart === 3) {
-    if (totalActivities === 0) {
-      return { primary: 'Ej startat', subtext: 'Del 3 — väntar på arbetsprövning' }
-    }
+  if (timeline.currentPart === 2) {
+    const week = Math.min(5, Math.floor(elapsedDays / 7) + 1)
     return {
-      primary: 'Arbetsprövning',
-      subtext: 'Del 3 — pågående',
+      primary: `Vecka ${week} av 5 · dag ${currentDay} av 35`,
+      subtext: 'Del 2 — Prova på',
+      progress,
     }
   }
-  if (totalActivities === 0) {
-    return { primary: 'Ej startat', subtext: 'Del 4 — väntar på arbetsplats' }
+  if (timeline.currentPart === 3) {
+    const monthsIn = Math.min(6, Math.floor(elapsedDays / 30) + 1)
+    return {
+      primary: `Månad ${monthsIn} av 6`,
+      subtext: 'Del 3 — Arbetsprövning',
+      progress,
+    }
   }
+  const monthsIn = Math.min(6, Math.floor(elapsedDays / 30) + 1)
   return {
-    primary: 'Arbetsplats',
-    subtext: 'Del 4 — pågående',
+    primary: `Månad ${monthsIn} av 6`,
+    subtext: 'Del 4 — Hitta arbetsplats',
+    progress,
   }
 }
 
@@ -306,11 +365,11 @@ export function describeCurrentActivity(activities: StaActivity[], currentPart: 
  * Mappar EnrollmentStats → StaParticipantRow (samma format som tidigare mock).
  */
 export function toParticipantRow(stats: EnrollmentStats): StaParticipantRow {
-  const { enrollment, activities, assessments, documents, quickNotes } = stats
+  const { enrollment, assessments, documents, quickNotes } = stats
   const fullName = resolveParticipantName(enrollment)
   const currentPart = deriveCurrentPart(enrollment)
   const { daysLeft, endDate } = daysLeftInPart(enrollment)
-  const activityInfo = describeCurrentActivity(activities, currentPart)
+  const activityInfo = describeCurrentActivity(enrollment)
 
   const partAssessments = assessments.filter((a) => a.part === currentPart)
   const assessmentChips = partAssessments.slice(0, 3).map((a) => {

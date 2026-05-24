@@ -17,7 +17,7 @@ import { staWorkplacesApi, type StaWorkplace } from '@/services/staApi'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
 import { DOC_TYPE_META } from '@/services/staAiApi'
-import { toParticipantRow, computeKpi, formatShortDate, resolveParticipantName, deriveCurrentPart, derivePartTimeline, type EnrollmentStats } from './enrollmentDisplay'
+import { toParticipantRow, computeKpi, formatShortDate, resolveParticipantName, deriveCurrentPart, derivePartTimeline, PART_COLORS, type EnrollmentStats } from './enrollmentDisplay'
 import {
   collectActiveDeadlines,
   countDeadlinesWithinDays,
@@ -681,9 +681,8 @@ function AiSummaryItem({
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <span className="text-sm font-semibold text-stone-900 truncate">{participantName}</span>
-          <span className="text-[11px] text-stone-500 flex-shrink-0">
-            Del {deriveCurrentPart(enrollment)}
-          </span>
+          <PartChip part={deriveCurrentPart(enrollment)} size="xs" />
+
           {ageLabel && (
             <span
               className={cn(
@@ -1346,6 +1345,35 @@ function PaginationBar({
   )
 }
 
+/**
+ * Färgkodad chip per del — sky/amber/emerald/violet enligt PART_COLORS.
+ * `xs` används i kompakta listrader, `sm` är default för drawer/tabell.
+ */
+function PartChip({ part, size = 'sm' }: { part: 1 | 2 | 3 | 4; size?: 'xs' | 'sm' }) {
+  const c = PART_COLORS[part]
+  const isXs = size === 'xs'
+  return (
+    <span
+      className={cn(
+        'inline-flex items-center gap-1 rounded-full font-medium border flex-shrink-0',
+        isXs ? 'px-1.5 py-0.5 text-[10px]' : 'px-2 py-0.5 text-xs',
+        c.bgSolid, c.text, c.border,
+      )}
+    >
+      <span
+        className={cn(
+          'inline-flex items-center justify-center rounded-full font-bold',
+          isXs ? 'w-3.5 h-3.5 text-[9px]' : 'w-4 h-4 text-[10px]',
+          'bg-white/80',
+        )}
+      >
+        {part}
+      </span>
+      {c.name}
+    </span>
+  )
+}
+
 function EditEnrollmentModal({
   enrollment,
   onClose,
@@ -1439,33 +1467,45 @@ function EditEnrollmentModal({
           <div className="p-3 rounded-lg bg-stone-50 border border-stone-200">
             <div className="text-xs font-medium text-stone-700 mb-2">Tidslinje</div>
             <ol className="space-y-1.5 text-xs">
-              {timeline.segments.map((seg) => (
-                <li
-                  key={seg.part}
-                  className={cn(
-                    'flex items-center justify-between gap-2 py-1 px-2 rounded',
-                    seg.isCurrent && 'bg-white border border-stone-300 font-medium text-stone-900',
-                    seg.isPast && 'text-stone-400 line-through',
-                    !seg.isCurrent && !seg.isPast && 'text-stone-600',
-                  )}
-                >
-                  <span>
-                    Del {seg.part}
-                    {seg.part === 1 && ' — Lär känna'}
-                    {seg.part === 2 && ' — Prova på'}
-                    {seg.part === 3 && ' — Arbetsprövning'}
-                    {seg.part === 4 && ' — Hitta arbetsplats'}
-                    {seg.isOverdue && (
-                      <span className="ml-1 inline-flex items-center px-1.5 rounded text-[10px] bg-amber-100 text-amber-800">
-                        Förfallen
-                      </span>
+              {timeline.segments.map((seg) => {
+                const color = PART_COLORS[seg.part]
+                return (
+                  <li
+                    key={seg.part}
+                    className={cn(
+                      'flex items-center justify-between gap-2 py-1.5 px-2 rounded border',
+                      seg.isCurrent
+                        ? `${color.bgSolid} ${color.text} ${color.border} font-medium`
+                        : seg.isPast
+                          ? 'bg-white border-stone-200 text-stone-400 line-through'
+                          : `${color.bg} ${color.text} ${color.border} opacity-80`,
                     )}
-                  </span>
-                  <span className="text-stone-500 font-mono text-[11px]">
-                    {fmt(seg.startDate)} → {fmt(seg.endDate)}
-                  </span>
-                </li>
-              ))}
+                  >
+                    <span className="flex items-center gap-2">
+                      <span className={cn(
+                        'inline-flex items-center justify-center rounded-full w-5 h-5 text-[10px] font-bold border',
+                        color.bgSolid, color.text, color.border,
+                      )}>
+                        {seg.part}
+                      </span>
+                      <span>{color.name}</span>
+                      {seg.isCurrent && !seg.isOverdue && (
+                        <span className="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-white/70">
+                          pågående
+                        </span>
+                      )}
+                      {seg.isOverdue && (
+                        <span className="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-rose-100 text-rose-800 border border-rose-200">
+                          förfallen
+                        </span>
+                      )}
+                    </span>
+                    <span className="font-mono text-[11px] opacity-80">
+                      {fmt(seg.startDate)} → {fmt(seg.endDate)}
+                    </span>
+                  </li>
+                )
+              })}
             </ol>
           </div>
 
@@ -1775,12 +1815,7 @@ function ParticipantCard({
       <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
         <div>
           <div className="text-stone-500 uppercase tracking-wide text-[10px] mb-0.5">Del</div>
-          <span
-            className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium"
-            style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
-          >
-            Del {row.currentPart}
-          </span>
+          <PartChip part={row.currentPart} size="sm" />
         </div>
         <div>
           <div className="text-stone-500 uppercase tracking-wide text-[10px] mb-0.5">Tid kvar</div>
@@ -1920,12 +1955,7 @@ function ParticipantRow({
         </div>
       </td>
       <td className="px-4 py-3 align-middle">
-        <span
-          className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-          style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
-        >
-          Del {row.currentPart}
-        </span>
+        <PartChip part={row.currentPart} size="sm" />
       </td>
       <td className="px-4 py-3 align-middle">
         <div className="text-stone-900 font-medium text-sm">
@@ -2069,10 +2099,11 @@ function ParticipantDetailDrawer({
             <div className="min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
                 <h2 className="text-xl font-semibold text-stone-900">{participant.fullName}</h2>
+                <PartChip part={participant.currentPart} size="sm" />
                 <LinkStatusBadge status={participant.linkStatus} />
               </div>
               <div className="text-sm text-stone-600">
-                Del {participant.currentPart} · {participant.daysLeftInPart > 30 ? `${Math.round(participant.daysLeftInPart / 30)} mån kvar` : `${participant.daysLeftInPart} dagar kvar`} · slut {participant.partEndsAt}
+                {participant.daysLeftInPart > 30 ? `${Math.round(participant.daysLeftInPart / 30)} mån kvar` : `${participant.daysLeftInPart} dagar kvar`} · slut {participant.partEndsAt}
               </div>
               <div className="flex gap-2 mt-2 flex-wrap">
                 <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] bg-stone-100 text-stone-700">
@@ -3511,15 +3542,16 @@ function WorkplacesTab({
           <Card key={s.enrollment.id} variant="flat" padding="lg">
             <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
               <div>
-                <h3 className="text-base font-semibold text-stone-900">
+                <h3 className="text-base font-semibold text-stone-900 flex items-center gap-2 flex-wrap">
                   {resolveParticipantName(s.enrollment)}
+                  <PartChip part={derivedPart} size="sm" />
                 </h3>
                 <p className="text-xs text-stone-500">
-                  Del {derivedPart} · {s.workplaces.length} arbetsplats
+                  {s.workplaces.length} arbetsplats
                   {s.workplaces.length === 1 ? '' : 'er'}
                   {derivedPart < 3 && (
                     <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-amber-50 text-amber-800">
-                      För tidigt (Del {derivedPart})
+                      För tidigt — arbetsprövning börjar i Del 3
                     </span>
                   )}
                 </p>
