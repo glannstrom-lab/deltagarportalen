@@ -17,7 +17,7 @@ import { staWorkplacesApi, type StaWorkplace } from '@/services/staApi'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type StaPart as ApiStaPart, type AbsenceKind } from '@/services/staApi'
 import { DOC_TYPE_META } from '@/services/staAiApi'
-import { toParticipantRow, computeKpi, formatShortDate, resolveParticipantName, type EnrollmentStats } from './enrollmentDisplay'
+import { toParticipantRow, computeKpi, formatShortDate, resolveParticipantName, deriveCurrentPart, derivePartTimeline, type EnrollmentStats } from './enrollmentDisplay'
 import {
   collectActiveDeadlines,
   countDeadlinesWithinDays,
@@ -682,7 +682,7 @@ function AiSummaryItem({
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <span className="text-sm font-semibold text-stone-900 truncate">{participantName}</span>
           <span className="text-[11px] text-stone-500 flex-shrink-0">
-            Del {enrollment.current_part}
+            Del {deriveCurrentPart(enrollment)}
           </span>
           {ageLabel && (
             <span
@@ -1355,33 +1355,27 @@ function EditEnrollmentModal({
   onClose: () => void
   onSaved: () => void
 }) {
-  const [currentPart, setCurrentPart] = useState<1 | 2 | 3 | 4>(enrollment.current_part as 1 | 2 | 3 | 4)
   const [startedAt, setStartedAt] = useState(enrollment.started_at)
-  const [partStartedAt, setPartStartedAt] = useState(enrollment.part_started_at)
+  const [includesPart2, setIncludesPart2] = useState<boolean>(enrollment.includes_part_2 ?? true)
   const [weeklyHours, setWeeklyHours] = useState(enrollment.weekly_hours)
   const [focusOccupation, setFocusOccupation] = useState(enrollment.focus_occupation ?? '')
   const [adaptations, setAdaptations] = useState(enrollment.adaptations ?? '')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  // När konsulenten ändrar del → föreslå part_started_at = idag om det inte var ändrat
-  const partChanged = currentPart !== enrollment.current_part
-  const handleChangePart = (next: 1 | 2 | 3 | 4) => {
-    setCurrentPart(next)
-    // Auto-uppdatera part_started_at till idag när del byts (kan ändras manuellt)
-    if (partStartedAt === enrollment.part_started_at) {
-      setPartStartedAt(new Date().toISOString().slice(0, 10))
-    }
-  }
+  // Tidslinjen uppdateras live när konsulenten ändrar startdatum eller Del 2-toggle.
+  const timeline = derivePartTimeline(startedAt, includesPart2)
 
   const handleSave = async () => {
     setError(null)
     setSaving(true)
     try {
       await staEnrollmentsApi.update(enrollment.id, {
-        current_part: currentPart,
         started_at: startedAt,
-        part_started_at: partStartedAt,
+        includes_part_2: includesPart2,
+        // Synca DB med härlett värde så att aktivitets-inserts får rätt part-default
+        current_part: timeline.currentPart as import('@/services/staApi').StaPart,
+        part_started_at: timeline.partStartedAt.toISOString().slice(0, 10),
         weekly_hours: weeklyHours,
         focus_occupation: focusOccupation || null,
         adaptations: adaptations || null,
@@ -1394,6 +1388,9 @@ function EditEnrollmentModal({
     }
   }
 
+  const fmt = (d: Date) =>
+    new Intl.DateTimeFormat('sv-SE', { day: 'numeric', month: 'short', year: '2-digit' }).format(d)
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <button type="button" className="absolute inset-0 bg-stone-900/40" onClick={onClose} aria-label="Stäng" />
@@ -1401,60 +1398,75 @@ function EditEnrollmentModal({
         <div className="px-6 py-5 border-b border-stone-100">
           <h2 className="text-lg font-semibold text-stone-900">Ändra deltagare</h2>
           <p className="text-xs text-stone-500 mt-1">
-            Justera del, datum och programparametrar. Ändringar sparas direkt till molnet.
+            Del räknas ut från startdatum + om Del 2 ingår. Tidslinjen uppdateras live.
           </p>
         </div>
 
-        <div className="px-6 py-5 space-y-4 max-h-[60vh] overflow-y-auto">
+        <div className="px-6 py-5 space-y-4 max-h-[65vh] overflow-y-auto">
           <div>
-            <label htmlFor="edit-current-part" className="block text-sm font-medium text-stone-800 mb-1">
-              Nuvarande del
+            <label htmlFor="edit-started-at" className="block text-sm font-medium text-stone-800 mb-1">
+              Programstart
             </label>
-            <select
-              id="edit-current-part"
-              value={currentPart}
-              onChange={(e) => handleChangePart(Number(e.target.value) as 1 | 2 | 3 | 4)}
+            <input
+              id="edit-started-at"
+              type="date"
+              value={startedAt}
+              onChange={(e) => setStartedAt(e.target.value)}
               className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
-            >
-              <option value={1}>Del 1 — Lär känna (3 v)</option>
-              <option value={2}>Del 2 — Prova på (5 v)</option>
-              <option value={3}>Del 3 — Arbetsprövning (max 6 mån)</option>
-              <option value={4}>Del 4 — Hitta arbetsplats (max 6 mån)</option>
-            </select>
-            {partChanged && (
-              <p className="text-[11px] text-amber-700 mt-1">
-                Del ändrad — part_started_at uppdateras till idag om du inte själv väljer annat datum nedan.
-              </p>
-            )}
+            />
+            <p className="text-[11px] text-stone-500 mt-1">När insatsen startade. Styr hela tidslinjen.</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div>
-              <label htmlFor="edit-started-at" className="block text-sm font-medium text-stone-800 mb-1">
-                Programstart
-              </label>
+          <div>
+            <label className="flex items-start gap-2 cursor-pointer p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
               <input
-                id="edit-started-at"
-                type="date"
-                value={startedAt}
-                onChange={(e) => setStartedAt(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
+                type="checkbox"
+                checked={includesPart2}
+                onChange={(e) => setIncludesPart2(e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-stone-700"
               />
-              <p className="text-[11px] text-stone-500 mt-1">När hen började på STA totalt.</p>
-            </div>
-            <div>
-              <label htmlFor="edit-part-started-at" className="block text-sm font-medium text-stone-800 mb-1">
-                Nuvarande del började
-              </label>
-              <input
-                id="edit-part-started-at"
-                type="date"
-                value={partStartedAt}
-                onChange={(e) => setPartStartedAt(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
-              />
-              <p className="text-[11px] text-stone-500 mt-1">Styr deadline-räknaren.</p>
-            </div>
+              <span className="text-sm text-stone-800">
+                <strong className="block">Inkluderar Del 2 — Prova på</strong>
+                <span className="text-xs text-stone-600">
+                  Kartläggning i konstruerad miljö (5 v). AF räknar Del 2 som valbar — avmarkera om
+                  deltagaren går direkt från Del 1 till arbetsprövning.
+                </span>
+              </span>
+            </label>
+          </div>
+
+          {/* Tidslinje */}
+          <div className="p-3 rounded-lg bg-stone-50 border border-stone-200">
+            <div className="text-xs font-medium text-stone-700 mb-2">Tidslinje</div>
+            <ol className="space-y-1.5 text-xs">
+              {timeline.segments.map((seg) => (
+                <li
+                  key={seg.part}
+                  className={cn(
+                    'flex items-center justify-between gap-2 py-1 px-2 rounded',
+                    seg.isCurrent && 'bg-white border border-stone-300 font-medium text-stone-900',
+                    seg.isPast && 'text-stone-400 line-through',
+                    !seg.isCurrent && !seg.isPast && 'text-stone-600',
+                  )}
+                >
+                  <span>
+                    Del {seg.part}
+                    {seg.part === 1 && ' — Lär känna'}
+                    {seg.part === 2 && ' — Prova på'}
+                    {seg.part === 3 && ' — Arbetsprövning'}
+                    {seg.part === 4 && ' — Hitta arbetsplats'}
+                    {seg.isOverdue && (
+                      <span className="ml-1 inline-flex items-center px-1.5 rounded text-[10px] bg-amber-100 text-amber-800">
+                        Förfallen
+                      </span>
+                    )}
+                  </span>
+                  <span className="text-stone-500 font-mono text-[11px]">
+                    {fmt(seg.startDate)} → {fmt(seg.endDate)}
+                  </span>
+                </li>
+              ))}
+            </ol>
           </div>
 
           <div>
@@ -2562,7 +2574,7 @@ function DetailAssessments({
   return (
     <div className="space-y-3">
       <p className="text-sm text-stone-600">
-        Alla instrumentskattningar för Del {stats.enrollment.current_part}.
+        Alla instrumentskattningar för Del {deriveCurrentPart(stats.enrollment)}.
         {enrollmentId && (
           <> Skattningarna sparas mot enrollment-id <code className="text-[10px]">{enrollmentId.slice(0, 8)}</code>.</>
         )}
@@ -2675,7 +2687,7 @@ function DetailDocuments({
 
   // Tillgängliga dokumenttyper för aktuell del
   const docTypesForPart: Array<{ key: keyof typeof DOC_TYPE_META; label: string }> = (() => {
-    const part = stats.enrollment.current_part
+    const part = deriveCurrentPart(stats.enrollment)
     const list: Array<{ key: keyof typeof DOC_TYPE_META; label: string }> = []
     if (part === 1) list.push({ key: 'initial_planering', label: 'Initial planering' })
     list.push({ key: `delredovisning_${part}` as keyof typeof DOC_TYPE_META, label: `Delredovisning Del ${part}` })
@@ -3336,11 +3348,12 @@ function WorkplacesTab({
   const filteredStats = useMemo(() => {
     const out: EnrollmentStats[] = []
     for (const s of stats) {
-      // Del-filter
+      // Del-filter — använd härlett part (current_part i DB kan vara stale)
+      const derivedPart = deriveCurrentPart(s.enrollment)
       if (filterPart === 'del-3-4') {
-        if (s.enrollment.current_part < 3) continue
+        if (derivedPart < 3) continue
       } else if (filterPart !== 'all') {
-        if (s.enrollment.current_part !== filterPart) continue
+        if (derivedPart !== filterPart) continue
       }
 
       // Sök på deltagar-namn ELLER företagsnamn
@@ -3492,7 +3505,9 @@ function WorkplacesTab({
           </div>
         </Card>
       ) : (
-        filteredStats.map((s) => (
+        filteredStats.map((s) => {
+          const derivedPart = deriveCurrentPart(s.enrollment)
+          return (
           <Card key={s.enrollment.id} variant="flat" padding="lg">
             <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
               <div>
@@ -3500,11 +3515,11 @@ function WorkplacesTab({
                   {resolveParticipantName(s.enrollment)}
                 </h3>
                 <p className="text-xs text-stone-500">
-                  Del {s.enrollment.current_part} · {s.workplaces.length} arbetsplats
+                  Del {derivedPart} · {s.workplaces.length} arbetsplats
                   {s.workplaces.length === 1 ? '' : 'er'}
-                  {s.enrollment.current_part < 3 && (
+                  {derivedPart < 3 && (
                     <span className="ml-2 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] bg-amber-50 text-amber-800">
-                      För tidigt (Del {s.enrollment.current_part})
+                      För tidigt (Del {derivedPart})
                     </span>
                   )}
                 </p>
@@ -3522,7 +3537,7 @@ function WorkplacesTab({
             {s.workplaces.length === 0 ? (
               <p className="text-sm text-stone-500">
                 Inga arbetsplatser registrerade än.
-                {s.enrollment.current_part >= 3 && (
+                {derivedPart >= 3 && (
                   <> Klicka på &quot;Lägg till arbetsplats&quot; för att börja.</>
                 )}
               </p>
@@ -3541,7 +3556,8 @@ function WorkplacesTab({
               </div>
             )}
           </Card>
-        ))
+          )
+        })
       )}
 
       <WorkplaceFormModal
@@ -3979,7 +3995,7 @@ function AddParticipantModal({ onClose, onCreated }: { onClose: () => void; onCr
   const [personalId, setPersonalId] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
-  const [startPart, setStartPart] = useState<StaPart>(1)
+  const [includesPart2, setIncludesPart2] = useState<boolean>(true)
   const [startedAt, setStartedAt] = useState<string>(() => new Date().toISOString().slice(0, 10))
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -4000,11 +4016,15 @@ function AddParticipantModal({ onClose, onCreated }: { onClose: () => void; onCr
     setSaving(true)
     setError(null)
     try {
+      // Härled aktuell del från startdatum + Del 2-toggle. Konsulent som behöver
+      // starta direkt i Del 3/4 går via EditEnrollmentModal efter skapande.
+      const timeline = derivePartTimeline(startedAt, includesPart2)
       await staEnrollmentsApi.create({
         consultant_id: profile.id,
         started_at: startedAt,
-        part_started_at: startedAt,
-        current_part: startPart as ApiStaPart,
+        part_started_at: timeline.partStartedAt.toISOString().slice(0, 10),
+        current_part: timeline.currentPart as ApiStaPart,
+        includes_part_2: includesPart2,
         external_name: fullName.trim(),
         external_email: email.trim() || undefined,
         external_phone: phone.trim() || undefined,
@@ -4122,25 +4142,24 @@ function AddParticipantModal({ onClose, onCreated }: { onClose: () => void; onCr
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-stone-700 mb-1">Startar i del</label>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-              {([1, 2, 3, 4] as const).map((p) => (
-                <button
-                  key={p}
-                  type="button"
-                  onClick={() => setStartPart(p)}
-                  className={cn(
-                    'p-2 rounded-lg border-2 text-sm transition-colors',
-                    startPart === p
-                      ? 'border-[var(--c-solid)] text-[var(--c-text)]'
-                      : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300',
-                  )}
-                  style={startPart === p ? { background: 'var(--c-bg)' } : undefined}
-                >
-                  Del {p}
-                </button>
-              ))}
-            </div>
+            <label className="flex items-start gap-2 cursor-pointer p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
+              <input
+                type="checkbox"
+                checked={includesPart2}
+                onChange={(e) => setIncludesPart2(e.target.checked)}
+                className="mt-0.5 w-4 h-4 accent-stone-700"
+              />
+              <span className="text-sm text-stone-800">
+                <strong className="block">Inkluderar Del 2 — Prova på</strong>
+                <span className="text-xs text-stone-600">
+                  Kartläggning i konstruerad miljö (5 v). Avmarkera om deltagaren går direkt från
+                  Del 1 till arbetsprövning. Del räknas ut automatiskt från startdatumet.
+                </span>
+              </span>
+            </label>
+            <p className="text-[11px] text-stone-500 mt-2">
+              Behöver du börja direkt i Del 3 eller 4 — skapa först och flytta sedan via "Ändra deltagare".
+            </p>
           </div>
 
           <details className="text-sm">

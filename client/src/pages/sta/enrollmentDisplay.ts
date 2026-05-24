@@ -40,27 +40,167 @@ export function getInitials(name: string | null | undefined): string {
 }
 
 /**
- * Hur många dagar kvar i nuvarande del? Förenklat — räknar arbetsdagar-aktigt.
- * Del 1: 21 dagar, Del 2: 35 dagar, Del 3-4: 180 dagar (max).
+ * AF:s tidsfrister per del:
+ *   Del 1: 3 veckor
+ *   Del 2: 5 veckor
+ *   Del 3: 6 månader (kalendermånader)
+ *   Del 4: 6 månader (kalendermånader)
+ *
+ * Vi mäter i den enhet AF mäter — veckor för Del 1/2, kalendermånader för
+ * Del 3/4 — så slutdatum hamnar på samma dag-i-månaden istället för 4 dagar
+ * fel (180 dagar ≠ 6 kalendermånader).
  */
-const PART_DURATIONS: Record<1 | 2 | 3 | 4, number> = {
-  1: 21,
-  2: 35,
-  3: 180,
-  4: 180,
+export const PART_DURATIONS = {
+  1: { weeks: 3 },
+  2: { weeks: 5 },
+  3: { months: 6 },
+  4: { months: 6 },
+} as const
+
+/** Mänsklig label per del — för UI. */
+export const PART_DURATION_LABELS: Record<1 | 2 | 3 | 4, string> = {
+  1: '3 v',
+  2: '5 v',
+  3: '6 mån',
+  4: '6 mån',
 }
 
+function addPartDuration(date: Date, part: 1 | 2 | 3 | 4): Date {
+  const d = new Date(date)
+  const config = PART_DURATIONS[part]
+  if ('weeks' in config) {
+    d.setDate(d.getDate() + config.weeks * 7)
+  } else {
+    d.setMonth(d.getMonth() + config.months)
+  }
+  return d
+}
+
+export interface PartSegment {
+  part: 1 | 2 | 3 | 4
+  startDate: Date
+  endDate: Date
+  /** Mänsklig längdetikett ("3 v", "5 v", "6 mån"). */
+  durationLabel: string
+  /** TRUE om idag ligger inom [startDate, endDate). */
+  isCurrent: boolean
+  /** TRUE om delen redan är passerad (endDate < idag). */
+  isPast: boolean
+  /** TRUE om delen är aktiv men dagens datum kommit förbi maxtiden. */
+  isOverdue: boolean
+}
+
+export interface PartTimeline {
+  /** Härlett part-nummer från start_date + includes_part_2 + idag. */
+  currentPart: 1 | 2 | 3 | 4
+  /** När den aktuella delen började. */
+  partStartedAt: Date
+  /** När den aktuella delen tar slut. */
+  partEndsAt: Date
+  /** Dagar kvar (0 om förfallen). */
+  daysLeft: number
+  /** Hela tidslinjen, alltid Del 1 → 4 (Del 2 utesluts om !includesPart2). */
+  segments: PartSegment[]
+}
+
+/**
+ * Härleder vilken del deltagaren är i, baserat på startdatum + om Del 2 ingår
+ * + idag. ALLA delar progredieras automatiskt på datum — konsulenten behöver
+ * bara välja om Del 2 ingår, allt annat räknas ut.
+ *
+ * Tidslinjen om Del 2 ingår:    Del 1 (3v) → Del 2 (5v) → Del 3 (6mån) → Del 4 (6mån)
+ * Tidslinjen utan Del 2:        Del 1 (3v) →             Del 3 (6mån) → Del 4 (6mån)
+ *
+ * Efter Del 4 stannar vi i Del 4 (markeras som overdue om tiden gått ut).
+ */
+export function derivePartTimeline(
+  startedAt: string | Date,
+  includesPart2: boolean,
+  today: Date = new Date(),
+): PartTimeline {
+  const start = typeof startedAt === 'string' ? new Date(startedAt) : new Date(startedAt)
+  const part1End = addPartDuration(start, 1)
+  const part2Start = part1End
+  const part2End = includesPart2 ? addPartDuration(part2Start, 2) : part2Start
+  const part3Start = part2End
+  const part3End = addPartDuration(part3Start, 3)
+  const part4Start = part3End
+  const part4End = addPartDuration(part4Start, 4)
+
+  let currentPart: 1 | 2 | 3 | 4
+  if (today < part1End) {
+    currentPart = 1
+  } else if (includesPart2 && today < part2End) {
+    currentPart = 2
+  } else if (today < part3End) {
+    currentPart = 3
+  } else {
+    // Efter Del 3-tiden — Del 4 (auto). Stannar på Del 4 även när Del 4 förfallen.
+    currentPart = 4
+  }
+
+  const segments: PartSegment[] = [
+    buildSegment(1, start, part1End, today, currentPart),
+    ...(includesPart2 ? [buildSegment(2, part2Start, part2End, today, currentPart)] : []),
+    buildSegment(3, part3Start, part3End, today, currentPart),
+    buildSegment(4, part4Start, part4End, today, currentPart),
+  ]
+
+  const currentSegment = segments.find((s) => s.part === currentPart)!
+  const daysLeft = Math.max(
+    0,
+    Math.ceil((currentSegment.endDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
+  )
+
+  return {
+    currentPart,
+    partStartedAt: currentSegment.startDate,
+    partEndsAt: currentSegment.endDate,
+    daysLeft,
+    segments,
+  }
+}
+
+function buildSegment(
+  part: 1 | 2 | 3 | 4,
+  startDate: Date,
+  endDate: Date,
+  today: Date,
+  currentPart: 1 | 2 | 3 | 4,
+): PartSegment {
+  const isCurrent = part === currentPart
+  const isPast = endDate < today && !isCurrent
+  const isOverdue = isCurrent && today >= endDate
+  return {
+    part,
+    startDate,
+    endDate,
+    durationLabel: PART_DURATION_LABELS[part],
+    isCurrent,
+    isPast,
+    isOverdue,
+  }
+}
+
+/**
+ * Bekväm wrapper för existerande kod — accepterar StaEnrollment och returnerar
+ * { daysLeft, endDate } som tidigare. Bytte från DB-baserad räkning till
+ * härlett part + datum.
+ */
 export function daysLeftInPart(enrollment: StaEnrollment): {
   daysLeft: number
   endDate: Date
 } {
-  const start = new Date(enrollment.part_started_at)
-  const duration = PART_DURATIONS[enrollment.current_part]
-  const end = new Date(start)
-  end.setDate(start.getDate() + duration)
-  const now = new Date()
-  const daysLeft = Math.max(0, Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)))
-  return { daysLeft, endDate: end }
+  const timeline = derivePartTimeline(enrollment.started_at, enrollment.includes_part_2 ?? true)
+  return { daysLeft: timeline.daysLeft, endDate: timeline.partEndsAt }
+}
+
+/**
+ * Härlett current_part för en enrollment. Använd den här istället för
+ * enrollment.current_part när du visar "deltagaren är i Del X" i UI.
+ */
+export function deriveCurrentPart(enrollment: StaEnrollment): 1 | 2 | 3 | 4 {
+  return derivePartTimeline(enrollment.started_at, enrollment.includes_part_2 ?? true).currentPart
 }
 
 /**
@@ -168,10 +308,11 @@ export function describeCurrentActivity(activities: StaActivity[], currentPart: 
 export function toParticipantRow(stats: EnrollmentStats): StaParticipantRow {
   const { enrollment, activities, assessments, documents, quickNotes } = stats
   const fullName = resolveParticipantName(enrollment)
+  const currentPart = deriveCurrentPart(enrollment)
   const { daysLeft, endDate } = daysLeftInPart(enrollment)
-  const activityInfo = describeCurrentActivity(activities, enrollment.current_part)
+  const activityInfo = describeCurrentActivity(activities, currentPart)
 
-  const partAssessments = assessments.filter((a) => a.part === enrollment.current_part)
+  const partAssessments = assessments.filter((a) => a.part === currentPart)
   const assessmentChips = partAssessments.slice(0, 3).map((a) => {
     if (a.status === 'complete') return { label: `${a.instrument} ✓`, status: 'done' as const }
     if (a.status === 'submitted_to_af') return { label: `${a.instrument} → AF`, status: 'done' as const }
@@ -186,7 +327,7 @@ export function toParticipantRow(stats: EnrollmentStats): StaParticipantRow {
     initials: getInitials(fullName),
     fullName,
     focusOccupation: enrollment.focus_occupation,
-    currentPart: enrollment.current_part,
+    currentPart,
     daysLeftInPart: daysLeft,
     partEndsAt: formatShortDate(endDate),
     currentActivity: activityInfo.primary,
@@ -224,7 +365,7 @@ export function computeKpi(allStats: EnrollmentStats[]): {
   for (const stats of allStats) {
     if (stats.enrollment.status !== 'active') continue
     active += 1
-    perPart[stats.enrollment.current_part] += 1
+    perPart[deriveCurrentPart(stats.enrollment)] += 1
     draftsToReview += countDraftsToReview(stats.documents)
     assessmentsInProgress += stats.assessments.filter((a) => a.status === 'draft').length
   }

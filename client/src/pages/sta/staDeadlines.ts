@@ -9,7 +9,7 @@
  * räknas den inte som aktiv (man har redan lämnat in).
  */
 
-import { daysLeftInPart, resolveParticipantName } from './enrollmentDisplay'
+import { daysLeftInPart, deriveCurrentPart, resolveParticipantName } from './enrollmentDisplay'
 import type { EnrollmentStats } from './enrollmentDisplay'
 
 export interface StaDeadline {
@@ -40,7 +40,7 @@ export function nextDeadlineFor(stats: EnrollmentStats): StaDeadline | null {
     return null
   }
 
-  const part = enrollment.current_part as 1 | 2 | 3 | 4
+  const part = deriveCurrentPart(enrollment)
   const docType = DOC_TYPE_FOR_PART[part]
 
   const alreadySubmitted = documents.some(

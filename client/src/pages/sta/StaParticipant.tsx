@@ -16,6 +16,7 @@ import {
   getCurrentWeekMonday,
 } from '@/hooks/useSta'
 import type { StaPulseCheck, StaActivity } from '@/services/staApi'
+import { deriveCurrentPart } from './enrollmentDisplay'
 import { PulseCheckWidget } from './components/PulseCheckWidget'
 import { WeeklyCheckinForm } from './components/WeeklyCheckinForm'
 import { WeeklyHoursEditor, activeDaysForHours } from './components/WeeklyHoursEditor'
@@ -330,7 +331,7 @@ export default function StaParticipant() {
 
     return {
       firstName: firstName || '',
-      currentPart: enrollment.current_part,
+      currentPart: deriveCurrentPart(enrollment),
       currentDay,
       totalDays,
       startedAt: enrollment.started_at,

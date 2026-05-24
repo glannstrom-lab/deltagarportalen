@@ -15,7 +15,7 @@ import { Button } from '@/components/ui/Button'
 import { ChevronLeft, AlertTriangle } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { staEnrollmentsApi, type DocumentType, type StaEnrollment } from '@/services/staApi'
-import { resolveParticipantName } from './enrollmentDisplay'
+import { resolveParticipantName, deriveCurrentPart } from './enrollmentDisplay'
 import { DOC_TYPE_META } from '@/services/staAiApi'
 import { DocumentDraftPanel } from './components/DocumentDraftPanel'
 
@@ -127,7 +127,7 @@ export default function StaDocumentWorkspace() {
                 {resolveParticipantName(enrollment)}
               </div>
               <div className="text-xs text-stone-600">
-                Del {enrollment.current_part} · Fokusyrke: {enrollment.focus_occupation ?? 'ej fastställt'}
+                Del {deriveCurrentPart(enrollment)} · Fokusyrke: {enrollment.focus_occupation ?? 'ej fastställt'}
               </div>
             </Card>
 

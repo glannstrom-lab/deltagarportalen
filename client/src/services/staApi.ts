@@ -60,6 +60,11 @@ export interface StaEnrollment {
   external_personal_id: string | null
   consultant_id: string
   current_part: StaPart
+  /**
+   * Om Del 2 (Prova på, 5 v) ska köras. FALSE → Del 1 hoppar direkt till Del 3.
+   * AF-officiellt valbart — vissa deltagare har inte nytta av konstruerad miljö.
+   */
+  includes_part_2: boolean
   started_at: string
   part_started_at: string
   focus_occupation: string | null
@@ -410,6 +415,7 @@ export const staEnrollmentsApi = {
     rows: Array<{ email: string; first_name?: string; last_name?: string; started_at?: string }>
     defaultStartedAt?: string
     currentPart?: 1 | 2 | 3 | 4
+    includesPart2?: boolean
     consentText: string
     consentScope: Record<string, unknown>
   }): Promise<Array<{
@@ -426,6 +432,7 @@ export const staEnrollmentsApi = {
       p_current_part: input.currentPart ?? 1,
       p_consent_text: input.consentText,
       p_consent_scope: input.consentScope,
+      p_includes_part_2: input.includesPart2 ?? true,
     })
     if (error) handleError(error)
     return (data ?? []) as Array<{
