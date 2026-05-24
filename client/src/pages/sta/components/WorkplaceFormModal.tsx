@@ -29,6 +29,7 @@ const EMPTY: Partial<StaWorkplace> & { company_name: string } = {
   end_date: null,
   weeks_planned: null,
   inriktning: null,
+  should_extend: false,
   notes: null,
 }
 
@@ -191,6 +192,22 @@ export function WorkplaceFormModal({ open, existing, onSave, onClose }: Props) {
               />
             </Field>
           </div>
+
+          <label className="flex items-start gap-2 cursor-pointer p-3 rounded-lg border border-stone-200 hover:bg-stone-50">
+            <input
+              type="checkbox"
+              checked={draft.should_extend ?? false}
+              onChange={(e) => update('should_extend', e.target.checked)}
+              className="mt-0.5 w-4 h-4 accent-stone-700"
+            />
+            <span className="text-sm text-stone-800">
+              <strong className="block">Ska förlängas</strong>
+              <span className="text-xs text-stone-600">
+                Markera om arbetsprövningen ska fortsätta efter slutdatumet — t.ex. förlängd period
+                eller övergång Del 3 → Del 4 på samma arbetsplats.
+              </span>
+            </span>
+          </label>
 
           <Field label="Anteckningar">
             <textarea

@@ -167,6 +167,8 @@ export interface StaWorkplace {
   end_date: string | null
   weeks_planned: number | null
   inriktning: 'aktiverande' | 'introducerande' | null
+  /** Markerad av konsulent när arbetsprövningen ska förlängas. */
+  should_extend: boolean
   af_submission_status: 'pending' | 'submitted' | 'approved' | 'rejected'
   af_submitted_at: string | null
   af_approved_at: string | null

@@ -16,6 +16,7 @@ import {
   Plus,
   PencilLine,
   Trash2,
+  ArrowRight,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import {
@@ -77,15 +78,23 @@ export function WorkplaceCard({ workplace, consultantView, onEdit, onDelete, onS
             )}
           </div>
         </div>
-        <span
-          className={cn(
-            'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium',
-            afStatusMeta.class,
+        <div className="flex items-center gap-2 flex-wrap">
+          {workplace.should_extend && (
+            <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-sky-50 text-sky-700">
+              <ArrowRight size={11} />
+              Ska förlängas
+            </span>
           )}
-        >
-          {afStatusMeta.icon}
-          {afStatusMeta.label}
-        </span>
+          <span
+            className={cn(
+              'inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium',
+              afStatusMeta.class,
+            )}
+          >
+            {afStatusMeta.icon}
+            {afStatusMeta.label}
+          </span>
+        </div>
       </div>
 
       {/* Period + weeks */}

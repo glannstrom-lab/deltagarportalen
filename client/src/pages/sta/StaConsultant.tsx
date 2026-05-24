@@ -2297,6 +2297,7 @@ function ParticipantDetailDrawer({
               enrollment={stats.enrollment}
               assessments={stats.assessments}
               activities={stats.activities}
+              workplaces={stats.workplaces}
               recentReflection={
                 stats.quickNotes
                   .filter((n) => n.body && n.visibility !== 'consultant_only')
@@ -2385,6 +2386,7 @@ function DetailOverview({
   enrollment,
   assessments,
   activities,
+  workplaces,
   recentReflection,
   onChange,
 }: {
@@ -2393,6 +2395,7 @@ function DetailOverview({
   enrollment: import('@/services/staApi').StaEnrollment
   assessments: import('@/services/staApi').StaAssessment[]
   activities: import('@/services/staApi').StaActivity[]
+  workplaces: import('@/services/staApi').StaWorkplace[]
   recentReflection: { text: string; at: string } | null
   onChange?: () => void
 }) {
@@ -2404,6 +2407,27 @@ function DetailOverview({
   const [summaryAt, setSummaryAt] = useState<string | null>(enrollment.ai_week_summary_generated_at)
   const [generating, setGenerating] = useState(false)
   const [generationError, setGenerationError] = useState<string | null>(null)
+
+  // Arbetsprövning — formulär-state
+  const [editingWorkplace, setEditingWorkplace] = useState<import('@/services/staApi').StaWorkplace | null>(null)
+  const [workplaceFormOpen, setWorkplaceFormOpen] = useState(false)
+
+  const handleSaveWorkplace = async (input: Partial<import('@/services/staApi').StaWorkplace> & { company_name: string }) => {
+    if (editingWorkplace) {
+      await staWorkplacesApi.update(editingWorkplace.id, input)
+    } else if (enrollmentId) {
+      await staWorkplacesApi.create({ ...input, enrollment_id: enrollmentId })
+    }
+    setEditingWorkplace(null)
+    setWorkplaceFormOpen(false)
+    onChange?.()
+  }
+
+  const handleDeleteWorkplace = async (id: string) => {
+    if (!confirm('Ta bort arbetsprövningen? Alla uppföljningar raderas också.')) return
+    await staWorkplacesApi.delete(id)
+    onChange?.()
+  }
 
   const handleGenerateSummary = async () => {
     if (!enrollmentId) return
@@ -2542,6 +2566,48 @@ function DetailOverview({
             })}
           </div>
         </div>
+
+        {/* Arbetsprövning */}
+        <div>
+          <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+            <h4 className="text-sm font-semibold text-stone-900">Arbetsprövning</h4>
+            {enrollmentId && !workplaceFormOpen && (
+              <Button
+                variant="secondary"
+                size="sm"
+                leftIcon={<Plus size={12} />}
+                onClick={() => { setEditingWorkplace(null); setWorkplaceFormOpen(true) }}
+              >
+                Lägg till arbetsprövning
+              </Button>
+            )}
+          </div>
+          {workplaces.length === 0 ? (
+            <p className="text-sm text-stone-500">
+              Ingen arbetsprövning registrerad än. Lägg till företag, kontakt och period när
+              deltagaren ska börja en arbetsprövning.
+            </p>
+          ) : (
+            <div className="space-y-3">
+              {workplaces.map((w) => (
+                <WorkplaceCard
+                  key={w.id}
+                  workplace={w}
+                  consultantView
+                  onEdit={() => { setEditingWorkplace(w); setWorkplaceFormOpen(true) }}
+                  onDelete={() => handleDeleteWorkplace(w.id)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        <WorkplaceFormModal
+          open={workplaceFormOpen}
+          existing={editingWorkplace}
+          onSave={handleSaveWorkplace}
+          onClose={() => { setWorkplaceFormOpen(false); setEditingWorkplace(null) }}
+        />
       </div>
 
       <aside className="space-y-3">
