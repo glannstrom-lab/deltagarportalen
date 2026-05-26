@@ -171,6 +171,18 @@ export function AbsenceForm({ recentAbsences, onReport, onRemove, readOnly = fal
             </div>
           )}
 
+          {/* Kom-ihåg: frånvaro ska även anmälas till Arbetsförmedlingen */}
+          <div
+            className="mt-3 flex items-start gap-2 p-3 rounded-lg bg-amber-50 border border-amber-200"
+            role="note"
+          >
+            <AlertCircle size={16} className="mt-0.5 flex-shrink-0 text-amber-700" />
+            <p className="text-xs text-amber-900">
+              <strong>Kom ihåg:</strong> anmäl din frånvaro till Arbetsförmedlingen också. Att säga
+              till här når din konsulent, men det ersätter inte anmälan till Arbetsförmedlingen.
+            </p>
+          </div>
+
           <div className="flex items-center gap-2 mt-3">
             <Button variant="primary" size="sm" onClick={handleSubmit} isLoading={saving}>
               {todaysAbsence ? 'Uppdatera anmälan' : 'Skicka anmälan'}

@@ -159,7 +159,8 @@ export interface StaStrength {
 // ============================================================================
 // VECKOSTRUKTUR — Del 1 kartläggningsperioden
 // ============================================================================
-// Del 1 är 3 veckor och 14 schemalagda dagar. Vi ger varje vecka ett tydligt
+// Del 1 är 3 veckor (15 schemalagda vardagar) med en 14-dagars övningsslinga.
+// Vi ger varje vecka ett tydligt
 // fokus så att deltagaren förstår vart resan tar vägen — och hur dagens övning
 // passar in i en större bild. Varje vecka kopplar till nästa steg mot arbete.
 

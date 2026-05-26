@@ -143,6 +143,31 @@ function dagsslingaDayForDate(startedAt: string, target: Date): number | null {
   return null
 }
 
+/** Antal schemalagda dagar (vardagar mån–fre) i Del 1 — 3 veckor à 5 dagar. */
+const DEL1_PROGRAM_DAYS = 15
+
+/**
+ * Hur många vardagar (mån–fre) har passerat sedan `startedAt`, inklusive idag?
+ * Helger räknas inte. Stannar vid `max` (vi behöver aldrig veta mer än så) och
+ * returnerar 0 om insatsen ännu inte börjat. Om idag är en helg räknas dagen
+ * som senaste vardagen — räknaren hoppar alltså inte fram över helgen.
+ */
+function weekdaysSinceStart(startedAt: string, target: Date, max = DEL1_PROGRAM_DAYS): number {
+  const start = new Date(startedAt + 'T00:00:00')
+  start.setHours(0, 0, 0, 0)
+  const end = new Date(target)
+  end.setHours(0, 0, 0, 0)
+  if (end < start) return 0
+  let count = 0
+  const cursor = new Date(start)
+  while (cursor <= end && count < max) {
+    const dow = cursor.getDay()
+    if (dow !== 0 && dow !== 6) count += 1
+    cursor.setDate(cursor.getDate() + 1)
+  }
+  return count
+}
+
 function getInitials(name: string | null | undefined): string {
   if (!name) return '–'
   return name
@@ -195,11 +220,19 @@ export default function StaParticipant() {
   const viewModel = useMemo((): ParticipantViewModel | null => {
     if (!enrollment) return null
 
+    // Övningsdag: nästa ej avklarade dag i dagsslingan (1–14). Styr vilken
+    // övning som visas som "idag" och driver vecko-kortet.
     const completedDays = activities.filter(
       (a) => a.completed_at && a.activity_key?.startsWith('dag-'),
     ).length
-    const currentDay = Math.min(completedDays + 1, DAGSSLINGA_DEL1.length)
-    const totalDays = DAGSSLINGA_DEL1.length
+    const currentExerciseDay = Math.min(completedDays + 1, DAGSSLINGA_DEL1.length)
+
+    // Program-dag: var i de 3 veckorna (15 vardagar) deltagaren är just nu,
+    // räknat från startdatum. Detta är räknaren i "Just nu"-kortet — den speglar
+    // tid i insatsen, inte hur många övningar man hunnit göra.
+    const programDay = Math.max(1, weekdaysSinceStart(enrollment.started_at, new Date()))
+    const currentDay = programDay
+    const totalDays = DEL1_PROGRAM_DAYS
 
     const consultantName = consultantProfile
       ? `${consultantProfile.first_name ?? ''} ${consultantProfile.last_name ?? ''}`.trim() || 'Din konsulent'
@@ -219,8 +252,8 @@ export default function StaParticipant() {
       const key = `dag-${d.day}`
       let status: DailyExercise['status'] = 'upcoming'
       if (completedKeys.has(key)) status = 'completed'
-      else if (d.day === currentDay) status = 'today'
-      else if (d.day === currentDay + 1) status = 'tomorrow'
+      else if (d.day === currentExerciseDay) status = 'today'
+      else if (d.day === currentExerciseDay + 1) status = 'tomorrow'
       return {
         day: d.day,
         title: d.title,
@@ -283,7 +316,7 @@ export default function StaParticipant() {
     })
 
     // Dagens aktivitet
-    const todayDef = DAGSSLINGA_DEL1.find((d) => d.day === currentDay)
+    const todayDef = DAGSSLINGA_DEL1.find((d) => d.day === currentExerciseDay)
     const todayActivity = todayDef
       ? {
           day: todayDef.day,
@@ -333,6 +366,7 @@ export default function StaParticipant() {
       firstName: firstName || '',
       currentPart: deriveCurrentPart(enrollment),
       currentDay,
+      currentExerciseDay,
       totalDays,
       startedAt: enrollment.started_at,
       partStartedAt: enrollment.part_started_at,
@@ -347,6 +381,8 @@ export default function StaParticipant() {
         name: consultantName,
         initials: getInitials(consultantName),
         nextMeeting: nextMeetingLabel,
+        email: consultantProfile?.email ?? null,
+        phone: consultantProfile?.phone ?? null,
       },
       todayActivity,
       weekPlan,
@@ -513,7 +549,10 @@ function NoEnrollmentEmptyState({
 interface ParticipantViewModel {
   firstName: string
   currentPart: StaPart
+  /** Program-dag i Del 1 (vardag 1–15 sedan start) — räknaren i hero. */
   currentDay: number
+  /** Övningsdag i dagsslingan (1–14) — vilken övning som visas som "idag". */
+  currentExerciseDay: number
   totalDays: number
   startedAt: string
   partStartedAt: string
@@ -522,7 +561,7 @@ interface ParticipantViewModel {
   focusOccupation: string | null
   adaptations: string[]
   languageSupport: string[]
-  consultant: { name: string; initials: string; nextMeeting: string }
+  consultant: { name: string; initials: string; nextMeeting: string; email: string | null; phone: string | null }
   todayActivity: { day: number; title: string; description: string; timeRange: string; href: string } | null
   weekPlan: Array<{
     weekday: 'MÅN' | 'TIS' | 'ONS' | 'TOR' | 'FRE'
@@ -917,10 +956,33 @@ function STaOverview({
           </div>
         </div>
         <div className="flex gap-2 mt-4">
-          <Button variant="secondary" size="sm" className="flex-1" leftIcon={<MessageSquare size={14} />}>
+          <Button
+            variant="secondary"
+            size="sm"
+            className="flex-1"
+            leftIcon={<MessageSquare size={14} />}
+            disabled={!mock.consultant.email}
+            title={mock.consultant.email ? `Mejla ${mock.consultant.email}` : 'Ingen e-postadress finns'}
+            onClick={() => {
+              if (mock.consultant.email) {
+                window.location.href = `mailto:${mock.consultant.email}?subject=${encodeURIComponent('Steg till arbete')}`
+              }
+            }}
+          >
             Meddelande
           </Button>
-          <Button variant="secondary" size="sm" leftIcon={<Phone size={14} />}>
+          <Button
+            variant="secondary"
+            size="sm"
+            leftIcon={<Phone size={14} />}
+            disabled={!mock.consultant.phone}
+            title={mock.consultant.phone ? `Ring ${mock.consultant.phone}` : 'Inget telefonnummer finns'}
+            onClick={() => {
+              if (mock.consultant.phone) {
+                window.location.href = `tel:${mock.consultant.phone.replace(/\s+/g, '')}`
+              }
+            }}
+          >
             Ring
           </Button>
         </div>
@@ -973,41 +1035,6 @@ function STaOverview({
           </p>
         )}
         <p className="text-xs text-stone-500 mt-3">{mock.consultant.name.split(' ')[0]} fyller på listan när ni pratas vid.</p>
-      </Card>
-
-      {/* Reflection */}
-      <Card variant="flat" padding="lg" className="lg:col-span-2" style={{ background: 'var(--wellbeing-bg)' }}>
-        <div className="text-xs uppercase tracking-wide font-medium mb-2" style={{ color: 'var(--wellbeing-text)' }}>
-          Dagens reflektion
-        </div>
-        <h3 className="text-base font-semibold text-stone-900 mb-3 flex items-center gap-2">
-          <Heart size={18} style={{ color: 'var(--wellbeing-text)' }} />
-          Hur har dagen känts?
-        </h3>
-        <div className="flex flex-wrap gap-2 mb-3">
-          {[
-            { emoji: '🌤️', label: 'Riktigt bra' },
-            { emoji: '🙂', label: 'Okej' },
-            { emoji: '😐', label: 'Sådär' },
-            { emoji: '😞', label: 'Tungt' },
-          ].map((opt) => (
-            <button
-              key={opt.label}
-              type="button"
-              className="px-3 py-2 rounded-full bg-white border-2 border-stone-200 text-sm hover:border-stone-300 transition-colors"
-            >
-              {opt.emoji} {opt.label}
-            </button>
-          ))}
-        </div>
-        <textarea
-          rows={2}
-          placeholder="Vad har varit roligt eller jobbigt idag? Kan vara så kort eller långt du vill."
-          className="w-full px-3 py-2 rounded-lg border border-stone-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-stone-200"
-        />
-        <p className="text-xs text-stone-600 mt-2">
-          Bara du och {mock.consultant.name.split(' ')[0]} ser detta. Du bestämmer själv när du vill skriva.
-        </p>
       </Card>
 
       {/* Resources */}
@@ -1143,7 +1170,7 @@ function STaDel1({
   const [selectedDay, setSelectedDay] = useState<number | null>(initialDay)
   const [kompFormOpen, setKompFormOpen] = useState(false)
 
-  const currentWeek = getWeekForDay(mock.currentDay)
+  const currentWeek = getWeekForDay(mock.currentExerciseDay)
 
   // Tre obligatoriska Del 1-aktiviteter — status från sta_activities
   const startsamtalAct = activities.find((a) => a.activity_key === 'startsamtal') ?? null
@@ -1155,7 +1182,7 @@ function STaDel1({
       <div className="lg:col-span-2 space-y-5">
         <PartIntro part={1} day={mock.currentDay} totalDays={mock.totalDays} />
 
-        {currentWeek && <CurrentWeekCard week={currentWeek} currentDay={mock.currentDay} />}
+        {currentWeek && <CurrentWeekCard week={currentWeek} currentDay={mock.currentExerciseDay} />}
 
         {/* De tre obligatoriska aktiviteterna enligt AF-uppdraget */}
         <ObligatoryActivitiesSection
@@ -1208,9 +1235,9 @@ function STaDel1({
           iconBgStyle={{ background: 'var(--wellbeing-bg)' }}
         >
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <HealthCard icon={<Moon size={18} />} title="Bättre sömn" subtitle="Övningar och guide" />
-            <HealthCard icon={<Sun size={18} />} title="Stresshantering" subtitle="Korta verktyg" />
-            <HealthCard icon={<Coffee size={18} />} title="Vardagsstruktur" subtitle="Hitta din rytm" />
+            <HealthCard icon={<Moon size={18} />} title="Bättre sömn" subtitle="Övningar och guide" href="/knowledge-base/article/sta-somn-ostrukturerad" />
+            <HealthCard icon={<Sun size={18} />} title="Stresshantering" subtitle="Korta verktyg" href="/knowledge-base/article/stresshantering" />
+            <HealthCard icon={<Coffee size={18} />} title="Vardagsstruktur" subtitle="Hitta din rytm" href="/knowledge-base/article/sta-timeboxing" />
           </div>
         </ActivitySection>
       </div>
@@ -1219,6 +1246,7 @@ function STaDel1({
         nextPart={STA_PARTS[1]}
         consultantFirstName={mock.consultant.name.split(' ')[0]}
         showLanguageSupport
+        consultantEmail={mock.consultant.email}
       />
 
       {/* Kompetenskartläggning-modal — öppnas från ObligatoryActivitiesSection */}
@@ -1755,11 +1783,11 @@ function ResourceLink({ resource }: { resource: DayResource }) {
   )
 }
 
-function HealthCard({ icon, title, subtitle }: { icon: React.ReactNode; title: string; subtitle: string }) {
+function HealthCard({ icon, title, subtitle, href }: { icon: React.ReactNode; title: string; subtitle: string; href: string }) {
   return (
-    <button
-      type="button"
-      className="text-left p-4 rounded-lg bg-white border border-stone-200 hover:border-stone-300 hover:shadow-sm transition-all"
+    <Link
+      to={href}
+      className="block text-left p-4 rounded-lg bg-white border border-stone-200 hover:border-stone-300 hover:shadow-sm transition-all"
     >
       <div
         className="w-10 h-10 rounded-lg flex items-center justify-center mb-2"
@@ -1769,7 +1797,7 @@ function HealthCard({ icon, title, subtitle }: { icon: React.ReactNode; title: s
       </div>
       <div className="font-medium text-sm text-stone-900">{title}</div>
       <div className="text-xs text-stone-500">{subtitle}</div>
-    </button>
+    </Link>
   )
 }
 
@@ -2249,10 +2277,12 @@ function PartSidebar({
   nextPart,
   consultantFirstName,
   showLanguageSupport,
+  consultantEmail,
 }: {
   nextPart?: typeof STA_PARTS[number]
   consultantFirstName: string
   showLanguageSupport?: boolean
+  consultantEmail?: string | null
 }) {
   return (
     <aside className="space-y-5">
@@ -2279,7 +2309,18 @@ function PartSidebar({
           <p className="text-sm text-stone-700">
             Vi kan översätta material eller ge stöd på arabiska, somaliska, tigrinja, dari eller pashtu.
           </p>
-          <Button variant="secondary" size="sm" className="mt-3">
+          <Button
+            variant="secondary"
+            size="sm"
+            className="mt-3"
+            disabled={!consultantEmail}
+            title={consultantEmail ? `Mejla ${consultantEmail}` : 'Ingen e-postadress finns — prata med din konsulent'}
+            onClick={() => {
+              if (consultantEmail) {
+                window.location.href = `mailto:${consultantEmail}?subject=${encodeURIComponent('Steg till arbete — önskemål om språkstöd')}&body=${encodeURIComponent('Hej!\n\nJag skulle vilja ha språkstöd. Mitt språk är: ')}`
+              }
+            }}
+          >
             Be om språkstöd
           </Button>
         </Card>
