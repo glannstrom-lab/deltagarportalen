@@ -16,7 +16,7 @@ import {
   getCurrentWeekMonday,
 } from '@/hooks/useSta'
 import type { StaPulseCheck, StaActivity } from '@/services/staApi'
-import { deriveCurrentPart } from './enrollmentDisplay'
+import { deriveCurrentPart, derivePartTimeline, formatShortDate } from './enrollmentDisplay'
 import { PulseCheckWidget } from './components/PulseCheckWidget'
 import { WeeklyCheckinForm } from './components/WeeklyCheckinForm'
 import { WeeklyHoursEditor, activeDaysForHours } from './components/WeeklyHoursEditor'
@@ -463,6 +463,18 @@ export default function StaParticipant() {
     await markOnboardingDone()
   }
 
+  // Resa-nivå upplåsning: framtida delar är låsta tills de börjar. Vi öppnar
+  // resan steg för steg så att deltagaren fokuserar på var hen är just nu.
+  const includesPart2 = enrollment.includes_part_2 ?? true
+  const journeyTimeline = derivePartTimeline(enrollment.started_at, includesPart2)
+  const partStartDates = new Map<StaPart, Date>()
+  journeyTimeline.segments.forEach((s) => partStartDates.set(s.part, s.startDate))
+  const partUnlockLabel = (part: StaPart): string => {
+    if (part === 2 && !includesPart2) return 'Ingår inte i din plan'
+    const d = partStartDates.get(part)
+    return d ? `Öppnas ${formatShortDate(d)}` : 'Öppnas senare'
+  }
+
   return (
     <PageLayout title="Steg till arbete" showTabs={false} domain="action" showHeader={false}>
       <STaHero
@@ -471,8 +483,14 @@ export default function StaParticipant() {
         onUpdateStartDate={updateStartDate}
         onUpdateWeeklyHours={updateWeeklyHours}
         absences30d={countAbsencesLast30Days(absences)}
+        unlockLabelFor={partUnlockLabel}
       />
-      <STaTabs current={tab} onChange={setTab} currentPart={viewModel.currentPart} />
+      <STaTabs
+        current={tab}
+        onChange={setTab}
+        currentPart={viewModel.currentPart}
+        unlockLabelFor={partUnlockLabel}
+      />
 
       <div className="mt-6">
         {tab === 'oversikt' && (
@@ -617,6 +635,7 @@ function STaHero({
   onUpdateStartDate,
   onUpdateWeeklyHours,
   absences30d,
+  unlockLabelFor,
 }: {
   mock: ParticipantViewModel
   enrollmentStartedAt: string
@@ -626,6 +645,8 @@ function STaHero({
   onUpdateWeeklyHours?: (hours: number) => Promise<unknown>
   /** Antal frånvarodagar senaste 30 dgr — visas som chip om > 0. */
   absences30d: number
+  /** Mänsklig etikett för när en låst del öppnas — visas under framtida delar. */
+  unlockLabelFor?: (part: StaPart) => string
 }) {
   const partLabel = STA_PARTS.find((p) => p.id === mock.currentPart)?.shortLabel ?? ''
   const progressPct = Math.round((mock.currentDay / mock.totalDays) * 100)
@@ -792,12 +813,18 @@ function STaHero({
         </Card>
       </div>
 
-      <Timeline currentPart={mock.currentPart} />
+      <Timeline currentPart={mock.currentPart} unlockLabelFor={unlockLabelFor} />
     </Card>
   )
 }
 
-function Timeline({ currentPart }: { currentPart: StaPart }) {
+function Timeline({
+  currentPart,
+  unlockLabelFor,
+}: {
+  currentPart: StaPart
+  unlockLabelFor?: (part: StaPart) => string
+}) {
   return (
     <div className="mt-6 flex items-center">
       {STA_PARTS.map((part, idx) => {
@@ -806,18 +833,20 @@ function Timeline({ currentPart }: { currentPart: StaPart }) {
         const isFuture = part.id > currentPart
         return (
           <div key={part.id} className="flex items-center flex-1 last:flex-initial">
-            <div className={cn('flex flex-col items-center flex-shrink-0', isFuture && 'opacity-50')}>
+            <div className={cn('flex flex-col items-center flex-shrink-0', isFuture && 'opacity-60')}>
               <div
                 className={cn(
                   'w-10 h-10 rounded-full flex items-center justify-center font-semibold ring-4 ring-[var(--header-bg)]',
-                  isActive || isPast ? 'text-white' : 'text-stone-600 bg-stone-300',
+                  isActive || isPast ? 'text-white' : 'text-stone-500 bg-stone-200',
                 )}
                 style={isActive || isPast ? { background: 'var(--c-solid)' } : undefined}
               >
-                {isPast ? <CheckCircle2 className="w-5 h-5" /> : part.id}
+                {isPast ? <CheckCircle2 className="w-5 h-5" /> : isFuture ? <Lock size={15} /> : part.id}
               </div>
               <div className="text-xs mt-2 font-medium text-stone-900 text-center max-w-[110px]">{part.shortLabel}</div>
-              <div className="text-[11px] text-stone-500">{part.duration}</div>
+              <div className="text-[11px] text-stone-500">
+                {isFuture ? (unlockLabelFor?.(part.id) ?? part.duration) : part.duration}
+              </div>
             </div>
             {idx < STA_PARTS.length - 1 && (
               <div
@@ -842,16 +871,37 @@ function STaTabs({
   current,
   onChange,
   currentPart,
+  unlockLabelFor,
 }: {
   current: TabId
   onChange: (tab: TabId) => void
   currentPart: StaPart
+  /** Mänsklig etikett för när en låst del öppnas. */
+  unlockLabelFor?: (part: StaPart) => string
 }) {
   return (
     <div className="mt-6 flex flex-wrap gap-2" role="tablist">
       {TABS.map((t) => {
         const isActive = t.id === current
-        const isFuturePart = t.partIndex !== undefined && t.partIndex > currentPart
+        const isLocked = t.partIndex !== undefined && t.partIndex > currentPart
+
+        if (isLocked) {
+          const label = unlockLabelFor?.(t.partIndex as StaPart) ?? 'Öppnas senare'
+          return (
+            <span
+              key={t.id}
+              role="tab"
+              aria-selected={false}
+              aria-disabled="true"
+              title={label}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border-2 border-dashed border-stone-200 bg-stone-50 text-stone-400 cursor-not-allowed select-none"
+            >
+              <Lock size={13} />
+              {t.label}
+            </span>
+          )
+        }
+
         return (
           <button
             key={t.id}
@@ -864,7 +914,6 @@ function STaTabs({
               isActive
                 ? 'border-[var(--c-solid)] text-[var(--c-text)]'
                 : 'border-stone-200 bg-white text-stone-700 hover:border-stone-300',
-              !isActive && isFuturePart && 'opacity-60',
             )}
             style={isActive ? { background: 'var(--c-bg)' } : undefined}
           >
