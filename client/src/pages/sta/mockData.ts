@@ -74,6 +74,10 @@ export interface DailyExercise {
   scheduledFor?: string
   durationMin: number
   reflection?: string
+  /** Låst tills schemalagd dag inträffar — vi öppnar en dag i taget. */
+  locked?: boolean
+  /** Mänsklig etikett för när dagen öppnas, t.ex. "imorgon" eller "26 maj". */
+  unlockLabel?: string
 }
 
 /** Definitionsdata för dagsslingan — titel/längd från det fysiska
@@ -343,6 +347,8 @@ export interface StaParticipantRow {
   activitySubtext: string
   activityProgress?: number
   assessments: Array<{ label: string; status: 'pending' | 'done' | 'due_today' | 'in_progress' }>
+  /** EN tydlig nästa åtgärd för konsulenten — "en uppgift i taget". null = inget brådskande. */
+  nextAction: { label: string; tone: 'critical' | 'warning' | 'normal' } | null
   adaptations: string
   hasDraft: number
   hasMessage: number

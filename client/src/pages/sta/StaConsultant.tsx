@@ -4,7 +4,7 @@ import { PageLayout } from '@/components/layout/index'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
-import { useConsultantStats, useStaQuickNotes, useStaAbsences } from '@/hooks/useSta'
+import { useConsultantStats, useStaQuickNotes, useStaAbsences, useStaPulseChecks } from '@/hooks/useSta'
 import { KompetenskartlaggningSummary } from './components/KompetenskartlaggningSummary'
 import { AssessmentSignature } from './components/AssessmentSignature'
 import { WorkplaceCard } from './components/WorkplaceCard'
@@ -1801,6 +1801,25 @@ function ParticipantsCardList({
   )
 }
 
+/** EN tydlig nästa åtgärd per deltagare — "en uppgift i taget". */
+function NextActionBanner({ action }: { action: StaParticipantRow['nextAction'] }) {
+  if (!action) return null
+  const cls =
+    action.tone === 'critical'
+      ? 'bg-rose-50 border-rose-200 text-rose-800'
+      : action.tone === 'warning'
+        ? 'bg-amber-50 border-amber-200 text-amber-900'
+        : 'bg-sky-50 border-sky-200 text-sky-800'
+  const dot = action.tone === 'critical' ? '#e11d48' : action.tone === 'warning' ? '#d97706' : '#0284c7'
+  return (
+    <div className={cn('flex items-center gap-2 mb-3 px-2.5 py-1.5 rounded-lg border text-xs font-medium', cls)}>
+      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0" style={{ background: dot }} />
+      <span className="uppercase tracking-wide text-[10px] opacity-70">Nästa</span>
+      <span>{action.label}</span>
+    </div>
+  )
+}
+
 function ParticipantCard({
   row,
   onOpen,
@@ -1845,6 +1864,9 @@ function ParticipantCard({
           </div>
         </div>
       </div>
+
+      {/* Nästa åtgärd — en uppgift i taget */}
+      <NextActionBanner action={row.nextAction} />
 
       {/* Tre-radig metadata-rad */}
       <div className="grid grid-cols-2 gap-2 mb-3 text-xs">
@@ -2014,6 +2036,9 @@ function ParticipantRow({
           <div className="mt-1 h-1.5 rounded-full overflow-hidden bg-stone-100 w-24">
             <div className="h-full" style={{ width: `${row.activityProgress}%`, background: 'var(--c-solid)' }} />
           </div>
+        )}
+        {row.nextAction && (
+          <div className="mt-1.5"><NextActionBanner action={row.nextAction} /></div>
         )}
       </td>
       <td className="px-4 py-3 align-middle">
@@ -2403,6 +2428,30 @@ function DetailOverview({
   const recentAbsences = absences.slice(0, 4)
   const kompAct = activities.find((a) => a.activity_key === 'kompetenskartlaggning') ?? null
 
+  // Bryggan: deltagarens egen input → underlag för delredovisningen.
+  const { pulses } = useStaPulseChecks(enrollmentId)
+  const participantInput = useMemo(() => {
+    const reflections = activities
+      .filter((a) => a.participant_reflection && a.participant_reflection.trim())
+      .map((a) => ({ text: a.participant_reflection!.trim(), at: a.completed_at ?? a.created_at }))
+    const completedDays = activities.filter((a) => a.completed_at && a.activity_key?.startsWith('dag-')).length
+    const pulseComments = pulses
+      .filter((p) => p.comment && p.comment.trim())
+      .map((p) => ({ text: p.comment!.trim(), at: p.check_date }))
+    const latest = [...reflections, ...pulseComments]
+      .sort((a, b) => (b.at ?? '').localeCompare(a.at ?? ''))
+      .slice(0, 3)
+    return {
+      reflections: reflections.length,
+      completedDays,
+      pulses: pulses.length,
+      pulseComments: pulseComments.length,
+      latest,
+      total: reflections.length + pulses.length + completedDays,
+    }
+  }, [activities, pulses])
+  const firstName = participant.fullName.split(' ')[0]
+
   const [summary, setSummary] = useState<string | null>(enrollment.ai_week_summary)
   const [summaryAt, setSummaryAt] = useState<string | null>(enrollment.ai_week_summary_generated_at)
   const [generating, setGenerating] = useState(false)
@@ -2485,7 +2534,55 @@ function DetailOverview({
           </Card>
         )}
 
-        <Card variant="flat" padding="md" style={{ background: 'linear-gradient(135deg, #FFFFFF 0%, var(--c-bg) 100%)' }}>
+        {/* Bryggan: deltagarens input → underlag för delredovisningen */}
+        <Card variant="flat" padding="md">
+          <div className="flex items-center justify-between gap-2 mb-1 flex-wrap">
+            <span className="text-[11px] uppercase tracking-wide font-medium" style={{ color: 'var(--c-text)' }}>
+              Underlag från deltagaren
+            </span>
+            <span className="text-[11px] text-stone-500">{participantInput.total} bidrag</span>
+          </div>
+          <h4 className="text-sm font-semibold text-stone-900">Det här har {firstName} bidragit med</h4>
+          {participantInput.total === 0 ? (
+            <p className="text-sm text-stone-600 mt-1">
+              Inget underlag än — {firstName} har inte lagt till reflektioner eller check-ins. Det fylls på
+              allteftersom.
+            </p>
+          ) : (
+            <>
+              <p className="text-xs text-stone-500 mt-1">
+                Blir underlag för Delredovisning Del {participant.currentPart}.
+              </p>
+              <div className="grid grid-cols-3 gap-2 mt-3">
+                {[
+                  { n: participantInput.completedDays, l: 'avklarade dagar' },
+                  { n: participantInput.reflections, l: 'reflektioner' },
+                  { n: participantInput.pulseComments, l: 'check-in-kommentarer' },
+                ].map((s) => (
+                  <div key={s.l} className="rounded-lg p-2.5 text-center" style={{ background: 'var(--c-bg)' }}>
+                    <div className="text-lg font-semibold" style={{ color: 'var(--c-text)' }}>{s.n}</div>
+                    <div className="text-[10px] text-stone-600 leading-tight">{s.l}</div>
+                  </div>
+                ))}
+              </div>
+              {participantInput.latest.length > 0 && (
+                <ul className="mt-3 space-y-1.5">
+                  {participantInput.latest.map((x, i) => (
+                    <li key={i} className="text-sm text-stone-700 bg-stone-50 rounded-lg px-2.5 py-1.5">
+                      <span className="text-[11px] text-stone-500 mr-2">{formatShortDate(new Date(x.at))}</span>
+                      "{x.text.length > 120 ? x.text.slice(0, 120) + '…' : x.text}"
+                    </li>
+                  ))}
+                </ul>
+              )}
+              <p className="text-xs text-stone-500 mt-3">
+                Sammanfatta som utkast nedan, eller öppna fliken Dokument för att skapa delredovisningen.
+              </p>
+            </>
+          )}
+        </Card>
+
+        <Card variant="flat" padding="md" style={{ background: 'var(--c-bg)' }}>
           <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
             <span
               className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium text-white"

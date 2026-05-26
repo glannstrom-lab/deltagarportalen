@@ -362,6 +362,48 @@ export function describeCurrentActivity(enrollment: StaEnrollment): {
 }
 
 /**
+ * EN tydlig nästa åtgärd för konsulenten ("en uppgift i taget"). Prioriterar i
+ * ordning: utkast att granska → delredovisning som förfaller → skattning som
+ * saknas för delen. Returnerar null när inget är brådskande just nu.
+ *
+ * Inlinad här (i stället för via staDeadlines) för att undvika cirkulär import.
+ */
+export function deriveNextAction(
+  stats: EnrollmentStats,
+): { label: string; tone: 'critical' | 'warning' | 'normal' } | null {
+  const { enrollment, documents, assessments } = stats
+  if (enrollment.status !== 'active' && enrollment.status !== 'paused') return null
+  const part = deriveCurrentPart(enrollment)
+
+  // 1. Dokumentutkast att granska
+  const drafts = countDraftsToReview(documents)
+  if (drafts > 0) {
+    return { label: drafts === 1 ? 'Granska 1 dokumentutkast' : `Granska ${drafts} dokumentutkast`, tone: 'warning' }
+  }
+
+  // 2. Delredovisning för delen som närmar sig / passerat
+  const docType = `delredovisning_${part}`
+  const submitted = documents.some(
+    (d) => d.doc_type === docType && (d.status === 'submitted' || d.status === 'approved' || d.status === 'submitted_to_af'),
+  )
+  const { daysLeft } = daysLeftInPart(enrollment)
+  if (!submitted && daysLeft <= 14) {
+    const when = daysLeft <= 0 ? 'förfaller' : daysLeft === 1 ? 'imorgon' : `om ${daysLeft} dgr`
+    return { label: `Delredovisning Del ${part} ${when}`, tone: daysLeft <= 3 ? 'critical' : 'warning' }
+  }
+
+  // 3. Skattning för delen ännu ej klar
+  const partComplete = assessments.some(
+    (a) => a.part === part && (a.status === 'complete' || a.status === 'submitted_to_af'),
+  )
+  if (!partComplete) {
+    return { label: `Skattning saknas för Del ${part}`, tone: 'normal' }
+  }
+
+  return null
+}
+
+/**
  * Mappar EnrollmentStats → StaParticipantRow (samma format som tidigare mock).
  */
 export function toParticipantRow(stats: EnrollmentStats): StaParticipantRow {
@@ -404,6 +446,7 @@ export function toParticipantRow(stats: EnrollmentStats): StaParticipantRow {
     activitySubtext: activityInfo.subtext,
     activityProgress: activityInfo.progress,
     assessments: assessmentChips,
+    nextAction: deriveNextAction(stats),
     adaptations: enrollment.adaptations ?? 'Inga särskilda',
     hasDraft: countDraftsToReview(documents),
     hasMessage: quickNotes.filter((n) => n.visibility === 'shared_with_participant').length,

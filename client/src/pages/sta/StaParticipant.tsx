@@ -52,6 +52,7 @@ import {
   PencilLine,
   Info,
   Stethoscope,
+  Lock,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import {
@@ -168,6 +169,22 @@ function weekdaysSinceStart(startedAt: string, target: Date, max = DEL1_PROGRAM_
   return count
 }
 
+/** Kalenderdatum då den n:te vardagen (mån–fre) sedan `startedAt` inträffar. */
+function dateForExerciseDay(startedAt: string, n: number): Date {
+  const cursor = new Date(startedAt + 'T00:00:00')
+  cursor.setHours(0, 0, 0, 0)
+  let count = 0
+  for (let i = 0; i < 200; i++) {
+    const dow = cursor.getDay()
+    if (dow !== 0 && dow !== 6) {
+      count += 1
+      if (count === n) return new Date(cursor)
+    }
+    cursor.setDate(cursor.getDate() + 1)
+  }
+  return cursor
+}
+
 function getInitials(name: string | null | undefined): string {
   if (!name) return '–'
   return name
@@ -220,19 +237,17 @@ export default function StaParticipant() {
   const viewModel = useMemo((): ParticipantViewModel | null => {
     if (!enrollment) return null
 
-    // Övningsdag: nästa ej avklarade dag i dagsslingan (1–14). Styr vilken
-    // övning som visas som "idag" och driver vecko-kortet.
-    const completedDays = activities.filter(
-      (a) => a.completed_at && a.activity_key?.startsWith('dag-'),
-    ).length
-    const currentExerciseDay = Math.min(completedDays + 1, DAGSSLINGA_DEL1.length)
-
     // Program-dag: var i de 3 veckorna (15 vardagar) deltagaren är just nu,
     // räknat från startdatum. Detta är räknaren i "Just nu"-kortet — den speglar
     // tid i insatsen, inte hur många övningar man hunnit göra.
     const programDay = Math.max(1, weekdaysSinceStart(enrollment.started_at, new Date()))
     const currentDay = programDay
     const totalDays = DEL1_PROGRAM_DAYS
+
+    // Dagens övning = den som är schemalagd för aktuell program-dag (1–14, så
+    // räknaren och dagens övning visar samma dag). Tidigare dagar som inte
+    // gjorts når man via dagsslingan nedan.
+    const currentExerciseDay = Math.min(programDay, DAGSSLINGA_DEL1.length)
 
     const consultantName = consultantProfile
       ? `${consultantProfile.first_name ?? ''} ${consultantProfile.last_name ?? ''}`.trim() || 'Din konsulent'
@@ -247,13 +262,26 @@ export default function StaParticipant() {
       }
     })
 
-    // Daglig dagsslinga med beräknad status
+    // Daglig dagsslinga med beräknad status + progressiv upplåsning.
+    // Vi öppnar en dag i taget: dagens dag och passerade dagar är öppna,
+    // framtida dagar är låsta tills de schemaläggs (så det inte blir för mycket).
     const dailyExercises: DailyExercise[] = DAGSSLINGA_DEL1.map((d) => {
       const key = `dag-${d.day}`
+      const isCompleted = completedKeys.has(key)
+      const locked = !isCompleted && d.day > currentExerciseDay
       let status: DailyExercise['status'] = 'upcoming'
-      if (completedKeys.has(key)) status = 'completed'
+      if (isCompleted) status = 'completed'
       else if (d.day === currentExerciseDay) status = 'today'
       else if (d.day === currentExerciseDay + 1) status = 'tomorrow'
+
+      let unlockLabel: string | undefined
+      if (locked) {
+        unlockLabel =
+          d.day === currentExerciseDay + 1
+            ? 'imorgon'
+            : formatShortSv(dateForExerciseDay(enrollment.started_at, d.day))
+      }
+
       return {
         day: d.day,
         title: d.title,
@@ -262,6 +290,8 @@ export default function StaParticipant() {
         status,
         reflection: reflectionByDay.get(d.day),
         scheduledFor: status === 'today' ? 'Idag' : undefined,
+        locked,
+        unlockLabel,
       }
     })
 
@@ -925,7 +955,19 @@ function STaOverview({
               </span>
             </div>
             <div className="flex flex-wrap gap-2 mt-4">
-              <Button variant="primary" onClick={() => onJumpToTab('del-1')}>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  onJumpToTab('del-1')
+                  // Del 1-fliken monteras vid tabbytet och förväljer dagens dag.
+                  // Vänta in renderingen och rulla direkt till dagens övning.
+                  window.setTimeout(() => {
+                    document
+                      .getElementById('sta-dagens-ovning')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }, 150)
+                }}
+              >
                 Öppna dagens övning
               </Button>
             </div>
@@ -1166,7 +1208,7 @@ function STaDel1({
   onMarkDayComplete?: (activityKey: string, reflection?: string) => Promise<unknown>
 }) {
   // Default: visa idag som vald dag, om den finns
-  const initialDay = mock.dailyExercises.find((d) => d.status === 'today')?.day ?? null
+  const initialDay = mock.dailyExercises.find((d) => d.status === 'today')?.day ?? mock.currentExerciseDay
   const [selectedDay, setSelectedDay] = useState<number | null>(initialDay)
   const [kompFormOpen, setKompFormOpen] = useState(false)
 
@@ -1198,7 +1240,7 @@ function STaDel1({
         <ActivitySection
           icon={<Calendar size={18} style={{ color: 'var(--c-text)' }} />}
           title="Resan i tre veckor"
-          subtitle={`${mock.dailyExercises.filter((d) => d.status === 'completed').length} av 14 dagar avklarade · klicka på en dag för material`}
+          subtitle={`${mock.dailyExercises.filter((d) => d.status === 'completed').length} av 14 dagar klara · vi öppnar en dag i taget`}
           iconBg=""
           iconBgStyle={{ background: 'var(--c-accent)' }}
           defaultOpen
@@ -1566,6 +1608,24 @@ function DayCell({
   const isToday = exercise.status === 'today'
   const isTomorrow = exercise.status === 'tomorrow'
 
+  // Låst dag — vi öppnar en dag i taget. Visas men går inte att öppna än.
+  if (exercise.locked) {
+    return (
+      <div
+        className="block w-full text-center p-3 rounded-lg border border-dashed border-stone-200 bg-stone-50/60 cursor-not-allowed select-none"
+        aria-disabled="true"
+        title={`Öppnas ${exercise.unlockLabel ?? 'senare'}`}
+      >
+        <div className="text-[10px] font-medium uppercase tracking-wide text-stone-400">Dag {exercise.day}</div>
+        <div className="text-xs mt-1 text-stone-400">{exercise.shortTitle}</div>
+        <div className="text-[10px] text-stone-400 mt-1 inline-flex items-center gap-1">
+          <Lock size={10} />
+          Öppnas {exercise.unlockLabel ?? 'senare'}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <button
       type="button"
@@ -1653,7 +1713,8 @@ function DayResourcePanel({
 
   return (
     <div
-      className="mt-5 p-5 rounded-xl border"
+      id="sta-dagens-ovning"
+      className="mt-5 p-5 rounded-xl border scroll-mt-24"
       style={{ background: 'var(--c-bg)', borderColor: 'var(--c-accent)' }}
     >
       <div className="flex items-start justify-between flex-wrap gap-3 mb-3">
