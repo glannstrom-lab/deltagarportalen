@@ -490,6 +490,7 @@ export default function StaParticipant() {
         onChange={setTab}
         currentPart={viewModel.currentPart}
         unlockLabelFor={partUnlockLabel}
+        includesPart2={includesPart2}
       />
 
       <div className="mt-6">
@@ -872,16 +873,20 @@ function STaTabs({
   onChange,
   currentPart,
   unlockLabelFor,
+  includesPart2 = true,
 }: {
   current: TabId
   onChange: (tab: TabId) => void
   currentPart: StaPart
   /** Mänsklig etikett för när en låst del öppnas. */
   unlockLabelFor?: (part: StaPart) => string
+  /** Om Del 2 inte ingår i deltagarens plan döljs fliken helt. */
+  includesPart2?: boolean
 }) {
+  const visibleTabs = includesPart2 ? TABS : TABS.filter((t) => t.id !== 'del-2')
   return (
     <div className="mt-6 flex flex-wrap gap-2" role="tablist">
-      {TABS.map((t) => {
+      {visibleTabs.map((t) => {
         const isActive = t.id === current
         const isLocked = t.partIndex !== undefined && t.partIndex > currentPart
 

@@ -2405,6 +2405,95 @@ function DrawerDeadlineBanner({
   )
 }
 
+/**
+ * AF-krav per arbetsprövningsplats (Del 3/4): vilka skattningar som krävs och
+ * är gjorda, plus när AWC/AWP ska observeras enligt fasen. Grundas på AF:s
+ * uppföljningsrutin — AWC/AWP vecka 1 + sista 3 veckorna, MOHOST/DOA minst en
+ * gång per arbetsplats, uppföljning veckovis + besök var 4–6:e vecka.
+ */
+function WorkplaceAfStatus({
+  workplace,
+  assessments,
+}: {
+  workplace: import('@/services/staApi').StaWorkplace
+  assessments: import('@/services/staApi').StaAssessment[]
+}) {
+  const required: Array<'AWC' | 'AWP' | 'MOHOST' | 'DOA'> = ['AWC', 'AWP', 'MOHOST', 'DOA']
+  const done = new Set(
+    assessments
+      .filter(
+        (a) =>
+          a.workplace_id === workplace.id &&
+          (a.status === 'complete' || a.status === 'submitted_to_af'),
+      )
+      .map((a) => a.instrument),
+  )
+
+  const today = new Date()
+  const start = workplace.start_date ? new Date(workplace.start_date + 'T00:00:00') : null
+  let end = workplace.end_date ? new Date(workplace.end_date + 'T00:00:00') : null
+  if (!end && start && workplace.weeks_planned) {
+    end = new Date(start)
+    end.setDate(end.getDate() + workplace.weeks_planned * 7)
+  }
+
+  let obsCue = 'AWC/AWP: vecka 1 + sista 3 veckorna'
+  let obsDue = false
+  if (start) {
+    const week1End = new Date(start)
+    week1End.setDate(start.getDate() + 7)
+    if (today <= week1End) {
+      obsCue = 'AWC/AWP ska göras nu — vecka 1'
+      obsDue = !done.has('AWC') || !done.has('AWP')
+    } else if (end) {
+      const last3 = new Date(end)
+      last3.setDate(end.getDate() - 21)
+      if (today >= last3) {
+        obsCue = 'AWC/AWP ska göras nu — sista 3 veckorna'
+        obsDue = !done.has('AWC') || !done.has('AWP')
+      }
+    }
+  }
+
+  return (
+    <div className="mt-2 p-3 rounded-lg border border-stone-200 bg-stone-50">
+      <div className="text-[11px] uppercase tracking-wide text-stone-500 font-medium mb-1.5">
+        AF-krav · skattningar
+      </div>
+      <div className="flex flex-wrap gap-1.5">
+        {required.map((i) => {
+          const isDone = done.has(i)
+          return (
+            <span
+              key={i}
+              className={cn(
+                'inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium',
+                isDone ? 'bg-emerald-50 text-emerald-700' : 'bg-stone-100 text-stone-600',
+              )}
+            >
+              {i} {isDone ? '✓' : 'saknas'}
+            </span>
+          )
+        })}
+      </div>
+      <ul className="mt-2 space-y-0.5 text-[11px] text-stone-600">
+        <li className={cn('flex items-start gap-1.5', obsDue && 'text-amber-800 font-medium')}>
+          <span className="mt-1 w-1 h-1 rounded-full flex-shrink-0" style={{ background: obsDue ? '#d97706' : '#a8a29e' }} />
+          {obsCue}
+        </li>
+        <li className="flex items-start gap-1.5">
+          <span className="mt-1 w-1 h-1 rounded-full bg-stone-400 flex-shrink-0" />
+          MOHOST + DOA: minst 1 gång per arbetsplats
+        </li>
+        <li className="flex items-start gap-1.5">
+          <span className="mt-1 w-1 h-1 rounded-full bg-stone-400 flex-shrink-0" />
+          Uppföljning veckovis · besök var 4–6:e vecka
+        </li>
+      </ul>
+    </div>
+  )
+}
+
 function DetailOverview({
   participant,
   enrollmentId,
@@ -2687,13 +2776,15 @@ function DetailOverview({
           ) : (
             <div className="space-y-3">
               {workplaces.map((w) => (
-                <WorkplaceCard
-                  key={w.id}
-                  workplace={w}
-                  consultantView
-                  onEdit={() => { setEditingWorkplace(w); setWorkplaceFormOpen(true) }}
-                  onDelete={() => handleDeleteWorkplace(w.id)}
-                />
+                <div key={w.id}>
+                  <WorkplaceCard
+                    workplace={w}
+                    consultantView
+                    onEdit={() => { setEditingWorkplace(w); setWorkplaceFormOpen(true) }}
+                    onDelete={() => handleDeleteWorkplace(w.id)}
+                  />
+                  <WorkplaceAfStatus workplace={w} assessments={assessments} />
+                </div>
               ))}
             </div>
           )}
