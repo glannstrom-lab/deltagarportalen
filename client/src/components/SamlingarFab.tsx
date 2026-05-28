@@ -31,6 +31,7 @@ import {
   X,
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { useHideOnScrollDown } from '@/hooks/useHideOnScrollDown'
 
 type Destination = {
   label: string
@@ -85,6 +86,7 @@ export function SamlingarFab() {
   const previousFocusRef = useRef<HTMLElement | null>(null)
   const titleId = useId()
   const navigate = useNavigate()
+  const hiddenOnScroll = useHideOnScrollDown()
 
   // ESC stänger
   useEffect(() => {
@@ -142,10 +144,14 @@ export function SamlingarFab() {
             'group fixed z-40',
             // Stackad ovanför CoachWidget (bottom-20 sm:bottom-6, höjd ~48px)
             'bottom-36 right-4 sm:bottom-[88px] sm:right-6',
-            'flex items-center gap-2 pl-2 pr-3 py-1.5',
+            // Ikon-only på mobil, etikett-pill på desktop
+            'flex items-center gap-0 sm:gap-2 p-1.5 sm:pl-2 sm:pr-3',
             'rounded-full bg-white dark:bg-stone-800 shadow-lg hover:shadow-xl',
             'border border-stone-200 dark:border-stone-700',
             'transition-all duration-200 hover:scale-105 active:scale-95',
+            // Dölj vid scroll nedåt (endast mobil) så fältet inte täcker innehåll
+            hiddenOnScroll ? 'translate-y-[220%] opacity-0 pointer-events-none' : 'translate-y-0 opacity-100',
+            'sm:translate-y-0 sm:opacity-100 sm:pointer-events-auto',
           )}
         >
           <span
@@ -158,7 +164,7 @@ export function SamlingarFab() {
               aria-hidden="true"
             />
           </span>
-          <span className="text-sm font-medium text-stone-700 dark:text-stone-200 pr-1">
+          <span className="hidden sm:inline text-sm font-medium text-stone-700 dark:text-stone-200 pr-1">
             Mina samlingar
           </span>
         </button>

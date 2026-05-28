@@ -27,7 +27,7 @@ export const careerTabDefs = [
 export const careerTabs: Tab[] = [
   { id: 'labor-market', label: 'Arbetsmarknad', path: '/career', icon: TrendingUp },
   { id: 'adaptation', label: 'Anpassning', path: '/career/adaptation', icon: Accessibility, badge: undefined },
-  { id: 'credentials', label: 'Credentials', path: '/career/credentials', icon: GraduationCap, badge: undefined },
+  { id: 'credentials', label: 'Meriter', path: '/career/credentials', icon: GraduationCap, badge: undefined },
   { id: 'relocation', label: 'Flytta', path: '/career/relocation', icon: Home, badge: undefined },
   { id: 'plan', label: 'Karriärplan', path: '/career/plan', icon: Target },
 ]

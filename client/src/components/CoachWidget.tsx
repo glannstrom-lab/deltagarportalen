@@ -12,6 +12,7 @@ import { useEffect, useId, useRef, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { X, ChevronDown, ChevronUp, MessageCircle, Lightbulb, ExternalLink } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { useHideOnScrollDown } from '@/hooks/useHideOnScrollDown'
 import {
   COACHES,
   getCoachContentForPage,
@@ -129,6 +130,7 @@ function CoachLauncher({
   onOpen: () => void
 }) {
   const coaches = content.coachIds.slice(0, 3).map((id) => COACHES[id])
+  const hiddenOnScroll = useHideOnScrollDown()
 
   return (
     <button
@@ -137,10 +139,14 @@ function CoachLauncher({
       aria-label={`Öppna coachtips${coaches.length > 1 ? ` från ${coaches.length} coacher` : ''}`}
       className={cn(
         'group fixed z-40 bottom-20 sm:bottom-6 right-4 sm:right-6',
-        'flex items-center gap-2 pl-1.5 pr-3 py-1.5',
+        // Ikon-only (avatarstack) på mobil, etikett-pill på desktop
+        'flex items-center gap-0 sm:gap-2 p-1.5 sm:pl-1.5 sm:pr-3',
         'rounded-full bg-white dark:bg-stone-800 shadow-lg hover:shadow-xl',
         'border border-stone-200 dark:border-stone-700',
         'transition-all duration-200 hover:scale-105 active:scale-95',
+        // Dölj vid scroll nedåt (endast mobil) så knappen inte täcker innehåll
+        hiddenOnScroll ? 'translate-y-[220%] opacity-0 pointer-events-none' : 'translate-y-0 opacity-100',
+        'sm:translate-y-0 sm:opacity-100 sm:pointer-events-auto',
       )}
     >
       <div className="flex -space-x-3">
@@ -155,7 +161,7 @@ function CoachLauncher({
           />
         ))}
       </div>
-      <span className="text-sm font-medium text-stone-700 dark:text-stone-200 pr-1">
+      <span className="hidden sm:inline text-sm font-medium text-stone-700 dark:text-stone-200 pr-1">
         Tips
       </span>
     </button>

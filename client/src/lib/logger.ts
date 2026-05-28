@@ -88,6 +88,24 @@ function extractErrorInfo(err: unknown): { message: string; stack?: string } {
   if (typeof err === 'string') {
     return { message: err }
   }
+  // Supabase/PostgREST-fel är vanliga objekt ({ message, code, details, hint }),
+  // inte Error-instanser. String(obj) ger "[object Object]" och döljer felet —
+  // läs .message om den finns, annars serialisera hela objektet.
+  if (err && typeof err === 'object') {
+    const o = err as { message?: unknown; code?: unknown; details?: unknown; hint?: unknown }
+    if (typeof o.message === 'string' && o.message) {
+      const parts = [o.message]
+      if (o.code != null) parts.push(`code=${String(o.code)}`)
+      if (typeof o.details === 'string' && o.details) parts.push(o.details)
+      if (typeof o.hint === 'string' && o.hint) parts.push(`hint=${o.hint}`)
+      return { message: parts.join(' | ') }
+    }
+    try {
+      return { message: JSON.stringify(err) }
+    } catch {
+      return { message: String(err) }
+    }
+  }
   return { message: String(err) }
 }
 

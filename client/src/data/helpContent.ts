@@ -281,7 +281,7 @@ export const helpContent: Record<string, HelpContent> = {
     faqs: [
       {
         question: 'Vilka flikar finns?',
-        answer: 'Utforska (yrkesbeskrivningar), Nätverk (nätverkstips), Anpassning (karriärbyte), Företag (arbetsgivare), Credentials (certifieringar), Flytta (jobba utomlands), Karriärplan (din plan), Kompetens (kompetensgap).'
+        answer: 'Utforska (yrkesbeskrivningar), Nätverk (nätverkstips), Anpassning (karriärbyte), Företag (arbetsgivare), Meriter (certifieringar), Flytta (jobba utomlands), Karriärplan (din plan), Kompetens (kompetensgap).'
       },
       {
         question: 'Vad är kompetensgap-analysen?',

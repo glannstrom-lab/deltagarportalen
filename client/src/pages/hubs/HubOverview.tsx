@@ -112,7 +112,7 @@ function HubOverviewInner() {
 
   const firstName = summary?.profile?.full_name?.trim().split(/\s+/)[0] ?? null
   const profileImageUrl = summary?.profile?.profile_image_url ?? null
-  const initials = (firstName?.[0] ?? 'M').toUpperCase()
+  const initials = firstName ? firstName[0].toUpperCase() : null
   const today = new Date()
 
   // ---------- Senaste aktivitet per hub ----------
@@ -229,9 +229,13 @@ function HubOverviewInner() {
                   <img src={profileImageUrl} alt="" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-[var(--c-bg)]">
-                    <span className="text-[22px] sm:text-[28px] font-bold text-[var(--c-text)] tracking-tight">
-                      {initials}
-                    </span>
+                    {initials ? (
+                      <span className="text-[22px] sm:text-[28px] font-bold text-[var(--c-text)] tracking-tight">
+                        {initials}
+                      </span>
+                    ) : (
+                      <User className="w-6 h-6 sm:w-8 sm:h-8 text-[var(--c-text)]" aria-hidden="true" />
+                    )}
                   </div>
                 )}
               </Link>

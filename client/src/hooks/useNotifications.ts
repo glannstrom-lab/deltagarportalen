@@ -14,15 +14,23 @@ import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { apiLogger } from '@/lib/logger'
 
-// Supabase fetch som avbryts vid unmount/navigation kastar AbortError eller
-// ERR_ABORTED-message. Dessa är förväntade och ska inte loggas som fel.
-function isAbortError(err: unknown): boolean {
+// Supabase-fetch som avbryts vid unmount/navigation rejectar inte alltid som
+// AbortError — vid sid-navigation ger Chrome "TypeError: Failed to fetch" och
+// WebKit "Load failed". Dessa är transienta och ska inte loggas som fel eller
+// visas för användaren (notifikationer är icke-kritiska).
+function isTransientFetchError(err: unknown): boolean {
   if (!err) return false
-  const e = err as { name?: string; message?: string; code?: string }
+  const e = err as { name?: string; message?: unknown; code?: unknown }
   if (e.name === 'AbortError') return true
   if (e.code === '20') return true
-  const msg = (e.message || '').toLowerCase()
-  return msg.includes('abort') || msg.includes('cancel')
+  const msg = (typeof e.message === 'string' ? e.message : '').toLowerCase()
+  return (
+    msg.includes('abort') ||
+    msg.includes('cancel') ||
+    msg.includes('failed to fetch') ||
+    msg.includes('load failed') ||
+    msg.includes('networkerror')
+  )
 }
 
 // ============================================
@@ -110,7 +118,7 @@ export function useNotifications(): UseNotificationsReturn {
       apiLogger.debug('Notifications loaded', { count: data?.length || 0 })
     } catch (err) {
       // ERR_ABORTED från snabb navigation eller unmount är inte ett riktigt fel
-      if (isAbortError(err)) return
+      if (isTransientFetchError(err)) return
       const message = err instanceof Error ? err.message : 'Kunde inte ladda notifikationer'
       setError(message)
       apiLogger.error('Failed to load notifications', { error: err })
@@ -148,7 +156,7 @@ export function useNotifications(): UseNotificationsReturn {
         apiLogger.debug('Notifications loaded', { count: data?.length || 0 })
       } catch (err) {
         if (!isMounted) return
-        if (isAbortError(err)) return
+        if (isTransientFetchError(err)) return
         const message = err instanceof Error ? err.message : 'Kunde inte ladda notifikationer'
         setError(message)
         apiLogger.error('Failed to load notifications', { error: err })
