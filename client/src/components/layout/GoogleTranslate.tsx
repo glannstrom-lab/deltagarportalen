@@ -301,10 +301,14 @@ export function GoogleTranslate() {
               ))}
             </div>
 
-            {/* Footer */}
-            <div className="px-4 py-2 border-t border-stone-100 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-900/30">
+            {/* Footer — maskinöversättning + integritetsnotis (GDPR: sidans
+                innehåll skickas till Google vid översättning) */}
+            <div className="px-4 py-2.5 border-t border-stone-100 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-900/30">
               <p className="text-xs text-stone-400 dark:text-stone-500 text-center">
                 {t('language.machineTranslation', 'Maskinöversättning via Google')}
+              </p>
+              <p className="mt-1 text-[11px] text-stone-400 dark:text-stone-500 text-center leading-snug">
+                {t('language.translationPrivacy', 'När du översätter skickas sidans innehåll till Google för översättning.')}
               </p>
             </div>
           </div>

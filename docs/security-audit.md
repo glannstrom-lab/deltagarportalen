@@ -1,3 +1,105 @@
+# Säkerhetsrevision (kodgranskning) — Deltagarportalen
+
+**Datum:** 2026-05-28
+**Typ:** Statisk kodgranskning (READ-ONLY, ingen live-trafik mot prod)
+**Omfattning:** Secrets, Supabase RLS, endpoint-auth/CORS/rate limiting, XSS/injektion, OAuth, GDPR/PII
+**Metod:** 4 parallella recon-agenter + manuell verifiering av allvarliga fynd
+
+> Föregående revision (2026-04-23) finns längre ned i dokumentet och är fortsatt giltig som referens.
+
+---
+
+## Sammanfattning 2026-05-28
+
+| Severity | Antal | Fynd | Status |
+|----------|-------|------|--------|
+| 🔴 CRITICAL | 1 | Läckt OpenRouter-nyckel i git-historik | ⚠️ **Kräver nyckelrotation** (out-of-band) |
+| 🟠 HIGH | 1 | `send-invite-email` saknar ägar-/rollkontroll (IDOR) | ✅ Åtgärdad i kod 2026-05-28 |
+| 🟡 MEDIUM | 4 | Rate-limiters fail-open; edge-AI saknar rate limit; Sentry Session Replay PII; Google Translate skickar PII utan samtycke | ✅ Åtgärdade i kod 2026-05-28 |
+| ⚪ LOW | 7 | Se nedan | Öppna |
+
+> **OBS:** Kodfixar (HIGH + 4× MEDIUM) är committade men måste **deployas** (Vercel + `supabase functions deploy`) för att gälla i prod. CRITICAL kräver nyckelrotation i OpenRouter — kodborttagning räcker inte.
+
+**Verifierat starkt (positivt):**
+- RLS är aktiverat och korrekt scopat (`auth.uid() = user_id`) på alla granskade användartabeller.
+- Rolleskalering väl försvarad (signup-trigger tvingar `role='USER'`, `check_role_change_allowed`, audit-loggning).
+- Konsulent↔deltagare-scoping korrekt (`EXISTS(... consultant_id = auth.uid())`); deltagare ser inte konsulent-only-noteringar.
+- DOMPurify centraliserat och säkert konfigurerat; inga osanerade `dangerouslySetInnerHTML`.
+- Alla server-endpoints verifierar JWT (`auth.getUser`) **före** arbete och härleder user-id från token (ingen IDOR utom HIGH-1).
+- CORS använder allowlist (ingen blanket-reflektion); Sentry skrubbar Authorization/Cookie; `delete-account` är korrekt ägar-scopat; ingen SQL-injektion; prompt-injektion väl mitigerad (användardata i `user`-roll, PII strippas klientsida).
+
+---
+
+## 🔴 CRITICAL
+
+### [CRIT-2605-01] Läckt OpenRouter-API-nyckel i git-historik
+- **Fil (historisk):** `client/src/components/cv/AIWritingAssistant.tsx`
+- **Commits:** introducerad i `95093b2`, borttagen i `dc12d31`, dokumentation städad i `3094737`
+- **Status:** Borta ur arbetsträdet, men **permanent återställbar** via `git log -S 'sk-or-v1-...' --all`.
+- **Verifierad:** Ja (git-historik bekräftad 2026-05-28).
+- **Risk:** Vem som helst med repo-åtkomst (eller om repot någonsin blir publikt) kan extrahera nyckeln och belasta OpenRouter-kontot.
+- **Åtgärd (out-of-band — kodborttagning räcker INTE):**
+  1. **Rotera/återkalla nyckeln i OpenRouter-dashboarden omedelbart.**
+  2. Lägg ev. nyckelanvändning bakom server-side proxy (sker redan via `/api/ai`).
+  3. (Valfritt) Rensa historik med `git filter-repo`/BFG om repot ska delas — kräver force-push och koordinering.
+
+---
+
+## 🟠 HIGH
+
+### [HIGH-2605-01] `send-invite-email` saknar ägar-/rollkontroll (IDOR + e-postmissbruk)
+- **Fil:** `supabase/functions/send-invite-email/index.ts:354-359` (auth) + `:201-205` (laddar inbjudan via service-role) + `:380-389` (processar godtyckliga IDs)
+- **Verifierad:** Ja (aktuell kod läst 2026-05-28). *OBS: filen har lokala icke-committade ändringar.*
+- **Beskrivning:** Funktionen autentiserar anroparen (`auth.getUser`) men kontrollerar **aldrig** att anroparen äger inbjudan (`invitation.consultant_id === user.id`) eller har konsulentroll. Inbjudan laddas med **service-role-klienten** (RLS förbigås).
+- **Exploit:** Vilken inloggad användare som helst (även en deltagare) POSTar `{ invitationIds: [<godtyckliga UUID>] }` (upp till 50) och triggar Supabase admin-invite (`generateLink`/`inviteUserByEmail`) för andras pending-inbjudningar → e-postspam, enumeration av inbjudningar, missbruk av admin-invite-flödet.
+- **✅ Åtgärdat 2026-05-28:** `processInvitation` tar nu `callerId` + `callerIsAdmin` och avvisar (`Forbidden`) om anroparen varken är `consultant_id`, `invited_by` eller admin. Anroparens roll hämtas en gång i `serve()`. `select` aliaserad till `inviter:` så råa `invited_by`-UUID:t bevaras för kontrollen.
+
+---
+
+## 🟡 MEDIUM
+
+### [MED-2605-01] Rate-limiters fail-open vid RPC-fel
+- **Fil:** `client/api/ai.js:121-124` (och motsvarande i `ai-stream.js`, `upload-image.js`, `job-alerts.js`)
+- **Beskrivning:** Vid fel i `check_rate_limit`-RPC returnerar limitern `{ allowed: true }`. Ett DB/RPC-avbrott stänger av all rate limiting tyst → kostnads-/missbruksrisk på AI-endpoints.
+- **✅ Åtgärdat 2026-05-28:** `ai.js`, `ai-stream.js`, `job-alerts.js` använder nu en per-instans in-memory fallback-räknare (`rateLimitFallback`) vid RPC-fel istället för att släppa igenom allt — begränsar abuse vid DB-avbrott utan hård AI-otillgänglighet.
+
+### [MED-2605-02] Edge-AI-funktioner saknar per-user rate limit
+- **Fil:** `supabase/functions/ai-assistant`, `ai-cover-letter`, `ai-career-assistant` m.fl.
+- **Beskrivning:** Förlitar sig på JWT + att modellen är kostnadslåst, men har ingen synlig per-user request-rate-limit (till skillnad från Vercel-`/api/ai`).
+- **✅ Åtgärdat 2026-05-28:** `ai-assistant` och `ai-company-search` anropar nu `checkRateLimit` från `_shared/rateLimit.ts` (429 vid överskridande). `ai-company-search` fick egen ENDPOINT_LIMITS-post (10/min). Övriga edge-AI-funktioner hade redan rate limiting.
+
+### [MED-2605-03] Sentry Session Replay kan spela in PII
+- **Fil:** `client/src/lib/sentry.ts:99-100`
+- **Beskrivning:** `replaysSessionSampleRate`/`replaysOnErrorSampleRate` är aktiva utan `replayIntegration({ maskAllText, blockAllMedia })`. Replays kan fånga CV:n, namn, dagbok/hälsodata på skärmen. `beforeSend`-skrubben gäller inte replay-DOM.
+- **✅ Åtgärdat 2026-05-28:** `Sentry.replayIntegration({ maskAllText: true, maskAllInputs: true, blockAllMedia: true })` tillagd i `sentry.ts` — replays visar nu bara layout, aldrig faktiskt innehåll.
+
+### [MED-2605-04] Google Translate skickar sid-DOM (PII) till Google utan samtyckesgrind
+- **Fil:** `client/src/components/layout/GoogleTranslate.tsx` (script-injektion ~`:119`, `googtrans`-cookie ~`:57`)
+- **Beskrivning:** När användaren översätter skickas sidans text (inkl. CV/profil) till Google, och en cross-subdomän-cookie sätts — inte grindat bakom analytics-samtycket som gäller Sentry.
+- **✅ Åtgärdat 2026-05-28:** Tydlig integritetsnotis tillagd i översättnings-dropdownen ("När du översätter skickas sidans innehåll till Google …", `language.translationPrivacy` i sv/en). Scriptet laddas redan endast vid uttrycklig användarhandling (inte automatiskt) → informerat samtycke vid användningstillfället. *Återstår (valfritt):* hård cookie-samtyckes-grind om juridiken kräver opt-in.
+
+---
+
+## ⚪ LOW
+
+- **[LOW-2605-01]** `client/src/components/ai-team/MarkdownRenderer.tsx:417` — `<a href>` byggs från AI-genererad markdown utan protokoll-allowlist (`javascript:` möjligt). React neutraliserar oftast `javascript:`-href i runtime → låg risk. Lägg ändå till `^(https?:|mailto:)`-kontroll.
+- **[LOW-2605-02]** `profiles` admin-UPDATE-policy (`20260323120000_...:42-45`) saknar `WITH CHECK`. Mitigeras troligen av senare policy (`20260324100000`), men flera permissiva UPDATE-policys OR/AND-kombineras — **verifiera i live-DB** (`pg_policies`) att den oskyddade policyn faktiskt ersatts.
+- **[LOW-2605-03]** `profile_shares` har `USING(true)` + `GRANT SELECT ... anon` (`20260417120000_...:143-145`) — anon kan enumerera **alla** delade profiler, inte bara via känd kod. Scopa till share_code-lookup.
+- **[LOW-2605-04]** Vercel-preview-CORS-regex (`ai.js:245` m.fl.) matchar valfritt `deltagarportalen-*.vercel.app` kombinerat med `Allow-Credentials: true` → en attacker-kontrollerad preview kan allowlistas. Snäva regexen eller stäng av preview-CORS i prod.
+- **[LOW-2605-05]** Partiell kontoradering rapporterar "success" även om `auth.users`-raden inte raderades (`client/src/services/accountApi.ts:79-93`) → kvarvarande e-post/PII. Verifiera även `ON DELETE CASCADE` på alla tabeller som refererar `profiles(id)`.
+- **[LOW-2605-06]** `supabase/functions/health` är publik och returnerar fel-strängar (`:86`); `client/api/test.js` är oautentiserad. Begränsa felmeddelanden i prod; ta bort `test.js`.
+- **[LOW-2605-07]** Supabase-session i `localStorage` (`client/src/lib/supabase.ts:21`) är XSS-läsbar (standard SPA-avvägning). Acceptabelt givet stark XSS-hygien; värt att notera.
+
+---
+
+## Kräver verifiering utanför koden (dashboard/live-DB)
+- Supabase OAuth: bekräfta att redirect-allowlist i dashboarden endast tillåter `jobin.se`/kända origins.
+- `pg_policies`: bekräfta faktiskt RLS-tillstånd för `profiles` UPDATE (LOW-2605-02).
+- FK-cascades på alla `profiles(id)`-referenser (LOW-2605-05).
+
+---
+---
+
 # Sakerhetsrevision - Deltagarportalen
 
 **Datum:** 2026-04-23

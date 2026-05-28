@@ -100,6 +100,27 @@ const RATE_LIMITS = {
   'default': { limit: 20, windowMinutes: 15 }
 };
 
+// In-memory fallback för rate limiting när Supabase-RPC failar. Serverless →
+// per-instans (delas ej mellan varma instanser), men förhindrar att en
+// enskild instans blir helt obegränsad vid DB-avbrott (fail-closed-ish istället
+// för fail-open). Föredras framför att släppa igenom allt.
+const rlFallbackStore = new Map();
+function rateLimitFallback(userId, functionName, config) {
+  const key = `${userId}:${functionName}`;
+  const now = Date.now();
+  const windowMs = config.windowMinutes * 60 * 1000;
+  const entry = rlFallbackStore.get(key);
+  if (!entry || now > entry.resetTime) {
+    rlFallbackStore.set(key, { count: 1, resetTime: now + windowMs });
+    return { allowed: true, remaining: config.limit - 1, resetIn: windowMs };
+  }
+  if (entry.count >= config.limit) {
+    return { allowed: false, remaining: 0, resetIn: Math.max(0, entry.resetTime - now) };
+  }
+  entry.count++;
+  return { allowed: true, remaining: config.limit - entry.count, resetIn: Math.max(0, entry.resetTime - now) };
+}
+
 /**
  * Check rate limit using Supabase distributed storage
  * @param {object} supabase - Supabase client
@@ -119,9 +140,8 @@ async function checkRateLimit(supabase, userId, functionName) {
     });
 
     if (error) {
-      console.error('[RateLimit] Supabase error:', error.message);
-      // On error, allow request but log it
-      return { allowed: true, remaining: config.limit, resetIn: 0 };
+      console.error('[RateLimit] Supabase error, using in-memory fallback:', error.message);
+      return rateLimitFallback(userId, functionName, config);
     }
 
     if (data && data.length > 0) {
@@ -139,8 +159,8 @@ async function checkRateLimit(supabase, userId, functionName) {
 
     return { allowed: true, remaining: config.limit, resetIn: 0 };
   } catch (err) {
-    console.error('[RateLimit] Error:', err.message);
-    return { allowed: true, remaining: config.limit, resetIn: 0 };
+    console.error('[RateLimit] Error, using in-memory fallback:', err.message);
+    return rateLimitFallback(userId, functionName, config);
   }
 }
 

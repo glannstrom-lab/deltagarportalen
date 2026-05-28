@@ -6,6 +6,7 @@
 
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
+import { checkRateLimit } from '../_shared/rateLimit.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 const BOLAGSVERKET_API_BASE = 'https://gw.api.bolagsverket.se/vardefulla-datamangder/v1'
@@ -269,6 +270,19 @@ Deno.serve(async (req) => {
 
     if (authError || !user) {
       return createCorsResponse({ error: 'Invalid token' }, 401, origin)
+    }
+
+    // Per-user rate limit (distribuerad via Supabase, in-memory fallback)
+    const rateCheck = await checkRateLimit(user.id, 'ai-company-search')
+    if (!rateCheck.allowed) {
+      return createCorsResponse(
+        {
+          error: 'För många sökningar. Vänta en stund och försök igen.',
+          retryAfter: rateCheck.retryAfter,
+        },
+        429,
+        origin,
+      )
     }
 
     console.log(`[ai-company-search] User ${user.id} searching: "${query}"`)

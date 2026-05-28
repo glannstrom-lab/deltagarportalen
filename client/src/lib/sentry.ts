@@ -92,6 +92,16 @@ function doInitSentry(): void {
           /^\//,  // Relativa URL:er (egna API-anrop)
         ],
       }),
+      // Session Replay — PII-maskning är OBLIGATORISK för denna app:
+      // skärmen kan visa CV, namn, dagbok och hälsodata. maskAllText +
+      // blockAllMedia gör att replays bara visar layout/struktur, aldrig
+      // faktiskt innehåll. beforeSend-skrubben gäller INTE replay-DOM, så
+      // maskningen måste ske här. (GDPR — känslig persondata.)
+      Sentry.replayIntegration({
+        maskAllText: true,
+        maskAllInputs: true,
+        blockAllMedia: true,
+      }),
     ],
     tracesSampleRate: IS_PRODUCTION ? 0.1 : 1.0, // 10% in prod, 100% in dev
 

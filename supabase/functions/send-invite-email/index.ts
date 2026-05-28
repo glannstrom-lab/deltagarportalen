@@ -13,15 +13,116 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 
-// Email template
-const getInviteEmailTemplate = (data: {
+// =============================================================================
+// E-MAIL-TEMPLATES
+// =============================================================================
+// Två separata template-funktioner: STA-specifik och generell. STA-mailet
+// nämner arbetskonsulentens namn, Steg till arbete och samtycke direkt — så
+// det inte ser ut som ett generiskt onboarding-mail.
+
+interface TemplateData {
   firstName: string
   consultantName: string
+  consultantEmail?: string
   inviteUrl: string
   message?: string
   expiresAt: string
-  program?: string
-}) => `
+}
+
+const SHARED_STYLES = `
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1c1917; max-width: 600px; margin: 0 auto; padding: 20px; background: #fafaf9; }
+  .header { padding: 32px 30px; border-radius: 12px 12px 0 0; }
+  .header h1 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .header .eyebrow { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; opacity: 0.85; }
+  .content { background: #ffffff; padding: 32px 30px; border-radius: 0 0 12px 12px; border: 1px solid #e7e5e4; border-top: none; }
+  .button { display: inline-block; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 16px 0; }
+  .message-box { background: #f5f5f4; border-left: 4px solid #57534e; padding: 14px 16px; margin: 20px 0; border-radius: 0 8px 8px 0; font-size: 14px; }
+  .info-list { background: #f5f5f4; padding: 18px 20px; margin: 20px 0; border-radius: 8px; }
+  .info-list strong { display: block; margin-bottom: 10px; color: #1c1917; }
+  .info-list ul { margin: 0; padding-left: 20px; color: #44403c; font-size: 14px; }
+  .info-list li { margin: 4px 0; }
+  .footer { margin-top: 24px; padding-top: 20px; border-top: 1px solid #e7e5e4; color: #78716c; font-size: 13px; text-align: center; }
+  .expiry { color: #b45309; font-weight: 600; font-size: 14px; }
+  .small { font-size: 13px; color: #78716c; }
+  .fallback-link { font-size: 12px; color: #57534e; word-break: break-all; }
+`
+
+// STA-specifikt mail — för inbjudningar med metadata.program = 'steg_till_arbete'
+const getStaInviteEmailTemplate = (data: TemplateData) => `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inbjudan till Steg till arbete · Jobin</title>
+  <style>
+    ${SHARED_STYLES}
+    .header { background: #d8efe5; color: #14532d; }
+    .button { background: #16a34a; color: #ffffff; }
+    .button:hover { background: #15803d; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="eyebrow">Steg till arbete</div>
+    <h1>Hej ${data.firstName || 'du'} — välkommen till Jobin</h1>
+  </div>
+
+  <div class="content">
+    <p style="font-size: 16px;">
+      Du har av arbetskonsulent <strong>${data.consultantName}</strong> blivit inbjuden
+      till arbetssökarportalen <strong>jobin.se</strong> som är din digitala vägledare
+      i Steg till arbete.
+    </p>
+
+    <p>
+      Fortsätt här för att skapa ett konto och koppla ihop dig med din arbetskonsulent.
+    </p>
+
+    <center>
+      <a href="${data.inviteUrl}" class="button">Skapa konto &amp; koppla ihop</a>
+    </center>
+
+    ${data.message ? `
+    <div class="message-box">
+      <strong>Personligt meddelande från ${data.consultantName}:</strong><br>
+      ${data.message}
+    </div>
+    ` : ''}
+
+    <div class="info-list">
+      <strong>När du har skapat ditt konto:</strong>
+      <ul>
+        <li>Steg till arbete är aktiverat direkt — du behöver inte göra något extra</li>
+        <li>Du ser tydligt vilken information som delas med din konsulent</li>
+        <li>Du kan när som helst säga upp kopplingen från "Min konsulent"-sidan</li>
+      </ul>
+    </div>
+
+    <p class="small">
+      Innan kontot skapas får du läsa och godkänna ett samtycke om vilken data
+      din konsulent får tillgång till. Den rättsliga grunden är ditt samtycke
+      (GDPR art. 6.1.a) och du kan återkalla det när du vill.
+    </p>
+
+    <p class="expiry">Inbjudan är giltig till: ${data.expiresAt}</p>
+
+    <p class="small">
+      Om knappen inte fungerar, kopiera denna länk till din webbläsare:<br>
+      <span class="fallback-link">${data.inviteUrl}</span>
+    </p>
+  </div>
+
+  <div class="footer">
+    <p>Har du frågor? Kontakta ${data.consultantName}${data.consultantEmail ? ` på <a href="mailto:${data.consultantEmail}" style="color: #15803d;">${data.consultantEmail}</a>` : ''}.</p>
+    <p>&copy; ${new Date().getFullYear()} Jobin · jobin.se</p>
+  </div>
+</body>
+</html>
+`
+
+// Generellt mail — för inbjudningar utan STA-program
+const getGenericInviteEmailTemplate = (data: TemplateData) => `
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,28 +130,21 @@ const getInviteEmailTemplate = (data: {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inbjudan till Jobin</title>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 30px; border-radius: 12px 12px 0 0; text-align: center; }
-    .header h1 { margin: 0; font-size: 24px; }
-    .content { background: #f9fafb; padding: 30px; border-radius: 0 0 12px 12px; }
-    .button { display: inline-block; background: #4f46e5; color: white; padding: 14px 28px; text-decoration: none; border-radius: 8px; font-weight: 600; margin: 20px 0; }
+    ${SHARED_STYLES}
+    .header { background: #e0e7ff; color: #312e81; }
+    .button { background: #4f46e5; color: #ffffff; }
     .button:hover { background: #4338ca; }
-    .message-box { background: white; border-left: 4px solid #4f46e5; padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0; }
-    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; text-align: center; }
-    .expiry { color: #dc2626; font-weight: 600; }
-    .program-tag { display: inline-block; background: #ede9fe; color: #5b21b6; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; margin-top: 8px; }
   </style>
 </head>
 <body>
   <div class="header">
-    <h1>Välkommen till Jobin!</h1>
-    ${data.program === 'steg_till_arbete' ? '<div class="program-tag" style="background: rgba(255,255,255,0.2); color: white;">Steg till arbete</div>' : ''}
+    <div class="eyebrow">Inbjudan</div>
+    <h1>Hej ${data.firstName || 'du'} — välkommen till Jobin</h1>
   </div>
 
   <div class="content">
-    <p>Hej ${data.firstName || 'du'}!</p>
-
-    <p><strong>${data.consultantName}</strong> har bjudit in dig till Jobin${data.program === 'steg_till_arbete' ? ' för att delta i <strong>Steg till arbete</strong>' : ''}.</p>
+    <p><strong>${data.consultantName}</strong> har bjudit in dig till Jobin — en plattform
+    som hjälper dig att hitta vägen tillbaka till arbetsmarknaden.</p>
 
     ${data.message ? `
     <div class="message-box">
@@ -59,22 +153,15 @@ const getInviteEmailTemplate = (data: {
     </div>
     ` : ''}
 
-    ${data.program === 'steg_till_arbete' ? `
-    <p>När du skapar ditt konto kommer du att:</p>
-    <ul>
-      <li>Få tillgång till Steg till arbete-modulen direkt</li>
-      <li>Se vilken information som delas med din konsulent</li>
-      <li>Kunna säga upp kopplingen när du vill</li>
-    </ul>
-    ` : `
-    <p>Med Jobin kan du:</p>
-    <ul>
-      <li>Bygga ett professionellt CV</li>
-      <li>Upptäcka yrken som passar dig</li>
-      <li>Söka jobb från Arbetsförmedlingen</li>
-      <li>Få stöd i din jobbsökning</li>
-    </ul>
-    `}
+    <div class="info-list">
+      <strong>Med Jobin kan du:</strong>
+      <ul>
+        <li>Bygga ett professionellt CV</li>
+        <li>Upptäcka yrken som passar dig</li>
+        <li>Söka jobb från Arbetsförmedlingen</li>
+        <li>Få stöd i din jobbsökning</li>
+      </ul>
+    </div>
 
     <center>
       <a href="${data.inviteUrl}" class="button">Skapa ditt konto</a>
@@ -82,15 +169,15 @@ const getInviteEmailTemplate = (data: {
 
     <p class="expiry">Inbjudan är giltig till: ${data.expiresAt}</p>
 
-    <p style="font-size: 14px; color: #6b7280;">
+    <p class="small">
       Om knappen inte fungerar, kopiera denna länk till din webbläsare:<br>
-      <a href="${data.inviteUrl}" style="color: #4f46e5;">${data.inviteUrl}</a>
+      <span class="fallback-link">${data.inviteUrl}</span>
     </p>
   </div>
 
   <div class="footer">
     <p>Har du frågor? Kontakta din handledare eller svara på detta email.</p>
-    <p>&copy; ${new Date().getFullYear()} Jobin</p>
+    <p>&copy; ${new Date().getFullYear()} Jobin · jobin.se</p>
   </div>
 </body>
 </html>
@@ -109,16 +196,30 @@ async function processInvitation(
   resendApiKey: string | undefined,
   emailFrom: string,
   siteUrl: string,
+  callerId: string,
+  callerIsAdmin: boolean,
 ): Promise<ProcessResult> {
-  // Hämta inbjudan
+  // Hämta inbjudan (inviter aliasad så råa invited_by-UUID:t bevaras för auktorisering)
   const { data: invitation, error: inviteError } = await client
     .from('invitations')
-    .select('*, invited_by:profiles!invited_by(first_name, last_name)')
+    .select('*, inviter:profiles!invited_by(first_name, last_name)')
     .eq('id', invitationId)
     .single()
 
   if (inviteError || !invitation) {
     return { invitationId, success: false, error: 'Invitation not found' }
+  }
+
+  // AUKTORISERING: anroparen måste äga inbjudan (vara dess konsulent eller
+  // skapare) eller vara admin. Annars kan vilken inloggad användare som helst
+  // trigga inbjudningsmail för godtyckliga invitation-IDs (service-role
+  // förbigår RLS här).
+  if (
+    !callerIsAdmin &&
+    invitation.consultant_id !== callerId &&
+    invitation.invited_by !== callerId
+  ) {
+    return { invitationId, success: false, error: 'Forbidden: not your invitation' }
   }
 
   const inviteUrl = `${siteUrl}/#/invite/${invitation.token}`
@@ -129,9 +230,12 @@ async function processInvitation(
     day: 'numeric',
   })
 
-  const consultantName = invitation.invited_by
-    ? `${invitation.invited_by.first_name || ''} ${invitation.invited_by.last_name || ''}`.trim()
+  const consultantName = invitation.inviter
+    ? `${invitation.inviter.first_name || ''} ${invitation.inviter.last_name || ''}`.trim()
     : 'Din handledare'
+
+  const isStaInvite = invitation.metadata?.program === 'steg_till_arbete'
+  const renderTemplate = isStaInvite ? getStaInviteEmailTemplate : getGenericInviteEmailTemplate
 
   let emailErrorMessage: string | null = null
 
@@ -164,17 +268,17 @@ async function processInvitation(
         (linkData as { properties?: { action_link?: string } })?.properties?.action_link ||
         inviteUrl
 
-      const html = getInviteEmailTemplate({
+      const html = renderTemplate({
         firstName: invitation.metadata?.first_name,
         consultantName,
+        consultantEmail: invitation.metadata?.consultant_email,
         inviteUrl: actionLink,
         message: invitation.metadata?.message,
         expiresAt: expiresAtFormatted,
-        program: invitation.metadata?.program,
       })
 
-      const subject = invitation.metadata?.program === 'steg_till_arbete'
-        ? 'Inbjudan till Steg till arbete · Jobin'
+      const subject = isStaInvite
+        ? `Inbjudan till Steg till arbete från ${consultantName} · Jobin`
         : 'Inbjudan till Jobin'
 
       const resendResponse = await fetch('https://api.resend.com/emails', {
@@ -268,6 +372,16 @@ serve(async (req) => {
       return createCorsResponse({ error: 'Invalid token' }, 401, origin)
     }
 
+    // Hämta anroparens roll en gång — admins får skicka för valfri inbjudan,
+    // övriga endast för sina egna (kontroll i processInvitation).
+    const { data: callerProfile } = await supabaseClient
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single()
+    const callerIsAdmin =
+      callerProfile?.role === 'ADMIN' || callerProfile?.role === 'SUPERADMIN'
+
     const body = await req.json()
     const invitationIds: string[] = Array.isArray(body.invitationIds)
       ? body.invitationIds
@@ -289,7 +403,7 @@ serve(async (req) => {
 
     const results = await Promise.all(
       invitationIds.map((id) =>
-        processInvitation(supabaseClient, id, resendApiKey, emailFrom, siteUrl)
+        processInvitation(supabaseClient, id, resendApiKey, emailFrom, siteUrl, user.id, callerIsAdmin)
           .catch((err) => ({
             invitationId: id,
             success: false,

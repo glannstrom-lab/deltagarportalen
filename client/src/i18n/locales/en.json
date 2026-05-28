@@ -263,7 +263,8 @@
     "translatedTo": "Page is translated",
     "showOriginal": "Show original (Swedish)",
     "poweredByGoogle": "Powered by Google Translate",
-    "machineTranslation": "Machine translation by Google"
+    "machineTranslation": "Machine translation by Google",
+    "translationPrivacy": "When you translate, the page content is sent to Google for translation."
   },
   "dashboard": {
     "title": "Dashboard",

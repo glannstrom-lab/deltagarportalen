@@ -270,7 +270,8 @@
     "translatedTo": "Sidan är översatt",
     "showOriginal": "Visa original (Svenska)",
     "poweredByGoogle": "Via Google Translate",
-    "machineTranslation": "Maskinöversättning via Google"
+    "machineTranslation": "Maskinöversättning via Google",
+    "translationPrivacy": "När du översätter skickas sidans innehåll till Google för översättning."
   },
   "dashboard": {
     "title": "Översikt",

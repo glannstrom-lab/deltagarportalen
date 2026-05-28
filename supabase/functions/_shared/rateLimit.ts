@@ -32,6 +32,7 @@ const ENDPOINT_LIMITS: Record<string, { limit: number; windowMs: number }> = {
   'af-jobsearch': { limit: 60, windowMs: 60 * 1000 },
   'ai-career-assistant': { limit: 20, windowMs: 60 * 1000 },
   'ai-company-analysis': { limit: 5, windowMs: 60 * 1000 },
+  'ai-company-search': { limit: 10, windowMs: 60 * 1000 },
   'ai-industry-radar': { limit: 10, windowMs: 60 * 1000 },
   'ai-commute-planner': { limit: 10, windowMs: 60 * 1000 },
 }

@@ -122,6 +122,25 @@ const JOB_ALERT_RATE_LIMITS = {
   'default': { limit: 10, windowMinutes: 15 }
 };
 
+// In-memory fallback när Supabase-RPC failar (per-instans). Förhindrar
+// obegränsade anrop vid DB-avbrott istället för att släppa igenom allt.
+const rlFallbackStore = new Map();
+function rateLimitFallback(identifier, action, config) {
+  const key = `${identifier}:${action}`;
+  const now = Date.now();
+  const windowMs = config.windowMinutes * 60 * 1000;
+  const entry = rlFallbackStore.get(key);
+  if (!entry || now > entry.resetTime) {
+    rlFallbackStore.set(key, { count: 1, resetTime: now + windowMs });
+    return { allowed: true, remaining: config.limit - 1, resetIn: windowMs };
+  }
+  if (entry.count >= config.limit) {
+    return { allowed: false, remaining: 0, resetIn: Math.max(0, entry.resetTime - now) };
+  }
+  entry.count++;
+  return { allowed: true, remaining: config.limit - entry.count, resetIn: Math.max(0, entry.resetTime - now) };
+}
+
 async function checkRateLimit(identifier, action) {
   const config = JOB_ALERT_RATE_LIMITS[action] || JOB_ALERT_RATE_LIMITS.default;
 
@@ -134,8 +153,8 @@ async function checkRateLimit(identifier, action) {
     });
 
     if (error) {
-      console.error('[RateLimit] Error:', error.message);
-      return { allowed: true, remaining: config.limit, resetIn: 0 };
+      console.error('[RateLimit] Error, using in-memory fallback:', error.message);
+      return rateLimitFallback(identifier, action, config);
     }
 
     if (data && data.length > 0) {
@@ -151,8 +170,8 @@ async function checkRateLimit(identifier, action) {
 
     return { allowed: true, remaining: config.limit, resetIn: 0 };
   } catch (err) {
-    console.error('[RateLimit] Error:', err.message);
-    return { allowed: true, remaining: config.limit, resetIn: 0 };
+    console.error('[RateLimit] Error, using in-memory fallback:', err.message);
+    return rateLimitFallback(identifier, action, config);
   }
 }
 
