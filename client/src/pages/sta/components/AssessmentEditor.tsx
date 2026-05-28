@@ -16,11 +16,13 @@
  */
 
 import { useEffect, useMemo, useState } from 'react'
-import { X, Save, Info, CheckCircle, AlertTriangle, Download } from '@/components/ui/icons'
+import { X, Save, Info, CheckCircle, AlertTriangle, Download, Sparkles, Loader2 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
 import { staAssessmentsApi, type StaAssessment, type StaEnrollment } from '@/services/staApi'
+import { generateDoaSummary, type DoaSummaryResult } from '@/services/aiApi'
+import { resolveParticipantName } from '../enrollmentDisplay'
 import {
   getInstrument,
   type InstrumentDefinition,
@@ -30,6 +32,7 @@ import {
   fillAwpPdf,
   fillAwcPdf,
   fillMohostPdf,
+  fillDoaPdf,
   downloadPdf,
   suggestPdfFilename,
 } from '../assessmentPdfExport'
@@ -76,9 +79,17 @@ interface BedomningMeta {
 //   }
 // För instrument utan multi-bedömning (DOA, WRI, MOHOST) används bara 'b1'.
 // Bakåtkompatibilitet: gammal flat-format ({ c0_i0: {...} }) tolkas som 'b1'.
+interface DoaSummaryStored extends DoaSummaryResult {
+  /** ISO-tidpunkt när AI senast genererade. Hjälper AT veta om utkastet är gammalt. */
+  generatedAt?: string
+  /** True om AT redigerat efter AI-generering. */
+  editedByAt?: boolean
+}
+
 interface ScoresJsonb {
   _bedomningar?: BedomningMeta[]
-  [key: string]: ItemEntry | BedomningMeta[] | undefined
+  _ai_summary?: DoaSummaryStored
+  [key: string]: ItemEntry | BedomningMeta[] | DoaSummaryStored | undefined
 }
 
 const MULTI_INSTRUMENTS = new Set(['AWP', 'AWC'])
@@ -140,6 +151,10 @@ function normalizeScores(raw: unknown): ScoresJsonb {
   const out: ScoresJsonb = { _bedomningar: [{ id: 'b1' }] }
   for (const [key, value] of Object.entries(src)) {
     if (key === '_bedomningar') continue
+    if (key === '_ai_summary' || key === '_participant_completed_at') {
+      out[key] = value as DoaSummaryStored
+      continue
+    }
     if (key.match(/^c\d+_i\d+$/)) {
       out[`b1_${key}`] = value as ItemEntry
     } else {
@@ -169,6 +184,8 @@ export function AssessmentEditor({
   const [dirty, setDirty] = useState(false)
   const [downloadingPdf, setDownloadingPdf] = useState(false)
   const [pdfError, setPdfError] = useState<string | null>(null)
+  const [generatingSummary, setGeneratingSummary] = useState(false)
+  const [summaryError, setSummaryError] = useState<string | null>(null)
 
   // Reset state om assessment ändras
   useEffect(() => {
@@ -285,6 +302,86 @@ export function AssessmentEditor({
     setDirty(true)
   }
 
+  // =================================================================
+  // DOA-AI-sammanfattning (för AF-blankett sida 4)
+  // =================================================================
+  const handleGenerateDoaSummary = async () => {
+    if (!instrument || instrument.code !== 'DOA') return
+    setSummaryError(null)
+    setGeneratingSummary(true)
+    try {
+      // Bygg payload från nuvarande scores (deltagaren + AT-bedömningar + kommentarer)
+      const categoriesPayload = instrument.categories.map((cat, catIdx) => ({
+        title: cat.title,
+        items: cat.items.map((itemText, itemIdx) => {
+          const entry = (scores[itemKey('b1', catIdx, itemIdx)] as HybridItemEntry | undefined) ?? {}
+          return {
+            text: itemText,
+            person: typeof entry.person === 'number' ? entry.person : null,
+            bedomare: typeof entry.bedomare === 'number' ? entry.bedomare : entry.bedomare ?? null,
+            comment: entry.comment ?? null,
+          }
+        }),
+      }))
+      const firstName = enrollment ? resolveParticipantName(enrollment, '').split(' ')[0] : undefined
+      const result = await generateDoaSummary({ firstName, categories: categoriesPayload })
+      const ai = (result as { sammanfattning?: DoaSummaryResult }).sammanfattning
+      if (!ai) {
+        throw new Error('AI gav inget svar — försök igen om en stund.')
+      }
+      setScores((prev) => ({
+        ...prev,
+        _ai_summary: {
+          malPlanering: ai.malPlanering ?? '',
+          kategorier: Array.isArray(ai.kategorier) ? ai.kategorier : [],
+          generatedAt: new Date().toISOString(),
+          editedByAt: false,
+        },
+      }))
+      setDirty(true)
+    } catch (err) {
+      setSummaryError(err instanceof Error ? err.message : 'Kunde inte generera sammanfattning')
+    } finally {
+      setGeneratingSummary(false)
+    }
+  }
+
+  const handleSummaryFieldChange = (
+    field: 'malPlanering' | 'kategori',
+    catIdx: number | null,
+    value: string,
+  ) => {
+    setScores((prev) => {
+      const existing: DoaSummaryStored = prev._ai_summary ?? {
+        malPlanering: '',
+        kategorier: instrument
+          ? instrument.categories.map((c) => ({ title: c.title, resurserBegransningar: '' }))
+          : [],
+      }
+      const next: DoaSummaryStored = {
+        ...existing,
+        editedByAt: true,
+      }
+      if (field === 'malPlanering') {
+        next.malPlanering = value
+      } else if (field === 'kategori' && catIdx !== null && instrument) {
+        const kategorier = [...(existing.kategorier ?? [])]
+        // Säkerställ att arrayen har en plats för denna kategori
+        while (kategorier.length < instrument.categories.length) {
+          const i = kategorier.length
+          kategorier.push({ title: instrument.categories[i].title, resurserBegransningar: '' })
+        }
+        kategorier[catIdx] = {
+          title: kategorier[catIdx]?.title ?? instrument.categories[catIdx].title,
+          resurserBegransningar: value,
+        }
+        next.kategorier = kategorier
+      }
+      return { ...prev, _ai_summary: next }
+    })
+    setDirty(true)
+  }
+
   const persistDraft = async () => {
     setSaveError(null)
     setSaving(true)
@@ -340,10 +437,36 @@ export function AssessmentEditor({
     !!enrollment &&
     (assessment.instrument === 'AWP' ||
       assessment.instrument === 'AWC' ||
-      assessment.instrument === 'MOHOST')
+      assessment.instrument === 'MOHOST' ||
+      assessment.instrument === 'DOA')
 
   const handleDownloadPdf = async () => {
     if (!enrollment) return
+
+    // För DOA: erbjud AI-sammanfattning om sida 4 är tom — annars exporteras en
+    // PDF med tomma rutor som AT troligen ville fylla.
+    if (assessment.instrument === 'DOA') {
+      const ai = scores._ai_summary
+      const hasAnySummaryText = !!ai && (
+        !!ai.malPlanering ||
+        (ai.kategorier ?? []).some((k) => !!k?.resurserBegransningar)
+      )
+      const hasFallbackSummary = !ai && !!summary
+      if (!hasAnySummaryText && !hasFallbackSummary && !generatingSummary) {
+        const userChoice = confirm(
+          'Sammanfattningen för AF-blankettens sida 4 är tom.\n\n' +
+            'Klicka OK för att generera ett utkast med AI nu (du kan redigera innan PDF skapas).\n' +
+            'Klicka Avbryt för att exportera ändå med tomma fält.',
+        )
+        if (userChoice) {
+          await handleGenerateDoaSummary()
+          // Vänta inte med PDF-export — låt AT redigera utkastet först
+          return
+        }
+        // Fortsätt med tom export
+      }
+    }
+
     setPdfError(null)
     setDownloadingPdf(true)
     try {
@@ -352,6 +475,7 @@ export function AssessmentEditor({
       if (assessment.instrument === 'AWP') blob = await fillAwpPdf(ctx)
       else if (assessment.instrument === 'AWC') blob = await fillAwcPdf(ctx)
       else if (assessment.instrument === 'MOHOST') blob = await fillMohostPdf(ctx)
+      else if (assessment.instrument === 'DOA') blob = await fillDoaPdf(ctx)
       else throw new Error(`PDF-export ej tillgänglig för ${assessment.instrument}`)
       downloadPdf(blob, suggestPdfFilename(assessment, enrollment))
     } catch (err) {
@@ -460,6 +584,19 @@ export function AssessmentEditor({
           />
         ))}
 
+        {/* DOA: Sammanfattning till AF-blankettens sida 4 (Mål + 5 kategorier).
+            AI-utkast som AT redigerar — landar i Text230-Text235 vid PDF-export. */}
+        {instrument.code === 'DOA' && (
+          <DoaSummaryEditor
+            instrument={instrument}
+            aiSummary={scores._ai_summary}
+            generating={generatingSummary}
+            error={summaryError}
+            onGenerate={handleGenerateDoaSummary}
+            onChange={handleSummaryFieldChange}
+          />
+        )}
+
         <div>
           <label
             htmlFor="assessment-summary"
@@ -475,6 +612,12 @@ export function AssessmentEditor({
             placeholder="Övergripande observationer, mönster, nästa steg…"
             className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200 resize-y"
           />
+          {instrument.code === 'DOA' && (
+            <p className="text-[11px] text-stone-500 mt-1">
+              Den här texten landar i AF-blankettens sammanfattande kommentar (Text236).
+              Strukturen ovan landar på sida 4 i kategori-rutorna.
+            </p>
+          )}
         </div>
 
         {saveError && (
@@ -633,6 +776,118 @@ function ScaleExplainer({ scale }: { scale: InstrumentScale[] }) {
         ))}
       </ul>
     </Card>
+  )
+}
+
+function DoaSummaryEditor({
+  instrument,
+  aiSummary,
+  generating,
+  error,
+  onGenerate,
+  onChange,
+}: {
+  instrument: InstrumentDefinition
+  aiSummary?: DoaSummaryStored
+  generating: boolean
+  error: string | null
+  onGenerate: () => void
+  onChange: (field: 'malPlanering' | 'kategori', catIdx: number | null, value: string) => void
+}) {
+  const malValue = aiSummary?.malPlanering ?? ''
+  const generatedAt = aiSummary?.generatedAt
+  const generatedLabel = generatedAt
+    ? new Date(generatedAt).toLocaleString('sv-SE', { dateStyle: 'short', timeStyle: 'short' })
+    : null
+  const hasAnyText = !!aiSummary && (
+    !!aiSummary.malPlanering ||
+    (aiSummary.kategorier ?? []).some((k) => !!k?.resurserBegransningar)
+  )
+
+  return (
+    <section className="space-y-3 p-4 rounded-xl border-2 border-dashed border-stone-200" style={{ background: 'var(--header-bg)' }}>
+      <header className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="min-w-0">
+          <div className="text-[11px] uppercase tracking-wide text-stone-500 font-medium">
+            Till AF-blankett · sida 4
+          </div>
+          <h3 className="text-sm font-semibold text-stone-900 mt-0.5 flex items-center gap-2">
+            <Sparkles size={14} style={{ color: 'var(--c-solid)' }} />
+            Sammanfattning per kategori
+          </h3>
+          <p className="text-xs text-stone-700 mt-1 max-w-xl">
+            Det här hamnar i de stora textrutorna på blankettens sista sida — en mål-och-planering-ruta
+            och en kort sammanfattning per kategori. Du kan generera ett utkast med AI och redigera fritt.
+          </p>
+          {generatedLabel && (
+            <div className="text-[11px] text-stone-500 mt-1">
+              AI-utkast genererat {generatedLabel}
+              {aiSummary?.editedByAt ? ' · redigerat av dig' : ''}
+            </div>
+          )}
+        </div>
+        <Button
+          variant={hasAnyText ? 'secondary' : 'primary'}
+          size="sm"
+          leftIcon={generating ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+          onClick={onGenerate}
+          disabled={generating}
+        >
+          {generating
+            ? 'Genererar…'
+            : hasAnyText
+              ? 'Regenerera utkast med AI'
+              : 'Föreslå med AI'}
+        </Button>
+      </header>
+
+      {error && (
+        <div className="p-2.5 rounded-lg bg-rose-50 border border-rose-200 text-xs text-rose-900 flex items-start gap-2">
+          <AlertTriangle size={12} className="mt-0.5 flex-shrink-0" />
+          {error}
+        </div>
+      )}
+
+      <div>
+        <label htmlFor="doa-summary-mal" className="block text-xs font-medium text-stone-700 mb-1">
+          Mål och planering
+        </label>
+        <textarea
+          id="doa-summary-mal"
+          value={malValue}
+          onChange={(e) => onChange('malPlanering', null, e.target.value)}
+          rows={4}
+          placeholder="2-4 meningar om vart deltagaren är på väg och vad nästa steg är. Lämna tom om AT skriver direkt på blanketten."
+          className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200 resize-y bg-white"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {instrument.categories.map((cat, catIdx) => {
+          const catValue =
+            (aiSummary?.kategorier ?? [])[catIdx]?.resurserBegransningar ?? ''
+          return (
+            <div key={cat.title}>
+              <label
+                htmlFor={`doa-summary-cat-${catIdx}`}
+                className="block text-xs font-medium text-stone-700 mb-1"
+              >
+                <span className="text-stone-500 font-normal">Kategori {catIdx + 1}: </span>
+                {cat.title}
+              </label>
+              <textarea
+                id={`doa-summary-cat-${catIdx}`}
+                value={catValue}
+                onChange={(e) => onChange('kategori', catIdx, e.target.value)}
+                rows={4}
+                placeholder="Resurser och begränsningar som syns i skattningen…"
+                className="w-full px-3 py-2 rounded-lg border border-stone-200 text-xs focus:outline-none focus:ring-2 focus:ring-stone-200 resize-y bg-white"
+              />
+            </div>
+          )
+        })}
+      </div>
+    </section>
   )
 }
 

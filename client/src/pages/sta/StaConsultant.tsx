@@ -2949,8 +2949,11 @@ function DetailAssessments({
           enrollment={stats.enrollment}
           consultantName={consultantName}
           onClose={() => setEditingAssessment(null)}
-          onSaved={() => {
-            setEditingAssessment(null)
+          onSaved={(updated) => {
+            // Behåll modalen öppen efter Spara utkast — AT kan vilja fortsätta
+            // redigera eller exportera PDF utan att öppna om. Modalen stängs
+            // explicit via onClose (knapp Avbryt eller efter Markera klar).
+            setEditingAssessment(updated)
             onChange?.()
           }}
         />

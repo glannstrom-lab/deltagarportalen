@@ -730,6 +730,41 @@ export const staAssessmentsApi = {
     if (error) handleError(error)
     return data as StaAssessment
   },
+
+  /**
+   * Deltagar-RPC: spara en DOA-itemskattning (person-värde och kommentar).
+   * AT:s bedömar-värde rörs aldrig — endast person-fältet uppdateras.
+   * Skapar assessment-raden vid första anropet.
+   */
+  async participantSaveDoaScore(input: {
+    enrollment_id: string
+    cat_index: number
+    item_index: number
+    person_value: number | null
+    comment?: string | null
+  }): Promise<StaAssessment> {
+    const { data, error } = await supabase.rpc('sta_participant_save_doa_score', {
+      p_enrollment_id: input.enrollment_id,
+      p_cat_index: input.cat_index,
+      p_item_index: input.item_index,
+      p_person_value: input.person_value,
+      p_comment: input.comment ?? null,
+    })
+    if (error) handleError(error)
+    return data as StaAssessment
+  },
+
+  /**
+   * Deltagar-RPC: markera DOA-självskattning som klar.
+   * Sätter scores._participant_completed_at — påverkar inte status (AT signerar slutgiltigt).
+   */
+  async participantMarkDoaDone(enrollmentId: string): Promise<StaAssessment> {
+    const { data, error } = await supabase.rpc('sta_participant_mark_doa_done', {
+      p_enrollment_id: enrollmentId,
+    })
+    if (error) handleError(error)
+    return data as StaAssessment
+  },
 }
 
 // =============================================================================

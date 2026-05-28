@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import {
   useParticipantEnrollment,
+  useParticipantDoaAssessment,
   useStaPulseChecks,
   useStaWeeklyCheckin,
   useStaActivities,
@@ -15,7 +16,7 @@ import {
   useStaWorkplaces,
   getCurrentWeekMonday,
 } from '@/hooks/useSta'
-import type { StaPulseCheck, StaActivity } from '@/services/staApi'
+import type { StaPulseCheck, StaActivity, StaAssessment } from '@/services/staApi'
 import { deriveCurrentPart, derivePartTimeline, formatShortDate } from './enrollmentDisplay'
 import { PulseCheckWidget } from './components/PulseCheckWidget'
 import { WeeklyCheckinForm } from './components/WeeklyCheckinForm'
@@ -23,6 +24,8 @@ import { WeeklyHoursEditor, activeDaysForHours } from './components/WeeklyHoursE
 import { AbsenceForm } from './components/AbsenceForm'
 import { StaOnboardingTrigger, StaOnboardingModal } from './components/StaOnboarding'
 import { KompetenskartlaggningForm } from './components/KompetenskartlaggningForm'
+import { DoaSelfAssessment } from './components/DoaSelfAssessment'
+import { DOA } from './assessmentInstruments'
 import { WorkplaceCard } from './components/WorkplaceCard'
 import { WorkDiary } from './components/WorkDiary'
 import { Del3PortalIntegration } from './components/Del3PortalIntegration'
@@ -1265,13 +1268,15 @@ function STaDel1({
   const initialDay = mock.dailyExercises.find((d) => d.status === 'today')?.day ?? mock.currentExerciseDay
   const [selectedDay, setSelectedDay] = useState<number | null>(initialDay)
   const [kompFormOpen, setKompFormOpen] = useState(false)
+  const [doaFormOpen, setDoaFormOpen] = useState(false)
 
   const currentWeek = getWeekForDay(mock.currentExerciseDay)
 
-  // Tre obligatoriska Del 1-aktiviteter — status från sta_activities
+  // Obligatoriska Del 1-aktiviteter — status från sta_activities och sta_assessments
   const startsamtalAct = activities.find((a) => a.activity_key === 'startsamtal') ?? null
   const kartlaggningAct = activities.find((a) => a.activity_key === 'kartlaggningssamtal') ?? null
   const kompAct = activities.find((a) => a.activity_key === 'kompetenskartlaggning') ?? null
+  const { assessment: doaAssessment, reload: reloadDoa } = useParticipantDoaAssessment(enrollmentId ?? null)
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
@@ -1280,14 +1285,16 @@ function STaDel1({
 
         {currentWeek && <CurrentWeekCard week={currentWeek} currentDay={mock.currentExerciseDay} />}
 
-        {/* De tre obligatoriska aktiviteterna enligt AF-uppdraget */}
+        {/* De obligatoriska aktiviteterna enligt AF-uppdraget */}
         <ObligatoryActivitiesSection
           consultantFirstName={mock.consultant.name.split(' ')[0]}
           adaptations={mock.adaptations}
           startsamtalAct={startsamtalAct}
           kartlaggningAct={kartlaggningAct}
           kompAct={kompAct}
+          doaAssessment={doaAssessment}
           onStartKomp={() => setKompFormOpen(true)}
+          onStartDoa={() => setDoaFormOpen(true)}
         />
 
         {/* Dagsslinga — grupperad veckovis */}
@@ -1354,6 +1361,21 @@ function STaDel1({
           readOnly={!enrollmentId}
         />
       )}
+
+      {/* DOA-självskattning — wizard öppnas från ObligatoryActivitiesSection */}
+      {doaFormOpen && enrollmentId && (
+        <DoaSelfAssessment
+          enrollmentId={enrollmentId}
+          existing={doaAssessment}
+          onClose={() => {
+            setDoaFormOpen(false)
+            void reloadDoa()
+          }}
+          onSaved={() => {
+            void reloadDoa()
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -1368,15 +1390,35 @@ function ObligatoryActivitiesSection({
   startsamtalAct,
   kartlaggningAct,
   kompAct,
+  doaAssessment,
   onStartKomp,
+  onStartDoa,
 }: {
   consultantFirstName: string
   adaptations: string[]
   startsamtalAct: StaActivity | null
   kartlaggningAct: StaActivity | null
   kompAct: StaActivity | null
+  doaAssessment: StaAssessment | null
   onStartKomp: () => void
+  onStartDoa: () => void
 }) {
+  // Räkna deltagarens DOA-progress: hur många av 34 items har person-värde
+  const doaProgress = (() => {
+    const scores = (doaAssessment?.scores as Record<string, unknown> | undefined) ?? {}
+    let filled = 0
+    for (const [key, raw] of Object.entries(scores)) {
+      if (!key.startsWith('b1_c')) continue
+      const entry = raw as { person?: unknown } | undefined
+      if (typeof entry?.person === 'number' && entry.person >= 1 && entry.person <= 5) {
+        filled++
+      }
+    }
+    const pct = Math.round((filled / DOA.itemCount) * 100)
+    const completedAt = (scores as { _participant_completed_at?: string })._participant_completed_at
+    return { filled, total: DOA.itemCount, pct, completedAt }
+  })()
+
   return (
     <Card variant="flat" padding="lg">
       <div className="flex items-center gap-2 mb-3">
@@ -1384,10 +1426,10 @@ function ObligatoryActivitiesSection({
           className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium"
           style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
         >
-          3 obligatoriska
+          Det här ingår
         </span>
         <h3 className="text-base font-semibold text-stone-900">
-          Det här gör vi tillsammans i Del 1
+          Aktiviteter i Del 1
         </h3>
       </div>
 
@@ -1412,9 +1454,16 @@ function ObligatoryActivitiesSection({
           }
         />
 
+        {/* DOA-självskattning — deltagaren skattar själv, AT gör sin parallellt */}
+        <DoaSelfAssessmentRow
+          consultantFirstName={consultantFirstName}
+          progress={doaProgress}
+          onOpen={onStartDoa}
+        />
+
         <ObligatoryActivityRow
           title="Kartläggningssamtal"
-          description={`Två samtal med ${consultantFirstName} (eller med en arbetsterapeut) där vi pratar om dina resurser, motivation och vad som funkat tidigare. Här används DOA, WRI och MOHOST som stöd.`}
+          description={`Två samtal med ${consultantFirstName} (eller med en arbetsterapeut) där vi pratar om dina resurser, motivation och vad som funkat tidigare. Vi använder dina svar från Min skattning som underlag.`}
           activity={kartlaggningAct}
         />
 
@@ -1525,6 +1574,76 @@ function ObligatoryActivityRow({
         )}
       </div>
       {extra}
+    </div>
+  )
+}
+
+function DoaSelfAssessmentRow({
+  consultantFirstName,
+  progress,
+  onOpen,
+}: {
+  consultantFirstName: string
+  progress: { filled: number; total: number; pct: number; completedAt?: string }
+  onOpen: () => void
+}) {
+  const isParticipantDone = !!progress.completedAt
+  const isStarted = progress.filled > 0
+  const Icon = isParticipantDone ? CheckCircle2 : isStarted ? Activity : Clock
+
+  const statusLabel = isParticipantDone
+    ? 'Du har markerat klar'
+    : isStarted
+      ? `${progress.filled} av ${progress.total} besvarade`
+      : 'Inte startat ännu'
+
+  const actionLabel = isParticipantDone
+    ? 'Se mina svar'
+    : isStarted
+      ? 'Fortsätt där du var'
+      : 'Börja skattningen'
+
+  return (
+    <div className="p-3.5 rounded-xl border border-stone-200 bg-white">
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div className="flex items-start gap-3 min-w-0">
+          <div
+            className={cn(
+              'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
+              isParticipantDone ? 'bg-emerald-100 text-emerald-700' : 'bg-stone-100 text-stone-600',
+            )}
+          >
+            <Icon size={16} />
+          </div>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="font-semibold text-stone-900 text-sm">Min skattning</span>
+              <span
+                className={cn(
+                  'inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-medium',
+                  isParticipantDone && 'bg-emerald-50 text-emerald-700',
+                  isStarted && !isParticipantDone && 'bg-sky-50 text-sky-700',
+                  !isStarted && 'bg-stone-100 text-stone-600',
+                )}
+              >
+                {statusLabel}
+              </span>
+            </div>
+            <p className="text-sm text-stone-700 mt-1">
+              34 frågor om hur du själv ser på din arbetsförmåga. Du gör dem i din egen takt.
+              {consultantFirstName} gör sin egen skattning vid sidan om — sen pratar ni om vad ni ser.
+            </p>
+            {isStarted && (
+              <div className="h-1.5 rounded-full mt-2 overflow-hidden bg-stone-100">
+                <div className="h-full" style={{ width: `${progress.pct}%`, background: 'var(--c-solid)' }} />
+              </div>
+            )}
+          </div>
+        </div>
+        <Button size="sm" variant={isParticipantDone ? 'ghost' : 'primary'} onClick={onOpen}>
+          {actionLabel}
+        </Button>
+      </div>
     </div>
   )
 }

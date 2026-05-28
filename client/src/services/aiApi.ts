@@ -176,6 +176,32 @@ export async function generateProfileSummary(data: {
   return callAI<string>('profile-summary', data)
 }
 
+/**
+ * STA — DOA-sammanfattning för AF-blankett sida 4.
+ * Returnerar strukturerad summering med 1 mål-och-planering + en text per kategori.
+ * AT redigerar utkastet innan PDF-export.
+ */
+export interface DoaSummaryResult {
+  malPlanering: string
+  kategorier: Array<{ title: string; resurserBegransningar: string }>
+}
+
+export async function generateDoaSummary(data: {
+  firstName?: string
+  categories: Array<{
+    title: string
+    items: Array<{
+      text: string
+      person: number | null
+      bedomare: number | string | null
+      comment: string | null
+    }>
+  }>
+}) {
+  const result = await callAI<DoaSummaryResult>('sta-doa-sammanfattning', data as unknown as Record<string, unknown>)
+  return result
+}
+
 export default {
   callAI,
   generateCoverLetter,

@@ -35,8 +35,16 @@ interface BedomningMeta {
   arbetsuppgift?: string
 }
 
-type ScoresJsonb = Record<string, ItemEntry | BedomningMeta[] | undefined> & {
+interface DoaAiSummary {
+  malPlanering?: string
+  kategorier?: Array<{ title: string; resurserBegransningar: string }>
+  generatedAt?: string
+  editedByAt?: boolean
+}
+
+type ScoresJsonb = Record<string, ItemEntry | BedomningMeta[] | DoaAiSummary | string | undefined> & {
   _bedomningar?: BedomningMeta[]
+  _ai_summary?: DoaAiSummary
 }
 
 interface PdfContext {
@@ -76,6 +84,74 @@ const TEMPLATE_URLS: Partial<Record<InstrumentCode, string>> = {
   AWP: '/sta-templates/awp-2.0-mall.pdf',
   AWC: '/sta-templates/awc-1.1-mall.pdf',
   MOHOST: '/sta-templates/mohost-sammanstallning-mall.pdf',
+  DOA: '/sta-templates/doa-sammanstallning-mall.pdf',
+}
+
+// ===========================================================================
+// DOA — FÄLTNAMNSMAPPNING
+// ===========================================================================
+// AF:s DOA-sammanställningsformulär har systematiska fältnamn:
+//   Items 1-4: person-checkboxes "N1".."N5", bedömare-checkboxes "N11".."N15"
+//   Items 5-9: numeriska 51-100 i block om 10 (5 person + 5 bedömare per item)
+//   Items 10-13: prefix "f", 4 items × 10 fält = f1..f40
+//   Items 14-20: prefix "s", 7 items × 10 fält = s1..s70
+//   Items 21-26: prefix "o", 6 items × 10 fält = o1..o60
+//   Items 27-34: prefix "r", 8 items × 10 fält = r1..r80
+//   Kommentar per item: k1..k34
+//
+// För prefix-block är ordningen: person 1-5 följt av bedömare 1-5.
+// T.ex. item 10 (första i f-blocket): person = f1..f5, bedömare = f6..f10.
+
+interface DoaItemFields {
+  /** 5 checkbox-namn för person-skattning (värde 1-5) */
+  person: string[]
+  /** 5 checkbox-namn för bedömar-skattning (värde 1-5) */
+  bedomare: string[]
+  /** Textfält-namn för kommentar */
+  comment: string
+}
+
+function doaItemFieldNames(globalItemIndex: number): DoaItemFields {
+  // globalItemIndex är 1-indexerat (1..34)
+  if (globalItemIndex < 1 || globalItemIndex > 34) {
+    throw new Error(`DOA item index out of range: ${globalItemIndex}`)
+  }
+  const comment = `k${globalItemIndex}`
+
+  // Items 1-4: enkelsiffrig prefix
+  if (globalItemIndex <= 4) {
+    const N = globalItemIndex
+    return {
+      person: [1, 2, 3, 4, 5].map((v) => `${N}${v}`),
+      bedomare: [1, 2, 3, 4, 5].map((v) => `${N}1${v}`),
+      comment,
+    }
+  }
+
+  // Items 5-9: numeriska 51-100, block om 10
+  if (globalItemIndex <= 9) {
+    const base = 51 + (globalItemIndex - 5) * 10
+    return {
+      person: [0, 1, 2, 3, 4].map((i) => String(base + i)),
+      bedomare: [0, 1, 2, 3, 4].map((i) => String(base + 5 + i)),
+      comment,
+    }
+  }
+
+  // Items 10-34: bokstavsprefix-block
+  const ranges = [
+    { letter: 'f', startItem: 10, endItem: 13 },
+    { letter: 's', startItem: 14, endItem: 20 },
+    { letter: 'o', startItem: 21, endItem: 26 },
+    { letter: 'r', startItem: 27, endItem: 34 },
+  ]
+  const range = ranges.find((r) => globalItemIndex >= r.startItem && globalItemIndex <= r.endItem)!
+  const offset = (globalItemIndex - range.startItem) * 10
+  return {
+    person: [1, 2, 3, 4, 5].map((v) => `${range.letter}${offset + v}`),
+    bedomare: [1, 2, 3, 4, 5].map((v) => `${range.letter}${offset + 5 + v}`),
+    comment,
+  }
 }
 
 /**
@@ -115,6 +191,99 @@ export async function fillAwpPdf(ctx: PdfContext): Promise<Blob> {
 
 export async function fillAwcPdf(ctx: PdfContext): Promise<Blob> {
   return fillAwpAwcPdf(ctx, 'AWC')
+}
+
+export async function fillDoaPdf(ctx: PdfContext): Promise<Blob> {
+  const { assessment, enrollment, consultantName } = ctx
+  const url = TEMPLATE_URLS.DOA
+  if (!url) throw new Error('Ingen mall registrerad för DOA')
+
+  const { PDFDocument } = await import('pdf-lib')
+  const templateBytes = await fetch(url).then((r) => {
+    if (!r.ok) throw new Error(`Kunde inte hämta mall: ${r.status} ${r.statusText}`)
+    return r.arrayBuffer()
+  })
+
+  const doc = await PDFDocument.load(templateBytes)
+  const form = doc.getForm()
+  const scores = (assessment.scores as ScoresJsonb) ?? {}
+
+  // ---------- Metadata ----------
+  trySetText(form, 'Namn', resolveParticipantName(enrollment, ''))
+  trySetText(form, 'Födelsedatum', extractBirthDateFromPersonnummer(enrollment.external_personal_id))
+  trySetText(form, 'Bedömarens namn', consultantName ?? '')
+  const dateStr = (assessment.signed_at ?? assessment.created_at ?? new Date().toISOString()).slice(0, 10)
+  trySetText(form, 'Datum', dateStr)
+
+  // ---------- Skattningar — iterera över alla 34 items linjärt ----------
+  // DOA är single-bedömning (b1). Items numreras 1-34 globalt över kategorier.
+  const instrument = INSTRUMENTS.DOA
+  let globalItemIndex = 0 // 1-indexerat när vi använder doaItemFieldNames
+  for (let catIdx = 0; catIdx < instrument.categories.length; catIdx++) {
+    const category = instrument.categories[catIdx]
+    for (let itemIdx = 0; itemIdx < category.items.length; itemIdx++) {
+      globalItemIndex += 1
+      const entry = readItem(scores, 'b1', catIdx, itemIdx)
+      if (!entry) continue
+
+      const fields = doaItemFieldNames(globalItemIndex)
+
+      // Person-skattning (1-5)
+      const personValue = typeof entry.person === 'number' ? entry.person : undefined
+      if (personValue !== undefined && personValue >= 1 && personValue <= 5) {
+        tryCheck(form, fields.person[personValue - 1])
+      }
+
+      // Bedömar-skattning (1-5)
+      const bedomareValue = typeof entry.bedomare === 'number' ? entry.bedomare : undefined
+      if (bedomareValue !== undefined && bedomareValue >= 1 && bedomareValue <= 5) {
+        tryCheck(form, fields.bedomare[bedomareValue - 1])
+      }
+
+      // Kommentar
+      if (entry.comment) {
+        trySetText(form, fields.comment, entry.comment)
+      }
+    }
+  }
+
+  // ---------- Sista sidan: Mål och planering + 5 kategori-rutor + sammanfattande ----------
+  // Fält-layout på AF-blankettens sida 4 (verifierat via rect-positioner):
+  //   Text230 = Mål och planering (stor ruta överst)
+  //   Text231 = Kategori 1 (Självkännedom, intressen och värderingar)
+  //   Text232 = Kategori 2 (Roller och vanor)
+  //   Text233 = Kategori 3 (Fysisk förmåga)
+  //   Text234 = Kategori 4 (Org/problemlösning)
+  //   Text235 = Kategori 5 (Samspel/kommunikation)
+  //   Text236 = Sammanfattande kommentar (AT:s övergripande text)
+  //
+  // Källa: scores._ai_summary fylls via AI + AT-redigering i AssessmentEditor.
+  // Fallback: om _ai_summary saknas men assessment.summary finns, lägg den i Text230.
+  const ai = scores._ai_summary
+  if (ai?.malPlanering) {
+    trySetText(form, 'Text230', ai.malPlanering)
+  } else if (assessment.summary && !ai) {
+    // Bakåtkompatibilitet: om AT bara använt det gamla summary-fältet
+    trySetText(form, 'Text230', assessment.summary)
+  }
+
+  if (Array.isArray(ai?.kategorier)) {
+    const fieldOrder = ['Text231', 'Text232', 'Text233', 'Text234', 'Text235'] as const
+    ai!.kategorier.slice(0, 5).forEach((cat, idx) => {
+      if (cat?.resurserBegransningar) {
+        trySetText(form, fieldOrder[idx], cat.resurserBegransningar)
+      }
+    })
+  }
+
+  // Sammanfattande kommentar — använd om vi har den OCH ai-summary också finns
+  // (annars riskerar vi att dubblera summary både i Text230 och Text236)
+  if (assessment.summary && ai) {
+    trySetText(form, 'Text236', assessment.summary)
+  }
+
+  const pdfBytes = await doc.save()
+  return new Blob([pdfBytes as BlobPart], { type: 'application/pdf' })
 }
 
 export async function fillMohostPdf(ctx: PdfContext): Promise<Blob> {

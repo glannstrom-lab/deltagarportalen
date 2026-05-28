@@ -12,7 +12,7 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Sparkles, CheckCircle2, AlertCircle } from '@/components/ui/icons'
-import { useAuthStore, useIsAdmin, useIsArbetsterapeut } from '@/stores/authStore'
+import { useAuthStore, useIsArbetsterapeut, useIsConsultant } from '@/stores/authStore'
 import { staEnrollmentsApi } from '@/services/staApi'
 
 interface Props {
@@ -22,15 +22,16 @@ interface Props {
 }
 
 export function SelfTestEnrollmentButton({ onCreated, variant = 'compact' }: Props) {
-  const isAdmin = useIsAdmin()
   const isAt = useIsArbetsterapeut()
+  const isConsultant = useIsConsultant()
   const { profile, updateProfile } = useAuthStore()
   const [creating, setCreating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  // Bara admin/superadmin/AT får skapa självkoppling
-  if (!isAdmin && !isAt) return null
+  // Konsulent/AT/admin/superadmin får skapa självkoppling.
+  // useIsConsultant täcker CONSULTANT+ADMIN+SUPERADMIN; useIsArbetsterapeut täcker ARBETSTERAPEUT.
+  if (!isConsultant && !isAt) return null
 
   const handleClick = async () => {
     setCreating(true)
@@ -66,8 +67,8 @@ export function SelfTestEnrollmentButton({ onCreated, variant = 'compact' }: Pro
           <div className="flex-1 min-w-0">
             <h4 className="text-sm font-semibold text-stone-900">Skapa testkoppling till dig själv</h4>
             <p className="text-xs text-stone-600 mt-0.5">
-              Du är admin — vi kan koppla dig som <strong>både konsulent och deltagare</strong> så
-              att du kan utforska sidan från båda sidor utan en separat konsulent.
+              Vi kopplar dig som <strong>både konsulent och deltagare</strong> så att du kan
+              utforska sidan från båda sidor utan en separat konsulent.
             </p>
             <div className="mt-2 flex items-center gap-2 flex-wrap">
               <Button

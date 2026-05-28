@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { create } from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
@@ -506,8 +507,22 @@ export const useActiveRole = () => {
   return useAuthStore((state) => state.profile?.activeRole || state.profile?.role || 'USER')
 }
 
-export const useUserRoles = () => {
-  return useAuthStore((state) => state.profile?.roles || [state.profile?.role || 'USER'])
+export const useUserRoles = (): UserRole[] => {
+  // Selektorer returnerar primitiver respektive original-array — bara förändringar
+  // i de underliggande värdena triggar re-render. useMemo bygger den mergade
+  // arrayen utanför selektorn så vi inte skapar en ny array per render
+  // (det skulle ge oändlig loop med Zustand).
+  //
+  // Mergea profile.role (single) in i profile.roles (array). Konsulenter i
+  // prod har historiskt roles=['USER'] även när role='CONSULTANT' — utan
+  // mergen skulle de tappa sin tillgång till konsulent-funktioner.
+  const single = useAuthStore((s) => s.profile?.role)
+  const arr = useAuthStore((s) => s.profile?.roles)
+  return useMemo(() => {
+    const base = arr ?? []
+    if (single && !base.includes(single)) return [...base, single]
+    return base.length > 0 ? base : ['USER']
+  }, [single, arr])
 }
 
 export const useHasRole = (role: UserRole) => {

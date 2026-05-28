@@ -470,6 +470,40 @@ export function useStaAssessment(
 }
 
 // =============================================================================
+// useParticipantDoaAssessment — deltagarens egen DOA Del 1
+// =============================================================================
+// Hämtar (eller väntar in) deltagarens DOA-skattning för Del 1.
+// Skapas av RPC sta_participant_save_doa_score vid första skattningen, så
+// denna hook returnerar bara `null` tills något har sparats.
+export function useParticipantDoaAssessment(enrollmentId: string | null) {
+  const [assessment, setAssessment] = useState<StaAssessment | null>(null)
+  const [loading, setLoading] = useState(false)
+
+  const reload = useCallback(async () => {
+    if (!enrollmentId) {
+      setAssessment(null)
+      return
+    }
+    setLoading(true)
+    try {
+      const list = await staAssessmentsApi.list(enrollmentId, 1)
+      const doa = list.find((a) => a.instrument === 'DOA') ?? null
+      setAssessment(doa)
+    } catch {
+      setAssessment(null)
+    } finally {
+      setLoading(false)
+    }
+  }, [enrollmentId])
+
+  useEffect(() => {
+    void reload()
+  }, [reload])
+
+  return { assessment, loading, reload, setAssessment }
+}
+
+// =============================================================================
 // useStaWeeklyCheckin
 // =============================================================================
 export function useStaWeeklyCheckin(enrollmentId: string | null) {

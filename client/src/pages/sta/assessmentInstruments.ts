@@ -22,8 +22,13 @@ export interface InstrumentScale {
 
 export interface InstrumentCategory {
   title: string
-  /** Items i ordning, första item är 1-indexerat itemNr */
+  /** Items i ordning, första item är 1-indexerat itemNr — AF:s exakta lydelse, tredje person. */
   items: string[]
+  /**
+   * Items i jag-form för självskattning. Samma längd som `items`. Om null faller deltagar-vyn
+   * tillbaka på `items`. Endast hybrid-instrument (DOA) behöver detta.
+   */
+  personItems?: string[]
 }
 
 export interface InstrumentDefinition {
@@ -44,6 +49,7 @@ export interface InstrumentDefinition {
 // DOA — Dialog om arbetsförmåga 4.2/2017 (34 items, 5 kategorier, skala 1-5)
 // ===========================================================================
 
+// AF:s officiella formuleringar (tredje person) — används av bedömaren och i PDF-export.
 const DOA_ITEMS_SELVFKANNEDOM = [
   'Har förmåga att utföra de uppgifter han/hon vill utföra',
   'Har förmåga att säga ifrån när det är något han/hon inte vill utföra',
@@ -54,6 +60,19 @@ const DOA_ITEMS_SELVFKANNEDOM = [
   'Har förmåga att använda andras kritik för att förbättra sin förmåga',
   'Har förmåga att arbeta självständigt',
   'Har förmåga att samarbeta med andra',
+]
+
+// Jag-form för deltagarens självskattning. Samma innebörd, mer mänskligt och direkt.
+const DOA_PERSON_SELVFKANNEDOM = [
+  'Jag kan utföra de uppgifter jag vill utföra',
+  'Jag kan säga ifrån när det är något jag inte vill utföra',
+  'Jag kan utföra de uppgifter någon ber mig att göra',
+  'Jag är intresserad av att lära mig nya saker',
+  'Jag tar egna initiativ när jag utför uppgifter',
+  'Jag tar emot beröm bra när någon uppskattar något jag gjort',
+  'Jag kan använda andras kritik för att bli bättre',
+  'Jag kan arbeta självständigt',
+  'Jag kan samarbeta med andra',
 ]
 
 const DOA_ITEMS_ROLLER = [
@@ -67,11 +86,29 @@ const DOA_ITEMS_ROLLER = [
   'Brukar anpassa sig till överenskomna tider',
 ]
 
+const DOA_PERSON_ROLLER = [
+  'Jag bryr mig om hygien — min egen och andras',
+  'Jag är noggrann när jag utför uppgifter',
+  'Jag accepterar de krav som ställs i en uppgift',
+  'Jag kan ta till mig och använda andras kunskap',
+  'Jag tar ansvar för uppgifter jag förväntas göra',
+  'Jag tar på mig att leda en grupp om det behövs',
+  'Jag kan avgöra vilka uppgifter som är viktigast att göra först',
+  'Jag passar tider som vi kommit överens om',
+]
+
 const DOA_ITEMS_FYSISK = [
   'Kan utföra uppgifter som kräver små, preciserade handrörelser',
   'Kan utföra uppgifter som kräver kraft och rörlighet i arm och hand',
   'Kan utföra uppgifter som kräver samordning av kroppens rörelser',
   'Kan utföra uppgifter som kräver fysisk uthållighet',
+]
+
+const DOA_PERSON_FYSISK = [
+  'Jag klarar uppgifter som kräver små, precisa handrörelser',
+  'Jag klarar uppgifter som kräver kraft och rörlighet i arm och hand',
+  'Jag klarar uppgifter som kräver att kroppens rörelser samordnas',
+  'Jag har fysisk uthållighet att klara uppgifter',
 ]
 
 const DOA_ITEMS_ORG = [
@@ -83,6 +120,15 @@ const DOA_ITEMS_ORG = [
   'Kan själv hitta lösningar på en uppgift om problem uppstår',
 ]
 
+const DOA_PERSON_ORG = [
+  'Jag kan koncentrera mig när jag gör en uppgift',
+  'Jag kan följa en instruktion och planera mitt arbete',
+  'Jag kan arbeta även när det är tidspress',
+  'Jag kan anpassa mig till nya sätt att göra en uppgift',
+  'Jag kan själv avgöra om resultatet av en uppgift är bra nog',
+  'Jag kan själv hitta lösningar när problem uppstår',
+]
+
 const DOA_ITEMS_SAMSPEL = [
   'Tar själv kontakt med andra personer om det behövs',
   'Har förmåga att genomföra ett samtal med andra personer',
@@ -91,6 +137,16 @@ const DOA_ITEMS_SAMSPEL = [
   'Erbjuder sin hjälp till andra personer när det behövs',
   'Tar emot erbjudande om hjälp från andra personer när det behövs',
   'Visar delaktighet i den grupp han/hon ingår i',
+]
+
+const DOA_PERSON_SAMSPEL = [
+  'Jag tar själv kontakt med andra om det behövs',
+  'Jag kan genomföra ett samtal med andra',
+  'Jag kan göra mig förstådd när jag pratar med andra',
+  'Jag är lyhörd för andras synpunkter',
+  'Jag erbjuder min hjälp till andra när det behövs',
+  'Jag tar emot hjälp från andra när jag behöver det',
+  'Jag är delaktig i grupper jag ingår i',
 ]
 
 export const DOA: InstrumentDefinition = {
@@ -112,11 +168,11 @@ export const DOA: InstrumentDefinition = {
   ],
   hasSelfRating: true,
   categories: [
-    { title: 'Självkännedom, intressen och värderingar', items: DOA_ITEMS_SELVFKANNEDOM },
-    { title: 'Roller och vanor', items: DOA_ITEMS_ROLLER },
-    { title: 'Fysisk förmåga', items: DOA_ITEMS_FYSISK },
-    { title: 'Organisations- och problemlösningsförmåga', items: DOA_ITEMS_ORG },
-    { title: 'Förmåga till samspel och kommunikation', items: DOA_ITEMS_SAMSPEL },
+    { title: 'Självkännedom, intressen och värderingar', items: DOA_ITEMS_SELVFKANNEDOM, personItems: DOA_PERSON_SELVFKANNEDOM },
+    { title: 'Roller och vanor', items: DOA_ITEMS_ROLLER, personItems: DOA_PERSON_ROLLER },
+    { title: 'Fysisk förmåga', items: DOA_ITEMS_FYSISK, personItems: DOA_PERSON_FYSISK },
+    { title: 'Organisations- och problemlösningsförmåga', items: DOA_ITEMS_ORG, personItems: DOA_PERSON_ORG },
+    { title: 'Förmåga till samspel och kommunikation', items: DOA_ITEMS_SAMSPEL, personItems: DOA_PERSON_SAMSPEL },
   ],
 }
 

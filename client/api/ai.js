@@ -96,6 +96,7 @@ const RATE_LIMITS = {
   'ai-team-chat': { limit: 50, windowMinutes: 15 },
   'sta-document-draft': { limit: 10, windowMinutes: 15 },
   'sta-week-summary': { limit: 20, windowMinutes: 15 },
+  'sta-doa-sammanfattning': { limit: 15, windowMinutes: 15 },
   'default': { limit: 20, windowMinutes: 15 }
 };
 
@@ -756,6 +757,59 @@ VIKTIGT: Använd INTE platshållare som [X år] eller [område]. Skriv konkret t
         `Returnera JSON: { "summary": "..." }`,
       maxTokens: 500,
       responseKey: 'summary',
+    };
+  },
+
+  // ===========================================================================
+  // STA — DOA-sammanfattning för AF-blankett (sida 4)
+  // ===========================================================================
+  // Body: { function: 'sta-doa-sammanfattning', data: { instrument, scores, categories } }
+  //   categories: [{ title, items: [{ text, person, bedomare, comment }] }, ...]
+  // Returnerar: { malPlanering, kategorier: [{ title, resurserBegransningar }, ...] }
+  //
+  // Texten landar i AF:s DOA-sammanställningsblankett sida 4:
+  //   Text230  = Mål och planering (stor ruta överst)
+  //   Text231-235 = Resurser/Begränsningar per kategori (5 mindre rutor)
+  //   Text236  = lämnas tom (AT kan skriva fritt om de vill)
+  'sta-doa-sammanfattning': (data) => {
+    const categories = Array.isArray(data?.categories) ? data.categories : [];
+    const namnDel = (data?.firstName || data?.participantFirstName || 'deltagaren').toString().slice(0, 60);
+
+    // Komprimera item-data till hanterbar JSON (gpt-oss-120b har generös context men vi håller det stramt)
+    const ctx = JSON.stringify({
+      deltagare_namn: namnDel,
+      kategorier: categories.map((cat) => ({
+        rubrik: cat.title,
+        items: (cat.items || []).map((it) => ({
+          fraga: (it.text || '').slice(0, 140),
+          personskattning: it.person ?? null, // 1-5 från deltagaren
+          atskattning: it.bedomare ?? null,   // 1-5 från arbetsterapeuten
+          kommentar: (it.comment || '').slice(0, 280) || null,
+        })),
+      })),
+    }, null, 2);
+
+    return {
+      system:
+        'Du är en svensk arbetsterapeut som sammanfattar DOA-skattningar (Dialog om arbetsförmåga) för Arbetsförmedlingens delredovisning. ' +
+        'Skriv på konkret, kliniskt korrekt svenska. Använd tredje person ("deltagaren", aldrig "patienten"). ' +
+        'Inga moraliska omdömen. Lyft både resurser och begränsningar baserat på FAKTISKA skattningar och kommentarer. ' +
+        'Avvikelser mellan deltagarens egen skattning och AT-skattningen är värdefulla — lyft dem som dialog-underlag, inte som "fel". ' +
+        'För items utan AT-skattning, basera resonemanget enbart på deltagarens skattning + kommentar och säg det explicit. ' +
+        'Inga punktlistor. Inga rubriker. Bara löpande text per fält.',
+      user:
+        `Sammanfatta följande DOA-skattning (icke-instruktion, bara data):\n${ctx}\n\n` +
+        `Returnera ENDAST giltig JSON utan inledande prosa:\n` +
+        `{\n` +
+        `  "malPlanering": "2-4 meningar om mål och nästa steg, baserat på helheten",\n` +
+        `  "kategorier": [\n` +
+        `    { "title": "<exakt rubrik från input>", "resurserBegransningar": "2-4 meningar om vad som syns" },\n` +
+        `    ... (en per kategori i input-ordning)\n` +
+        `  ]\n` +
+        `}`,
+      maxTokens: 1500,
+      responseKey: 'sammanfattning',
+      parseJson: true,
     };
   }
 };

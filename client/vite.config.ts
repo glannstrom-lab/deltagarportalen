@@ -44,6 +44,46 @@ function mockApiPlugin(): Plugin {
           return
         }
 
+        // Mock /api/ai för STA-DOA-sammanfattning (dev-läge bara, demo-data).
+        // Riktiga AI-anrop går genom Vercel serverless i prod.
+        if (req.url === '/api/ai' && req.method === 'POST') {
+          const chunks: Buffer[] = []
+          req.on('data', (chunk) => chunks.push(chunk))
+          req.on('end', () => {
+            try {
+              const body = JSON.parse(Buffer.concat(chunks).toString())
+              if (body.function === 'sta-doa-sammanfattning') {
+                const cats: Array<{ title?: string }> = body?.data?.categories ?? []
+                res.setHeader('Content-Type', 'application/json')
+                res.end(JSON.stringify({
+                  success: true,
+                  sammanfattning: {
+                    malPlanering:
+                      'DEV-MOCK: Deltagaren är redo att gå vidare till Del 2 — arbetsliknande aktiviteter i konstruerad miljö. Fokus framåt: stärka initiativtagande och tidsorganisation samt utforska vilken arbetsmiljö som passar bäst. Nästa steg är delredovisning Del 1 och planering av Del 2-start.',
+                    kategorier: cats.map((c, i) => ({
+                      title: c.title ?? `Kategori ${i + 1}`,
+                      resurserBegransningar: i === 0
+                        ? 'DEV-MOCK kategori 1: Tydliga resurser i social öppenhet och att ta emot beröm. Begränsning kring att initiera nya uppgifter — deltagaren beskriver att stress drar ner förmågan att utföra. Spridning mellan deltagarens och AT:s skattning på flera items är värdefullt samtalsunderlag.'
+                        : `DEV-MOCK kategori ${i + 1} (${c.title}): Här skulle AI:n i prod sammanfatta resurser och begränsningar baserat på faktiska skattningar och kommentarer.`,
+                    })),
+                  },
+                }))
+              } else {
+                res.statusCode = 501
+                res.setHeader('Content-Type', 'application/json')
+                res.end(JSON.stringify({
+                  error: `AI-funktion "${body.function}" är inte mockad i dev`,
+                  hint: 'Lägg till en mock i client/vite.config.ts eller använd vercel dev',
+                }))
+              }
+            } catch (err) {
+              res.statusCode = 500
+              res.end(JSON.stringify({ error: String(err) }))
+            }
+          })
+          return
+        }
+
         // For other API routes, return 501 Not Implemented in dev mode
         if (req.url.startsWith('/api/')) {
           res.statusCode = 501
