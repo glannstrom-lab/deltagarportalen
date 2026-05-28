@@ -25,6 +25,9 @@ import { AbsenceForm } from './components/AbsenceForm'
 import { StaOnboardingTrigger, StaOnboardingModal } from './components/StaOnboarding'
 import { KompetenskartlaggningForm } from './components/KompetenskartlaggningForm'
 import { DoaSelfAssessment } from './components/DoaSelfAssessment'
+import { ProfileGrowingCard } from './components/ProfileGrowingCard'
+import { EnergySparkline } from './components/EnergySparkline'
+import { PartTransitionCard } from './components/PartTransitionCard'
 import { DOA } from './assessmentInstruments'
 import { WorkplaceCard } from './components/WorkplaceCard'
 import { WorkDiary } from './components/WorkDiary'
@@ -507,6 +510,10 @@ export default function StaParticipant() {
             onRemoveAbsence={removeAbsence}
             showOnboarding={showOnboardingTrigger}
             onStartOnboarding={() => setOnboardingOpen(true)}
+            pulses={pulses}
+            quickNotes={sharedNotes}
+            activities={activities}
+            includesPart2={includesPart2}
           />
         )}
         {tab === 'del-1' && (
@@ -562,38 +569,115 @@ function NoEnrollmentEmptyState({
   onSelfTestCreated: () => void
 }) {
   return (
-    <Card
-      variant="flat"
-      padding="lg"
-      className="border-l-4"
-      style={{
-        background: 'var(--header-bg)',
-        borderLeftColor: 'var(--c-solid)',
-      }}
-    >
-      <div className="flex items-center gap-2 mb-2">
-        <span className="text-[11px] uppercase tracking-wider text-stone-500 font-medium">Projekt</span>
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700">
-          <Briefcase size={12} />
-          Steg till arbete
-        </span>
-      </div>
-      <h1 className="text-2xl lg:text-3xl font-semibold text-stone-900">
-        {firstName ? `Hej ${firstName}!` : 'Välkommen!'}
-      </h1>
-      <p className="text-stone-700 mt-2 max-w-2xl">
-        Du är inte tilldelad Steg till arbete än. När din arbetskonsulent har kopplat dig till
-        tjänsten ser du din veckoplan, dagliga övningar och kontakt med din konsulent här.
-      </p>
-      <p className="text-stone-700 mt-3 max-w-2xl text-sm">
-        Tror du att du borde vara med? Kontakta din konsulent eller arbetsförmedlare.
-      </p>
+    <div className="space-y-5">
+      {/* Hero — varmt välkomnande, inte byråkratisk avvisning */}
+      <Card
+        variant="flat"
+        padding="lg"
+        className="border-l-4"
+        style={{
+          background: 'var(--header-bg)',
+          borderLeftColor: 'var(--c-solid)',
+        }}
+      >
+        <div className="flex items-center gap-2 mb-2">
+          <span className="text-[11px] uppercase tracking-wider text-stone-500 font-medium">Projekt</span>
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700">
+            <Briefcase size={12} />
+            Steg till arbete
+          </span>
+        </div>
+        <h1 className="text-2xl lg:text-3xl font-semibold text-stone-900">
+          {firstName ? `Hej ${firstName}!` : 'Välkommen!'}
+        </h1>
+        <p className="text-stone-700 mt-2 max-w-2xl">
+          När din arbetskonsulent har kopplat dig till Steg till arbete öppnas den här sidan upp.
+          Här nedan ser du vad som väntar — så vet du vad du har att se fram emot.
+        </p>
+        <p className="text-stone-700 mt-3 max-w-2xl text-sm">
+          Tror du att du borde vara med? Kontakta din konsulent eller arbetsförmedlare.
+        </p>
 
-      {/* Admin/AT-genväg: skapa koppling till sig själv för att kunna testa sidan */}
-      <div className="mt-5">
-        <SelfTestEnrollmentButton onCreated={onSelfTestCreated} variant="full" />
+        {/* Admin/AT-genväg: skapa koppling till sig själv för att kunna testa sidan */}
+        <div className="mt-5">
+          <SelfTestEnrollmentButton onCreated={onSelfTestCreated} variant="full" />
+        </div>
+      </Card>
+
+      {/* Förhandsvisning — så deltagaren vet vad som väntar (Begripsam: Trygghet/tillit) */}
+      <Card variant="flat" padding="lg">
+        <div className="text-xs uppercase tracking-wide text-stone-500 mb-2 font-medium">
+          Det här kommer du se
+        </div>
+        <h2 className="text-lg font-semibold text-stone-900 mb-3">
+          När du är kopplad öppnas sidan upp för dig
+        </h2>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <PreviewItem
+            icon={<Calendar size={16} style={{ color: 'var(--c-text)' }} />}
+            title="En veckoplan"
+            description="Vilka dagar du är på plats och vad som händer den dagen — ingen tidspress, bara struktur."
+          />
+          <PreviewItem
+            icon={<Activity size={16} style={{ color: 'var(--c-text)' }} />}
+            title="Dagliga övningar"
+            description="Korta övningar att göra i din egen takt under Del 1 — om sömn, stress, intressen, mål."
+          />
+          <PreviewItem
+            icon={<MessageSquare size={16} style={{ color: 'var(--c-text)' }} />}
+            title="Plats att skriva"
+            description="Reflektioner, dagbok, energi-pulse — bara du och din konsulent ser det."
+          />
+          <PreviewItem
+            icon={<Phone size={16} style={{ color: 'var(--c-text)' }} />}
+            title="Din konsulent"
+            description="Kontaktuppgifter och nästa möte — alltid synligt så du vet vem du kan höra av dig till."
+          />
+          <PreviewItem
+            icon={<Target size={16} style={{ color: 'var(--c-text)' }} />}
+            title="Ditt fokusyrke"
+            description="Det yrkesområde ni hittar tillsammans — och vägen dit, steg för steg."
+          />
+          <PreviewItem
+            icon={<Heart size={16} className="text-rose-500" />}
+            title="Anpassningar"
+            description="Det vi planerat så att insatsen passar dig — synligt så ingen glömmer bort."
+          />
+        </div>
+
+        <div
+          className="mt-4 p-3 rounded-lg flex items-start gap-2"
+          style={{ background: 'var(--c-bg)', color: 'var(--c-text)' }}
+        >
+          <Info size={14} className="mt-0.5 flex-shrink-0" />
+          <p className="text-xs text-stone-700">
+            Det är okej att gå i din egen takt. Steg till arbete har inga prestationskrav — det handlar
+            om att hitta vad som passar dig.
+          </p>
+        </div>
+      </Card>
+    </div>
+  )
+}
+
+function PreviewItem({
+  icon,
+  title,
+  description,
+}: {
+  icon: React.ReactNode
+  title: string
+  description: string
+}) {
+  return (
+    <div className="p-3 rounded-lg border border-stone-200 bg-white">
+      <div className="flex items-center gap-2 mb-1">
+        {icon}
+        <h3 className="text-sm font-semibold text-stone-900">{title}</h3>
       </div>
-    </Card>
+      <p className="text-xs text-stone-600">{description}</p>
+    </div>
   )
 }
 
@@ -946,6 +1030,10 @@ function STaOverview({
   onRemoveAbsence,
   showOnboarding,
   onStartOnboarding,
+  pulses,
+  quickNotes,
+  activities,
+  includesPart2,
 }: {
   mock: ParticipantViewModel
   onJumpToTab: (tab: TabId) => void
@@ -955,6 +1043,10 @@ function STaOverview({
   onRemoveAbsence: (id: string) => Promise<void>
   showOnboarding: boolean
   onStartOnboarding: () => void
+  pulses: StaPulseCheck[]
+  quickNotes: import('@/services/staApi').StaQuickNote[]
+  activities: StaActivity[]
+  includesPart2: boolean
 }) {
   const { hasToday, submitToday } = useStaPulseChecks(enrollmentId)
   const { checkins, submitForWeek } = useStaWeeklyCheckin(enrollmentId)
@@ -980,6 +1072,21 @@ function STaOverview({
     return `v.${weekNo} · ${formatShortSv(monday)}–${formatShortSv(friday)}`
   })()
 
+  // A2: Övergångsskärm — visas i två fall:
+  //   (a) Del 1:s vardagsräknare har passerat alla 15 dagar men currentPart är fortfarande 1
+  //       → deltagaren är "klar med Del 1" men AT har inte avancerat manuellt
+  //   (b) currentPart >= 2 och deltagaren har precis bytt del (part_started_at inom 14 dagar)
+  //       → systemet har auto-avancerat och deltagaren behöver se övergången
+  const showTransitionForPart1Done = mock.currentPart === 1 && mock.currentDay >= mock.totalDays
+  const daysInCurrentPart = mock.partStartedAt
+    ? Math.floor((Date.now() - new Date(mock.partStartedAt + 'T00:00:00').getTime()) / (1000 * 60 * 60 * 24))
+    : 999
+  const showTransitionForLaterPart = mock.currentPart >= 2 && daysInCurrentPart <= 14
+  const showTransition = showTransitionForPart1Done || showTransitionForLaterPart
+  const completedPart: StaPart = (showTransitionForPart1Done
+    ? 1
+    : Math.max(1, mock.currentPart - 1)) as StaPart
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
       {/* Onboarding-trigger — visas tills introduktionen är klar */}
@@ -987,6 +1094,21 @@ function STaOverview({
         <div className="lg:col-span-3">
           <StaOnboardingTrigger firstName={mock.firstName} onStart={onStartOnboarding} />
         </div>
+      )}
+
+      {/* A2: Övergångsskärm Del→Del */}
+      {showTransition && (
+        <PartTransitionCard
+          completedPart={completedPart}
+          consultantFirstName={mock.consultant.name.split(' ')[0]}
+          strengths={quickNotes
+            .filter((n) => n.body && n.body.trim().length > 0)
+            .slice(0, 4)
+            .map((n) => n.body!.trim())}
+          adaptations={mock.adaptations}
+          focusOccupation={mock.focusOccupation}
+          nextPartIncluded={includesPart2}
+        />
       )}
 
       {/* Today */}
@@ -1109,32 +1231,19 @@ function STaOverview({
         </ul>
       </Card>
 
-      {/* Strengths */}
-      <Card variant="flat" padding="lg">
-        <div className="text-xs uppercase tracking-wide text-stone-500 mb-2 font-medium">Det här ser vi hos dig</div>
-        <h3 className="text-base font-semibold text-stone-900 mb-3 flex items-center gap-2">
-          <Sparkles size={18} style={{ color: 'var(--c-solid)' }} />
-          Styrkor som växer fram
-        </h3>
-        {mock.strengths.length > 0 ? (
-          <ul className="space-y-2 text-sm">
-            {mock.strengths.map((s, i) => (
-              <li key={i} className="flex items-start gap-2">
-                <span
-                  className="mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0"
-                  style={{ background: 'var(--c-solid)' }}
-                />
-                <span className="text-stone-700">{s.text}</span>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-stone-600">
-            Här samlar {mock.consultant.name.split(' ')[0]} det som syns hos dig — börjar fyllas på efter era första samtal.
-          </p>
-        )}
-        <p className="text-xs text-stone-500 mt-3">{mock.consultant.name.split(' ')[0]} fyller på listan när ni pratas vid.</p>
-      </Card>
+      {/* A1: ProfileGrowingCard — ersätter tidigare "Styrkor"-kort med rikare insiktssammanställning */}
+      <ProfileGrowingCard
+        consultantFirstName={mock.consultant.name.split(' ')[0]}
+        pulseChecks={pulses}
+        quickNotes={quickNotes}
+        activities={activities}
+        focusOccupation={mock.focusOccupation}
+      />
+
+      {/* A3: Energi-sparkline — visar pulse-mönster senaste 14 dagarna */}
+      <div className="lg:col-span-3">
+        <EnergySparkline pulseChecks={pulses} days={14} />
+      </div>
 
       {/* Resources */}
       <Card variant="flat" padding="lg">
