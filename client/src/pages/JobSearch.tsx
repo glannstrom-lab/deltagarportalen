@@ -9,7 +9,7 @@ import {
   Trash2, CheckCircle, Clock, MessageSquare,
   Star, Mic, Train
 } from '@/components/ui/icons';
-import { Link, Routes, Route, Navigate } from 'react-router-dom';
+import { Link, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
 import { sanitizeHTMLWithLineBreaks } from '@/utils/sanitize';
@@ -25,6 +25,7 @@ import {
   LoadingState,
   ErrorState,
   EmptySearch,
+  EmptyState,
   Button,
   Card,
 } from '@/components/ui';
@@ -911,6 +912,7 @@ function SearchTab() {
 // Enhanced Saved Jobs Tab
 function SavedJobsTab() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { savedJobs, removeJob, updateJobStatus, isLoaded } = useSavedJobs();
   const [filter] = useState<'all' | SavedJob['status']>('all');
   const [sortBy, setSortBy] = useState<'date' | 'company' | 'status'>('date');
@@ -952,15 +954,16 @@ function SavedJobsTab() {
 
   if (onlySaved.length === 0) {
     return (
-      <Card className="p-12 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="w-16 h-16 bg-stone-100 dark:bg-stone-700 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Bookmark className="w-8 h-8 text-stone-600 dark:text-stone-400" />
-        </div>
-        <h3 className="text-xl font-semibold text-stone-700 dark:text-stone-200 mb-2">{t('jobSearch.noSavedJobsTitle')}</h3>
-        <p className="text-stone-700 dark:text-stone-400 mb-4">{t('jobSearch.noSavedJobsDesc')}</p>
-        <Link to="/job-search">
-          <Button>{t('jobSearch.title')}</Button>
-        </Link>
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <EmptyState
+          illustration="jobb"
+          title={t('jobSearch.noSavedJobsTitle')}
+          description={t('jobSearch.noSavedJobsDesc')}
+          action={{
+            label: t('jobSearch.title'),
+            onClick: () => navigate('/job-search'),
+          }}
+        />
       </Card>
     );
   }
