@@ -23,6 +23,10 @@ const MAP = [
 // Hero-illustrationer (bredformat, ~1200px brett) för hub-landningssidornas hero.
 const HEROES = [
   { src: 'översikt hero.png', out: 'hero-oversikt' },
+  { src: 'hero jobb.png', out: 'hero-jobb' },
+  { src: 'hero karriär.png', out: 'hero-karriar' },
+  { src: 'hero resurser.png', out: 'hero-resurser' },
+  { src: 'hero vardag.png', out: 'hero-vardag' },
 ]
 
 // En pixel räknas som nära-neutral+ljus (kandidat för rutmönster-bakgrund).
@@ -49,17 +53,19 @@ async function clean(input, mode = 'spot') {
   const N = width * height
 
   if (mode === 'hero') {
-    // Chroma-key: "magentaness" m = (R+B)/2 - G. Magenta #FF00FF -> 255, vitt/grönt
-    // -> ~0 eller negativt. m >= HIGH => transparent, <= LOW => behåll, mellan =>
-    // mjuk kant. Spill-suppression höjer G mot min(R,B) så rosa kantfransar tas bort.
-    const LOW = 40, HIGH = 130
+    // Chroma-key mot solid magenta. Magentaness = min(R,B) - G: magenta #FF00FF
+    // (R och B höga, G=0) -> 255; vitt -> 0; korall-rosa (lågt B) och lavendel
+    // (lågt R) -> lågt; sky/grönt -> negativt. Skiljer alltså äkta magenta från
+    // alla hub-färger. score >= HIGH => transparent, <= LOW => behåll, mellan =>
+    // mjuk kant + de-spill (höjer G mot min(R,B) så rosa kantfransar blir neutrala).
+    const LOW = 60, HIGH = 160
     for (let p = 0; p < N; p++) {
       const i = p * channels
       const r = data[i], g = data[i + 1], b = data[i + 2]
-      const m = (r + b) / 2 - g
-      if (m <= LOW) continue
-      if (m >= HIGH) { out[i + 3] = 0; continue }
-      out[i + 3] = Math.round(255 * (HIGH - m) / (HIGH - LOW))
+      const score = Math.min(r, b) - g
+      if (score <= LOW) continue
+      if (score >= HIGH) { out[i + 3] = 0; continue }
+      out[i + 3] = Math.round(255 * (HIGH - score) / (HIGH - LOW))
       const floor = Math.min(r, b)            // de-spill: neutralisera magenta-tinten
       if (g < floor) out[i + 1] = floor
     }

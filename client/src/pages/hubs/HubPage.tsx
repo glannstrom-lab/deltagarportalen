@@ -75,6 +75,14 @@ const heroVariants = {
   visible: { opacity: 1, y: 0 },
 }
 
+// Dekorativ hub-illustration per domän (DESIGN.md §3 — hub-landning).
+const HUB_ILLUSTRATIONS: Partial<Record<HubDomain, string>> = {
+  activity: '/illustrations/hero-jobb.webp',
+  coaching: '/illustrations/hero-karriar.webp',
+  info: '/illustrations/hero-resurser.webp',
+  wellbeing: '/illustrations/hero-vardag.webp',
+}
+
 export default function HubPage({
   titleKey: _titleKey,
   title,
@@ -113,6 +121,7 @@ export default function HubPage({
           description={hubDescription}
           greeting={trimmedFirstName ? `Hej ${trimmedFirstName}` : undefined}
           icon={HubIcon}
+          heroIllustration={HUB_ILLUSTRATIONS[domain]}
           rightDecoration={
             <div
               aria-hidden="true"

@@ -62,6 +62,12 @@ interface PageHeroProps {
    */
   rightDecoration?: React.ReactNode
 
+  /**
+   * URL till dekorativ hub-illustration (webp). Visas nere till höger i
+   * hub-hero:n, dold på mobil. Bara meningsfull i mode="hub".
+   */
+  heroIllustration?: string
+
   /** Fält för CTA-knappar i tool-läge (höger om title) */
   actions?: React.ReactNode
 
@@ -88,6 +94,7 @@ export function PageHero({
   greeting,
   icon: Icon,
   rightDecoration,
+  heroIllustration,
   actions,
   stats,
   tabs,
@@ -102,6 +109,7 @@ export function PageHero({
       greeting={greeting}
       icon={Icon}
       rightDecoration={rightDecoration}
+      heroIllustration={heroIllustration}
       showRadialGlow={showRadialGlow ?? true}
       className={className}
     />
@@ -128,6 +136,7 @@ interface HeroHubProps {
   greeting?: string | null
   icon?: LucideIcon
   rightDecoration?: React.ReactNode
+  heroIllustration?: string
   showRadialGlow: boolean
   className?: string
 }
@@ -138,6 +147,7 @@ function PageHeroHub({
   greeting,
   icon: Icon,
   rightDecoration,
+  heroIllustration,
   showRadialGlow,
   className,
 }: HeroHubProps) {
@@ -162,6 +172,16 @@ function PageHeroHub({
             background: 'radial-gradient(circle, var(--c-accent) 0%, transparent 70%)',
             opacity: 0.4,
           }}
+        />
+      )}
+
+      {/* Dekorativ hub-illustration — nere till höger, döljs på mobil/surfplatta */}
+      {heroIllustration && (
+        <img
+          src={heroIllustration}
+          alt=""
+          aria-hidden="true"
+          className="hidden lg:block absolute bottom-0 right-4 h-[120px] xl:h-[128px] pointer-events-none select-none"
         />
       )}
 
