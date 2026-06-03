@@ -11,11 +11,10 @@ import {
   type UserProfile,
 } from '@/services/interestGuideData'
 import { RiasecChart } from '@/components/interest-guide/RiasecChart'
-import { LoadingState, Button, InfoCard } from '@/components/ui'
+import { LoadingState, Button, InfoCard, EmptyState } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'
 import {
   History,
-  Sparkles,
   Calendar,
   Target,
   Brain,
@@ -98,21 +97,13 @@ export default function HistoryTab() {
 
   if (history.length === 0) {
     return (
-      <div className="max-w-lg mx-auto text-center py-12  min-h-screen">
-        <div className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <History className="w-8 h-8 text-amber-600 dark:text-amber-400" />
-        </div>
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">{t('interestGuide.history.noHistory')}</h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          {t('interestGuide.history.noHistoryDesc')}
-        </p>
-        <Button
-          onClick={() => navigate('/interest-guide')}
-          className="gap-2 bg-[var(--c-solid)]"
-        >
-          <Sparkles className="w-4 h-4" />
-          {t('interestGuide.history.startTest')}
-        </Button>
+      <div className="max-w-lg mx-auto py-12 min-h-screen">
+        <EmptyState
+          illustration="karriar"
+          title={t('interestGuide.history.noHistory')}
+          description={t('interestGuide.history.noHistoryDesc')}
+          action={{ label: t('interestGuide.history.startTest'), onClick: () => navigate('/interest-guide') }}
+        />
       </div>
     )
   }

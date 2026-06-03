@@ -3,6 +3,7 @@
  */
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { EmptyState } from '@/components/ui/EmptyState'
 import {
   Building2,
   MapPin,
@@ -405,18 +406,12 @@ export default function MyCompaniesTab() {
 
       {/* Companies List */}
       {filteredCompanies.length === 0 ? (
-        <Card className="p-8 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-          <Building2 className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2 text-stone-800 dark:text-stone-100">
-            {filter === 'all' ? t('spontaneous.noSavedCompanies') : t('spontaneous.noCompaniesWithStatus', { status: t(filterOptions.find(o => o.value === filter)?.labelKey || '') })}
-          </h3>
-          <p className="text-stone-600 dark:text-stone-400">
-            {filter === 'all'
-              ? t('spontaneous.searchAndSaveCompanies')
-              : t('spontaneous.changeFilter')
-            }
-          </p>
-        </Card>
+        <EmptyState
+          illustration={filter === 'all' ? 'jobb' : undefined}
+          icon={filter === 'all' ? undefined : Building2}
+          title={filter === 'all' ? t('spontaneous.noSavedCompanies') : t('spontaneous.noCompaniesWithStatus', { status: t(filterOptions.find(o => o.value === filter)?.labelKey || '') })}
+          description={filter === 'all' ? t('spontaneous.searchAndSaveCompanies') : t('spontaneous.changeFilter')}
+        />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {filteredCompanies.map((company) => (

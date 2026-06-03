@@ -9,6 +9,7 @@ import { calendarApi } from '@/services/cloudStorage'
 import type { CalendarEvent, CalendarView } from '@/services/calendarData'
 import { eventTypeConfig, formatTime } from '@/services/calendarData'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { Calendar as CalendarIcon } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
@@ -318,18 +319,11 @@ function CalendarInner() {
             )
           })}
           {sortedEvents.length === 0 && (
-            <div className="p-8 text-center">
-              <CalendarDays className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
-              <p className="text-stone-500 dark:text-stone-400">
-                {t('calendar.noEventsPlanned')}
-              </p>
-              <button
-                onClick={handleCreateEvent}
-                className="mt-4 px-4 py-2 bg-[var(--c-solid)] text-white rounded-lg hover:bg-[var(--c-text)] transition-colors text-sm font-medium"
-              >
-                {t('calendar.newEvent')}
-              </button>
-            </div>
+            <EmptyState
+              illustration="vardag"
+              title={t('calendar.noEventsPlanned')}
+              action={{ label: t('calendar.newEvent'), onClick: handleCreateEvent }}
+            />
           )}
         </div>
       </div>

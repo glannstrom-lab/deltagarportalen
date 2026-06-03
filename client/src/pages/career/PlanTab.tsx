@@ -5,10 +5,10 @@ import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Target, MapPin, Flag, Calendar, CheckCircle, Clock,
-  Sparkles, Plus, Award, TrendingUp, AlertCircle,
+  Sparkles, Plus, TrendingUp, AlertCircle,
   Zap, Trash2, Loader2, Heart, FileText
 } from '@/components/ui/icons'
-import { Card, Button } from '@/components/ui'
+import { Card, Button, EmptyState } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { careerPlanApi, milestonesApi, favoriteOccupationsApi, type CareerPlan, type CareerMilestone, type FavoriteOccupation } from '@/services/careerApi'
 import { CalendarSync } from '@/components/calendar/CalendarSync'
@@ -574,11 +574,12 @@ export default function PlanTab() {
 
           <div className="relative pl-6" role="list" aria-label="Milstolpar">
             {milestones.length === 0 ? (
-              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
-                <Award className="w-12 h-12 mx-auto mb-3 opacity-50" />
-                <p>Inga milstolpar ännu.</p>
-                <p className="text-sm">Klicka på "Lägg till milstolpe" för att komma igång.</p>
-              </div>
+              <EmptyState
+                compact
+                illustration="karriar"
+                title="Inga milstolpar ännu"
+                description='Klicka på "Lägg till milstolpe" för att komma igång.'
+              />
             ) : milestones.map((milestone, index) => (
               <div key={milestone.id} className="mb-6 relative">
                 {/* Timeline dot */}

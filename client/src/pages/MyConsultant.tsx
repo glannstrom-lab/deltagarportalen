@@ -11,6 +11,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { EmptyState } from '@/components/ui/EmptyState'
 import {
   User,
   Mail,
@@ -421,16 +422,12 @@ function MessagesSection({
             <LoadingState type="spinner" />
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center">
-            <div className="w-16 h-16 rounded-full bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 flex items-center justify-center mb-4">
-              <MessageSquare className="w-8 h-8 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-            </div>
-            <p className="text-stone-600 dark:text-stone-400">
-              {t('myConsultant.noMessagesYet')}
-            </p>
-            <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-              {t('myConsultant.sendToStart')}
-            </p>
+          <div className="flex items-center justify-center h-full">
+            <EmptyState
+              illustration="vardag"
+              title={t('myConsultant.noMessagesYet')}
+              description={t('myConsultant.sendToStart')}
+            />
           </div>
         ) : (
           <>
