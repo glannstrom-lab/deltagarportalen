@@ -11,12 +11,18 @@ const SRC = path.resolve(__dirname, '..', '..', 'design-source', 'illustrations-
 const OUT = path.resolve(__dirname, '..', 'public', 'illustrations')
 fs.mkdirSync(OUT, { recursive: true })
 
+// Spot-illustrationer (kvadrat, ~360px) för tomtillstånd.
 const MAP = [
   { src: 'söka jobb.png', out: 'empty-jobb' },
   { src: 'karriär.png', out: 'empty-karriar' },
   { src: 'resurser.png', out: 'empty-resurser' },
   { src: 'min vardag.png', out: 'empty-vardag' },
   { src: 'översikt.png', out: 'empty-oversikt' },
+]
+
+// Hero-illustrationer (bredformat, ~1200px brett) för hub-landningssidornas hero.
+const HEROES = [
+  { src: 'översikt hero.png', out: 'hero-oversikt' },
 ]
 
 // En pixel räknas som nära-neutral+ljus (kandidat för rutmönster-bakgrund).
@@ -33,18 +39,39 @@ const isNeutral = (d, i) => {
   return (Math.max(r, g, b) - Math.min(r, g, b)) <= NEUTRAL_DIFF
 }
 
-async function clean(input) {
+// mode='spot' -> ChatGPT-spot-PNG med inbränt rutmönster: textur + kant-floodfill.
+// mode='hero' -> ChatGPT-hero-PNG på SOLID MAGENTA: chroma-key bort magentan med
+//                mjuk alfa-kant + spill-suppression (tar bort rosa fransar).
+async function clean(input, mode = 'spot') {
   const { data, info } = await sharp(input).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
   const { width, height, channels } = info // channels = 4
   const out = Buffer.from(data)
   const N = width * height
+
+  if (mode === 'hero') {
+    // Chroma-key: "magentaness" m = (R+B)/2 - G. Magenta #FF00FF -> 255, vitt/grönt
+    // -> ~0 eller negativt. m >= HIGH => transparent, <= LOW => behåll, mellan =>
+    // mjuk kant. Spill-suppression höjer G mot min(R,B) så rosa kantfransar tas bort.
+    const LOW = 40, HIGH = 130
+    for (let p = 0; p < N; p++) {
+      const i = p * channels
+      const r = data[i], g = data[i + 1], b = data[i + 2]
+      const m = (r + b) / 2 - g
+      if (m <= LOW) continue
+      if (m >= HIGH) { out[i + 3] = 0; continue }
+      out[i + 3] = Math.round(255 * (HIGH - m) / (HIGH - LOW))
+      const floor = Math.min(r, b)            // de-spill: neutralisera magenta-tinten
+      if (g < floor) out[i + 1] = floor
+    }
+    return sharp(out, { raw: { width, height, channels } })
+  }
+
+  // --- spot: rutmönster-borttagning (textur + kant-floodfill) ---
   const bg = new Uint8Array(N) // 1 = ska bli transparent
 
-  // --- Steg 1: texturdetektor ---
-  // Rutmönstret växlar mellan ljus (~254) och grå (~243). En neutralljus pixel
-  // som har BÅDE en mörkare grå (<=247) OCH en ljusare (>=252) neutral granne
-  // inom några rutors avstånd ligger i ett rutmönster. Jämna ljusytor (en
-  // enda nyans, t.ex. anslagstavlan) saknar denna växling och bevaras.
+  // Steg 1: texturdetektor. En neutralljus pixel som har BÅDE en mörkare (<=247)
+  // OCH ljusare (>=252) neutral granne inom några rutors avstånd ligger i ett
+  // rutmönster. Jämna ljusytor (enfärgad anslagstavla) saknar växlingen, bevaras.
   const RINGS = [7, 14, 21]
   const DIRS = [[1,0],[-1,0],[0,1],[0,-1],[1,1],[-1,-1],[1,-1],[-1,1]]
   const sampleNeutral = (x, y, lo, hi) => {
@@ -68,9 +95,8 @@ async function clean(input) {
     }
   }
 
-  // --- Steg 2: flood-fill från kanten ---
-  // Fångar den yttre bakgrunden + antialias-kanter (en enda mellangrå nyans
-  // som texturtestet missar) som hänger ihop med ramen.
+  // Steg 2: flood-fill från kanten — yttre bakgrund + antialias-kanter (enstaka
+  // mellangrå nyans som texturtestet missar) som hänger ihop med ramen.
   const visited = new Uint8Array(N)
   const stack = []
   const push = (x, y) => {
@@ -92,18 +118,24 @@ async function clean(input) {
   return sharp(out, { raw: { width, height, channels } })
 }
 
-;(async () => {
-  for (const { src, out } of MAP) {
+async function process(list, mode, resize) {
+  for (const { src, out } of list) {
     const input = path.join(SRC, src)
+    if (!fs.existsSync(input)) { console.log(`(hoppar ${src} — saknas)`); continue }
     const output = path.join(OUT, `${out}.webp`)
     const before = fs.statSync(input).size
-    const cleaned = await clean(input)
+    const cleaned = await clean(input, mode)
     await cleaned
-      .trim()                              // beskär nu äkta transparent luft
-      .resize(360, 360, { fit: 'inside', withoutEnlargement: true })
+      .trim()                              // beskär äkta transparent luft
+      .resize(resize)
       .webp({ quality: 82, alphaQuality: 95, effort: 6 })
       .toFile(output)
     const after = fs.statSync(output).size
     console.log(`${out}.webp  ${(before / 1024).toFixed(0)}KB -> ${(after / 1024).toFixed(1)}KB`)
   }
+}
+
+;(async () => {
+  await process(MAP, 'spot', { width: 360, height: 360, fit: 'inside', withoutEnlargement: true })
+  await process(HEROES, 'hero', { width: 1200, withoutEnlargement: true })
 })()

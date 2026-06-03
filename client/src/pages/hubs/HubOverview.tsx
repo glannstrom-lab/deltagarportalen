@@ -216,6 +216,14 @@ function HubOverviewInner() {
           }}
         />
 
+        {/* Hub-illustration — dekorativ, nere till höger, döljs på mobil/surfplatta */}
+        <img
+          src="/illustrations/hero-oversikt.webp"
+          alt=""
+          aria-hidden="true"
+          className="hidden lg:block absolute bottom-0 right-3 h-[150px] xl:h-[180px] pointer-events-none select-none"
+        />
+
         <div className="flex flex-col gap-4 sm:gap-6 relative">
           {/* Topprad: avatar inline med greeting + visit-link | datum-disc */}
           <div className="flex items-center justify-between gap-3 sm:gap-6">
