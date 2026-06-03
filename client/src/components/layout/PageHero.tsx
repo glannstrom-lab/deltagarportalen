@@ -175,17 +175,18 @@ function PageHeroHub({
         />
       )}
 
-      {/* Dekorativ hub-illustration — nere till höger, döljs på mobil/surfplatta */}
+      {/* Dekorativ hub-illustration — egen högerkolumn, döljs på mobil/surfplatta.
+          Innehållet får motsvarande pr så streck/datum-disc aldrig korsar bilden. */}
       {heroIllustration && (
         <img
           src={heroIllustration}
           alt=""
           aria-hidden="true"
-          className="hidden lg:block absolute bottom-0 right-4 h-[120px] xl:h-[128px] pointer-events-none select-none"
+          className="hidden lg:block absolute top-4 bottom-4 right-4 w-[170px] xl:w-[190px] object-contain object-bottom pointer-events-none select-none"
         />
       )}
 
-      <div className="flex flex-col gap-4 sm:gap-6 relative">
+      <div className={cn('flex flex-col gap-4 sm:gap-6 relative', heroIllustration && 'lg:pr-[190px] xl:pr-[210px]')}>
         <div className="flex items-center justify-between gap-3 sm:gap-6">
           <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
             {Icon && (
