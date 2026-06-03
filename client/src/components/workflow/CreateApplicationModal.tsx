@@ -43,6 +43,7 @@ export function CreateApplicationModal({
   const [cvMatchScore, setCvMatchScore] = useState<number | null>(null)
   const [cvAnalysis, setCvAnalysis] = useState<CVOptimizationResult | null>(null)
   const [showDetailedAnalysis, setShowDetailedAnalysis] = useState(false)
+  const [saved, setSaved] = useState(false)
   
   const [workflow, setWorkflow] = useState<ApplicationWorkflow>({
     step1_cv: { optimize: false },
@@ -120,16 +121,9 @@ export function CreateApplicationModal({
       }
 
       await workflowApi.createApplication({ jobData, workflow })
-      
-      showToast.success(
-        'Ansökan sparad!',
-        workflow.step3_tracker.status === 'APPLIED' 
-          ? 'Din ansökan har registrerats i jobbtrackern'
-          : 'Jobbet har sparats för senare'
-      )
-      
+
       onSuccess?.()
-      onClose()
+      setSaved(true)
     } catch {
       showToast.error(
         'Något gick fel',
@@ -152,6 +146,37 @@ export function CreateApplicationModal({
   }
 
   if (!isOpen) return null
+
+  // Success-vy efter sparad ansökan
+  if (saved) {
+    const applied = workflow.step3_tracker.status === 'APPLIED'
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+        <div className="bg-white rounded-2xl max-w-sm w-full shadow-2xl p-8 text-center">
+          <img
+            src="/illustrations/success-ansokan.webp"
+            alt=""
+            aria-hidden="true"
+            className="w-28 h-28 mx-auto mb-4 select-none"
+          />
+          <h2 className="text-xl font-semibold text-stone-900 mb-1">
+            {applied ? 'Ansökan registrerad' : 'Jobbet sparat'}
+          </h2>
+          <p className="text-sm text-stone-600 mb-6">
+            {applied
+              ? 'Din ansökan finns nu i jobbtrackern. Heja dig!'
+              : 'Du hittar jobbet bland dina sparade.'}
+          </p>
+          <button
+            onClick={onClose}
+            className="w-full bg-[var(--c-solid)] hover:bg-[var(--c-text)] text-white font-medium py-2.5 rounded-lg transition-colors"
+          >
+            Klar
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
