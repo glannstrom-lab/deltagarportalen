@@ -21,6 +21,13 @@ articleCategories.forEach(cat => {
   })
 })
 
+// Dekorativa ämnes-illustrationer per kategori (de som har en bild får en banner).
+const CATEGORY_ILLUSTRATIONS: Record<string, string> = {
+  interview: '/illustrations/spot-intervju.webp',
+  'employment-law': '/illustrations/spot-ratt.webp',
+  wellness: '/illustrations/spot-halsa.webp',
+}
+
 interface TopicsTabProps {
   articles: Article[]
 }
@@ -174,6 +181,26 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
 
       {/* Articles grid/list */}
       <div className="lg:col-span-3">
+        {/* Ämnes-banner med illustration (för kategorier som har en bild) */}
+        {selectedCategory && CATEGORY_ILLUSTRATIONS[selectedCategory] && (
+          <div className="flex items-center gap-4 mb-5 p-4 rounded-xl bg-[var(--c-bg)] border border-[var(--c-accent)]/50">
+            <img
+              src={CATEGORY_ILLUSTRATIONS[selectedCategory]}
+              alt=""
+              aria-hidden="true"
+              className="w-16 h-16 flex-shrink-0 select-none"
+            />
+            <div>
+              <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+                {categoryNameMap[selectedCategory] || selectedCategory}
+              </h2>
+              <p className="text-sm text-stone-600 dark:text-stone-300">
+                {filteredArticles.length} {t('knowledgeBase.topics.articles')}
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex items-center justify-between mb-4">
           <div>
