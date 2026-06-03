@@ -400,7 +400,7 @@ export default function NetworkTab() {
       {/* Tomtillstånd för helt nya användare — EN tydlig CTA istället för 3 staplade tomma element */}
       {!isAdding && !isAddingEvent && contacts.length === 0 && events.length === 0 && (
         <EmptyState
-          icon={Users}
+          illustration="resurser"
           title={t('career.networkTab.welcomeTitle', 'Här bygger du ditt nätverk')}
           description={t('career.networkTab.welcomeDescription', 'Människor du har jobbat med, träffat eller känner kan ofta öppna dörrar du inte vet finns. Lägg till en första kontakt eller utforska mallarna nedan när du är redo.')}
           action={{

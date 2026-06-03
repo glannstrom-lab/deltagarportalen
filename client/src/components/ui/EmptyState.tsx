@@ -29,11 +29,27 @@ import { Button } from './Button'
 import type { LucideIcon } from '@/components/ui/icons'
 
 // ============================================
+// HUB-ILLUSTRATIONER (DESIGN.md §7 — varm illustration istället för grå ikon)
+// Genererade i hub-paletten, optimerade till transparent webp (~7-10KB).
+// ============================================
+export type HubIllustration = 'oversikt' | 'jobb' | 'karriar' | 'resurser' | 'vardag'
+
+const HUB_ILLUSTRATIONS: Record<HubIllustration, string> = {
+  oversikt: '/illustrations/empty-oversikt.webp',
+  jobb: '/illustrations/empty-jobb.webp',
+  karriar: '/illustrations/empty-karriar.webp',
+  resurser: '/illustrations/empty-resurser.webp',
+  vardag: '/illustrations/empty-vardag.webp',
+}
+
+// ============================================
 // EMPTY STATE
 // ============================================
 interface EmptyStateProps {
   icon?: LucideIcon
   iconClassName?: string
+  /** Varm hub-illustration som ersätter ikon-cirkeln (DESIGN.md §7). */
+  illustration?: HubIllustration
   title: string
   description?: string
   action?: {
@@ -52,6 +68,7 @@ interface EmptyStateProps {
 export function EmptyState({
   icon: Icon,
   iconClassName,
+  illustration,
   title,
   description,
   action,
@@ -66,7 +83,15 @@ export function EmptyState({
         'text-center py-8 px-4',
         className
       )}>
-        {Icon && (
+        {illustration ? (
+          <img
+            src={HUB_ILLUSTRATIONS[illustration]}
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="w-20 h-20 mb-3 select-none"
+          />
+        ) : Icon && (
           <div className={cn(
             'w-12 h-12 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mb-3',
             iconClassName
@@ -98,7 +123,15 @@ export function EmptyState({
       'text-center py-12 px-4',
       className
     )}>
-      {Icon && (
+      {illustration ? (
+        <img
+          src={HUB_ILLUSTRATIONS[illustration]}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="w-32 h-32 mb-4 select-none"
+        />
+      ) : Icon && (
         <div className={cn(
           'w-16 h-16 bg-stone-100 dark:bg-stone-800 rounded-full flex items-center justify-center mb-4',
           iconClassName
