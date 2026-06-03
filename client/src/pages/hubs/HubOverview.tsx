@@ -221,7 +221,7 @@ function HubOverviewInner() {
           src="/illustrations/hero-oversikt.webp"
           alt=""
           aria-hidden="true"
-          className="hidden lg:block absolute bottom-0 right-3 h-[150px] xl:h-[180px] pointer-events-none select-none"
+          className="hidden lg:block absolute bottom-0 right-4 h-[120px] xl:h-[128px] pointer-events-none select-none"
         />
 
         <div className="flex flex-col gap-4 sm:gap-6 relative">
