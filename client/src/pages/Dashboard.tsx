@@ -300,7 +300,7 @@ export default function DashboardPage() {
               {/* All done celebration */}
               {remainingSteps.length === 0 && (
                 <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 rounded-xl border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 p-4 sm:p-6 text-center">
-                  <Sparkles className="w-8 h-8 sm:w-10 sm:h-10 text-[var(--c-solid)] mx-auto mb-2 sm:mb-3" />
+                  <img src="/illustrations/success-klart.webp" alt="" aria-hidden="true" className="w-20 h-20 mx-auto mb-2 sm:mb-3 select-none" />
                   <h2 className="text-base sm:text-lg font-bold text-stone-800 dark:text-stone-100 mb-1">
                     {t('dashboard.allStepsComplete')}
                   </h2>

@@ -878,6 +878,12 @@ export default function CVBuilder() {
     return (
       <div className="space-y-6">
         <div className="text-center">
+          <img
+            src="/illustrations/success-cv.webp"
+            alt=""
+            aria-hidden="true"
+            className="w-24 h-24 mx-auto mb-3 select-none"
+          />
           <h3 className="text-2xl font-bold text-stone-800 dark:text-stone-200 mb-2">
             {t('cvBuilder.review.title', 'Granska och spara ditt CV')}
           </h3>

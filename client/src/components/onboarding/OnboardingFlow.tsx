@@ -217,10 +217,19 @@ export function OnboardingFlow() {
             </button>
           </div>
 
-          {/* Domän-pastell ikon-tile */}
-          <div className="w-20 h-20 rounded-2xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center mx-auto mb-6">
-            <Icon className="w-10 h-10 text-[var(--c-solid)]" />
-          </div>
+          {/* Steg 1: välkomst-illustration. Övriga steg: domän-pastell ikon-tile. */}
+          {currentStep === 0 ? (
+            <img
+              src="/illustrations/spot-valkommen.webp"
+              alt=""
+              aria-hidden="true"
+              className="w-28 h-28 mx-auto mb-6 select-none"
+            />
+          ) : (
+            <div className="w-20 h-20 rounded-2xl bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 flex items-center justify-center mx-auto mb-6">
+              <Icon className="w-10 h-10 text-[var(--c-solid)]" />
+            </div>
+          )}
 
           <h2
             id="onboarding-title"

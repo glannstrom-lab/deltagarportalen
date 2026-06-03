@@ -21,12 +21,26 @@ const MAP = [
 ]
 
 // Hero-illustrationer (bredformat, ~1200px brett) för hub-landningssidornas hero.
+// Genererade på solid magenta -> chroma-key.
 const HEROES = [
   { src: 'översikt hero.png', out: 'hero-oversikt' },
   { src: 'hero jobb.png', out: 'hero-jobb' },
   { src: 'hero karriär.png', out: 'hero-karriar' },
   { src: 'hero resurser.png', out: 'hero-resurser' },
   { src: 'hero vardag.png', out: 'hero-vardag' },
+]
+
+// Spot-illustrationer genererade på solid magenta (chroma-key) — framgång,
+// onboarding och editorial. Kvadratiska, ~360px.
+const SPOTS_MAGENTA = [
+  { src: 'success cv.png', out: 'success-cv' },
+  { src: 'success ansokan.png', out: 'success-ansokan' },
+  { src: 'success klart.png', out: 'success-klart' },
+  { src: 'success valkommen.png', out: 'spot-valkommen' },
+  { src: 'spot intervju.png', out: 'spot-intervju' },
+  { src: 'spot ekonomi.png', out: 'spot-ekonomi' },
+  { src: 'spot ratt.png', out: 'spot-ratt' },
+  { src: 'spot halsa.png', out: 'spot-halsa' },
 ]
 
 // En pixel räknas som nära-neutral+ljus (kandidat för rutmönster-bakgrund).
@@ -43,16 +57,16 @@ const isNeutral = (d, i) => {
   return (Math.max(r, g, b) - Math.min(r, g, b)) <= NEUTRAL_DIFF
 }
 
-// mode='spot' -> ChatGPT-spot-PNG med inbränt rutmönster: textur + kant-floodfill.
-// mode='hero' -> ChatGPT-hero-PNG på SOLID MAGENTA: chroma-key bort magentan med
-//                mjuk alfa-kant + spill-suppression (tar bort rosa fransar).
+// mode='spot'    -> ChatGPT-PNG med inbränt rutmönster: textur + kant-floodfill.
+// mode='magenta' -> ChatGPT-PNG på SOLID MAGENTA: chroma-key bort magentan med
+//                   mjuk alfa-kant + spill-suppression (tar bort rosa fransar).
 async function clean(input, mode = 'spot') {
   const { data, info } = await sharp(input).ensureAlpha().raw().toBuffer({ resolveWithObject: true })
   const { width, height, channels } = info // channels = 4
   const out = Buffer.from(data)
   const N = width * height
 
-  if (mode === 'hero') {
+  if (mode === 'magenta') {
     // Chroma-key mot solid magenta. Magentaness = min(R,B) - G: magenta #FF00FF
     // (R och B höga, G=0) -> 255; vitt -> 0; korall-rosa (lågt B) och lavendel
     // (lågt R) -> lågt; sky/grönt -> negativt. Skiljer alltså äkta magenta från
@@ -143,5 +157,6 @@ async function process(list, mode, resize) {
 
 ;(async () => {
   await process(MAP, 'spot', { width: 360, height: 360, fit: 'inside', withoutEnlargement: true })
-  await process(HEROES, 'hero', { width: 1200, withoutEnlargement: true })
+  await process(HEROES, 'magenta', { width: 1200, withoutEnlargement: true })
+  await process(SPOTS_MAGENTA, 'magenta', { width: 360, height: 360, fit: 'inside', withoutEnlargement: true })
 })()
