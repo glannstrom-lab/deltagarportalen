@@ -6,7 +6,8 @@ const sharp = require('sharp')
 const fs = require('fs')
 const path = require('path')
 
-const ROOT = path.resolve(__dirname, '..', '..')
+// Källbilderna (ChatGPT-PNG) ligger ogitspårade i design-source/illustrations-raw/
+const SRC = path.resolve(__dirname, '..', '..', 'design-source', 'illustrations-raw')
 const OUT = path.resolve(__dirname, '..', 'public', 'illustrations')
 fs.mkdirSync(OUT, { recursive: true })
 
@@ -93,7 +94,7 @@ async function clean(input) {
 
 ;(async () => {
   for (const { src, out } of MAP) {
-    const input = path.join(ROOT, src)
+    const input = path.join(SRC, src)
     const output = path.join(OUT, `${out}.webp`)
     const before = fs.statSync(input).size
     const cleaned = await clean(input)

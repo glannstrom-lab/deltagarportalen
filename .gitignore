@@ -102,3 +102,6 @@ pdf-verify/
 # Blob migration reports (URL-mappningar — kan innehålla user-paths)
 blob-migration-report-*.json
 article-refs-report.json
+
+# Bildkällor för illustrationer (stora PNG, behålls lokalt, derivat ligger i client/public/illustrations)
+design-source/illustrations-raw/
