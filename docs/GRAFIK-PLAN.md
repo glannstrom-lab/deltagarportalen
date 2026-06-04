@@ -26,9 +26,16 @@ pastell-hero / verktygssida = neutral hero).
 |-----|--------|
 | Pipeline `client/scripts/optimize-illustrations.cjs` | ✅ Rensar + optimerar → transparent webp |
 | `EmptyState` `illustration`-prop (5 hubbar) | ✅ |
-| 5 spot-illustrationer (`empty-jobb/karriar/resurser/vardag/oversikt`) | ✅ Filer live |
-| Hero översikt (`hero-oversikt`) | ✅ Live i `/oversikt`-hero |
-| Inkopplat skarpt | ✅ Nätverk (resurser), Sparade jobb (jobb), Översikt-hero |
+| 5 spot-illustrationer (`empty-jobb/karriar/resurser/vardag/oversikt`) | ✅ Filer live + inkopplade i tomtillstånd |
+| 5 hub-heroes (`hero-oversikt/jobb/karriar/resurser/vardag`) | ✅ Filer live + inkopplade i hub-landningar |
+| Framgång/firande (`success-cv/ansokan/klart`) | ✅ Filer live + inkopplade i slutför-flöden |
+| Onboarding (`spot-valkommen`) | ✅ Live i OnboardingFlow |
+| Editorial spots (`spot-intervju/ratt/halsa`) | ✅ Live som Kunskapsbank-kategoribanners (`TopicsTab`) |
+| Kunskapsbankens kategori-banners (§7.5, 9 nya spots) | ✅ Live — 12 av 13 kategorier har banner |
+
+**Fas 1, 2 och 3 är klara.** 12 av 13 Kunskapsbank-kategorier har banner (`job-search`
+saknar dedikerad bild, lämnad utan). `spot-ekonomi.webp` är genererad men nu reserv
+(`job-market` använder den på-tema `spot-arbetsmarknad`). Återstår bara valfri polish (Fas 4).
 
 ---
 
@@ -192,11 +199,37 @@ Skapa en platt, vänlig vektorillustration i lugn "kompis"-stil för en svensk j
 Skapa en platt, vänlig vektorillustration i lugn "kompis"-stil för en svensk jobbportal. Kvadratisk 1024×1024 pixlar, motivet centrerat med god marginal. Bakgrunden ska vara HELT SOLID magenta (#FF00FF) som fyller hela ytan — ingen transparens, inget rutmönster, inga vita eller grå ytor i bakgrunden. Inga gradienter, inga skuggor, ingen 3D, mjuka rundade former. Motiv: ett hjärta tillsammans med ett löv, symboliserar hälsa och mående. Motivets huvudfärg är lavendel-lila #7058A8, med vitt och neutralt för små detaljer.
 ```
 
+### 7.5 Kunskapsbankens kategori-banners (Fas 3, nästa batch)
+
+Bryter textmassorna i Kunskapsbankens Ämnen-flik. Mappas i `TopicsTab.tsx`
+(`CATEGORY_ILLUSTRATIONS`) per kategori-id. Alla i sky-blå `#266DA0` (Resurser-hubben)
+för en-färg-per-sida-koherens.
+
+| Kategori-id | Filnamn | Motiv |
+|-------------|---------|-------|
+| `getting-started` | `spot-start.png` | spirande planta + pil uppåt |
+| `self-awareness` | `spot-sjalvkannedom.png` | kompass + spegel |
+| `networking` | `spot-natverk.png` | tre förbundna cirklar med silhuetter |
+| `digital-presence` | `spot-digital.png` | skärm/mobil med profilkort |
+| `career-development` | `spot-karriarutveckling.png` | trappsteg uppåt mot stjärna |
+| `job-market` | `spot-arbetsmarknad.png` | stadssiluett + stapeldiagram |
+| `tools` | `spot-verktyg.png` | checklista + penna |
+| `accessibility` | `spot-tillganglighet.png` | två händer kring ett hjärta |
+| `easy-swedish` | `spot-lattsvenska.png` | öppen bok med A B C |
+
+> Alla 9 ovan ✅ genererade, optimerade och inkopplade i `TopicsTab.tsx`.
+> `spot-ekonomi.webp` blev reserv (mynt + spargris) — kan användas till framtida lön/ekonomi-vy.
+
+Prompt-mall (byt motiv-meningen per rad ovan):
+```
+Skapa en platt, vänlig vektorillustration i lugn "kompis"-stil för en svensk jobbportal. Kvadratisk 1024×1024 pixlar, motivet centrerat med god marginal. Bakgrunden ska vara HELT SOLID magenta (#FF00FF) som fyller hela ytan — ingen transparens, inget rutmönster, inga vita eller grå ytor i bakgrunden. Inga gradienter, inga skuggor, ingen 3D, mjuka rundade former. Motiv: <MOTIV>. Motivets huvudfärg är sky-blå #266DA0, med vitt och neutralt för små detaljer.
+```
+
 ---
 
 ## 8. Att börja med nu
 
-Generera **Fas 1, §7.2 (de 4 hero-bilderna)** i en batch och lägg i
-`design-source/illustrations-raw/`. Säg till när de ligger där, så kör jag
-pipelinen, kopplar in alla fyra heroes + gör tomtillstånds-svepet, och pushar +
-verifierar en gång.
+Fas 1–3:s basset är klart och inkopplat. Nästa batch: **§7.5 (de 9 kategori-spotsen)**.
+Generera dem i ChatGPT och lägg i `design-source/illustrations-raw/`. Säg till när de
+ligger där, så kör jag pipelinen en gång, mappar alla i `TopicsTab.tsx` och verifierar
+live en gång.

@@ -23,9 +23,19 @@ articleCategories.forEach(cat => {
 
 // Dekorativa ämnes-illustrationer per kategori (de som har en bild får en banner).
 const CATEGORY_ILLUSTRATIONS: Record<string, string> = {
+  'getting-started': '/illustrations/spot-start.webp',
+  'self-awareness': '/illustrations/spot-sjalvkannedom.webp',
   interview: '/illustrations/spot-intervju.webp',
+  networking: '/illustrations/spot-natverk.webp',
+  'digital-presence': '/illustrations/spot-digital.webp',
   'employment-law': '/illustrations/spot-ratt.webp',
+  'career-development': '/illustrations/spot-karriarutveckling.webp',
   wellness: '/illustrations/spot-halsa.webp',
+  accessibility: '/illustrations/spot-tillganglighet.webp',
+  'job-market': '/illustrations/spot-arbetsmarknad.webp',
+  tools: '/illustrations/spot-verktyg.webp',
+  'easy-swedish': '/illustrations/spot-lattsvenska.webp',
+  // spot-ekonomi.webp = reserv (genererad, ej mappad)
 }
 
 interface TopicsTabProps {

@@ -41,6 +41,16 @@ const SPOTS_MAGENTA = [
   { src: 'spot ekonomi.png', out: 'spot-ekonomi' },
   { src: 'spot ratt.png', out: 'spot-ratt' },
   { src: 'spot halsa.png', out: 'spot-halsa' },
+  // Kunskapsbankens kategori-banners (§7.5) — sky-blå, chroma-key på magenta.
+  { src: 'spot start.png', out: 'spot-start' },
+  { src: 'spot sjalvkannedom.png', out: 'spot-sjalvkannedom' },
+  { src: 'spot natverk.png', out: 'spot-natverk' },
+  { src: 'spot digital.png', out: 'spot-digital' },
+  { src: 'spot karriarutveckling.png', out: 'spot-karriarutveckling' },
+  { src: 'spot arbetsmarknad.png', out: 'spot-arbetsmarknad' },
+  { src: 'spot verktyg.png', out: 'spot-verktyg' },
+  { src: 'spot tillgänglighet.png', out: 'spot-tillganglighet' },
+  { src: 'spot lattsvenska.png', out: 'spot-lattsvenska' },
 ]
 
 // En pixel räknas som nära-neutral+ljus (kandidat för rutmönster-bakgrund).
