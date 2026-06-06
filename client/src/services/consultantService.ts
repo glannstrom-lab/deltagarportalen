@@ -174,6 +174,24 @@ class ConsultantService {
       .insert(messages)
 
     if (error) throw error
+
+    // GDPR-spårbarhet: logga massutskicket (vem, när, hur många mottagare).
+    // Best-effort — får ALDRIG blockera själva utskicket om audit-tabellen/policyn
+    // saknas. Dataminimering: meddelandets innehåll loggas INTE, bara metadata.
+    try {
+      await supabase.from('audit_logs').insert({
+        user_id: user.id,
+        action: 'BULK_MESSAGE_SENT',
+        resource_type: 'consultant_messages',
+        new_value: {
+          recipient_count: receiverIds.length,
+          recipient_ids: receiverIds,
+          content_length: content.length,
+        },
+      })
+    } catch (err) {
+      console.warn('[consultantService] audit-logg för bulk-utskick misslyckades:', err)
+    }
   }
 
   /**

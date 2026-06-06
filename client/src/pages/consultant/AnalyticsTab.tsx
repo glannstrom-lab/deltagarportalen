@@ -321,8 +321,8 @@ export function AnalyticsTab() {
           )
         }
 
-        // Generate monthly progress data based on date range
-        const monthlyData = generateMonthlyProgress(dateRange, avgATS)
+        // Verklig månadsserie: slutförda mål + placeringar per månad (riktiga timestamps)
+        const monthlyData = computeMonthlyProgress(dateRange, goalsData || [], allPlacementsData || [])
 
         const statusData = [
           { label: t('consultant.analytics.status.active'), value: active, color: 'bg-emerald-500' },
@@ -355,11 +355,17 @@ export function AnalyticsTab() {
     }
   }
 
-  // Helper function to generate monthly progress data
-  const generateMonthlyProgress = (range: string, currentAvg: number) => {
+  // Räknar verkliga slutförda milstolpar per månad (avslutade mål + placeringar).
+  // Tidigare fabricerade denna en ATS-progression med Math.random() — borttaget
+  // 2026-06-06, en konsulent får inte visa brus som utvecklingskurva. Tomma
+  // månader blir 0 (sanning), inte uppdiktade värden.
+  const computeMonthlyProgress = (
+    range: string,
+    goals: Array<Record<string, unknown>>,
+    placements: Array<Record<string, unknown>>
+  ) => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun', 'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec']
     const now = new Date()
-    const currentMonth = now.getMonth()
 
     let numMonths: number
     switch (range) {
@@ -370,17 +376,26 @@ export function AnalyticsTab() {
       default: numMonths = 6
     }
 
-    const data = []
+    const buckets: Array<{ month: string; value: number }> = []
+    const indexByKey: Record<string, number> = {}
     for (let i = numMonths - 1; i >= 0; i--) {
-      const monthIndex = (currentMonth - i + 12) % 12
-      // Generate a somewhat realistic progression
-      const baseValue = Math.max(30, currentAvg - (i * 5) + Math.floor(Math.random() * 10 - 5))
-      data.push({
-        month: months[monthIndex],
-        value: Math.min(100, Math.max(0, baseValue)),
-      })
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      indexByKey[`${d.getFullYear()}-${d.getMonth()}`] = buckets.length
+      buckets.push({ month: months[d.getMonth()], value: 0 })
     }
-    return data
+
+    const bump = (iso: unknown) => {
+      if (!iso) return
+      const d = new Date(iso as string)
+      if (isNaN(d.getTime())) return
+      const idx = indexByKey[`${d.getFullYear()}-${d.getMonth()}`]
+      if (idx !== undefined) buckets[idx].value += 1
+    }
+
+    goals.forEach(g => { if (g.status === 'COMPLETED') bump(g.completed_at || g.updated_at) })
+    placements.forEach(p => bump(p.placement_date || p.start_date || p.created_at))
+
+    return buckets
   }
 
   // Helper function to calculate cohorts from participant data
@@ -514,7 +529,7 @@ export function AnalyticsTab() {
 
     return {
       cvCompletion: calcPercentChange(currentCvRate, previousCvRate),
-      placementTime: { value: 5, isPositive: true }, // Placeholder - would need historical placement data
+      placementTime: { value: 0, isPositive: true }, // Ingen historisk placeringstidsserie ännu → 0 döljer trenden (render gate rad ~687) i st. för att visa en uppdiktad +5%
       goalsCompletion: calcPercentChange(currentGoalsRate, previousGoalsRate),
       engagement: calcPercentChange(currentEngagementRate, previousEngagementRate),
     }

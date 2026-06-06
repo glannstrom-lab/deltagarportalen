@@ -503,7 +503,6 @@ export function OverviewTab() {
           subtitle={t('consultant.overview.completeCvs', { count: stats.completedCV })}
           icon={FileText}
           status={stats.averageProgress >= 70 ? 'green' : stats.averageProgress >= 50 ? 'yellow' : 'red'}
-          trend={{ value: 5, isPositive: true }}
           onClick={() => navigate('/consultant/analytics')}
         />
         <KPICard
