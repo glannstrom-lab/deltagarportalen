@@ -12,7 +12,6 @@ import { CareerRecommendationsPanel } from '@/components/interest-guide/CareerRe
 import { LoadingState, InfoCard, Button, Card } from '@/components/ui'
 import { interestGuideApi, type InterestGuideHistoryEntry } from '@/services/cloudStorage'
 import {
-  ClipboardList,
   Sparkles,
   Download,
   Share2,
@@ -159,14 +158,16 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   if (!profile) {
     return (
       <div className="max-w-lg mx-auto text-center py-12  min-h-screen">
-        <motion.div
+        <motion.img
+          src="/illustrations/empty-karriar.webp"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 rounded-2xl flex items-center justify-center mx-auto mb-6"
-        >
-          <ClipboardList className="w-8 h-8 text-amber-600 dark:text-amber-400" />
-        </motion.div>
+          className="w-32 h-32 mx-auto mb-6 select-none"
+        />
         <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
           {t('interestGuide.noResultsYet') || 'Inga resultat än'}
         </h2>

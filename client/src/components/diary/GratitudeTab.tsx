@@ -174,7 +174,13 @@ function GratitudeHistory() {
   if (entries.length === 0) {
     return (
       <Card className="p-8 text-center">
-        <Heart className="w-12 h-12 text-stone-200 mx-auto mb-4" />
+        <img
+          src="/illustrations/empty-vardag.webp"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="w-24 h-24 mx-auto mb-4 select-none"
+        />
         <h3 className="font-semibold text-stone-700 mb-2">Ingen historik än</h3>
         <p className="text-sm text-stone-700">
           Börja logga din dagliga tacksamhet för att se din historik här

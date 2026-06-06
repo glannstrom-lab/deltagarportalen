@@ -370,7 +370,13 @@ export function GoalsTab() {
       {/* Goals */}
       {goals.length === 0 && !showAddForm ? (
         <Card className="p-12 text-center">
-          <Target className="w-16 h-16 text-stone-200 mx-auto mb-4" />
+          <img
+            src="/illustrations/empty-vardag.webp"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="w-28 h-28 mx-auto mb-4 select-none"
+          />
           <h3 className="text-lg font-semibold text-stone-700 mb-2">
             Inga mål satta för denna vecka
           </h3>

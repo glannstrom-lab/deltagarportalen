@@ -32,10 +32,23 @@ pastell-hero / verktygssida = neutral hero).
 | Onboarding (`spot-valkommen`) | ✅ Live i OnboardingFlow |
 | Editorial spots (`spot-intervju/ratt/halsa`) | ✅ Live som Kunskapsbank-kategoribanners (`TopicsTab`) |
 | Kunskapsbankens kategori-banners (§7.5, 9 nya spots) | ✅ Live — 12 av 13 kategorier har banner |
+| Dagbok-tomtillstånd (Journal/Tacksamhet/Mål) → `empty-vardag` | ✅ Inkopplat (Hink A, 2026-06-06) |
+| Intresseguide-resultat tomt läge → `empty-karriar` | ✅ Inkopplat + fixade amber-färgbrott (Hink A, 2026-06-06) |
 
 **Fas 1, 2 och 3 är klara.** 12 av 13 Kunskapsbank-kategorier har banner (`job-search`
 saknar dedikerad bild, lämnad utan). `spot-ekonomi.webp` är genererad men nu reserv
-(`job-market` använder den på-tema `spot-arbetsmarknad`). Återstår bara valfri polish (Fas 4).
+(`job-market` använder den på-tema `spot-arbetsmarknad`).
+
+### Audit 2026-06-06 (asset-integritet ✅)
+- 27 webp på disk, 26 refererade i kod. Enda oanvända: `spot-ekonomi` (avsiktlig reserv).
+- Inga trasiga referenser (ingen kod pekar på saknad fil). Alla 27 giltiga transparenta
+  webp, 8–47 KB, korrekta mått. *Live-rendering i ljust/mörkt läge ej verifierad — kräver
+  inloggning mot jobin.se.*
+- **Hink A (noll nya bilder) klar:** Dagbok + Intresseguide-empties kopplade till befintliga
+  hub-spots. AI-teamets tomma chatt lämnas — har medveten agent-specifik greeting, inte ett
+  platt tomtillstånd. Konsultvyns empties lämnas neutrala (DESIGN.md §2 — admin-vyer har
+  egen, mer saklig ton; varma deltagar-illustrationer hör inte hemma där).
+- **Hink B (ny batch) = Fas 5 nedan:** 3 nya framgångs-spots för AI-verktygens slutmoment.
 
 ---
 
@@ -120,6 +133,21 @@ Så blir det en deploy per fas i stället för en per bild.
 
 ### Fas 4 — Polish (valfritt)
 - Diskreta dekor-motiv i sektionsheaders, små accenter. Endast om tid finns.
+
+### Fas 5 — Framgångsögonblick i AI-verktygen (nästa batch) 🎯
+**Mål:** De tre största AI-verktygen saknar ett framgångsögonblick när man är klar.
+Audit 2026-06-06 visade att CV och ansökan har success-spots, men Intervjusimulator,
+Kompetensanalys och Intresseguide avslutas utan visuell belöning.
+- Generera 3 framgångs-spots (§7.6), färgsatta per sidans hub-färg (en-färg-per-sida).
+- Jag kopplar in i slutför-/resultatläget på respektive verktyg.
+- **OBS — inga hero-illustrationer på verktygssidor.** DESIGN.md §3: verktygssidor har
+  neutral grå hero. Grafik på dem = framgångsögonblick, tomtillstånd eller editorial-spot.
+
+| Verktyg | Hub-färg | Filnamn | Inkopplas i |
+|---------|----------|---------|-------------|
+| Intervjusimulator klar | persika `#A85D24` | `success-intervju.png` | `InterviewSimulator.tsx` slutvy |
+| Kompetensanalys klar | rosa `#B85363` | `success-kompetens.png` | `SkillsGapAnalysis.tsx` resultat/till-plan |
+| Intresseguide klar | rosa `#B85363` | `success-intresse.png` | `interest-guide/ResultsTab.tsx` topp |
 
 ---
 
@@ -225,11 +253,32 @@ Prompt-mall (byt motiv-meningen per rad ovan):
 Skapa en platt, vänlig vektorillustration i lugn "kompis"-stil för en svensk jobbportal. Kvadratisk 1024×1024 pixlar, motivet centrerat med god marginal. Bakgrunden ska vara HELT SOLID magenta (#FF00FF) som fyller hela ytan — ingen transparens, inget rutmönster, inga vita eller grå ytor i bakgrunden. Inga gradienter, inga skuggor, ingen 3D, mjuka rundade former. Motiv: <MOTIV>. Motivets huvudfärg är sky-blå #266DA0, med vitt och neutralt för små detaljer.
 ```
 
+### 7.6 Framgångsögonblick i AI-verktygen (Fas 5, nästa batch)
+
+Varje prompt är komplett. Spara med angivet filnamn i `design-source/illustrations-raw/`.
+
+**`success-intervju.png`** (Intervjusimulator — persika)
+```
+Skapa en platt, vänlig vektorillustration i lugn "kompis"-stil för en svensk jobbportal. Kvadratisk 1024×1024 pixlar, motivet centrerat med god marginal. Bakgrunden ska vara HELT SOLID magenta (#FF00FF) som fyller hela ytan — ingen transparens, inget rutmönster, inga vita eller grå ytor i bakgrunden. Inga gradienter, inga skuggor, ingen 3D, mjuka rundade former. Motiv: en mikrofon med en liten stjärna eller bock bredvid och några lugna konfetti-prickar, känsla av väl genomförd intervju. Motivets huvudfärg är persika-orange #A85D24, med vitt och neutralt för små detaljer.
+```
+
+**`success-kompetens.png`** (Kompetensanalys — rosa)
+```
+Skapa en platt, vänlig vektorillustration i lugn "kompis"-stil för en svensk jobbportal. Kvadratisk 1024×1024 pixlar, motivet centrerat med god marginal. Bakgrunden ska vara HELT SOLID magenta (#FF00FF) som fyller hela ytan — ingen transparens, inget rutmönster, inga vita eller grå ytor i bakgrunden. Inga gradienter, inga skuggor, ingen 3D, mjuka rundade former. Motiv: en pusselbit som faller på plats i ett mönster, symboliserar att ett kompetensgap fylls. Motivets huvudfärg är korall-rosa #B85363, med vitt och neutralt för små detaljer.
+```
+
+**`success-intresse.png`** (Intresseguide — rosa)
+```
+Skapa en platt, vänlig vektorillustration i lugn "kompis"-stil för en svensk jobbportal. Kvadratisk 1024×1024 pixlar, motivet centrerat med god marginal. Bakgrunden ska vara HELT SOLID magenta (#FF00FF) som fyller hela ytan — ingen transparens, inget rutmönster, inga vita eller grå ytor i bakgrunden. Inga gradienter, inga skuggor, ingen 3D, mjuka rundade former. Motiv: en kompass med en liten stjärna i riktningen, symboliserar att man hittat sin riktning. Motivets huvudfärg är korall-rosa #B85363, med vitt och neutralt för små detaljer.
+```
+
 ---
 
 ## 8. Att börja med nu
 
-Fas 1–3:s basset är klart och inkopplat. Nästa batch: **§7.5 (de 9 kategori-spotsen)**.
-Generera dem i ChatGPT och lägg i `design-source/illustrations-raw/`. Säg till när de
-ligger där, så kör jag pipelinen en gång, mappar alla i `TopicsTab.tsx` och verifierar
-live en gång.
+Fas 1–3 är klara och inkopplade, och Hink A (audit 2026-06-06) kopplade in befintliga
+spots i Dagbok + Intresseguide-empties utan nya bilder.
+
+**Nästa batch: §7.6 — de 3 framgångs-spotsen (Fas 5).** Generera dem i ChatGPT och lägg
+i `design-source/illustrations-raw/`. Säg till när de ligger där, så kör jag pipelinen en
+gång, kopplar in alla tre i respektive verktygs slutvy, bygger och verifierar en gång.
