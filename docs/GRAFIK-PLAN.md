@@ -149,6 +149,11 @@ Kompetensanalys och Intresseguide avslutas utan visuell belöning.
 | Kompetensanalys klar | rosa `#B85363` | `success-kompetens.png` | `SkillsGapAnalysis.tsx` resultat/till-plan |
 | Intresseguide klar | rosa `#B85363` | `success-intresse.png` | `interest-guide/ResultsTab.tsx` topp |
 
+> **✅ Fas 5 inkopplad 2026-06-06.** Alla tre genererade, chroma-keyade (13–18 KB) och
+> inkopplade: Intresseguide-resultatets topp, SkillsGap-resultatets header, och en
+> milstolpe-hälsning i Intervjusimulatorn efter 3 besvarade frågor (verktyget saknade
+> dedikerad slutvy — hälsningen är medvetet kopplad till milstolpen i stället).
+
 ---
 
 ## 7. Promptlista

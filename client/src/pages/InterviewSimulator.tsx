@@ -620,6 +620,27 @@ TIPS FÖR FÖRBÄTTRING:
         </div>
       </Card>
 
+      {/* Milstolpe-hälsning (Fas 5 — success-spot) — visas efter 3 besvarade frågor */}
+      {antalFragor >= 3 && (
+        <Card className="p-5 flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left bg-white dark:bg-stone-800 border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50 shadow-sm">
+          <img
+            src="/illustrations/success-intervju.webp"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="w-20 h-20 flex-shrink-0 select-none"
+          />
+          <div>
+            <h3 className="text-lg font-bold text-stone-800 dark:text-stone-100">
+              Du har svarat på {antalFragor} frågor
+            </h3>
+            <p className="text-stone-600 dark:text-stone-300 mt-1">
+              Varje övning gör dig tryggare inför den riktiga intervjun. Fortsätt så länge du vill, eller ladda ner din sammanfattning.
+            </p>
+          </div>
+        </Card>
+      )}
+
       {/* Historik med expanderbar feedback - with aria-live */}
       {historik.length > 0 && (
         <div className="space-y-4" role="log" aria-live="polite" aria-label={t('interviewSimulator.session.previousAnswers')}>

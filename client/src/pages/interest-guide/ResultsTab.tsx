@@ -198,6 +198,27 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         </InfoCard>
       )}
 
+      {/* Slutförande-hälsning (Fas 5 — success-spot) */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left"
+      >
+        <img
+          src="/illustrations/success-intresse.webp"
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          className="w-24 h-24 flex-shrink-0 select-none"
+        />
+        <div>
+          <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">Du har hittat din riktning</h2>
+          <p className="text-stone-600 dark:text-stone-300 mt-1">
+            Här är vad dina svar säger om vilka yrken som kan passa dig.
+          </p>
+        </div>
+      </motion.div>
+
       {/* Results Summary Cards */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}

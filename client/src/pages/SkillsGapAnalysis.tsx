@@ -530,6 +530,23 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         className="max-w-7xl mx-auto"
         contentClassName="space-y-6 pb-20"
       >
+        {/* Slutförande-hälsning (Fas 5 — success-spot) */}
+        <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-left">
+          <img
+            src="/illustrations/success-kompetens.webp"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="w-20 h-20 flex-shrink-0 select-none"
+          />
+          <div>
+            <h2 className="text-xl font-bold text-stone-800 dark:text-stone-100">Din analys är klar</h2>
+            <p className="text-stone-600 dark:text-stone-300 mt-1">
+              Så här ser dina styrkor och nästa steg ut mot {currentAnalysis.dream_job}.
+            </p>
+          </div>
+        </div>
+
         {/* Results Header */}
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">

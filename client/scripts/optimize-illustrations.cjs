@@ -51,6 +51,10 @@ const SPOTS_MAGENTA = [
   { src: 'spot verktyg.png', out: 'spot-verktyg' },
   { src: 'spot tillgänglighet.png', out: 'spot-tillganglighet' },
   { src: 'spot lattsvenska.png', out: 'spot-lattsvenska' },
+  // Fas 5 — framgångsögonblick i AI-verktygen (§7.6).
+  { src: 'success intervju.png', out: 'success-intervju' },
+  { src: 'success kompetens.png', out: 'success-kompetens' },
+  { src: 'success intresse.png', out: 'success-intresse' },
 ]
 
 // En pixel räknas som nära-neutral+ljus (kandidat för rutmönster-bakgrund).
