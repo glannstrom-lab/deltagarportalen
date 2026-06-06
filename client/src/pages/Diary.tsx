@@ -222,6 +222,20 @@ function DiaryInner() {
 >
       <WellnessConsentGate>
       <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
+        {/* Editorial-spot (Fas 6) */}
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-[var(--c-bg)] border border-[var(--c-accent)]/50">
+          <img
+            src="/illustrations/spot-dagbok.webp"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="w-16 h-16 flex-shrink-0 select-none"
+          />
+          <p className="text-sm sm:text-base text-stone-700 dark:text-stone-200">
+            Samla tankar, humör, mål och tacksamhet på ett ställe — i din egen takt.
+          </p>
+        </div>
+
         {/* Achievement Banner (only for significant milestones) */}
         <AchievementBanner />
 

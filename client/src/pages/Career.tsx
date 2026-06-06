@@ -66,6 +66,20 @@ export default function CareerPage() {
         className="max-w-7xl mx-auto space-y-6"
         domain="coaching"
       >
+        {/* Editorial-spot (Fas 6) */}
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-[var(--c-bg)] border border-[var(--c-accent)]/50">
+          <img
+            src="/illustrations/spot-karriarbygge.webp"
+            alt=""
+            aria-hidden="true"
+            loading="lazy"
+            className="w-16 h-16 flex-shrink-0 select-none"
+          />
+          <p className="text-sm sm:text-base text-stone-700 dark:text-stone-200">
+            Utforska arbetsmarknaden och bygg din plan steg för steg.
+          </p>
+        </div>
+
         <Routes>
           <Route path="/" element={<LaborMarketTab />} />
           <Route path="/adaptation" element={<AdaptationTab />} />

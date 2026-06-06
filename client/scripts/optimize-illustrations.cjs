@@ -55,6 +55,13 @@ const SPOTS_MAGENTA = [
   { src: 'success intervju.png', out: 'success-intervju' },
   { src: 'success kompetens.png', out: 'success-kompetens' },
   { src: 'success intresse.png', out: 'success-intresse' },
+  // Fas 6 — editorial-spots för verktygssidor (§7.7).
+  { src: 'spot profil.png', out: 'spot-profil' },
+  { src: 'spot dagbok.png', out: 'spot-dagbok' },
+  { src: 'spot internationellt.png', out: 'spot-internationellt' },
+  { src: 'spot lon.png', out: 'spot-lon' },
+  { src: 'spot varumarke.png', out: 'spot-varumarke' },
+  { src: 'spot karriarbygge.png', out: 'spot-karriarbygge' },
 ]
 
 // En pixel räknas som nära-neutral+ljus (kandidat för rutmönster-bakgrund).

@@ -154,6 +154,26 @@ Kompetensanalys och Intresseguide avslutas utan visuell belöning.
 > milstolpe-hälsning i Intervjusimulatorn efter 3 besvarade frågor (verktyget saknade
 > dedikerad slutvy — hälsningen är medvetet kopplad till milstolpen i stället).
 
+### Fas 6 — Editorial-spots på verktygssidor (§7.7)
+**Mål:** Bryta textmassan högst upp på fyra text-/formtunga verktygssidor + Dagbok,
+med samma editorial-banner-mönster som Kunskapsbanken (`bg-[var(--c-bg)]` +
+`border-[var(--c-accent)]`, auto-färgad via sidans `data-domain`). Inga hero-bilder.
+
+| Bild (4 juni-batch) | Filnamn | Sida (domän) | Status |
+|---------------------|---------|--------------|--------|
+| Jordglob + flygplan | `spot-internationellt` | International (activity) | ✅ Inkopplad |
+| Handslag + kr-mynt | `spot-lon` | Salary (activity) | ✅ Inkopplad |
+| Rosett + person + stjärna | `spot-varumarke` | PersonalBrand (coaching) | ✅ Inkopplad |
+| Pussel + stege | `spot-karriarbygge` | Career (coaching) | ✅ Inkopplad |
+| Dagboks-uppslag | `spot-dagbok` | Diary (wellbeing) | ✅ Inkopplad |
+| Min profil-kort | `spot-profil` | — | ⏸ **Reserv** |
+
+> `spot-profil.webp` är genererad och chroma-keyad men **inte inkopplad**: Profilsidans
+> `ProfileHeader` visar redan ett riktigt profilkort med avatar, så en stiliserad
+> profil-illustration där bryter mot §1 ("grafik ska stötta, inte dekorera tomt").
+> Sparas som reserv för onboarding / ofullständig-profil-läge (jfr `spot-ekonomi`).
+> Bok+ABC-bilden från samma batch var redan inlagd som `spot-lattsvenska`.
+
 ---
 
 ## 7. Promptlista
