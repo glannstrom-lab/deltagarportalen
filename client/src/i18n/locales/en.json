@@ -157,6 +157,97 @@
     "upcomingEvents": "Upcoming events",
     "noEventsPlanned": "No events planned",
     "newEvent": "New event",
+    "eventCreated": "Event created",
+    "eventUpdated": "Event updated",
+    "eventDeleted": "Event deleted",
+    "oneHour": "1 hour",
+    "videoCall": "Video call",
+    "phone": "Phone",
+    "modal": {
+      "newEvent": "New event",
+      "editEvent": "Edit event",
+      "title": "Title",
+      "titlePlaceholder": "E.g. Interview with Tech Solutions",
+      "type": "Event type",
+      "date": "Date",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "locationOptional": "Location (optional)",
+      "locationPlaceholder": "E.g. the office or a video link",
+      "withOptional": "With whom (optional)",
+      "withPlaceholder": "E.g. name of the person you're meeting",
+      "description": "Description",
+      "descriptionPlaceholder": "Add details about the event ...",
+      "linkedTo": "Linked to",
+      "createEvent": "Create event",
+      "tabs": {
+        "details": "Details",
+        "tasks": "Tasks",
+        "preparation": "Preparation",
+        "travel": "Travel"
+      }
+    },
+    "eventTypes": {
+      "interview": "Interview",
+      "meeting": "Meeting",
+      "deadline": "Deadline",
+      "reminder": "Reminder",
+      "task": "Task",
+      "followup": "Follow-up",
+      "preparation": "Preparation"
+    },
+    "errors": {
+      "endTimeBeforeStart": "The end time can't be before the start time",
+      "saveFailed": "Couldn't save the event. Please try again.",
+      "deleteFailed": "Couldn't delete the event. Please try again.",
+      "loadFailed": "Couldn't load your events. Please try again."
+    },
+    "tasks": {
+      "toDo": "To do",
+      "empty": "No tasks yet",
+      "addTask": "Add task",
+      "addPlaceholder": "New task ...",
+      "deleteTask": "Delete task",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
+    },
+    "travel": {
+      "title": "Travel planning",
+      "travelPlan": "Travel plan",
+      "edit": "Edit",
+      "destination": "Destination",
+      "destinationPlaceholder": "Where are you going?",
+      "transportMode": "Mode of transport",
+      "modes": {
+        "walk": "Walk",
+        "bike": "Bike",
+        "car": "Car",
+        "public": "Public transport"
+      },
+      "departureTime": "Departure time",
+      "duration": "Travel time",
+      "cost": "Cost",
+      "reimbursed": "Reimbursed",
+      "savePlan": "Save travel plan"
+    },
+    "interviewPrep": {
+      "title": "Interview preparation",
+      "subtitle": "Get ready for your interview",
+      "theCompany": "The company",
+      "searchCompany": "Search company",
+      "generateDescription": "Generate description",
+      "generateQuestions": "Generate questions",
+      "questionsToAsk": "Questions to ask",
+      "tailoredQuestions": "Tailored questions",
+      "commonQuestions": "Common questions",
+      "dressRecommendation": "Dress recommendation",
+      "questions": {
+        "attraction": "What attracts you most to this role?",
+        "businessModel": "How does the company make money?",
+        "challenge": "What's your biggest challenge right now?",
+        "contribution": "How can I contribute most in this role?"
+      }
+    },
     "mockData": {
       "jobInterview": "Job Interview - Tech Solutions",
       "secondInterview": "Second interview with technical questions",
@@ -171,6 +262,30 @@
       "interviewPrep": "Interview preparation",
       "reviewQuestions": "Review common interview questions"
     }
+  },
+  "datasharing": {
+    "title": "Data sharing",
+    "description": "Control what your consultant can see",
+    "consultantLabel": "Your consultant:",
+    "noConsultant": "No consultant assigned",
+    "noConsultantDesc": "You don't have an assigned consultant yet. These settings apply once a consultant is assigned to you.",
+    "health": {
+      "title": "Share health data",
+      "description": "Allow your consultant to see your ICF data (cognitive, motor, sensory, etc.)"
+    },
+    "wellness": {
+      "title": "Share wellbeing data",
+      "description": "Allow your consultant to see your diary, mood and wellbeing information"
+    },
+    "warningShared": "Your consultant can now see this data",
+    "privacy": "Your data is safe",
+    "privacyDesc": "All data sharing is entirely optional and can be withdrawn at any time. Your data is encrypted and transferred securely.",
+    "savedSuccess": "Your settings were saved!",
+    "loadError": "Couldn't load your settings",
+    "saveError": "Couldn't save settings",
+    "privacyPolicy": "Read our",
+    "privacyPolicyLink": "privacy policy",
+    "privacyPolicyEnd": " for more information about how we process your data."
   },
   "nav": {
     "dashboard": "Dashboard",

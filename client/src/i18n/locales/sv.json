@@ -157,6 +157,97 @@
     "upcomingEvents": "Kommande händelser",
     "noEventsPlanned": "Inga händelser planerade",
     "newEvent": "Ny händelse",
+    "eventCreated": "Händelse skapad",
+    "eventUpdated": "Händelse uppdaterad",
+    "eventDeleted": "Händelse borttagen",
+    "oneHour": "1 timme",
+    "videoCall": "Videosamtal",
+    "phone": "Telefon",
+    "modal": {
+      "newEvent": "Ny händelse",
+      "editEvent": "Redigera händelse",
+      "title": "Titel",
+      "titlePlaceholder": "T.ex. Intervju med Tech Solutions",
+      "type": "Typ av händelse",
+      "date": "Datum",
+      "startTime": "Starttid",
+      "endTime": "Sluttid",
+      "locationOptional": "Plats (valfritt)",
+      "locationPlaceholder": "T.ex. kontoret eller en videolänk",
+      "withOptional": "Med vem (valfritt)",
+      "withPlaceholder": "T.ex. namn på person du träffar",
+      "description": "Beskrivning",
+      "descriptionPlaceholder": "Lägg till detaljer om händelsen ...",
+      "linkedTo": "Kopplad till",
+      "createEvent": "Skapa händelse",
+      "tabs": {
+        "details": "Detaljer",
+        "tasks": "Uppgifter",
+        "preparation": "Förberedelse",
+        "travel": "Resa"
+      }
+    },
+    "eventTypes": {
+      "interview": "Intervju",
+      "meeting": "Möte",
+      "deadline": "Deadline",
+      "reminder": "Påminnelse",
+      "task": "Uppgift",
+      "followup": "Uppföljning",
+      "preparation": "Förberedelse"
+    },
+    "errors": {
+      "endTimeBeforeStart": "Sluttiden kan inte vara före starttiden",
+      "saveFailed": "Kunde inte spara händelsen. Försök igen.",
+      "deleteFailed": "Kunde inte ta bort händelsen. Försök igen.",
+      "loadFailed": "Kunde inte ladda dina händelser. Försök igen."
+    },
+    "tasks": {
+      "toDo": "Att göra",
+      "empty": "Inga uppgifter ännu",
+      "addTask": "Lägg till uppgift",
+      "addPlaceholder": "Ny uppgift ...",
+      "deleteTask": "Ta bort uppgift",
+      "moveUp": "Flytta upp",
+      "moveDown": "Flytta ner"
+    },
+    "travel": {
+      "title": "Reseplanering",
+      "travelPlan": "Reseplan",
+      "edit": "Ändra",
+      "destination": "Destination",
+      "destinationPlaceholder": "Vart ska du?",
+      "transportMode": "Färdsätt",
+      "modes": {
+        "walk": "Gå",
+        "bike": "Cykel",
+        "car": "Bil",
+        "public": "Kollektivt"
+      },
+      "departureTime": "Avgångstid",
+      "duration": "Restid",
+      "cost": "Kostnad",
+      "reimbursed": "Ersätts",
+      "savePlan": "Spara reseplan"
+    },
+    "interviewPrep": {
+      "title": "Intervjuförberedelse",
+      "subtitle": "Förbered dig inför intervjun",
+      "theCompany": "Företaget",
+      "searchCompany": "Sök företag",
+      "generateDescription": "Generera beskrivning",
+      "generateQuestions": "Generera frågor",
+      "questionsToAsk": "Frågor att ställa",
+      "tailoredQuestions": "Skräddarsydda frågor",
+      "commonQuestions": "Vanliga frågor",
+      "dressRecommendation": "Klädrekommendation",
+      "questions": {
+        "attraction": "Vad lockar dig mest med den här rollen?",
+        "businessModel": "Hur tjänar företaget pengar?",
+        "challenge": "Vad är er största utmaning just nu?",
+        "contribution": "Hur kan jag bidra mest i den här rollen?"
+      }
+    },
     "mockData": {
       "jobInterview": "Jobbintervju - Tech Solutions",
       "secondInterview": "Andra intervjun med tekniska frågor",
@@ -171,6 +262,30 @@
       "interviewPrep": "Förberedelse inför intervju",
       "reviewQuestions": "Gå igenom vanliga intervjufrågor"
     }
+  },
+  "datasharing": {
+    "title": "Datadelning",
+    "description": "Styr vad din konsulent kan se",
+    "consultantLabel": "Din konsulent:",
+    "noConsultant": "Ingen konsulent tilldelad",
+    "noConsultantDesc": "Du har ingen tilldelad konsulent än. Dessa inställningar gäller när en konsulent tilldelas dig.",
+    "health": {
+      "title": "Dela hälsodata",
+      "description": "Tillåt din konsulent att se din ICF-data (kognitiv, motorisk, sensorisk osv.)"
+    },
+    "wellness": {
+      "title": "Dela välmåendedata",
+      "description": "Tillåt din konsulent att se din dagbok, ditt humör och din välmåendeinformation"
+    },
+    "warningShared": "Din konsulent kan nu se denna data",
+    "privacy": "Dina data är säkra",
+    "privacyDesc": "All datadelning är helt valfri och kan dras tillbaka när som helst. Din data krypteras och överförs säkert.",
+    "savedSuccess": "Dina inställningar sparades!",
+    "loadError": "Kunde inte hämta dina inställningar",
+    "saveError": "Kunde inte spara inställningar",
+    "privacyPolicy": "Läs vår",
+    "privacyPolicyLink": "integritetspolicy",
+    "privacyPolicyEnd": " för mer information om hur vi behandlar dina data."
   },
   "nav": {
     "dashboard": "Översikt",
