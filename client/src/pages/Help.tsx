@@ -11,8 +11,8 @@ import {
   Briefcase,
   Target,
   Compass,
-  LucideIcon
 } from '@/components/ui/icons'
+import type { LucideIcon } from '@/components/ui/icons'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHelpWizard } from '@/components/focus/pages/FocusHelpWizard'

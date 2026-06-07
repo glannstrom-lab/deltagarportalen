@@ -214,7 +214,10 @@
       "development": "My Development",
       "wellbeing": "Wellbeing",
       "resources": "Resources",
-      "account": "Account"
+      "account": "Account",
+      "action": "Overview",
+      "reflection": "Reflection",
+      "outbound": "Outreach"
     }
   },
   "roles": {

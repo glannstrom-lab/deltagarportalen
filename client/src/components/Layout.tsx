@@ -367,7 +367,7 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
                 className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wider hover:bg-stone-50 dark:hover:bg-stone-800 rounded-lg transition-colors"
                 aria-expanded={isGroupExpanded}
               >
-                <span>{t(group.labelKey)}</span>
+                <span>{t(group.labelKey, group.fallbackLabel)}</span>
                 <ChevronDown
                   className={cn(
                     'w-3.5 h-3.5 transition-transform',

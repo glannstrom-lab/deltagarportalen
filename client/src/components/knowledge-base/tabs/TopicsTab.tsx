@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { BookOpen, Grid, List, SlidersHorizontal, Search } from '@/components/ui/icons'
 import EnhancedArticleCard from '../EnhancedArticleCard'
 import { Card, Input } from '@/components/ui'
+import { MotionList } from '@/components/ui/MotionList'
 import { articleCategories } from '@/services/articleData'
 import type { Article } from '@/types/knowledge'
 
@@ -260,14 +261,14 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
           </Card>
         ) : viewMode === 'grid' ? (
           // Grid view
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <MotionList className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {visibleArticles.map((article) => (
               <EnhancedArticleCard
                 key={article.id}
                 article={article}
               />
             ))}
-          </div>
+          </MotionList>
         ) : (
           // List view
           <div className="space-y-3">

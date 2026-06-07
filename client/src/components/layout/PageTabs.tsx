@@ -271,7 +271,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
               'min-h-[40px]', // touch-friendly
               isActive
                 ? 'bg-[var(--c-bg)] text-[var(--c-text)] border border-[var(--c-accent)]'
-                : 'bg-white text-stone-700 border border-stone-200 hover:bg-stone-50'
+                : 'bg-white dark:bg-stone-800 text-stone-700 dark:text-stone-300 border border-stone-200 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-700'
             )}
           >
             {Icon && <Icon className="w-4 h-4" />}
@@ -279,7 +279,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-[11px] rounded-full font-bold',
-                isActive ? 'bg-white/60 text-[var(--c-text)]' : 'bg-stone-100 text-stone-600'
+                isActive ? 'bg-white/60 text-[var(--c-text)]' : 'bg-stone-100 dark:bg-stone-700 text-stone-600 dark:text-stone-300'
               )}>
                 {tab.badge}
               </span>

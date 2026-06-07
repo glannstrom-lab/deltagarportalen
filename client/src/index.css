@@ -1018,6 +1018,20 @@
     }
   }
 
+  /* Staggered list/grid entrance — appliceras via <MotionList>. Varje item
+     fadar upp med en liten delay per index. Reduced-motion: den globala regeln
+     ovan kollapsar durationen; här nollar vi även delayen så inget kommer in
+     successivt för de användarna. */
+  .stagger-item {
+    animation: fadeInUp 0.3s ease-out both;
+    animation-delay: calc(var(--stagger-index, 0) * 40ms);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stagger-item {
+      animation-delay: 0ms !important;
+    }
+  }
+
   /* Card lift on hover */
   .card-lift {
     transition: transform 0.2s ease, box-shadow 0.2s ease;

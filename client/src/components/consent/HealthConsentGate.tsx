@@ -206,14 +206,14 @@ export function HealthConsentGate({
         </div>
 
         <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800/50 rounded-lg text-left">
-          <p className="text-xs text-blue-700 dark:text-blue-300">
+          <div className="text-xs text-blue-700 dark:text-blue-300">
             <strong>{t('health.consent.canWithdraw') || 'Du kan när som helst:'}</strong>
             <ul className="mt-2 space-y-1">
               <li>• {t('health.consent.withdrawDetail1') || 'Dra tillbaka ditt samtycke i Inställningar'}</li>
               <li>• {t('health.consent.withdrawDetail2') || 'Få all din hälsodata raderad'}</li>
               <li>• {t('health.consent.withdrawDetail3') || 'Kontakta oss för mer information'}</li>
             </ul>
-          </p>
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

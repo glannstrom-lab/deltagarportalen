@@ -221,7 +221,10 @@
       "development": "Min utveckling",
       "wellbeing": "Välmående",
       "resources": "Resurser",
-      "account": "Konto"
+      "account": "Konto",
+      "action": "Översikt",
+      "reflection": "Reflektion",
+      "outbound": "Utåtriktat"
     }
   },
   "roles": {

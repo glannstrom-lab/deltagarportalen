@@ -285,7 +285,7 @@ export function CoverLetterMyLetters() {
   if (letters.length === 0) {
     return (
       <EmptyState
-        icon={FileText}
+        illustration="jobb"
         title="Dina personliga brev samlas här"
         description="Ett personligt brev är din chans att visa vem du är – bortom vad som står i CV:t. Skriv, spara och återanvänd brev för olika ansökningar."
         action={{

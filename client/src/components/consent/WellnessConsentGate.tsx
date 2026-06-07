@@ -202,14 +202,14 @@ export function WellnessConsentGate({
         </div>
 
         <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800/50 rounded-lg text-left">
-          <p className="text-xs text-green-700 dark:text-green-300">
+          <div className="text-xs text-green-700 dark:text-green-300">
             <strong>{t('wellness.consent.canWithdraw') || 'Du kan när som helst:'}</strong>
             <ul className="mt-2 space-y-1">
               <li>• {t('wellness.consent.withdrawDetail1') || 'Dra tillbaka ditt samtycke i Inställningar'}</li>
               <li>• {t('wellness.consent.withdrawDetail2') || 'Få all din välmål data raderad'}</li>
               <li>• {t('wellness.consent.withdrawDetail3') || 'Kontakta oss för mer information'}</li>
             </ul>
-          </p>
+          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3">

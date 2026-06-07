@@ -572,7 +572,7 @@ const SWEDISH_MUNICIPALITIES = [
   { concept_id: 'hudiksvall', label: 'Hudiksvall' },
   { concept_id: 'hultsfred', label: 'Hultsfred' },
   { concept_id: 'hylte', label: 'Hylte' },
-  { concept_id: 'habo', label: 'Håbo' },
+  { concept_id: 'habo-uppsala', label: 'Håbo' },
   { concept_id: 'hallefors', label: 'Hällefors' },
   { concept_id: 'jarfalla', label: 'Järfälla' },
   { concept_id: 'jokkmokk', label: 'Jokkmokk' },

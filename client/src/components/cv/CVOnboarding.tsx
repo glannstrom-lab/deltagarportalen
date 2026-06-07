@@ -133,7 +133,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+      <div className="relative w-full max-w-lg bg-white dark:bg-stone-900 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
         {/* Header with progress */}
         <div className="bg-[var(--c-solid)] p-6 text-white">
           <div className="flex items-center justify-between mb-4">
@@ -164,10 +164,10 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
 
         {/* Content */}
         <div className="p-6">
-          <h2 className="text-2xl font-bold text-stone-800 mb-3">
+          <h2 className="text-2xl font-bold text-stone-800 dark:text-stone-100 mb-3">
             {step.title}
           </h2>
-          <p className="text-stone-600 mb-6 leading-relaxed">
+          <p className="text-stone-600 dark:text-stone-400 mb-6 leading-relaxed">
             {step.description}
           </p>
 
@@ -189,9 +189,9 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
               disabled={isFirstStep}
               className={`
                 flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-colors
-                ${isFirstStep 
-                  ? 'text-stone-300 cursor-not-allowed' 
-                  : 'text-stone-600 hover:bg-stone-100'
+                ${isFirstStep
+                  ? 'text-stone-300 dark:text-stone-600 cursor-not-allowed'
+                  : 'text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800'
                 }
               `}
             >
@@ -202,7 +202,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
             <div className="flex gap-2">
               <button
                 onClick={handleSkip}
-                className="px-4 py-2 text-stone-700 hover:text-stone-700 font-medium transition-colors"
+                className="px-4 py-2 text-stone-700 dark:text-stone-300 hover:text-stone-700 dark:hover:text-stone-100 font-medium transition-colors"
               >
                 Hoppa över
               </button>
@@ -235,7 +235,7 @@ export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
               className={`
                 w-2 h-2 rounded-full transition-colors
                 ${idx === currentStep ? 'bg-[var(--c-solid)]' :
-                  idx < currentStep ? 'bg-[var(--c-accent)]' : 'bg-stone-200'}
+                  idx < currentStep ? 'bg-[var(--c-accent)]' : 'bg-stone-200 dark:bg-stone-700'}
               `}
             />
           ))}

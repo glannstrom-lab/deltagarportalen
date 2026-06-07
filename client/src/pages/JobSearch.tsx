@@ -29,6 +29,7 @@ import {
   Button,
   Card,
 } from '@/components/ui';
+import { MotionList } from '@/components/ui/MotionList';
 import { InterviewPrepPanel, CommutePlannerPanel } from '@/components/ai';
 import { cn } from '@/lib/utils';
 import { CreateApplicationModal } from '@/components/workflow';
@@ -95,6 +96,18 @@ const REGIONS = [
 ];
 
 const JOBS_PER_PAGE = 20;
+
+// Platsbanken kan returnera samma annons-id flera gånger (överlappande
+// yrkesmatchningar / pagineringsglapp). Dubbletter ger React-key-krockar och
+// dubbla kort — dedupera på id, behåll första förekomsten.
+function dedupeJobsById(jobs: PlatsbankenJob[]): PlatsbankenJob[] {
+  const seen = new Set<string>();
+  return jobs.filter((job) => {
+    if (seen.has(job.id)) return false;
+    seen.add(job.id);
+    return true;
+  });
+}
 
 // Main Search Tab Component
 function SearchTab() {
@@ -176,7 +189,7 @@ function SearchTab() {
         sort: 'pubdate-desc',
       });
 
-      setJobs(result.hits);
+      setJobs(dedupeJobsById(result.hits));
       setTotalJobs(result.total.value);
       setHasMore(result.hits.length >= JOBS_PER_PAGE);
     } catch (err) {
@@ -204,7 +217,7 @@ function SearchTab() {
         offset: jobs.length,
         sort: 'pubdate-desc',
       });
-      setJobs(prev => [...prev, ...result.hits]);
+      setJobs(prev => dedupeJobsById([...prev, ...result.hits]));
       setHasMore(result.hits.length >= JOBS_PER_PAGE);
     } catch (err) {
       console.error('Load more error:', err);
@@ -989,7 +1002,7 @@ function SavedJobsTab() {
       </div>
 
       {/* Jobs list */}
-      <div className="grid gap-4 md:grid-cols-2">
+      <MotionList className="grid gap-4 md:grid-cols-2">
         {filteredJobs.map((job) => {
           const jobData = job.jobData;
           return (
@@ -1062,7 +1075,7 @@ function SavedJobsTab() {
             </Card>
           );
         })}
-      </div>
+      </MotionList>
     </div>
   );
 }

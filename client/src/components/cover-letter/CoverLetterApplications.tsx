@@ -146,7 +146,7 @@ export function CoverLetterApplications() {
   if (applications.length === 0) {
     return (
       <EmptyState
-        icon={Send}
+        illustration="jobb"
         title="Dina ansökningar visas här"
         description="När du skickar ett personligt brev till en arbetsgivare sparas det här – så har du koll på vilka jobb du sökt och när."
         action={{

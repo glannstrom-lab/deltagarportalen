@@ -644,7 +644,7 @@ function EducationInner() {
             </>
           ) : (
             <EmptyState
-              icon={GraduationCap}
+              illustration="karriar"
               title={t('education.noResults.title')}
               description={t('education.noResults.description')}
               action={{

@@ -1460,7 +1460,7 @@ export const exercises: Exercise[] = [
     ]
   },
   {
-    id: 'anstallningsformer',
+    id: 'anstallningsformer-avtal',
     title: 'Anställningsformer och avtal',
     description: 'Lär dig skillnaden mellan olika anställningsformer, vad som bör stå i ditt anställningsavtal och vad du ska tänka på innan du skriver på.',
     icon: FileBadge,
@@ -4105,7 +4105,7 @@ export const exercises: Exercise[] = [
 
   // === NYA ÖVNINGAR: ARBETSRÄTT ===
   {
-    id: 'rattigheter-skyldigheter',
+    id: 'rattigheter-arbetssokande',
     title: 'Dina rättigheter som arbetssökande',
     description: 'Lär dig om dina rättigheter i rekryteringsprocessen och hur du skyddar dig mot diskriminering.',
     icon: ShieldCheck,
@@ -4230,7 +4230,7 @@ export const exercises: Exercise[] = [
 
   // === NYA ÖVNINGAR: KARRIÄRUTVECKLING ===
   {
-    id: 'karriarskifte',
+    id: 'karriarskifte-byta-yrke',
     title: 'Planera ett karriärskifte',
     description: 'Utforska möjligheten att byta bransch eller yrke och lägg en plan för förändringen.',
     icon: RefreshCw,
