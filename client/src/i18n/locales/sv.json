@@ -7907,6 +7907,279 @@
     }
   },
   "focus": {
+    "ai": {
+      "agentTitle": "Vem vill du prata med?",
+      "doneText": "Bra! Öppna AI-team i normalläge för att fortsätta samtalet.",
+      "doneTitle": "Klart!",
+      "questionHint": "En fråga räcker.",
+      "questionPlaceholder": "Skriv din fråga...",
+      "questionTitle": "Vad vill du fråga om?"
+    },
+    "applications": {
+      "appTitle": "Ansökan {{n}} av {{total}}",
+      "doneText": "Bra koll! Öppna ansökningssidan i normalläge för att uppdatera status eller lägga till anteckningar.",
+      "doneTitle": "Du har gått igenom dina senaste ansökningar",
+      "emptyCta": "Stäng fokusläge",
+      "emptyText": "När du sparat eller ansökt om jobb visas de här. Börja med att söka ett jobb i fokus-jobbsökaren.",
+      "emptyTitle": "Inga ansökningar än",
+      "unknownRole": "Okänd roll"
+    },
+    "article": {
+      "intro": "I fokusläge läser vi artikeln i lugn takt. Öppna artikeln i normalläge för att läsa den med full layout.",
+      "openNormal": "Läs i normalläge"
+    },
+    "calendar": {
+      "doneText": "Bra fokus. Resten kan du återkomma till senare.",
+      "doneTitle": "Bra val!",
+      "focusHint": "Resten kan vänta.",
+      "focusPlaceholder": "t.ex. möte med konsulenten",
+      "focusTitle": "Vilken EN sak vill du fokusera på?",
+      "todayHint": "Skriv kort vad som står på din dag.",
+      "todayPlaceholder": "t.ex. möte 10, lunch med vän, läsa annonser",
+      "todayTitle": "Vad har du idag?"
+    },
+    "career": {
+      "currentSituationLabel": "Min nuvarande situation (skapad i fokusläge)",
+      "doneTitle": "Bra plan! Vi sparar den.",
+      "firstHint": "Något litet och konkret. Idag eller imorgon.",
+      "firstPlaceholder": "t.ex. Skicka ett mejl till min konsulent för att prata om mål.",
+      "firstTitle": "Vad kan du göra först?",
+      "readyText": "Vi sparar planen till din karriärsida när du trycker på \"Spara plan\".",
+      "saveCta": "Spara plan",
+      "savedText": "Sparat!",
+      "visionHint": "En kort dröm räcker — ord, inte siffror.",
+      "visionPlaceholder": "t.ex. Jag jobbar i en kreativ roll där jag får hjälpa andra.",
+      "visionTitle": "Var vill du vara om 5 år?"
+    },
+    "consultant": {
+      "doneText": "Bra! Du har förberett ditt meddelande. Öppna min-konsulent-sidan i normalläge för att skicka.",
+      "doneTitle": "Bra jobbat!",
+      "messageHint": "Du kan formulera det i lugn takt här. Du skickar det själv senare.",
+      "messagePlaceholder": "Skriv det du tänker på...",
+      "messageTitle": "Vad vill du säga till din konsulent?"
+    },
+    "diary": {
+      "doneTitle": "Klart!",
+      "entryTitle": "Fokusläge-incheckning",
+      "feelingPlaceholder": "t.ex. jag kände mig lugn, lite stressad i början...",
+      "feelingTitle": "Hur kändes det?",
+      "happenedHint": "En sak räcker.",
+      "happenedPlaceholder": "t.ex. Träffade min konsulent, gick en promenad...",
+      "happenedTitle": "Vad hände idag?",
+      "readyText": "Vi sparar din anteckning i din dagbok.",
+      "savedText": "Sparat i din dagbok.",
+      "tomorrowHint": "Något litet — inte hela listan.",
+      "tomorrowPlaceholder": "t.ex. ringa ett företag, läsa en sida i en bok",
+      "tomorrowTitle": "En sak du vill göra imorgon"
+    },
+    "education": {
+      "doneText": "Öppna utbildningssidan i normalläge för att se utbildningar inom \"{{interest}}\".",
+      "doneTitle": "Klart!",
+      "interestHint": "Ett ämne eller en yrkesroll räcker.",
+      "interestPlaceholder": "t.ex. webbutveckling, vård, ekonomi",
+      "interestTitle": "Vad vill du lära dig?"
+    },
+    "exercises": {
+      "chooseTitle": "Välj en övning",
+      "doneText": "Bra! Små pauser hjälper dig hålla i längre.",
+      "doneTitle": "Bra jobbat!",
+      "skipTimer": "Klar redan",
+      "timerDone": "Tiden är ute — bra jobbat!",
+      "timerHint": "Andas lugnt och gör övningen.",
+      "timerTitle": "Gör övningen i ditt eget tempo"
+    },
+    "ext": {
+      "doneText": "Öppna sidan för externa resurser i normalläge för att se länkar.",
+      "doneTitle": "Bra val!",
+      "needTitle": "Vad behöver du hjälp med?"
+    },
+    "help": {
+      "doneText": "Öppna hjälpsidan i normalläge för svar på frågor i denna kategori.",
+      "doneTitle": "Bra!",
+      "topicTitle": "Vad behöver du hjälp med?"
+    },
+    "hub": {
+      "doneText": "Öppna verktyget när du är redo:",
+      "doneTitle": "Bra val!"
+    },
+    "hubHistory": {
+      "intro": "Historik är en stor lista. I fokusläge tittar vi på den i normalvyn för bättre översikt.",
+      "openNormal": "Visa i normalläge"
+    },
+    "hubOverview": {
+      "question": "Vad vill du fokusera på idag?"
+    },
+    "interest": {
+      "doneText": "Bra start! Öppna intresseguiden i normalläge för att göra hela RIASEC-testet och se yrken som passar dig.",
+      "doneTitle": "Bra start!",
+      "interestsHint": "På jobbet eller på fritiden.",
+      "interestsPlaceholder": "t.ex. att hjälpa människor, organisera saker, jobba utomhus",
+      "interestsTitle": "Vad gillar du att göra?",
+      "strengthsHint": "Något du gör utan att tänka på det.",
+      "strengthsPlaceholder": "t.ex. lyssna på andra, lösa problem, vara noga med detaljer",
+      "strengthsTitle": "Vad är du extra bra på?"
+    },
+    "interview": {
+      "answerHint": "Det finns inget rätt eller fel — bara träning.",
+      "answerPlaceholder": "Skriv så som du skulle säga det...",
+      "answerTitle": "Skriv ditt svar i lugn takt",
+      "breatheCountdown": "sekunder kvar",
+      "breatheDone": "Klart! Du är redo.",
+      "breatheHint": "Du klarar det här. In genom näsan, ut genom munnen.",
+      "breatheTitle": "Andas lugnt i 10 sekunder",
+      "breatheWait": "Vänta lite...",
+      "doneText": "Du har övat på en fråga. Vill du öva fler? Gå till intervjusimulatorn i normalt läge för mer.",
+      "doneTitle": "Bra jobbat!",
+      "questionTitle": "Här är din fråga",
+      "roleHint": "En enkel beskrivning räcker.",
+      "rolePlaceholder": "t.ex. butikssäljare, undersköterska",
+      "roleTitle": "Vilken roll vill du öva för?"
+    },
+    "intl": {
+      "countryPlaceholder": "t.ex. Tyskland, Norge",
+      "countryTitle": "Vilket land funderar du på?",
+      "languageHint": "Förutom svenska.",
+      "languagePlaceholder": "t.ex. engelska, spanska",
+      "languageTitle": "Vilket språk kan du jobba på?",
+      "tipExtra": "Öppna internationella sidan i normalläge för fler tips om {{country}}.",
+      "tipText": "Ett bra första steg: skriv ditt CV på {{language}} och spara en kopia. Du kan göra det i CV-byggaren.",
+      "tipTitle": "Ett tips att börja med"
+    },
+    "jobSearch": {
+      "cityHint": "Skriv en stad eller lämna tomt för hela Sverige.",
+      "cityPlaceholder": "t.ex. Stockholm, Göteborg",
+      "cityTitle": "Var vill du jobba?",
+      "noResults": "Inga jobb hittades. Prova en annan sökning.",
+      "queryHint": "Skriv en yrkesroll eller en bransch.",
+      "queryPlaceholder": "t.ex. lärare, lager, kock",
+      "queryTitle": "Vilket jobb letar du efter?",
+      "resultsTitle": "Här är jobben vi hittade",
+      "searchError": "Något gick fel. Prova igen."
+    },
+    "jobsokHub": {
+      "question": "Vad i jobbsökandet vill du göra?"
+    },
+    "karriarHub": {
+      "question": "Vad i karriären vill du jobba med?"
+    },
+    "kb": {
+      "categoryTitle": "Vad vill du läsa om?",
+      "doneText": "Öppna kunskapsbasen i normalläge för att läsa artiklar i denna kategori.",
+      "doneTitle": "Bra val!"
+    },
+    "linkedin": {
+      "doneText": "Öppna LinkedIn-optimeraren i normalläge för att få AI-förslag på din text.",
+      "doneTitle": "Klart!",
+      "partTitle": "Vilken del vill du förbättra?",
+      "textHint": "Vi använder den för att föreslå förbättringar i normalläge.",
+      "textPlaceholder": "Klistra in din text här...",
+      "textTitle": "Klistra in din nuvarande text"
+    },
+    "minVardagHub": {
+      "question": "Vad känns viktigt i din vardag just nu?"
+    },
+    "network": {
+      "doneText": "Bra! Du har förberett ett meddelande till {{person}}. Du bestämmer själv när det ska skickas.",
+      "doneTitle": "Bra start!",
+      "messageHint": "Du behöver inte skicka det nu. Bara skriv.",
+      "messagePlaceholder": "Hej! Jag tänkte på dig... Hur har du det? Jag undrar om vi kan höras kort.",
+      "messageTitle": "Skriv ett kort meddelande",
+      "personHint": "En person — namn eller roll.",
+      "personPlaceholder": "t.ex. min gamla chef, en kursare",
+      "personTitle": "Vem vill du höra av dig till?"
+    },
+    "personalBrand": {
+      "aboutHint": "3-5 meningar räcker. Vi använder det som \"om mig\".",
+      "aboutPlaceholder": "Skriv som du skulle berätta för en vän...",
+      "aboutTitle": "Berätta lite mer om dig",
+      "adjHint": "Separera med komma. T.ex. lugn, lojal, ordningsam.",
+      "adjPlaceholder": "lugn, lojal, ordningsam",
+      "adjTitle": "Tre ord som beskriver dig",
+      "doneText": "Fint! Du kan kopiera och använda din \"om mig\" på LinkedIn och i CV.",
+      "doneTitle": "Klart!",
+      "taglineHint": "Vad är du bra på? Hur hjälper du andra?",
+      "taglinePlaceholder": "t.ex. Jag är en noggrann administratör som hjälper team att hålla ordning.",
+      "taglineTitle": "En kort mening om dig"
+    },
+    "print": {
+      "doneText": "Öppna utskriftssidan i normalläge för att skriva ut.",
+      "doneTitle": "Bra val!",
+      "pickTitle": "Vilken resurs vill du skriva ut?"
+    },
+    "profile": {
+      "doneText": "Bra jobbat! Du kan alltid uppdatera dina uppgifter senare under Profil.",
+      "doneTitle": "Klart! Din profil är sparad.",
+      "firstNameHint": "Vi använder det för att hälsa på dig.",
+      "firstNamePlaceholder": "Anna",
+      "firstNameTitle": "Vad heter du i förnamn?",
+      "lastNameHint": "Det visas i CV och brev.",
+      "lastNamePlaceholder": "Andersson",
+      "lastNameTitle": "Och i efternamn?",
+      "phoneHint": "Du kan hoppa över om du inte vill ange det.",
+      "phonePlaceholder": "070-123 45 67",
+      "phoneTitle": "Vilket telefonnummer kan arbetsgivare nå dig på?"
+    },
+    "resources": {
+      "doneText": "Öppna resurssidan i normalläge för att se resurser i denna kategori.",
+      "doneTitle": "Bra val!",
+      "typeTitle": "Vilken typ av resurs?"
+    },
+    "resurserHub": {
+      "question": "Vad behöver du läsa eller hitta?"
+    },
+    "salary": {
+      "cityHint": "Skriv en stad eller lämna tomt för hela Sverige.",
+      "cityPlaceholder": "t.ex. Malmö",
+      "cityTitle": "I vilken stad?",
+      "doneText": "Öppna lönesidan i normalläge för att se en uppskattning för \"{{role}}\" i {{city}}.",
+      "doneTitle": "Klart!",
+      "rolePlaceholder": "t.ex. snickare, säljare",
+      "roleTitle": "Vilken roll vill du veta lön för?"
+    },
+    "settings": {
+      "categoryTitle": "Vad vill du ändra?",
+      "doneText": "Öppna inställningssidan i normalläge för att ändra dem.",
+      "doneTitle": "Bra val!"
+    },
+    "skillsGap": {
+      "dreamHint": "En roll eller bransch — kort och tydligt.",
+      "dreamPlaceholder": "t.ex. systemutvecklare, sjuksköterska",
+      "dreamTitle": "Vilket jobb drömmer du om?",
+      "reviewText": "Vi sparar dina svar och visar gapet mellan dina kompetenser och drömjobbet på kompetensgap-sidan.",
+      "saveCta": "Spara och se gapet",
+      "saveHint": "Vi sparar dina svar så vi kan visa gapet senare.",
+      "saveTitle": "Klart att spara",
+      "savedText": "Sparat! Öppna Kompetensgap-sidan för att se hela analysen.",
+      "skillsHint": "Skriv en kompetens per rad.",
+      "skillsPlaceholder": "samarbete\nlösa problem\ngrundläggande Excel",
+      "skillsTitle": "Vilka är dina starkaste kompetenser idag?"
+    },
+    "spontaneous": {
+      "companyHint": "Skriv namnet eller en beskrivning.",
+      "companyPlaceholder": "t.ex. ICA Maxi, Volvo",
+      "companyTitle": "Vilket företag vill du kontakta?",
+      "doneText": "Bra! Öppna sidan i normalläge för att skicka meddelandet och spara företaget.",
+      "doneTitle": "Klart!",
+      "industryHint": "En bransch eller område.",
+      "industryPlaceholder": "t.ex. restaurang, vård, IT",
+      "industryTitle": "Vilken bransch är du intresserad av?",
+      "messageHint": "Berätta vem du är och varför du hör av dig.",
+      "messagePlaceholder": "Hej! Jag heter ... och söker arbete inom ... Jag tror jag skulle passa hos er för att ...",
+      "messageTitle": "Skriv ett kort meddelande"
+    },
+    "wellness": {
+      "doneTitle": "Bra att du checkade in",
+      "energyHint": "1 är väldigt lite, 5 är mycket.",
+      "energyTitle": "Hur mycket energi har du just nu?",
+      "nextHint": "Något snällt mot dig själv. T.ex. ett glas vatten.",
+      "nextPlaceholder": "t.ex. dricka vatten, gå ut 5 minuter",
+      "nextTitle": "En liten sak du kan göra nu?",
+      "readyText": "Vi sparar din incheckning i din dagbok.",
+      "reasonHint": "Ett ord eller en mening räcker. Du kan hoppa över.",
+      "reasonPlaceholder": "t.ex. sov dåligt, mycket att tänka på",
+      "reasonTitle": "Vad tror du beror det på?",
+      "savedText": "Tack — sparat i din dagbok."
+    },
     "exit": "Avsluta fokusläge",
     "exitShort": "Avsluta fokus",
     "stepOf": "Steg {{current}} av {{total}}",

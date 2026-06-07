@@ -7900,6 +7900,279 @@
     }
   },
   "focus": {
+    "ai": {
+      "agentTitle": "Who would you like to talk to?",
+      "doneText": "Great! Open AI team in normal mode to continue the conversation.",
+      "doneTitle": "Done!",
+      "questionHint": "One question is enough.",
+      "questionPlaceholder": "Type your question...",
+      "questionTitle": "What would you like to ask about?"
+    },
+    "applications": {
+      "appTitle": "Application {{n}} of {{total}}",
+      "doneText": "Nicely tracked! Open the applications page in normal mode to update status or add notes.",
+      "doneTitle": "You've reviewed your latest applications",
+      "emptyCta": "Close focus mode",
+      "emptyText": "When you save or apply for jobs they show up here. Start by searching for a job in the focus job search.",
+      "emptyTitle": "No applications yet",
+      "unknownRole": "Unknown role"
+    },
+    "article": {
+      "intro": "In focus mode we read the article at a calm pace. Open the article in normal mode to read it with full layout.",
+      "openNormal": "Read in normal mode"
+    },
+    "calendar": {
+      "doneText": "Good focus. You can come back to the rest later.",
+      "doneTitle": "Good choice!",
+      "focusHint": "The rest can wait.",
+      "focusPlaceholder": "e.g. meeting with my consultant",
+      "focusTitle": "Which ONE thing do you want to focus on?",
+      "todayHint": "Briefly write what your day looks like.",
+      "todayPlaceholder": "e.g. meeting at 10, lunch with a friend, read job ads",
+      "todayTitle": "What do you have today?"
+    },
+    "career": {
+      "currentSituationLabel": "My current situation (created in focus mode)",
+      "doneTitle": "Good plan! We'll save it.",
+      "firstHint": "Something small and concrete. Today or tomorrow.",
+      "firstPlaceholder": "e.g. Send an email to my consultant to talk about goals.",
+      "firstTitle": "What can you do first?",
+      "readyText": "We save the plan to your career page when you press \"Save plan\".",
+      "saveCta": "Save plan",
+      "savedText": "Saved!",
+      "visionHint": "A short dream is enough — words, not numbers.",
+      "visionPlaceholder": "e.g. I work in a creative role where I get to help others.",
+      "visionTitle": "Where do you want to be in 5 years?"
+    },
+    "consultant": {
+      "doneText": "Great! You've prepared your message. Open the my-consultant page in normal mode to send it.",
+      "doneTitle": "Well done!",
+      "messageHint": "You can phrase it calmly here. You send it yourself later.",
+      "messagePlaceholder": "Write what's on your mind...",
+      "messageTitle": "What would you like to say to your consultant?"
+    },
+    "diary": {
+      "doneTitle": "Done!",
+      "entryTitle": "Focus mode check-in",
+      "feelingPlaceholder": "e.g. I felt calm, a little stressed at first...",
+      "feelingTitle": "How did it feel?",
+      "happenedHint": "One thing is enough.",
+      "happenedPlaceholder": "e.g. Met my consultant, went for a walk...",
+      "happenedTitle": "What happened today?",
+      "readyText": "We save your note in your diary.",
+      "savedText": "Saved in your diary.",
+      "tomorrowHint": "Something small — not the whole list.",
+      "tomorrowPlaceholder": "e.g. call a company, read a page of a book",
+      "tomorrowTitle": "One thing you want to do tomorrow"
+    },
+    "education": {
+      "doneText": "Open the education page in normal mode to see programmes in \"{{interest}}\".",
+      "doneTitle": "Done!",
+      "interestHint": "A subject or a job role is enough.",
+      "interestPlaceholder": "e.g. web development, healthcare, finance",
+      "interestTitle": "What do you want to learn?"
+    },
+    "exercises": {
+      "chooseTitle": "Choose an exercise",
+      "doneText": "Great! Small breaks help you keep going longer.",
+      "doneTitle": "Well done!",
+      "skipTimer": "Already done",
+      "timerDone": "Time's up — well done!",
+      "timerHint": "Breathe calmly and do the exercise.",
+      "timerTitle": "Do the exercise at your own pace"
+    },
+    "ext": {
+      "doneText": "Open the external resources page in normal mode to see links.",
+      "doneTitle": "Good choice!",
+      "needTitle": "What do you need help with?"
+    },
+    "help": {
+      "doneText": "Open the help page in normal mode for answers to questions in this category.",
+      "doneTitle": "Great!",
+      "topicTitle": "What do you need help with?"
+    },
+    "hub": {
+      "doneText": "Open the tool when you're ready:",
+      "doneTitle": "Good choice!"
+    },
+    "hubHistory": {
+      "intro": "History is a long list. In focus mode we view it in the normal view for a better overview.",
+      "openNormal": "Show in normal mode"
+    },
+    "hubOverview": {
+      "question": "What would you like to focus on today?"
+    },
+    "interest": {
+      "doneText": "Great start! Open the interest guide in normal mode to take the full RIASEC test and see careers that suit you.",
+      "doneTitle": "Great start!",
+      "interestsHint": "At work or in your free time.",
+      "interestsPlaceholder": "e.g. helping people, organising things, working outdoors",
+      "interestsTitle": "What do you like to do?",
+      "strengthsHint": "Something you do without thinking about it.",
+      "strengthsPlaceholder": "e.g. listen to others, solve problems, pay attention to detail",
+      "strengthsTitle": "What are you especially good at?"
+    },
+    "interview": {
+      "answerHint": "There's no right or wrong — just practice.",
+      "answerPlaceholder": "Write it the way you would say it...",
+      "answerTitle": "Write your answer at a calm pace",
+      "breatheCountdown": "seconds left",
+      "breatheDone": "Done! You're ready.",
+      "breatheHint": "You can do this. In through the nose, out through the mouth.",
+      "breatheTitle": "Breathe calmly for 10 seconds",
+      "breatheWait": "Just a moment...",
+      "doneText": "You've practised one question. Want to practise more? Go to the interview simulator in normal mode for more.",
+      "doneTitle": "Well done!",
+      "questionTitle": "Here is your question",
+      "roleHint": "A simple description is enough.",
+      "rolePlaceholder": "e.g. shop assistant, assistant nurse",
+      "roleTitle": "Which role do you want to practise for?"
+    },
+    "intl": {
+      "countryPlaceholder": "e.g. Germany, Norway",
+      "countryTitle": "Which country are you considering?",
+      "languageHint": "Besides Swedish.",
+      "languagePlaceholder": "e.g. English, Spanish",
+      "languageTitle": "Which language can you work in?",
+      "tipExtra": "Open the international page in normal mode for more tips about {{country}}.",
+      "tipText": "A good first step: write your CV in {{language}} and save a copy. You can do it in the CV builder.",
+      "tipTitle": "A tip to start with"
+    },
+    "jobSearch": {
+      "cityHint": "Type a city or leave blank for all of Sweden.",
+      "cityPlaceholder": "e.g. Stockholm, Gothenburg",
+      "cityTitle": "Where do you want to work?",
+      "noResults": "No jobs found. Try a different search.",
+      "queryHint": "Type a job role or an industry.",
+      "queryPlaceholder": "e.g. teacher, warehouse, chef",
+      "queryTitle": "Which job are you looking for?",
+      "resultsTitle": "Here are the jobs we found",
+      "searchError": "Something went wrong. Try again."
+    },
+    "jobsokHub": {
+      "question": "What in your job search would you like to do?"
+    },
+    "karriarHub": {
+      "question": "What in your career would you like to work on?"
+    },
+    "kb": {
+      "categoryTitle": "What would you like to read about?",
+      "doneText": "Open the knowledge base in normal mode to read articles in this category.",
+      "doneTitle": "Good choice!"
+    },
+    "linkedin": {
+      "doneText": "Open the LinkedIn optimiser in normal mode to get AI suggestions for your text.",
+      "doneTitle": "Done!",
+      "partTitle": "Which part do you want to improve?",
+      "textHint": "We use it to suggest improvements in normal mode.",
+      "textPlaceholder": "Paste your text here...",
+      "textTitle": "Paste your current text"
+    },
+    "minVardagHub": {
+      "question": "What feels important in your everyday life right now?"
+    },
+    "network": {
+      "doneText": "Great! You've prepared a message to {{person}}. You decide when to send it.",
+      "doneTitle": "Great start!",
+      "messageHint": "You don't have to send it now. Just write.",
+      "messagePlaceholder": "Hi! I was thinking of you... How are you? I wonder if we could have a quick chat.",
+      "messageTitle": "Write a short message",
+      "personHint": "One person — name or role.",
+      "personPlaceholder": "e.g. my former manager, a fellow student",
+      "personTitle": "Who would you like to reach out to?"
+    },
+    "personalBrand": {
+      "aboutHint": "Three to five sentences is enough. We use it as your \"about me\".",
+      "aboutPlaceholder": "Write it as you would tell a friend...",
+      "aboutTitle": "Tell us a bit more about you",
+      "adjHint": "Separate with commas. E.g. calm, loyal, organised.",
+      "adjPlaceholder": "calm, loyal, organised",
+      "adjTitle": "Three words that describe you",
+      "doneText": "Nice! You can copy and use your \"about me\" on LinkedIn and in your CV.",
+      "doneTitle": "Done!",
+      "taglineHint": "What are you good at? How do you help others?",
+      "taglinePlaceholder": "e.g. I am a meticulous administrator who helps teams stay organised.",
+      "taglineTitle": "A short sentence about you"
+    },
+    "print": {
+      "doneText": "Open the print page in normal mode to print.",
+      "doneTitle": "Good choice!",
+      "pickTitle": "Which resource do you want to print?"
+    },
+    "profile": {
+      "doneText": "Well done! You can always update your details later under Profile.",
+      "doneTitle": "Done! Your profile is saved.",
+      "firstNameHint": "We use it to greet you.",
+      "firstNamePlaceholder": "Anna",
+      "firstNameTitle": "What is your first name?",
+      "lastNameHint": "It appears in your CV and letters.",
+      "lastNamePlaceholder": "Andersson",
+      "lastNameTitle": "And your last name?",
+      "phoneHint": "You can skip this if you'd rather not provide it.",
+      "phonePlaceholder": "070-123 45 67",
+      "phoneTitle": "What phone number can employers reach you on?"
+    },
+    "resources": {
+      "doneText": "Open the resources page in normal mode to see resources in this category.",
+      "doneTitle": "Good choice!",
+      "typeTitle": "What type of resource?"
+    },
+    "resurserHub": {
+      "question": "What do you need to read or find?"
+    },
+    "salary": {
+      "cityHint": "Type a city or leave blank for all of Sweden.",
+      "cityPlaceholder": "e.g. Malmö",
+      "cityTitle": "In which city?",
+      "doneText": "Open the salary page in normal mode to see an estimate for \"{{role}}\" in {{city}}.",
+      "doneTitle": "Done!",
+      "rolePlaceholder": "e.g. carpenter, sales rep",
+      "roleTitle": "Which role do you want to know the salary for?"
+    },
+    "settings": {
+      "categoryTitle": "What would you like to change?",
+      "doneText": "Open the settings page in normal mode to change them.",
+      "doneTitle": "Good choice!"
+    },
+    "skillsGap": {
+      "dreamHint": "A role or industry — short and clear.",
+      "dreamPlaceholder": "e.g. systems developer, nurse",
+      "dreamTitle": "Which job do you dream of?",
+      "reviewText": "We save your answers and show the gap between your skills and your dream job on the skills gap page.",
+      "saveCta": "Save and see the gap",
+      "saveHint": "We save your answers so we can show the gap later.",
+      "saveTitle": "Ready to save",
+      "savedText": "Saved! Open the Skills Gap page to see the full analysis.",
+      "skillsHint": "Write one skill per line.",
+      "skillsPlaceholder": "teamwork\nproblem solving\nbasic Excel",
+      "skillsTitle": "What are your strongest skills today?"
+    },
+    "spontaneous": {
+      "companyHint": "Write the name or a description.",
+      "companyPlaceholder": "e.g. ICA Maxi, Volvo",
+      "companyTitle": "Which company would you like to contact?",
+      "doneText": "Great! Open the page in normal mode to send the message and save the company.",
+      "doneTitle": "Done!",
+      "industryHint": "An industry or field.",
+      "industryPlaceholder": "e.g. restaurant, healthcare, IT",
+      "industryTitle": "Which industry are you interested in?",
+      "messageHint": "Tell them who you are and why you're reaching out.",
+      "messagePlaceholder": "Hi! My name is ... and I am looking for work in ... I think I would be a good fit for you because ...",
+      "messageTitle": "Write a short message"
+    },
+    "wellness": {
+      "doneTitle": "Good that you checked in",
+      "energyHint": "1 is very little, 5 is a lot.",
+      "energyTitle": "How much energy do you have right now?",
+      "nextHint": "Something kind to yourself. E.g. a glass of water.",
+      "nextPlaceholder": "e.g. drink water, go outside for 5 minutes",
+      "nextTitle": "One small thing you can do now?",
+      "readyText": "We save your check-in in your diary.",
+      "reasonHint": "A word or a sentence is enough. You can skip it.",
+      "reasonPlaceholder": "e.g. slept badly, a lot on my mind",
+      "reasonTitle": "What do you think is causing it?",
+      "savedText": "Thank you — saved in your diary."
+    },
     "exit": "Exit focus mode",
     "exitShort": "Exit focus",
     "stepOf": "Step {{current}} of {{total}}",
