@@ -32,6 +32,7 @@ import { notifications } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
 
 interface GoalTemplate {
@@ -603,7 +604,7 @@ export function ResourcesTab() {
       const { data, error } = await supabase
         .from('consultant_goal_templates')
         .select('*')
-        .or(`consultant_id.eq.${user.id},is_shared.eq.true`)
+        .or(`consultant_id.eq.${user.id},is_public.eq.true`) // kolumnen heter is_public — is_shared gav 400/42703 i prod
         .order('usage_count', { ascending: false })
 
       if (error) throw error
@@ -690,7 +691,7 @@ export function ResourcesTab() {
         achievable: data.achievable,
         relevant: data.relevant,
         time_bound: data.timeBound,
-        is_shared: false,
+        is_public: false,
         updated_at: new Date().toISOString(),
       }
 
@@ -815,36 +816,10 @@ export function ResourcesTab() {
     setSelectedTemplate(null)
   }
 
-  // Static data for collections and practices
-  const jobCollections: JobCollection[] = [
-    {
-      id: '1',
-      name: 'IT & Tech - Stockholm',
-      description: 'Aktuella IT-jobb i Stockholmsområdet',
-      industry: 'IT',
-      jobCount: 24,
-      createdAt: new Date().toISOString(),
-      sharedWith: 3,
-    },
-    {
-      id: '2',
-      name: 'Ekonomi & Administration',
-      description: 'Ekonomijobb för nyutexaminerade',
-      industry: 'Ekonomi',
-      jobCount: 18,
-      createdAt: new Date().toISOString(),
-      sharedWith: 5,
-    },
-    {
-      id: '3',
-      name: 'Vård & Omsorg',
-      description: 'Jobb inom vårdsektorn',
-      industry: 'Vård',
-      jobCount: 31,
-      createdAt: new Date().toISOString(),
-      sharedWith: 2,
-    },
-  ]
+  // Jobbsamlingar är inte byggda än (tabellen consultant_job_collections finns
+  // men inget CRUD-flöde). Visa ärligt tomtillstånd i stället för de tidigare
+  // hårdkodade exempelsamlingarna som såg ut som riktig data.
+  const jobCollections: JobCollection[] = []
 
   const bestPractices: BestPractice[] = [
     {
@@ -1038,17 +1013,25 @@ export function ResourcesTab() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {jobCollections.map(collection => (
-              <JobCollectionCard
-                key={collection.id}
-                collection={collection}
-                onView={() => notifications.info(`Visa-funktionen för "${collection.name}" kommer i nästa version.`)}
-                onShare={() => notifications.info(`Delningsfunktionen för "${collection.name}" kommer i nästa version.`)}
-                t={t}
-              />
-            ))}
-          </div>
+          {jobCollections.length === 0 ? (
+            <EmptyState
+              icon={Folder}
+              title={t('consultant.resources.collectionsComingTitle')}
+              description={t('consultant.resources.collectionsComingDesc')}
+            />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {jobCollections.map(collection => (
+                <JobCollectionCard
+                  key={collection.id}
+                  collection={collection}
+                  onView={() => notifications.info(`Visa-funktionen för "${collection.name}" kommer i nästa version.`)}
+                  onShare={() => notifications.info(`Delningsfunktionen för "${collection.name}" kommer i nästa version.`)}
+                  t={t}
+                />
+              ))}
+            </div>
+          )}
         </>
       )}
 

@@ -24,7 +24,6 @@ import {
   Building2,
   ChevronRight,
   ClipboardList,
-  Compass,
   FileText,
   Mail,
   Users,
@@ -32,6 +31,7 @@ import {
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useHideOnScrollDown } from '@/hooks/useHideOnScrollDown'
+import { useAuthStore } from '@/stores/authStore'
 
 type Destination = {
   label: string
@@ -80,6 +80,7 @@ const DESTINATIONS: Destination[] = [
 ]
 
 export function SamlingarFab() {
+  const profile = useAuthStore(s => s.profile)
   const [isOpen, setIsOpen] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
@@ -131,6 +132,12 @@ export function SamlingarFab() {
     },
     [navigate],
   )
+
+  // Samlingarna är deltagargenvägar ("Mina CV", "Mina ansökningar" ...).
+  // Dölj FAB:en för konsulent/admin — den hörde inte hemma där och skymde
+  // dessutom snabbåtgärderna i Konsultportalens översikt.
+  const activeRole = profile?.activeRole || profile?.role || 'USER'
+  if (activeRole !== 'USER') return null
 
   return (
     <>

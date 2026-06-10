@@ -126,7 +126,7 @@ function QuickStat({
 // Goal Card Component
 function GoalCard({
   goal,
-  onEdit: _onEdit,
+  onEdit,
   onComplete,
   t,
 }: {
@@ -135,6 +135,8 @@ function GoalCard({
   onComplete: (id: string) => void
   t: (key: string) => string
 }) {
+  // Åtgärdsmenyn var tidigare en död knapp utan onClick — nu kopplad.
+  const [showMenu, setShowMenu] = useState(false)
   const statusColors = {
     NOT_STARTED: 'bg-stone-100 text-stone-600',
     IN_PROGRESS: 'bg-blue-100 text-blue-600',
@@ -169,9 +171,51 @@ function GoalCard({
             {goal.description}
           </p>
         </div>
-        <button aria-label="Åtgärder för mål" className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg">
-          <MoreVertical className="w-4 h-4 text-stone-600" aria-hidden="true" />
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowMenu(v => !v)}
+            aria-label={t('consultant.participantDetail.goalActions')}
+            aria-haspopup="menu"
+            aria-expanded={showMenu}
+            className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg"
+          >
+            <MoreVertical className="w-4 h-4 text-stone-600" aria-hidden="true" />
+          </button>
+          {showMenu && (
+            <>
+              <button
+                type="button"
+                aria-hidden="true"
+                tabIndex={-1}
+                onClick={() => setShowMenu(false)}
+                className="fixed inset-0 z-10 cursor-default"
+              />
+              <div
+                role="menu"
+                className="absolute right-0 top-8 z-20 w-56 py-1 bg-white dark:bg-stone-800 rounded-xl shadow-lg border border-stone-200 dark:border-stone-700"
+              >
+                <button
+                  role="menuitem"
+                  onClick={() => { setShowMenu(false); onEdit(goal) }}
+                  className="w-full px-4 py-2 text-left text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-700"
+                >
+                  {goal.status === 'NOT_STARTED'
+                    ? t('consultant.participantDetail.markInProgress')
+                    : t('consultant.participantDetail.markNotStarted')}
+                </button>
+                {goal.status !== 'COMPLETED' && (
+                  <button
+                    role="menuitem"
+                    onClick={() => { setShowMenu(false); onComplete(goal.id) }}
+                    className="w-full px-4 py-2 text-left text-sm text-stone-700 dark:text-stone-200 hover:bg-stone-50 dark:hover:bg-stone-700"
+                  >
+                    {t('consultant.participantDetail.markComplete')}
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="flex items-center gap-3 mb-3">
@@ -650,12 +694,10 @@ export function ParticipantDetailPage() {
             <div className="py-10 text-center">
               <Clock className="w-10 h-10 mx-auto text-stone-400 dark:text-stone-500 mb-3" />
               <p className="font-medium text-stone-700 dark:text-stone-200">
-                Aktivitetshistorik kommer
+                {t('consultant.participantDetail.timelineComingTitle')}
               </p>
               <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-md mx-auto">
-                Vi spårar deltagarens aktiviteter (CV-uppdateringar, sparade
-                jobb, mål) men måste först ge konsulenter läsrättighet — kommer
-                i kommande version.
+                {t('consultant.participantDetail.timelineComingDesc')}
               </p>
             </div>
           )}

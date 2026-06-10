@@ -27,6 +27,7 @@ import {
   Download,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
+import { notifications } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
@@ -275,10 +276,11 @@ export function OverviewTab() {
       if (!user) return
 
       // Fetch participants
-      const { data: participantsData } = await supabase
+      const { data: participantsData, error: participantsError } = await supabase
         .from('consultant_dashboard_participants')
         .select('*')
         .eq('consultant_id', user.id)
+      if (participantsError) throw participantsError
 
       // Fetch meetings this week
       const startOfWeek = new Date()
@@ -468,6 +470,7 @@ export function OverviewTab() {
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
+      notifications.error(t('consultant.analytics.loadError'))
     } finally {
       setLoading(false)
     }

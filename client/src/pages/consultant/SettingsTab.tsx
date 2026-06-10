@@ -185,7 +185,7 @@ export function SettingsTab() {
         .from('consultant_settings')
         .select('*')
         .eq('consultant_id', user.id)
-        .single()
+        .maybeSingle() // .single() gav 406 för konsulenter utan sparad settings-rad
 
       if (settingsData) {
         // Apply saved notifications
@@ -208,12 +208,9 @@ export function SettingsTab() {
         }
       }
 
-      // Fetch team members (mock for now, would come from organization table)
-      setTeamMembers([
-        { id: '1', name: 'Anna Andersson', email: 'anna@example.com', role: 'admin', participantCount: 0 },
-        { id: '2', name: 'Erik Eriksson', email: 'erik@example.com', role: 'consultant', participantCount: 12 },
-        { id: '3', name: 'Maria Nilsson', email: 'maria@example.com', role: 'consultant', participantCount: 8 },
-      ])
+      // Ingen organisations-/teamtabell finns ännu — visa ärligt tomtillstånd
+      // i stället för påhittade kollegor (tidigare mock: Anna/Erik/Maria).
+      setTeamMembers([])
 
     } catch (error) {
       console.error('Error loading settings:', error)
@@ -352,7 +349,7 @@ export function SettingsTab() {
           </div>
           <div>
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
-              {t('consultant.settings.notifications')}
+              {t('consultant.settings.notificationsTitle')}
             </h3>
             <p className="text-sm text-stone-500 dark:text-stone-400">
               {t('consultant.settings.notificationsDesc')}
@@ -541,6 +538,11 @@ export function SettingsTab() {
         </div>
 
         <div className="space-y-3">
+          {teamMembers.length === 0 && (
+            <p className="text-sm text-stone-500 dark:text-stone-400">
+              {t('consultant.settings.teamEmpty')}
+            </p>
+          )}
           {teamMembers.map(member => (
             <div
               key={member.id}

@@ -20,6 +20,7 @@ import {
   Clock,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
+import { notifications } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { BarChart } from '@/components/ui/BarChart'
@@ -36,7 +37,7 @@ interface AnalyticsData {
   averageProgress: number
   cvCompletionRate: number
   jobApplicationRate: number
-  averageTimeToPlacement: number
+  averageTimeToPlacement: number | null
   goalsCompletionRate: number
   engagementRate: number
   monthlyProgress: Array<{ month: string; value: number }>
@@ -194,7 +195,7 @@ export function AnalyticsTab() {
     averageProgress: 0,
     cvCompletionRate: 0,
     jobApplicationRate: 0,
-    averageTimeToPlacement: 0,
+    averageTimeToPlacement: null,
     goalsCompletionRate: 0,
     engagementRate: 0,
     monthlyProgress: [],
@@ -231,10 +232,11 @@ export function AnalyticsTab() {
       }
 
       // Fetch participants
-      const { data: participants } = await supabase
+      const { data: participants, error: participantsError } = await supabase
         .from('consultant_dashboard_participants')
         .select('*')
         .eq('consultant_id', user.id)
+      if (participantsError) throw participantsError
 
       // Fetch goals
       const { data: goalsData } = await supabase
@@ -260,12 +262,15 @@ export function AnalyticsTab() {
       const previousPeriodEnd = startDate
       const previousPeriodStart = new Date(startDate.getTime() - periodLength)
 
-      const { data: previousParticipants } = await supabase
+      // OBS: vyn consultant_dashboard_participants saknar created_at (gav 400/42703 i prod).
+      // assigned_at = när deltagaren kopplades till konsulenten — rätt mått för perioden.
+      const { data: previousParticipants, error: previousError } = await supabase
         .from('consultant_dashboard_participants')
         .select('*')
         .eq('consultant_id', user.id)
-        .gte('created_at', previousPeriodStart.toISOString())
-        .lt('created_at', previousPeriodEnd.toISOString())
+        .gte('assigned_at', previousPeriodStart.toISOString())
+        .lt('assigned_at', previousPeriodEnd.toISOString())
+      if (previousError) throw previousError
 
       const { data: previousGoals } = await supabase
         .from('consultant_goals')
@@ -309,7 +314,8 @@ export function AnalyticsTab() {
         const engagementRate = total > 0 ? Math.round((engagedParticipants / total) * 100) : 0
 
         // Calculate average placement time from placements
-        let avgPlacementTime = 45 // Default
+        // null = inga placeringar än. Visa aldrig ett påhittat default-snitt (tidigare 45).
+        let avgPlacementTime: number | null = null
         if (placementsData && placementsData.length > 0) {
           // Simplified calculation - would need participant start dates for accuracy
           avgPlacementTime = Math.round(
@@ -350,6 +356,7 @@ export function AnalyticsTab() {
       }
     } catch (error) {
       console.error('Error fetching analytics:', error)
+      notifications.error(t('consultant.analytics.loadError'))
     } finally {
       setLoading(false)
     }
@@ -595,7 +602,7 @@ export function AnalyticsTab() {
         [t('consultant.analytics.export.cvCompletion'), `${analytics.cvCompletionRate}%`],
         [t('consultant.analytics.export.goalCompletion'), `${analytics.goalsCompletionRate}%`],
         [t('consultant.analytics.export.engagement'), `${analytics.engagementRate}%`],
-        [t('consultant.analytics.export.avgPlacementTime'), t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })],
+        [t('consultant.analytics.export.avgPlacementTime'), analytics.averageTimeToPlacement === null ? t('consultant.analytics.metrics.noPlacementsYet') : t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })],
         [''],
         [t('consultant.analytics.export.statusDistribution'), t('consultant.analytics.export.count')],
         ...analytics.statusDistribution.map(s => [s.label, s.value]),
@@ -623,7 +630,7 @@ export function AnalyticsTab() {
     cvCompletionRate: analytics.cvCompletionRate,
     goalsCompletionRate: analytics.goalsCompletionRate,
     engagementRate: analytics.engagementRate,
-    averageTimeToPlacement: analytics.averageTimeToPlacement,
+    averageTimeToPlacement: analytics.averageTimeToPlacement ?? 0,
     monthlyProgress: analytics.monthlyProgress,
     statusDistribution: analytics.statusDistribution,
     topGoalCategories: analytics.topGoalCategories,
@@ -696,8 +703,8 @@ export function AnalyticsTab() {
         />
         <MetricCard
           title={t('consultant.analytics.metrics.avgPlacementTime')}
-          value={t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })}
-          subtitle={t('consultant.analytics.metrics.fromStartToJob')}
+          value={analytics.averageTimeToPlacement === null ? '–' : t('consultant.analytics.metrics.days', { count: analytics.averageTimeToPlacement })}
+          subtitle={analytics.averageTimeToPlacement === null ? t('consultant.analytics.metrics.noPlacementsYet') : t('consultant.analytics.metrics.fromStartToJob')}
           icon={Clock}
           trend={trends.placementTime.value > 0 ? trends.placementTime : undefined}
           trendLabel={t('consultant.analytics.vsLastMonth')}

@@ -30,6 +30,7 @@ import {
   Loader2,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
+import { notifications } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
@@ -76,15 +77,8 @@ interface Conversation {
   unreadCount: number
 }
 
-// Mallar för Quick Messages — fyller compose-rutan så konsulenten slipper börja från noll.
-const QUICK_TEMPLATES = {
-  meetingReminder:
-    'Hej! Påminner om vårt möte. Säg till om något kommer i vägen så hittar vi en ny tid.',
-  checkIn:
-    'Hej! Hur har veckan varit? Säg till om det är något du behöver hjälp med.',
-  congrats:
-    'Snyggt jobbat! Det är roligt att se framstegen — fortsätt så.',
-} as const
+// Mallar för Quick Messages flyttade till i18n (consultant.communication.*Body)
+// så engelska användare inte får svenska mallar — se användningen i JSX.
 
 function initialsOf(name: string): string {
   return name
@@ -715,6 +709,7 @@ export function CommunicationTab() {
       }
     } catch (error) {
       console.error('Error fetching data:', error)
+      notifications.error(t('consultant.analytics.loadError'))
     } finally {
       setLoading(false)
     }
@@ -998,15 +993,15 @@ export function CommunicationTab() {
 
                 {/* Quick templates — fungerar nu på riktigt */}
                 <div className="flex flex-wrap gap-2 justify-center">
-                  <Button variant="outline" size="sm" onClick={() => openCompose(QUICK_TEMPLATES.meetingReminder)}>
+                  <Button variant="outline" size="sm" onClick={() => openCompose(t('consultant.communication.meetingReminderBody'))}>
                     <Mail className="w-4 h-4 mr-2" />
                     {t('consultant.communication.meetingReminder', 'Mötespåminnelse')}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => openCompose(QUICK_TEMPLATES.checkIn)}>
+                  <Button variant="outline" size="sm" onClick={() => openCompose(t('consultant.communication.checkInBody'))}>
                     <Bell className="w-4 h-4 mr-2" />
                     {t('consultant.communication.checkInMessage', 'Check-in')}
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => openCompose(QUICK_TEMPLATES.congrats)}>
+                  <Button variant="outline" size="sm" onClick={() => openCompose(t('consultant.communication.congratsBody'))}>
                     <Users className="w-4 h-4 mr-2" />
                     {t('consultant.communication.congratsProgress', 'Grattis till framsteg')}
                   </Button>
