@@ -6857,6 +6857,26 @@
         "interviewTraining": "Intervjuträning",
         "networking": "Nätverkande",
         "skillsDevelopment": "Kompetensutveckling"
+      },
+      "myDay": {
+        "title": "Min dag",
+        "todaysMeetings": "Dagens möten",
+        "noMeetingsToday": "Inga möten idag.",
+        "latestNote": "Senaste anteckning",
+        "noNotes": "Ingen journalanteckning än.",
+        "deadlines": "Måldeadlines",
+        "noDeadlines": "Inga deadlines inom 7 dagar.",
+        "daysLeft_one": "1 dag kvar",
+        "daysLeft_other": "{{count}} dagar kvar",
+        "overdue_one": "1 dag försenad",
+        "overdue_other": "{{count}} dagar försenade",
+        "dueToday": "Förfaller idag",
+        "needsContact": "Hör av dig",
+        "noContactsNeeded": "Alla deltagare har aktuell kontakt.",
+        "sendMessage": "Skicka meddelande",
+        "joinMeeting": "Möteslänk",
+        "allClear": "Inga brådskande punkter idag",
+        "allClearDesc": "Bra läge att jobba proaktivt med dina deltagare."
       }
     },
     "participants": {
@@ -6998,6 +7018,26 @@
         "skillsDevelopment": "Kompetensutveckling",
         "other": "Övrigt"
       },
+      "stuck": {
+        "title": "Riskerar att fastna",
+        "subtitle": "Deltagare med minst två varningssignaler",
+        "empty": "Inga deltagare visar flera varningssignaler just nu.",
+        "reasonLogin": "Inte inloggad på 3 veckor",
+        "reasonContact": "Ingen kontakt på 2 veckor",
+        "reasonGoals": "Ingen målaktivitet på 3 veckor"
+      },
+      "effect": {
+        "title": "Insatseffekt",
+        "subtitle": "Aktivitet hos deltagare med respektive utan möte senaste 30 dagarna",
+        "insufficient": "För litet underlag för en meningsfull jämförelse — det behövs minst 3 aktiva deltagare i varje grupp (med och utan möte senaste 30 dagarna).",
+        "withMeeting": "Med möte (30 dagar)",
+        "withoutMeeting": "Utan möte (30 dagar)",
+        "participantCount_one": "1 deltagare",
+        "participantCount_other": "{{count}} deltagare",
+        "goalsPerParticipant": "avklarade mål per deltagare",
+        "activeLastWeek": "inloggade senaste veckan",
+        "note": "Samband är inte orsak — men en stor skillnad mellan grupperna är värd att agera på."
+      },
       "cohortAnalysis": {
         "title": "Kohortanalys",
         "subtitle": "Jämförelse mellan deltagargrupper baserat på startdatum",
@@ -7090,11 +7130,22 @@
       "used": "Använd {{count}} gånger",
       "use": "Använd",
       "createAndShare": "Skapa och dela jobbsamlingar med dina deltagare",
-      "collectionsComingTitle": "Jobbsamlingar kommer i nästa version",
-      "collectionsComingDesc": "Här kommer du kunna samla jobb per bransch och dela dem med dina deltagare. Kontakta support om du behöver detta nu.",
       "newCollection": "Ny samling",
       "jobs": "jobb",
       "view": "Visa",
+      "loadingCollections": "Laddar samlingar...",
+      "collectionsEmptyTitle": "Dina jobbsamlingar",
+      "collectionsEmptyDesc": "Samla intressanta jobb per bransch eller deltagare och dela dem som meddelande med ett klick.",
+      "collectionCreated": "Samlingen skapades.",
+      "collectionUpdated": "Samlingen uppdaterades.",
+      "collectionSaveError": "Samlingen kunde inte sparas. Försök igen.",
+      "collectionDeleteError": "Samlingen kunde inte tas bort. Försök igen.",
+      "confirmDeleteCollection": "Är du säker på att du vill ta bort denna samling?",
+      "sharedWithCount_one": "delad med 1 deltagare",
+      "sharedWithCount_other": "delad med {{count}} deltagare",
+      "shareCollection": "Dela samling",
+      "shareIntro": "Här är några jobb jag tror kan passa dig — samlingen \"{{name}}\":",
+      "goalAssigned": "Målet tilldelades deltagaren.",
       "provenMethods": "Beprövade metoder och checklistor för effektivt konsulentarbete",
       "steps": "steg",
       "stepsTitle": "Steg",
@@ -7172,7 +7223,8 @@
       "saveNote": "Spara anteckning",
       "activeGoalsCount": "{{count}} aktiva mål",
       "newGoal": "Nytt mål",
-      "writeNote": "Skriv anteckning"
+      "writeNote": "Skriv anteckning",
+      "reportDraft": "Rapportutkast (AI)"
     },
     "settings": {
       "unsavedChanges": "Du har osparade ändringar",
@@ -7223,7 +7275,8 @@
       "dataPrivacy": "Data & Integritet",
       "gdprSettings": "Hantera data och GDPR-relaterade inställningar",
       "exportAllData": "Exportera all data",
-      "viewAccessLog": "Se åtkomstlogg",
+      "exportDone": "Din data laddades ner som JSON-fil.",
+      "exportError": "Exporten misslyckades. Försök igen.",
       "privacyPolicy": "Integritetspolicy",
       "saved": "Inställningar sparade!",
       "saving": "Sparar...",

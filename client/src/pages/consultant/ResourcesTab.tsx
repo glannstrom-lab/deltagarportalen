@@ -34,6 +34,9 @@ import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
+import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
+import { JobCollectionDialog, type JobCollectionFormData } from '@/components/consultant/JobCollectionDialog'
+import { GroupMessageDialog } from '@/components/consultant/GroupMessageDialog'
 
 interface GoalTemplate {
   id: string
@@ -49,14 +52,19 @@ interface GoalTemplate {
   isStarred: boolean
 }
 
+export interface CollectionJob {
+  title: string
+  url: string
+}
+
 interface JobCollection {
   id: string
   name: string
   description: string
   industry: string
-  jobCount: number
+  jobs: CollectionJob[]
+  sharedWith: string[]
   createdAt: string
-  sharedWith: number
 }
 
 interface BestPractice {
@@ -168,24 +176,53 @@ function TemplateCard({
 // Job Collection Card Component
 function JobCollectionCard({
   collection,
-  onView,
+  onEdit,
   onShare,
+  onDelete,
   t,
 }: {
   collection: JobCollection
-  onView: (collection: JobCollection) => void
-  onShare: (id: string) => void
-  t: (key: string) => string
+  onEdit: (collection: JobCollection) => void
+  onShare: (collection: JobCollection) => void
+  onDelete: (id: string) => void
+  t: (key: string, options?: Record<string, unknown>) => string
 }) {
+  const [showMenu, setShowMenu] = useState(false)
   return (
     <Card className="p-4 hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between mb-3">
         <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-xl">
           <Folder className="w-5 h-5 text-amber-600 dark:text-amber-400" />
         </div>
-        <button aria-label="Åtgärder för samling" className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg">
-          <MoreVertical className="w-4 h-4 text-stone-500 dark:text-stone-400" aria-hidden="true" />
-        </button>
+        <div className="relative">
+          <button
+            onClick={() => setShowMenu(v => !v)}
+            aria-label="Åtgärder för samling"
+            aria-haspopup="menu"
+            aria-expanded={showMenu}
+            className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
+          >
+            <MoreVertical className="w-4 h-4 text-stone-500 dark:text-stone-400" aria-hidden="true" />
+          </button>
+          {showMenu && (
+            <div className="absolute right-0 top-full mt-1 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-10 min-w-[120px]">
+              <button
+                onClick={() => { onEdit(collection); setShowMenu(false) }}
+                className="w-full px-3 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center gap-2"
+              >
+                <Edit2 className="w-4 h-4" />
+                {t('common.edit')}
+              </button>
+              <button
+                onClick={() => { onDelete(collection.id); setShowMenu(false) }}
+                className="w-full px-3 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center gap-2 text-red-600"
+              >
+                <Trash2 className="w-4 h-4" />
+                {t('common.delete')}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
         {collection.name}
@@ -196,18 +233,26 @@ function JobCollectionCard({
       <div className="flex items-center gap-3 text-xs text-stone-500 dark:text-stone-400 mb-4">
         <span className="flex items-center gap-1">
           <Briefcase className="w-3 h-3" />
-          {collection.jobCount} {t('consultant.resources.jobs')}
+          {collection.jobs.length} {t('consultant.resources.jobs')}
         </span>
-        <span className="flex items-center gap-1">
-          <Tag className="w-3 h-3" />
-          {collection.industry}
-        </span>
+        {collection.industry && (
+          <span className="flex items-center gap-1">
+            <Tag className="w-3 h-3" />
+            {collection.industry}
+          </span>
+        )}
+        {collection.sharedWith.length > 0 && (
+          <span className="flex items-center gap-1">
+            <Users className="w-3 h-3" />
+            {t('consultant.resources.sharedWithCount', { count: collection.sharedWith.length })}
+          </span>
+        )}
       </div>
       <div className="flex items-center gap-2">
-        <Button size="sm" variant="outline" className="flex-1" onClick={() => onView(collection)}>
+        <Button size="sm" variant="outline" className="flex-1" onClick={() => onEdit(collection)}>
           {t('consultant.resources.view')}
         </Button>
-        <Button size="sm" variant="ghost" onClick={() => onShare(collection.id)}>
+        <Button size="sm" variant="ghost" onClick={() => onShare(collection)} aria-label={t('consultant.resources.shareCollection')}>
           <Share2 className="w-4 h-4" />
         </Button>
       </div>
@@ -590,9 +635,21 @@ export function ResourcesTab() {
   const [selectedPractice, setSelectedPractice] = useState<BestPractice | null>(null)
   const [showPracticeDetail, setShowPracticeDetail] = useState(false)
 
+  // Mall→deltagare-tilldelning (öppnar GoalCreationDialog förifylld)
+  const [assignTemplate, setAssignTemplate] = useState<GoalTemplate | null>(null)
+
+  // Job collections state
+  const [collections, setCollections] = useState<JobCollection[]>([])
+  const [collectionsLoading, setCollectionsLoading] = useState(true)
+  const [showCollectionForm, setShowCollectionForm] = useState(false)
+  const [editingCollection, setEditingCollection] = useState<JobCollection | null>(null)
+  const [savingCollection, setSavingCollection] = useState(false)
+  const [shareCollection, setShareCollection] = useState<JobCollection | null>(null)
+
   // Load templates from database
   useEffect(() => {
     loadTemplates()
+    loadCollections()
   }, [])
 
   const loadTemplates = async () => {
@@ -808,18 +865,137 @@ export function ResourcesTab() {
   }
 
   const handleUseForParticipant = () => {
-    // Funktionen är inte implementerad ännu (mall→deltagare-tilldelning kräver
-    // deltagarväljare + journey_goals-skrivning). Visar toast istället för
-    // browser-alert. Spårad i docs/teknisk-skuld-2026-05/ (P2).
-    notifications.info('Funktion under utveckling — kontakta support om du behöver tilldela mål nu.')
+    // Öppnar GoalCreationDialog förifylld med mallen — deltagarväljaren och
+    // consultant_goals-skrivningen finns redan där.
+    if (!selectedTemplate) return
+    setAssignTemplate(selectedTemplate)
     setShowTemplateDetail(false)
-    setSelectedTemplate(null)
   }
 
-  // Jobbsamlingar är inte byggda än (tabellen consultant_job_collections finns
-  // men inget CRUD-flöde). Visa ärligt tomtillstånd i stället för de tidigare
-  // hårdkodade exempelsamlingarna som såg ut som riktig data.
-  const jobCollections: JobCollection[] = []
+  // ==================== Jobbsamlingar (consultant_job_collections) ====================
+  // job_ids TEXT[] lagrar varje jobb som JSON-sträng {title, url}. Äldre rader
+  // med ren text tolkas som titel utan länk (defensiv parse).
+  const parseCollectionJob = (raw: string): CollectionJob => {
+    try {
+      const parsed = JSON.parse(raw)
+      if (parsed && typeof parsed === 'object' && typeof parsed.title === 'string') {
+        return { title: parsed.title, url: typeof parsed.url === 'string' ? parsed.url : '' }
+      }
+    } catch { /* ren textsträng — behandla som titel */ }
+    return { title: raw, url: '' }
+  }
+
+  const loadCollections = async () => {
+    setCollectionsLoading(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data, error } = await supabase
+        .from('consultant_job_collections')
+        .select('*')
+        .eq('consultant_id', user.id)
+        .order('created_at', { ascending: false })
+
+      if (error) throw error
+
+      setCollections((data || []).map(c => ({
+        id: c.id,
+        name: c.name,
+        description: c.description || '',
+        industry: c.industry || '',
+        jobs: (c.job_ids || []).map(parseCollectionJob),
+        sharedWith: c.shared_with || [],
+        createdAt: c.created_at,
+      })))
+    } catch (err) {
+      console.error('Error loading job collections:', err)
+    } finally {
+      setCollectionsLoading(false)
+    }
+  }
+
+  const handleSaveCollection = async (form: JobCollectionFormData) => {
+    setSavingCollection(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const row = {
+        consultant_id: user.id,
+        name: form.name,
+        description: form.description,
+        industry: form.industry,
+        job_ids: form.jobs.map(j => JSON.stringify(j)),
+        updated_at: new Date().toISOString(),
+      }
+
+      if (editingCollection) {
+        const { error } = await supabase
+          .from('consultant_job_collections')
+          .update(row)
+          .eq('id', editingCollection.id)
+        if (error) throw error
+      } else {
+        const { error } = await supabase
+          .from('consultant_job_collections')
+          .insert(row)
+        if (error) throw error
+      }
+
+      notifications.success(editingCollection ? t('consultant.resources.collectionUpdated') : t('consultant.resources.collectionCreated'))
+      setShowCollectionForm(false)
+      setEditingCollection(null)
+      await loadCollections()
+    } catch (err) {
+      console.error('Error saving collection:', err)
+      notifications.error(t('consultant.resources.collectionSaveError'))
+    } finally {
+      setSavingCollection(false)
+    }
+  }
+
+  const handleDeleteCollection = async (id: string) => {
+    if (!confirm(t('consultant.resources.confirmDeleteCollection'))) return
+    try {
+      const { error } = await supabase
+        .from('consultant_job_collections')
+        .delete()
+        .eq('id', id)
+      if (error) throw error
+      setCollections(prev => prev.filter(c => c.id !== id))
+    } catch (err) {
+      console.error('Error deleting collection:', err)
+      notifications.error(t('consultant.resources.collectionDeleteError'))
+    }
+  }
+
+  // Delning: skickar samlingen som meddelande (når deltagaren i befintliga
+  // meddelandeflödet) + registrerar mottagarna i shared_with-kolumnen.
+  const collectionShareMessage = (c: JobCollection) =>
+    `${t('consultant.resources.shareIntro', { name: c.name })}\n\n` +
+    c.jobs.map(j => j.url ? `• ${j.title}\n  ${j.url}` : `• ${j.title}`).join('\n') +
+    (c.description ? `\n\n${c.description}` : '')
+
+  const handleCollectionShared = async (recipientIds: string[]) => {
+    if (!shareCollection) return
+    try {
+      const merged = Array.from(new Set([...shareCollection.sharedWith, ...recipientIds]))
+      const { error } = await supabase
+        .from('consultant_job_collections')
+        .update({ shared_with: merged, updated_at: new Date().toISOString() })
+        .eq('id', shareCollection.id)
+      if (error) throw error
+      setCollections(prev => prev.map(c =>
+        c.id === shareCollection.id ? { ...c, sharedWith: merged } : c
+      ))
+    } catch (err) {
+      // Meddelandena är redan skickade — logga bara att shared_with inte uppdaterades
+      console.error('Error updating shared_with:', err)
+    } finally {
+      setShareCollection(null)
+    }
+  }
 
   const bestPractices: BestPractice[] = [
     {
@@ -1007,26 +1183,35 @@ export function ResourcesTab() {
             <p className="text-stone-500 dark:text-stone-400">
               {t('consultant.resources.createAndShare')}
             </p>
-            <Button onClick={() => notifications.info('Jobbsamlingar kommer i nästa version. Kontakta support om du behöver detta nu.')}>
+            <Button onClick={() => { setEditingCollection(null); setShowCollectionForm(true) }}>
               <Plus className="w-4 h-4 mr-2" />
               {t('consultant.resources.newCollection')}
             </Button>
           </div>
 
-          {jobCollections.length === 0 ? (
+          {collectionsLoading && <LoadingState message={t('consultant.resources.loadingCollections')} />}
+
+          {!collectionsLoading && collections.length === 0 && (
             <EmptyState
               icon={Folder}
-              title={t('consultant.resources.collectionsComingTitle')}
-              description={t('consultant.resources.collectionsComingDesc')}
+              title={t('consultant.resources.collectionsEmptyTitle')}
+              description={t('consultant.resources.collectionsEmptyDesc')}
+              action={{
+                label: t('consultant.resources.newCollection'),
+                onClick: () => { setEditingCollection(null); setShowCollectionForm(true) },
+              }}
             />
-          ) : (
+          )}
+
+          {!collectionsLoading && collections.length > 0 && (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {jobCollections.map(collection => (
+              {collections.map(collection => (
                 <JobCollectionCard
                   key={collection.id}
                   collection={collection}
-                  onView={() => notifications.info(`Visa-funktionen för "${collection.name}" kommer i nästa version.`)}
-                  onShare={() => notifications.info(`Delningsfunktionen för "${collection.name}" kommer i nästa version.`)}
+                  onEdit={(c) => { setEditingCollection(c); setShowCollectionForm(true) }}
+                  onShare={(c) => setShareCollection(c)}
+                  onDelete={handleDeleteCollection}
                   t={t}
                 />
               ))}
@@ -1080,6 +1265,43 @@ export function ResourcesTab() {
         onClose={() => { setShowPracticeDetail(false); setSelectedPractice(null) }}
         practice={selectedPractice}
         t={t}
+      />
+
+      {/* Mall→deltagare: GoalCreationDialog förifylld med mallen */}
+      <GoalCreationDialog
+        isOpen={!!assignTemplate}
+        onClose={() => setAssignTemplate(null)}
+        onSuccess={() => {
+          setAssignTemplate(null)
+          setSelectedTemplate(null)
+          notifications.success(t('consultant.resources.goalAssigned'))
+        }}
+        initialGoal={assignTemplate ? {
+          title: assignTemplate.title,
+          description: assignTemplate.description,
+          specific: assignTemplate.specific,
+          measurable: assignTemplate.measurable,
+          achievable: assignTemplate.achievable,
+          relevant: assignTemplate.relevant,
+          timeBound: assignTemplate.timeBound,
+        } : undefined}
+      />
+
+      {/* Jobbsamling: skapa/redigera */}
+      <JobCollectionDialog
+        isOpen={showCollectionForm}
+        onClose={() => { setShowCollectionForm(false); setEditingCollection(null) }}
+        collection={editingCollection}
+        onSave={handleSaveCollection}
+        saving={savingCollection}
+      />
+
+      {/* Jobbsamling: dela som meddelande */}
+      <GroupMessageDialog
+        isOpen={!!shareCollection}
+        onClose={() => setShareCollection(null)}
+        initialMessage={shareCollection ? collectionShareMessage(shareCollection) : ''}
+        onSent={handleCollectionShared}
       />
     </div>
   )

@@ -54,6 +54,16 @@ interface GoalCreationDialogProps {
   onClose: () => void
   onSuccess: () => void
   preselectedParticipant?: Participant
+  /** Förifyllt mål (t.ex. från en mall i ResourcesTab). Hoppar över mallsteget. */
+  initialGoal?: {
+    title: string
+    description: string
+    specific: string
+    measurable: string
+    achievable: string
+    relevant: string
+    timeBound: string
+  }
 }
 
 const goalTemplates: GoalTemplate[] = [
@@ -143,6 +153,7 @@ export function GoalCreationDialog({
   onClose,
   onSuccess,
   preselectedParticipant,
+  initialGoal,
 }: GoalCreationDialogProps) {
   const [step, setStep] = useState<'participant' | 'template' | 'customize'>('participant')
   const [loading, setLoading] = useState(false)
@@ -172,9 +183,22 @@ export function GoalCreationDialog({
     }
     if (preselectedParticipant) {
       setSelectedParticipant(preselectedParticipant)
-      setStep('template')
+      setStep(initialGoal ? 'customize' : 'template')
     }
-  }, [isOpen, preselectedParticipant])
+  }, [isOpen, preselectedParticipant, initialGoal])
+
+  // Förifyll målet från initialGoal (mall→deltagare-flödet) när dialogen öppnas
+  useEffect(() => {
+    if (isOpen && initialGoal) {
+      const deadline = new Date()
+      deadline.setDate(deadline.getDate() + 14)
+      setCustomGoal({
+        ...initialGoal,
+        priority: 'MEDIUM',
+        deadline: deadline.toISOString().split('T')[0],
+      })
+    }
+  }, [isOpen, initialGoal])
 
   useEffect(() => {
     if (selectedTemplate) {
@@ -358,7 +382,7 @@ export function GoalCreationDialog({
                     key={p.participant_id}
                     onClick={() => {
                       setSelectedParticipant(p)
-                      setStep('template')
+                      setStep(initialGoal ? 'customize' : 'template')
                     }}
                     className={cn(
                       'w-full flex items-center gap-3 p-4 rounded-xl transition-colors',
@@ -699,7 +723,7 @@ export function GoalCreationDialog({
             {step !== 'participant' && (
               <Button
                 variant="ghost"
-                onClick={() => setStep(step === 'customize' ? 'template' : 'participant')}
+                onClick={() => setStep(step === 'customize' && !initialGoal ? 'template' : 'participant')}
               >
                 <ChevronLeft className="w-4 h-4 mr-1" />
                 Tillbaka

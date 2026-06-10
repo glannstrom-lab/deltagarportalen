@@ -6850,6 +6850,26 @@
         "interviewTraining": "Interview training",
         "networking": "Networking",
         "skillsDevelopment": "Skills development"
+      },
+      "myDay": {
+        "title": "My day",
+        "todaysMeetings": "Today's meetings",
+        "noMeetingsToday": "No meetings today.",
+        "latestNote": "Latest note",
+        "noNotes": "No journal entry yet.",
+        "deadlines": "Goal deadlines",
+        "noDeadlines": "No deadlines within 7 days.",
+        "daysLeft_one": "1 day left",
+        "daysLeft_other": "{{count}} days left",
+        "overdue_one": "1 day overdue",
+        "overdue_other": "{{count}} days overdue",
+        "dueToday": "Due today",
+        "needsContact": "Reach out",
+        "noContactsNeeded": "All participants have recent contact.",
+        "sendMessage": "Send message",
+        "joinMeeting": "Meeting link",
+        "allClear": "Nothing urgent today",
+        "allClearDesc": "A good moment to work proactively with your participants."
       }
     },
     "participants": {
@@ -6964,7 +6984,8 @@
       "consultant": "Consultant",
       "participantsCount": "{{count}} participants",
       "exportAllData": "Export all data",
-      "viewAccessLog": "View access log",
+      "exportDone": "Your data was downloaded as a JSON file.",
+      "exportError": "The export failed. Please try again.",
       "privacyPolicy": "Privacy policy",
       "saved": "Settings saved!",
       "saving": "Saving...",
@@ -7299,6 +7320,26 @@
         "skillsDevelopment": "Skills development",
         "other": "Other"
       },
+      "stuck": {
+        "title": "At risk of getting stuck",
+        "subtitle": "Participants with at least two warning signals",
+        "empty": "No participants are showing multiple warning signals right now.",
+        "reasonLogin": "Not logged in for 3 weeks",
+        "reasonContact": "No contact for 2 weeks",
+        "reasonGoals": "No goal activity for 3 weeks"
+      },
+      "effect": {
+        "title": "Intervention effect",
+        "subtitle": "Activity among participants with vs. without a meeting in the last 30 days",
+        "insufficient": "Not enough data for a meaningful comparison — at least 3 active participants are needed in each group (with and without a meeting in the last 30 days).",
+        "withMeeting": "With meeting (30 days)",
+        "withoutMeeting": "Without meeting (30 days)",
+        "participantCount_one": "1 participant",
+        "participantCount_other": "{{count}} participants",
+        "goalsPerParticipant": "completed goals per participant",
+        "activeLastWeek": "logged in within the last week",
+        "note": "Correlation is not causation — but a large gap between the groups is worth acting on."
+      },
       "cohortAnalysis": {
         "title": "Cohort analysis",
         "subtitle": "Comparison between participant groups based on start date",
@@ -7391,11 +7432,22 @@
       "used": "Used {{count}} times",
       "use": "Use",
       "createAndShare": "Create and share job collections with your participants",
-      "collectionsComingTitle": "Job collections are coming in a future version",
-      "collectionsComingDesc": "Here you'll be able to collect jobs by industry and share them with your participants. Contact support if you need this now.",
       "newCollection": "New collection",
       "jobs": "jobs",
       "view": "View",
+      "loadingCollections": "Loading collections...",
+      "collectionsEmptyTitle": "Your job collections",
+      "collectionsEmptyDesc": "Collect interesting jobs by industry or participant and share them as a message with one click.",
+      "collectionCreated": "The collection was created.",
+      "collectionUpdated": "The collection was updated.",
+      "collectionSaveError": "The collection could not be saved. Please try again.",
+      "collectionDeleteError": "The collection could not be deleted. Please try again.",
+      "confirmDeleteCollection": "Are you sure you want to delete this collection?",
+      "sharedWithCount_one": "shared with 1 participant",
+      "sharedWithCount_other": "shared with {{count}} participants",
+      "shareCollection": "Share collection",
+      "shareIntro": "Here are some jobs I think could suit you — the collection \"{{name}}\":",
+      "goalAssigned": "The goal was assigned to the participant.",
       "provenMethods": "Proven methods and checklists for effective consulting",
       "steps": "steps",
       "stepsTitle": "Steps",
@@ -7473,7 +7525,8 @@
       "saveNote": "Save note",
       "activeGoalsCount": "{{count}} active goals",
       "newGoal": "New goal",
-      "writeNote": "Write note"
+      "writeNote": "Write note",
+      "reportDraft": "Report draft (AI)"
     },
     "participantAnalytics": {
       "title": "Participant Analytics",

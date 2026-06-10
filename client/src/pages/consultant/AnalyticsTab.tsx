@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   BarChart3,
@@ -18,6 +19,9 @@ import {
   Activity,
   Award,
   Clock,
+  AlertTriangle,
+  Calendar,
+  ChevronRight,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { notifications } from '@/lib/toast'
@@ -58,6 +62,23 @@ interface TrendData {
   placementTime: { value: number; isPositive: boolean }
   goalsCompletion: { value: number; isPositive: boolean }
   engagement: { value: number; isPositive: boolean }
+}
+
+interface StuckParticipant {
+  participantId: string
+  name: string
+  reasons: string[]
+}
+
+interface InterventionGroup {
+  participants: number
+  avgGoalsCompleted: number
+  engagedPct: number
+}
+
+interface InterventionEffect {
+  withMeeting: InterventionGroup
+  withoutMeeting: InterventionGroup
 }
 
 // Metric Card Component
@@ -182,6 +203,8 @@ export function AnalyticsTab() {
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
   const [showReportDialog, setShowReportDialog] = useState(false)
   const [cohortData, setCohortData] = useState<CohortData[]>([])
+  const [stuckList, setStuckList] = useState<StuckParticipant[]>([])
+  const [interventionEffect, setInterventionEffect] = useState<InterventionEffect | null>(null)
   const [trends, setTrends] = useState<TrendData>({
     cvCompletion: { value: 0, isPositive: true },
     placementTime: { value: 0, isPositive: true },
@@ -256,6 +279,16 @@ export function AnalyticsTab() {
         .select('*')
         .eq('consultant_id', user.id)
         .gte('created_at', startDate.toISOString())
+
+      // Fetch meetings last 30 days (för insatseffekt-analysen)
+      const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+      const { data: recentMeetings } = await supabase
+        .from('consultant_meetings')
+        .select('participant_id, scheduled_at, status')
+        .eq('consultant_id', user.id)
+        .gte('scheduled_at', thirtyDaysAgo.toISOString())
+        .lte('scheduled_at', now.toISOString())
+        .neq('status', 'cancelled')
 
       // Fetch previous period data for trend calculations
       const periodLength = now.getTime() - startDate.getTime()
@@ -338,6 +371,77 @@ export function AnalyticsTab() {
 
         // Calculate goal categories from real data
         const goalCategories = calculateGoalCategories(goalsData || [])
+
+        // ==================== Riskerar att fastna ====================
+        // Bygger på de signaler konsulenten faktiskt har tillgång till:
+        // inloggning, senaste kontakt och målaktivitet. En deltagare listas
+        // först vid minst två varningssignaler — en ensam signal är brus.
+        const twentyOneDaysAgo = new Date(now.getTime() - 21 * 24 * 60 * 60 * 1000)
+        const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000)
+
+        const stuck: StuckParticipant[] = participants
+          .filter(p => p.status === 'ACTIVE')
+          .map(p => {
+            const reasons: string[] = []
+            if (!p.last_login || new Date(p.last_login) < twentyOneDaysAgo) {
+              reasons.push(t('consultant.analytics.stuck.reasonLogin'))
+            }
+            if (!p.last_contact_at || new Date(p.last_contact_at) < fourteenDaysAgo) {
+              reasons.push(t('consultant.analytics.stuck.reasonContact'))
+            }
+            const pGoals = (goalsData || []).filter(g => g.participant_id === p.participant_id)
+            const recentGoalActivity = pGoals.some(g =>
+              (g.completed_at && new Date(g.completed_at) >= twentyOneDaysAgo) ||
+              (g.created_at && new Date(g.created_at) >= twentyOneDaysAgo)
+            )
+            if (pGoals.length > 0 && !recentGoalActivity) {
+              reasons.push(t('consultant.analytics.stuck.reasonGoals'))
+            }
+            return {
+              participantId: p.participant_id,
+              name: `${p.first_name} ${p.last_name}`,
+              reasons,
+            }
+          })
+          .filter(s => s.reasons.length >= 2)
+          .sort((a, b) => b.reasons.length - a.reasons.length)
+          .slice(0, 8)
+        setStuckList(stuck)
+
+        // ==================== Insatseffekt: möte ↔ aktivitet ====================
+        // Jämför aktiva deltagare MED ≥1 möte senaste 30 dagarna mot dem UTAN.
+        // Visas bara när båda grupperna har ≥3 deltagare — annars är
+        // jämförelsen statistiskt meningslös och vi säger det istället.
+        const activeParticipants = participants.filter(p => p.status === 'ACTIVE')
+        const metPids = new Set((recentMeetings || []).map(m => m.participant_id))
+        const groupWith = activeParticipants.filter(p => metPids.has(p.participant_id))
+        const groupWithout = activeParticipants.filter(p => !metPids.has(p.participant_id))
+
+        if (groupWith.length >= 3 && groupWithout.length >= 3) {
+          const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+          const buildGroup = (group: typeof activeParticipants): InterventionGroup => {
+            const pids = new Set(group.map(p => p.participant_id))
+            const completed = (goalsData || []).filter(g =>
+              pids.has(g.participant_id) &&
+              g.status === 'COMPLETED' &&
+              g.completed_at && new Date(g.completed_at) >= thirtyDaysAgo
+            ).length
+            const engaged = group.filter(p =>
+              p.last_login && new Date(p.last_login) >= sevenDaysAgo
+            ).length
+            return {
+              participants: group.length,
+              avgGoalsCompleted: Math.round((completed / group.length) * 10) / 10,
+              engagedPct: Math.round((engaged / group.length) * 100),
+            }
+          }
+          setInterventionEffect({
+            withMeeting: buildGroup(groupWith),
+            withoutMeeting: buildGroup(groupWithout),
+          })
+        } else {
+          setInterventionEffect(null)
+        }
 
         setAnalytics({
           totalParticipants: total,
@@ -852,6 +956,110 @@ export function AnalyticsTab() {
               </div>
             ))}
           </div>
+        </Card>
+      </div>
+
+      {/* Riskerar att fastna & Insatseffekt */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Riskerar att fastna */}
+        <Card className="p-5">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="font-semibold text-stone-900 dark:text-stone-100">
+                {t('consultant.analytics.stuck.title')}
+              </h3>
+              <p className="text-sm text-stone-500 dark:text-stone-600">
+                {t('consultant.analytics.stuck.subtitle')}
+              </p>
+            </div>
+            <AlertTriangle className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
+          </div>
+          {stuckList.length === 0 ? (
+            <p className="text-sm text-stone-500 dark:text-stone-400 py-4">
+              {t('consultant.analytics.stuck.empty')}
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {stuckList.map(s => (
+                <li key={s.participantId}>
+                  <Link
+                    to={`/consultant/participants/${s.participantId}`}
+                    className="flex items-center justify-between gap-3 p-3 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+                  >
+                    <div className="min-w-0">
+                      <p className="font-medium text-stone-900 dark:text-stone-100 truncate">
+                        {s.name}
+                      </p>
+                      <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                        {s.reasons.join(' · ')}
+                      </p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-stone-400 flex-shrink-0" aria-hidden="true" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
+
+        {/* Insatseffekt */}
+        <Card className="p-5">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="font-semibold text-stone-900 dark:text-stone-100">
+                {t('consultant.analytics.effect.title')}
+              </h3>
+              <p className="text-sm text-stone-500 dark:text-stone-600">
+                {t('consultant.analytics.effect.subtitle')}
+              </p>
+            </div>
+            <Calendar className="w-5 h-5 text-stone-500 dark:text-stone-400" aria-hidden="true" />
+          </div>
+          {interventionEffect === null ? (
+            <p className="text-sm text-stone-500 dark:text-stone-400 py-4">
+              {t('consultant.analytics.effect.insufficient')}
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {([
+                { key: 'withMeeting' as const, label: t('consultant.analytics.effect.withMeeting') },
+                { key: 'withoutMeeting' as const, label: t('consultant.analytics.effect.withoutMeeting') },
+              ]).map(group => {
+                const g = interventionEffect[group.key]
+                return (
+                  <div key={group.key} className="p-4 bg-stone-50 dark:bg-stone-800 rounded-xl">
+                    <div className="flex items-center justify-between mb-3">
+                      <p className="font-medium text-stone-900 dark:text-stone-100">{group.label}</p>
+                      <span className="text-xs text-stone-500 dark:text-stone-400">
+                        {t('consultant.analytics.effect.participantCount', { count: g.participants })}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <p className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+                          {g.avgGoalsCompleted}
+                        </p>
+                        <p className="text-xs text-stone-500 dark:text-stone-400">
+                          {t('consultant.analytics.effect.goalsPerParticipant')}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+                          {g.engagedPct}%
+                        </p>
+                        <p className="text-xs text-stone-500 dark:text-stone-400">
+                          {t('consultant.analytics.effect.activeLastWeek')}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+              <p className="text-xs text-stone-500 dark:text-stone-400">
+                {t('consultant.analytics.effect.note')}
+              </p>
+            </div>
+          )}
         </Card>
       </div>
 

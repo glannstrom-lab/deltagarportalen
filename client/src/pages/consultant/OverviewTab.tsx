@@ -35,6 +35,13 @@ import { InviteParticipantDialog } from '@/components/consultant/InviteParticipa
 import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
 import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
+import { GroupMessageDialog } from '@/components/consultant/GroupMessageDialog'
+import {
+  MinDagSection,
+  type MyDayMeeting,
+  type MyDayDeadline,
+  type MyDayContact,
+} from '@/components/consultant/MinDagSection'
 
 interface DashboardStats {
   totalParticipants: number
@@ -257,7 +264,14 @@ export function OverviewTab() {
   const [showMeetingDialog, setShowMeetingDialog] = useState(false)
   const [showGoalDialog, setShowGoalDialog] = useState(false)
   const [showReportDialog, setShowReportDialog] = useState(false)
-  // showMessageDialog-state borttagen 2026-05-15 — message-dialog inte ansluten
+  // Meddelandedialog (gruppmeddelande + direktmeddelande från Min dag)
+  const [showMessageDialog, setShowMessageDialog] = useState(false)
+  const [messagePreselected, setMessagePreselected] = useState<string[] | undefined>(undefined)
+
+  // Min dag-data
+  const [myDayMeetings, setMyDayMeetings] = useState<MyDayMeeting[]>([])
+  const [myDayDeadlines, setMyDayDeadlines] = useState<MyDayDeadline[]>([])
+  const [myDayContacts, setMyDayContacts] = useState<MyDayContact[]>([])
 
   // Goal categories for overview
   const [goalCategories, setGoalCategories] = useState<Array<{ category: string; count: number; percentage: number }>>([])
@@ -373,6 +387,83 @@ export function OverviewTab() {
 
         setAttentionList(attention.slice(0, 5))
 
+        // ==================== Min dag ====================
+        const nameOf = (pid: string) => {
+          const p = participantsData.find(x => x.participant_id === pid)
+          if (!p) return t('common.unknown')
+          const name = [p.first_name, p.last_name].filter(Boolean).join(' ')
+          return name || p.email || t('common.unknown')
+        }
+
+        // Dagens möten (ur veckans redan hämtade möten)
+        const todayStart = new Date(); todayStart.setHours(0, 0, 0, 0)
+        const todayEnd = new Date(); todayEnd.setHours(23, 59, 59, 999)
+        const todaysMeetings = (meetingsData || []).filter(m => {
+          const at = new Date(m.scheduled_at)
+          return at >= todayStart && at <= todayEnd
+        })
+
+        // Mötesförberedelse: senaste journalanteckning per mötesdeltagare
+        const meetingPids = [...new Set(todaysMeetings.map(m => m.participant_id))]
+        let prepNotes: Array<{ participant_id: string; content: string; category: string; created_at: string }> = []
+        if (meetingPids.length > 0) {
+          const { data: prepData } = await supabase
+            .from('consultant_journal')
+            .select('participant_id, content, category, created_at')
+            .eq('consultant_id', user.id)
+            .in('participant_id', meetingPids)
+            .order('created_at', { ascending: false })
+            .limit(30)
+          prepNotes = prepData || []
+        }
+        const latestNoteFor = (pid: string) => {
+          const note = prepNotes.find(n => n.participant_id === pid)
+          return note ? { content: note.content, category: note.category, createdAt: note.created_at } : null
+        }
+
+        setMyDayMeetings(
+          todaysMeetings
+            .sort((a, b) => new Date(a.scheduled_at).getTime() - new Date(b.scheduled_at).getTime())
+            .map(m => ({
+              id: m.id,
+              participantId: m.participant_id,
+              participantName: nameOf(m.participant_id),
+              scheduledAt: m.scheduled_at,
+              meetingType: m.meeting_type || null,
+              meetingLink: m.meeting_link || null,
+              latestNote: latestNoteFor(m.participant_id),
+            }))
+        )
+
+        // Måldeadlines: förfallna + inom 7 dagar (ej slutförda)
+        const sevenDaysAhead = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+        setMyDayDeadlines(
+          (goalsData || [])
+            .filter(g => g.status !== 'COMPLETED' && g.deadline && new Date(g.deadline) <= sevenDaysAhead)
+            .sort((a, b) => new Date(a.deadline).getTime() - new Date(b.deadline).getTime())
+            .slice(0, 6)
+            .map(g => ({
+              goalId: g.id,
+              goalTitle: g.title,
+              participantId: g.participant_id,
+              participantName: nameOf(g.participant_id),
+              deadline: g.deadline,
+              daysLeft: Math.floor((new Date(g.deadline).getTime() - now.getTime()) / (24 * 60 * 60 * 1000)),
+            }))
+        )
+
+        // Behöver kontakt: topp 3 ur attention-listan (kontakt/inaktivitet)
+        setMyDayContacts(
+          attention
+            .filter(a => a.type === 'no_contact' || a.type === 'inactive')
+            .slice(0, 3)
+            .map(a => ({
+              participantId: a.participant.participant_id,
+              participantName: nameOf(a.participant.participant_id),
+              reason: a.type as 'no_contact' | 'inactive',
+            }))
+        )
+
         // Build recent activity from real data
         const activityTypes: Record<string, RecentActivity['type']> = {
           GENERAL: 'message',
@@ -482,6 +573,17 @@ export function OverviewTab() {
 
   return (
     <div className="space-y-6">
+      {/* Min dag — prioriterad dagsvy */}
+      <MinDagSection
+        meetings={myDayMeetings}
+        deadlines={myDayDeadlines}
+        contacts={myDayContacts}
+        onMessage={(participantId) => {
+          setMessagePreselected([participantId])
+          setShowMessageDialog(true)
+        }}
+      />
+
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <KPICard
@@ -581,7 +683,10 @@ export function OverviewTab() {
             <QuickAction
               icon={Mail}
               label={t('consultant.overview.sendGroupMessage')}
-              onClick={() => navigate('/consultant/communication')}
+              onClick={() => {
+                setMessagePreselected(undefined)
+                setShowMessageDialog(true)
+              }}
             />
             <QuickAction
               icon={Calendar}
@@ -777,6 +882,15 @@ export function OverviewTab() {
           analyticsData={reportData}
         />
       )}
+
+      <GroupMessageDialog
+        isOpen={showMessageDialog}
+        onClose={() => {
+          setShowMessageDialog(false)
+          setMessagePreselected(undefined)
+        }}
+        preselectedIds={messagePreselected}
+      />
     </div>
   )
 }

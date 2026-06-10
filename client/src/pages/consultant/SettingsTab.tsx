@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Settings,
@@ -19,8 +20,10 @@ import {
   Save,
   Loader2,
   CheckCircle,
+  Download,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
+import { notifications as toast } from '@/lib/toast'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
@@ -103,10 +106,12 @@ function SettingRow({
 
 export function SettingsTab() {
   const { t, i18n } = useTranslation()
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
+  const [exporting, setExporting] = useState(false)
 
   const getDefaultNotifications = (): NotificationSetting[] => [
     {
@@ -273,6 +278,57 @@ export function SettingsTab() {
       console.error('Error saving settings:', error)
     } finally {
       setSaving(false)
+    }
+  }
+
+  // GDPR-export: laddar ner konsulentens egen yrkesdata som JSON.
+  // Deltagardata ingår bara i form av konsulentens egna anteckningar/mål —
+  // det är konsulentens behandlingsunderlag, inte deltagarens profildata.
+  const handleExportData = async () => {
+    setExporting(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const [settings, goals, journal, meetings, messages, templates, collections, placements] = await Promise.all([
+        supabase.from('consultant_settings').select('*').eq('consultant_id', user.id).maybeSingle(),
+        supabase.from('consultant_goals').select('*').eq('consultant_id', user.id),
+        supabase.from('consultant_journal').select('*').eq('consultant_id', user.id),
+        supabase.from('consultant_meetings').select('*').eq('consultant_id', user.id),
+        supabase.from('consultant_messages').select('*').or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`),
+        supabase.from('consultant_goal_templates').select('*').eq('consultant_id', user.id),
+        supabase.from('consultant_job_collections').select('*').eq('consultant_id', user.id),
+        supabase.from('consultant_placements').select('*').eq('consultant_id', user.id),
+      ])
+
+      const exportPayload = {
+        exportedAt: new Date().toISOString(),
+        consultantId: user.id,
+        settings: settings.data ?? null,
+        goals: goals.data ?? [],
+        journal: journal.data ?? [],
+        meetings: meetings.data ?? [],
+        messages: messages.data ?? [],
+        goalTemplates: templates.data ?? [],
+        jobCollections: collections.data ?? [],
+        placements: placements.data ?? [],
+      }
+
+      const blob = new Blob([JSON.stringify(exportPayload, null, 2)], { type: 'application/json' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `jobin-konsulentdata-${new Date().toISOString().split('T')[0]}.json`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+      toast.success(t('consultant.settings.exportDone'))
+    } catch (error) {
+      console.error('Error exporting data:', error)
+      toast.error(t('consultant.settings.exportError'))
+    } finally {
+      setExporting(false)
     }
   }
 
@@ -597,24 +653,29 @@ export function SettingsTab() {
           </div>
         </div>
 
+        {/* Åtkomstlogg-knappen togs bort 2026-06-11: audit_logs har admin-only
+            SELECT-RLS, så en konsulent kan aldrig läsa loggen härifrån. */}
         <div className="space-y-3">
-          <button className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors">
+          <button
+            onClick={handleExportData}
+            disabled={exporting}
+            className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors disabled:opacity-60"
+          >
             <span className="font-medium text-stone-900 dark:text-stone-100">
               {t('consultant.settings.exportAllData')}
             </span>
-            <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
+            {exporting
+              ? <Loader2 className="w-5 h-5 text-stone-400 animate-spin" aria-hidden="true" />
+              : <Download className="w-5 h-5 text-stone-400 dark:text-stone-500" aria-hidden="true" />}
           </button>
-          <button className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors">
-            <span className="font-medium text-stone-900 dark:text-stone-100">
-              {t('consultant.settings.viewAccessLog')}
-            </span>
-            <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
-          </button>
-          <button className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors">
+          <button
+            onClick={() => navigate('/privacy')}
+            className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
+          >
             <span className="font-medium text-stone-900 dark:text-stone-100">
               {t('consultant.settings.privacyPolicy')}
             </span>
-            <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
+            <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" aria-hidden="true" />
           </button>
         </div>
       </Card>

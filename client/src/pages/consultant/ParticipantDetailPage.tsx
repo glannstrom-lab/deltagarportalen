@@ -24,11 +24,13 @@ import {
   CheckCircle,
   Activity,
   Send,
+  Sparkles,
 } from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
+import { ReportDraftDialog } from '@/components/consultant/ReportDraftDialog'
 import { cn } from '@/lib/utils'
 
 interface Participant {
@@ -277,6 +279,7 @@ export function ParticipantDetailPage() {
   const [timeline, setTimeline] = useState<TimelineEvent[]>([])
   const [activeTab, setActiveTab] = useState<'overview' | 'goals' | 'journal' | 'timeline'>('overview')
   const [newNote, setNewNote] = useState('')
+  const [showReportDraft, setShowReportDraft] = useState(false)
 
   useEffect(() => {
     fetchParticipantData()
@@ -639,6 +642,12 @@ export function ParticipantDetailPage() {
 
       {activeTab === 'journal' && (
         <div className="space-y-4">
+          <div className="flex items-center justify-end">
+            <Button variant="outline" onClick={() => setShowReportDraft(true)}>
+              <Sparkles className="w-4 h-4 mr-2" />
+              {t('consultant.participantDetail.reportDraft')}
+            </Button>
+          </div>
           <Card className="p-4">
             <textarea
               value={newNote}
@@ -741,6 +750,14 @@ export function ParticipantDetailPage() {
             })}
           </div>
         </Card>
+      )}
+
+      {participantId && (
+        <ReportDraftDialog
+          isOpen={showReportDraft}
+          onClose={() => setShowReportDraft(false)}
+          participantId={participantId}
+        />
       )}
     </div>
   )
