@@ -118,4 +118,11 @@ Sentry-baseline efter compliance-sprinten (Session Replay-beslutet är redan tag
 | Beslut | Behövs till |
 |--------|-------------|
 | Rotera OpenRouter-nyckeln | Idag |
-| Skapa testanvä
+| Skapa testanvändare + GitHub Secrets (D1) | v. 24 |
+| Välja EU-utlysning (26-001 vs 26-002) | Aug |
+| `sta/`-dokumentens hemvist (repo eller ej) | v. 25 |
+| Konsolidera roadmaps till en | v. 25 |
+
+---
+
+*Granskning utförd av Claude (Cowork) 2026-06-10. Screenshots från granskningen kan återskapas med e2e-skripten mot `https://jobin.se` med testkontot.*

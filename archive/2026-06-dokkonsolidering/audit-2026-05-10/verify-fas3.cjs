@@ -8,7 +8,7 @@ const path = require('path')
 const BASE = 'http://localhost:3002'
 const USER = {
   email: process.env.TEST_USER_EMAIL || 'claude-playwright-test@jobin.se',
-  password: process.env.TEST_USER_PASSWORD || 'HjFxMLjrXzjHhOqS33j9vPzq',
+  password: process.env.TEST_USER_PASSWORD || process.env.TEST_USER_PASSWORD,
 }
 
 async function dismissCookies(page) {

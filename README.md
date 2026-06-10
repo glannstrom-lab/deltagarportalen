@@ -205,4 +205,34 @@ Aktiveras via `data-domain` (sätts av `PageLayout`). Nav-sanning:
 | `docs/security-audit.md` | Levande säkerhetsstatus (senast 2026-05-28) |
 | `docs/COMPLIANCE-USER-ACTIONS.md` | Juridisk åtgärdschecklista (DPIA, Art 30, AI Act) |
 | `e2e/README.md` | E2E-test-aktivering |
-| `supabase/migrations/MIGRATI
+| `supabase/migrations/MIGRATION_NOTES.md` | Kända migrations-konflikter |
+| `archive/2026-06-dokkonsolidering/` | Arkiverade planer & granskningar (med README) |
+
+---
+
+## Roller & åtkomst
+
+- **USER** (deltagare) — egen CV, brev, jobb, dagbok
+- **CONSULTANT** — alla deltagares CV/brev/aktivitet hen är knuten till
+- **ADMIN** — alla deltagare + konsulenter
+- **SUPERADMIN** — admin + audit-logs + system-config
+
+Rollkontroll via `PrivateRoute` + Supabase RLS på alla 130 publika tabeller.
+
+---
+
+## Bidra
+
+1. Skapa branch från `main`
+2. Kör `npx tsc --noEmit && npm run test:run` lokalt
+3. Skapa PR — CI körs automatiskt (lint, typecheck, vitest, build, lighthouse,
+   security scan, e2e smoke)
+4. Coverage-rapport visas i PR-summary
+
+---
+
+## Licens
+
+MIT
+
+*Senast uppdaterad: 2026-06-10*

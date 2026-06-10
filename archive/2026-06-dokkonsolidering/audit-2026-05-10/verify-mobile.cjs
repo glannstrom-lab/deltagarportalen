@@ -4,7 +4,7 @@ const path = require('path')
 const BASE = 'https://jobin.se'
 const TEST_USER = {
   email: 'claude-playwright-test@jobin.se',
-  password: 'HjFxMLjrXzjHhOqS33j9vPzq',
+  password: process.env.TEST_USER_PASSWORD,
 }
 
 async function main() {

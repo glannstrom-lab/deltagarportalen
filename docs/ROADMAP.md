@@ -122,4 +122,8 @@ Native mobilapp (PWA räcker) · egen LLM-hosting (OpenRouter ger modellfrihet) 
 | TECH-DEBT fas A + autonoma B–F | −14 800 rader dödkod, −52 % initial JS, AI-robusthet, säkerhetsfixar (2026-05-15) | `.../TECH-DEBT-ROADMAP.md`, `NIGHT-LOOP-SUMMARY-2026-05-15.md` |
 | LIV fas 1–3 + GRAFIK fas 1–6 | Illustrationer i heroes, tomtillstånd, success-vyer, editorial spots (2026-06-04/06) | `.../LIV-ROADMAP.md` |
 | STA-bygget maj 2026 | Arbetsprövningsmodul: deltagar- + konsulentflöde, DOA, AI-utkast | `docs/sta-*` |
-| Granskningar apr/maj | portal-review-2026-04, audit-2026-04, audit-2026-05-10, teknisk-skuld-2026-05 
+| Granskningar apr/maj | portal-review-2026-04, audit-2026-04, audit-2026-05-10, teknisk-skuld-2026-05 | `archive/2026-06-dokkonsolidering/` |
+
+---
+
+*Uppdateras löpande. Vid kvartalsskifte: flytta avklarat till §9, omvärdera §1–3.*

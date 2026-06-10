@@ -1,73 +1,126 @@
-# Roadmap — Jobin (Deltagarportalen)
+# Deltagarportalen – Roadmap (12 mån framåt)
 
-> **Detta är projektets enda gällande plan.** Antagen 2026-06-10 utifrån `docs/portal-review-2026-06.md`.
-> Ersätter och konsoliderar: gamla ROADMAP (2026-04), TECH-DEBT-ROADMAP, DESIGN-ROADMAP, LIV-ROADMAP, FLAGGED-DEFERRED, BLOCKED-FAS-D — alla arkiverade i `archive/2026-06-dokkonsolidering/` med öppna punkter överförda hit.
-> ID:n som `A1`, `E3`, `F1` behålls från tech-debt-roadmapen för spårbarhet mot arkivets detaljbeskrivningar.
+**Senast uppdaterad:** 2026-04-27
+**Status:** Förslag, ej beslutad. Diskuteras med produktägare och konsulenter innan kommit-tid bokas.
 
-**Så underhålls dokumentet:** En plan, tre horisonter (Nu / Näst / Senare). Avklarat flyttas till §9. Nya idéer går in under rätt horisont — aldrig i ett nytt plandokument. Detaljspecar (STA, AF-API, EU) lever som bilagor enligt §8 och prioriteras härifrån.
+Roadmap-prioritering följer tre principer:
+
+1. **Stabilisera först, expandera sedan.** Dödkod, RLS-luckor och saknade tester är dyrare än ny funktionalitet.
+2. **Synergi med EU-utlysningar.** Tre relevanta finns dokumenterade i `docs/26-001…26-010`. Bygg så att portalen kvalificerar.
+3. **Konsulenten är hävstången.** Varje ny funktion ska ha ett tydligt konsultvärde – inte bara deltagar­värde – för att skala.
 
 ---
 
-## 1. Nu — v. 24–27 (juni–juli): Compliance & skyddsnät
+## H1 2026 (maj–juli) – STABILISERA
 
-### Spår 1 — Juridik (hård deadline: AI Act 2 aug 2026)
+**Tema:** Rensa, mäta, säkra. Inga nya features.
 
-| # | Uppgift | Detaljer | Status |
-|---|---------|----------|--------|
-| J1 | Rotera läckt OpenRouter-nyckel | `docs/security-audit.md` CRIT-2605-01 — dashboardåtgärd, 5 min | ⬜ **Mikael, idag** |
-| J2 | Färdigställ DPIA | `docs/DPIA-PORTAL.md` — fält för ansvarig/org.nr/signatur väntar | ⬜ |
-| J3 | Färdigställ Art 30-register | `docs/GDPR-ART30-REGISTER.md` + verifiera retention & DPA per biträde | ⬜ |
-| J4 | AI Act Annex III-klassificering per AI-funktion | `docs/AI-ACT-CLASSIFICATION.md` — kompetensanalys/jobbmatchning/STA-AI ligger närmast högrisk (Annex III p4) | ⬜ |
-| J5 | Art 50-transparensmärkning i UI | "AI-genererat"-märkning på alla AI-svar (18 Vercel-funktioner + edge) | ⬜ |
-| J6 | Beta av `docs/COMPLIANCE-USER-ACTIONS.md` | Levande checklista — kritiska punkter denna vecka | ⬜ pågående |
+### Maj 2026 – "Operation Spring Clean"
+- [ ] **Dödkods-radering** (åtgärd #1 i `portal-review-2026-04.md`). 6 sidfiler bort, ~3500 rader.
+- [ ] **Repo-hygien**: arkivera 50+ doc/png/pdf till `archive/2026-q1/`.
+- [ ] **README.md uppdatering**: korrekt stack (React 19, OpenRouter), korrekt migrationsguide.
+- [ ] **HSTS-header** + `sanitizeInput()`-paritet mellan `/api/ai.js` och edge functions.
+- [ ] **Console.log-stripping** i produktionsbygget.
+- [ ] **Vite bundle-analys** + ta bort `html2pdf.js` ELLER `html2canvas+jspdf` – välj en PDF-väg.
+- [ ] **Migrationskonsolidation**: lös 20260306130000-dubbletten och invitations-trippeln.
 
-### Spår 2 — Skyddsnät & buggfixar från granskningen 2026-06
+**Mätbart resultat:** Bundle <800 KB main chunk, 0 dödkods-imports i `App.tsx`, rotmappen <20 filer.
 
-| # | Uppgift | Detaljer | Status |
-|---|---------|----------|--------|
-| S1 (f.d. D1) | Authenticated E2E i CI | Mikael: skapa testanvändare + GitHub Secrets (`TEST_USER_EMAIL`/`TEST_USER_PASSWORD`); instruktioner i arkivets `BLOCKED-FAS-D.md`. Sedan: aktivera workflow-steget | ⬜ blockerad på Mikael |
-| S2 (f.d. D3/D4) | Konsulent golden path + PDF-export-E2E | Följer direkt på S1; STA-smoke ingår | ⬜ |
-| S3 | Kurera `e2e/` | Promota ~10 bästa av 81 ad-hoc `.cjs`-skript till spec-filer, arkivera resten | ⬜ |
-| S4 | Fixa V1–V7 från `portal-review-2026-06.md` §4 | "Hej □"-fallback, "1 månader sen"-plural, "Generera"-copy, cookie+tour-krock mobil, Resurser-animationsrace, stale build-timestamp, Hälsa-hero | ⬜ ~1–2 dagar |
-| S5 | Mät LCP/Web Vitals i prod efter preload-fixen | Sätt baseline → performance-budget i CI (mål: LCP < 2,5 s) | ⬜ |
-| S6 | Repo-städning | 39 ospårade filer: committa/ignorera; besluta `sta/`-källdokumentens hemvist (persondata?); normalisera radslut (`.gitattributes`) | ⬜ delvis Mikael |
+### Juni 2026 – "Operation Test Cover"
+- [ ] **RLS-audit live**: kör `pg_policies`-jämförelse, skriv migration som täpper de 13 tabellerna.
+- [ ] **Top-5 testflöden**: login, CV-spara, cover-letter-generering, jobbsök, GDPR-radera. Vitest + Testing Library.
+- [ ] **Playwright E2E** för 3 kritiska happy paths (befintlig `e2e/`-mapp aktiveras).
+- [ ] **Sentry-konfiguration**: verifiera att fel verkligen rapporteras (logger.ts har TODO).
+- [ ] **CI-gate**: PR ska inte kunna mergas om testtäckning sjunker.
 
-## 2. Näst — v. 26–31 (juli–aug): Skuldbetalning
+**Mätbart resultat:** 100 % RLS-täckning på persondata-tabeller, 30 % testtäckning, Sentry-grupperade fel synliga.
 
-Bakgrundsarbete, körs när Spår 1–2 tillåter. Detaljer: arkivets `TECH-DEBT-ROADMAP.md` + `FLAGGED-DEFERRED.md`.
+### Juli 2026 – "Konsulent-vyn på riktigt"
+- [ ] Fixa `consultantService.ts` TODO:s – riktiga månadsstats (placeringar, slutförda mål).
+- [ ] Konsult-dashboard: vilka deltagare behöver kontakt? (sortera på senaste aktivitet, energinivå).
+- [ ] Massmeddelande-funktion (med GDPR-loggning).
+- [ ] Konsultens egen kalenderintegration (Google Calendar är redan halvbyggt).
 
-| ID | Uppgift | Notis |
-|----|---------|-------|
-| A1 | ESLint 1019 → 0 errors | Mest `no-unused-vars`; manuellt över flera dagar |
-| D2r | Tester för 3 kvarvarande services (profileEnhancementsApi, careerApi, pdfExportService) | userApi klar (natt-loopen) |
-| C1 | Prompt-konsolidering `ai.js`/`ai-stream.js` → `_prompts.js` | Designbeslut: medveten divergens dokumenterad — konsolidera eller behåll |
-| PDF | Konsolidera 3 PDF-bibliotek → 1 | −700 kB möjligt |
-| E6 | Radera `services/api.ts`-shim | 14 callers importeras om |
-| E10 | Data-access-regel (`no-restricted-imports` för `@/lib/supabase` i pages/components) | 77 brott — soft warn → 10 filer/sprint |
-| E11 | Service Worker: aktivera på riktigt eller ta bort | Idag worst-of-both |
-| F1 | EmptyState-migrering ~50 sidor | Görs hub för hub; design-kontraktet i DESIGN.md §7 |
-| F2 | localStorage → cloud-sync (NegotiationTab + 6 OverviewTab-flaggor) | Kräver DB-migration |
-| F7 | i18n-svep för hårdkodade svenska strängar | Inkluderar hub-korten (V2/V3); utöka leak-scannerns scope till `pages/hubs/` |
-| F9 | `aria-live` på dynamiska delar (sökresultat, filter, widget-laddning) | A11y |
-| G | Gradient-överträdelser 68 → 0 | Levande lista i `docs/DESIGN-DEBT.md`; CI-guard finns |
-| E3–E5 | Bryt upp god objects (`cloudStorage` 2810 r, `careerApi` 1150 r, `pdfExportService` 1619 r) | **Först efter** D2r — kräver testtäckning |
-| E1 | `articleData.ts` (24 880 rader) → Supabase | **Först efter** S1/S2 — kräver E2E-skydd + prod-migration |
-| D6 | Husky + lint-staged | Valfri bekvämlighet, CI fångar redan |
-| ONB | Slutför onboarding-konsolideringen enligt DESIGN.md §12 | Natt-loopen reducerade 5 → 1 aktiv komponent; restpunkter kvar |
+**Mätbart resultat:** Konsulent kan se "10 deltagare som inte loggat in på 14 dagar" i en vy.
 
-## 3. Senare — aug–okt: Produkt (H2)
+---
 
-### 3a. LIV — gör portalen levande (fas 4–5 kvar, detalj i arkivets `LIV-ROADMAP.md`)
+## H2 2026 (aug–okt) – EU-PROJEKT-FASEN
 
-- **Fas 4 Personalisering:** tid-på-dygnet-hälsning ("God morgon, Anna"), dynamisk hero-subtitel på hubbar, ny-vs-återvändande-copy. (Säsongstoner: flaggat, valfritt.)
-- **Fas 5 Glädje i nyckelögonblick:** lugnt firande vid ansökan skickad / övning klar / milstolpe (CV-success finns). Konfetti EN gång, dismissbar, reduced-motion-safe.
-- Restpunkt fas 3: verifiera att SkillsGap fick sin editorial-spot (`spot-kompetens` saknas på disk).
+**Tema:** Bygg för att kvalificera till nationella utlysningar.
 
-### 3b. STA — arbetsprövning nästa steg
+### Augusti–september – AI-kompetensspår (utlysning 26-002)
 
-Öppet ur `docs/STA-FORBATTRINGSFORSLAG.md`: A5 påminnelser (opt-in), A6 frånvarodagar förskjuter dagsslingan, A7 konsulent-statusindikator, B2 karriärvägledning som övning, B3 voice-input, B4 kompendium-läsmiljö, B5 "Det här ser Linda"-transparenssida.
-Automation enligt `docs/sta-automation-roadmap.md`: fas 1–5 i drift sedan maj (datamodell, skattningar, AI-utkast, AT-blankett) — **fas 6 (avancerad automation) och fas 7 (AF-integration + statusflöde)** kvarstår.
+Bas-skelettet för "AI-Lärande" som beskrivs i `docs/26-002 - Nationell utlysning POA1`. Implementera Fas 1 av deras 3-fasplan:
 
-### 3c. EU-utlysningarna (beslut i aug — se §7)
+- [ ] Ny sida `/ai-larande` med 4 flikar: Guide, Beredskapsindex, Verktyg, Etik.
+- [ ] Tabeller: `ai_learning_progress`, `ai_readiness_assessments`, `ai_course_modules`.
+- [ ] **AI-Beredskapsindex** (självskattning, 6 kompetensområden, 0–100-poäng).
+- [ ] **AI-Kompetensguide** med 5 moduler (Vad är AI?, ML, Generativ AI, AI på arbetsplatsen, Din roll).
+- [ ] Konsulent-vy: deltagares AI-poäng + rekommenderade nästa steg.
 
-- **26-002 AI-kompetensspår (aug–sep):** ny sida `/ai-larande` (Guide, Beredskapsindex, Verktyg, Etik), tabeller `ai_learning_progress`/`ai_readiness_assessments`/`ai_course_modules`, AI-beredskapsindex (6 områden, 0–100), kompetensguide 5 moduler, konsulentvy med AI-poäng. Underlag för 45 MSEK ESF-ansöka
+**Värde:** Underlag för 45 MSEK ESF-ansökan om portalen kvalar in. Även standalone-värde för deltagare.
+
+### Oktober – Mikromeritsystem (utlysning 26-001)
+
+Bas för digitala kompetensbevis:
+
+- [ ] Tabell `micro_credentials` med utfärdare, deltagare, kompetens, verifierings­hash.
+- [ ] Generera mikromerit när AI-kurs slutförs, intervjusimulering passerar tröskel, eller CV-poäng >85.
+- [ ] PDF-export med QR-kod för verifiering.
+- [ ] Deltagaren kan dela mikromeriter på LinkedIn (länka till `LinkedInOptimizer`).
+
+**Värde:** Konkret outcome-mätning för konsulenter och arbetsgivare. Dokumentkrav i fler ESF-utlysningar.
+
+---
+
+## Q4 2026 – KONSOLIDERA OCH MÄTA
+
+### November–december
+- [ ] **Performance-budget**: Core Web Vitals i CI. LCP <2.5 s på 3G, INP <200 ms.
+- [ ] **A11y-audit** med Lighthouse + manuell skärmläsning på 5 viktigaste sidor.
+- [ ] **i18n-täckning**: granska AI-output-strängar (idag inte översatta).
+- [ ] **Användarintervjuer** med 5 deltagare + 3 konsulenter. Mät: vilka funktioner används aldrig?
+- [ ] **Feature-sunset-process**: dokumentera vilka funktioner som ska tas bort om de inte används av >5 % av aktiva deltagare under Q4.
+
+**Mätbart resultat:** Klart vad som ska in i 2027 och vad som ska bort.
+
+---
+
+## Q1 2027 – framtida arbete (ej spec, bara riktning)
+
+Beroende på vad H2 2026 lär oss:
+
+- **Real-time-meddelanden** mellan deltagare och konsult (idag polling, Supabase Realtime är redan tillgängligt).
+- **Ekonomiskt utsatta-spår** (utlysning 26-010 om det vinns).
+- **AF-API tier 2-integration**: jobbed, taxonomy, trends finns redan som proxies – exponera dem i UI.
+- **PWA-läge** för deltagare med begränsad data: offline CV-redigering, synka när online.
+- **AI-Rollsimulator** (modul 7 från 26-002 om grunden funkar).
+
+---
+
+## Vad som EJ ska byggas (förbjudna riktningar)
+
+- **Mobilapp (native)** – PWA räcker. Native = 3x maintenance-kostnad utan motsvarande värde för målgruppen.
+- **Egen LLM-hosting** – OpenRouter ger redan modellvalsfrihet. Hosting flyttar oss från produkt-bolag till ML-ops-bolag.
+- **Egen videointervju-plattform** – välj integrationspartner (Daily, Whereby) om behovet uppstår.
+- **Eget CMS för artiklar** – nuvarande Supabase-tabell + admin-UI räcker. Inga editor-features utan dokumenterat behov.
+- **Gamification 2.0** – existerande tabeller (`achievements`, `user_gamification`) räcker. Lägg energi på att använda det som finns.
+
+---
+
+## Beroende mellan spår
+
+```
+H1 2026 STABILISERA
+  └─ är förutsättning för →
+       H2 2026 AI-spår + Mikromeriter
+            └─ underlag för →
+                  Q1 2027 expansion
+```
+
+Att hoppa över H1 = bygga nya features på en kodbas med 19 % testtäckning, dödkod och RLS-luckor. Tekniskt skuldsatt expansion blir dyrare än stabilisering.
+
+---
+
+*Roadmap är ett levande dokument. Uppdateras vid varje kvartal och vid större strategiskifte.*

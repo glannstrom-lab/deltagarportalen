@@ -15,7 +15,7 @@ async function main() {
   const page = await context.newPage()
 
   for (const tpl of ['budapest', 'sidebar', 'nordic', 'manhattan']) {
-    const url = `${BASE_URL}/#/print/cv?demo=mikael&template=${tpl}&manual=1`
+    const url = `${BASE_URL}/#/print/cv?demo=mikael&template=${tpl}&jobs=8&manual=1`
     await page.goto(url, { waitUntil: 'domcontentloaded' })
     await page.locator('.cv-print-root').waitFor({ state: 'attached', timeout: 15000 })
     await page.waitForTimeout(800)

@@ -15,7 +15,7 @@ const DATA = path.join(OUT, 'data')
 
 const TEST_USER = {
   email: process.env.TEST_USER_EMAIL || 'claude-playwright-test@jobin.se',
-  password: process.env.TEST_USER_PASSWORD || 'HjFxMLjrXzjHhOqS33j9vPzq',
+  password: process.env.TEST_USER_PASSWORD || process.env.TEST_USER_PASSWORD,
 }
 
 // All pages to audit. `tabs` = sub-paths to try after main page. `clicks` = labels to click and screenshot.

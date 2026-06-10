@@ -8,7 +8,7 @@ const path = require('path')
 
 const BASE_URL = 'http://localhost:3000'
 const TEST_EMAIL = 'claude-playwright-test@jobin.se'
-const TEST_PASSWORD = 'HjFxMLjrXzjHhOqS33j9vPzq'
+const TEST_PASSWORD = process.env.TEST_USER_PASSWORD
 
 const OUT_DIR = path.join(__dirname, '..', 'audit-2026-05-12', 'focus-mode')
 fs.mkdirSync(OUT_DIR, { recursive: true })

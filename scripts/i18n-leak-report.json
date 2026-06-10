@@ -1,0 +1,263 @@
+{
+  "startedAt": "2026-05-10T16:05:50.741Z",
+  "completedAt": "2026-05-10T16:07:37.238Z",
+  "baseUrl": "https://jobin.se",
+  "routesScanned": 63,
+  "routesWithHits": 0,
+  "uniqueLeakedKeys": 0,
+  "leakedKeys": [],
+  "perRoute": [
+    {
+      "route": "/#/login",
+      "hits": []
+    },
+    {
+      "route": "/#/register",
+      "hits": []
+    },
+    {
+      "route": "/#/privacy",
+      "hits": []
+    },
+    {
+      "route": "/#/terms",
+      "hits": []
+    },
+    {
+      "route": "/#/ai-policy",
+      "hits": []
+    },
+    {
+      "route": "/#/",
+      "hits": []
+    },
+    {
+      "route": "/#/oversikt",
+      "hits": []
+    },
+    {
+      "route": "/#/oversikt/historik",
+      "hits": []
+    },
+    {
+      "route": "/#/jobb",
+      "hits": []
+    },
+    {
+      "route": "/#/karriar",
+      "hits": []
+    },
+    {
+      "route": "/#/resurser",
+      "hits": []
+    },
+    {
+      "route": "/#/min-vardag",
+      "hits": []
+    },
+    {
+      "route": "/#/cv",
+      "hits": []
+    },
+    {
+      "route": "/#/cv/my-cvs",
+      "hits": []
+    },
+    {
+      "route": "/#/cv/adapt",
+      "hits": []
+    },
+    {
+      "route": "/#/cv/ats",
+      "hits": []
+    },
+    {
+      "route": "/#/cv/tips",
+      "hits": []
+    },
+    {
+      "route": "/#/cover-letter",
+      "hits": []
+    },
+    {
+      "route": "/#/cover-letter/saved",
+      "hits": []
+    },
+    {
+      "route": "/#/job-search",
+      "hits": []
+    },
+    {
+      "route": "/#/applications",
+      "hits": []
+    },
+    {
+      "route": "/#/spontanansökan",
+      "hits": []
+    },
+    {
+      "route": "/#/spontanansökan/mina-foretag",
+      "hits": []
+    },
+    {
+      "route": "/#/spontanansökan/statistik",
+      "hits": []
+    },
+    {
+      "route": "/#/career",
+      "hits": []
+    },
+    {
+      "route": "/#/career/adaptation",
+      "hits": []
+    },
+    {
+      "route": "/#/career/credentials",
+      "hits": []
+    },
+    {
+      "route": "/#/career/relocation",
+      "hits": []
+    },
+    {
+      "route": "/#/career/plan",
+      "hits": []
+    },
+    {
+      "route": "/#/interest-guide",
+      "hits": []
+    },
+    {
+      "route": "/#/interest-guide/results",
+      "hits": []
+    },
+    {
+      "route": "/#/interest-guide/occupations",
+      "hits": []
+    },
+    {
+      "route": "/#/interest-guide/explore",
+      "hits": []
+    },
+    {
+      "route": "/#/interest-guide/history",
+      "hits": []
+    },
+    {
+      "route": "/#/skills-gap-analysis",
+      "hits": []
+    },
+    {
+      "route": "/#/personal-brand",
+      "hits": []
+    },
+    {
+      "route": "/#/education",
+      "hits": []
+    },
+    {
+      "route": "/#/linkedin-optimizer",
+      "hits": []
+    },
+    {
+      "route": "/#/salary",
+      "hits": []
+    },
+    {
+      "route": "/#/international",
+      "hits": []
+    },
+    {
+      "route": "/#/interview-simulator",
+      "hits": []
+    },
+    {
+      "route": "/#/ai-team",
+      "hits": []
+    },
+    {
+      "route": "/#/knowledge-base",
+      "hits": []
+    },
+    {
+      "route": "/#/knowledge-base?tab=getting-started",
+      "hits": []
+    },
+    {
+      "route": "/#/knowledge-base?tab=topics",
+      "hits": []
+    },
+    {
+      "route": "/#/knowledge-base?tab=quick-help",
+      "hits": []
+    },
+    {
+      "route": "/#/knowledge-base?tab=my-journey",
+      "hits": []
+    },
+    {
+      "route": "/#/knowledge-base?tab=tools",
+      "hits": []
+    },
+    {
+      "route": "/#/resources",
+      "hits": []
+    },
+    {
+      "route": "/#/print-resources",
+      "hits": []
+    },
+    {
+      "route": "/#/externa-resurser",
+      "hits": []
+    },
+    {
+      "route": "/#/nätverk",
+      "hits": []
+    },
+    {
+      "route": "/#/wellness",
+      "hits": []
+    },
+    {
+      "route": "/#/wellness/routines",
+      "hits": []
+    },
+    {
+      "route": "/#/wellness/cognitive",
+      "hits": []
+    },
+    {
+      "route": "/#/wellness/crisis",
+      "hits": []
+    },
+    {
+      "route": "/#/diary",
+      "hits": []
+    },
+    {
+      "route": "/#/calendar",
+      "hits": []
+    },
+    {
+      "route": "/#/exercises",
+      "hits": []
+    },
+    {
+      "route": "/#/my-consultant",
+      "hits": []
+    },
+    {
+      "route": "/#/profile",
+      "hits": []
+    },
+    {
+      "route": "/#/settings",
+      "hits": []
+    },
+    {
+      "route": "/#/help",
+      "hits": []
+    }
+  ]
+}
