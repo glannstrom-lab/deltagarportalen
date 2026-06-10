@@ -21,9 +21,11 @@ mer — designat för låg friktion, hög tillgänglighet (WCAG 2.1 AA) och empa
 | LinkedIn-optimerare | Förbättra headline, about, posts | ✅ |
 | AI-Team | Chatta med specialiserade AI-agenter (karriärcoach m.fl.) | ✅ |
 | Jobbsökning | Arbetsförmedlingens API, sverigekarta, dela med konsulent | — |
+| Spontanansökan | Hitta företag (Bolagsverket) och skicka spontana ansökningar | ✅ |
+| STA / Arbetsprövning | Arbetsprövning i 4 delar: deltagarresa, DOA-självskattning, konsulentvy, AI-utkast för AF-blanketter | ✅ |
 | Dagbok | Reflektion, dokumentation, mood-tracking | — |
 | Wellness | Energi, mående, vilo-tracking | — |
-| Konsultvy | Hantera deltagare, rapportering | — |
+| Konsultvy | Hantera deltagare, rapportering, GDPR-logg | — |
 
 ---
 
@@ -34,7 +36,7 @@ mer — designat för låg friktion, hög tillgänglighet (WCAG 2.1 AA) och empa
 | Frontend | React 19, TypeScript 5.9, Vite 7, Tailwind 4 |
 | State | Zustand 5 (client state), React Query 5 (server state) |
 | Routing | React Router 7 (HashRouter — `/#/route`) |
-| AI-integration | OpenRouter (default Claude 3.5 Sonnet) via Vercel functions + Supabase Edge |
+| AI-integration | OpenRouter (modell låst till `openai/gpt-oss-120b`, se `docs/AI_MODEL_LOCKING.md`) via Vercel functions + Supabase Edge |
 | Backend | Supabase (Postgres, Auth, Storage, Edge Functions) + Vercel serverless |
 | PDF | @react-pdf/renderer + html2canvas + jsPDF (multi-strategy) |
 | Test | Vitest + Testing Library + Playwright (E2E) |
@@ -123,7 +125,7 @@ Aktiva edge functions: `ai-assistant`, `ai-cover-letter`, `ai-cv-writing`,
 
 ```bash
 npx supabase secrets set OPENROUTER_API_KEY=sk-or-...
-npx supabase secrets set AI_MODEL=anthropic/claude-3.5-sonnet
+npx supabase secrets set AI_MODEL=openai/gpt-oss-120b  # låst modell, se docs/AI_MODEL_LOCKING.md
 ```
 
 ---
@@ -146,26 +148,24 @@ deltagarportalen/
 │       ├── lib/                  domains.ts (route→domän), supabase.ts, logger.ts
 │       └── styles/               tokens.css (designsystem), globals
 │
-├── api/                          Top-level Vercel functions
-│   ├── google-calendar.js
-│   └── linkedin-auth.js
+├── api/                          Top-level Vercel-katalog (endast _utils/rate-limiter.js)
 │
 ├── supabase/
-│   ├── functions/                Deno edge functions (28 st)
-│   ├── migrations/               SQL-migrationer (85+ filer, se MIGRATION_NOTES.md)
+│   ├── functions/                Deno edge functions (24 st)
+│   ├── migrations/               SQL-migrationer (116 filer, körs manuellt — se CLAUDE.md)
 │   └── config.toml
 │
 ├── docs/                         Aktiv projektdokumentation
-│   ├── DESIGN.md                 Designsystem (C-Pastell, 3 domäner)
-│   ├── ROADMAP.md                12-månaders plan
-│   ├── portal-review-2026-04.md  Helhetsgranskning
-│   ├── claude-code-guide.md      Hur Claude Code används effektivt
-│   └── security-audit.md         Säkerhetsrevision
+│   ├── ROADMAP.md                ★ Projektets enda gällande plan
+│   ├── DESIGN.md                 Designsystem v3.0 (Manifest + 5 hubbar)
+│   ├── DESIGN-DEBT.md            Levande designskuldlista (CI-kopplad)
+│   ├── portal-review-2026-06.md  Senaste helhetsgranskning
+│   ├── security-audit.md         Levande säkerhetsstatus
+│   └── COMPLIANCE-*, DPIA-* ...  Juridik & compliance
 │
 ├── e2e/                          Playwright E2E-tester
 ├── design-demos/                 Standalone HTML för designval
-├── archive/2026-q1/              Arkiverad sprint-dokumentation
-├── server/                       ⛔ INAKTIV (gammal Express-backend)
+├── archive/                      Arkiverat (2026-q1, server-legacy, 2026-06-dokkonsolidering)
 ├── CLAUDE.md                     Instruktioner för Claude Code
 ├── SECURITY.md                   Säkerhetsrutiner
 └── README.md                     (denna fil)
@@ -175,17 +175,22 @@ deltagarportalen/
 
 ## Designsystem
 
-Specifikation i `docs/DESIGN.md`. Sammanfattning: turkos primär + 3 domäner i
-pastell-intensitet. Aktiveras automatiskt per route via `[data-domain]`-CSS:
+Specifikation i `docs/DESIGN.md` (v3.0, aktiv från 2026-05-10). Manifestet styr:
+Jobin är en följeslagare, inte en jobbportal — lugn ton, inga gradients, inga
+prestationsmätningar i hjälteposition. Två sidlägen: hub-landning (pastell-hero)
+och verktygssida (neutral hero med färgad vänsterkant). En hub-färg per sida.
 
-| Domän | Färg | Sidor |
-|-------|------|-------|
-| Action | Turkos | Dashboard, AI-Team, Settings, Help, Resources |
-| Reflektion | Lila | CV, Personligt brev, Wellness, Diary, Karriär |
-| Utåtriktat | Persika | Jobbsökning, Ansökningar, LinkedIn, Salary |
+| Hub | Path | Domän/färg |
+|-----|------|------------|
+| Översikt | `/oversikt` | action (mint) |
+| Söka jobb | `/jobb` | activity (persika) |
+| Karriär | `/karriar` | coaching (rosa) |
+| Resurser | `/resurser` | info (sky) |
+| Min vardag | `/min-vardag` | wellbeing (lavendel) |
 
-Domän-mappning i `client/src/lib/domains.ts`. CSS-tokens i
-`client/src/styles/tokens.css`. Visuell referens: `design-demos/demo-C-pastell.html`.
+Aktiveras via `data-domain` (sätts av `PageLayout`). Nav-sanning:
+`client/src/components/layout/navigation.ts`. CSS-tokens i
+`client/src/styles/tokens.css`. Designskuld bevakas i `docs/DESIGN-DEBT.md`.
 
 ---
 
@@ -193,41 +198,11 @@ Domän-mappning i `client/src/lib/domains.ts`. CSS-tokens i
 
 | Dokument | Syfte |
 |----------|-------|
+| `docs/ROADMAP.md` | **Projektets enda gällande plan** (Nu/Näst/Senare + beslutslogg) |
 | `CLAUDE.md` | Projektkontext för Claude Code (build-kommandon, konventioner) |
-| `docs/portal-review-2026-04.md` | Helhetsgranskning (arkitektur, säkerhet, kvalitet) |
-| `docs/ROADMAP.md` | 12 månader framåt |
-| `docs/DESIGN.md` | Designsystem |
-| `docs/claude-code-guide.md` | Hur Claude Code används i projektet |
-| `docs/security-audit.md` | Säkerhetsrevision (april 2026) |
-| `docs/audit-2026-04.md` | UI-audit |
+| `docs/portal-review-2026-06.md` | Senaste helhetsgranskning (kod, docs, visuellt) |
+| `docs/DESIGN.md` + `docs/DESIGN-DEBT.md` | Designsystem v3.0 + levande skuldlista |
+| `docs/security-audit.md` | Levande säkerhetsstatus (senast 2026-05-28) |
+| `docs/COMPLIANCE-USER-ACTIONS.md` | Juridisk åtgärdschecklista (DPIA, Art 30, AI Act) |
 | `e2e/README.md` | E2E-test-aktivering |
-| `supabase/migrations/MIGRATION_NOTES.md` | Kända migrations-konflikter |
-
----
-
-## Roller & åtkomst
-
-- **USER** (deltagare) — egen CV, brev, jobb, dagbok
-- **CONSULTANT** — alla deltagares CV/brev/aktivitet hen är knuten till
-- **ADMIN** — alla deltagare + konsulenter
-- **SUPERADMIN** — admin + audit-logs + system-config
-
-Rollkontroll via `PrivateRoute` + Supabase RLS på alla 130 publika tabeller.
-
----
-
-## Bidra
-
-1. Skapa branch från `main`
-2. Kör `npx tsc --noEmit && npm run test:run` lokalt
-3. Skapa PR — CI körs automatiskt (lint, typecheck, vitest, build, lighthouse,
-   security scan, e2e smoke)
-4. Coverage-rapport visas i PR-summary
-
----
-
-## Licens
-
-MIT
-
-*Senast uppdaterad: 2026-04-28*
+| `supabase/migrations/MIGRATI

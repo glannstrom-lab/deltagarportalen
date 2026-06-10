@@ -7,9 +7,9 @@ Track of completed milestones. New milestones added at the bottom as they ship.
 ## Pre-GSD (historik)
 
 Före 2026-04-28 fanns ingen formell milstolpestruktur. Det som shippades dokumenterades i:
-- `docs/SPRINT_SUMMARY.md` — pågående sprint-noteringar
-- `docs/portal-review-2026-04.md` — helhetsgranskning april 2026
-- `docs/audit-2026-04.md` — UI-audit mot DESIGN.md
+- `archive/2026-06-dokkonsolidering/SPRINT_SUMMARY.md` — pågående sprint-noteringar
+- `archive/2026-06-dokkonsolidering/portal-review-2026-04.md` — helhetsgranskning april 2026
+- `archive/2026-06-dokkonsolidering/audit-2026-04.md` — UI-audit mot DESIGN.md
 - `docs/security-audit.md` — säkerhetsrevision (alla HIGH åtgärdade)
 - `docs/ROADMAP.md` — 12-månaders riktning (stabilisera → EU-projekt → konsolidera)
 

@@ -506,7 +506,7 @@ Profile RLS evaluation time using `EXPLAIN ANALYZE` on the policies for the tabl
 ## Sources
 
 - Codebase analysis: `client/src/App.tsx` (routing structure), `client/src/components/layout/navigation.ts` (navGroups, active-state logic)
-- `docs/portal-review-2026-04.md` — known issues: dead-code pattern, dual AI backends, state-store collisions, 19% test coverage
+- `archive/2026-06-dokkonsolidering/portal-review-2026-04.md` — known issues: dead-code pattern, dual AI backends, state-store collisions, 19% test coverage
 - `docs/security-audit.md` — RLS baseline, CORS fixes, rate-limiting approach
 - `nav-hub-sketch.html` — widget sizes (S/M/L), hub sidebar design, section structure, "Anpassa vy" modal concept
 - `PROJECT.md` — target group definition (NPF, exhaustion, long-term unemployed), tone requirement ("Headspace, not Linear"), WCAG 2.1 AA as minimum

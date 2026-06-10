@@ -194,7 +194,7 @@ Phases with well-documented patterns (skip research-phase):
 - supabase/migrations/20260316_add_widget_config_column.sql — existing dashboard_widget_config in user_preferences
 - docs/DESIGN.md — 5 semantic domains, pastell token rules, motion constraints, tone guidelines
 - nav-hub-sketch.html — widget sizes (S/M/L), hub sidebar pattern, grid math, Anpassa vy concept
-- docs/portal-review-2026-04.md — dead-code pattern, dual AI backends, state-store collisions, 19% test coverage
+- archive/2026-06-dokkonsolidering/portal-review-2026-04.md — dead-code pattern, dual AI backends, state-store collisions, 19% test coverage
 - docs/security-audit.md — RLS baseline, CORS configuration
 - PROJECT.md — target group definition (NPF, exhaustion, long-term unemployed), WCAG 2.1 AA requirement
 - https://github.com/react-grid-layout/react-grid-layout — README, CHANGELOG, peerDependencies, v2 API

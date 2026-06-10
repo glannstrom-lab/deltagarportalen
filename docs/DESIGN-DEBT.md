@@ -179,7 +179,7 @@ Verifierat via `e2e/axe-contrast.cjs` på Landing, Login, Översikt, Profil, CV,
 
 ## 4. Övriga kända designöverträdelser från audit 2026-05-10
 
-Dessa fångas inte av ESLint utan av visuell audit (`audit-2026-05-10/RAPPORT.md` + `DESIGN-GRANSKNING.md`). Listas här för spårbarhet.
+Dessa fångas inte av ESLint utan av visuell audit (`archive/2026-06-dokkonsolidering/audit-2026-05-10/RAPPORT.md` + `DESIGN-GRANSKNING.md`). Listas här för spårbarhet.
 
 ### Två-läges-systemet (DESIGN.md §3)
 
@@ -308,4 +308,4 @@ Inga obesvarade strängar i sv.json som matchar admin-språk-mönstret kvar.
 - `client/src/components/ui/EmptyState.tsx` — JSDoc-kontrakt enligt DESIGN.md §7
 - `scripts/i18n-leak-detector.cjs` — Playwright-baserad sweep
 - `.github/PULL_REQUEST_TEMPLATE.md` — designcheck i varje PR
-- `audit-2026-05-10/data/baseline.json` — frusen baseline för regression-mätning
+- `archive/2026-06-dokkonsolidering/audit-2026-05-10/data/baseline.json` — frusen baseline för regression-mätning

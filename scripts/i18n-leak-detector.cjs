@@ -1,7 +1,7 @@
 /**
  * i18n-läckage-detektor
  *
- * Roadmap-uppgift 0.3 i docs/DESIGN-ROADMAP.md.
+ * Roadmap-uppgift 0.3 i archive/2026-06-dokkonsolidering/DESIGN-ROADMAP.md (arkiverad).
  * Bestyrkt av audit 2026-05-10 där `myConsultant.noConsultantFullDesc` läckte
  * till UI på /my-consultant.
  *

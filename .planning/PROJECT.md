@@ -58,7 +58,7 @@ Se "Current Milestone" nedan för full lista (24 requirements i v1.0).
 
 **Målgrupp & ton:** Långtidsarbetslösa, personer med NPF, utmattning, fysiska/psykiska utmaningar. Tonen ska vara stödjande, inte stressande. Tänk Headspace, inte Linear. WCAG 2.1 AA är minimikrav.
 
-**85+ sidor i client/src/pages/.** Stor yta, hög underhållskostnad — risk för dödkod (sidor lazy-importeras utan att routas). Se `docs/portal-review-2026-04.md` för senaste granskning.
+**85+ sidor i client/src/pages/.** Stor yta, hög underhållskostnad — risk för dödkod (sidor lazy-importeras utan att routas). Se `archive/2026-06-dokkonsolidering/portal-review-2026-04.md` för senaste granskning.
 
 **Två AI-backends:** `/api/ai.js` (Vercel, 18 funktioner — UI-default) och `supabase/functions/` (Deno edge, 23 funktioner — service role + AF/Bolagsverket-integration). När man bygger ny AI-funktion måste man uttryckligen säga vilken backend.
 

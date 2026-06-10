@@ -22,10 +22,12 @@
 | LinkedIn-optimerare | Förbättra LinkedIn-profil | ✅ |
 | AI-team | Personlig AI-coach/agentchatt | ✅ |
 | Spontanansökan | Hitta företag och skicka spontana ansökningar | ✅ |
+| STA/Arbetsprövning | 4-delars arbetsprövningsresa: deltagarflöde, DOA-självskattning, konsulentvy, AI-utkast för AF-blanketter (`pages/sta/`) | ✅ |
 | Jobbsökning | Hitta och spara jobb | - |
 | Dagbok | Reflektera och dokumentera | - |
 | Hälsa/Wellness | Följ mående och energi | - |
-| Konsultvy | Hantera deltagare | - |
+| Fokusläge | Guidat fokusflöde (i18n-namespace `focus.*`) | - |
+| Konsultvy | Hantera deltagare, GDPR-logg | - |
 
 ---
 
@@ -49,28 +51,26 @@ deltagarportal/
 │   ├── api/                 # Vercel serverless functions
 │   │   ├── ai.js            # Huvud-AI-endpoint (18 funktioner, samlad)
 │   │   ├── ai-stream.js     # SSE-streaming för AI-svar
+│   │   ├── cv-pdf.js        # CV → PDF (puppeteer, rate-limited)
 │   │   ├── job-alerts.js    # E-postaviseringar för jobb
 │   │   ├── upload-image.js  # Profilbild → Vercel Blob
 │   │   └── test.js, package.json
 │   └── src/
 │       ├── components/      # ui/, dashboard/, layout/, ai-team/, ...
-│       ├── pages/           # ~58 sidor + hub-sidor i pages/hubs/
+│       ├── pages/           # ~120 sidfiler: verktygssidor, pages/hubs/, pages/sta/
 │       ├── stores/          # Zustand stores
 │       ├── services/        # API-anrop (aiApi.ts m.fl.)
 │       ├── hooks/           # 30+ custom hooks
 │       └── lib/             # supabase, sentry, validators, ...
-├── api/                     # Repo-root Vercel functions
-│   ├── google-calendar.js   # Google Calendar OAuth
-│   ├── linkedin-auth.js     # LinkedIn OAuth
+├── api/                     # Repo-root Vercel-katalog
 │   └── _utils/              # rate-limiter.js (Supabase-distribuerad)
-├── server/                  # Express backend (legacy, oanvänd i prod)
-├── supabase/                # Migrations + 23 edge functions
+├── supabase/                # Migrations (116 filer) + 24 edge functions
 │   ├── functions/           # Deno edge — ai-*, af-*, learning-*, bolagsverket, ...
 │   └── migrations/
-├── e2e/                     # Playwright-tester
-├── docs/                    # Granskningar, DESIGN.md, ROADMAP, audits
-├── archive/                 # Gamla rapporter och dokument
-├── .planning/               # Pågående milestone-arbete (PROJECT, ROADMAP, STATE)
+├── e2e/                     # Playwright-tester (8 spec + ad-hoc .cjs-skript)
+├── docs/                    # ROADMAP.md (enda gällande plan), DESIGN.md, granskningar
+├── archive/                 # Arkiverat: 2026-q1, server-legacy, 2026-06-dokkonsolidering
+├── .planning/               # GSD-milestone-historik (PROJECT, STATE) + AF-API-idébank
 └── .claude/agents/          # 10 specialagenter för granskning
 ```
 
@@ -131,7 +131,9 @@ När något inte fungerar, följ denna ordning:
 ### AI-anrop går till TVÅ backends
 Det finns två parallella AI-vägar — välj rätt:
 - **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — 18 funktioner samlade. Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.** Streaming-varianten ligger i `client/api/ai-stream.js` och anropas via `useAIStream`-hooken.
-- **`supabase/functions/`** (Deno edge) — 23 funktioner: `ai-*`, `af-*` (Arbetsförmedlingen), `learning-*`, `bolagsverket`, `cv-analysis`, `health`, `delete-account`, `send-invite-email`. Service role, längre prompts, integration mot AF/Bolagsverket.
+- **`supabase/functions/`** (Deno edge) — 24 funktioner: `ai-*`, `af-*` (Arbetsförmedlingen), `learning-*`, `bolagsverket`, `cv-analysis`, `health`, `delete-account`, `send-invite-email`. Service role, längre prompts, integration mot AF/Bolagsverket.
+
+> **AI-modellen är låst** till `openai/gpt-oss-120b` av kostnadsskäl (`docs/AI_MODEL_LOCKING.md`). Byt aldrig modell utan explicit beslut av Mikael.
 
 När du bygger en ny AI-funktion: säg uttryckligen vilken backend. Annars gissar Claude.
 
@@ -293,7 +295,7 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 ### 2026-04-27: Lazy-import utan route = dödkod
 **Problem:** Sidor som `CoverLetterGenerator`, `UnifiedProfile` är `lazy()`-importerade i `App.tsx` men har ingen `<Route>`. De byggs in i bundlen utan att vara nåbara.
 **Kontroll:** Sök efter sidonamnet i `<Route` — saknas det ska importen tas bort.
-**Aktiva entry-points 2026-04-27:** Se `docs/portal-review-2026-04.md` § 1.
+**Aktiva entry-points 2026-04-27:** Se `archive/2026-06-dokkonsolidering/portal-review-2026-04.md` § 1.
 
 ### 2026-04-29: Hub-aktivering kräver URL-prefix-fri matchning
 **Problem:** Aktiv hub kunde feldetekteras vid djup-länkar.
@@ -309,24 +311,25 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 
 | Dokument | Innehåll |
 |----------|----------|
-| `docs/portal-review-2026-04.md` | Senaste helhetsgranskning — arkitektur, databas, säkerhet, repo-hygien + 12-punkts åtgärdslista |
-| `docs/ROADMAP.md` | 12-månaders roadmap (stabilisera → EU-projekt → konsolidera) |
-| `docs/claude-code-guide.md` | Hur Claude Code används effektivt i projektet |
-| `docs/security-audit.md` | Säkerhetsrevision 2026-04-23 (alla HIGH åtgärdade) |
-| `docs/audit-2026-04.md` | UI-audit mot DESIGN.md |
+| `docs/ROADMAP.md` | ★ **Projektets enda gällande plan** (antagen 2026-06-10) — Nu/Näst/Senare, beslutslogg, allt öppet arbete. Nya idéer förs in här, aldrig i nya plandokument |
+| `docs/portal-review-2026-06.md` | Senaste helhetsgranskning (kod + dokumentation + visuell Playwright-granskning av prod) |
 | `docs/DESIGN.md` | **Designsystemets sanning v3.0** — Manifest + Voice & Tone + två-läges-system (hub-landning vs verktygssida) + en-färg-per-sida-regel |
-| `docs/DESIGN-ROADMAP.md` | **9-fasers implementationsplan** för DESIGN.md v3.0 (~13 arbetsveckor) |
-| `docs/DESIGN-DEBT.md` | Levande lista över designöverträdelser — uppdateras tills allt är ✅ |
-| `audit-2026-05-10/RAPPORT.md` | Produktionsaudit: 41 sidor + 34 flikar testade, buggrapport + förbättringar |
-| `audit-2026-05-10/DESIGN-GRANSKNING.md` | Världsklass-designerns granskning av audit-screenshots — underlag till DESIGN.md v3.0 |
+| `docs/DESIGN-DEBT.md` | Levande lista över designöverträdelser — CI-guardad (`npm run lint:design`) |
+| `docs/security-audit.md` | Levande säkerhetsstatus (senast 2026-05-28; CRIT: OpenRouter-nyckelrotation utestående) |
+| `docs/COMPLIANCE-AUDIT-2026-05-15.md` + `docs/COMPLIANCE-USER-ACTIONS.md` | Juridiskt läge + åtgärdschecklista (DPIA, Art 30, AI Act — deadline 2 aug 2026) |
+| `docs/AI-ACT-CLASSIFICATION.md`, `docs/DPIA-PORTAL.md`, `docs/GDPR-ART30-REGISTER.md` | Compliance-dokument under färdigställande (se ROADMAP §1) |
+| `docs/AI_MODEL_LOCKING.md` | Modell-låsning `openai/gpt-oss-120b` — alla AI-vägar |
 | `docs/AI_ARCHITECTURE_OVERVIEW.md` | Översikt över AI-stack (Vercel + Supabase edge) |
-| `docs/AI_ENGINEER_ANALYSIS.md` | Djupanalys av AI-funktionerna och förbättringsförslag |
+| `docs/STA-FORBATTRINGSFORSLAG.md`, `docs/sta-automation-roadmap.md`, `docs/sta-*` | STA-modulens detaljspecar (prioriteras från ROADMAP §3b) |
 | `docs/RLS_VERIFICATION.md` | Supabase RLS-policy-verifiering |
-| `docs/SPRINT_SUMMARY.md` | Senaste sprintens sammanfattning |
-| `docs/services-overview.md` | Översikt över services-lagret i `client/src/services/` |
-| `docs/26-001/26-002/26-010` | EU-utlysningsspecifikationer för framtida funktioner |
-| `.planning/PROJECT.md`, `ROADMAP.md`, `STATE.md` | Pågående milestone-arbete |
+| `docs/api/services-overview.md` | Översikt över services-lagret i `client/src/services/` |
+| `docs/claude-code-guide.md` | Hur Claude Code används effektivt i projektet |
+| `docs/GRAFIK-PLAN.md` | Grafikpipeline-manual (chroma-key-standard, optimering, asset-status) |
+| `docs/26-001/26-002/26-010` | EU-utlysningsspecifikationer (beslut aug 2026, se ROADMAP §3c/§7) |
+| `.planning/PROJECT.md`, `STATE.md` | GSD-milestone-historik (hub-nav v1.0, klar 2026-04-29) |
+| `.planning/AF-API-INTEGRATION-ROADMAP.md` | AF-API-idébank (~60 förslag, status per förslag) |
 | `.planning/research/PITFALLS.md` | Kända fallgropar i hub-systemet och dashboard |
+| `archive/2026-06-dokkonsolidering/` | Arkiverade planer & granskningar apr–maj 2026 (TECH-DEBT, DESIGN-ROADMAP, LIV, FLAGGED, BLOCKED m.fl.) — README förklarar vad som finns var |
 
 ---
 
@@ -339,25 +342,4 @@ Projektets 10 specialiserade agenter finns i `.claude/agents/`:
 | arbetskonsulent | Arbetsmarknad, deltagarnytta, konsultverktyg |
 | langtidsarbetssokande | Användarperspektiv, energianpassning, tillgänglighet |
 | ux-designer | Användarflöden, WCAG, interaktionsdesign |
-| fullstack-utvecklare | React/TypeScript/Supabase-integration |
-| accessibility-specialist | WCAG 2.1 AA, skärmläsare, kognitiv tillgänglighet |
-| qa-testare | Testning, edge cases, kvalitetssäkring |
-| product-owner | User stories, prioritering, värdeskapande |
-| ai-engineer | AI-funktioner, personalisering, ML-optimering |
-| performance-engineer | Core Web Vitals, laddningstider, optimering |
-| security-specialist | Säkerhetsrevision, secrets, RLS, XSS, GDPR → `docs/security-audit.md` |
-
-Använd agenter för granskning: "Låt [agent] granska [funktion/kod]"
-
-### Säkerhetsrevision
-Kör säkerhetsagenten för en fullständig audit:
-```
-Låt security-specialist granska hela projektet
-```
-Rapporten skrivs till `docs/security-audit.md` och inkluderar:
-- Secrets & credentials-sökning
-- Supabase RLS-verifiering
-- API-endpoints auth-krav
-- Input validation (XSS, SQL injection)
-- Externa API:er (OAuth, Claude)
-- Top 3 att fixa innan launch
+| fullstack-
