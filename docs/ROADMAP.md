@@ -44,7 +44,7 @@ Färsk fan-out-granskning (kod/säkerhet/UX/prestanda). Snabbfixarna nedan är *
 | R3 | Radera oautentiserad `client/api/test.js` | Onödig attackyta | ✅ fixad (gren) |
 | R4 | **Beslut: dark mode i scope eller ej?** | `ThemeContext.tsx` default `'system'` → oprövad mörk variant (~3 631 ad-hoc `dark:`-klasser) som ingen designprincip styr. Ja → in i DESIGN.md + konsolidera mot tokens. Nej → default `'light'` + städa bort | ⬜ **Mikael** |
 | R5 | Scopa `profile_shares`-RLS (anon-enumeration) | `USING(true)` + `GRANT SELECT TO anon` låter anon räkna upp ALLA delade profiler. Kräver koordinerad SECURITY DEFINER-RPC + omskrivning av `getSharedProfile` + test av publik delning — **inte** en ren migration | ⬜ |
-| R6 | Edge-funktioners rate-limiting är per-instans | `ai-cv-writing` m.fl. har `new Map()` → faktisk gräns N×10/min. Låt dem använda samma distribuerade `check_rate_limit`-RPC som `ai.js`. Kostnadsskydd (modell låst av kostnadsskäl) | ⬜ |
+| R6 | Edge-funktioners rate-limiting är per-instans | Endast `ai-cv-writing` hade kvar lokal `new Map()` (övriga 8 använder redan `_shared/rateLimit.ts`). Migrerad till delade distribuerade RPC:n. Kräver `supabase functions deploy ai-cv-writing` | ✅ fixad (gren) — deploy kvar |
 | R7 | Aktivera retention-gallring i prod | `20260515_retention_cron.sql` kräver att `pg_cron` aktiveras i Supabase-dashboarden — sker ingen gallring annars (Art 5.1.e). Verifiera att Free tier tillåter pg_cron | ⬜ **Mikael** |
 | R8 | OpenRouter tredjelandsöverföring (DPF/SCC/TIA) | Känsliga CV-data → USA. Saknar verifierad DPF/DPA/TIA. Binds ihop med AI Act-paketet före 2 aug | ⬜ |
 | R9 | Lås gradient-baseline + uppdatera DESIGN-DEBT §3 | `check-design-debt.cjs` 443 → 65; i18n-läckorna §3 verifierat fixade | ✅ fixad (gren) |
@@ -72,7 +72,7 @@ Bakgrundsarbete, körs när Spår 1–2 tillåter. Detaljer: arkivets `TECH-DEBT
 | E1 | `articleData.ts` (24 880 rader) → Supabase | **Först efter** S1/S2 — kräver E2E-skydd + prod-migration |
 | D6 | Husky + lint-staged | Valfri bekvämlighet, CI fångar redan |
 | ONB | Slutför onboarding-konsolideringen enligt DESIGN.md §12 | Natt-loopen reducerade 5 → 1 aktiv komponent; restpunkter kvar |
-| P1 | Banta initial entry-chunk | 912 kB / 271 kB gzip + CSS 316 kB. Kör visualizer, lazy-ladda sällan-använda providers (Sentry/zod). Direkt LCP-vinst för målgruppen |
+| P1 | Banta initial entry-chunk | ✅ **Steg 1 gjort (gren):** en.json lazy-laddad → entry 912→658 kB rå (-28%), 271→189 kB gz för sv-användare. Kvar: visualizer-analys av återstående 658 kB (zod/Sentry redan lazy), ev. CSS-split (316 kB) |
 | P2 | Kolumn-trimma `select('*')` i listvyer | `saved_jobs` har ~2 kB JSONB/rad; specificera kolumner i list-queries (~20–30 % mindre payload) |
 | P3 | Timeout + AbortController på `callAI` | `aiApi.ts:52` saknar avbryt → upp mot 60 s spinner på svag uppkoppling. Streaming-vägen gör rätt |
 | P4 | Migrera legacy `useSupabase`-hooks till React Query | `useCV`/`useCoverLetters` m.fl. refetchar + realtime-listener per mount, ingen caching |
