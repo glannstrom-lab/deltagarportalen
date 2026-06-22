@@ -6,30 +6,9 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
 import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
+import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
-
-// Rate limiting - enkel implementation
-const rateLimits = new Map<string, { count: number; resetTime: number }>()
-const RATE_LIMIT = 10 // requests per minute
-const WINDOW_MS = 60 * 1000
-
-function checkRateLimit(userId: string): boolean {
-  const now = Date.now()
-  const userLimit = rateLimits.get(userId)
-
-  if (!userLimit || now > userLimit.resetTime) {
-    rateLimits.set(userId, { count: 1, resetTime: now + WINDOW_MS })
-    return true
-  }
-
-  if (userLimit.count >= RATE_LIMIT) {
-    return false
-  }
-
-  userLimit.count++
-  return true
-}
 
 // Input sanitization för att förhindra prompt injection
 function sanitizeInput(input: string): string {
@@ -114,9 +93,10 @@ serve(async (req) => {
       return createCorsResponse({ error: 'Invalid token' }, 401, origin)
     }
 
-    // 4. Rate limiting
-    if (!checkRateLimit(user.id)) {
-      return createCorsResponse({ error: 'Rate limit exceeded. Max 10 requests per minute.' }, 429, origin)
+    // 4. Rate limiting (distribuerad via Supabase RPC, in-memory fallback)
+    const rateCheck = await checkRateLimit(user.id, 'ai-cv-writing')
+    if (!rateCheck.allowed) {
+      return createRateLimitResponse(rateCheck.retryAfter || 60, origin)
     }
 
     // 5. Parse request body
