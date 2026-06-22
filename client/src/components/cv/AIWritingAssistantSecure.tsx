@@ -109,7 +109,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
         throw new Error('Du måste vara inloggad för att använda AI-funktioner.')
       }
 
-      const response = await fetch('/functions/ai-cv-writing', {
+      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-cv-writing`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

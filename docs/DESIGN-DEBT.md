@@ -1,6 +1,6 @@
 # Designskuld — kända överträdelser mot DESIGN.md v3.0
 
-> **Senast uppdaterad:** 2026-05-14 (90-min designskuld-loop avslutad)
+> **Senast uppdaterad:** 2026-06-22 (granskning: i18n-läckor §3 verifierade fixade, gradient-baseline låst till 65)
 > **Källa:** ESLint-regler från Fas 0 (`client/eslint.config.js`) + i18n-detektor (`scripts/i18n-leak-detector.cjs`).
 > **Status nu:** ✅ ESLint-reglerna på `error`-nivå. **0 design-errors, 0 design-warnings** i kodbasen.
 > Stale `eslint-disable next-line no-restricted-syntax`-kommentarer rensade — fil-nivå whitelist i `eslint.config.js` täcker dem redan.
@@ -116,33 +116,34 @@ Inga åtgärder krävs. Reglerna håller redan `warn`-nivå utan brott. Höj til
 
 ## 3. i18n-läckande keys (DESIGN.md §7 — empty states)
 
-### Mätvärde
+✅ **Fixad — verifierad 2026-06-22.** Alla 5 tidigare läckande nycklar finns nu i
+`sv.json`, och `scripts/i18n-leak-report.json` rapporterar **0 läckor på 63 rutter**.
 
-Senaste sweep med `scripts/i18n-leak-detector.cjs` (2026-05-10):
+### Mätvärde (2026-06-22)
 
 | Mått | Värde |
 |------|-------|
 | Rutter som scannades | 63 |
-| Rutter med läcka | 3 |
-| Unika läckande keys | **5** |
+| Rutter med läcka | **0** |
+| Unika läckande keys | **0** |
 | Detektor-skript | `scripts/i18n-leak-detector.cjs` |
 | Senaste rapport | `scripts/i18n-leak-report.json` |
 
-### Kända läckor
+### Tidigare läckor (alla åtgärdade)
 
-| Key | Plats | Trolig orsak |
-|-----|-------|--------------|
-| `myConsultant.noConsultantFullDesc` | `/my-consultant` | Saknar översättning i `sv.json` — empty-state-beskrivning |
-| `jobSearch.municipality` | `/job-search` | Filter-label, saknar översättning |
-| `jobSearch.region` | `/job-search` | Filter-label |
-| `jobSearch.employmentType` | `/job-search` | Filter-label |
-| `jobSearch.publishedWithin` | `/job-search` | Filter-label |
+| Key | Plats | Status |
+|-----|-------|--------|
+| `myConsultant.noConsultantFullDesc` | `/my-consultant` | ✅ finns i `sv.json` |
+| `jobSearch.municipality` | `/job-search` | ✅ finns i `sv.json` |
+| `jobSearch.region` | `/job-search` | ✅ finns i `sv.json` |
+| `jobSearch.employmentType` | `/job-search` | ✅ finns i `sv.json` |
+| `jobSearch.publishedWithin` | `/job-search` | ✅ finns i `sv.json` |
 
-### Plan
-
-**Fas 1.1 — i18n-läckage-sweep** (vecka 2 i roadmapen). Lägg till de 5 keys i `client/src/i18n/locales/sv.json`. Verifiera att detektorn rapporterar 0 läckor efteråt.
-
-Veckovis sweep i Fas 8 — Polish.
+> **OBS (kvarstående i18n-skuld, inte samma sak):** hub-korten och flera
+> participant-vyer (t.ex. `pages/personal-brand/PitchTab.tsx`,
+> `pages/sta/StaConsultant.tsx`) har **hårdkodad svenska utanför `t()`**. Det
+> fångas inte av leak-detektorn (som letar oöversatta *nycklar*, inte rå svensk
+> text). Spåras som F7 i ROADMAP.
 
 ---
 

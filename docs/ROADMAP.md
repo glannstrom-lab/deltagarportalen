@@ -32,6 +32,24 @@
 | S5 | Mät LCP/Web Vitals i prod efter preload-fixen | Sätt baseline → performance-budget i CI (mål: LCP < 2,5 s) | ⬜ |
 | S6 | Repo-städning | 39 ospårade filer: committa/ignorera; besluta `sta/`-källdokumentens hemvist (persondata?); normalisera radslut (`.gitattributes`) | ⬜ delvis Mikael |
 
+### Spår 3 — Granskning 2026-06-22 (nya fynd, ej tidigare i planen)
+
+Färsk fan-out-granskning (kod/säkerhet/UX/prestanda). Snabbfixarna nedan är **gjorda på gren `fix/review-quick-wins-2026-06-22`** (committad, ej pushad). Resten är nya rader.
+
+| # | Uppgift | Detaljer | Status |
+|---|---------|----------|--------|
+| R1 | Trasig edge-path i CV-skrivassistenten | `AIWritingAssistantSecure.tsx:112` saknade `${VITE_SUPABASE_URL}/functions/v1/` → 404 i prod (död knapp) | ✅ fixad (gren) |
+| R2 | Döda knappar i konsulentvyn | `BulkActionsDialog.tsx` fejkade success för tagg + status. Status kopplad till `consultantService.updateParticipantStatus`; tagg gjord ärlig ("kommer snart") | ✅ delvis (gren) |
+| R2b | Tagg-backend för konsulent-bulk | Ingen tags-kolumn/tabell finns. Bygg `participant_consultants.tags` (eller egen tabell) + service, koppla tagg-knappen | ⬜ |
+| R3 | Radera oautentiserad `client/api/test.js` | Onödig attackyta | ✅ fixad (gren) |
+| R4 | **Beslut: dark mode i scope eller ej?** | `ThemeContext.tsx` default `'system'` → oprövad mörk variant (~3 631 ad-hoc `dark:`-klasser) som ingen designprincip styr. Ja → in i DESIGN.md + konsolidera mot tokens. Nej → default `'light'` + städa bort | ⬜ **Mikael** |
+| R5 | Scopa `profile_shares`-RLS (anon-enumeration) | `USING(true)` + `GRANT SELECT TO anon` låter anon räkna upp ALLA delade profiler. Kräver koordinerad SECURITY DEFINER-RPC + omskrivning av `getSharedProfile` + test av publik delning — **inte** en ren migration | ⬜ |
+| R6 | Edge-funktioners rate-limiting är per-instans | `ai-cv-writing` m.fl. har `new Map()` → faktisk gräns N×10/min. Låt dem använda samma distribuerade `check_rate_limit`-RPC som `ai.js`. Kostnadsskydd (modell låst av kostnadsskäl) | ⬜ |
+| R7 | Aktivera retention-gallring i prod | `20260515_retention_cron.sql` kräver att `pg_cron` aktiveras i Supabase-dashboarden — sker ingen gallring annars (Art 5.1.e). Verifiera att Free tier tillåter pg_cron | ⬜ **Mikael** |
+| R8 | OpenRouter tredjelandsöverföring (DPF/SCC/TIA) | Känsliga CV-data → USA. Saknar verifierad DPF/DPA/TIA. Binds ihop med AI Act-paketet före 2 aug | ⬜ |
+| R9 | Lås gradient-baseline + uppdatera DESIGN-DEBT §3 | `check-design-debt.cjs` 443 → 65; i18n-läckorna §3 verifierat fixade | ✅ fixad (gren) |
+| R10 | Verifiera deploy av 28-maj-säkerhetsfixar | IDOR + 4 MEDIUM finns i kod — bekräfta `supabase functions deploy` + Vercel-deploy är live | ⬜ |
+
 ## 2. Näst — v. 26–31 (juli–aug): Skuldbetalning
 
 Bakgrundsarbete, körs när Spår 1–2 tillåter. Detaljer: arkivets `TECH-DEBT-ROADMAP.md` + `FLAGGED-DEFERRED.md`.
@@ -54,6 +72,11 @@ Bakgrundsarbete, körs när Spår 1–2 tillåter. Detaljer: arkivets `TECH-DEBT
 | E1 | `articleData.ts` (24 880 rader) → Supabase | **Först efter** S1/S2 — kräver E2E-skydd + prod-migration |
 | D6 | Husky + lint-staged | Valfri bekvämlighet, CI fångar redan |
 | ONB | Slutför onboarding-konsolideringen enligt DESIGN.md §12 | Natt-loopen reducerade 5 → 1 aktiv komponent; restpunkter kvar |
+| P1 | Banta initial entry-chunk | 912 kB / 271 kB gzip + CSS 316 kB. Kör visualizer, lazy-ladda sällan-använda providers (Sentry/zod). Direkt LCP-vinst för målgruppen |
+| P2 | Kolumn-trimma `select('*')` i listvyer | `saved_jobs` har ~2 kB JSONB/rad; specificera kolumner i list-queries (~20–30 % mindre payload) |
+| P3 | Timeout + AbortController på `callAI` | `aiApi.ts:52` saknar avbryt → upp mot 60 s spinner på svag uppkoppling. Streaming-vägen gör rätt |
+| P4 | Migrera legacy `useSupabase`-hooks till React Query | `useCV`/`useCoverLetters` m.fl. refetchar + realtime-listener per mount, ingen caching |
+| E12 | Verifiera/radera dödkod-dashboards | `CompactDashboard.tsx` + `MobileDashboard.tsx` har noll importörer men ligger i CLAUDE.md-katalogen som aktiva |
 
 ## 3. Senare — aug–okt: Produkt (H2)
 
@@ -99,6 +122,9 @@ Native mobilapp (PWA räcker) · egen LLM-hosting (OpenRouter ger modellfrihet) 
 | Prompt-strategi: konsolidera eller dokumenterad divergens (C1) | v. 28 | ⬜ |
 | Välj EU-utlysning: 26-001, 26-002 eller båda | Aug | ⬜ |
 | DPIA/Art 30: org-uppgifter + signatur (J2/J3) | v. 25 | ⬜ |
+| **Dark mode i scope eller ej? (R4)** | v. 26 | ⬜ |
+| Aktivera pg_cron för retention (R7) | Snarast | ⬜ |
+| Boka AI-jurist för Annex III-gränsfall (J4) — längst ledtid | Denna vecka | ⬜ |
 
 ## 8. Detaljkällor (bilagor — prioriteras härifrån, inte därifrån)
 

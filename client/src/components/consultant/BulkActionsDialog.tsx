@@ -22,6 +22,7 @@ import {
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
+import { consultantService } from '@/services/consultantService'
 
 interface Participant {
   participant_id: string
@@ -184,26 +185,9 @@ export function BulkActionsDialog({
       return
     }
 
-    setLoading(true)
-    setError(null)
-
-    try {
-      // Mock implementation - in real app, would update participant tags
-      await new Promise(resolve => setTimeout(resolve, 1000))
-
-      // TODO: Implement actual API call to apply tags
-
-      setSuccess(true)
-      setTimeout(() => {
-        onComplete()
-        onClose()
-      }, 1500)
-    } catch (err) {
-      console.error('Error applying tags:', err)
-      setError('Det gick inte att lägga till taggar')
-    } finally {
-      setLoading(false)
-    }
+    // Taggning saknar ännu en backend (ingen tags-kolumn/tabell finns).
+    // Var ärlig mot konsulenten istället för att fejka ett lyckat resultat.
+    setError('Taggning är inte tillgänglig än – kommer snart.')
   }
 
   const handleExport = async () => {
@@ -271,10 +255,22 @@ export function BulkActionsDialog({
     setError(null)
 
     try {
-      // Mock implementation - in real app, would update participant statuses
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const results = await Promise.allSettled(
+        selectedParticipants.map(p =>
+          consultantService.updateParticipantStatus(
+            p.participant_id,
+            newStatus as 'ACTIVE' | 'INACTIVE' | 'COMPLETED' | 'ON_HOLD'
+          )
+        )
+      )
 
-      // TODO: Implement actual API call to update status
+      const failed = results.filter(r => r.status === 'rejected').length
+      if (failed === selectedParticipants.length) {
+        throw new Error('Det gick inte att uppdatera status')
+      }
+      if (failed > 0) {
+        setError(`${failed} av ${selectedParticipants.length} kunde inte uppdateras`)
+      }
 
       setSuccess(true)
       setTimeout(() => {

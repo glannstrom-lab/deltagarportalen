@@ -22,7 +22,9 @@ const path = require('path');
 // Ändringslogg:
 //   2026-05-09 (initial): 444
 //   2026-05-09 (P2-S, dödkod EmptyState borttagen): 443
-const BASELINE_TOTAL = 443;
+//   2026-05-14 (designskuld-loop, -241): 68
+//   2026-06-22 (lås fast vinsten efter granskning): 65
+const BASELINE_TOTAL = 65;
 
 const CHECK_DIR = path.join(__dirname, '..', 'src');
 const PATTERN = /bg-gradient-(to-[trbl]+|radial)/g;
