@@ -429,6 +429,15 @@ Första ark1 testades som pilot innan resten av setet genererades. Resultat:
 - `icon-hub-oversikt` (rutnätet) är genererad men **renderas inte än** — Översiktens hero
   visar en profil-avatar, inte hub-ikonen. Reserv för framtida oversikt-yta.
 
-**⏭ Nästa batch:** de 25 verktygs-ikonerna (Ark 2–5) på hub-feature-korten. Alla är redan
-utskurna + chroma-keyade (verifierat i kontaktark); återskapas deterministiskt från
-`ark2–5.png` via `scratchpad/slice-all.cjs`.
+**✅ Inkopplat (verktygs-ikoner, Ark 2–5):**
+- 25 webp i `client/public/illustrations/icon-*.webp` (icke-hub).
+- `TOOL_ICON_SRC` i `hubIcons.ts` mappar feature-kortets `href` (path) → webp.
+- `HubPage.tsx` FeatureCard renderar custom-ikonen i tilen (lucide-fallback om path saknas).
+- 23 av 25 syns som kort; `icon-linkedin` + `icon-internationellt` finns men visas inte
+  på JobsokHub (de verktygen är inte feature-kort där) — sparade som reserv.
+- Verifierat i verklig kortstorlek (40px tile) via `scratchpad/feature-preview.cjs`
+  (kopia i `design-source/previews/feature-preview.png`). tsc + 31 hub-tester + build +
+  lint:design rena.
+
+**Fas 7 klar** — hela ikonsetet (5 hub + 25 verktyg) live. Källark `ark1–5.png` återskapas
+deterministiskt till webp via `scratchpad/slice-all.cjs` vid behov.

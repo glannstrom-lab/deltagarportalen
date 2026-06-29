@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { PageHero } from '@/components/layout/PageHero'
-import { HUB_ICON_SRC } from '@/components/layout/hubIcons'
+import { HUB_ICON_SRC, TOOL_ICON_SRC } from '@/components/layout/hubIcons'
 
 /**
  * HubPage — gemensam template för alla 4 hub-sidor.
@@ -186,7 +186,11 @@ function FeatureCard({ feature }: { feature: HubFeature }) {
             aria-hidden="true"
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-[10px] flex items-center justify-center flex-shrink-0 bg-[var(--c-bg)] text-[var(--c-text)]"
           >
-            <Icon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" strokeWidth={2} />
+            {TOOL_ICON_SRC[href] ? (
+              <img src={TOOL_ICON_SRC[href]} alt="" className="w-6 h-6 sm:w-7 sm:h-7 object-contain" />
+            ) : (
+              <Icon className="w-4 h-4 sm:w-[18px] sm:h-[18px]" strokeWidth={2} />
+            )}
           </span>
           <span className="text-[14px] sm:text-[15px] font-bold text-[var(--stone-900)] tracking-tight leading-tight min-w-0">
             {title}
