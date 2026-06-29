@@ -57,6 +57,12 @@ interface PageHeroProps {
   icon?: LucideIcon
 
   /**
+   * URL till custom hub-ikon (webp). Om satt renderas den i stället för `icon`
+   * i hub-hjältens cirkel (GRAFIK-PLAN.md §9). Bara meningsfull i mode="hub".
+   */
+  iconSrc?: string
+
+  /**
    * Höger-side-element i hub-läge (t.ex. datum-disc).
    * I tool-läge ignoreras detta — använd `actions` istället.
    */
@@ -93,6 +99,7 @@ export function PageHero({
   description,
   greeting,
   icon: Icon,
+  iconSrc,
   rightDecoration,
   heroIllustration,
   actions,
@@ -108,6 +115,7 @@ export function PageHero({
       description={description}
       greeting={greeting}
       icon={Icon}
+      iconSrc={iconSrc}
       rightDecoration={rightDecoration}
       heroIllustration={heroIllustration}
       showRadialGlow={showRadialGlow ?? true}
@@ -135,6 +143,7 @@ interface HeroHubProps {
   description?: string
   greeting?: string | null
   icon?: LucideIcon
+  iconSrc?: string
   rightDecoration?: React.ReactNode
   heroIllustration?: string
   showRadialGlow: boolean
@@ -146,6 +155,7 @@ function PageHeroHub({
   description,
   greeting,
   icon: Icon,
+  iconSrc,
   rightDecoration,
   heroIllustration,
   showRadialGlow,
@@ -189,12 +199,16 @@ function PageHeroHub({
       <div className={cn('flex flex-col gap-4 sm:gap-6 relative', heroIllustration && 'lg:pr-[190px] xl:pr-[210px]')}>
         <div className="flex items-center justify-between gap-3 sm:gap-6">
           <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
-            {Icon && (
+            {(iconSrc || Icon) && (
               <div
                 aria-hidden="true"
                 className="w-14 h-14 sm:w-[80px] sm:h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm flex items-center justify-center text-[var(--c-text)] flex-shrink-0"
               >
-                <Icon className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={2} />
+                {iconSrc ? (
+                  <img src={iconSrc} alt="" className="w-8 h-8 sm:w-12 sm:h-12 object-contain" />
+                ) : (
+                  Icon && <Icon className="w-6 h-6 sm:w-8 sm:h-8" strokeWidth={2} />
+                )}
               </div>
             )}
 

@@ -307,3 +307,128 @@ spots i Dagbok + Intresseguide-empties utan nya bilder.
 **Nästa batch: §7.6 — de 3 framgångs-spotsen (Fas 5).** Generera dem i ChatGPT och lägg
 i `design-source/illustrations-raw/`. Säg till när de ligger där, så kör jag pipelinen en
 gång, kopplar in alla tre i respektive verktygs slutvy, bygger och verifierar en gång.
+
+---
+
+## 9. Fas 7 — Custom ikonset (sprite-sheets)
+
+**Mål:** Ge portalen ett eget ikonspråk i innehållsytorna istället för standard
+lucide-stroke-ikoner (som alla andra sajter har). Detta är den enskilt största
+"unik-göraren" — det syns på hubbarnas feature-kort och dashboard-widgetarna.
+
+### 9.1 Var setet får (och inte får) användas — VIKTIGT
+
+Ikonerna renderas på två helt olika sätt i koden:
+
+| Yta | Storlek | Färg | Custom-ikon? |
+|-----|---------|------|--------------|
+| Sidofält / bottennav | 16–18px | byter på hover/aktiv (`text-current`) | **NEJ — behåll lucide.** Raster kan inte recoloras och blir grötigt vid 16px |
+| Hub-feature-kortens tile (`HubPage.tsx`) | 36–40px ruta | sidans hub-färg | **JA** — custom-ikonen fyller hela tilen |
+| Dashboard-widgetarnas rubrik-ikon | ~32–40px | hub-färg | **JA** |
+| Hub-kort på Översikt + PageHero | ≥40px | hub-färg | **JA** |
+
+> Regel: custom-ikoner = innehållsytor ≥36px utan state-baserad recolor. Funktionella
+> småikoner (pilar, kryss, chevrons, inställningar, hover-toner i nav) förblir lucide.
+
+### 9.2 Färgstrategi
+
+En-färg-per-sida (§DESIGN.md): varje verktyg bor på exakt **en** hub, så varje ikon
+får sin hubs huvudfärg. Därför 5 ark, ett per hub-färg — varje ark blir internt
+färgkonsekvent och matchar automatiskt sidan det renderas på.
+
+mint `#1A7757` · persika `#A85D24` · rosa `#B85363` · sky `#266DA0` · lavendel `#7058A8`
+
+### 9.3 Sprite-sheet-teknik (flera ikoner i EN generering)
+
+Varje ark genereras som **en** ChatGPT-bild med ett jämnt rutnät, sparas i
+`design-source/illustrations-raw/`, **beskärs manuellt till en PNG per cell**, och körs
+sedan genom `optimize-illustrations.cjs` (chroma-keyar bort magentan på varje cell).
+Lägg magenta även i mellanrummen — pipelinen nyckar bort allt magenta globalt.
+
+Filnamn efter beskärning: `icon-<key>.png` → blir `icon-<key>.webp`.
+
+### 9.4 Promptlista — 5 ark
+
+**Ark 1 — `iconsheet-hubbar` (5 hub-ikoner, en per färg)**
+```
+Skapa ett enhetligt ikon-ark (sprite sheet) i platt, vänlig vektorstil för en svensk jobbportal. Kvadratisk bild 1024×1024. Lägg ut exakt 5 ikoner på en rad (eller 5 jämnt fördelade celler) med tydliga lika stora mellanrum. Varje ikon centrerad i sin cell med god marginal. HELA bilden inklusive mellanrummen ska vara HELT SOLID magenta #FF00FF — ingen transparens, inget rutmönster, inga vita/grå ytor. Inga gradienter, skuggor eller 3D. Alla ikoner ska ha samma visuella vikt, samma formspråk och vara så enkla att de läses tydligt redan vid 40 pixlar; enkla fyllda former, mjukt rundade hörn. Ingen text, inga etiketter, inga ramar runt cellerna. Ikoner i ordning: 1) ett lugnt överblicks-rutnät av fyra rundade rutor, huvudfärg mint-grön #1A7757. 2) en portfölj/arbetsväska, huvudfärg persika-orange #A85D24. 3) en trappa med tre tydliga trappsteg som leder uppåt mot en liten stjärna i övre högra hörnet — alltså en trappa man går upp för, ABSOLUT INTE ett stapeldiagram eller staplar, huvudfärg korall-rosa #B85363. 4) en öppen bok, huvudfärg sky-blå #266DA0. 5) ett hjärta, huvudfärg lavendel-lila #7058A8. Vitt och neutralt för små detaljer.
+
+> **Regenererings-not (efter pilot):** Första ark1 gav ett stapeldiagram för karriär,
+> vilket krockar med kompetensgap-ikonen (Ark 3, stapel + pil, samma rosa hub). Därför
+> är ikon 3 ovan förtydligad till **trappa/trappsteg**. Behåll de övriga fyra som de var
+> i piloten — de var godkända (se §9.6).
+```
+
+**Ark 2 — `iconsheet-jobb` (persika `#A85D24`, 9 ikoner, 3×3)**
+```
+Skapa ett enhetligt ikon-ark (sprite sheet) i platt, vänlig vektorstil för en svensk jobbportal. Kvadratisk bild 1024×1024. Lägg ut exakt 9 ikoner i ett jämnt 3×3-rutnät med tydliga lika stora mellanrum. Varje ikon centrerad i sin cell med god marginal. HELA bilden inklusive mellanrummen ska vara HELT SOLID magenta #FF00FF — ingen transparens, inget rutmönster, inga vita/grå ytor. Inga gradienter, skuggor eller 3D. Alla ikoner ska ha samma visuella vikt, samma linjetjocklek och samma enkla fyllda formspråk så att de läses tydligt redan vid 40 pixlar; mjukt rundade hörn. Ikonernas huvudfärg är persika-orange #A85D24, med vitt och neutralt för små detaljer. Ingen text, inga etiketter, inga ramar runt cellerna. Ikoner radvis: 1) ett förstoringsglas över en lista (jobbsök), 2) ett urklippsblock med en bock (ansökningar), 3) ett kontorshus (spontanansökan), 4) ett persondokument med ett litet huvud (CV), 5) ett kuvert (personligt brev), 6) en mikrofon (intervju), 7) en plånbok med ett mynt (lön), 8) ett professionellt profilkort på en skärm (LinkedIn), 9) en jordglob med ett litet flygplan (internationellt).
+```
+
+**Ark 3 — `iconsheet-karriar` (rosa `#B85363`, 5 ikoner)**
+```
+Skapa ett enhetligt ikon-ark (sprite sheet) i platt, vänlig vektorstil för en svensk jobbportal. Kvadratisk bild 1024×1024. Lägg ut exakt 5 ikoner jämnt fördelade (t.ex. en rad om 5 eller 2+3) med tydliga lika stora mellanrum. Varje ikon centrerad i sin cell med god marginal. HELA bilden inklusive mellanrummen ska vara HELT SOLID magenta #FF00FF — ingen transparens, inget rutmönster, inga vita/grå ytor. Inga gradienter, skuggor eller 3D. Alla ikoner ska ha samma visuella vikt, samma linjetjocklek och samma enkla fyllda formspråk så att de läses tydligt redan vid 40 pixlar; mjukt rundade hörn. Ikonernas huvudfärg är korall-rosa #B85363, med vitt och neutralt för små detaljer. Ingen text, inga etiketter, inga ramar runt cellerna. Ikoner i ordning: 1) trappsteg uppåt mot en stjärna (karriär), 2) en kompass (intresseguide), 3) ett stapeldiagram med en pil uppåt (kompetensgap), 4) en rosett/stjärna på en person (personligt varumärke), 5) en studentmössa (utbildning).
+```
+
+**Ark 4 — `iconsheet-resurser` (sky `#266DA0`, 6 ikoner, 3×2)**
+```
+Skapa ett enhetligt ikon-ark (sprite sheet) i platt, vänlig vektorstil för en svensk jobbportal. Kvadratisk bild 1024×1024. Lägg ut exakt 6 ikoner i ett jämnt 3×2-rutnät med tydliga lika stora mellanrum. Varje ikon centrerad i sin cell med god marginal. HELA bilden inklusive mellanrummen ska vara HELT SOLID magenta #FF00FF — ingen transparens, inget rutmönster, inga vita/grå ytor. Inga gradienter, skuggor eller 3D. Alla ikoner ska ha samma visuella vikt, samma linjetjocklek och samma enkla fyllda formspråk så att de läses tydligt redan vid 40 pixlar; mjukt rundade hörn. Ikonernas huvudfärg är sky-blå #266DA0, med vitt och neutralt för små detaljer. Ingen text, inga etiketter, inga ramar runt cellerna. Ikoner radvis: 1) en bokhylla (kunskapsbank), 2) ett bokmärke i en mapp (mina dokument), 3) en skrivare (utskrift), 4) en pil som pekar ut ur en ruta (externa resurser), 5) en vänlig robot (AI-team), 6) tre förbundna noder med små silhuetter (nätverk).
+```
+
+**Ark 5 — `iconsheet-vardag` (lavendel `#7058A8`, 5 ikoner)**
+```
+Skapa ett enhetligt ikon-ark (sprite sheet) i platt, vänlig vektorstil för en svensk jobbportal. Kvadratisk bild 1024×1024. Lägg ut exakt 5 ikoner jämnt fördelade (t.ex. en rad om 5 eller 2+3) med tydliga lika stora mellanrum. Varje ikon centrerad i sin cell med god marginal. HELA bilden inklusive mellanrummen ska vara HELT SOLID magenta #FF00FF — ingen transparens, inget rutmönster, inga vita/grå ytor. Inga gradienter, skuggor eller 3D. Alla ikoner ska ha samma visuella vikt, samma linjetjocklek och samma enkla fyllda formspråk så att de läses tydligt redan vid 40 pixlar; mjukt rundade hörn. Ikonernas huvudfärg är lavendel-lila #7058A8, med vitt och neutralt för små detaljer. Ingen text, inga etiketter, inga ramar runt cellerna. Ikoner i ordning: 1) ett leende ansikte / en liten sol (wellness), 2) en anteckningsbok med penna (dagbok), 3) ett kalenderblad (kalender), 4) en hantel (övningar), 5) en person med en bock bredvid (min konsulent).
+```
+
+### 9.5 Test-flöde (denna batch)
+
+1. **Börja med Ark 2 (`iconsheet-jobb`)** som pilot — flest ikoner, tydligast om stilen
+   håller vid 40px. Generera, beskär till 9 PNG (`icon-jobbsok`, `icon-ansokningar`,
+   `icon-spontan`, `icon-cv`, `icon-brev`, `icon-intervju`, `icon-lon`, `icon-linkedin`,
+   `icon-internationellt`), lägg i `design-source/illustrations-raw/`.
+2. Jag kör pipelinen, kopplar in på Söka jobb-hubbens feature-kort, bygger och visar dig
+   resultatet vid 40px. Håller stilen → generera resten av arken. Håller den inte →
+   justera prompt (enklare former / tjockare linje) innan vi skalar upp.
+
+> Filnamn efter beskärning följer `icon-<key>.webp`. Mappning ikon→verktyg→hub finns i
+> `client/src/components/layout/navigation.ts` (`navHubs[].items`).
+
+### 9.6 Pilot-resultat — hub-ikoner (Ark 1)
+
+Första ark1 testades som pilot innan resten av setet genererades. Resultat:
+
+- **Frans-test (chroma-key):** ✅ Ingen synlig magenta-frans på vare sig ljus eller
+  mörk yta. Pipelinens de-spill (`optimize-illustrations.cjs` rad 104–105) neutraliserar
+  de mjuka kanterna. Rasterbaserade sprite-sheet-ikoner håller — ingen teknik-ändring
+  behövs, och vi behöver inte ens tvinga fram skarpare kanter.
+- **Läsbarhet @40px:** ✅ Alla fem läses tydligt i verklig renderingsstorlek. Boken är
+  gränsfall (vita linjer smälter ihop något) men entydig.
+- **Färgdrift:** Tonerna är något ljusare än tokens men harmoniserar med pastell-chippen
+  (token-bg). Accepterad — ingen efter-recolor.
+- **Karriär-motiv:** ✗ Stapel i stället för trappa → ark1 regenereras (se §9.4-noten).
+
+**Beslut för inkoppling:**
+- Hub-ikon-assets namnges **`icon-hub-<key>.webp`** (oversikt/jobb/karriar/resurser/vardag),
+  ej `icon-<key>.webp` (det mönstret gäller verktygs-ikonerna i Ark 2–5).
+- **Chippen behålls** — den färgade ikonen ligger kvar i sin pastell-chip (`--c-bg`),
+  bevarar layout, 4px-accentrytm och optisk centrering. (Chip-löst alternativ avvaktar.)
+- **Storleksnormalisering:** ikonerna har lite ojämn optisk vikt i arket → sätt
+  per-ikon-storlek vid inkoppling så de väger lika i chippen.
+- **Ytor:** Hub-ikonerna kopplas in på `HubOverview.tsx` (HubCard, ~rad 400) och därefter
+  `PageHero` (hub-landningarnas hjälte). **Sidofält/bottennav (16px) rörs inte** — lucide
+  kvar där (§9.1).
+- Före/efter-preview genererades med `scratchpad/hub-preview.cjs` (riktig HubCard-markup,
+  lucide vs custom). Kopia av HTML + PNG ligger i `design-source/previews/` (gitignorerat).
+
+**✅ Inkopplat (pilot, hub-ikoner):**
+- 5 webp i `client/public/illustrations/icon-hub-*.webp`.
+- Central mappning domän→webp: `client/src/components/layout/hubIcons.ts` (`HUB_ICON_SRC`).
+- `PageHero.tsx` fick `iconSrc`-prop (renderar `<img>` i hub-hjältens cirkel när satt).
+- `HubPage.tsx` skickar `iconSrc={HUB_ICON_SRC[domain]}` → de 4 hub-landningarna.
+- `HubOverview.tsx` HubCard renderar custom-ikonen i chippen (jobb/karriar/resurser/vardag).
+- Sidofält/bottennav orörda (lucide). tsc + build + lint:design rena.
+- `icon-hub-oversikt` (rutnätet) är genererad men **renderas inte än** — Översiktens hero
+  visar en profil-avatar, inte hub-ikonen. Reserv för framtida oversikt-yta.
+
+**⏭ Nästa batch:** de 25 verktygs-ikonerna (Ark 2–5) på hub-feature-korten. Alla är redan
+utskurna + chroma-keyade (verifierat i kontaktark); återskapas deterministiskt från
+`ark2–5.png` via `scratchpad/slice-all.cjs`.

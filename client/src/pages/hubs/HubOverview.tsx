@@ -12,6 +12,7 @@ import {
   BookOpen,
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
+import { HUB_ICON_SRC } from '@/components/layout/hubIcons'
 import { useOversiktHubSummary } from '@/hooks/useOversiktHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { careerGoalLabel } from '@/utils/careerGoalLabel'
@@ -397,7 +398,11 @@ function HubCard({ to, domain, icon: Icon, title, description, activity }: HubCa
             className="w-11 h-11 sm:w-12 sm:h-12 rounded-[12px] sm:rounded-[14px] flex items-center justify-center flex-shrink-0"
             style={{ background: domainBg(domain), color: domainText(domain) }}
           >
-            <Icon className="w-5 h-5 sm:w-[22px] sm:h-[22px]" strokeWidth={2.25} />
+            {HUB_ICON_SRC[domain] ? (
+              <img src={HUB_ICON_SRC[domain]} alt="" className="w-7 h-7 sm:w-8 sm:h-8 object-contain" />
+            ) : (
+              <Icon className="w-5 h-5 sm:w-[22px] sm:h-[22px]" strokeWidth={2.25} />
+            )}
           </span>
           <span className="text-[16px] sm:text-[18px] font-bold text-[var(--stone-900)] tracking-tight leading-tight min-w-0">
             {title}

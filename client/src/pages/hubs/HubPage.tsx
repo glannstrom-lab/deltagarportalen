@@ -4,6 +4,7 @@ import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { PageHero } from '@/components/layout/PageHero'
+import { HUB_ICON_SRC } from '@/components/layout/hubIcons'
 
 /**
  * HubPage — gemensam template för alla 4 hub-sidor.
@@ -121,6 +122,7 @@ export default function HubPage({
           description={hubDescription}
           greeting={trimmedFirstName ? `Hej ${trimmedFirstName}` : undefined}
           icon={HubIcon}
+          iconSrc={HUB_ICON_SRC[domain]}
           heroIllustration={HUB_ILLUSTRATIONS[domain]}
           rightDecoration={
             <div
