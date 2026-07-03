@@ -1751,7 +1751,17 @@
     "region": "Län",
     "employmentType": "Anställningsform",
     "publishedWithin": "Publicerad inom",
-    "removeFilter": "Ta bort filter: {{filter}}"
+    "removeFilter": "Ta bort filter: {{filter}}",
+    "zeroResults": {
+      "title": "Inga annonser matchar allt du valt just nu",
+      "hint": "Det är oftast kombinationen som stoppar — prova att släppa ett filter:",
+      "searchTerm": "sökordet ”{{term}}”",
+      "occupations": "yrkesfiltret",
+      "without": "Utan {{filter}}",
+      "jobCount": "{{count}} jobb",
+      "jobCountPlus": "{{count}}+ jobb",
+      "checking": "Tittar på vad som stoppar träffarna …"
+    }
   },
   "jobs": {
     "card": {
@@ -1869,6 +1879,12 @@
       "match": "match",
       "showMatchDetails": "Visa matchningsdetaljer",
       "matchesOn": "Matchar på",
+      "level": {
+        "strong": "Stark",
+        "good": "Bra",
+        "possible": "Möjlig"
+      },
+      "showMoreMatches": "Visa {{count}} fler möjliga matchningar",
       "refresh": "Uppdatera",
       "createProfileFirst": "Vi behöver veta mer om dig först",
       "createProfileDesc": "När vi vet vad du kan och vill kan vi hitta jobb som passar. Börja med någon av dessa:",

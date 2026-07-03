@@ -98,6 +98,15 @@ const REGIONS = [
 
 const JOBS_PER_PAGE = 20;
 
+/** Nollresultat-hjälp: ett förslag om att släppa ett specifikt filter. */
+interface FilterRelaxation {
+  key: string;
+  label: string;
+  count: number;
+  capped: boolean;
+  patch: Partial<SearchFilters>;
+}
+
 // Platsbanken kan returnera samma annons-id flera gånger (överlappande
 // yrkesmatchningar / pagineringsglapp). Dubbletter ger React-key-krockar och
 // dubbla kort — dedupera på id, behåll första förekomsten.
@@ -121,7 +130,12 @@ function SearchTab() {
   const [filters, setFilters, filtersLoaded] = useJobSearchFilters(defaultFilters);
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedJob, setSelectedJob] = useState<PlatsbankenJob | null>(null);
-  const [isSearchExpanded, setIsSearchExpanded] = useState(true);
+  // Kollapsad som default på mobil — expanderad panel trycker resultaten
+  // ~2 skärmhöjder ner. Sammanfattningsraden i panelhuvudet visar ändå
+  // aktiv sökning/filter, så inget göms.
+  const [isSearchExpanded, setIsSearchExpanded] = useState(
+    () => typeof window === 'undefined' || window.matchMedia('(min-width: 640px)').matches
+  );
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   // Infinite scroll: hämta första 20, ladda 20 till när användaren scrollar nära slutet
@@ -294,6 +308,76 @@ function SearchTab() {
   };
 
   const hasActiveFilters = filters.municipality || filters.region || filters.employmentType || filters.publishedWithin !== 'all' || filters.occupations.length > 0;
+
+  // Antal aktiva filterDIMENSIONER (sökord räknas, yrken som en) — styr när
+  // nollresultat-hjälpen provsöker. Med bara en dimension är "kontrollera
+  // stavningen"-rådet rätt; med två+ är det oftast kombinationen som stoppar.
+  const activeDimensionCount =
+    (filters.query ? 1 : 0) +
+    (filters.municipality ? 1 : 0) +
+    (filters.region ? 1 : 0) +
+    (filters.employmentType ? 1 : 0) +
+    (filters.publishedWithin !== 'all' ? 1 : 0) +
+    (filters.occupations.length > 0 ? 1 : 0);
+
+  // Nollresultat-hjälp: när kombinationen ger 0 träffar provsöker vi med ett
+  // filter borttaget i taget och visar vilka som öppnar upp träffar. Räknar
+  // faktiska (lokalfiltrerade) träffar — AF:s totalsiffra är inte pålitlig
+  // när regionfiltret (som filtreras lokalt) är aktivt.
+  const [relaxations, setRelaxations] = useState<FilterRelaxation[]>([]);
+  const [probing, setProbing] = useState(false);
+
+  useEffect(() => {
+    if (loading || error || jobs.length > 0 || activeDimensionCount < 2) {
+      setRelaxations([]);
+      setProbing(false);
+      return;
+    }
+
+    const candidates: Array<{ key: string; label: string; patch: Partial<SearchFilters> }> = [];
+    if (filters.query) candidates.push({ key: 'query', label: t('jobSearch.zeroResults.searchTerm', { term: filters.query }), patch: { query: '' } });
+    if (filters.occupations.length > 0) candidates.push({ key: 'occupations', label: t('jobSearch.zeroResults.occupations'), patch: { occupations: [] } });
+    if (filters.municipality) candidates.push({ key: 'municipality', label: filters.municipality, patch: { municipality: '' } });
+    if (filters.region) candidates.push({ key: 'region', label: REGIONS.find((r) => r.code === filters.region)?.name || filters.region, patch: { region: '' } });
+    if (filters.employmentType) candidates.push({ key: 'employmentType', label: filters.employmentType, patch: { employmentType: '' } });
+    if (filters.publishedWithin !== 'all') {
+      const publishedLabel = filters.publishedWithin === 'today' ? t('jobSearch.today') : filters.publishedWithin === 'week' ? t('jobSearch.lastWeek') : t('jobSearch.lastMonth');
+      candidates.push({ key: 'published', label: `”${publishedLabel}”`, patch: { publishedWithin: 'all' } });
+    }
+
+    let cancelled = false;
+    setProbing(true);
+    (async () => {
+      const results = await Promise.all(
+        candidates.map(async (c) => {
+          try {
+            const probe = { ...filters, ...c.patch };
+            const r = await searchJobs({
+              query: probe.query,
+              municipality: probe.municipality,
+              region: probe.region,
+              employmentType: probe.employmentType,
+              publishedWithin: probe.publishedWithin,
+              occupationConceptIds: probe.occupations.map((o) => o.conceptId),
+              limit: JOBS_PER_PAGE,
+              offset: 0,
+              sort: 'pubdate-desc',
+            });
+            const hits = dedupeJobsById(r.hits || []);
+            return { ...c, count: hits.length, capped: hits.length >= JOBS_PER_PAGE };
+          } catch {
+            return { ...c, count: 0, capped: false };
+          }
+        })
+      );
+      if (!cancelled) {
+        setRelaxations(results.filter((r) => r.count > 0).sort((a, b) => b.count - a.count));
+        setProbing(false);
+      }
+    })();
+    return () => { cancelled = true; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jobs, loading, error, filters, activeDimensionCount]);
 
   // Filter count for badge
   const activeFilterCount = [
@@ -764,6 +848,58 @@ function SearchTab() {
               </p>
             )}
           </div>
+        ) : activeDimensionCount >= 2 ? (
+          /* Nollresultat med flera filter: det är oftast kombinationen som
+             stoppar — visa vilka filter som öppnar upp träffar, i stället för
+             att skylla på stavningen. */
+          <Card className="p-8 sm:p-12">
+            <div className="text-center max-w-md mx-auto">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-stone-100 dark:bg-stone-700 flex items-center justify-center">
+                <Filter className="w-7 h-7 text-stone-500 dark:text-stone-400" aria-hidden="true" />
+              </div>
+              <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-1">
+                {t('jobSearch.zeroResults.title')}
+              </h3>
+              <p className="text-sm text-stone-600 dark:text-stone-400">
+                {t('jobSearch.zeroResults.hint')}
+              </p>
+
+              {relaxations.length > 0 && (
+                <div className="mt-5 flex flex-col gap-2">
+                  {relaxations.map((r) => (
+                    <button
+                      key={r.key}
+                      onClick={() => setFilters({ ...filters, ...r.patch })}
+                      className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-800 hover:border-[var(--c-accent)] dark:hover:border-[var(--c-solid)] hover:bg-[var(--c-bg)]/40 transition-colors text-left min-h-[48px]"
+                    >
+                      <span className="text-sm font-medium text-stone-800 dark:text-stone-200">
+                        {t('jobSearch.zeroResults.without', { filter: r.label })}
+                      </span>
+                      <span className="text-sm font-semibold text-[var(--c-text)] dark:text-[var(--c-solid)] whitespace-nowrap">
+                        {r.capped
+                          ? t('jobSearch.zeroResults.jobCountPlus', { count: r.count })
+                          : t('jobSearch.zeroResults.jobCount', { count: r.count })}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {probing && relaxations.length === 0 && (
+                <p className="mt-4 text-sm text-stone-500 dark:text-stone-400" role="status" aria-live="polite">
+                  <span className="inline-block w-3.5 h-3.5 mr-2 rounded-full border-2 border-stone-300 border-t-[var(--c-solid)] animate-spin align-middle" aria-hidden="true" />
+                  {t('jobSearch.zeroResults.checking')}
+                </p>
+              )}
+
+              <button
+                onClick={() => setFilters(defaultFilters)}
+                className="mt-5 text-sm text-stone-600 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-200 underline underline-offset-2"
+              >
+                {t('common.clearAll')}
+              </button>
+            </div>
+          </Card>
         ) : (
           <Card className="p-8 sm:p-12">
             <EmptySearch
@@ -1132,7 +1268,10 @@ export default function JobSearch() {
     label: tab.labelKey ? t(tab.labelKey) : tab.label!,
   }));
 
-  // Live header stats — derived from saved jobs (no extra fetch)
+  // Live header stats — derived from saved jobs (no extra fetch).
+  // Chips med värde 0 visas INTE: "0 sparade · 0 ansökta · 0 intervjuer" i
+  // hjälteposition är prestationsspråk (DESIGN.md §2) och ett dagligt kvitto
+  // på misslyckande för den som inte kommit igång. Tomt läge = inga chips.
   const headerStats = [
     {
       label: 'sparade',
@@ -1152,7 +1291,7 @@ export default function JobSearch() {
       icon: MessageSquare,
       to: '/applications',
     },
-  ];
+  ].filter(s => s.value > 0);
 
   return (
     <>
@@ -1163,7 +1302,7 @@ export default function JobSearch() {
         tabVariant="glass"
         className="max-w-7xl mx-auto"
         domain="activity"
-        stats={headerStats}
+        stats={headerStats.length > 0 ? headerStats : undefined}
       >
         <Routes>
           <Route index element={<SearchTab />} />

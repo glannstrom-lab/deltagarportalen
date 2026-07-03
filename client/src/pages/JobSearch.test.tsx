@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom'
 import { I18nextProvider } from 'react-i18next'
 import i18n from '@/i18n/config'
@@ -83,8 +83,13 @@ describe('JobSearch', () => {
       })
     })
 
-    it('should render search input', async () => {
+    it('should render search input after expanding the filter panel', async () => {
+      // matchMedia mockas till matches: false i test-setup → "mobil" →
+      // filterpanelen är kollapsad som default. Expandera först.
       renderWithProviders(<JobSearch />)
+
+      const toggle = await screen.findByRole('button', { name: /sök & filtrera/i })
+      fireEvent.click(toggle)
 
       await waitFor(() => {
         // Look for any text input

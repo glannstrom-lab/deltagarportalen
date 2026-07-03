@@ -840,6 +840,9 @@ const MatchCard = memo(function MatchCard({
   isSaved: boolean
   labels: {
     match: string
+    levelStrong: string
+    levelGood: string
+    levelPossible: string
     cv: string
     interest: string
     career: string
@@ -869,11 +872,16 @@ const MatchCard = memo(function MatchCard({
   return (
     <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover:shadow-lg transition-shadow">
       <div className="flex items-start gap-4 p-5">
+        {/* Ord i stället för procent — poängen är delvis konstruerad (golv,
+            boosts) så "68%" ger falsk precision; "Stark/Bra/Möjlig" säger det
+            som faktiskt går att lova utan att skrämma med låga siffror. */}
         <div className={cn(
-          "w-14 h-14 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border",
+          "w-16 h-14 px-1 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border text-center",
           scoreColor
         )}>
-          <span className="text-lg font-bold">{score}%</span>
+          <span className="text-xs font-bold leading-tight">
+            {score >= 70 ? labels.levelStrong : score >= 50 ? labels.levelGood : labels.levelPossible}
+          </span>
           <span className="text-[10px] font-medium">{labels.match}</span>
         </div>
 
@@ -1608,6 +1616,14 @@ export function MatchesTab() {
     total: currentJobs.length
   }), [currentJobs])
 
+  // Visa bra matchningar (score >= 50) först — 50 kort i ett svep är en
+  // överväldigande vägg (~23 skärmar på mobil). Resten bakom "Visa fler".
+  const [showAllMatches, setShowAllMatches] = useState(false)
+  useEffect(() => { setShowAllMatches(false) }, [activeSource, municipalities])
+  const goodJobs = useMemo(() => currentJobs.filter(m => m.score >= 50), [currentJobs])
+  const displayedJobs = showAllMatches || goodJobs.length === 0 ? currentJobs : goodJobs
+  const hiddenCount = currentJobs.length - displayedJobs.length
+
   const handleSave = async (job: PlatsbankenJob) => {
     await saveJob(job)
   }
@@ -1661,6 +1677,9 @@ export function MatchesTab() {
 
   const matchCardLabels = {
     match: t('jobs.matches.match'),
+    levelStrong: t('jobs.matches.level.strong', 'Stark'),
+    levelGood: t('jobs.matches.level.good', 'Bra'),
+    levelPossible: t('jobs.matches.level.possible', 'Möjlig'),
     cv: t('jobs.matches.sources.cv'),
     interest: t('jobs.matches.sources.interest'),
     career: t('jobs.matches.sources.career'),
@@ -1817,17 +1836,26 @@ export function MatchesTab() {
       {currentJobs.length === 0 ? (
         <EmptyState type="no-results" labels={emptyStateLabels} />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2">
-          {currentJobs.map(matchedJob => (
-            <MatchCard
-              key={matchedJob.job.id}
-              matchedJob={matchedJob}
-              onSave={handleSave}
-              isSaved={isSaved(matchedJob.job.id)}
-              labels={matchCardLabels}
-            />
-          ))}
-        </div>
+        <>
+          <div className="grid gap-4 md:grid-cols-2">
+            {displayedJobs.map(matchedJob => (
+              <MatchCard
+                key={matchedJob.job.id}
+                matchedJob={matchedJob}
+                onSave={handleSave}
+                isSaved={isSaved(matchedJob.job.id)}
+                labels={matchCardLabels}
+              />
+            ))}
+          </div>
+          {hiddenCount > 0 && (
+            <div className="flex justify-center pt-2">
+              <Button variant="outline" onClick={() => setShowAllMatches(true)}>
+                {t('jobs.matches.showMoreMatches', { count: hiddenCount })}
+              </Button>
+            </div>
+          )}
+        </>
       )}
     </div>
   )

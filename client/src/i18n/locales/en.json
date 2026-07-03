@@ -1744,7 +1744,17 @@
     "region": "Region",
     "employmentType": "Employment type",
     "publishedWithin": "Published within",
-    "removeFilter": "Remove filter: {{filter}}"
+    "removeFilter": "Remove filter: {{filter}}",
+    "zeroResults": {
+      "title": "No ads match everything you chose right now",
+      "hint": "It's usually the combination that blocks results — try dropping one filter:",
+      "searchTerm": "the search term “{{term}}”",
+      "occupations": "the occupation filter",
+      "without": "Without {{filter}}",
+      "jobCount": "{{count}} jobs",
+      "jobCountPlus": "{{count}}+ jobs",
+      "checking": "Checking what's blocking your results …"
+    }
   },
   "jobs": {
     "card": {
@@ -1862,6 +1872,12 @@
       "match": "match",
       "showMatchDetails": "Show match details",
       "matchesOn": "Matches on",
+      "level": {
+        "strong": "Strong",
+        "good": "Good",
+        "possible": "Possible"
+      },
+      "showMoreMatches": "Show {{count}} more possible matches",
       "refresh": "Refresh",
       "createProfileFirst": "Create your profile first",
       "createProfileDesc": "To find matches you need to create your CV, take the interest guide, or set career goals.",

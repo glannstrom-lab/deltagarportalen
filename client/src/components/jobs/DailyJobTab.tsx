@@ -456,7 +456,7 @@ export function DailyJobTab() {
     );
   }
 
-  const { job, reason, matchScore } = dailyJob;
+  const { job, reason } = dailyJob;
   const jobIsSaved = isSaved(job.id);
 
   // Build readable summary of active filter (for UI hint)
@@ -488,14 +488,9 @@ export function DailyJobTab() {
               })}
             </p>
           </div>
-          <div className="ml-auto text-right">
-            <div className="text-2xl font-bold text-[var(--c-text)] dark:text-[var(--c-solid)]">
-              {matchScore}%
-            </div>
-            <div className="text-xs text-stone-500 dark:text-stone-400">
-              {lang === 'en' ? 'match' : 'matchning'}
-            </div>
-          </div>
+          {/* Ingen procentsiffra i hjälteposition — "28% matchning" i stort
+              läser som ett betyg på personen (DESIGN.md §1/§2). Den mänskliga
+              matchtexten på kortet ("Matchar X av dina kompetenser") räcker. */}
         </div>
 
         {/* Filter hint — when an active Sök-filter is driving the daily pick */}
