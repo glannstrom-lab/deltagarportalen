@@ -39,6 +39,7 @@ interface CreateAlertModalProps {
 }
 
 function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [query, setQuery] = useState('')
   const [region, setRegion] = useState('')
@@ -89,7 +90,7 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
       >
         <button
           onClick={onClose}
-          aria-label="Stäng dialogrutan"
+          aria-label={t('jobSearch.alertsTab.closeDialog')}
           className="absolute top-4 right-4 p-2 hover:bg-stone-100 rounded-lg min-w-[44px] min-h-[44px] flex items-center justify-center"
         >
           <X className="w-5 h-5 text-stone-600" aria-hidden="true" />
@@ -100,21 +101,21 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
             <Bell className="w-6 h-6 text-indigo-600" aria-hidden="true" />
           </div>
           <div>
-            <h2 id="create-alert-title" className="text-xl font-bold text-stone-900">Skapa bevakning</h2>
-            <p className="text-sm text-stone-700">Få notiser om nya jobb</p>
+            <h2 id="create-alert-title" className="text-xl font-bold text-stone-900">{t('jobSearch.alertsTab.createAlert')}</h2>
+            <p className="text-sm text-stone-700">{t('jobSearch.alertsTab.createSubtitle')}</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-1">
-              Namn på bevakningen *
+              {t('jobSearch.alertsTab.nameLabel')}
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="t.ex. Utvecklare i Stockholm"
+              placeholder={t('jobSearch.alertsTab.namePlaceholder')}
               className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
               required
             />
@@ -122,27 +123,27 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
 
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-1">
-              Sökord
+              {t('jobSearch.alertsTab.queryLabel')}
             </label>
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="t.ex. React, projektledare, ekonom"
+              placeholder={t('jobSearch.alertsTab.queryPlaceholder')}
               className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-stone-700 mb-1">
-              Region
+              {t('jobSearch.alertsTab.regionLabel')}
             </label>
             <select
               value={region}
               onChange={(e) => setRegion(e.target.value)}
               className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
-              <option value="">Hela Sverige</option>
+              <option value="">{t('jobSearch.alertsTab.allOfSweden')}</option>
               {AF_REGIONS.map((r) => (
                 <option key={r.code} value={r.code}>{r.name}</option>
               ))}
@@ -156,7 +157,7 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
               onChange={(e) => setRemote(e.target.checked)}
               className="w-5 h-5 rounded border-stone-300 text-indigo-600 focus:ring-indigo-500"
             />
-            <span className="text-sm text-stone-700">Endast distansjobb</span>
+            <span className="text-sm text-stone-700">{t('jobSearch.alertsTab.remoteOnly')}</span>
           </label>
 
           <div className="flex gap-3 pt-4">
@@ -166,14 +167,14 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
               className="flex-1"
               onClick={onClose}
             >
-              Avbryt
+              {t('jobSearch.alertsTab.cancel')}
             </Button>
             <Button
               type="submit"
               className="flex-1"
               disabled={!name.trim() || isSubmitting}
             >
-              {isSubmitting ? 'Skapar...' : 'Skapa bevakning'}
+              {isSubmitting ? t('jobSearch.alertsTab.creating') : t('jobSearch.alertsTab.createAlert')}
             </Button>
           </div>
         </form>
@@ -195,6 +196,7 @@ interface JobAlert {
 
 // Email notification settings panel
 function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
+  const { t } = useTranslation()
   const [emailEnabled, setEmailEnabled] = useState(true)
   const [frequency, setFrequency] = useState<'instant' | 'daily' | 'weekly' | 'none'>('daily')
   const [isLoading, setIsLoading] = useState(true)
@@ -234,8 +236,8 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
             <Mail className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-stone-900">E-postaviseringar</h3>
-            <p className="text-sm text-stone-600">Välj hur du vill bli notifierad om nya jobb</p>
+            <h3 className="font-semibold text-stone-900">{t('jobSearch.alertsTab.emailNotifications')}</h3>
+            <p className="text-sm text-stone-600">{t('jobSearch.alertsTab.emailSubtitle')}</p>
           </div>
         </div>
         <button
@@ -254,20 +256,20 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
             onChange={(e) => setEmailEnabled(e.target.checked)}
             className="w-5 h-5 rounded border-stone-300 text-indigo-600 focus:ring-indigo-500"
           />
-          <span className="text-sm text-stone-700">Aktivera e-postaviseringar för jobbvarningar</span>
+          <span className="text-sm text-stone-700">{t('jobSearch.alertsTab.enableEmail')}</span>
         </label>
 
         {emailEnabled && (
           <div className="ml-8">
             <label className="block text-sm font-medium text-stone-700 mb-2">
-              Frekvens
+              {t('jobSearch.alertsTab.frequency')}
             </label>
             <div className="grid grid-cols-2 gap-2">
               {[
-                { value: 'instant', label: 'Direkt' },
-                { value: 'daily', label: 'Daglig sammanfattning' },
-                { value: 'weekly', label: 'Veckosammanfattning' },
-                { value: 'none', label: 'Endast i appen' }
+                { value: 'instant', label: t('jobSearch.alertsTab.freqInstant') },
+                { value: 'daily', label: t('jobSearch.alertsTab.freqDaily') },
+                { value: 'weekly', label: t('jobSearch.alertsTab.freqWeekly') },
+                { value: 'none', label: t('jobSearch.alertsTab.freqNone') }
               ].map(option => (
                 <label
                   key={option.value}
@@ -295,10 +297,10 @@ function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
 
         <div className="flex justify-end gap-3 pt-2">
           <Button variant="outline" size="sm" onClick={onClose}>
-            Avbryt
+            {t('jobSearch.alertsTab.cancel')}
           </Button>
           <Button size="sm" onClick={handleSave} disabled={isSaving}>
-            {isSaving ? 'Sparar...' : 'Spara inställningar'}
+            {isSaving ? t('jobSearch.alertsTab.saving') : t('jobSearch.alertsTab.saveSettings')}
           </Button>
         </div>
       </div>
@@ -317,6 +319,7 @@ function AlertCard({
   onDelete: (id: string) => void
   onRunSearch: (alert: JobAlert) => void
 }) {
+  const { t } = useTranslation()
   const [isChecking, setIsChecking] = useState(false)
 
   const handleRunSearch = async () => {
@@ -339,7 +342,7 @@ function AlertCard({
             <h3 className="font-semibold text-stone-900">{alert.name}</h3>
             {alert.new_jobs_count > 0 && alert.is_active && (
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
-                {alert.new_jobs_count} nya
+                {t('jobSearch.alertsTab.newCount', { count: alert.new_jobs_count })}
               </span>
             )}
           </div>
@@ -360,7 +363,7 @@ function AlertCard({
             )}
             {alert.remote && (
               <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 text-xs rounded-lg">
-                🏠 Distans
+                {t('jobSearch.alertsTab.remoteBadge')}
               </span>
             )}
           </div>
@@ -369,7 +372,7 @@ function AlertCard({
           {alert.last_checked_at && (
             <p className="text-xs text-stone-600 mt-2 flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              Senast kollad: {new Date(alert.last_checked_at).toLocaleDateString('sv-SE')}
+              {t('jobSearch.alertsTab.lastChecked', { date: new Date(alert.last_checked_at).toLocaleDateString('sv-SE') })}
             </p>
           )}
         </div>
@@ -379,7 +382,7 @@ function AlertCard({
           <button
             onClick={() => onToggle(alert.id, !alert.is_active)}
             className="p-2 hover:bg-stone-100 rounded-lg transition-colors"
-            title={alert.is_active ? 'Pausa bevakning' : 'Aktivera bevakning'}
+            title={alert.is_active ? t('jobSearch.alertsTab.pauseAlert') : t('jobSearch.alertsTab.activateAlert')}
           >
             {alert.is_active ? (
               <ToggleRight className="w-6 h-6 text-green-600" />
@@ -390,12 +393,12 @@ function AlertCard({
 
           <button
             onClick={() => {
-              if (confirm('Är du säker på att du vill ta bort denna bevakning?')) {
+              if (confirm(t('jobSearch.alertsTab.confirmDelete'))) {
                 onDelete(alert.id)
               }
             }}
             className="p-2 hover:bg-red-50 rounded-lg transition-colors text-stone-600 hover:text-red-600"
-            title="Ta bort"
+            title={t('jobSearch.alertsTab.delete')}
           >
             <Trash2 className="w-5 h-5" />
           </button>
@@ -416,12 +419,12 @@ function AlertCard({
         {isChecking ? (
           <>
             <RefreshCw className="w-4 h-4 animate-spin" />
-            Söker...
+            {t('jobSearch.alertsTab.searching')}
           </>
         ) : (
           <>
             <Search className="w-4 h-4" />
-            Sök nu
+            {t('jobSearch.alertsTab.searchNow')}
           </>
         )}
       </button>
@@ -430,7 +433,7 @@ function AlertCard({
 }
 
 export function AlertsTab() {
-  useTranslation()
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { alerts, isLoading, createAlert, deleteAlert, toggleAlert, checkForNewJobs } = useJobAlerts()
   const [showCreateModal, setShowCreateModal] = useState(false)
@@ -480,17 +483,17 @@ export function AlertsTab() {
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="text-lg font-semibold text-stone-900">Dina bevakningar</h2>
+            <h2 className="text-lg font-semibold text-stone-900">{t('jobSearch.alertsTab.title')}</h2>
             {unreadCount > 0 && (
               <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">
-                {unreadCount} nya
+                {t('jobSearch.alertsTab.newCount', { count: unreadCount })}
               </span>
             )}
           </div>
           <p className="text-sm text-stone-700">
             {alerts.length === 0
-              ? 'Skapa bevakningar för att få notiser om nya jobb'
-              : `${alerts.filter(a => a.is_active).length} aktiva av ${alerts.length} bevakningar`}
+              ? t('jobSearch.alertsTab.emptySubtitle')
+              : t('jobSearch.alertsTab.activeCount', { active: alerts.filter(a => a.is_active).length, total: alerts.length })}
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -500,13 +503,13 @@ export function AlertsTab() {
               "p-2 rounded-lg transition-colors",
               showEmailSettings ? "bg-indigo-100 text-indigo-600" : "hover:bg-stone-100 text-stone-600"
             )}
-            title="E-postinställningar"
+            title={t('jobSearch.alertsTab.emailSettingsTitle')}
           >
             <Settings className="w-5 h-5" />
           </button>
           <Button onClick={() => setShowCreateModal(true)}>
             <Plus className="w-4 h-4 mr-2" />
-            Ny bevakning
+            {t('jobSearch.alertsTab.newAlert')}
           </Button>
         </div>
       </div>
@@ -523,14 +526,14 @@ export function AlertsTab() {
             <Bell className="w-8 h-8 text-amber-600" />
           </div>
           <h3 className="text-xl font-semibold text-stone-700 mb-2">
-            Inga bevakningar
+            {t('jobSearch.alertsTab.noAlerts')}
           </h3>
           <p className="text-stone-700 mb-6 max-w-md mx-auto">
-            Skapa en bevakning för att få notifieringar när nya jobb som matchar dina kriterier publiceras.
+            {t('jobSearch.alertsTab.noAlertsText')}
           </p>
           <Button onClick={() => setShowCreateModal(true)}>
             <Plus className="w-4 h-4 mr-2" />
-            Skapa din första bevakning
+            {t('jobSearch.alertsTab.createFirst')}
           </Button>
         </Card>
       ) : (

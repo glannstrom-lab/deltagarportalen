@@ -57,7 +57,7 @@ interface UserProfileData {
 }
 
 export function DailyJobTab() {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const lang = i18n.language;
   const { saveJob, isSaved, removeJob } = useSavedJobs();
   const [filters, , filtersLoaded] = useJobSearchFilters(DEFAULT_JOB_SEARCH_FILTERS);
@@ -293,7 +293,7 @@ export function DailyJobTab() {
         // Exact match or partial match
         if (jobLocation.includes(userLocationLower) || userLocationLower.includes(jobLocation)) {
           score += 30;
-          reasons.push(lang === 'en' ? 'Near your home' : 'Nära din bostadsort');
+          reasons.push(t('jobSearch.dailyTab.reasonNearHome'));
         }
         // Check for greater region match (Stockholm area, Göteborg area, etc.)
         else if (
@@ -306,7 +306,7 @@ export function DailyJobTab() {
           (userLocationLower.includes('stockholm') && (jobLocation.includes('solna') || jobLocation.includes('nacka') || jobLocation.includes('huddinge') || jobLocation.includes('sundbyberg') || jobLocation.includes('kista')))
         ) {
           score += 20;
-          reasons.push(lang === 'en' ? 'In your region' : 'I din region');
+          reasons.push(t('jobSearch.dailyTab.reasonInRegion'));
         }
       }
 
@@ -322,7 +322,7 @@ export function DailyJobTab() {
         });
         if (skillMatches > 0) {
           score += Math.min(40, skillMatches * 10);
-          reasons.push(lang === 'en' ? `Matches ${skillMatches} of your skills` : `Matchar ${skillMatches} av dina kompetenser`);
+          reasons.push(t('jobSearch.dailyTab.reasonSkillMatches', { count: skillMatches }));
         }
 
         // Match work experience titles (up to 30 points)
@@ -334,7 +334,7 @@ export function DailyJobTab() {
         });
         if (titleMatches > 0) {
           score += Math.min(30, titleMatches * 15);
-          reasons.push(lang === 'en' ? 'Matches your experience' : 'Matchar din erfarenhet');
+          reasons.push(t('jobSearch.dailyTab.reasonExperience'));
         }
 
         // Match preferred roles (up to 25 points)
@@ -346,7 +346,7 @@ export function DailyJobTab() {
         });
         if (roleMatches > 0) {
           score += Math.min(25, roleMatches * 12);
-          reasons.push(lang === 'en' ? 'Matches your career goals' : 'Matchar dina karriärmål');
+          reasons.push(t('jobSearch.dailyTab.reasonCareerGoals'));
         }
 
         // Match interest guide occupations (up to 35 points)
@@ -363,7 +363,7 @@ export function DailyJobTab() {
         });
         if (bestOccMatch > 0) {
           score += Math.min(35, Math.round(bestOccMatch * 0.35));
-          reasons.push(lang === 'en' ? 'Fits your interests' : 'Passar dina intressen');
+          reasons.push(t('jobSearch.dailyTab.reasonInterests'));
         }
       }
 
@@ -374,10 +374,10 @@ export function DailyJobTab() {
       );
       if (daysOld <= 1) {
         score += 15;
-        if (reasons.length === 0) reasons.push(lang === 'en' ? 'Just published' : 'Nyligen publicerad');
+        if (reasons.length === 0) reasons.push(t('jobSearch.dailyTab.reasonJustPublished'));
       } else if (daysOld <= 3) {
         score += 10;
-        if (reasons.length === 0) reasons.push(lang === 'en' ? 'New this week' : 'Ny denna vecka');
+        if (reasons.length === 0) reasons.push(t('jobSearch.dailyTab.reasonNewThisWeek'));
       }
 
       // Has complete information (up to 10 points)
@@ -387,7 +387,7 @@ export function DailyJobTab() {
       // Has application URL (10 points)
       if (job.application_details?.url || job.webpage_url) {
         score += 10;
-        if (reasons.length < 2) reasons.push(lang === 'en' ? 'Easy to apply' : 'Enkel att ansöka till');
+        if (reasons.length < 2) reasons.push(t('jobSearch.dailyTab.reasonEasyApply'));
       }
 
       // Not too overwhelming (5 points)
@@ -408,7 +408,7 @@ export function DailyJobTab() {
 
     return {
       job: best.job,
-      reason: best.reasons.slice(0, 2).join(' • ') || (lang === 'en' ? 'Good opportunity' : 'Bra möjlighet'),
+      reason: best.reasons.slice(0, 2).join(' • ') || t('jobSearch.dailyTab.reasonDefault'),
       matchScore,
     };
   };
@@ -431,7 +431,7 @@ export function DailyJobTab() {
           <Star className="w-8 h-8 text-[var(--c-solid)]" />
         </div>
         <p className="text-stone-600 dark:text-stone-400">
-          {lang === 'en' ? 'Finding your job of the day...' : 'Hittar dagens jobb åt dig...'}
+          {t('jobSearch.dailyTab.loading')}
         </p>
       </div>
     );
@@ -442,16 +442,14 @@ export function DailyJobTab() {
       <Card className="p-8 text-center">
         <Star className="w-12 h-12 text-stone-400 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-2">
-          {lang === 'en' ? 'No job for today' : 'Inget jobb för idag'}
+          {t('jobSearch.dailyTab.noJobTitle')}
         </h3>
         <p className="text-stone-600 dark:text-stone-400 mb-4">
-          {lang === 'en'
-            ? 'Try refreshing or come back tomorrow.'
-            : 'Försök uppdatera eller kom tillbaka imorgon.'}
+          {t('jobSearch.dailyTab.noJobText')}
         </p>
         <Button onClick={handleRefresh}>
           <RefreshCw className="w-4 h-4 mr-2" />
-          {lang === 'en' ? 'Refresh' : 'Uppdatera'}
+          {t('jobSearch.dailyTab.refresh')}
         </Button>
       </Card>
     );
@@ -478,7 +476,7 @@ export function DailyJobTab() {
           </div>
           <div>
             <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100">
-              {lang === 'en' ? "Today's Job For You" : 'Dagens jobb för dig'}
+              {t('jobSearch.dailyTab.title')}
             </h2>
             <p className="text-sm text-stone-600 dark:text-stone-400 flex items-center gap-1">
               <Calendar className="w-3.5 h-3.5" />
@@ -502,7 +500,7 @@ export function DailyJobTab() {
           >
             <Filter className="w-3.5 h-3.5" />
             <span>
-              {lang === 'en' ? 'Based on your filter: ' : 'Baserat på ditt filter: '}
+              {t('jobSearch.dailyTab.basedOnFilter')}{' '}
               <span className="font-semibold">{activeFilterParts.join(' · ')}</span>
             </span>
           </Link>
@@ -510,9 +508,7 @@ export function DailyJobTab() {
 
         <p className="text-sm text-stone-600 dark:text-stone-400 bg-white/60 dark:bg-stone-900/30 rounded-lg p-3">
           <Sparkles className="w-4 h-4 inline mr-1 text-[var(--c-solid)]" />
-          {lang === 'en'
-            ? 'Focus on one opportunity at a time. No pressure, no overwhelm.'
-            : 'Fokusera på en möjlighet i taget. Ingen press, ingen stress.'}
+          {t('jobSearch.dailyTab.focusText')}
         </p>
       </Card>
 
@@ -557,7 +553,7 @@ export function DailyJobTab() {
           >
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
-                {lang === 'en' ? 'About this job' : 'Om jobbet'}
+                {t('jobSearch.dailyTab.aboutJob')}
               </span>
               <ChevronRight
                 className={cn(
@@ -590,9 +586,7 @@ export function DailyJobTab() {
           {!hasActioned ? (
             <div className="space-y-3">
               <p className="text-sm text-stone-600 dark:text-stone-400 text-center mb-4">
-                {lang === 'en'
-                  ? 'What would you like to do with this job?'
-                  : 'Vad vill du göra med detta jobb?'}
+                {t('jobSearch.dailyTab.whatToDo')}
               </p>
 
               <div className="grid grid-cols-2 gap-3">
@@ -614,12 +608,8 @@ export function DailyJobTab() {
                 >
                   <Heart className={cn('w-5 h-5', jobIsSaved && 'fill-current')} />
                   {jobIsSaved
-                    ? lang === 'en'
-                      ? 'Saved!'
-                      : 'Sparad!'
-                    : lang === 'en'
-                    ? 'Save for later'
-                    : 'Spara till senare'}
+                    ? t('jobSearch.dailyTab.savedExclamation')
+                    : t('jobSearch.dailyTab.saveForLater')}
                 </button>
 
                 <Link
@@ -627,7 +617,7 @@ export function DailyJobTab() {
                   className="flex items-center justify-center gap-2 py-3 rounded-xl font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
                 >
                   <FileText className="w-5 h-5" />
-                  {lang === 'en' ? 'Write letter' : 'Skriv brev'}
+                  {t('jobSearch.dailyTab.writeLetter')}
                 </Link>
               </div>
 
@@ -640,7 +630,7 @@ export function DailyJobTab() {
                   className="flex items-center justify-center gap-2 w-full py-3 bg-[var(--c-solid)] hover:brightness-95 text-white rounded-xl font-medium transition-all"
                 >
                   <Send className="w-5 h-5" />
-                  {lang === 'en' ? 'Apply Now' : 'Ansök nu'}
+                  {t('jobSearch.dailyTab.applyNow')}
                 </a>
               )}
 
@@ -648,23 +638,21 @@ export function DailyJobTab() {
                 onClick={handleRefresh}
                 className="w-full text-sm text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300 py-2"
               >
-                {lang === 'en' ? 'Not interested? Show another job' : 'Inte intresserad? Visa ett annat jobb'}
+                {t('jobSearch.dailyTab.notInterested')}
               </button>
             </div>
           ) : (
             <div className="text-center">
               <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
               <h4 className="font-semibold text-stone-800 dark:text-stone-100 mb-1">
-                {lang === 'en' ? 'Great job!' : 'Bra jobbat!'}
+                {t('jobSearch.dailyTab.greatJob')}
               </h4>
               <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
-                {lang === 'en'
-                  ? "You've taken action on today's job. Come back tomorrow for a new opportunity!"
-                  : 'Du har tagit action på dagens jobb. Kom tillbaka imorgon för en ny möjlighet!'}
+                {t('jobSearch.dailyTab.actionedText')}
               </p>
               <Button variant="outline" onClick={handleRefresh} size="sm">
                 <RefreshCw className="w-4 h-4 mr-2" />
-                {lang === 'en' ? 'See another job' : 'Visa ett annat jobb'}
+                {t('jobSearch.dailyTab.seeAnotherJob')}
               </Button>
             </div>
           )}
@@ -677,10 +665,8 @@ export function DailyJobTab() {
           <Clock className="w-5 h-5 text-sky-600 dark:text-sky-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm text-stone-700 dark:text-stone-300">
-              <strong>{lang === 'en' ? 'Tip:' : 'Tips:'}</strong>{' '}
-              {lang === 'en'
-                ? 'Take your time with this job. Read it carefully, save it if interesting, or apply when you feel ready.'
-                : 'Ta dig tid med detta jobb. Läs det noga, spara om det är intressant, eller ansök när du känner dig redo.'}
+              <strong>{t('jobSearch.dailyTab.tipLabel')}</strong>{' '}
+              {t('jobSearch.dailyTab.tipText')}
             </p>
           </div>
         </div>

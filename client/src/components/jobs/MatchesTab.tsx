@@ -3,64 +3,48 @@
  *
  * Each source (CV, Interest, Career) searches and matches jobs independently.
  * No combination or weighting - each source gives its own results.
+ *
+ * Uppdelad 2026-07-03: statisk matchningsdata ligger i data/jobMatchingData.ts,
+ * rena matchningsfunktioner i services/jobMatching.ts och subkomponenter i
+ * components/jobs/matches/. Här finns källdata-inläsning, de tre
+ * sökfunktionerna, state och komposition.
  */
 
-import { useState, useEffect, useMemo, useCallback, memo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Sparkles, Target, CheckCircle, AlertCircle, FileText,
-  Briefcase, MapPin, Heart, ExternalLink, ChevronDown,
-  Loader2, RefreshCw, TrendingUp, Award, Compass,
-  Settings2, X, Car
+  Sparkles, Target, AlertCircle, FileText,
+  Briefcase, Loader2, RefreshCw, TrendingUp, Award, Compass,
+  Settings2, Car
 } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
-import { searchJobs, type PlatsbankenJob, SWEDISH_MUNICIPALITIES } from '@/services/arbetsformedlingenApi'
-
-/**
- * Förhämta flera AF-sökningar parallellt. Sökningarna är oberoende av
- * varandra — de seriella await:arna i käll-funktionerna lät användaren
- * vänta på upp till 5+8+8 anrop i RAD innan fliken visade något.
- * Fel per sökning sväljs (tom lista) så en trasig term inte fäller resten.
- */
-async function prefetchJobSearches(
-  queries: string[],
-  municipality?: string,
-): Promise<Map<string, PlatsbankenJob[]>> {
-  const map = new Map<string, PlatsbankenJob[]>()
-  await Promise.all(
-    queries.map(async (q) => {
-      try {
-        const r = await searchJobs({ query: q, municipality, limit: 25, publishedWithin: 'month' })
-        map.set(q, r.hits)
-      } catch (e) {
-        console.error('Error searching for term:', q, e)
-        map.set(q, [])
-      }
-    }),
-  )
-  return map
-}
+import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
+import {
+  prefetchJobSearches,
+  isGenericSkill,
+  matchSkill,
+  matchJobTitle,
+  checkRequiredLicense,
+  applyProfileBoosts,
+  type MatchSource,
+  type MatchedJob,
+  type MatchPreferences
+} from '@/services/jobMatching'
 import { cvApi } from '@/services/cvApi'
 import { userApi } from '@/services/userApi'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { calculateUserProfile, calculateJobMatches } from '@/services/interestGuideData'
 import { unifiedProfileApi } from '@/services/unifiedProfileApi'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
-import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
+import { SourceToggle } from './matches/SourceToggle'
+import { LocationSelector } from './matches/LocationSelector'
+import { MatchCard } from './matches/MatchCard'
+import { MatchesEmptyState } from './matches/MatchesEmptyState'
 
 // ============================================
 // TYPES
 // ============================================
-
-type MatchSource = 'cv' | 'interest' | 'career'
-
-interface MatchedJob {
-  job: PlatsbankenJob
-  score: number
-  source: MatchSource
-  matchDetails: string[]
-}
 
 interface SourceData {
   cv: {
@@ -80,987 +64,7 @@ interface SourceData {
     keywords: string[]
   }
   // Profile preferences for filtering and boosting
-  preferences: {
-    employmentTypes: string[]  // 'fulltime', 'parttime', etc.
-    remoteWork: 'yes' | 'no' | 'hybrid' | null
-    driversLicense: string[]  // ['B', 'C', etc.]
-    hasCar: boolean
-    maxCommuteMinutes: number | null
-    industries: string[]
-  }
-}
-
-// ============================================
-// SKILL & JOB TITLE SYNONYMS
-// ============================================
-
-const SKILL_SYNONYMS: Record<string, string[]> = {
-  // Programming languages
-  'javascript': ['js', 'ecmascript', 'node', 'nodejs', 'node.js'],
-  'typescript': ['ts'],
-  'python': ['py', 'django', 'flask', 'pandas'],
-  'java': ['jvm', 'spring', 'spring boot', 'jakarta'],
-  'c#': ['csharp', 'c-sharp', '.net', 'dotnet', 'asp.net'],
-  'c++': ['cpp', 'c plus plus'],
-  'php': ['laravel', 'symfony', 'wordpress'],
-  'ruby': ['rails', 'ruby on rails'],
-  'go': ['golang'],
-  'rust': ['rustlang'],
-  'swift': ['ios', 'xcode'],
-  'kotlin': ['android'],
-
-  // Frontend
-  'react': ['react.js', 'reactjs', 'react native', 'redux'],
-  'vue': ['vue.js', 'vuejs', 'nuxt'],
-  'angular': ['angularjs', 'angular.js'],
-  'html': ['html5', 'markup'],
-  'css': ['css3', 'sass', 'scss', 'less', 'tailwind', 'bootstrap'],
-  'frontend': ['front-end', 'front end', 'ui', 'användargränssnitt'],
-  'backend': ['back-end', 'back end', 'server-side', 'serversidan'],
-  'fullstack': ['full-stack', 'full stack'],
-
-  // Databases
-  'sql': ['mysql', 'postgresql', 'postgres', 'mssql', 'oracle', 'mariadb', 'sqlite'],
-  'nosql': ['mongodb', 'redis', 'elasticsearch', 'cassandra', 'dynamodb'],
-  'databas': ['database', 'db', 'datalagring'],
-
-  // DevOps & Cloud
-  'devops': ['ci/cd', 'continuous integration', 'deployment'],
-  'docker': ['container', 'kubernetes', 'k8s'],
-  'aws': ['amazon web services', 'ec2', 's3', 'lambda'],
-  'azure': ['microsoft azure', 'azure devops'],
-  'gcp': ['google cloud', 'google cloud platform'],
-  'linux': ['unix', 'ubuntu', 'debian', 'centos'],
-
-  // Office & General IT
-  'excel': ['spreadsheet', 'kalkylark', 'kalkylblad', 'vba'],
-  'word': ['ordbehandling', 'dokument'],
-  'powerpoint': ['presentation', 'presentationer'],
-  'office': ['microsoft office', 'ms office', 'office 365', 'm365'],
-  'it': ['informationsteknik', 'data', 'system', 'teknik'],
-  'support': ['helpdesk', 'servicedesk', 'kundsupport', 'teknisk support'],
-
-  // Project & Management
-  'projektledning': ['projektledare', 'project management', 'pm', 'projektkoordinator'],
-  'scrum': ['agile', 'agil', 'sprint', 'kanban', 'scrum master'],
-  'ledarskap': ['chef', 'ledare', 'teamlead', 'team lead', 'teamledare', 'manager'],
-  'strategi': ['strategisk', 'affärsutveckling', 'business development'],
-
-  // Communication & Sales
-  'kommunikation': ['kommunikativ', 'kundkontakt', 'kundbemötande', 'pr'],
-  'försäljning': ['säljare', 'sales', 'sälj', 'account manager', 'kundansvarig'],
-  'marknadsföring': ['marketing', 'digital marknadsföring', 'content', 'seo', 'sem'],
-  'kundservice': ['kundtjänst', 'customer service', 'kundsupport'],
-
-  // Finance & Admin
-  'ekonomi': ['redovisning', 'bokföring', 'accounting', 'finans', 'finance'],
-  'administration': ['admin', 'administratör', 'kontorsarbete', 'reception'],
-  'hr': ['personal', 'rekrytering', 'human resources', 'personalansvarig'],
-  'juridik': ['jurist', 'legal', 'avtal', 'kontrakt'],
-
-  // Healthcare & Social
-  'vård': ['omsorg', 'sjukvård', 'hälsa', 'healthcare', 'omvårdnad'],
-  'undersköterska': ['usk', 'vårdbiträde', 'äldreomsorg'],
-  'sjuksköterska': ['ssk', 'nurse', 'nursing'],
-  'läkare': ['doctor', 'physician', 'medicine'],
-  'psykologi': ['psykolog', 'terapi', 'terapeut', 'counseling'],
-  'socialt arbete': ['socionom', 'social worker', 'biståndshandläggare'],
-
-  // Education
-  'pedagogik': ['undervisning', 'lärare', 'utbildning', 'education', 'teacher'],
-  'förskola': ['förskollärare', 'barnskötare', 'dagis'],
-  'grundskola': ['mellanstadie', 'lågstadie', 'högstadie'],
-
-  // Construction & Industry
-  'bygg': ['byggnad', 'construction', 'byggnadsarbete', 'snickare'],
-  'el': ['elektriker', 'elektricitet', 'elinstallation'],
-  'vvs': ['rörmokare', 'plumber', 'ventilation'],
-  'industri': ['produktion', 'tillverkning', 'manufacturing', 'fabrik'],
-  'lager': ['logistik', 'warehouse', 'lagerpersonal', 'godshantering'],
-  'transport': ['chaufför', 'driver', 'lastbil', 'truck', 'leverans'],
-
-  // Licenses & Certificates
-  'körkort': ['b-körkort', 'c-körkort', 'ce-körkort', 'driving license', 'förare'],
-  'truckkort': ['truck', 'forklift', 'gaffeltruck'],
-  'certifikat': ['certificate', 'behörighet', 'licens'],
-
-  // Languages
-  'engelska': ['english', 'eng'],
-  'svenska': ['swedish', 'swe'],
-  'tyska': ['german', 'deutsch'],
-  'franska': ['french', 'français'],
-  'spanska': ['spanish', 'español'],
-}
-
-const JOB_TITLE_SYNONYMS: Record<string, string[]> = {
-  'systemutvecklare': ['developer', 'utvecklare', 'programmerare', 'software engineer', 'mjukvaruutvecklare'],
-  'webbutvecklare': ['web developer', 'frontendutvecklare', 'backendutvecklare', 'fullstackutvecklare'],
-  'projektledare': ['project manager', 'pm', 'projektkoordinator', 'project lead'],
-  'produktägare': ['product owner', 'po', 'produktchef', 'product manager'],
-  'säljare': ['sales', 'försäljare', 'account manager', 'säljansvarig', 'key account'],
-  'ekonom': ['accountant', 'redovisningsekonom', 'controller', 'finansanalytiker'],
-  'administratör': ['admin', 'kontorsassistent', 'sekreterare', 'koordinator'],
-  'receptionist': ['reception', 'front desk', 'kundmottagare'],
-  'chef': ['manager', 'ledare', 'ansvarig', 'head of', 'director'],
-  'konsult': ['consultant', 'rådgivare', 'specialist', 'expert'],
-  'tekniker': ['technician', 'servicetekniker', 'drifttekniker'],
-  'ingenjör': ['engineer', 'civilingenjör', 'högskoleingenjör'],
-  'lärare': ['teacher', 'pedagog', 'utbildare', 'instructor'],
-  'sjuksköterska': ['nurse', 'ssk', 'vårdpersonal'],
-  'undersköterska': ['usk', 'vårdbiträde', 'omsorgspersonal'],
-  'kock': ['chef', 'cook', 'köksbiträde', 'köksansvarig'],
-  'städare': ['cleaner', 'lokalvårdare', 'städpersonal'],
-  'chaufför': ['driver', 'förare', 'lastbilschaufför', 'budbilsförare'],
-}
-
-// SENIORITY_LEVELS + INDUSTRIES borttagna 2026-05-15 — användes endast
-// av detect-funktionerna ovan (också borttagna). Återinför med tester när
-// matching-logiken behöver granulär klassificering.
-
-/**
- * Generic skills that should NOT be used for job searching
- * These are basic requirements that almost every job has,
- * so using them as search terms returns irrelevant results.
- * They can still contribute minor points in scoring.
- */
-const GENERIC_SKILLS = new Set([
-  // Languages
-  'svenska', 'swedish', 'engelska', 'english', 'tyska', 'german',
-  'franska', 'french', 'spanska', 'spanish', 'arabiska', 'arabic',
-  'finska', 'finnish', 'norska', 'norwegian', 'danska', 'danish',
-  'polska', 'polish', 'ryska', 'russian', 'kinesiska', 'chinese',
-  'japanska', 'japanese', 'portugisiska', 'portuguese',
-  // Driver's licenses
-  'körkort', 'b-körkort', 'c-körkort', 'ce-körkort', 'am-körkort',
-  'a-körkort', 'a1-körkort', 'a2-körkort', 'driving license',
-  'drivers license', 'förarbevis',
-  // Basic computer skills
-  'dator', 'datorer', 'datorvana', 'computer', 'it-vana',
-  'microsoft office', 'ms office', 'office', 'word', 'excel', 'powerpoint',
-  'outlook', 'teams', 'e-post', 'email', 'internet',
-  // Soft skills (too generic)
-  'kommunikation', 'kommunikativ', 'social', 'samarbete', 'teamwork',
-  'flexibel', 'noggrann', 'ansvarstagande', 'självständig', 'strukturerad',
-  'serviceinriktad', 'stresstålig', 'lösningsorienterad', 'positiv',
-  'driven', 'engagerad', 'motiverad', 'pålitlig', 'punktlig',
-  // Other generic
-  'truckkort', 'truck', 'hjullastare', 'travers',
-])
-
-/**
- * Check if a skill is generic (should not be used for searching)
- */
-function isGenericSkill(skill: string): boolean {
-  const skillLower = skill.toLowerCase().trim()
-
-  // Direct match
-  if (GENERIC_SKILLS.has(skillLower)) return true
-
-  // Check if any generic skill is contained in this skill
-  for (const generic of GENERIC_SKILLS) {
-    if (skillLower.includes(generic) || generic.includes(skillLower)) {
-      return true
-    }
-  }
-
-  return false
-}
-
-/**
- * Check if a skill matches in job text (with synonyms)
- */
-function matchSkill(skill: string, jobText: string): boolean {
-  const skillLower = skill.toLowerCase()
-
-  // Direct match
-  if (jobText.includes(skillLower)) return true
-
-  // Check synonyms
-  const synonyms = SKILL_SYNONYMS[skillLower] || []
-  for (const syn of synonyms) {
-    if (jobText.includes(syn)) return true
-  }
-
-  // Reverse lookup - check if skill is a synonym of something in the text
-  for (const [key, syns] of Object.entries(SKILL_SYNONYMS)) {
-    if (syns.includes(skillLower) && jobText.includes(key)) return true
-  }
-
-  // Partial word match for compound words
-  if (skillLower.length > 4) {
-    const words = skillLower.split(/[\s\-/]+/).filter(w => w.length > 3)
-    for (const word of words) {
-      if (jobText.includes(word)) return true
-    }
-  }
-
-  return false
-}
-
-/**
- * Check if job title matches user's work title (with synonyms)
- */
-function matchJobTitle(userTitle: string, jobTitle: string, jobOccupation: string): { match: 'exact' | 'similar' | 'partial' | 'none' } {
-  const titleLower = userTitle.toLowerCase()
-  const jobTitleLower = jobTitle.toLowerCase()
-  const jobOccLower = jobOccupation.toLowerCase()
-  const combined = `${jobTitleLower} ${jobOccLower}`
-
-  // Exact match
-  if (jobTitleLower.includes(titleLower) || jobOccLower.includes(titleLower)) {
-    return { match: 'exact' }
-  }
-
-  // Synonym match
-  const synonyms = JOB_TITLE_SYNONYMS[titleLower] || []
-  for (const syn of synonyms) {
-    if (combined.includes(syn)) return { match: 'similar' }
-  }
-
-  // Reverse synonym lookup
-  for (const [key, syns] of Object.entries(JOB_TITLE_SYNONYMS)) {
-    if (syns.includes(titleLower) && combined.includes(key)) return { match: 'similar' }
-  }
-
-  // Partial word match
-  const titleWords = titleLower.split(/[\s\-/,]+/).filter(w => w.length > 3)
-  const matchedWords = titleWords.filter(word => combined.includes(word))
-  if (matchedWords.length > 0) {
-    return { match: 'partial' }
-  }
-
-  return { match: 'none' }
-}
-
-// 3 detect-/extract-funktioner (detectSeniority, detectIndustry,
-// extractRequiredExperience) borttagna 2026-05-15 — 0 callers. Återinför
-// med tester när matching-logiken behöver granulär klassificering.
-
-// ============================================
-// PROFESSIONAL LICENSE/CERTIFICATION REQUIREMENTS
-// ============================================
-
-/**
- * Professional licenses that are legally required for certain jobs
- * Jobs requiring these should be filtered out if user doesn't have them
- */
-const REQUIRED_LICENSES: Record<string, {
-  keywords: string[]
-  titlePatterns: string[]
-  description: string
-}> = {
-  'sjuksköterska': {
-    keywords: ['legitimerad sjuksköterska', 'leg. sjuksköterska', 'leg sjuksköterska', 'ssk-legitimation', 'sjuksköterskelegitimation'],
-    titlePatterns: ['sjuksköterska', 'ssk'],
-    description: 'Sjuksköterskelegitimation'
-  },
-  'läkare': {
-    keywords: ['legitimerad läkare', 'leg. läkare', 'läkarlegitimation', 'medicine doktor'],
-    titlePatterns: ['läkare', 'doktor', 'medicine'],
-    description: 'Läkarlegitimation'
-  },
-  'lärare': {
-    keywords: ['lärarlegitimation', 'legitimerad lärare', 'leg. lärare', 'behörig lärare'],
-    titlePatterns: ['lärare', 'pedagog'],
-    description: 'Lärarlegitimation'
-  },
-  'förskollärare': {
-    keywords: ['legitimerad förskollärare', 'förskollärarlegitimation', 'behörig förskollärare'],
-    titlePatterns: ['förskollärare'],
-    description: 'Förskollärarlegitimation'
-  },
-  'psykolog': {
-    keywords: ['legitimerad psykolog', 'leg. psykolog', 'psykologlegitimation'],
-    titlePatterns: ['psykolog'],
-    description: 'Psykologlegitimation'
-  },
-  'fysioterapeut': {
-    keywords: ['legitimerad fysioterapeut', 'leg. fysioterapeut', 'fysioterapeutlegitimation', 'legitimerad sjukgymnast'],
-    titlePatterns: ['fysioterapeut', 'sjukgymnast'],
-    description: 'Fysioterapeutlegitimation'
-  },
-  'arbetsterapeut': {
-    keywords: ['legitimerad arbetsterapeut', 'leg. arbetsterapeut', 'arbetsterapeutlegitimation'],
-    titlePatterns: ['arbetsterapeut'],
-    description: 'Arbetsterapeutlegitimation'
-  },
-  'tandläkare': {
-    keywords: ['legitimerad tandläkare', 'leg. tandläkare', 'tandläkarlegitimation'],
-    titlePatterns: ['tandläkare'],
-    description: 'Tandläkarlegitimation'
-  },
-  'tandhygienist': {
-    keywords: ['legitimerad tandhygienist', 'leg. tandhygienist'],
-    titlePatterns: ['tandhygienist'],
-    description: 'Tandhygienistlegitimation'
-  },
-  'apotekare': {
-    keywords: ['legitimerad apotekare', 'leg. apotekare', 'apotekarlegitimation'],
-    titlePatterns: ['apotekare'],
-    description: 'Apotekarlegitimation'
-  },
-  'receptarie': {
-    keywords: ['legitimerad receptarie', 'leg. receptarie'],
-    titlePatterns: ['receptarie'],
-    description: 'Receptarielegitimation'
-  },
-  'barnmorska': {
-    keywords: ['legitimerad barnmorska', 'leg. barnmorska', 'barnmorskelegitimation'],
-    titlePatterns: ['barnmorska'],
-    description: 'Barnmorskelegitimation'
-  },
-  'dietist': {
-    keywords: ['legitimerad dietist', 'leg. dietist'],
-    titlePatterns: ['dietist'],
-    description: 'Dietistlegitimation'
-  },
-  'logoped': {
-    keywords: ['legitimerad logoped', 'leg. logoped'],
-    titlePatterns: ['logoped'],
-    description: 'Logopedlegitimation'
-  },
-  'optiker': {
-    keywords: ['legitimerad optiker', 'leg. optiker'],
-    titlePatterns: ['optiker'],
-    description: 'Optikerlegitimation'
-  },
-  'kiropraktor': {
-    keywords: ['legitimerad kiropraktor', 'leg. kiropraktor'],
-    titlePatterns: ['kiropraktor'],
-    description: 'Kiropraktorlegitimation'
-  },
-  'naprapat': {
-    keywords: ['legitimerad naprapat', 'leg. naprapat'],
-    titlePatterns: ['naprapat'],
-    description: 'Naprapatlegitimation'
-  },
-  'audionom': {
-    keywords: ['legitimerad audionom', 'leg. audionom'],
-    titlePatterns: ['audionom'],
-    description: 'Audionomlegitimation'
-  },
-  'biomedicinsk_analytiker': {
-    keywords: ['legitimerad biomedicinsk analytiker', 'bma-legitimation'],
-    titlePatterns: ['biomedicinsk analytiker', 'bma'],
-    description: 'BMA-legitimation'
-  },
-  'röntgensjuksköterska': {
-    keywords: ['legitimerad röntgensjuksköterska', 'leg. röntgensjuksköterska'],
-    titlePatterns: ['röntgensjuksköterska'],
-    description: 'Röntgensjuksköterskelegitimation'
-  },
-  'socionom': {
-    keywords: ['socionomexamen', 'socionom'],
-    titlePatterns: ['socionom', 'socialsekreterare', 'biståndshandläggare'],
-    description: 'Socionomexamen'
-  },
-  'jurist': {
-    keywords: ['juristexamen', 'jur. kand', 'advokat'],
-    titlePatterns: ['jurist', 'advokat'],
-    description: 'Juristexamen'
-  },
-  'revisor': {
-    keywords: ['auktoriserad revisor', 'godkänd revisor', 'revisorsexamen'],
-    titlePatterns: ['revisor'],
-    description: 'Revisorsauktorisation'
-  },
-  'elektriker': {
-    keywords: ['behörig elektriker', 'elinstallatör', 'elbehörighet'],
-    titlePatterns: ['elektriker', 'elinstallatör'],
-    description: 'Elbehörighet'
-  },
-  'veterinär': {
-    keywords: ['legitimerad veterinär', 'leg. veterinär'],
-    titlePatterns: ['veterinär'],
-    description: 'Veterinärlegitimation'
-  }
-}
-
-/**
- * Check if a job requires a professional license that the user doesn't have
- * Returns null if no license required, or the required license info if blocked
- */
-function checkRequiredLicense(
-  jobTitle: string,
-  jobText: string,
-  userEducation: string[],
-  userWorkTitles: string[]
-): { blocked: boolean; requiredLicense: string | null } {
-  const titleLower = jobTitle.toLowerCase()
-  const textLower = jobText.toLowerCase()
-  const userBackground = [...userEducation, ...userWorkTitles].map(s => s.toLowerCase()).join(' ')
-
-  for (const [, license] of Object.entries(REQUIRED_LICENSES)) {
-    // Check if job title matches a licensed profession
-    const titleMatch = license.titlePatterns.some(pattern => {
-      const patternLower = pattern.toLowerCase()
-      return titleLower.includes(patternLower)
-    })
-
-    // Check if job explicitly requires the license
-    const keywordMatch = license.keywords.some(keyword => textLower.includes(keyword.toLowerCase()))
-
-    if (titleMatch || keywordMatch) {
-      // Job requires this license - check if user has it
-      const userHasLicense = license.titlePatterns.some(pattern => userBackground.includes(pattern.toLowerCase())) ||
-                            license.keywords.some(keyword => userBackground.includes(keyword.toLowerCase()))
-
-      if (!userHasLicense) {
-        return { blocked: true, requiredLicense: license.description }
-      }
-    }
-  }
-
-  return { blocked: false, requiredLicense: null }
-}
-
-// ============================================
-// PROFILE PREFERENCE MATCHING
-// ============================================
-
-/**
- * Check if job matches employment type preference
- */
-function matchesEmploymentType(job: PlatsbankenJob, preferredTypes: string[]): { matches: boolean; boost: number } {
-  if (preferredTypes.length === 0) return { matches: true, boost: 0 }
-
-  const jobType = job.employment_type?.label?.toLowerCase() || ''
-
-  // Map Swedish job types to our preference keys
-  const typeMapping: Record<string, string[]> = {
-    'fulltime': ['heltid', 'tillsvidare', 'fast anställning'],
-    'parttime': ['deltid', 'halvtid'],
-    'temporary': ['vikariat', 'tidsbegränsad', 'visstid', 'säsong'],
-    'freelance': ['frilans', 'konsult', 'uppdrag'],
-    'internship': ['praktik', 'trainee', 'lärling']
-  }
-
-  for (const pref of preferredTypes) {
-    const keywords = typeMapping[pref] || []
-    if (keywords.some(kw => jobType.includes(kw))) {
-      return { matches: true, boost: 10 }  // +10% for matching preference
-    }
-  }
-
-  // If user wants specific types but job doesn't match, slight penalty
-  return { matches: true, boost: -5 }
-}
-
-/**
- * Check if job matches remote work preference
- */
-function matchesRemoteWork(job: PlatsbankenJob, preference: 'yes' | 'no' | 'hybrid' | null): { matches: boolean; boost: number } {
-  if (!preference) return { matches: true, boost: 0 }
-
-  const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
-  const remoteOption = job.remote_work?.option?.toLowerCase() || ''
-
-  const isRemote = remoteOption.includes('remote') ||
-    jobText.includes('distans') ||
-    jobText.includes('remote') ||
-    jobText.includes('hemarbete') ||
-    jobText.includes('jobba hemifrån')
-
-  const isHybrid = remoteOption.includes('hybrid') ||
-    jobText.includes('hybrid') ||
-    jobText.includes('delvis distans') ||
-    jobText.includes('flexibel arbetsplats')
-
-  if (preference === 'yes') {
-    if (isRemote) return { matches: true, boost: 15 }
-    if (isHybrid) return { matches: true, boost: 5 }
-    return { matches: true, boost: -5 }
-  }
-
-  if (preference === 'hybrid') {
-    if (isHybrid) return { matches: true, boost: 15 }
-    if (isRemote) return { matches: true, boost: 5 }
-    return { matches: true, boost: 0 }
-  }
-
-  // preference === 'no' - prefers on-site
-  if (!isRemote && !isHybrid) return { matches: true, boost: 5 }
-  return { matches: true, boost: 0 }
-}
-
-/**
- * Check if user has required driver's license
- */
-function matchesDriversLicense(job: PlatsbankenJob, userLicenses: string[]): { matches: boolean; boost: number; detail: string | null } {
-  const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
-
-  // Check for driver's license requirements
-  const requiresLicense = jobText.includes('körkort') ||
-    jobText.includes('b-körkort') ||
-    jobText.includes('c-körkort') ||
-    jobText.includes('ce-körkort') ||
-    jobText.includes('truckkort')
-
-  if (!requiresLicense) {
-    return { matches: true, boost: 0, detail: null }
-  }
-
-  // Job requires license - check if user has it
-  if (userLicenses.length === 0) {
-    // User hasn't specified licenses, slight penalty for jobs requiring them
-    return { matches: true, boost: -10, detail: 'Körkort krävs' }
-  }
-
-  // Check specific license types
-  const hasB = userLicenses.some(l => l.toUpperCase() === 'B')
-  const hasC = userLicenses.some(l => l.toUpperCase() === 'C')
-  const hasCE = userLicenses.some(l => l.toUpperCase() === 'CE')
-
-  if (jobText.includes('ce-körkort') || jobText.includes('ce körkort')) {
-    if (hasCE) return { matches: true, boost: 15, detail: 'Du har CE-körkort ✓' }
-    return { matches: true, boost: -15, detail: 'CE-körkort krävs' }
-  }
-
-  if (jobText.includes('c-körkort') || jobText.includes('c körkort')) {
-    if (hasC || hasCE) return { matches: true, boost: 15, detail: 'Du har C-körkort ✓' }
-    return { matches: true, boost: -15, detail: 'C-körkort krävs' }
-  }
-
-  if (jobText.includes('b-körkort') || jobText.includes('b körkort') ||
-      (jobText.includes('körkort') && !jobText.includes('c-') && !jobText.includes('ce-'))) {
-    if (hasB || hasC || hasCE) return { matches: true, boost: 10, detail: 'Du har B-körkort ✓' }
-    return { matches: true, boost: -10, detail: 'B-körkort krävs' }
-  }
-
-  return { matches: true, boost: 0, detail: null }
-}
-
-/**
- * Apply all profile-based boosts/penalties to a match score
- */
-function applyProfileBoosts(
-  job: PlatsbankenJob,
-  baseScore: number,
-  preferences: SourceData['preferences'],
-  matchDetails: string[]
-): { score: number; details: string[] } {
-  let score = baseScore
-  const details = [...matchDetails]
-
-  // Employment type
-  const empMatch = matchesEmploymentType(job, preferences.employmentTypes)
-  score += empMatch.boost
-
-  // Remote work
-  const remoteMatch = matchesRemoteWork(job, preferences.remoteWork)
-  score += remoteMatch.boost
-  if (remoteMatch.boost > 0 && preferences.remoteWork === 'yes') {
-    details.push('Distansarbete ✓')
-  }
-
-  // Driver's license
-  const licenseMatch = matchesDriversLicense(job, preferences.driversLicense)
-  score += licenseMatch.boost
-  if (licenseMatch.detail && licenseMatch.boost > 0) {
-    details.push(licenseMatch.detail)
-  }
-
-  // Car requirement
-  if (preferences.hasCar) {
-    const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
-    if (jobText.includes('egen bil') || jobText.includes('tillgång till bil')) {
-      score += 10
-      details.push('Har bil ✓')
-    }
-  }
-
-  // Cap score between 0 and 100
-  score = Math.max(0, Math.min(100, score))
-
-  return { score, details }
-}
-
-// ============================================
-// HELPER COMPONENTS
-// ============================================
-
-function SourceToggle({
-  source,
-  label,
-  icon: Icon,
-  active,
-  available,
-  count,
-  missingLabel,
-  onToggle
-}: {
-  source: MatchSource
-  label: string
-  icon: React.ElementType
-  active: boolean
-  available: boolean
-  count: number
-  missingLabel: string
-  onToggle: () => void
-}) {
-  const colors = {
-    cv: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-[var(--c-accent)]',
-    interest: 'bg-amber-100 text-amber-700 border-amber-300',
-    career: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] border-[var(--c-accent)]'
-  }
-
-  return (
-    <button
-      onClick={onToggle}
-      disabled={!available}
-      className={cn(
-        "flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all",
-        active && available ? colors[source] : "bg-white dark:bg-stone-900 border-stone-200 dark:border-stone-700 text-stone-700 dark:text-stone-300",
-        !available && "opacity-50 cursor-not-allowed",
-        available && !active && "hover:border-stone-300 dark:hover:border-stone-600"
-      )}
-    >
-      <Icon className="w-4 h-4" />
-      <span className="font-medium text-sm">{label}</span>
-      {available && count > 0 && (
-        <span className={cn(
-          "text-xs px-2 py-0.5 rounded-full",
-          active ? "bg-white/50" : "bg-stone-100"
-        )}>
-          {count}
-        </span>
-      )}
-      {!available && (
-        <span className="text-xs bg-stone-200 dark:bg-stone-700 px-2 py-0.5 rounded-full ml-1">
-          {missingLabel}
-        </span>
-      )}
-    </button>
-  )
-}
-
-function LocationSelector({
-  selected,
-  onChange,
-  labels
-}: {
-  selected: string[]
-  onChange: (locations: string[]) => void
-  labels: {
-    allLocations: string
-    location: string
-    locations: string
-    searchLocation: string
-    noResults: string
-    clearAll: string
-  }
-}) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [search, setSearch] = useState('')
-
-  const filteredMunicipalities = useMemo(() =>
-    SWEDISH_MUNICIPALITIES.filter(m =>
-      m.label.toLowerCase().includes(search.toLowerCase())
-    ).slice(0, 20),
-    [search]
-  )
-
-  const toggleLocation = (location: string) => {
-    if (selected.includes(location)) {
-      onChange(selected.filter(l => l !== location))
-    } else {
-      onChange([...selected, location])
-    }
-  }
-
-  return (
-    <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-stone-200 dark:border-stone-700 bg-white dark:bg-stone-900 hover:border-stone-300 dark:hover:border-stone-600 transition-colors"
-      >
-        <MapPin className="w-4 h-4 text-stone-700 dark:text-stone-300" />
-        <span className="font-medium text-sm text-stone-700 dark:text-stone-300">
-          {selected.length === 0
-            ? labels.allLocations
-            : `${selected.length} ${selected.length === 1 ? labels.location : labels.locations}`
-          }
-        </span>
-        <ChevronDown className={cn("w-4 h-4 text-stone-600 dark:text-stone-400 transition-transform", isOpen && "rotate-180")} />
-      </button>
-
-      {isOpen && (
-        <>
-          <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full mt-2 left-0 w-72 bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 shadow-xl z-20 overflow-hidden">
-            <div className="p-3 border-b border-stone-100 dark:border-stone-700">
-              <input
-                type="text"
-                placeholder={labels.searchLocation}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full px-3 py-2 border border-stone-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
-              />
-            </div>
-
-            {selected.length > 0 && (
-              <div className="p-2 border-b border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">
-                <div className="flex flex-wrap gap-1">
-                  {selected.map(loc => (
-                    <button
-                      key={loc}
-                      onClick={() => toggleLocation(loc)}
-                      className="flex items-center gap-1 px-2 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-lg text-xs font-medium hover:bg-[var(--c-accent)]/60"
-                    >
-                      {loc}
-                      <X className="w-3 h-3" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="max-h-60 overflow-y-auto p-2">
-              {filteredMunicipalities.length === 0 ? (
-                <p className="text-sm text-stone-700 dark:text-stone-300 text-center py-4">{labels.noResults}</p>
-              ) : (
-                filteredMunicipalities.map(m => (
-                  <button
-                    key={m.concept_id}
-                    onClick={() => toggleLocation(m.label)}
-                    className={cn(
-                      "w-full text-left px-3 py-2 rounded-lg text-sm transition-colors",
-                      selected.includes(m.label)
-                        ? "bg-[var(--c-accent)]/40 text-[var(--c-text)] font-medium"
-                        : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300"
-                    )}
-                  >
-                    {m.label}
-                  </button>
-                ))
-              )}
-            </div>
-
-            {selected.length > 0 && (
-              <div className="p-2 border-t border-stone-100 dark:border-stone-700">
-                <button
-                  onClick={() => onChange([])}
-                  className="w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
-                >
-                  {labels.clearAll}
-                </button>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-    </div>
-  )
-}
-
-// Memoized to prevent unnecessary re-renders when filtering/sorting doesn't change this card's data
-const MatchCard = memo(function MatchCard({
-  matchedJob,
-  onSave,
-  isSaved,
-  labels
-}: {
-  matchedJob: MatchedJob
-  onSave: (job: PlatsbankenJob) => void
-  isSaved: boolean
-  labels: {
-    match: string
-    levelStrong: string
-    levelGood: string
-    levelPossible: string
-    cv: string
-    interest: string
-    career: string
-    unknownCompany: string
-    showMatchDetails: string
-    matchesOn: string
-    apply: string
-  }
-}) {
-  const { job, score, source, matchDetails } = matchedJob
-  const [showDetails, setShowDetails] = useState(false)
-
-  const scoreColor = score >= 70
-    ? 'text-green-600 bg-green-100 border-green-200'
-    : score >= 50
-      ? 'text-amber-600 bg-amber-100 border-amber-200'
-      : 'text-stone-600 bg-stone-100 border-stone-200'
-
-  const sourceConfig = {
-    cv: { color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)]', label: labels.cv, icon: FileText },
-    interest: { color: 'bg-amber-100 text-amber-700', label: labels.interest, icon: Compass },
-    career: { color: 'bg-[var(--c-accent)]/40 text-[var(--c-text)]', label: labels.career, icon: Target }
-  }
-
-  const config = sourceConfig[source]
-
-  return (
-    <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover:shadow-lg transition-shadow">
-      <div className="flex items-start gap-4 p-5">
-        {/* Ord i stället för procent — poängen är delvis konstruerad (golv,
-            boosts) så "68%" ger falsk precision; "Stark/Bra/Möjlig" säger det
-            som faktiskt går att lova utan att skrämma med låga siffror. */}
-        <div className={cn(
-          "w-16 h-14 px-1 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border text-center",
-          scoreColor
-        )}>
-          <span className="text-xs font-bold leading-tight">
-            {score >= 70 ? labels.levelStrong : score >= 50 ? labels.levelGood : labels.levelPossible}
-          </span>
-          <span className="text-[10px] font-medium">{labels.match}</span>
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", config.color)}>
-              {config.label}
-            </span>
-          </div>
-          <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-2 mb-1">
-            {job.headline}
-          </h3>
-          <p className="text-sm text-stone-600 dark:text-stone-400 flex items-center gap-1">
-            <Briefcase className="w-3.5 h-3.5" />
-            {job.employer?.name || labels.unknownCompany}
-          </p>
-          {job.workplace_address?.municipality && (
-            <p className="text-sm text-stone-700 dark:text-stone-300 flex items-center gap-1 mt-0.5">
-              <MapPin className="w-3.5 h-3.5" />
-              {job.workplace_address.municipality}
-            </p>
-          )}
-        </div>
-
-        {/* Toggle — inte disabled: sparade jobb ska gå att av-spara här,
-            precis som i Sök-flikens kort. */}
-        <button
-          onClick={() => onSave(job)}
-          aria-pressed={isSaved}
-          aria-label={isSaved ? 'Ta bort från sparade jobb' : 'Spara jobb'}
-          className={cn(
-            "p-2 rounded-lg transition-colors",
-            isSaved
-              ? "bg-red-100 text-red-600 hover:bg-red-200"
-              : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-red-500"
-          )}
-        >
-          <Heart className={cn("w-5 h-5", isSaved && "fill-current")} />
-        </button>
-      </div>
-
-      {matchDetails.length > 0 && (
-        <div className="px-5 pb-3">
-          <button
-            onClick={() => setShowDetails(!showDetails)}
-            className="flex items-center gap-2 text-xs text-stone-700 dark:text-stone-300 hover:text-stone-700 dark:hover:text-stone-200"
-          >
-            <Settings2 className="w-3 h-3" />
-            {labels.showMatchDetails}
-            <ChevronDown className={cn("w-3 h-3 transition-transform", showDetails && "rotate-180")} />
-          </button>
-        </div>
-      )}
-
-      {showDetails && matchDetails.length > 0 && (
-        <div className="px-5 pb-4">
-          <p className="text-xs font-medium text-stone-600 dark:text-stone-400 mb-1.5 flex items-center gap-1">
-            <CheckCircle className="w-3 h-3 text-green-600" />
-            {labels.matchesOn}
-          </p>
-          <div className="flex flex-wrap gap-1">
-            {matchDetails.slice(0, 6).map((detail, i) => (
-              <span key={i} className={cn("px-2 py-0.5 text-xs rounded", config.color)}>
-                {detail}
-              </span>
-            ))}
-            {matchDetails.length > 6 && (
-              <span className="px-2 py-0.5 bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400 text-xs rounded">
-                +{matchDetails.length - 6}
-              </span>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="flex items-center justify-between px-5 py-3 border-t border-stone-100 dark:border-stone-700 bg-stone-50 dark:bg-stone-800">
-        <span className="text-xs text-stone-700 dark:text-stone-300">
-          {new Date(job.publication_date).toLocaleDateString('sv-SE')}
-        </span>
-        {job.webpage_url && (
-          <a
-            href={job.webpage_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"
-          >
-            <ExternalLink className="w-3 h-3" />
-            {labels.apply}
-          </a>
-        )}
-      </div>
-    </div>
-  )
-})
-
-function EmptyState({ type, labels }: {
-  type: 'no-data' | 'no-results'
-  labels: {
-    createProfileFirst: string
-    createProfileDesc: string
-    createCV: string
-    takeInterestGuide: string
-    setCareerGoals: string
-    noJobsFound: string
-  }
-}) {
-  if (type === 'no-data') {
-    return (
-      <Card className="p-12 text-center">
-        <img
-          src="/illustrations/empty-jobb.webp"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          className="w-28 h-28 mx-auto mb-6 select-none"
-        />
-        <h3 className="text-2xl font-bold text-stone-800 dark:text-stone-100 mb-3">
-          {labels.createProfileFirst}
-        </h3>
-        <p className="text-stone-700 dark:text-stone-300 mb-8 max-w-md mx-auto">
-          {labels.createProfileDesc}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link to="/cv">
-            <Button size="lg">
-              <FileText className="w-5 h-5 mr-2" />
-              {labels.createCV}
-            </Button>
-          </Link>
-          <Link to="/interest-guide">
-            <Button variant="outline" size="lg">
-              <Compass className="w-5 h-5 mr-2" />
-              {labels.takeInterestGuide}
-            </Button>
-          </Link>
-          <Link to="/profile">
-            <Button variant="outline" size="lg">
-              <Target className="w-5 h-5 mr-2" />
-              {labels.setCareerGoals}
-            </Button>
-          </Link>
-        </div>
-      </Card>
-    )
-  }
-
-  return (
-    <Card className="p-8 text-center">
-      <Sparkles className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
-      <p className="text-stone-700 dark:text-stone-300">
-        {labels.noJobsFound}
-      </p>
-    </Card>
-  )
+  preferences: MatchPreferences
 }
 
 // ============================================
@@ -1244,7 +248,7 @@ export function MatchesTab() {
           // ========== BASE SCORE (20 points) ==========
           // Job was returned by API for this search term, so it's relevant
           let totalScore = 20
-          matchDetails.push(`Sökning: ${searchTerm}`)
+          matchDetails.push(`Hittades via sökningen ”${searchTerm}”`)
 
           // ========== TITLE/OCCUPATION MATCHING (bonus 0-30 points) ==========
           let titleBonus = 0
@@ -1254,13 +258,13 @@ export function MatchesTab() {
             const titleResult = matchJobTitle(userTitle, jobHeadline, jobOccupation)
             if (titleResult.match === 'exact') {
               titleBonus = Math.max(titleBonus, 30)
-              matchDetails.push(`Erfarenhet: ${userTitle}`)
+              matchDetails.push(`Du har jobbat som ${userTitle}`)
             } else if (titleResult.match === 'similar') {
               titleBonus = Math.max(titleBonus, 20)
-              matchDetails.push(`Liknande: ${userTitle}`)
+              matchDetails.push(`Liknar din roll som ${userTitle}`)
             } else if (titleResult.match === 'partial') {
               titleBonus = Math.max(titleBonus, 10)
-              matchDetails.push(`Relaterat: ${userTitle}`)
+              matchDetails.push(`Relaterat till din erfarenhet som ${userTitle}`)
             }
           }
 
@@ -1292,7 +296,7 @@ export function MatchesTab() {
             const words = edu.toLowerCase().split(/\s+/).filter(w => w.length > 3)
             if (words.some(word => jobText.includes(word))) {
               hasEducationMatch = true
-              matchDetails.push('Utbildning ✓')
+              matchDetails.push('Matchar din utbildning')
               break
             }
           }
@@ -1409,7 +413,7 @@ export function MatchesTab() {
               const matchedWords = searchWords.filter(w => jobText.includes(w))
               if (matchedWords.length > 0) {
                 matchQuality = 70 + (matchedWords.length / searchWords.length) * 20
-                matchDetails.push(`Relaterat: ${occ.name}`)
+                matchDetails.push(`Passar ditt intresse för ${occ.name}`)
               } else {
                 matchQuality = 50
                 matchDetails.push(`Relaterat yrke`)
@@ -1520,7 +524,7 @@ export function MatchesTab() {
           // Description match
           else if (jobText.includes(roleLower)) {
             baseScore = isDesiredJob ? 60 : 50
-            matchDetails.push(`Relaterat: ${role}`)
+            matchDetails.push(`Nära ditt mål: ${role}`)
           }
 
           // Check career keywords for additional boost
@@ -1675,7 +679,7 @@ export function MatchesTab() {
   }
 
   if (!hasAnyData) {
-    return <EmptyState type="no-data" labels={emptyStateLabels} />
+    return <MatchesEmptyState type="no-data" labels={emptyStateLabels} />
   }
 
   if (error) {
@@ -1860,7 +864,7 @@ export function MatchesTab() {
 
       {/* Jobs Grid */}
       {currentJobs.length === 0 ? (
-        <EmptyState type="no-results" labels={emptyStateLabels} />
+        <MatchesEmptyState type="no-results" labels={emptyStateLabels} />
       ) : (
         <>
           <div className="grid gap-4 md:grid-cols-2">

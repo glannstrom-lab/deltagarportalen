@@ -1,17 +1,18 @@
 /**
  * Slumpjobbet — snurra ett hjul av matchade jobb och få ett slumpmässigt vinnare.
  *
- * Inspirerat av wheelofnames.com. Hämtar upp till 50 jobb baserade på
+ * Inspirerat av wheelofnames.com. Hämtar upp till 30 jobb baserade på
  * användarens profil (CV-skills + drömjobb från preferences) och renderar
  * dem som segment på ett SVG-hjul. Klick på "Snurra!" animerar 5+ varv
  * med cubic-bezier easing och landar slumpmässigt på ett segment.
  *
- * Varför 50 jobb: tillräckligt många för att kännas "som platsbanken",
- * men inte så många att texten blir oläslig (7.2° per segment).
+ * Varför 30 jobb: tillräckligt många för att kännas "som platsbanken",
+ * men inte så många att texten blir oläslig (12° per segment).
  */
 
 import { useState, useEffect, useRef, useMemo, useCallback } from 'react'
-import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { CreateApplicationModal } from '@/components/workflow'
 import {
   Sparkles, RefreshCw, Loader2, MapPin, Building2,
   ExternalLink, Heart, Send, Trophy,
@@ -59,15 +60,17 @@ interface WinnerPanelProps {
   saved: boolean
   onSave: () => void
   onSpinAgain: () => void
+  onCreateApplication: () => void
 }
 
-function WinnerPanel({ job, saved, onSave, onSpinAgain }: WinnerPanelProps) {
+function WinnerPanel({ job, saved, onSave, onSpinAgain, onCreateApplication }: WinnerPanelProps) {
+  const { t } = useTranslation()
   const place =
     job.workplace_address?.municipality ||
     job.workplace_address?.city ||
     job.workplace_address?.region ||
-    'Hela Sverige'
-  const employerName = job.employer?.name || 'Okänd arbetsgivare'
+    t('jobSearch.slumpjobbet.allOfSweden')
+  const employerName = job.employer?.name || t('jobSearch.slumpjobbet.unknownEmployer')
   // Bygg ansöknings-URL: föredra direktlänk, fallback till AF
   const applyUrl =
     job.application_details?.url ||
@@ -121,7 +124,7 @@ function WinnerPanel({ job, saved, onSave, onSpinAgain }: WinnerPanelProps) {
           className="inline-flex items-center gap-2 px-4 py-2.5 bg-orange-500 hover:bg-orange-600 text-white rounded-lg font-medium text-sm transition-colors"
         >
           <ExternalLink className="w-4 h-4" />
-          Öppna annons
+          {t('jobSearch.slumpjobbet.openAd')}
         </a>
         <button
           type="button"
@@ -135,22 +138,25 @@ function WinnerPanel({ job, saved, onSave, onSpinAgain }: WinnerPanelProps) {
           )}
         >
           <Heart className={cn('w-4 h-4', saved && 'fill-current text-rose-500')} />
-          {saved ? 'Sparat' : 'Spara'}
+          {saved ? t('jobSearch.slumpjobbet.saved') : t('jobSearch.slumpjobbet.save')}
         </button>
-        <Link
-          to={`/applications`}
+        {/* Öppnar ansökningsmodalen MED jobbet — tidigare länkade knappen
+            till /applications utan jobbet, så vinsten tappades på vägen. */}
+        <button
+          type="button"
+          onClick={onCreateApplication}
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm border border-stone-300 hover:bg-stone-50 dark:border-stone-600 dark:hover:bg-stone-800 text-stone-700 dark:text-stone-300 transition-colors"
         >
           <Send className="w-4 h-4" />
-          Skapa ansökan
-        </Link>
+          {t('jobSearch.slumpjobbet.createApplication')}
+        </button>
         <button
           type="button"
           onClick={onSpinAgain}
           className="ml-auto inline-flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium text-sm bg-stone-100 hover:bg-stone-200 dark:bg-stone-800 dark:hover:bg-stone-700 text-stone-700 dark:text-stone-300 transition-colors"
         >
           <RefreshCw className="w-4 h-4" />
-          Snurra igen
+          {t('jobSearch.slumpjobbet.spinAgain')}
         </button>
       </div>
     </Card>
@@ -164,6 +170,7 @@ interface WheelProps {
 }
 
 function Wheel({ jobs, rotation, spinning }: WheelProps) {
+  const { t } = useTranslation()
   const segmentAngle = jobs.length > 0 ? 360 / jobs.length : 0
 
   // Bygg path-data för varje segment via polära koordinater
@@ -187,13 +194,13 @@ function Wheel({ jobs, rotation, spinning }: WheelProps) {
       return {
         path: `M 0 0 L ${x1.toFixed(6)} ${y1.toFixed(6)} A 1 1 0 ${largeArc} 1 ${x2.toFixed(6)} ${y2.toFixed(6)} Z`,
         color: colorForIndex(i),
-        text: truncate(job.headline || job.occupation?.label || `Jobb ${i + 1}`, 28),
+        text: truncate(job.headline || job.occupation?.label || t('jobSearch.slumpjobbet.wheelJobFallback', { number: i + 1 }), 28),
         textX,
         textY,
         textAngle,
       }
     })
-  }, [jobs, segmentAngle])
+  }, [jobs, segmentAngle, t])
 
   return (
     <div
@@ -264,6 +271,7 @@ function Wheel({ jobs, rotation, spinning }: WheelProps) {
 }
 
 export function SlumpjobbetTab() {
+  const { t } = useTranslation()
   const { saveJob, isSaved } = useSavedJobs()
   const [jobs, setJobs] = useState<PlatsbankenJob[]>([])
   const [loading, setLoading] = useState(true)
@@ -273,6 +281,7 @@ export function SlumpjobbetTab() {
   const [rotation, setRotation] = useState(0)
   const [spinning, setSpinning] = useState(false)
   const [winner, setWinner] = useState<PlatsbankenJob | null>(null)
+  const [applicationModalJob, setApplicationModalJob] = useState<PlatsbankenJob | null>(null)
   const spinTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => () => { if (spinTimerRef.current) clearTimeout(spinTimerRef.current) }, [])
 
@@ -309,7 +318,7 @@ export function SlumpjobbetTab() {
     try {
       // 10s timeout — om Platsbanken API hänger ska vi inte vänta för evigt
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error('Tidsgränsen för sökning överskreds')), 10000),
+        setTimeout(() => reject(new Error(t('jobSearch.slumpjobbet.timeoutError'))), 10000),
       )
       const result = await Promise.race([
         searchJobs({
@@ -325,12 +334,12 @@ export function SlumpjobbetTab() {
       setActiveSearchTerm(query || 'jobb')
     } catch (e) {
       console.error('[Slumpjobbet] searchJobs failed:', e)
-      setError(e instanceof Error ? e.message : 'Kunde inte hämta jobb')
+      setError(e instanceof Error ? e.message : t('jobSearch.slumpjobbet.fetchError'))
       setJobs([])
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [t])
 
   // Initial load: bygg sökord från profilen
   useEffect(() => {
@@ -390,12 +399,10 @@ export function SlumpjobbetTab() {
           </div>
           <div>
             <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100 mb-1">
-              Låt slumpen välja dagens jobb
+              {t('jobSearch.slumpjobbet.introTitle')}
             </h2>
             <p className="text-sm text-stone-600 dark:text-stone-400">
-              Vi laddar upp till 50 matchade jobb från Platsbanken. Snurra hjulet och se vilket
-              jobb du ska titta närmare på idag. Bra om du har fastnat och inte vet var du ska
-              börja.
+              {t('jobSearch.slumpjobbet.introText', { count: TARGET_JOBS })}
             </p>
           </div>
         </div>
@@ -407,13 +414,13 @@ export function SlumpjobbetTab() {
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Yrke, kompetens eller ort (t.ex. 'undersköterska')"
+          placeholder={t('jobSearch.slumpjobbet.searchPlaceholder')}
           className="flex-1 px-4 py-2.5 border border-stone-300 dark:border-stone-600 rounded-xl text-sm bg-white dark:bg-stone-800 text-stone-900 dark:text-stone-100 placeholder:text-stone-400"
           disabled={loading || spinning}
         />
         <Button type="submit" variant="outline" disabled={loading || spinning}>
           {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCw className="w-4 h-4" />}
-          Ladda nya jobb
+          {t('jobSearch.slumpjobbet.loadNewJobs')}
         </Button>
       </form>
 
@@ -421,7 +428,7 @@ export function SlumpjobbetTab() {
       {loading && (
         <Card className="p-12 text-center">
           <Loader2 className="w-8 h-8 animate-spin text-orange-500 mx-auto mb-3" />
-          <p className="text-stone-700 dark:text-stone-300">Hämtar matchade jobb…</p>
+          <p className="text-stone-700 dark:text-stone-300">{t('jobSearch.slumpjobbet.loadingJobs')}</p>
         </Card>
       )}
 
@@ -448,11 +455,11 @@ export function SlumpjobbetTab() {
                   : 'bg-orange-500 hover:bg-orange-600 active:scale-95 text-white shadow-orange-500/30',
               )}
             >
-              {spinning ? 'Snurrar…' : 'Snurra hjulet!'}
+              {spinning ? t('jobSearch.slumpjobbet.spinningButton') : t('jobSearch.slumpjobbet.spinButton')}
             </button>
             <p className="text-xs text-stone-500 dark:text-stone-400">
-              {jobs.length} jobb i hjulet
-              {activeSearchTerm && ` för "${activeSearchTerm}"`}
+              {t('jobSearch.slumpjobbet.jobsInWheel', { count: jobs.length })}
+              {activeSearchTerm && ` ${t('jobSearch.slumpjobbet.forSearchTerm', { term: activeSearchTerm })}`}
             </p>
           </div>
         </div>
@@ -465,6 +472,15 @@ export function SlumpjobbetTab() {
           saved={isSaved(winner.id)}
           onSave={handleSaveWinner}
           onSpinAgain={handleSpin}
+          onCreateApplication={() => setApplicationModalJob(winner)}
+        />
+      )}
+
+      {applicationModalJob && (
+        <CreateApplicationModal
+          job={applicationModalJob}
+          isOpen={!!applicationModalJob}
+          onClose={() => setApplicationModalJob(null)}
         />
       )}
 
@@ -473,10 +489,10 @@ export function SlumpjobbetTab() {
         <Card className="p-8 text-center">
           <Sparkles className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
           <p className="text-stone-700 dark:text-stone-300 mb-2">
-            Inga jobb hittades för "{activeSearchTerm}"
+            {t('jobSearch.slumpjobbet.noJobsFound', { term: activeSearchTerm })}
           </p>
           <p className="text-sm text-stone-500 dark:text-stone-400">
-            Prova ett bredare sökord, t.ex. ett yrke eller en stad.
+            {t('jobSearch.slumpjobbet.noJobsHint')}
           </p>
         </Card>
       )}

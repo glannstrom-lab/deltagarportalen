@@ -7,8 +7,10 @@
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Search, MapPin, ListChecks, Briefcase, ExternalLink, Loader2 } from '@/components/ui/icons'
+import { Search, MapPin, ListChecks, Briefcase, ExternalLink, Loader2, Heart } from '@/components/ui/icons'
 import { searchJobs, type PlatsbankenJob } from '@/services/arbetsformedlingenApi'
+import { useSavedJobs } from '@/hooks/useSavedJobs'
+import { cn } from '@/lib/utils'
 import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
@@ -17,6 +19,9 @@ interface Props {
 
 export function FocusJobSearchWizard({ onExit }: Props) {
   const { t } = useTranslation()
+  // Spara-möjlighet även i fokusläget — tidigare enda jobbvyn utan den,
+  // vilket drabbade just de användare som fokusläget finns för.
+  const { saveJob, removeJob, isSaved } = useSavedJobs()
 
   const [step, setStep] = useState(0)
   const [query, setQuery] = useState('')
@@ -124,29 +129,51 @@ export function FocusJobSearchWizard({ onExit }: Props) {
             </p>
           )}
           {!searching && results.map((job) => (
-            <a
+            <div
               key={job.id}
-              href={`https://arbetsformedlingen.se/platsbanken/annonser/${job.id}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-start gap-3 p-3 rounded-xl bg-stone-50 dark:bg-stone-900 hover:bg-[var(--c-accent)]/30 transition-colors"
+              className="flex items-start gap-3 p-3 rounded-xl bg-stone-50 dark:bg-stone-900"
             >
-              <div className="w-10 h-10 rounded-lg bg-[var(--c-accent)]/40 flex items-center justify-center flex-shrink-0">
-                <Briefcase className="w-5 h-5 text-[var(--c-solid)]" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="font-medium text-stone-800 dark:text-stone-100 truncate">
-                  {job.headline}
-                </p>
-                <p className="text-sm text-stone-500 dark:text-stone-400 truncate">
-                  {job.employer?.name ?? ''}
-                  {job.workplace_address?.municipality
-                    ? ` · ${job.workplace_address.municipality}`
-                    : ''}
-                </p>
-              </div>
-              <ExternalLink className="w-4 h-4 text-stone-400 flex-shrink-0" />
-            </a>
+              <a
+                href={`https://arbetsformedlingen.se/platsbanken/annonser/${job.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-start gap-3 min-w-0 flex-1 rounded-lg hover:bg-[var(--c-accent)]/30 transition-colors"
+              >
+                <div className="w-10 h-10 rounded-lg bg-[var(--c-accent)]/40 flex items-center justify-center flex-shrink-0">
+                  <Briefcase className="w-5 h-5 text-[var(--c-solid)]" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-stone-800 dark:text-stone-100 truncate">
+                    {job.headline}
+                  </p>
+                  <p className="text-sm text-stone-500 dark:text-stone-400 truncate">
+                    {job.employer?.name ?? ''}
+                    {job.workplace_address?.municipality
+                      ? ` · ${job.workplace_address.municipality}`
+                      : ''}
+                  </p>
+                </div>
+                <ExternalLink className="w-4 h-4 text-stone-400 flex-shrink-0 mt-1" />
+              </a>
+              <button
+                type="button"
+                onClick={() => (isSaved(job.id) ? removeJob(job.id) : saveJob(job))}
+                aria-pressed={isSaved(job.id)}
+                aria-label={
+                  isSaved(job.id)
+                    ? t('focus.jobSearch.unsaveJob', 'Ta bort från sparade jobb')
+                    : t('focus.jobSearch.saveJob', 'Spara jobb')
+                }
+                className={cn(
+                  'p-2 rounded-lg transition-colors flex-shrink-0',
+                  isSaved(job.id)
+                    ? 'bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400'
+                    : 'text-stone-400 hover:text-rose-500 hover:bg-stone-100 dark:hover:bg-stone-800'
+                )}
+              >
+                <Heart className={cn('w-5 h-5', isSaved(job.id) && 'fill-current')} />
+              </button>
+            </div>
           ))}
         </div>
       )}
