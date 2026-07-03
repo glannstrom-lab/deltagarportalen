@@ -7,9 +7,9 @@ import {
   Sparkles, Heart, FileText,
   Bookmark, Send,
   Trash2, CheckCircle, Clock, MessageSquare,
-  Star, Mic, Train
+  Star, Mic, Train, Bell
 } from '@/components/ui/icons';
-import { Link, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Routes, Route, Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
 import { sanitizeHTMLWithLineBreaks } from '@/utils/sanitize';
@@ -47,6 +47,7 @@ const jobSearchTabDefs = [
   { id: 'daily', labelKey: 'jobSearch.tabs.daily', path: '/job-search/daily', icon: Star },
   { id: 'slumpjobbet', label: 'Slumpjobbet', path: '/job-search/slumpjobbet', icon: Sparkles },
   { id: 'saved', labelKey: 'jobSearch.tabs.saved', path: '/job-search/saved', icon: Bookmark },
+  { id: 'alerts', labelKey: 'jobSearch.tabs.alerts', path: '/job-search/alerts', icon: Bell },
   { id: 'matches', labelKey: 'jobSearch.tabs.matches', path: '/job-search/matches', icon: Sparkles },
 ];
 
@@ -117,7 +118,8 @@ function SearchTab() {
   const [error, setError] = useState<string | null>(null);
   const [totalJobs, setTotalJobs] = useState(0);
   // Filter persisteras i Supabase (user_preferences.job_search_filters) för cross-device-sync
-  const [filters, setFilters] = useJobSearchFilters(defaultFilters);
+  const [filters, setFilters, filtersLoaded] = useJobSearchFilters(defaultFilters);
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedJob, setSelectedJob] = useState<PlatsbankenJob | null>(null);
   const [isSearchExpanded, setIsSearchExpanded] = useState(true);
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -143,6 +145,28 @@ function SearchTab() {
     restoreFocus: true,
   })
   const [showCommutePlanner, setShowCommutePlanner] = useState(false)
+
+  // Deep-link: /job-search?q=…&region=…&municipality=…&employmentType=…
+  // (används av Bevakningars "Sök nu"). Appliceras EFTER att persisterade
+  // filter laddats från Supabase så URL:en vinner — annars klobbras den av
+  // den asynkrona filterladdningen. Rensas sedan från adressraden.
+  useEffect(() => {
+    if (!filtersLoaded) return;
+    const q = searchParams.get('q');
+    const region = searchParams.get('region');
+    const municipality = searchParams.get('municipality');
+    const employmentType = searchParams.get('employmentType');
+    if (q === null && region === null && municipality === null && employmentType === null) return;
+    setFilters({
+      ...defaultFilters,
+      query: q ?? '',
+      region: region ?? '',
+      municipality: municipality ?? '',
+      employmentType: employmentType ?? '',
+    });
+    setSearchParams({}, { replace: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filtersLoaded]);
 
   // Sök när filter ändras (med debounce)
   useEffect(() => {

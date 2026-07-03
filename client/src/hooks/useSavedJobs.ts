@@ -118,14 +118,22 @@ export function useSavedJobs() {
     }
   }, [savedJobs, trackJobApplied])
 
-  const addNotes = useCallback((jobId: string, notes: string) => {
-    setSavedJobs(prev => 
-      prev.map(job => 
+  const addNotes = useCallback(async (jobId: string, notes: string) => {
+    // Optimistisk uppdatering + persistens — utan updateNotes-anropet
+    // försvann anteckningarna vid omladdning.
+    setSavedJobs(prev =>
+      prev.map(job =>
         job.id === jobId ? { ...job, notes } : job
       )
     )
-    // Notera: Supabase API har ingen direkt metod för att uppdatera notes
-    // Detta kan läggas till senare om behov finns
+    try {
+      await savedJobsApi.updateNotes(jobId, notes)
+      return true
+    } catch (err) {
+      console.error('Error saving notes:', err)
+      setError('Kunde inte spara anteckningen')
+      return false
+    }
   }, [])
 
   const isSaved = useCallback((jobId: string) => {

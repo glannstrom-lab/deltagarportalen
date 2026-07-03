@@ -321,7 +321,7 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
       hits: hits,
     };
     
-  } catch {
+  } catch (error) {
     jobLogger.error('Search error:', error);
     return { total: { value: 0 }, hits: [] };
   }
@@ -381,7 +381,7 @@ export async function getJobDetails(id: string): Promise<PlatsbankenJob | null> 
   try {
     const url = `${AF_JOBSEARCH_BASE}/ad/${id}`;
     return await fetchFromAF(url);
-  } catch {
+  } catch (error) {
     jobLogger.error('Get job details error:', error);
     return null;
   }
@@ -858,7 +858,7 @@ export async function searchJobsSafe(filters: SearchFilters): Promise<SafeSearch
       fromCache: false,
       isMockData: false,
     };
-  } catch {
+  } catch (error) {
     jobLogger.error('Safe search error:', error);
     return {
       success: false,

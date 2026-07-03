@@ -463,10 +463,13 @@ export function AlertsTab() {
   const handleRunSearch = async (alert: JobAlert) => {
     // Check for new jobs first
     await checkForNewJobs(alert)
-    // Then navigate to search with alert criteria
+    // Navigera till sökfliken med bevakningens kriterier som URL-parametrar —
+    // SearchTab läser dem vid mount och applicerar dem över persisterade filter.
     const params = new URLSearchParams()
     if (alert.query) params.set('q', alert.query)
     if (alert.region) params.set('region', alert.region)
+    if (alert.municipality) params.set('municipality', alert.municipality)
+    if (alert.employment_type) params.set('employmentType', alert.employment_type)
     navigate(`/job-search?${params.toString()}`)
   }
 

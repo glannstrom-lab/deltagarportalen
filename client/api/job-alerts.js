@@ -327,23 +327,49 @@ async function searchJobs(params) {
   }
 }
 
-// Send email via Supabase (using pg_net or edge function)
-// In production, replace with Resend/SendGrid/etc.
+// E-postleverans via Resend — samma tjänst som supabase/functions/
+// send-invite-email. Kräver RESEND_API_KEY (+ valfri EMAIL_FROM) i Vercel-env.
+// Utan nyckel köas mejlet som 'pending' i email_notifications utan leverans
+// (tidigare beteende) så inget går förlorat, men då mejlas inga bevakningar.
 async function sendEmail(to, subject, html, text) {
-  // Log email for now (in production, integrate with email service)
-  console.log(`📧 Email to ${to}: ${subject}`);
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const emailFrom = process.env.EMAIL_FROM || 'Jobin <onboarding@resend.dev>';
 
-  // Store notification in database
+  let status = 'pending';
+  if (resendApiKey) {
+    try {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ from: emailFrom, to: [to], subject, html, text }),
+      });
+      if (!response.ok) {
+        const errBody = await response.text().catch(() => 'unknown');
+        throw new Error(`Resend ${response.status}: ${errBody}`);
+      }
+      status = 'sent';
+    } catch (error) {
+      console.error('[job-alerts] Resend-leverans misslyckades:', error);
+      status = 'failed';
+    }
+  } else {
+    console.warn('[job-alerts] RESEND_API_KEY saknas — mejl köas som pending utan leverans');
+  }
+
+  // Logga alltid mejlet i databasen (leveransspårning + fallback-kö)
   try {
     await supabase.from('email_notifications').insert({
       recipient: to,
       subject,
       body_html: html,
       body_text: text,
-      status: 'pending',
+      status,
       created_at: new Date().toISOString()
     });
-    return true;
+    return status !== 'failed';
   } catch (error) {
     console.error('Error storing email notification:', error);
 

@@ -99,13 +99,22 @@ export function useJobAlerts() {
         limit: 50
       })
 
-      const newCount = result.hits?.length || 0
+      // "Nya" = publicerade EFTER senaste kontrollen — inte alla träffar
+      // senaste veckan. Matchar backend-logiken i api/job-alerts.js
+      // (publishedAfter: lastChecked); annars ljuger badgen "X nya".
+      const hits = result.hits || []
+      const lastChecked = alert.last_checked_at ? new Date(alert.last_checked_at).getTime() : null
+      const newHits = lastChecked
+        ? hits.filter(j => new Date(j.publication_date).getTime() > lastChecked)
+        : hits
+
+      const newCount = newHits.length
       await jobAlertsApi.updateNewJobsCount(alert.id, newCount)
       setAlerts(prev => prev.map(a =>
         a.id === alert.id ? { ...a, new_jobs_count: newCount, last_checked_at: new Date().toISOString() } : a
       ))
 
-      return result.hits || []
+      return newHits
     } catch (err) {
       console.error('Error checking for new jobs:', err)
       return []
