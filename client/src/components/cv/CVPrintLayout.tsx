@@ -5,30 +5,37 @@
  *  1. Rendera CV som EN sammanhängande sida (inget JS-pre-paginering).
  *  2. Låt Chrome:s print-engine paginera naturligt med break-inside: avoid
  *     på cv-entry och break-after: avoid på rubriker.
- *  3. För sidobar-mallar: använd `background-image: linear-gradient(to right,
- *     <sidebar-bg> 0 <w>, white <w> 100%)` på print-root. Eftersom hela
- *     elementets background renderas och print-engine slicar elementet
- *     i sidor får varje sida samma vertikala "sidobar"-färg från 0→w.
- *
- * Detta är mycket mer robust än JS-pre-paginering (gamla PagedCVPrint),
- * som krashade på templates med icke-uniform struktur, sektionsnumrering
- * som reset:ades på sida 2, och innehåll som föll bort.
+ *  3. Sidobar-/sidbakgrund: lägg gradienten som CANVAS-bakgrund (html-
+ *     elementet) i print. Canvas-bakgrunden målas om på VARJE tryckt sida,
+ *     kant till kant — även på sista sidan där innehållet slutar mitt på
+ *     sidan. Därmed behövs ingen filler/höjdmätning alls.
+ *  4. Säkerhetszoner på sida 2+: .cv-print-flow har padding 12mm topp /
+ *     10mm botten med box-decoration-break: clone — paddingen klonas vid
+ *     varje sidbrytning så innehållet aldrig ligger dikt an mot papperets
+ *     kant. Negativa marginaler nollar ut paddingen på första/sista sidan,
+ *     så ensidiga CV:n behåller exakt sin naturliga höjd (inget "tippar
+ *     över till 2 sidor"-problem). Kräver Chromium ≥ 130 (prod kör
+ *     @sparticuz/chromium 148, lokal dev modern Chrome).
  *
  * Försökt och funkar INTE:
  *  - position: fixed för sidebar-bg → överlappades av cv-print-root:s
  *    egna background, syntes bara delvis på sista sidan
  *  - JS-mätning + per-sida-rendering (PagedCVPrint) → fragil, ej universellt
  *  - @page { margin: 12mm 0 } + aside JS-stretch → vita band sidan 2+
+ *  - background-image-tile + JS-filler som sträcker root-höjden → vit
+ *    remsa 20-50mm på sista sidan (höjden kunde aldrig mätas exakt utan
+ *    risk för en extra blank sida)
  *
  * Funkar:
- *  - background-image linear-gradient on container → upprepas på varje sida
- *    naturligt eftersom det är en background på ETT långt element
+ *  - canvas-bakgrund (html) i print → full täckning på alla sidor
+ *  - box-decoration-break: clone → per-sida-marginaler utan @page-margin
+ *    (som hade gett vita band i sidobar-färgen)
  *  - break-inside: avoid på .cv-entry → håller ihop jobb/utbildning
  *  - body * { visibility: hidden } + .cv-print-root * { visibility: visible }
  *    → döljer ev. navbar/sidebar från App.tsx i print
  */
 
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import type { CVData } from '@/services/supabaseApi'
 import {
   MinimalTemplate, ExecutiveTemplate, ModernTemplate, CreativeTemplate,
@@ -41,12 +48,13 @@ interface PrintLayoutProps {
 }
 
 /**
- * Sidobar-konfiguration per mall.
- *  - width: bredd i px eller % (måste matcha mallens egen aside-bredd)
+ * Bakgrundskonfiguration per mall.
+ *  - width: sidobar-bredd i px eller % — '100%' betyder att HELA sidan
+ *    tonas i bg-färgen (mallar med tonad helsidesbakgrund)
  *  - bg: CSS-färg (solid — gradient inom sidebar är inte värt komplexiteten)
  *  - divider: optionell tunn linje mellan aside och main (för ljusa sidobar)
  *
- * null = single-column-mall, ingen sidebar-bg behövs.
+ * null = single-column-mall med vit bakgrund, ingen canvas-bg behövs.
  *
  * VIKTIGT: width måste matcha mallens egen aside exakt. Annars hamnar
  * text utanför färgfältet.
@@ -55,23 +63,28 @@ type SidebarConfig = { width: string; bg: string; divider?: string } | null
 const SIDEBAR_CONFIG: Record<string, SidebarConfig> = {
   sidebar:   { width: '240px', bg: '#141414' },                                  // ModernTemplate (mörk gradient → solid medel) — 30% av A4-bredd
   nordic:    { width: '240px', bg: '#F8FAFC', divider: '#E2E8F0' },              // NordicTemplate
-  budapest:  { width: '34%',   bg: '#2C3E50' },                                  // BudapestTemplate
+  budapest:  { width: 'calc(34% - 2px)', bg: '#2C3E50' },                        // BudapestTemplate — 2px smalare än aside så main:s vita bg alltid täcker skarven (34% rasteriseras olika i canvas-bg vs flex-layout)
   manhattan: { width: '220px', bg: '#0F1B2D' },                                  // ManhattanTemplate
   rotterdam: { width: '220px', bg: '#FFFFFF', divider: '#E5E7EB' },              // RotterdamTemplate
   chicago:   { width: '200px', bg: '#FFFFFF', divider: '#E5E7EB' },              // ChicagoTemplate
   berlin:    { width: '60px',  bg: '#1A1A1A' },                                  // BerlinTemplate
-  // Single-column — ingen sidebar-bg
+  // Tonad helsidesbakgrund — canvas-bg i mallens egen sidfärg
+  atelier:   { width: '100%',  bg: '#FAF8F4' },                                  // AtelierTemplate (cream)
+  executive: { width: '100%',  bg: '#FDFCFA' },                                  // ExecutiveTemplate (varm off-white)
+  creative:  { width: '100%',  bg: '#FAFAFA' },                                  // CreativeTemplate (ljusgrå)
+  // Single-column på vitt — ingen canvas-bg
   centered: null,
   minimal: null,
-  executive: null,
-  creative: null,
-  atelier: null,
 }
 
 function buildBgImage(cfg: NonNullable<SidebarConfig>): string {
+  const w = cfg.width
+  if (w === '100%') {
+    // Helsidesfärg — solid gradient utan vit del
+    return `linear-gradient(${cfg.bg}, ${cfg.bg})`
+  }
   // linear-gradient to right gör hårda stopp: 0%→sidebar-w är sidebar-bg,
   // sidebar-w→100% är vit. Inga mjuka övergångar (det blir hårda kanter).
-  const w = cfg.width
   if (cfg.divider) {
     // Med divider: smal 1px linje i divider-färg mellan sidebar och vit
     return `linear-gradient(to right, ${cfg.bg} 0, ${cfg.bg} calc(${w} - 1px), ${cfg.divider} calc(${w} - 1px), ${cfg.divider} ${w}, #FFFFFF ${w}, #FFFFFF 100%)`
@@ -123,11 +136,8 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
   const data = sanitize(rawData)
   const fullName = `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'CV'
   const cfg = SIDEBAR_CONFIG[data.template || 'sidebar']
-  const hasSidebar = cfg !== null
+  const hasSidebar = cfg !== null && cfg !== undefined
   const bgImage = hasSidebar && cfg ? buildBgImage(cfg) : 'none'
-
-  const rootRef = useRef<HTMLDivElement>(null)
-  const fillerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     document.documentElement.style.background = '#FFFFFF'
@@ -145,55 +155,6 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
     }
   }, [])
 
-  // Avrunda cv-print-root:s höjd till nästa hela A4-sida så sidobar-bg
-  // (background-image på elementet) täcker varje tryckt sida hela vägen ned
-  // istället för att klippas mitt på sista sidan. A4 = 297mm = 1123.6px @ 96dpi.
-  //
-  // Detta är säkert i print eftersom Chrome:s print-engine paginerar
-  // element-höjd / page-height — om vi sätter höjden till exakt N pages
-  // får vi N tryckta sidor utan extra blank.
-  useLayoutEffect(() => {
-    const A4_PX = 297 * (96 / 25.4) // 1123.6
-    const root = rootRef.current
-    if (!root) return
-    const sync = () => {
-      if (!root) return
-      const filler = fillerRef.current
-      if (filler) filler.style.height = '0'
-      void root.offsetHeight
-      const natural = root.scrollHeight
-      const pages = Math.max(1, Math.ceil(Math.max(0, natural - 4) / A4_PX))
-      // Fyll cv-print-root till slutet av sidan FÖRE natural-page-end så
-      // sidobar-bg paintar till botten av varje sida. Chrome:s print-
-      // engine renderar ofta tomma sidor om elementet är nästan exakt N*A4
-      // — så vi siktar på en sida UNDER (pages-1)*A4 + 285mm = N*A4 - 12mm,
-      // som ger sidobar-bg på alla sidor utom de sista 12mm av sista sidan.
-      const targetMm = pages * 297 - 30
-      const naturalMm = natural / (96 / 25.4)
-      if (filler) {
-        const fillerMm = Math.max(0, targetMm - naturalMm)
-        filler.style.height = `${fillerMm}mm`
-      }
-      root.setAttribute('data-pages', String(pages))
-      root.setAttribute('data-natural', String(natural))
-    }
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        sync()
-        if (document.fonts) document.fonts.ready.then(sync).catch(() => {})
-      })
-    })
-    const ro = new ResizeObserver(sync)
-    // Observera mallens cv-preview så vi syncar om innehåll ändras
-    const cvPrev = root.querySelector('.cv-preview')
-    if (cvPrev) ro.observe(cvPrev)
-    window.addEventListener('beforeprint', sync)
-    return () => {
-      ro.disconnect()
-      window.removeEventListener('beforeprint', sync)
-    }
-  }, [data])
-
   return (
     <>
       <style>{`
@@ -203,11 +164,26 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
         }
 
         @media print {
-          html, body {
+          /* Canvas-bakgrund: html-elementets background målas om på VARJE
+             tryckt sida, kant till kant (även sista sidan, oavsett var
+             innehållet slutar). !important vinner över inline-white som
+             sätts för screen-läget. */
+          html {
             margin: 0 !important;
             padding: 0 !important;
-            background: #FFFFFF !important;
             height: auto !important;
+            background: ${hasSidebar ? bgImage : '#FFFFFF'} !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          /* Body/root/print-root måste vara transparenta så canvas-bg
+             syns igenom — annars täcker deras vita bakgrund gradienten
+             precis som gamla filler-lösningen. */
+          body {
+            margin: 0 !important;
+            padding: 0 !important;
+            height: auto !important;
+            background: transparent !important;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
@@ -229,21 +205,40 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
             margin: 0 !important;
             box-shadow: none !important;
             border: none !important;
+            background: transparent !important;
+            /* flow-root: hindra att .cv-print-flow:s negativa topp-marginal
+               kollapsar genom root och skjuter upp hela dokumentet */
+            display: flow-root;
             -webkit-print-color-adjust: exact !important;
             print-color-adjust: exact !important;
           }
+
+          /* Per-sida-säkerhetszoner: box-decoration-break: clone gör att
+             paddingen appliceras på VARJE sidfragment — 12mm ovanför och
+             10mm nedanför varje sidbrytning. De negativa marginalerna
+             nollar ut paddingen i dokumentets absoluta början/slut, så
+             sida 1 behåller mallens egen header-padding och ensidiga CV:n
+             inte växer med 22mm (vilket hade tippat nästan-fulla CV:n
+             över till 2 sidor). */
+          .cv-print-flow {
+            -webkit-box-decoration-break: clone;
+            box-decoration-break: clone;
+            padding: 12mm 0 10mm;
+            margin: -12mm 0 -10mm;
+          }
+
           /* Override cv-preview:s min-height: 297mm i print — så att 1-sidors-
              CV:n vars content är nästan exakt A4 inte tippar över till 2 sidor
              pga cv-preview tvingas vara minst A4 (1122.5px) + Chrome:s print-
              safe-zone på ~30mm. Vi vill att cv-preview ska anpassa höjd till
-             content. Sidobar-bg på cv-print-root täcker resterande utrymme. */
+             content. Canvas-bg täcker resterande utrymme. */
           .cv-print-root .cv-preview {
             min-height: 0 !important;
           }
 
           /* Mallens cv-preview ska INTE sätta egen bakgrund som täcker
-             print-root:s gradient. Vi nollställer aside:s bg så gradient
-             syns igenom. Main:s bg är redan vit i mallarna. */
+             canvas-gradienten. Vi nollställer även aside:s bg så gradienten
+             syns igenom. Main:s bg är redan vit i sidobar-mallarna. */
           ${hasSidebar ? `
           .cv-print-root .cv-preview {
             background: transparent !important;
@@ -273,15 +268,10 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
             orphans: 3;
             widows: 3;
           }
-
-          /* Vi använder INTE ::before för top-safe-zone. Mallarna har redan
-             egna 40-56px (10-14mm) padding-top på header/main vilket räcker
-             som safe-zone. Om vi adderar extra ::before skulle 1-sidors-CV
-             (t.ex. Budapest) tippa över till 2 sidor med mestadels tomt
-             innehåll på sida 2 — det är värre än att behålla 0 extra padding. */
         }
 
-        /* Screen-vy: visa CV:t som en lång A4-remsa för förhandsgranskning. */
+        /* Screen-vy: visa CV:t som en lång A4-remsa för förhandsgranskning.
+           Här ligger gradienten kvar som element-bg (tile per 297mm). */
         @media screen {
           .cv-print-root {
             width: 210mm;
@@ -293,7 +283,6 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
       `}</style>
 
       <div
-        ref={rootRef}
         className="cv-print-root"
         style={{
           backgroundImage: bgImage,
@@ -303,8 +292,9 @@ export function CVPrintLayout({ data: rawData }: PrintLayoutProps) {
           backgroundPosition: '0 0',
         }}
       >
-        {renderTemplate(data, fullName)}
-        <div ref={fillerRef} aria-hidden="true" style={{ width: '100%', height: 0 }} />
+        <div className="cv-print-flow">
+          {renderTemplate(data, fullName)}
+        </div>
       </div>
     </>
   )

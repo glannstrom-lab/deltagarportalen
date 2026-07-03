@@ -301,6 +301,11 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 **Problem:** Aktiv hub kunde feldetekteras vid djup-länkar.
 **Lösning:** Använd `pageToHub`-mappen byggd från `navHubs[].memberPaths`. **Aldrig** URL-prefix-matchning. Se `.planning/research/PITFALLS.md` (Pitfall 2).
 
+### 2026-07-03: CV-PDF — per-sida-marginaler + kant-till-kant-bakgrund
+**Problem:** Flersidiga CV-PDF:er började sida 2+ ~2,5mm från papperskanten, och sidopanelens färg slutade med vit remsa 20-50mm före sista sidans nederkant.
+**Lösning (CVPrintLayout.tsx):** (1) Sidobar-/sidbakgrund som **canvas-bg** — `html { background: <gradient> }` i print målas om kant-till-kant på VARJE sida (body/root/preview måste vara transparenta). (2) Säkerhetszoner via **`box-decoration-break: clone`** på flow-wrappern: `padding: 12mm 0 10mm` klonas vid varje sidbrytning; negativa marginaler nollar ut den på första/sista sidan så ensidiga CV:n inte tippar till 2 sidor. Kräver Chromium ≥130 (prod: @sparticuz/chromium 148). Filler-/höjdmätnings-JS:et kunde raderas helt.
+**Verifiering:** `node e2e/cv-pdf-visual-audit.cjs` (dev-server på :3000) → PDF+PNG per mall/variant i `cv-prints/visual-audit/`.
+
 ### 2026-04-29: Smoke-test mot fel hostname
 **Problem:** `deploy.yml` curlade `deltagarportalen.se` men prod ligger på `jobin.se`.
 **Lösning:** Smoke-test ska peka på `jobin.se` — `deltagarportalen.se` är staging.
