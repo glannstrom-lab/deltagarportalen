@@ -22,7 +22,8 @@ async function main() {
   const outDir = path.join(ROOT, 'client', 'public', 'templates')
   fs.mkdirSync(outDir, { recursive: true })
 
-  const browser = await chromium.launch()
+  // channel: 'chrome' = systemets Chrome — kräver ingen 'npx playwright install'
+  const browser = await chromium.launch({ channel: 'chrome' })
   const context = await browser.newContext({
     viewport: { width: 1000, height: 1414 }, // A4-aspect ~ 794×1123 + lite marginal
     deviceScaleFactor: 2, // 2x för retina-skärpa
@@ -55,9 +56,15 @@ async function main() {
       console.log(`  ⚠ Hittade inte preview-element för ${tpl}`)
       continue
     }
-    // Fota hela CV-arket (kan vara mycket högre än viewport)
+    // Beskär till exakt A4 (första sidan). CVPreview:s sid-stretch-logik
+    // kan göra elementet flera "sidor" högt med tom yta under innehållet —
+    // en thumbnail ska bara visa sida 1, och alla får samma aspekt (1:1.414).
+    const A4_HEIGHT = Math.round(previewBox.width * (297 / 210))
     const out = path.join(outDir, `${tpl}.png`)
-    await page.locator('.cv-preview').first().screenshot({ path: out })
+    await page.screenshot({
+      path: out,
+      clip: { x: previewBox.x, y: previewBox.y, width: previewBox.width, height: A4_HEIGHT },
+    })
     console.log(`  ✓ ${path.relative(ROOT, out)}`)
   }
 

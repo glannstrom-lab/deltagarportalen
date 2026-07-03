@@ -162,8 +162,10 @@ export function BudapestTemplate({ data, fullName }: TemplateProps) {
               {data.certificates.map((cert) => (
                 <div key={cert.id} className="cv-entry" style={{ marginBottom: '6px' }}>
                   <div style={{ fontSize: '11.5px', fontWeight: 600, color: '#FFFFFF' }}>{cert.name}</div>
-                  {cert.issuer && (
-                    <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.7)' }}>{cert.issuer}</div>
+                  {(cert.issuer || cert.date) && (
+                    <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.7)' }}>
+                      {[cert.issuer, cert.date].filter(Boolean).join(' · ')}
+                    </div>
                   )}
                 </div>
               ))}

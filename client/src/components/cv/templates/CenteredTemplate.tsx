@@ -275,6 +275,61 @@ export function CenteredTemplate({ data, fullName }: TemplateProps) {
             </div>
           </section>
         )}
+
+        {data.certificates?.length > 0 && (
+          <section className="cv-keep" style={{ marginTop: '16px' }}>
+            <h2
+              style={{
+                fontSize: '11px',
+                fontWeight: '600',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                color: primary,
+                marginBottom: '10px',
+                paddingBottom: '5px',
+                borderBottom: `1px solid ${primary}25`,
+              }}
+            >
+              Certifikat
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {data.certificates.map(cert => (
+                <div key={cert.id} className="cv-entry">
+                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#111827' }}>{cert.name}</span>
+                  {cert.issuer && <span style={{ fontSize: '12px', color: '#6B7280' }}> · {cert.issuer}</span>}
+                  {cert.date && <span style={{ fontSize: '12px', color: '#9CA3AF' }}> · {cert.date}</span>}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {data.links?.length > 0 && (
+          <section className="cv-keep" style={{ marginTop: '16px' }}>
+            <h2
+              style={{
+                fontSize: '11px',
+                fontWeight: '600',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                color: primary,
+                marginBottom: '10px',
+                paddingBottom: '5px',
+                borderBottom: `1px solid ${primary}25`,
+              }}
+            >
+              Länkar
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              {data.links.map(link => (
+                <div key={link.id} className="cv-entry" style={{ fontSize: '12.5px' }}>
+                  {link.label && <span style={{ color: '#111827', fontWeight: 500 }}>{link.label} · </span>}
+                  <span style={{ color: '#6B7280', wordBreak: 'break-all' }}>{link.url}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   )

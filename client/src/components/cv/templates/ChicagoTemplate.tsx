@@ -223,6 +223,27 @@ export function ChicagoTemplate({ data, fullName }: TemplateProps) {
             </div>
           </section>
         )}
+
+        {data.certificates?.length > 0 && (
+          <section className="cv-keep" style={{ marginTop: '32px' }}>
+            <h3 style={{ ...sectionHeader, marginBottom: '18px' }}>CERTIFIKAT</h3>
+            <div>
+              {data.certificates.map((cert) => (
+                <div key={cert.id} className="cv-entry" style={{ marginBottom: '10px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+                    <h4 style={{ fontSize: '13px', fontWeight: 700, color: ink, wordBreak: 'break-word' }}>
+                      {cert.name}
+                      {cert.issuer && <span style={{ fontWeight: 500, color: '#4B5563' }}>, {cert.issuer}</span>}
+                    </h4>
+                    {cert.date && (
+                      <span style={{ fontSize: '11px', color: muted, whiteSpace: 'nowrap', marginLeft: '12px' }}>{cert.date}</span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
       </main>
     </div>
   )

@@ -185,10 +185,13 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
               const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
               return (
                 <div key={lang.id} className="cv-entry">
-                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  {/* Nivån direkt efter namnet — space-between över hela
+                      grid-kolumnen gjorde att kolumn 1:s nivå hamnade
+                      intill kolumn 2:s språknamn ("Modersmål Engelska"). */}
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                     <span style={{ fontSize: '12.5px', color: '#333333' }}>{name}</span>
                     <span style={{ fontSize: '12.5px', color: '#999999' }}>
-                      {getLanguageLevelDisplay(lang.level)}
+                      · {getLanguageLevelDisplay(lang.level)}
                     </span>
                   </div>
                 </div>
@@ -217,6 +220,32 @@ export function MinimalTemplate({ data, fullName }: TemplateProps) {
               <div key={cert.id} className="cv-entry">
                 <span style={{ fontSize: '14px', color: '#333333' }}>{cert.name}</span>
                 {cert.issuer && <span style={{ fontSize: '12px', color: '#999999', marginLeft: '8px' }}>· {cert.issuer}</span>}
+                {cert.date && <span style={{ fontSize: '12px', color: '#999999', marginLeft: '8px' }}>· {cert.date}</span>}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {data.links?.length > 0 && (
+        <section className="cv-keep" style={{ marginTop: '20px' }}>
+          <h2
+            style={{
+              fontSize: '11px',
+              fontWeight: '600',
+              letterSpacing: '0.15em',
+              textTransform: 'uppercase',
+              color: '#999999',
+              marginBottom: '10px',
+            }}
+          >
+            Länkar
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {data.links.map(link => (
+              <div key={link.id} className="cv-entry" style={{ fontSize: '12.5px' }}>
+                {link.label && <span style={{ color: '#333333' }}>{link.label} · </span>}
+                <span style={{ color: '#999999', wordBreak: 'break-all' }}>{link.url}</span>
               </div>
             ))}
           </div>

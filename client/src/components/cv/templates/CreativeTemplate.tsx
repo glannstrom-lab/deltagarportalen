@@ -302,15 +302,87 @@ export function CreativeTemplate({ data, fullName }: TemplateProps) {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
                   <div key={lang.id} className="cv-entry">
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    {/* Nivån direkt efter namnet — space-between över hela
+                        grid-kolumnen la kolumn 1:s nivå intill kolumn 2:s
+                        språknamn ("Modersmål Engelska"). */}
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                       <span style={{ fontSize: '12.5px', color: '#333333' }}>{name}</span>
                       <span style={{ fontSize: '12.5px', color: '#888888' }}>
-                        {getLanguageLevelDisplay(lang.level)}
+                        · {getLanguageLevelDisplay(lang.level)}
                       </span>
                     </div>
                   </div>
                 )
               })}
+            </div>
+          </section>
+        )}
+
+        {data.certificates?.length > 0 && (
+          <section
+            className="cv-keep"
+            style={{
+              background: '#FFFFFF',
+              padding: '12px 16px',
+              borderRadius: '12px',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+              marginTop: '12px',
+            }}
+          >
+            <h2
+              style={{
+                fontSize: '11px',
+                fontWeight: '700',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: primary,
+                marginBottom: '8px',
+              }}
+            >
+              Certifikat
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              {data.certificates.map(cert => (
+                <div key={cert.id} className="cv-entry">
+                  <span style={{ fontSize: '12.5px', fontWeight: 600, color: '#333333' }}>{cert.name}</span>
+                  {cert.issuer && <span style={{ fontSize: '12px', color: '#888888' }}> · {cert.issuer}</span>}
+                  {cert.date && <span style={{ fontSize: '12px', color: '#888888' }}> · {cert.date}</span>}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {data.links?.length > 0 && (
+          <section
+            className="cv-keep"
+            style={{
+              background: '#FFFFFF',
+              padding: '12px 16px',
+              borderRadius: '12px',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+              marginTop: '12px',
+            }}
+          >
+            <h2
+              style={{
+                fontSize: '11px',
+                fontWeight: '700',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: primary,
+                marginBottom: '8px',
+              }}
+            >
+              Länkar
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+              {data.links.map(link => (
+                <div key={link.id} className="cv-entry" style={{ fontSize: '12.5px' }}>
+                  {link.label && <span style={{ color: '#333333', fontWeight: 600 }}>{link.label} · </span>}
+                  <span style={{ color: '#888888', wordBreak: 'break-all' }}>{link.url}</span>
+                </div>
+              ))}
             </div>
           </section>
         )}

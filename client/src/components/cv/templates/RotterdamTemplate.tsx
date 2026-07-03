@@ -83,6 +83,22 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
           </div>
         </section>
 
+        {data.links?.length > 0 && (
+          <section className="cv-keep" style={{ marginBottom: '32px' }}>
+            <h3 style={sectionHeader}>LÄNKAR</h3>
+            <div>
+              {data.links.map((link) => (
+                <div key={link.id} className="cv-entry" style={{ marginBottom: '10px' }}>
+                  {link.label && (
+                    <div style={{ fontSize: '11px', fontWeight: 600, color: ink }}>{link.label}</div>
+                  )}
+                  <div style={{ fontSize: '10px', color: muted, wordBreak: 'break-all' }}>{link.url}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
         {data.skills?.length > 0 && (
           <section className="cv-keep" style={{ marginBottom: '32px' }}>
             <h3 style={sectionHeader}>KOMPETENSER</h3>
@@ -201,6 +217,21 @@ export function RotterdamTemplate({ data, fullName }: TemplateProps) {
                   {job.description && (
                     <p style={{ fontSize: '12px', lineHeight: 1.6, color: '#4B5563' }}>{job.description}</p>
                   )}
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {data.certificates?.length > 0 && (
+          <section className="cv-keep" style={{ marginTop: '8px' }}>
+            <h3 style={sectionHeader}>CERTIFIKAT</h3>
+            <div>
+              {data.certificates.map((cert) => (
+                <div key={cert.id} className="cv-entry" style={{ marginBottom: '8px' }}>
+                  <span style={{ fontSize: '12px', fontWeight: 600, color: ink }}>{cert.name}</span>
+                  {cert.issuer && <span style={{ fontSize: '11px', color: muted }}> · {cert.issuer}</span>}
+                  {cert.date && <span style={{ fontSize: '11px', color: muted }}> · {cert.date}</span>}
                 </div>
               ))}
             </div>

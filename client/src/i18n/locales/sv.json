@@ -862,7 +862,7 @@
     "preview": "Förhandsgranska",
     "createCV": "Skapa CV",
     "chooseTemplate": "Välj en mall",
-    "templateDescription": "6 moderna designer. Alla med förvalda färger och typsnitt.",
+    "templateDescription": "Moderna designer med förvalda färger och typsnitt — välj den som känns rätt för dig.",
     "profilePicture": "Profilbild",
     "profilePictureDesc": "Lägg till en professionell profilbild för att göra ditt CV mer personligt",
     "summary": "Sammanfattning",
@@ -6654,7 +6654,7 @@
     },
     "templates": {
       "chooseTemplate": "Välj en mall",
-      "templateDescription": "6 moderna designer. Alla med förvalda färger och typsnitt.",
+      "templateDescription": "Moderna designer med förvalda färger och typsnitt — välj den som känns rätt för dig.",
       "sidebar": {
         "name": "Sidokolumn",
         "desc": "Modern layout med sidopanel för kontakt och skills",

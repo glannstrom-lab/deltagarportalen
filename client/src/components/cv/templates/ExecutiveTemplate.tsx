@@ -231,10 +231,13 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
                 const name = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
                   <div key={lang.id} className="cv-entry">
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    {/* Nivån direkt efter namnet — space-between över hela
+                        grid-kolumnen la kolumn 1:s nivå intill kolumn 2:s
+                        språknamn ("Modersmål Engelska"). */}
+                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                       <span style={{ fontSize: '12.5px', color: '#333333' }}>{name}</span>
                       <span style={{ fontSize: '12.5px', fontStyle: 'italic', color: muted }}>
-                        {getLanguageLevelDisplay(lang.level)}
+                        · {getLanguageLevelDisplay(lang.level)}
                       </span>
                     </div>
                   </div>
@@ -256,6 +259,9 @@ export function ExecutiveTemplate({ data, fullName }: TemplateProps) {
                       <span style={{ fontSize: '12.5px', color: ink, fontWeight: 400 }}>{cert.name}</span>
                       {cert.issuer && (
                         <span style={{ fontSize: '11.5px', color: muted, fontStyle: 'italic' }}> · {cert.issuer}</span>
+                      )}
+                      {cert.date && (
+                        <span style={{ fontSize: '11.5px', color: muted, fontStyle: 'italic' }}> · {cert.date}</span>
                       )}
                     </div>
                   ))}

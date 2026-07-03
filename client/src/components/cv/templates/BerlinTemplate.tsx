@@ -360,9 +360,9 @@ export function BerlinTemplate({ data, fullName }: TemplateProps) {
                   {data.certificates.map((cert) => (
                     <div key={cert.id} className="cv-entry" style={{ marginBottom: '4px' }}>
                       <div style={{ fontSize: '12.5px', fontWeight: 700, color: ink }}>{cert.name}</div>
-                      {cert.issuer && (
+                      {(cert.issuer || cert.date) && (
                         <div style={{ fontSize: '10.5px', color: muted, marginTop: '1px', letterSpacing: '0.06em', textTransform: 'uppercase' }}>
-                          {cert.issuer}
+                          {[cert.issuer, cert.date].filter(Boolean).join(' · ')}
                         </div>
                       )}
                     </div>

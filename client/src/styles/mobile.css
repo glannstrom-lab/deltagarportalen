@@ -9,7 +9,7 @@
    ============================================ */
 
 /* UPPGRADERAT: 48x48px för bättre tillgänglighet (var 44px) */
-button, 
+button,
 [role="button"],
 a,
 input[type="submit"],
@@ -17,6 +17,15 @@ input[type="button"],
 .touch-target {
   min-height: 48px;
   min-width: 48px;
+}
+
+/* CV-mallarna är dokument, inte UI — touch-target-regeln ovan får inte
+   blåsa upp länkar i CV-renderingen (48px min-height gör t.ex. e-post-
+   raden i Nordic 3 rader hög, i både preview och PDF-export). */
+.cv-preview a {
+  min-height: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
 }
 
 /* Större knappar på mobil */

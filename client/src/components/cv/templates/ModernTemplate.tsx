@@ -138,6 +138,36 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
           </div>
         )}
 
+        {/* Länkar — nära kontaktuppgifterna där man letar efter dem. */}
+        {data.links?.length > 0 && (
+          <div className="cv-keep" style={{ marginBottom: '28px' }}>
+            <h3
+              style={{
+                fontSize: '10px',
+                fontWeight: '600',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: accent,
+                marginBottom: '14px',
+              }}
+            >
+              Länkar
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {data.links.map(link => (
+                <div key={link.id} className="cv-entry">
+                  {link.label && (
+                    <div style={{ fontSize: '11.5px', fontWeight: 500, color: 'rgba(255,255,255,0.9)' }}>{link.label}</div>
+                  )}
+                  <div style={{ fontSize: '10.5px', color: 'rgba(255,255,255,0.55)', wordBreak: 'break-all', lineHeight: 1.4 }}>
+                    {link.url}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Languages — utan marginTop:auto eftersom det skapar stora
             mellanrum när aside-content är kortare än main, vilket gör
             att SPRÅK hamnar i mitten av sida 2 i flera-sidors-PDFs. */}
@@ -271,6 +301,33 @@ export function ModernTemplate({ data, fullName }: TemplateProps) {
                       <div style={{ fontSize: '12.5px', color: '#666666' }}>{edu.school}</div>
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Certifikat */}
+        {data.certificates?.length > 0 && (
+          <section className="cv-keep" style={{ marginTop: '22px' }}>
+            <h2
+              style={{
+                fontSize: '11px',
+                fontWeight: '600',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                color: '#999999',
+                marginBottom: '14px',
+              }}
+            >
+              Certifikat
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {data.certificates.map(cert => (
+                <div key={cert.id} className="cv-entry">
+                  <span style={{ fontSize: '13px', fontWeight: 500, color: '#0F0F0F' }}>{cert.name}</span>
+                  {cert.issuer && <span style={{ fontSize: '12px', color: '#888888' }}> · {cert.issuer}</span>}
+                  {cert.date && <span style={{ fontSize: '12px', color: '#888888' }}> · {cert.date}</span>}
                 </div>
               ))}
             </div>

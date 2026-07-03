@@ -104,7 +104,8 @@ async function main() {
   fs.mkdirSync(authDir, { recursive: true })
   fs.mkdirSync(screenshotsDir, { recursive: true })
 
-  const browser = await chromium.launch()
+  // channel: 'chrome' = systemets Chrome — kräver ingen 'npx playwright install'
+  const browser = await chromium.launch({ channel: 'chrome' })
   const context = await browser.newContext({
     viewport: { width: 1440, height: 900 },
     storageState: fs.existsSync(statePath) ? statePath : undefined,

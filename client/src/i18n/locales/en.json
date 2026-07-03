@@ -855,7 +855,7 @@
     "preview": "Preview",
     "createCV": "Create CV",
     "chooseTemplate": "Choose a template",
-    "templateDescription": "6 modern designs. All with preset colors and fonts.",
+    "templateDescription": "Modern designs with preset colors and fonts — pick the one that feels right for you.",
     "profilePicture": "Profile picture",
     "profilePictureDesc": "Add a professional profile picture to make your CV more personal",
     "summary": "Summary",
@@ -6647,7 +6647,7 @@
     },
     "templates": {
       "chooseTemplate": "Choose a template",
-      "templateDescription": "6 modern designs. All with preset colors and fonts.",
+      "templateDescription": "Modern designs with preset colors and fonts — pick the one that feels right for you.",
       "sidebar": {
         "name": "Sidebar",
         "desc": "Modern layout with sidebar for contact and skills",

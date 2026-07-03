@@ -192,8 +192,10 @@ export function ManhattanTemplate({ data, fullName }: TemplateProps) {
             {data.certificates.map((cert) => (
               <div key={cert.id} style={{ marginBottom: '12px', fontSize: '12px' }}>
                 <div style={{ fontWeight: 600, color: '#FFFFFF' }}>{cert.name}</div>
-                {cert.issuer && (
-                  <div style={{ fontSize: '11px', color: copperSoft, marginTop: '2px' }}>{cert.issuer}</div>
+                {(cert.issuer || cert.date) && (
+                  <div style={{ fontSize: '11px', color: copperSoft, marginTop: '2px' }}>
+                    {[cert.issuer, cert.date].filter(Boolean).join(' · ')}
+                  </div>
                 )}
               </div>
             ))}

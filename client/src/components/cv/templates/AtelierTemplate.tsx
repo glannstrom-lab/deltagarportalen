@@ -208,8 +208,10 @@ export function AtelierTemplate({ data, fullName }: TemplateProps) {
               {data.certificates.map((cert) => (
                 <div key={cert.id} style={{ marginBottom: '10px', fontSize: '12px' }}>
                   <div style={{ fontWeight: 500, color: ink }}>{cert.name}</div>
-                  {cert.issuer && (
-                    <div style={{ fontSize: '11px', color: muted, marginTop: '1px' }}>{cert.issuer}</div>
+                  {(cert.issuer || cert.date) && (
+                    <div style={{ fontSize: '11px', color: muted, marginTop: '1px' }}>
+                      {[cert.issuer, cert.date].filter(Boolean).join(' · ')}
+                    </div>
                   )}
                 </div>
               ))}
