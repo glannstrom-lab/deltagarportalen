@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/icons'
 import { useNavigate } from 'react-router-dom'
 import { useJobAlerts } from '@/hooks/useJobAlerts'
+import { AF_REGIONS, getAfRegionName } from '@/data/afRegions'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
 import {
@@ -21,14 +22,8 @@ import {
   getUnreadCount
 } from '@/services/jobAlertEmailService'
 
-// Region mapping for display
-const REGION_NAMES: Record<string, string> = {
-  'SE110': 'Stockholms län',
-  'SE232': 'Västra Götalands län',
-  'SE224': 'Skåne län',
-  'SE121': 'Uppsala län',
-  'SE123': 'Östergötlands län'
-}
+// Länsnamn/­lista delas via data/afRegions — tidigare en lokal 5-läns-kopia
+// som gjorde att bevakningar bara kunde skapas för 5 av 21 län.
 
 interface CreateAlertModalProps {
   isOpen: boolean
@@ -148,11 +143,9 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
               className="w-full px-4 py-3 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">Hela Sverige</option>
-              <option value="SE110">Stockholms län</option>
-              <option value="SE232">Västra Götalands län</option>
-              <option value="SE224">Skåne län</option>
-              <option value="SE121">Uppsala län</option>
-              <option value="SE123">Östergötlands län</option>
+              {AF_REGIONS.map((r) => (
+                <option key={r.code} value={r.code}>{r.name}</option>
+              ))}
             </select>
           </div>
 
@@ -362,7 +355,7 @@ function AlertCard({
             {alert.region && (
               <span className="inline-flex items-center gap-1 px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-lg">
                 <MapPin className="w-3 h-3" />
-                {REGION_NAMES[alert.region] || alert.region}
+                {getAfRegionName(alert.region)}
               </span>
             )}
             {alert.remote && (

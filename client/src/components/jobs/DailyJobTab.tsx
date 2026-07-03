@@ -24,6 +24,7 @@ import {
 import { Card, Button } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { searchJobs, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
+import { buildCoverLetterUrl } from '@/utils/jobLinks';
 import { useSavedJobs } from '@/hooks/useSavedJobs';
 import { cvApi } from '@/services/cvApi';
 import { interestGuideApi } from '@/services/cloudStorage';
@@ -622,11 +623,7 @@ export function DailyJobTab() {
                 </button>
 
                 <Link
-                  to={`/cover-letter?jobId=${job.id}&company=${encodeURIComponent(
-                    job.employer?.name || ''
-                  )}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(
-                    job.description?.text?.substring(0, 500) || ''
-                  )}`}
+                  to={buildCoverLetterUrl(job)}
                   className="flex items-center justify-center gap-2 py-3 rounded-xl font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 text-[var(--c-text)] dark:text-[var(--c-solid)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
                 >
                   <FileText className="w-5 h-5" />

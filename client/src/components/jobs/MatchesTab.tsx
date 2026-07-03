@@ -15,6 +15,31 @@ import {
 } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { searchJobs, type PlatsbankenJob, SWEDISH_MUNICIPALITIES } from '@/services/arbetsformedlingenApi'
+
+/**
+ * Förhämta flera AF-sökningar parallellt. Sökningarna är oberoende av
+ * varandra — de seriella await:arna i käll-funktionerna lät användaren
+ * vänta på upp till 5+8+8 anrop i RAD innan fliken visade något.
+ * Fel per sökning sväljs (tom lista) så en trasig term inte fäller resten.
+ */
+async function prefetchJobSearches(
+  queries: string[],
+  municipality?: string,
+): Promise<Map<string, PlatsbankenJob[]>> {
+  const map = new Map<string, PlatsbankenJob[]>()
+  await Promise.all(
+    queries.map(async (q) => {
+      try {
+        const r = await searchJobs({ query: q, municipality, limit: 25, publishedWithin: 'month' })
+        map.set(q, r.hits)
+      } catch (e) {
+        console.error('Error searching for term:', q, e)
+        map.set(q, [])
+      }
+    }),
+  )
+  return map
+}
 import { cvApi } from '@/services/cvApi'
 import { userApi } from '@/services/userApi'
 import { interestGuideApi } from '@/services/cloudStorage'
@@ -906,13 +931,16 @@ const MatchCard = memo(function MatchCard({
           )}
         </div>
 
+        {/* Toggle — inte disabled: sparade jobb ska gå att av-spara här,
+            precis som i Sök-flikens kort. */}
         <button
           onClick={() => onSave(job)}
-          disabled={isSaved}
+          aria-pressed={isSaved}
+          aria-label={isSaved ? 'Ta bort från sparade jobb' : 'Spara jobb'}
           className={cn(
             "p-2 rounded-lg transition-colors",
             isSaved
-              ? "bg-red-100 text-red-600"
+              ? "bg-red-100 text-red-600 hover:bg-red-200"
               : "hover:bg-stone-100 dark:hover:bg-stone-800 text-stone-600 dark:text-stone-400 hover:text-red-500"
           )}
         >
@@ -1041,7 +1069,7 @@ function EmptyState({ type, labels }: {
 
 export function MatchesTab() {
   const { t } = useTranslation()
-  const { saveJob, isSaved } = useSavedJobs()
+  const { saveJob, removeJob, isSaved } = useSavedJobs()
 
   // State
   const [isLoading, setIsLoading] = useState(true)
@@ -1181,17 +1209,13 @@ export function MatchesTab() {
     const allJobs: MatchedJob[] = []
     const seenJobIds = new Set<string>()
 
-    // Search for each term separately to get diverse results
-    for (const searchTerm of searchTerms.slice(0, 5)) {
+    // Search for each term separately to get diverse results —
+    // förhämtade parallellt i stället för seriellt
+    const cvTerms = searchTerms.slice(0, 5)
+    const prefetchedCv = await prefetchJobSearches(cvTerms, locations.length === 1 ? locations[0] : undefined)
+    for (const searchTerm of cvTerms) {
       try {
-        const result = await searchJobs({
-          query: searchTerm,
-          municipality: locations.length === 1 ? locations[0] : undefined,
-          limit: 25,
-          publishedWithin: 'month'
-        })
-
-        let jobs = result.hits
+        let jobs = prefetchedCv.get(searchTerm) ?? []
 
         // Filter by location if multiple selected
         if (locations.length > 1) {
@@ -1320,22 +1344,24 @@ export function MatchesTab() {
     const seenJobIds = new Set<string>()
     const searchTermsUsed = new Set<string>()
 
+    // Samla (yrke, sökterm)-paren först och förhämta alla sökningar
+    // parallellt — de seriella await:arna i dubbelloopen var flaskhalsen.
+    const termPairs: Array<{ occ: (typeof topOccupations)[number]; searchTerm: string }> = []
     for (const occ of topOccupations) {
-      const searchTerms = getSearchTerms(occ.name)
-
-      for (const searchTerm of searchTerms) {
+      for (const searchTerm of getSearchTerms(occ.name)) {
         if (searchTermsUsed.has(searchTerm.toLowerCase())) continue
         searchTermsUsed.add(searchTerm.toLowerCase())
+        termPairs.push({ occ, searchTerm })
+      }
+    }
+    const prefetchedInterest = await prefetchJobSearches(
+      termPairs.map((p) => p.searchTerm),
+      locations.length === 1 ? locations[0] : undefined,
+    )
 
+    for (const { occ, searchTerm } of termPairs) {
         try {
-          const result = await searchJobs({
-            query: searchTerm,
-            municipality: locations.length === 1 ? locations[0] : undefined,
-            limit: 25,
-            publishedWithin: 'month'
-          })
-
-          let jobs = result.hits
+          let jobs = prefetchedInterest.get(searchTerm) ?? []
           if (locations.length > 1) {
             jobs = jobs.filter(job =>
               locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
@@ -1406,9 +1432,8 @@ export function MatchesTab() {
             })
           })
         } catch (e) {
-          console.error('Error searching for term:', searchTerm, e)
+          console.error('Error processing term:', searchTerm, e)
         }
-      }
     }
 
     // Deduplicate - keep best score for each job
@@ -1444,17 +1469,12 @@ export function MatchesTab() {
     const allJobs: MatchedJob[] = []
     const seenJobIds = new Set<string>()
 
-    // Search for each career role/desired job
-    for (const role of searchRoles.slice(0, 8)) {
+    // Search for each career role/desired job — förhämtade parallellt
+    const careerRoles = searchRoles.slice(0, 8)
+    const prefetchedCareer = await prefetchJobSearches(careerRoles, locations.length === 1 ? locations[0] : undefined)
+    for (const role of careerRoles) {
       try {
-        const result = await searchJobs({
-          query: role,
-          municipality: locations.length === 1 ? locations[0] : undefined,
-          limit: 25,
-          publishedWithin: 'month'
-        })
-
-        let jobs = result.hits
+        let jobs = prefetchedCareer.get(role) ?? []
         if (locations.length > 1) {
           jobs = jobs.filter(job =>
             locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
@@ -1624,8 +1644,14 @@ export function MatchesTab() {
   const displayedJobs = showAllMatches || goodJobs.length === 0 ? currentJobs : goodJobs
   const hiddenCount = currentJobs.length - displayedJobs.length
 
+  // Toggle: spara/av-spara — knappen var tidigare disabled när jobbet var
+  // sparat, så av-sparning var omöjlig här (inkonsekvent mot Sök-fliken).
   const handleSave = async (job: PlatsbankenJob) => {
-    await saveJob(job)
+    if (isSaved(job.id)) {
+      await removeJob(job.id)
+    } else {
+      await saveJob(job)
+    }
   }
 
   if (isLoading) {

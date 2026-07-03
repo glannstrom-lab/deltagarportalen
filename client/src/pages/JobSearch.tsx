@@ -16,6 +16,8 @@ import { sanitizeHTMLWithLineBreaks } from '@/utils/sanitize';
 import { useJobSearchFilters } from '@/hooks/useJobSearchFilters';
 import { useProfileStore } from '@/stores/profileStore';
 import { OccupationPicker, type OccupationSelection } from '@/components/occupation/OccupationPicker';
+import { AF_REGIONS } from '@/data/afRegions';
+import { buildCoverLetterUrl } from '@/utils/jobLinks';
 
 import { PageLayout } from '@/components/layout/index';
 import { useFocusMode } from '@/components/FocusModeProvider';
@@ -74,27 +76,9 @@ const defaultFilters: SearchFilters = {
   occupations: [],
 };
 
-const REGIONS = [
-  { code: 'SE110', name: 'Stockholms län' },
-  { code: 'SE232', name: 'Västra Götalands län' },
-  { code: 'SE224', name: 'Skåne län' },
-  { code: 'SE121', name: 'Uppsala län' },
-  { code: 'SE123', name: 'Östergötlands län' },
-  { code: 'SE211', name: 'Jönköpings län' },
-  { code: 'SE212', name: 'Kronobergs län' },
-  { code: 'SE213', name: 'Kalmar län' },
-  { code: 'SE221', name: 'Blekinge län' },
-  { code: 'SE231', name: 'Hallands län' },
-  { code: 'SE311', name: 'Värmlands län' },
-  { code: 'SE124', name: 'Örebro län' },
-  { code: 'SE125', name: 'Västmanlands län' },
-  { code: 'SE312', name: 'Dalarnas län' },
-  { code: 'SE313', name: 'Gävleborgs län' },
-  { code: 'SE321', name: 'Västernorrlands län' },
-  { code: 'SE322', name: 'Jämtlands län' },
-  { code: 'SE331', name: 'Västerbottens län' },
-  { code: 'SE332', name: 'Norrbottens län' },
-];
+// Länslistan delas via data/afRegions (tidigare en lokal 19-läns-kopia
+// som saknade Södermanland och Gotland).
+const REGIONS = AF_REGIONS;
 
 const JOBS_PER_PAGE = 20;
 
@@ -808,7 +792,7 @@ function SearchTab() {
                       </button>
 
                       <Link
-                        to={`/cover-letter?jobId=${job.id}&company=${encodeURIComponent(job.employer?.name || '')}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(job.description?.text?.substring(0, 500) || '')}`}
+                        to={buildCoverLetterUrl(job)}
                         onClick={(e) => e.stopPropagation()}
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 transition-colors"
                       >
@@ -1031,7 +1015,7 @@ function SearchTab() {
                     </button>
 
                     <Link
-                      to={`/cover-letter?jobId=${selectedJob.id}&company=${encodeURIComponent(selectedJob.employer?.name || '')}&title=${encodeURIComponent(selectedJob.headline)}&desc=${encodeURIComponent(selectedJob.description?.text?.substring(0, 1000) || '')}`}
+                      to={buildCoverLetterUrl(selectedJob, 1000)}
                       onClick={() => setSelectedJob(null)}
                       className="flex items-center justify-center gap-2 py-3 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40 text-[var(--c-text)] dark:text-[var(--c-text)] hover:bg-[var(--c-accent)]/40 dark:hover:bg-[var(--c-bg)]/50 rounded-xl font-medium transition-colors border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/50 min-h-[48px]"
                     >
