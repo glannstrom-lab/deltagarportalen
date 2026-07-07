@@ -10,7 +10,7 @@ import {
   Clock, CheckCircle, Send, Users, Trophy,
   Target, Briefcase, ArrowRight
 } from '@/components/ui/icons'
-import { Card } from '@/components/ui'
+import { Card, EmptyState } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { useApplications } from '@/hooks/useApplications'
 import {
@@ -19,6 +19,20 @@ import {
   type Application,
   type ApplicationStatus
 } from '@/types/application.types'
+
+// Hur långt en ansökan bevisligen kommit i processen (statusordning).
+// Terminala statusar säger inte var man var när processen tog slut:
+// avslag räknas som "har ansökt" (man kan inte få avslag utan att ha sökt),
+// återkallad räknas som "har ansökt" bara om ansökningsdatum finns.
+function reachedOrder(app: Application): number {
+  if (app.status === 'rejected') {
+    return APPLICATION_STATUS_CONFIG.applied.order
+  }
+  if (app.status === 'withdrawn') {
+    return app.applicationDate ? APPLICATION_STATUS_CONFIG.applied.order : 0
+  }
+  return APPLICATION_STATUS_CONFIG[app.status].order
+}
 
 interface StatCardProps {
   title: string
@@ -118,38 +132,36 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
   )
 }
 
-function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Record<ApplicationStatus, Application[]> }) {
+function ConversionFunnel({ applications }: { applications: Application[] }) {
   const { t } = useTranslation()
+  // Kumulativ tratt: varje steg räknar ansökningar som nått MINST det steget.
+  // (Nulägesräkning gav missvisande siffror — "Ansökt" sjönk när någon gick vidare.)
   const stages = useMemo(() => {
-    const applied = applicationsByStatus.applied?.length || 0
-    const screening = applicationsByStatus.screening?.length || 0
-    const phone = applicationsByStatus.phone?.length || 0
-    const interview = applicationsByStatus.interview?.length || 0
-    const assessment = applicationsByStatus.assessment?.length || 0
-    const offer = applicationsByStatus.offer?.length || 0
-    const accepted = applicationsByStatus.accepted?.length || 0
-
-    const total = applied + screening + phone + interview + assessment + offer + accepted
-
-    return [
-      { label: t('applications.status.applied', 'Ansökt'), count: applied, icon: Send },
-      { label: t('applications.status.screening', 'Screening'), count: screening, icon: Clock },
-      { label: t('applications.status.phone', 'Telefonintervju'), count: phone, icon: Users },
-      { label: t('applications.status.interview', 'Intervju'), count: interview, icon: Users },
-      { label: t('applications.status.assessment', 'Arbetsprov'), count: assessment, icon: Briefcase },
-      { label: t('applications.status.offer', 'Erbjudande'), count: offer, icon: Trophy },
-      { label: t('applications.status.accepted', 'Accepterad'), count: accepted, icon: CheckCircle },
-    ].filter(s => s.count > 0 || total > 0)
-  }, [applicationsByStatus, t])
+    const defs: { status: ApplicationStatus; icon: React.ElementType }[] = [
+      { status: 'applied', icon: Send },
+      { status: 'screening', icon: Clock },
+      { status: 'phone', icon: Users },
+      { status: 'interview', icon: Users },
+      { status: 'assessment', icon: Briefcase },
+      { status: 'offer', icon: Trophy },
+      { status: 'accepted', icon: CheckCircle },
+    ]
+    return defs.map(d => ({
+      label: t(`applications.status.${d.status}`, getStatusLabel(d.status)),
+      icon: d.icon,
+      count: applications.filter(a => reachedOrder(a) >= APPLICATION_STATUS_CONFIG[d.status].order).length
+    }))
+  }, [applications, t])
 
   const maxCount = Math.max(...stages.map(s => s.count), 1)
 
   return (
     <Card className="p-4">
-      <div className="flex items-center gap-2 mb-4">
+      <div className="flex items-center gap-2 mb-1">
         <BarChart3 className="w-5 h-5 text-sky-600" />
         <h3 className="font-semibold text-stone-900">{t('applications.analytics.funnel', 'Ansökningstratt')}</h3>
       </div>
+      <p className="text-xs text-stone-600 mb-4">{t('applications.analytics.funnelHint', 'Antal ansökningar som nått minst varje steg')}</p>
 
       <div className="space-y-3">
         {stages.map((stage, index) => {
@@ -226,7 +238,7 @@ export function ApplicationsAnalytics() {
   const { t } = useTranslation()
   const { applications, applicationsByStatus, stats, staleApplications, isLoading } = useApplications()
 
-  // Calculate additional metrics
+  // Calculate additional metrics (kumulativt via reachedOrder, inte nulägesräkning)
   const metrics = useMemo(() => {
     const now = new Date()
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
@@ -235,42 +247,61 @@ export function ApplicationsAnalytics() {
       app => new Date(app.createdAt) >= thirtyDaysAgo
     )
 
-    const responseRate = stats.applied > 0
-      ? Math.round(((stats.interview + stats.accepted + stats.rejected) / stats.applied) * 100)
-      : 0
+    const appliedOrder = APPLICATION_STATUS_CONFIG.applied.order
+    const screeningOrder = APPLICATION_STATUS_CONFIG.screening.order
+    const phoneOrder = APPLICATION_STATUS_CONFIG.phone.order
 
-    const interviewRate = stats.applied > 0
-      ? Math.round((stats.interview / stats.applied) * 100)
-      : 0
+    const submitted = applications.filter(a => reachedOrder(a) >= appliedOrder).length
+    // Avslag är också ett svar från arbetsgivaren
+    const responses = applications.filter(
+      a => reachedOrder(a) >= screeningOrder || a.status === 'rejected'
+    ).length
+    const interviews = applications.filter(a => reachedOrder(a) >= phoneOrder).length
 
-    const successRate = (stats.interview + stats.accepted) > 0
-      ? Math.round((stats.accepted / (stats.interview + stats.accepted)) * 100)
-      : 0
+    const responseRate = submitted > 0 ? Math.round((responses / submitted) * 100) : 0
+    const interviewRate = submitted > 0 ? Math.round((interviews / submitted) * 100) : 0
 
-    const avgDaysInPipeline = applications.length > 0
+    // Bara pågående ansökningar — avslutade/arkiverade ska inte dra upp snittet för evigt
+    const inPipeline = applications.filter(
+      a => !a.archivedAt && !['accepted', 'rejected', 'withdrawn'].includes(a.status)
+    )
+    const avgDaysInPipeline = inPipeline.length > 0
       ? Math.round(
-          applications.reduce((sum, app) => {
+          inPipeline.reduce((sum, app) => {
             const days = Math.floor((now.getTime() - new Date(app.createdAt).getTime()) / (1000 * 60 * 60 * 24))
             return sum + days
-          }, 0) / applications.length
+          }, 0) / inPipeline.length
         )
       : 0
 
     return {
       recentCount: recentApplications.length,
+      submitted,
+      responses,
+      interviews,
       responseRate,
       interviewRate,
-      successRate,
       avgDaysInPipeline,
       staleCount: staleApplications.length
     }
-  }, [applications, stats, staleApplications])
+  }, [applications, staleApplications])
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600" />
       </div>
+    )
+  }
+
+  // Ett tomtillstånd, inte noll-dashboard + empty-card staplade (DESIGN.md §7)
+  if (stats.total === 0) {
+    return (
+      <EmptyState
+        icon={BarChart3}
+        title={t('applications.analytics.emptyTitle', 'Här ser du hur ditt jobbsökande går')}
+        description={t('applications.analytics.emptyDescription', 'När du börjar spåra ansökningar visas statistik och insikter om din process här.')}
+      />
     )
   }
 
@@ -295,9 +326,9 @@ export function ApplicationsAnalytics() {
           bgColor="bg-sky-100"
         />
         <StatCard
-          title={t('applications.analytics.interviewRateTitle', 'Intervjufrekvens')}
-          value={`${metrics.interviewRate}%`}
-          subtitle={t('applications.analytics.interviewRateSubtitle', 'Av inskickade ansökningar')}
+          title={t('applications.analytics.interviewsTitle', 'Intervjuer')}
+          value={metrics.interviews}
+          subtitle={t('applications.analytics.interviewsSubtitle', 'Telefon- och platsintervjuer')}
           icon={Users}
           color="text-[var(--c-text)]"
           bgColor="bg-[var(--c-accent)]/40"
@@ -315,7 +346,7 @@ export function ApplicationsAnalytics() {
       {/* Charts row */}
       <div className="grid gap-4 md:grid-cols-2">
         <StatusDistribution applicationsByStatus={applicationsByStatus} />
-        <ConversionFunnel applicationsByStatus={applicationsByStatus} />
+        <ConversionFunnel applications={applications} />
       </div>
 
       {/* Additional metrics and activity */}
@@ -323,40 +354,64 @@ export function ApplicationsAnalytics() {
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5 text-amber-600" />
-            <h3 className="font-semibold text-stone-900">{t('applications.analytics.successMetrics', 'Framgångsmått')}</h3>
+            <h3 className="font-semibold text-stone-900">{t('applications.analytics.successMetrics', 'Så går din process')}</h3>
           </div>
-          <div className="space-y-4">
-            <div>
-              <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-stone-600">{t('applications.analytics.responseRate', 'Svarsfrekvens')}</span>
-                <span className="font-medium text-stone-900">{metrics.responseRate}%</span>
+          {metrics.submitted >= 5 ? (
+            <div className="space-y-4">
+              <div>
+                <div className="flex items-center justify-between text-sm mb-1">
+                  <span className="text-stone-600">{t('applications.analytics.responseRate', 'Svarsfrekvens')}</span>
+                  <span className="font-medium text-stone-900">{metrics.responseRate}%</span>
+                </div>
+                <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-amber-500 rounded-full"
+                    style={{ width: `${metrics.responseRate}%` }}
+                  />
+                </div>
               </div>
-              <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-amber-500 rounded-full"
-                  style={{ width: `${metrics.responseRate}%` }}
-                />
+              <div>
+                <div className="flex items-center justify-between text-sm mb-1">
+                  <span className="text-stone-600">{t('applications.analytics.interviewRateTitle', 'Intervjufrekvens')}</span>
+                  <span className="font-medium text-stone-900">{metrics.interviewRate}%</span>
+                </div>
+                <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-[var(--c-solid)] rounded-full"
+                    style={{ width: `${metrics.interviewRate}%` }}
+                  />
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center justify-between text-sm mb-1">
+                  <span className="text-stone-600">{t('applications.analytics.avgPipeline', 'Genomsnitt i pipeline')}</span>
+                  <span className="font-medium text-stone-900">{t('applications.analytics.days', { count: metrics.avgDaysInPipeline })}</span>
+                </div>
               </div>
             </div>
-            <div>
-              <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-stone-600">{t('applications.analytics.interviewRateTitle', 'Intervjufrekvens')}</span>
-                <span className="font-medium text-stone-900">{metrics.interviewRate}%</span>
+          ) : (
+            /* Under 5 skickade: antal istället för procent — små underlag ger
+               missvisande (och potentiellt nedslående) siffror. DESIGN.md §2. */
+            <div className="space-y-3">
+              <div className="flex items-center justify-between text-sm">
+                <span className="text-stone-600">{t('applications.analytics.submitted', 'Skickade ansökningar')}</span>
+                <span className="font-medium text-stone-900">{metrics.submitted}</span>
               </div>
-              <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-[var(--c-solid)] rounded-full"
-                  style={{ width: `${metrics.interviewRate}%` }}
-                />
-              </div>
+              {metrics.responses > 0 && (
+                <p className="text-sm text-stone-700">
+                  {t('applications.analytics.responsesCount', { count: metrics.responses })}
+                </p>
+              )}
+              {metrics.interviews > 0 && (
+                <p className="text-sm text-stone-700">
+                  {t('applications.analytics.interviewsCount', { count: metrics.interviews })}
+                </p>
+              )}
+              <p className="text-xs text-stone-600">
+                {t('applications.analytics.tooFewForRates', 'Procentsiffror visas när du har skickat minst fem ansökningar — ett litet underlag ger missvisande siffror.')}
+              </p>
             </div>
-            <div>
-              <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-stone-600">{t('applications.analytics.avgPipeline', 'Genomsnitt i pipeline')}</span>
-                <span className="font-medium text-stone-900">{t('applications.analytics.days', { count: metrics.avgDaysInPipeline })}</span>
-              </div>
-            </div>
-          </div>
+          )}
         </Card>
 
         <div className="md:col-span-2">
@@ -364,18 +419,6 @@ export function ApplicationsAnalytics() {
         </div>
       </div>
 
-      {/* Empty state */}
-      {stats.total === 0 && (
-        <Card className="p-12 text-center">
-          <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <BarChart3 className="w-8 h-8 text-stone-600" />
-          </div>
-          <h3 className="text-xl font-semibold text-stone-700 mb-2">{t('applications.analytics.emptyTitle', 'Ingen data än')}</h3>
-          <p className="text-stone-700 max-w-md mx-auto">
-            {t('applications.analytics.emptyDescription', 'Börja spåra dina jobbansökningar för att se statistik och insikter om din ansökningsprocess.')}
-          </p>
-        </Card>
-      )}
     </div>
   )
 }
