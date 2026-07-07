@@ -6,7 +6,7 @@
 import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Plus, Filter, ChevronDown, AlertCircle,
+  Plus, Filter, ChevronDown, AlertCircle, Archive, CheckCircle,
   Sparkles, Bookmark, Send, Eye, Phone, Users, FileCheck, Trophy
 } from '@/components/ui/icons'
 import { Button, Card } from '@/components/ui'
@@ -20,6 +20,41 @@ import {
   type Application,
   type ApplicationStatus
 } from '@/types/application.types'
+
+function CollapsibleSection({
+  id,
+  title,
+  count,
+  icon: Icon,
+  children
+}: {
+  id: string
+  title: string
+  count: number
+  icon: React.ElementType
+  children: React.ReactNode
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <div className="border border-stone-200 rounded-xl bg-white">
+      <button
+        onClick={() => setOpen(!open)}
+        aria-expanded={open}
+        aria-controls={id}
+        className="w-full flex items-center justify-between p-3 text-left hover:bg-stone-50 rounded-xl transition-colors"
+      >
+        <span className="flex items-center gap-2 font-medium text-stone-800 text-sm">
+          <Icon className="w-4 h-4 text-stone-500" aria-hidden="true" />
+          {title}
+          <span className="px-2 py-0.5 rounded-full text-xs bg-stone-100 text-stone-600">{count}</span>
+        </span>
+        <ChevronDown className={cn('w-4 h-4 text-stone-500 transition-transform', open && 'rotate-180')} aria-hidden="true" />
+      </button>
+      {open && <div id={id} className="p-3 pt-0">{children}</div>}
+    </div>
+  )
+}
 
 interface ApplicationsPipelineProps {
   onAddApplication?: () => void
@@ -126,14 +161,16 @@ export function ApplicationsPipeline({
   onViewApplication,
   onEditApplication
 }: ApplicationsPipelineProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const {
     applicationsByStatus,
+    archivedApplications,
     staleApplications,
     stats,
     isLoading,
     updateStatus,
     archiveApplication,
+    unarchiveApplication,
     deleteApplication
   } = useApplications()
 
@@ -180,6 +217,23 @@ export function ApplicationsPipeline({
       console.error('Failed to archive:', error)
     }
   }
+
+  const handleUnarchive = async (id: string) => {
+    try {
+      await unarchiveApplication(id)
+    } catch (error) {
+      console.error('Failed to unarchive:', error)
+    }
+  }
+
+  // Avslutade (terminala, ej arkiverade) — visas i egen sektion under pipelinen
+  const completedApplications = useMemo(() => {
+    return [
+      ...applicationsByStatus.accepted,
+      ...applicationsByStatus.rejected,
+      ...applicationsByStatus.withdrawn,
+    ].sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
+  }, [applicationsByStatus])
 
   const handleDelete = async (id: string) => {
     try {
@@ -337,6 +391,65 @@ export function ApplicationsPipeline({
             />
           ))}
         </div>
+      )}
+
+      {/* Avslutade ansökningar (accepterad/avslag/återkallad) */}
+      {completedApplications.length > 0 && (
+        <CollapsibleSection
+          id="completed-applications"
+          title={t('applications.pipeline.completedSection', 'Avslutade')}
+          count={completedApplications.length}
+          icon={CheckCircle}
+        >
+          <div className="grid gap-3 md:grid-cols-2">
+            {completedApplications.map(app => (
+              <ApplicationCard
+                key={app.id}
+                application={app}
+                onStatusChange={handleStatusChange}
+                onViewDetails={onViewApplication}
+                onEdit={onEditApplication}
+                onArchive={handleArchive}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+        </CollapsibleSection>
+      )}
+
+      {/* Arkiverade ansökningar med möjlighet att återställa */}
+      {archivedApplications.length > 0 && (
+        <CollapsibleSection
+          id="archived-applications"
+          title={t('applications.pipeline.archiveSection', 'Arkiv')}
+          count={archivedApplications.length}
+          icon={Archive}
+        >
+          <div className="space-y-2">
+            {archivedApplications.map(app => {
+              const jobData = app.jobData as { employer?: { name?: string }; headline?: string } | undefined
+              const title = app.jobTitle || jobData?.headline || t('applications.common.unknownTitle', 'Okänd tjänst')
+              const company = app.companyName || jobData?.employer?.name || t('applications.common.unknownCompany', 'Okänt företag')
+              return (
+                <div key={app.id} className="flex items-center justify-between gap-3 p-3 bg-stone-50 rounded-lg">
+                  <button
+                    onClick={() => onViewApplication?.(app)}
+                    className="min-w-0 text-left flex-1 hover:underline"
+                  >
+                    <p className="text-sm font-medium text-stone-800 truncate">{title}</p>
+                    <p className="text-xs text-stone-600 truncate">
+                      {company}
+                      {app.archivedAt && ` • ${t('applications.pipeline.archivedOn', { date: new Date(app.archivedAt).toLocaleDateString(i18n.language) })}`}
+                    </p>
+                  </button>
+                  <Button variant="outline" size="sm" onClick={() => handleUnarchive(app.id)}>
+                    {t('applications.pipeline.restore', 'Återställ')}
+                  </Button>
+                </div>
+              )
+            })}
+          </div>
+        </CollapsibleSection>
       )}
 
       {/* Empty state */}

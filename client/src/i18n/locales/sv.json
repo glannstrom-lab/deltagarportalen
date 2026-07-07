@@ -2089,7 +2089,11 @@
       "priorityHigh": "Hög prioritet",
       "priorityMedium": "Medium prioritet",
       "priorityLow": "Låg prioritet",
-      "emptyColumn": "Inga ansökningar"
+      "emptyColumn": "Inga ansökningar",
+      "completedSection": "Avslutade",
+      "archiveSection": "Arkiv",
+      "restore": "Återställ",
+      "archivedOn": "Arkiverad {{date}}"
     },
     "card": {
       "updatedToday": "Uppdaterad idag",
@@ -2166,18 +2170,27 @@
       "activeSubtitle": "Pågående ansökningar",
       "interviewRateTitle": "Intervjufrekvens",
       "interviewRateSubtitle": "Av inskickade ansökningar",
+      "interviewsTitle": "Intervjuer",
+      "interviewsSubtitle": "Telefon- och platsintervjuer",
       "staleTitle": "Behöver uppföljning",
       "staleSubtitle": "Ej uppdaterade 7+ dagar",
       "statusDistribution": "Statusfördelning",
       "funnel": "Ansökningstratt",
+      "funnelHint": "Antal ansökningar som nått minst varje steg",
       "recentActivity": "Senaste aktivitet",
-      "successMetrics": "Framgångsmått",
+      "successMetrics": "Så går din process",
       "responseRate": "Svarsfrekvens",
       "avgPipeline": "Genomsnitt i pipeline",
       "days_one": "{{count}} dag",
       "days_other": "{{count}} dagar",
-      "emptyTitle": "Ingen data än",
-      "emptyDescription": "Börja spåra dina jobbansökningar för att se statistik och insikter om din ansökningsprocess."
+      "submitted": "Skickade ansökningar",
+      "responsesCount_one": "{{count}} arbetsgivare har hört av sig",
+      "responsesCount_other": "{{count}} arbetsgivare har hört av sig",
+      "interviewsCount_one": "{{count}} intervju bokad",
+      "interviewsCount_other": "{{count}} intervjuer bokade",
+      "tooFewForRates": "Procentsiffror visas när du har skickat minst fem ansökningar — ett litet underlag ger missvisande siffror.",
+      "emptyTitle": "Här ser du hur ditt jobbsökande går",
+      "emptyDescription": "När du börjar spåra ansökningar visas statistik och insikter om din process här."
     },
     "form": {
       "addTitle": "Lägg till ansökan",

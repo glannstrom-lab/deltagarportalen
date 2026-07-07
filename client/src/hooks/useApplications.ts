@@ -165,6 +165,15 @@ export function useApplications(
     }
   })
 
+  // Unarchive application
+  const unarchiveMutation = useMutation({
+    mutationFn: (id: string) => applicationsApi.unarchive(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.applications })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.stats })
+    }
+  })
+
   // Delete application
   const deleteMutation = useMutation({
     mutationFn: (id: string) => applicationsApi.delete(id),
@@ -233,6 +242,10 @@ export function useApplications(
     return archiveMutation.mutateAsync(id)
   }, [archiveMutation])
 
+  const unarchiveApplication = useCallback(async (id: string) => {
+    return unarchiveMutation.mutateAsync(id)
+  }, [unarchiveMutation])
+
   const deleteApplication = useCallback(async (id: string) => {
     return deleteMutation.mutateAsync(id)
   }, [deleteMutation])
@@ -282,11 +295,17 @@ export function useApplications(
     )
   }, [applications])
 
+  // Archived applications
+  const archivedApplications = useMemo(() => {
+    return applications.filter(a => a.archivedAt)
+  }, [applications])
+
   return {
     // Data
     applications,
     applicationsByStatus,
     activeApplications,
+    archivedApplications,
     staleApplications,
     stats: stats || {
       total: 0, interested: 0, saved: 0, applied: 0, screening: 0,
@@ -307,6 +326,7 @@ export function useApplications(
     updateStatus,
     updateApplication,
     archiveApplication,
+    unarchiveApplication,
     deleteApplication,
     createApplication: createMutation.mutateAsync,
 

@@ -2082,7 +2082,11 @@
       "priorityHigh": "High priority",
       "priorityMedium": "Medium priority",
       "priorityLow": "Low priority",
-      "emptyColumn": "No applications"
+      "emptyColumn": "No applications",
+      "completedSection": "Completed",
+      "archiveSection": "Archive",
+      "restore": "Restore",
+      "archivedOn": "Archived {{date}}"
     },
     "card": {
       "updatedToday": "Updated today",
@@ -2159,18 +2163,27 @@
       "activeSubtitle": "Applications in progress",
       "interviewRateTitle": "Interview rate",
       "interviewRateSubtitle": "Of submitted applications",
+      "interviewsTitle": "Interviews",
+      "interviewsSubtitle": "Phone and on-site interviews",
       "staleTitle": "Needs follow-up",
       "staleSubtitle": "Not updated in 7+ days",
       "statusDistribution": "Status distribution",
       "funnel": "Application funnel",
+      "funnelHint": "Applications that reached at least each stage",
       "recentActivity": "Recent activity",
-      "successMetrics": "Progress metrics",
+      "successMetrics": "How your process is going",
       "responseRate": "Response rate",
       "avgPipeline": "Average time in pipeline",
       "days_one": "{{count}} day",
       "days_other": "{{count}} days",
-      "emptyTitle": "No data yet",
-      "emptyDescription": "Start tracking your job applications to see statistics and insights about your application process."
+      "submitted": "Submitted applications",
+      "responsesCount_one": "{{count}} employer has responded",
+      "responsesCount_other": "{{count}} employers have responded",
+      "interviewsCount_one": "{{count}} interview booked",
+      "interviewsCount_other": "{{count}} interviews booked",
+      "tooFewForRates": "Percentages appear once you have submitted at least five applications — small numbers give misleading figures.",
+      "emptyTitle": "Here you can see how your job search is going",
+      "emptyDescription": "Once you start tracking applications, statistics and insights about your process will appear here."
     },
     "form": {
       "addTitle": "Add application",
