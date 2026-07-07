@@ -25,6 +25,10 @@ import type {
 } from '@/types/application.types'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 
+// Hur långt fram kommande påminnelser hämtas — 7 dagar dolde t.ex. en
+// intervju om två veckor helt i Kalender-fliken
+export const UPCOMING_REMINDER_DAYS = 30
+
 // Query keys
 const QUERY_KEYS = {
   applications: ['applications'] as const,
@@ -86,8 +90,8 @@ export function useApplications(
 
   // Upcoming reminders
   const { data: upcomingReminders = [] } = useQuery({
-    queryKey: QUERY_KEYS.upcomingReminders(7),
-    queryFn: () => applicationRemindersApi.getUpcoming(7),
+    queryKey: QUERY_KEYS.upcomingReminders(UPCOMING_REMINDER_DAYS),
+    queryFn: () => applicationRemindersApi.getUpcoming(UPCOMING_REMINDER_DAYS),
     staleTime: 5 * 60 * 1000,
   })
 
@@ -419,7 +423,7 @@ export function useApplication(id: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.reminders(id) })
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.history(id) })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.upcomingReminders(7) })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.upcomingReminders(UPCOMING_REMINDER_DAYS) })
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.todayReminders })
     }
   })
@@ -429,7 +433,7 @@ export function useApplication(id: string) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.reminders(id) })
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.history(id) })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.upcomingReminders(7) })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.upcomingReminders(UPCOMING_REMINDER_DAYS) })
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.todayReminders })
     }
   })
@@ -438,7 +442,7 @@ export function useApplication(id: string) {
     mutationFn: (reminderId: string) => applicationRemindersApi.delete(reminderId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.reminders(id) })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.upcomingReminders(7) })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.upcomingReminders(UPCOMING_REMINDER_DAYS) })
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.todayReminders })
     }
   })
@@ -491,8 +495,8 @@ export function useApplicationReminders() {
     data: upcomingReminders = [],
     isLoading: isLoadingUpcoming
   } = useQuery({
-    queryKey: QUERY_KEYS.upcomingReminders(7),
-    queryFn: () => applicationRemindersApi.getUpcoming(7),
+    queryKey: QUERY_KEYS.upcomingReminders(UPCOMING_REMINDER_DAYS),
+    queryFn: () => applicationRemindersApi.getUpcoming(UPCOMING_REMINDER_DAYS),
     staleTime: 5 * 60 * 1000
   })
 
@@ -500,7 +504,7 @@ export function useApplicationReminders() {
     mutationFn: (id: string) => applicationRemindersApi.complete(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.todayReminders })
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.upcomingReminders(7) })
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.upcomingReminders(UPCOMING_REMINDER_DAYS) })
     }
   })
 

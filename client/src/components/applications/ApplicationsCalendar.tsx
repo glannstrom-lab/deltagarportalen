@@ -158,7 +158,7 @@ export function ApplicationsCalendar() {
 
       {/* Upcoming reminders */}
       <div>
-        <h2 className="text-lg font-semibold text-stone-900 mb-4">{t('applications.calendar.upcoming', 'Kommande 7 dagar')}</h2>
+        <h2 className="text-lg font-semibold text-stone-900 mb-4">{t('applications.calendar.upcoming', 'Kommande 30 dagar')}</h2>
 
         {futureReminders.length === 0 ? (
           <Card className="p-8 text-center">

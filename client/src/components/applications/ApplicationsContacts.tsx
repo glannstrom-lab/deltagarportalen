@@ -3,17 +3,18 @@
  * CRM-style view for managing recruiter contacts
  */
 
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   User, Mail, Phone, Linkedin, MoreVertical,
-  Edit2, Trash2, MessageSquare, Clock, X
+  Edit2, Trash2, MessageSquare, Clock, X, Briefcase
 } from '@/components/ui/icons'
 import { Button, Card, useConfirmDialog } from '@/components/ui'
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
 } from '@/components/ui/DropdownMenu'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
+import { useApplications } from '@/hooks/useApplications'
 import { applicationContactsApi } from '@/services/applicationsApi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { ApplicationContact, CreateContactInput } from '@/types/application.types'
@@ -173,11 +174,14 @@ function ContactEditModal({
 
 function ContactCard({
   contact,
+  applicationLabel,
   onEdit,
   onDelete,
   onMarkContacted
 }: {
   contact: ApplicationContact
+  /** "Tjänst · Företag" för ansökan kontakten hör till */
+  applicationLabel?: string
   onEdit: (contact: ApplicationContact) => void
   onDelete: (id: string) => void
   onMarkContacted: (id: string) => void
@@ -208,6 +212,12 @@ function ContactCard({
               </h3>
               {contact.title && (
                 <p className="text-sm text-stone-700">{contact.title}</p>
+              )}
+              {applicationLabel && (
+                <p className="text-xs text-stone-600 mt-0.5 flex items-center gap-1">
+                  <Briefcase className="w-3 h-3 flex-shrink-0" aria-hidden="true" />
+                  <span className="truncate">{applicationLabel}</span>
+                </p>
               )}
             </div>
 
@@ -307,6 +317,21 @@ export function ApplicationsContacts() {
     staleTime: 60 * 1000
   })
 
+  // Koppling kontakt -> ansökan ("Tjänst · Företag") — utan den säger
+  // kontaktlistan inget om vilken process kontakten hör till
+  const { applications } = useApplications()
+  const applicationLabelById = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const app of applications) {
+      const jobData = app.jobData as { employer?: { name?: string }; headline?: string } | undefined
+      const title = app.jobTitle || jobData?.headline
+      const company = app.companyName || jobData?.employer?.name
+      const label = [title, company].filter(Boolean).join(' · ')
+      if (label) map.set(app.id, label)
+    }
+    return map
+  }, [applications])
+
   const markContactedMutation = useMutation({
     mutationFn: (id: string) => applicationContactsApi.markContacted(id),
     onSuccess: () => {
@@ -395,6 +420,7 @@ export function ApplicationsContacts() {
             <ContactCard
               key={contact.id}
               contact={contact}
+              applicationLabel={applicationLabelById.get(contact.applicationId)}
               onEdit={handleEdit}
               onDelete={handleDelete}
               onMarkContacted={handleMarkContacted}

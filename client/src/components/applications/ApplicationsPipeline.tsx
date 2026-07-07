@@ -7,9 +7,9 @@ import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Plus, Filter, ChevronDown, AlertCircle, Archive, CheckCircle,
-  Sparkles, Bookmark, Send, Eye, Phone, Users, FileCheck, Trophy
+  Sparkles, Bookmark, Send, Eye, Phone, Users, FileCheck, Trophy, Search
 } from '@/components/ui/icons'
-import { Button, Card } from '@/components/ui'
+import { Button, Card, EmptyState } from '@/components/ui'
 import {
   DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
 } from '@/components/ui/DropdownMenu'
@@ -178,31 +178,36 @@ export function ApplicationsPipeline({
   } = useApplications()
 
   const [priorityFilter, setPriorityFilter] = useState<string | null>(null)
+  const [searchQuery, setSearchQuery] = useState('')
 
-  // Filter applications by priority if set
+  // Filter applications by priority and search query
   const filteredByStatus = useMemo(() => {
-    if (!priorityFilter) return applicationsByStatus
+    const q = searchQuery.trim().toLowerCase()
+    if (!priorityFilter && !q) return applicationsByStatus
 
-    const filtered: typeof applicationsByStatus = {
-      interested: [],
-      saved: [],
-      applied: [],
-      screening: [],
-      phone: [],
-      interview: [],
-      assessment: [],
-      offer: [],
-      accepted: [],
-      rejected: [],
-      withdrawn: []
+    const matches = (a: Application) => {
+      if (priorityFilter && a.priority !== priorityFilter) return false
+      if (!q) return true
+      const jobData = a.jobData as { employer?: { name?: string }; headline?: string } | undefined
+      const haystack = [
+        a.jobTitle, a.companyName, a.location,
+        jobData?.headline, jobData?.employer?.name
+      ].filter(Boolean).join(' ').toLowerCase()
+      return haystack.includes(q)
     }
 
+    const filtered = {} as typeof applicationsByStatus
     Object.entries(applicationsByStatus).forEach(([status, apps]) => {
-      filtered[status as ApplicationStatus] = apps.filter(a => a.priority === priorityFilter)
+      filtered[status as ApplicationStatus] = apps.filter(matches)
     })
-
     return filtered
-  }, [applicationsByStatus, priorityFilter])
+  }, [applicationsByStatus, priorityFilter, searchQuery])
+
+  const hasActiveFilter = Boolean(priorityFilter || searchQuery.trim())
+  const visibleCount = useMemo(
+    () => PIPELINE_COLUMNS.reduce((sum, s) => sum + filteredByStatus[s].length, 0),
+    [filteredByStatus]
+  )
 
   const handleStatusChange = async (id: string, newStatus: ApplicationStatus) => {
     try {
@@ -266,7 +271,20 @@ export function ApplicationsPipeline({
           </span>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-500" aria-hidden="true" />
+            <input
+              type="search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t('applications.pipeline.searchPlaceholder', 'Sök företag eller tjänst')}
+              aria-label={t('applications.pipeline.searchPlaceholder', 'Sök företag eller tjänst')}
+              className="w-40 sm:w-56 pl-9 pr-3 py-2 text-sm border border-stone-200 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)]"
+            />
+          </div>
+
           {/* Priority filter */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -350,23 +368,73 @@ export function ApplicationsPipeline({
         </Card>
       )}
 
-      {/* Pipeline columns — visa bara när användaren har minst en ansökan.
-          När total är 0 visas bara empty-state-Card nedan (inte två tomtillstånd). */}
-      {stats.total > 0 && (
-        <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
-          {PIPELINE_COLUMNS.map((status) => (
-            <PipelineColumn
-              key={status}
-              status={status}
-              applications={filteredByStatus[status]}
-              onStatusChange={handleStatusChange}
-              onViewApplication={onViewApplication}
-              onEditApplication={onEditApplication}
-              onArchive={handleArchive}
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
+      {/* Nollresultat vid aktiv sökning/filter — istället för åtta tomma kolumner */}
+      {stats.total > 0 && hasActiveFilter && visibleCount === 0 && (
+        <EmptyState
+          icon={Search}
+          title={t('applications.pipeline.noResultsTitle', 'Inga ansökningar matchar din sökning')}
+          description={t('applications.pipeline.noResultsDescription', 'Prova andra sökord eller rensa filtren.')}
+          action={{
+            label: t('applications.pipeline.clearFilters', 'Rensa filter'),
+            onClick: () => { setSearchQuery(''); setPriorityFilter(null) },
+            variant: 'secondary',
+          }}
+        />
+      )}
+
+      {/* Pipeline — kanban på ≥sm, grupperad lista på mobil (8 kolumner
+          horisontell scroll är för tungt på små skärmar).
+          Visas bara när användaren har minst en ansökan — när total är 0
+          visas bara empty-state-Card nedan (inte två tomtillstånd). */}
+      {stats.total > 0 && !(hasActiveFilter && visibleCount === 0) && (
+        <>
+          <div className="hidden sm:flex gap-3 overflow-x-auto pb-4">
+            {PIPELINE_COLUMNS.map((status) => (
+              <PipelineColumn
+                key={status}
+                status={status}
+                applications={filteredByStatus[status]}
+                onStatusChange={handleStatusChange}
+                onViewApplication={onViewApplication}
+                onEditApplication={onEditApplication}
+                onArchive={handleArchive}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+
+          <div className="sm:hidden space-y-5">
+            {PIPELINE_COLUMNS.filter(status => filteredByStatus[status].length > 0).map((status) => {
+              const config = APPLICATION_STATUS_CONFIG[status]
+              const Icon = STATUS_ICONS[status]
+              return (
+                <section key={status} aria-label={t(`applications.status.${status}`, getStatusLabel(status))}>
+                  <h3 className="flex items-center gap-2 mb-2 font-semibold text-stone-900 text-sm">
+                    <Icon className={cn('w-4 h-4', config.color)} aria-hidden="true" />
+                    {t(`applications.status.${status}`, getStatusLabel(status))}
+                    <span className={cn('px-2 py-0.5 rounded-full text-xs font-medium', config.bgColor, config.color)}>
+                      {filteredByStatus[status].length}
+                    </span>
+                  </h3>
+                  <div className="space-y-2">
+                    {filteredByStatus[status].map(app => (
+                      <ApplicationCard
+                        key={app.id}
+                        application={app}
+                        variant="compact"
+                        onStatusChange={handleStatusChange}
+                        onViewDetails={onViewApplication}
+                        onEdit={onEditApplication}
+                        onArchive={handleArchive}
+                        onDelete={handleDelete}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )
+            })}
+          </div>
+        </>
       )}
 
       {/* Avslutade ansökningar (accepterad/avslag/återkallad) */}
