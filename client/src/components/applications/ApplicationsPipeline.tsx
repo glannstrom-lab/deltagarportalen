@@ -10,6 +10,9 @@ import {
   Sparkles, Bookmark, Send, Eye, Phone, Users, FileCheck, Trophy
 } from '@/components/ui/icons'
 import { Button, Card } from '@/components/ui'
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
+} from '@/components/ui/DropdownMenu'
 import { cn } from '@/lib/utils'
 import { ApplicationCard } from './ApplicationCard'
 import { useApplications } from '@/hooks/useApplications'
@@ -174,7 +177,6 @@ export function ApplicationsPipeline({
     deleteApplication
   } = useApplications()
 
-  const [showFilters, setShowFilters] = useState(false)
   const [priorityFilter, setPriorityFilter] = useState<string | null>(null)
 
   // Filter applications by priority if set
@@ -246,7 +248,7 @@ export function ApplicationsPipeline({
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600" role="status" aria-label="Laddar" />
       </div>
     )
   }
@@ -266,69 +268,43 @@ export function ApplicationsPipeline({
 
         <div className="flex items-center gap-2">
           {/* Priority filter */}
-          <div className="relative">
-            <button
-              onClick={() => setShowFilters(!showFilters)}
-              className={cn(
-                "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-sm",
-                priorityFilter
-                  ? "border-[var(--c-accent)] bg-[var(--c-bg)] text-[var(--c-text)]"
-                  : "border-stone-200 hover:bg-stone-50 text-stone-600"
-              )}
-            >
-              <Filter className="w-4 h-4" />
-              <span className="hidden sm:inline">
-                {priorityFilter
-                  ? t(`applications.pipeline.priority${priorityFilter.charAt(0).toUpperCase()}${priorityFilter.slice(1)}`)
-                  : t('applications.pipeline.filter', 'Filter')}
-              </span>
-              <ChevronDown className="w-4 h-4" />
-            </button>
-
-            {showFilters && (
-              <>
-                <div className="fixed inset-0 z-10" onClick={() => setShowFilters(false)} />
-                <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[150px]">
-                  <button
-                    onClick={() => { setPriorityFilter(null); setShowFilters(false) }}
-                    className={cn(
-                      "w-full text-left px-3 py-2 text-sm hover:bg-stone-50",
-                      !priorityFilter && "text-[var(--c-text)] bg-[var(--c-bg)]"
-                    )}
-                  >
-                    {t('applications.pipeline.allPriorities', 'Alla prioriteter')}
-                  </button>
-                  <button
-                    onClick={() => { setPriorityFilter('high'); setShowFilters(false) }}
-                    className={cn(
-                      "w-full text-left px-3 py-2 text-sm hover:bg-stone-50",
-                      priorityFilter === 'high' && "text-[var(--c-text)] bg-[var(--c-bg)]"
-                    )}
-                  >
-                    {t('applications.pipeline.priorityHigh', 'Hög prioritet')}
-                  </button>
-                  <button
-                    onClick={() => { setPriorityFilter('medium'); setShowFilters(false) }}
-                    className={cn(
-                      "w-full text-left px-3 py-2 text-sm hover:bg-stone-50",
-                      priorityFilter === 'medium' && "text-[var(--c-text)] bg-[var(--c-bg)]"
-                    )}
-                  >
-                    {t('applications.pipeline.priorityMedium', 'Medium prioritet')}
-                  </button>
-                  <button
-                    onClick={() => { setPriorityFilter('low'); setShowFilters(false) }}
-                    className={cn(
-                      "w-full text-left px-3 py-2 text-sm hover:bg-stone-50",
-                      priorityFilter === 'low' && "text-[var(--c-text)] bg-[var(--c-bg)]"
-                    )}
-                  >
-                    {t('applications.pipeline.priorityLow', 'Låg prioritet')}
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button
+                aria-haspopup="menu"
+                className={cn(
+                  "flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors text-sm",
+                  priorityFilter
+                    ? "border-[var(--c-accent)] bg-[var(--c-bg)] text-[var(--c-text)]"
+                    : "border-stone-200 hover:bg-stone-50 text-stone-600"
+                )}
+              >
+                <Filter className="w-4 h-4" />
+                <span className="hidden sm:inline">
+                  {priorityFilter
+                    ? t(`applications.pipeline.priority${priorityFilter.charAt(0).toUpperCase()}${priorityFilter.slice(1)}`)
+                    : t('applications.pipeline.filter', 'Filter')}
+                </span>
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="min-w-[150px]">
+              {([
+                { value: null, labelKey: 'applications.pipeline.allPriorities', fallback: 'Alla prioriteter' },
+                { value: 'high', labelKey: 'applications.pipeline.priorityHigh', fallback: 'Hög prioritet' },
+                { value: 'medium', labelKey: 'applications.pipeline.priorityMedium', fallback: 'Medium prioritet' },
+                { value: 'low', labelKey: 'applications.pipeline.priorityLow', fallback: 'Låg prioritet' },
+              ] as const).map(opt => (
+                <DropdownMenuItem
+                  key={opt.labelKey}
+                  onClick={() => setPriorityFilter(opt.value)}
+                  className={priorityFilter === opt.value ? 'text-[var(--c-text)] bg-[var(--c-bg)]' : undefined}
+                >
+                  {t(opt.labelKey, opt.fallback)}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
 
           {/* Mobil-CTA — på desktop finns "Ny ansökan" redan i sidans header.
               På mobil är den header-knappen dold (sm:flex) så vi behöver en

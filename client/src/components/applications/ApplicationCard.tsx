@@ -3,14 +3,16 @@
  * Displays a single job application in the pipeline/list
  */
 
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Building2, MapPin, ExternalLink, MoreVertical,
   Clock, Calendar, AlertCircle, ChevronRight,
   Trash2, Archive, Edit2, FileText
 } from '@/components/ui/icons'
-import { Card } from '@/components/ui'
+import { Card, useConfirmDialog } from '@/components/ui'
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
+} from '@/components/ui/DropdownMenu'
 import { cn } from '@/lib/utils'
 import {
   APPLICATION_STATUS_CONFIG,
@@ -44,8 +46,7 @@ export function ApplicationCard({
   showActions = true
 }: ApplicationCardProps) {
   const { t } = useTranslation()
-  const [showMenu, setShowMenu] = useState(false)
-  const [showStatusMenu, setShowStatusMenu] = useState(false)
+  const { confirm } = useConfirmDialog()
 
   const statusConfig = APPLICATION_STATUS_CONFIG[application.status]
   const jobData = application.jobData as { employer?: { name?: string }; headline?: string; workplace_address?: { municipality?: string } } | undefined
@@ -65,9 +66,15 @@ export function ApplicationCard({
     low: 'bg-stone-100 text-stone-600 border-stone-200'
   }
 
-  const handleStatusChange = (newStatus: ApplicationStatus) => {
-    onStatusChange?.(application.id, newStatus)
-    setShowStatusMenu(false)
+  const handleDelete = async () => {
+    const ok = await confirm({
+      title: t('applications.common.delete', 'Ta bort'),
+      message: t('applications.card.deleteConfirm', 'Ta bort denna ansökan?'),
+      confirmText: t('applications.common.delete', 'Ta bort'),
+      cancelText: t('applications.common.cancel', 'Avbryt'),
+      variant: 'danger',
+    })
+    if (ok) onDelete?.(application.id)
   }
 
   if (variant === 'compact') {
@@ -134,122 +141,70 @@ export function ApplicationCard({
             </div>
 
             {showActions && (
-              <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+              /* Synlig på touch (ingen hover) och vid tangentbordsfokus; hover-gated
+                 endast på desktop. stopPropagation hindrar kortets onClick. */
+              <div
+                className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity"
+                onClick={(e) => e.stopPropagation()}
+              >
                 {/* Quick status change */}
-                <div className="relative">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setShowStatusMenu(!showStatusMenu)
-                    }}
-                    className={cn(
-                      "px-2 py-1 rounded text-xs font-medium border transition-colors",
-                      statusConfig.bgColor, statusConfig.color, statusConfig.borderColor,
-                      "hover:opacity-80"
-                    )}
-                  >
-                    {t(`applications.status.${application.status}`, getStatusLabel(application.status))}
-                    <ChevronRight className="w-3 h-3 ml-1 inline" />
-                  </button>
-
-                  {showStatusMenu && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-10"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setShowStatusMenu(false)
-                        }}
-                      />
-                      <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[140px]">
-                        {getNextStatuses(application.status).map((status) => {
-                          const config = APPLICATION_STATUS_CONFIG[status]
-                          return (
-                            <button
-                              key={status}
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleStatusChange(status)
-                              }}
-                              className={cn(
-                                "w-full text-left px-3 py-1.5 text-sm hover:bg-stone-50 flex items-center gap-2",
-                                config.color
-                              )}
-                            >
-                              <span className={cn("w-2 h-2 rounded-full", config.bgColor)} />
-                              {t(`applications.status.${status}`, getStatusLabel(status))}
-                            </button>
-                          )
-                        })}
-                      </div>
-                    </>
-                  )}
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      aria-haspopup="menu"
+                      className={cn(
+                        "px-2 py-1 rounded text-xs font-medium border transition-colors",
+                        statusConfig.bgColor, statusConfig.color, statusConfig.borderColor,
+                        "hover:opacity-80"
+                      )}
+                    >
+                      {t(`applications.status.${application.status}`, getStatusLabel(application.status))}
+                      <ChevronRight className="w-3 h-3 ml-1 inline" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="min-w-[140px]">
+                    {getNextStatuses(application.status).map((status) => {
+                      const config = APPLICATION_STATUS_CONFIG[status]
+                      return (
+                        <DropdownMenuItem
+                          key={status}
+                          onClick={() => onStatusChange?.(application.id, status)}
+                          className={config.color}
+                        >
+                          <span className={cn("w-2 h-2 rounded-full", config.bgColor)} />
+                          {t(`applications.status.${status}`, getStatusLabel(status))}
+                        </DropdownMenuItem>
+                      )
+                    })}
+                  </DropdownMenuContent>
+                </DropdownMenu>
 
                 {/* More actions menu */}
-                <div className="relative">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setShowMenu(!showMenu)
-                    }}
-                    aria-label={t('applications.card.moreActions', 'Fler åtgärder')}
-                    aria-haspopup="menu"
-                    aria-expanded={showMenu}
-                    className="p-1.5 hover:bg-stone-100 rounded"
-                  >
-                    <MoreVertical className="w-4 h-4 text-stone-600" aria-hidden="true" />
-                  </button>
-
-                  {showMenu && (
-                    <>
-                      <div
-                        className="fixed inset-0 z-10"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setShowMenu(false)
-                        }}
-                      />
-                      <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[150px]">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onEdit?.(application)
-                            setShowMenu(false)
-                          }}
-                          className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
-                        >
-                          <Edit2 className="w-4 h-4" />
-                          {t('applications.common.edit', 'Redigera')}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            onArchive?.(application.id)
-                            setShowMenu(false)
-                          }}
-                          className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
-                        >
-                          <Archive className="w-4 h-4" />
-                          {t('applications.common.archive', 'Arkivera')}
-                        </button>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            if (confirm(t('applications.card.deleteConfirm', 'Ta bort denna ansökan?'))) {
-                              onDelete?.(application.id)
-                            }
-                            setShowMenu(false)
-                          }}
-                          className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          {t('applications.common.delete', 'Ta bort')}
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      aria-label={t('applications.card.moreActions', 'Fler åtgärder')}
+                      aria-haspopup="menu"
+                      className="p-1.5 hover:bg-stone-100 rounded"
+                    >
+                      <MoreVertical className="w-4 h-4 text-stone-600" aria-hidden="true" />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="min-w-[150px]">
+                    <DropdownMenuItem onClick={() => onEdit?.(application)}>
+                      <Edit2 className="w-4 h-4" />
+                      {t('applications.common.edit', 'Redigera')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onArchive?.(application.id)}>
+                      <Archive className="w-4 h-4" />
+                      {t('applications.common.archive', 'Arkivera')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleDelete} className="text-red-600 hover:bg-red-50">
+                      <Trash2 className="w-4 h-4" />
+                      {t('applications.common.delete', 'Ta bort')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             )}
           </div>

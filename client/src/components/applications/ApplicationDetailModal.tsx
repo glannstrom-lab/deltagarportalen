@@ -10,9 +10,10 @@ import {
   Edit2, Trash2, Archive, Bell, User,
   ChevronRight, Plus, FileText, CheckCircle, Save
 } from '@/components/ui/icons'
-import { Button, Card } from '@/components/ui'
+import { Button, Card, useConfirmDialog } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { useApplication, useApplications } from '@/hooks/useApplications'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { DocumentSelector } from './DocumentSelector'
 import {
   APPLICATION_STATUS_CONFIG,
@@ -30,6 +31,8 @@ interface ApplicationDetailModalProps {
   isOpen: boolean
   onClose: () => void
   onEdit: (application: Application) => void
+  /** Pausar fokusfällan när en annan modal (t.ex. redigering) ligger ovanpå. */
+  suspended?: boolean
 }
 
 const REMINDER_TYPE_OPTIONS: { value: ReminderType; label: string }[] = [
@@ -254,9 +257,11 @@ export function ApplicationDetailModal({
   application,
   isOpen,
   onClose,
-  onEdit
+  onEdit,
+  suspended = false
 }: ApplicationDetailModalProps) {
   const { t, i18n } = useTranslation()
+  const { confirm } = useConfirmDialog()
   const { updateStatus, updateApplication, archiveApplication, deleteApplication } = useApplications()
   const {
     contacts,
@@ -274,6 +279,20 @@ export function ApplicationDetailModal({
   const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'contacts' | 'reminders' | 'documents'>('overview')
   const [showContactForm, setShowContactForm] = useState(false)
   const [showReminderForm, setShowReminderForm] = useState(false)
+  const [confirmOpen, setConfirmOpen] = useState(false)
+
+  // Fokusfälla + Escape (WCAG 2.1.2). Pausas när redigeringsmodal eller
+  // bekräftelsedialog ligger ovanpå så att deras egna fällor tar över.
+  // Escape stänger statusmenyn först om den är öppen.
+  const modalRef = useFocusTrap<HTMLDivElement>(isOpen && !suspended && !confirmOpen, {
+    onEscape: () => {
+      if (showStatusMenu) {
+        setShowStatusMenu(false)
+      } else {
+        onClose()
+      }
+    }
+  })
 
   const handleAddContact = async (input: Omit<CreateContactInput, 'applicationId'>) => {
     await addContact(input)
@@ -356,7 +375,16 @@ export function ApplicationDetailModal({
   }
 
   const handleDelete = async () => {
-    if (confirm(t('applications.detail.deleteConfirm', 'Är du säker på att du vill ta bort denna ansökan? Detta går inte att ångra.'))) {
+    setConfirmOpen(true)
+    const ok = await confirm({
+      title: t('applications.common.delete', 'Ta bort'),
+      message: t('applications.detail.deleteConfirm', 'Är du säker på att du vill ta bort denna ansökan? Detta går inte att ångra.'),
+      confirmText: t('applications.common.delete', 'Ta bort'),
+      cancelText: t('applications.common.cancel', 'Avbryt'),
+      variant: 'danger',
+    })
+    setConfirmOpen(false)
+    if (ok) {
       try {
         await deleteApplication(application.id)
         onClose()
@@ -369,8 +397,13 @@ export function ApplicationDetailModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
-      <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="application-detail-title"
+    >
+      <div ref={modalRef} className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-stone-100 p-4">
           <div className="flex items-start justify-between gap-4">
@@ -382,7 +415,7 @@ export function ApplicationDetailModal({
                 <Building2 className={cn("w-6 h-6", statusConfig.color)} />
               </div>
               <div className="min-w-0">
-                <h2 className="text-lg font-semibold text-stone-900 line-clamp-1">{jobTitle}</h2>
+                <h2 id="application-detail-title" className="text-lg font-semibold text-stone-900 line-clamp-1">{jobTitle}</h2>
                 <p className="text-stone-600">{companyName}</p>
               </div>
             </div>
@@ -423,6 +456,8 @@ export function ApplicationDetailModal({
             <div className="relative">
               <button
                 onClick={() => setShowStatusMenu(!showStatusMenu)}
+                aria-haspopup="menu"
+                aria-expanded={showStatusMenu}
                 className={cn(
                   "px-3 py-1.5 rounded-lg text-sm font-medium border flex items-center gap-2",
                   statusConfig.bgColor, statusConfig.color, statusConfig.borderColor
@@ -503,7 +538,7 @@ export function ApplicationDetailModal({
 
         {/* Tabs */}
         <div className="border-b border-stone-100 px-4">
-          <div className="flex gap-4">
+          <div className="flex gap-4" role="tablist">
             {[
               { id: 'overview' as const, label: t('applications.detail.tabs.overview', 'Översikt') },
               { id: 'documents' as const, label: t('applications.detail.tabs.documents', 'Dokument'), badge: documentsChanged ? t('applications.detail.changedBadge', 'Ändrad') : undefined },
@@ -514,6 +549,8 @@ export function ApplicationDetailModal({
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
+                role="tab"
+                aria-selected={activeTab === tab.id}
                 className={cn(
                   "py-3 px-1 text-sm font-medium border-b-2 transition-colors",
                   activeTab === tab.id
@@ -642,7 +679,7 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label="Laddar" />
                 </div>
               ) : history.length === 0 ? (
                 <div className="text-center py-8 text-stone-700">
@@ -691,7 +728,7 @@ export function ApplicationDetailModal({
               )}
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label="Laddar" />
                 </div>
               ) : contacts.length === 0 ? (
                 !showContactForm && (
@@ -750,7 +787,7 @@ export function ApplicationDetailModal({
               )}
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" role="status" aria-label="Laddar" />
                 </div>
               ) : reminders.filter(r => !r.isCompleted).length === 0 ? (
                 !showReminderForm && (

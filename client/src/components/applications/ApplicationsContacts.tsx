@@ -9,7 +9,11 @@ import {
   User, Mail, Phone, Linkedin, MoreVertical,
   Edit2, Trash2, MessageSquare, Clock, X
 } from '@/components/ui/icons'
-import { Button, Card } from '@/components/ui'
+import { Button, Card, useConfirmDialog } from '@/components/ui'
+import {
+  DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem
+} from '@/components/ui/DropdownMenu'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import { applicationContactsApi } from '@/services/applicationsApi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import type { ApplicationContact, CreateContactInput } from '@/types/application.types'
@@ -38,6 +42,9 @@ function ContactEditModal({
   })
   const [error, setError] = useState<string | null>(null)
 
+  // Fokusfälla + Escape/utanförklick stänger (WCAG 2.1.2)
+  const modalRef = useFocusTrap<HTMLDivElement>(true, { onEscape: onClose })
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.name.trim()) {
@@ -64,10 +71,15 @@ function ContactEditModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
-      <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[95vh] overflow-y-auto">
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-contact-title-heading"
+    >
+      <div ref={modalRef} className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[95vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-stone-900">{t('applications.contacts.editTitle', 'Redigera kontakt')}</h2>
+          <h2 id="edit-contact-title-heading" className="text-lg font-semibold text-stone-900">{t('applications.contacts.editTitle', 'Redigera kontakt')}</h2>
           <button
             onClick={onClose}
             aria-label={t('applications.common.close', 'Stäng')}
@@ -171,7 +183,6 @@ function ContactCard({
   onMarkContacted: (id: string) => void
 }) {
   const { t } = useTranslation()
-  const [showMenu, setShowMenu] = useState(false)
 
   const daysSinceContact = contact.lastContactedAt
     ? Math.floor((Date.now() - new Date(contact.lastContactedAt).getTime()) / (1000 * 60 * 60 * 24))
@@ -200,45 +211,33 @@ function ContactCard({
               )}
             </div>
 
-            <div className="relative">
-              <button
-                onClick={() => setShowMenu(!showMenu)}
-                aria-label={t('applications.contacts.actionsAria', 'Åtgärder för kontakt')}
-                aria-haspopup="menu"
-                aria-expanded={showMenu}
-                className="p-1.5 hover:bg-stone-100 rounded opacity-0 group-hover:opacity-100 transition-opacity"
-              >
-                <MoreVertical className="w-4 h-4 text-stone-600" aria-hidden="true" />
-              </button>
-
-              {showMenu && (
-                <>
-                  <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
-                  <div className="absolute right-0 mt-1 bg-white rounded-lg shadow-lg border border-stone-200 py-1 z-20 min-w-[150px]">
-                    <button
-                      onClick={() => { onMarkContacted(contact.id); setShowMenu(false) }}
-                      className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
-                    >
-                      <MessageSquare className="w-4 h-4" />
-                      {t('applications.contacts.markContacted', 'Markera kontaktad')}
-                    </button>
-                    <button
-                      onClick={() => { onEdit(contact); setShowMenu(false) }}
-                      className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
-                    >
-                      <Edit2 className="w-4 h-4" />
-                      {t('applications.common.edit', 'Redigera')}
-                    </button>
-                    <button
-                      onClick={() => { onDelete(contact.id); setShowMenu(false) }}
-                      className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                      {t('applications.common.delete', 'Ta bort')}
-                    </button>
-                  </div>
-                </>
-              )}
+            {/* Synlig på touch och vid tangentbordsfokus; hover-gated endast på desktop */}
+            <div className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 sm:group-focus-within:opacity-100 transition-opacity">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    aria-label={t('applications.contacts.actionsAria', 'Åtgärder för kontakt')}
+                    aria-haspopup="menu"
+                    className="p-1.5 hover:bg-stone-100 rounded"
+                  >
+                    <MoreVertical className="w-4 h-4 text-stone-600" aria-hidden="true" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="min-w-[150px]">
+                  <DropdownMenuItem onClick={() => onMarkContacted(contact.id)}>
+                    <MessageSquare className="w-4 h-4" />
+                    {t('applications.contacts.markContacted', 'Markera kontaktad')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onEdit(contact)}>
+                    <Edit2 className="w-4 h-4" />
+                    {t('applications.common.edit', 'Redigera')}
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => onDelete(contact.id)} className="text-red-600 hover:bg-red-50">
+                    <Trash2 className="w-4 h-4" />
+                    {t('applications.common.delete', 'Ta bort')}
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
@@ -298,6 +297,7 @@ function ContactCard({
 
 export function ApplicationsContacts() {
   const { t } = useTranslation()
+  const { confirm } = useConfirmDialog()
   const queryClient = useQueryClient()
   const [editContact, setEditContact] = useState<ApplicationContact | null>(null)
 
@@ -344,7 +344,14 @@ export function ApplicationsContacts() {
   }
 
   const handleDelete = async (id: string) => {
-    if (confirm(t('applications.contacts.deleteConfirm', 'Ta bort denna kontakt?'))) {
+    const ok = await confirm({
+      title: t('applications.common.delete', 'Ta bort'),
+      message: t('applications.contacts.deleteConfirm', 'Ta bort denna kontakt?'),
+      confirmText: t('applications.common.delete', 'Ta bort'),
+      cancelText: t('applications.common.cancel', 'Avbryt'),
+      variant: 'danger',
+    })
+    if (ok) {
       await deleteMutation.mutateAsync(id)
     }
   }
@@ -356,7 +363,7 @@ export function ApplicationsContacts() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600" role="status" aria-label="Laddar" />
       </div>
     )
   }

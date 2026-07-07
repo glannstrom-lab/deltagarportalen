@@ -150,6 +150,7 @@ function ApplicationsInner() {
           isOpen={!!selectedApplication}
           onClose={() => setSelectedApplication(null)}
           onEdit={handleEditApplication}
+          suspended={showAddModal}
         />
       )}
 

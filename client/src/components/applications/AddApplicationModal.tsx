@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui'
 import { useApplications } from '@/hooks/useApplications'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 import {
   APPLICATION_STATUS_CONFIG,
   getStatusLabel,
@@ -70,6 +71,9 @@ export function AddApplicationModal({
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // Fokusfälla + Escape/utanförklick stänger (WCAG 2.1.2)
+  const modalRef = useFocusTrap<HTMLDivElement>(isOpen, { onEscape: onClose })
 
   // Initialize form data
   useEffect(() => {
@@ -166,11 +170,16 @@ export function AddApplicationModal({
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
-      <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
+    <div
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="add-application-title"
+    >
+      <div ref={modalRef} className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg max-h-[95vh] sm:max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-stone-900">
+          <h2 id="add-application-title" className="text-lg font-semibold text-stone-900">
             {editApplication
               ? t('applications.form.editTitle', 'Redigera ansökan')
               : t('applications.form.addTitle', 'Lägg till ansökan')}
