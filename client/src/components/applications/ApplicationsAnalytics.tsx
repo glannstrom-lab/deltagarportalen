@@ -57,6 +57,7 @@ function StatCard({ title, value, subtitle, icon: Icon, trend, color = 'text-sto
 }
 
 function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Record<ApplicationStatus, Application[]> }) {
+  const { t } = useTranslation()
   const statusCounts = useMemo(() => {
     const counts: { status: ApplicationStatus; count: number; percentage: number }[] = []
     const total = Object.values(applicationsByStatus).flat().length
@@ -82,7 +83,7 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
         <PieChart className="w-5 h-5 text-[var(--c-text)]" />
-        <h3 className="font-semibold text-stone-900">Statusfördelning</h3>
+        <h3 className="font-semibold text-stone-900">{t('applications.analytics.statusDistribution', 'Statusfördelning')}</h3>
       </div>
 
       {/* Visual bar */}
@@ -94,7 +95,7 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
               key={status}
               className={cn("h-full", config.bgColor)}
               style={{ width: `${percentage}%` }}
-              title={`${getStatusLabel(status)}: ${percentage}%`}
+              title={`${t(`applications.status.${status}`, getStatusLabel(status))}: ${percentage}%`}
             />
           )
         })}
@@ -107,7 +108,7 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
           return (
             <div key={status} className="flex items-center gap-2 text-sm">
               <span className={cn("w-3 h-3 rounded-full", config.bgColor)} />
-              <span className="text-stone-600">{getStatusLabel(status)}</span>
+              <span className="text-stone-600">{t(`applications.status.${status}`, getStatusLabel(status))}</span>
               <span className="text-stone-600 ml-auto">{count}</span>
             </div>
           )
@@ -118,6 +119,7 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
 }
 
 function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Record<ApplicationStatus, Application[]> }) {
+  const { t } = useTranslation()
   const stages = useMemo(() => {
     const applied = applicationsByStatus.applied?.length || 0
     const screening = applicationsByStatus.screening?.length || 0
@@ -130,15 +132,15 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
     const total = applied + screening + phone + interview + assessment + offer + accepted
 
     return [
-      { label: 'Ansökt', count: applied, icon: Send },
-      { label: 'Screening', count: screening, icon: Clock },
-      { label: 'Telefonintervju', count: phone, icon: Users },
-      { label: 'Intervju', count: interview, icon: Users },
-      { label: 'Arbetsprov', count: assessment, icon: Briefcase },
-      { label: 'Erbjudande', count: offer, icon: Trophy },
-      { label: 'Accepterat', count: accepted, icon: CheckCircle },
+      { label: t('applications.status.applied', 'Ansökt'), count: applied, icon: Send },
+      { label: t('applications.status.screening', 'Screening'), count: screening, icon: Clock },
+      { label: t('applications.status.phone', 'Telefonintervju'), count: phone, icon: Users },
+      { label: t('applications.status.interview', 'Intervju'), count: interview, icon: Users },
+      { label: t('applications.status.assessment', 'Arbetsprov'), count: assessment, icon: Briefcase },
+      { label: t('applications.status.offer', 'Erbjudande'), count: offer, icon: Trophy },
+      { label: t('applications.status.accepted', 'Accepterad'), count: accepted, icon: CheckCircle },
     ].filter(s => s.count > 0 || total > 0)
-  }, [applicationsByStatus])
+  }, [applicationsByStatus, t])
 
   const maxCount = Math.max(...stages.map(s => s.count), 1)
 
@@ -146,7 +148,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
         <BarChart3 className="w-5 h-5 text-sky-600" />
-        <h3 className="font-semibold text-stone-900">Ansökningstratt</h3>
+        <h3 className="font-semibold text-stone-900">{t('applications.analytics.funnel', 'Ansökningstratt')}</h3>
       </div>
 
       <div className="space-y-3">
@@ -179,6 +181,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
 }
 
 function RecentActivity({ applications }: { applications: Application[] }) {
+  const { t } = useTranslation()
   const recentApps = useMemo(() => {
     return [...applications]
       .sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime())
@@ -191,15 +194,15 @@ function RecentActivity({ applications }: { applications: Application[] }) {
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
         <Clock className="w-5 h-5 text-[var(--c-text)]" />
-        <h3 className="font-semibold text-stone-900">Senaste aktivitet</h3>
+        <h3 className="font-semibold text-stone-900">{t('applications.analytics.recentActivity', 'Senaste aktivitet')}</h3>
       </div>
 
       <div className="space-y-3">
         {recentApps.map((app) => {
           const config = APPLICATION_STATUS_CONFIG[app.status as ApplicationStatus]
           const jobData = app.jobData as { employer?: { name?: string }; headline?: string } | undefined
-          const companyName = app.companyName || jobData?.employer?.name || 'Okänt företag'
-          const jobTitle = app.jobTitle || jobData?.headline || 'Okänd tjänst'
+          const companyName = app.companyName || jobData?.employer?.name || t('applications.common.unknownCompany', 'Okänt företag')
+          const jobTitle = app.jobTitle || jobData?.headline || t('applications.common.unknownTitle', 'Okänd tjänst')
 
           return (
             <div key={app.id} className="flex items-center gap-3 p-2 rounded-lg hover:bg-stone-50">
@@ -209,7 +212,7 @@ function RecentActivity({ applications }: { applications: Application[] }) {
                 <p className="text-xs text-stone-700">{companyName}</p>
               </div>
               <span className={cn("text-xs px-2 py-0.5 rounded-full", config.bgColor, config.color)}>
-                {getStatusLabel(app.status)}
+                {t(`applications.status.${app.status}`, getStatusLabel(app.status))}
               </span>
             </div>
           )
@@ -220,7 +223,7 @@ function RecentActivity({ applications }: { applications: Application[] }) {
 }
 
 export function ApplicationsAnalytics() {
-  useTranslation()
+  const { t } = useTranslation()
   const { applications, applicationsByStatus, stats, staleApplications, isLoading } = useApplications()
 
   // Calculate additional metrics
@@ -276,33 +279,33 @@ export function ApplicationsAnalytics() {
       {/* Key metrics */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <StatCard
-          title="Totalt ansökningar"
+          title={t('applications.analytics.totalTitle', 'Totalt ansökningar')}
           value={stats.total}
-          subtitle={`${metrics.recentCount} senaste 30 dagarna`}
+          subtitle={t('applications.analytics.totalSubtitle', { count: metrics.recentCount })}
           icon={Briefcase}
           color="text-[var(--c-text)]"
           bgColor="bg-[var(--c-accent)]/40"
         />
         <StatCard
-          title="Aktiva"
+          title={t('applications.analytics.activeTitle', 'Aktiva')}
           value={stats.active}
-          subtitle="Pågående ansökningar"
+          subtitle={t('applications.analytics.activeSubtitle', 'Pågående ansökningar')}
           icon={Send}
           color="text-sky-600"
           bgColor="bg-sky-100"
         />
         <StatCard
-          title="Intervjufrekvens"
+          title={t('applications.analytics.interviewRateTitle', 'Intervjufrekvens')}
           value={`${metrics.interviewRate}%`}
-          subtitle="Av inskickade ansökningar"
+          subtitle={t('applications.analytics.interviewRateSubtitle', 'Av inskickade ansökningar')}
           icon={Users}
           color="text-[var(--c-text)]"
           bgColor="bg-[var(--c-accent)]/40"
         />
         <StatCard
-          title="Behöver uppföljning"
+          title={t('applications.analytics.staleTitle', 'Behöver uppföljning')}
           value={metrics.staleCount}
-          subtitle="Ej uppdaterade 7+ dagar"
+          subtitle={t('applications.analytics.staleSubtitle', 'Ej uppdaterade 7+ dagar')}
           icon={Clock}
           color={metrics.staleCount > 0 ? "text-amber-600" : "text-green-600"}
           bgColor={metrics.staleCount > 0 ? "bg-amber-100" : "bg-green-100"}
@@ -320,12 +323,12 @@ export function ApplicationsAnalytics() {
         <Card className="p-4">
           <div className="flex items-center gap-2 mb-4">
             <Target className="w-5 h-5 text-amber-600" />
-            <h3 className="font-semibold text-stone-900">Framgångsmått</h3>
+            <h3 className="font-semibold text-stone-900">{t('applications.analytics.successMetrics', 'Framgångsmått')}</h3>
           </div>
           <div className="space-y-4">
             <div>
               <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-stone-600">Svarsfrekvens</span>
+                <span className="text-stone-600">{t('applications.analytics.responseRate', 'Svarsfrekvens')}</span>
                 <span className="font-medium text-stone-900">{metrics.responseRate}%</span>
               </div>
               <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
@@ -337,7 +340,7 @@ export function ApplicationsAnalytics() {
             </div>
             <div>
               <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-stone-600">Intervjufrekvens</span>
+                <span className="text-stone-600">{t('applications.analytics.interviewRateTitle', 'Intervjufrekvens')}</span>
                 <span className="font-medium text-stone-900">{metrics.interviewRate}%</span>
               </div>
               <div className="h-2 bg-stone-100 rounded-full overflow-hidden">
@@ -349,8 +352,8 @@ export function ApplicationsAnalytics() {
             </div>
             <div>
               <div className="flex items-center justify-between text-sm mb-1">
-                <span className="text-stone-600">Genomsnitt i pipeline</span>
-                <span className="font-medium text-stone-900">{metrics.avgDaysInPipeline} dagar</span>
+                <span className="text-stone-600">{t('applications.analytics.avgPipeline', 'Genomsnitt i pipeline')}</span>
+                <span className="font-medium text-stone-900">{t('applications.analytics.days', { count: metrics.avgDaysInPipeline })}</span>
               </div>
             </div>
           </div>
@@ -367,9 +370,9 @@ export function ApplicationsAnalytics() {
           <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <BarChart3 className="w-8 h-8 text-stone-600" />
           </div>
-          <h3 className="text-xl font-semibold text-stone-700 mb-2">Ingen data än</h3>
+          <h3 className="text-xl font-semibold text-stone-700 mb-2">{t('applications.analytics.emptyTitle', 'Ingen data än')}</h3>
           <p className="text-stone-700 max-w-md mx-auto">
-            Börja spåra dina jobbansökningar för att se statistik och insikter om din ansökningsprocess.
+            {t('applications.analytics.emptyDescription', 'Börja spåra dina jobbansökningar för att se statistik och insikter om din ansökningsprocess.')}
           </p>
         </Card>
       )}

@@ -21,6 +21,7 @@ import {
   type HistoryEventType
 } from '@/types/application.types'
 
+// label = svensk fallback; visningstexten hämtas via t('applications.timeline.events.*')
 const EVENT_CONFIG: Record<HistoryEventType, {
   icon: React.ElementType
   color: string
@@ -42,13 +43,19 @@ const EVENT_CONFIG: Record<HistoryEventType, {
 }
 
 function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEntry; applicationName?: string }) {
+  const { t, i18n } = useTranslation()
   const config = EVENT_CONFIG[entry.eventType]
   const Icon = config.icon
 
+  const statusLabel = (value: string) => {
+    const status = value.toLowerCase() as ApplicationStatus
+    return t(`applications.status.${status}`, getStatusLabel(status))
+  }
+
   const formatStatusChange = () => {
     if (entry.eventType !== 'status_change') return null
-    const oldLabel = entry.oldValue ? getStatusLabel(entry.oldValue.toLowerCase() as ApplicationStatus) : null
-    const newLabel = entry.newValue ? getStatusLabel(entry.newValue.toLowerCase() as ApplicationStatus) : null
+    const oldLabel = entry.oldValue ? statusLabel(entry.oldValue) : null
+    const newLabel = entry.newValue ? statusLabel(entry.newValue) : null
     return (
       <span>
         {oldLabel && <span className="text-stone-700">{oldLabel}</span>}
@@ -72,10 +79,10 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
       <div className="flex-1 pb-6">
         <div className="flex items-center justify-between">
           <p className="font-medium text-stone-900 text-sm">
-            {config.label}
+            {t(`applications.timeline.events.${entry.eventType}`, config.label)}
           </p>
           <span className="text-xs text-stone-600">
-            {new Date(entry.createdAt).toLocaleDateString('sv-SE', {
+            {new Date(entry.createdAt).toLocaleDateString(i18n.language, {
               day: 'numeric',
               month: 'short',
               hour: '2-digit',
@@ -101,7 +108,7 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
 }
 
 export function ApplicationsTimeline() {
-  useTranslation()
+  const { t, i18n } = useTranslation()
   const { applications } = useApplications()
 
   const { data: recentHistory = [], isLoading } = useQuery({
@@ -115,7 +122,7 @@ export function ApplicationsTimeline() {
     const groups: Record<string, ApplicationHistoryEntry[]> = {}
 
     recentHistory.forEach(entry => {
-      const date = new Date(entry.createdAt).toLocaleDateString('sv-SE', {
+      const date = new Date(entry.createdAt).toLocaleDateString(i18n.language, {
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -126,13 +133,15 @@ export function ApplicationsTimeline() {
     })
 
     return groups
-  }, [recentHistory])
+  }, [recentHistory, i18n.language])
 
   // Get application name by ID
   const getApplicationName = (appId: string) => {
     const app = applications.find(a => a.id === appId)
     if (!app) return undefined
-    return app.jobTitle || (app.jobData as { headline?: string } | undefined)?.headline || 'Okänd tjänst'
+    return app.jobTitle
+      || (app.jobData as { headline?: string } | undefined)?.headline
+      || t('applications.common.unknownTitle', 'Okänd tjänst')
   }
 
   if (isLoading) {
@@ -148,9 +157,9 @@ export function ApplicationsTimeline() {
       {Object.keys(groupedHistory).length === 0 ? (
         <Card className="p-8 text-center">
           <Clock className="w-12 h-12 text-stone-300 mx-auto mb-4" />
-          <h3 className="font-semibold text-stone-700 mb-2">Ingen aktivitet än</h3>
+          <h3 className="font-semibold text-stone-700 mb-2">{t('applications.timeline.emptyTitle', 'Ingen aktivitet än')}</h3>
           <p className="text-stone-700">
-            Din aktivitetshistorik visas här när du börjar spåra ansökningar.
+            {t('applications.timeline.emptyDescription', 'Din aktivitetshistorik visas här när du börjar spåra ansökningar.')}
           </p>
         </Card>
       ) : (

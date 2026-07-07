@@ -59,6 +59,7 @@ function PipelineColumn({
   onArchive: (id: string) => void
   onDelete: (id: string) => void
 }) {
+  const { t } = useTranslation()
   const config = APPLICATION_STATUS_CONFIG[status]
   const Icon = STATUS_ICONS[status]
 
@@ -83,7 +84,7 @@ function PipelineColumn({
         <div className="flex items-center gap-2">
           <Icon className={cn("w-4 h-4", config.color)} />
           <h3 className="font-semibold text-stone-900 text-sm">
-            {getStatusLabel(status)}
+            {t(`applications.status.${status}`, getStatusLabel(status))}
           </h3>
           <span className={cn(
             "px-2 py-0.5 rounded-full text-xs font-medium",
@@ -99,7 +100,7 @@ function PipelineColumn({
         {sortedApps.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-stone-600">
             <Icon className="w-8 h-8 mb-2 opacity-50" />
-            <p className="text-xs text-center">Inga ansökningar</p>
+            <p className="text-xs text-center">{t('applications.pipeline.emptyColumn', 'Inga ansökningar')}</p>
           </div>
         ) : (
           sortedApps.map((app) => (
@@ -125,7 +126,7 @@ export function ApplicationsPipeline({
   onViewApplication,
   onEditApplication
 }: ApplicationsPipelineProps) {
-  useTranslation()
+  const { t } = useTranslation()
   const {
     applicationsByStatus,
     staleApplications,
@@ -202,10 +203,10 @@ export function ApplicationsPipeline({
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
           <span className="px-3 py-1.5 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded-full text-sm font-medium">
-            {stats.active} aktiva
+            {t('applications.pipeline.active', { count: stats.active })}
           </span>
           <span className="text-sm text-stone-700 hidden sm:inline">
-            {stats.applied} ansökta • {stats.interview} intervjuer
+            {t('applications.pipeline.summary', { applied: stats.applied, interviews: stats.interview })}
           </span>
         </div>
 
@@ -223,7 +224,9 @@ export function ApplicationsPipeline({
             >
               <Filter className="w-4 h-4" />
               <span className="hidden sm:inline">
-                {priorityFilter ? `${priorityFilter === 'high' ? 'Hög' : priorityFilter === 'low' ? 'Låg' : 'Medium'} prioritet` : 'Filter'}
+                {priorityFilter
+                  ? t(`applications.pipeline.priority${priorityFilter.charAt(0).toUpperCase()}${priorityFilter.slice(1)}`)
+                  : t('applications.pipeline.filter', 'Filter')}
               </span>
               <ChevronDown className="w-4 h-4" />
             </button>
@@ -239,7 +242,7 @@ export function ApplicationsPipeline({
                       !priorityFilter && "text-[var(--c-text)] bg-[var(--c-bg)]"
                     )}
                   >
-                    Alla prioriteter
+                    {t('applications.pipeline.allPriorities', 'Alla prioriteter')}
                   </button>
                   <button
                     onClick={() => { setPriorityFilter('high'); setShowFilters(false) }}
@@ -248,7 +251,7 @@ export function ApplicationsPipeline({
                       priorityFilter === 'high' && "text-[var(--c-text)] bg-[var(--c-bg)]"
                     )}
                   >
-                    Hög prioritet
+                    {t('applications.pipeline.priorityHigh', 'Hög prioritet')}
                   </button>
                   <button
                     onClick={() => { setPriorityFilter('medium'); setShowFilters(false) }}
@@ -257,7 +260,7 @@ export function ApplicationsPipeline({
                       priorityFilter === 'medium' && "text-[var(--c-text)] bg-[var(--c-bg)]"
                     )}
                   >
-                    Medium prioritet
+                    {t('applications.pipeline.priorityMedium', 'Medium prioritet')}
                   </button>
                   <button
                     onClick={() => { setPriorityFilter('low'); setShowFilters(false) }}
@@ -266,7 +269,7 @@ export function ApplicationsPipeline({
                       priorityFilter === 'low' && "text-[var(--c-text)] bg-[var(--c-bg)]"
                     )}
                   >
-                    Låg prioritet
+                    {t('applications.pipeline.priorityLow', 'Låg prioritet')}
                   </button>
                 </div>
               </>
@@ -276,7 +279,7 @@ export function ApplicationsPipeline({
           {/* Mobil-CTA — på desktop finns "Ny ansökan" redan i sidans header.
               På mobil är den header-knappen dold (sm:flex) så vi behöver en
               kompakt knapp här. */}
-          <Button onClick={onAddApplication} className="sm:hidden" aria-label="Ny ansökan">
+          <Button onClick={onAddApplication} className="sm:hidden" aria-label={t('applications.addApplication', 'Ny ansökan')}>
             <Plus className="w-4 h-4" />
           </Button>
         </div>
@@ -289,10 +292,10 @@ export function ApplicationsPipeline({
             <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
             <div>
               <p className="font-medium text-amber-900">
-                {staleApplications.length} ansökning{staleApplications.length > 1 ? 'ar' : ''} behöver uppföljning
+                {t('applications.stale.title', { count: staleApplications.length })}
               </p>
               <p className="text-sm text-amber-700 mt-1">
-                Dessa har inte uppdaterats på 7+ dagar. Överväg att följa upp eller uppdatera status.
+                {t('applications.stale.description', 'Dessa har inte uppdaterats på 7+ dagar. Överväg att följa upp eller uppdatera status.')}
               </p>
               <div className="flex flex-wrap gap-2 mt-2">
                 {staleApplications.slice(0, 3).map(app => (
@@ -301,12 +304,14 @@ export function ApplicationsPipeline({
                     onClick={() => onViewApplication?.(app)}
                     className="px-2 py-1 bg-white rounded-lg text-xs font-medium text-amber-800 border border-amber-200 hover:bg-amber-100"
                   >
-                    {app.companyName || (app.jobData as { employer?: { name?: string } } | undefined)?.employer?.name}
+                    {app.companyName
+                      || (app.jobData as { employer?: { name?: string } } | undefined)?.employer?.name
+                      || t('applications.common.unknownCompany', 'Okänt företag')}
                   </button>
                 ))}
                 {staleApplications.length > 3 && (
                   <span className="px-2 py-1 text-xs text-amber-600">
-                    +{staleApplications.length - 3} till
+                    {t('applications.stale.more', { count: staleApplications.length - 3 })}
                   </span>
                 )}
               </div>
@@ -341,19 +346,18 @@ export function ApplicationsPipeline({
             <Bookmark className="w-8 h-8 text-[var(--c-text)]" />
           </div>
           <h3 className="text-xl font-semibold text-stone-700 mb-2">
-            Inga ansökningar än
+            {t('applications.empty.title', 'Du har inte börjat söka jobb än')}
           </h3>
           <p className="text-stone-700 mb-6 max-w-md mx-auto">
-            Börja spåra dina jobbansökningar genom att spara jobb från jobbsökningen
-            eller lägg till en ansökan manuellt.
+            {t('applications.empty.description', 'Spara jobb från jobbsökningen så hamnar de här — eller lägg till en ansökan manuellt om du redan sökt något.')}
           </p>
           <div className="flex gap-3 justify-center">
             <Button onClick={onAddApplication}>
               <Plus className="w-4 h-4 mr-1" />
-              Lägg till ansökan
+              {t('applications.empty.addCta', 'Lägg till ansökan')}
             </Button>
             <Button variant="outline" onClick={() => window.location.href = '/job-search'}>
-              Sök jobb
+              {t('applications.empty.searchCta', 'Sök jobb')}
             </Button>
           </div>
         </Card>

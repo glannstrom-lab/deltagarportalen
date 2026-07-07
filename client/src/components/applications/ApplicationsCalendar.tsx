@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils'
 import { useApplicationReminders } from '@/hooks/useApplications'
 import type { ApplicationReminder, ReminderType } from '@/types/application.types'
 
+// label = svensk fallback; visningstexten hämtas via t('applications.calendar.types.*')
 const REMINDER_TYPE_CONFIG: Record<ReminderType, {
   icon: React.ElementType
   color: string
@@ -36,6 +37,7 @@ function ReminderCard({
   onComplete: (id: string) => void
   showDate?: boolean
 }) {
+  const { t, i18n } = useTranslation()
   const config = REMINDER_TYPE_CONFIG[reminder.reminderType]
   const Icon = config.icon
   const isOverdue = new Date(reminder.reminderDate) < new Date(new Date().toDateString())
@@ -54,14 +56,15 @@ function ReminderCard({
           <div className="flex items-start justify-between gap-2">
             <div>
               <h4 className="font-medium text-stone-900">{reminder.title}</h4>
-              <p className="text-sm text-stone-700">{config.label}</p>
+              <p className="text-sm text-stone-700">{t(`applications.calendar.types.${reminder.reminderType}`, config.label)}</p>
             </div>
             <button
               onClick={() => onComplete(reminder.id)}
+              aria-label={t('applications.detail.markDoneAria', { title: reminder.title })}
+              title={t('applications.common.markDone', 'Markera som klar')}
               className="p-2 hover:bg-green-50 rounded-lg transition-colors text-stone-600 hover:text-green-600"
-              title="Markera som klar"
             >
-              <CheckCircle className="w-5 h-5" />
+              <CheckCircle className="w-5 h-5" aria-hidden="true" />
             </button>
           </div>
 
@@ -73,7 +76,7 @@ function ReminderCard({
             <Calendar className="w-3 h-3" />
             {showDate && (
               <span>
-                {new Date(reminder.reminderDate).toLocaleDateString('sv-SE', {
+                {new Date(reminder.reminderDate).toLocaleDateString(i18n.language, {
                   weekday: 'short',
                   day: 'numeric',
                   month: 'short'
@@ -87,7 +90,7 @@ function ReminderCard({
               </span>
             )}
             {isOverdue && (
-              <span className="text-red-600 font-medium">Försenad</span>
+              <span className="text-red-600 font-medium">{t('applications.calendar.overdue', 'Försenad')}</span>
             )}
           </div>
         </div>
@@ -97,7 +100,7 @@ function ReminderCard({
 }
 
 export function ApplicationsCalendar() {
-  useTranslation()
+  const { t } = useTranslation()
   const { todayReminders, upcomingReminders, isLoading, completeReminder } = useApplicationReminders()
 
   const handleComplete = async (id: string) => {
@@ -126,11 +129,11 @@ export function ApplicationsCalendar() {
       <div>
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-stone-900">Idag</h2>
+            <h2 className="text-lg font-semibold text-stone-900">{t('applications.calendar.today', 'Idag')}</h2>
             <p className="text-sm text-stone-700">
               {todayReminders.length === 0
-                ? 'Inga påminnelser idag'
-                : `${todayReminders.length} påminnelse${todayReminders.length > 1 ? 'r' : ''}`}
+                ? t('applications.calendar.noRemindersToday', 'Inga påminnelser idag')
+                : t('applications.calendar.reminderCount', { count: todayReminders.length })}
             </p>
           </div>
         </div>
@@ -138,7 +141,7 @@ export function ApplicationsCalendar() {
         {todayReminders.length === 0 ? (
           <Card className="p-8 text-center bg-green-50 border-green-100">
             <CheckCircle className="w-12 h-12 text-green-400 mx-auto mb-3" />
-            <p className="text-green-700 font-medium">Allt klart för idag!</p>
+            <p className="text-green-700 font-medium">{t('applications.calendar.allDone', 'Allt klart för idag!')}</p>
           </Card>
         ) : (
           <div className="space-y-3">
@@ -155,12 +158,12 @@ export function ApplicationsCalendar() {
 
       {/* Upcoming reminders */}
       <div>
-        <h2 className="text-lg font-semibold text-stone-900 mb-4">Kommande 7 dagar</h2>
+        <h2 className="text-lg font-semibold text-stone-900 mb-4">{t('applications.calendar.upcoming', 'Kommande 7 dagar')}</h2>
 
         {futureReminders.length === 0 ? (
           <Card className="p-8 text-center">
             <Calendar className="w-12 h-12 text-stone-300 mx-auto mb-3" />
-            <p className="text-stone-700">Inga kommande påminnelser</p>
+            <p className="text-stone-700">{t('applications.calendar.noUpcoming', 'Inga kommande påminnelser')}</p>
           </Card>
         ) : (
           <div className="space-y-3">

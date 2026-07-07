@@ -27,6 +27,7 @@ function ContactEditModal({
   onClose: () => void
   isSaving: boolean
 }) {
+  const { t } = useTranslation()
   const [formData, setFormData] = useState({
     name: contact.name,
     title: contact.title || '',
@@ -40,7 +41,7 @@ function ContactEditModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!formData.name.trim()) {
-      setError('Namn måste fyllas i')
+      setError(t('applications.contacts.nameRequired', 'Namn måste fyllas i'))
       return
     }
     setError(null)
@@ -58,7 +59,7 @@ function ContactEditModal({
       })
       onClose()
     } catch {
-      setError('Kunde inte spara kontakten. Försök igen.')
+      setError(t('applications.contacts.saveError', 'Kunde inte spara kontakten. Försök igen.'))
     }
   }
 
@@ -66,10 +67,10 @@ function ContactEditModal({
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
       <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[95vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-stone-900">Redigera kontakt</h2>
+          <h2 className="text-lg font-semibold text-stone-900">{t('applications.contacts.editTitle', 'Redigera kontakt')}</h2>
           <button
             onClick={onClose}
-            aria-label="Stäng"
+            aria-label={t('applications.common.close', 'Stäng')}
             className="p-2 hover:bg-stone-100 rounded-full transition-colors"
           >
             <X className="w-5 h-5 text-stone-700" aria-hidden="true" />
@@ -80,7 +81,7 @@ function ContactEditModal({
           {error && <p className="text-sm text-red-600">{error}</p>}
           <div>
             <label htmlFor="edit-contact-name" className="block text-sm font-medium text-stone-700 mb-1">
-              Namn <span className="text-red-500">*</span>
+              {t('applications.contacts.name', 'Namn')} <span className="text-red-500">*</span>
             </label>
             <input
               id="edit-contact-name"
@@ -92,7 +93,7 @@ function ContactEditModal({
             />
           </div>
           <div>
-            <label htmlFor="edit-contact-title" className="block text-sm font-medium text-stone-700 mb-1">Titel</label>
+            <label htmlFor="edit-contact-title" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.contacts.roleTitle', 'Titel')}</label>
             <input
               id="edit-contact-title"
               type="text"
@@ -103,7 +104,7 @@ function ContactEditModal({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label htmlFor="edit-contact-email" className="block text-sm font-medium text-stone-700 mb-1">E-post</label>
+              <label htmlFor="edit-contact-email" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.contacts.email', 'E-post')}</label>
               <input
                 id="edit-contact-email"
                 type="email"
@@ -113,7 +114,7 @@ function ContactEditModal({
               />
             </div>
             <div>
-              <label htmlFor="edit-contact-phone" className="block text-sm font-medium text-stone-700 mb-1">Telefon</label>
+              <label htmlFor="edit-contact-phone" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.contacts.phone', 'Telefon')}</label>
               <input
                 id="edit-contact-phone"
                 type="tel"
@@ -124,7 +125,7 @@ function ContactEditModal({
             </div>
           </div>
           <div>
-            <label htmlFor="edit-contact-linkedin" className="block text-sm font-medium text-stone-700 mb-1">LinkedIn-länk</label>
+            <label htmlFor="edit-contact-linkedin" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.contacts.linkedin', 'LinkedIn-länk')}</label>
             <input
               id="edit-contact-linkedin"
               type="url"
@@ -135,7 +136,7 @@ function ContactEditModal({
             />
           </div>
           <div>
-            <label htmlFor="edit-contact-notes" className="block text-sm font-medium text-stone-700 mb-1">Anteckningar</label>
+            <label htmlFor="edit-contact-notes" className="block text-sm font-medium text-stone-700 mb-1">{t('applications.contacts.notes', 'Anteckningar')}</label>
             <textarea
               id="edit-contact-notes"
               value={formData.notes}
@@ -146,10 +147,10 @@ function ContactEditModal({
           </div>
           <div className="flex gap-3 pt-2">
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
-              Avbryt
+              {t('applications.common.cancel', 'Avbryt')}
             </Button>
             <Button type="submit" disabled={isSaving} className="flex-1">
-              {isSaving ? 'Sparar...' : 'Spara'}
+              {isSaving ? t('applications.common.saving', 'Sparar...') : t('applications.common.save', 'Spara')}
             </Button>
           </div>
         </form>
@@ -169,6 +170,7 @@ function ContactCard({
   onDelete: (id: string) => void
   onMarkContacted: (id: string) => void
 }) {
+  const { t } = useTranslation()
   const [showMenu, setShowMenu] = useState(false)
 
   const daysSinceContact = contact.lastContactedAt
@@ -189,7 +191,7 @@ function ContactCard({
                 {contact.name}
                 {contact.isPrimary && (
                   <span className="px-2 py-0.5 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded text-xs font-medium">
-                    Primär
+                    {t('applications.contacts.primary', 'Primär')}
                   </span>
                 )}
               </h3>
@@ -201,7 +203,7 @@ function ContactCard({
             <div className="relative">
               <button
                 onClick={() => setShowMenu(!showMenu)}
-                aria-label="Åtgärder för kontakt"
+                aria-label={t('applications.contacts.actionsAria', 'Åtgärder för kontakt')}
                 aria-haspopup="menu"
                 aria-expanded={showMenu}
                 className="p-1.5 hover:bg-stone-100 rounded opacity-0 group-hover:opacity-100 transition-opacity"
@@ -218,21 +220,21 @@ function ContactCard({
                       className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
                     >
                       <MessageSquare className="w-4 h-4" />
-                      Markera kontaktad
+                      {t('applications.contacts.markContacted', 'Markera kontaktad')}
                     </button>
                     <button
                       onClick={() => { onEdit(contact); setShowMenu(false) }}
                       className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
                     >
                       <Edit2 className="w-4 h-4" />
-                      Redigera
+                      {t('applications.common.edit', 'Redigera')}
                     </button>
                     <button
                       onClick={() => { onDelete(contact.id); setShowMenu(false) }}
                       className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                     >
                       <Trash2 className="w-4 h-4" />
-                      Ta bort
+                      {t('applications.common.delete', 'Ta bort')}
                     </button>
                   </div>
                 </>
@@ -282,7 +284,10 @@ function ContactCard({
           {contact.lastContactedAt && (
             <p className="text-xs text-stone-600 mt-2 flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              Senast kontaktad: {daysSinceContact === 0 ? 'Idag' : `${daysSinceContact} dagar sedan`}
+              {t('applications.contacts.lastContacted', 'Senast kontaktad:')}{' '}
+              {daysSinceContact === 0
+                ? t('applications.common.today', 'Idag')
+                : t('applications.common.daysAgo', { count: daysSinceContact ?? 0 })}
             </p>
           )}
         </div>
@@ -292,7 +297,7 @@ function ContactCard({
 }
 
 export function ApplicationsContacts() {
-  useTranslation()
+  const { t } = useTranslation()
   const queryClient = useQueryClient()
   const [editContact, setEditContact] = useState<ApplicationContact | null>(null)
 
@@ -339,7 +344,7 @@ export function ApplicationsContacts() {
   }
 
   const handleDelete = async (id: string) => {
-    if (confirm('Ta bort denna kontakt?')) {
+    if (confirm(t('applications.contacts.deleteConfirm', 'Ta bort denna kontakt?'))) {
       await deleteMutation.mutateAsync(id)
     }
   }
@@ -360,9 +365,9 @@ export function ApplicationsContacts() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-stone-900">Kontakter</h2>
+          <h2 className="text-lg font-semibold text-stone-900">{t('applications.contacts.title', 'Kontakter')}</h2>
           <p className="text-sm text-stone-700">
-            {contacts.length} kontakt{contacts.length !== 1 ? 'er' : ''} sparade
+            {t('applications.contacts.savedCount', { count: contacts.length })}
           </p>
         </div>
       </div>
@@ -372,9 +377,9 @@ export function ApplicationsContacts() {
           <div className="w-16 h-16 bg-stone-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <User className="w-8 h-8 text-stone-600" />
           </div>
-          <h3 className="text-xl font-semibold text-stone-700 mb-2">Inga kontakter än</h3>
+          <h3 className="text-xl font-semibold text-stone-700 mb-2">{t('applications.contacts.emptyTitle', 'Inga kontakter än')}</h3>
           <p className="text-stone-700 mb-4 max-w-md mx-auto">
-            Lägg till kontakter från dina ansökningar för att hålla koll på rekryterare och kontaktpersoner.
+            {t('applications.contacts.emptyDescription', 'Lägg till kontakter från dina ansökningar för att hålla koll på rekryterare och kontaktpersoner.')}
           </p>
         </Card>
       ) : (

@@ -4,6 +4,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Building2, MapPin, ExternalLink, MoreVertical,
   Clock, Calendar, AlertCircle, ChevronRight,
@@ -42,13 +43,14 @@ export function ApplicationCard({
   isDragging = false,
   showActions = true
 }: ApplicationCardProps) {
+  const { t } = useTranslation()
   const [showMenu, setShowMenu] = useState(false)
   const [showStatusMenu, setShowStatusMenu] = useState(false)
 
   const statusConfig = APPLICATION_STATUS_CONFIG[application.status]
   const jobData = application.jobData as { employer?: { name?: string }; headline?: string; workplace_address?: { municipality?: string } } | undefined
-  const companyName = application.companyName || jobData?.employer?.name || 'Okänt företag'
-  const jobTitle = application.jobTitle || jobData?.headline || 'Okänd tjänst'
+  const companyName = application.companyName || jobData?.employer?.name || t('applications.common.unknownCompany', 'Okänt företag')
+  const jobTitle = application.jobTitle || jobData?.headline || t('applications.common.unknownTitle', 'Okänd tjänst')
   const location = application.location || jobData?.workplace_address?.municipality
 
   // Calculate days since last update
@@ -93,7 +95,9 @@ export function ApplicationCard({
 
         <div className="flex items-center justify-between mt-2">
           <span className="text-xs text-stone-600">
-            {daysSinceUpdate === 0 ? 'Idag' : `${daysSinceUpdate}d sedan`}
+            {daysSinceUpdate === 0
+              ? t('applications.common.today', 'Idag')
+              : t('applications.card.daysShort', { count: daysSinceUpdate })}
           </span>
           {isStale && (
             <AlertCircle className="w-3.5 h-3.5 text-amber-500" />
@@ -144,7 +148,7 @@ export function ApplicationCard({
                       "hover:opacity-80"
                     )}
                   >
-                    {getStatusLabel(application.status)}
+                    {t(`applications.status.${application.status}`, getStatusLabel(application.status))}
                     <ChevronRight className="w-3 h-3 ml-1 inline" />
                   </button>
 
@@ -173,7 +177,7 @@ export function ApplicationCard({
                               )}
                             >
                               <span className={cn("w-2 h-2 rounded-full", config.bgColor)} />
-                              {getStatusLabel(status)}
+                              {t(`applications.status.${status}`, getStatusLabel(status))}
                             </button>
                           )
                         })}
@@ -189,7 +193,7 @@ export function ApplicationCard({
                       e.stopPropagation()
                       setShowMenu(!showMenu)
                     }}
-                    aria-label="Fler åtgärder"
+                    aria-label={t('applications.card.moreActions', 'Fler åtgärder')}
                     aria-haspopup="menu"
                     aria-expanded={showMenu}
                     className="p-1.5 hover:bg-stone-100 rounded"
@@ -216,7 +220,7 @@ export function ApplicationCard({
                           className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
                         >
                           <Edit2 className="w-4 h-4" />
-                          Redigera
+                          {t('applications.common.edit', 'Redigera')}
                         </button>
                         <button
                           onClick={(e) => {
@@ -227,12 +231,12 @@ export function ApplicationCard({
                           className="w-full text-left px-3 py-2 text-sm text-stone-700 hover:bg-stone-50 flex items-center gap-2"
                         >
                           <Archive className="w-4 h-4" />
-                          Arkivera
+                          {t('applications.common.archive', 'Arkivera')}
                         </button>
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
-                            if (confirm('Ta bort denna ansökan?')) {
+                            if (confirm(t('applications.card.deleteConfirm', 'Ta bort denna ansökan?'))) {
                               onDelete?.(application.id)
                             }
                             setShowMenu(false)
@@ -240,7 +244,7 @@ export function ApplicationCard({
                           className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2"
                         >
                           <Trash2 className="w-4 h-4" />
-                          Ta bort
+                          {t('applications.common.delete', 'Ta bort')}
                         </button>
                       </div>
                     </>
@@ -260,12 +264,14 @@ export function ApplicationCard({
             )}
             <span className="flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              {daysSinceUpdate === 0 ? 'Uppdaterad idag' : `${daysSinceUpdate} dagar sedan`}
+              {daysSinceUpdate === 0
+                ? t('applications.card.updatedToday', 'Uppdaterad idag')
+                : t('applications.common.daysAgo', { count: daysSinceUpdate })}
             </span>
             {application.applicationDate && (
               <span className="flex items-center gap-1">
                 <Calendar className="w-3 h-3" />
-                Ansökt {new Date(application.applicationDate).toLocaleDateString('sv-SE')}
+                {t('applications.card.appliedOn', { date: new Date(application.applicationDate).toLocaleDateString('sv-SE') })}
               </span>
             )}
           </div>
@@ -278,7 +284,9 @@ export function ApplicationCard({
                 "px-2 py-0.5 rounded text-xs font-medium border",
                 priorityColors[application.priority]
               )}>
-                {application.priority === 'high' ? 'Hög prioritet' : 'Låg prioritet'}
+                {application.priority === 'high'
+                  ? t('applications.pipeline.priorityHigh', 'Hög prioritet')
+                  : t('applications.pipeline.priorityLow', 'Låg prioritet')}
               </span>
             )}
 
@@ -286,7 +294,7 @@ export function ApplicationCard({
             {isStale && (
               <span className="px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 border border-amber-200 flex items-center gap-1">
                 <AlertCircle className="w-3 h-3" />
-                Behöver uppföljning
+                {t('applications.card.needsFollowUp', 'Behöver uppföljning')}
               </span>
             )}
 
@@ -327,7 +335,7 @@ export function ApplicationCard({
             className="flex items-center gap-1 text-xs text-sky-600 hover:text-sky-700 font-medium"
           >
             <ExternalLink className="w-3 h-3" />
-            Visa annons
+            {t('applications.card.viewAd', 'Visa annons')}
           </a>
         </div>
       )}

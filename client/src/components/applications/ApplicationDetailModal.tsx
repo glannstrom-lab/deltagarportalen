@@ -52,6 +52,7 @@ function ContactForm({
   onCancel: () => void
   isSaving: boolean
 }) {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [title, setTitle] = useState('')
   const [email, setEmail] = useState('')
@@ -61,7 +62,7 @@ function ContactForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!name.trim()) {
-      setError('Namn måste fyllas i')
+      setError(t('applications.contacts.nameRequired', 'Namn måste fyllas i'))
       return
     }
     setError(null)
@@ -73,69 +74,69 @@ function ContactForm({
         phone: phone.trim() || undefined,
       })
     } catch {
-      setError('Kunde inte spara kontakten. Försök igen.')
+      setError(t('applications.detail.contactSaveError', 'Kunde inte spara kontakten. Försök igen.'))
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="p-3 bg-stone-50 rounded-lg space-y-3">
-      <h4 className="text-sm font-medium text-stone-900">Ny kontakt</h4>
+      <h4 className="text-sm font-medium text-stone-900">{t('applications.detail.newContact', 'Ny kontakt')}</h4>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label htmlFor="contact-name" className="block text-xs font-medium text-stone-700 mb-1">
-            Namn <span className="text-red-500">*</span>
+            {t('applications.contacts.name', 'Namn')} <span className="text-red-500">*</span>
           </label>
           <input
             id="contact-name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            placeholder="T.ex. Anna Andersson"
+            placeholder={t('applications.detail.contactNamePlaceholder', 'T.ex. Anna Andersson')}
             className={formInputClass}
             required
           />
         </div>
         <div>
-          <label htmlFor="contact-title" className="block text-xs font-medium text-stone-700 mb-1">Titel</label>
+          <label htmlFor="contact-title" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.contacts.roleTitle', 'Titel')}</label>
           <input
             id="contact-title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="T.ex. Rekryterare"
+            placeholder={t('applications.detail.contactTitlePlaceholder', 'T.ex. Rekryterare')}
             className={formInputClass}
           />
         </div>
         <div>
-          <label htmlFor="contact-email" className="block text-xs font-medium text-stone-700 mb-1">E-post</label>
+          <label htmlFor="contact-email" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.contacts.email', 'E-post')}</label>
           <input
             id="contact-email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="namn@foretag.se"
+            placeholder={t('applications.detail.contactEmailPlaceholder', 'namn@foretag.se')}
             className={formInputClass}
           />
         </div>
         <div>
-          <label htmlFor="contact-phone" className="block text-xs font-medium text-stone-700 mb-1">Telefon</label>
+          <label htmlFor="contact-phone" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.contacts.phone', 'Telefon')}</label>
           <input
             id="contact-phone"
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="070-123 45 67"
+            placeholder={t('applications.detail.contactPhonePlaceholder', '070-123 45 67')}
             className={formInputClass}
           />
         </div>
       </div>
       <div className="flex gap-2 justify-end">
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>
-          Avbryt
+          {t('applications.common.cancel', 'Avbryt')}
         </Button>
         <Button type="submit" size="sm" disabled={isSaving}>
-          {isSaving ? 'Sparar...' : 'Spara kontakt'}
+          {isSaving ? t('applications.common.saving', 'Sparar...') : t('applications.detail.saveContact', 'Spara kontakt')}
         </Button>
       </div>
     </form>
@@ -151,6 +152,7 @@ function ReminderForm({
   onCancel: () => void
   isSaving: boolean
 }) {
+  const { t } = useTranslation()
   const [title, setTitle] = useState('')
   const [reminderType, setReminderType] = useState<ReminderType>('follow_up')
   const [reminderDate, setReminderDate] = useState('')
@@ -160,7 +162,7 @@ function ReminderForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!title.trim() || !reminderDate) {
-      setError('Titel och datum måste fyllas i')
+      setError(t('applications.detail.reminderRequiredError', 'Titel och datum måste fyllas i'))
       return
     }
     setError(null)
@@ -172,31 +174,31 @@ function ReminderForm({
         reminderTime: reminderTime || undefined,
       })
     } catch {
-      setError('Kunde inte spara påminnelsen. Försök igen.')
+      setError(t('applications.detail.reminderSaveError', 'Kunde inte spara påminnelsen. Försök igen.'))
     }
   }
 
   return (
     <form onSubmit={handleSubmit} className="p-3 bg-stone-50 rounded-lg space-y-3">
-      <h4 className="text-sm font-medium text-stone-900">Ny påminnelse</h4>
+      <h4 className="text-sm font-medium text-stone-900">{t('applications.detail.newReminder', 'Ny påminnelse')}</h4>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label htmlFor="reminder-title" className="block text-xs font-medium text-stone-700 mb-1">
-            Titel <span className="text-red-500">*</span>
+            {t('applications.detail.reminderTitle', 'Titel')} <span className="text-red-500">*</span>
           </label>
           <input
             id="reminder-title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="T.ex. Ring och följ upp"
+            placeholder={t('applications.detail.reminderTitlePlaceholder', 'T.ex. Ring och följ upp')}
             className={formInputClass}
             required
           />
         </div>
         <div>
-          <label htmlFor="reminder-type" className="block text-xs font-medium text-stone-700 mb-1">Typ</label>
+          <label htmlFor="reminder-type" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.detail.reminderType', 'Typ')}</label>
           <select
             id="reminder-type"
             value={reminderType}
@@ -204,13 +206,17 @@ function ReminderForm({
             className={formInputClass}
           >
             {REMINDER_TYPE_OPTIONS.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
+              <option key={opt.value} value={opt.value}>
+                {opt.value === 'custom'
+                  ? t('applications.detail.reminderTypeOther', opt.label)
+                  : t(`applications.calendar.types.${opt.value}`, opt.label)}
+              </option>
             ))}
           </select>
         </div>
         <div>
           <label htmlFor="reminder-date" className="block text-xs font-medium text-stone-700 mb-1">
-            Datum <span className="text-red-500">*</span>
+            {t('applications.detail.reminderDate', 'Datum')} <span className="text-red-500">*</span>
           </label>
           <input
             id="reminder-date"
@@ -222,7 +228,7 @@ function ReminderForm({
           />
         </div>
         <div>
-          <label htmlFor="reminder-time" className="block text-xs font-medium text-stone-700 mb-1">Tid</label>
+          <label htmlFor="reminder-time" className="block text-xs font-medium text-stone-700 mb-1">{t('applications.detail.reminderTime', 'Tid')}</label>
           <input
             id="reminder-time"
             type="time"
@@ -234,10 +240,10 @@ function ReminderForm({
       </div>
       <div className="flex gap-2 justify-end">
         <Button type="button" variant="outline" size="sm" onClick={onCancel}>
-          Avbryt
+          {t('applications.common.cancel', 'Avbryt')}
         </Button>
         <Button type="submit" size="sm" disabled={isSaving}>
-          {isSaving ? 'Sparar...' : 'Spara påminnelse'}
+          {isSaving ? t('applications.common.saving', 'Sparar...') : t('applications.detail.saveReminder', 'Spara påminnelse')}
         </Button>
       </div>
     </form>
@@ -250,7 +256,7 @@ export function ApplicationDetailModal({
   onClose,
   onEdit
 }: ApplicationDetailModalProps) {
-  useTranslation() // i18n initialiseras
+  const { t, i18n } = useTranslation()
   const { updateStatus, updateApplication, archiveApplication, deleteApplication } = useApplications()
   const {
     contacts,
@@ -323,8 +329,8 @@ export function ApplicationDetailModal({
 
   const statusConfig = APPLICATION_STATUS_CONFIG[application.status]
   const jobData = application.jobData as { employer?: { name?: string }; headline?: string; workplace_address?: { municipality?: string } } | undefined
-  const companyName = application.companyName || jobData?.employer?.name || 'Okänt företag'
-  const jobTitle = application.jobTitle || jobData?.headline || 'Okänd tjänst'
+  const companyName = application.companyName || jobData?.employer?.name || t('applications.common.unknownCompany', 'Okänt företag')
+  const jobTitle = application.jobTitle || jobData?.headline || t('applications.common.unknownTitle', 'Okänd tjänst')
   const location = application.location || jobData?.workplace_address?.municipality
 
   const daysSinceCreated = Math.floor(
@@ -350,7 +356,7 @@ export function ApplicationDetailModal({
   }
 
   const handleDelete = async () => {
-    if (confirm('Är du säker på att du vill ta bort denna ansökan? Detta går inte att ångra.')) {
+    if (confirm(t('applications.detail.deleteConfirm', 'Är du säker på att du vill ta bort denna ansökan? Detta går inte att ångra.'))) {
       try {
         await deleteApplication(application.id)
         onClose()
@@ -382,9 +388,10 @@ export function ApplicationDetailModal({
             </div>
             <button
               onClick={onClose}
+              aria-label={t('applications.common.close', 'Stäng')}
               className="p-2 hover:bg-stone-100 rounded-full transition-colors flex-shrink-0"
             >
-              <X className="w-5 h-5 text-stone-700" />
+              <X className="w-5 h-5 text-stone-700" aria-hidden="true" />
             </button>
           </div>
 
@@ -398,12 +405,14 @@ export function ApplicationDetailModal({
             )}
             <span className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
-              {daysSinceCreated === 0 ? 'Tillagd idag' : `${daysSinceCreated} dagar sedan`}
+              {daysSinceCreated === 0
+                ? t('applications.detail.addedToday', 'Tillagd idag')
+                : t('applications.common.daysAgo', { count: daysSinceCreated })}
             </span>
             {application.applicationDate && (
               <span className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
-                Ansökt {new Date(application.applicationDate).toLocaleDateString('sv-SE')}
+                {t('applications.card.appliedOn', { date: new Date(application.applicationDate).toLocaleDateString(i18n.language) })}
               </span>
             )}
           </div>
@@ -419,7 +428,7 @@ export function ApplicationDetailModal({
                   statusConfig.bgColor, statusConfig.color, statusConfig.borderColor
                 )}
               >
-                {getStatusLabel(application.status)}
+                {t(`applications.status.${application.status}`, getStatusLabel(application.status))}
                 <ChevronRight className={cn("w-4 h-4 transition-transform", showStatusMenu && "rotate-90")} />
               </button>
 
@@ -439,7 +448,7 @@ export function ApplicationDetailModal({
                           )}
                         >
                           <span className={cn("w-2 h-2 rounded-full", config.bgColor)} />
-                          {getStatusLabel(status)}
+                          {t(`applications.status.${status}`, getStatusLabel(status))}
                         </button>
                       )
                     })}
@@ -456,7 +465,9 @@ export function ApplicationDetailModal({
                   ? "bg-red-100 text-red-700 border-red-200"
                   : "bg-stone-100 text-stone-600 border-stone-200"
               )}>
-                {application.priority === 'high' ? 'Hög prioritet' : 'Låg prioritet'}
+                {application.priority === 'high'
+                  ? t('applications.pipeline.priorityHigh', 'Hög prioritet')
+                  : t('applications.pipeline.priorityLow', 'Låg prioritet')}
               </span>
             )}
 
@@ -466,23 +477,26 @@ export function ApplicationDetailModal({
             <button
               onClick={() => onEdit(application)}
               className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-600 hover:text-stone-600"
-              title="Redigera"
+              title={t('applications.common.edit', 'Redigera')}
+              aria-label={t('applications.common.edit', 'Redigera')}
             >
-              <Edit2 className="w-4 h-4" />
+              <Edit2 className="w-4 h-4" aria-hidden="true" />
             </button>
             <button
               onClick={handleArchive}
               className="p-2 hover:bg-stone-100 rounded-lg transition-colors text-stone-600 hover:text-stone-600"
-              title="Arkivera"
+              title={t('applications.common.archive', 'Arkivera')}
+              aria-label={t('applications.common.archive', 'Arkivera')}
             >
-              <Archive className="w-4 h-4" />
+              <Archive className="w-4 h-4" aria-hidden="true" />
             </button>
             <button
               onClick={handleDelete}
               className="p-2 hover:bg-red-50 rounded-lg transition-colors text-stone-600 hover:text-red-600"
-              title="Ta bort"
+              title={t('applications.common.delete', 'Ta bort')}
+              aria-label={t('applications.common.delete', 'Ta bort')}
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-4 h-4" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -491,11 +505,11 @@ export function ApplicationDetailModal({
         <div className="border-b border-stone-100 px-4">
           <div className="flex gap-4">
             {[
-              { id: 'overview' as const, label: 'Översikt' },
-              { id: 'documents' as const, label: 'Dokument', badge: documentsChanged ? 'Ändrad' : undefined },
-              { id: 'history' as const, label: 'Historik', count: history.length },
-              { id: 'contacts' as const, label: 'Kontakter', count: contacts.length },
-              { id: 'reminders' as const, label: 'Påminnelser', count: reminders.filter(r => !r.isCompleted).length },
+              { id: 'overview' as const, label: t('applications.detail.tabs.overview', 'Översikt') },
+              { id: 'documents' as const, label: t('applications.detail.tabs.documents', 'Dokument'), badge: documentsChanged ? t('applications.detail.changedBadge', 'Ändrad') : undefined },
+              { id: 'history' as const, label: t('applications.detail.tabs.history', 'Historik'), count: history.length },
+              { id: 'contacts' as const, label: t('applications.detail.tabs.contacts', 'Kontakter'), count: contacts.length },
+              { id: 'reminders' as const, label: t('applications.detail.tabs.reminders', 'Påminnelser'), count: reminders.filter(r => !r.isCompleted).length },
             ].map(tab => (
               <button
                 key={tab.id}
@@ -530,7 +544,7 @@ export function ApplicationDetailModal({
               {/* Notes */}
               {application.notes && (
                 <Card className="p-4">
-                  <h4 className="text-sm font-medium text-stone-700 mb-2">Anteckningar</h4>
+                  <h4 className="text-sm font-medium text-stone-700 mb-2">{t('applications.detail.notes', 'Anteckningar')}</h4>
                   <p className="text-stone-600">{application.notes}</p>
                 </Card>
               )}
@@ -538,35 +552,35 @@ export function ApplicationDetailModal({
               {/* Documents summary */}
               <Card className="p-4">
                 <div className="flex items-center justify-between mb-3">
-                  <h4 className="text-sm font-medium text-stone-700">Dokument</h4>
+                  <h4 className="text-sm font-medium text-stone-700">{t('applications.detail.documents', 'Dokument')}</h4>
                   <button
                     onClick={() => setActiveTab('documents')}
                     className="text-xs text-[var(--c-text)] hover:text-[var(--c-text)] font-medium"
                   >
-                    Hantera →
+                    {t('applications.detail.manage', 'Hantera →')}
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {selectedCVId ? (
                     <span className="flex items-center gap-1.5 px-2 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded text-xs">
                       <FileText className="w-3 h-3" />
-                      CV kopplat
+                      {t('applications.detail.cvLinked', 'CV kopplat')}
                     </span>
                   ) : (
                     <span className="flex items-center gap-1.5 px-2 py-1 bg-stone-100 text-stone-700 rounded text-xs">
                       <FileText className="w-3 h-3" />
-                      Inget CV
+                      {t('applications.detail.noCv', 'Inget CV')}
                     </span>
                   )}
                   {selectedCoverLetterId ? (
                     <span className="flex items-center gap-1.5 px-2 py-1 bg-[var(--c-accent)]/40 text-[var(--c-text)] rounded text-xs">
                       <FileText className="w-3 h-3" />
-                      Brev kopplat
+                      {t('applications.detail.letterLinked', 'Brev kopplat')}
                     </span>
                   ) : (
                     <span className="flex items-center gap-1.5 px-2 py-1 bg-stone-100 text-stone-700 rounded text-xs">
                       <FileText className="w-3 h-3" />
-                      Inget brev
+                      {t('applications.detail.noLetter', 'Inget brev')}
                     </span>
                   )}
                 </div>
@@ -581,7 +595,7 @@ export function ApplicationDetailModal({
                   className="flex items-center justify-center gap-2 p-3 bg-stone-100 rounded-lg text-stone-700 hover:bg-stone-200 transition-colors"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  Visa jobbannons
+                  {t('applications.detail.viewAd', 'Visa jobbannons')}
                 </a>
               )}
             </div>
@@ -591,8 +605,8 @@ export function ApplicationDetailModal({
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-medium text-stone-900">Koppla dokument</h3>
-                  <p className="text-sm text-stone-700">Välj CV och personligt brev för denna ansökan</p>
+                  <h3 className="font-medium text-stone-900">{t('applications.detail.linkDocuments', 'Koppla dokument')}</h3>
+                  <p className="text-sm text-stone-700">{t('applications.detail.linkDocumentsHint', 'Välj CV och personligt brev för denna ansökan')}</p>
                 </div>
                 {documentsChanged && (
                   <Button
@@ -601,7 +615,7 @@ export function ApplicationDetailModal({
                     size="sm"
                   >
                     <Save className="w-4 h-4 mr-1" />
-                    {isSavingDocuments ? 'Sparar...' : 'Spara'}
+                    {isSavingDocuments ? t('applications.common.saving', 'Sparar...') : t('applications.common.save', 'Spara')}
                   </Button>
                 )}
               </div>
@@ -618,7 +632,7 @@ export function ApplicationDetailModal({
               {documentsChanged && (
                 <p className="text-xs text-amber-600 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-amber-500 rounded-full" />
-                  Osparade ändringar
+                  {t('applications.detail.unsavedChanges', 'Osparade ändringar')}
                 </p>
               )}
             </div>
@@ -633,29 +647,35 @@ export function ApplicationDetailModal({
               ) : history.length === 0 ? (
                 <div className="text-center py-8 text-stone-700">
                   <Clock className="w-8 h-8 mx-auto mb-2 text-stone-300" />
-                  <p>Ingen historik än</p>
+                  <p>{t('applications.detail.noHistory', 'Ingen historik än')}</p>
                 </div>
               ) : (
-                history.map((entry) => (
-                  <div key={entry.id} className="flex gap-3 p-3 bg-stone-50 rounded-lg">
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                      <Clock className="w-4 h-4 text-stone-600" />
+                history.map((entry) => {
+                  const historyStatusLabel = (value: string) => {
+                    const status = value.toLowerCase() as ApplicationStatus
+                    return t(`applications.status.${status}`, getStatusLabel(status))
+                  }
+                  return (
+                    <div key={entry.id} className="flex gap-3 p-3 bg-stone-50 rounded-lg">
+                      <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0">
+                        <Clock className="w-4 h-4 text-stone-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm text-stone-700">
+                          {entry.eventType === 'status_change'
+                            ? `${t('applications.detail.statusChanged', 'Status ändrad:')} ${entry.oldValue ? historyStatusLabel(entry.oldValue) : '?'} → ${entry.newValue ? historyStatusLabel(entry.newValue) : '?'}`
+                            : t(`applications.timeline.events.${entry.eventType}`, entry.eventType.replace(/_/g, ' '))}
+                        </p>
+                        {entry.note && (
+                          <p className="text-sm text-stone-700 mt-1">{entry.note}</p>
+                        )}
+                        <p className="text-xs text-stone-600 mt-1">
+                          {new Date(entry.createdAt).toLocaleString(i18n.language)}
+                        </p>
+                      </div>
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-stone-700">
-                        {entry.eventType === 'status_change'
-                          ? `Status ändrad: ${entry.oldValue} → ${entry.newValue}`
-                          : entry.eventType.replace(/_/g, ' ')}
-                      </p>
-                      {entry.note && (
-                        <p className="text-sm text-stone-700 mt-1">{entry.note}</p>
-                      )}
-                      <p className="text-xs text-stone-600 mt-1">
-                        {new Date(entry.createdAt).toLocaleString('sv-SE')}
-                      </p>
-                    </div>
-                  </div>
-                ))
+                  )
+                })
               )}
             </div>
           )}
@@ -677,10 +697,10 @@ export function ApplicationDetailModal({
                 !showContactForm && (
                   <div className="text-center py-8 text-stone-700">
                     <User className="w-8 h-8 mx-auto mb-2 text-stone-300" />
-                    <p>Inga kontakter tillagda</p>
+                    <p>{t('applications.detail.noContacts', 'Inga kontakter tillagda')}</p>
                     <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowContactForm(true)}>
                       <Plus className="w-4 h-4 mr-1" />
-                      Lägg till kontakt
+                      {t('applications.detail.addContact', 'Lägg till kontakt')}
                     </Button>
                   </div>
                 )
@@ -690,7 +710,7 @@ export function ApplicationDetailModal({
                   <div className="flex justify-end">
                     <Button variant="outline" size="sm" onClick={() => setShowContactForm(true)}>
                       <Plus className="w-4 h-4 mr-1" />
-                      Lägg till kontakt
+                      {t('applications.detail.addContact', 'Lägg till kontakt')}
                     </Button>
                   </div>
                 )}
@@ -736,10 +756,10 @@ export function ApplicationDetailModal({
                 !showReminderForm && (
                   <div className="text-center py-8 text-stone-700">
                     <Bell className="w-8 h-8 mx-auto mb-2 text-stone-300" />
-                    <p>Inga aktiva påminnelser</p>
+                    <p>{t('applications.detail.noReminders', 'Inga aktiva påminnelser')}</p>
                     <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowReminderForm(true)}>
                       <Plus className="w-4 h-4 mr-1" />
-                      Lägg till påminnelse
+                      {t('applications.detail.addReminder', 'Lägg till påminnelse')}
                     </Button>
                   </div>
                 )
@@ -749,7 +769,7 @@ export function ApplicationDetailModal({
                   <div className="flex justify-end">
                     <Button variant="outline" size="sm" onClick={() => setShowReminderForm(true)}>
                       <Plus className="w-4 h-4 mr-1" />
-                      Lägg till påminnelse
+                      {t('applications.detail.addReminder', 'Lägg till påminnelse')}
                     </Button>
                   </div>
                 )}
@@ -762,14 +782,14 @@ export function ApplicationDetailModal({
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-stone-900">{reminder.title}</p>
                         <p className="text-sm text-stone-700">
-                          {new Date(reminder.reminderDate).toLocaleDateString('sv-SE')}
-                          {reminder.reminderTime && ` kl ${reminder.reminderTime.slice(0, 5)}`}
+                          {new Date(reminder.reminderDate).toLocaleDateString(i18n.language)}
+                          {reminder.reminderTime && ` ${t('applications.detail.atTime', 'kl')} ${reminder.reminderTime.slice(0, 5)}`}
                         </p>
                       </div>
                       <button
                         onClick={() => handleCompleteReminder(reminder.id)}
-                        aria-label={`Markera "${reminder.title}" som klar`}
-                        title="Markera som klar"
+                        aria-label={t('applications.detail.markDoneAria', { title: reminder.title })}
+                        title={t('applications.common.markDone', 'Markera som klar')}
                         className="p-2 hover:bg-green-50 rounded-lg text-stone-600 hover:text-green-600"
                       >
                         <CheckCircle className="w-5 h-5" aria-hidden="true" />
