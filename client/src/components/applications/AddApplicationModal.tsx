@@ -81,7 +81,7 @@ export function AddApplicationModal({
         source: editApplication.source || 'manual',
         status: editApplication.status,
         priority: editApplication.priority,
-        applicationDate: editApplication.applicationDate || '',
+        applicationDate: editApplication.applicationDate?.slice(0, 10) || '',
         notes: editApplication.notes || '',
       })
     } else if (prefillJob) {
@@ -124,6 +124,11 @@ export function AddApplicationModal({
     try {
       if (editApplication) {
         await updateApplication(editApplication.id, {
+          companyName: formData.companyName.trim(),
+          jobTitle: formData.jobTitle.trim(),
+          location: formData.location.trim() || undefined,
+          jobUrl: formData.jobUrl.trim() || undefined,
+          source: formData.source,
           status: formData.status,
           priority: formData.priority,
           applicationDate: formData.applicationDate || undefined,
@@ -144,6 +149,7 @@ export function AddApplicationModal({
           source: formData.source,
           status: formData.status,
           priority: formData.priority,
+          applicationDate: formData.applicationDate || undefined,
           notes: formData.notes || undefined,
         })
       }

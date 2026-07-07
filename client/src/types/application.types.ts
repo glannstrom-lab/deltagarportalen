@@ -349,6 +349,7 @@ export interface CreateApplicationInput {
   source?: ApplicationSource
   priority?: 'high' | 'medium' | 'low'
   applicationMethod?: ApplicationMethod
+  applicationDate?: string
   notes?: string
   cvVersionId?: string
   coverLetterId?: string
@@ -356,6 +357,7 @@ export interface CreateApplicationInput {
 
 export interface UpdateApplicationInput {
   status?: ApplicationStatus
+  source?: ApplicationSource
   priority?: 'high' | 'medium' | 'low'
   applicationMethod?: ApplicationMethod
   applicationDate?: string

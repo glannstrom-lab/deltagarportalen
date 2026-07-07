@@ -227,6 +227,7 @@ export const applicationsApi = {
         source: input.source || 'job_search',
         priority: input.priority || 'medium',
         application_method: input.applicationMethod,
+        application_date: input.applicationDate,
         notes: input.notes,
         cv_version_id: input.cvVersionId,
         cover_letter_id: input.coverLetterId,
@@ -254,6 +255,7 @@ export const applicationsApi = {
     }
 
     if (input.status !== undefined) updates.status = input.status.toUpperCase()
+    if (input.source !== undefined) updates.source = input.source
     if (input.priority !== undefined) updates.priority = input.priority
     if (input.applicationMethod !== undefined) updates.application_method = input.applicationMethod
     if (input.applicationDate !== undefined) updates.application_date = input.applicationDate

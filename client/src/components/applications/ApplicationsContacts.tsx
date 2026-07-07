@@ -7,12 +7,156 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   User, Mail, Phone, Linkedin, MoreVertical,
-  Edit2, Trash2, MessageSquare, Clock
+  Edit2, Trash2, MessageSquare, Clock, X
 } from '@/components/ui/icons'
-import { Card } from '@/components/ui'
+import { Button, Card } from '@/components/ui'
 import { applicationContactsApi } from '@/services/applicationsApi'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import type { ApplicationContact } from '@/types/application.types'
+import type { ApplicationContact, CreateContactInput } from '@/types/application.types'
+
+const editInputClass = 'w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white'
+
+function ContactEditModal({
+  contact,
+  onSave,
+  onClose,
+  isSaving
+}: {
+  contact: ApplicationContact
+  onSave: (id: string, input: Partial<CreateContactInput>) => Promise<void>
+  onClose: () => void
+  isSaving: boolean
+}) {
+  const [formData, setFormData] = useState({
+    name: contact.name,
+    title: contact.title || '',
+    email: contact.email || '',
+    phone: contact.phone || '',
+    linkedinUrl: contact.linkedinUrl || '',
+    notes: contact.notes || '',
+  })
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!formData.name.trim()) {
+      setError('Namn måste fyllas i')
+      return
+    }
+    setError(null)
+    try {
+      // Tomma strängar skickas medvetet — undefined-nycklar stryks i API-lagret
+      // och skulle göra det omöjligt att rensa ett fält.
+      await onSave(contact.id, {
+        name: formData.name.trim(),
+        title: formData.title.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        linkedinUrl: formData.linkedinUrl.trim(),
+        notes: formData.notes.trim(),
+        isPrimary: contact.isPrimary,
+      })
+      onClose()
+    } catch {
+      setError('Kunde inte spara kontakten. Försök igen.')
+    }
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
+      <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-md max-h-[95vh] overflow-y-auto">
+        <div className="sticky top-0 bg-white border-b border-stone-100 p-4 flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-stone-900">Redigera kontakt</h2>
+          <button
+            onClick={onClose}
+            aria-label="Stäng"
+            className="p-2 hover:bg-stone-100 rounded-full transition-colors"
+          >
+            <X className="w-5 h-5 text-stone-700" aria-hidden="true" />
+          </button>
+        </div>
+
+        <form onSubmit={handleSubmit} className="p-4 space-y-3">
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <div>
+            <label htmlFor="edit-contact-name" className="block text-sm font-medium text-stone-700 mb-1">
+              Namn <span className="text-red-500">*</span>
+            </label>
+            <input
+              id="edit-contact-name"
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className={editInputClass}
+              required
+            />
+          </div>
+          <div>
+            <label htmlFor="edit-contact-title" className="block text-sm font-medium text-stone-700 mb-1">Titel</label>
+            <input
+              id="edit-contact-title"
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+              className={editInputClass}
+            />
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label htmlFor="edit-contact-email" className="block text-sm font-medium text-stone-700 mb-1">E-post</label>
+              <input
+                id="edit-contact-email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className={editInputClass}
+              />
+            </div>
+            <div>
+              <label htmlFor="edit-contact-phone" className="block text-sm font-medium text-stone-700 mb-1">Telefon</label>
+              <input
+                id="edit-contact-phone"
+                type="tel"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className={editInputClass}
+              />
+            </div>
+          </div>
+          <div>
+            <label htmlFor="edit-contact-linkedin" className="block text-sm font-medium text-stone-700 mb-1">LinkedIn-länk</label>
+            <input
+              id="edit-contact-linkedin"
+              type="url"
+              value={formData.linkedinUrl}
+              onChange={(e) => setFormData({ ...formData, linkedinUrl: e.target.value })}
+              placeholder="https://linkedin.com/in/..."
+              className={editInputClass}
+            />
+          </div>
+          <div>
+            <label htmlFor="edit-contact-notes" className="block text-sm font-medium text-stone-700 mb-1">Anteckningar</label>
+            <textarea
+              id="edit-contact-notes"
+              value={formData.notes}
+              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+              rows={3}
+              className={`${editInputClass} resize-none`}
+            />
+          </div>
+          <div className="flex gap-3 pt-2">
+            <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+              Avbryt
+            </Button>
+            <Button type="submit" disabled={isSaving} className="flex-1">
+              {isSaving ? 'Sparar...' : 'Spara'}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </div>
+  )
+}
 
 function ContactCard({
   contact,
@@ -150,6 +294,7 @@ function ContactCard({
 export function ApplicationsContacts() {
   useTranslation()
   const queryClient = useQueryClient()
+  const [editContact, setEditContact] = useState<ApplicationContact | null>(null)
 
   const { data: contacts = [], isLoading } = useQuery({
     queryKey: ['application-contacts-all'],
@@ -177,9 +322,20 @@ export function ApplicationsContacts() {
     }
   })
 
+  const updateMutation = useMutation({
+    mutationFn: ({ id, input }: { id: string; input: Partial<CreateContactInput> }) =>
+      applicationContactsApi.update(id, input),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['application-contacts-all'] })
+    }
+  })
+
   const handleEdit = (contact: ApplicationContact) => {
-    // TODO: Open edit modal
-    console.log('Edit contact:', contact)
+    setEditContact(contact)
+  }
+
+  const handleSaveEdit = async (id: string, input: Partial<CreateContactInput>) => {
+    await updateMutation.mutateAsync({ id, input })
   }
 
   const handleDelete = async (id: string) => {
@@ -233,6 +389,15 @@ export function ApplicationsContacts() {
             />
           ))}
         </div>
+      )}
+
+      {editContact && (
+        <ContactEditModal
+          contact={editContact}
+          onSave={handleSaveEdit}
+          onClose={() => setEditContact(null)}
+          isSaving={updateMutation.isPending}
+        />
       )}
     </div>
   )

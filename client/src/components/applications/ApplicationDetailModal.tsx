@@ -19,7 +19,10 @@ import {
   getStatusLabel,
   getNextStatuses,
   type Application,
-  type ApplicationStatus
+  type ApplicationStatus,
+  type CreateContactInput,
+  type CreateReminderInput,
+  type ReminderType
 } from '@/types/application.types'
 
 interface ApplicationDetailModalProps {
@@ -27,6 +30,218 @@ interface ApplicationDetailModalProps {
   isOpen: boolean
   onClose: () => void
   onEdit: (application: Application) => void
+}
+
+const REMINDER_TYPE_OPTIONS: { value: ReminderType; label: string }[] = [
+  { value: 'follow_up', label: 'Uppföljning' },
+  { value: 'interview', label: 'Intervju' },
+  { value: 'phone_screen', label: 'Telefonintervju' },
+  { value: 'assessment', label: 'Arbetsprov' },
+  { value: 'deadline', label: 'Deadline' },
+  { value: 'custom', label: 'Annat' },
+]
+
+const formInputClass = 'w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--c-solid)] bg-white'
+
+function ContactForm({
+  onSubmit,
+  onCancel,
+  isSaving
+}: {
+  onSubmit: (input: Omit<CreateContactInput, 'applicationId'>) => Promise<void>
+  onCancel: () => void
+  isSaving: boolean
+}) {
+  const [name, setName] = useState('')
+  const [title, setTitle] = useState('')
+  const [email, setEmail] = useState('')
+  const [phone, setPhone] = useState('')
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!name.trim()) {
+      setError('Namn måste fyllas i')
+      return
+    }
+    setError(null)
+    try {
+      await onSubmit({
+        name: name.trim(),
+        title: title.trim() || undefined,
+        email: email.trim() || undefined,
+        phone: phone.trim() || undefined,
+      })
+    } catch {
+      setError('Kunde inte spara kontakten. Försök igen.')
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="p-3 bg-stone-50 rounded-lg space-y-3">
+      <h4 className="text-sm font-medium text-stone-900">Ny kontakt</h4>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label htmlFor="contact-name" className="block text-xs font-medium text-stone-700 mb-1">
+            Namn <span className="text-red-500">*</span>
+          </label>
+          <input
+            id="contact-name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="T.ex. Anna Andersson"
+            className={formInputClass}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="contact-title" className="block text-xs font-medium text-stone-700 mb-1">Titel</label>
+          <input
+            id="contact-title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="T.ex. Rekryterare"
+            className={formInputClass}
+          />
+        </div>
+        <div>
+          <label htmlFor="contact-email" className="block text-xs font-medium text-stone-700 mb-1">E-post</label>
+          <input
+            id="contact-email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="namn@foretag.se"
+            className={formInputClass}
+          />
+        </div>
+        <div>
+          <label htmlFor="contact-phone" className="block text-xs font-medium text-stone-700 mb-1">Telefon</label>
+          <input
+            id="contact-phone"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="070-123 45 67"
+            className={formInputClass}
+          />
+        </div>
+      </div>
+      <div className="flex gap-2 justify-end">
+        <Button type="button" variant="outline" size="sm" onClick={onCancel}>
+          Avbryt
+        </Button>
+        <Button type="submit" size="sm" disabled={isSaving}>
+          {isSaving ? 'Sparar...' : 'Spara kontakt'}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
+function ReminderForm({
+  onSubmit,
+  onCancel,
+  isSaving
+}: {
+  onSubmit: (input: Omit<CreateReminderInput, 'applicationId'>) => Promise<void>
+  onCancel: () => void
+  isSaving: boolean
+}) {
+  const [title, setTitle] = useState('')
+  const [reminderType, setReminderType] = useState<ReminderType>('follow_up')
+  const [reminderDate, setReminderDate] = useState('')
+  const [reminderTime, setReminderTime] = useState('')
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!title.trim() || !reminderDate) {
+      setError('Titel och datum måste fyllas i')
+      return
+    }
+    setError(null)
+    try {
+      await onSubmit({
+        title: title.trim(),
+        reminderType,
+        reminderDate,
+        reminderTime: reminderTime || undefined,
+      })
+    } catch {
+      setError('Kunde inte spara påminnelsen. Försök igen.')
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="p-3 bg-stone-50 rounded-lg space-y-3">
+      <h4 className="text-sm font-medium text-stone-900">Ny påminnelse</h4>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label htmlFor="reminder-title" className="block text-xs font-medium text-stone-700 mb-1">
+            Titel <span className="text-red-500">*</span>
+          </label>
+          <input
+            id="reminder-title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            placeholder="T.ex. Ring och följ upp"
+            className={formInputClass}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="reminder-type" className="block text-xs font-medium text-stone-700 mb-1">Typ</label>
+          <select
+            id="reminder-type"
+            value={reminderType}
+            onChange={(e) => setReminderType(e.target.value as ReminderType)}
+            className={formInputClass}
+          >
+            {REMINDER_TYPE_OPTIONS.map(opt => (
+              <option key={opt.value} value={opt.value}>{opt.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="reminder-date" className="block text-xs font-medium text-stone-700 mb-1">
+            Datum <span className="text-red-500">*</span>
+          </label>
+          <input
+            id="reminder-date"
+            type="date"
+            value={reminderDate}
+            onChange={(e) => setReminderDate(e.target.value)}
+            className={formInputClass}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="reminder-time" className="block text-xs font-medium text-stone-700 mb-1">Tid</label>
+          <input
+            id="reminder-time"
+            type="time"
+            value={reminderTime}
+            onChange={(e) => setReminderTime(e.target.value)}
+            className={formInputClass}
+          />
+        </div>
+      </div>
+      <div className="flex gap-2 justify-end">
+        <Button type="button" variant="outline" size="sm" onClick={onCancel}>
+          Avbryt
+        </Button>
+        <Button type="submit" size="sm" disabled={isSaving}>
+          {isSaving ? 'Sparar...' : 'Spara påminnelse'}
+        </Button>
+      </div>
+    </form>
+  )
 }
 
 export function ApplicationDetailModal({
@@ -41,11 +256,36 @@ export function ApplicationDetailModal({
     contacts,
     reminders,
     history,
-    isLoading: isDetailLoading
+    isLoading: isDetailLoading,
+    addContact,
+    addReminder,
+    completeReminder,
+    isAddingContact,
+    isAddingReminder
   } = useApplication(application.id)
 
   const [showStatusMenu, setShowStatusMenu] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'history' | 'contacts' | 'reminders' | 'documents'>('overview')
+  const [showContactForm, setShowContactForm] = useState(false)
+  const [showReminderForm, setShowReminderForm] = useState(false)
+
+  const handleAddContact = async (input: Omit<CreateContactInput, 'applicationId'>) => {
+    await addContact(input)
+    setShowContactForm(false)
+  }
+
+  const handleAddReminder = async (input: Omit<CreateReminderInput, 'applicationId'>) => {
+    await addReminder(input)
+    setShowReminderForm(false)
+  }
+
+  const handleCompleteReminder = async (reminderId: string) => {
+    try {
+      await completeReminder(reminderId)
+    } catch (error) {
+      console.error('Failed to complete reminder:', error)
+    }
+  }
 
   // Document selection state
   const [selectedCVId, setSelectedCVId] = useState<string | null>(application.cvVersionId || null)
@@ -422,21 +662,39 @@ export function ApplicationDetailModal({
 
           {activeTab === 'contacts' && (
             <div className="space-y-3">
+              {showContactForm && (
+                <ContactForm
+                  onSubmit={handleAddContact}
+                  onCancel={() => setShowContactForm(false)}
+                  isSaving={isAddingContact}
+                />
+              )}
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" />
                 </div>
               ) : contacts.length === 0 ? (
-                <div className="text-center py-8 text-stone-700">
-                  <User className="w-8 h-8 mx-auto mb-2 text-stone-300" />
-                  <p>Inga kontakter tillagda</p>
-                  <Button variant="outline" size="sm" className="mt-3">
-                    <Plus className="w-4 h-4 mr-1" />
-                    Lägg till kontakt
-                  </Button>
-                </div>
+                !showContactForm && (
+                  <div className="text-center py-8 text-stone-700">
+                    <User className="w-8 h-8 mx-auto mb-2 text-stone-300" />
+                    <p>Inga kontakter tillagda</p>
+                    <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowContactForm(true)}>
+                      <Plus className="w-4 h-4 mr-1" />
+                      Lägg till kontakt
+                    </Button>
+                  </div>
+                )
               ) : (
-                contacts.map((contact) => (
+                <>
+                {!showContactForm && (
+                  <div className="flex justify-end">
+                    <Button variant="outline" size="sm" onClick={() => setShowContactForm(true)}>
+                      <Plus className="w-4 h-4 mr-1" />
+                      Lägg till kontakt
+                    </Button>
+                  </div>
+                )}
+                {contacts.map((contact) => (
                   <Card key={contact.id} className="p-3">
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-stone-100 rounded-lg flex items-center justify-center">
@@ -455,28 +713,47 @@ export function ApplicationDetailModal({
                       </div>
                     </div>
                   </Card>
-                ))
+                ))}
+                </>
               )}
             </div>
           )}
 
           {activeTab === 'reminders' && (
             <div className="space-y-3">
+              {showReminderForm && (
+                <ReminderForm
+                  onSubmit={handleAddReminder}
+                  onCancel={() => setShowReminderForm(false)}
+                  isSaving={isAddingReminder}
+                />
+              )}
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-[var(--c-solid)]" />
                 </div>
               ) : reminders.filter(r => !r.isCompleted).length === 0 ? (
-                <div className="text-center py-8 text-stone-700">
-                  <Bell className="w-8 h-8 mx-auto mb-2 text-stone-300" />
-                  <p>Inga aktiva påminnelser</p>
-                  <Button variant="outline" size="sm" className="mt-3">
-                    <Plus className="w-4 h-4 mr-1" />
-                    Lägg till påminnelse
-                  </Button>
-                </div>
+                !showReminderForm && (
+                  <div className="text-center py-8 text-stone-700">
+                    <Bell className="w-8 h-8 mx-auto mb-2 text-stone-300" />
+                    <p>Inga aktiva påminnelser</p>
+                    <Button variant="outline" size="sm" className="mt-3" onClick={() => setShowReminderForm(true)}>
+                      <Plus className="w-4 h-4 mr-1" />
+                      Lägg till påminnelse
+                    </Button>
+                  </div>
+                )
               ) : (
-                reminders.filter(r => !r.isCompleted).map((reminder) => (
+                <>
+                {!showReminderForm && (
+                  <div className="flex justify-end">
+                    <Button variant="outline" size="sm" onClick={() => setShowReminderForm(true)}>
+                      <Plus className="w-4 h-4 mr-1" />
+                      Lägg till påminnelse
+                    </Button>
+                  </div>
+                )}
+                {reminders.filter(r => !r.isCompleted).map((reminder) => (
                   <Card key={reminder.id} className="p-3">
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
@@ -489,12 +766,18 @@ export function ApplicationDetailModal({
                           {reminder.reminderTime && ` kl ${reminder.reminderTime.slice(0, 5)}`}
                         </p>
                       </div>
-                      <button className="p-2 hover:bg-green-50 rounded-lg text-stone-600 hover:text-green-600">
-                        <CheckCircle className="w-5 h-5" />
+                      <button
+                        onClick={() => handleCompleteReminder(reminder.id)}
+                        aria-label={`Markera "${reminder.title}" som klar`}
+                        title="Markera som klar"
+                        className="p-2 hover:bg-green-50 rounded-lg text-stone-600 hover:text-green-600"
+                      >
+                        <CheckCircle className="w-5 h-5" aria-hidden="true" />
                       </button>
                     </div>
                   </Card>
-                ))
+                ))}
+                </>
               )}
             </div>
           )}
