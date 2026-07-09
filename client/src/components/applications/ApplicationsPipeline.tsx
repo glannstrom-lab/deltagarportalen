@@ -3,7 +3,7 @@
  * Kanban-style view for managing job applications through stages
  */
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Plus, Filter, ChevronDown, AlertCircle, Archive, CheckCircle,
@@ -65,6 +65,9 @@ interface ApplicationsPipelineProps {
   onEditApplication?: (application: Application) => void
 }
 
+// MIME-typ för drag-and-drop av ansökningskort (dataTransfer lowercasar typer)
+const DND_TYPE = 'application/x-jobin-application-id'
+
 // Icon mapping for status
 const STATUS_ICONS: Record<ApplicationStatus, React.ElementType> = {
   interested: Sparkles,
@@ -87,7 +90,10 @@ function PipelineColumn({
   onViewApplication,
   onEditApplication,
   onArchive,
-  onDelete
+  onDelete,
+  draggingId,
+  onDragStateChange,
+  onDropApplication
 }: {
   status: ApplicationStatus
   applications: Application[]
@@ -96,10 +102,18 @@ function PipelineColumn({
   onEditApplication?: (app: Application) => void
   onArchive: (id: string) => void
   onDelete: (id: string) => void
+  draggingId: string | null
+  onDragStateChange: (id: string | null) => void
+  onDropApplication: (id: string, status: ApplicationStatus) => void
 }) {
   const { t } = useTranslation()
   const config = APPLICATION_STATUS_CONFIG[status]
   const Icon = STATUS_ICONS[status]
+
+  const [isDropTarget, setIsDropTarget] = useState(false)
+  // dragenter/dragleave bubblar från barnelement — räknare krävs för att
+  // veta när pekaren faktiskt lämnat kolumnen.
+  const dragDepth = useRef(0)
 
   // Sort by priority (high first), then by updated date
   const sortedApps = useMemo(() => {
@@ -112,7 +126,7 @@ function PipelineColumn({
   }, [applications])
 
   return (
-    <div className="flex-shrink-0 w-64 sm:w-72 flex flex-col">
+    <div className="min-w-0 flex flex-col">
       {/* Column header */}
       <div className={cn(
         "flex items-center justify-between p-3 rounded-t-xl border-t-4",
@@ -133,25 +147,66 @@ function PipelineColumn({
         </div>
       </div>
 
-      {/* Column content */}
-      <div className="flex-1 bg-stone-50 border border-t-0 border-stone-200 rounded-b-xl p-2 space-y-2 min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto">
+      {/* Column content — även drop-zon för drag-and-drop */}
+      <div
+        data-status={status}
+        onDragOver={(e) => {
+          if (!e.dataTransfer.types.includes(DND_TYPE)) return
+          e.preventDefault()
+          e.dataTransfer.dropEffect = 'move'
+        }}
+        onDragEnter={(e) => {
+          if (!e.dataTransfer.types.includes(DND_TYPE)) return
+          dragDepth.current++
+          setIsDropTarget(true)
+        }}
+        onDragLeave={() => {
+          dragDepth.current = Math.max(0, dragDepth.current - 1)
+          if (dragDepth.current === 0) setIsDropTarget(false)
+        }}
+        onDrop={(e) => {
+          e.preventDefault()
+          dragDepth.current = 0
+          setIsDropTarget(false)
+          const id = e.dataTransfer.getData(DND_TYPE)
+          if (id) onDropApplication(id, status)
+        }}
+        className={cn(
+          "flex-1 bg-stone-50 border border-t-0 border-stone-200 rounded-b-xl p-2 space-y-2 min-h-[200px] max-h-[420px] overflow-y-auto transition-colors",
+          isDropTarget && "bg-[var(--c-bg)] ring-2 ring-inset ring-[var(--c-solid)]"
+        )}
+      >
         {sortedApps.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8 text-stone-600">
+          <div className="flex flex-col items-center justify-center py-8 text-stone-600 pointer-events-none">
             <Icon className="w-8 h-8 mb-2 opacity-50" />
             <p className="text-xs text-center">{t('applications.pipeline.emptyColumn', 'Inga ansökningar')}</p>
           </div>
         ) : (
           sortedApps.map((app) => (
-            <ApplicationCard
+            <div
               key={app.id}
-              application={app}
-              variant="compact"
-              onStatusChange={onStatusChange}
-              onViewDetails={onViewApplication}
-              onEdit={onEditApplication}
-              onArchive={onArchive}
-              onDelete={onDelete}
-            />
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData(DND_TYPE, app.id)
+                e.dataTransfer.effectAllowed = 'move'
+                // Skjut upp state-ändringen en tick — en synkron re-render
+                // under dragstart kan avbryta draget i Chromium.
+                setTimeout(() => onDragStateChange(app.id), 0)
+              }}
+              onDragEnd={() => onDragStateChange(null)}
+              className="cursor-grab active:cursor-grabbing"
+            >
+              <ApplicationCard
+                application={app}
+                variant="compact"
+                isDragging={draggingId === app.id}
+                onStatusChange={onStatusChange}
+                onViewDetails={onViewApplication}
+                onEdit={onEditApplication}
+                onArchive={onArchive}
+                onDelete={onDelete}
+              />
+            </div>
           ))
         )}
       </div>
@@ -179,6 +234,7 @@ export function ApplicationsPipeline({
 
   const [priorityFilter, setPriorityFilter] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [draggingId, setDraggingId] = useState<string | null>(null)
 
   // Filter applications by priority and search query
   const filteredByStatus = useMemo(() => {
@@ -215,6 +271,13 @@ export function ApplicationsPipeline({
     } catch (error) {
       console.error('Failed to update status:', error)
     }
+  }
+
+  const handleDropApplication = (id: string, newStatus: ApplicationStatus) => {
+    setDraggingId(null)
+    // Släpp i samma kolumn = ingen ändring
+    if (applicationsByStatus[newStatus].some(app => app.id === id)) return
+    void handleStatusChange(id, newStatus)
   }
 
   const handleArchive = async (id: string) => {
@@ -384,11 +447,13 @@ export function ApplicationsPipeline({
 
       {/* Pipeline — kanban på ≥sm, grupperad lista på mobil (8 kolumner
           horisontell scroll är för tungt på små skärmar).
+          Kanbanen radbryts som grid med max 4 kolumner per rad så alla
+          kolumner får plats på skärmen utan horisontell scroll.
           Visas bara när användaren har minst en ansökan — när total är 0
           visas bara empty-state-Card nedan (inte två tomtillstånd). */}
       {stats.total > 0 && !(hasActiveFilter && visibleCount === 0) && (
         <>
-          <div className="hidden sm:flex gap-3 overflow-x-auto pb-4">
+          <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 pb-4">
             {PIPELINE_COLUMNS.map((status) => (
               <PipelineColumn
                 key={status}
@@ -399,6 +464,9 @@ export function ApplicationsPipeline({
                 onEditApplication={onEditApplication}
                 onArchive={handleArchive}
                 onDelete={handleDelete}
+                draggingId={draggingId}
+                onDragStateChange={setDraggingId}
+                onDropApplication={handleDropApplication}
               />
             ))}
           </div>
