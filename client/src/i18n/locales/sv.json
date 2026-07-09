@@ -2361,6 +2361,39 @@
       "overdue": "Försenad",
       "daysLeft": "Om {{days}} dagar"
     },
+    "followup": {
+      "plan": "Planera uppföljning",
+      "suggestion": "Vill du planera en uppföljning?",
+      "quickWeek": "Om 1 vecka",
+      "quickTwoWeeks": "Om 2 veckor",
+      "pickDate": "Välj datum",
+      "dateLabel": "Uppföljningsdatum",
+      "change": "Ändra",
+      "remove": "Ta bort"
+    },
+    "contact": {
+      "title": "Kontaktperson",
+      "add": "Lägg till kontaktperson",
+      "name": "Namn",
+      "namePlaceholder": "t.ex. Anna Andersson",
+      "email": "E-post",
+      "phone": "Telefon",
+      "method": "Kontaktsätt",
+      "methods": {
+        "email": "E-post",
+        "linkedin": "LinkedIn",
+        "phone": "Telefon",
+        "visit": "Besök",
+        "other": "Annat"
+      }
+    },
+    "writeCoverLetter": "Skriv personligt brev",
+    "focusDraft": {
+      "title": "Ditt utkast från fokusläget",
+      "description": "När du sparar ett företag följer meddelandet med som anteckning.",
+      "dismiss": "Ta bort utkastet",
+      "savedAsNote": "Ditt meddelande sparades som anteckning"
+    },
     "tips": {
       "title": "Tips för spontanansökningar",
       "tip1": "Sikta på att kontakta 5-10 nya företag per vecka",
@@ -8547,7 +8580,7 @@
       "companyHint": "Skriv namnet eller en beskrivning.",
       "companyPlaceholder": "t.ex. ICA Maxi, Volvo",
       "companyTitle": "Vilket företag vill du kontakta?",
-      "doneText": "Bra! Öppna sidan i normalläge för att skicka meddelandet och spara företaget.",
+      "doneText": "Bra! Ditt utkast är sparat. Öppna sidan i normalläge — sökningen är förifylld, och meddelandet följer med som anteckning när du sparar företaget.",
       "doneTitle": "Klart!",
       "industryHint": "En bransch eller område.",
       "industryPlaceholder": "t.ex. restaurang, vård, IT",

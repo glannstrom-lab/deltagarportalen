@@ -569,20 +569,21 @@ export interface CreateSpontaneousCompany {
   why_interested?: string
 }
 
+// Fälten tillåter null för att kunna rensas — undefined stryks av supabase-js
 export interface UpdateSpontaneousCompany {
   status?: SpontaneousStatus
   priority?: SpontaneousPriority
-  notes?: string
-  why_interested?: string
-  contact_name?: string
-  contact_email?: string
-  contact_phone?: string
-  contact_linkedin?: string
-  outreach_method?: OutreachMethod
-  outreach_date?: string
-  followup_date?: string
-  response_date?: string
-  response_notes?: string
+  notes?: string | null
+  why_interested?: string | null
+  contact_name?: string | null
+  contact_email?: string | null
+  contact_phone?: string | null
+  contact_linkedin?: string | null
+  outreach_method?: OutreachMethod | null
+  outreach_date?: string | null
+  followup_date?: string | null
+  response_date?: string | null
+  response_notes?: string | null
 }
 
 export const spontaneousCompaniesApi = {

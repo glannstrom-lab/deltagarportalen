@@ -2354,6 +2354,39 @@
       "overdue": "Overdue",
       "daysLeft": "In {{days}} days"
     },
+    "followup": {
+      "plan": "Plan follow-up",
+      "suggestion": "Would you like to plan a follow-up?",
+      "quickWeek": "In 1 week",
+      "quickTwoWeeks": "In 2 weeks",
+      "pickDate": "Pick a date",
+      "dateLabel": "Follow-up date",
+      "change": "Change",
+      "remove": "Remove"
+    },
+    "contact": {
+      "title": "Contact person",
+      "add": "Add contact person",
+      "name": "Name",
+      "namePlaceholder": "e.g. Anna Andersson",
+      "email": "Email",
+      "phone": "Phone",
+      "method": "Contact method",
+      "methods": {
+        "email": "Email",
+        "linkedin": "LinkedIn",
+        "phone": "Phone",
+        "visit": "Visit",
+        "other": "Other"
+      }
+    },
+    "writeCoverLetter": "Write cover letter",
+    "focusDraft": {
+      "title": "Your draft from focus mode",
+      "description": "When you save a company, the message is attached as a note.",
+      "dismiss": "Remove draft",
+      "savedAsNote": "Your message was saved as a note"
+    },
     "tips": {
       "title": "Tips for spontaneous applications",
       "tip1": "Aim to contact 5-10 new companies per week",
@@ -8540,7 +8573,7 @@
       "companyHint": "Write the name or a description.",
       "companyPlaceholder": "e.g. ICA Maxi, Volvo",
       "companyTitle": "Which company would you like to contact?",
-      "doneText": "Great! Open the page in normal mode to send the message and save the company.",
+      "doneText": "Great! Your draft is saved. Open the page in normal mode — the search is pre-filled, and your message is attached as a note when you save the company.",
       "doneTitle": "Done!",
       "industryHint": "An industry or field.",
       "industryPlaceholder": "e.g. restaurant, healthcare, IT",

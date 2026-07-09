@@ -188,11 +188,21 @@ export function useSpontaneousCompanies(): UseSpontaneousCompaniesResult {
     const oldStatus = company.status
 
     try {
-      await spontaneousCompaniesApi.updateStatus(id, status)
+      // Stämpla datum automatiskt vid relevanta statusbyten
+      const today = new Date().toISOString().split('T')[0]
+      const updates: UpdateSpontaneousCompany = { status }
+      if (status === 'contacted' && !company.outreach_date) {
+        updates.outreach_date = today
+      }
+      if ((status === 'response_positive' || status === 'response_negative') && !company.response_date) {
+        updates.response_date = today
+      }
+
+      const updated = await spontaneousCompaniesApi.update(id, updates)
 
       // Update local state
       setCompanies(prev =>
-        prev.map(c => c.id === id ? { ...c, status } : c)
+        prev.map(c => c.id === id ? updated : c)
       )
       setStats(prev => ({
         ...prev,

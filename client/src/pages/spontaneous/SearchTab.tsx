@@ -21,6 +21,8 @@ import {
   Hash,
   CheckCheck,
   Save,
+  MessageSquare,
+  X,
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -38,6 +40,11 @@ import {
 import { searchCompaniesWithAI, type AICompanyResult } from '@/services/aiCompanySearchApi'
 import { CompanyAnalysisPanel } from '@/components/ai'
 import { showToast } from '@/components/Toast'
+import {
+  loadSpontaneousFocusDraft,
+  clearSpontaneousFocusDraft,
+  type SpontaneousFocusDraft,
+} from '@/lib/spontaneousFocusDraft'
 
 // Company status badge based on raw data from Bolagsverket
 function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
@@ -99,8 +106,10 @@ type SearchMode = 'orgnr' | 'ai'
 
 export default function SearchTab() {
   const { t } = useTranslation()
+  // Utkast från fokuslägets wizard — förifyller sökningen och följer med som anteckning
+  const [focusDraft, setFocusDraft] = useState<SpontaneousFocusDraft | null>(() => loadSpontaneousFocusDraft())
   const [searchMode, setSearchMode] = useState<SearchMode>('ai')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [searchQuery, setSearchQuery] = useState(() => focusDraft?.company || focusDraft?.industry || '')
   const [isSearching, setIsSearching] = useState(false)
   const [searchResult, setSearchResult] = useState<BolagsverketCompany | null>(null)
   const [searchError, setSearchError] = useState<string | null>(null)
@@ -117,6 +126,20 @@ export default function SearchTab() {
   const [expandedAnalysis, setExpandedAnalysis] = useState<string | null>(null)
 
   const { lookupCompany, addCompany, isCompanySaved } = useSpontaneousCompanies()
+
+  const draftNotes = focusDraft?.message.trim() || undefined
+
+  const dismissFocusDraft = () => {
+    clearSpontaneousFocusDraft()
+    setFocusDraft(null)
+  }
+
+  // Rensa utkastet när det använts och bekräfta för användaren
+  const consumeFocusDraft = () => {
+    clearSpontaneousFocusDraft()
+    setFocusDraft(null)
+    showToast.success(t('spontaneous.focusDraft.savedAsNote'))
+  }
 
   // Load documents when search result changes
   useEffect(() => {
@@ -205,7 +228,8 @@ export default function SearchTab() {
     setSavingCompanyId(companyKey)
 
     try {
-      await addCompany(company.orgNumber)
+      const saved = await addCompany(company.orgNumber, draftNotes ? { notes: draftNotes } : undefined)
+      if (saved && draftNotes) consumeFocusDraft()
     } finally {
       setSavingCompanyId(null)
     }
@@ -225,8 +249,8 @@ export default function SearchTab() {
 
     for (const company of toSave) {
       try {
-        await addCompany(company.orgNumber!)
-        saved++
+        const result = await addCompany(company.orgNumber!, draftNotes ? { notes: draftNotes } : undefined)
+        if (result) saved++
       } catch (err) {
         console.error('Error saving company:', err)
       }
@@ -235,6 +259,7 @@ export default function SearchTab() {
     setSelectedForSave(new Set())
     setIsSearching(false)
     showToast.success(t('spontaneous.companiesSaved', { count: saved }))
+    if (saved > 0 && draftNotes) consumeFocusDraft()
   }
 
   // Toggle selection
@@ -302,7 +327,8 @@ export default function SearchTab() {
 
     setIsSaving(true)
     try {
-      await addCompany(searchResult.orgNumber)
+      const saved = await addCompany(searchResult.orgNumber, draftNotes ? { notes: draftNotes } : undefined)
+      if (saved && draftNotes) consumeFocusDraft()
       // Clear search after saving
       setSearchResult(null)
       setSearchQuery('')
@@ -411,6 +437,44 @@ export default function SearchTab() {
           <p className="mt-3 text-sm text-red-500">{searchError}</p>
         )}
       </Card>
+
+      {/* Utkast från fokusläget */}
+      {focusDraft && (
+        <Card className="p-4 bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 border-[var(--c-accent)] dark:border-[var(--c-accent)]/50">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start gap-3 min-w-0">
+              <MessageSquare className="w-5 h-5 text-[var(--c-solid)] mt-0.5 flex-shrink-0" aria-hidden="true" />
+              <div className="min-w-0">
+                <h3 className="font-medium text-stone-800 dark:text-stone-100">
+                  {t('spontaneous.focusDraft.title')}
+                </h3>
+                {(focusDraft.company || focusDraft.industry) && (
+                  <p className="text-sm text-stone-600 dark:text-stone-400">
+                    {[focusDraft.company, focusDraft.industry].filter(Boolean).join(' · ')}
+                  </p>
+                )}
+                {focusDraft.message && (
+                  <p className="text-sm text-stone-700 dark:text-stone-300 mt-2 whitespace-pre-wrap">
+                    {focusDraft.message}
+                  </p>
+                )}
+                <p className="text-xs text-stone-500 dark:text-stone-500 mt-2">
+                  {t('spontaneous.focusDraft.description')}
+                </p>
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={dismissFocusDraft}
+              aria-label={t('spontaneous.focusDraft.dismiss')}
+              className="h-8 w-8 p-0 flex-shrink-0"
+            >
+              <X className="w-4 h-4" aria-hidden="true" />
+            </Button>
+          </div>
+        </Card>
+      )}
 
       {/* Search Result */}
       {searchResult && (

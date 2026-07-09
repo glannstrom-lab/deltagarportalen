@@ -2,12 +2,14 @@
  * FocusSpontaneousWizard — NPF-anpassad spontanansökan.
  *
  * Steg: vilken bransch? → vilket företag (namn/typ) → kort meddelande → klart.
- * Sparar inte direkt — leder ut till normalvyn för att skicka.
+ * Sparar utkastet i localStorage — normalvyns SearchTab plockar upp det,
+ * förifyller sökningen och lägger meddelandet som anteckning vid spara.
  */
 
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Building2, Search, MessageSquare, Smile } from '@/components/ui/icons'
+import { saveSpontaneousFocusDraft } from '@/lib/spontaneousFocusDraft'
 import { FocusWizardFrame, type FocusWizardStep } from './FocusWizardFrame'
 
 interface Props {
@@ -51,6 +53,10 @@ export function FocusSpontaneousWizard({ onExit }: Props) {
   const current = STEPS[step]
 
   const handleNext = async () => {
+    if (current.id === 'message') {
+      // Spara utkastet innan sista steget så det inte går förlorat vid avslut
+      saveSpontaneousFocusDraft({ industry, company, message })
+    }
     if (current.id === 'done') {
       onExit()
       return
@@ -113,7 +119,7 @@ export function FocusSpontaneousWizard({ onExit }: Props) {
         <p className="text-stone-600 dark:text-stone-300">
           {t(
             'focus.spontaneous.doneText',
-            'Bra! Öppna sidan i normalläge för att skicka meddelandet och spara företaget.'
+            'Bra! Ditt utkast är sparat. Öppna sidan i normalläge — sökningen är förifylld, och meddelandet följer med som anteckning när du sparar företaget.'
           )}
         </p>
       )}

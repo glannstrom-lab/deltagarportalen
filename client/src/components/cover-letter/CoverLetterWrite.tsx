@@ -324,12 +324,14 @@ export function CoverLetterWrite() {
     const desc = searchParams.get('desc')
 
     if (jobId || company || title) {
+      // searchParams.get() avkodar redan — en extra decodeURIComponent
+      // kraschar på literala %-tecken i t.ex. verksamhetsbeskrivningar
       setFormData(prev => ({
         ...prev,
         selectedJobId: jobId || '',
-        company: company ? decodeURIComponent(company) : prev.company,
-        jobTitle: title ? decodeURIComponent(title) : prev.jobTitle,
-        jobAd: desc ? decodeURIComponent(desc) : prev.jobAd,
+        company: company || prev.company,
+        jobTitle: title || prev.jobTitle,
+        jobAd: desc || prev.jobAd,
       }))
     }
   }, [searchParams])
