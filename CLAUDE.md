@@ -49,7 +49,7 @@ Monitoring:   Sentry
 deltagarportal/
 ├── client/                  # React frontend (Vercel rootDirectory)
 │   ├── api/                 # Vercel serverless functions
-│   │   ├── ai.js            # Huvud-AI-endpoint (18 funktioner, samlad)
+│   │   ├── ai.js            # Huvud-AI-endpoint (22 funktioner, samlad)
 │   │   ├── ai-stream.js     # SSE-streaming för AI-svar
 │   │   ├── cv-pdf.js        # CV → PDF (puppeteer, rate-limited)
 │   │   ├── job-alerts.js    # E-postaviseringar för jobb
@@ -64,10 +64,10 @@ deltagarportal/
 │       └── lib/             # supabase, sentry, validators, ...
 ├── api/                     # Repo-root Vercel-katalog
 │   └── _utils/              # rate-limiter.js (Supabase-distribuerad)
-├── supabase/                # Migrations (116 filer) + 24 edge functions
+├── supabase/                # Migrations (120 filer) + 24 edge functions
 │   ├── functions/           # Deno edge — ai-*, af-*, learning-*, bolagsverket, ...
 │   └── migrations/
-├── e2e/                     # Playwright-tester (8 spec + ad-hoc .cjs-skript)
+├── e2e/                     # Playwright-tester (8 spec + ~87 ad-hoc .cjs-skript, kurering planerad C6)
 ├── docs/                    # ROADMAP.md (enda gällande plan), DESIGN.md, granskningar
 ├── archive/                 # Arkiverat: 2026-q1, server-legacy, 2026-06-dokkonsolidering
 ├── .planning/               # GSD-milestone-historik (PROJECT, STATE) + AF-API-idébank
@@ -130,7 +130,7 @@ När något inte fungerar, följ denna ordning:
 
 ### AI-anrop går till TVÅ backends
 Det finns två parallella AI-vägar — välj rätt:
-- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — 18 funktioner samlade. Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.** Streaming-varianten ligger i `client/api/ai-stream.js` och anropas via `useAIStream`-hooken.
+- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — 22 funktioner samlade. Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.** Streaming-varianten ligger i `client/api/ai-stream.js` och anropas via `useAIStream`-hooken.
 - **`supabase/functions/`** (Deno edge) — 24 funktioner: `ai-*`, `af-*` (Arbetsförmedlingen), `learning-*`, `bolagsverket`, `cv-analysis`, `health`, `delete-account`, `send-invite-email`. Service role, längre prompts, integration mot AF/Bolagsverket.
 
 > **AI-modellen är låst** till `openai/gpt-oss-120b` av kostnadsskäl (`docs/AI_MODEL_LOCKING.md`). Byt aldrig modell utan explicit beslut av Mikael.
@@ -253,7 +253,7 @@ client/src/components/
   dashboard/
     KpiCard, NextStepCard, GettingStartedChecklist, OnboardingStep
     DashboardWidget, DashboardGrid, DashboardSection, DashboardSkeleton
-    CompactDashboard, MobileDashboard, WidgetFilter, WidgetSizeSelector
+    WidgetFilter, WidgetSizeSelector
     QuickActions, QuickActionButton, QuickWinButton, SmartQuickWinButton
     CareerReadinessScore, MatchingScoreWidget, ProfileStatusWidget,
     WeeklySummary, WellnessQuickCard, WhyItMatters, DashboardRiasecChart
@@ -306,6 +306,10 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 **Lösning (CVPrintLayout.tsx):** (1) Sidobar-/sidbakgrund som **canvas-bg** — `html { background: <gradient> }` i print målas om kant-till-kant på VARJE sida (body/root/preview måste vara transparenta). (2) Säkerhetszoner via **`box-decoration-break: clone`** på flow-wrappern: `padding: 12mm 0 10mm` klonas vid varje sidbrytning; negativa marginaler nollar ut den på första/sista sidan så ensidiga CV:n inte tippar till 2 sidor. Kräver Chromium ≥130 (prod: @sparticuz/chromium 148). Filler-/höjdmätnings-JS:et kunde raderas helt.
 **Verifiering:** `node e2e/cv-pdf-visual-audit.cjs` (dev-server på :3000) → PDF+PNG per mall/variant i `cv-prints/visual-audit/`.
 
+### 2026-07-10: Widget-grid-systemet monteras aldrig i prod
+**Problem:** `components/widgets/` (registry, HubGrid, JobsokLayoutContext, ~24 *Widget-komponenter, ~6 000 rader inkl. tester) importeras inte från någon sida — hubbarna byggs med `HubPage`-funktionskort i `pages/hubs/*.tsx`.
+**Lärdom:** Ändringar som ska synas på en hubb görs i hubbsidans `features[]`, inte i widgets. Arkivering av widget-systemet är planerad (ROADMAP C1).
+
 ### 2026-04-29: Smoke-test mot fel hostname
 **Problem:** `deploy.yml` curlade `deltagarportalen.se` men prod ligger på `jobin.se`.
 **Lösning:** Smoke-test ska peka på `jobin.se` — `deltagarportalen.se` är staging.
@@ -316,8 +320,8 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 
 | Dokument | Innehåll |
 |----------|----------|
-| `docs/ROADMAP.md` | ★ **Projektets enda gällande plan** (antagen 2026-06-10) — Nu/Näst/Senare, beslutslogg, allt öppet arbete. Nya idéer förs in här, aldrig i nya plandokument |
-| `docs/portal-review-2026-06.md` | Senaste helhetsgranskning (kod + dokumentation + visuell Playwright-granskning av prod) |
+| `docs/ROADMAP.md` | ★ **Projektets enda gällande plan** (version 2026-07-10) — spår A–G, beslutslogg, allt öppet arbete. Nya idéer förs in här, aldrig i nya plandokument |
+| `docs/portal-review-2026-07.md` | Senaste helhetsgranskning (6 parallella analyser: kod, säkerhet, UX, prestanda, produkt, dokumentation) |
 | `docs/DESIGN.md` | **Designsystemets sanning v3.0** — Manifest + Voice & Tone + två-läges-system (hub-landning vs verktygssida) + en-färg-per-sida-regel |
 | `docs/DESIGN-DEBT.md` | Levande lista över designöverträdelser — CI-guardad (`npm run lint:design`) |
 | `docs/security-audit.md` | Levande säkerhetsstatus (senast 2026-05-28; CRIT: OpenRouter-nyckelrotation utestående) |
