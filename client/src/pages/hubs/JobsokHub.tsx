@@ -69,6 +69,11 @@ function JobsokHubInner() {
     const cv = data?.cv
     const apps = data?.applicationStats?.total ?? 0
     const sponCount = data?.spontaneousCount ?? 0
+    const sponFollowups = data?.spontaneousFollowups
+    // Kommande uppföljning väger tyngre än antal sparade
+    const sponStatus = sponFollowups && sponFollowups.count > 0 && sponFollowups.nextDate
+      ? `Uppföljning ${shortDate(sponFollowups.nextDate)}`
+      : sponCount > 0 ? `${sponCount} sparade` : 'Utforska'
     const interviewCount = data?.interviewSessions?.length ?? 0
     const coverLetterCount = data?.coverLetters?.length ?? 0
 
@@ -95,7 +100,7 @@ function JobsokHubInner() {
         icon: Building2,
         title: 'Spontanansökan',
         description: 'Skicka ansökningar till företag du tror på.',
-        status: sponCount > 0 ? `${sponCount} sparade` : 'Utforska',
+        status: sponStatus,
         isActive: sponCount > 0,
         href: '/spontanansökan',
       },

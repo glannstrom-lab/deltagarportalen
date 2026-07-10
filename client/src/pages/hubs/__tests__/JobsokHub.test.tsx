@@ -77,6 +77,38 @@ describe('JobsokHub — feature-page', () => {
     expect(screen.getByText('Inga än')).toBeInTheDocument()
   })
 
+  it('shows next follow-up on the spontaneous card when one is upcoming', () => {
+    mockSummary.mockReturnValue({
+      data: {
+        applicationStats: { total: 0 },
+        cv: null,
+        coverLetters: [],
+        interviewSessions: [],
+        spontaneousCount: 3,
+        spontaneousFollowups: { count: 2, nextDate: '2026-07-15' },
+      },
+      isLoading: false,
+    })
+    renderHub()
+    expect(screen.getByText('Uppföljning 15 juli')).toBeInTheDocument()
+  })
+
+  it('falls back to saved count when no follow-ups', () => {
+    mockSummary.mockReturnValue({
+      data: {
+        applicationStats: { total: 0 },
+        cv: null,
+        coverLetters: [],
+        interviewSessions: [],
+        spontaneousCount: 3,
+        spontaneousFollowups: { count: 0, nextDate: null },
+      },
+      isLoading: false,
+    })
+    renderHub()
+    expect(screen.getByText('3 sparade')).toBeInTheDocument()
+  })
+
   it('does NOT render legacy widget grid or Anpassa-vy', () => {
     renderHub()
     expect(screen.queryByRole('button', { name: /Anpassa vy/i })).not.toBeInTheDocument()
