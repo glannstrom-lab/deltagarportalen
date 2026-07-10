@@ -23,13 +23,13 @@
 |---|---------|----------|--------|
 | A1 (J1) | Rotera läckt OpenRouter-nyckel | CRIT-2605-01 sedan 28 maj; 5 min i dashboarden | **Mikael, idag** |
 | A2 (J4) | Boka AI-jurist för Annex III-gränsfall | Längst ledtid; ~4 v efter egen plan. Gränsfall: cv-analysis, kompetensgap, RIASEC | **Mikael, denna vecka** |
-| A3 (J5) | Art 50-märkning på alla AI-ytor | `AIGeneratedWatermark` finns men används på 2 av ~13 ytor. 11 ytor listade i portal-review §4 p2. Rent kodarbete ~1–2 d | Claude |
+| A3 (J5) | Art 50-märkning på alla AI-ytor | ✅ **Klar 2026-07-10** — ~12 ytor märkta (AIResultCard-panelerna ×5, branschradar, CV-assistent, intervjufeedback, LinkedIn, kompetensgap, rapportutkast, STA). Fejk-AI-ytorna (B1/B2) märks när de görs ärliga | Claude |
 | A4 (J2/J3) | Färdigställ + signera DPIA & Art 30 | Org-uppgifter/signatur = Mikael; textkomplettering = Claude | Båda |
 | A5 (R8) | OpenRouter DPF/SCC/TIA | Art 9-data → USA utan verifierat underlag. Claude tar fram underlag, Mikael verifierar/signerar DPA | Båda |
 | A6 (R7) | Aktivera pg_cron + kör retention-migrationen | Utan den sker ingen Art 5.1.e-gallring | **Mikael** (dashboard) + Claude (verifiering) |
 | A7 (R5) | Scopa `profile_shares`-RLS | `USING(true)` + `GRANT anon` = enumeration av delade profiler. SECURITY DEFINER-RPC + omskriven `getSharedProfile` + test | Claude |
-| A8 | Rate limit på `learning-analyze-gap` | Enda edge-funktionen med oskyddad OpenRouter-väg (alternativ: ta bort, se C4) | Claude |
-| A9 (R6/R10) | Deploy-verifiering + uppdatera security-audit.md | `supabase functions deploy ai-cv-writing`; bekräfta 28-maj-fixarna live; nydatera auditen | Claude + Mikael (dashboardkoll) |
+| A8 | Rate limit på `learning-analyze-gap` | ✅ **Klar 2026-07-10** — 5/min via `_shared/rateLimit.ts`, deployad | Claude |
+| A9 (R6/R10) | Deploy-verifiering + uppdatera security-audit.md | ✅ **Klar 2026-07-10** — alla 24 edge-funktioner omdeployade med main-kod, Vercel-deploy verifierad, auditen nydaterad. Kvar för Mikael: dashboard-verifieringarna (OAuth-allowlist, pg_policies, FK-cascades) | Claude + Mikael (dashboardkoll) |
 
 ## Spår B — Ärlighet i produkten (nya fynd 2026-07-10)
 

@@ -198,6 +198,7 @@ export function ReportDraftDialog({ isOpen, onClose, participantId }: ReportDraf
                 onChange={e => setDraft(e.target.value)}
                 rows={14}
                 aria-label="Rapportutkast"
+                data-ai-generated="true"
                 className={cn(
                   'w-full px-4 py-3 rounded-xl text-sm leading-relaxed',
                   'bg-stone-50 dark:bg-stone-800',

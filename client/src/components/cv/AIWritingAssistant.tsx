@@ -7,6 +7,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield, RotateCcw } from '@/components/ui/icons'
 import { callAI } from '@/services/aiApi'
+import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 
 interface CVDataForAI {
   title?: string
@@ -267,7 +268,8 @@ export function AIWritingAssistant({ content, onChange, type, cvData }: AIWritin
               <p className="text-xs font-medium text-stone-700 dark:text-stone-300 mb-2 uppercase tracking-wide">
                 {activeFeature && features[activeFeature]?.label}
               </p>
-              <p className="text-sm text-stone-700 dark:text-stone-300 whitespace-pre-wrap">{suggestion}</p>
+              <p className="text-sm text-stone-700 dark:text-stone-300 whitespace-pre-wrap" data-ai-generated="true">{suggestion}</p>
+              <AIGeneratedWatermark contentType="förslag" className="mt-2 pt-2" />
               <div className="flex gap-2 mt-3">
                 <button
                   onClick={() => {

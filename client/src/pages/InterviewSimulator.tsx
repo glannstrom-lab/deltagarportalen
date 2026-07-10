@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { useAchievementTracker } from '@/hooks/useAchievementTracker'
 import { callAI } from '@/services/aiApi'
+import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import { useAudioRecorder } from '@/hooks/useAudioRecorder'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
@@ -717,8 +718,9 @@ TIPS FÖR FÖRBÄTTRING:
                   {expandedFeedback === index && (
                     <div id={`feedback-${index}`} className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-600 space-y-3" aria-live="polite">
                       {fs.feedback && (
-                        <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 p-4 rounded-xl text-sm text-[var(--c-text)] dark:text-[var(--c-accent)] border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
+                        <div data-ai-generated="true" className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/20 p-4 rounded-xl text-sm text-[var(--c-text)] dark:text-[var(--c-accent)] border border-[var(--c-accent)]/40 dark:border-[var(--c-accent)]/50/50">
                           <strong>{t('interviewSimulator.session.aiFeedback')}</strong> {fs.feedback}
+                          <AIGeneratedWatermark contentType="omdöme" />
                         </div>
                       )}
                       <div className="bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/30 p-3 rounded-xl text-sm text-[var(--c-text)] dark:text-[var(--c-text)] border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">

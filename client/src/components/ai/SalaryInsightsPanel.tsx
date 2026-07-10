@@ -139,6 +139,7 @@ export function SalaryInsightsPanel({
   return (
     <AiConsentGate compact featureName="Lönekompass">
       <AIResultCard
+        aiGenerated={!!result}
         title="AI Lönekompass"
         subtitle={`${occupation}${region ? ` i ${region}` : ''}`}
         icon={<TrendingUp className="w-5 h-5 text-white" />}

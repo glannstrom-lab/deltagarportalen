@@ -131,6 +131,7 @@ export function CompanyAnalysisPanel({
   return (
     <AiConsentGate compact featureName="Företagsanalys">
       <AIResultCard
+        aiGenerated={!!result}
         title="Företagsanalys"
         subtitle={companyName}
         icon={<Building2 className="w-5 h-5 text-white" />}

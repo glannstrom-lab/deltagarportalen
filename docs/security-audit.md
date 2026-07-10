@@ -1,11 +1,31 @@
 # Säkerhetsrevision (kodgranskning) — Deltagarportalen
 
-**Datum:** 2026-05-28
+**Datum:** 2026-05-28 · **Statusuppdatering:** 2026-07-10
 **Typ:** Statisk kodgranskning (READ-ONLY, ingen live-trafik mot prod)
 **Omfattning:** Secrets, Supabase RLS, endpoint-auth/CORS/rate limiting, XSS/injektion, OAuth, GDPR/PII
 **Metod:** 4 parallella recon-agenter + manuell verifiering av allvarliga fynd
 
 > Föregående revision (2026-04-23) finns längre ned i dokumentet och är fortsatt giltig som referens.
+
+---
+
+## Statusuppdatering 2026-07-10 (A9 i ROADMAP)
+
+**Deploy-verifiering (stänger R10):**
+- ✅ **Samtliga 24 edge-funktioner omdeployade 2026-07-10** med aktuell main-kod (`npx supabase functions deploy`) — HIGH-2605-01- och MED-2605-02-fixarna är därmed bekräftat live.
+- ✅ Vercel deployar main automatiskt; ny bundle verifierad live i prod 2026-07-10 → MED-2605-01/03/04-fixarna är i drift.
+- ✅ `ai-cv-writing` migrerad till distribuerad rate limit (R6, main 2026-06-22) och deployad 2026-07-10.
+
+**Nya åtgärder 2026-07-10:**
+- ✅ **`learning-analyze-gap` har nu rate limit** (5/min via `_shared/rateLimit.ts`) — var sista edge-funktionen med oskyddad OpenRouter-väg. Deployad.
+- ✅ **AI Act Art 50-märkning utökad från 2 till ~12 AI-ytor** (`AIGeneratedWatermark`/`data-ai-generated`): AIResultCard-panelerna (företagsanalys, pendling, intervjuprep, nätverk, lönekompass), branschradarn, CV-skrivassistenten, intervjusimulatorns feedback, LinkedIn-optimeraren, kompetensgap-analysen, konsulentens rapportutkast, STA AssessmentEditor. Sedan tidigare: AI-team-chatt, personligt brev.
+- ✅ `client/api/test.js` raderad (R3, main 2026-06-22) — del av LOW-2605-06 stängd; `health`-funktionens fel-strängar kvarstår.
+
+**Fortsatt öppet (se ROADMAP spår A):**
+- 🔴 **CRIT-2605-01: OpenRouter-nyckeln är fortfarande INTE roterad** (dashboardåtgärd, Mikael — A1).
+- 🟡 **LOW-2605-03 uppgraderad till prioriterad:** `profile_shares` `USING(true)` + `GRANT anon` = enumeration av alla delade profiler (A7 i ROADMAP).
+- ⚪ Retention-gallring kräver pg_cron-aktivering i dashboarden (A6) — annars körs ingen Art 5.1.e-gallring.
+- ⚪ LOW-2605-01/02/04/05/07 + dashboard-verifieringarna (OAuth-allowlist, pg_policies, FK-cascades) kvarstår.
 
 ---
 

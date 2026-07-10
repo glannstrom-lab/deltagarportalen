@@ -4,6 +4,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -283,6 +284,12 @@ serve(async (req) => {
 
     if (!user) {
       return jsonResponse({ error: 'Unauthorized' }, 401);
+    }
+
+    // Distribuerad rate limit — skyddar OpenRouter-vägen (A8, 2026-07-10)
+    const rateLimit = await checkRateLimit(user.id, 'learning-analyze-gap');
+    if (!rateLimit.allowed) {
+      return createRateLimitResponse(rateLimit.retryAfter || 60, req.headers.get('origin'));
     }
 
     console.log(`Analyzing gaps for user: ${user.id}, target: ${targetRole || 'general'}`);

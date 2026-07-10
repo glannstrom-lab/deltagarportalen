@@ -21,6 +21,7 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { AiConsentGate } from './AiConsentGate'
 import { AILoadingIndicator } from './AIResultCard'
+import { AIGeneratedWatermark } from './AIBadge'
 import type { IndustryRadarResult } from '@/services/aiCareerAssistantApi'
 import { trendsApi, type TrendingSkill, type PopularSearch } from '@/services/afTrendsApi'
 import { AI_FEATURES } from '@/config/features'
@@ -269,7 +270,7 @@ export function IndustryRadarSection({
             )}
 
             {result && !error && (
-              <div className="space-y-6">
+              <div className="space-y-6" data-ai-generated="true">
                 {/* Trending Industries */}
                 {result.trendingIndustries.length > 0 && (
                   <div>
@@ -413,6 +414,8 @@ export function IndustryRadarSection({
                     {i18n.language === 'en' ? 'Live data' : 'Realtidsdata'}
                   </span>
                 </div>
+
+                <AIGeneratedWatermark contentType="analys" />
               </div>
             )}
           </div>

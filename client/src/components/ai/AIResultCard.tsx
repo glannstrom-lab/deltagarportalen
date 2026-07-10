@@ -19,6 +19,7 @@ import {
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { AIGeneratedWatermark } from './AIBadge'
 import { cn } from '@/lib/utils'
 
 // ============================================
@@ -239,6 +240,8 @@ interface AIResultCardProps {
   className?: string
   variant?: 'default' | 'compact'
   headerActions?: ReactNode
+  /** Sätt true när kortet visar AI-genererat resultat — renderar Art 50-märkning (AI Act) */
+  aiGenerated?: boolean
 }
 
 export function AIResultCard({
@@ -254,6 +257,7 @@ export function AIResultCard({
   className,
   variant = 'default',
   headerActions,
+  aiGenerated = false,
 }: AIResultCardProps) {
   const { t } = useTranslation()
 
@@ -325,6 +329,7 @@ export function AIResultCard({
           <>
             {children}
             {sources && <SourceCitations sources={sources} />}
+            {aiGenerated && <AIGeneratedWatermark />}
           </>
         )}
       </div>

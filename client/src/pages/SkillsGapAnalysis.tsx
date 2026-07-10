@@ -23,6 +23,7 @@ import { cvApi } from '@/services/cvApi'
 import type { CVData } from '@/services/supabaseApi'
 import { useAuthStore } from '@/stores/authStore'
 import { useAIStream } from '@/hooks/useAIStream'
+import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import {
   skillsAnalysisApi, careerPlanApi, milestonesApi, favoriteOccupationsApi,
   type SkillsAnalysis, type SkillComparison, type CourseRecommendation,
@@ -548,7 +549,7 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         </div>
 
         {/* Results Header */}
-        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" data-ai-generated="true">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{t('skillsGapAnalysis.result.title')}</h3>
@@ -596,6 +597,8 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
                 : (i18n.language === 'en' ? 'There is potential! Start with the most important competencies below.' : 'Det finns potential! Börja med de viktigaste kompetenserna nedan.')}
             </p>
           </div>
+
+          <AIGeneratedWatermark contentType="analys" />
         </Card>
 
         {/* Skills Gap */}

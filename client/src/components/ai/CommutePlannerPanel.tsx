@@ -134,6 +134,7 @@ export function CommutePlannerPanel({
   return (
     <AiConsentGate compact featureName="Pendlingsplaneraren">
       <AIResultCard
+        aiGenerated={!!result}
         title="Pendlingsanalys"
         subtitle={workCompanyName || workAddress}
         icon={<MapPin className="w-5 h-5 text-white" />}

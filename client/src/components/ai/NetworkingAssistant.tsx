@@ -182,6 +182,7 @@ export function NetworkingAssistant({
   return (
     <AiConsentGate compact featureName="Nätverkshjälpen">
       <AIResultCard
+        aiGenerated={!!result}
         title="Nätverksassistent"
         subtitle={contactName || contactCompany || 'Nätverksstrategi'}
         icon={<Users className="w-5 h-5 text-white" />}

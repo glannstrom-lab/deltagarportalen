@@ -106,6 +106,7 @@ export function InterviewPrepPanel({
   return (
     <AiConsentGate compact featureName="Intervjuförberedelse">
       <AIResultCard
+        aiGenerated={!!result}
         title="Intervjuförberedelse"
         subtitle={`${companyName}${jobTitle ? ` - ${jobTitle}` : ''}`}
         icon={<MessageSquare className="w-5 h-5 text-white" />}

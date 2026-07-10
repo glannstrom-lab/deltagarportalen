@@ -6,6 +6,7 @@ import { Card } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'
 import { PageLayout } from '@/components/layout/PageLayout'
 import { callAI } from '@/services/aiApi'
+import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusLinkedInWizard } from '@/components/focus/pages/FocusLinkedInWizard'
@@ -337,7 +338,8 @@ function LinkedInOptimizerInner() {
                 </button>
               </div>
               <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-[var(--c-accent)]/60 dark:border-[var(--c-accent)]/40">
-                <p className="text-stone-700 dark:text-stone-300 whitespace-pre-wrap">{resultat}</p>
+                <p className="text-stone-700 dark:text-stone-300 whitespace-pre-wrap" data-ai-generated="true">{resultat}</p>
+                <AIGeneratedWatermark contentType="förslag" />
               </div>
               <p className="text-xs text-stone-600 dark:text-stone-400 mt-3">
                 {t('linkedInOptimizer.result.tip')}

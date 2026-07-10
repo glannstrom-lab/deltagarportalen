@@ -820,7 +820,7 @@ function DoaSummaryEditor({
             och en kort sammanfattning per kategori. Du kan generera ett utkast med AI och redigera fritt.
           </p>
           {generatedLabel && (
-            <div className="text-[11px] text-stone-500 mt-1">
+            <div className="text-[11px] text-stone-500 mt-1" data-ai-generated="true" role="note">
               AI-utkast genererat {generatedLabel}
               {aiSummary?.editedByAt ? ' · redigerat av dig' : ''}
             </div>
@@ -856,6 +856,7 @@ function DoaSummaryEditor({
           id="doa-summary-mal"
           value={malValue}
           onChange={(e) => onChange('malPlanering', null, e.target.value)}
+          data-ai-generated={generatedLabel ? 'true' : undefined}
           rows={4}
           placeholder="2-4 meningar om vart deltagaren är på väg och vad nästa steg är. Lämna tom om AT skriver direkt på blanketten."
           className="w-full px-3 py-2 rounded-lg border border-stone-200 text-sm focus:outline-none focus:ring-2 focus:ring-stone-200 resize-y bg-white"
@@ -879,6 +880,7 @@ function DoaSummaryEditor({
                 id={`doa-summary-cat-${catIdx}`}
                 value={catValue}
                 onChange={(e) => onChange('kategori', catIdx, e.target.value)}
+                data-ai-generated={generatedLabel ? 'true' : undefined}
                 rows={4}
                 placeholder="Resurser och begränsningar som syns i skattningen…"
                 className="w-full px-3 py-2 rounded-lg border border-stone-200 text-xs focus:outline-none focus:ring-2 focus:ring-stone-200 resize-y bg-white"

@@ -29,6 +29,7 @@ const ENDPOINT_LIMITS: Record<string, { limit: number; windowMs: number }> = {
   'send-invite-email': { limit: 10, windowMs: 60 * 1000 },
   'learning-recommend': { limit: 30, windowMs: 60 * 1000 },
   'learning-progress': { limit: 50, windowMs: 60 * 1000 },
+  'learning-analyze-gap': { limit: 5, windowMs: 60 * 1000 },
   'af-jobsearch': { limit: 60, windowMs: 60 * 1000 },
   'ai-career-assistant': { limit: 20, windowMs: 60 * 1000 },
   'ai-company-analysis': { limit: 5, windowMs: 60 * 1000 },
