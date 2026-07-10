@@ -246,7 +246,7 @@ function KnowledgeBaseLanding({ articles }: LandingProps) {
                   {cat.description}
                 </p>
                 <div className="text-xs font-medium text-gray-500 dark:text-gray-400">
-                  {count === 0 ? 'Kommer snart' : `${count} artiklar`}
+                  {count === 0 ? 'Inga artiklar än' : `${count} artiklar`}
                 </div>
               </Link>
             )

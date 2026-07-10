@@ -4,7 +4,7 @@
  */
 
 import { useTranslation } from 'react-i18next'
-import { Star, Sparkles, CheckCircle, FileText, Linkedin, ExternalLink } from '@/components/ui/icons'
+import { Star, Sparkles, CheckCircle, FileText } from '@/components/ui/icons'
 import { useProfileStore } from '@/stores/profileStore'
 import { SectionCard } from '../forms'
 import {
@@ -54,27 +54,8 @@ export function CompetenceSection() {
         <DocumentsSection />
       </SectionCard>
 
-      {/* LinkedIn Import */}
-      <div className="bg-sky-50 dark:bg-sky-900/20 dark:from-sky-900/20 dark:to-blue-900/20 rounded-xl p-5 border border-sky-200 dark:border-sky-800/50">
-        <div className="flex items-start gap-4">
-          <div className="w-10 h-10 rounded-lg bg-[#0077b5] flex items-center justify-center flex-shrink-0">
-            <Linkedin className="w-5 h-5 text-white" aria-hidden="true" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="font-semibold text-sky-800 dark:text-sky-300 text-sm">{t('profile.competenceSection.importFromLinkedIn')}</p>
-            <p className="text-xs text-sky-600 dark:text-sky-400 mt-0.5">
-              {t('profile.competenceSection.importFromLinkedInDesc')}
-            </p>
-            <button
-              disabled
-              className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#0077b5]/10 text-[#0077b5] dark:text-sky-400 rounded-lg text-xs font-medium opacity-60 cursor-not-allowed"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-              {t('profile.competenceSection.comingSoon')}
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* LinkedIn-import borttagen 2026-07-10 (B4): var en "Kommer snart"-teaser
+          med permanent inaktiverad knapp — återinförs när funktionen finns */}
 
       {/* Completion Guide */}
       <SectionCard

@@ -15,6 +15,8 @@ import {
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { adaptationsApi, type AdaptationItem } from '@/services/careerApi'
+import { callAI } from '@/services/aiApi'
+import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import { showToast } from '@/components/Toast'
 
 // ===== CATEGORY DEFINITIONS =====
@@ -437,29 +439,27 @@ export default function AdaptationTab() {
     setHasUnsavedChanges(true)
   }
 
-  // AI Recommendations
+  // AI Recommendations — ärlig felhantering: visar fel i stället för att
+  // maskera med statisk text som ser ut som ett AI-svar
   const generateAIRecommendations = async () => {
     setAiLoading(true)
     try {
       const summary = generateSummaryText()
-      const response = await fetch('/api/ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          function: 'adaptation-recommendations',
-          selectedAdaptations: summary,
-          language: i18n.language
-        })
+      const data = await callAI<string>('adaptation-recommendations', {
+        selectedAdaptations: summary,
+        language: i18n.language,
       })
-      const data = await response.json()
-      setAiRecommendations(data.recommendations || (isEn
-        ? 'Based on your selections, consider also looking into ergonomic assessments and regular breaks.'
-        : 'Baserat på dina val, överväg även ergonomisk bedömning och regelbundna pauser.'))
+      const recommendations = (data as { recommendations?: string }).recommendations
+      if (!recommendations) {
+        throw new Error('Tomt AI-svar')
+      }
+      setAiRecommendations(recommendations)
     } catch (err) {
       console.error('AI error:', err)
-      setAiRecommendations(isEn
-        ? 'Could not generate recommendations. Please try again.'
-        : 'Kunde inte generera rekommendationer. Försök igen.')
+      setAiRecommendations(null)
+      showToast.error(err instanceof Error && err.message.includes('många')
+        ? err.message
+        : (isEn ? 'Could not generate recommendations right now. Please try again.' : 'Kunde inte generera rekommendationer just nu. Försök igen.'))
     } finally {
       setAiLoading(false)
     }
@@ -470,39 +470,24 @@ export default function AdaptationTab() {
     setAiLoading(true)
     try {
       const summary = generateSummaryText()
-      const response = await fetch('/api/ai', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          function: 'adaptation-conversation',
-          selectedAdaptations: summary,
-          language: i18n.language
-        })
+      const data = await callAI<string>('adaptation-conversation', {
+        selectedAdaptations: summary,
+        language: i18n.language,
       })
-      const data = await response.json()
-      setAiConversation(data.conversation || generateDefaultConversation())
+      const conversation = (data as { conversation?: string }).conversation
+      if (!conversation) {
+        throw new Error('Tomt AI-svar')
+      }
+      setAiConversation(conversation)
     } catch (err) {
       console.error('AI error:', err)
-      setAiConversation(generateDefaultConversation())
+      setAiConversation(null)
+      showToast.error(err instanceof Error && err.message.includes('många')
+        ? err.message
+        : (isEn ? 'Could not generate a script right now. Please try again.' : 'Kunde inte generera samtalsmanus just nu. Försök igen.'))
     } finally {
       setAiLoading(false)
     }
-  }
-
-  const generateDefaultConversation = () => {
-    const selected = Object.entries(selectedNeeds)
-      .filter(([, opts]) => opts.length > 0)
-      .map(([catId, opts]) => {
-        const cat = categoryDefs.find(c => c.id === catId)
-        return opts.map(o => {
-          const opt = cat?.options.find(op => op.key === o)
-          return isEn ? opt?.labelEn : opt?.labelSv
-        }).join(', ')
-      }).join('; ')
-
-    return isEn
-      ? `Sample conversation script:\n\n"I'd like to discuss some workplace accommodations that would help me work more effectively. Specifically, I'm interested in: ${selected}.\n\nI've researched the available support from the Employment Agency and Social Insurance Agency, and I believe these accommodations would benefit both my productivity and wellbeing.\n\nCould we discuss how to implement these?"`
-      : `Exempel på samtalsmanuskript:\n\n"Jag skulle vilja diskutera några arbetsanpassningar som skulle hjälpa mig att arbeta mer effektivt. Specifikt är jag intresserad av: ${selected}.\n\nJag har undersökt vilket stöd som finns från Arbetsförmedlingen och Försäkringskassan, och jag tror att dessa anpassningar skulle gynna både min produktivitet och mitt välmående.\n\nKan vi diskutera hur vi kan genomföra dessa?"`
   }
 
   // Export functions
@@ -745,8 +730,9 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                 {isEn ? 'Get Recommendations' : 'Få rekommendationer'}
               </Button>
               {aiRecommendations && (
-                <div className="p-3 bg-white dark:bg-stone-800 rounded-lg text-sm">
+                <div className="p-3 bg-white dark:bg-stone-800 rounded-lg text-sm" data-ai-generated="true">
                   <p className="whitespace-pre-wrap">{aiRecommendations}</p>
+                  <AIGeneratedWatermark contentType={isEn ? 'recommendation' : 'förslag'} />
                 </div>
               )}
             </div>
@@ -761,8 +747,9 @@ ${isEn ? 'Next Steps:' : 'Nästa steg:'}
                 {isEn ? 'Generate Conversation Script' : 'Generera samtalsmanuskript'}
               </Button>
               {aiConversation && (
-                <div className="p-3 bg-white dark:bg-stone-800 rounded-lg text-sm">
+                <div className="p-3 bg-white dark:bg-stone-800 rounded-lg text-sm" data-ai-generated="true">
                   <p className="whitespace-pre-wrap text-xs">{aiConversation}</p>
+                  <AIGeneratedWatermark contentType={isEn ? 'script' : 'manus'} />
                   <Button
                     size="sm"
                     variant="ghost"

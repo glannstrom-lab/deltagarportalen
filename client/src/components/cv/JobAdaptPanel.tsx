@@ -1,6 +1,8 @@
 /**
  * JobAdaptPanel - "Anpassa för jobb" feature
- * Låter användaren klistra in en jobbannons eller välja från sparade jobb
+ * Låter användaren klistra in en jobbannons eller välja från sparade jobb.
+ * Analysen görs med riktig AI via /api/ai (cv-jobbmatchning) — tidigare
+ * simulerades den lokalt, vilket var vilseledande.
  */
 
 import { useState } from 'react'
@@ -13,6 +15,9 @@ import {
 import { cn } from '@/lib/utils'
 import type { CVData } from '@/services/supabaseApi'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
+import { callAI } from '@/services/aiApi'
+import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
+import { showToast } from '@/components/Toast'
 
 interface JobAdaptPanelProps {
   cvData: CVData
@@ -29,47 +34,6 @@ interface AnalysisResult {
   suggestedSummaryAdditions: string[]
   jobTitle: string
   companyName: string
-}
-
-// Extrahera nyckelord från text
-function extractKeywords(text: string): string[] {
-  const commonKeywords = [
-    // Tekniska
-    'javascript', 'typescript', 'react', 'node', 'python', 'java', 'sql', 'git',
-    'agil', 'scrum', 'kanban', 'ci/cd', 'devops', 'aws', 'azure', 'docker',
-    // Mjuka
-    'kommunikation', 'teamwork', 'ledarskap', 'projektledning', 'problemlösning',
-    'kundservice', 'försäljning', 'marknadsföring', 'analys', 'kreativitet',
-    'samarbete', 'självständig', 'driven', 'noggrann', 'flexibel', 'strukturerad',
-    // Språk
-    'engelska', 'svenska', 'tyska', 'franska', 'spanska',
-    // Verktyg
-    'excel', 'powerpoint', 'word', 'office', 'crm', 'erp', 'sap',
-    // Branscher
-    'it', 'finans', 'vård', 'utbildning', 'industri', 'handel', 'bygg',
-    // Roller
-    'chef', 'ledare', 'koordinator', 'specialist', 'konsult', 'utvecklare',
-    // Egenskaper
-    'ansvarstagande', 'initiativrik', 'serviceinriktad', 'resultatorienterad',
-    'kvalitetsmedveten', 'lösningsorienterad', 'affärsmässig'
-  ]
-
-  const textLower = text.toLowerCase()
-  return commonKeywords.filter(keyword => textLower.includes(keyword))
-}
-
-// Extrahera jobbtitel och företagsnamn (enkel heuristik)
-function extractJobInfo(text: string): { title: string; company: string } {
-  const lines = text.split('\n').filter(l => l.trim())
-
-  // Första raden är ofta titeln
-  const title = lines[0]?.substring(0, 50) || 'Okänd tjänst'
-
-  // Sök efter "hos", "på", "till" för företagsnamn
-  const companyMatch = text.match(/(?:hos|på|till|för|at)\s+([A-ZÅÄÖ][a-zåäö]+(?:\s+[A-ZÅÄÖ][a-zåäö]+)?)/i)
-  const company = companyMatch?.[1] || ''
-
-  return { title, company }
 }
 
 type InputMode = 'paste' | 'saved'
@@ -95,51 +59,37 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
     cvData.title || ''
   ].join(' ').toLowerCase()
 
-  const analyzeJobAd = () => {
+  const analyzeJobAd = async () => {
     if (!jobDescription.trim()) return
 
     setIsAnalyzing(true)
-
-    // Simulera API-anrop (i produktion: anropa /api/ai med function: 'analyze-job')
-    setTimeout(() => {
-      const jobKeywords = extractKeywords(jobDescription)
-      const cvKeywords = extractKeywords(cvText)
-
-      const found = jobKeywords.filter(k => cvKeywords.includes(k) || cvText.includes(k))
-      const missing = jobKeywords.filter(k => !found.includes(k))
-
-      const { title, company } = extractJobInfo(jobDescription)
-
-      // Beräkna matchscore
-      const totalRelevant = jobKeywords.length || 1
-      const matchScore = Math.round((found.length / totalRelevant) * 100)
-
-      // Föreslå sammanfattningstillägg baserat på saknade nyckelord
-      const suggestions: string[] = []
-      if (missing.includes('teamwork') || missing.includes('samarbete')) {
-        suggestions.push('Trivs i team och samarbetar effektivt med kollegor.')
-      }
-      if (missing.includes('självständig')) {
-        suggestions.push('Arbetar självständigt och tar egna initiativ.')
-      }
-      if (missing.includes('strukturerad') || missing.includes('noggrann')) {
-        suggestions.push('Strukturerad och noggrann i mitt arbetssätt.')
-      }
-      if (missing.includes('kundservice') || missing.includes('serviceinriktad')) {
-        suggestions.push('Serviceinriktad med fokus på kundnöjdhet.')
-      }
-
-      setAnalysis({
-        matchScore,
-        foundKeywords: found,
-        missingKeywords: missing,
-        suggestedSummaryAdditions: suggestions.slice(0, 3),
-        jobTitle: title,
-        companyName: company
+    try {
+      const data = await callAI<AnalysisResult>('cv-jobbmatchning', {
+        jobDescription: jobDescription.substring(0, 4000),
+        cvText: cvText.substring(0, 4000),
       })
-
+      const analys = (data as { analys?: Partial<AnalysisResult> }).analys
+      if (!analys || typeof analys !== 'object' || typeof analys.matchScore !== 'number') {
+        throw new Error('Ogiltigt AI-svar')
+      }
+      setAnalysis({
+        matchScore: Math.max(0, Math.min(100, Math.round(analys.matchScore))),
+        foundKeywords: Array.isArray(analys.foundKeywords) ? analys.foundKeywords : [],
+        missingKeywords: Array.isArray(analys.missingKeywords) ? analys.missingKeywords : [],
+        suggestedSummaryAdditions: Array.isArray(analys.suggestedSummaryAdditions)
+          ? analys.suggestedSummaryAdditions.slice(0, 3)
+          : [],
+        jobTitle: analys.jobTitle || '',
+        companyName: analys.companyName || '',
+      })
+    } catch (err) {
+      console.error('Jobbmatchnings-fel:', err)
+      showToast.error(err instanceof Error && err.message.includes('många')
+        ? err.message
+        : t('cv.jobAdapt.analyzeError', 'Kunde inte analysera annonsen just nu. Försök igen om en stund.'))
+    } finally {
       setIsAnalyzing(false)
-    }, 1200)
+    }
   }
 
   const handleAddKeyword = (keyword: string) => {
@@ -370,7 +320,7 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
           ) : (
             <>
               {/* Results */}
-              <div className="space-y-4">
+              <div className="space-y-4" data-ai-generated="true">
                 {/* Match score */}
                 <div className="flex items-center justify-between p-4 bg-white dark:bg-stone-800 rounded-xl">
                   <div className="flex items-center gap-3">
@@ -474,6 +424,8 @@ export function JobAdaptPanel({ cvData, onAddSkill, onUpdateSummary, className, 
                     </div>
                   </div>
                 )}
+
+                <AIGeneratedWatermark contentType={t('cv.jobAdapt.watermarkType', 'analys')} />
 
                 {/* New analysis button */}
                 <button

@@ -86,6 +86,9 @@ const RATE_LIMITS = {
   'loneforhandling': { limit: 10, windowMinutes: 15 },
   'karriarplan': { limit: 5, windowMinutes: 15 },
   'kompetensgap': { limit: 10, windowMinutes: 15 },
+  'adaptation-recommendations': { limit: 10, windowMinutes: 15 },
+  'adaptation-conversation': { limit: 10, windowMinutes: 15 },
+  'cv-jobbmatchning': { limit: 10, windowMinutes: 15 },
   'linkedin-optimering': { limit: 15, windowMinutes: 15 },
   'mentalt-stod': { limit: 20, windowMinutes: 15 },
   'natverkande': { limit: 15, windowMinutes: 15 },
@@ -367,6 +370,41 @@ Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, ex
     responseKey: 'analys',
     parseJson: true
   }),
+  'cv-jobbmatchning': (data) => ({
+    system: `Du är expert på CV-matchning mot jobbannonser i Sverige. Svara ENDAST med JSON i detta format:
+{"matchScore":75,"foundKeywords":["nyckelord som finns i CV:t"],"missingKeywords":["viktiga krav som saknas"],"suggestedSummaryAdditions":["kort mening i första person"],"jobTitle":"tjänstens titel","companyName":"företaget"}
+Regler: matchScore 0-100 utifrån hur väl CV:t täcker annonsens krav. foundKeywords/missingKeywords = korta ord/fraser på svenska, max 10 per lista. suggestedSummaryAdditions = max 3 korta meningar som kan läggas till i CV-sammanfattningen — föreslå bara sådant som rimligen stämmer utifrån CV:t, hitta ALDRIG på erfarenheter.`,
+    user: `JOBBANNONS:\n${data?.jobDescription || ''}\n\nCV:\n${data?.cvText || ''}\n\nSvara ENDAST med JSON.`,
+    maxTokens: 900,
+    responseKey: 'analys',
+    parseJson: true
+  }),
+  'adaptation-recommendations': (data) => {
+    const en = data?.language === 'en';
+    return {
+      system: en
+        ? 'You are an occupational therapist and expert on workplace accommodations in Sweden (Arbetsförmedlingen, Försäkringskassan, the Discrimination Act). Give concrete, warm, practical advice in English.'
+        : 'Du är arbetsterapeut och expert på arbetsplatsanpassningar i Sverige (Arbetsförmedlingen, Försäkringskassan, Diskrimineringslagen). Ge konkreta, varma och praktiska råd på svenska.',
+      user: en
+        ? `A job seeker has identified these workplace accommodation needs:\n\n${data?.selectedAdaptations || ''}\n\nGive 3-5 concrete recommendations: complementary accommodations worth considering, how to prioritize them, and what support (Försäkringskassan/Arbetsförmedlingen) can be applied for. Keep it short and practical.`
+        : `En arbetssökande har identifierat följande behov av arbetsplatsanpassningar:\n\n${data?.selectedAdaptations || ''}\n\nGe 3-5 konkreta rekommendationer: kompletterande anpassningar värda att överväga, hur de bör prioriteras, och vilket stöd (Försäkringskassan/Arbetsförmedlingen) som kan sökas. Kort och praktiskt.`,
+      maxTokens: 800,
+      responseKey: 'recommendations'
+    };
+  },
+  'adaptation-conversation': (data) => {
+    const en = data?.language === 'en';
+    return {
+      system: en
+        ? 'You are a coach who helps job seekers prepare conversations with employers about workplace accommodations. Write a personal, respectful conversation script in English.'
+        : 'Du är en coach som hjälper arbetssökande att förbereda samtal med arbetsgivare om arbetsplatsanpassningar. Skriv ett personligt, respektfullt samtalsmanus på svenska.',
+      user: en
+        ? `Write a short conversation script (max ~200 words) the person can use with their employer to request these accommodations:\n\n${data?.selectedAdaptations || ''}\n\nInclude: a respectful opening, the concrete needs, a mention that Försäkringskassan/Arbetsförmedlingen can subsidize costs, and an inviting closing question.`
+        : `Skriv ett kort samtalsmanus (max ~200 ord) som personen kan använda med sin arbetsgivare för att be om dessa anpassningar:\n\n${data?.selectedAdaptations || ''}\n\nInkludera: en respektfull inledning, de konkreta behoven, att Försäkringskassan/Arbetsförmedlingen kan ge bidrag för kostnader, och en inbjudande avslutande fråga.`,
+      maxTokens: 700,
+      responseKey: 'conversation'
+    };
+  },
   'linkedin-optimering': (data) => {
     const typ = data?.typ || 'headline';
     const prompts = {

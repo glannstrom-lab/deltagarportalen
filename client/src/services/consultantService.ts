@@ -561,9 +561,9 @@ class ConsultantService {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    // Update last_contact_at in participant_consultants table
+    // Update last_contact_at in consultant_participants table
     const { error } = await supabase
-      .from('participant_consultants')
+      .from('consultant_participants')
       .update({ last_contact_at: new Date().toISOString() })
       .eq('consultant_id', user.id)
       .eq('participant_id', participantId)
@@ -579,7 +579,7 @@ class ConsultantService {
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
-      .from('participant_consultants')
+      .from('consultant_participants')
       .update({ priority })
       .eq('consultant_id', user.id)
       .eq('participant_id', participantId)
@@ -598,8 +598,51 @@ class ConsultantService {
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase
-      .from('participant_consultants')
+      .from('consultant_participants')
       .update({ status })
+      .eq('consultant_id', user.id)
+      .eq('participant_id', participantId)
+
+    if (error) throw error
+  }
+
+  /**
+   * Add tags to a participant relation (merges with existing, no duplicates)
+   */
+  async addParticipantTags(participantId: string, newTags: string[]): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { data, error: readError } = await supabase
+      .from('consultant_participants')
+      .select('tags')
+      .eq('consultant_id', user.id)
+      .eq('participant_id', participantId)
+      .single()
+
+    if (readError) throw readError
+
+    const merged = Array.from(new Set([...((data?.tags as string[] | null) || []), ...newTags]))
+
+    const { error } = await supabase
+      .from('consultant_participants')
+      .update({ tags: merged })
+      .eq('consultant_id', user.id)
+      .eq('participant_id', participantId)
+
+    if (error) throw error
+  }
+
+  /**
+   * Replace a participant relation's tags entirely
+   */
+  async setParticipantTags(participantId: string, tags: string[]): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    const { error } = await supabase
+      .from('consultant_participants')
+      .update({ tags })
       .eq('consultant_id', user.id)
       .eq('participant_id', participantId)
 

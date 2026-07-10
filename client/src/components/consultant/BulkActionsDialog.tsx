@@ -23,6 +23,8 @@ import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 import { consultantService } from '@/services/consultantService'
+import { loadJsPDFWithAutoTable } from '@/services/pdfLazyLoad'
+import { AVAILABLE_TAGS, TAG_COLOR_CLASSES } from './participantTags'
 
 interface Participant {
   participant_id: string
@@ -64,16 +66,6 @@ const MESSAGE_TEMPLATES = [
     title: 'Uppmuntran',
     content: 'Bra jobbat med dina framsteg! Fortsätt så här!',
   },
-]
-
-// Pre-defined tags
-const AVAILABLE_TAGS = [
-  { id: 'followup', label: 'Behöver uppföljning', color: 'amber' },
-  { id: 'priority', label: 'Prioriterad', color: 'rose' },
-  { id: 'ready', label: 'Redo för jobb', color: 'emerald' },
-  { id: 'interview', label: 'Intervjuträning', color: 'teal' },
-  { id: 'cv', label: 'CV-förbättring', color: 'blue' },
-  { id: 'motivation', label: 'Motivationsstöd', color: 'orange' },
 ]
 
 // Status options
@@ -185,9 +177,35 @@ export function BulkActionsDialog({
       return
     }
 
-    // Taggning saknar ännu en backend (ingen tags-kolumn/tabell finns).
-    // Var ärlig mot konsulenten istället för att fejka ett lyckat resultat.
-    setError('Taggning är inte tillgänglig än – kommer snart.')
+    setLoading(true)
+    setError(null)
+
+    try {
+      const results = await Promise.allSettled(
+        selectedParticipants.map(p =>
+          consultantService.addParticipantTags(p.participant_id, selectedTags)
+        )
+      )
+
+      const failed = results.filter(r => r.status === 'rejected').length
+      if (failed === selectedParticipants.length) {
+        throw new Error('Det gick inte att lägga till taggar')
+      }
+      if (failed > 0) {
+        setError(`${failed} av ${selectedParticipants.length} kunde inte taggas`)
+      }
+
+      setSuccess(true)
+      setTimeout(() => {
+        onComplete()
+        onClose()
+      }, 1500)
+    } catch (err) {
+      console.error('Error applying tags:', err)
+      setError('Det gick inte att lägga till taggar')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleExport = async () => {
@@ -231,10 +249,22 @@ export function BulkActionsDialog({
         link.click()
         URL.revokeObjectURL(url)
       } else if (exportFormat === 'pdf') {
-        // PDF export would use jspdf - not yet implemented
-        setError('PDF-export kommer snart')
-        setLoading(false)
-        return
+        const { jsPDF, autoTable } = await loadJsPDFWithAutoTable()
+        const doc = new jsPDF()
+        const dateStr = new Date().toLocaleDateString('sv-SE')
+        doc.setFontSize(14)
+        doc.text('Deltagare', 14, 18)
+        doc.setFontSize(9)
+        doc.setTextColor(120)
+        doc.text(`Exporterad ${dateStr} från jobin.se`, 14, 24)
+        autoTable(doc, {
+          startY: 30,
+          head: [['Namn', 'E-post', 'Status']],
+          body: exportData.map(row => [row.Namn, row.Email, row.Status]),
+          styles: { fontSize: 9 },
+          headStyles: { fillColor: [120, 113, 108] },
+        })
+        doc.save(`deltagare-export-${new Date().toISOString().split('T')[0]}.pdf`)
       }
 
       setSuccess(true)
@@ -455,22 +485,13 @@ export function BulkActionsDialog({
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {AVAILABLE_TAGS.map(tag => {
-                      const colorClasses = {
-                        amber: 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300 ring-amber-500',
-                        rose: 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-300 ring-rose-500',
-                        emerald: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300 ring-emerald-500',
-                        teal: 'bg-[var(--c-accent)]/40 text-[var(--c-text)] dark:bg-[var(--c-bg)]/40 dark:text-[var(--c-accent)] ring-[var(--c-solid)]',
-                        blue: 'bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-300 ring-blue-500',
-                        orange: 'bg-orange-100 text-orange-800 dark:bg-orange-900/40 dark:text-orange-300 ring-orange-500',
-                      }
-
                       return (
                         <button
                           key={tag.id}
                           onClick={() => toggleTag(tag.id)}
                           className={cn(
                             'px-3 py-2 rounded-xl text-sm font-medium transition-all',
-                            colorClasses[tag.color as keyof typeof colorClasses],
+                            TAG_COLOR_CLASSES[tag.color],
                             selectedTags.includes(tag.id) && 'ring-2'
                           )}
                         >
@@ -494,15 +515,13 @@ export function BulkActionsDialog({
                     {[
                       { id: 'csv', label: 'CSV', icon: FileText },
                       { id: 'excel', label: 'Excel', icon: FileSpreadsheet },
-                      { id: 'pdf', label: 'PDF', icon: FileText, disabled: true },
+                      { id: 'pdf', label: 'PDF', icon: FileText },
                     ].map(format => (
                       <button
                         key={format.id}
-                        onClick={() => !format.disabled && setExportFormat(format.id as typeof exportFormat)}
-                        disabled={format.disabled}
+                        onClick={() => setExportFormat(format.id as typeof exportFormat)}
                         className={cn(
                           'p-4 rounded-xl text-center transition-all',
-                          format.disabled && 'opacity-50 cursor-not-allowed',
                           exportFormat === format.id
                             ? 'bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/40 ring-2 ring-[var(--c-solid)]'
                             : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
@@ -512,9 +531,6 @@ export function BulkActionsDialog({
                         <p className="font-medium text-sm text-stone-900 dark:text-stone-100">
                           {format.label}
                         </p>
-                        {format.disabled && (
-                          <p className="text-xs text-stone-500 mt-1">Kommer snart</p>
-                        )}
                       </button>
                     ))}
                   </div>

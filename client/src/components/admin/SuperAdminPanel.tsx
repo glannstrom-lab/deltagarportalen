@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Shield,
   Users,
-  Settings,
   BarChart3,
   Plus,
   Search,
@@ -31,7 +30,8 @@ interface User {
 export const SuperAdminPanel: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'users' | 'stats' | 'settings'>('users');
+  // 'settings'-fliken borttagen 2026-07-10 (B4): var en tom "Kommer snart..."-yta
+  const [activeTab, setActiveTab] = useState<'users' | 'stats'>('users');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -100,11 +100,10 @@ export const SuperAdminPanel: React.FC = () => {
             {[
               { id: 'users', label: 'Användare', icon: Users },
               { id: 'stats', label: 'Statistik', icon: BarChart3 },
-              { id: 'settings', label: 'Inställningar', icon: Settings },
             ].map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id as 'users' | 'stats' | 'settings')}
+                onClick={() => setActiveTab(tab.id as 'users' | 'stats')}
                 className={`flex items-center gap-2 py-4 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === tab.id
                     ? 'border-primary-600 text-primary-600'
@@ -237,12 +236,6 @@ export const SuperAdminPanel: React.FC = () => {
           </div>
         )}
 
-        {activeTab === 'settings' && (
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Systeminställningar</h3>
-            <p className="text-gray-500">Kommer snart...</p>
-          </div>
-        )}
       </div>
     </div>
   );

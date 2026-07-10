@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
+import { showToast } from '@/components/Toast'
 
 export type BadgeTier = 'bronze' | 'silver' | 'gold' | 'platinum'
 
@@ -456,11 +457,23 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
           </div>
         )}
 
-        {/* Share button for unlocked badges */}
+        {/* Share button for unlocked badges — Web Share API med urklipps-fallback */}
         {badge.isUnlocked && (
-          <Button variant="outline" className="w-full" onClick={() => {
-            // Share functionality would go here
-            alert('Delningsfunktion kommer snart!')
+          <Button variant="outline" className="w-full" onClick={async () => {
+            const text = `Jag har låst upp märket "${badge.name}" på jobin.se! 🎉`
+            try {
+              if (navigator.share) {
+                await navigator.share({ text, url: 'https://jobin.se' })
+              } else {
+                await navigator.clipboard.writeText(`${text} https://jobin.se`)
+                showToast.success('Kopierat till urklipp — klistra in där du vill dela!')
+              }
+            } catch (err) {
+              // Avbruten delning är inget fel
+              if (err instanceof Error && err.name !== 'AbortError') {
+                console.error('Delningsfel:', err)
+              }
+            }
           }}>
             <Share2 size={16} className="mr-2" />
             Dela framsteg

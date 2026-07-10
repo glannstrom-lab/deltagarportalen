@@ -35,10 +35,10 @@
 
 | # | Uppgift | Detaljer |
 |---|---------|----------|
-| B1 | Fejk-AI på `/career/adaptation` | AdaptationTab anropar AI-funktioner som inte finns; fallback maskerar felet som AI-svar. Bygg funktionerna i ai.js eller gör fliken ärligt statisk |
-| B2 | Simulerad AI i CV-byggarens "Anpassa för jobb" | JobAdaptPanel "simulerar API-anrop". Koppla till riktig AI-väg eller märk om/ta bort |
-| B3 (R2b) | Konsulent-bulk: tagg-backend + PDF-export | Två "kommer snart"-knappar i BulkActionsDialog. Bygg (tags-kolumn + export) eller ta bort |
-| B4 | "Kommer snart"-svep | Inventera resterande platshållar-UI; allt ska antingen fungera eller inte visas |
+| B1 | Fejk-AI på `/career/adaptation` | ✅ **Klar 2026-07-10** — `adaptation-recommendations` + `adaptation-conversation` byggda i ai.js, fliken använder callAI (auth), ärliga fel i stället för maskerad fallback, Art 50-märkt |
+| B2 | Simulerad AI i CV-byggarens "Anpassa för jobb" | ✅ **Klar 2026-07-10** — ny `cv-jobbmatchning` (JSON) i ai.js ersätter den simulerade nyckelordslistan; ärlig felhantering + Art 50-märkning |
+| B3 (R2b) | Konsulent-bulk: tagg-backend + PDF-export | ✅ **Klar 2026-07-10** — `consultant_participants.tags text[]` + vy + service + taggchips i deltagarlistan; PDF-export via jspdf-autotable. **Bonusfynd:** servicen skrev till obefintliga tabellen `participant_consultants` → status/prioritet/kontakt-uppdateringar har misslyckats tyst i prod; rättat till `consultant_participants` |
+| B4 | "Kommer snart"-svep | ✅ **Klar 2026-07-10** — LinkedIn-import-teaser (Profil) och videokort (CV-tips) borttagna, badge-delning fick riktig Web Share/urklipp, superadmins tomma Inställningar-flik borttagen, "Kommer snart" → "Inga artiklar än" i Kunskapsbanken |
 
 ## Spår C — Städning & dödkod
 

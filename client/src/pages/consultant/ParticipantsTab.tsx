@@ -32,6 +32,7 @@ import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
+import { getTagLabel, getTagColorClasses } from '@/components/consultant/participantTags'
 
 interface Participant {
   participant_id: string
@@ -51,6 +52,7 @@ interface Participant {
   last_contact_at: string | null
   next_meeting_scheduled: string | null
   last_login: string | null
+  tags: string[] | null
 }
 
 type SortField = 'name' | 'status' | 'ats_score' | 'last_contact' | 'priority'
@@ -482,6 +484,16 @@ export function ParticipantsTab() {
                         {priorityBadge.label}
                       </span>
                     )}
+                    {(p.tags || []).slice(0, 3).map(tagId => (
+                      <span key={tagId} className={cn('px-2.5 py-1 rounded-full text-xs font-medium', getTagColorClasses(tagId))}>
+                        {getTagLabel(tagId)}
+                      </span>
+                    ))}
+                    {(p.tags?.length || 0) > 3 && (
+                      <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400">
+                        +{(p.tags?.length || 0) - 3}
+                      </span>
+                    )}
                   </div>
 
                   {/* Stats Grid */}
@@ -612,13 +624,23 @@ export function ParticipantsTab() {
                         </Link>
                       </td>
                       <td className="px-4 py-4">
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 flex-wrap">
                           <span className={cn('px-2.5 py-1 rounded-full text-xs font-medium', statusBadge.color)}>
                             {statusBadge.label}
                           </span>
                           {priorityBadge && (
                             <span className={cn('px-2.5 py-1 rounded-full text-xs font-medium', priorityBadge.color)}>
                               {priorityBadge.label}
+                            </span>
+                          )}
+                          {(p.tags || []).slice(0, 2).map(tagId => (
+                            <span key={tagId} className={cn('px-2.5 py-1 rounded-full text-xs font-medium', getTagColorClasses(tagId))}>
+                              {getTagLabel(tagId)}
+                            </span>
+                          ))}
+                          {(p.tags?.length || 0) > 2 && (
+                            <span className="px-2.5 py-1 rounded-full text-xs font-medium bg-stone-100 text-stone-600 dark:bg-stone-800 dark:text-stone-400">
+                              +{(p.tags?.length || 0) - 2}
                             </span>
                           )}
                         </div>

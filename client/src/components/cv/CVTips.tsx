@@ -14,7 +14,6 @@ import {
   ChevronUp,
   Star,
   AlertTriangle,
-  Video,
   FileText,
   Target,
   Award
@@ -295,21 +294,9 @@ export function CVTips() {
         </a>
       </div>
 
-      {/* Additional Resources */}
+      {/* Additional Resources — videokortet borttaget 2026-07-10 (B4):
+          det var en "Kommer snart"-knapp utan funktion */}
       <div className="grid sm:grid-cols-2 gap-4">
-        <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
-          <div className="flex items-center gap-3 mb-3">
-            <Video className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
-            <h4 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.tips.resources.video.title')}</h4>
-          </div>
-          <p className="text-sm text-stone-600 dark:text-stone-400 mb-3">
-            {t('cv.tips.resources.video.description')}
-          </p>
-          <button className="text-[var(--c-text)] dark:text-[var(--c-text)] text-sm font-medium hover:underline">
-            {t('cv.tips.resources.video.comingSoon')}
-          </button>
-        </div>
-
         <div className="bg-white dark:bg-stone-900 rounded-xl border border-stone-200 dark:border-stone-700 p-5">
           <div className="flex items-center gap-3 mb-3">
             <Target className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-text)]" />
