@@ -4,6 +4,7 @@
  */
 
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import {
   Target, ChevronRight, FileText, Compass, BookOpen,
@@ -165,6 +166,7 @@ export function CareerReadinessScore({
   showRecommendations = true,
   className,
 }: CareerReadinessScoreProps) {
+  const { t } = useTranslation()
   const { progress, isLoading } = useUnifiedProgress()
 
   if (isLoading || !progress) {
@@ -186,7 +188,7 @@ export function CareerReadinessScore({
       <div className={cn('flex items-center gap-3', className)}>
         <ScoreRing score={progress.careerReadinessScore} size="sm" />
         <div>
-          <p className="text-sm font-medium text-stone-700">Karriärberedskap</p>
+          <p className="text-sm font-medium text-stone-700">{t('dashboard.careerReadiness.title', 'Karriärberedskap')}</p>
           <p className="text-xs text-stone-700">{progress.careerReadinessLabel}</p>
         </div>
       </div>
@@ -199,15 +201,15 @@ export function CareerReadinessScore({
         <div className="flex items-center gap-4">
           <ScoreRing score={progress.careerReadinessScore} size="md" />
           <div className="flex-1">
-            <h3 className="font-semibold text-stone-800">Karriärberedskap</h3>
+            <h3 className="font-semibold text-stone-800">{t('dashboard.careerReadiness.title', 'Karriärberedskap')}</h3>
             <p className="text-sm text-stone-600">{progress.careerReadinessLabel}</p>
             <div className="flex items-center gap-4 mt-2 text-xs text-stone-700">
-              <span>{progress.completedMilestones}/{progress.totalMilestones} områden klara</span>
+              <span>{t('dashboard.careerReadiness.areasComplete', { defaultValue: '{{completed}}/{{total}} områden klara', completed: progress.completedMilestones, total: progress.totalMilestones })}</span>
             </div>
           </div>
           <Link to="/journey">
             <Button variant="outline" size="sm">
-              Se detaljer
+              {t('dashboard.careerReadiness.seeDetails', 'Se detaljer')}
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </Link>
@@ -224,7 +226,7 @@ export function CareerReadinessScore({
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-1">
             <Target className="w-5 h-5 text-[var(--c-text)]" />
-            <h2 className="text-xl font-bold text-stone-900">Karriärberedskap</h2>
+            <h2 className="text-xl font-bold text-stone-900">{t('dashboard.careerReadiness.title', 'Karriärberedskap')}</h2>
           </div>
           <p className="text-stone-600 mb-3">{progress.careerReadinessLabel}</p>
 
@@ -233,7 +235,7 @@ export function CareerReadinessScore({
             <div className="flex items-center gap-1.5">
               <TrendingUp className="w-4 h-4 text-emerald-500" />
               <span className="text-stone-600">
-                {progress.completedMilestones} av {progress.totalMilestones} områden
+                {t('dashboard.careerReadiness.areasOf', { defaultValue: '{{completed}} av {{total}} områden', completed: progress.completedMilestones, total: progress.totalMilestones })}
               </span>
             </div>
             {progress.hasRiasecProfile && progress.dominantTypes.length > 0 && (
@@ -248,7 +250,7 @@ export function CareerReadinessScore({
               <div className="flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4 text-amber-500" />
                 <span className="text-stone-600">
-                  {progress.moodStreak} dagars streak
+                  {t('dashboard.careerReadiness.streak', { defaultValue: '{{count}} dagars streak', count: progress.moodStreak })}
                 </span>
               </div>
             )}
@@ -258,7 +260,7 @@ export function CareerReadinessScore({
 
       {/* Section breakdown */}
       <div className="space-y-3 mb-6">
-        <h3 className="text-sm font-semibold text-stone-700">Områden</h3>
+        <h3 className="text-sm font-semibold text-stone-700">{t('dashboard.careerReadiness.areas', 'Områden')}</h3>
         {progress.sections.map(section => (
           <SectionProgressBar key={section.id} section={section} />
         ))}
@@ -267,7 +269,7 @@ export function CareerReadinessScore({
       {/* Recommendations */}
       {showRecommendations && progress.recommendations.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-stone-700 mb-3">Rekommenderade nästa steg</h3>
+          <h3 className="text-sm font-semibold text-stone-700 mb-3">{t('dashboard.careerReadiness.recommendedNextSteps', 'Rekommenderade nästa steg')}</h3>
           <div className="space-y-2">
             {progress.recommendations.slice(0, 3).map(rec => (
               <RecommendationCard key={rec.id} recommendation={rec} />
@@ -284,6 +286,7 @@ export function CareerReadinessScore({
 // ============================================
 
 export function CareerReadinessWidget() {
+  const { t } = useTranslation()
   const { progress, isLoading } = useUnifiedProgress()
 
   if (isLoading || !progress) {
@@ -306,7 +309,7 @@ export function CareerReadinessWidget() {
         <div className="flex items-center gap-4">
           <ScoreRing score={progress.careerReadinessScore} size="sm" />
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-stone-800 truncate">Karriärberedskap</h3>
+            <h3 className="font-semibold text-stone-800 truncate">{t('dashboard.careerReadiness.title', 'Karriärberedskap')}</h3>
             <p className="text-sm text-stone-700">{progress.careerReadinessLabel}</p>
           </div>
           <ChevronRight className="w-5 h-5 text-stone-600" />
@@ -315,7 +318,7 @@ export function CareerReadinessWidget() {
         {/* Top recommendation */}
         {progress.recommendations.length > 0 && (
           <div className="mt-3 pt-3 border-t border-stone-100">
-            <p className="text-xs text-stone-700 mb-1">Nästa steg:</p>
+            <p className="text-xs text-stone-700 mb-1">{t('dashboard.careerReadiness.nextStep', 'Nästa steg:')}</p>
             <p className="text-sm font-medium text-stone-700">
               {progress.recommendations[0].title}
             </p>

@@ -142,6 +142,7 @@ export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
         <title id="riasec-chart-title">RIASEC Arbetsintressen</title>
         <desc id="riasec-chart-desc">{accessibleDescription}</desc>
         <defs>
+          {/* Diagramfyllnad (SVG) — datavisualisering, undantag från DESIGN.md §6 */}
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#6366f1" stopOpacity="0.6" />
             <stop offset="100%" stopColor="#a855f7" stopOpacity="0.6" />

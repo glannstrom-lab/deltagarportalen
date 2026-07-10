@@ -8,9 +8,10 @@
  */
 
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { EmptyState } from '@/components/ui/EmptyState'
 import {
   FileUser,
   Target,
@@ -44,6 +45,7 @@ interface InterestRecommendation {
 }
 
 export function Del3PortalIntegration({ enrollmentId, currentFocusOccupation, onFocusUpdated }: Props) {
+  const navigate = useNavigate()
   const [cv, setCv] = useState<CvStatus | null>(null)
   const [recommendations, setRecommendations] = useState<InterestRecommendation[]>([])
   const [interestCompletedAt, setInterestCompletedAt] = useState<string | null>(null)
@@ -193,24 +195,17 @@ export function Del3PortalIntegration({ enrollmentId, currentFocusOccupation, on
 
       {recommendations.length === 0 && (
         <Card variant="flat" padding="md" className="bg-stone-50">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Target size={16} className="text-stone-400" />
-              <div>
-                <h4 className="text-sm font-semibold text-stone-900">Hitta ditt fokusyrke</h4>
-                <p className="text-xs text-stone-600">
-                  Gör intresseguiden så får du yrkesförslag baserat på vad du gillar
-                </p>
-              </div>
-            </div>
-            <Link
-              to="/interest-guide"
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700 hover:border-stone-300"
-            >
-              Öppna intresseguiden
-              <ChevronRight size={12} />
-            </Link>
-          </div>
+          <EmptyState
+            compact
+            icon={Target}
+            title="Hitta ditt fokusyrke"
+            description="Gör intresseguiden så får du yrkesförslag baserat på vad du gillar."
+            action={{
+              label: 'Öppna intresseguiden',
+              onClick: () => navigate('/interest-guide'),
+              variant: 'secondary',
+            }}
+          />
         </Card>
       )}
 
@@ -266,24 +261,17 @@ export function Del3PortalIntegration({ enrollmentId, currentFocusOccupation, on
 
       {!cv && (
         <Card variant="flat" padding="md" className="bg-stone-50">
-          <div className="flex items-center justify-between gap-3 flex-wrap">
-            <div className="flex items-center gap-2">
-              <FileUser size={16} className="text-stone-400" />
-              <div>
-                <h4 className="text-sm font-semibold text-stone-900">Skapa ditt CV</h4>
-                <p className="text-xs text-stone-600">
-                  Du har inte börjat med ditt CV än. Det behövs när vi börjar söka arbetsplats.
-                </p>
-              </div>
-            </div>
-            <Link
-              to="/cv"
-              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-medium bg-white border border-stone-200 text-stone-700 hover:border-stone-300"
-            >
-              Skapa CV
-              <ChevronRight size={12} />
-            </Link>
-          </div>
+          <EmptyState
+            compact
+            icon={FileUser}
+            title="Här börjar ditt CV"
+            description="Det behövs när vi börjar söka arbetsplats — kom igång i lugn takt."
+            action={{
+              label: 'Skapa CV',
+              onClick: () => navigate('/cv'),
+              variant: 'secondary',
+            }}
+          />
         </Card>
       )}
 

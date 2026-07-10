@@ -101,13 +101,12 @@ export default defineConfig([
   {
     // Whitelistade filer där gradient är legitim dekoration:
     // - CVTemplates: CV-mall-thumbnails (DESIGN.md §6 — dekorativa)
-    // - ResultsView: RIASEC-färger semantiskt distinkta
     // - Landing: dekorativa hero-bakgrunder (Manifestet-godkända)
     // - design-system.ts: designtoken-definitioner, ej UI-output
     // - WellnessQuickCard: dekorativ glow-blur längst ner
+    // (ResultsView borttagen 2026-07-10 — gradient-fri efter F6-städning)
     files: [
       'src/components/cv/templates/CVTemplates.tsx',
-      'src/components/interest-guide/ResultsView.tsx',
       'src/pages/Landing.tsx',
       'src/styles/design-system.ts',
       'src/components/dashboard/WellnessQuickCard.tsx',

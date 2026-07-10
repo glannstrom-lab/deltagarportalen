@@ -5,6 +5,7 @@
  */
 
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Check, ChevronRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
@@ -27,12 +28,17 @@ export function OnboardingStep({
   isCurrent,
   to
 }: OnboardingStepProps) {
-  const statusLabel = isComplete ? 'Klart' : isCurrent ? 'Aktuellt steg' : 'Ej påbörjat'
+  const { t } = useTranslation()
+  const statusLabel = isComplete
+    ? t('dashboard.onboardingStep.done', 'Klart')
+    : isCurrent
+      ? t('dashboard.onboardingStep.currentStep', 'Aktuellt steg')
+      : t('dashboard.onboardingStep.notStarted', 'Ej påbörjat')
 
   return (
     <Link
       to={to}
-      aria-label={`Steg ${step}: ${title}. ${description}. Status: ${statusLabel}`}
+      aria-label={t('dashboard.onboardingStep.aria', { defaultValue: 'Steg {{step}}: {{title}}. {{description}}. Status: {{status}}', step, title, description, status: statusLabel })}
       className={cn(
         'flex items-center gap-3 p-3 rounded-xl transition-all duration-200 group',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--c-solid)] focus-visible:ring-offset-2',
@@ -82,11 +88,11 @@ export function OnboardingStep({
       {/* Status badge or arrow */}
       {isComplete ? (
         <span className="text-xs text-[var(--c-text)] dark:text-[var(--c-solid)] font-medium px-2 py-0.5 bg-[var(--c-accent)]/40 dark:bg-[var(--c-bg)]/30 rounded-full">
-          Klart
+          {t('dashboard.onboardingStep.done', 'Klart')}
         </span>
       ) : isCurrent ? (
         <span className="text-xs text-white font-medium px-2 py-0.5 bg-[var(--c-solid)] rounded-full">
-          Nästa
+          {t('dashboard.onboardingStep.next', 'Nästa')}
         </span>
       ) : (
         <ChevronRight className="w-4 h-4 text-stone-300 dark:text-stone-600 group-hover:text-stone-400 dark:group-hover:text-stone-500 transition-colors" />

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Target, TrendingUp, Briefcase, AlertCircle, FileText } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 import { trendsApi } from '@/services/afTrendsApi';
@@ -11,6 +12,7 @@ interface TrendingSkill {
 }
 
 export default function MatchingScoreWidget() {
+  const { t } = useTranslation();
   const { data, loading: dashboardLoading } = useDashboardData();
   const [topSkills, setTopSkills] = useState<TrendingSkill[]>([]);
   const [skillsLoading, setSkillsLoading] = useState(true);
@@ -61,9 +63,9 @@ export default function MatchingScoreWidget() {
             <Target className="text-brand-900 dark:text-brand-300" size={24} />
           </div>
           <div>
-            <h3 className="font-semibold text-stone-800 dark:text-stone-100">Din matchningsgrad</h3>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('dashboard.matchingScore.title', 'Din matchningsgrad')}</h3>
             <p className="text-sm text-stone-600 dark:text-stone-400">
-              Skapa ditt CV för att se hur väl du matchar arbetsmarknaden
+              {t('dashboard.matchingScore.createCvPrompt', 'Skapa ditt CV för att se hur väl du matchar arbetsmarknaden')}
             </p>
           </div>
         </div>
@@ -72,7 +74,7 @@ export default function MatchingScoreWidget() {
           className="flex items-center justify-center gap-2 py-2.5 bg-brand-900 text-white rounded-lg text-sm font-medium hover:bg-brand-900/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2"
         >
           <FileText size={16} />
-          Börja med CV
+          {t('dashboard.matchingScore.startWithCv', 'Börja med CV')}
         </Link>
       </div>
     );
@@ -112,8 +114,8 @@ export default function MatchingScoreWidget() {
             <Target className={getScoreColor(overallScore)} size={24} />
           </div>
           <div>
-            <h3 className="font-semibold text-stone-800 dark:text-stone-100">Din matchningsgrad</h3>
-            <p className="text-sm text-stone-600 dark:text-stone-400">CV-styrka enligt ATS-analys</p>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('dashboard.matchingScore.title', 'Din matchningsgrad')}</h3>
+            <p className="text-sm text-stone-600 dark:text-stone-400">{t('dashboard.matchingScore.subtitle', 'CV-styrka enligt ATS-analys')}</p>
           </div>
         </div>
         <div className="text-right">
@@ -138,14 +140,14 @@ export default function MatchingScoreWidget() {
         <div className="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-1">
             <Briefcase size={16} className="text-brand-900" />
-            <span className="text-sm text-stone-600 dark:text-stone-400">Sparade jobb</span>
+            <span className="text-sm text-stone-600 dark:text-stone-400">{t('dashboard.matchingScore.savedJobs', 'Sparade jobb')}</span>
           </div>
           <p className="text-2xl font-bold text-stone-800 dark:text-stone-100">{matchingJobs}</p>
         </div>
         <div className="bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4">
           <div className="flex items-center gap-2 mb-1">
             <TrendingUp size={16} className="text-brand-900" />
-            <span className="text-sm text-stone-600 dark:text-stone-400">Eftertraktade kompetenser</span>
+            <span className="text-sm text-stone-600 dark:text-stone-400">{t('dashboard.matchingScore.inDemandSkills', 'Eftertraktade kompetenser')}</span>
           </div>
           {topSkills.length > 0 ? (
             <div className="flex flex-wrap gap-1 mt-2">
@@ -160,7 +162,7 @@ export default function MatchingScoreWidget() {
               ))}
             </div>
           ) : (
-            <p className="text-xs text-stone-500 mt-2">Hämtar marknadsdata…</p>
+            <p className="text-xs text-stone-500 mt-2">{t('dashboard.matchingScore.fetchingMarketData', 'Hämtar marknadsdata…')}</p>
           )}
         </div>
       </div>
@@ -171,7 +173,7 @@ export default function MatchingScoreWidget() {
             <AlertCircle className="text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" size={18} />
             <div>
               <p className="text-sm font-medium text-amber-900 dark:text-amber-200 mb-1">
-                Komplettera ditt CV:
+                {t('dashboard.matchingScore.completeCv', 'Komplettera ditt CV:')}
               </p>
               <div className="flex flex-wrap gap-2">
                 {missingSections.map((section) => (
@@ -179,7 +181,7 @@ export default function MatchingScoreWidget() {
                     key={section}
                     className="text-xs px-2 py-1 bg-white dark:bg-stone-800 text-amber-800 dark:text-amber-300 rounded-full"
                   >
-                    {sectionLabels[section] || section}
+                    {t(`dashboard.matchingScore.sections.${section}`, sectionLabels[section] || section)}
                   </span>
                 ))}
               </div>
@@ -194,14 +196,14 @@ export default function MatchingScoreWidget() {
           className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-brand-900 text-white rounded-lg text-sm font-medium hover:bg-brand-900/90 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2"
         >
           <Briefcase size={16} />
-          Se matchande jobb
+          {t('dashboard.matchingScore.seeMatchingJobs', 'Se matchande jobb')}
         </Link>
         <Link
           to="/career"
           className="flex-1 flex items-center justify-center gap-2 py-2.5 border border-stone-200 dark:border-stone-600 text-stone-700 dark:text-stone-200 rounded-lg text-sm font-medium hover:bg-stone-50 dark:hover:bg-stone-700 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-900 focus-visible:ring-offset-2"
         >
           <TrendingUp size={16} />
-          Utveckla kompetenser
+          {t('dashboard.matchingScore.developSkills', 'Utveckla kompetenser')}
         </Link>
       </div>
     </div>

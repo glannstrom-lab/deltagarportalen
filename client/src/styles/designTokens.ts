@@ -91,22 +91,17 @@ export const colors = {
   },
 }
 
-// Bakgrunder och gradients
+// Bakgrunder
+// (Gradient-tokens borttagna 2026-07-10 — 0 användare, DESIGN.md §6 förbjuder gradients i UI)
 export const backgrounds = {
   // Huvudbakgrunder
   page: '#fafaf9',           // Neutral-50
   card: '#ffffff',           // Vit
   cardHover: '#fafaf9',      // Subtil hover
-  
+
   // Overlay-bakgrunder
   modal: 'rgba(28, 25, 23, 0.5)',      // Neutral-900 med 50% opacity
   tooltip: 'rgba(68, 64, 60, 0.95)',   // Neutral-700
-  
-  // Gradients
-  hero: 'linear-gradient(135deg, #f0fdfa 0%, #fafaf9 100%)',
-  primaryButton: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
-  primaryButtonHover: 'linear-gradient(135deg, #0f766e 0%, #115e59 100%)',
-  success: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
 }
 
 // Avstånd (spacing)
@@ -229,42 +224,36 @@ export const widgetTokens = {
       border: colors.primary[200],
       text: colors.primary[700],
       icon: colors.primary[500],
-      gradient: 'from-teal-500 to-sky-600',
     },
     jobSearch: {
       bg: colors.info.light,
       border: '#bfdbfe',
       text: colors.info.dark,
       icon: colors.info.DEFAULT,
-      gradient: 'from-blue-500 to-sky-600',
     },
     wellness: {
       bg: colors.secondary[50],
       border: colors.secondary[200],
       text: colors.secondary[800],
       icon: colors.secondary[500],
-      gradient: 'from-sky-500 to-emerald-600',
     },
     success: {
       bg: colors.success.light,
       border: '#a7f3d0',
       text: colors.success.dark,
       icon: colors.success.DEFAULT,
-      gradient: 'from-emerald-500 to-teal-600',
     },
     warning: {
       bg: colors.warning.light,
       border: '#fde68a',
       text: colors.warning.dark,
       icon: colors.warning.DEFAULT,
-      gradient: 'from-amber-500 to-orange-600',
     },
     neutral: {
       bg: colors.neutral[50],
       border: colors.neutral[200],
       text: colors.neutral[700],
       icon: colors.neutral[500],
-      gradient: 'from-stone-400 to-stone-600',
     },
   }
 }
@@ -277,7 +266,6 @@ export const getWidgetClasses = (variant: keyof typeof widgetTokens.variants) =>
     border: tokens.border,
     text: tokens.text,
     icon: tokens.icon,
-    gradient: tokens.gradient,
   }
 }
 

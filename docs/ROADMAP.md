@@ -81,13 +81,13 @@
 
 | # | Uppgift | Detaljer |
 |---|---------|----------|
-| F1 (R4) | **Beslut: dark mode i scope eller ej** | Default `'system'` exponerar oprövad mörk vy (10 768 ostyrda dark:-klasser). Ja → designprincip + tokens; Nej → default 'light' + städning. **Mikael** (deadline passerad) |
-| F2 (F7) | i18n-svep hårdkodad svenska | ~100+ strängar i hubs/dashboard/STA/PitchTab + utöka leak-scannern till rå svenska utanför t() |
-| F3 (gamla F1) | EmptyState-migrering | 15 sidfiler med ad-hoc-tomtillstånd, STA värst; DESIGN.md §7-kontraktet |
-| F4 (F9) | aria-live på dynamiska vyer | Applications.tsx har 0 trots sök/filter/drag-and-drop |
-| F5 | Voice & Tone-svep | "Aktivera bevakning" m.fl. i sv.json; 0-språk i CareerGoalWidget |
-| F6 (G) | Gradients 65→0 | Baseline hålls; beta av resterande |
-| F7 (ONB) | Onboarding-konsolidering rest | 3 aktiva + 1 avkopplad i bundlen (raderas i C2) |
+| F1 (R4) | **Beslut: dark mode i scope eller ej** | ⬜ **Fortfarande Mikaels beslut** (deadline v. 26 passerad). Default `'system'` exponerar oprövad mörk vy |
+| F2 (F7) | i18n-svep hårdkodad svenska | ✅ **Klar 2026-07-10** (UI-delen) — ~205 stränganvändningar i hubs (7 filer) + dashboard (13 filer) + PitchTab i18n:ade, 370 nya nycklar/språk. Ny rapport `npm run report:i18n` (rå svenska utanför t()) visar att resterande ~10 000 rader är svenskt INNEHÅLL (övningar/artiklar/yrkesdata) — översättning av innehållet är ett produktbeslut, inte städning |
+| F3 (gamla F1) | EmptyState-migrering | ✅ **Klar 2026-07-10** — 8 filer migrerade till `<EmptyState>` med inviter + EN CTA (StaConsultant 5 flikar, WorkDiary, WorkplaceCard, Del3, PitchTab ×2, OccupationsTab, ResultsTab, PrintableResources). DoaSelfAssessment var felflaggad (inget tomtillstånd) |
+| F4 (F9) | aria-live på dynamiska vyer | ✅ **Klar 2026-07-10** — sök-/filterresultat annonseras i Ansökningar-pipelinen och Spontanansökans lista (sr-only role=status) |
+| F5 | Voice & Tone-svep | ✅ **Klar 2026-07-10** — "Aktivera" → "Slå på" (bevakning, e-post, jobbalert), "Inga aktiva påminnelser" → "Du har inga påminnelser just nu" (sv+en) |
+| F6 (G) | Gradients → whitelistad noll | ✅ **Klar 2026-07-10** — baseline 65 → **52 där samtliga är medvetna undantag** (CV-mallar 43, Landing-hero 3, glow 2, tokens 4). Fixbara skulden = 0: ResultsView städad (13), döda gradient-tokens raderade, SVG-diagramgradienter dokumenterade som undantag |
+| F7 (ONB) | Onboarding-konsolidering rest | ✅ **Klar 2026-07-10** — läget dokumenterat i DESIGN-DEBT: 1 global + 2 medvetet sidospecifika (Profil, STA); AI-team-modal raderad (C2), CV-tour borta. Rest: ev. Profile-modal-migrering när profilsidan görs om |
 
 ## Spår G — Produktutveckling
 

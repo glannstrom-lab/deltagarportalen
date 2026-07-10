@@ -542,7 +542,7 @@ export default function PlatsbankenIntegration() {
                   <button
                     onClick={() => toggleAlert(search.id)}
                     className={`p-0.5 rounded ${search.notify ? 'text-[var(--c-text)]' : 'text-stone-600 hover:text-stone-600'}`}
-                    title={search.notify ? 'Stäng av jobbalert' : 'Aktivera jobbalert'}
+                    title={search.notify ? 'Stäng av jobbalert' : 'Slå på jobbalert'}
                   >
                     <Bell size={12} fill={search.notify ? 'currentColor' : 'none'} />
                   </button>

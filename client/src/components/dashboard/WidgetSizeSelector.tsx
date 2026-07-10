@@ -1,4 +1,5 @@
 import { memo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { LayoutGrid, LayoutTemplate, Maximize2, X } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
@@ -36,6 +37,7 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
   onSizeChange,
   onClose,
 }: WidgetSizeSelectorProps) {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
   if (!isOpen) {
@@ -43,8 +45,8 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
       <button
         onClick={() => setIsOpen(true)}
         className="p-1.5 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors"
-        title="Ändra storlek"
-        aria-label="Ändra widget-storlek"
+        title={t('dashboard.widgetSize.changeSize', 'Ändra storlek')}
+        aria-label={t('dashboard.widgetSize.changeSizeAria', 'Ändra widget-storlek')}
       >
         <LayoutGrid size={14} />
       </button>
@@ -54,7 +56,7 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
   return (
     <div className="absolute top-2 right-2 z-10 bg-white rounded-lg shadow-lg border border-stone-200 p-2 min-w-[140px]">
       <div className="flex items-center justify-between mb-2 pb-1 border-b border-stone-100">
-        <span className="text-xs font-medium text-stone-600">Storlek</span>
+        <span className="text-xs font-medium text-stone-600">{t('dashboard.widgetSize.size', 'Storlek')}</span>
         <button
           onClick={() => {
             setIsOpen(false)
@@ -83,7 +85,7 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
               )}
             >
               <Icon size={14} />
-              <span>{option.label}</span>
+              <span>{t(`dashboard.widgetSize.${option.value}`, option.label)}</span>
             </button>
           )
         })}

@@ -12,20 +12,21 @@ import { useResurserHubSummary } from '@/hooks/useResurserHubSummary'
 import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { useAuthStore } from '@/stores/authStore'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 
-function relativeShort(iso: string | null | undefined): string | null {
+function relativeShort(iso: string | null | undefined, t: TFunction): string | null {
   if (!iso) return null
   const then = new Date(iso)
   const now = new Date()
   const days = Math.floor((now.getTime() - then.getTime()) / (1000 * 60 * 60 * 24))
-  if (days <= 0) return 'idag'
-  if (days === 1) return 'i går'
-  if (days < 7) return `${days} dagar sen`
-  if (days < 14) return '1 vecka sen'
-  return `${Math.floor(days / 7)} veckor sen`
+  if (days <= 0) return t('hubs.relativeTimeShort.today', 'idag')
+  if (days === 1) return t('hubs.relativeTimeShort.yesterday', 'i går')
+  if (days < 7) return t('hubs.relativeTimeShort.daysAgo', { defaultValue: '{{count}} dagar sen', count: days })
+  if (days < 14) return t('hubs.relativeTimeShort.oneWeekAgo', '1 vecka sen')
+  return t('hubs.relativeTimeShort.weeksAgo', { defaultValue: '{{count}} veckor sen', count: Math.floor(days / 7) })
 }
 
 export default function ResurserHub() {
@@ -60,6 +61,7 @@ export default function ResurserHub() {
 }
 
 function ResurserHubInner() {
+  const { t } = useTranslation()
   useOnboardedHubsTracking('resurser')
   const { data } = useResurserHubSummary()
   const firstName = useAuthStore(s => s.profile?.first_name)
@@ -76,65 +78,71 @@ function ResurserHubInner() {
       {
         key: 'knowledge-base',
         icon: BookOpen,
-        title: 'Kunskapsbank',
-        description: 'Guider, tips och artiklar för en bättre jobbsökning.',
+        title: t('resurserHub.features.knowledgeBase.title', 'Kunskapsbank'),
+        description: t('resurserHub.features.knowledgeBase.description', 'Guider, tips och artiklar för en bättre jobbsökning.'),
         status: articlesCompleted > 0
-          ? `${articlesCompleted} lästa`
-          : articles.length > 0 ? 'Pågående' : 'Bläddra biblioteket',
+          ? t('resurserHub.features.knowledgeBase.read', { defaultValue: '{{count}} lästa', count: articlesCompleted })
+          : articles.length > 0
+            ? t('hubs.inProgress', 'Pågående')
+            : t('resurserHub.features.knowledgeBase.browse', 'Bläddra biblioteket'),
         isActive: articlesCompleted > 0 || articles.length > 0,
         href: '/knowledge-base',
       },
       {
         key: 'my-documents',
         icon: Bookmark,
-        title: 'Mina dokument',
-        description: 'Sparade CV, brev och andra dokument.',
-        status: docsCount > 0 ? `${docsCount} sparade` : 'Inga ännu',
+        title: t('resurserHub.features.myDocuments.title', 'Mina dokument'),
+        description: t('resurserHub.features.myDocuments.description', 'Sparade CV, brev och andra dokument.'),
+        status: docsCount > 0
+          ? t('hubs.saved', { defaultValue: '{{count}} sparade', count: docsCount })
+          : t('resurserHub.features.myDocuments.none', 'Inga ännu'),
         isActive: docsCount > 0,
         href: '/resources',
       },
       {
         key: 'print-resources',
         icon: Printer,
-        title: 'Utskriftsmaterial',
-        description: 'Mallar och checklistor du kan skriva ut.',
-        status: 'Bläddra',
+        title: t('resurserHub.features.printResources.title', 'Utskriftsmaterial'),
+        description: t('resurserHub.features.printResources.description', 'Mallar och checklistor du kan skriva ut.'),
+        status: t('resurserHub.features.printResources.browse', 'Bläddra'),
         href: '/print-resources',
       },
       {
         key: 'external-resources',
         icon: ExternalLink,
-        title: 'Externa resurser',
-        description: 'Länkar till Arbetsförmedlingen och andra.',
-        status: 'Utforska',
+        title: t('resurserHub.features.externalResources.title', 'Externa resurser'),
+        description: t('resurserHub.features.externalResources.description', 'Länkar till Arbetsförmedlingen och andra.'),
+        status: t('hubs.explore', 'Utforska'),
         href: '/externa-resurser',
       },
       {
         key: 'ai-team',
         icon: Bot,
-        title: 'AI-team',
-        description: 'Chatta med karriärcoach, studievägledare och fler.',
-        status: aiSession ? `Senast ${relativeShort(aiSession.updated_at)}` : 'Möt ditt AI-team',
+        title: t('resurserHub.features.aiTeam.title', 'AI-team'),
+        description: t('resurserHub.features.aiTeam.description', 'Chatta med karriärcoach, studievägledare och fler.'),
+        status: aiSession
+          ? t('hubs.lastUpdated', { defaultValue: 'Senast {{when}}', when: relativeShort(aiSession.updated_at, t) })
+          : t('resurserHub.features.aiTeam.meet', 'Möt ditt AI-team'),
         isActive: !!aiSession,
         href: '/ai-team',
       },
       {
         key: 'network',
         icon: Users,
-        title: 'Nätverk',
-        description: 'Bygg och håll kontakt med ditt nätverk.',
-        status: 'Utforska',
+        title: t('resurserHub.features.network.title', 'Nätverk'),
+        description: t('resurserHub.features.network.description', 'Bygg och håll kontakt med ditt nätverk.'),
+        status: t('hubs.explore', 'Utforska'),
         href: '/nätverk',
       },
     ]
-  }, [data])
+  }, [data, t])
 
   return (
     <HubPage
       titleKey="hub-resurser"
-      title="Resurser"
-      hubTitle="Dina sparade resurser"
-      hubDescription="Dokument, kunskapsbank, AI-team och utskriftsmaterial."
+      title={t('resurserHub.title', 'Resurser')}
+      hubTitle={t('resurserHub.hubTitle', 'Dina sparade resurser')}
+      hubDescription={t('resurserHub.hubDescription', 'Dokument, kunskapsbank, AI-team och utskriftsmaterial.')}
       hubIcon={BookOpen}
       domain="info"
       features={features}

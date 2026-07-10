@@ -298,6 +298,13 @@ export default function MyCompaniesTab() {
         </select>
       </div>
 
+      {/* Skärmläsarannonsering av sök-/filterresultat (F4, 2026-07-10) */}
+      <span className="sr-only" role="status" aria-live="polite">
+        {(searchText.trim() || filter !== 'all')
+          ? t('spontaneous.resultsAnnouncement', { count: filteredCompanies.length })
+          : ''}
+      </span>
+
       {/* Companies List */}
       {filteredCompanies.length === 0 ? (
         <EmptyState

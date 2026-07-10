@@ -8,6 +8,7 @@
 import { useState } from 'react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { EmptyState } from '@/components/ui/EmptyState'
 import {
   Building2,
   Send,
@@ -114,7 +115,7 @@ export function WorkplaceCard({ workplace, consultantView, onEdit, onDelete, onS
           <h4 className="text-sm font-semibold text-stone-900">
             Veckovis uppföljning ({followups.length})
           </h4>
-          {consultantView && !followupOpen && !editingFollowup && (
+          {consultantView && !followupOpen && !editingFollowup && followups.length > 0 && (
             <Button
               size="sm"
               variant="secondary"
@@ -143,9 +144,21 @@ export function WorkplaceCard({ workplace, consultantView, onEdit, onDelete, onS
         )}
 
         {followups.length === 0 && !followupOpen && !editingFollowup && (
-          <p className="text-sm text-stone-500">
-            Inga uppföljningar än. AF kräver minst en uppföljning per vecka.
-          </p>
+          <EmptyState
+            compact
+            icon={CheckCircle2}
+            title="Uppföljningarna samlas här"
+            description="AF kräver minst en uppföljning per vecka."
+            action={
+              consultantView
+                ? {
+                    label: 'Lägg till första uppföljningen',
+                    onClick: () => setFollowupOpen(true),
+                    variant: 'secondary',
+                  }
+                : undefined
+            }
+          />
         )}
 
         {followups.length > 0 && (

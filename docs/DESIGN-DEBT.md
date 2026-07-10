@@ -1,6 +1,6 @@
 # Designskuld — kända överträdelser mot DESIGN.md v3.0
 
-> **Senast uppdaterad:** 2026-06-22 (granskning: i18n-läckor §3 verifierade fixade, gradient-baseline låst till 65)
+> **Senast uppdaterad:** 2026-07-10 (F6: ResultsView gradient-fri, baseline sänkt 65 → 52)
 > **Källa:** ESLint-regler från Fas 0 (`client/eslint.config.js`) + i18n-detektor (`scripts/i18n-leak-detector.cjs`).
 > **Status nu:** ✅ ESLint-reglerna på `error`-nivå. **0 design-errors, 0 design-warnings** i kodbasen.
 > Stale `eslint-disable next-line no-restricted-syntax`-kommentarer rensade — fil-nivå whitelist i `eslint.config.js` täcker dem redan.
@@ -18,6 +18,8 @@
 | Efter Fas 8 | 2026-05-10 | **250** (-193 totalt, -44%) | 0 | inga utöver legacy |
 | **2026-05-14 session** | 2026-05-14 | **68** (-241 totalt, -78%) | 0 | inga |
 | **ESLint höjd → error** | 2026-05-14 | 68 men 0 errors (whitelistade) | 0 | inga |
+| **Granskning 2026-06-22** | 2026-06-22 | **65** (baseline låst) | 0 | inga |
+| **F6-städning** | 2026-07-10 | **52** (-13: ResultsView solid-ersatt, ESLint-whitelist krympt; kvar = medvetna undantag CVTemplates/Landing/WellnessQuickCard/design-system.ts) | 0 | inga |
 
 ### 2026-05-14-sessionen — sammanfattning
 
@@ -208,14 +210,14 @@ Dessa fångas inte av ESLint utan av visuell audit (`archive/2026-06-dokkonsolid
 
 ### Onboarding (DESIGN.md §12)
 
-| Komponent | Avvikelse | Fas |
-|-----------|-----------|-----|
-| `OnboardingFlow` (global) | Visas potentiellt parallellt med sido-specifika onboardings | Fas 6 |
-| `OnboardingModal` (AI-team) | Egen modal-stil (cyan→mint gradient-bg) | Fas 6 |
-| CV-tour-overlay | Egen orange "Steg 1 av 7"-overlay, separat komponent | Fas 6 |
-| Profile welcome-modal | Egen turkos→blå→lila→rosa-gradient-header | Fas 6 |
+| Komponent | Avvikelse | Status 2026-07-10 (F7) |
+|-----------|-----------|------------------------|
+| `OnboardingFlow` (global) | — | ✅ Aktiv och ensam global (monteras i Layout) |
+| `OnboardingModal` (AI-team) | Egen modal-stil | ✅ **Raderad** (ROADMAP C2 — var avkopplad dödkod) |
+| CV-tour-overlay | Egen overlay | ✅ Borttagen (verifierat i nulägesanalysen 2026-07-10) |
+| Profile welcome-modal | Egen stil | ⏳ Kvar som separat modal i `pages/Profile.tsx`; STA har egen `StaOnboarding` (medvetet — programspecifik) |
 
-**Mål Fas 6:** Konsolidera till en enda `<OnboardingFlow>`-komponent. Övriga tas bort eller migreras.
+**Fas 6-läge:** i praktiken konsoliderat — 1 global + 2 medvetet sidospecifika (Profil, STA). Rest: bedöm om Profile-modalen kan migreras in i `OnboardingFlow` när profilsidan ändå görs om.
 
 ### Logotyp (DESIGN.md §13)
 

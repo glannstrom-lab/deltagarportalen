@@ -13,20 +13,21 @@ import { useOnboardedHubsTracking } from '@/hooks/useOnboardedHubsTracking'
 import { streakDays } from '@/utils/streakDays'
 import { useAuthStore } from '@/stores/authStore'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { useFocusMode } from '@/components/FocusModeProvider'
 import { PageFocusShell } from '@/components/focus/shell/PageFocusShell'
 import { FocusHubWizard } from '@/components/focus/pages/FocusHubWizard'
 
-function relativeShort(iso: string | null | undefined): string | null {
+function relativeShort(iso: string | null | undefined, t: TFunction): string | null {
   if (!iso) return null
   const then = new Date(iso)
   const now = new Date()
   const days = Math.floor((now.getTime() - then.getTime()) / (1000 * 60 * 60 * 24))
-  if (days <= 0) return 'idag'
-  if (days === 1) return 'i går'
-  if (days < 7) return `${days} dagar sen`
-  if (days < 14) return '1 vecka sen'
-  return `${Math.floor(days / 7)} veckor sen`
+  if (days <= 0) return t('hubs.relativeTimeShort.today', 'idag')
+  if (days === 1) return t('hubs.relativeTimeShort.yesterday', 'i går')
+  if (days < 7) return t('hubs.relativeTimeShort.daysAgo', { defaultValue: '{{count}} dagar sen', count: days })
+  if (days < 14) return t('hubs.relativeTimeShort.oneWeekAgo', '1 vecka sen')
+  return t('hubs.relativeTimeShort.weeksAgo', { defaultValue: '{{count}} veckor sen', count: Math.floor(days / 7) })
 }
 
 export default function MinVardagHub() {
@@ -60,6 +61,7 @@ export default function MinVardagHub() {
 }
 
 function MinVardagHubInner() {
+  const { t } = useTranslation()
   useOnboardedHubsTracking('min-vardag')
   const { data } = useMinVardagHubSummary()
   const firstName = useAuthStore(s => s.profile?.first_name)
@@ -76,64 +78,66 @@ function MinVardagHubInner() {
       {
         key: 'wellness',
         icon: Smile,
-        title: 'Mående',
-        description: 'Logga ditt mående och se hur det varierar över tid.',
+        title: t('minVardagHub.features.wellness.title', 'Mående'),
+        description: t('minVardagHub.features.wellness.description', 'Logga ditt mående och se hur det varierar över tid.'),
         status: streak > 0
-          ? `${streak} dagar i rad`
-          : moodLogs.length > 0 ? 'Pågående' : 'Logga om du vill',
+          ? t('minVardagHub.features.wellness.streak', { defaultValue: '{{count}} dagar i rad', count: streak })
+          : moodLogs.length > 0
+            ? t('hubs.inProgress', 'Pågående')
+            : t('minVardagHub.features.wellness.log', 'Logga om du vill'),
         isActive: streak > 0 || moodLogs.length > 0,
         href: '/wellness',
       },
       {
         key: 'diary',
         icon: NotebookPen,
-        title: 'Dagbok',
-        description: 'Reflektera fritt om din vecka och dina framsteg.',
+        title: t('minVardagHub.features.diary.title', 'Dagbok'),
+        description: t('minVardagHub.features.diary.description', 'Reflektera fritt om din vecka och dina framsteg.'),
         status: diaryCount > 0
-          ? `${diaryCount} ${diaryCount === 1 ? 'inlägg' : 'inlägg'}${latestDiary ? ` · ${relativeShort(latestDiary.created_at)}` : ''}`
-          : 'Skriv idag',
+          ? `${t('minVardagHub.features.diary.entries', { defaultValue: '{{count}} inlägg', count: diaryCount })}${latestDiary ? ` · ${relativeShort(latestDiary.created_at, t)}` : ''}`
+          : t('minVardagHub.features.diary.writeToday', 'Skriv idag'),
         isActive: diaryCount > 0,
         href: '/diary',
       },
       {
         key: 'calendar',
         icon: Calendar,
-        title: 'Kalender',
-        description: 'Möten, påminnelser och planerade aktiviteter.',
+        title: t('minVardagHub.features.calendar.title', 'Kalender'),
+        description: t('minVardagHub.features.calendar.description', 'Möten, påminnelser och planerade aktiviteter.'),
         status: upcoming
-          ? `Nästa: ${upcoming.title}`
-          : 'Inget inplanerat',
+          ? t('minVardagHub.features.calendar.next', { defaultValue: 'Nästa: {{title}}', title: upcoming.title })
+          : t('minVardagHub.features.calendar.nothingPlanned', 'Inget inplanerat'),
         isActive: !!upcoming,
         href: '/calendar',
       },
       {
         key: 'exercises',
         icon: Dumbbell,
-        title: 'Övningar',
-        description: 'Träna intervjuer, presentationer och mer.',
-        status: 'Utforska',
+        title: t('minVardagHub.features.exercises.title', 'Övningar'),
+        description: t('minVardagHub.features.exercises.description', 'Träna intervjuer, presentationer och mer.'),
+        status: t('hubs.explore', 'Utforska'),
         href: '/exercises',
       },
       {
         key: 'my-consultant',
         icon: UserCheck,
-        title: 'Min konsulent',
-        description: 'Kontakta din arbetskonsulent och se anteckningar.',
-        status: consultant?.full_name ? consultant.full_name : 'Inte tilldelad',
+        title: t('minVardagHub.features.myConsultant.title', 'Min konsulent'),
+        description: t('minVardagHub.features.myConsultant.description', 'Kontakta din arbetskonsulent och se anteckningar.'),
+        status: consultant?.full_name ? consultant.full_name : t('minVardagHub.features.myConsultant.notAssigned', 'Inte tilldelad'),
         isActive: !!consultant?.full_name,
         href: '/my-consultant',
       },
       // Nätverk hör till Resurser-hubben (DESIGN.md §3 — en sida = en hub).
       // Tidigare dubblerad här; fixat 2026-05-10 i Fas 3.4.
     ]
-  }, [data])
+  }, [data, t])
 
   return (
     <HubPage
       titleKey="hub-min-vardag"
-      title="Min vardag"
-      hubTitle="Din vardag"
-      hubDescription="Mående, dagbok, kalender och möten med din konsulent."
+      title={t('minVardagHub.title', 'Min vardag')}
+      hubTitle={t('minVardagHub.hubTitle', 'Din vardag')}
+      hubDescription={t('minVardagHub.hubDescription', 'Mående, dagbok, kalender och möten med din konsulent.')}
       hubIcon={Heart}
       domain="wellbeing"
       features={features}

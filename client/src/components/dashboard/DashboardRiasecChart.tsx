@@ -5,6 +5,7 @@
  */
 
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import type { RiasecScores } from '@/hooks/useInterestProfile'
 import { cn } from '@/lib/utils'
 
@@ -23,17 +24,21 @@ const RIASEC_NAMES: Record<keyof RiasecScores, string> = {
   conventional: 'Konventionell'
 }
 
-const RIASEC_COLORS: Record<keyof RiasecScores, { main: string; light: string; gradient: string }> = {
-  realistic: { main: '#f59e0b', light: '#fef3c7', gradient: 'from-amber-500 to-orange-500' },
-  investigative: { main: '#3b82f6', light: '#dbeafe', gradient: 'from-blue-500 to-indigo-500' },
-  artistic: { main: '#8b5cf6', light: '#ede9fe', gradient: 'from-violet-500 to-purple-500' },
-  social: { main: '#10b981', light: '#d1fae5', gradient: 'from-emerald-500 to-[var(--c-solid)]' },
-  enterprising: { main: '#ef4444', light: '#fee2e2', gradient: 'from-red-500 to-rose-500' },
-  conventional: { main: '#6366f1', light: '#e0e7ff', gradient: 'from-indigo-500 to-blue-500' }
+// Diagramfärger per RIASEC-kategori (gradient-tokens borttagna 2026-07-10 — 0 användare, DESIGN.md §6)
+const RIASEC_COLORS: Record<keyof RiasecScores, { main: string; light: string }> = {
+  realistic: { main: '#f59e0b', light: '#fef3c7' },
+  investigative: { main: '#3b82f6', light: '#dbeafe' },
+  artistic: { main: '#8b5cf6', light: '#ede9fe' },
+  social: { main: '#10b981', light: '#d1fae5' },
+  enterprising: { main: '#ef4444', light: '#fee2e2' },
+  conventional: { main: '#6366f1', light: '#e0e7ff' }
 }
 
 export function DashboardRiasecChart({ scores, size = 220 }: DashboardRiasecChartProps) {
+  const { t } = useTranslation()
   const [hoveredType, setHoveredType] = useState<keyof RiasecScores | null>(null)
+  const riasecName = (key: keyof RiasecScores) =>
+    t(`dashboard.riasecChart.names.${key}`, RIASEC_NAMES[key])
   const center = size / 2
   const radius = (size / 2) - 35
   const keys: (keyof RiasecScores)[] = ['realistic', 'investigative', 'artistic', 'social', 'enterprising', 'conventional']
@@ -71,16 +76,19 @@ export function DashboardRiasecChart({ scores, size = 220 }: DashboardRiasecChar
     .sort((a, b) => b.score - a.score)
     .slice(0, 3)
 
-  const ariaLabel = `Intresseprofil: Dina topp 3 områden är ${sortedScores
-    .map((s, i) => `${i + 1}. ${RIASEC_NAMES[s.key]} (${Math.round((s.score / maxScore) * 100)}%)`)
-    .join(', ')}`
+  const ariaLabel = t('dashboard.riasecChart.ariaLabel', {
+    defaultValue: 'Intresseprofil: Dina topp 3 områden är {{list}}',
+    list: sortedScores
+      .map((s, i) => `${i + 1}. ${riasecName(s.key)} (${Math.round((s.score / maxScore) * 100)}%)`)
+      .join(', '),
+  })
 
   return (
     <figure role="img" aria-label={ariaLabel} className="relative">
       {/* Visual chart - hidden from screen readers */}
       <svg width={size} height={size} className="mx-auto" aria-hidden="true">
         <defs>
-          {/* Main gradient fill */}
+          {/* Diagramfyllnad (SVG) — datavisualisering, undantag från DESIGN.md §6 */}
           <linearGradient id="riasecGradFill" x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.35" />
             <stop offset="50%" stopColor="#0ea5e9" stopOpacity="0.25" />
@@ -262,7 +270,7 @@ export function DashboardRiasecChart({ scores, size = 220 }: DashboardRiasecChar
               textAnchor="middle"
               className="fill-stone-700 dark:fill-stone-200 text-xs font-medium"
             >
-              {RIASEC_NAMES[hoveredType]}
+              {riasecName(hoveredType)}
             </text>
             <text
               x={center}
@@ -278,17 +286,17 @@ export function DashboardRiasecChart({ scores, size = 220 }: DashboardRiasecChar
 
       {/* Accessible fallback table - visually hidden but available to screen readers */}
       <table className="sr-only">
-        <caption>RIASEC intressepoäng</caption>
+        <caption>{t('dashboard.riasecChart.caption', 'RIASEC intressepoäng')}</caption>
         <thead>
           <tr>
-            <th scope="col">Intresseområde</th>
-            <th scope="col">Poäng</th>
+            <th scope="col">{t('dashboard.riasecChart.area', 'Intresseområde')}</th>
+            <th scope="col">{t('dashboard.riasecChart.score', 'Poäng')}</th>
           </tr>
         </thead>
         <tbody>
           {keys.map(key => (
             <tr key={key}>
-              <td>{RIASEC_NAMES[key]}</td>
+              <td>{riasecName(key)}</td>
               <td>{Math.round((scores[key] / maxScore) * 100)}%</td>
             </tr>
           ))}

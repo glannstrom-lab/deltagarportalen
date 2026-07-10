@@ -17,6 +17,7 @@
 import { useEffect, useState, useMemo } from 'react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { EmptyState } from '@/components/ui/EmptyState'
 import {
   BookOpen,
   CheckCircle2,
@@ -103,7 +104,7 @@ export function WorkDiary({ enrollmentId, workplace, part }: Props) {
             </p>
           </div>
         </div>
-        {!composing && (
+        {!composing && entries.length > 0 && (
           <Button size="sm" variant="primary" leftIcon={<Plus size={12} />} onClick={() => setComposing(true)}>
             Ny post
           </Button>
@@ -125,10 +126,16 @@ export function WorkDiary({ enrollmentId, workplace, part }: Props) {
 
       {!composing && entries.length === 0 && !loading && (
         <Card variant="flat" padding="md" className="bg-stone-50">
-          <p className="text-sm text-stone-600">
-            Inga poster än. När du skriver om en dag på {workplace.company_name} samlas det här —
-            din konsulent ser samma logg.
-          </p>
+          <EmptyState
+            compact
+            icon={BookOpen}
+            title="Din arbetsdagbok börjar här"
+            description={`När du skriver om en dag på ${workplace.company_name} samlas det här — din konsulent ser samma logg.`}
+            action={{
+              label: 'Skriv din första rad',
+              onClick: () => setComposing(true),
+            }}
+          />
         </Card>
       )}
 

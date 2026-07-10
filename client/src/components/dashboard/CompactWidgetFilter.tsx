@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 import { memo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import {
   FileText,
@@ -47,6 +48,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
   onShowAll,
   onHideAll,
 }: CompactWidgetFilterProps) {
+  const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const visibleCount = visibleWidgets.length
 
@@ -60,7 +62,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <LayoutGrid size={16} className="text-stone-700" />
-            <span className="text-sm font-medium text-stone-700">Moduler</span>
+            <span className="text-sm font-medium text-stone-700">{t('dashboard.widgetFilter.modules', 'Moduler')}</span>
           </div>
           <span className="text-xs text-stone-600 bg-stone-100 px-2 py-0.5 rounded-full">
             {visibleCount}/{compactWidgets.length}
@@ -107,20 +109,20 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
         <div className="px-3 pb-3 border-t border-stone-100">
           {/* Quick actions */}
           <div className="flex items-center justify-between py-2 mb-2">
-            <span className="text-xs text-stone-700">Välj moduler att visa:</span>
+            <span className="text-xs text-stone-700">{t('dashboard.widgetFilter.selectModules', 'Välj moduler att visa:')}</span>
             <div className="flex items-center gap-1">
               <button
                 onClick={onShowAll}
                 className="text-xs text-sky-600 hover:text-sky-700 font-medium px-2 py-1 hover:bg-sky-50 rounded transition-colors"
               >
-                Alla
+                {t('common.all', 'Alla')}
               </button>
               <span className="text-stone-300">|</span>
               <button
                 onClick={onHideAll}
                 className="text-xs text-stone-700 hover:text-stone-700 px-2 py-1 hover:bg-stone-100 rounded transition-colors"
               >
-                Ingen
+                {t('common.none', 'Ingen')}
               </button>
             </div>
           </div>
@@ -143,14 +145,14 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
                   )}
                 >
                   <Icon size={16} />
-                  <span className="text-xs leading-tight">{widget.label}</span>
+                  <span className="text-xs leading-tight">{t(`dashboard.widgetFilter.widgetsShort.${widget.id}`, widget.label)}</span>
                 </button>
               )
             })}
           </div>
 
           <p className="mt-3 text-xs text-stone-600">
-            Tips: Du kan ändra storlek på varje widget med ikonen uppe till höger på kortet.
+            {t('dashboard.widgetFilter.tip', 'Tips: Du kan ändra storlek på varje widget med ikonen uppe till höger på kortet.')}
           </p>
         </div>
       )}

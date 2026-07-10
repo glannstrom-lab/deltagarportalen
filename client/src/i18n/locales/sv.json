@@ -392,6 +392,126 @@
     "translationPrivacy": "När du översätter skickas sidans innehåll till Google för översättning."
   },
   "dashboard": {
+    "careerReadiness": {
+      "title": "Karriärberedskap",
+      "areasComplete": "{{completed}}/{{total}} områden klara",
+      "seeDetails": "Se detaljer",
+      "areasOf": "{{completed}} av {{total}} områden",
+      "streak_one": "{{count}} dags streak",
+      "streak_other": "{{count}} dagars streak",
+      "areas": "Områden",
+      "recommendedNextSteps": "Rekommenderade nästa steg",
+      "nextStep": "Nästa steg:"
+    },
+    "whyItMatters": {
+      "why": "Varför?",
+      "whyImportant": "Varför är detta viktigt?"
+    },
+    "riasecChart": {
+      "ariaLabel": "Intresseprofil: Dina topp 3 områden är {{list}}",
+      "caption": "RIASEC intressepoäng",
+      "area": "Intresseområde",
+      "score": "Poäng",
+      "names": {
+        "realistic": "Praktisk",
+        "investigative": "Undersökande",
+        "artistic": "Konstnärlig",
+        "social": "Social",
+        "enterprising": "Företagsam",
+        "conventional": "Konventionell"
+      }
+    },
+    "error": {
+      "title": "Kunde inte ladda dashboard",
+      "fallbackMessage": "Ett oväntat fel uppstod. Kontrollera din internetanslutning och försök igen.",
+      "contactSupport": "Om problemet kvarstår, kontakta support."
+    },
+    "widgetFilter": {
+      "modules": "Moduler",
+      "showModules": "Visa moduler",
+      "selectModules": "Välj moduler att visa:",
+      "selectWhatToSee": "Välj vad du vill se:",
+      "visibleCount_one": "{{count}} modul synlig",
+      "visibleCount_other": "{{count}} moduler synliga",
+      "clickToHide": "Klicka för att dölja",
+      "clickToShow": "Klicka för att visa",
+      "hint": "Klicka på en modul för att visa eller dölja den. Ändra storlek på varje widget med ikonen uppe till höger.",
+      "tip": "Tips: Du kan ändra storlek på varje widget med ikonen uppe till höger på kortet.",
+      "widgets": {
+        "cv": "Ditt CV",
+        "coverLetter": "Brev",
+        "jobSearch": "Jobb",
+        "applications": "Ansökningar",
+        "career": "Karriär",
+        "interests": "Intressen",
+        "exercises": "Övningar",
+        "diary": "Dagbok",
+        "wellness": "Hälsa",
+        "knowledge": "Kunskap",
+        "quests": "Quests"
+      },
+      "widgetsShort": {
+        "cv": "CV",
+        "coverLetter": "Brev",
+        "jobSearch": "Jobb",
+        "applications": "Ansökningar",
+        "career": "Karriär",
+        "interests": "Intressen",
+        "exercises": "Övningar",
+        "diary": "Dagbok",
+        "wellness": "Hälsa",
+        "knowledge": "Kunskap",
+        "quests": "Quests"
+      }
+    },
+    "widgetSize": {
+      "changeSize": "Ändra storlek",
+      "changeSizeAria": "Ändra widget-storlek",
+      "size": "Storlek",
+      "small": "Liten",
+      "medium": "Medel",
+      "large": "Stor"
+    },
+    "onboardingStep": {
+      "done": "Klart",
+      "currentStep": "Aktuellt steg",
+      "notStarted": "Ej påbörjat",
+      "next": "Nästa",
+      "aria": "Steg {{step}}: {{title}}. {{description}}. Status: {{status}}"
+    },
+    "matchingScore": {
+      "title": "Din matchningsgrad",
+      "createCvPrompt": "Skapa ditt CV för att se hur väl du matchar arbetsmarknaden",
+      "startWithCv": "Börja med CV",
+      "subtitle": "CV-styrka enligt ATS-analys",
+      "savedJobs": "Sparade jobb",
+      "inDemandSkills": "Eftertraktade kompetenser",
+      "fetchingMarketData": "Hämtar marknadsdata…",
+      "completeCv": "Komplettera ditt CV:",
+      "seeMatchingJobs": "Se matchande jobb",
+      "developSkills": "Utveckla kompetenser",
+      "sections": {
+        "profile": "Personliga uppgifter",
+        "summary": "Sammanfattning",
+        "work_experience": "Arbetslivserfarenhet",
+        "education": "Utbildning",
+        "skills": "Färdigheter"
+      }
+    },
+    "wellnessQuick": {
+      "loggedToday": "Loggat idag",
+      "howAreYou": "Hur mår du idag?",
+      "yourMoodToday": "Ditt humör idag",
+      "history": "Historik",
+      "moreDetailed": "Mer detaljerad loggning",
+      "moods": {
+        "1": "Dåligt",
+        "2": "Lite nere",
+        "3": "Okej",
+        "4": "Bra",
+        "5": "Fantastiskt"
+      }
+    },
     "title": "Översikt",
     "description": "Din personliga dashboard och översikt",
     "welcome": "Välkommen",
@@ -628,6 +748,8 @@
       "questsCompleted": "Quests klara",
       "weekGoals": "Veckans mål",
       "goalsProgress": "{{completed}} av {{total}} klara",
+      "daysShort_one": "{{count}} dgr",
+      "daysShort_other": "{{count}} dgr",
       "weekBadge": "Veckan: {{progress}}%",
       "goals": {
         "logWellness": "Logga mående 3 dagar",
@@ -1809,7 +1931,7 @@
       "creating": "Skapar...",
       "emailNotifications": "E-postaviseringar",
       "emailSubtitle": "Välj hur du vill bli notifierad om nya jobb",
-      "enableEmail": "Aktivera e-postaviseringar för jobbvarningar",
+      "enableEmail": "Slå på mejl när nya jobb dyker upp",
       "frequency": "Frekvens",
       "freqInstant": "Direkt",
       "freqDaily": "Daglig sammanfattning",
@@ -1820,7 +1942,7 @@
       "remoteBadge": "🏠 Distans",
       "lastChecked": "Senast kollad: {{date}}",
       "pauseAlert": "Pausa bevakning",
-      "activateAlert": "Aktivera bevakning",
+      "activateAlert": "Slå på bevakning",
       "confirmDelete": "Är du säker på att du vill ta bort denna bevakning?",
       "delete": "Ta bort",
       "searching": "Söker...",
@@ -2081,6 +2203,7 @@
       "markDone": "Markera som klar"
     },
     "pipeline": {
+      "resultsAnnouncement": "{{count}} ansökningar visas",
       "active_one": "{{count}} aktiv",
       "active_other": "{{count}} aktiva",
       "summary": "{{applied}} ansökta • {{interviews}} intervjuer",
@@ -2250,7 +2373,7 @@
       "addContact": "Lägg till kontakt",
       "newContact": "Ny kontakt",
       "saveContact": "Spara kontakt",
-      "noReminders": "Inga aktiva påminnelser",
+      "noReminders": "Du har inga påminnelser just nu",
       "addReminder": "Lägg till påminnelse",
       "newReminder": "Ny påminnelse",
       "saveReminder": "Spara påminnelse",
@@ -2418,6 +2541,7 @@
       "notes": "Anteckningar"
     },
     "companyActions": "Åtgärder för företag",
+    "resultsAnnouncement": "{{count}} företag visas",
     "selectCompany": "Välj {{name}}",
     "batch": {
       "selectMode": "Välj flera",
@@ -3127,7 +3251,8 @@
     "completeTestForSuggestions": "Du behöver genomföra intressetestet för att få personliga yrkesförslag.",
     "startTest": "Starta testet",
     "noOccupationsFound": "Inga yrken hittades med dina filter.",
-    "noResultsYet": "Inga resultat än",
+    "tryOtherFilters": "Prova andra sökord eller ta bort ett filter.",
+    "noResultsYet": "Här visas dina resultat",
     "completeTestToSeeResults": "Du behöver genomföra intressetestet för att se dina resultat.",
     "couldNotLoadResults": "Kunde inte ladda resultaten",
     "couldNotRestartTest": "Kunde inte starta om testet",
@@ -3280,6 +3405,136 @@
         "description": "Öka din digitala närvaro"
       },
       "newBadge": "Ny!"
+    },
+    "pitch": {
+      "header": {
+        "title": "Din personliga pitch",
+        "description": "Skapa och öva på din hiss-pitch. En bra pitch tar 30-60 sekunder och lämnar ett starkt intryck."
+      },
+      "newPitch": "Ny pitch",
+      "yourPitches": "Dina pitchar",
+      "confirmDelete": "Ta bort denna pitch?",
+      "practicedTimes_one": "Övat {{count}} gång",
+      "practicedTimes_other": "Övat {{count}} gånger",
+      "emptyList": {
+        "title": "Dina pitchar samlas här",
+        "description": "En kort presentation av dig själv som du kan öva på och använda när det gäller.",
+        "action": "Skapa din första pitch"
+      },
+      "empty": {
+        "title": "Här skapar du din pitch",
+        "description": "En bra hiss-pitch är nyckeln till att göra ett starkt första intryck. Börja med en generell pitch som du kan anpassa efter situation.",
+        "action": "Skapa pitch"
+      },
+      "types": {
+        "general": {
+          "label": "Generell",
+          "description": "Fungerar i alla situationer"
+        },
+        "job-specific": {
+          "label": "Jobbspecifik",
+          "description": "Anpassad för en specifik tjänst"
+        },
+        "networking": {
+          "label": "Nätverkande",
+          "description": "För mingel och events"
+        },
+        "interview": {
+          "label": "Intervju",
+          "description": "För jobbintervjuer"
+        }
+      },
+      "templates": {
+        "classic": {
+          "name": "Klassisk",
+          "structure1": "Vem jag är",
+          "structure2": "Vad jag gör",
+          "structure3": "Vad jag söker",
+          "structure4": "Varför vi borde prata",
+          "example": "Hej! Jag heter [Namn] och arbetar som [Roll]. Jag har [X] års erfarenhet av [Område] och är särskilt bra på [Styrka]. Just nu söker jag [Mål]. Jag skulle gärna höra mer om [Deras projekt/företag]."
+        },
+        "problem-solution": {
+          "name": "Problem-Lösning",
+          "structure1": "Problem jag löser",
+          "structure2": "Hur jag löser det",
+          "structure3": "Resultat jag uppnått",
+          "structure4": "Call to action",
+          "example": "Vet du hur företag ofta kämpar med [Problem]? Jag hjälper dem att [Lösning] genom att [Metod]. Senast sparade jag [Företag] [X] timmar/kronor. Låt mig veta om ni har liknande utmaningar!"
+        },
+        "story": {
+          "name": "Berättande",
+          "structure1": "Bakgrund",
+          "structure2": "Vändpunkt",
+          "structure3": "Nuläge",
+          "structure4": "Framtid",
+          "example": "Jag började min karriär som [Start] men upptäckte snart att min passion var [Passion]. Efter att ha [Prestation] insåg jag att jag ville [Mål]. Nu söker jag en möjlighet att [Nästa steg]."
+        }
+      },
+      "practice": {
+        "target": "Mål: {{time}}",
+        "perfectTiming": "Perfekt timing!",
+        "tryShorten": "Försök korta ner",
+        "stop": "Stoppa",
+        "start": "Starta",
+        "continue": "Fortsätt",
+        "reset": "Återställ",
+        "end": "Avsluta övning"
+      },
+      "form": {
+        "editTitle": "Redigera pitch",
+        "createTitle": "Skapa ny pitch",
+        "chooseTemplate": "Välj en mall att utgå från",
+        "templateParts_one": "{{count}} del",
+        "templateParts_other": "{{count}} delar",
+        "titleLabel": "Titel",
+        "titlePlaceholder": "T.ex. Min generella pitch",
+        "typeLabel": "Typ",
+        "durationLabel": "Mållängd (sek)",
+        "seconds_one": "{{count}} sekund",
+        "seconds_other": "{{count}} sekunder",
+        "audienceLabel": "Målgrupp (valfritt)",
+        "audiencePlaceholder": "T.ex. Rekryterare inom tech",
+        "contentLabel": "Din pitch",
+        "contentPlaceholder": "Skriv din pitch här...",
+        "readingTime": "Ca {{seconds}} sekunder att läsa ({{chars}} tecken)",
+        "keyPointsLabel": "Nyckelpoänger att komma ihåg",
+        "keyPointPlaceholder": "Lägg till en nyckelpoäng",
+        "addKeyPoint": "Lägg till nyckelpoäng",
+        "removeKeyPoint": "Ta bort nyckelpoäng",
+        "save": "Spara",
+        "cancel": "Avbryt"
+      },
+      "view": {
+        "seconds_one": "{{count}} sek",
+        "seconds_other": "{{count}} sek",
+        "audience": "Målgrupp: {{audience}}",
+        "remember": "Kom ihåg:",
+        "practiceNow": "Öva nu",
+        "copy": "Kopiera",
+        "copied": "Kopierad!",
+        "practicedStats_one": "Du har övat på denna pitch {{count}} gång",
+        "practicedStats_other": "Du har övat på denna pitch {{count}} gånger",
+        "lastPracticed": ", senast {{date}}"
+      },
+      "tips": {
+        "title": "Tips för en kraftfull pitch",
+        "specific": {
+          "title": "Var specifik",
+          "text": "Undvik vaga uttalanden. \"Jag sparade företaget 2 miljoner\" är bättre än \"jag är bra på att spara pengar\"."
+        },
+        "adapt": {
+          "title": "Anpassa efter lyssnaren",
+          "text": "Ha olika versioner för olika målgrupper och situationer."
+        },
+        "aloud": {
+          "title": "Öva högt",
+          "text": "En pitch ska kännas naturlig. Öva tills den sitter utan att den låter inövad."
+        },
+        "question": {
+          "title": "Avsluta med en fråga",
+          "text": "Bjud in till dialog istället för att bara prata om dig själv."
+        }
+      }
     }
   },
   "exercises": {
@@ -8777,6 +9032,288 @@
       "nextSteps": "Du kan alltid komma tillbaka till fokusläget genom att klicka på fokusikonen i menyn.",
       "goToDashboard": "Till startsidan",
       "restart": "Gå igenom guiden igen"
+    }
+  },
+  "hubs": {
+    "greeting": "Hej {{name}}",
+    "featuresHeading": "Funktioner",
+    "explore": "Utforska",
+    "inProgress": "Pågående",
+    "lastUpdated": "Senast {{when}}",
+    "saved_one": "{{count}} sparad",
+    "saved_other": "{{count}} sparade",
+    "daysShort": {
+      "0": "sön",
+      "1": "mån",
+      "2": "tis",
+      "3": "ons",
+      "4": "tor",
+      "5": "fre",
+      "6": "lör"
+    },
+    "months": {
+      "0": "januari",
+      "1": "februari",
+      "2": "mars",
+      "3": "april",
+      "4": "maj",
+      "5": "juni",
+      "6": "juli",
+      "7": "augusti",
+      "8": "september",
+      "9": "oktober",
+      "10": "november",
+      "11": "december"
+    },
+    "relativeTime": {
+      "today": "Idag",
+      "yesterday": "I går",
+      "daysAgo_one": "{{count}} dag sen",
+      "daysAgo_other": "{{count}} dagar sen",
+      "oneWeekAgo": "1 vecka sen",
+      "weeksAgo_one": "{{count}} vecka sen",
+      "weeksAgo_other": "{{count}} veckor sen",
+      "monthsAgo_one": "{{count}} månad sen",
+      "monthsAgo_other": "{{count}} månader sen",
+      "longAgo": "Längesen"
+    },
+    "relativeTimeShort": {
+      "today": "idag",
+      "yesterday": "i går",
+      "daysAgo_one": "{{count}} dag sen",
+      "daysAgo_other": "{{count}} dagar sen",
+      "oneWeekAgo": "1 vecka sen",
+      "weeksAgo_one": "{{count}} vecka sen",
+      "weeksAgo_other": "{{count}} veckor sen",
+      "monthsAgo_one": "{{count}} månad sen",
+      "monthsAgo_other": "{{count}} månader sen"
+    },
+    "oversikt": {
+      "subtitle": "Din samlade vy — det viktigaste från alla hubbar",
+      "history": {
+        "title": "Historik",
+        "subtitle": "Hela din aktivitet i portalen"
+      }
+    }
+  },
+  "hubOverview": {
+    "title": "Översikt",
+    "goodMorning": "God morgon",
+    "goodEvening": "God kväll",
+    "hello": "Hej",
+    "visitProfile": "Besök din profil",
+    "question": "Vad vill du göra idag?",
+    "chooseHub": "Välj en hub",
+    "noEvents": "Inga händelser än — börja utforska",
+    "cards": {
+      "jobb": {
+        "title": "Hitta och söka jobb",
+        "description": "Hitta jobb och håll koll på dina ansökningar."
+      },
+      "karriar": {
+        "title": "Planera min karriär",
+        "description": "Sätt mål, kartlägg kompetens och bygg din väg framåt."
+      },
+      "resurser": {
+        "title": "Dina sparade resurser",
+        "description": "Dokument, kunskapsbank, AI-team och utskriftsmaterial."
+      },
+      "minVardag": {
+        "title": "Din vardag",
+        "description": "Mående, dagbok, kalender och möten med din konsulent."
+      }
+    },
+    "activity": {
+      "activeApplications_one": "{{count}} aktiv ansökan",
+      "activeApplications_other": "{{count}} aktiva ansökningar",
+      "updatedCvPrefix": "Du uppdaterade ditt",
+      "setGoalPrefix": "Du satte målet",
+      "didAnalysisPrefix": "Du gjorde en",
+      "skillsAnalysis": "kompetensanalys",
+      "aiChatPrefix": "Senaste samtal med",
+      "readPrefix": "Du läste i",
+      "knowledgeBank": "kunskapsbanken",
+      "nextMeeting": "Nästa möte:",
+      "streak_one": "{{count}} dag i rad",
+      "streak_other": "{{count}} dagar i rad",
+      "logged": "loggade",
+      "wroteDiaryPrefix": "Du skrev i",
+      "diary": "dagboken"
+    }
+  },
+  "hubOverviewHistory": {
+    "title": "Aktivitet",
+    "backToOverview": "Tillbaka till Översikten",
+    "updatedCv": "Du uppdaterade ditt CV",
+    "loggedMood": "Du loggade ditt mående",
+    "wroteDiary": "Du skrev i dagboken",
+    "setCareerGoalPrefix": "Du satte ett karriärmål:",
+    "startedAiChat": "Du startade ett samtal med AI-team",
+    "activeApplications_one": "Du har {{count}} aktiv ansökan",
+    "activeApplications_other": "Du har {{count}} aktiva ansökningar",
+    "meetingPrefix": "Möte:",
+    "consultantPrefix": "Din konsulent:",
+    "emptyTitle": "Här samlas din historik",
+    "emptyBody": "När du gör något i appen dyker det upp här.",
+    "suggestionsHeading": "Här är 3 saker du kan utforska",
+    "suggestJobTitle": "Sök ditt första jobb",
+    "suggestJobDesc": "Hitta jobb från Platsbanken som matchar dig.",
+    "suggestGoalTitle": "Sätt ett karriärmål",
+    "suggestGoalDesc": "Beskriv var du vill — vi hjälper dig dit.",
+    "suggestMoodTitle": "Logga ditt mående",
+    "suggestMoodDesc": "Liten check-in — bara för dig."
+  },
+  "jobsokHub": {
+    "title": "Söka jobb",
+    "hubTitle": "Hitta och söka jobb",
+    "hubDescription": "Hitta jobb och håll koll på dina ansökningar.",
+    "status": {
+      "followUp": "Uppföljning {{date}}"
+    },
+    "features": {
+      "jobSearch": {
+        "title": "Sök jobb",
+        "description": "Hitta jobb från Platsbanken som matchar din profil.",
+        "status": "Hitta nya jobb"
+      },
+      "applications": {
+        "title": "Mina ansökningar",
+        "description": "Spåra och följ upp dina jobbansökningar.",
+        "active_one": "{{count}} aktiv",
+        "active_other": "{{count}} aktiva",
+        "none": "Inga än"
+      },
+      "spontaneous": {
+        "title": "Spontanansökan",
+        "description": "Skicka ansökningar till företag du tror på."
+      },
+      "cv": {
+        "title": "CV",
+        "description": "Skapa, redigera och exportera ditt CV.",
+        "updatedFallback": "uppdaterat",
+        "create": "Skapa CV"
+      },
+      "coverLetter": {
+        "title": "Personligt brev",
+        "description": "Generera anpassade brev med AI-stöd.",
+        "create": "Skapa brev"
+      },
+      "interview": {
+        "title": "Intervjuträning",
+        "description": "Öva intervjuer med AI och bygg självförtroende.",
+        "sessions_one": "{{count}} session",
+        "sessions_other": "{{count}} sessioner",
+        "practice": "Tid för övning"
+      },
+      "salary": {
+        "title": "Lön & förhandling",
+        "description": "Förbered dig på lönesamtal och förhandlingar."
+      }
+    }
+  },
+  "karriarHub": {
+    "title": "Karriär",
+    "hubTitle": "Planera min karriär",
+    "hubDescription": "Sätt mål, kartlägg kompetens och bygg din väg framåt.",
+    "features": {
+      "careerGoal": {
+        "title": "Karriärmål",
+        "description": "Sätt korta och långsiktiga mål, beskriv vad du vill uppnå.",
+        "active": "Aktivt: {{goal}}",
+        "setDirection": "Sätt en riktning"
+      },
+      "interestGuide": {
+        "title": "Intresseguide",
+        "description": "Utforska vilka yrken som matchar dina intressen.",
+        "notTested": "Inte testad"
+      },
+      "skillsGap": {
+        "title": "Kompetensanalys",
+        "description": "Kartlägg dina kompetenser mot ett drömjobb.",
+        "building": "Bygger upp profilen"
+      },
+      "personalBrand": {
+        "title": "Personligt varumärke",
+        "description": "Bygg en tydlig identitet som arbetsgivare märker.",
+        "notStarted": "Inte börjat"
+      },
+      "education": {
+        "title": "Utbildning",
+        "description": "Hitta utbildningar som tar dig dit du vill."
+      }
+    }
+  },
+  "resurserHub": {
+    "title": "Resurser",
+    "hubTitle": "Dina sparade resurser",
+    "hubDescription": "Dokument, kunskapsbank, AI-team och utskriftsmaterial.",
+    "features": {
+      "knowledgeBase": {
+        "title": "Kunskapsbank",
+        "description": "Guider, tips och artiklar för en bättre jobbsökning.",
+        "read_one": "{{count}} läst",
+        "read_other": "{{count}} lästa",
+        "browse": "Bläddra biblioteket"
+      },
+      "myDocuments": {
+        "title": "Mina dokument",
+        "description": "Sparade CV, brev och andra dokument.",
+        "none": "Inga ännu"
+      },
+      "printResources": {
+        "title": "Utskriftsmaterial",
+        "description": "Mallar och checklistor du kan skriva ut.",
+        "browse": "Bläddra"
+      },
+      "externalResources": {
+        "title": "Externa resurser",
+        "description": "Länkar till Arbetsförmedlingen och andra."
+      },
+      "aiTeam": {
+        "title": "AI-team",
+        "description": "Chatta med karriärcoach, studievägledare och fler.",
+        "meet": "Möt ditt AI-team"
+      },
+      "network": {
+        "title": "Nätverk",
+        "description": "Bygg och håll kontakt med ditt nätverk."
+      }
+    }
+  },
+  "minVardagHub": {
+    "title": "Min vardag",
+    "hubTitle": "Din vardag",
+    "hubDescription": "Mående, dagbok, kalender och möten med din konsulent.",
+    "features": {
+      "wellness": {
+        "title": "Mående",
+        "description": "Logga ditt mående och se hur det varierar över tid.",
+        "streak_one": "{{count}} dag i rad",
+        "streak_other": "{{count}} dagar i rad",
+        "log": "Logga om du vill"
+      },
+      "diary": {
+        "title": "Dagbok",
+        "description": "Reflektera fritt om din vecka och dina framsteg.",
+        "entries_one": "{{count}} inlägg",
+        "entries_other": "{{count}} inlägg",
+        "writeToday": "Skriv idag"
+      },
+      "calendar": {
+        "title": "Kalender",
+        "description": "Möten, påminnelser och planerade aktiviteter.",
+        "next": "Nästa: {{title}}",
+        "nothingPlanned": "Inget inplanerat"
+      },
+      "exercises": {
+        "title": "Övningar",
+        "description": "Träna intervjuer, presentationer och mer."
+      },
+      "myConsultant": {
+        "title": "Min konsulent",
+        "description": "Kontakta din arbetskonsulent och se anteckningar.",
+        "notAssigned": "Inte tilldelad"
+      }
     }
   }
 }

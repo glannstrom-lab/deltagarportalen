@@ -4,6 +4,7 @@
  * "Show the value, not just the task"
  */
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { HelpCircle, X, Lightbulb, ArrowRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
@@ -53,6 +54,7 @@ export function WhyItMattersTooltip({
   statistic,
   benefit 
 }: WhyItMattersProps) {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
 
   return (
@@ -64,7 +66,7 @@ export function WhyItMattersTooltip({
         className="inline-flex items-center gap-1 text-xs text-stone-600 hover:text-[var(--c-text)] transition-colors"
       >
         <HelpCircle size={14} />
-        <span>Varför?</span>
+        <span>{t('dashboard.whyItMatters.why', 'Varför?')}</span>
       </button>
 
       <AnimatePresence>
@@ -99,6 +101,7 @@ export function WhyItMattersExpandable({
   statistic,
   benefit 
 }: WhyItMattersProps) {
+  const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
 
   return (
@@ -108,7 +111,7 @@ export function WhyItMattersExpandable({
         className="flex items-center gap-2 text-sm text-[var(--c-text)] hover:text-[var(--c-text)] font-medium transition-colors"
       >
         <Lightbulb size={16} />
-        <span>Varför är detta viktigt?</span>
+        <span>{t('dashboard.whyItMatters.whyImportant', 'Varför är detta viktigt?')}</span>
         <motion.div
           animate={{ rotate: isExpanded ? 90 : 0 }}
           transition={{ duration: 0.2 }}
@@ -169,8 +172,9 @@ export function WhyItMattersBadge({
   className 
 }: { 
   reason: string
-  className?: string 
+  className?: string
 }) {
+  const { t } = useTranslation()
   const [showTooltip, setShowTooltip] = useState(false)
 
   return (
@@ -181,7 +185,7 @@ export function WhyItMattersBadge({
     >
       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-medium cursor-help">
         <Lightbulb size={10} />
-        <span>Varför?</span>
+        <span>{t('dashboard.whyItMatters.why', 'Varför?')}</span>
       </span>
 
       <AnimatePresence>

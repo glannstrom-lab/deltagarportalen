@@ -3,6 +3,7 @@
  * Displayed when dashboard data fails to load
  */
 
+import { useTranslation } from 'react-i18next'
 import { AlertTriangle, RefreshCw } from '@/components/ui/icons'
 
 interface DashboardErrorProps {
@@ -11,6 +12,7 @@ interface DashboardErrorProps {
 }
 
 export function DashboardError({ error, onRetry }: DashboardErrorProps) {
+  const { t } = useTranslation()
   return (
     <div
       className="pb-8"
@@ -24,11 +26,11 @@ export function DashboardError({ error, onRetry }: DashboardErrorProps) {
           </div>
 
           <h2 className="text-lg font-semibold text-red-800 dark:text-red-300 mb-2">
-            Kunde inte ladda dashboard
+            {t('dashboard.error.title', 'Kunde inte ladda dashboard')}
           </h2>
 
           <p className="text-sm text-red-600 dark:text-red-400 mb-4 max-w-md mx-auto">
-            {error || 'Ett oväntat fel uppstod. Kontrollera din internetanslutning och försök igen.'}
+            {error || t('dashboard.error.fallbackMessage', 'Ett oväntat fel uppstod. Kontrollera din internetanslutning och försök igen.')}
           </p>
 
           <button
@@ -36,11 +38,11 @@ export function DashboardError({ error, onRetry }: DashboardErrorProps) {
             className="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/40 hover:bg-red-200 dark:hover:bg-red-900/60 text-red-700 dark:text-red-300 rounded-lg text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2"
           >
             <RefreshCw className="w-4 h-4" aria-hidden="true" />
-            Försök igen
+            {t('common.tryAgain', 'Försök igen')}
           </button>
 
           <p className="text-xs text-red-500 dark:text-red-400/70 mt-4">
-            Om problemet kvarstår, kontakta support.
+            {t('dashboard.error.contactSupport', 'Om problemet kvarstår, kontakta support.')}
           </p>
         </div>
       </div>

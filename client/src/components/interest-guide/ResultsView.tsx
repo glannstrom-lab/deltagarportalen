@@ -198,7 +198,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
 
       {/* Quick Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <div className="bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl p-5 border border-red-100">
+        <div className="bg-red-50 rounded-2xl p-5 border border-red-100">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center">
               <Target className="w-5 h-5 text-white" />
@@ -215,7 +215,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           </div>
         </div>
 
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-5 border border-blue-100">
+        <div className="bg-blue-50 rounded-2xl p-5 border border-blue-100">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-blue-500 rounded-xl flex items-center justify-center">
               <Brain className="w-5 h-5 text-white" />
@@ -227,7 +227,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           </p>
         </div>
 
-        <div className="bg-gradient-to-br from-green-50 to-[var(--c-bg)] rounded-2xl p-5 border border-green-100">
+        <div className="bg-green-50 rounded-2xl p-5 border border-green-100">
           <div className="flex items-center gap-3 mb-3">
             <div className="w-10 h-10 bg-green-500 rounded-xl flex items-center justify-center">
               <Heart className="w-5 h-5 text-white" />
@@ -262,7 +262,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           onClick={() => setActiveTab('profile')}
           className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
             activeTab === 'profile'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-200'
+              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
               : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
           }`}
         >
@@ -273,7 +273,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           onClick={() => setActiveTab('jobs')}
           className={`px-6 py-3 rounded-xl font-medium transition-all flex items-center gap-2 ${
             activeTab === 'jobs'
-              ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg shadow-indigo-200'
+              ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200'
               : 'bg-white text-gray-600 hover:bg-gray-50 border border-gray-200'
           }`}
         >
@@ -292,7 +292,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           <section className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-500 to-orange-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-red-500 rounded-2xl flex items-center justify-center flex-shrink-0">
                   <Target className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -349,7 +349,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </div>
 
               {/* Din tolkning */}
-              <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
+              <div className="bg-indigo-50 rounded-2xl p-6 border border-indigo-100">
                 <div className="flex items-start gap-3">
                   <Info className="w-5 h-5 text-indigo-600 flex-shrink-0 mt-0.5" />
                   <div>
@@ -369,7 +369,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           <section className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-blue-500 rounded-2xl flex items-center justify-center flex-shrink-0">
                   <Brain className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -412,7 +412,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                           <p className="text-sm text-gray-600 mb-2">{trait.desc}</p>
                           <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
                             <div 
-                              className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full"
+                              className="h-full bg-blue-500 rounded-full"
                               style={{ width: `${profile.bigFive[trait.key as keyof BigFiveScores]}%` }}
                             />
                           </div>
@@ -425,7 +425,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </div>
 
               {/* Din tolkning */}
-              <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+              <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100">
                 <div className="flex items-start gap-3">
                   <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
                   <div>
@@ -444,7 +444,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
           <section className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4 mb-6">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-[var(--c-solid)] rounded-2xl flex items-center justify-center flex-shrink-0">
+                <div className="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center flex-shrink-0">
                   <Heart className="w-6 h-6 text-white" />
                 </div>
                 <div>
@@ -501,7 +501,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
               </div>
 
               {/* Viktigt meddelande */}
-              <div className="bg-gradient-to-r from-green-50 to-[var(--c-bg)] rounded-2xl p-6 border border-green-100">
+              <div className="bg-green-50 rounded-2xl p-6 border border-green-100">
                 <div className="flex items-start gap-3">
                   <Info className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                   <div>
@@ -523,7 +523,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
       {activeTab === 'jobs' && (
         <div className="space-y-6">
           {/* Intro text */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
+          <div className="bg-indigo-50 rounded-2xl p-6 border border-indigo-100">
             <h3 className="font-semibold text-indigo-900 mb-2 flex items-center gap-2">
               <Briefcase className="w-5 h-5" />
               Dina yrkesmatchningar

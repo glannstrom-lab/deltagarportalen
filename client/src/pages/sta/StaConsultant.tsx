@@ -4,6 +4,7 @@ import { PageLayout } from '@/components/layout/index'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { useConsultantStats, useStaQuickNotes, useStaAbsences, useStaPulseChecks } from '@/hooks/useSta'
 import { KompetenskartlaggningSummary } from './components/KompetenskartlaggningSummary'
 import { AssessmentSignature } from './components/AssessmentSignature'
@@ -135,7 +136,6 @@ export default function StaConsultant() {
             onOpenDocuments={(id) => openParticipant(id, 'dokument')}
             onLink={setLinkParticipantId}
             onAdd={() => setAddParticipantOpen(true)}
-            onBulkInvite={() => setBulkInviteOpen(true)}
             onBulkImport={() => setBulkImportOpen(true)}
             onReload={reload}
           />
@@ -455,22 +455,19 @@ function OverviewTab({
 function EmptyDataBanner({ onAdd, onSelfTestCreated }: { onAdd: () => void; onSelfTestCreated: () => void }) {
   return (
     <Card variant="flat" padding="lg" style={{ background: 'var(--c-bg)' }}>
-      <div className="flex items-start justify-between gap-3 flex-wrap">
-        <div>
-          <h3 className="text-base font-semibold text-stone-900 flex items-center gap-2">
-            <Sparkles size={16} style={{ color: 'var(--c-solid)' }} />
-            Inga deltagare än
-          </h3>
-          <p className="text-sm text-stone-700 mt-1 max-w-xl">
-            Lägg till din första deltagare — antingen manuellt eller via en Jobin-inbjudan.
-          </p>
-        </div>
-        <Button variant="primary" leftIcon={<UserPlus size={14} />} onClick={onAdd}>
-          Lägg till första deltagaren
-        </Button>
-      </div>
+      <EmptyState
+        compact
+        icon={Sparkles}
+        title="Dina deltagare samlas här"
+        description="Lägg till din första deltagare — antingen manuellt eller via en Jobin-inbjudan."
+        action={{
+          label: 'Lägg till första deltagaren',
+          onClick: onAdd,
+          variant: 'primary',
+        }}
+      />
       {/* Admin-genväg: lägg till mig själv som testdeltagare */}
-      <div className="mt-4">
+      <div className="mt-2 flex justify-center">
         <SelfTestEnrollmentButton onCreated={onSelfTestCreated} variant="compact" />
       </div>
     </Card>
@@ -860,7 +857,6 @@ function ParticipantsTab({
   onOpenDocuments,
   onLink,
   onAdd,
-  onBulkInvite,
   onBulkImport,
   onReload,
 }: {
@@ -870,7 +866,6 @@ function ParticipantsTab({
   onOpenDocuments: (id: string) => void
   onLink: (id: string) => void
   onAdd: () => void
-  onBulkInvite: () => void
   onBulkImport: () => void
   onReload?: () => void
 }) {
@@ -1016,24 +1011,20 @@ function ParticipantsTab({
   return (
     <Card variant="flat" padding="none" className="overflow-hidden">
       {totalCount === 0 && !loading && (
-        <div className="px-5 py-10 text-center">
-          <h3 className="text-base font-semibold text-stone-900 mb-1">Inga deltagare än</h3>
-          <p className="text-sm text-stone-600 mb-4 max-w-md mx-auto">
-            Lägg till en deltagare manuellt, bjud in flera samtidigt, eller importera
-            en CSV/Excel-fil med dina deltagare.
-          </p>
-          <div className="flex gap-2 justify-center flex-wrap">
-            <Button variant="primary" size="sm" leftIcon={<UserPlus size={14} />} onClick={onAdd}>
-              Lägg till deltagare
-            </Button>
-            <Button variant="secondary" size="sm" leftIcon={<Users size={14} />} onClick={onBulkInvite}>
-              Bjud in flera
-            </Button>
-            <Button variant="secondary" size="sm" leftIcon={<FileSpreadsheet size={14} />} onClick={onBulkImport}>
-              Importera CSV/Excel
-            </Button>
-          </div>
-        </div>
+        <EmptyState
+          icon={Users}
+          title="Dina deltagare samlas här"
+          description="Lägg till en deltagare manuellt eller importera en CSV/Excel-fil med dina deltagare."
+          action={{
+            label: 'Lägg till deltagare',
+            onClick: onAdd,
+            variant: 'primary',
+          }}
+          secondaryAction={{
+            label: 'Importera CSV/Excel',
+            onClick: onBulkImport,
+          }}
+        />
       )}
 
       {totalCount > 0 && (
@@ -3365,21 +3356,16 @@ function AssessmentsTab({
   return (
     <Card variant="flat" padding="none" className="overflow-hidden">
       {totalCount === 0 ? (
-        <div className="px-5 py-10 text-center">
-          <h3 className="text-base font-semibold text-stone-900 mb-1">Inga skattningar än</h3>
-          <p className="text-sm text-stone-600 mb-4 max-w-md mx-auto">
-            Skattningar startas från deltagarens drawer. DOA, WRI och MOHOST gör du
-            i Del 1; AWP och AWC i Del 2 och Del 3.
-          </p>
-          <Button
-            variant="primary"
-            size="sm"
-            leftIcon={<Users size={14} />}
-            onClick={() => onChangeTab('deltagare')}
-          >
-            Gå till Deltagare
-          </Button>
-        </div>
+        <EmptyState
+          icon={ClipboardList}
+          title="Skattningarna samlas här"
+          description="Skattningar startas från deltagarens drawer. DOA, WRI och MOHOST gör du i Del 1; AWP och AWC i Del 2 och Del 3."
+          action={{
+            label: 'Gå till Deltagare',
+            onClick: () => onChangeTab('deltagare'),
+            variant: 'primary',
+          }}
+        />
       ) : (
         <>
           <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between flex-wrap gap-3">
@@ -3739,20 +3725,16 @@ function WorkplacesTab({
   if (stats.length === 0) {
     return (
       <Card variant="flat" padding="lg">
-        <div className="text-center py-6">
-          <h3 className="text-base font-semibold text-stone-900 mb-1">Inga deltagare än</h3>
-          <p className="text-sm text-stone-600 mb-4 max-w-md mx-auto">
-            Arbetsprövningsplatser registreras per deltagare. Lägg först till deltagare.
-          </p>
-          <Button
-            variant="primary"
-            size="sm"
-            leftIcon={<Users size={14} />}
-            onClick={() => onChangeTab('deltagare')}
-          >
-            Gå till Deltagare
-          </Button>
-        </div>
+        <EmptyState
+          icon={Building2}
+          title="Arbetsplatserna samlas här"
+          description="Arbetsprövningsplatser registreras per deltagare. Lägg först till deltagare."
+          action={{
+            label: 'Gå till Deltagare',
+            onClick: () => onChangeTab('deltagare'),
+            variant: 'primary',
+          }}
+        />
       </Card>
     )
   }
@@ -4037,21 +4019,16 @@ function DocumentsTab({
     <div className="space-y-5">
       <Card variant="flat" padding="none" className="overflow-hidden">
         {totalCount === 0 ? (
-          <div className="px-5 py-10 text-center">
-            <h3 className="text-base font-semibold text-stone-900 mb-1">Inga dokument än</h3>
-            <p className="text-sm text-stone-600 mb-4 max-w-md mx-auto">
-              Dokument skapas från deltagarens drawer — öppna en deltagare och välj
-              vilken redovisning eller bilaga som ska skapas.
-            </p>
-            <Button
-              variant="primary"
-              size="sm"
-              leftIcon={<Users size={14} />}
-              onClick={() => onChangeTab('deltagare')}
-            >
-              Gå till Deltagare
-            </Button>
-          </div>
+          <EmptyState
+            icon={FileText}
+            title="Dokumenten samlas här"
+            description="Dokument skapas från deltagarens drawer — öppna en deltagare och välj vilken redovisning eller bilaga som ska skapas."
+            action={{
+              label: 'Gå till Deltagare',
+              onClick: () => onChangeTab('deltagare'),
+              variant: 'primary',
+            }}
+          />
         ) : (
           <>
             <div className="px-5 py-4 border-b border-stone-100 flex items-center justify-between flex-wrap gap-3">

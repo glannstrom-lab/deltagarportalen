@@ -62,7 +62,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
     {
       icon: <Heart size={18} />,
       label: t('dashboard.weeklySummary.wellnessDays'),
-      value: stats.wellnessStreak > 0 ? `${stats.wellnessStreak} dgr` : '—',
+      value: stats.wellnessStreak > 0 ? t('dashboard.weeklySummary.daysShort', { defaultValue: '{{count}} dgr', count: stats.wellnessStreak }) : '—',
       color: 'text-rose-700 bg-rose-50',
     },
     {

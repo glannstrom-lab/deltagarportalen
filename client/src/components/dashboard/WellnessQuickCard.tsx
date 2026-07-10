@@ -69,7 +69,9 @@ export function WellnessQuickCard({
                 {t('dashboard.sidebar.wellness.title', 'Välmående')}
               </h3>
               <p className="text-xs text-rose-600/70 dark:text-rose-400/70">
-                {hasLoggedToday ? 'Loggat idag' : 'Hur mår du idag?'}
+                {hasLoggedToday
+                  ? t('dashboard.wellnessQuick.loggedToday', 'Loggat idag')
+                  : t('dashboard.wellnessQuick.howAreYou', 'Hur mår du idag?')}
               </p>
             </div>
           </div>
@@ -95,10 +97,10 @@ export function WellnessQuickCard({
               <span className="text-3xl">{currentMood.emoji}</span>
               <div>
                 <p className="text-sm font-medium text-stone-700 dark:text-stone-200">
-                  {currentMood.label}
+                  {t(`dashboard.wellnessQuick.moods.${currentMood.value}`, currentMood.label)}
                 </p>
                 <p className="text-xs text-stone-500 dark:text-stone-400">
-                  Ditt humör idag
+                  {t('dashboard.wellnessQuick.yourMoodToday', 'Ditt humör idag')}
                 </p>
               </div>
             </div>
@@ -106,7 +108,7 @@ export function WellnessQuickCard({
               to="/wellness"
               className="flex items-center gap-1 text-xs font-medium text-rose-600 dark:text-rose-400 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2 rounded"
             >
-              Historik <ChevronRight className="w-3.5 h-3.5" />
+              {t('dashboard.wellnessQuick.history', 'Historik')} <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         ) : (
@@ -125,7 +127,7 @@ export function WellnessQuickCard({
                       ? `bg-gradient-to-br ${mood.color} shadow-lg`
                       : 'bg-white/60 dark:bg-stone-800/40 hover:bg-white dark:hover:bg-stone-800/60'
                   )}
-                  aria-label={mood.label}
+                  aria-label={t(`dashboard.wellnessQuick.moods.${mood.value}`, mood.label)}
                 >
                   <span className={cn(
                     'text-xl sm:text-2xl transition-transform duration-200',
@@ -148,7 +150,7 @@ export function WellnessQuickCard({
               to="/wellness"
               className="flex items-center justify-center gap-1.5 w-full py-2 text-xs font-medium text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 transition-colors rounded-lg hover:bg-rose-50 dark:hover:bg-rose-900/20"
             >
-              Mer detaljerad loggning <ChevronRight className="w-3.5 h-3.5" />
+              {t('dashboard.wellnessQuick.moreDetailed', 'Mer detaljerad loggning')} <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         )}

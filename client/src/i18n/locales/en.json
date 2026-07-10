@@ -385,6 +385,126 @@
     "translationPrivacy": "When you translate, the page content is sent to Google for translation."
   },
   "dashboard": {
+    "careerReadiness": {
+      "title": "Career readiness",
+      "areasComplete": "{{completed}}/{{total}} areas complete",
+      "seeDetails": "See details",
+      "areasOf": "{{completed}} of {{total}} areas",
+      "streak_one": "{{count}}-day streak",
+      "streak_other": "{{count}}-day streak",
+      "areas": "Areas",
+      "recommendedNextSteps": "Recommended next steps",
+      "nextStep": "Next step:"
+    },
+    "whyItMatters": {
+      "why": "Why?",
+      "whyImportant": "Why does this matter?"
+    },
+    "riasecChart": {
+      "ariaLabel": "Interest profile: Your top 3 areas are {{list}}",
+      "caption": "RIASEC interest scores",
+      "area": "Interest area",
+      "score": "Score",
+      "names": {
+        "realistic": "Practical",
+        "investigative": "Investigative",
+        "artistic": "Artistic",
+        "social": "Social",
+        "enterprising": "Enterprising",
+        "conventional": "Conventional"
+      }
+    },
+    "error": {
+      "title": "Couldn't load the dashboard",
+      "fallbackMessage": "Something unexpected went wrong. Check your internet connection and try again.",
+      "contactSupport": "If the problem persists, please contact support."
+    },
+    "widgetFilter": {
+      "modules": "Modules",
+      "showModules": "Show modules",
+      "selectModules": "Choose modules to show:",
+      "selectWhatToSee": "Choose what you want to see:",
+      "visibleCount_one": "{{count}} module visible",
+      "visibleCount_other": "{{count}} modules visible",
+      "clickToHide": "Click to hide",
+      "clickToShow": "Click to show",
+      "hint": "Click a module to show or hide it. Resize each widget with the icon in its top right corner.",
+      "tip": "Tip: You can resize each widget with the icon in the top right corner of the card.",
+      "widgets": {
+        "cv": "Your CV",
+        "coverLetter": "Letters",
+        "jobSearch": "Jobs",
+        "applications": "Applications",
+        "career": "Career",
+        "interests": "Interests",
+        "exercises": "Exercises",
+        "diary": "Diary",
+        "wellness": "Health",
+        "knowledge": "Knowledge",
+        "quests": "Quests"
+      },
+      "widgetsShort": {
+        "cv": "CV",
+        "coverLetter": "Letters",
+        "jobSearch": "Jobs",
+        "applications": "Applications",
+        "career": "Career",
+        "interests": "Interests",
+        "exercises": "Exercises",
+        "diary": "Diary",
+        "wellness": "Health",
+        "knowledge": "Knowledge",
+        "quests": "Quests"
+      }
+    },
+    "widgetSize": {
+      "changeSize": "Change size",
+      "changeSizeAria": "Change widget size",
+      "size": "Size",
+      "small": "Small",
+      "medium": "Medium",
+      "large": "Large"
+    },
+    "onboardingStep": {
+      "done": "Done",
+      "currentStep": "Current step",
+      "notStarted": "Not started",
+      "next": "Next",
+      "aria": "Step {{step}}: {{title}}. {{description}}. Status: {{status}}"
+    },
+    "matchingScore": {
+      "title": "Your match score",
+      "createCvPrompt": "Create your CV to see how well you match the job market",
+      "startWithCv": "Start with your CV",
+      "subtitle": "CV strength according to ATS analysis",
+      "savedJobs": "Saved jobs",
+      "inDemandSkills": "In-demand skills",
+      "fetchingMarketData": "Fetching market data…",
+      "completeCv": "Complete your CV:",
+      "seeMatchingJobs": "See matching jobs",
+      "developSkills": "Develop your skills",
+      "sections": {
+        "profile": "Personal details",
+        "summary": "Summary",
+        "work_experience": "Work experience",
+        "education": "Education",
+        "skills": "Skills"
+      }
+    },
+    "wellnessQuick": {
+      "loggedToday": "Logged today",
+      "howAreYou": "How are you feeling today?",
+      "yourMoodToday": "Your mood today",
+      "history": "History",
+      "moreDetailed": "More detailed logging",
+      "moods": {
+        "1": "Bad",
+        "2": "A bit low",
+        "3": "Okay",
+        "4": "Good",
+        "5": "Fantastic"
+      }
+    },
     "title": "Dashboard",
     "description": "Your personal dashboard and overview",
     "welcome": "Welcome",
@@ -621,6 +741,8 @@
       "questsCompleted": "Quests completed",
       "weekGoals": "Weekly goals",
       "goalsProgress": "{{completed}} of {{total}} done",
+      "daysShort_one": "{{count}} day",
+      "daysShort_other": "{{count}} days",
       "weekBadge": "Week: {{progress}}%",
       "goals": {
         "logWellness": "Log wellness 3 days",
@@ -1802,7 +1924,7 @@
       "creating": "Creating...",
       "emailNotifications": "Email notifications",
       "emailSubtitle": "Choose how you want to be notified about new jobs",
-      "enableEmail": "Enable email notifications for job alerts",
+      "enableEmail": "Get an email when new jobs appear",
       "frequency": "Frequency",
       "freqInstant": "Instant",
       "freqDaily": "Daily summary",
@@ -1813,7 +1935,7 @@
       "remoteBadge": "🏠 Remote",
       "lastChecked": "Last checked: {{date}}",
       "pauseAlert": "Pause alert",
-      "activateAlert": "Activate alert",
+      "activateAlert": "Turn on alert",
       "confirmDelete": "Are you sure you want to delete this alert?",
       "delete": "Delete",
       "searching": "Searching...",
@@ -2074,6 +2196,7 @@
       "markDone": "Mark as done"
     },
     "pipeline": {
+      "resultsAnnouncement": "{{count}} applications shown",
       "active_one": "{{count}} active",
       "active_other": "{{count}} active",
       "summary": "{{applied}} applied • {{interviews}} interviews",
@@ -2243,7 +2366,7 @@
       "addContact": "Add contact",
       "newContact": "New contact",
       "saveContact": "Save contact",
-      "noReminders": "No active reminders",
+      "noReminders": "You have no reminders right now",
       "addReminder": "Add reminder",
       "newReminder": "New reminder",
       "saveReminder": "Save reminder",
@@ -2411,6 +2534,7 @@
       "notes": "Notes"
     },
     "companyActions": "Company actions",
+    "resultsAnnouncement": "{{count}} companies shown",
     "selectCompany": "Select {{name}}",
     "batch": {
       "selectMode": "Select multiple",
@@ -3169,7 +3293,8 @@
     "completeTestForSuggestions": "You need to complete the interest test to get personalized career suggestions.",
     "startTest": "Start the test",
     "noOccupationsFound": "No occupations found with your filters.",
-    "noResultsYet": "No results yet",
+    "tryOtherFilters": "Try other search terms or remove a filter.",
+    "noResultsYet": "Your results will show here",
     "completeTestToSeeResults": "You need to complete the interest test to see your results.",
     "couldNotLoadResults": "Could not load results",
     "couldNotRestartTest": "Could not restart the test",
@@ -3273,6 +3398,136 @@
         "description": "Increase your digital presence"
       },
       "newBadge": "New!"
+    },
+    "pitch": {
+      "header": {
+        "title": "Your personal pitch",
+        "description": "Create and practice your elevator pitch. A good pitch takes 30-60 seconds and leaves a strong impression."
+      },
+      "newPitch": "New pitch",
+      "yourPitches": "Your pitches",
+      "confirmDelete": "Delete this pitch?",
+      "practicedTimes_one": "Practiced {{count}} time",
+      "practicedTimes_other": "Practiced {{count}} times",
+      "emptyList": {
+        "title": "Your pitches live here",
+        "description": "A short introduction of yourself that you can practice and use when it matters.",
+        "action": "Create your first pitch"
+      },
+      "empty": {
+        "title": "This is where you create your pitch",
+        "description": "A good elevator pitch is the key to making a strong first impression. Start with a general pitch that you can adapt to the situation.",
+        "action": "Create pitch"
+      },
+      "types": {
+        "general": {
+          "label": "General",
+          "description": "Works in any situation"
+        },
+        "job-specific": {
+          "label": "Job-specific",
+          "description": "Tailored to a specific position"
+        },
+        "networking": {
+          "label": "Networking",
+          "description": "For mingles and events"
+        },
+        "interview": {
+          "label": "Interview",
+          "description": "For job interviews"
+        }
+      },
+      "templates": {
+        "classic": {
+          "name": "Classic",
+          "structure1": "Who I am",
+          "structure2": "What I do",
+          "structure3": "What I am looking for",
+          "structure4": "Why we should talk",
+          "example": "Hi! My name is [Name] and I work as [Role]. I have [X] years of experience in [Field] and I am especially good at [Strength]. Right now I am looking for [Goal]. I would love to hear more about [Their project/company]."
+        },
+        "problem-solution": {
+          "name": "Problem-Solution",
+          "structure1": "The problem I solve",
+          "structure2": "How I solve it",
+          "structure3": "Results I have achieved",
+          "structure4": "Call to action",
+          "example": "You know how companies often struggle with [Problem]? I help them [Solution] by [Method]. Most recently I saved [Company] [X] hours/kronor. Let me know if you have similar challenges!"
+        },
+        "story": {
+          "name": "Storytelling",
+          "structure1": "Background",
+          "structure2": "Turning point",
+          "structure3": "Where I am now",
+          "structure4": "The future",
+          "example": "I started my career as [Start] but soon discovered that my passion was [Passion]. After [Achievement] I realized I wanted to [Goal]. Now I am looking for an opportunity to [Next step]."
+        }
+      },
+      "practice": {
+        "target": "Target: {{time}}",
+        "perfectTiming": "Perfect timing!",
+        "tryShorten": "Try to shorten it",
+        "stop": "Stop",
+        "start": "Start",
+        "continue": "Continue",
+        "reset": "Reset",
+        "end": "End practice"
+      },
+      "form": {
+        "editTitle": "Edit pitch",
+        "createTitle": "Create new pitch",
+        "chooseTemplate": "Choose a template to start from",
+        "templateParts_one": "{{count}} part",
+        "templateParts_other": "{{count}} parts",
+        "titleLabel": "Title",
+        "titlePlaceholder": "E.g. My general pitch",
+        "typeLabel": "Type",
+        "durationLabel": "Target length (sec)",
+        "seconds_one": "{{count}} second",
+        "seconds_other": "{{count}} seconds",
+        "audienceLabel": "Audience (optional)",
+        "audiencePlaceholder": "E.g. Recruiters in tech",
+        "contentLabel": "Your pitch",
+        "contentPlaceholder": "Write your pitch here...",
+        "readingTime": "About {{seconds}} seconds to read ({{chars}} characters)",
+        "keyPointsLabel": "Key points to remember",
+        "keyPointPlaceholder": "Add a key point",
+        "addKeyPoint": "Add key point",
+        "removeKeyPoint": "Remove key point",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "view": {
+        "seconds_one": "{{count}} sec",
+        "seconds_other": "{{count}} sec",
+        "audience": "Audience: {{audience}}",
+        "remember": "Remember:",
+        "practiceNow": "Practice now",
+        "copy": "Copy",
+        "copied": "Copied!",
+        "practicedStats_one": "You have practiced this pitch {{count}} time",
+        "practicedStats_other": "You have practiced this pitch {{count}} times",
+        "lastPracticed": ", most recently {{date}}"
+      },
+      "tips": {
+        "title": "Tips for a powerful pitch",
+        "specific": {
+          "title": "Be specific",
+          "text": "Avoid vague statements. \"I saved the company 2 million\" is better than \"I am good at saving money\"."
+        },
+        "adapt": {
+          "title": "Adapt to your listener",
+          "text": "Keep different versions for different audiences and situations."
+        },
+        "aloud": {
+          "title": "Practice out loud",
+          "text": "A pitch should feel natural. Practice until it sticks without sounding rehearsed."
+        },
+        "question": {
+          "title": "End with a question",
+          "text": "Invite a dialogue instead of only talking about yourself."
+        }
+      }
     }
   },
   "exercises": {
@@ -8770,6 +9025,288 @@
       "nextSteps": "You can always come back to focus mode by clicking the focus icon in the menu.",
       "goToDashboard": "To the dashboard",
       "restart": "Go through the guide again"
+    }
+  },
+  "hubs": {
+    "greeting": "Hi {{name}}",
+    "featuresHeading": "Features",
+    "explore": "Explore",
+    "inProgress": "In progress",
+    "lastUpdated": "Updated {{when}}",
+    "saved_one": "{{count}} saved",
+    "saved_other": "{{count}} saved",
+    "daysShort": {
+      "0": "Sun",
+      "1": "Mon",
+      "2": "Tue",
+      "3": "Wed",
+      "4": "Thu",
+      "5": "Fri",
+      "6": "Sat"
+    },
+    "months": {
+      "0": "January",
+      "1": "February",
+      "2": "March",
+      "3": "April",
+      "4": "May",
+      "5": "June",
+      "6": "July",
+      "7": "August",
+      "8": "September",
+      "9": "October",
+      "10": "November",
+      "11": "December"
+    },
+    "relativeTime": {
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo_one": "{{count}} day ago",
+      "daysAgo_other": "{{count}} days ago",
+      "oneWeekAgo": "1 week ago",
+      "weeksAgo_one": "{{count}} week ago",
+      "weeksAgo_other": "{{count}} weeks ago",
+      "monthsAgo_one": "{{count}} month ago",
+      "monthsAgo_other": "{{count}} months ago",
+      "longAgo": "A while ago"
+    },
+    "relativeTimeShort": {
+      "today": "today",
+      "yesterday": "yesterday",
+      "daysAgo_one": "{{count}} day ago",
+      "daysAgo_other": "{{count}} days ago",
+      "oneWeekAgo": "1 week ago",
+      "weeksAgo_one": "{{count}} week ago",
+      "weeksAgo_other": "{{count}} weeks ago",
+      "monthsAgo_one": "{{count}} month ago",
+      "monthsAgo_other": "{{count}} months ago"
+    },
+    "oversikt": {
+      "subtitle": "Your combined view — the essentials from every hub",
+      "history": {
+        "title": "History",
+        "subtitle": "All your activity in the portal"
+      }
+    }
+  },
+  "hubOverview": {
+    "title": "Overview",
+    "goodMorning": "Good morning",
+    "goodEvening": "Good evening",
+    "hello": "Hi",
+    "visitProfile": "Visit your profile",
+    "question": "What would you like to do today?",
+    "chooseHub": "Choose a hub",
+    "noEvents": "Nothing here yet — start exploring",
+    "cards": {
+      "jobb": {
+        "title": "Find and apply for jobs",
+        "description": "Find jobs and keep track of your applications."
+      },
+      "karriar": {
+        "title": "Plan my career",
+        "description": "Set goals, map your skills and build your path forward."
+      },
+      "resurser": {
+        "title": "Your saved resources",
+        "description": "Documents, knowledge base, AI team and printable materials."
+      },
+      "minVardag": {
+        "title": "Your everyday life",
+        "description": "Wellbeing, diary, calendar and meetings with your consultant."
+      }
+    },
+    "activity": {
+      "activeApplications_one": "{{count}} active application",
+      "activeApplications_other": "{{count}} active applications",
+      "updatedCvPrefix": "You updated your",
+      "setGoalPrefix": "You set the goal",
+      "didAnalysisPrefix": "You completed a",
+      "skillsAnalysis": "skills analysis",
+      "aiChatPrefix": "Latest chat with",
+      "readPrefix": "You read in",
+      "knowledgeBank": "the knowledge base",
+      "nextMeeting": "Next meeting:",
+      "streak_one": "{{count}} day in a row",
+      "streak_other": "{{count}} days in a row",
+      "logged": "logged",
+      "wroteDiaryPrefix": "You wrote in",
+      "diary": "your diary"
+    }
+  },
+  "hubOverviewHistory": {
+    "title": "Activity",
+    "backToOverview": "Back to Overview",
+    "updatedCv": "You updated your CV",
+    "loggedMood": "You logged how you were feeling",
+    "wroteDiary": "You wrote in your diary",
+    "setCareerGoalPrefix": "You set a career goal:",
+    "startedAiChat": "You started a chat with the AI team",
+    "activeApplications_one": "You have {{count}} active application",
+    "activeApplications_other": "You have {{count}} active applications",
+    "meetingPrefix": "Meeting:",
+    "consultantPrefix": "Your consultant:",
+    "emptyTitle": "Your history gathers here",
+    "emptyBody": "When you do something in the app, it shows up here.",
+    "suggestionsHeading": "Here are 3 things you can explore",
+    "suggestJobTitle": "Search for your first job",
+    "suggestJobDesc": "Find jobs from Platsbanken that match you.",
+    "suggestGoalTitle": "Set a career goal",
+    "suggestGoalDesc": "Describe where you want to go — we'll help you get there.",
+    "suggestMoodTitle": "Log how you're feeling",
+    "suggestMoodDesc": "A small check-in — just for you."
+  },
+  "jobsokHub": {
+    "title": "Job search",
+    "hubTitle": "Find and apply for jobs",
+    "hubDescription": "Find jobs and keep track of your applications.",
+    "status": {
+      "followUp": "Follow-up {{date}}"
+    },
+    "features": {
+      "jobSearch": {
+        "title": "Search jobs",
+        "description": "Find jobs from Platsbanken that match your profile.",
+        "status": "Find new jobs"
+      },
+      "applications": {
+        "title": "My applications",
+        "description": "Track and follow up on your job applications.",
+        "active_one": "{{count}} active",
+        "active_other": "{{count}} active",
+        "none": "None yet"
+      },
+      "spontaneous": {
+        "title": "Spontaneous applications",
+        "description": "Send applications to companies you believe in."
+      },
+      "cv": {
+        "title": "CV",
+        "description": "Create, edit and export your CV.",
+        "updatedFallback": "updated",
+        "create": "Create your CV"
+      },
+      "coverLetter": {
+        "title": "Cover letter",
+        "description": "Generate tailored letters with AI support.",
+        "create": "Write a letter"
+      },
+      "interview": {
+        "title": "Interview practice",
+        "description": "Practice interviews with AI and build confidence.",
+        "sessions_one": "{{count}} session",
+        "sessions_other": "{{count}} sessions",
+        "practice": "Time to practice"
+      },
+      "salary": {
+        "title": "Salary & negotiation",
+        "description": "Prepare for salary talks and negotiations."
+      }
+    }
+  },
+  "karriarHub": {
+    "title": "Career",
+    "hubTitle": "Plan my career",
+    "hubDescription": "Set goals, map your skills and build your path forward.",
+    "features": {
+      "careerGoal": {
+        "title": "Career goals",
+        "description": "Set short- and long-term goals and describe what you want to achieve.",
+        "active": "Active: {{goal}}",
+        "setDirection": "Set a direction"
+      },
+      "interestGuide": {
+        "title": "Interest guide",
+        "description": "Explore which occupations match your interests.",
+        "notTested": "Not taken yet"
+      },
+      "skillsGap": {
+        "title": "Skills analysis",
+        "description": "Map your skills against a dream job.",
+        "building": "Building your profile"
+      },
+      "personalBrand": {
+        "title": "Personal brand",
+        "description": "Build a clear identity that employers notice.",
+        "notStarted": "Not started yet"
+      },
+      "education": {
+        "title": "Education",
+        "description": "Find courses that take you where you want to go."
+      }
+    }
+  },
+  "resurserHub": {
+    "title": "Resources",
+    "hubTitle": "Your saved resources",
+    "hubDescription": "Documents, knowledge base, AI team and printable materials.",
+    "features": {
+      "knowledgeBase": {
+        "title": "Knowledge base",
+        "description": "Guides, tips and articles for a better job search.",
+        "read_one": "{{count}} read",
+        "read_other": "{{count}} read",
+        "browse": "Browse the library"
+      },
+      "myDocuments": {
+        "title": "My documents",
+        "description": "Saved CVs, letters and other documents.",
+        "none": "None yet"
+      },
+      "printResources": {
+        "title": "Printable materials",
+        "description": "Templates and checklists you can print.",
+        "browse": "Browse"
+      },
+      "externalResources": {
+        "title": "External resources",
+        "description": "Links to Arbetsförmedlingen and others."
+      },
+      "aiTeam": {
+        "title": "AI team",
+        "description": "Chat with a career coach, study counsellor and more.",
+        "meet": "Meet your AI team"
+      },
+      "network": {
+        "title": "Network",
+        "description": "Build and keep in touch with your network."
+      }
+    }
+  },
+  "minVardagHub": {
+    "title": "My everyday life",
+    "hubTitle": "Your everyday life",
+    "hubDescription": "Wellbeing, diary, calendar and meetings with your consultant.",
+    "features": {
+      "wellness": {
+        "title": "Wellbeing",
+        "description": "Log how you feel and see how it changes over time.",
+        "streak_one": "{{count}} day in a row",
+        "streak_other": "{{count}} days in a row",
+        "log": "Log if you like"
+      },
+      "diary": {
+        "title": "Diary",
+        "description": "Reflect freely on your week and your progress.",
+        "entries_one": "{{count}} entry",
+        "entries_other": "{{count}} entries",
+        "writeToday": "Write today"
+      },
+      "calendar": {
+        "title": "Calendar",
+        "description": "Meetings, reminders and planned activities.",
+        "next": "Next: {{title}}",
+        "nothingPlanned": "Nothing planned"
+      },
+      "exercises": {
+        "title": "Exercises",
+        "description": "Practice interviews, presentations and more."
+      },
+      "myConsultant": {
+        "title": "My consultant",
+        "description": "Contact your employment consultant and see notes.",
+        "notAssigned": "Not assigned yet"
+      }
     }
   }
 }

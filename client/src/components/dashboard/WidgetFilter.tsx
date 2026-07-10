@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + context/konstant/helper-export */
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import {
   FileText,
@@ -64,6 +65,7 @@ export const WidgetFilter = memo(function WidgetFilter({
   onShowAll,
   onHideAll,
 }: WidgetFilterProps) {
+  const { t } = useTranslation()
   const visibleCount = visibleWidgets.length
   const totalCount = availableWidgets.length
 
@@ -74,7 +76,7 @@ export const WidgetFilter = memo(function WidgetFilter({
         <div className="flex items-center gap-2">
           <LayoutGrid size={16} className="text-stone-700 sm:w-[18px] sm:h-[18px]" />
           <h3 className="text-sm font-medium text-stone-700">
-            Visa moduler
+            {t('dashboard.widgetFilter.showModules', 'Visa moduler')}
           </h3>
           <span className="text-xs text-stone-600">
             ({visibleCount}/{totalCount})
@@ -85,14 +87,14 @@ export const WidgetFilter = memo(function WidgetFilter({
             onClick={onShowAll}
             className="text-xs text-sky-600 hover:text-sky-700 font-medium px-2 py-1 hover:bg-sky-50 rounded transition-colors"
           >
-            Alla
+            {t('common.all', 'Alla')}
           </button>
           <span className="text-stone-300">|</span>
           <button
             onClick={onHideAll}
             className="text-xs text-stone-700 hover:text-stone-700 px-2 py-1 hover:bg-stone-100 rounded transition-colors"
           >
-            Dölj
+            {t('common.hide', 'Dölj')}
           </button>
         </div>
       </div>
@@ -113,10 +115,10 @@ export const WidgetFilter = memo(function WidgetFilter({
                   ? `${widget.color} border border-current opacity-100`
                   : 'bg-stone-100 text-stone-600 border border-transparent opacity-60 hover:opacity-80'
               )}
-              title={isVisible ? 'Klicka för att dölja' : 'Klicka för att visa'}
+              title={isVisible ? t('dashboard.widgetFilter.clickToHide', 'Klicka för att dölja') : t('dashboard.widgetFilter.clickToShow', 'Klicka för att visa')}
             >
               <Icon size={12} className="sm:w-[14px] sm:h-[14px]" />
-              <span>{widget.label}</span>
+              <span>{t(`dashboard.widgetFilter.widgets.${widget.id}`, widget.label)}</span>
               {isVisible && (
                 <span className="ml-0.5 w-1.5 h-1.5 rounded-full bg-current opacity-60" />
               )}
@@ -127,7 +129,7 @@ export const WidgetFilter = memo(function WidgetFilter({
 
       {/* Hint - endast desktop */}
       <p className="hidden sm:block text-xs text-stone-600 mt-3">
-        Klicka på en modul för att visa eller dölja den. Ändra storlek på varje widget med ikonen uppe till höger.
+        {t('dashboard.widgetFilter.hint', 'Klicka på en modul för att visa eller dölja den. Ändra storlek på varje widget med ikonen uppe till höger.')}
       </p>
     </div>
   )

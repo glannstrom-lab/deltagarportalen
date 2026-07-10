@@ -334,6 +334,13 @@ export function ApplicationsPipeline({
           </span>
         </div>
 
+        {/* Skärmläsarannonsering av sök-/filterresultat (F4, 2026-07-10) */}
+        <span className="sr-only" role="status" aria-live="polite">
+          {hasActiveFilter
+            ? t('applications.pipeline.resultsAnnouncement', { count: visibleCount })
+            : ''}
+        </span>
+
         <div className="flex items-center gap-2 flex-wrap">
           {/* Search */}
           <div className="relative">

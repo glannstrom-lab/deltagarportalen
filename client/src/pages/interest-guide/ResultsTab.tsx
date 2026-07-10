@@ -9,7 +9,7 @@ import { motion, MotionConfig } from 'framer-motion'
 import { calculateUserProfile, calculateJobMatches, type UserProfile } from '@/services/interestGuideData'
 import { ResultsView } from '@/components/interest-guide/ResultsView'
 import { CareerRecommendationsPanel } from '@/components/interest-guide/CareerRecommendationsPanel'
-import { LoadingState, InfoCard, Button, Card } from '@/components/ui'
+import { LoadingState, InfoCard, Button, Card, EmptyState } from '@/components/ui'
 import { interestGuideApi, type InterestGuideHistoryEntry } from '@/services/cloudStorage'
 import {
   Sparkles,
@@ -157,30 +157,16 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
 
   if (!profile) {
     return (
-      <div className="max-w-lg mx-auto text-center py-12  min-h-screen">
-        <motion.img
-          src="/illustrations/empty-karriar.webp"
-          alt=""
-          aria-hidden="true"
-          loading="lazy"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ type: 'spring', stiffness: 200 }}
-          className="w-32 h-32 mx-auto mb-6 select-none"
+      <div className="max-w-lg mx-auto min-h-screen">
+        <EmptyState
+          illustration="karriar"
+          title={t('interestGuide.noResultsYet', 'Här visas dina resultat')}
+          description={t('interestGuide.completeTestToSeeResults', 'Du behöver genomföra intressetestet för att se dina resultat.')}
+          action={{
+            label: t('interestGuide.startTest', 'Starta testet'),
+            onClick: () => navigate('/interest-guide'),
+          }}
         />
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
-          {t('interestGuide.noResultsYet') || 'Inga resultat än'}
-        </h2>
-        <p className="text-gray-600 dark:text-gray-300 mb-6">
-          {t('interestGuide.completeTestToSeeResults') || 'Du behöver genomföra intressetestet för att se dina resultat.'}
-        </p>
-        <Button
-          onClick={() => navigate('/interest-guide')}
-          className="gap-2 bg-[var(--c-solid)] hover:brightness-110"
-        >
-          <Sparkles className="w-4 h-4" />
-          {t('interestGuide.startTest') || 'Starta testet'}
-        </Button>
       </div>
     )
   }

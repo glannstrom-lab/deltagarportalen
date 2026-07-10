@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/Card'
 import { LoadingState } from '@/components/ui/LoadingState'
@@ -38,6 +39,7 @@ export function DashboardWidget({
   onRetry,
   sizeSelector,
 }: DashboardWidgetProps) {
+  const { t } = useTranslation()
   const colors = categoryColors[color]
   const statusInfo = statusConfig[status]
 
@@ -55,7 +57,7 @@ export function DashboardWidget({
         <AlertCircle className="w-4 h-4 text-rose-500 mx-auto mb-1" />
         <p className="text-xs text-stone-600">{error}</p>
         {onRetry && (
-          <button onClick={onRetry} className="text-xs text-sky-600 mt-1">Försök igen</button>
+          <button onClick={onRetry} className="text-xs text-sky-600 mt-1">{t('common.tryAgain', 'Försök igen')}</button>
         )}
       </Card>
     )

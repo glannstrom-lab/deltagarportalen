@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { motion } from 'framer-motion'
 import {
   Briefcase,
@@ -49,27 +50,27 @@ function daysSince(iso: string | null | undefined): number | null {
   return Math.floor((now.getTime() - then.getTime()) / (1000 * 60 * 60 * 24))
 }
 
-function relativeWhen(iso: string | null | undefined): string {
+function relativeWhen(iso: string | null | undefined, t: TFunction): string {
   const d = daysSince(iso)
   if (d == null) return ''
-  if (d <= 0) return 'Idag'
-  if (d === 1) return 'I går'
-  if (d < 7) return `${d} dagar sen`
-  if (d < 14) return '1 vecka sen'
-  if (d < 30) return `${Math.floor(d / 7)} veckor sen`
-  if (d < 365) return `${Math.floor(d / 30)} månader sen`
-  return 'Längesen'
+  if (d <= 0) return t('hubs.relativeTime.today', 'Idag')
+  if (d === 1) return t('hubs.relativeTime.yesterday', 'I går')
+  if (d < 7) return t('hubs.relativeTime.daysAgo', { defaultValue: '{{count}} dagar sen', count: d })
+  if (d < 14) return t('hubs.relativeTime.oneWeekAgo', '1 vecka sen')
+  if (d < 30) return t('hubs.relativeTime.weeksAgo', { defaultValue: '{{count}} veckor sen', count: Math.floor(d / 7) })
+  if (d < 365) return t('hubs.relativeTime.monthsAgo', { defaultValue: '{{count}} månader sen', count: Math.floor(d / 30) })
+  return t('hubs.relativeTime.longAgo', 'Längesen')
 }
 
 /**
  * Tidsanpassad hälsning enligt DESIGN.md §2.
  * 06–09 = "God morgon", 18–22 = "God kväll", övrigt = "Hej".
  */
-function timeOfDayGreeting(now: Date): 'God morgon' | 'God kväll' | 'Hej' {
+function timeOfDayGreeting(now: Date, t: TFunction): string {
   const h = now.getHours()
-  if (h >= 6 && h < 10) return 'God morgon'
-  if (h >= 18 && h < 23) return 'God kväll'
-  return 'Hej'
+  if (h >= 6 && h < 10) return t('hubOverview.goodMorning', 'God morgon')
+  if (h >= 18 && h < 23) return t('hubOverview.goodEvening', 'God kväll')
+  return t('hubOverview.hello', 'Hej')
 }
 
 const heroVariants = {
@@ -124,11 +125,14 @@ function HubOverviewInner() {
     let jobb: ActivityCell = null
     const apps = summary?.jobsok?.applicationStats?.total ?? 0
     if (apps > 0) {
-      jobb = { text: <><strong>{apps} aktiva ansökningar</strong></>, when: '' }
+      jobb = {
+        text: <strong>{t('hubOverview.activity.activeApplications', { defaultValue: '{{count}} aktiva ansökningar', count: apps })}</strong>,
+        when: '',
+      }
     } else if (summary?.jobsok?.cv?.updated_at) {
       jobb = {
-        text: <>Du uppdaterade ditt <strong>CV</strong></>,
-        when: relativeWhen(summary.jobsok.cv.updated_at),
+        text: <>{t('hubOverview.activity.updatedCvPrefix', 'Du uppdaterade ditt')} <strong>CV</strong></>,
+        when: relativeWhen(summary.jobsok.cv.updated_at, t),
       }
     }
 
@@ -138,13 +142,13 @@ function HubOverviewInner() {
     const goalUpdatedAt = summary?.karriar?.careerGoals?.updatedAt
     if (goalLabel && goalUpdatedAt) {
       karriar = {
-        text: <>Du satte målet <strong>{goalLabel}</strong></>,
-        when: relativeWhen(goalUpdatedAt),
+        text: <>{t('hubOverview.activity.setGoalPrefix', 'Du satte målet')} <strong>{goalLabel}</strong></>,
+        when: relativeWhen(goalUpdatedAt, t),
       }
     } else if (summary?.karriar?.latestSkillsAnalysis?.created_at) {
       karriar = {
-        text: <>Du gjorde en <strong>kompetensanalys</strong></>,
-        when: relativeWhen(summary.karriar.latestSkillsAnalysis.created_at),
+        text: <>{t('hubOverview.activity.didAnalysisPrefix', 'Du gjorde en')} <strong>{t('hubOverview.activity.skillsAnalysis', 'kompetensanalys')}</strong></>,
+        when: relativeWhen(summary.karriar.latestSkillsAnalysis.created_at, t),
       }
     }
 
@@ -154,13 +158,13 @@ function HubOverviewInner() {
     const recentArticle = summary?.resurser?.recentArticles?.[0]
     if (aiSession) {
       resurser = {
-        text: <>Senaste samtal med <strong>AI-team</strong></>,
-        when: relativeWhen(aiSession.updated_at),
+        text: <>{t('hubOverview.activity.aiChatPrefix', 'Senaste samtal med')} <strong>AI-team</strong></>,
+        when: relativeWhen(aiSession.updated_at, t),
       }
     } else if (recentArticle) {
       resurser = {
-        text: <>Du läste i <strong>kunskapsbanken</strong></>,
-        when: relativeWhen(recentArticle.completed_at),
+        text: <>{t('hubOverview.activity.readPrefix', 'Du läste i')} <strong>{t('hubOverview.activity.knowledgeBank', 'kunskapsbanken')}</strong></>,
+        when: relativeWhen(recentArticle.completed_at, t),
       }
     }
 
@@ -171,23 +175,23 @@ function HubOverviewInner() {
     const upcoming = summary?.minVardag?.upcomingEvents?.[0]
     if (upcoming) {
       minVardag = {
-        text: <>Nästa möte: <strong>{upcoming.title}</strong></>,
-        when: relativeWhen(upcoming.date),
+        text: <>{t('hubOverview.activity.nextMeeting', 'Nästa möte:')} <strong>{upcoming.title}</strong></>,
+        when: relativeWhen(upcoming.date, t),
       }
     } else if (streak > 0) {
       minVardag = {
-        text: <><strong>{streak} dagar i rad</strong> loggade</>,
-        when: relativeWhen(moodLogs[0]?.log_date),
+        text: <><strong>{t('hubOverview.activity.streak', { defaultValue: '{{count}} dagar i rad', count: streak })}</strong> {t('hubOverview.activity.logged', 'loggade')}</>,
+        when: relativeWhen(moodLogs[0]?.log_date, t),
       }
     } else if (summary?.minVardag?.latestDiaryEntry) {
       minVardag = {
-        text: <>Du skrev i <strong>dagboken</strong></>,
-        when: relativeWhen(summary.minVardag.latestDiaryEntry.created_at),
+        text: <>{t('hubOverview.activity.wroteDiaryPrefix', 'Du skrev i')} <strong>{t('hubOverview.activity.diary', 'dagboken')}</strong></>,
+        when: relativeWhen(summary.minVardag.latestDiaryEntry.created_at, t),
       }
     }
 
     return { jobb, karriar, resurser, minVardag }
-  }, [summary])
+  }, [summary, t])
 
   return (
     <PageLayout
@@ -232,7 +236,7 @@ function HubOverviewInner() {
             <div className="flex items-center gap-3 sm:gap-4 flex-1 min-w-0">
               <Link
                 to="/profile"
-                aria-label="Besök din profil"
+                aria-label={t('hubOverview.visitProfile', 'Besök din profil')}
                 className="block w-14 h-14 sm:w-[80px] sm:h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] overflow-hidden shadow-sm transition-all hover:border-[var(--c-solid)] hover:shadow-md flex-shrink-0"
               >
                 {profileImageUrl ? (
@@ -256,15 +260,15 @@ function HubOverviewInner() {
                   className="text-[24px] sm:text-[32px] md:text-[40px] font-bold text-[var(--stone-900)] leading-[1.1] sm:leading-[1.05] tracking-tight m-0 break-words"
                 >
                   {firstName
-                    ? `${timeOfDayGreeting(today)}, ${firstName}`
-                    : `${timeOfDayGreeting(today)} 👋`}
+                    ? `${timeOfDayGreeting(today, t)}, ${firstName}`
+                    : `${timeOfDayGreeting(today, t)} 👋`}
                 </h1>
                 <Link
                   to="/profile"
                   className="inline-flex items-center gap-1 text-[12px] font-semibold text-[var(--c-text)] hover:text-[var(--c-solid)] no-underline"
                 >
                   <User size={12} aria-hidden="true" />
-                  Besök din profil
+                  {t('hubOverview.visitProfile', 'Besök din profil')}
                   <span aria-hidden="true">→</span>
                 </Link>
               </div>
@@ -276,7 +280,7 @@ function HubOverviewInner() {
               className="hidden sm:flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] flex-shrink-0 shadow-sm"
             >
               <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] leading-none">
-                {SWEDISH_DAYS_SHORT[today.getDay()]}
+                {t(`hubs.daysShort.${today.getDay()}`, SWEDISH_DAYS_SHORT[today.getDay()])}
               </span>
               <span className="text-[28px] font-bold text-[var(--c-text)] leading-none mt-1 tracking-tight">
                 {today.getDate()}
@@ -289,43 +293,43 @@ function HubOverviewInner() {
 
           {/* Question på egen rad nedanför */}
           <p className="text-base sm:text-[20px] md:text-[22px] font-medium text-[var(--stone-700)] tracking-tight m-0 leading-snug">
-            Vad vill du göra idag?
+            {t('hubOverview.question', 'Vad vill du göra idag?')}
           </p>
         </div>
       </motion.section>
 
       {/* 2. Hubs — 2×2-grid med distinkta domänfärger */}
-      <section aria-label="Välj en hub" className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+      <section aria-label={t('hubOverview.chooseHub', 'Välj en hub')} className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
         <HubCard
           to="/jobb"
           domain="activity"
           icon={Briefcase}
-          title="Hitta och söka jobb"
-          description="Hitta jobb och håll koll på dina ansökningar."
+          title={t('hubOverview.cards.jobb.title', 'Hitta och söka jobb')}
+          description={t('hubOverview.cards.jobb.description', 'Hitta jobb och håll koll på dina ansökningar.')}
           activity={hubActivity.jobb}
         />
         <HubCard
           to="/karriar"
           domain="coaching"
           icon={Compass}
-          title="Planera min karriär"
-          description="Sätt mål, kartlägg kompetens och bygg din väg framåt."
+          title={t('hubOverview.cards.karriar.title', 'Planera min karriär')}
+          description={t('hubOverview.cards.karriar.description', 'Sätt mål, kartlägg kompetens och bygg din väg framåt.')}
           activity={hubActivity.karriar}
         />
         <HubCard
           to="/resurser"
           domain="info"
           icon={GraduationCap}
-          title="Dina sparade resurser"
-          description="Dokument, kunskapsbank, AI-team och utskriftsmaterial."
+          title={t('hubOverview.cards.resurser.title', 'Dina sparade resurser')}
+          description={t('hubOverview.cards.resurser.description', 'Dokument, kunskapsbank, AI-team och utskriftsmaterial.')}
           activity={hubActivity.resurser}
         />
         <HubCard
           to="/min-vardag"
           domain="wellbeing"
           icon={Heart}
-          title="Din vardag"
-          description="Mående, dagbok, kalender och möten med din konsulent."
+          title={t('hubOverview.cards.minVardag.title', 'Din vardag')}
+          description={t('hubOverview.cards.minVardag.description', 'Mående, dagbok, kalender och möten med din konsulent.')}
           activity={hubActivity.minVardag}
         />
       </section>
@@ -376,6 +380,7 @@ interface HubCardProps {
 }
 
 function HubCard({ to, domain, icon: Icon, title, description, activity }: HubCardProps) {
+  const { t } = useTranslation()
   return (
     <Link to={to} className="block no-underline">
       <motion.div
@@ -435,7 +440,7 @@ function HubCard({ to, domain, icon: Icon, title, description, activity }: HubCa
           </div>
         ) : (
           <div className="mt-auto pt-3 sm:pt-3.5 border-t border-[var(--stone-100)] text-[12px] sm:text-[13px] text-[var(--stone-700)] italic">
-            Inga händelser än — börja utforska
+            {t('hubOverview.noEvents', 'Inga händelser än — börja utforska')}
           </div>
         )}
       </motion.div>

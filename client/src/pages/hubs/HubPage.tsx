@@ -1,5 +1,6 @@
 import { type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import type { LucideIcon } from 'lucide-react'
 import { PageLayout } from '@/components/layout/PageLayout'
@@ -96,6 +97,7 @@ export default function HubPage({
   trackingChild,
   firstName,
 }: HubPageProps) {
+  const { t } = useTranslation()
   const today = new Date()
   const trimmedFirstName = firstName?.trim() || null
 
@@ -120,7 +122,7 @@ export default function HubPage({
           mode="hub"
           title={hubTitle}
           description={hubDescription}
-          greeting={trimmedFirstName ? `Hej ${trimmedFirstName}` : undefined}
+          greeting={trimmedFirstName ? t('hubs.greeting', { defaultValue: 'Hej {{name}}', name: trimmedFirstName }) : undefined}
           icon={HubIcon}
           iconSrc={HUB_ICON_SRC[domain]}
           heroIllustration={HUB_ILLUSTRATIONS[domain]}
@@ -130,7 +132,7 @@ export default function HubPage({
               className="flex flex-col items-center justify-center w-[80px] h-[80px] rounded-full bg-white border-2 border-[var(--c-accent)] shadow-sm"
             >
               <span className="text-[11px] font-bold uppercase tracking-[0.12em] text-[var(--c-text)] leading-none">
-                {SWEDISH_DAYS_SHORT[today.getDay()]}
+                {t(`hubs.daysShort.${today.getDay()}`, SWEDISH_DAYS_SHORT[today.getDay()])}
               </span>
               <span className="text-[28px] font-bold text-[var(--c-text)] leading-none mt-1 tracking-tight">
                 {today.getDate()}
@@ -146,12 +148,12 @@ export default function HubPage({
         animate="visible"
         variants={heroVariants}
         transition={{ duration: 0.35, delay: 0.08 }}
-        aria-label="Funktioner"
+        aria-label={t('hubs.featuresHeading', 'Funktioner')}
       >
         <div className="flex items-center gap-2.5 mb-3.5">
           <span aria-hidden="true" className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)] flex-shrink-0" />
           <h2 className="text-[12px] font-bold uppercase tracking-[0.1em] text-[var(--c-text)] m-0">
-            Funktioner
+            {t('hubs.featuresHeading', 'Funktioner')}
           </h2>
           <div className="flex-1 h-px bg-[var(--c-accent)] opacity-60" />
         </div>

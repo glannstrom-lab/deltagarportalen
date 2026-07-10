@@ -10,6 +10,7 @@ import {
   ChevronDown, ChevronUp, Loader2, Search
 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
+import { EmptyState } from '@/components/ui'
 import { useArticles } from '@/hooks/knowledge-base/useArticles'
 import { exercises } from '@/data/exercises'
 import { articleCategories } from '@/services/articleData'
@@ -450,12 +451,27 @@ function PrintableResourcesInner() {
             ))}
 
             {currentItems.length === 0 && (
-              <div className="text-center py-12 text-stone-500 dark:text-stone-400">
-                {searchQuery
-                  ? t('printable.noResults', 'Inga resultat hittades')
-                  : t('printable.noItems', 'Inga resurser tillgängliga')
-                }
-              </div>
+              searchQuery || selectedCategory !== 'all' ? (
+                <EmptyState
+                  icon={Search}
+                  title={t('printable.noResults', 'Inga resultat hittades')}
+                  description={t('printable.noResultsDescription', 'Prova andra sökord eller välj en annan kategori.')}
+                  action={{
+                    label: t('printable.clearSearch', 'Rensa sökningen'),
+                    onClick: () => {
+                      setSearchQuery('')
+                      setSelectedCategory('all')
+                    },
+                    variant: 'secondary',
+                  }}
+                />
+              ) : (
+                <EmptyState
+                  icon={resourceType === 'articles' ? BookOpen : ClipboardList}
+                  title={t('printable.noItems', 'Här samlas material du kan skriva ut')}
+                  description={t('printable.noItemsDescription', 'Just nu finns inget att visa i den här listan. Titta gärna in igen senare.')}
+                />
+              )
             )}
           </div>
         )}

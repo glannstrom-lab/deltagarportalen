@@ -3287,13 +3287,14 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
 
 // ===== RIASEC FÄRGER =====
 
-export const riasecColors: Record<string, { bg: string; text: string; gradient: string }> = {
-  R: { bg: 'bg-red-500', text: 'text-red-500', gradient: 'from-red-500 to-red-600' },
-  I: { bg: 'bg-blue-500', text: 'text-blue-500', gradient: 'from-blue-500 to-blue-600' },
-  A: { bg: 'bg-purple-500', text: 'text-purple-500', gradient: 'from-purple-500 to-purple-600' },
-  S: { bg: 'bg-green-500', text: 'text-green-500', gradient: 'from-green-500 to-green-600' },
-  E: { bg: 'bg-amber-500', text: 'text-amber-500', gradient: 'from-amber-500 to-amber-600' },
-  C: { bg: 'bg-teal-500', text: 'text-teal-500', gradient: 'from-teal-500 to-teal-600' },
+// Kategorifärger för RIASEC-diagram (gradient-tokens borttagna 2026-07-10 — 0 användare, DESIGN.md §6)
+export const riasecColors: Record<string, { bg: string; text: string }> = {
+  R: { bg: 'bg-red-500', text: 'text-red-500' },
+  I: { bg: 'bg-blue-500', text: 'text-blue-500' },
+  A: { bg: 'bg-purple-500', text: 'text-purple-500' },
+  S: { bg: 'bg-green-500', text: 'text-green-500' },
+  E: { bg: 'bg-amber-500', text: 'text-amber-500' },
+  C: { bg: 'bg-teal-500', text: 'text-teal-500' },
 }
 
 export const riasecNames: Record<string, string> = {

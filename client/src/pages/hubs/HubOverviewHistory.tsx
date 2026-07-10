@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import {
   Briefcase,
   FileText,
@@ -28,28 +29,29 @@ const SWEDISH_MONTHS = [
   'juli', 'augusti', 'september', 'oktober', 'november', 'december',
 ] as const
 
-function formatExactDate(iso: string | null | undefined): string {
+function formatExactDate(iso: string | null | undefined, t: TFunction): string {
   if (!iso) return ''
   const d = new Date(iso)
   const today = new Date()
+  const month = t(`hubs.months.${d.getMonth()}`, SWEDISH_MONTHS[d.getMonth()])
   const sameYear = d.getFullYear() === today.getFullYear()
   return sameYear
-    ? `${d.getDate()} ${SWEDISH_MONTHS[d.getMonth()]}`
-    : `${d.getDate()} ${SWEDISH_MONTHS[d.getMonth()]} ${d.getFullYear()}`
+    ? `${d.getDate()} ${month}`
+    : `${d.getDate()} ${month} ${d.getFullYear()}`
 }
 
-function relativeWhen(iso: string | null | undefined): string {
+function relativeWhen(iso: string | null | undefined, t: TFunction): string {
   if (!iso) return ''
   const then = new Date(iso)
   const now = new Date()
   const diffMs = now.getTime() - then.getTime()
   const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-  if (diffDays <= 0) return 'Idag'
-  if (diffDays === 1) return 'I går'
-  if (diffDays < 7) return `${diffDays} dagar sen`
-  if (diffDays < 14) return '1 vecka sen'
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} veckor sen`
-  return formatExactDate(iso)
+  if (diffDays <= 0) return t('hubs.relativeTime.today', 'Idag')
+  if (diffDays === 1) return t('hubs.relativeTime.yesterday', 'I går')
+  if (diffDays < 7) return t('hubs.relativeTime.daysAgo', { defaultValue: '{{count}} dagar sen', count: diffDays })
+  if (diffDays < 14) return t('hubs.relativeTime.oneWeekAgo', '1 vecka sen')
+  if (diffDays < 30) return t('hubs.relativeTime.weeksAgo', { defaultValue: '{{count}} veckor sen', count: Math.floor(diffDays / 7) })
+  return formatExactDate(iso, t)
 }
 
 type Domain = 'action' | 'activity' | 'wellbeing' | 'info'
@@ -126,7 +128,7 @@ function HubOverviewHistoryInner() {
         key: 'cv-' + cv.id,
         icon: FileText,
         domain: 'action',
-        label: 'Du uppdaterade ditt CV',
+        label: t('hubOverviewHistory.updatedCv', 'Du uppdaterade ditt CV'),
         iso: cv.updated_at,
         href: '/cv',
       })
@@ -137,7 +139,7 @@ function HubOverviewHistoryInner() {
         key: 'mood-' + m.log_date + '-' + i,
         icon: Heart,
         domain: 'wellbeing',
-        label: 'Du loggade ditt mående',
+        label: t('hubOverviewHistory.loggedMood', 'Du loggade ditt mående'),
         iso: m.log_date,
         href: '/wellness',
       })
@@ -148,7 +150,7 @@ function HubOverviewHistoryInner() {
         key: 'diary-' + latestDiary.id,
         icon: BookText,
         domain: 'wellbeing',
-        label: 'Du skrev i dagboken',
+        label: t('hubOverviewHistory.wroteDiary', 'Du skrev i dagboken'),
         iso: latestDiary.created_at,
         href: '/diary',
       })
@@ -160,7 +162,7 @@ function HubOverviewHistoryInner() {
         key: 'goal-' + goalUpdatedAt,
         icon: Target,
         domain: 'info',
-        label: <>Du satte ett karriärmål: <strong>{goalLabelText}</strong></>,
+        label: <>{t('hubOverviewHistory.setCareerGoalPrefix', 'Du satte ett karriärmål:')} <strong>{goalLabelText}</strong></>,
         iso: goalUpdatedAt,
         href: '/karriar',
       })
@@ -171,7 +173,7 @@ function HubOverviewHistoryInner() {
         key: 'ai-' + s.agent_id + '-' + i,
         icon: MessageSquare,
         domain: 'info',
-        label: 'Du startade ett samtal med AI-team',
+        label: t('hubOverviewHistory.startedAiChat', 'Du startade ett samtal med AI-team'),
         iso: s.updated_at,
         href: '/ai-team',
       })
@@ -182,7 +184,7 @@ function HubOverviewHistoryInner() {
         key: 'apps',
         icon: Briefcase,
         domain: 'activity',
-        label: `Du har ${apps} aktiva ansökningar`,
+        label: t('hubOverviewHistory.activeApplications', { defaultValue: 'Du har {{count}} aktiva ansökningar', count: apps }),
         iso: new Date().toISOString(),
         href: '/jobb',
       })
@@ -193,7 +195,7 @@ function HubOverviewHistoryInner() {
         key: 'event-' + e.id,
         icon: CalendarDays,
         domain: 'wellbeing',
-        label: <>Möte: <strong>{e.title}</strong></>,
+        label: <>{t('hubOverviewHistory.meetingPrefix', 'Möte:')} <strong>{e.title}</strong></>,
         iso: e.date,
         href: '/calendar',
       })
@@ -204,14 +206,14 @@ function HubOverviewHistoryInner() {
         key: 'consultant-' + consultant.id,
         icon: Users,
         domain: 'wellbeing',
-        label: <>Din konsulent: <strong>{consultant.full_name}</strong></>,
+        label: <>{t('hubOverviewHistory.consultantPrefix', 'Din konsulent:')} <strong>{consultant.full_name}</strong></>,
         iso: new Date().toISOString(),
         href: '/my-consultant',
       })
     }
 
     return result.sort((a, b) => new Date(b.iso).getTime() - new Date(a.iso).getTime())
-  }, [summary])
+  }, [summary, t])
 
   return (
     <PageLayout
@@ -225,7 +227,7 @@ function HubOverviewHistoryInner() {
           className="inline-flex items-center gap-2 px-3 py-1.5 rounded-[8px] text-[13px] text-[var(--stone-600)] hover:bg-[var(--stone-100)] no-underline"
         >
           <ArrowLeft size={14} />
-          Tillbaka till Översikten
+          {t('hubOverviewHistory.backToOverview', 'Tillbaka till Översikten')}
         </Link>
       }
     >
@@ -233,10 +235,10 @@ function HubOverviewHistoryInner() {
         {items.length === 0 ? (
           <div className="px-5 py-8 text-center">
             <p className="text-[14px] text-[var(--stone-700)] font-medium m-0 mb-1">
-              Här samlas din historik
+              {t('hubOverviewHistory.emptyTitle', 'Här samlas din historik')}
             </p>
             <p className="text-[12px] text-[var(--stone-500)] m-0">
-              När du gör något i appen dyker det upp här.
+              {t('hubOverviewHistory.emptyBody', 'När du gör något i appen dyker det upp här.')}
             </p>
           </div>
         ) : (
@@ -259,7 +261,7 @@ function HubOverviewHistoryInner() {
                     </span>
                     <span className="flex-1 text-[14px] text-[var(--stone-800)]">{item.label}</span>
                     <time className="text-[12px] text-[var(--stone-600)] flex-shrink-0" dateTime={item.iso.slice(0, 10)}>
-                      {relativeWhen(item.iso)}
+                      {relativeWhen(item.iso, t)}
                     </time>
                   </Link>
                 ) : (
@@ -272,7 +274,7 @@ function HubOverviewHistoryInner() {
                     </span>
                     <span className="flex-1 text-[14px] text-[var(--stone-800)]">{item.label}</span>
                     <time className="text-[12px] text-[var(--stone-600)] flex-shrink-0" dateTime={item.iso.slice(0, 10)}>
-                      {relativeWhen(item.iso)}
+                      {relativeWhen(item.iso, t)}
                     </time>
                   </div>
                 )}
@@ -290,7 +292,7 @@ function HubOverviewHistoryInner() {
             id="suggestions-heading"
             className="text-[13px] font-semibold uppercase tracking-[0.08em] text-[var(--stone-600)] mb-3 px-1"
           >
-            Här är 3 saker du kan utforska
+            {t('hubOverviewHistory.suggestionsHeading', 'Här är 3 saker du kan utforska')}
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Link
@@ -300,8 +302,8 @@ function HubOverviewHistoryInner() {
               <div className="w-9 h-9 rounded-lg bg-[var(--activity-bg)] flex items-center justify-center mb-3">
                 <Briefcase size={18} className="text-[var(--activity-text)]" />
               </div>
-              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">Sök ditt första jobb</h3>
-              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">Hitta jobb från Platsbanken som matchar dig.</p>
+              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">{t('hubOverviewHistory.suggestJobTitle', 'Sök ditt första jobb')}</h3>
+              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">{t('hubOverviewHistory.suggestJobDesc', 'Hitta jobb från Platsbanken som matchar dig.')}</p>
             </Link>
             <Link
               to="/karriar"
@@ -310,8 +312,8 @@ function HubOverviewHistoryInner() {
               <div className="w-9 h-9 rounded-lg bg-[var(--coaching-bg)] flex items-center justify-center mb-3">
                 <Target size={18} className="text-[var(--coaching-text)]" />
               </div>
-              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">Sätt ett karriärmål</h3>
-              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">Beskriv var du vill — vi hjälper dig dit.</p>
+              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">{t('hubOverviewHistory.suggestGoalTitle', 'Sätt ett karriärmål')}</h3>
+              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">{t('hubOverviewHistory.suggestGoalDesc', 'Beskriv var du vill — vi hjälper dig dit.')}</p>
             </Link>
             <Link
               to="/min-vardag"
@@ -320,8 +322,8 @@ function HubOverviewHistoryInner() {
               <div className="w-9 h-9 rounded-lg bg-[var(--wellbeing-bg)] flex items-center justify-center mb-3">
                 <Heart size={18} className="text-[var(--wellbeing-text)]" />
               </div>
-              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">Logga ditt mående</h3>
-              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">Liten check-in — bara för dig.</p>
+              <h3 className="text-[14px] font-bold text-[var(--stone-900)] m-0">{t('hubOverviewHistory.suggestMoodTitle', 'Logga ditt mående')}</h3>
+              <p className="text-[12px] text-[var(--stone-600)] mt-1 m-0">{t('hubOverviewHistory.suggestMoodDesc', 'Liten check-in — bara för dig.')}</p>
             </Link>
           </div>
         </section>
