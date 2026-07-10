@@ -7,6 +7,20 @@ import type { JobsokSummary } from '@/components/widgets/JobsokDataContext'
 export const JOBSOK_HUB_KEY = (userId: string) => ['hub', 'jobsok', userId] as const
 
 type AppRow = { status: string }
+type SponRow = { id: string; followup_date: string | null; status: string }
+
+// Statusar där uppföljning inte längre är aktuell (speglar useSpontaneousCompanies)
+const SPON_FOLLOWUP_DONE = ['archived', 'response_positive', 'response_negative']
+
+function buildSpontaneousFollowups(rows: SponRow[]) {
+  const horizon = new Date()
+  horizon.setDate(horizon.getDate() + 30)
+  const horizonStr = horizon.toISOString().split('T')[0]
+  const upcoming = rows
+    .filter(r => r.followup_date && r.followup_date <= horizonStr && !SPON_FOLLOWUP_DONE.includes(r.status))
+    .sort((a, b) => (a.followup_date! < b.followup_date! ? -1 : 1))
+  return { count: upcoming.length, nextDate: upcoming[0]?.followup_date ?? null }
+}
 
 function buildApplicationStats(rows: AppRow[]) {
   const byStatus: Record<string, number> = {}
@@ -41,15 +55,17 @@ export function useJobsokHubSummary() {
         supabase.from('cover_letters').select('id, title, created_at').eq('user_id', userId).order('created_at', { ascending: false }).limit(3),
         supabase.from('interview_sessions').select('id, score, created_at').eq('user_id', userId).not('completed_at', 'is', null).order('created_at', { ascending: false }).limit(8),
         supabase.from('job_applications').select('status').eq('user_id', userId),
-        supabase.from('spontaneous_companies').select('id').eq('user_id', userId),
+        supabase.from('spontaneous_companies').select('id, followup_date, status').eq('user_id', userId),
       ])
 
+      const sponRows = (sponR.data as SponRow[] | null) ?? []
       const summary: JobsokSummary = {
         cv: cvR.data ?? null,
         coverLetters: lettersR.data ?? [],
         interviewSessions: sessionsR.data ?? [],
         applicationStats: buildApplicationStats((appsR.data as AppRow[] | null) ?? []),
-        spontaneousCount: sponR.data?.length ?? 0,
+        spontaneousCount: sponRows.length,
+        spontaneousFollowups: buildSpontaneousFollowups(sponRows),
       }
 
       // Deep-link cache sync — write to EXACT keys used by useDocuments + useApplications

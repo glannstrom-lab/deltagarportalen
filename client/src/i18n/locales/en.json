@@ -2343,8 +2343,11 @@
       "waiting": "Awaiting response",
       "responseRate": "Response rate",
       "positiveRate": "Positive responses",
-      "contactToSeeStats": "Contact companies to see statistics here.",
-      "statusDistribution": "Status distribution"
+      "contactToSeeStats": "Once you've contacted a few companies, you'll see how it's going here.",
+      "statusDistribution": "Status distribution",
+      "emptyTitle": "Your overview lives here",
+      "emptyDescription": "As you save and contact companies, you'll see how things are going here — at your own pace.",
+      "emptyCta": "Find companies to contact"
     },
     "followups": {
       "title": "Upcoming follow-ups",
@@ -2381,6 +2384,61 @@
       }
     },
     "writeCoverLetter": "Write cover letter",
+    "toasts": {
+      "loadError": "Could not load companies",
+      "alreadySaved": "The company is already saved",
+      "saved": "{{name}} has been saved",
+      "saveError": "Could not save the company",
+      "updated": "The company has been updated",
+      "updateError": "Could not update the company",
+      "statusChanged": "Status changed to \"{{status}}\"",
+      "statusChangedBulk": "{{count}} companies changed to \"{{status}}\"",
+      "statusError": "Could not update the status",
+      "removed": "The company has been removed",
+      "removeError": "Could not remove the company",
+      "addedToApplications": "{{name}} has been added to Applications",
+      "addToApplicationsError": "Could not add to Applications"
+    },
+    "csv": {
+      "companyName": "Company name",
+      "orgNumber": "Org. number",
+      "status": "Status",
+      "priority": "Priority",
+      "city": "City",
+      "industry": "Industry",
+      "contacted": "Contacted",
+      "followup": "Follow-up",
+      "notes": "Notes"
+    },
+    "companyActions": "Company actions",
+    "selectCompany": "Select {{name}}",
+    "batch": {
+      "selectMode": "Select multiple",
+      "cancel": "Cancel selection",
+      "selected": "{{count}} selected",
+      "changeStatusTo": "Change status to",
+      "archiveSelected": "Archive selected"
+    },
+    "listSearchPlaceholder": "Search by name, city or industry...",
+    "sort": {
+      "label": "Sort",
+      "newest": "Recently added",
+      "name": "Name A-Z",
+      "followup": "Follow-up date"
+    },
+    "filterLabel": "Filter by status",
+    "priorityActions": {
+      "markHigh": "Mark as high priority",
+      "clearHigh": "Remove high priority"
+    },
+    "nextSteps": {
+      "title": "Congratulations on the response! Next steps:",
+      "addToApplications": "Add to Applications",
+      "practiceInterview": "Practice for the interview"
+    },
+    "citySearchLabel": "City (optional)",
+    "cityPlaceholder": "e.g. Gothenburg",
+    "showMore": "Show more results",
     "focusDraft": {
       "title": "Your draft from focus mode",
       "description": "When you save a company, the message is attached as a note.",

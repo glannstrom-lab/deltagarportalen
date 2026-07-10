@@ -1,16 +1,22 @@
 // SpontaneousWidget — Spontanansökan
-// Shows pipeline company count at S-size with link CTA to add more
+// Shows pipeline company count at S-size with link CTA to add more,
+// plus kommande uppföljningar när sådana finns
 
-import { Building2, Plus } from 'lucide-react'
+import { Building2, Plus, Clock } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Widget } from './Widget'
 import { useWidgetSize } from '@/hooks/useWidgetSize'
 import { useJobsokWidgetData } from './JobsokDataContext'
 import type { WidgetProps } from './types'
 
+function formatFollowupDate(iso: string): string {
+  return new Date(iso).toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })
+}
+
 export default function SpontaneousWidget({ id, size, onSizeChange, allowedSizes, editMode, onHide }: WidgetProps) {
   const { compact } = useWidgetSize(size)
   const spontaneousCount = useJobsokWidgetData('spontaneousCount')
+  const followups = useJobsokWidgetData('spontaneousFollowups')
 
   // Loading: context not yet resolved
   if (spontaneousCount === undefined) {
@@ -54,6 +60,13 @@ export default function SpontaneousWidget({ id, size, onSizeChange, allowedSizes
             {spontaneousCount}
           </span>
           <span className="text-[12px] text-[var(--stone-700)]">företag i pipeline</span>
+          {followups && followups.count > 0 && (
+            <span className="inline-flex items-center gap-1 text-[12px] text-amber-700 dark:text-amber-400 mt-1">
+              <Clock size={12} aria-hidden="true" />
+              {followups.count === 1 ? '1 uppföljning' : `${followups.count} uppföljningar`}
+              {followups.nextDate && ` — nästa ${formatFollowupDate(followups.nextDate)}`}
+            </span>
+          )}
         </div>
       </Widget.Body>
       {!compact && (

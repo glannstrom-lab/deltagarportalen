@@ -2,6 +2,7 @@
  * Stats Tab - View statistics and upcoming follow-ups
  */
 import { useTranslation } from 'react-i18next'
+import { useNavigate } from 'react-router-dom'
 import {
   Building2,
   Send,
@@ -12,6 +13,7 @@ import {
   Target,
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
+import { EmptyState } from '@/components/ui/EmptyState'
 import { useSpontaneousCompanies } from '@/hooks/useSpontaneousCompanies'
 import { formatOrgNumber } from '@/services/bolagsverketApi'
 
@@ -46,6 +48,7 @@ function StatCard({
 
 export default function StatsTab() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const { stats, companies, upcomingFollowups, isLoading } = useSpontaneousCompanies()
 
   if (isLoading) {
@@ -57,6 +60,21 @@ export default function StatsTab() {
   }
 
   const totalCompanies = companies.length
+
+  // Inga företag än — bjud in i stället för att visa nollor
+  if (totalCompanies === 0) {
+    return (
+      <EmptyState
+        illustration="jobb"
+        title={t('spontaneous.stats.emptyTitle')}
+        description={t('spontaneous.stats.emptyDescription')}
+        action={{
+          label: t('spontaneous.stats.emptyCta'),
+          onClick: () => navigate('/spontanansökan'),
+        }}
+      />
+    )
+  }
   const totalContacted = stats.contacted + stats.waiting + stats.response_positive + stats.response_negative + stats.no_response
   const totalResponses = stats.response_positive + stats.response_negative
   const responseRate = totalContacted > 0 ? Math.round((totalResponses / totalContacted) * 100) : 0
@@ -148,11 +166,14 @@ export default function StatsTab() {
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <h3 className="font-semibold mb-4 text-stone-800 dark:text-stone-100">{t('spontaneous.stats.statusDistribution')}</h3>
           <div className="space-y-2">
+            <StatusRow label={t('spontaneous.status.saved')} value={stats.saved} color="bg-stone-400" total={totalCompanies} />
             <StatusRow label={t('spontaneous.status.to_contact')} value={stats.to_contact} color="bg-[var(--c-solid)]" total={totalCompanies} />
+            <StatusRow label={t('spontaneous.status.contacted')} value={stats.contacted} color="bg-sky-500" total={totalCompanies} />
             <StatusRow label={t('spontaneous.status.waiting')} value={stats.waiting} color="bg-amber-500" total={totalCompanies} />
             <StatusRow label={t('spontaneous.status.response_positive')} value={stats.response_positive} color="bg-emerald-500" total={totalCompanies} />
             <StatusRow label={t('spontaneous.status.response_negative')} value={stats.response_negative} color="bg-red-500" total={totalCompanies} />
             <StatusRow label={t('spontaneous.status.no_response')} value={stats.no_response} color="bg-orange-500" total={totalCompanies} />
+            <StatusRow label={t('spontaneous.status.archived')} value={stats.archived} color="bg-stone-300 dark:bg-stone-600" total={totalCompanies} />
           </div>
         </Card>
       </div>

@@ -12,6 +12,8 @@ export interface JobsokSummary {
     segments: Array<{ label: string; count: number; deEmphasized?: boolean }>
   }
   spontaneousCount: number
+  /** Kommande uppföljningar för spontanansökningar (30 dagar framåt) */
+  spontaneousFollowups?: { count: number; nextDate: string | null }
   // salary + international are optional — loader omits if tables don't exist
   salary?: { median: number; low: number; high: number; roleLabel: string } | null
   international?: { countries: string[] } | null

@@ -5,7 +5,10 @@ import SpontaneousWidget from './SpontaneousWidget'
 import { JobsokDataProvider } from './JobsokDataContext'
 import type { JobsokSummary } from './JobsokDataContext'
 
-function renderWithCount(spontaneousCount: number | undefined) {
+function renderWithCount(
+  spontaneousCount: number | undefined,
+  spontaneousFollowups?: JobsokSummary['spontaneousFollowups'],
+) {
   const summary =
     spontaneousCount === undefined
       ? undefined
@@ -15,6 +18,7 @@ function renderWithCount(spontaneousCount: number | undefined) {
           interviewSessions: [],
           applicationStats: { total: 0, byStatus: {}, segments: [] },
           spontaneousCount,
+          spontaneousFollowups,
         } as JobsokSummary)
   return render(
     <MemoryRouter>
@@ -36,5 +40,15 @@ describe('SpontaneousWidget — data wiring', () => {
     renderWithCount(0)
     expect(screen.getByText('Inget i pipeline')).toBeInTheDocument()
     expect(screen.getByText(/Kontakta företag direkt/)).toBeInTheDocument()
+  })
+
+  it('shows upcoming followups when present', () => {
+    renderWithCount(5, { count: 2, nextDate: '2026-07-15' })
+    expect(screen.getByText(/2 uppföljningar/)).toBeInTheDocument()
+  })
+
+  it('hides followup row when there are none', () => {
+    renderWithCount(5, { count: 0, nextDate: null })
+    expect(screen.queryByText(/uppföljning/)).not.toBeInTheDocument()
   })
 })

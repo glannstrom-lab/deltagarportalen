@@ -119,9 +119,12 @@ export default function SearchTab() {
   const [downloadingDocId, setDownloadingDocId] = useState<string | null>(null)
 
   // AI Search state
+  const [searchCity, setSearchCity] = useState('')
   const [aiResults, setAiResults] = useState<AICompanyResult[]>([])
   const [aiSearchStats, setAiSearchStats] = useState<{ total: number; verified: number } | null>(null)
+  const [lastRequestedCount, setLastRequestedCount] = useState(10)
   const [savingCompanyId, setSavingCompanyId] = useState<string | null>(null)
+  const [isSavingSelected, setIsSavingSelected] = useState(false)
   const [selectedForSave, setSelectedForSave] = useState<Set<string>>(new Set())
   const [expandedAnalysis, setExpandedAnalysis] = useState<string | null>(null)
 
@@ -186,7 +189,7 @@ export default function SearchTab() {
   }
 
   // AI Search handler
-  const handleAISearch = async () => {
+  const handleAISearch = async (maxResults = 10) => {
     const query = searchQuery.trim()
 
     if (query.length < 3) {
@@ -194,15 +197,20 @@ export default function SearchTab() {
       return
     }
 
+    // Ortfältet vävs in i frisökningen
+    const city = searchCity.trim()
+    const composedQuery = city ? `${query} i ${city}` : query
+
     setIsSearching(true)
     setSearchError(null)
     setAiResults([])
     setAiSearchStats(null)
     setSearchResult(null)
     setSelectedForSave(new Set())
+    setLastRequestedCount(maxResults)
 
     try {
-      const result = await searchCompaniesWithAI(query, 10)
+      const result = await searchCompaniesWithAI(composedQuery, maxResults)
       setAiResults(result.companies)
       setAiSearchStats({ total: result.totalFound, verified: result.verified })
 
@@ -244,20 +252,15 @@ export default function SearchTab() {
       return
     }
 
-    setIsSearching(true)
-    let saved = 0
+    setIsSavingSelected(true)
 
-    for (const company of toSave) {
-      try {
-        const result = await addCompany(company.orgNumber!, draftNotes ? { notes: draftNotes } : undefined)
-        if (result) saved++
-      } catch (err) {
-        console.error('Error saving company:', err)
-      }
-    }
+    const results = await Promise.allSettled(
+      toSave.map(company => addCompany(company.orgNumber!, draftNotes ? { notes: draftNotes } : undefined))
+    )
+    const saved = results.filter(r => r.status === 'fulfilled' && r.value).length
 
     setSelectedForSave(new Set())
-    setIsSearching(false)
+    setIsSavingSelected(false)
     showToast.success(t('spontaneous.companiesSaved', { count: saved }))
     if (saved > 0 && draftNotes) consumeFocusDraft()
   }
@@ -360,6 +363,7 @@ export default function SearchTab() {
             variant={searchMode === 'ai' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSearchMode('ai')}
+            aria-pressed={searchMode === 'ai'}
             className={`flex items-center gap-2 ${searchMode === 'ai' ? 'bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Sparkles className="w-4 h-4" />
@@ -369,6 +373,7 @@ export default function SearchTab() {
             variant={searchMode === 'orgnr' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSearchMode('orgnr')}
+            aria-pressed={searchMode === 'orgnr'}
             className={`flex items-center gap-2 ${searchMode === 'orgnr' ? 'bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Hash className="w-4 h-4" />
@@ -395,8 +400,8 @@ export default function SearchTab() {
           )}
         </p>
 
-        <div className="flex gap-3">
-          <div className="flex-1 relative">
+        <div className="flex flex-wrap gap-3">
+          <div className="flex-1 min-w-[200px] relative">
             {searchMode === 'ai' ? (
               <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--c-solid)] dark:text-[var(--c-solid)]" />
             ) : (
@@ -415,6 +420,21 @@ export default function SearchTab() {
               disabled={isSearching}
             />
           </div>
+          {searchMode === 'ai' && (
+            <div className="w-40 relative">
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-600 dark:text-stone-400" aria-hidden="true" />
+              <Input
+                type="text"
+                placeholder={t('spontaneous.cityPlaceholder')}
+                aria-label={t('spontaneous.citySearchLabel')}
+                value={searchCity}
+                onChange={(e) => setSearchCity(e.target.value)}
+                onKeyDown={handleKeyDown}
+                className="pl-9 bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 text-stone-900 dark:text-stone-100"
+                disabled={isSearching}
+              />
+            </div>
+          )}
           <Button
             onClick={handleSearch}
             disabled={isSearching || !searchQuery.trim()}
@@ -648,10 +668,14 @@ export default function SearchTab() {
                 <Button
                   size="sm"
                   onClick={handleSaveSelected}
-                  disabled={isSearching}
+                  disabled={isSavingSelected}
                   className="bg-[var(--c-solid)] hover:bg-[var(--c-solid)] dark:bg-[var(--c-solid)] dark:hover:bg-[var(--c-solid)]"
                 >
-                  <Save className="w-4 h-4 mr-1" />
+                  {isSavingSelected ? (
+                    <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4 mr-1" />
+                  )}
                   {t('spontaneous.saveSelected', { count: selectedForSave.size })}
                 </Button>
               )}
@@ -681,6 +705,7 @@ export default function SearchTab() {
                           type="checkbox"
                           checked={isSelected}
                           onChange={() => toggleSelection(company.orgNumber!)}
+                          aria-label={t('spontaneous.selectCompany', { name: company.name })}
                           className="w-4 h-4 text-primary-500 rounded border-stone-300 focus:ring-primary-500"
                         />
                       </div>
@@ -794,6 +819,25 @@ export default function SearchTab() {
               )
             })}
           </div>
+
+          {/* Visa fler — sök om med större resultatmängd */}
+          {lastRequestedCount < 25 && aiResults.length >= lastRequestedCount && (
+            <div className="mt-4 text-center">
+              <Button
+                variant="outline"
+                onClick={() => handleAISearch(25)}
+                disabled={isSearching}
+                className="border-stone-200 dark:border-stone-700"
+              >
+                {isSearching ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Sparkles className="w-4 h-4 mr-2" />
+                )}
+                {t('spontaneous.showMore')}
+              </Button>
+            </div>
+          )}
         </Card>
       )}
 

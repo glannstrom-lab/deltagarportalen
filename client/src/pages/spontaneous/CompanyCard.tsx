@@ -24,6 +24,11 @@ import {
   Phone,
   User,
   UserPlus,
+  Star,
+  StarOff,
+  Briefcase,
+  MessageCircle,
+  Loader2,
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -34,7 +39,10 @@ import type {
   UpdateSpontaneousCompany,
   OutreachMethod,
 } from '@/services/supabaseApi'
+import { applicationsApi } from '@/services/applicationsApi'
+import { showToast } from '@/components/Toast'
 import { buildSpontaneousCoverLetterUrl } from '@/utils/jobLinks'
+import { StatusBadge } from './spontaneousStatus'
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -42,63 +50,6 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
 } from '@/components/ui/DropdownMenu'
-
-// Status configuration (labels are translation keys)
-const statusConfig: Record<SpontaneousStatus, {
-  labelKey: string
-  icon: typeof Building2
-  color: string
-  bgColor: string
-}> = {
-  saved: {
-    labelKey: 'spontaneous.status.saved',
-    icon: Building2,
-    color: 'text-stone-600',
-    bgColor: 'bg-stone-100 dark:bg-stone-800',
-  },
-  to_contact: {
-    labelKey: 'spontaneous.status.to_contact',
-    icon: Send,
-    color: 'text-[var(--c-text)]',
-    bgColor: 'bg-[var(--c-bg)] dark:bg-[var(--c-bg)]/40',
-  },
-  contacted: {
-    labelKey: 'spontaneous.status.contacted',
-    icon: Send,
-    color: 'text-stone-700 dark:text-stone-300',
-    bgColor: 'bg-stone-100 dark:bg-stone-700/50',
-  },
-  waiting: {
-    labelKey: 'spontaneous.status.waiting',
-    icon: Clock,
-    color: 'text-amber-600',
-    bgColor: 'bg-amber-100 dark:bg-amber-900/30',
-  },
-  response_positive: {
-    labelKey: 'spontaneous.status.response_positive',
-    icon: CheckCircle,
-    color: 'text-emerald-700',
-    bgColor: 'bg-emerald-50 dark:bg-emerald-900/30',
-  },
-  response_negative: {
-    labelKey: 'spontaneous.status.response_negative',
-    icon: XCircle,
-    color: 'text-red-600',
-    bgColor: 'bg-red-100 dark:bg-red-900/30',
-  },
-  no_response: {
-    labelKey: 'spontaneous.status.no_response',
-    icon: AlertCircle,
-    color: 'text-orange-600',
-    bgColor: 'bg-orange-100 dark:bg-orange-900/30',
-  },
-  archived: {
-    labelKey: 'spontaneous.status.archived',
-    icon: Archive,
-    color: 'text-stone-600',
-    bgColor: 'bg-stone-100 dark:bg-stone-800',
-  },
-}
 
 const OUTREACH_METHODS: OutreachMethod[] = ['email', 'linkedin', 'phone', 'visit', 'other']
 
@@ -108,29 +59,22 @@ function addDaysIso(days: number): string {
   return date.toISOString().split('T')[0]
 }
 
-export function StatusBadge({ status }: { status: SpontaneousStatus }) {
-  const { t } = useTranslation()
-  const config = statusConfig[status]
-  const Icon = config.icon
-
-  return (
-    <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.bgColor} ${config.color}`}>
-      <Icon className="w-3.5 h-3.5" aria-hidden="true" />
-      {t(config.labelKey)}
-    </span>
-  )
-}
-
 export function CompanyCard({
   company,
   onUpdateStatus,
   onDelete,
   onUpdate,
+  selectable = false,
+  selected = false,
+  onToggleSelect,
 }: {
   company: SpontaneousCompany
   onUpdateStatus: (status: SpontaneousStatus) => void
   onDelete: () => void
   onUpdate: (updates: UpdateSpontaneousCompany) => void
+  selectable?: boolean
+  selected?: boolean
+  onToggleSelect?: () => void
 }) {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -145,6 +89,8 @@ export function CompanyCard({
     phone: company.contact_phone || '',
     method: (company.outreach_method || '') as OutreachMethod | '',
   })
+  const [isAddingToApplications, setIsAddingToApplications] = useState(false)
+  const [addedToApplications, setAddedToApplications] = useState(false)
 
   const address = company.company_data?.address
   const sniCodes = company.company_data?.sniCodes || []
@@ -183,9 +129,43 @@ export function CompanyCard({
     navigate(buildSpontaneousCoverLetterUrl(company, t('spontaneous.title')))
   }
 
+  // Positivt svar → skapa post på Ansökningar-sidan (pipeline, kontakter, påminnelser)
+  const handleAddToApplications = async () => {
+    setIsAddingToApplications(true)
+    try {
+      await applicationsApi.create({
+        jobData: {
+          headline: t('spontaneous.title'),
+          employer: { name: company.company_name },
+          workplace_address: { municipality: company.company_data?.address?.city },
+          description: { text: company.company_data?.businessDescription },
+        },
+        status: 'applied',
+        source: 'manual',
+        notes: company.notes || undefined,
+      })
+      setAddedToApplications(true)
+      showToast.success(t('spontaneous.toasts.addedToApplications', { name: company.company_name }))
+    } catch (err) {
+      console.error('Error adding to applications:', err)
+      showToast.error(t('spontaneous.toasts.addToApplicationsError'))
+    } finally {
+      setIsAddingToApplications(false)
+    }
+  }
+
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+    <Card className={`p-4 hover:shadow-md transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 ${selected ? 'ring-2 ring-[var(--c-solid)]' : ''}`}>
       <div className="flex justify-between items-start gap-4">
+        {selectable && (
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onToggleSelect}
+            aria-label={t('spontaneous.selectCompany', { name: company.company_name })}
+            className="mt-1 w-4 h-4 flex-shrink-0 text-primary-500 rounded border-stone-300 focus:ring-primary-500"
+          />
+        )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
             <Building2 className="w-4 h-4 text-[var(--c-solid)] dark:text-[var(--c-solid)] flex-shrink-0" aria-hidden="true" />
@@ -299,6 +279,37 @@ export function CompanyCard({
               </button>
             </div>
           ) : null}
+
+          {/* Nästa steg vid positivt svar */}
+          {company.status === 'response_positive' && (
+            <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-emerald-700 dark:text-emerald-300">
+              <CheckCircle className="w-3 h-3 flex-shrink-0" aria-hidden="true" />
+              <span>{t('spontaneous.nextSteps.title')}</span>
+              {!addedToApplications && (
+                <button
+                  type="button"
+                  onClick={handleAddToApplications}
+                  disabled={isAddingToApplications}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 disabled:opacity-50"
+                >
+                  {isAddingToApplications ? (
+                    <Loader2 className="w-3 h-3 animate-spin" aria-hidden="true" />
+                  ) : (
+                    <Briefcase className="w-3 h-3" aria-hidden="true" />
+                  )}
+                  {t('spontaneous.nextSteps.addToApplications')}
+                </button>
+              )}
+              <button
+                type="button"
+                onClick={() => navigate('/interview-simulator')}
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
+              >
+                <MessageCircle className="w-3 h-3" aria-hidden="true" />
+                {t('spontaneous.nextSteps.practiceInterview')}
+              </button>
+            </div>
+          )}
 
           {/* Kontaktperson */}
           {isEditingContact ? (
@@ -454,7 +465,7 @@ export function CompanyCard({
         {/* Actions Menu */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" aria-label="Åtgärder för företag" className="h-8 w-8 p-0">
+            <Button variant="ghost" size="sm" aria-label={t('spontaneous.companyActions')} className="h-8 w-8 p-0">
               <MoreVertical className="w-4 h-4" aria-hidden="true" />
             </Button>
           </DropdownMenuTrigger>
@@ -471,6 +482,17 @@ export function CompanyCard({
               <UserPlus className="w-4 h-4 mr-2" />
               {t('spontaneous.contact.title')}
             </DropdownMenuItem>
+            {company.priority === 'high' ? (
+              <DropdownMenuItem onClick={() => onUpdate({ priority: 'medium' })}>
+                <StarOff className="w-4 h-4 mr-2" />
+                {t('spontaneous.priorityActions.clearHigh')}
+              </DropdownMenuItem>
+            ) : (
+              <DropdownMenuItem onClick={() => onUpdate({ priority: 'high' })}>
+                <Star className="w-4 h-4 mr-2" />
+                {t('spontaneous.priorityActions.markHigh')}
+              </DropdownMenuItem>
+            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => onUpdateStatus('to_contact')}>
               <Send className="w-4 h-4 mr-2" />

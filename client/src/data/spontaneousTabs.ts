@@ -3,7 +3,6 @@
  * 3 tabs: Sök företag, Mina företag, Statistik
  */
 
-import type { Tab } from '@/components/layout/PageTabs'
 import {
   Search,
   Building2,
@@ -30,28 +29,6 @@ export const spontaneousTabDefs = [
     id: 'stats',
     labelKey: 'spontaneous.tabs.stats',
     descriptionKey: 'spontaneous.tabs.statsDesc',
-    path: '/spontanansökan/statistik',
-    icon: BarChart3,
-  },
-]
-
-// For backwards compatibility - tabs with hardcoded Swedish labels
-export const spontaneousTabs: Tab[] = [
-  {
-    id: 'search',
-    label: 'Sök företag',
-    path: '/spontanansökan',
-    icon: Search,
-  },
-  {
-    id: 'companies',
-    label: 'Mina företag',
-    path: '/spontanansökan/mina-foretag',
-    icon: Building2,
-  },
-  {
-    id: 'stats',
-    label: 'Statistik',
     path: '/spontanansökan/statistik',
     icon: BarChart3,
   },

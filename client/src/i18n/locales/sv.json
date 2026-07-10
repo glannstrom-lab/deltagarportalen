@@ -2350,8 +2350,11 @@
       "waiting": "Väntar svar",
       "responseRate": "Svarsfrekvens",
       "positiveRate": "Positiva svar",
-      "contactToSeeStats": "Kontakta företag för att se statistik här.",
-      "statusDistribution": "Statusfördelning"
+      "contactToSeeStats": "När du har kontaktat några företag ser du hur det går här.",
+      "statusDistribution": "Statusfördelning",
+      "emptyTitle": "Här samlas din överblick",
+      "emptyDescription": "När du sparar och kontaktar företag ser du hur det går här — i din egen takt.",
+      "emptyCta": "Hitta företag att kontakta"
     },
     "followups": {
       "title": "Kommande uppföljningar",
@@ -2388,6 +2391,61 @@
       }
     },
     "writeCoverLetter": "Skriv personligt brev",
+    "toasts": {
+      "loadError": "Kunde inte ladda företag",
+      "alreadySaved": "Företaget är redan sparat",
+      "saved": "{{name}} har sparats",
+      "saveError": "Kunde inte spara företaget",
+      "updated": "Företaget har uppdaterats",
+      "updateError": "Kunde inte uppdatera företaget",
+      "statusChanged": "Status ändrad till \"{{status}}\"",
+      "statusChangedBulk": "{{count}} företag ändrade till \"{{status}}\"",
+      "statusError": "Kunde inte uppdatera status",
+      "removed": "Företaget har tagits bort",
+      "removeError": "Kunde inte ta bort företaget",
+      "addedToApplications": "{{name}} har lagts till i Ansökningar",
+      "addToApplicationsError": "Kunde inte lägga till i Ansökningar"
+    },
+    "csv": {
+      "companyName": "Företagsnamn",
+      "orgNumber": "Org.nr",
+      "status": "Status",
+      "priority": "Prioritet",
+      "city": "Ort",
+      "industry": "Bransch",
+      "contacted": "Kontaktad",
+      "followup": "Uppföljning",
+      "notes": "Anteckningar"
+    },
+    "companyActions": "Åtgärder för företag",
+    "selectCompany": "Välj {{name}}",
+    "batch": {
+      "selectMode": "Välj flera",
+      "cancel": "Avbryt val",
+      "selected": "{{count}} valda",
+      "changeStatusTo": "Ändra status till",
+      "archiveSelected": "Arkivera valda"
+    },
+    "listSearchPlaceholder": "Sök på namn, ort eller bransch...",
+    "sort": {
+      "label": "Sortera",
+      "newest": "Senast tillagd",
+      "name": "Namn A-Ö",
+      "followup": "Uppföljningsdatum"
+    },
+    "filterLabel": "Filtrera på status",
+    "priorityActions": {
+      "markHigh": "Markera som hög prioritet",
+      "clearHigh": "Ta bort hög prioritet"
+    },
+    "nextSteps": {
+      "title": "Grattis till svaret! Nästa steg:",
+      "addToApplications": "Lägg till i Ansökningar",
+      "practiceInterview": "Öva inför intervju"
+    },
+    "citySearchLabel": "Ort (valfritt)",
+    "cityPlaceholder": "t.ex. Göteborg",
+    "showMore": "Visa fler resultat",
     "focusDraft": {
       "title": "Ditt utkast från fokusläget",
       "description": "När du sparar ett företag följer meddelandet med som anteckning.",
