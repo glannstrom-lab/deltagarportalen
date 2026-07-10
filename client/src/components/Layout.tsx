@@ -314,7 +314,10 @@ function MobileMainMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => v
   const { t } = useTranslation()
   const location = useLocation()
   const { profile, signOut } = useAuthStore()
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['overview', 'job-search'])
+  // Alla grupper utfällda som default — tidigare default ('overview'/'job-search')
+  // matchade inga faktiska grupp-id:n (action/reflection/outbound) så menyn
+  // startade helt hopfälld (upptäckt av spar-c-verify 2026-07-10)
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['action', 'reflection', 'outbound'])
 
   const activeRole = profile?.activeRole || profile?.role || 'USER'
   const isSuperAdmin = activeRole === 'SUPERADMIN'
