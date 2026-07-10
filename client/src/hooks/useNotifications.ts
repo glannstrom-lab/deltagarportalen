@@ -2,6 +2,10 @@
  * useNotifications Hook
  * Real-time notification management with Supabase Realtime
  *
+ * React Query-baserad: TopBar/Layout renderar NotificationBell på varje
+ * sidvisning — en delad cache ersätter en ny fetch per mount.
+ * Realtime-eventen skriver direkt in i React Query-cachen.
+ *
  * Categories:
  * - message: Direktmeddelanden
  * - job_match: Jobbmatchningar
@@ -9,7 +13,8 @@
  * - friend_request: Vänförfrågningar
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useEffect, useCallback, useMemo, useRef } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { apiLogger } from '@/lib/logger'
@@ -82,31 +87,46 @@ interface UseNotificationsReturn {
 }
 
 // ============================================
+// QUERY KEY & COLUMNS
+// ============================================
+
+export const NOTIFICATIONS_KEY = ['notifications'] as const
+
+function notificationsKey(userId: string) {
+  return [...NOTIFICATIONS_KEY, userId] as const
+}
+
+// Explicit kolumnlista i stället för select('*'). Tabellen har idag exakt
+// dessa 10 kolumner — samma uppsättning som det exporterade Notification-
+// interfacet kräver, så inget kan trimmas bort utan att ändra API-ytan.
+// Listan skyddar mot att framtida kolumntillägg blåser upp payloaden.
+const NOTIFICATION_COLUMNS =
+  'id, user_id, type, title, message, read, read_at, action_url, data, created_at'
+
+// ============================================
 // HOOK
 // ============================================
 
 export function useNotifications(): UseNotificationsReturn {
   const { user } = useAuthStore()
-  const [notifications, setNotifications] = useState<Notification[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
+  const userId = user?.id
 
   // ============================================
-  // FETCH NOTIFICATIONS
+  // FETCH NOTIFICATIONS (React Query)
   // ============================================
-  const fetchNotifications = useCallback(async () => {
-    if (!user) {
-      setNotifications([])
-      setIsLoading(false)
-      return
-    }
-
-    try {
-      setError(null)
+  const query = useQuery({
+    queryKey: notificationsKey(userId ?? 'anonymous'),
+    enabled: !!userId,
+    // Realtime-kanalen håller cachen färsk — staleTime skyddar mot
+    // onödiga refetches vid varje mount av NotificationBell.
+    staleTime: 60_000,
+    retry: false,
+    queryFn: async (): Promise<Notification[]> => {
       const { data, error: fetchError } = await supabase
         .from('notifications')
-        .select('*')
-        .eq('user_id', user.id)
+        .select(NOTIFICATION_COLUMNS)
+        .eq('user_id', userId!)
         .order('created_at', { ascending: false })
         .limit(50)
 
@@ -114,76 +134,72 @@ export function useNotifications(): UseNotificationsReturn {
         throw fetchError
       }
 
-      setNotifications(data || [])
       apiLogger.debug('Notifications loaded', { count: data?.length || 0 })
-    } catch (err) {
-      // ERR_ABORTED från snabb navigation eller unmount är inte ett riktigt fel
-      if (isTransientFetchError(err)) return
-      const message = err instanceof Error ? err.message : 'Kunde inte ladda notifikationer'
-      setError(message)
-      apiLogger.error('Failed to load notifications', { error: err })
-    } finally {
-      setIsLoading(false)
+      return (data || []) as unknown as Notification[]
+    },
+  })
+
+  const notifications = useMemo(() => query.data ?? [], [query.data])
+
+  // Transienta avbrott (navigation/unmount) ska varken loggas eller visas
+  const error = useMemo(() => {
+    if (!query.error || isTransientFetchError(query.error)) return null
+    return query.error instanceof Error
+      ? query.error.message
+      : 'Kunde inte ladda notifikationer'
+  }, [query.error])
+
+  // Logga laddningsfel — en gång per felobjekt
+  const loggedError = useRef<unknown>(null)
+  useEffect(() => {
+    if (query.error && !isTransientFetchError(query.error) && loggedError.current !== query.error) {
+      loggedError.current = query.error
+      apiLogger.error('Failed to load notifications', { error: query.error })
     }
-  }, [user])
+  }, [query.error])
 
   // ============================================
-  // REALTIME SUBSCRIPTION
+  // CACHE HELPERS
+  // ============================================
+  const setNotifications = useCallback(
+    (updater: (prev: Notification[]) => Notification[]) => {
+      if (!userId) return
+      queryClient.setQueryData<Notification[]>(notificationsKey(userId), (prev) =>
+        updater(prev ?? [])
+      )
+    },
+    [queryClient, userId]
+  )
+
+  const refresh = useCallback(async () => {
+    if (!userId) return
+    await queryClient.invalidateQueries({ queryKey: notificationsKey(userId) })
+  }, [queryClient, userId])
+
+  // ============================================
+  // REALTIME SUBSCRIPTION (en per hook-instans, som tidigare)
   // ============================================
   useEffect(() => {
-    if (!user) return
+    if (!userId) return
 
-    let isMounted = true
-
-    // Initial fetch with mounted check
-    const loadInitial = async () => {
-      try {
-        setError(null)
-        const { data, error: fetchError } = await supabase
-          .from('notifications')
-          .select('*')
-          .eq('user_id', user.id)
-          .order('created_at', { ascending: false })
-          .limit(50)
-
-        if (!isMounted) return
-
-        if (fetchError) {
-          throw fetchError
-        }
-
-        setNotifications(data || [])
-        apiLogger.debug('Notifications loaded', { count: data?.length || 0 })
-      } catch (err) {
-        if (!isMounted) return
-        if (isTransientFetchError(err)) return
-        const message = err instanceof Error ? err.message : 'Kunde inte ladda notifikationer'
-        setError(message)
-        apiLogger.error('Failed to load notifications', { error: err })
-      } finally {
-        if (isMounted) {
-          setIsLoading(false)
-        }
-      }
+    const key = notificationsKey(userId)
+    const setCache = (updater: (prev: Notification[]) => Notification[]) => {
+      queryClient.setQueryData<Notification[]>(key, (prev) => updater(prev ?? []))
     }
 
-    loadInitial()
-
-    // Subscribe to realtime changes
     const channel = supabase
-      .channel(`notifications:${user.id}`)
+      .channel(`notifications:${userId}`)
       .on<Notification>(
         'postgres_changes',
         {
           event: 'INSERT',
           schema: 'public',
           table: 'notifications',
-          filter: `user_id=eq.${user.id}`,
+          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          if (!isMounted) return
           apiLogger.debug('New notification received', { type: payload.new.type })
-          setNotifications((prev) => [payload.new as Notification, ...prev])
+          setCache((prev) => [payload.new as Notification, ...prev])
         }
       )
       .on<Notification>(
@@ -192,11 +208,10 @@ export function useNotifications(): UseNotificationsReturn {
           event: 'UPDATE',
           schema: 'public',
           table: 'notifications',
-          filter: `user_id=eq.${user.id}`,
+          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          if (!isMounted) return
-          setNotifications((prev) =>
+          setCache((prev) =>
             prev.map((n) =>
               n.id === (payload.new as Notification).id ? (payload.new as Notification) : n
             )
@@ -209,13 +224,10 @@ export function useNotifications(): UseNotificationsReturn {
           event: 'DELETE',
           schema: 'public',
           table: 'notifications',
-          filter: `user_id=eq.${user.id}`,
+          filter: `user_id=eq.${userId}`,
         },
         (payload) => {
-          if (!isMounted) return
-          setNotifications((prev) =>
-            prev.filter((n) => n.id !== (payload.old as Notification).id)
-          )
+          setCache((prev) => prev.filter((n) => n.id !== (payload.old as Notification).id))
         }
       )
       .subscribe((status) => {
@@ -226,11 +238,10 @@ export function useNotifications(): UseNotificationsReturn {
 
     // Cleanup subscription
     return () => {
-      isMounted = false
       apiLogger.debug('Unsubscribing from notifications channel')
       supabase.removeChannel(channel)
     }
-  }, [user])
+  }, [userId, queryClient])
 
   // ============================================
   // COMPUTED VALUES
@@ -262,10 +273,10 @@ export function useNotifications(): UseNotificationsReturn {
   }, [notifications])
 
   // ============================================
-  // ACTIONS
+  // ACTIONS (optimistisk cache-uppdatering, revert via invalidate)
   // ============================================
   const markAsRead = useCallback(async (notificationId: string) => {
-    if (!user) return
+    if (!userId) return
 
     // Optimistic update
     setNotifications((prev) =>
@@ -281,18 +292,18 @@ export function useNotifications(): UseNotificationsReturn {
         .from('notifications')
         .update({ read: true, read_at: new Date().toISOString() })
         .eq('id', notificationId)
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
 
       if (error) throw error
     } catch (err) {
       // Revert on error
-      fetchNotifications()
+      refresh()
       apiLogger.error('Failed to mark notification as read', { error: err })
     }
-  }, [user, fetchNotifications])
+  }, [userId, setNotifications, refresh])
 
   const markAllAsRead = useCallback(async () => {
-    if (!user) return
+    if (!userId) return
 
     // Optimistic update
     const now = new Date().toISOString()
@@ -304,20 +315,20 @@ export function useNotifications(): UseNotificationsReturn {
       const { error } = await supabase
         .from('notifications')
         .update({ read: true, read_at: now })
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
         .eq('read', false)
 
       if (error) throw error
       apiLogger.debug('Marked all notifications as read')
     } catch (err) {
       // Revert on error
-      fetchNotifications()
+      refresh()
       apiLogger.error('Failed to mark all as read', { error: err })
     }
-  }, [user, fetchNotifications])
+  }, [userId, setNotifications, refresh])
 
   const deleteNotification = useCallback(async (notificationId: string) => {
-    if (!user) return
+    if (!userId) return
 
     // Optimistic update
     setNotifications((prev) => prev.filter((n) => n.id !== notificationId))
@@ -327,48 +338,48 @@ export function useNotifications(): UseNotificationsReturn {
         .from('notifications')
         .delete()
         .eq('id', notificationId)
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
 
       if (error) throw error
     } catch (err) {
       // Revert on error
-      fetchNotifications()
+      refresh()
       apiLogger.error('Failed to delete notification', { error: err })
     }
-  }, [user, fetchNotifications])
+  }, [userId, setNotifications, refresh])
 
   const clearAll = useCallback(async () => {
-    if (!user) return
+    if (!userId) return
 
     // Optimistic update
-    setNotifications([])
+    setNotifications(() => [])
 
     try {
       const { error } = await supabase
         .from('notifications')
         .delete()
-        .eq('user_id', user.id)
+        .eq('user_id', userId)
 
       if (error) throw error
       apiLogger.debug('Cleared all notifications')
     } catch (err) {
       // Revert on error
-      fetchNotifications()
+      refresh()
       apiLogger.error('Failed to clear all notifications', { error: err })
     }
-  }, [user, fetchNotifications])
+  }, [userId, setNotifications, refresh])
 
   return {
     notifications,
     unreadCount,
     unreadByCategory,
-    isLoading,
+    isLoading: query.isLoading,
     error,
     markAsRead,
     markAllAsRead,
     deleteNotification,
     clearAll,
-    refresh: fetchNotifications,
+    refresh,
   }
 }
 

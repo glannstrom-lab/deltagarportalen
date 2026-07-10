@@ -254,6 +254,7 @@ export async function calculateTrends(
     })
 
     // Calculate engagement rate trend
+    const now = new Date()
     const recentlyActive = participants.filter(p => {
       if (!p.last_login) return false
       const daysSince = Math.floor((now.getTime() - new Date(p.last_login).getTime()) / (1000 * 60 * 60 * 24))

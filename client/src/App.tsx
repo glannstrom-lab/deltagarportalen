@@ -9,10 +9,11 @@ import Layout from './components/Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Landing from './pages/Landing'
-import Privacy from './pages/Privacy'
-import Terms from './pages/Terms'
-import AiPolicy from './pages/AiPolicy'
-import Accessibility from './pages/Accessibility'
+// Statiska info-sidor lazy-laddas (E6, 2026-07-10) — låg trafik, ~90 kB ur entry
+const Privacy = lazy(() => import('./pages/Privacy'))
+const Terms = lazy(() => import('./pages/Terms'))
+const AiPolicy = lazy(() => import('./pages/AiPolicy'))
+const Accessibility = lazy(() => import('./pages/Accessibility'))
 import CookieConsent from './components/CookieConsent'
 import { EnergySaveMode } from './components/EnergySaveMode'
 import { FocusModeProvider } from './components/FocusModeProvider'
@@ -199,11 +200,11 @@ function App() {
         } />
 
         {/* Legal pages - always accessible */}
-        <Route path="/privacy" element={<Privacy />} />
-        <Route path="/terms" element={<Terms />} />
-        <Route path="/ai-policy" element={<AiPolicy />} />
-        <Route path="/tillganglighet" element={<Accessibility />} />
-        <Route path="/accessibility" element={<Accessibility />} />
+        <Route path="/privacy" element={<LazyRoute><Privacy /></LazyRoute>} />
+        <Route path="/terms" element={<LazyRoute><Terms /></LazyRoute>} />
+        <Route path="/ai-policy" element={<LazyRoute><AiPolicy /></LazyRoute>} />
+        <Route path="/tillganglighet" element={<LazyRoute><Accessibility /></LazyRoute>} />
+        <Route path="/accessibility" element={<LazyRoute><Accessibility /></LazyRoute>} />
         <Route path="/template-snapshot/:templateId" element={<LazyRoute><TemplateSnapshot /></LazyRoute>} />
         <Route path="/print/cv" element={<LazyRoute><PrintCV /></LazyRoute>} />
 

@@ -69,12 +69,13 @@
 
 | # | Uppgift | Detaljer |
 |---|---------|----------|
-| E1 (P3) | Timeout + AbortController på `callAI` | Hängda AI-anrop väntar för evigt; liten fix, stor UX-effekt på svag uppkoppling |
-| E2 | Bildbantning | logo-jobin.png 1 052 kB + logo-icon 424 kB → WebP/SVG < 30 kB; snabbaste LCP-vinsten |
-| E3 (P2) | Kolumn-trimma `select('*')` | 178 st; börja med listvyerna saved_jobs + spontaneous_companies |
-| E4 (gamla E1) | articleData (24 864 r) → Supabase/lazy | contentApi-chunken är 1 019 kB rå. **Efter D1/D2** (kräver E2E-skydd) |
-| E5 (P4) | React Query-migrering av 12 hooks | useSavedJobs, useNotifications, useSta m.fl. — i takt med att sidor ändå rörs |
-| E6 (P1 steg 2) | Bundle-analys av entry 655 kB + CSS-split 317 kB | Visualizer-körning; en.json/Sentry redan lazy |
+| E1 (P3) | Timeout + AbortController på `callAI` | ✅ **Klar 2026-07-10** — 60 s timeout med vänligt felmeddelande |
+| E2 | Bildbantning | ✅ **Klar 2026-07-10** — favicon/touch-icon/PWA-ikoner genererade i rätt storlekar (3–110 kB); fem oanvända stor-PNG:er raderade (appen använde redan SVG/WebP). Favicon-nedladdningen gick från ~1,5 MB till 12 kB |
+| E3 (P2) | Kolumn-trimma `select('*')` | ✅ **Delvis klar 2026-07-10** — calendarApi.getEvents (24 kolumner explicit), notifications (via E5), döda getUpcomingFollowups raderad; hub-loaders var redan trimmade. Rest: cloudStorage/careerApi-svansen tas i takt med E-refaktorer |
+| E4 (gamla E1) | articleData → Supabase/lazy | ✅ **Analyserad 2026-07-10:** contentApi-chunken (1 055 kB: articleData 772 + exercises 263) är REDAN on-demand — bara lazy-sidor importerar den. Ingen eager-belastning. Full Supabase-migrering kvarstår gated på D1-aktivering, nedprioriterad |
+| E5 (P4) | React Query-migrering | ✅ **Delvis klar 2026-07-10** — useSavedJobs (7 konsumenter delar cache), useNotifications (TopBar = varje sidvisning; realtime → cache), useDiary (6 hooks), useJobAlerts. Rest: useSta/useLearning/useInsights m.fl. i takt med att sidorna rörs |
+| E6 (P1 steg 2) | Bundle-analys | ✅ **Klar 2026-07-10** — entry 655→605 kB (statiska sidor lazy). Fynd: sv.json 290 kB är största entry-posten (medvetet — startspråk), PDF-chunken har 3× pako-kopior (tas i PDF-konsolideringen), xlsx 978 kB egen lazy-chunk. CSS 317 kB = global tailwind, ingen enkel split |
+| E7 | **CI-typkontrollen avslöjad + lagad** | ✅ 2026-07-10 — `npx tsc --noEmit` utan `-p` är en NO-OP (solution-style tsconfig). Riktiga gaten är `npm run typecheck:critical`. Den visade 2 crash-fel: hooks-barrelns useServiceWorker-export (från C2 — CI röd sedan dess) + odefinierad `now` i consultantInsights. Båda lagade. OBS: full `typecheck` har ~751 pre-existing strict-fel (ny skuldpost) |
 
 ## Spår F — Design/UX-skuld
 

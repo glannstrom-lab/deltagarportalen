@@ -26,6 +26,11 @@ async function getAuthToken(): Promise<string | null> {
   return session?.access_token ?? null
 }
 
+/** Maxtid för ett AI-anrop innan vi ger upp (E1/P3, 2026-07-10).
+ *  Vercel-funktionen har egen serverside-timeout; 60 s täcker långsamma
+ *  modellsvar utan att låta UI:t vänta för evigt på hängda anslutningar. */
+const AI_TIMEOUT_MS = 60_000
+
 /**
  * Make an authenticated request to the AI API
  */
@@ -49,14 +54,28 @@ export async function callAI<T = unknown>(
     apiLogger.debug('[callAI] PII-warning (behållen, krävs för AI-output):', { functionName, warnings })
   }
 
-  const response = await fetch('/api/ai', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`
-    },
-    body: JSON.stringify({ function: functionName, data: sanitized })
-  })
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), AI_TIMEOUT_MS)
+
+  let response: Response
+  try {
+    response = await fetch('/api/ai', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ function: functionName, data: sanitized }),
+      signal: controller.signal
+    })
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new Error('AI-tjänsten svarade inte i tid. Försök igen om en stund.')
+    }
+    throw err
+  } finally {
+    clearTimeout(timeoutId)
+  }
 
   if (!response.ok) {
     if (response.status === 401) {

@@ -1,8 +1,13 @@
 /**
  * useDiary - Hook for managing diary entries and related data
+ * React Query-baserad: en delad cache mellan komponenterna (Diary-flikarna
+ * monterar samma hook flera gånger) i stället för en fetch per instans.
+ * Mutationer uppdaterar cachen direkt via queryClient.setQueryData —
+ * samma mönster som useSpontaneousCompanies.
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   diaryEntriesApi,
   moodLogsApi,
@@ -18,33 +23,46 @@ import {
   type WritingPrompt
 } from '@/services/diaryApi'
 
+export const DIARY_ENTRIES_KEY = ['diary-entries'] as const
+export const MOOD_LOGS_KEY = ['mood-logs'] as const
+export const WEEKLY_GOALS_KEY = ['weekly-goals'] as const
+export const GRATITUDE_ENTRIES_KEY = ['gratitude-entries'] as const
+export const DIARY_STREAKS_KEY = ['diary-streaks'] as const
+export const WRITING_PROMPTS_KEY = ['writing-prompts'] as const
+
+const STALE_TIME = 60_000
+
 // ============================================
 // DIARY ENTRIES HOOK
 // ============================================
 
 export function useDiaryEntries() {
-  const [entries, setEntries] = useState<DiaryEntry[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
 
-  const loadEntries = useCallback(async () => {
-    setIsLoading(true)
-    setError(null)
-    try {
-      const data = await diaryEntriesApi.getAll()
-      setEntries(data || [])
-    } catch (err) {
-      console.warn('Could not load diary entries:', err)
-      setEntries([])
-      // Don't set error - tables might not exist yet
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+  const query = useQuery({
+    queryKey: DIARY_ENTRIES_KEY,
+    // Fel sväljs precis som tidigare — tabellerna kanske inte finns än
+    queryFn: async (): Promise<DiaryEntry[]> => {
+      try {
+        const data = await diaryEntriesApi.getAll()
+        return data || []
+      } catch (err) {
+        console.warn('Could not load diary entries:', err)
+        return []
+      }
+    },
+    staleTime: STALE_TIME,
+  })
 
-  useEffect(() => {
-    loadEntries()
-  }, [loadEntries])
+  const entries = useMemo(() => query.data ?? [], [query.data])
+
+  const setEntries = useCallback((updater: (prev: DiaryEntry[]) => DiaryEntry[]) => {
+    queryClient.setQueryData<DiaryEntry[]>(DIARY_ENTRIES_KEY, (prev) => updater(prev ?? []))
+  }, [queryClient])
+
+  const refresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: DIARY_ENTRIES_KEY })
+  }, [queryClient])
 
   const createEntry = async (entry: Omit<DiaryEntry, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
     const newEntry = await diaryEntriesApi.create(entry)
@@ -85,16 +103,19 @@ export function useDiaryEntries() {
     return results
   }
 
+  // error sattes aldrig i gamla hooken ("tables might not exist yet")
+  const error: string | null = null
+
   return {
     entries,
-    isLoading,
+    isLoading: query.isLoading,
     error,
     createEntry,
     updateEntry,
     deleteEntry,
     toggleFavorite,
     searchByTags,
-    refresh: loadEntries
+    refresh
   }
 }
 
@@ -102,44 +123,48 @@ export function useDiaryEntries() {
 // MOOD LOGS HOOK
 // ============================================
 
+interface MoodLogsData {
+  logs: MoodLog[]
+  todayMood: MoodLog | null
+}
+
 export function useMoodLogs() {
-  const [logs, setLogs] = useState<MoodLog[]>([])
-  const [todayMood, setTodayMood] = useState<MoodLog | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const queryClient = useQueryClient()
 
-  const loadLogs = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const [allLogs, today] = await Promise.all([
-        moodLogsApi.getAll(30).catch(() => []),
-        moodLogsApi.getToday().catch(() => null)
-      ])
-      setLogs(allLogs || [])
-      setTodayMood(today)
-    } catch (err) {
-      console.warn('Could not load mood logs:', err)
-      setLogs([])
-      setTodayMood(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+  const query = useQuery({
+    queryKey: MOOD_LOGS_KEY,
+    queryFn: async (): Promise<MoodLogsData> => {
+      try {
+        const [allLogs, today] = await Promise.all([
+          moodLogsApi.getAll(30).catch(() => []),
+          moodLogsApi.getToday().catch(() => null)
+        ])
+        return { logs: allLogs || [], todayMood: today }
+      } catch (err) {
+        console.warn('Could not load mood logs:', err)
+        return { logs: [], todayMood: null }
+      }
+    },
+    staleTime: STALE_TIME,
+  })
 
-  useEffect(() => {
-    loadLogs()
-  }, [loadLogs])
+  const logs = useMemo(() => query.data?.logs ?? [], [query.data])
+  const todayMood = query.data?.todayMood ?? null
+
+  const refresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: MOOD_LOGS_KEY })
+  }, [queryClient])
 
   const logMood = async (log: Omit<MoodLog, 'id' | 'user_id' | 'created_at' | 'updated_at'>) => {
     const newLog = await moodLogsApi.upsert(log)
     if (newLog) {
-      setTodayMood(newLog)
-      // Update logs list
-      setLogs(prev => {
-        const exists = prev.find(l => l.log_date === newLog.log_date)
-        if (exists) {
-          return prev.map(l => l.log_date === newLog.log_date ? newLog : l)
-        }
-        return [newLog, ...prev]
+      queryClient.setQueryData<MoodLogsData>(MOOD_LOGS_KEY, (prev) => {
+        const base = prev ?? { logs: [], todayMood: null }
+        const exists = base.logs.find(l => l.log_date === newLog.log_date)
+        const nextLogs = exists
+          ? base.logs.map(l => l.log_date === newLog.log_date ? newLog : l)
+          : [newLog, ...base.logs]
+        return { logs: nextLogs, todayMood: newLog }
       })
     }
     return newLog
@@ -166,11 +191,11 @@ export function useMoodLogs() {
   return {
     logs,
     todayMood,
-    isLoading,
+    isLoading: query.isLoading,
     logMood,
     getByDateRange,
     stats,
-    refresh: loadLogs
+    refresh
   }
 }
 
@@ -179,25 +204,31 @@ export function useMoodLogs() {
 // ============================================
 
 export function useWeeklyGoals() {
-  const [goals, setGoals] = useState<WeeklyGoal[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const queryClient = useQueryClient()
 
-  const loadGoals = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const data = await weeklyGoalsApi.getCurrentWeek()
-      setGoals(data || [])
-    } catch (err) {
-      console.warn('Could not load weekly goals:', err)
-      setGoals([])
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+  const query = useQuery({
+    queryKey: WEEKLY_GOALS_KEY,
+    queryFn: async (): Promise<WeeklyGoal[]> => {
+      try {
+        const data = await weeklyGoalsApi.getCurrentWeek()
+        return data || []
+      } catch (err) {
+        console.warn('Could not load weekly goals:', err)
+        return []
+      }
+    },
+    staleTime: STALE_TIME,
+  })
 
-  useEffect(() => {
-    loadGoals()
-  }, [loadGoals])
+  const goals = useMemo(() => query.data ?? [], [query.data])
+
+  const setGoals = useCallback((updater: (prev: WeeklyGoal[]) => WeeklyGoal[]) => {
+    queryClient.setQueryData<WeeklyGoal[]>(WEEKLY_GOALS_KEY, (prev) => updater(prev ?? []))
+  }, [queryClient])
+
+  const refresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: WEEKLY_GOALS_KEY })
+  }, [queryClient])
 
   const createGoal = async (goal: { goal_text: string; category?: string; priority?: number }) => {
     const newGoal = await weeklyGoalsApi.create(goal)
@@ -242,7 +273,7 @@ export function useWeeklyGoals() {
 
   return {
     goals,
-    isLoading,
+    isLoading: query.isLoading,
     createGoal,
     toggleComplete,
     addReflection,
@@ -250,7 +281,7 @@ export function useWeeklyGoals() {
     completedCount,
     totalCount,
     progress,
-    refresh: loadGoals
+    refresh
   }
 }
 
@@ -258,38 +289,45 @@ export function useWeeklyGoals() {
 // GRATITUDE HOOK
 // ============================================
 
+interface GratitudeData {
+  entries: GratitudeEntry[]
+  todayEntry: GratitudeEntry | null
+}
+
 export function useGratitude() {
-  const [entries, setEntries] = useState<GratitudeEntry[]>([])
-  const [todayEntry, setTodayEntry] = useState<GratitudeEntry | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const queryClient = useQueryClient()
 
-  const loadEntries = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const [allEntries, today] = await Promise.all([
-        gratitudeApi.getAll(30).catch(() => []),
-        gratitudeApi.getToday().catch(() => null)
-      ])
-      setEntries(allEntries || [])
-      setTodayEntry(today)
-    } catch (err) {
-      console.warn('Could not load gratitude entries:', err)
-      setEntries([])
-      setTodayEntry(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+  const query = useQuery({
+    queryKey: GRATITUDE_ENTRIES_KEY,
+    queryFn: async (): Promise<GratitudeData> => {
+      try {
+        const [allEntries, today] = await Promise.all([
+          gratitudeApi.getAll(30).catch(() => []),
+          gratitudeApi.getToday().catch(() => null)
+        ])
+        return { entries: allEntries || [], todayEntry: today }
+      } catch (err) {
+        console.warn('Could not load gratitude entries:', err)
+        return { entries: [], todayEntry: null }
+      }
+    },
+    staleTime: STALE_TIME,
+  })
 
-  useEffect(() => {
-    loadEntries()
-  }, [loadEntries])
+  const entries = useMemo(() => query.data?.entries ?? [], [query.data])
+  const todayEntry = query.data?.todayEntry ?? null
+
+  const refresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: GRATITUDE_ENTRIES_KEY })
+  }, [queryClient])
 
   const createEntry = async (entry: { item1: string; item2?: string; item3?: string; reflection?: string }) => {
     const newEntry = await gratitudeApi.create(entry)
     if (newEntry) {
-      setTodayEntry(newEntry)
-      setEntries(prev => [newEntry, ...prev])
+      queryClient.setQueryData<GratitudeData>(GRATITUDE_ENTRIES_KEY, (prev) => {
+        const base = prev ?? { entries: [], todayEntry: null }
+        return { entries: [newEntry, ...base.entries], todayEntry: newEntry }
+      })
     }
     return newEntry
   }
@@ -297,12 +335,15 @@ export function useGratitude() {
   const updateEntry = async (id: string, updates: Partial<GratitudeEntry>) => {
     const success = await gratitudeApi.update(id, updates)
     if (success) {
-      setEntries(prev => prev.map(e =>
-        e.id === id ? { ...e, ...updates } : e
-      ))
-      if (todayEntry?.id === id) {
-        setTodayEntry(prev => prev ? { ...prev, ...updates } : prev)
-      }
+      queryClient.setQueryData<GratitudeData>(GRATITUDE_ENTRIES_KEY, (prev) => {
+        const base = prev ?? { entries: [], todayEntry: null }
+        return {
+          entries: base.entries.map(e => e.id === id ? { ...e, ...updates } : e),
+          todayEntry: base.todayEntry?.id === id
+            ? { ...base.todayEntry, ...updates }
+            : base.todayEntry
+        }
+      })
     }
     return success
   }
@@ -310,11 +351,11 @@ export function useGratitude() {
   return {
     entries,
     todayEntry,
-    isLoading,
+    isLoading: query.isLoading,
     createEntry,
     updateEntry,
     hasLoggedToday: !!todayEntry,
-    refresh: loadEntries
+    refresh
   }
 }
 
@@ -323,35 +364,36 @@ export function useGratitude() {
 // ============================================
 
 export function useDiaryStreaks() {
-  const [streaks, setStreaks] = useState<DiaryStreaks | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const queryClient = useQueryClient()
 
-  const loadStreaks = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const data = await diaryStreaksApi.get()
-      setStreaks(data)
-    } catch (err) {
-      // Silently handle - tables might not exist yet
-      console.warn('Could not load diary streaks:', err)
-      setStreaks(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+  const query = useQuery({
+    queryKey: DIARY_STREAKS_KEY,
+    queryFn: async (): Promise<DiaryStreaks | null> => {
+      try {
+        return await diaryStreaksApi.get()
+      } catch (err) {
+        // Silently handle - tables might not exist yet
+        console.warn('Could not load diary streaks:', err)
+        return null
+      }
+    },
+    staleTime: STALE_TIME,
+  })
 
-  useEffect(() => {
-    loadStreaks()
-  }, [loadStreaks])
+  const streaks = query.data ?? null
+
+  const refresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: DIARY_STREAKS_KEY })
+  }, [queryClient])
 
   return {
     streaks,
-    isLoading,
+    isLoading: query.isLoading,
     currentStreak: streaks?.current_streak ?? 0,
     longestStreak: streaks?.longest_streak ?? 0,
     totalEntries: streaks?.total_entries ?? 0,
     totalWords: streaks?.total_words ?? 0,
-    refresh: loadStreaks
+    refresh
   }
 }
 
@@ -359,35 +401,45 @@ export function useDiaryStreaks() {
 // WRITING PROMPTS HOOK
 // ============================================
 
+interface WritingPromptsData {
+  prompt: WritingPrompt | null
+  allPrompts: WritingPrompt[]
+}
+
 export function useWritingPrompts() {
-  const [prompt, setPrompt] = useState<WritingPrompt | null>(null)
-  const [allPrompts, setAllPrompts] = useState<WritingPrompt[]>([])
-  const [isLoading, setIsLoading] = useState(true)
+  const queryClient = useQueryClient()
 
-  const loadPrompts = useCallback(async () => {
-    setIsLoading(true)
-    try {
-      const [random, all] = await Promise.all([
-        writingPromptsApi.getRandom().catch(() => null),
-        writingPromptsApi.getAll().catch(() => [])
-      ])
-      setPrompt(random)
-      setAllPrompts(all || [])
-    } catch (err) {
-      console.warn('Could not load writing prompts:', err)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [])
+  const query = useQuery({
+    queryKey: WRITING_PROMPTS_KEY,
+    queryFn: async (): Promise<WritingPromptsData> => {
+      try {
+        const [random, all] = await Promise.all([
+          writingPromptsApi.getRandom().catch(() => null),
+          writingPromptsApi.getAll().catch(() => [])
+        ])
+        return { prompt: random, allPrompts: all || [] }
+      } catch (err) {
+        console.warn('Could not load writing prompts:', err)
+        return { prompt: null, allPrompts: [] }
+      }
+    },
+    staleTime: STALE_TIME,
+  })
 
-  useEffect(() => {
-    loadPrompts()
-  }, [loadPrompts])
+  const prompt = query.data?.prompt ?? null
+  const allPrompts = useMemo(() => query.data?.allPrompts ?? [], [query.data])
+
+  const refresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: WRITING_PROMPTS_KEY })
+  }, [queryClient])
 
   const getNewPrompt = async (category?: string) => {
     const newPrompt = await writingPromptsApi.getRandom(category)
     if (newPrompt) {
-      setPrompt(newPrompt)
+      queryClient.setQueryData<WritingPromptsData>(WRITING_PROMPTS_KEY, (prev) => ({
+        prompt: newPrompt,
+        allPrompts: prev?.allPrompts ?? []
+      }))
     }
     return newPrompt
   }
@@ -395,8 +447,8 @@ export function useWritingPrompts() {
   return {
     prompt,
     allPrompts,
-    isLoading,
+    isLoading: query.isLoading,
     getNewPrompt,
-    refresh: loadPrompts
+    refresh
   }
 }

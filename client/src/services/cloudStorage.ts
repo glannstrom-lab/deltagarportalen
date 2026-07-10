@@ -2376,9 +2376,11 @@ export const calendarApi = {
       return cached ? JSON.parse(cached) : []
     }
 
+    // E3 (2026-07-10): explicita kolumner i stället för select('*') —
+    // exakt de fält transformen nedan använder
     const { data, error } = await supabase
       .from('calendar_events')
-      .select('*')
+      .select('id, title, date, time, end_time, type, location, is_video, is_phone, description, with_person, job_id, job_application_id, tasks, travel, interview_prep, is_recurring, recurring_config, parent_event_id, reminders, shared_with, is_shared, created_at, updated_at')
       .order('date', { ascending: true })
       .order('time', { ascending: true })
 

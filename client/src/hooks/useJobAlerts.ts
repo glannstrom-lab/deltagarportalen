@@ -1,35 +1,45 @@
 /**
  * Hook for managing job alerts
  * Persists to Supabase database
+ * React Query-baserad: en delad cache i stället för en fetch per
+ * hook-instans. Mutationer uppdaterar cachen direkt via
+ * queryClient.setQueryData — samma mönster som useSpontaneousCompanies.
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { jobAlertsApi, type JobAlert } from '@/services/jobsApi'
 import { searchJobs } from '@/services/arbetsformedlingenApi'
 
+export const JOB_ALERTS_KEY = ['job-alerts'] as const
+
 export function useJobAlerts() {
-  const [alerts, setAlerts] = useState<JobAlert[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
 
-  // Load alerts on mount
+  const query = useQuery({
+    queryKey: JOB_ALERTS_KEY,
+    queryFn: () => jobAlertsApi.getAll(),
+    staleTime: 60_000,
+  })
+
+  const alerts = useMemo(() => query.data ?? [], [query.data])
+
+  // Logga laddningsfel en gång per felobjekt (motsvarar gamla loadAlerts)
+  const loggedError = useRef<unknown>(null)
   useEffect(() => {
-    loadAlerts()
-  }, [])
-
-  const loadAlerts = async () => {
-    try {
-      setIsLoading(true)
-      const data = await jobAlertsApi.getAll()
-      setAlerts(data)
-      setError(null)
-    } catch (err) {
-      console.error('Error loading alerts:', err)
-      setError('Kunde inte ladda bevakningar')
-    } finally {
-      setIsLoading(false)
+    if (query.error && loggedError.current !== query.error) {
+      loggedError.current = query.error
+      console.error('Error loading alerts:', query.error)
     }
-  }
+  }, [query.error])
+
+  const setAlerts = useCallback((updater: (prev: JobAlert[]) => JobAlert[]) => {
+    queryClient.setQueryData<JobAlert[]>(JOB_ALERTS_KEY, (prev) => updater(prev ?? []))
+  }, [queryClient])
+
+  const refresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: JOB_ALERTS_KEY })
+  }, [queryClient])
 
   const createAlert = useCallback(async (alertData: {
     name: string
@@ -53,7 +63,7 @@ export function useJobAlerts() {
       console.error('Error creating alert:', err)
       throw err
     }
-  }, [])
+  }, [setAlerts])
 
   const deleteAlert = useCallback(async (id: string) => {
     try {
@@ -64,7 +74,7 @@ export function useJobAlerts() {
       console.error('Error deleting alert:', err)
       return false
     }
-  }, [])
+  }, [setAlerts])
 
   const toggleAlert = useCallback(async (id: string, isActive: boolean) => {
     try {
@@ -75,7 +85,7 @@ export function useJobAlerts() {
       console.error('Error toggling alert:', err)
       throw err
     }
-  }, [])
+  }, [setAlerts])
 
   const updateAlert = useCallback(async (id: string, updates: Partial<JobAlert>) => {
     try {
@@ -86,7 +96,7 @@ export function useJobAlerts() {
       console.error('Error updating alert:', err)
       throw err
     }
-  }, [])
+  }, [setAlerts])
 
   const checkForNewJobs = useCallback(async (alert: JobAlert) => {
     try {
@@ -119,7 +129,7 @@ export function useJobAlerts() {
       console.error('Error checking for new jobs:', err)
       return []
     }
-  }, [])
+  }, [setAlerts])
 
   const runAlertSearch = useCallback(async (alert: JobAlert) => {
     try {
@@ -140,14 +150,14 @@ export function useJobAlerts() {
 
   return {
     alerts,
-    isLoading,
-    error,
+    isLoading: query.isLoading,
+    error: query.error ? 'Kunde inte ladda bevakningar' : null,
     createAlert,
     deleteAlert,
     toggleAlert,
     updateAlert,
     checkForNewJobs,
     runAlertSearch,
-    refresh: loadAlerts
+    refresh
   }
 }

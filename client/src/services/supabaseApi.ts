@@ -762,26 +762,7 @@ export const spontaneousCompaniesApi = {
     return stats
   },
 
-  /**
-   * Get companies with upcoming followups
-   */
-  async getUpcomingFollowups(days: number = 7): Promise<SpontaneousCompany[]> {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-
-    const futureDate = new Date()
-    futureDate.setDate(futureDate.getDate() + days)
-
-    const { data, error } = await supabase
-      .from('spontaneous_companies')
-      .select('*')
-      .eq('user_id', user.id)
-      .not('followup_date', 'is', null)
-      .lte('followup_date', futureDate.toISOString().split('T')[0])
-      .not('status', 'in', '("archived","response_positive","response_negative")')
-      .order('followup_date', { ascending: true })
-
-    if (error) handleError(error)
-    return (data || []) as SpontaneousCompany[]
-  },
+  // getUpcomingFollowups borttagen 2026-07-10 (E3): blev död kod när
+  // useSpontaneousCompanies migrerades till React Query — uppföljningar
+  // härleds numera klientside ur companies-cachen.
 }

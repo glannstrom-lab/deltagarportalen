@@ -1,9 +1,13 @@
 /**
  * Hook for managing saved jobs
  * Persists to Supabase database
+ *
+ * React Query-baserad: en delad cache mellan alla konsumenter i stället
+ * för ett fetch per komponent som använder hooken.
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { savedJobsApi } from '@/services/jobsApi'
 import { userApi } from '@/services/userApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
@@ -17,42 +21,50 @@ export interface SavedJob {
   status: 'saved' | 'applied' | 'interview' | 'rejected' | 'offer'
 }
 
+export const SAVED_JOBS_KEY = ['saved-jobs'] as const
+
+async function fetchSavedJobs(): Promise<SavedJob[]> {
+  const jobs = await savedJobsApi.getAll()
+  // Konvertera från Supabase-format till vårt format
+  return jobs.map((job) => ({
+    id: job.job_id,
+    jobData: job.job_data as PlatsbankenJob,
+    savedAt: job.created_at,
+    notes: job.notes || undefined,
+    status: (job.status?.toLowerCase() || 'saved') as SavedJob['status']
+  }))
+}
+
 export function useSavedJobs() {
-  const [savedJobs, setSavedJobs] = useState<SavedJob[]>([])
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
+  const [actionError, setActionError] = useState<string | null>(null)
   const { trackJobSaved, trackJobApplied } = useAchievementTracker()
 
-  // Load from Supabase on mount
+  const query = useQuery({
+    queryKey: SAVED_JOBS_KEY,
+    queryFn: fetchSavedJobs,
+    staleTime: 60_000,
+  })
+
+  const savedJobs = useMemo(() => query.data ?? [], [query.data])
+
+  // Logga laddningsfel — en gång per felobjekt
   useEffect(() => {
-    const loadSavedJobs = async () => {
-      try {
-        const jobs = await savedJobsApi.getAll()
-        // Konvertera från Supabase-format till vårt format
-        const formatted = jobs.map((job) => ({
-          id: job.job_id,
-          jobData: job.job_data as PlatsbankenJob,
-          savedAt: job.created_at,
-          notes: job.notes || undefined,
-          status: (job.status?.toLowerCase() || 'saved') as SavedJob['status']
-        }))
-        setSavedJobs(formatted)
-        setError(null)
-      } catch (err) {
-        console.error('Error loading saved jobs:', err)
-        setError('Kunde inte ladda sparade jobb')
-      }
-      setIsLoaded(true)
+    if (query.error) {
+      console.error('Error loading saved jobs:', query.error)
     }
-    loadSavedJobs()
-  }, [])
+  }, [query.error])
+
+  const setSavedJobs = useCallback((updater: (prev: SavedJob[]) => SavedJob[]) => {
+    queryClient.setQueryData<SavedJob[]>(SAVED_JOBS_KEY, (prev) => updater(prev ?? []))
+  }, [queryClient])
 
   const saveJob = useCallback(async (job: PlatsbankenJob) => {
     try {
       // Spara till Supabase
       await savedJobsApi.save(job.id, job)
 
-      // Uppdatera lokalt state
+      // Uppdatera cachen
       setSavedJobs(prev => {
         if (prev.some(saved => saved.id === job.id)) {
           return prev
@@ -78,10 +90,10 @@ export function useSavedJobs() {
       return true
     } catch (err) {
       console.error('Error saving job:', err)
-      setError('Kunde inte spara jobb')
+      setActionError('Kunde inte spara jobb')
       return false
     }
-  }, [trackJobSaved])
+  }, [setSavedJobs, trackJobSaved])
 
   const removeJob = useCallback(async (jobId: string) => {
     try {
@@ -90,10 +102,10 @@ export function useSavedJobs() {
       return true
     } catch (err) {
       console.error('Error removing job:', err)
-      setError('Kunde inte ta bort jobb')
+      setActionError('Kunde inte ta bort jobb')
       return false
     }
-  }, [])
+  }, [setSavedJobs])
 
   const updateJobStatus = useCallback(async (jobId: string, status: SavedJob['status']) => {
     try {
@@ -113,10 +125,10 @@ export function useSavedJobs() {
       return true
     } catch (err) {
       console.error('Error updating job status:', err)
-      setError('Kunde inte uppdatera status')
+      setActionError('Kunde inte uppdatera status')
       return false
     }
-  }, [savedJobs, trackJobApplied])
+  }, [savedJobs, setSavedJobs, trackJobApplied])
 
   const addNotes = useCallback(async (jobId: string, notes: string) => {
     // Optimistisk uppdatering + persistens — utan updateNotes-anropet
@@ -131,10 +143,10 @@ export function useSavedJobs() {
       return true
     } catch (err) {
       console.error('Error saving notes:', err)
-      setError('Kunde inte spara anteckningen')
+      setActionError('Kunde inte spara anteckningen')
       return false
     }
-  }, [])
+  }, [setSavedJobs])
 
   const isSaved = useCallback((jobId: string) => {
     return savedJobs.some(job => job.id === jobId)
@@ -157,8 +169,8 @@ export function useSavedJobs() {
 
   return {
     savedJobs,
-    isLoaded,
-    error,
+    isLoaded: query.isFetched,
+    error: query.error ? 'Kunde inte ladda sparade jobb' : actionError,
     saveJob,
     removeJob,
     updateJobStatus,
