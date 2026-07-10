@@ -63,6 +63,7 @@
 | D4 (D6) | Husky + lint-staged | ✅ **Klar 2026-07-10** — pre-commit kör eslint --quiet på stage:ade filer + lint:design |
 | D5 | ESLint 11→0 + jaga flaky test | ✅ **Klar 2026-07-10** — 0 errors (villkorlig useMemo i AssessmentEditor var ett äkta rules-of-hooks-brott); flaky = nav-smoke-timeout under maskinlast, höjd 8→20 s |
 | D6 (S5) | LCP-baseline + CI-budget | ✅ **Klar 2026-07-10** — baseline mot prod: landning ~340 ms, inloggad översikt ~1 400 ms (median, `e2e/lcp-baseline.cjs`). LCP-budget 2 500 ms som warn i CI:s Lighthouse-jobb; skärp till error när CI-variansen är känd |
+| D7 | Robusthetsfynd från testskrivningen | ⬜ Ny 2026-07-10. ~14 observationer från D3-agenterna, viktigast: tysta DB-fel i `applicationHistoryApi.log` + `milestonesApi.toggleComplete` + `favoriteOccupationsApi.isFavorite` (fel tolkas som "inte favorit" → toggle kan skapa dubblett), race i `personalBrandApi.recordPractice`, `careerPlanApi.create` error-checkar inte avaktiveringen (två aktiva planer möjliga), `savedJobsApi.getAll` utan auth-guard, asymmetrisk snake/camelCase i `calendarApi`, `credentialsApi.updateStatus` kan aldrig rensa completed_date. Detaljer i commit 79f52e78 |
 
 ## Spår E — Prestanda
 
