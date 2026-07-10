@@ -1,0 +1,2 @@
+# Pre-commit-gate (D4, 2026-07-10): eslint pa stage:ade filer + design-lint
+cd client && npx lint-staged && npm run lint:design

@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + helper-export */
+ 
 /**
  * AI-märkning enligt AI Act Art 50 (transparenskrav som gäller från 2 aug 2026).
  *

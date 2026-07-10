@@ -456,7 +456,6 @@ async function fillAwpAwcPdf(ctx: PdfContext, code: 'AWP' | 'AWC'): Promise<Blob
   const maxBedomningar = Math.min(bedomningar.length, 4)
   for (let bedIdx = 0; bedIdx < maxBedomningar; bedIdx++) {
     const bedomning = bedomningar[bedIdx]
-    const skattningNr = bedIdx + 1 // PDF-mallen: Skattning 1-4
 
     let linearIndex = 0
     for (let catIdx = 0; catIdx < instrument.categories.length; catIdx++) {

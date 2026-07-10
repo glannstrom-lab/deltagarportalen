@@ -443,7 +443,7 @@ export async function getMarketInsights() {
 
 // Förenklad analys (parametrarna används inte ännu — placeholder för
 // framtida AI-analys; Math.random är temporär simulering).
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+ 
 export function analyzeSkillGap(_userSkills: string[], _jobRequirements: string[]) {
   const matchPercentage = Math.floor(Math.random() * 40) + 60; // Simulerad för nu
   

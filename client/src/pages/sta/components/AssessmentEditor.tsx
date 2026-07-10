@@ -15,7 +15,7 @@
  * sta_assessments.summary (separat kolumn).
  */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { X, Save, Info, CheckCircle, AlertTriangle, Download, Sparkles, Loader2 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -107,9 +107,6 @@ function itemKey(bedomningId: string, catIndex: number, itemIndex: number): stri
   return `${bedomningId}_c${catIndex}_i${itemIndex}`
 }
 
-function legacyItemKey(catIndex: number, itemIndex: number): string {
-  return `c${catIndex}_i${itemIndex}`
-}
 
 /**
  * Normaliserar scores-JSONB till multi-bedömning-format.
@@ -215,7 +212,9 @@ export function AssessmentEditor({
   const totalItems = instrument.itemCount
   // Räkna ifyllda items för current bedömning (multi-instrument)
   // eller totalt (single-instrument — bara b1)
-  const completedItems = useMemo(() => {
+  // Vanlig beräkning (inte useMemo): låg efter en early return vilket bröt
+  // hook-reglerna (rules-of-hooks). Linjär skanning av scores är billig.
+  const completedItems = (() => {
     let n = 0
     const prefix = `${currentBedomningId}_`
     for (const [key, raw] of Object.entries(scores)) {
@@ -235,7 +234,7 @@ export function AssessmentEditor({
       }
     }
     return n
-  }, [scores, hybrid, mode, currentBedomningId])
+  })()
   const progress = Math.round((completedItems / totalItems) * 100)
 
   const handleItemValue = (catIdx: number, itemIdx: number, value: ItemValue) => {
@@ -1044,7 +1043,7 @@ function BedomningMetaForm({
 }
 
 function ItemRow({
-  itemKey,
+  itemKey: _itemKey,
   label,
   instrument,
   entry,

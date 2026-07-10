@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + konstant/helper-export */
 /**
  * Delad statuskonfiguration för Spontanansökan.
  * En källa för ikoner, färger och i18n-nycklar — används av CompanyCard,

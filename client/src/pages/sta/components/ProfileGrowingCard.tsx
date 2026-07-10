@@ -13,7 +13,7 @@
  */
 
 import { useMemo } from 'react'
-import { Sparkles, Activity, Heart, Target, MessageSquare } from '@/components/ui/icons'
+import { Sparkles, Activity, Target, MessageSquare } from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import type { StaPulseCheck, StaQuickNote, StaActivity, Mood } from '@/services/staApi'
 

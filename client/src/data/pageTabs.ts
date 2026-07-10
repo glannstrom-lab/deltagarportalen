@@ -24,7 +24,6 @@ import {
 import { wellnessTabs } from './wellnessTabs'
 import { dashboardTabs } from './dashboardTabs'
 import { careerTabs } from './careerTabs'
-import { knowledgeTabs } from './knowledgeTabs'
 import { consultantTabs } from './consultantTabs'
 
 // Tab definitions with i18n keys - labels are resolved at render time

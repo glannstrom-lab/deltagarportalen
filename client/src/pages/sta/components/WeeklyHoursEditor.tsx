@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + konstant/helper-export */
 /**
  * WeeklyHoursEditor — slider 10-40h med snabbval och autosave.
  *

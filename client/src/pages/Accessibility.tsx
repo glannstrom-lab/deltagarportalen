@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components -- legitim samexistens av komponent + helper-export */
+ 
 import type { ComponentType, ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import {

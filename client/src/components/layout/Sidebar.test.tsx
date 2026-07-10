@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- vi.mock importOriginal returnerar any */
-import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { describe, it, expect, vi } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
