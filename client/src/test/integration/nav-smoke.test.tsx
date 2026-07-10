@@ -172,12 +172,12 @@ describe('Deep-link smoke test (NAV-04)', () => {
             expect(container.textContent ?? '').not.toBe('loading')
             expect(container.textContent ?? '').not.toBe('')
           },
-          { timeout: 5000 }
+          { timeout: 15000 }
         )
         const errorFallback = container.querySelector('[data-testid="route-error-fallback"]')
         expect(errorFallback).toBeNull()
       },
-      { timeout: 8000 }
+      { timeout: 20000 }
     )
 
     it.each(HUB_PATHS)(
@@ -189,13 +189,13 @@ describe('Deep-link smoke test (NAV-04)', () => {
             expect(container.textContent ?? '').not.toBe('loading')
             expect(container.textContent ?? '').not.toBe('')
           },
-          { timeout: 5000 }
+          { timeout: 15000 }
         )
         // Hub pages are placeholder pages — assert no error boundary fired
         const errorFallback = container.querySelector('[data-testid="route-error-fallback"]')
         expect(errorFallback).toBeNull()
       },
-      8000
+      20000
     )
   })
 

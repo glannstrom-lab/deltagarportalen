@@ -437,11 +437,12 @@ export const staEnrollmentsApi = {
       p_includes_part_2: input.includesPart2 ?? true,
     })
     if (error) handleError(error)
+    // RPC:n returnerar linked_participant_id (verifierat mot pg_proc 2026-07-10)
     return (data ?? []) as Array<{
       email: string
       invitation_id: string | null
       sta_enrollment_id: string | null
-      participant_id: string | null
+      linked_participant_id: string | null
       status: 'linked' | 'invited' | 'error'
       error: string | null
     }>

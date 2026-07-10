@@ -27,8 +27,9 @@ export class AuthHelper {
     await this.page.locator('input#email').fill(email)
     await this.page.locator('input#password').fill(password)
     await this.page.getByRole('button', { name: /^logga in$/i }).click()
-    // Wait for redirect to dashboard
-    await this.page.waitForURL(/\/$/, { timeout: 10000 })
+    // Vänta tills vi lämnat login — index redirectar numera till /#/oversikt
+    // (C3, 2026-07-10), så matcha inte på trailing slash
+    await this.page.waitForURL((u) => !u.toString().includes('/login'), { timeout: 15000 })
   }
 
   async logout() {

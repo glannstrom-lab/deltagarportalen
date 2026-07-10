@@ -57,12 +57,12 @@
 
 | # | Uppgift | Detaljer |
 |---|---------|----------|
-| D1 (S1) | Authenticated E2E i CI | Testkontot FINNS (.env.test.local, användes 10/7 mot prod). Kvar: GitHub Secrets + aktivera workflow-steget. **Mikael: secrets, 10 min** |
-| D2 (S2) | Golden path-spec | Deltagare: registrera→CV→söka→spara→följa upp; konsulent-smoke; STA-smoke. `spontan-verify.cjs` promotas |
-| D3 (D2r) | Tester för kärnservices | 53/70 services otestade; börja cloudStorage, careerApi, staApi, applicationsApi — **förutsättning för E3–E5-refaktorer** |
-| D4 (D6) | Husky + lint-staged | Ingen pre-commit-gate; förklarar no-console-ackumulering |
-| D5 | ESLint 11→0 + jaga flaky test | Restskuld liten; 1 flaky observerad i full suite |
-| D6 (S5) | LCP/Web Vitals-baseline + CI-budget | Mål LCP < 2,5 s; idag bara Sentry 0.1-sampling |
+| D1 (S1) | Authenticated E2E i CI | ✅ **Klar 2026-07-10 (kodsidan)** — `e2e-authenticated`-jobb i ci.yml; specarna själv-skippar utan credentials så jobbet aktiveras automatiskt när **Mikael lägger in secrets** TEST_USER_EMAIL/TEST_USER_PASSWORD (+ valfritt TEST_CONSULTANT_*) i GitHub. Fixade även AuthHelper.login som väntade på fel URL efter C3 |
+| D2 (S2) | Golden path-spec | ✅ **Klar 2026-07-10** — `e2e/golden-path.spec.ts`: deltagarens kärnflöde (7 sidor i en session) + hubbnav + konsulent-smoke. Provkörd 3/3 grönt mot prod |
+| D3 (D2r) | Tester för kärnservices | ✅ **Klar 2026-07-10** — 174 nya tester: applicationsApi (23), careerApi (37), staApi (62), cloudStorage (52). Låser beteendet inför E3–E5-refaktorerna. ~14 källkodsobservationer rapporterade (svalda fel, race i recordPractice, asymmetrisk casing i calendarApi m.m.) — se commit-historik |
+| D4 (D6) | Husky + lint-staged | ✅ **Klar 2026-07-10** — pre-commit kör eslint --quiet på stage:ade filer + lint:design |
+| D5 | ESLint 11→0 + jaga flaky test | ✅ **Klar 2026-07-10** — 0 errors (villkorlig useMemo i AssessmentEditor var ett äkta rules-of-hooks-brott); flaky = nav-smoke-timeout under maskinlast, höjd 8→20 s |
+| D6 (S5) | LCP-baseline + CI-budget | ✅ **Klar 2026-07-10** — baseline mot prod: landning ~340 ms, inloggad översikt ~1 400 ms (median, `e2e/lcp-baseline.cjs`). LCP-budget 2 500 ms som warn i CI:s Lighthouse-jobb; skärp till error när CI-variansen är känd |
 
 ## Spår E — Prestanda
 
