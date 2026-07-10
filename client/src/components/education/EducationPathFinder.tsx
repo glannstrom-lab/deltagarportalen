@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { GraduationCap, Search, ChevronRight, Clock, Building2, BookOpen } from '@/components/ui/icons';
 import { Autocomplete } from '@/components/common/Autocomplete';
-import { taxonomyApi, jobEdApi } from '@/services/api';
+import { taxonomyApi } from '@/services/afTaxonomyApi';
+import { jobEdApi } from '@/services/afJobEdApi';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 
 interface Education {

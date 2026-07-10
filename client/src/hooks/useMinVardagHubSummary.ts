@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
-import type { MinVardagSummary } from '@/components/widgets/MinVardagDataContext'
+import type { MinVardagSummary } from './hubSummaryTypes'
 
 /** Stable query key — exported so tests and DevTools can target it. */
 export const MIN_VARDAG_HUB_KEY = (userId: string) => ['hub', 'min-vardag', userId] as const

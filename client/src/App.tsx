@@ -1,9 +1,7 @@
 import { useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
-import { isHubNavEnabled } from './components/layout/navigation'
 import { RouteErrorBoundary, RouteLoadingFallback } from './components/RouteErrorBoundary'
-import { swLogger } from './lib/logger'
 import { Loader2 } from '@/components/ui/icons'
 
 // Eager-loaded kritiska komponenter
@@ -21,7 +19,6 @@ import { FocusModeProvider } from './components/FocusModeProvider'
 import { FocusExitButton } from './components/focus/shell/FocusExitButton'
 
 // Lazy-loaded sidor
-const Dashboard = lazy(() => import('./pages/Dashboard'))
 const CVPage = lazy(() => import('./pages/CVPage'))
 const TemplateSnapshot = lazy(() => import('./pages/TemplateSnapshot'))
 const PrintCV = lazy(() => import('./pages/PrintCV'))
@@ -166,16 +163,6 @@ function App() {
 
   useEffect(() => {
     initialize()
-    
-    // Clear old service worker to fix routing issues
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then((registrations) => {
-        registrations.forEach((registration) => {
-          swLogger.debug('[App] Unregistering old service worker:', registration.scope)
-          registration.unregister()
-        })
-      })
-    }
   }, [initialize])
 
   // Show loading screen while auth initializes
@@ -226,17 +213,8 @@ function App() {
         {/* Root route - shows Landing or Layout based on auth */}
         <Route path="/" element={<RootRoute />}>
           {/* Nested routes for authenticated users */}
-          <Route index element={
-            isHubNavEnabled() ? (
-              <Navigate to="/oversikt" replace />
-            ) : (
-              <LazyRoute>
-                <RouteErrorBoundary>
-                  <Dashboard />
-                </RouteErrorBoundary>
-              </LazyRoute>
-            )
-          } />
+          {/* Hub-nav är permanent sedan 2026-07-10 (C3) — index går alltid till Översikt */}
+          <Route index element={<Navigate to="/oversikt" replace />} />
           <Route path="cv/*" element={<LazyRoute><RouteErrorBoundary><CVPage /></RouteErrorBoundary></LazyRoute>} />
           <Route path="cover-letter/*" element={<LazyRoute><RouteErrorBoundary><CoverLetterPage /></RouteErrorBoundary></LazyRoute>} />
           <Route path="interest-guide/*" element={<LazyRoute><RouteErrorBoundary><InterestGuide /></RouteErrorBoundary></LazyRoute>} />

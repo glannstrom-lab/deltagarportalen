@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Target, TrendingUp, Briefcase, AlertCircle, FileText } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
-import { trendsApi } from '@/services/api';
+import { trendsApi } from '@/services/afTrendsApi';
 import { useDashboardData } from '@/hooks/useDashboardData';
 
 interface TrendingSkill {

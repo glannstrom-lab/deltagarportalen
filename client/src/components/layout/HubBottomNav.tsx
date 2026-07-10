@@ -1,8 +1,7 @@
 /**
  * HubBottomNav — 5-tab persistent mobile bottom navigation
  *
- * Renders only when isHubNavEnabled() returns true. Replaces the FAQ BottomBar
- * on mobile when hub navigation is rolled out (Phase 1 of v1.0 milestone).
+ * Hub-nav är permanent sedan 2026-07-10 (C3) — flaggreturen är borttagen.
  *
  * Active-tab detection uses getActiveHub() (explicit pageToHub map),
  * NEVER URL prefix matching (PITFALLS.md Pitfall 2).
@@ -12,15 +11,12 @@
 
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { navHubs, getActiveHub, isHubNavEnabled } from './navigation'
+import { navHubs, getActiveHub } from './navigation'
 import { cn } from '@/lib/utils'
 
 export function HubBottomNav() {
   const location = useLocation()
   const { t } = useTranslation()
-
-  // Render nothing when feature flag is off — caller should not need to gate this
-  if (!isHubNavEnabled()) return null
 
   const activeHub = getActiveHub(location.pathname)
 

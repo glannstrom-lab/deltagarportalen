@@ -2,19 +2,17 @@
  * Sidebar Component - Compact Design (Vercel/Supabase style)
  * Minimal padding, flat groups, subtle interactions
  *
- * Navigation modes:
- *  - Hub mode (VITE_HUB_NAV_ENABLED=true): 5 hub links + active hub sub-items
- *  - Legacy mode (default): existing 3-group navGroups flat list
+ * 5 hub links + active hub sub-items. (Legacy navGroups-läget togs bort
+ * 2026-07-10 (C3) — hub-nav är permanent sedan flaggan varit på i alla
+ * miljöer. navGroups lever kvar för mobilens MobileMainMenu.)
  */
 
 import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
-  navGroups,
   navHubs,
   getActiveHub,
-  isHubNavEnabled,
   adminNavItems,
   consultantNavItems,
   markFeatureVisited,
@@ -49,9 +47,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
   const isConsultant = activeRole === 'CONSULTANT' || isAdmin || isArbetsterapeut
   const isUser = activeRole === 'USER'
 
-  // Hub mode: computed once per render based on env flag + current location
-  const hubModeEnabled = isHubNavEnabled()
-  const activeHub = hubModeEnabled ? getActiveHub(location.pathname) : undefined
+  const activeHub = getActiveHub(location.pathname)
 
   const NavLink = ({
     to,
@@ -146,9 +142,8 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
         'flex-1 overflow-y-auto py-3',
         isCollapsed ? 'px-1.5' : 'px-2'
       )}>
-        {hubModeEnabled ? (
-          // Hub mode: 5 hub links with active sub-item expansion
-          <div className="space-y-0.5">
+        {/* 5 hub links with active sub-item expansion */}
+        <div className="space-y-0.5">
             {navHubs.map((hub) => {
               const isHubActive = activeHub?.id === hub.id
               return (
@@ -183,55 +178,7 @@ export function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: Side
                 </div>
               )
             })}
-          </div>
-        ) : (
-          // Legacy mode: existing 3-group navGroups rendering — preserved exactly
-          <>
-            {navGroups.map((group, groupIndex) => (
-              <div
-                key={group.id}
-                data-domain={group.domain}
-                className={cn(groupIndex > 0 && 'mt-4')}
-              >
-                {/* Group Label med färgpunkt — Only show expanded */}
-                {!isCollapsed && (
-                  <div className="px-2 mb-1.5 flex items-center gap-1.5">
-                    <span
-                      className="w-1.5 h-1.5 rounded-full bg-[var(--c-solid)]"
-                      aria-hidden="true"
-                    />
-                    <span className="text-xs font-semibold text-stone-500 dark:text-stone-400 uppercase tracking-wide">
-                      {t(group.labelKey, group.fallbackLabel)}
-                    </span>
-                  </div>
-                )}
-
-                {/* Collapsed separator */}
-                {isCollapsed && groupIndex > 0 && (
-                  <div className="mx-2 mb-2 border-t border-stone-100 dark:border-stone-800" />
-                )}
-
-                {/* Items */}
-                <div className="space-y-0.5">
-                  {group.items.map((item) => {
-                    const isActive = location.pathname === item.path ||
-                      (item.path !== '/' && location.pathname.startsWith(`${item.path}/`))
-                    return (
-                      <NavLink
-                        key={item.path}
-                        to={item.path}
-                        icon={item.icon}
-                        label={t(item.labelKey)}
-                        item={item}
-                        isActive={isActive}
-                      />
-                    )
-                  })}
-                </div>
-              </div>
-            ))}
-          </>
-        )}
+        </div>
 
         {/* Project Section — Steg till arbete (STA)
          *

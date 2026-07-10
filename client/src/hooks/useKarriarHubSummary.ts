@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
-import type { KarriarSummary } from '@/components/widgets/KarriarDataContext'
+import type { KarriarSummary } from './hubSummaryTypes'
 
 /** Stable query key — exported so tests and DevTools can target it. */
 export const KARRIAR_HUB_KEY = (userId: string) => ['hub', 'karriar', userId] as const

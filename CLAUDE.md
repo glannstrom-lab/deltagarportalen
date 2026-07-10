@@ -67,7 +67,7 @@ deltagarportal/
 ├── supabase/                # Migrations (120 filer) + 24 edge functions
 │   ├── functions/           # Deno edge — ai-*, af-*, learning-*, bolagsverket, ...
 │   └── migrations/
-├── e2e/                     # Playwright-tester (8 spec + ~87 ad-hoc .cjs-skript, kurering planerad C6)
+├── e2e/                     # Playwright-tester (8 spec + 7 kanoniska verktygsskript; 82 ad-hoc i e2e/archive/)
 ├── docs/                    # ROADMAP.md (enda gällande plan), DESIGN.md, granskningar
 ├── archive/                 # Arkiverat: 2026-q1, server-legacy, 2026-06-dokkonsolidering
 ├── .planning/               # GSD-milestone-historik (PROJECT, STATE) + AF-API-idébank
@@ -330,12 +330,11 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 | `docs/AI_MODEL_LOCKING.md` | Modell-låsning `openai/gpt-oss-120b` — alla AI-vägar |
 | `docs/AI_ARCHITECTURE_OVERVIEW.md` | Översikt över AI-stack (Vercel + Supabase edge) |
 | `docs/STA-FORBATTRINGSFORSLAG.md`, `docs/sta-automation-roadmap.md`, `docs/sta-*` | STA-modulens detaljspecar (prioriteras från ROADMAP §3b) |
-| `docs/RLS_VERIFICATION.md` | Supabase RLS-policy-verifiering |
 | `docs/api/services-overview.md` | Översikt över services-lagret i `client/src/services/` |
 | `docs/claude-code-guide.md` | Hur Claude Code används effektivt i projektet |
 | `docs/GRAFIK-PLAN.md` | Grafikpipeline-manual (chroma-key-standard, optimering, asset-status) |
 | `docs/26-001/26-002/26-010` | EU-utlysningsspecifikationer (beslut aug 2026, se ROADMAP §3c/§7) |
-| `.planning/PROJECT.md`, `STATE.md` | GSD-milestone-historik (hub-nav v1.0, klar 2026-04-29) |
+| `.planning/PROJECT.md`, `MILESTONES.md` | GSD-milestone-historik (hub-nav v1.0, klar 2026-04-29); STATE/ROADMAP/REQUIREMENTS arkiverade i `archive/2026-07-dokarkiv/` |
 | `.planning/AF-API-INTEGRATION-ROADMAP.md` | AF-API-idébank (~60 förslag, status per förslag) |
 | `.planning/research/PITFALLS.md` | Kända fallgropar i hub-systemet och dashboard |
 | `archive/2026-06-dokkonsolidering/` | Arkiverade planer & granskningar apr–maj 2026 (TECH-DEBT, DESIGN-ROADMAP, LIV, FLAGGED, BLOCKED m.fl.) — README förklarar vad som finns var |

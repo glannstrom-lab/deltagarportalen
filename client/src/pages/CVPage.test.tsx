@@ -122,7 +122,7 @@ vi.mock('@/components/Toast', () => ({
 
 import CVPage from './CVPage'
 import CVBuilder from './CVBuilder'
-import { cvApi } from '@/services/api'
+import { cvApi } from '@/services/supabaseApi'
 
 const mockCvApi = cvApi as {
   getCV: ReturnType<typeof vi.fn>

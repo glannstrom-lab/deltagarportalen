@@ -4,14 +4,7 @@ import { render, screen, within } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { Sidebar } from './Sidebar'
 
-// Mock isHubNavEnabled (reads import.meta.env at module load — must mock the module)
-vi.mock('./navigation', async (importOriginal) => {
-  const actual: any = await importOriginal()
-  return {
-    ...actual,
-    isHubNavEnabled: vi.fn(() => false), // default off; override per test
-  }
-})
+// (isHubNavEnabled-mocken borttagen 2026-07-10, C3 — hub-nav är permanent)
 
 // Mock useAuthStore
 vi.mock('@/stores/authStore', () => ({
@@ -29,21 +22,11 @@ const renderAt = (path: string, props?: { isCollapsed?: boolean }) =>
     </MemoryRouter>
   )
 
-// Helper to get isHubNavEnabled mock
-const getNavMock = async () => {
-  const nav = await import('./navigation')
-  return vi.mocked(nav.isHubNavEnabled)
-}
-
 // ============================================================
-// HUB MODE TESTS (isHubNavEnabled returns true)
+// HUB NAVIGATION TESTS (permanent sedan 2026-07-10, C3)
 // ============================================================
 
-describe('Hub mode (isHubNavEnabled = true)', () => {
-  beforeEach(async () => {
-    const mock = await getNavMock()
-    mock.mockReturnValue(true)
-  })
+describe('Hub-navigering', () => {
 
   it('Test 1: Renders exactly 5 top-level hub links with hub fallback labels', () => {
     renderAt('/oversikt')
@@ -116,77 +99,17 @@ describe('Hub mode (isHubNavEnabled = true)', () => {
 })
 
 // ============================================================
-// LEGACY MODE TESTS (isHubNavEnabled returns false — default)
-// ============================================================
-
-describe('Legacy mode (isHubNavEnabled = false)', () => {
-  beforeEach(async () => {
-    const mock = await getNavMock()
-    mock.mockReturnValue(false)
-  })
-
-  it('Test 7: Renders all 3 navGroup labels as group headers', () => {
-    renderAt('/')
-    const nav = document.querySelector('nav')!
-    // Group headers are uppercase small text spans, not links
-    // Use getAllByText since "Översikt" may appear both as group header and nav item
-    const allOversigtElements = within(nav).getAllByText('Översikt')
-    // At minimum the group header should exist
-    expect(allOversigtElements.length).toBeGreaterThanOrEqual(1)
-    expect(within(nav).getByText('Reflektion')).toBeInTheDocument()
-    expect(within(nav).getByText('Utåtriktat')).toBeInTheDocument()
-  })
-
-  it('Test 8: Renders all nav items from navGroups', async () => {
-    // Räkna förväntat antal från navGroups istället för hårdkodat 27 — tidigare
-    // antagande har glidit eftersom outbound-gruppen krymptes (numera 25 items
-    // totalt: 7+12+6). Testet kollar fortfarande att alla items renderas.
-    const { navGroups } = await import('@/components/layout/navigation')
-    const expectedCount = navGroups.flatMap(g => g.items).length
-
-    renderAt('/')
-    const nav = document.querySelector('nav')!
-    const navLinks = nav.querySelectorAll('a')
-    expect(navLinks.length).toBeGreaterThanOrEqual(expectedCount)
-  })
-
-  it('Test 9: When on /cv, the /cv nav link is highlighted (aria-current="page")', () => {
-    renderAt('/cv')
-    const nav = document.querySelector('nav')!
-    const activeLinks = nav.querySelectorAll('[aria-current="page"]')
-    expect(activeLinks.length).toBeGreaterThanOrEqual(1)
-    // Verify the active link goes to /cv
-    const cvActiveLink = Array.from(activeLinks).find(
-      (el) => el.getAttribute('href') === '/cv'
-    )
-    expect(cvActiveLink).toBeDefined()
-  })
-})
-
-// ============================================================
 // BOTH MODES — footer and sections
 // ============================================================
 
-describe('Both modes — footer and sections', () => {
-  it('Test 10 (hub mode): Footer renders settings link and logout button', async () => {
-    const mock = await getNavMock()
-    mock.mockReturnValue(true)
+describe('Footer and sections', () => {
+  it('Test 10: Footer renders settings link and logout button', () => {
     renderAt('/oversikt')
     expect(screen.getByRole('link', { name: /inställningar/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /logga ut/i })).toBeInTheDocument()
   })
 
-  it('Test 10b (legacy mode): Footer renders settings link and logout button', async () => {
-    const mock = await getNavMock()
-    mock.mockReturnValue(false)
-    renderAt('/')
-    expect(screen.getByRole('link', { name: /inställningar/i })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: /logga ut/i })).toBeInTheDocument()
-  })
-
-  it('Test 11: When isCollapsed=true and hub mode, only icon-only hub links render (no text labels, no sub-items)', async () => {
-    const mock = await getNavMock()
-    mock.mockReturnValue(true)
+  it('Test 11: When isCollapsed=true, only icon-only hub links render (no text labels, no sub-items)', () => {
     renderAt('/cv', { isCollapsed: true })
     // In collapsed mode, hub link text labels should not be visible (they use sr-only or are omitted)
     expect(screen.queryByText('Söka jobb')).not.toBeInTheDocument()

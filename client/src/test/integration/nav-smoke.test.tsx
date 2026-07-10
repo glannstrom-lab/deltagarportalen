@@ -44,14 +44,7 @@ vi.mock('@/stores/authStore', () => ({
   })),
 }))
 
-// Mock isHubNavEnabled — overridden per test suite
-vi.mock('@/components/layout/navigation', async (importOriginal) => {
-  const actual: any = await importOriginal()
-  return {
-    ...actual,
-    isHubNavEnabled: vi.fn(() => false),
-  }
-})
+// (isHubNavEnabled-mocken borttagen 2026-07-10, C3 — hub-nav är permanent)
 
 // Mock Supabase to prevent real network calls during page render
 vi.mock('@/lib/supabase', () => ({
@@ -170,38 +163,6 @@ describe('Deep-link smoke test (NAV-04)', () => {
     vi.clearAllMocks()
   })
 
-  describe('with VITE_HUB_NAV_ENABLED=false (legacy mode)', () => {
-    beforeEach(async () => {
-      const nav = await import('@/components/layout/navigation')
-      vi.mocked(nav.isHubNavEnabled).mockReturnValue(false)
-    })
-
-    it.each(DEEP_LINK_PATHS)(
-      'mounts %s without silently redirecting',
-      async (path) => {
-        const { container } = await renderAppAt(path)
-        // Wait for lazy chunk + Suspense to settle
-        await waitFor(
-          () => {
-            expect(container.textContent ?? '').not.toBe('loading')
-            expect(container.textContent ?? '').not.toBe('')
-          },
-          { timeout: 5000 }
-        )
-        // Assert no RouteErrorBoundary fired (chunk load or render error)
-        const errorFallback = container.querySelector('[data-testid="route-error-fallback"]')
-        expect(errorFallback).toBeNull()
-      },
-      8000
-    )
-  })
-
-  describe('with VITE_HUB_NAV_ENABLED=true (hub mode)', () => {
-    beforeEach(async () => {
-      const nav = await import('@/components/layout/navigation')
-      vi.mocked(nav.isHubNavEnabled).mockReturnValue(true)
-    })
-
     it.each(DEEP_LINK_PATHS)(
       'mounts %s without silently redirecting',
       async (path) => {
@@ -220,7 +181,7 @@ describe('Deep-link smoke test (NAV-04)', () => {
     )
 
     it.each(HUB_PATHS)(
-      'mounts hub path %s when flag is on',
+      'mounts hub path %s',
       async (path) => {
         const { container } = await renderAppAt(path)
         await waitFor(
@@ -237,4 +198,4 @@ describe('Deep-link smoke test (NAV-04)', () => {
       8000
     )
   })
-})
+

@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { cvApi } from '@/services/api'
+import { cvApi } from '@/services/supabaseApi'
 import { JobAdaptPanel } from '@/components/cv/JobAdaptPanel'
 import { showToast } from '@/components/Toast'
 import { Loader2, FileText, ArrowRight } from '@/components/ui/icons'

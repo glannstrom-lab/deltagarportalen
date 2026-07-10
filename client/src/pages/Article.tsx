@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { articleApi } from '../services/api'
+import { articleApi } from '../services/supabaseApi'
 import { logger } from '../lib/logger'
 import {
   ReadingProgress,

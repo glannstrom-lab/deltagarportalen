@@ -16,7 +16,7 @@ import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
 import { OptimizedImage } from './ui/OptimizedImage'
-import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge, isHubNavEnabled } from './layout/navigation'
+import { navGroups, adminNavItems, consultantNavItems, shouldShowBadge } from './layout/navigation'
 import { HubBottomNav } from './layout/HubBottomNav'
 import { OnboardingFlow } from './onboarding/OnboardingFlow'
 import { CoachWidget } from './CoachWidget'
@@ -65,10 +65,9 @@ export default function Layout() {
   const HUB_ROOT_PATHS = ['/', '/oversikt', '/jobb', '/karriar', '/resurser', '/min-vardag']
   const showBackButton = isMobile && !HUB_ROOT_PATHS.includes(location.pathname)
 
-  const hubModeEnabled = isHubNavEnabled()
   // FAQ + Crisis Support moved into TopBar; BottomBar removed.
-  // HubBottomNav still renders on mobile when hub flag is on (for hub-level navigation).
-  const showHubBottomNav = hubModeEnabled && isMobile && showBars
+  // HubBottomNav renders on mobile (hub-nav är permanent sedan 2026-07-10, C3).
+  const showHubBottomNav = isMobile && showBars
 
   return (
     <>

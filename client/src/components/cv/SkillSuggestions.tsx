@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Lightbulb, Plus, Check, Loader2 } from '@/components/ui/icons';
-import { taxonomyApi } from '@/services/api';
+import { taxonomyApi } from '@/services/afTaxonomyApi';
 
 interface Skill {
   id: string;

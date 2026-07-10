@@ -19,7 +19,7 @@ async function shot(p,name){ await p.screenshot({path:path.join(out,name+'.png')
 async function consultantDesktop(browser){
   const auth = path.join(__dirname,'.auth','consultant.json')
   const c = await browser.newContext({ viewport: DESK, storageState: fs.existsSync(auth)?auth:undefined })
-  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true');localStorage.setItem('VITE_HUB_NAV_ENABLED','true')}catch{}})
+  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true')}catch{}})
   const p = await c.newPage()
   const errs=[];p.on('console',m=>{if(m.type()==='error')errs.push(m.text().slice(0,140))});p.on('pageerror',e=>errs.push('PE:'+String(e.message).slice(0,140)))
   const routes=[['/consultant','cons-d-overview'],['/consultant/participants','cons-d-participants'],['/consultant/analytics','cons-d-analytics'],['/consultant/communication','cons-d-communication'],['/consultant/resources','cons-d-resources'],['/consultant/settings','cons-d-settings'],['/konsulent/steg-till-arbete','cons-d-sta']]
@@ -34,7 +34,7 @@ async function consultantDesktop(browser){
 
 async function participantFlows(browser){
   const c = await browser.newContext({ viewport: DESK })
-  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true');localStorage.setItem('VITE_HUB_NAV_ENABLED','true')}catch{}})
+  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true')}catch{}})
   const p = await c.newPage()
   const errs=[];p.on('console',m=>{if(m.type()==='error')errs.push(m.text().slice(0,140))});p.on('pageerror',e=>errs.push('PE:'+String(e.message).slice(0,140)))
   await p.goto(`http://localhost:3000/#/login?bust=${Date.now()}`,{waitUntil:'networkidle'});await p.waitForTimeout(700)

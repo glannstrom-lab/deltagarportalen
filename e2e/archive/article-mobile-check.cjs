@@ -7,7 +7,7 @@ async function main(){
   const out=path.join(__dirname,'screenshots','mobile-full-audit');fs.mkdirSync(out,{recursive:true})
   const b=await chromium.launch()
   const c=await b.newContext({viewport:{width:360,height:740},deviceScaleFactor:2,isMobile:true,hasTouch:true})
-  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true');localStorage.setItem('VITE_HUB_NAV_ENABLED','true')}catch{}})
+  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true')}catch{}})
   const p=await c.newPage()
   const errs=[];p.on('console',m=>{if(m.type()==='error')errs.push(m.text().slice(0,140))});p.on('pageerror',e=>errs.push('PE:'+String(e.message).slice(0,140)))
   await p.goto(`http://localhost:3000/#/login?bust=${Date.now()}`,{waitUntil:'networkidle'});await p.waitForTimeout(700)

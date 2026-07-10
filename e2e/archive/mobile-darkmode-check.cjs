@@ -14,7 +14,7 @@ async function main(){
   const out=path.join(__dirname,'screenshots','mobile-darkmode');fs.mkdirSync(out,{recursive:true})
   const b=await chromium.launch()
   const c=await b.newContext({viewport:{width:360,height:740},deviceScaleFactor:2,isMobile:true,hasTouch:true})
-  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true');localStorage.setItem('VITE_HUB_NAV_ENABLED','true');localStorage.setItem('theme','dark')}catch{}})
+  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true');localStorage.setItem('theme','dark')}catch{}})
   const p=await c.newPage()
   await p.goto(`http://localhost:3000/#/login?bust=${Date.now()}`,{waitUntil:'networkidle'});await p.waitForTimeout(700)
   await p.locator('input#email').fill(process.env.TEST_USER_EMAIL);await p.locator('input#password').fill(process.env.TEST_USER_PASSWORD)

@@ -170,9 +170,9 @@ export function shouldShowBadge(item: NavItem): boolean {
 }
 
 // ============================================
-// HUB NAVIGATION (v1.0 milestone — Phase 1)
-// 5 domain-oriented hubs replacing the flat 27-item nav
-// Coexists with navGroups via VITE_HUB_NAV_ENABLED
+// HUB NAVIGATION (v1.0 milestone — Phase 1; permanent sedan 2026-07-10, C3)
+// 5 domain-oriented hubs. navGroups ovan lever kvar för mobilens
+// MobileMainMenu ("alla sidor"-hamburgermenyn i Layout.tsx).
 // ============================================
 
 export type HubId = 'oversikt' | 'jobb' | 'karriar' | 'resurser' | 'min-vardag'
@@ -356,13 +356,7 @@ export function getActiveHub(pathname: string): NavHub | undefined {
   return undefined
 }
 
-/**
- * Read VITE_HUB_NAV_ENABLED once at module load.
- * Default: false (old navigation stays active until env var is explicitly set to 'true').
- * Per STATE.md decision: rollout via env flag only, no per-user DB flag (PITFALLS.md Pitfall 16).
- */
-const HUB_NAV_FLAG = import.meta.env.VITE_HUB_NAV_ENABLED === 'true'
-
-export function isHubNavEnabled(): boolean {
-  return HUB_NAV_FLAG
-}
+// VITE_HUB_NAV_ENABLED + isHubNavEnabled() borttagna 2026-07-10 (C3):
+// hub-nav har varit permanent på i alla miljöer sedan v1.0-utrullningen.
+// OBS: navGroups är INTE död kod — mobilens MobileMainMenu (Layout.tsx)
+// renderar den som "alla sidor"-hamburgermeny.

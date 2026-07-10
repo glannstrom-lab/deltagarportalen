@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TrendingUp, MapPin, Briefcase, Award, Users, BarChart3 } from '@/components/ui/icons';
-import { trendsApi } from '@/services/api';
+import { trendsApi } from '@/services/afTrendsApi';
 import type { MarketStats, TrendingSkill, PopularSearch } from '@/services/afTrendsApi';
 
 export default function RealMarketInsights() {

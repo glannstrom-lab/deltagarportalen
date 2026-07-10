@@ -6,7 +6,7 @@ const fs = require('fs'), path = require('path')
 async function main(){
   const b = await chromium.launch()
   const c = await b.newContext({ viewport:{width:360,height:740}, isMobile:true, hasTouch:true })
-  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true');localStorage.setItem('VITE_HUB_NAV_ENABLED','true')}catch{}})
+  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true')}catch{}})
   const p = await c.newPage()
   p.on('console', async (msg)=>{
     if(msg.type()==='error' && msg.text().includes('same key')){

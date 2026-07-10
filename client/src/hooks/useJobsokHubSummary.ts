@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
-import type { JobsokSummary } from '@/components/widgets/JobsokDataContext'
+import type { JobsokSummary } from './hubSummaryTypes'
 
 /** Stable query key — exported so tests and DevTools can target it. */
 export const JOBSOK_HUB_KEY = (userId: string) => ['hub', 'jobsok', userId] as const

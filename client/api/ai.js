@@ -93,7 +93,6 @@ const RATE_LIMITS = {
   'mentalt-stod': { limit: 20, windowMinutes: 15 },
   'natverkande': { limit: 15, windowMinutes: 15 },
   'ansokningscoach': { limit: 15, windowMinutes: 15 },
-  'ovningshjalp': { limit: 20, windowMinutes: 15 },
   'profile-summary': { limit: 10, windowMinutes: 15 },
   'chatbot': { limit: 30, windowMinutes: 15 },
   'ai-team-chat': { limit: 50, windowMinutes: 15 },
@@ -450,12 +449,6 @@ Regler: matchScore 0-100 utifrån hur väl CV:t täcker annonsens krav. foundKey
     system: 'Du är ansökningscoach. Ge feedback på svenska.',
     user: `${data?.typ === 'feedback' ? 'Feedback på' : data?.typ === 'forbattra' ? 'Förbättra' : 'Kontrollera'}:\n${data?.text}\n\nJobbannons: ${data?.jobbannons || 'Ej angiven'}`,
     maxTokens: 1000,
-    responseKey: 'result'
-  }),
-  'ovningshjalp': (data) => ({
-    system: 'Du är en stödjande coach som hjälper användare med självreflektion och övningar på svenska.',
-    user: `Hjälp användaren med denna övning:\nÖvning: ${data?.ovningId || 'Självreflektion'}\nSteg: ${data?.steg || '1'}\nFråga: ${data?.fraga || ''}\n${data?.anvandarSvar ? 'Användarens svar: ' + data.anvandarSvar + '\n\nGe feedback och vägledning.' : 'Ge vägledning för att besvara frågan.'}`,
-    maxTokens: 800,
     responseKey: 'result'
   }),
   'profile-summary': (data) => {

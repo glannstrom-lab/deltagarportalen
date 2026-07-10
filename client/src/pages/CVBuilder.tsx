@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { cvApi } from '@/services/api'
+import { cvApi } from '@/services/supabaseApi'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Check,
   Sparkles, Briefcase, GraduationCap, Award,

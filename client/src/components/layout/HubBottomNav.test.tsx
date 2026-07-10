@@ -4,13 +4,7 @@ import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import { HubBottomNav } from './HubBottomNav'
 
-vi.mock('./navigation', async (importOriginal) => {
-  const actual: any = await importOriginal()
-  return {
-    ...actual,
-    isHubNavEnabled: vi.fn(() => true), // default ON for most tests; override in test 8
-  }
-})
+// (isHubNavEnabled-mocken borttagen 2026-07-10, C3 — hub-nav är permanent)
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -30,7 +24,7 @@ const renderAt = (path: string) =>
   )
 
 describe('HubBottomNav', () => {
-  it('Test 1: Renders exactly 5 navigation links when isHubNavEnabled returns true', () => {
+  it('Test 1: Renders exactly 5 navigation links', () => {
     renderAt('/cv')
     const links = screen.getAllByRole('link')
     expect(links).toHaveLength(5)
@@ -87,13 +81,6 @@ describe('HubBottomNav', () => {
     for (const link of links) {
       expect(link.className).toContain('min-h-[44px]')
     }
-  })
-
-  it('Test 8: When isHubNavEnabled returns false, renders null', async () => {
-    const nav = await import('./navigation')
-    vi.mocked(nav.isHubNavEnabled).mockReturnValueOnce(false)
-    const { container } = renderAt('/cv')
-    expect(container.firstChild).toBeNull()
   })
 
   it('Test 9: Active link parent <li> has data-domain equal to the active hub domain', () => {

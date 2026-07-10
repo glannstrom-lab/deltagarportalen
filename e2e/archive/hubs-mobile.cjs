@@ -50,7 +50,6 @@ async function main() {
       try {
         localStorage.setItem('jobin_cookie_consent', 'true')
         localStorage.setItem('jobin_cookie_preferences', JSON.stringify({ necessary: true, analytics: false }))
-        localStorage.setItem('VITE_HUB_NAV_ENABLED', 'true')
       } catch {}
     })
     const page = await context.newPage()

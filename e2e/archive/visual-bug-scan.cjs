@@ -75,7 +75,7 @@ async function main() {
   fs.mkdirSync(out, { recursive: true })
   const b = await chromium.launch()
   const c = await b.newContext({ viewport: VW, deviceScaleFactor: 1, isMobile: MODE === 'mobile', hasTouch: MODE === 'mobile' })
-  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true');localStorage.setItem('VITE_HUB_NAV_ENABLED','true')}catch{}})
+  await c.addInitScript(()=>{try{localStorage.setItem('jobin_cookie_consent','true')}catch{}})
   const p = await c.newPage()
   const errs = []
   p.on('console', m => { if (m.type() === 'error') errs.push(m.text().slice(0,160)) })

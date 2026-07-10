@@ -1,75 +1,50 @@
-# E2E-tester (Playwright)
+# E2E-tester och verifieringsverktyg
 
-## Vad som körs i CI nu
+Uppdaterad 2026-07-10 (ROADMAP C6). Katalogen kurerad: 82 ad-hoc-skript
+flyttade till `archive/` — det som ligger i roten är kanoniskt.
 
-`smoke.spec.ts` körs automatiskt på varje PR och push:
-- Landing page laddas utan JS-fel
-- Login/register-sidor renderar formulär
-- Privacy + AI-policy är tillgängliga
-- Skyddade sidor redirectar oautentiserad till login
+## Spec-filer (Playwright Test — körs med `npx playwright test`)
 
-Inga credentials krävs — alla testerna är på public sidor.
+| Fil | Täcker |
+|-----|--------|
+| `smoke.spec.ts` | Grundläggande sidladdning — **körs i CI på varje PR/push** (inga credentials krävs) |
+| `auth.spec.ts` | Login/registrering |
+| `cv.spec.ts` | CV-flödet |
+| `cover-letter.spec.ts` | Personligt brev |
+| `job-search.spec.ts` | Jobbsökning |
+| `dashboard.spec.ts` | Översikt |
+| `axe-a11y.spec.ts` | Automatisk a11y-svep (axe-core) |
+| `regression-fas-a.spec.ts` | Regressionsskydd tech-debt fas A |
 
-## Aktivera authenticated-tester (cv, dashboard, cover-letter, job-search)
+**CI-status för authenticated-testerna:** väntar på GitHub Secrets
+(`TEST_USER_EMAIL`/`TEST_USER_PASSWORD`) — ROADMAP D1. Testkontot finns
+redan i `.env.test.local` (gitignorerad) och fungerar mot prod (jobin.se).
+När secrets är satta: aktivera workflow-steget i `.github/workflows/`.
 
-De andra spec-filerna (`auth.spec.ts`, `cv.spec.ts`, etc.) kräver en
-test-användare i Supabase. För att aktivera i CI:
+## Kanoniska verktygsskript (körs med `node e2e/<fil>`)
 
-### 1. Skapa test-user i Supabase
-```sql
--- Kör i Supabase SQL Editor
-INSERT INTO auth.users (id, email, encrypted_password, email_confirmed_at)
-VALUES (
-  gen_random_uuid(),
-  'test+e2e@deltagarportalen.se',
-  crypt('byt-detta-långa-lösenord-här', gen_salt('bf')),
-  NOW()
-);
-```
+| Skript | Användning |
+|--------|-----------|
+| `screenshot.cjs` | `node e2e/screenshot.cjs /<route> [WxH]` — loggar in (cachar session i `.auth/state.json`), tar skärmdump. `BASE_URL=https://www.jobin.se` för prod |
+| `cv-pdf-visual-audit.cjs` | PDF+PNG per CV-mall/variant → `cv-prints/visual-audit/` (kräver dev-server på :3000). Kanoniskt verifieringsverktyg för CV-PDF (se CLAUDE.md) |
+| `axe-contrast.cjs` | Kontrastkontroll (WCAG) |
+| `spontan-verify.cjs` | Full browserverifiering av Spontanansökan mot prod (24 kontroller, självstädande) |
+| `spontan-verify-p7.cjs` | Fokuserad kontroll: uppföljningspill på Jobb-hubbens Spontanansökan-kort |
+| `art50-verify.cjs` | AI Act Art 50: synlig märkning + data-ai-generated på AI-output (LinkedIn-optimeraren) |
+| `spar-b-verify.cjs` | Spår B-regression: riktig AI på /career/adaptation, konsulentens deltagarlista, borttagen LinkedIn-teaser |
 
-Rekommendation: skapa hellre en separat test-databas eller -projekt om
-möjligt, så test-data inte krockar med riktiga användare.
+Verktygsskripten läser `TEST_USER_EMAIL`/`TEST_USER_PASSWORD` (och för
+konsulentflöden `E2E_CONS_EMAIL`/`E2E_CONS_PASSWORD`) från `.env.test.local`
+i projektroten. Sessioner cachas i `e2e/.auth/*.json` (gitignorerat).
 
-### 2. Lägg till GitHub Secrets
-- `TEST_USER_EMAIL` = `test+e2e@deltagarportalen.se`
-- `TEST_USER_PASSWORD` = lösenordet ovan
-- (consultant-tester) `TEST_CONSULTANT_EMAIL` + `TEST_CONSULTANT_PASSWORD`
+## Mönster: verifiera datadrivna vyer
 
-### 3. Lägg till job i `.github/workflows/ci.yml`
-Kopiera `e2e-smoke`-jobbet och byt:
-- Namnet till `e2e-authenticated`
-- Steget till: `npx playwright test e2e/auth.spec.ts e2e/cv.spec.ts e2e/dashboard.spec.ts ...`
-- Lägg till env: `TEST_USER_EMAIL: ${{ secrets.TEST_USER_EMAIL }}` etc.
+Testkontot är ofta tomt. Antingen skapa riktig data via UI:t och städa
+efteråt (som `spontan-verify.cjs` gör), eller intercepta Supabase REST med
+Playwright-routes (route-interception av `**/rest/v1/...`).
 
-### 4. (Valfritt) Cleanup mellan tester
-Test-användarens data fylls med varje test. Lägg till en `afterEach` som
-nollställer profile/cv via Supabase RPC:
-```sql
-CREATE FUNCTION reset_test_user(p_email text) RETURNS void AS $$
-BEGIN
-  DELETE FROM cvs WHERE user_id = (SELECT id FROM auth.users WHERE email = p_email);
-  DELETE FROM cover_letters WHERE user_id = (...);
-  -- etc.
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-```
+## `archive/`
 
-## Lokal körning
-
-```bash
-# Smoke-tester (ingen auth)
-npx playwright test e2e/smoke.spec.ts --project=chromium
-
-# Med UI för debugging
-npx playwright test --ui
-
-# Specifik test
-npx playwright test cv -g "kan spara CV"
-
-# Visa rapport
-npx playwright show-report
-```
-
-Webserver startas automatiskt via `playwright.config.ts` (npm run dev:client).
-Om du redan har dev-servern igång, sätt `PLAYWRIGHT_BASE_URL=http://localhost:3002`
-för att hoppa över auto-start.
+82 historiska ad-hoc-skript (apr–jul 2026): engångsfelsökningar,
+skärmdumpsserier, granskningsskript. Behållna för referens — förvänta dig
+inte att de kör oförändrade (selektorer/flöden har ändrats).

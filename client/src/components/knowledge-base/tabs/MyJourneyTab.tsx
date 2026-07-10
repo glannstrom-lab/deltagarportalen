@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Briefcase, FileText, Compass, PenTool, ArrowRight, CheckCircle2 } from '@/components/ui/icons'
 import { Card, LoadingState } from '@/components/ui'
-import { cvApi, coverLetterApi, savedJobsApi } from '@/services/api'
+import { cvApi, coverLetterApi, savedJobsApi } from '@/services/supabaseApi'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 
 export default function MyJourneyTab() {

@@ -4,7 +4,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { articleApi } from '@/services/api'
+import { articleApi } from '@/services/supabaseApi'
 import type { Article } from '@/types/knowledge'
 
 const ARTICLES_KEY = 'articles'

@@ -50,7 +50,7 @@ async function measure(page) {
 async function run(pages, storageState, prefix, out) {
   const browser = await chromium.launch()
   const ctx = await browser.newContext({ viewport: { width: VIEWPORT.w, height: VIEWPORT.h }, deviceScaleFactor: 2, isMobile: true, hasTouch: true, storageState })
-  await ctx.addInitScript(() => { try { localStorage.setItem('jobin_cookie_consent','true'); localStorage.setItem('VITE_HUB_NAV_ENABLED','true') } catch {} })
+  await ctx.addInitScript(() => { try { localStorage.setItem('jobin_cookie_consent','true');  } catch {} })
   const page = await ctx.newPage()
   const errs = []
   page.on('console', m => { if (m.type()==='error') errs.push(m.text().slice(0,160)) })

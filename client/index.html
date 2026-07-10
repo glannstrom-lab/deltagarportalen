@@ -179,40 +179,10 @@
       })();
     </script>
     
-    <!-- Force clear old service workers on version mismatch -->
-    <script type="text/javascript">
-      (function() {
-        const CURRENT_VERSION = 'v3';
-        const storedVersion = localStorage.getItem('app-version');
-        
-        if (storedVersion !== CURRENT_VERSION) {
-          // Unregister all service workers
-          if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-              registrations.forEach(function(registration) {
-                registration.unregister();
-                console.log('[App] Unregistered old service worker');
-              });
-              // Clear all caches
-              if ('caches' in window) {
-                caches.keys().then(function(cacheNames) {
-                  cacheNames.forEach(function(cacheName) {
-                    caches.delete(cacheName);
-                    console.log('[App] Deleted cache:', cacheName);
-                  });
-                });
-              }
-              // Store new version and reload
-              localStorage.setItem('app-version', CURRENT_VERSION);
-              console.log('[App] Updated to version:', CURRENT_VERSION);
-            });
-          } else {
-            localStorage.setItem('app-version', CURRENT_VERSION);
-          }
-        }
-      })();
-    </script>
-    
+    <!-- SW-avregistrering sker en gång i skriptet ovan (rad ~42).
+         Dubbletterna i main.tsx/App.tsx och version-mismatch-blocket
+         togs bort 2026-07-10 (C2) — appen registrerar ingen SW längre. -->
+
     <!-- Start Single Page Apps for GitHub Pages -->
     <script type="text/javascript">
       (function(l) {

@@ -81,19 +81,8 @@ const queryClient = new QueryClient({
   },
 })
 
-// Clear any remaining service workers
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    registrations.forEach(registration => {
-      registration.unregister()
-    })
-  })
-  if ('caches' in window) {
-    caches.keys().then(names => {
-      names.forEach(name => caches.delete(name))
-    })
-  }
-}
+// SW-avregistrering sker i index.html (en gång, före app-laddning) —
+// dubbletten här borttagen 2026-07-10 (C2)
 
 // Initialize app
 const rootElement = document.getElementById('root')

@@ -44,14 +44,14 @@
 
 | # | Uppgift | Detaljer |
 |---|---------|----------|
-| C1 | Arkivera widget-systemet | `components/widgets/` ~6 000 rader inkl. ~30 testfiler, monteras aldrig. Flytta typexporter (JobsokSummary m.fl.) till hooks-filerna, arkivera resten |
-| C2 | Radera småskrot | CompactDashboard + MobileDashboard (690 r), `ai-team/OnboardingModal`, `useServiceWorker` + SW-avregistrering ×3, `ovningshjalp` i ai.js |
-| C3 | Ta bort `VITE_HUB_NAV_ENABLED` + navGroups | Flaggan är permanent på; gamla 27-items-navigationen är död. Rätta även e2e-skript som sätter flaggan via localStorage (verkningslöst) |
-| C4 | Beslut: 6 callerlösa edge-funktioner | `learning-*` ×3, `ai-assistant`, `af-jobsearch`, `af-enrichments` — behåll som 26-002-groundwork eller ta bort (attackyta). **Kopplas till G6-beslutet** |
-| C5 (E6) | Radera `services/api.ts`-shim | 14 importörer skrivs om |
-| C6 (S3) | Kurera `e2e/` + skriv om README | 87 ad-hoc-.cjs; promota ~10 till spec, arkivera resten |
-| C7 (S6) | `design-source/` 36 MB ospårat | Committa, .gitignore eller flytta ut — **Mikael beslutar** (persondata?) |
-| C8 | Dokumentarkivering | 12× team-betyg, jobsearch-fullstack-review, AI_ENGINEER_ANALYSIS, RLS_VERIFICATION (inaktuell = farlig), .planning/STATE|ROADMAP|REQUIREMENTS → archive/ |
+| C1 | Arkivera widget-systemet | ✅ **Klar 2026-07-10** — hela `components/widgets/` + `useWidgetLayout`/`useWidgetSize` (+tester) → `archive/2026-07-widget-system/`; levande typer flyttade till `hooks/hubSummaryTypes.ts`. Testsviten −184 tester som vaktade dödkod |
+| C2 | Radera småskrot | ✅ **Klar 2026-07-10** — CompactDashboard, MobileDashboard, ai-team/OnboardingModal, useServiceWorker raderade; SW-avregistrering 4→1 ställe (index.html); UpdateNotification förenklad till offline-indikator; `ovningshjalp` borta ur ai.js |
+| C3 | Ta bort `VITE_HUB_NAV_ENABLED` | ✅ **Klar 2026-07-10** — flaggan + legacy-grenar borta ur App/Sidebar/Layout/HubBottomNav, nav-flag-flip-testet raderat, 14 e2e-skript rensade. **Korrigering:** navGroups är INTE död — mobilens MobileMainMenu renderar den; behållen och dokumenterad. Rest: pages/Dashboard.tsx blev orutad (E12-kandidat); ta bort flaggan ur Vercel-dashboarden (kosmetiskt, Mikael) |
+| C4 | Beslut: 6 callerlösa edge-funktioner | ⬜ **Öppen — kopplad till G6-beslutet (aug).** `learning-*` ×3, `ai-assistant`, `af-jobsearch`, `af-enrichments` behålls tills EU-valet; alla har auth och `learning-analyze-gap` fick rate limit (A8) |
+| C5 (E6) | Radera `services/api.ts`-shim | ✅ **Klar 2026-07-10** — 14 importörer omskrivna till källmoduler (supabaseApi/afTrendsApi/afTaxonomyApi/afJobEdApi), shimmen raderad |
+| C6 (S3) | Kurera `e2e/` + skriv om README | ✅ **Klar 2026-07-10** — 82 ad-hoc-skript → `e2e/archive/`, 7 kanoniska kvar, README omskriven. Promota-till-spec väntar på D1 (CI-secrets) |
+| C7 (S6) | `design-source/` 36 MB ospårat | ✅ Gitignorerad 2026-07-10 (rå grafik, inga persondata; optimerade versioner i client/public). Långsiktig hemvist fortfarande **Mikaels beslut** |
+| C8 | Dokumentarkivering | ✅ **Klar 2026-07-10** — 12× team-betyg, jobsearch-review, AI_ENGINEER_ANALYSIS, RLS_VERIFICATION, onboarding-patterns + .planning/STATE\|ROADMAP\|REQUIREMENTS → `archive/2026-07-dokarkiv/` (README förklarar) |
 
 ## Spår D — Skyddsnät & kvalitet
 

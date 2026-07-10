@@ -1,95 +1,51 @@
 /**
  * Update Notification Component
- * 
- * Shows a toast notification when a new app version is available
+ *
+ * Visar en offline-indikator när nätverket försvinner.
+ * (Uppdaterings-toasten togs bort 2026-07-10 (C2): den byggde på en
+ * service worker som appen samtidigt avregistrerade — flödet kunde
+ * aldrig trigga. Offline-läget behöver ingen SW.)
  */
 
-import { useServiceWorker } from '@/hooks/useServiceWorker'
-import { Button } from './ui/Button'
-import { RefreshCw, X } from '@/components/ui/icons'
+import { X } from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 
 export function UpdateNotification() {
-  const { updateAvailable, update, isOffline } = useServiceWorker()
-  const [isVisible, setIsVisible] = useState(false)
+  const [isOffline, setIsOffline] = useState(!navigator.onLine)
   const [isDismissed, setIsDismissed] = useState(false)
 
   useEffect(() => {
-    if (updateAvailable && !isDismissed) {
-      // Small delay to not interrupt user immediately
-      const timer = setTimeout(() => {
-        setIsVisible(true)
-      }, 2000)
-      return () => clearTimeout(timer)
+    const goOffline = () => {
+      setIsOffline(true)
+      setIsDismissed(false)
     }
-  }, [updateAvailable, isDismissed])
+    const goOnline = () => setIsOffline(false)
 
-  const handleUpdate = () => {
-    update()
-  }
+    window.addEventListener('offline', goOffline)
+    window.addEventListener('online', goOnline)
+    return () => {
+      window.removeEventListener('offline', goOffline)
+      window.removeEventListener('online', goOnline)
+    }
+  }, [])
 
-  const handleDismiss = () => {
-    setIsVisible(false)
-    setIsDismissed(true)
-  }
-
-  const handleOfflineDismiss = () => {
-    setIsVisible(false)
-  }
-
-  // Show offline notification
-  if (isOffline && !isDismissed) {
-    return (
-      <div
-        role="alert"
-        className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-stone-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-in slide-in-from-bottom-4"
-      >
-        <span className="text-sm">
-          Du är offline. Vissa funktioner kan vara begränsade.
-        </span>
-        <button
-          onClick={handleOfflineDismiss}
-          className="p-1 hover:bg-stone-700 rounded"
-          aria-label="Stäng"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-    )
-  }
-
-  // Show update notification
-  if (!isVisible) return null
+  if (!isOffline || isDismissed) return null
 
   return (
     <div
       role="alert"
-      aria-live="polite"
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-[var(--c-solid)] text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-4 animate-in slide-in-from-bottom-4"
+      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-stone-800 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-3 animate-in slide-in-from-bottom-4"
     >
-      <div className="flex items-center gap-2">
-        <RefreshCw className="w-5 h-5" aria-hidden="true" />
-        <span className="text-sm font-medium">
-          En ny version är tillgänglig
-        </span>
-      </div>
-      
-      <div className="flex items-center gap-2">
-        <Button
-          onClick={handleUpdate}
-          size="sm"
-          className="bg-white text-[var(--c-text)] hover:bg-[var(--c-bg)] h-8"
-        >
-          Uppdatera
-        </Button>
-        <button
-          onClick={handleDismiss}
-          className="p-1 hover:bg-[var(--c-text)] rounded"
-          aria-label="Stäng"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
+      <span className="text-sm">
+        Du är offline. Vissa funktioner kan vara begränsade.
+      </span>
+      <button
+        onClick={() => setIsDismissed(true)}
+        className="p-1 hover:bg-stone-700 rounded"
+        aria-label="Stäng"
+      >
+        <X className="w-4 h-4" />
+      </button>
     </div>
   )
 }

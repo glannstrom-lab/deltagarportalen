@@ -1,7 +1,7 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAuth } from '@/hooks/useSupabase'
 import { supabase } from '@/lib/supabase'
-import type { ResurserSummary } from '@/components/widgets/ResurserDataContext'
+import type { ResurserSummary } from './hubSummaryTypes'
 
 /** Stable query key — exported so tests and DevTools can target it. */
 export const RESURSER_HUB_KEY = (userId: string) => ['hub', 'resurser', userId] as const

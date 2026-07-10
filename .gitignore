@@ -104,7 +104,9 @@ blob-migration-report-*.json
 article-refs-report.json
 
 # Bildkällor för illustrationer (stora PNG, behålls lokalt, derivat ligger i client/public/illustrations)
-design-source/illustrations-raw/
+# Hela design-source/ (rå grafik, 36 MB) — optimerade versioner i client/public.
+# Långsiktig hemvist: Mikaels beslut (ROADMAP C7).
+design-source/
 
 # STA källmaterial (~800 MB arbetsdokument) — hålls utanför repot
 sta/Del */

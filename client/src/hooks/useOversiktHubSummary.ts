@@ -5,10 +5,7 @@ import { useJobsokHubSummary } from './useJobsokHubSummary'
 import { useKarriarHubSummary } from './useKarriarHubSummary'
 import { useResurserHubSummary } from './useResurserHubSummary'
 import { useMinVardagHubSummary } from './useMinVardagHubSummary'
-import type { JobsokSummary } from '@/components/widgets/JobsokDataContext'
-import type { KarriarSummary } from '@/components/widgets/KarriarDataContext'
-import type { ResurserSummary } from '@/components/widgets/ResurserDataContext'
-import type { MinVardagSummary } from '@/components/widgets/MinVardagDataContext'
+import type { JobsokSummary, KarriarSummary, ResurserSummary, MinVardagSummary } from './hubSummaryTypes'
 
 /**
  * Aggregated shape consumed by HubOverview. Defined here (was in the deleted

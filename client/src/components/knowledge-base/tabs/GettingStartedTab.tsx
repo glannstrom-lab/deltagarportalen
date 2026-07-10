@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { Rocket, CheckCircle2, ArrowRight, Sparkles, FileText, Compass, Briefcase, PenTool } from '@/components/ui/icons'
 import { Card, LoadingState } from '@/components/ui'
-import { cvApi, interestApi, coverLetterApi, savedJobsApi } from '@/services/api'
+import { cvApi, interestApi, coverLetterApi, savedJobsApi } from '@/services/supabaseApi'
 
 
 export default function GettingStartedTab() {
