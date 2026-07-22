@@ -49,7 +49,7 @@ Monitoring:   Sentry
 deltagarportal/
 ├── client/                  # React frontend (Vercel rootDirectory)
 │   ├── api/                 # Vercel serverless functions
-│   │   ├── ai.js            # Huvud-AI-endpoint (22 funktioner, samlad)
+│   │   ├── ai.js            # Huvud-AI-endpoint (24 funktioner, samlad)
 │   │   ├── ai-stream.js     # SSE-streaming för AI-svar
 │   │   ├── cv-pdf.js        # CV → PDF (puppeteer, rate-limited)
 │   │   ├── job-alerts.js    # E-postaviseringar för jobb
@@ -64,10 +64,10 @@ deltagarportal/
 │       └── lib/             # supabase, sentry, validators, ...
 ├── api/                     # Repo-root Vercel-katalog
 │   └── _utils/              # rate-limiter.js (Supabase-distribuerad)
-├── supabase/                # Migrations (120 filer) + 24 edge functions
+├── supabase/                # Migrations (118 filer) + 24 edge functions
 │   ├── functions/           # Deno edge — ai-*, af-*, learning-*, bolagsverket, ...
 │   └── migrations/
-├── e2e/                     # Playwright-tester (8 spec + 7 kanoniska verktygsskript; 82 ad-hoc i e2e/archive/)
+├── e2e/                     # Playwright-tester (8 spec + 10 verktygsskript; 82 ad-hoc i e2e/archive/)
 ├── docs/                    # ROADMAP.md (enda gällande plan), DESIGN.md, granskningar
 ├── archive/                 # Arkiverat: 2026-q1, server-legacy, 2026-06-dokkonsolidering
 ├── .planning/               # GSD-milestone-historik (PROJECT, STATE) + AF-API-idébank
@@ -130,7 +130,7 @@ När något inte fungerar, följ denna ordning:
 
 ### AI-anrop går till TVÅ backends
 Det finns två parallella AI-vägar — välj rätt:
-- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — 22 funktioner samlade. Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.** Streaming-varianten ligger i `client/api/ai-stream.js` och anropas via `useAIStream`-hooken.
+- **`client/api/ai.js`** (Vercel serverless, exponerad som `/api/ai`) — 24 funktioner samlade. Snabb cold start, lägre auth-kostnad. **Default för UI-anrop.** Streaming-varianten ligger i `client/api/ai-stream.js` och anropas via `useAIStream`-hooken.
 - **`supabase/functions/`** (Deno edge) — 24 funktioner: `ai-*`, `af-*` (Arbetsförmedlingen), `learning-*`, `bolagsverket`, `cv-analysis`, `health`, `delete-account`, `send-invite-email`. Service role, längre prompts, integration mot AF/Bolagsverket.
 
 > **AI-modellen är låst** till `openai/gpt-oss-120b` av kostnadsskäl (`docs/AI_MODEL_LOCKING.md`). Byt aldrig modell utan explicit beslut av Mikael.
@@ -251,10 +251,10 @@ client/src/components/
     DropdownMenu, BottomSheet, ConfirmDialog, SearchBar, QuickActions
     Image, OptimizedImage, PageCard, LanguageSelector
   dashboard/
-    KpiCard, NextStepCard, GettingStartedChecklist, OnboardingStep
+    KpiCard, NextStepCard, OnboardingStep
     DashboardWidget, DashboardGrid, DashboardSection, DashboardSkeleton
     WidgetFilter, WidgetSizeSelector
-    QuickActions, QuickActionButton, QuickWinButton, SmartQuickWinButton
+    QuickActions, QuickActionButton
     CareerReadinessScore, MatchingScoreWidget, ProfileStatusWidget,
     WeeklySummary, WellnessQuickCard, WhyItMatters, DashboardRiasecChart
     widgets/                                      # Lazy-laddade widget-moduler
@@ -321,7 +321,8 @@ Sanning: `client/src/components/layout/navigation.ts` (`navHubs[]`). Member-path
 | Dokument | Innehåll |
 |----------|----------|
 | `docs/ROADMAP.md` | ★ **Projektets enda gällande plan** (version 2026-07-10) — spår A–G, beslutslogg, allt öppet arbete. Nya idéer förs in här, aldrig i nya plandokument |
-| `docs/portal-review-2026-07.md` | Senaste helhetsgranskning (6 parallella analyser: kod, säkerhet, UX, prestanda, produkt, dokumentation) |
+| `docs/portal-review-2026-07-22.md` | Senaste granskning (7 parallella analyser: kod, säkerhet, UX, prestanda, produkt, AI, dokumentation/test) |
+| `docs/portal-review-2026-07.md` | Helhetsgranskning 2026-07-10 (grund för roadmapens spårstruktur) |
 | `docs/DESIGN.md` | **Designsystemets sanning v3.0** — Manifest + Voice & Tone + två-läges-system (hub-landning vs verktygssida) + en-färg-per-sida-regel |
 | `docs/DESIGN-DEBT.md` | Levande lista över designöverträdelser — CI-guardad (`npm run lint:design`) |
 | `docs/security-audit.md` | Levande säkerhetsstatus (senast 2026-05-28; CRIT: OpenRouter-nyckelrotation utestående) |

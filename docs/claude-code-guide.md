@@ -81,7 +81,7 @@ Claude glömmer instruktioner mellan turer om de inte är i CLAUDE.md eller i en
         "matcher": "Edit|Write",
         "hooks": [{
           "type": "command",
-          "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -E '\\.(tsx?|jsx?)$' > /dev/null; then cd client && npx tsc --noEmit 2>&1 | head -20; fi"
+          "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -E '\\.(tsx?|jsx?)$' > /dev/null; then cd client && npm run typecheck:critical 2>&1 | head -20; fi"
         }]
       }
     ]
@@ -217,7 +217,8 @@ DESIGN.md använder `brand-*` (turkos = action-domän). Många filer har fortfar
 cd client && npm run dev
 
 # Typcheck (snabbare felsökning än webbläsaren)
-npx tsc --noEmit
+# OBS: `npx tsc --noEmit` utan -p är en NO-OP här (solution-style tsconfig, se ROADMAP E7)
+cd client && npm run typecheck:critical
 
 # Kör en specifik test-fil
 npx vitest run client/src/pages/CVPage.test.tsx

@@ -1,6 +1,6 @@
 # Roadmap — Jobin (Deltagarportalen)
 
-> **Detta är projektets enda gällande plan.** Version 2026-07-10, utifrån `docs/portal-review-2026-07.md` (ersätter versionen 2026-06-10/22).
+> **Detta är projektets enda gällande plan.** Version 2026-07-22, utifrån `docs/portal-review-2026-07.md` (2026-07-10) + `docs/portal-review-2026-07-22.md` (7-agenters uppföljningsgranskning; nya punkter A10–A15, B5–B8, C9–C15, D8–D12, E8–E11, F8–F10, G9–G13).
 > **Prioriteringsstatus: förslag.** Punkterna nedan är grupperade i spår A–G och rankade inom varje spår, men horisonten (vad som görs först) väntar på Mikaels val — se §7. Undantag: spår A är deadline-styrt (AI Act 2 aug 2026) och ligger fast som "Nu".
 > ID:n i parentes (J1, R5, P2 …) behålls från tidigare versioner för spårbarhet.
 
@@ -30,6 +30,12 @@
 | A7 (R5) | Scopa `profile_shares`-RLS | `USING(true)` + `GRANT anon` = enumeration av delade profiler. SECURITY DEFINER-RPC + omskriven `getSharedProfile` + test | Claude |
 | A8 | Rate limit på `learning-analyze-gap` | ✅ **Klar 2026-07-10** — 5/min via `_shared/rateLimit.ts`, deployad | Claude |
 | A9 (R6/R10) | Deploy-verifiering + uppdatera security-audit.md | ✅ **Klar 2026-07-10** — alla 24 edge-funktioner omdeployade med main-kod, Vercel-deploy verifierad, auditen nydaterad. Kvar för Mikael: dashboard-verifieringarna (OAuth-allowlist, pg_policies, FK-cascades) | Claude + Mikael (dashboardkoll) |
+| A10 | **`invitations`-RLS: anonym massläsning** | ⬜ Ny 2026-07-22, HIGH/CRIT. `USING(true)`-SELECT (`20260412130000_fix_invitation_acceptance.sql:152`) exponerar e-post/telefon/roll/hemlig token för anon. Fix: SECURITY DEFINER-RPC med tokenmatchning (samma mönster som A7) | Claude |
+| A11 | SSRF i `cv-pdf.js` | ⬜ Ny 2026-07-22, HIGH. `printUrl` byggs från ovaliderad `Origin`-header → Puppeteer navigerar dit. Fix: validera mot ALLOWED_ORIGINS före URL-bygget | Claude |
+| A12 | Dygnstokentak i `ai-stream.js` | ⬜ Ny 2026-07-22, MED. `checkDailyTokenCap` finns bara i ai.js — streaming kringgår kostnadsskyddet. Kopiera blocket | Claude |
+| A13 | Rate limit på 7 oskyddade proxy-edge-funktioner | ⬜ Ny 2026-07-22, MED. `af-*` ×6 + `education-search`: ingen auth, ingen rate limit, publika open proxies mot Jobtech. Minst per-IP-limit via `_shared/rateLimit.ts`; oberoende av C4-beslutet | Claude |
+| A14 | `npm audit fix` i client/ | ⬜ Ny 2026-07-22, MED/HIGH. dompurify (sanerings-bypass!), react-router-dom (RCE-CVE), ws, undici — fix finns för alla; regressionstesta react-router | Claude |
+| A15 | Säkerhetssmåfix | ⬜ Ny 2026-07-22, LOW. `REVOKE anon` på cvs/user_preferences, bolagsverket-catch → `createErrorResponse` (gammal MEDIUM-007), metod-allowlist + fetch-timeout i job-alerts.js | Claude |
 
 ## Spår B — Ärlighet i produkten (nya fynd 2026-07-10)
 
@@ -39,6 +45,10 @@
 | B2 | Simulerad AI i CV-byggarens "Anpassa för jobb" | ✅ **Klar 2026-07-10** — ny `cv-jobbmatchning` (JSON) i ai.js ersätter den simulerade nyckelordslistan; ärlig felhantering + Art 50-märkning |
 | B3 (R2b) | Konsulent-bulk: tagg-backend + PDF-export | ✅ **Klar 2026-07-10** — `consultant_participants.tags text[]` + vy + service + taggchips i deltagarlistan; PDF-export via jspdf-autotable. **Bonusfynd:** servicen skrev till obefintliga tabellen `participant_consultants` → status/prioritet/kontakt-uppdateringar har misslyckats tyst i prod; rättat till `consultant_participants` |
 | B4 | "Kommer snart"-svep | ✅ **Klar 2026-07-10** — LinkedIn-import-teaser (Profil) och videokort (CV-tips) borttagna, badge-delning fick riktig Web Share/urklipp, superadmins tomma Inställningar-flik borttagen, "Kommer snart" → "Inga artiklar än" i Kunskapsbanken |
+| B5 | **Fabricerad trend + maskerade fel i konsulent-analytics** | ⬜ Ny 2026-07-22. `consultantInsights.calculateTrends` använder `Math.random()` ("Simulating previous period"), live via `InsightsPanel` på `/consultant/analytics`; samma fil returnerar `[]` vid DB-fel i `assessParticipantRisks` → "inga riskdeltagare" vid nätverksfel. Fix: återanvänd AnalyticsTabs ärliga trendlogik + fel-signalering till UI (S) |
+| B6 | **Kompetensgapsanalysen: regex-parsning med hårdkodad fallback** | ⬜ Ny 2026-07-22. `SkillsGapAnalysis.tsx` parsar fritext-streaming med regex; vid miss visas hårdkodade exempelkompetenser/kurser oavsett CV. JSON-varianten av `kompetensgap` + Zod-schema finns redan — koppla in dem, ärligt fel vid mismatch (S–M) |
+| B7 | "Skapa karriärplan" utan AI | ⬜ Ny 2026-07-22. `PlanTab.tsx:148-200` skapar tre hårdkodade milstolpar; `karriarplan`-funktionen finns färdig i båda backends utan anropare. Koppla in + Art 50-märk (M) |
+| B8 | AI-svarsvalidering: koppla in `aiSchemas.ts` | ⬜ Ny 2026-07-22. `safeParseAiResponse` + scheman byggda mot H8 men 0 produktionsanrop; `ai.js` returnerar `{success:true,{raw}}` vid trasig JSON utan felsignal; `StaDocumentDraftSchema` matchar dessutom inte verklig svarsform (objekt, ej array) och `staAiApi` castar ovaliderat. Rätta schemat + koppla in (S) |
 
 ## Spår C — Städning & dödkod
 
@@ -52,6 +62,13 @@
 | C6 (S3) | Kurera `e2e/` + skriv om README | ✅ **Klar 2026-07-10** — 82 ad-hoc-skript → `e2e/archive/`, 7 kanoniska kvar, README omskriven. Promota-till-spec väntar på D1 (CI-secrets) |
 | C7 (S6) | `design-source/` 36 MB ospårat | ✅ Gitignorerad 2026-07-10 (rå grafik, inga persondata; optimerade versioner i client/public). Långsiktig hemvist fortfarande **Mikaels beslut** |
 | C8 | Dokumentarkivering | ✅ **Klar 2026-07-10** — 12× team-betyg, jobsearch-review, AI_ENGINEER_ANALYSIS, RLS_VERIFICATION, onboarding-patterns + .planning/STATE\|ROADMAP\|REQUIREMENTS → `archive/2026-07-dokarkiv/` (README förklarar) |
+| C9 | **Arkivera journey/gamification-systemet (~4 300 rader)** | ⬜ Ny 2026-07-22. `services/journeyService.ts` + `gamificationService.ts` + `hooks/useJourney`/`useGamification` + `components/journey/*` (10 filer) — inget routat, samma mönster som C1. Ett *tredje* system (`useAchievementTracker`) är det levande. OBS: `AchievementCelebration` bryter dessutom Manifestet ×3 (confetti, bounce-loop, 5s auto-dismiss) — radera, återbygg ev. senare mot DESIGN.md (M) |
+| C10 | Widgetsystem gen 2 + orutade `Dashboard.tsx` | ⬜ Ny 2026-07-22. `components/dashboard/widgets/` (~20 filer, DashboardGrid/WidgetFilter m.fl.) hänger dött på `pages/Dashboard.tsx` som saknar route sedan C3 (E12-kandidaten). Arkivera konsekvent med C1 (M) |
+| C11 | Döda AI-dubbletter | ⬜ Ny 2026-07-22. `components/career/`-mappen (anropar funktionsnamn som skulle 400:a), `AIWritingAssistantSecure`, `hooks/useSupabase.ts` (enda vägen till GPT-4-fakturerande `cv-analysis` — radering billigare än migrering?), `coverLetterApi.generate()` + AI-exporter i `lib/supabase.ts`. Flytta först `ai-cover-letter`-edgens bättre no-platshållare-prompt till ai.js:s `personligt-brev` (S) |
+| C12 | Beslut per orphanad ai.js-funktion | ⬜ Ny 2026-07-22. 9 av 24 utan anropare: `karriarplan` (→B7), `intervju-forberedelser`, `cv-optimering`, `generera-cv-text`, `jobbtips`, `loneforhandling`, `natverkande`, `ansokningscoach`, `mentalt-stod`. Radera eller koppla in — per funktion (S–M) |
+| C13 | Dödkodssmåskrot | ⬜ Ny 2026-07-22. 3 döda hooks i `useSta.ts` (~112 rader), `ui/BottomSheet` (+Filter/ActionSheet; saknar dialog-roll/fokus-trap — fixa före ev. första användning), `actionplan/ActionPlan`, `MobileSimplified`, `ApplicationsTracker`, `PlatsbankenIntegration`, döda Zustand-selektorer i `profileStore` (S) |
+| C14 | Konsolidera mood-datalagren | ⬜ Ny 2026-07-22. `mood_logs`/`mood_history`/`calendar_mood_entries` — tre tabeller blockerar AI-kontextbygget (G10) och wellness-rapporter (M–L) |
+| C15 | Dokumentsvep | ⬜ Ny 2026-07-22. Arkivera/skriv om `AI_ARCHITECTURE_OVERVIEW.md` (beskriver obefintliga filer + modeller som strider mot låsningen), rätta fiktiva `cvMatcher`/`jobMatchingService` i `docs/api/services-overview.md`, ersätt `client/README.md` (Vite-mall), döp om ena `20260306130000`-migrationen (versionkollision). `claude-code-guide.md` tsc-fällan + CLAUDE.md-siffror rättade 2026-07-22 (S–M) |
 
 ## Spår D — Skyddsnät & kvalitet
 
@@ -64,6 +81,10 @@
 | D5 | ESLint 11→0 + jaga flaky test | ✅ **Klar 2026-07-10** — 0 errors (villkorlig useMemo i AssessmentEditor var ett äkta rules-of-hooks-brott); flaky = nav-smoke-timeout under maskinlast, höjd 8→20 s |
 | D6 (S5) | LCP-baseline + CI-budget | ✅ **Klar 2026-07-10** — baseline mot prod: landning ~340 ms, inloggad översikt ~1 400 ms (median, `e2e/lcp-baseline.cjs`). LCP-budget 2 500 ms som warn i CI:s Lighthouse-jobb; skärp till error när CI-variansen är känd |
 | D7 | Robusthetsfynd från testskrivningen | ⬜ Ny 2026-07-10. ~14 observationer från D3-agenterna, viktigast: tysta DB-fel i `applicationHistoryApi.log` + `milestonesApi.toggleComplete` + `favoriteOccupationsApi.isFavorite` (fel tolkas som "inte favorit" → toggle kan skapa dubblett), race i `personalBrandApi.recordPractice`, `careerPlanApi.create` error-checkar inte avaktiveringen (två aktiva planer möjliga), `savedJobsApi.getAll` utan auth-guard, asymmetrisk snake/camelCase i `calendarApi`, `credentialsApi.updateStatus` kan aldrig rensa completed_date. Detaljer i commit 79f52e78 |
+| D8 | **CI-luckor** | ⬜ Ny 2026-07-22. `axe-a11y.spec.ts` + `regression-fas-a.spec.ts` körs ALDRIG (saknas i båda e2e-jobbens kommandorader i ci.yml) — a11y-svepet är overifierat trots WCAG-krav. Ingen `concurrency`-grupp i ci.yml/deploy.yml. `npm audit` + deployens API-hälsokontroll har `continue-on-error: true` (S) |
+| D9 | STA-e2e-spec | ⬜ Ny 2026-07-22. STA — en av fyra huvudfunktioner, aktivt utvecklingsfokus (G1) — saknar helt e2e-täckning. Minst deltagarflödet + DOA; CV-PDF-export är också otestad (M) |
+| D10 | Servicetester våg 2 | ⬜ Ny 2026-07-22. 47/59 services otestade. Prioritet: `consultantService` (hade redan tyst prod-bugg, B3), `cvApi`, `coverLetterApi`, `staAiApi` (Art 50-yta), `unifiedProfileApi`; hooks: `useSta`, E5-cache-hooksen; stores: `energyStoreWithSync` (racerisk) (M, delbar per fil) |
+| D11 | Konsulentens felmaskering → generellt mönster | ⬜ Ny 2026-07-22. D7-klassens fynd i `consultantInsights.ts` (tre funktioner returnerar `[]` i catch) åtgärdas i B5; svep efter samma mönster i övriga services vid D10-testskrivningen |
 
 ## Spår E — Prestanda
 
@@ -76,6 +97,10 @@
 | E5 (P4) | React Query-migrering | ✅ **Delvis klar 2026-07-10** — useSavedJobs (7 konsumenter delar cache), useNotifications (TopBar = varje sidvisning; realtime → cache), useDiary (6 hooks), useJobAlerts. Rest: useSta/useLearning/useInsights m.fl. i takt med att sidorna rörs |
 | E6 (P1 steg 2) | Bundle-analys | ✅ **Klar 2026-07-10** — entry 655→605 kB (statiska sidor lazy). Fynd: sv.json 290 kB är största entry-posten (medvetet — startspråk), PDF-chunken har 3× pako-kopior (tas i PDF-konsolideringen), xlsx 978 kB egen lazy-chunk. CSS 317 kB = global tailwind, ingen enkel split |
 | E7 | **CI-typkontrollen avslöjad + lagad** | ✅ 2026-07-10 — `npx tsc --noEmit` utan `-p` är en NO-OP (solution-style tsconfig). Riktiga gaten är `npm run typecheck:critical`. Den visade 2 crash-fel: hooks-barrelns useServiceWorker-export (från C2 — CI röd sedan dess) + odefinierad `now` i consultantInsights. Båda lagade. OBS: full `typecheck` har ~751 pre-existing strict-fel (ny skuldpost) |
+| E8 | **STA-konsulentvyns overfetch** | ⬜ Ny 2026-07-22. `useConsultantStats` (`useSta.ts:178-217`) drar 5 fulla queries per deltagare för hela caseloaden vid varje load + efter varje mutation — lista/KPI behöver bara aggregat. Fix: counts-RPC för listan, fulldata endast för öppnad deltagare. Störst förväntad effekt; skalar med caseload (M) |
+| E9 | AIAssistant dubbel ocachad dashboard-fetch | ⬜ Ny 2026-07-22. `AIAssistant.tsx:152` använder legacy-`useDashboardData` (15 parallella anrop, ingen cache) och renderas ×2 på Övningar-sidan → allt körs dubbelt. Byt till `useDashboardDataQuery`, deprecatea legacy-hooken (S) |
+| E10 | Entry-bantning: lazy auth-sidor + CoachWidget | ⬜ Ny 2026-07-22. Landing/Login/Register är enda icke-lazy-sidorna (~33 kB gzip för inloggade i onödan); `CoachWidget`+`data/coaches.ts` (36 kB) laddas ovillkorligt via Layout även avstängd; NotificationBell importerar båda date-fns-localerna. Entry har drivit 605→634 kB raw (S) |
+| E11 | select('*')-svansen + dubbel dataväg till job_applications | ⬜ Ny 2026-07-22. 177 träffar kvar i 24 servicefiler (cloudStorage 25, careerApi 17). OBS: `jobApplicationsApi` (cloudStorage) och `applicationsApi.ts` är två parallella vägar till samma tabell — konsolidera före kolumntrim (L) |
 
 ## Spår F — Design/UX-skuld
 
@@ -88,19 +113,27 @@
 | F5 | Voice & Tone-svep | ✅ **Klar 2026-07-10** — "Aktivera" → "Slå på" (bevakning, e-post, jobbalert), "Inga aktiva påminnelser" → "Du har inga påminnelser just nu" (sv+en) |
 | F6 (G) | Gradients → whitelistad noll | ✅ **Klar 2026-07-10** — baseline 65 → **52 där samtliga är medvetna undantag** (CV-mallar 43, Landing-hero 3, glow 2, tokens 4). Fixbara skulden = 0: ResultsView städad (13), döda gradient-tokens raderade, SVG-diagramgradienter dokumenterade som undantag |
 | F7 (ONB) | Onboarding-konsolidering rest | ✅ **Klar 2026-07-10** — läget dokumenterat i DESIGN-DEBT: 1 global + 2 medvetet sidospecifika (Profil, STA); AI-team-modal raderad (C2), CV-tour borta. Rest: ev. Profile-modal-migrering när profilsidan görs om |
+| F8 | **NetworkTab: tangentbordsdöda sektioner** | ⬜ Ny 2026-07-22. `NetworkTab.tsx:723,748` — expanderbara `<div onClick>` utan role/tabIndex/onKeyDown/aria-expanded = WCAG 2.1.1-brott på live sida. Kopiera mönstret från `ExperienceEditor.tsx:201-212` (S) |
+| F9 | aria-label-i18n-svep + detektorutökning | ⬜ Ny 2026-07-22. 58 hårdkodade svenska `aria-label` i 42 filer (värst: NotificationBell, "Laddar"-spinners ×8) — skärmläsare talar svenska i engelskt UI. Utöka `report:i18n`-detektorn till attribut så luckan inte återkommer (M) |
+| F10 | Editorial-spot-texterna → i18n | ⬜ Ny 2026-07-22. 5 stycken infördes efter F2-svepet: `Career.tsx:79`, `Diary.tsx:235`, `PersonalBrand.tsx:64`, `Salary.tsx:62`, `International.tsx:62` (S) |
 
 ## Spår G — Produktutveckling
 
 | # | Uppgift | Detaljer |
 |---|---------|----------|
-| G1 | **STA fas 7: statusflöde + AF-integration** | Sista milen till kärnvisionen: Utkast→Granskning→Inskickad→Bekräftad, konsekvenscheck före export, e-post till AF, audit-trail AI-vs-konsulent. Detalj: `docs/sta-automation-roadmap.md` |
-| G2 | STA fas 6-rester + förbättringar | Automatisk fredagsveckosumma, A5 påminnelser (opt-in), A6 frånvarodagar, A7 konsulent-statusindikator |
+| G1 | **STA fas 7: statusflöde + AF-integration** | Sista milen till kärnvisionen: Utkast→Granskning→Inskickad→Bekräftad, konsekvenscheck före export, e-post till AF, audit-trail AI-vs-konsulent. Detalj: `docs/sta-automation-roadmap.md`. **Uppdaterat 2026-07-22:** mindre än befarat — statusenum, `staApi.approve()` och konsulentens statusfilter finns redan; det som saknas är knapparna i `DocumentDraftPanel` + konsekvenscheck. Minsta värdefulla steg = S–M, inte L |
+| G2 | STA fas 6-rester + förbättringar | Automatisk fredagsveckosumma, A5 påminnelser (opt-in), A6 frånvarodagar, A7 konsulent-statusindikator. **Notis 2026-07-22:** `sta-week-summary`-endpointen finns redan; det som saknas är pg_cron-schemaläggning (mönster: `20260515_retention_cron.sql`) + leveranskanal |
 | G3 | Fokusläge för CV-flödet | 34 sidor har PageFocusShell — CV (tyngsta verktyget) och STA saknar |
 | G4 | Nav-lagningar | `/profile` in i Min vardag-hubben (CLAUDE.md lovar det), länka `/help` i Resurser |
 | G5 | LIV fas 5: firande i nyckelögonblick | Ansökan skickad/övning klar/milstolpe; konfetti-grund finns. Fas 4 i stort klar |
 | G6 | **EU-beslut: 26-001, 26-002 eller båda** | Aug. Styr även C4 (learning-funktionernas öde). Specar: docs/26-001/26-002 |
 | G7 | Spontanansökan-rester (lågprio) | SearchTab-uppdelning (~900 r), dubblettskydd "Lägg till i Ansökningar", ortfältets svenska |
 | G8 | Konsulentvyn vidare | Fortsätt på "Min dag"-spåret från 10–11/6; R2b ligger i B3 |
+| G9 | **Gör intjänade poäng synliga — eller sluta logga** | ⬜ Ny 2026-07-22. `useAchievementTracker` skriver redan poäng/aktiviteter till DB från 6 ytor, men ingen visningskomponent är monterad (NextStepCard, WeeklySummary ×2 m.fl. finns färdiga men orutade — se C9/C10 för vad som arkiveras). Montera EN kurerad yta på HubOverview inom "lugn vän"-ramen, eller ta bort loggningen (S–M) |
+| G10 | AI-personalisering: återanvänd kontexten | ⬜ Ny 2026-07-22. `useAITeamContext` (profil, CV, RIASEC, energi) används bara av AI-team-chatten — `AICareerChatbot` anropar samma `chatbot`-funktion kontextlöst. RIASEC förekommer i 0 AI-prompts; dagbok/energi bara i STA-prompterna. Skicka kontexten till chatboten + kompakt RIASEC-rad i `kompetensgap`/`karriarplan` + energidata i `mentalt-stod`/`jobbtips`. Delvis gated på C14 (mood-konsolidering) (M) |
+| G11 | Intervjusimulator: sessionssammanfattning | ⬜ Ny 2026-07-22. Idag rating per svar men ingen helhetsbedömning; `IntervjuSimulatorResultSchema` (overall_score/strengths/improvements/summary) finns redan oanvänt i aiSchemas.ts (M) |
+| G12 | Veckoreflektion för icke-STA-deltagare | ⬜ Ny 2026-07-22. Återanvänd `sta-week-summary`-mönstret med dagbok/wellness-data för vanliga deltagare — prompt-mönster + kontextbygge finns redan (M) |
+| G13 | Konsulent-transparenssida ("Det här ser din konsulent") | ⬜ Ny 2026-07-22. GDPR-förtroendevinst, ingen ny datamodell — läsvy över det konsulenten ser. Spec: `STA-FORBATTRINGSFORSLAG` B5 (M) |
 
 ## 4. Q4 2026 — Konsolidera & mäta
 
@@ -132,7 +165,8 @@ Native mobilapp (PWA räcker) · egen LLM-hosting · egen videointervju-plattfor
 
 | Dokument | Roll |
 |----------|------|
-| `docs/portal-review-2026-07.md` | **Senaste helhetsgranskning — grunden för denna plan** |
+| `docs/portal-review-2026-07-22.md` | **Senaste granskning (7-agenters uppföljning) — grund för punkterna A10+, B5+, C9+, D8+, E8+, F8+, G9+** |
+| `docs/portal-review-2026-07.md` | Helhetsgranskning 2026-07-10 — grund för spårstrukturen A–G |
 | `docs/portal-review-2026-06.md` | Föregående granskning (historik) |
 | `docs/DESIGN.md` + `docs/DESIGN-DEBT.md` | Designsanning + CI-kopplad skuldlista |
 | `docs/COMPLIANCE-AUDIT-2026-05-15.md` + `COMPLIANCE-USER-ACTIONS.md` | Juridiskt underlag + checklista |
