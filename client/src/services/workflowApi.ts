@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
-import { savedJobsApi, jobApplicationsApi } from './cloudStorage'
+import { savedJobsApi } from './cloudStorage'
 import { applicationsApi } from './applicationsApi'
 import type { ApplicationStatus, ManualJobData } from '@/types/application.types'
 
@@ -250,13 +250,15 @@ export const nextStepApi = {
         .select('ats_score, updated_at')
         .maybeSingle()
 
-      // Hämta sparade jobb
-      const savedJobs = await savedJobsApi.getAll()
-      
-      // Hämta ansökningar
-      const applications = await jobApplicationsApi.getAll()
+      // E12 (2026-07-23): allt hämtas nu från applicationsApi (saved_jobs) —
+      // tidigare räknades ansökningar från den tomma/döda job_applications-
+      // tabellen (jobApplicationsApi), så applicationsCount/recentApplications
+      // var alltid 0 efter UX2-fixen. saved_jobs håller både sparade (status
+      // 'saved') och ansökta (status !== 'saved') rader.
+      const allApps = await applicationsApi.getAll()
+      const applications = allApps.filter(a => a.status !== 'saved')
       const recentApps = applications.filter(a => {
-        const appDate = new Date(a.application_date || a.created_at)
+        const appDate = new Date(a.applicationDate || a.createdAt)
         const weekAgo = new Date()
         weekAgo.setDate(weekAgo.getDate() - 7)
         return appDate >= weekAgo
@@ -267,19 +269,18 @@ export const nextStepApi = {
         .from('cover_letters')
         .select('id')
 
-      // Räkna jobb utan ansökan
-      const jobsWithoutApplication = savedJobs.filter(j => j.status === 'SAVED').length
+      // Räkna sparade jobb utan ansökan
+      const jobsWithoutApplication = allApps.filter(a => a.status === 'saved').length
 
       // Hämta senaste aktivitet
-      const lastActivity = cv?.updated_at || 
-        (savedJobs[0]?.created_at) || 
-        (applications[0]?.created_at) || 
+      const lastActivity = cv?.updated_at ||
+        (allApps[0]?.createdAt) ||
         null
 
       return {
         hasCV: !!cv,
         cvScore: cv?.ats_score || 0,
-        savedJobsCount: savedJobs.length,
+        savedJobsCount: allApps.length,
         savedJobsWithoutApplication: jobsWithoutApplication,
         applicationsCount: applications.length,
         recentApplications: recentApps.length,

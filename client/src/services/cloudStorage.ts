@@ -46,28 +46,7 @@ interface NotificationPreferences {
   [key: string]: unknown
 }
 
-interface JobApplication {
-  company_name: string
-  position: string
-  status?: string
-  applied_at?: string
-  notes?: string
-  [key: string]: unknown
-}
-
-interface JobApplicationUpdate {
-  company_name?: string
-  position?: string
-  status?: string
-  notes?: string
-  [key: string]: unknown
-}
-
-interface JobApplicationStatusUpdate {
-  status: string
-  updated_at: string
-  applied_at?: string
-}
+// E12 (2026-07-23): JobApplication*-typerna borttagna med jobApplicationsApi.
 
 interface InterviewSession {
   company_name: string
@@ -1083,89 +1062,12 @@ export const draftsApi = {
 // ============================================
 // JOBBANSÖKNINGAR
 // ============================================
-export const jobApplicationsApi = {
-  async getAll() {
-    // E11 (2026-07-23): explicit kolumnlista — matchar exakt tabellschemat i
-    // senaste migrationen (20260306130000_fix_all_rls_policies.sql). OBS:
-    // konsumenten applicationService.ts läser även employer/cover_letter/
-    // contact_person/follow_up_date/application_date, men dessa kolumner
-    // finns inte i schemat (redan undefined idag med select('*')) — se E11-
-    // rapportens dubbelvägs-kartläggning för detaljer.
-    const { data, error } = await supabase
-      .from('job_applications')
-      .select('id, user_id, job_id, job_title, company, location, description, url, source, status, applied_at, notes, created_at, updated_at')
-      .order('created_at', { ascending: false })
-    
-    if (error) {
-      handleStorageError(error, 'hämta jobbansökningar')
-      return []
-    }
-    return data || []
-  },
-
-  async add(application: JobApplication) {
-    const user = await getCurrentUser()
-    if (!user) {
-      throw new Error('Användaren måste vara inloggad för att lägga till jobbansökning')
-    }
-
-    const { data, error } = await supabase
-      .from('job_applications')
-      .insert({
-        ...application,
-        user_id: user.id
-      })
-      .select()
-      .single()
-
-    if (error) throw error
-    return data
-  },
-
-  async update(id: string, updates: JobApplicationUpdate) {
-    const { error } = await supabase
-      .from('job_applications')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id)
-
-    if (error) {
-      handleStorageError(error, 'uppdatera jobbansökning')
-    }
-  },
-
-  async delete(id: string) {
-    const { error } = await supabase
-      .from('job_applications')
-      .delete()
-      .eq('id', id)
-    
-    if (error) {
-      handleStorageError(error, 'ta bort jobbansökning')
-    }
-  },
-
-  async updateStatus(id: string, status: string) {
-    const updates: JobApplicationStatusUpdate = {
-      status,
-      updated_at: new Date().toISOString()
-    }
-    if (status === 'applied') {
-      updates.applied_at = new Date().toISOString()
-    }
-
-    const { error } = await supabase
-      .from('job_applications')
-      .update(updates)
-      .eq('id', id)
-
-    if (error) {
-      handleStorageError(error, 'uppdatera jobbansökningsstatus')
-    }
-  }
-}
+// E12 (2026-07-23): jobApplicationsApi + tabellen job_applications är utfasade.
+// Den var en parallell ansökningsväg vars kolumner (employer/cover_letter/
+// contact_person m.fl.) aldrig fanns i tabellen — redan tyst degraderad. Alla
+// ansökningar går nu via applicationsApi (saved_jobs, med status). Den enda
+// klienten (applicationService.ts) är arkiverad. Tabellen ligger kvar i DB tills
+// Mikael beslutar om DROP (destruktivt, körs ej automatiskt). Se ROADMAP E12.
 
 // ============================================
 // INTERVJU-FÖRBEREDELSER
