@@ -254,7 +254,9 @@ jobs:
       - name: Run authenticated E2E
         # D8 (2026-07-23): axe-a11y tillagd — WCAG-svepet kördes aldrig i CI.
         # Publika sidor auditeras alltid; inloggade sidor när secrets finns.
-        run: npx playwright test e2e/golden-path.spec.ts e2e/auth.spec.ts e2e/cv.spec.ts e2e/dashboard.spec.ts e2e/cover-letter.spec.ts e2e/job-search.spec.ts e2e/axe-a11y.spec.ts --project=chromium
+        # D9 (2026-07-23): sta.spec.ts tillagd — STA/Arbetsprövning (en av de
+        # fyra huvudfunktionerna) hade ingen e2e-täckning alls.
+        run: npx playwright test e2e/golden-path.spec.ts e2e/auth.spec.ts e2e/cv.spec.ts e2e/dashboard.spec.ts e2e/cover-letter.spec.ts e2e/job-search.spec.ts e2e/axe-a11y.spec.ts e2e/sta.spec.ts --project=chromium
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}

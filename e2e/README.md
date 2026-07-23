@@ -15,6 +15,7 @@ flyttade till `archive/` — det som ligger i roten är kanoniskt.
 | `dashboard.spec.ts` | Översikt |
 | `axe-a11y.spec.ts` | Automatisk a11y-svep (axe-core) |
 | `regression-fas-a.spec.ts` | Regressionsskydd tech-debt fas A |
+| `sta.spec.ts` | STA/Arbetsprövning — deltagarflöde (`/steg-till-arbete`, DOA-självskattning i Del 1), konsulentvy-smoke (`/konsulent/steg-till-arbete`) |
 
 **CI-status för authenticated-testerna:** väntar på GitHub Secrets
 (`TEST_USER_EMAIL`/`TEST_USER_PASSWORD`) — ROADMAP D1. Testkontot finns
