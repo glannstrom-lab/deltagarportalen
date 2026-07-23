@@ -314,7 +314,8 @@ export default function Privacy() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-stone-900 dark:bg-stone-950 text-stone-400 py-8">
+      {/* text-stone-300 (inte 400): axe flaggade kontrasten mot stone-900 (WCAG AA) */}
+      <footer className="bg-stone-900 dark:bg-stone-950 text-stone-300 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm">&copy; {t('privacy.copyright')}</p>
         </div>

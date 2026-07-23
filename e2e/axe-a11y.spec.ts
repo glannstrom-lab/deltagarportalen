@@ -70,6 +70,10 @@ test.describe('A11y — Public pages (WCAG 2.1 AA)', () => {
 })
 
 test.describe('A11y — Authenticated pages (WCAG 2.1 AA)', () => {
+  // Själv-skipp utan riktiga credentials (samma mönster som golden-path, D1):
+  // fixtures har placeholder-fallbacks som annars ger login-fail i stället för skip
+  test.skip(!process.env.TEST_USER_EMAIL, 'TEST_USER_EMAIL saknas — hoppar över inloggade a11y-sidor')
+
   test.beforeEach(async ({ page }) => {
     const auth = new AuthHelper(page)
     await auth.login(TEST_USER.email, TEST_USER.password)

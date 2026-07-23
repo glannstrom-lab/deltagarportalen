@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
+import { SkipLinks } from '@/components/SkipLinks'
 
 // FAQ Item Component
 function FAQItem({ question, answer, isOpen, onClick }: {
@@ -209,6 +210,9 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-stone-900">
+      {/* WCAG 2.4.1: skip-link även på publika landningen (Layout har sin egen) */}
+      <SkipLinks links={[{ id: 'main-content', label: 'Hoppa till huvudinnehåll' }]} />
+
       {/* Mobile Menu Backdrop */}
       {mobileMenuOpen && (
         <div
@@ -332,7 +336,7 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-[100svh] flex items-center overflow-hidden">
+      <section id="main-content" className="relative min-h-[100svh] flex items-center overflow-hidden">
         {/* Hero Image - bakgrund på alla viewports, med olika overlay för mobil/desktop */}
         <div className="absolute inset-0">
           {/* Mjuk pastell-bas under bilden så texten är läsbar oavsett bildens del */}
