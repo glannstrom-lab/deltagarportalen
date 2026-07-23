@@ -200,7 +200,7 @@ När du ber Claude lägga till en AI-funktion: säg uttryckligen om det ska gå 
 - Streaming, hög frekvens, snabb cold start → Vercel.
 
 ### "Det ser ut som duplicering men är det inte"-fallgropen
-`CVPage.tsx` (125 rader) och `CVBuilder.tsx` (1084 rader) är **inte** dubletter – CVPage är router-wrapper. Likadant `CoverLetterPage` ↔ `CoverLetterWrite` (komponent). Säg det till Claude när hen vill "konsolidera" dem.
+`CVPage.tsx` (67 rader) och `CVBuilder.tsx` (1305 rader) är **inte** dubletter – CVPage är router-wrapper. Likadant `CoverLetterPage` ↔ `CoverLetterWrite` (komponent). Säg det till Claude när hen vill "konsolidera" dem.
 
 ### Designsystemets vandrande etiketter
 DESIGN.md använder `brand-*` (turkos = action-domän). Många filer har fortfarande `teal-*` direkt. Om Claude skriver `teal-500` – det är tekniskt samma färg, men bryter mot konventionen. Säg: "Använd `brand-900` enligt DESIGN.md, inte `teal-*`."

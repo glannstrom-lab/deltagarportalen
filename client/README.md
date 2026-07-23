@@ -1,73 +1,40 @@
-# React + TypeScript + Vite
+# Deltagarportalen — client
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React/TypeScript-frontend för Deltagarportalen (live på **jobin.se**), en
+jobbsökarportal med AI-drivna verktyg för arbetssökande och arbetskonsulenter.
 
-Currently, two official plugins are available:
+Detta är Vercel-projektets `rootDirectory`. Vercel serverless-funktioner ligger
+i `api/` (t.ex. `api/ai.js`, `api/cv-pdf.js`).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+För projektöversikt, teknikstack, arkitektur och kodstandard — se
+**`../CLAUDE.md`** (repo-roten) och **`../docs/ROADMAP.md`**.
 
-## React Compiler
+## Kommandon
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev            # Utvecklingsserver (Vite)
+npm run build           # Produktionsbygge
+npm run test            # Vitest, watch mode
+npm run test:run        # Vitest, single run
+npm run test:coverage   # Vitest med coverage
+npm run typecheck           # Fullständig typecheck (tsc --noEmit -p tsconfig.app.json)
+npm run typecheck:critical  # Snabbare delmängd — se docs/claude-code-guide.md (plain `tsc --noEmit` utan -p är no-op här)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+E2E-tester (Playwright) körs från repo-roten, inte härifrån: `npx playwright test`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Struktur (urval)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+api/              # Vercel serverless functions (ai.js, cv-pdf.js, ...)
+src/
+  components/     # ui/, dashboard/, layout/, ai-team/, ...
+  pages/          # ~120 sidfiler
+  stores/         # Zustand
+  services/       # API-klienter (aiApi.ts m.fl.)
+  hooks/          # Custom hooks
+  lib/            # supabase, sentry, validators, piiSanitizer, ...
+```
+
+Teknikstack: React 19, TypeScript 5.9, Vite 7, Tailwind CSS 4, Zustand 5,
+React Query 5, Supabase 2.97, i18next 25.

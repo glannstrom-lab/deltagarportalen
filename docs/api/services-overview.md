@@ -22,21 +22,28 @@ Generisk anrop. Kastar `Error` med svenska meddelanden:
 ### Convenience-funktioner
 
 ```ts
-generateCoverLetter({ companyName, jobTitle, jobbAnnons, ton, ... })
-optimizeCV({ cvText, ... })
-generateCVText({ yrke, erfarenhet, ... })
-prepareInterview({ jobbTitel, foretag, ... })
-getJobTips({ intressen, ... })
-prepareSalaryNegotiation({ roll, erfarenhetAr, ... })
-createCareerPlan({ currentOccupation, targetOccupation, ... })
-chatWithAI({ message, ... })
-generateProfileSummary({ ... })
+generateCoverLetter({ companyName, jobTitle, jobbAnnons, ton, ... })  // → 'personligt-brev'
+chatWithAI({ meddelande, historik, ... })                              // → 'chatbot'
+generateProfileSummary({ name, experience, skills, ... })              // → 'profile-summary'
+generateDoaSummary({ firstName, categories })                          // → 'sta-doa-sammanfattning'
 ```
 
 Varje wrappar `callAI(<funktionsnamn>, data)`. Funktionsnamn matchar
-PROMPTS-objektet i `client/api/ai.js`.
+`PROMPTS`-objektet i `client/api/ai.js` (16 funktioner efter C12 — se
+`docs/AI_ARCHITECTURE_OVERVIEW.md`). Övriga PROMPTS-funktioner (t.ex.
+`karriarplan`, `kompetensgap`, `intervju-simulator`, `sta-document-draft`)
+anropas direkt via `callAI(...)` från respektive sida/komponent utan en
+namngiven wrapper här.
 
-**Tester:** `aiApi.test.ts` (6 tester — auth, error mapping, generateCoverLetter)
+**C12 (2026-07-23):** åtta tidigare convenience-wrappers (`optimizeCV`,
+`generateCVText`, `prepareInterview`, `getJobTips`,
+`prepareSalaryNegotiation`, `createCareerPlan` m.fl.) togs bort tillsammans
+med sina motsvarande, då orphanade, `ai.js`-funktioner (0 anropare). Går att
+återskapa från git-historiken om ett framtida behov uppstår.
+
+**Tester:** `aiApi.test.ts` (auth, error mapping, generateCoverLetter),
+`aiSchemas.test.ts` (Zod-scheman för strukturerade AI-svar — se
+`aiSchemas.ts`, dokumenterad i AI_ARCHITECTURE_OVERVIEW.md).
 
 ---
 
@@ -60,40 +67,42 @@ Edge function-fel är **icke-fatalt** — profile är redan borta, vi flaggar
 
 ---
 
-## `cvMatcher.ts` — CV ↔ jobb matchning
+## `cvOptimizer.ts` — CV ↔ jobb matchning (deterministisk, ingen AI)
 
-Deterministisk matchnings-algoritm som producerar relevans-score för
-CV mot en jobbannons. Inga AI-anrop.
+> **Rättelse (2026-07-23):** tidigare version av detta dokument beskrev en
+> `cvMatcher.ts` med `analyzeMatch()` — den filen finns inte och har aldrig
+> funnits i repot. Nedan beskriver den verkliga modulen.
 
-### `cvMatcher.analyzeMatch(cv: CVData, job: JobAd): MatchResult`
+Nyckelords-baserad matchning mellan ett CV och en jobbannons. Inga AI-anrop.
 
-Returnerar:
+### `analyzeCVForJob(cv, job): CVOptimizationResult`
+### `calculateQuickMatchScore(...)`
+
+Returnerar (`CVOptimizationResult`):
 ```ts
 {
-  score: number              // 0-100
-  matchedSkills: string[]    // max 10
-  missingSkills: string[]    // max 10
-  recommendations: string[]  // genererade tips
-  overallAssessment: string  // mänsklig bedömning
+  matchScore: number
+  totalKeywords: number
+  matchedKeywords: number
+  missingKeywords: KeywordMatch[]
+  suggestions: CVSuggestion[]
+  sectionScores: { skills, experience, summary, education }
 }
 ```
 
-Algoritm: extraherar nyckelord från CV (skills + experience-beskrivningar +
-education + languages) och från job (headline + description + must_have +
-occupation), matchar exakt + partiellt + via synonymer (`getRelatedTerms`),
-beräknar `matched / totalRequirements * 100`.
-
-Synonym-tabellen i `getRelatedTerms` hanterar t.ex. js↔javascript, agil↔scrum,
-sql↔databas. Begränsad — utöka när behov uppstår.
-
-**Tester:** `cvMatcher.test.ts` (8 tester — score-grader, synonymer,
-experience-extraktion, edge cases)
+Relaterad, separat modul: `jobMatching.ts` innehåller fristående
+matchnings-hjälpare (`matchSkill`, `matchJobTitle`, `matchesEmploymentType`,
+`matchesRemoteWork`, `matchesDriversLicense`, `applyProfileBoosts`) som
+används av `MatchesTab.tsx`/`MatchCard.tsx` för att ranka
+Platsbanken-jobb mot användarens profil — detta är **inte** samma modul som
+CV-optimeringen ovan, och det finns ingen `jobMatchingService.ts`-wrapper
+runt den (den filen finns inte heller).
 
 ---
 
 ## `cloudStorage.ts` — Supabase data-wrappers
 
-Stor fil (~1500 rader) med många små API-objekt per data-domän.
+Stor fil (~2800 rader) med många små API-objekt per data-domän.
 Centralisera all `supabase.from(...)`-användning här.
 
 Alla funktioner följer samma mönster:
@@ -142,7 +151,8 @@ Alla funktioner följer samma mönster:
 | `pdfExportService.ts` | CV + cover letter PDF (jsPDF + html2canvas + @react-pdf) |
 | `pdfLazyLoad.ts` | Dynamic imports av PDF-libs (jsPDF, html2canvas) |
 | `cacheService.ts` | In-memory caching med TTL |
-| `jobMatchingService.ts` | Wrapper runt cvMatcher för UI-komponenter |
+| `jobMatching.ts` | Skill/titel/anställningstyp/körkort-matchning + profilboost för Platsbanken-jobb (se `cvOptimizer.ts`-avsnittet ovan) |
+| `cvOptimizer.ts` | CV↔jobbannons-matchning, keyword-gap, förbättringsförslag (se ovan) |
 | `notificationsService.ts` | Notif-CRUD + smart-batching |
 
 ---
@@ -159,9 +169,9 @@ Alla funktioner följer samma mönster:
    istället för direkt `console.log`. Loggers respekterar prod/dev-läge och
    skickar warn/error till Sentry (om initierat).
 4. **Lägg till tester när du rör en service.** Mönster i `aiApi.test.ts`,
-   `accountApi.test.ts`, `cvMatcher.test.ts`. Mocka Supabase, testa
+   `accountApi.test.ts`, `careerApi.test.ts`. Mocka Supabase, testa
    error-vägar, testa edge cases.
 
 ---
 
-*Senast uppdaterad: 2026-04-28*
+*Senast uppdaterad: 2026-07-23 (C15 — dokumentsvep: rättat fiktiva `cvMatcher.ts`/`jobMatchingService.ts`, aktualiserat aiApi.ts-wrapperlistan efter C12)*
