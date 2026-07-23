@@ -361,9 +361,9 @@ const PROMPTS = {
     parseJson: true
   }),
   'kompetensgap': (data) => ({
-    system: `Du är karriärcoach. Svara ENDAST med JSON i detta format:
-{"matchingScore":75,"skills":[{"name":"Kompetens","current":60,"required":80,"category":"teknisk","level":"intermediate","resources":["Resurs 1"]}],"gapSkills":["Saknad kompetens 1"],"recommendations":["Rekommendation 1"],"totalGaps":3,"timelineWeeks":8}
-Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, expert.`,
+    system: `Du är en varm och konkret karriärcoach. Analysera gapet mellan personens CV och drömjobbet. Svara ENDAST med JSON i detta format:
+{"matchPercentage":65,"skills":[{"name":"Kompetens","current":3,"target":5,"gap":"medium"}],"courses":[{"title":"Kursnamn","provider":"Arrangör","duration":"4 veckor","type":"online","cost":"Gratis"}],"actionPlan":[{"order":1,"title":"Kort steg","description":"Konkret beskrivning"}]}
+Regler: matchPercentage 0-100 utifrån hur väl CV:t täcker drömjobbets krav. skills = 3-6 viktigaste kompetenserna för drömjobbet; current och target är heltal 1-5 (current utifrån CV:t, target vad drömjobbet kräver); gap = "none" om current>=target, "small" vid 1 stegs skillnad, "medium" vid 2, "large" vid 3+. courses = max 3 verkliga svenska/kända kursförslag (hitta ALDRIG på leverantörer som inte finns; osäker → utelämna kursen). actionPlan = 3-4 konkreta steg i prioritetsordning. Basera allt på det faktiska CV:t — generiska exempel är förbjudna. Allt på svenska.`,
     user: `Analysera kompetensgap:\n\nCV:\n${data?.cvText || ''}\n\nDrömjobb: ${data?.dromjobb || data?.drömjobb || 'Ej angivet'}\n\nSvara ENDAST med JSON.`,
     maxTokens: 1500,
     responseKey: 'analys',

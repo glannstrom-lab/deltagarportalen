@@ -41,7 +41,6 @@ const RATE_LIMITS = {
   'personligt-brev': { limit: 10, windowMinutes: 15 },
   'cv-optimering': { limit: 15, windowMinutes: 15 },
   'karriarplan': { limit: 5, windowMinutes: 15 },
-  'kompetensgap': { limit: 10, windowMinutes: 15 },
   'default': { limit: 20, windowMinutes: 15 }
 };
 
@@ -97,6 +96,38 @@ async function checkRateLimit(supabase, userId, functionName) {
   } catch (err) {
     console.error('[RateLimit] Error, using in-memory fallback:', err.message);
     return rateLimitFallback(userId, functionName, config);
+  }
+}
+
+// ============================================
+// Daily Token Cap (A12, 2026-07-23) — samma kostnadsskydd som ai.js (C4).
+// Utan detta kunde streaming-vägen dra obegränsat med tokens per dygn
+// inom 15-minutersfönstren.
+// ============================================
+const DAILY_TOKEN_CAP = parseInt(process.env.AI_DAILY_TOKEN_CAP || '50000', 10);
+
+async function checkDailyTokenCap(serviceClient, userId) {
+  if (!serviceClient || !userId) return { allowed: true, used: 0 };
+  try {
+    const { data, error } = await serviceClient
+      .from('ai_usage_logs')
+      .select('tokens_used')
+      .eq('user_id', userId)
+      .gte('created_at', new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString());
+    if (error) {
+      console.warn('[TokenCap] query failed (allowing):', error.message);
+      return { allowed: true, used: 0 };
+    }
+    const used = (data || []).reduce((sum, row) => sum + (row.tokens_used || 0), 0);
+    return {
+      allowed: used < DAILY_TOKEN_CAP,
+      used,
+      limit: DAILY_TOKEN_CAP,
+      remaining: Math.max(0, DAILY_TOKEN_CAP - used),
+    };
+  } catch (err) {
+    console.warn('[TokenCap] threw (allowing):', err.message);
+    return { allowed: true, used: 0 };
   }
 }
 
@@ -212,11 +243,8 @@ const PROMPTS = {
     user: `Karriärplan:\nNuvarande: ${data?.currentOccupation || data?.nuvarande}\nMål: ${data?.targetOccupation || data?.mal}\nErfarenhet: ${data?.experienceYears || 'Varierad'} år\nTidsram: ${data?.tidsram || 'Flexibel'}\nHinder: ${data?.hinder || 'Inga specifika'}\n\nSkapa 4-5 konkreta steg med handlingsplan.`,
     maxTokens: 2500
   }),
-  'kompetensgap': (data) => ({
-    system: 'Du är karriärcoach som analyserar kompetensgap.',
-    user: `Analysera kompetensgap:\n\nCV:\n${data?.cvText || ''}\n\nDrömjobb: ${data?.dromjobb || data?.drömjobb || 'Ej angivet'}\n\nAnalysera:\n1. Matchande kompetenser\n2. Saknade kompetenser\n3. Rekommendationer för utveckling\n4. Tidsuppskattning`,
-    maxTokens: 1500
-  }),
+  // 'kompetensgap' borttagen 2026-07-23 (B6): fritext-streamingen krävde skör
+  // regex-parsning i klienten — sidan använder nu JSON-varianten i ai.js
   'linkedin-optimering': (data) => {
     const typ = data?.typ || 'headline';
     const prompts = {
@@ -290,6 +318,26 @@ module.exports = async (req, res) => {
         error: 'För många förfrågningar. Vänta en stund och försök igen.',
         retryAfter
       });
+    }
+
+    // Daily token cap — måste kollas INNAN SSE-headers sätts så att
+    // 429-svaret fortfarande kan skickas som JSON. Skipas om service-key
+    // saknas (samma best-effort-princip som i ai.js).
+    const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+    const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY;
+    if (SUPABASE_URL && SERVICE_KEY) {
+      const serviceClient = createClient(SUPABASE_URL, SERVICE_KEY, {
+        auth: { persistSession: false, autoRefreshToken: false },
+      });
+      const tokenCap = await checkDailyTokenCap(serviceClient, user.id);
+      if (!tokenCap.allowed) {
+        return res.status(429).json({
+          error: `Du har nått dagens AI-gräns (${tokenCap.limit} tokens). Försök igen i morgon.`,
+          dailyTokensUsed: tokenCap.used,
+          dailyTokenLimit: tokenCap.limit,
+        });
+      }
+      res.setHeader('X-Daily-Tokens-Remaining', String(tokenCap.remaining));
     }
 
     if (!fn || !PROMPTS[fn]) return res.status(400).json({ error: 'Invalid function: ' + fn });

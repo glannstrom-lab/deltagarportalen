@@ -72,20 +72,18 @@ export const InviteHandler: React.FC = () => {
     try {
       setValidating(true);
 
-      // FIX: invitations-tabellen har ingen status-kolumn — använd used_at IS NULL.
+      // A10 (2026-07-23): tokenmatchad SECURITY DEFINER-RPC i stället för
+      // direktläsning — tabellens öppna SELECT-policy är borttagen eftersom
+      // den exponerade alla inbjudningar (e-post/telefon/tokens) för anon.
       const { data, error } = await supabase
-        .from('invitations')
-        .select('*')
-        .eq('token', token)
-        .is('used_at', null)
-        .gt('expires_at', new Date().toISOString())
-        .single();
+        .rpc('get_invitation_by_token', { p_token: token })
+        .maybeSingle();
 
       if (error || !data) {
         throw new Error('Inbjudan är ogiltig eller har gått ut');
       }
 
-      setInviteData(data);
+      setInviteData(data as InviteData);
 
       if (data.metadata) {
         setFormData((prev) => ({

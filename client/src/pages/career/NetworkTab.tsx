@@ -720,7 +720,19 @@ export default function NetworkTab() {
 
       {/* LinkedIn Tips */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setShowLinkedInTips(!showLinkedInTips)}>
+        <div
+          className="flex items-center justify-between mb-4 cursor-pointer"
+          onClick={() => setShowLinkedInTips(!showLinkedInTips)}
+          role="button"
+          aria-expanded={showLinkedInTips}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setShowLinkedInTips(!showLinkedInTips)
+            }
+          }}
+        >
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
             <Linkedin className="w-5 h-5 text-[var(--c-text)] dark:text-blue-400" />
             {t('career.networkTab.linkedinTips.title')}
@@ -745,7 +757,19 @@ export default function NetworkTab() {
 
       {/* Networking Scripts */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
-        <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setShowNetworkingScripts(!showNetworkingScripts)}>
+        <div
+          className="flex items-center justify-between mb-4 cursor-pointer"
+          onClick={() => setShowNetworkingScripts(!showNetworkingScripts)}
+          role="button"
+          aria-expanded={showNetworkingScripts}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setShowNetworkingScripts(!showNetworkingScripts)
+            }
+          }}
+        >
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
             <BookOpen className="w-5 h-5 text-[var(--c-text)] dark:text-[var(--c-solid)]" />
             {t('career.networkTab.networkingScripts.title')}

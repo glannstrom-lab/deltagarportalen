@@ -22,7 +22,8 @@ import { Card } from '@/components/ui/Card'
 import { cvApi } from '@/services/cvApi'
 import type { CVData } from '@/services/supabaseApi'
 import { useAuthStore } from '@/stores/authStore'
-import { useAIStream } from '@/hooks/useAIStream'
+import { callAI } from '@/services/aiApi'
+import { safeParseAiResponse, KompetensgapSchema } from '@/services/aiSchemas'
 import { AIGeneratedWatermark } from '@/components/ai/AIBadge'
 import {
   skillsAnalysisApi, careerPlanApi, milestonesApi, favoriteOccupationsApi,
@@ -141,26 +142,10 @@ export default function SkillsGapAnalysis() {
   // Favorites
   const [favoriteOccupations, setFavoriteOccupations] = useState<FavoriteOccupation[]>([])
 
-  // AI streaming
-  const { streamedText, isStreaming, startStream, reset } = useAIStream({
-    onComplete: async (fullText) => {
-      try {
-        const parsed = parseAIResponse(fullText)
-        const saved = await skillsAnalysisApi.create({
-          dream_job: dreamJob,
-          cv_text: profileSummary,
-          match_percentage: parsed.matchPercentage,
-          skills_comparison: parsed.skills,
-          recommended_courses: parsed.courses,
-          action_plan: parsed.actionPlan
-        })
-        setCurrentAnalysis(saved)
-        setPreviousAnalyses(prev => [saved, ...prev])
-      } catch (err) {
-        console.error('Failed to save analysis:', err)
-      }
-    }
-  })
+  // AI analysis (JSON-varianten av kompetensgap + Zod-validering — den gamla
+  // streaming+regex-vägen föll tillbaka på hårdkodade exempelresultat, B6)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [analysisError, setAnalysisError] = useState<string | null>(null)
 
   // Load data on mount
   useEffect(() => {
@@ -200,118 +185,59 @@ export default function SkillsGapAnalysis() {
     }
   }
 
-  const parseAIResponse = (text: string): {
-    matchPercentage: number
-    skills: SkillComparison[]
-    courses: CourseRecommendation[]
-    actionPlan: ActionPlanItem[]
-  } => {
-    let matchPercentage = 65
-
-    // Try to extract match percentage
-    const matchMatch = text.match(/(\d{1,3})%\s*(match|matchning)/i)
-    if (matchMatch) {
-      matchPercentage = parseInt(matchMatch[1])
-    }
-
-    // Extract skills from the response
-    const skills: SkillComparison[] = []
-    const skillsSection = text.match(/kompetenser?:?\s*([\s\S]*?)(?:kurser|rekommendationer|åtgärder|$)/i)
-    if (skillsSection) {
-      const skillLines = skillsSection[1].split('\n').filter(l => l.trim())
-      skillLines.slice(0, 6).forEach(line => {
-        const match = line.match(/[-•*]\s*(.+?):\s*(\d)\s*\/\s*5.*?(\d)\s*\/\s*5/i) ||
-                     line.match(/[-•*]\s*(.+?).*?nuvarande:?\s*(\d).*?mål:?\s*(\d)/i)
-        if (match) {
-          const current = parseInt(match[2])
-          const target = parseInt(match[3])
-          const diff = target - current
-          skills.push({
-            name: match[1].trim(),
-            current,
-            target,
-            gap: diff <= 0 ? 'none' : diff === 1 ? 'small' : diff === 2 ? 'medium' : 'large'
-          })
-        }
-      })
-    }
-
-    // Default skills if none parsed
-    if (skills.length === 0) {
-      skills.push(
-        { name: i18n.language === 'en' ? 'Project Management' : 'Projektledning', current: 3, target: 5, gap: 'medium' },
-        { name: i18n.language === 'en' ? 'Communication' : 'Kommunikation', current: 4, target: 5, gap: 'small' },
-        { name: i18n.language === 'en' ? 'Technical Skills' : 'Tekniska färdigheter', current: 3, target: 4, gap: 'small' }
-      )
-    }
-
-    // Extract courses
-    const courses: CourseRecommendation[] = []
-    const coursesSection = text.match(/kurser?:?\s*([\s\S]*?)(?:åtgärder|handlingsplan|$)/i)
-    if (coursesSection) {
-      const courseLines = coursesSection[1].split('\n').filter(l => l.trim() && l.match(/[-•*\d]/))
-      courseLines.slice(0, 3).forEach(line => {
-        const cleanLine = line.replace(/^[-•*\d.)\s]+/, '').trim()
-        if (cleanLine.length > 5) {
-          courses.push({
-            title: cleanLine.substring(0, 60),
-            provider: 'Online',
-            duration: '4-8 veckor',
-            type: 'online',
-            cost: 'Gratis / Pris varierar'
-          })
-        }
-      })
-    }
-
-    // Default courses if none parsed
-    if (courses.length === 0) {
-      courses.push(
-        { title: 'Projektledning Grundkurs', provider: 'LinkedIn Learning', duration: '20 timmar', type: 'online', cost: 'Ingår i Premium' },
-        { title: 'Kommunikation i arbetslivet', provider: 'Coursera', duration: '6 veckor', type: 'online', cost: 'Gratis' }
-      )
-    }
-
-    // Extract action plan
-    const actionPlan: ActionPlanItem[] = []
-    const actionSection = text.match(/(?:åtgärder|handlingsplan|nästa steg):?\s*([\s\S]*?)$/i)
-    if (actionSection) {
-      const actionLines = actionSection[1].split('\n').filter(l => l.trim() && l.match(/[-•*\d]/))
-      actionLines.slice(0, 4).forEach((line, idx) => {
-        const cleanLine = line.replace(/^[-•*\d.)\s]+/, '').trim()
-        if (cleanLine.length > 5) {
-          actionPlan.push({
-            order: idx + 1,
-            title: cleanLine.substring(0, 60),
-            description: cleanLine
-          })
-        }
-      })
-    }
-
-    // Default action plan if none parsed
-    if (actionPlan.length === 0) {
-      actionPlan.push(
-        { order: 1, title: 'Börja med grundkurs', description: 'Starta med den rekommenderade grundkursen inom 2 veckor' },
-        { order: 2, title: 'Praktisera dagligen', description: 'Öva dina nya kunskaper i vardagen' },
-        { order: 3, title: 'Bygg portfolio', description: 'Dokumentera dina nya kompetenser' }
-      )
-    }
-
-    return { matchPercentage, skills, courses, actionPlan }
-  }
-
   const analyze = async () => {
     if (!profileSummary.trim() || !dreamJob.trim()) return
 
-    reset()
+    setIsAnalyzing(true)
+    setAnalysisError(null)
     setAddedToPlan(false)
 
-    // Start AI streaming for analysis
-    await startStream('kompetensgap', {
-      cvText: profileSummary,
-      dromjobb: dreamJob
-    })
+    try {
+      const response = await callAI('kompetensgap', {
+        cvText: profileSummary,
+        dromjobb: dreamJob
+      })
+
+      const parsed = safeParseAiResponse(KompetensgapSchema, response?.analys)
+      if (!parsed.success || !parsed.data) {
+        // Ärligt fel i stället för hårdkodade exempelresultat — ett påhittat
+        // "resultat" är värre än inget för den som planerar sin utveckling
+        console.error('Kompetensgap: AI-svaret gick inte att validera:', parsed.error)
+        setAnalysisError(t('skillsGapAnalysis.analysisFailed'))
+        return
+      }
+
+      const skills: SkillComparison[] = parsed.data.skills
+      const courses: CourseRecommendation[] = (parsed.data.courses ?? []).map(c => ({
+        title: c.title,
+        provider: c.provider || '',
+        duration: c.duration || '',
+        type: c.type || 'online',
+        cost: c.cost || '',
+        url: c.url
+      }))
+      const actionPlan: ActionPlanItem[] = (parsed.data.actionPlan ?? []).map((a, idx) => ({
+        order: a.order ?? idx + 1,
+        title: a.title,
+        description: a.description || a.title
+      }))
+
+      const saved = await skillsAnalysisApi.create({
+        dream_job: dreamJob,
+        cv_text: profileSummary,
+        match_percentage: parsed.data.matchPercentage,
+        skills_comparison: skills,
+        recommended_courses: courses,
+        action_plan: actionPlan
+      })
+      setCurrentAnalysis(saved)
+      setPreviousAnalyses(prev => [saved, ...prev])
+    } catch (err) {
+      console.error('Failed to run skills gap analysis:', err)
+      setAnalysisError(err instanceof Error ? err.message : t('skillsGapAnalysis.analysisFailed'))
+    } finally {
+      setIsAnalyzing(false)
+    }
   }
 
   const deleteAnalysis = async (id: string) => {
@@ -405,7 +331,7 @@ export default function SkillsGapAnalysis() {
   const startNewAnalysis = () => {
     setCurrentAnalysis(null)
     setDreamJob('')
-    reset()
+    setAnalysisError(null)
     setAddedToPlan(false)
   }
 
@@ -488,8 +414,8 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
     )
   }
 
-  // Streaming state
-  if (isStreaming) {
+  // Analysis in progress
+  if (isAnalyzing) {
     return (
       <PageLayout
         title={t('skillsGapAnalysis.title')}
@@ -500,16 +426,16 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         contentClassName="space-y-6 pb-20"
       >
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="status" aria-live="polite" aria-busy="true">
-          <div className="flex items-center gap-3 mb-4">
+          <div className="flex items-center gap-3">
             <Loader2 className="w-6 h-6 animate-spin text-[var(--c-solid)]" aria-hidden="true" />
-            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
-              {t('skillsGapAnalysis.analyzing')}
-            </h3>
-          </div>
-          <div className="prose prose-sm dark:prose-invert max-w-none">
-            <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 bg-stone-50 dark:bg-stone-700 p-4 rounded-lg" aria-label="AI-analys pågår">
-              {streamedText || t('skillsGapAnalysis.startingAnalysis')}
-            </pre>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+                {t('skillsGapAnalysis.analyzing')}
+              </h3>
+              <p className="text-sm text-stone-500 dark:text-stone-400">
+                {t('skillsGapAnalysis.startingAnalysis')}
+              </p>
+            </div>
           </div>
         </Card>
       </PageLayout>
@@ -921,11 +847,21 @@ ${actionPlan.map(a => `${a.order}. ${a.title}: ${a.description}`).join('\n')}`
         </p>
       </Card>
 
+      {/* Analysis error — honest failure instead of fabricated results */}
+      {analysisError && (
+        <Card className="p-4 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800" role="alert">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" aria-hidden="true" />
+            <p className="text-sm text-amber-800 dark:text-amber-200">{analysisError}</p>
+          </div>
+        </Card>
+      )}
+
       {/* Analyze Button */}
       <div className="flex justify-center">
         <Button
           onClick={analyze}
-          disabled={!hasProfileData || !dreamJob.trim() || isStreaming}
+          disabled={!hasProfileData || !dreamJob.trim() || isAnalyzing}
           className="px-8 py-4 text-lg bg-[var(--c-solid)] hover:brightness-110 text-white"
         >
           <Sparkles className="w-6 h-6 mr-2" />

@@ -25,7 +25,7 @@ import { cn } from '@/lib/utils'
 import {
   consultantInsights,
   type ParticipantInsight,
-  type TrendData,
+  type KeyMetric,
   type ParticipantRisk
 } from '@/services/consultantInsights'
 import { supabase } from '@/lib/supabase'
@@ -44,10 +44,11 @@ export function InsightsPanel({
   compact = false
 }: InsightsPanelProps) {
   const [insights, setInsights] = useState<ParticipantInsight[]>([])
-  const [trends, setTrends] = useState<TrendData[]>([])
+  const [metrics, setMetrics] = useState<KeyMetric[]>([])
   const [risks, setRisks] = useState<ParticipantRisk[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isRefreshing, setIsRefreshing] = useState(false)
+  const [loadError, setLoadError] = useState(false)
   const [activeTab, setActiveTab] = useState<'insights' | 'trends' | 'risks'>('insights')
 
   useEffect(() => {
@@ -56,21 +57,24 @@ export function InsightsPanel({
 
   const loadData = async () => {
     setIsLoading(true)
+    setLoadError(false)
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
 
-      const [insightsData, trendsData, risksData] = await Promise.all([
+      const [insightsData, metricsData, risksData] = await Promise.all([
         consultantInsights.generateParticipantInsights(user.id, maxInsights),
-        showTrends ? consultantInsights.calculateTrends(user.id) : Promise.resolve([]),
+        showTrends ? consultantInsights.getKeyMetrics(user.id) : Promise.resolve([]),
         showRisks ? consultantInsights.assessParticipantRisks(user.id) : Promise.resolve([])
       ])
 
       setInsights(insightsData)
-      setTrends(trendsData)
+      setMetrics(metricsData)
       setRisks(risksData.slice(0, 5))
     } catch (error) {
+      // Visa fel ärligt — en tom lista efter ett DB-fel skulle se ut som "allt är bra"
       console.error('Failed to load insights:', error)
+      setLoadError(true)
     } finally {
       setIsLoading(false)
     }
@@ -143,6 +147,26 @@ export function InsightsPanel({
         <div className="flex items-center justify-center py-8">
           <Loader2 className="w-6 h-6 animate-spin text-[var(--c-text)]" />
           <span className="ml-2 text-stone-600 dark:text-stone-400">Analyserar data...</span>
+        </div>
+      </Card>
+    )
+  }
+
+  if (loadError) {
+    return (
+      <Card className="p-6">
+        <div className="flex flex-col items-center text-center py-6" role="alert">
+          <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center mb-3">
+            <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+          </div>
+          <p className="font-medium text-stone-800 dark:text-stone-200">Kunde inte hämta insikterna</p>
+          <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 max-w-sm">
+            Något gick fel vid hämtningen — listan kan vara ofullständig. Försök igen om en stund.
+          </p>
+          <Button variant="outline" size="sm" className="mt-4" onClick={refresh}>
+            <RefreshCw className="w-4 h-4 mr-1" />
+            Försök igen
+          </Button>
         </div>
       </Card>
     )
@@ -223,7 +247,7 @@ export function InsightsPanel({
                   : 'text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300'
               )}
             >
-              Trender
+              Nyckeltal
             </button>
           )}
           {showRisks && (
@@ -309,36 +333,21 @@ export function InsightsPanel({
           </>
         )}
 
-        {/* Trends Tab */}
+        {/* Key metrics tab — ärliga ögonblicksvärden; ingen periodjämförelse
+            eftersom historiska snapshots saknas (fabricerades tidigare) */}
         {activeTab === 'trends' && showTrends && (
           <div className="p-4 space-y-4">
-            {trends.map((trend, index) => (
+            {metrics.map((metric, index) => (
               <div key={index} className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-900/50 rounded-xl">
-                <div>
-                  <p className="text-sm font-medium text-stone-700 dark:text-stone-300">{trend.label}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-2xl font-bold text-stone-900 dark:text-stone-100">
-                      {trend.current}{trend.label.includes('%') || trend.label.includes('poäng') ? '%' : ''}
-                    </span>
-                    <span className={cn(
-                      'flex items-center gap-0.5 text-sm font-medium px-2 py-0.5 rounded',
-                      trend.isPositive
-                        ? 'text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/30'
-                        : 'text-red-700 bg-red-100 dark:text-red-300 dark:bg-red-900/30'
-                    )}>
-                      {trend.isPositive ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
-                      {trend.isPositive ? '+' : ''}{trend.change}
-                    </span>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-stone-500 dark:text-stone-400">Förra perioden</p>
-                  <p className="text-lg font-semibold text-stone-600 dark:text-stone-400">
-                    {trend.previous}{trend.label.includes('%') || trend.label.includes('poäng') ? '%' : ''}
-                  </p>
-                </div>
+                <p className="text-sm font-medium text-stone-700 dark:text-stone-300">{metric.label}</p>
+                <span className="text-2xl font-bold text-stone-900 dark:text-stone-100">
+                  {metric.current}{metric.isPercent ? '%' : ''}
+                </span>
               </div>
             ))}
+            <p className="text-xs text-stone-500 dark:text-stone-400">
+              Nuläge för dina deltagare just nu. Historiska jämförelser kommer när det finns data över tid.
+            </p>
           </div>
         )}
 

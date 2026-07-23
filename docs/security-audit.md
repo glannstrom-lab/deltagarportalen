@@ -1,11 +1,24 @@
 # Säkerhetsrevision (kodgranskning) — Deltagarportalen
 
-**Datum:** 2026-05-28 · **Statusuppdatering:** 2026-07-10
+**Datum:** 2026-05-28 · **Statusuppdatering:** 2026-07-23
 **Typ:** Statisk kodgranskning (READ-ONLY, ingen live-trafik mot prod)
 **Omfattning:** Secrets, Supabase RLS, endpoint-auth/CORS/rate limiting, XSS/injektion, OAuth, GDPR/PII
 **Metod:** 4 parallella recon-agenter + manuell verifiering av allvarliga fynd
 
 > Föregående revision (2026-04-23) finns längre ned i dokumentet och är fortsatt giltig som referens.
+
+---
+
+## Statusuppdatering 2026-07-23 (Nu-punkterna från granskningen 2026-07-22)
+
+Fyra nya fynd från `docs/portal-review-2026-07-22.md` åtgärdade i kod samma vecka de hittades:
+
+- ✅ **A10 (HIGH/CRIT): `invitations`-tabellens öppna SELECT-policy stängd.** `USING(true)` utan tokenmatchning lät anon läsa ut alla inbjudningar (e-post, telefon i metadata, roll, hemlig token). Nu: policyn droppad, tokenmatchad SECURITY DEFINER-RPC `get_invitation_by_token` (returnerar bara id/email/role/metadata — inte token), `REVOKE ALL ON invitations FROM anon`. Migration `20260723090000_fix_invitations_rls.sql`; `InviteHandler.tsx` omskriven till RPC:n.
+- ✅ **A11 (HIGH): SSRF i `cv-pdf.js` stängd.** `printUrl` byggdes från ovaliderad `Origin`-header → server-Chromium kunde fås att navigera till attacker-styrd sida. Nu valideras Origin mot CORS-allowlisten (inkl. preview-regex) innan URL-bygget; okänd origin → `https://jobin.se`.
+- ✅ **A12 (MED): dygnstokentaket (50k/dygn/user) infört i `ai-stream.js`** — streaming-vägen kunde tidigare kringgå kostnadsskyddet C4 helt. Kollas före SSE-headers så 429 kan skickas som JSON.
+- ✅ **A14 (MED/HIGH): beroendeuppgraderingar** — dompurify 3.3.3→3.4.12 (sanerings-bypass-CVE:er i själva XSS-skyddsmotorn), react-router-dom 7.13.0→7.18.1 (bl.a. turbo-stream-RCE), ws 8.20.0→8.21.1. 710 tester + build gröna efteråt. **Kvarvarande known-issue:** undici@5.28.4 via `@vercel/blob@0.27` — fix kräver major-uppgradering av @vercel/blob (egen uppgift, A14-rest i ROADMAP); tills dess behåller CI:s npm-audit-steg `continue-on-error` (dokumenterat i ci.yml).
+
+Övriga fynd från 2026-07-22-granskningen (A13 proxy-rate-limits, A15 småfix) är öppna i ROADMAP spår A.
 
 ---
 

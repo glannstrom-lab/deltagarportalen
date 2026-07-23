@@ -46,14 +46,23 @@ export const KurseRecommendationSchema = z.object({
   title: z.string(),
   provider: z.string().optional(),
   duration: z.string().optional(),
-  url: z.string().url().optional(),
+  type: z.string().optional(),
+  cost: z.string().optional(),
+  // Medvetet inte .url() — en AI-felskriven URL ska inte fälla hela analysen
+  url: z.string().optional(),
+})
+
+export const ActionPlanStepSchema = z.object({
+  order: z.number().optional(),
+  title: z.string(),
+  description: z.string().optional(),
 })
 
 export const KompetensgapSchema = z.object({
   matchPercentage: z.number().min(0).max(100),
-  skills: z.array(KompetensComparisonSchema),
+  skills: z.array(KompetensComparisonSchema).min(1),
   courses: z.array(KurseRecommendationSchema).optional(),
-  actionPlan: z.array(z.string()).optional(),
+  actionPlan: z.array(ActionPlanStepSchema).optional(),
 })
 
 export type KompetensGap = z.infer<typeof KompetensgapSchema>

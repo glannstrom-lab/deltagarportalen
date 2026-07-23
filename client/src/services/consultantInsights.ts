@@ -31,13 +31,13 @@ export type InsightType =
   | 'high_performer'
   | 'needs_support'
 
-export interface TrendData {
+// Ögonblicksvärden, inte trender: det finns ingen historisk snapshot-tabell,
+// så en "förra perioden"-jämförelse går inte att göra ärligt härifrån.
+// (Tidigare fabricerades previous med Math.random() — borttaget 2026-07-23.)
+export interface KeyMetric {
   label: string
   current: number
-  previous: number
-  change: number
-  changePercent: number
-  isPositive: boolean
+  isPercent: boolean
 }
 
 export interface CohortComparison {
@@ -67,15 +67,15 @@ export async function generateParticipantInsights(
 ): Promise<ParticipantInsight[]> {
   const insights: ParticipantInsight[] = []
 
-  try {
-    // Fetch participants with their data
-    const { data: participants } = await supabase
-      .from('consultant_dashboard_participants')
-      .select('*')
-      .eq('consultant_id', consultantId)
-      .eq('status', 'ACTIVE')
+  // Fetch participants with their data
+  const { data: participants, error: participantsError } = await supabase
+    .from('consultant_dashboard_participants')
+    .select('*')
+    .eq('consultant_id', consultantId)
+    .eq('status', 'ACTIVE')
 
-    if (!participants) return insights
+  if (participantsError) throw participantsError
+  if (!participants) return insights
 
     const now = new Date()
 
@@ -151,12 +151,14 @@ export async function generateParticipantInsights(
       }
     }
 
-    // Fetch goals at risk
-    const { data: goals } = await supabase
-      .from('consultant_goals')
-      .select('*, participant:consultant_dashboard_participants!inner(name, user_id)')
-      .eq('consultant_id', consultantId)
-      .eq('status', 'IN_PROGRESS')
+  // Fetch goals at risk
+  const { data: goals, error: goalsError } = await supabase
+    .from('consultant_goals')
+    .select('*, participant:consultant_dashboard_participants!inner(name, user_id)')
+    .eq('consultant_id', consultantId)
+    .eq('status', 'IN_PROGRESS')
+
+  if (goalsError) throw goalsError
 
     if (goals) {
       for (const goal of goals) {
@@ -196,102 +198,49 @@ export async function generateParticipantInsights(
       }
     }
 
-    // Sort by priority
-    const priorityOrder = { high: 0, medium: 1, low: 2 }
-    insights.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
+  // Sort by priority
+  const priorityOrder = { high: 0, medium: 1, low: 2 }
+  insights.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority])
 
-    return insights.slice(0, limit)
-  } catch (error) {
-    console.error('Failed to generate participant insights:', error)
-    return []
-  }
+  return insights.slice(0, limit)
 }
 
 /**
- * Calculate trend data comparing current vs previous period
+ * Current key metrics for the consultant's caseload (honest snapshot, no
+ * fabricated period comparison — see note at KeyMetric).
  */
-export async function calculateTrends(
-  consultantId: string,
-  _periodDays: number = 30
-): Promise<TrendData[]> {
-  const trends: TrendData[] = []
+export async function getKeyMetrics(consultantId: string): Promise<KeyMetric[]> {
+  const { data: participants, error } = await supabase
+    .from('consultant_dashboard_participants')
+    .select('*')
+    .eq('consultant_id', consultantId)
 
-  try {
-    // Fetch all participants
-    const { data: participants } = await supabase
-      .from('consultant_dashboard_participants')
-      .select('*')
-      .eq('consultant_id', consultantId)
+  if (error) throw error
+  if (!participants || participants.length === 0) return []
 
-    if (!participants) return trends
+  const activeCount = participants.filter(p => p.status === 'ACTIVE').length
 
-    // Calculate active participants trend
-    const currentActive = participants.filter(p => p.status === 'ACTIVE').length
-    // Simulating previous period data (in real implementation, would query historical data)
-    const previousActive = Math.max(1, currentActive - Math.floor(Math.random() * 3 - 1))
+  const withCV = participants.filter(p => p.has_cv).length
+  const cvRate = Math.round((withCV / participants.length) * 100)
 
-    trends.push({
-      label: 'Aktiva deltagare',
-      current: currentActive,
-      previous: previousActive,
-      change: currentActive - previousActive,
-      changePercent: Math.round(((currentActive - previousActive) / Math.max(previousActive, 1)) * 100),
-      isPositive: currentActive >= previousActive
-    })
+  const now = new Date()
+  const recentlyActive = participants.filter(p => {
+    if (!p.last_login) return false
+    const daysSince = Math.floor((now.getTime() - new Date(p.last_login).getTime()) / (1000 * 60 * 60 * 24))
+    return daysSince < 7
+  }).length
+  const engagement = Math.round((recentlyActive / participants.length) * 100)
 
-    // Calculate CV completion rate trend
-    const withCV = participants.filter(p => p.has_cv).length
-    const currentCVRate = Math.round((withCV / Math.max(participants.length, 1)) * 100)
-    const previousCVRate = Math.max(0, currentCVRate - Math.floor(Math.random() * 10))
+  const avgScore = Math.round(
+    participants.reduce((sum, p) => sum + (p.ats_score || 0), 0) / participants.length
+  )
 
-    trends.push({
-      label: 'CV-komplettering',
-      current: currentCVRate,
-      previous: previousCVRate,
-      change: currentCVRate - previousCVRate,
-      changePercent: currentCVRate - previousCVRate,
-      isPositive: currentCVRate >= previousCVRate
-    })
-
-    // Calculate engagement rate trend
-    const now = new Date()
-    const recentlyActive = participants.filter(p => {
-      if (!p.last_login) return false
-      const daysSince = Math.floor((now.getTime() - new Date(p.last_login).getTime()) / (1000 * 60 * 60 * 24))
-      return daysSince < 7
-    }).length
-    const currentEngagement = Math.round((recentlyActive / Math.max(participants.length, 1)) * 100)
-    const previousEngagement = Math.max(0, currentEngagement - Math.floor(Math.random() * 15 - 5))
-
-    trends.push({
-      label: 'Engagemangsgrad',
-      current: currentEngagement,
-      previous: previousEngagement,
-      change: currentEngagement - previousEngagement,
-      changePercent: currentEngagement - previousEngagement,
-      isPositive: currentEngagement >= previousEngagement
-    })
-
-    // Calculate average CV score trend
-    const avgScore = Math.round(
-      participants.reduce((sum, p) => sum + (p.ats_score || 0), 0) / Math.max(participants.length, 1)
-    )
-    const previousAvgScore = Math.max(0, avgScore - Math.floor(Math.random() * 8))
-
-    trends.push({
-      label: 'Genomsnittlig CV-poäng',
-      current: avgScore,
-      previous: previousAvgScore,
-      change: avgScore - previousAvgScore,
-      changePercent: Math.round(((avgScore - previousAvgScore) / Math.max(previousAvgScore, 1)) * 100),
-      isPositive: avgScore >= previousAvgScore
-    })
-
-    return trends
-  } catch (error) {
-    console.error('Failed to calculate trends:', error)
-    return []
-  }
+  return [
+    { label: 'Aktiva deltagare', current: activeCount, isPercent: false },
+    { label: 'CV-komplettering', current: cvRate, isPercent: true },
+    { label: 'Aktiva senaste veckan', current: engagement, isPercent: true },
+    { label: 'Genomsnittlig CV-poäng', current: avgScore, isPercent: true }
+  ]
 }
 
 /**
@@ -302,14 +251,15 @@ export async function assessParticipantRisks(
 ): Promise<ParticipantRisk[]> {
   const risks: ParticipantRisk[] = []
 
-  try {
-    const { data: participants } = await supabase
-      .from('consultant_dashboard_participants')
-      .select('*')
-      .eq('consultant_id', consultantId)
-      .eq('status', 'ACTIVE')
+  const { data: participants, error } = await supabase
+    .from('consultant_dashboard_participants')
+    .select('*')
+    .eq('consultant_id', consultantId)
+    .eq('status', 'ACTIVE')
 
-    if (!participants) return risks
+  // Ett DB-fel får ALDRIG tolkas som "inga riskdeltagare" — kasta vidare så UI:t kan visa fel
+  if (error) throw error
+  if (!participants) return risks
 
     const now = new Date()
 
@@ -368,14 +318,10 @@ export async function assessParticipantRisks(
       }
     }
 
-    // Sort by risk score (highest first)
-    risks.sort((a, b) => b.riskScore - a.riskScore)
+  // Sort by risk score (highest first)
+  risks.sort((a, b) => b.riskScore - a.riskScore)
 
-    return risks
-  } catch (error) {
-    console.error('Failed to assess participant risks:', error)
-    return []
-  }
+  return risks
 }
 
 /**
@@ -462,7 +408,7 @@ export async function getDashboardSummary(consultantId: string): Promise<{
 // Export service
 export const consultantInsights = {
   generateParticipantInsights,
-  calculateTrends,
+  getKeyMetrics,
   assessParticipantRisks,
   getDashboardSummary
 }

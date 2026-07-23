@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [main, develop]
 
+# D8 (2026-07-23): avbryt föregående körning vid snabba på-varandra-följande
+# pushar till samma branch/PR — sparar CI-minuter och kortar kön.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   lint-and-typecheck:
     name: Lint & Type Check
@@ -200,7 +206,9 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run smoke tests
-        run: npx playwright test e2e/smoke.spec.ts --project=chromium
+        # D8 (2026-07-23): regression-fas-a tillagd — låg i repot men kördes
+        # aldrig i CI (publika vakter: modulepreload, upload-image-auth, routes)
+        run: npx playwright test e2e/smoke.spec.ts e2e/regression-fas-a.spec.ts --project=chromium
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
@@ -244,7 +252,9 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run authenticated E2E
-        run: npx playwright test e2e/golden-path.spec.ts e2e/auth.spec.ts e2e/cv.spec.ts e2e/dashboard.spec.ts e2e/cover-letter.spec.ts e2e/job-search.spec.ts --project=chromium
+        # D8 (2026-07-23): axe-a11y tillagd — WCAG-svepet kördes aldrig i CI.
+        # Publika sidor auditeras alltid; inloggade sidor när secrets finns.
+        run: npx playwright test e2e/golden-path.spec.ts e2e/auth.spec.ts e2e/cv.spec.ts e2e/dashboard.spec.ts e2e/cover-letter.spec.ts e2e/job-search.spec.ts e2e/axe-a11y.spec.ts --project=chromium
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
@@ -280,6 +290,11 @@ jobs:
         working-directory: client
         run: npm ci
 
+      # continue-on-error är MEDVETET (dokumenterat 2026-07-23, D8/A14):
+      # en kvarvarande known-issue finns — undici@5.28.4 via @vercel/blob@0.27
+      # (fix kräver major-uppgradering av @vercel/blob, egen uppgift). Utan
+      # continue-on-error skulle den fälla varje CI-körning tills dess.
+      # Ta bort flaggan när @vercel/blob uppgraderats och audit är ren.
       - name: Run npm audit
         working-directory: client
         run: npm audit --audit-level=high

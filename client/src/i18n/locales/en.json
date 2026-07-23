@@ -7185,6 +7185,7 @@
     "loadingProfile": "Loading your profile...",
     "analyzing": "Analyzing your skills...",
     "startingAnalysis": "Starting analysis...",
+    "analysisFailed": "The analysis couldn't be completed right now. Nothing was saved — please try again in a moment.",
     "dreamJobLabel": "Dream job",
     "skillsComparison": "Skills Comparison",
     "levels": "levels",

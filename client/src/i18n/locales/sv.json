@@ -7192,6 +7192,7 @@
     "loadingProfile": "Laddar din profil...",
     "analyzing": "Analyserar dina kompetenser...",
     "startingAnalysis": "Startar analys...",
+    "analysisFailed": "Analysen gick inte att genomföra just nu. Inget resultat har sparats — försök gärna igen om en stund.",
     "dreamJobLabel": "Drömjobb",
     "skillsComparison": "Kompetensöversikt",
     "levels": "nivåer",

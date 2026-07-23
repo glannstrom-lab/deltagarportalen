@@ -24,7 +24,6 @@ export type AIStreamFunction =
   | 'jobbtips'
   | 'loneforhandling'
   | 'karriarplan'
-  | 'kompetensgap'
   | 'linkedin-optimering'
   | 'mentalt-stod'
   | 'natverkande'

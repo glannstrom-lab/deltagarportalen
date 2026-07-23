@@ -5,6 +5,13 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# D8 (2026-07-23): köa deploys i stället för att köra parallellt.
+# cancel-in-progress medvetet false — en halvfärdig deploy ska få göra
+# klart; nästa körning tar den senaste koden ändå.
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
 jobs:
   deploy-frontend:
     name: Deploy Frontend to Vercel

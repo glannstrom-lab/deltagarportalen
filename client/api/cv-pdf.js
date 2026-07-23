@@ -108,9 +108,13 @@ const ALLOWED_ORIGINS = [
   ] : []),
 ].filter(Boolean);
 
-function getCorsHeaders(origin) {
-  const allowed = ALLOWED_ORIGINS.includes(origin)
+function isAllowedOrigin(origin) {
+  return ALLOWED_ORIGINS.includes(origin)
     || (origin && /^https:\/\/deltagarportal(en)?-[a-z0-9]+-[\w-]+\.vercel\.app$/.test(origin));
+}
+
+function getCorsHeaders(origin) {
+  const allowed = isAllowedOrigin(origin);
   return {
     'Access-Control-Allow-Origin': allowed ? origin : ALLOWED_ORIGINS[0],
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -201,10 +205,11 @@ module.exports = async (req, res) => {
 
   // Klienten skickar template + en print-host (för att stödja preview-deploys).
   const template = String(req.body?.template || 'sidebar').slice(0, 50);
-  // Print-URL: byggs från Origin så den fungerar mot localhost, preview-
-  // deploys och produktion. Klienten måste skicka Origin-header (browsers
-  // gör det automatiskt).
-  const origin = req.headers.origin || `https://${req.headers.host || 'jobin.se'}`;
+  // Print-URL: Origin används bara om den finns i allowlisten (SSRF-skydd,
+  // A11 2026-07-23 — CORS-headers stoppar inte direkta anrop, så en
+  // ovaliderad Origin lät anroparen styra vart server-Chromium navigerar).
+  // Okänd/saknad Origin → produktionsdomänen.
+  const origin = isAllowedOrigin(req.headers.origin) ? req.headers.origin : 'https://jobin.se';
 
   let browser = null;
   try {
