@@ -602,11 +602,14 @@ export const careerPlanApi = {
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // Deactivate any existing active plan
-    await supabase
+    // D7 (2026-07-23): felkontrollera avaktiveringen — annars kan insert nedan
+    // skapa en ANDRA aktiv plan om avaktiveringen tyst misslyckats
+    const { error: deactivateError } = await supabase
       .from('career_plans')
       .update({ is_active: false })
       .eq('user_id', user.id)
       .eq('is_active', true);
+    if (deactivateError) handleError(deactivateError, 'Failed to deactivate existing plan');
 
     const { data, error } = await supabase
       .from('career_plans')
@@ -721,12 +724,16 @@ export const milestonesApi = {
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
     // Get current state
-    const { data: current } = await supabase
+    const { data: current, error: readError } = await supabase
       .from('career_milestones')
       .select('is_completed')
       .eq('id', id)
       .eq('user_id', user.id)
       .single();
+
+    // D7 (2026-07-23): kasta vid läsfel — annars blir newCompleted alltid true
+    // (tolkar felet som "inte klar") oavsett milstolpens faktiska tillstånd
+    if (readError) handleError(readError, 'Failed to read milestone state');
 
     const newCompleted = !current?.is_completed;
 
@@ -1116,13 +1123,16 @@ export const favoriteOccupationsApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) return false;
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from('favorite_occupations')
       .select('id')
       .eq('occupation_id', occupationId)
       .eq('user_id', user.id)
       .maybeSingle();
 
+    // D7 (2026-07-23): kasta vid fel i stället för att tolka det som "inte
+    // favorit" — annars kan toggle() lägga till en dubblett vid transient fel
+    if (error) handleError(error, 'Failed to check favorite');
     return !!data;
   },
 
@@ -1304,11 +1314,14 @@ export const credentialsApi = {
   },
 
   async updateStatus(id: string, status: UserCredential['status']): Promise<UserCredential> {
-    const completedDate = status === 'completed' ? new Date().toISOString().split('T')[0] : undefined;
+    // D7 (2026-07-23): null (inte undefined) så completed_date faktiskt RENSAS
+    // när status lämnar 'completed' — undefined droppas vid serialiseringen och
+    // ett gammalt datum blev kvar
+    const completedDate = status === 'completed' ? new Date().toISOString().split('T')[0] : null;
     return this.update(id, {
       status,
       completed_date: completedDate
-    });
+    } as Partial<UserCredential>);
   }
 };
 

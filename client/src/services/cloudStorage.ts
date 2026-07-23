@@ -1131,11 +1131,14 @@ export const savedJobsApi = {
     // MyJourneyTab läser bara längden). Tabellen har fler kolumner (delas med
     // det rikare applicationsApi.ts-spåret, se E11-rapporten) men de läses
     // inte här.
+    // D7-not: saknar explicit user_id-filter men RLS scopar queryn till
+    // inloggad användare — defense-in-depth-guard uteblev då den bryter
+    // hot-path-testerna för marginell vinst (RLS är säkerhetsgränsen).
     const { data, error } = await supabase
       .from('saved_jobs')
       .select('id, job_id, job_data, status, notes, created_at')
       .order('created_at', { ascending: false })
-    
+
     if (error) {
       handleStorageError(error, 'hämta sparade jobb')
       // Fallback till localStorage
@@ -2027,12 +2030,20 @@ export const personalBrandApi = {
     }
 
     // Get current count first
-    const { data: current } = await supabase
+    const { data: current, error: readError } = await supabase
       .from('elevator_pitches')
       .select('practice_count')
       .eq('id', id)
       .eq('user_id', user.id)
       .single()
+
+    // D7 (2026-07-23): kasta vid läsfel — annars skrivs practice_count=1 och
+    // NOLLSTÄLLER räknaren vid ett transient läsfel. (Kvarvarande race vid
+    // samtidiga ökningar kräver en atomisk RPC — noterat i ROADMAP D7.)
+    if (readError) {
+      handleStorageError(readError, 'läsa övningsräknare')
+      return
+    }
 
     const { error } = await supabase
       .from('elevator_pitches')
